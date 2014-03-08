@@ -1,0 +1,49 @@
+<div class="row">
+
+  ### The form for a new message ###
+  <div class="col-md-6">
+    <h4>Process list</h4>fsfs
+
+    <form name="form" novalidate>
+      <fieldset>
+        <div>
+          <textarea id="text-input" rows="3" placeholder="title"
+                    data-ng-model="message.title" required>
+          </textarea>
+          <textarea id="text-input" rows="3" placeholder="address"
+                    data-ng-model="message.address" required>
+          </textarea>
+          <textarea id="text-input" rows="3" placeholder="city"
+                    data-ng-model="message.city" required>
+          </textarea>
+          <textarea id="text-input" rows="3" placeholder="state"
+                    data-ng-model="message.state" required>
+          </textarea>
+          <textarea id="text-input" rows="3" placeholder="zip"
+                    data-ng-model="message.zip" required>
+          </textarea>
+        </div>
+        <div>
+          <button type="submit" class="btn btn-primary"
+                  data-ng-click="sendMessage()" data-ng-disabled="form.$invalid">
+            Gabble away
+          </button>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+
+  <!--### The list of messages ###-->
+  <div class="col-md-6 messages">
+    <h1>Production map</h1>
+    <li ng-repeat="message in messages">
+      {{message.id}}
+      <h2>{{message.title}}</h2>
+      <h6>{{message.address}}</h6>
+      <h6>{{message.city}}</h6>
+      <h6>{{message.state}}</h6>
+      <h6>{{message.zip}}</h6>
+    </li>
+  </div>
+
+</div>

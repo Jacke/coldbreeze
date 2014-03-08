@@ -1,0 +1,90 @@
+* Link Update
+* Elem update
+* Proc elems normalize
+* ProcElems desc field 
+* Brick with SpaceControl interface
+* space(container, expand) constructor
+* spaces belongs_to brick
+* Brick add space automaticly (if is needed)
+* Scope, Groups, Emps, Clients in BP
+* Init method
+* Ownings
+
+
+* Collection
+* Result
+* Checker
+* Confirm
+* Stopper Pause
+* Loop
+** Condition
+* Companion ResAct -> Input, Times ...
+
+
+
+
+<DB>
+  * DAO Blocks
+  * DAO Resources
+  * Slick integration
+  * DB Scheme
+  * API End-Point
+  || Process owning, viewers, access // by owning tables Employees/Clients/Firm + Groups assigns
+  * scope ctx, bp views
+
+
+  encrypt password https://github.com/softwaremill/bootzooka
+  * Angular app
+  * error handling [checker before invoke, brick error - though invoking] /isOptionalLink/* checker for arguments and params [ ]
+
+
+
+
+* Assembled
+  * BProcess returns
+  * CTX[Res -> BPS]
+  * FrameMarker
+  * main.scala.maps.FrameLink ctx-ctx links
+  ** main.scala.utils.Space || Make support for frame elements
+  * Assembly Function [ Provide access to triple (object, params, arguments)] 1. req(el, in), assebmly(frame), running
+  ** [* CHAIN Invoke -> Process -> Process ]
+  * Return in BProcess  [ Blocks that comes after process invoked ]
+
+* Misc
+
+  * bRICK pOINTER FOR rEStYPE(INTVAL)
+  * GroupPointer fetch before invoke
+  ** Input block while proc/context running(wait for input if it paused)
+  * Return in ProcElems [ Block that return blocks and arg&params ] 
+  * Graph.js
+
+  /** 2 Books read **/
+    http://www.mulesoft.com/platform/soa
+    http://www.activiti.org/userguide/index.html#bpmnSequenceFlow
+    http://www.activiti.org/userguide/index.html#bpmnTask
+    http://www.activiti.org/userguide/index.html#bpmnGateways
+    http://www.activiti.org/userguide/index.html#bpmnSubprocessAndCallActivity
+
+
+/Final/
+  * Collab & sharing
+  * Link block[Input, return, ...]
+  * Block store
+  * Documents
+  * K-V Properties for resources
+  * Observer block http://www.activiti.org/userguide/index.html#bpmnEvents
+  * Triggers(that runs something just from template and request[POST /auth/token?acton=...])
+
+  * Merchant?
+  * Bridge
+  * Behav Resources
+  * Behav model methods and elements
+  * Templates BP, ctx, sbj?
+  * Neo4J integration?
+  * Complex block
+  * Block register / Elem -> Block conversion
+  * Sandbox for testing external Blocks
+  * Service
+  * RPC
+  * Zappier
+  * Regressor-core
