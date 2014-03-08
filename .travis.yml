@@ -5,3 +5,6 @@
    - oraclejdk7
    - openjdk7
    - openjdk6
+notifications:
+  webhooks:
+    - https://empireincloud.slack.com/services/hooks/travis?token=uhRc6viHMVwXAGaUNtEQ1HoT
