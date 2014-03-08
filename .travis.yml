@@ -7,4 +7,8 @@
    - openjdk6
 notifications:
   webhooks:
-    - https://empireincloud.slack.com/services/hooks/travis?token=RaRjEHR0qBr6wNvkHgqKu71f
+    urls:
+      - https://empireincloud.slack.com/services/hooks/travis?token=RaRjEHR0qBr6wNvkHgqKu71f
+    on_success: always
+    on_failure: always
+    on_start: true
