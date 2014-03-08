@@ -10,7 +10,17 @@ import main.scala.utils.links.LinkSearcher
 import scala.util.Try
 import main.scala.utils.ElementTracer
 
-class Brick(proc: BProcess, order: Int) extends ProcElems {
+class Brick(
+  title: String, 
+  desc: String, 
+  bprocess: BProcess,
+  b_type: String, 
+  b_title: String, 
+  order: Int, 
+  val space: Option[Space], 
+  val space_role: String
+  ) extends ProcElems {
+  
   ElementTracer.register[Brick]("Brick", "Default brick", "Default brick for taking Tests")
 
   override def toString = s"Brick:"

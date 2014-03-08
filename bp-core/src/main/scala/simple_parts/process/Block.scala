@@ -12,7 +12,16 @@ import main.scala.bprocesses.InvokeTracer
  * @author Sobolev
  */
 
-class Block(b_type: String, title: String, val expander: Boolean = false) extends ProcElems {
+class Block(
+  title: String, 
+  desc: String, 
+  bprocess: BProcess,
+  b_type: String, 
+  b_title: String, 
+  order: Int, 
+  val space: Option[Space], 
+  val space_role: String
+  ) extends ProcElems {
 
   override def toString = s"Block: $title"
 

@@ -4,8 +4,7 @@ import main.scala.bprocesses.InvokeTracer
 import main.scala.bprocesses.links._
 import main.scala.simple_parts.process.Brick
 
-class Space(val index: Int, val brick: Brick) // increment index
-    extends ProcElems 
+class Space(val index: Int, val brick: Brick, val is_subbricks: Boolean = true, val is_container: Boolean = true, val is_expander: Boolean = true) 
 {
   
 private var state = true
@@ -14,16 +13,24 @@ private var state = true
 override def init { }
 
 // Searcher
-def seachObjById(id: Int) = {
-  val objects = subbricks ++ container ++ expands
-  objects.find(obj => obj.id == id)
+def seachObjById(id: Int, space_role: String) = {
+  if (space_role == "subbrick") {
+    subbricks.find(obj => obj.id == id)
+  }
+  if (space_role == "container") {
+    container.find(obj => obj.id == id)
+  }
+  if (space_role == "expands") {
+    expands.find(obj => obj.id == id)
+  }
+  else { None }
 }
 def levelOfObject(obj: ProcElems) = {
-  if (subbricks.contains(obj)) {
+  if (subbricks.contains(obj) && is_subbricks) {
     "SubBricks"
-  else if (container.contains(obj)) {
+  else if (container.contains(obj) && is_container) {
     "Container"
-  } elseif (expands.contains(obj)) {
+  } elseif (expands.contains(obj) && is_expander) {
     "Expands"
   }
   None
@@ -43,6 +50,7 @@ def updateElem(old, newone) = {
 }
 
 // subbricks
+if (is_subbricks) {
   var subbricks = Array.empty[SubBrick]
 
   def sb_pushit(target: Array[SubBrick]) {
@@ -52,9 +60,10 @@ def updateElem(old, newone) = {
   def sb_push(f: ⇒ Array[SubBrick]) = {
     sb_pushit(f)
   }
-
+}
 
 // container
+if (is_container) { 
   var container: Array[ProcElems] = Array.empty
 
   def cont_pushin(target: Array[ProcElems]) {
@@ -64,9 +73,10 @@ def updateElem(old, newone) = {
   def cont_push(f: ⇒ Array[ProcElems]) = {
     cont_pushin(f)
   }
-
+}
 
 // expandings
+if (is_expander) {
   var expands: Array[ProcElems] = Array.empty
 
   def exp_pushin(target: Array[ProcElems]) {
@@ -84,10 +94,7 @@ def updateElem(old, newone) = {
     expands.update(expands(in), obj)
     // link_update
   } 
+}
 
-// runer
-  def invoke = {
-   //   pushit(ArgLinkDispatch.to(this).map(_.get).to[ListBuffer])
-   //   InvokeTracer.run_dim(this, InvokeTracer.runner.get)
-  }
+
 }
