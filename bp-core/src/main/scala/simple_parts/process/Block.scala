@@ -12,9 +12,10 @@ import main.scala.bprocesses.InvokeTracer
  * @author Sobolev
  */
 
-class Block(
+class Block(id: Int,
   title: String, 
   desc: String, 
+  values: CompositeValues,
   bprocess: BProcess,
   b_type: String, 
   b_title: String, 

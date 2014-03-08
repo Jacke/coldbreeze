@@ -29,6 +29,7 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]], groups: Option[
  *  Process collection methods
  */
 
+  //def allElements = {}
   def blk = variety.collect { case block: Block ⇒ block }
   def rsl = variety.collect { case brick: Result ⇒ brick }
   def chk = variety.collect { case brick: Brick ⇒ brick }
@@ -57,6 +58,7 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]], groups: Option[
 /**
  * Process CRUD methods
  */
+
   def updateElem(el: ProcElems, newone: ProcElems, inspace: Boolean) = {
     if (!inspace) {
     variety.update(variety.indexOf(old), newone)
@@ -67,26 +69,38 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]], groups: Option[
     }
     update_link[ProcElems](old, newone)
   }
+
+  def addToSpace(elem: ProcElems, space: Space, space_role:String) = {
+    if (space_role == "subbrick") {
+      space.subbricks = space.subbricks :+ elem.asInstanceOf[SubBrick]
+    }
+    if (space_role == "container") {
+      space.container = space.container :+ elem
+    }
+    if (space_role == "expands") {
+      space.expands = space.expands :+ elem
+    }
+  }
 /**
  *  Owners
  */
-   def owners(b: ResAct)     = ownerships.collect { case link: T ⇒ link.from == old }
-   def res_acts(r: Resource) = ownerships.collect { case link: T ⇒ link.to   == old }
+  def owners(b: ResAct)     = ownerships.collect { case link: T ⇒ link.from == old }
+  def res_acts(r: Resource) = ownerships.collect { case link: T ⇒ link.to   == old }
 
 /**
  * Input
  */
-  def fill(inputs: Array[ProcElems]) = {
+  def fill(inputs: SimpleInput) = {
     val z = variety.collect { case placeholder: InputPlaceholder ⇒ placeholder }
-    for (x ← z; y ← inputs) yield (x.push(y))
+    for (x ← z; y ← inputs.in) yield (x.push(y))
     // in space
   }
-  def pointed_fill(ids: Array[Int], inputs: Array[ProcElems]) = {
+  def pointed_fill(in: PointedInput) = {
     // inspace
-    val placeholders: Array[ProcElems] = ids.map(id => fetchElemById(id))
+    val placeholders: Array[ProcElems] = in.ids.map(id => fetchElemById(id))
     for {
          placeholder <- placeholders
-         input <- inputs
+         input <- in.inputs
         } yield (updateElem(placeholder, input))
   }
 
@@ -109,7 +123,7 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]], groups: Option[
 
   def elements_init = {
     println("init elements")
-    variety.map(el => el.init)
+    allElements.map(el => el.init)
   } 
 
 /**

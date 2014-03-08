@@ -13,18 +13,18 @@ trait BPLinkContainer[T] extends LinkContainer { self =>
 
   def add_link(x: T) = links :+ x
 
-  def update_link[Elem](old: Elem, new: Elem) = {
+  def update_link[Elem](old: Elem, newone: Elem) = {
     //val t1 = links.find (link => link.from == old)
     //val t2 = links.find (link => link.to == old)
     val t1 = links.collect { case link: T ⇒ link.from == old }
     val t2 = links.collect { case link: T ⇒ link.to   == old }
     if (t1.length > 0) {
-      t1.foreach(link => links.update(link, new T(new, link.from)))
+      t1.foreach(link => links.update(link, classOf[T].newInstance(newone, link.from).asInstanceOf[T] ))
       //links.update(t1, new Link(new, t1.to))
     }
     else if (t2.length > 0)
     {
-      t2.foreach(link => links.update(link, new T(link.from, new)))
+      t2.foreach(link => links.update(link, classOf[T].newInstance(link.from, newone).asInstanceOf[T] ))
       //links.update(t2, new Link(t2.from, new))
     }
 

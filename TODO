@@ -1,14 +1,8 @@
-* Link Update
-* Elem update
-* Proc elems normalize
-* ProcElems desc field 
+
 * Brick with SpaceControl interface
-* space(container, expand) constructor
-* spaces belongs_to brick
-* Brick add space automaticly (if is needed)
-* Scope, Groups, Emps, Clients in BP
-* Init method
-* Ownings
+* Add to space
+* Input check it out
+
 
 
 * Collection
@@ -16,11 +10,16 @@
 * Checker
 * Confirm
 * Stopper Pause
-* Loop
+
+** Input block while proc/context running(wait for input if it paused)
+* Ownings
+
+
+
+* Loop - Cycle
 ** Condition
 * Companion ResAct -> Input, Times ...
-
-
+  * error handling [checker before invoke, brick error - though invoking] /isOptionalLink/* checker for arguments and params [ ]
 
 
 <DB>
@@ -35,8 +34,6 @@
 
   encrypt password https://github.com/softwaremill/bootzooka
   * Angular app
-  * error handling [checker before invoke, brick error - though invoking] /isOptionalLink/* checker for arguments and params [ ]
-
 
 
 
@@ -54,7 +51,6 @@
 
   * bRICK pOINTER FOR rEStYPE(INTVAL)
   * GroupPointer fetch before invoke
-  ** Input block while proc/context running(wait for input if it paused)
   * Return in ProcElems [ Block that return blocks and arg&params ] 
   * Graph.js
 

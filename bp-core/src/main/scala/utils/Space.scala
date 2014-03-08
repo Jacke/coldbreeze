@@ -28,7 +28,7 @@ def seachObjById(id: Int, space_role: String) = {
 def levelOfObject(obj: ProcElems) = {
   if (subbricks.contains(obj) && is_subbricks) {
     "SubBricks"
-  else if (container.contains(obj) && is_container) {
+  elseif (container.contains(obj) && is_container) {
     "Container"
   } elseif (expands.contains(obj) && is_expander) {
     "Expands"
@@ -40,9 +40,9 @@ def getBrick = brick
 
 
 // Element control
-def updateElem(old, newone) = {
+def updateElem(old: ProcElems, newone: ProcElems) = {
   levelOfObject(old) match {
-    case "SubBricks" => subbrics.update(subbrics.indexOf(old), newone)
+    case "SubBricks" => subbrics.update(subbrics.indexOf(old), newone.asInstanceOf[SubBrick])
     case "Container" => container.update(container.indexOf(old), newone)
     case "Expands"   => expands.update(expands.indexOf(old), newone)
     case _           => None

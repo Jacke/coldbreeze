@@ -10,3 +10,5 @@ trait ProcElems {
     println(this)
   }
 }
+
+case class CompositeValues((String, String, Int, Int, Boolean, Boolean))
