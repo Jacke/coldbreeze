@@ -35,7 +35,9 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]], groups: Option[
   def cns = variety.collect { case const: Constant[_] ⇒ const }
   def inputs = variety.collect { case inputs: InputPlaceholder ⇒ inputs }
   def isContain(el: ProcElems) = variety contains el
-  
+/**
+ * Process search methods
+ */
   def fetchObjectById(id: Int) = {
     val frontelem = variety.find(elem => elem.id == id)
     val space_result = spaces.map(space => space.searchObjById(id))
@@ -52,7 +54,9 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]], groups: Option[
   def getElemsLength = variety.length - variety.collect { case space: Space => space }.length
   def getSpaceByIndex(index: Int) = spaces(index-1)
   def getSpaceQuantity = spaces.length
-
+/**
+ * Process CRUD methods
+ */
   def updateElem(el: ProcElems, newone: ProcElems, inspace: Boolean) = {
     if (!inspace) {
     variety.update(variety.indexOf(old), newone)
