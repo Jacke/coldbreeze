@@ -7,4 +7,4 @@
    - openjdk6
 notifications:
   webhooks:
-    - https://empireincloud.slack.com/services/hooks/travis?token=uhRc6viHMVwXAGaUNtEQ1HoT
+    - https://empireincloud.slack.com/services/hooks/travis?token=B1Q5jo4lNCLo7a3qKjBLJZC2
