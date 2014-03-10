@@ -4,8 +4,33 @@ import main.scala.bprocesses.InvokeTracer
 import main.scala.bprocesses.links._
 import main.scala.simple_parts.process.Brick
 
-class Space(val index: Int, val brick: Brick, val is_subbricks: Boolean = true, val is_container: Boolean = true, val is_expander: Boolean = true) 
-{
+object Space {
+  def apply(val index: Int, val brick: Brick, val is_subbricks: Boolean = true, val is_container: Boolean = true, val is_expander: Boolean = true) {
+    if (is_subbricks && is_container && is_expander) {
+      new Space(index, brick) extends SpaceSBComponent with SpaceContainerComponent with SpaceExpandComponent
+    }
+    if (is_subbricks && is_container && !is_expander) {
+      new Space(index, brick) extends SpaceSBComponent with SpaceContainerComponent 
+    }
+    if (is_subbricks && !is_container && is_expander) {
+      new Space(index, brick) extends SpaceSBComponent with SpaceExpandComponent
+    }
+    if (!is_subbricks && is_container && is_expander) {
+      new Space(index, brick) extends SpaceContainerComponent with SpaceExpandComponent
+    }
+    if (is_subbricks && !is_container && !is_expander) {
+      new Space(index, brick) extends SpaceSBComponent 
+    } 
+    if (!is_subbricks && is_container && !is_expander) {
+      new Space(index, brick) extends SpaceContainerComponent
+    }
+    if (!is_subbricks && !is_container && is_expander) {
+      new Space(index, brick) extends SpaceExpandComponent
+    }
+  }
+}
+
+class Space(val index: Int, val brick: Brick) {
   
 private var state = true
 
@@ -40,6 +65,17 @@ def getBrick = brick
 
 
 // Element control
+def addToSpace(elem: ProcElems, space_role:String) = {
+  if (space_role == "subbrick") {
+    subbricks = subbricks :+ elem.asInstanceOf[SubBrick]
+  }
+  if (space_role == "container") {
+    container = container :+ elem
+  }
+  if (space_role == "expands") {
+    expands = expands :+ elem
+  }
+}
 def updateElem(old: ProcElems, newone: ProcElems) = {
   levelOfObject(old) match {
     case "SubBricks" => subbrics.update(subbrics.indexOf(old), newone.asInstanceOf[SubBrick])
@@ -50,6 +86,7 @@ def updateElem(old: ProcElems, newone: ProcElems) = {
 }
 
 trait SpaceSBComponent {
+  val is_subbricks = true
   var subbricks = Array.empty[SubBrick]
 
   def sb_pushit(target: Array[SubBrick]) {
@@ -62,6 +99,7 @@ trait SpaceSBComponent {
 }
 
 trait SpaceContainerComponent {
+  val is_container = true
   var container: Array[ProcElems] = Array.empty
 
   def cont_pushin(target: Array[ProcElems]) {
@@ -74,6 +112,7 @@ trait SpaceContainerComponent {
 }
 
 trait SpaceExpandComponent {
+  val is_expander = true
   var expands: Array[ProcElems] = Array.empty
 
   def exp_pushin(target: Array[ProcElems]) {

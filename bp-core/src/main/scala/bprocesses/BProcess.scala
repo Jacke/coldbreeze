@@ -71,15 +71,7 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]], groups: Option[
   }
 
   def addToSpace(elem: ProcElems, space: Space, space_role:String) = {
-    if (space_role == "subbrick") {
-      space.subbricks = space.subbricks :+ elem.asInstanceOf[SubBrick]
-    }
-    if (space_role == "container") {
-      space.container = space.container :+ elem
-    }
-    if (space_role == "expands") {
-      space.expands = space.expands :+ elem
-    }
+    space.addToSpace(elem, space_role)
   }
 /**
  *  Owners
