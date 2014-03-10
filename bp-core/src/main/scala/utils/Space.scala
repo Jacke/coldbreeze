@@ -49,6 +49,51 @@ def updateElem(old: ProcElems, newone: ProcElems) = {
   }
 }
 
+trait SpaceSBComponent {
+  var subbricks = Array.empty[SubBrick]
+
+  def sb_pushit(target: Array[SubBrick]) {
+    container = container ++ target
+  }
+
+  def sb_push(f: ⇒ Array[SubBrick]) = {
+    sb_pushit(f)
+  }  
+}
+
+trait SpaceContainerComponent {
+  var container: Array[ProcElems] = Array.empty
+
+  def cont_pushin(target: Array[ProcElems]) {
+    container = container ++ target
+  }
+
+  def cont_push(f: ⇒ Array[ProcElems]) = {
+    cont_pushin(f)
+  }
+}
+
+trait SpaceExpandComponent {
+  var expands: Array[ProcElems] = Array.empty
+
+  def exp_pushin(target: Array[ProcElems]) {
+    expands = expands ++ target
+  }
+
+  def exps_push(f: ⇒ Array[ProcElems]) = {
+    exp_pushin(f)
+  }
+  def doExpandObj(old: ProcElems, obj: ProcElems) = {
+    expands.update(expands.indexOf(old), obj)
+    // link_update
+  }
+  def doExpandInd(in: Int, obj: ProcElems) = {
+    expands.update(expands(in), obj)
+    // link_update
+  } 
+}
+
+
 // subbricks
 if (is_subbricks) {
   var subbricks = Array.empty[SubBrick]
