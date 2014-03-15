@@ -6,7 +6,9 @@ import main.scala.simple_parts.process.data._
 import main.scala.bprocesses.links._
 import main.scala.utils.links.BPLinkContainer
 import main.scala.utils.Space
+import main.scala.utils.resources.OwnershipContainer
 import main.scala.resources._
+import main.scala.simple_parts.process.resource.ResAct
 
 class BProcess(scope: Scope, resources: Option[Array[Resource]], groups: Option[Array[Group]]) extends BPLinkContainer[BPLink] 
    with OwnershipContainer
@@ -29,7 +31,12 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]], groups: Option[
  *  Process collection methods
  */
 
-  //def allElements = {}
+  def allElements: List[ProcElems] = { 
+    (variety ++ spaces.collect 
+      { case space: Space => space.allElements }
+    ).toList.asInstanceOf[List[ProcElems]] // flatten
+  
+  }
   def blk = variety.collect { case block: Block ⇒ block }
   def rsl = variety.collect { case brick: Result ⇒ brick }
   def chk = variety.collect { case brick: Brick ⇒ brick }
@@ -43,8 +50,8 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]], groups: Option[
     val frontelem = variety.find(elem => elem.id == id)
     val space_result = spaces.map(space => space.searchObjById(id))
 
-    if (space_result.length == 1) {
-      space_result.head // Искомый объект
+    if (!space_result.isEmpty) {
+      lazy val target_obj = space_result.head // Искомый объект
     } else if (frontelem != None) {
       frontelem
     } else {
@@ -61,13 +68,13 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]], groups: Option[
 
   def updateElem(el: ProcElems, newone: ProcElems, inspace: Boolean) = {
     if (!inspace) {
-    variety.update(variety.indexOf(old), newone)
+    variety.update(variety.indexOf(el), newone)
     }
     if (inspace) { 
-    val space = getSpaceById(el.space_id)
+    val space = el.space_id
     space.updateElem(el, newone)
     }
-    update_link[ProcElems](old, newone)
+    update_link[ProcElems](el, newone)
   }
 
   def addToSpace(elem: ProcElems, space: Space, space_role:String) = {
@@ -76,8 +83,8 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]], groups: Option[
 /**
  *  Owners
  */
-  def owners(b: ResAct)     = ownerships.collect { case link: T ⇒ link.from == old }
-  def res_acts(r: Resource) = ownerships.collect { case link: T ⇒ link.to   == old }
+  def owners(b: ResAct)     = ownerships.collect { case link: Ownership ⇒ link.res == b }
+  def res_acts(r: Resource) = ownerships.collect { case link: Ownership ⇒ link.resact   == r }
 
 /**
  * Input
@@ -89,11 +96,13 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]], groups: Option[
   }
   def pointed_fill(in: PointedInput) = {
     // inspace
-    val placeholders: Array[ProcElems] = in.ids.map(id => fetchElemById(id))
-    for {
-         placeholder <- placeholders
-         input <- in.inputs
-        } yield (updateElem(placeholder, input))
+    val placeholders: Array[ProcElems] = in.ids.map(id => fetchObjectById(id))
+    if (!placeholder.isEmpty) {
+      for {
+             placeholder <- placeholders
+             input <- in.inputs
+            } yield (updateElem(placeholder, input))
+      }
   }
 
 /**

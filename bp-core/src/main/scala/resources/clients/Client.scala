@@ -1,5 +1,5 @@
-package main.scala.bprocesses.resources.clients
-import main.scala.bprocesses.resources.Resource
+package main.scala.resources.clients
+import main.scala.resources._
 
 class Client(name: String, email: String) extends Resource {
   

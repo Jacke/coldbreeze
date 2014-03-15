@@ -1,5 +1,5 @@
-package main.scala.bprocesses.resources.employees
-import main.scala.bprocesses.resources.Resource
+package main.scala.resources.employees
+import main.scala.resources._
 
 class Employee(name: String, email: String) extends Resource {
   

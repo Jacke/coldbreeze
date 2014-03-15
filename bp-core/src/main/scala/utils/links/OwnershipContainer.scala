@@ -1,7 +1,7 @@
 package main.scala.utils.resources
 import main.scala.bprocesses._
-import main.scala.bprocesses.resources._
-import main.scala.bprocesses.Ownership
+import main.scala.resources._
+import main.scala.simple_parts.process.resource.ResAct
 
 trait OwnershipContainer {
    var ownerships: Array[Ownership] = Array.empty

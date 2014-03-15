@@ -1,5 +1,5 @@
-package main.scala.bprocesses.resources
+package main.scala.resources
 
-trait Resources {
+trait Resource {
 
 }

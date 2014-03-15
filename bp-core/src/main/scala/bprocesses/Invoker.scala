@@ -83,10 +83,10 @@ class BPMarker(bp: BProcess) {
   }
   // exec
   def invokeExpand = {
-    bp.getSpaceByIndex(station.space).get.expands.map(ex => ex.invoke) // доделать.get
+    bp.getSpaceByIndex(station.space).expands.map(ex => ex.invoke) // доделать.get
   }
   def invokeContainer = {
-    bp.getSpaceByIndex(station.space).get.container.map(ex => ex.invoke)
+    bp.getSpaceByIndex(station.space).container.map(ex => ex.invoke)
   }
 
   // Push Info

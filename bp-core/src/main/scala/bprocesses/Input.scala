@@ -1,4 +1,5 @@
 package main.scala.bprocesses
+import main.scala.simple_parts.process._
 
 case class SimpleInput(in: Array[ProcElems])
 

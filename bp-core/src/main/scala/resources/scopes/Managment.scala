@@ -1,5 +1,5 @@
-package main.scala.bprocesses.resources.scopes
-import main.scala.bprocesses.resources.Scope
+package main.scala.resources.scopes
+import main.scala.resources.Scope
 
 class Managment extends Scope {
 

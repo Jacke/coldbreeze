@@ -12,15 +12,6 @@ class BPLogger {
     logs = logs :+ result
   }
 }
-class BPErrorCatcher(bp: BProcess) {
-  var errors: Array[BPError] = Array.empty
-  def reg(error: BPError) { 
-    errors = errors :+ error 
-    bp.station.state = false
-  }
-  def flush = errors = Array.empty
-}
-case class BPError(el: ProcElems, error_type: String, desc: String)
 
 case class BPLoggerResult(
   element: ProcElems, 
@@ -29,3 +20,22 @@ case class BPLoggerResult(
   order: Int, 
   space: Int, 
   station: BPStation)
+
+class BPErrorCatcher(bp: BProcess) {
+  var errors: Array[BPError] = Array.empty
+  var req_link: Array[ReqLink] = Array.empty
+
+  def reg_req_link(el: ProcElems, q: Int) = {
+    req_link = req_link :+ ReqLink(el, q)
+  }
+
+  def reg(error: BPError) { 
+    errors = errors :+ error 
+    bp.station.state = false
+  }
+  def flush = errors = Array.empty
+
+
+}
+case class ReqLink(el: ProcElems, quantity: Int)
+case class BPError(el: ProcElems, error_type: String, desc: String)

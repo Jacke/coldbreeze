@@ -10,6 +10,8 @@ import main.scala.utils.links.LinkSearcher
 import scala.util.Try
 import main.scala.utils.ElementTracer
 import main.scala.utils.SpaceControl
+import main.scala.utils.Space
+import main.scala.bprocesses._
 
 class Brick(id: Int,
   title: String, 
@@ -30,10 +32,10 @@ class Brick(id: Int,
     println("invoked brick")
   }
   def getSpace = {
-    proc.getSpaceByOrder(order).head
+    bprocess.spaces.map(space => space.searchObj(this, space_role)).head
   }
   def getSpaces = {
-    proc.getSpaceByOrder(order)
+    bprocess.spaces.map(space => space.searchObj(this, space_role))
   }
   
 

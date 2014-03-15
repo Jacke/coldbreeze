@@ -4,68 +4,62 @@ import main.scala.bprocesses.InvokeTracer
 import main.scala.bprocesses.links._
 import main.scala.simple_parts.process.Brick
 
-object Space {
-  def apply(val index: Int, val brick: Brick, val is_subbricks: Boolean = true, val is_container: Boolean = true, val is_expander: Boolean = true) {
-    if (is_subbricks && is_container && is_expander) {
-      new Space(index, brick) extends SpaceSBComponent with SpaceContainerComponent with SpaceExpandComponent
-    }
-    if (is_subbricks && is_container && !is_expander) {
-      new Space(index, brick) extends SpaceSBComponent with SpaceContainerComponent 
-    }
-    if (is_subbricks && !is_container && is_expander) {
-      new Space(index, brick) extends SpaceSBComponent with SpaceExpandComponent
-    }
-    if (!is_subbricks && is_container && is_expander) {
-      new Space(index, brick) extends SpaceContainerComponent with SpaceExpandComponent
-    }
-    if (is_subbricks && !is_container && !is_expander) {
-      new Space(index, brick) extends SpaceSBComponent 
-    } 
-    if (!is_subbricks && is_container && !is_expander) {
-      new Space(index, brick) extends SpaceContainerComponent
-    }
-    if (!is_subbricks && !is_container && is_expander) {
-      new Space(index, brick) extends SpaceExpandComponent
-    }
-  }
-}
 
 class Space(val index: Int, val brick: Brick) {
   
+
 private var state = true
+var subbricks = Array.empty[SubBrick]
+var container: Array[ProcElems] = Array.empty[ProcElems]
+var expands: Array[ProcElems] = Array.empty[ProcElems]
 
 // init
 override def init { }
 
 // Searcher
-def seachObjById(id: Int, space_role: String) = {
+///////////////////////def searchObjById(id: Int, space_role: String) {
+///////////////////////  if (space_role == "subbrick") {
+///////////////////////    subbricks.find(obj => obj.id == id)
+///////////////////////  }
+///////////////////////  if (space_role == "container") {
+///////////////////////    container.find(obj => obj.id == id)
+///////////////////////  }
+///////////////////////  if (space_role == "expands") {
+///////////////////////    expands.find(obj => obj.id == id)
+///////////////////////  }
+///////////////////////  else { None }
+///////////////////////}
+def searchObj(look:ProcElems,space_role: String) {
   if (space_role == "subbrick") {
-    subbricks.find(obj => obj.id == id)
+    subbricks.find(obj => obj == look)
   }
   if (space_role == "container") {
-    container.find(obj => obj.id == id)
+    container.find(obj => obj == look)
   }
   if (space_role == "expands") {
-    expands.find(obj => obj.id == id)
+    expands.find(obj => obj == look)
   }
-  else { None }
 }
-def levelOfObject(obj: ProcElems) = {
-  if (subbricks.contains(obj) && is_subbricks) {
+def levelOfObject(obj: ProcElems):String = {
+  if (subbricks.contains(obj)) { // && is_subbricks) {
     "SubBricks"
-  elseif (container.contains(obj) && is_container) {
+  }
+  if (container.contains(obj)) { // && is_container) {
     "Container"
-  } elseif (expands.contains(obj) && is_expander) {
+  } 
+  if (expands.contains(obj)) { // && is_expander) {
     "Expands"
   }
-  None
+  else {
+  "None"
   }
 }
 def getBrick = brick
 
+def allElements:List[ProcElems] = (subbricks ++ container ++ expands).toList
 
 // Element control
-def addToSpace(elem: ProcElems, space_role:String) = {
+def addToSpace(elem: ProcElems, space_role:String) {
   if (space_role == "subbrick") {
     subbricks = subbricks :+ elem.asInstanceOf[SubBrick]
   }
@@ -76,63 +70,84 @@ def addToSpace(elem: ProcElems, space_role:String) = {
     expands = expands :+ elem
   }
 }
-def updateElem(old: ProcElems, newone: ProcElems) = {
+def updateElem(old: ProcElems, newone: ProcElems) {
   levelOfObject(old) match {
-    case "SubBricks" => subbrics.update(subbrics.indexOf(old), newone.asInstanceOf[SubBrick])
+    case "SubBricks" => subbricks.update(subbricks.indexOf(old), newone.asInstanceOf[SubBrick])
     case "Container" => container.update(container.indexOf(old), newone)
     case "Expands"   => expands.update(expands.indexOf(old), newone)
     case _           => None
   }
 }
 
-trait SpaceSBComponent {
+}
+
+trait SpaceSBComponent { self: Space =>
   val is_subbricks = true
-  var subbricks = Array.empty[SubBrick]
 
   def sb_pushit(target: Array[SubBrick]) {
-    container = container ++ target
+    self.subbricks = self.subbricks ++ target
   }
 
-  def sb_push(f: ⇒ Array[SubBrick]) = {
-    sb_pushit(f)
-  }  
+  def sb_push(f: ⇒ Array[SubBrick]) = sb_pushit(f)  
 }
 
-trait SpaceContainerComponent {
+trait SpaceContainerComponent { self: Space =>
   val is_container = true
-  var container: Array[ProcElems] = Array.empty
 
-  def cont_pushin(target: Array[ProcElems]) {
-    container = container ++ target
-  }
 
-  def cont_push(f: ⇒ Array[ProcElems]) = {
-    cont_pushin(f)
-  }
+
+  def cont_pushin(target: Array[ProcElems]) = self.container = self.container ++ target
+  def cont_push(f: ⇒ Array[ProcElems]) = cont_pushin(f)
 }
 
-trait SpaceExpandComponent {
+trait SpaceExpandComponent { self: Space =>
   val is_expander = true
-  var expands: Array[ProcElems] = Array.empty
+
 
   def exp_pushin(target: Array[ProcElems]) {
-    expands = expands ++ target
+    self.expands = self.expands ++ target
   }
 
-  def exps_push(f: ⇒ Array[ProcElems]) = {
-    exp_pushin(f)
-  }
-  def doExpandObj(old: ProcElems, obj: ProcElems) = {
-    expands.update(expands.indexOf(old), obj)
+  def exps_push(f: ⇒ Array[ProcElems]) = exp_pushin(f)
+
+  def doExpandObj(old: ProcElems, obj: ProcElems) {
+    self.expands.update(self.expands.indexOf(old), obj)
     // link_update
   }
-  def doExpandInd(in: Int, obj: ProcElems) = {
-    expands.update(expands(in), obj)
+  def doExpandInd(in: Int, obj: ProcElems) {
+    self.expands.update(self.expands.indexOf(in), obj)
     // link_update
   } 
 }
 
 
+object Space {
+  def apply(index: Int, brick: Brick, is_subbricks: Boolean = true, is_container: Boolean = true, is_expander: Boolean = true) {
+    if (is_subbricks && is_container && is_expander) {
+      new Space(index, brick) with SpaceSBComponent with SpaceContainerComponent with SpaceExpandComponent
+    }
+    if (is_subbricks && is_container && !is_expander) {
+      new Space(index, brick) with SpaceSBComponent with SpaceContainerComponent 
+    }
+    if (is_subbricks && !is_container && is_expander) {
+      new Space(index, brick) with SpaceSBComponent with SpaceExpandComponent
+    }
+    if (!is_subbricks && is_container && is_expander) {
+      new Space(index, brick) with SpaceContainerComponent with SpaceExpandComponent
+    }
+    if (is_subbricks && !is_container && !is_expander) {
+      new Space(index, brick) with SpaceSBComponent 
+    } 
+    if (!is_subbricks && is_container && !is_expander) {
+      new Space(index, brick) with SpaceContainerComponent
+    }
+    if (!is_subbricks && !is_container && is_expander) {
+      new Space(index, brick) with SpaceExpandComponent
+    }
+  }
+}
+
+/**
 // subbricks
 if (is_subbricks) {
   var subbricks = Array.empty[SubBrick]
@@ -180,5 +195,4 @@ if (is_expander) {
   } 
 }
 
-
-}
+*/
