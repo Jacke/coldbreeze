@@ -48,11 +48,17 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]], groups: Option[
  */
   def fetchObjectById(id: Int) = {
     val frontelem = variety.find(elem => elem.id == id)
-    val space_result = spaces.map(space => space.searchObjById(id))
+    //val space_result = spaces.map(space => space.searchObjById(id))
 
-    if (!space_result.isEmpty) {
-      lazy val target_obj = space_result.head // Искомый объект
-    } else if (frontelem != None) {
+    //if (!space_result.isEmpty) {
+    //  lazy val target_obj = space_result.head // Искомый объект
+    //} else 
+    //// Поиск по ID для Space
+
+
+
+
+    if (frontelem != None) {
       frontelem
     } else {
       None
@@ -71,7 +77,7 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]], groups: Option[
     variety.update(variety.indexOf(el), newone)
     }
     if (inspace) { 
-    val space = el.space_id
+    val space = el.space_id.get
     space.updateElem(el, newone)
     }
     update_link[ProcElems](el, newone)
@@ -96,13 +102,14 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]], groups: Option[
   }
   def pointed_fill(in: PointedInput) = {
     // inspace
-    val placeholders: Array[ProcElems] = in.ids.map(id => fetchObjectById(id))
-    if (!placeholder.isEmpty) {
+    val placeholders: Array[ProcElems] = in.ids.map(id => fetchObjectById(id).get)
+    if (!placeholders.isEmpty) {
       for {
              placeholder <- placeholders
              input <- in.inputs
             } yield (updateElem(placeholder, input))
       }
+    else { None }
   }
 
 /**

@@ -1,10 +1,13 @@
 package main.scala.simple_parts.process
 
+import main.scala.utils.Space
 /**
  * @author Sobolev
  *
  */
 trait ProcElems {
+  val id: Int
+  val space_id: Option[Space] = None
   def invoke()
   def init() = {
     println(this)
