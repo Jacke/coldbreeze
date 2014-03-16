@@ -14,7 +14,7 @@ import main.scala.bprocesses._
  * @author Sobolev
  */
 
-class Block(id: Int,
+class Block(val id: Int,
   title: String, 
   desc: String, 
   values: CompositeValues,

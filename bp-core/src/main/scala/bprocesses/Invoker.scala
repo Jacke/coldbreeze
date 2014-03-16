@@ -11,6 +11,34 @@ class BPMarker(bp: BProcess) {
     toStation(bp).update_started(true)
     move
   }
+  def start_from
+  {
+  // * Start from middle
+  // push elems
+  // check expanders(through BPLogger)
+  // 
+    /*
+    station.status = "Stop"
+    proc.resume
+
+    for (b ← (proc.variety.slice(proc.step, proc.variety.length + 1))) {
+      if (proc.state) {
+        println("Try invoking the: " + b);
+        b.invoke
+
+        proc.step = proc.step + 1;
+      } else {
+
+        proc.status = "Paused"
+      }
+    }
+
+    if (proc.state && proc.status != "Paused") {
+      proc.step = 0
+      proc.status = "Complete/Stop"
+    }
+    */
+  }
   def move:Unit = {
     if (bp.station.step > bp.getElemsLength) // bp.station.step > bp.variety.length КОСЯК
     { 
@@ -115,32 +143,7 @@ class BPMarker(bp: BProcess) {
       }
     }
 
-// * Start from middle
-  // push elems
-  // check expanders(through BPLogger)
-  // start
-  /*
-  def run_from(proc: BProcess) = {
-    proc.status = "Stop"
-    proc.resume
 
-    for (b ← (proc.variety.slice(proc.step, proc.variety.length + 1))) {
-      if (proc.state) {
-        println("Try invoking the: " + b);
-        b.invoke
-
-        proc.step = proc.step + 1;
-      } else {
-
-        proc.status = "Paused"
-      }
-    }
-
-    if (proc.state && proc.status != "Paused") {
-      proc.step = 0
-      proc.status = "Complete/Stop"
-    }
-  }*/
 }
 
 object InvokeTracer {

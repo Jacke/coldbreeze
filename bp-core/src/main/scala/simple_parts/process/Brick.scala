@@ -13,7 +13,7 @@ import main.scala.utils.SpaceControl
 import main.scala.utils.Space
 import main.scala.bprocesses._
 
-class Brick(id: Int,
+class Brick(val id: Int,
   title: String, 
   desc: String, 
   values: CompositeValues,

@@ -3,7 +3,7 @@ import main.scala.simple_parts.process.ProcElems
 import main.scala.utils.links.LinkSearcher
 import main.scala.bprocesses.links.BPLink
 
-class Result extends ProcElems with LinkSearcher[BPLink] { // with ArgumentDispatch
+abstract class Result extends ProcElems with LinkSearcher[BPLink] { // with ArgumentDispatch
   /*
   lazy val obj = arguments
   */

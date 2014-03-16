@@ -74,13 +74,13 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]], groups: Option[
 
   def updateElem(el: ProcElems, newone: ProcElems, inspace: Boolean) = {
     if (!inspace) {
-    variety.update(variety.indexOf(el), newone)
+      variety.update(variety.indexOf(el), newone)
     }
     if (inspace) { 
-    val space = el.space_id.get
-    space.updateElem(el, newone)
+      val space = el.space_id.get
+      space.updateElem(el, newone)
     }
-    update_link[ProcElems](el, newone)
+    update_link(el, newone)
   }
 
   def addToSpace(elem: ProcElems, space: Space, space_role:String) = {
@@ -102,12 +102,22 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]], groups: Option[
   }
   def pointed_fill(in: PointedInput) = {
     // inspace
-    val placeholders: Array[ProcElems] = in.ids.map(id => fetchObjectById(id).get)
+    val placeholders: Array[ProcElems] = {
+      val arry = in.ids.map(id => fetchObjectById(id).get)
+      if (!arry.isEmpty) {
+        Array.empty[ProcElems]
+      } else {
+        arry
+      }
+    }
+    val inputs: List[ProcElems] = in.inputs.toList
+
     if (!placeholders.isEmpty) {
       for {
              placeholder <- placeholders
-             input <- in.inputs
-            } yield (updateElem(placeholder, input))
+             input <- inputs
+             if !inputs.isEmpty && !placeholders.isEmpty
+            } yield (updateElem(placeholder, input, false)) // Not in space
       }
     else { None }
   }

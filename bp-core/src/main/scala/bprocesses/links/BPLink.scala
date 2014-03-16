@@ -10,8 +10,8 @@ import main.scala.simple_parts.process.ProcElems
 /**
  * Business Process Links
  */
-class BPLink(start: Option[ProcElems], 
-             end: Option[ProcElems], 
+class BPLink(val start: Option[ProcElems], 
+             val end: Option[ProcElems], 
              nested: BProcess, 
              multiple: Boolean = false) 
 {

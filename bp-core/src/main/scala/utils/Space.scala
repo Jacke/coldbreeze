@@ -14,7 +14,7 @@ var container: Array[ProcElems] = Array.empty[ProcElems]
 var expands: Array[ProcElems] = Array.empty[ProcElems]
 
 // init
-override def init { }
+def init { }
 
 // Searcher
 ///////////////////////def searchObjById(id: Int, space_role: String) {
