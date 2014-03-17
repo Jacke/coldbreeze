@@ -10,7 +10,7 @@ import main.scala.utils.resources.OwnershipContainer
 import main.scala.resources._
 import main.scala.simple_parts.process.resource.ResAct
 
-class BProcess(scope: Scope, resources: Option[Array[Resource]], groups: Option[Array[Group]]) extends BPLinkContainer[BPLink] 
+class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: Option[Array[Group]] = None) extends BPLinkContainer[BPLink] 
    with OwnershipContainer
    with BPFlow 
 {
@@ -72,7 +72,7 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]], groups: Option[
  * Process CRUD methods
  */
 
-  def updateElem(el: ProcElems, newone: ProcElems, inspace: Boolean) = {
+  def updateElem(el: ProcElems, newone: ProcElems, inspace: Boolean = false) = {
     if (!inspace) {
       variety.update(variety.indexOf(el), newone)
     }
@@ -81,6 +81,7 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]], groups: Option[
       space.updateElem(el, newone)
     }
     update_link(el, newone)
+    println("link updating")
   }
 
   def addToSpace(elem: ProcElems, space: Space, space_role:String) = {

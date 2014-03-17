@@ -40,7 +40,7 @@ class BPMarker(bp: BProcess) {
     */
   }
   def move:Unit = {
-    if (bp.station.step > bp.getElemsLength) // bp.station.step > bp.variety.length КОСЯК
+    if (bp.station.step > bp.getElemsLength && blocator) 
     { 
       end 
       true
@@ -123,7 +123,14 @@ class BPMarker(bp: BProcess) {
   def toStation(bp: BProcess): BPStation = { bp.station }
   def toLogger(bp: BProcess, result: BPLoggerResult) = bp.logger.log(result)
 
+  // utils
+  def blocator: Boolean = {
+    station.state && !station.started
+  }
+  //def space_step_inc = station.container_step expand_step
+  def step_inc = station.update_step(station.step + 1)
 
+  
 /* Instructions */
   // Front Elements
     def front(b: ProcElems) = b.invoke 
