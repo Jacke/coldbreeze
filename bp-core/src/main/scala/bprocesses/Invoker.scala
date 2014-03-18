@@ -40,7 +40,7 @@ class BPMarker(bp: BProcess) {
     */
   }
   def move:Unit = {
-    if (bp.station.step > bp.getElemsLength && blocator) 
+    if (bp.station.step == bp.getElemsLength || blocator) 
     { 
       end 
       true

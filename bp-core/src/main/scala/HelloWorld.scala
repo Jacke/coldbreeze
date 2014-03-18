@@ -31,6 +31,9 @@ object Main extends App {
         //new Space(3, 1),new Space(3, 2))
         }
   println(proc.variety(0))
+  /** 
+    Update object/link 
+                        
   val link = new BPLink(Option(proc.variety(0)), Option(proc.variety(2)), proc, true)  
   proc.links = proc.links :+ link
   println(proc.links.head.start)
@@ -40,11 +43,10 @@ object Main extends App {
   println(proc.variety(0))
   println("upddates")
   println(proc.links.head.start)
+                                                                  **/
+  InvokeTracer.run_proc(proc)
 
-  //InvokeTracer.run_proc(proc)
 
-  // Update obj
-  // Update link
 
   // * Brick with SpaceControl interface
   // * Add to space

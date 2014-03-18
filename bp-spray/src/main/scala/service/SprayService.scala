@@ -10,20 +10,13 @@ import spray.httpx.SprayJsonSupport._
 import spray.routing.{ HttpService, HttpServiceActor, Route }
 import spray.json.DefaultJsonProtocol._
 
-case class MessagesList(title: String, container: List[Message])
-case class Message(process: String, test: List[Int]) {
-  // val typeof = getClass.toString
-}
-case class Supplier(var id: Option[Int], title: String, address: String, city: String, state: String, zip: String) {
-  //def incid: Int = id + 1
+import models.DAO._
 
-}
-case class SuppliersDTO(suppliers: List[Supplier])
 object MessageJsonProtocol extends DefaultJsonProtocol {
   implicit val format = jsonFormat2(Message)
   implicit val msgformat = jsonFormat2(MessagesList)
-  implicit val supformat = jsonFormat6(Supplier)
-  implicit val suppsformat = jsonFormat1(SuppliersDTO)
+  implicit val supformat = jsonFormat3(BProcess)
+  implicit val suppsformat = jsonFormat1(BProcessesDTO)
 
 }
 //object MessagesListJsonProtocol extends DefaultJsonProtocol {
@@ -36,65 +29,6 @@ object MessageJsonProtocol extends DefaultJsonProtocol {
  *   - a HTML under `spray-html/`
  */
 
-/* ======================================================
-   ======================================================
-   ======================================================
-   ======================================================
-   ====================================================== */
-
-object FirstExample {
-  import scala.slick.driver.PostgresDriver.simple._
-  val database = Database.forURL("jdbc:postgresql://localhost/bookstore", driver = "org.postgresql.Driver", user = "postgres", password = "12344321")
-
-  class Suppliers(tag: Tag) extends Table[(Option[Int], String, String, String, String, String)](tag, "suppliers") {
-    def id = column[Int]("SUP_ID", O.PrimaryKey, O.AutoInc) // This is the primary key column
-    def name = column[String]("SUP_NAME")
-    def street = column[String]("STREET")
-    def city = column[String]("CITY")
-    def state = column[String]("STATE")
-    def zip = column[String]("ZIP")
-    // Every table needs a * projection with the same type as the table's type parameter
-    def * = (id.?, name, street, city, state, zip) //<> (Supplier.tupled, Supplier.unapply)
-
-  }
-  val suppliers = TableQuery[Suppliers]
-
-  import scala.util.Try
-
-  def pull_object(s: Supplier) = Try(database withSession {
-    implicit session ⇒
-      suppliers returning suppliers.map(_.id) += Supplier.unapply(s).get
-  })
-
-  def pull(id: Option[Int] = None, title: String, address: String, city: String, state: String, zip: String) = Try(database withSession {
-    implicit session ⇒
-
-      suppliers += (id, title, address, city, state, zip)
-  }).isSuccess
-  def get(k: Int) = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← suppliers if s.id === k } yield s <> (Supplier.tupled, Supplier.unapply _)
-      println(q3.selectStatement)
-      println(q3.list)
-      q3.list //.map(Supplier.tupled(_))
-  }
-  println(get(222))
-  def getAll = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← suppliers } yield s <> (Supplier.tupled, Supplier.unapply _)
-      q3.list.sortBy(_.id)
-    //suppliers foreach {
-    //  case (id, title, address, city, state, zip) ⇒
-    //    Supplier(id, title, address, city, state, zip)
-    //}
-  }
-
-}
-/* ======================================================
-   ======================================================
-   ======================================================
-   ======================================================
-   ====================================================== */
 
 trait SprayService extends HttpService {
   import spray.http.StatusCodes.{ Created, BadRequest, NotFound, OK }
@@ -116,7 +50,7 @@ trait SprayService extends HttpService {
     } ~
       path("process") {
         post(
-          entity(as[Supplier]) {
+          entity(as[BProcess]) {
             suplier ⇒
               {
                 //suplier.toString

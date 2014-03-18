@@ -29,7 +29,10 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
 
 /**
  *  Process collection methods
+ *
  */
+
+
 
   def allElements: List[ProcElems] = { 
     (variety ++ spaces.collect 
@@ -98,7 +101,7 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
  */
   def fill(inputs: SimpleInput) = {
     val z = variety.collect { case placeholder: InputPlaceholder ⇒ placeholder }
-    for (x ← z; y ← inputs.in) yield (x.push(y))
+    for (x ← z; y ← inputs.in) yield x.push(y)
     // in space
   }
   def pointed_fill(in: PointedInput) = {
@@ -118,13 +121,14 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
              placeholder <- placeholders
              input <- inputs
              if !inputs.isEmpty && !placeholders.isEmpty
-            } yield (updateElem(placeholder, input, false)) // Not in space
+            } yield updateElem(placeholder, input, inspace = false) // Not in space
       }
     else { None }
   }
 
-/**
- * Push elements to process
+/**title VARCHAR(255);
+
+  * Push elements to process
  */
   def pushit(target: Array[ProcElems]) = {
     variety = variety ++ target

@@ -1,23 +1,14 @@
-* SpaceControl iface
-* Collection
-* Result
-* Checker
-* Confirm
-* Stopper Pause
-
-** Input block while proc/context running(wait for input if it paused)
-* TempItem Restore(expands, input)
-
-* Nested space
-* Ownings
-
-* Loop - Cycle
-** Condition
-* Companion ResAct -> Input, Times ...
-* error handling [checker before invoke, brick error - though invoking] /isOptionalLink/* checker for arguments and params [ ]
-
-
-<DB>
+Blocks
+  * SpaceControl iface
+  * Collection
+  * Result
+  * Checker
+  * Confirm
+  * Stopper Pause
+  * Ownings
+  * Companion ResAct -> Input, Times ...
+  * Loop - Cycle
+  ** Condition
   * DAO Blocks
   * DAO Resources
   * Slick integration
@@ -25,12 +16,15 @@
   * API End-Point
   || Process owning, viewers, access // by owning tables Employees/Clients/Firm + Groups assigns
   * scope ctx, bp views
+  * bRICK pOINTER FOR rEStYPE(INTVAL)
+  * GroupPointer fetch before invoke
 
 
-  encrypt password https://github.com/softwaremill/bootzooka
-  * Angular app
-
-
+** Input block while proc/context running(wait for input if it paused)
+* TempItem Restore(expands, input)
+* Nested space
+* error handling [checker before invoke, brick error - though invoking] /isOptionalLink/* checker for arguments and params [ ]
+encrypt password https://github.com/softwaremill/bootzooka
 
 * Assembled
   * BProcess returns
@@ -41,12 +35,10 @@
   * Assembly Function [ Provide access to triple (object, params, arguments)] 1. req(el, in), assebmly(frame), running
   ** [* CHAIN Invoke -> Process -> Process ]
   * Return in BProcess  [ Blocks that comes after process invoked ]
+  * Return in ProcElems [ Block that return blocks and arg&params ] 
 
 * Misc
-
-  * bRICK pOINTER FOR rEStYPE(INTVAL)
-  * GroupPointer fetch before invoke
-  * Return in ProcElems [ Block that return blocks and arg&params ] 
+  
   * Graph.js
 
   /** 2 Books read **/
@@ -61,7 +53,7 @@
   * Collab & sharing
   * Link block[Input, return, ...]
   * Block store
-  * Documents
+  * BDocuments
   * K-V Properties for resources
   * Observer block http://www.activiti.org/userguide/index.html#bpmnEvents
   * Triggers(that runs something just from template and request[POST /auth/token?acton=...])

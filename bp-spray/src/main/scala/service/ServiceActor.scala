@@ -2,6 +2,7 @@ package service
 
 import akka.actor.Actor
 import spray.routing._
+import models.DAO.Message
 
 /**
  * Actor for HttpServices.

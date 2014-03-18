@@ -13,8 +13,8 @@ import main.scala.bprocesses.links._
   import scala.collection.mutable._
       import main.scala.simple_parts.context._*/
 
-  class HelloWorldSpec extends Specification {
-  
+ class ProcessSpec extends Specification {
+
     "The 'Hello world' string" should {
       "contain 11 characters" in {
         "Hello world" must have size(11)
@@ -26,5 +26,5 @@ import main.scala.bprocesses.links._
         "Hello world" must endWith("world")
       }
     }
-    
+
   }
