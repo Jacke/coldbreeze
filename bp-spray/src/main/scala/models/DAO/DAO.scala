@@ -11,6 +11,17 @@ case class Message(process: String, test: List[Int]) {
 case class BProcess(var id: Option[Int], title: String, business: Int)
 case class BProcessesDTO(suppliers: List[BProcess])
 
+case class UndefElement(id: Int,
+                        title:String,
+                        desc:String,
+                        business:Int,
+                        bprocess:Int,
+                        b_type:String,
+                        type_title:String,
+                        space:Int,
+                        space_role:String,
+                        order:Int)
+
 /**
  * DAO
  */
@@ -32,6 +43,8 @@ class BProcesses(tag: Tag) extends Table[(Option[Int], String, Int)](tag, "bproc
 }
 val bprocesses = TableQuery[BProcesses]
 
+
+
 class ProcElements(tag: Tag) extends Table[(Option[Int], String, String, Int, Int, String, String, Int)](tag, "proc_elements") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc) // This is the primary key column
   def title = column[String]("title")
@@ -41,11 +54,11 @@ class ProcElements(tag: Tag) extends Table[(Option[Int], String, String, Int, In
   def b_type = column[String]("b_type")
   def type_title = column[String]("type_title")
   def order = column[Int]("order")
-  //def space = column[Option[Int]]("space_id")
- // def space_role = column[Option[String]]("space_role")
+  def space = column[Option[Int]]("space_id")
+  def space_role = column[Option[String]]("space_role")
   //values: CompositeValues,
 
-  def * = (id.?, title, desc, business, bprocess, b_type, type_title, order)//, space, space_role) <> (Supplier.tupled, Supplier.unapply)
+  def * = (id.?, title, desc, business, bprocess, b_type, type_title, space, space_role, order) <> (UndefElement.tupled, UndefElement.unapply)
 
 }
 val proc_elements = TableQuery[ProcElements]

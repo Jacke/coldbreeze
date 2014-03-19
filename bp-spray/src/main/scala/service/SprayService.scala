@@ -34,8 +34,16 @@ trait SprayService extends HttpService {
   import spray.http.StatusCodes.{ Created, BadRequest, NotFound, OK }
   //import MessagesListJsonProtocol._
   import MessageJsonProtocol._
+  import main.scala.utils.ElementTracer
 
   def adRoute: Route =
+    path("proc_elements") {
+      get {
+        complete {
+          ElementTracer.els
+        }
+      }
+    } ~
     path("checkin") {
       get {
         complete {

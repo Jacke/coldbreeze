@@ -7,6 +7,7 @@ package main.scala.simple_parts.process
 import scala.collection.mutable._
 import main.scala.simple_parts.process._
 import main.scala.bprocesses.InvokeTracer
+import main.scala.utils.ElementTracer
 import main.scala.utils.Space
 import main.scala.bprocesses._
 
@@ -26,6 +27,8 @@ class Block(val id: Int,
   val space_role: String
   ) extends ProcElems {
 
+
+
   override def toString = s"Block: $title"
 
   override def invoke {
@@ -39,4 +42,3 @@ class Block(val id: Int,
     }
   }
 }
-

@@ -13,6 +13,7 @@ class BPMarker(bp: BProcess) {
   }
   def start_from
   {
+    // skip elements invoke !!!!!!!!!!
   // * Start from middle
   // push elems
   // check expanders(through BPLogger)

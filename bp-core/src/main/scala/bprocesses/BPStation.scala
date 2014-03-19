@@ -1,7 +1,9 @@
 package main.scala.bprocesses
 
 class BPStation(val bp: BProcess) {
-  // Учет состояние процесса
+  /**
+   * Mutable statuses of process
+   */
   var state = true
   var step = 0
   var space = 0
@@ -15,8 +17,8 @@ class BPStation(val bp: BProcess) {
   var paused: Boolean = false
 
  /**
- * Process information
- */
+  * Process information
+  */
   def isStarted:Boolean = started
   def isRunned:Boolean  = started && !(finished && paused)
   def isPaused:Boolean  = paused

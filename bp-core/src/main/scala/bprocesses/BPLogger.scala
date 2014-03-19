@@ -5,7 +5,13 @@ import main.scala.simple_parts.process._
 /**
  * BPLogger
  */
-
+case class BPLoggerResult(
+                           element: ProcElems,
+                           invoked: Boolean,
+                           expanded: Boolean,
+                           order: Int,
+                           space: Int,
+                           station: BPStation)
 class BPLogger {
   var logs: Array[BPLoggerResult] = Array.empty
   def log(result: BPLoggerResult) = {
@@ -13,13 +19,7 @@ class BPLogger {
   }
 }
 
-case class BPLoggerResult(
-  element: ProcElems, 
-  invoked: Boolean, 
-  expanded: Boolean, 
-  order: Int, 
-  space: Int, 
-  station: BPStation)
+
 
 class BPErrorCatcher(bp: BProcess) {
   var errors: Array[BPError] = Array.empty
@@ -34,8 +34,6 @@ class BPErrorCatcher(bp: BProcess) {
     bp.station.state = false
   }
   def flush = errors = Array.empty
-
-
 }
 case class ReqLink(el: ProcElems, quantity: Int)
 case class BPError(el: ProcElems, error_type: String, desc: String)

@@ -46,7 +46,8 @@ object Main extends App {
                                                                   **/
   InvokeTracer.run_proc(proc)
 
-
+  ElementRegistrator.apply
+  println(ElementTracer.els.head)
 
   // * Brick with SpaceControl interface
   // * Add to space

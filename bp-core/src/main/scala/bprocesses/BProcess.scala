@@ -28,11 +28,9 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
   val errors = new BPErrorCatcher(this)
 
 /**
- *  Process collection methods
+ *  In-Process collection methods
  *
  */
-
-
 
   def allElements: List[ProcElems] = { 
     (variety ++ spaces.collect 
@@ -52,25 +50,20 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
   def fetchObjectById(id: Int) = {
     val frontelem = variety.find(elem => elem.id == id)
     //val space_result = spaces.map(space => space.searchObjById(id))
-
     //if (!space_result.isEmpty) {
     //  lazy val target_obj = space_result.head // Искомый объект
     //} else 
     //// Поиск по ID для Space
-
-
-
-
-    if (frontelem != None) {
+  if (frontelem != None) {
       frontelem
     } else {
       None
     }
   }
-
   def getElemsLength = variety.length - variety.collect { case space: Space => space }.length
   def getSpaceByIndex(index: Int) = spaces(index-1)
   def getSpaceQuantity = spaces.length
+
 /**
  * Process CRUD methods
  */
@@ -90,11 +83,14 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
   def addToSpace(elem: ProcElems, space: Space, space_role:String) = {
     space.addToSpace(elem, space_role)
   }
+
+
 /**
  *  Owners
  */
   def owners(b: ResAct)     = ownerships.collect { case link: Ownership ⇒ link.res == b }
   def res_acts(r: Resource) = ownerships.collect { case link: Ownership ⇒ link.resact   == r }
+
 
 /**
  * Input
@@ -126,10 +122,10 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
     else { None }
   }
 
-/**title VARCHAR(255);
-
-  * Push elements to process
+/**
+ * Push elements to process
  */
+
   def pushit(target: Array[ProcElems]) = {
     variety = variety ++ target
   }
@@ -138,25 +134,27 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
     pushit(f)
   }
 
-
-
 /**
- * Process initialization
+ * Process elements initialization method call
  */
 
   def elements_init = {
     println("init elements")
     allElements.map(el => el.init)
-  } 
+  }
+
+/**
+ * TODO: Temporary proc elements restore(if it necessarily)
+ */
+  //def tmp_elements_restore { }
+
 
 /**
  * Process returning
  */
-
   //def returning = {
   // find return block
   // execute return block
   // push complete result 
   //}
-
 }
