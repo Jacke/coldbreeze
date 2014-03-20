@@ -11,15 +11,15 @@ case class Message(process: String, test: List[Int]) {
 case class BProcess(var id: Option[Int], title: String, business: Int)
 case class BProcessesDTO(suppliers: List[BProcess])
 
-case class UndefElement(id: Int,
+case class UndefElement(id: Option[Int],
                         title:String,
                         desc:String,
                         business:Int,
                         bprocess:Int,
                         b_type:String,
                         type_title:String,
-                        space:Int,
-                        space_role:String,
+                        space:Option[Int],
+                        space_role:Option[String],
                         order:Int)
 
 /**
@@ -45,7 +45,7 @@ val bprocesses = TableQuery[BProcesses]
 
 
 
-class ProcElements(tag: Tag) extends Table[(Option[Int], String, String, Int, Int, String, String, Int)](tag, "proc_elements") {
+class ProcElements(tag: Tag) extends Table[(Option[Int], String, String, Int, Int, String, String, Option[Int], Option[String], Int)](tag, "proc_elements") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc) // This is the primary key column
   def title = column[String]("title")
   def desc  = column[String]("desc")
@@ -58,7 +58,7 @@ class ProcElements(tag: Tag) extends Table[(Option[Int], String, String, Int, In
   def space_role = column[Option[String]]("space_role")
   //values: CompositeValues,
 
-  def * = (id.?, title, desc, business, bprocess, b_type, type_title, space, space_role, order) <> (UndefElement.tupled, UndefElement.unapply)
+  def * = (id.?, title, desc, business, bprocess, b_type, type_title, space, space_role, order)// <> (UndefElement.tupled, UndefElement.unapply)
 
 }
 val proc_elements = TableQuery[ProcElements]
@@ -83,34 +83,35 @@ def pull(id: Option[Int] = None, title: String, business: Int) = Try(database wi
 /**
  * Find a specific entity by id.
  */
-def findById(id: Int):Boolean = {
-  database withSession { implicit session =>
-  val byId = proc_elements.findBy(_.id)
-  byId(id).list.headOption
-  }
-}
+//def findById(id: Int):Boolean = {
+//  database withSession { implicit session =>
+//  val byId = proc_elements.findBy(_.id)
+//  byId(id).list.headOption
+//  }
+//}
 
 /**
  * Delete a specific entity by id. If successfully completed return true, else false
  */
-def delete(id: Int):Boolean =
-  database withSession { implicit session =>
-  findById(id) match {
-    case Some(entity) => { proc_elements.where(_.id === id).delete; true }
-    case None => false
-  }
-  }
+//def delete(id: Int):Boolean =
+//  database withSession { implicit session =>
+//  findById(id) match {
+//    case Some(entity) => { proc_elements.where(_.id === id).delete; true }
+//    case None => false
+//  }
+//  }
 
 /**
  * Update a specific entity by id. If successfully completed return true, else false
  */
-def update(id: Int, entity: (Option[Int], String, String, Int, Int, String, String, Int)):Boolean = {
-  database withSession { implicit session =>
-    findById(id) match {
-    case Some(e) => { proc_elements.where(_.id === id).update(entity); true }
-    case None => false
-    }
-  }
+//def update(id: Int, entity: (Option[Int], String, String, Int, Int, String, String, Int)):Boolean = {
+//  database withSession { implicit session =>
+//    findById(id) match {
+//    case Some(e) => { proc_elements.where(_.id === id).update(entity); true }
+//    case None => false
+//    }
+//  }
+//}
 
 def get(k: Int) = database withSession {
   implicit session ⇒

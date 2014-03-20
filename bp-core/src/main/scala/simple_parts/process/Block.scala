@@ -24,7 +24,7 @@ class Block(val id: Int,
   b_title: String, 
   order: Int, 
   val space: Option[Space], 
-  val space_role: String
+  val space_role: Option[String]
   ) extends ProcElems {
 
 

@@ -40,7 +40,7 @@ trait SprayService extends HttpService {
     path("proc_elements") {
       get {
         complete {
-          ElementTracer.els
+          "good" //ElementTracer.els
         }
       }
     } ~

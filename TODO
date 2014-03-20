@@ -23,7 +23,6 @@ Blocks
 ** Input block while proc/context running(wait for input if it paused)
 * TempItem Restore(expands, input)
 * Nested space
-* Caster
 * error handling [checker before invoke, brick error - though invoking] /isOptionalLink/* checker for arguments and params [ ]
 encrypt password https://github.com/softwaremill/bootzooka
 

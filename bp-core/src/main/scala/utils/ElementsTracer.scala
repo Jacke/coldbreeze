@@ -18,16 +18,19 @@ object ElementTracer {
     println("biimn")
     println(els.length)
   }
-  def register[Type](element_type:String, element_name:String, description:String) = add_reg(Keepr[Type](element_type, element_name, description))
+  def register[Type](cls: Class[_], element_type:String, element_name:String, description:String) {
+    add_reg(Keepr[Type](cls, element_type, element_name, description))
+  }
 // def register_value(element_type, element_name, allowed_value)
 // value types
 
   /**
    * Search methods
    */
-  def findByInfo(eltype:String, elname:String):Keepr[T] {
+  def findByInfo(eltype:String, elname:String):Option[Keepr[_]] = {
     els.find(keepr => (keepr.eltype == eltype && keepr.elname == elname))
   }
+
 }
 object ElementRegistrator {
   def apply {
@@ -36,9 +39,9 @@ object ElementRegistrator {
      */
     ElementTracer.register[Block](classOf[Block], "block", "test_block", "")
   }
-  def instanciate()
 }
+
 case class Keepr[T](cls: Class[_], eltype:String, elname:String, desc:String) {
-  def classTag = cls
-  def instanciate(obj: Any) = obj.asInstanceOf[T]
+  //def classTag = cls
+  //def instanciate() = new T
 }

@@ -25,8 +25,6 @@ class Brick(val id: Int,
   val space_role: String
   ) extends ProcElems with SpaceControl {
 
-  ElementTracer.register[Brick]("Brick", "Default brick", "Default brick for taking Tests")
-
   override def toString = s"Brick:"
   def invoke {
     println("invoked brick")
