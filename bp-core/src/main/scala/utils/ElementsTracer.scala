@@ -18,8 +18,8 @@ object ElementTracer {
     println("biimn")
     println(els.length)
   }
-  def register[Type](cls: Class[_], element_type:String, element_name:String, description:String) {
-    add_reg(Keepr[Type](cls, element_type, element_name, description))
+  def register[Type](element_type:String, element_name:String, description:String) {
+    add_reg(Keepr[Type](element_type, element_name, description))
   }
 // def register_value(element_type, element_name, allowed_value)
 // value types
@@ -37,11 +37,13 @@ object ElementRegistrator {
     /**
      * Elements registration
      */
-    ElementTracer.register[Block](classOf[Block], "block", "test_block", "")
+    ElementTracer.register[Brick]("brick", "test_brick", "")
+    ElementTracer.register[Block]("block", "test_block", "")
   }
 }
 
-case class Keepr[T](cls: Class[_], eltype:String, elname:String, desc:String) {
+case class Keepr[T](eltype:String, elname:String, desc:String) {
+  // cls: Class[_],
   //def classTag = cls
   //def instanciate() = new T
 }

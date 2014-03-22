@@ -122,77 +122,30 @@ trait SpaceExpandComponent { self: Space =>
 
 
 object Space {
-  def apply(index: Int, brick: Brick, is_subbricks: Boolean = true, is_container: Boolean = true, is_expander: Boolean = true) {
+  def apply(index: Int, brick: Brick, is_subbricks: Boolean = true, is_container: Boolean = true, is_expander: Boolean = true):Space = {
+    val target = new Space(index, brick)
     if (is_subbricks && is_container && is_expander) {
-      new Space(index, brick) with SpaceSBComponent with SpaceContainerComponent with SpaceExpandComponent
+      val target = new Space(index, brick) with SpaceSBComponent with SpaceContainerComponent with SpaceExpandComponent
     }
     if (is_subbricks && is_container && !is_expander) {
-      new Space(index, brick) with SpaceSBComponent with SpaceContainerComponent 
+      val target = new Space(index, brick) with SpaceSBComponent with SpaceContainerComponent
     }
     if (is_subbricks && !is_container && is_expander) {
-      new Space(index, brick) with SpaceSBComponent with SpaceExpandComponent
+      val target = new Space(index, brick) with SpaceSBComponent with SpaceExpandComponent
     }
     if (!is_subbricks && is_container && is_expander) {
-      new Space(index, brick) with SpaceContainerComponent with SpaceExpandComponent
+      val target = new Space(index, brick) with SpaceContainerComponent with SpaceExpandComponent
     }
     if (is_subbricks && !is_container && !is_expander) {
-      new Space(index, brick) with SpaceSBComponent 
+      val target = new Space(index, brick) with SpaceSBComponent
     } 
     if (!is_subbricks && is_container && !is_expander) {
-      new Space(index, brick) with SpaceContainerComponent
+      val target = new Space(index, brick) with SpaceContainerComponent
     }
     if (!is_subbricks && !is_container && is_expander) {
-      new Space(index, brick) with SpaceExpandComponent
+      val target = new Space(index, brick) with SpaceExpandComponent
     }
+    target
   }
 }
 
-/**
-// subbricks
-if (is_subbricks) {
-  var subbricks = Array.empty[SubBrick]
-
-  def sb_pushit(target: Array[SubBrick]) {
-    container = container ++ target
-  }
-
-  def sb_push(f: ⇒ Array[SubBrick]) = {
-    sb_pushit(f)
-  }
-}
-
-// container
-if (is_container) { 
-  var container: Array[ProcElems] = Array.empty
-
-  def cont_pushin(target: Array[ProcElems]) {
-    container = container ++ target
-  }
-
-  def cont_push(f: ⇒ Array[ProcElems]) = {
-    cont_pushin(f)
-  }
-}
-
-// expandings
-if (is_expander) {
-  var expands: Array[ProcElems] = Array.empty
-
-  def exp_pushin(target: Array[ProcElems]) {
-    expands = expands ++ target
-  }
-
-  def exps_push(f: ⇒ Array[ProcElems]) = {
-    exp_pushin(f)
-  }
-  def doExpandObj(old: ProcElems, obj: ProcElems) = {
-    expands.update(expands.indexOf(old), obj)
-    // link_update
-  }
-  def doExpandInd(in: Int, obj: ProcElems) = {
-    expands.update(expands(in), obj)
-    // link_update
-  } 
-}
-
-*/

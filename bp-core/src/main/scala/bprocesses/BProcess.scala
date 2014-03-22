@@ -22,8 +22,8 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
   var variety: Array[ProcElems] = Array.empty[ProcElems]
   var spaces: Array[Space] = Array.empty[Space]
   links = Array.empty[BPLink]
-  val logger = new BPLogger
-  val station = new BPStation(this)
+  var station = new BPStation(this)
+  var logger = station.logger
   val marker =  new BPMarker(this)
   val errors = new BPErrorCatcher(this)
 
@@ -144,9 +144,11 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
   }
 
 /**
- * TODO: Temporary proc elements restore(if it necessarily)
+ * Temp process elements restoring, after pause
  */
-  //def tmp_elements_restore { }
+  def restoreProcElems {
+    println(variety.filter(elem => (elem.temp || elem.refresh)))
+  }
 
 
 /**

@@ -21,13 +21,20 @@ class Brick(val id: Int,
   b_type: String, 
   b_title: String, 
   order: Int, 
-  val space: Option[Space], 
-  val space_role: String
+  val space: Option[Space] = None,
+  val space_role: String = ""
   ) extends ProcElems with SpaceControl {
 
   override def toString = s"Brick:"
   def invoke {
-    println("invoked brick")
+    println("move to space")
+
+    bprocess.marker.moveToSpace
+    println("bprocess.marker.moveToSpace")
+    println(bprocess.station.represent)
+    println("bprocess.station.represent")
+    bprocess.marker.moveUpFront
+    println("bprocess.marker.moveUpFront")
   }
   def getSpace = {
     bprocess.spaces.map(space => space.searchObj(this, space_role)).head
@@ -36,6 +43,11 @@ class Brick(val id: Int,
     bprocess.spaces.map(space => space.searchObj(this, space_role))
   }
   
-
+  override def init {
+    brick_space
+  }
+  def brick_space {
+    bprocess.spaces = bprocess.spaces :+ Space.apply(1, this, is_subbricks = false, is_container = true)
+  }
 }
 

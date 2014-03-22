@@ -3,9 +3,18 @@ package main.scala.bprocesses
 import main.scala.simple_parts.process._
 import main.scala.utils.Space
 /**
- * Ivoking process
+ * Ivoking process by moving BPMarker
  */
 class BPMarker(bp: BProcess) {
+  // Push Info
+  var station = bp.station
+  def isInFront: Boolean = true// station.isInFront
+  def toStation(bp: BProcess): BPStation = { bp.station }
+  def toLogger(bp: BProcess, result: BPLoggerResult) = bp.logger.log(result)
+
+  /**
+   * Moving methods
+   */
   def start = {
     // set initial value
     toStation(bp).update_started(true)
@@ -13,35 +22,24 @@ class BPMarker(bp: BProcess) {
   }
   def start_from
   {
-    // skip elements invoke !!!!!!!!!!
-  // * Start from middle
-  // push elems
-  // check expanders(through BPLogger)
-  // 
-    /*
-    station.status = "Stop"
-    proc.resume
+    println("fff" + station.isStarted + station.finished)
+    println("fff" + bp.station.isStarted)
 
-    for (b ← (proc.variety.slice(proc.step, proc.variety.length + 1))) {
-      if (proc.state) {
-        println("Try invoking the: " + b);
-        b.invoke
-
-        proc.step = proc.step + 1;
-      } else {
-
-        proc.status = "Paused"
-      }
+    if(station.isStarted && !station.finished) {
+      println("fff")
+      station.update_paused(false)
+      move
     }
-
-    if (proc.state && proc.status != "Paused") {
-      proc.step = 0
-      proc.status = "Complete/Stop"
-    }
-    */
+    // start from space
+    /**
+     * inspace
+     *   1 level
+     * inspace * step.length > 1
+     *   2 level
+     */
   }
   def move:Unit = {
-    if (bp.station.step == bp.getElemsLength || blocator) 
+    if (station.step == bp.getElemsLength || blocator)
     { 
       end 
       true
@@ -54,8 +52,8 @@ class BPMarker(bp: BProcess) {
           front(elem) 
         }
 
-      toLogger(bp, BPLoggerResult(elem, true, false, 1, 0, toStation(bp))) // (elem, true, false, elem.order, elem.space, bp.station)
-      toStation(bp).update_step(bp.station.step + 1)
+      toLogger(bp, BPLoggerResult(elem, order = 1, space = 0, station = toStation(bp), invoked = true, expanded = false))
+      toStation(bp).update_step(station.step + 1)
 
       if (isInFront) { 
         println("station")
@@ -65,14 +63,48 @@ class BPMarker(bp: BProcess) {
       }
     }
   }
-  
+  def space_move = {
+
+  }
   def end = {
     // toStation end
     toStation(bp).update_finished(true)
 
     println("end")
   }
-  // Moving of marker
+  // utils
+  def blocator: Boolean = {
+    station.state && !station.started
+  }
+  /**
+   * Instruction execution
+   */
+  // Front Elements
+  def front(b: ProcElems) = b.invoke
+  // Space expanded elements
+  // Space container
+  /**
+   * /\
+   *
+   * upFront
+   */
+  def run_dim(dim: Space, proc: BProcess) {
+    for (b ← dim.container) {
+      if (proc.station.state) {
+        println("Invoking the: " + b);
+        b.invoke
+        println(proc.station.step)
+        //proc.step = proc.step + 1;
+      } else {
+        println(proc.station.step)
+        //proc.status = "Paused"
+      }
+    }
+  }
+
+  /**
+   * Space moving methods
+   */
   def moveToSpace = { 
     station.update_space(station.space + 1)
     station.inSpace(true)
@@ -88,11 +120,13 @@ class BPMarker(bp: BProcess) {
   }
   // up
   def moveUpFront = {
-      if ((station.container_step.length == 1) && (station.expand_step.length == 1)) 
+      if (    (station.container_step.length < 2 || station.container_step.isEmpty)
+                                                 &&
+              (station.expand_step.length < 2    || station.expand_step.isEmpty))
       {
         station.inExpand(false)
         station.inContainer(false)
-        
+        station.inSpace(false)
         station.flush_container_step
         station.flush_expand_step
         station.update_space(station.space - 1) } 
@@ -118,42 +152,19 @@ class BPMarker(bp: BProcess) {
     bp.getSpaceByIndex(station.space).container.map(ex => ex.invoke)
   }
 
-  // Push Info
-  val station = bp.station
-  def isInFront: Boolean = true// station.isInFront
-  def toStation(bp: BProcess): BPStation = { bp.station }
-  def toLogger(bp: BProcess, result: BPLoggerResult) = bp.logger.log(result)
-
-  // utils
-  def blocator: Boolean = {
-    station.state && !station.started
-  }
   //def space_step_inc = station.container_step expand_step
   def step_inc = station.update_step(station.step + 1)
 
-  
-/* Instructions */
-  // Front Elements
-    def front(b: ProcElems) = b.invoke 
-  // Space expanded elements
-  // Space container
-    def run_dim(dim: Space, proc: BProcess) {
-      for (b ← dim.container) {
-        if (proc.station.state) {
-          println("Invoking the: " + b);
-          b.invoke
-          println(proc.station.step)
-          //proc.step = proc.step + 1;
-        } else {
-          println(proc.station.step)
-          //proc.status = "Paused"
-        }
-      }
-    }
 
 
 }
 
 object InvokeTracer {
-  def run_proc(proc: BProcess) = proc.marker.start
+  def run_proc(proc: BProcess) =
+    if (proc.station.isStarted) {
+      proc.marker.start_from
+    }
+    else {
+      proc.marker.start
+    }
 }

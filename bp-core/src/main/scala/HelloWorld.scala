@@ -26,7 +26,8 @@ object Main extends App {
         //new Constant[Int](1001),
         new Constant[Boolean](1, true),
         new Constant[Boolean](2, true),
-        new Constant[Boolean](3, false))//,
+        new Constant[Boolean](3, false),
+        new Brick(2, "test brick", "", CompositeValues(), proc, "brick", "test_brick", 4))//,
         //new Brick(proc, 3),
         //new Space(3, 1),new Space(3, 2))
         }
@@ -44,16 +45,50 @@ object Main extends App {
   println("upddates")
   println(proc.links.head.start)
                                                                   **/
+  println(proc.station.represent)
+  proc.elements_init
+
+  println("space" + proc.spaces.head.brick)
   InvokeTracer.run_proc(proc)
 
   ElementRegistrator.apply
   println(ElementTracer.els.head)
+  println(proc.restoreProcElems)
+  println(proc.station.represent)
 
+  println("logger")
+  proc.station.logger.logs.map(log => println(log))
   // * Brick with SpaceControl interface
   // * Add to space
   // * Input check it out
 
 
+  /**
+   * Run from
+   */
+  val proc1 = new BProcess(new Managment)
+  proc1.push {
+    Array[ProcElems](
+      //new Note("Test note"),
+      //new Constant[Int](1001),
+      //new Constant[Int](1001),
+      new Constant[Boolean](1, true),
+      new Constant[Boolean](2, true),
+      new Constant[Boolean](3, false),
+      new Brick(2, "test brick", "", CompositeValues(), proc, "brick", "test_brick", 4))//,
+    //new Brick(proc, 3),
+    //new Space(3, 1),new Space(3, 2))
+  }
+  proc1.station = proc.station
+  proc1.station.update_step(2)
+  proc1.station.started = true
+  proc1.station.finished = false
+  println(proc1.station.started)
+
+  proc1.logger = proc.logger
+  proc1.marker.station = proc1.station
+  println("proc1")
+  InvokeTracer.run_proc(proc1)
 
   /****
 

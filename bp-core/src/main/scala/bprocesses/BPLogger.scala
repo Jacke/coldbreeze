@@ -1,20 +1,23 @@
 package main.scala.bprocesses
 
 import main.scala.simple_parts.process._
+import java.util.{Date, Calendar}
 
 /**
  * BPLogger
  */
 case class BPLoggerResult(
                            element: ProcElems,
-                           invoked: Boolean,
-                           expanded: Boolean,
                            order: Int,
                            space: Int,
-                           station: BPStation)
+                           station: BPStation,
+                           invoked: Boolean = false,
+                           expanded: Boolean = false,
+                           date: Date = Calendar.getInstance().getTime())
 class BPLogger {
   var logs: Array[BPLoggerResult] = Array.empty
   def log(result: BPLoggerResult) = {
+    //Thread.sleep(1000)
     logs = logs :+ result
   }
 }

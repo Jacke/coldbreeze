@@ -8,6 +8,9 @@ import main.scala.utils.Space
 trait ProcElems {
   val id: Int
   val space_id: Option[Space] = None
+  val temp = false
+  val refresh = false
+
   def invoke()
   def init() = {
     println(this)

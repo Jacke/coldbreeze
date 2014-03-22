@@ -1,3 +1,9 @@
+
+* Space container invoke
+* Data sync from logger to composite values of proc elements
+* Space expands expand(update)
+
+
 Blocks
   * SpaceControl iface
   * Collection
@@ -16,15 +22,51 @@ Blocks
   * API End-Point
   || Process owning, viewers, access // by owning tables Employees/Clients/Firm + Groups assigns
   * scope ctx, bp views
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+* Blocks {
   * bRICK pOINTER FOR rEStYPE(INTVAL)
   * GroupPointer fetch before invoke
+  * Composite values getter and setters
+  ** Input block while proc/context running(wait for input if it paused)
 
 
-** Input block while proc/context running(wait for input if it paused)
-* TempItem Restore(expands, input)
-* Nested space
-* error handling [checker before invoke, brick error - though invoking] /isOptionalLink/* checker for arguments and params [ ]
-encrypt password https://github.com/softwaremill/bootzooka
+  * TempItem Restore(expands, input)
+  * error handling [checker before invoke, brick error - though invoking] /isOptionalLink/* checker for arguments and params [ ]
+  encrypt password https://github.com/softwaremill/bootzooka
+  * Dopel
+}
+
+
+
+
 
 * Assembled
   * BProcess returns

@@ -3,7 +3,7 @@ package models.DAO
 /**
  * Case classes for casting
  */
-
+import main.scala.utils.Keepr
 case class MessagesList(title: String, container: List[Message])
 case class Message(process: String, test: List[Int]) {
   // val typeof = getClass.toString
@@ -21,7 +21,7 @@ case class UndefElement(id: Option[Int],
                         space:Option[Int],
                         space_role:Option[String],
                         order:Int)
-
+case class KeeprDAO(eltype:String, elname:String, desc:String)
 /**
  * DAO
  */

@@ -9,6 +9,7 @@ import spray.json._
 import spray.httpx.SprayJsonSupport._
 import spray.routing.{ HttpService, HttpServiceActor, Route }
 import spray.json.DefaultJsonProtocol._
+import models.DAO.KeeprDAO
 
 import models.DAO._
 
@@ -17,6 +18,7 @@ object MessageJsonProtocol extends DefaultJsonProtocol {
   implicit val msgformat = jsonFormat2(MessagesList)
   implicit val supformat = jsonFormat3(BProcess)
   implicit val suppsformat = jsonFormat1(BProcessesDTO)
+  implicit val el_tracer = jsonFormat3(KeeprDAO)
 
 }
 //object MessagesListJsonProtocol extends DefaultJsonProtocol {
@@ -35,12 +37,15 @@ trait SprayService extends HttpService {
   //import MessagesListJsonProtocol._
   import MessageJsonProtocol._
   import main.scala.utils.ElementTracer
+  import main.scala.utils.ElementRegistrator
+  import main.scala.utils.Keepr
 
   def adRoute: Route =
     path("proc_elements") {
       get {
         complete {
-          "good" //ElementTracer.els
+          ElementRegistrator.apply
+          ElementTracer.els.map(keepr => KeeprDAO.tupled(Keepr.unapply(keepr).get))
         }
       }
     } ~
