@@ -40,3 +40,10 @@ class BPErrorCatcher(bp: BProcess) {
 }
 case class ReqLink(el: ProcElems, quantity: Int)
 case class BPError(el: ProcElems, error_type: String, desc: String)
+
+class ScalaCustomException(msg: String) extends RuntimeException(msg)
+
+object PullCustomException {
+  def create(msg: String) : ScalaCustomException = new ScalaCustomException(msg)
+  //def create(msg: String, cause: Throwable) = new ScalaCustomException(msg).initCause(cause)
+}

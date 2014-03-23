@@ -2,6 +2,7 @@ package main.scala.bprocesses
 
 import main.scala.simple_parts.process._
 import main.scala.utils.Space
+
 /**
  * Ivoking process by moving BPMarker
  */
@@ -81,22 +82,17 @@ class BPMarker(bp: BProcess) {
    */
   // Front Elements
   def front(b: ProcElems) = b.invoke
-  // Space expanded elements
-  // Space container
-  /**
-   * /\
-   *
-   * upFront
-   */
-  def run_dim(dim: Space, proc: BProcess) {
-    for (b ← dim.container) {
-      if (proc.station.state) {
+
+
+  def runContainer(space: Space) {
+    for (b ← space.container) {
+      if (station.state) {
         println("Invoking the: " + b);
         b.invoke
-        println(proc.station.step)
+        println(station.step)
         //proc.step = proc.step + 1;
       } else {
-        println(proc.station.step)
+        println(station.step)
         //proc.status = "Paused"
       }
     }
@@ -160,11 +156,18 @@ class BPMarker(bp: BProcess) {
 }
 
 object InvokeTracer {
-  def run_proc(proc: BProcess) =
+  import main.scala.bprocesses.PullCustomException
+
+  def run_proc(proc: BProcess) {
+    if (proc.station.inspace) { // TODO: Run from inspace
+      throw PullCustomException.create("bad things")
+    }
+
     if (proc.station.isStarted) {
       proc.marker.start_from
     }
     else {
       proc.marker.start
     }
+  }
 }

@@ -27,7 +27,7 @@ object Main extends App {
         new Constant[Boolean](1, true),
         new Constant[Boolean](2, true),
         new Constant[Boolean](3, false),
-        new Brick(2, "test brick", "", CompositeValues(), proc, "brick", "test_brick", 4))//,
+        new Brick(4, "test brick", "", CompositeValues(), proc, "brick", "test_brick", 4))//,
         //new Brick(proc, 3),
         //new Space(3, 1),new Space(3, 2))
         }
@@ -75,7 +75,7 @@ object Main extends App {
       new Constant[Boolean](1, true),
       new Constant[Boolean](2, true),
       new Constant[Boolean](3, false),
-      new Brick(2, "test brick", "", CompositeValues(), proc, "brick", "test_brick", 4))//,
+      new Brick(4, "test brick", "", CompositeValues(), proc, "brick", "test_brick", 4))//,
     //new Brick(proc, 3),
     //new Space(3, 1),new Space(3, 2))
   }
@@ -89,6 +89,50 @@ object Main extends App {
   proc1.marker.station = proc1.station
   println("proc1")
   InvokeTracer.run_proc(proc1)
+
+
+
+
+
+
+  println(
+    """
+      |Expands through Marker
+      |Container run through space_move
+    """.stripMargin)
+  val proc2 = new BProcess(new Managment)
+  proc2.push {
+    Array[ProcElems](
+      //new Note("Test note"),
+      //new Constant[Int](1001),
+      //new Constant[Int](1001),
+      new Constant[Boolean](1, true),
+      new Constant[Boolean](2, true),
+      new Constant[Boolean](3, false),
+      new ContainerBrick(4, "container brick", "", CompositeValues(), proc2, "brick", "containerbrick", 4),
+      new ExpandBrick(5, "expand brick", "", CompositeValues(), proc2, "brick", "expandbrick", 5))//,
+    //new Brick(proc, 3),
+    //new Space(3, 1),new Space(3, 2))
+  }
+
+  // init space elems
+  proc2.elements_init
+
+
+  println(proc2.spaces.length)
+  println(proc2.spaces.head)
+  proc2.spaces.head.addToSpace(new Constant[Boolean](1, true), "container")
+  proc2.spaces.head.addToSpace(new Constant[Boolean](2, true), "container")
+  proc2.spaces.head.addToSpace(new Constant[Boolean](3, true), "container")
+
+  println(proc2.spaces.last)
+  proc2.spaces.last.addToSpace(new Constant[Boolean](1, true), "expands")
+  proc2.spaces.last.addToSpace(new Constant[Boolean](1, true), "expands")
+  proc2.spaces.last.addToSpace(new Constant[Boolean](1, true), "expands")
+  println("******" + proc2.spaces.last.index)
+  println(proc2.spaces.last.expands.head)
+  InvokeTracer.run_proc(proc2)
+  println(proc2.spaces.last.expands.head) // must be false
 
   /****
 

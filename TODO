@@ -1,6 +1,5 @@
 
 * Space container invoke
-* Data sync from logger to composite values of proc elements
 * Space expands expand(update)
 
 
@@ -55,13 +54,14 @@ Blocks
   * bRICK pOINTER FOR rEStYPE(INTVAL)
   * GroupPointer fetch before invoke
   * Composite values getter and setters
-  ** Input block while proc/context running(wait for input if it paused)
 
-
-  * TempItem Restore(expands, input)
   * error handling [checker before invoke, brick error - though invoking] /isOptionalLink/* checker for arguments and params [ ]
   encrypt password https://github.com/softwaremill/bootzooka
-  * Dopel
+  * Dopel feature
+
+  ** Input block while proc/context running(wait for input if it paused)
+  * Data sync from logger to composite values of proc elements
+  * TempItem Restore(expands, input)
 }
 
 
