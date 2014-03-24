@@ -10,14 +10,16 @@ import spray.httpx.SprayJsonSupport._
 import spray.routing.{ HttpService, HttpServiceActor, Route }
 import spray.json.DefaultJsonProtocol._
 import models.DAO.KeeprDAO
+import models.DAO.BProcessDTO
+
 
 import models.DAO._
 
 object MessageJsonProtocol extends DefaultJsonProtocol {
-  implicit val format = jsonFormat2(Message)
-  implicit val msgformat = jsonFormat2(MessagesList)
-  implicit val supformat = jsonFormat3(BProcess)
-  implicit val suppsformat = jsonFormat1(BProcessesDTO)
+  //implicit val format = jsonFormat2(Message)
+  //implicit val msgformat = jsonFormat2(MessagesList)
+  implicit val supformat = jsonFormat3(BProcessDTO)
+  //implicit val suppsformat = jsonFormat1(BProcessesDTO)
   implicit val el_tracer = jsonFormat3(KeeprDAO)
 
 }
@@ -64,7 +66,7 @@ trait SprayService extends HttpService {
     } ~
       path("process") {
         post(
-          entity(as[BProcess]) {
+          entity(as[BProcessDTO]) {
             suplier ⇒
               {
                 //suplier.toString

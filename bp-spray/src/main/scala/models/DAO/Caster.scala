@@ -18,7 +18,7 @@ object Caster {
                                                 undef.b_type,
                                                 undef.type_title,
                                                 undef.order,
-                                                Option(proc.getSpaceByIndex(undef.space.get)),
+                                                Option(proc.getSpaceByIndex(undef.space_parent.get)),
                                                 undef.space_role)
     }
     // push to bp OR space

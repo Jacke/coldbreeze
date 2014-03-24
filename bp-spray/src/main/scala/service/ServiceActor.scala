@@ -2,7 +2,7 @@ package service
 
 import akka.actor.Actor
 import spray.routing._
-import models.DAO.Message
+
 
 /**
  * Actor for HttpServices.
@@ -18,14 +18,14 @@ class ServiceActor
   def actorRefFactory = context
 
   //-**********def receive = runRoute(adRoute ~ staticRoute)
-  type Completer = Seq[Message] ⇒ Unit
+  //type Completer = Seq[Message] ⇒ Unit
 
   def staticRoute: Route =
     path("")(getFromResource("web/index.html")) ~ getFromResourceDirectory("web")
 
-  var messages: List[Message] = Nil
+  //var messages: List[Message] = Nil
 
-  var storedCompleter: Option[Completer] = None
+  //var storedCompleter: Option[Completer] = None
 
   def receive: Receive = {
     runRoute(adRoute ~ staticRoute)

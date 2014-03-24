@@ -19,7 +19,7 @@ object FirstExample {
 
 object BPSerial {
   import main.scala.bprocesses.BProcess
-  def instance(bpdto: BProcessDTO, els: List[UndefElement]):BProcess = {
+  def instance(bpdto: BProcessDTO, els: List[UndefElement]) = {// :BProcess = {
     println(bpdto)
     println(els)
 
@@ -36,5 +36,6 @@ object BPSerial {
   def save(bp: BProcess):Boolean = {
   // station save
   // logger save
+    true
   }
 }

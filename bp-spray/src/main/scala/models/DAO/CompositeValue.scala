@@ -108,9 +108,7 @@ class PgCompositeSupportTest {
       //assertEquals(rec2, q2.first)
     }
   }
-  def fetchIt():Unit = {
-    db with
-  }
+
   def createShit(): Unit = {
     db withSession { implicit session: Session =>
       (Q[Int] + "create type compositevalues as (id int8, a_string text, b_string text, a_int int8, b_int int8, a_bool boolean, b_bool boolean)").first

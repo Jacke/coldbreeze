@@ -1,6 +1,6 @@
 package models.DAO
 
-import scala.slick.driver.PostgresDriver.simple._
+import models.DAO.driver.MyPostgresDriver.simple._
 
 class BPStations(tag: Tag) extends Table[
   (Option[Int],
@@ -9,8 +9,9 @@ class BPStations(tag: Tag) extends Table[
    Boolean,
    Int,
    Int,
-   Array[Int],
-   Array[Int],
+   List[Int],
+   List[Int],
+   Boolean,
    Boolean,
    Boolean,
    Boolean,
@@ -26,8 +27,8 @@ class BPStations(tag: Tag) extends Table[
   def state = column[Boolean]("state")
   def step = column[Int]("step")
   def space = column[Int]("space")
-  def container_step = column[Array[Int]]
-  def expand_step = column[Array[Int]]
+  def container_step = column[List[Int]]("container_step")
+  def expand_step = column[List[Int]]("expand_step")
   def started = column[Boolean]("started")
   def finished = column[Boolean]("finished")
   def inspace = column[Boolean]("inspace")
