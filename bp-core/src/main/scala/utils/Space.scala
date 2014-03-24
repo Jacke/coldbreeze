@@ -5,7 +5,7 @@ import main.scala.bprocesses.links._
 import main.scala.simple_parts.process.Brick
 
 
-class Space(val index: Int, val brick: Brick) {
+class Space(val index: Int, val brick_owner: Brick) {
   
 
 private var state = true
@@ -54,19 +54,27 @@ def levelOfObject(obj: ProcElems):String = {
   "None"
   }
 }
-def getBrick = brick
+def getBrick = brick_owner
+
+def spaceOrderNum(c: Array[ProcElems]):Int = c.sortBy(_.order).last.order + 1
 
 def allElements:List[ProcElems] = (subbricks ++ container ++ expands).toList
 
 // Element control
 def addToSpace(elem: ProcElems, space_role:String) {
   if (space_role == "subbrick") {
-    subbricks = subbricks :+ elem.asInstanceOf[SubBrick]
+    // TODO: Space order
+    //println(spaceOrderNum(subbricks))
+    subbricks = subbricks :+ elem.order.asInstanceOf[SubBrick]
   }
   if (space_role == "container") {
+    // TODO: Space order
+    println(spaceOrderNum(container))
     container = container :+ elem
   }
   if (space_role == "expands") {
+    // TODO: Space order
+    println(spaceOrderNum(expands))
     expands = expands :+ elem
   }
 }

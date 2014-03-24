@@ -9,21 +9,20 @@ import main.scala.bprocesses.InvokeTracer
 import main.scala.utils.links.LinkSearcher
 import scala.util.Try
 import main.scala.utils.ElementTracer
-import main.scala.utils.SpaceControl
 import main.scala.utils.Space
 import main.scala.bprocesses._
 
 class Brick(val id: Int,
-  title: String, 
-  desc: String, 
-  values: CompositeValues,
-  bprocess: BProcess,
-  b_type: String, 
-  b_title: String, 
-  order: Int, 
-  val space: Option[Space] = None,
-  val space_role: String = ""
-  ) extends ProcElems with SpaceControl {
+            title: String,
+            desc: String,
+            values: CompositeValues,
+            bprocess: BProcess,
+            b_type: String,
+            b_title: String,
+            var order: Int,
+            val space_parent: Option[Space] = None,
+            val space_role: String = ""
+             ) extends ProcElems {
 
   override def toString = s"Brick:"
   def invoke {
@@ -40,12 +39,12 @@ class Brick(val id: Int,
   //  bprocess.spaces.find(space => (space.searchObj(obj, space_role) != None))
   //}
   def getSpace(brick: Brick):Option[Space] = {
-    bprocess.spaces.find(space => (space.brick == brick))
+    bprocess.spaces.find(space => (space.brick_owner == brick))
   }
   def getSpaces = {
     bprocess.spaces.map(space => space.searchObj(this, space_role))
   }
-  
+
   override def init {
     brick_space
   }
@@ -56,26 +55,26 @@ class Brick(val id: Int,
 
 
 class ExpandBrick(override val id: Int,
-            title: String,
-            desc: String,
-            values: CompositeValues,
-            bprocess: BProcess,
-            b_type: String,
-            b_title: String,
-            order: Int,
-            override val space: Option[Space] = None,
-            override val space_role: String = ""
-             ) extends Brick(id,
-                             title,
-                             desc,
-                             values,
-                             bprocess,
-                             b_type,
-                             b_title,
-                             order,
-                             space,
-                             space_role
-                            ) with SpaceControl {
+                  title: String,
+                  desc: String,
+                  values: CompositeValues,
+                  bprocess: BProcess,
+                  b_type: String,
+                  b_title: String,
+                  order: Int,
+                  override val space_parent: Option[Space] = None,
+                  override val space_role: String = ""
+                   ) extends Brick(id,
+  title,
+  desc,
+  values,
+  bprocess,
+  b_type,
+  b_title,
+  order,
+  space_parent,
+  space_role
+) {
 
   override def toString = s"Brick:"
   override def invoke {
@@ -86,9 +85,53 @@ class ExpandBrick(override val id: Int,
     println("bprocess.marker.moveToSpace********")
     println(getSpace(this).get.expands.length)
     bprocess.marker.moveToExpand
-    getSpace(this).get.updateElem(getSpace(this).get.expands(0), new Constant[Boolean](1, false))
-    getSpace(this).get.updateElem(getSpace(this).get.expands(1), new Constant[Boolean](1, false))
-    getSpace(this).get.updateElem(getSpace(this).get.expands(2), new Constant[Boolean](1, false))
+
+    // TODO: Move in Invoke file Temp solution
+
+
+    getSpace(this).get.updateElem(getSpace(this).get.expands(0), new Constant[Boolean](1, false,1))
+
+    bprocess.marker.toLogger(
+      bprocess.marker.station.bp,
+      BPLoggerResult
+        (new Constant[Boolean](1, false,1),
+            order = 1,
+            space = getSpace(this).get.index,
+            station = bprocess.marker.toStation(bprocess.marker.station.bp),
+            invoked = true,
+            expanded = true,
+            container = false)
+    )
+    getSpace(this).get.updateElem(getSpace(this).get.expands(1), new Constant[Boolean](1, false,1))
+    /**
+     * TODO: Move in Invoke file Temp solution
+     */
+    bprocess.marker.toLogger(
+      bprocess.marker.station.bp,
+      BPLoggerResult
+        (new Constant[Boolean](1, false,1),
+            order = 1,
+            space = getSpace(this).get.index,
+            station = bprocess.marker.toStation(bprocess.marker.station.bp),
+            invoked = true,
+            expanded = true,
+            container = false)
+    )
+    getSpace(this).get.updateElem(getSpace(this).get.expands(2), new Constant[Boolean](1, false,1))
+    /**
+     * TODO: Move in Invoke file Temp solution
+     */
+    bprocess.marker.toLogger(
+      bprocess.marker.station.bp,
+      BPLoggerResult
+        (new Constant[Boolean](1, false,1),
+            order = 1,
+            space = getSpace(this).get.index,
+            station = bprocess.marker.toStation(bprocess.marker.station.bp),
+            invoked = true,
+            expanded = true,
+            container = false)
+    )
 
     bprocess.marker.moveUpFront
     println("bprocess.marker.moveUpFront")
@@ -103,26 +146,26 @@ class ExpandBrick(override val id: Int,
   }
 }
 class ContainerBrick(override val id: Int,
-            title: String,
-            desc: String,
-            values: CompositeValues,
-            bprocess: BProcess,
-            b_type: String,
-            b_title: String,
-            order: Int,
-            override val space: Option[Space] = None,
-            override val space_role: String = ""
-           ) extends Brick(id,
-                           title,
-                           desc,
-                           values,
-                           bprocess,
-                           b_type,
-                           b_title,
-                           order,
-                           space,
-                           space_role
-                          ) with SpaceControl {
+                     title: String,
+                     desc: String,
+                     values: CompositeValues,
+                     bprocess: BProcess,
+                     b_type: String,
+                     b_title: String,
+                     order: Int,
+                     override val space_parent: Option[Space] = None,
+                     override val space_role: String = ""
+                      ) extends Brick(id,
+  title,
+  desc,
+  values,
+  bprocess,
+  b_type,
+  b_title,
+  order,
+  space_parent,
+  space_role
+) {
 
   override def toString = s"Brick:"
   override def invoke {

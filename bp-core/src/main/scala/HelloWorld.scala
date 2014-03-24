@@ -24,9 +24,9 @@ object Main extends App {
         //new Note("Test note"),
         //new Constant[Int](1001),
         //new Constant[Int](1001),
-        new Constant[Boolean](1, true),
-        new Constant[Boolean](2, true),
-        new Constant[Boolean](3, false),
+        new Constant[Boolean](1, true,1),
+        new Constant[Boolean](2, true,1),
+        new Constant[Boolean](3, false,1),
         new Brick(4, "test brick", "", CompositeValues(), proc, "brick", "test_brick", 4))//,
         //new Brick(proc, 3),
         //new Space(3, 1),new Space(3, 2))
@@ -48,7 +48,7 @@ object Main extends App {
   println(proc.station.represent)
   proc.elements_init
 
-  println("space" + proc.spaces.head.brick)
+  println("space" + proc.spaces.head.brick_owner)
   InvokeTracer.run_proc(proc)
 
   ElementRegistrator.apply
@@ -72,9 +72,9 @@ object Main extends App {
       //new Note("Test note"),
       //new Constant[Int](1001),
       //new Constant[Int](1001),
-      new Constant[Boolean](1, true),
-      new Constant[Boolean](2, true),
-      new Constant[Boolean](3, false),
+      new Constant[Boolean](1, true, 1),
+      new Constant[Boolean](2, true, 2),
+      new Constant[Boolean](3, false, 3),
       new Brick(4, "test brick", "", CompositeValues(), proc, "brick", "test_brick", 4))//,
     //new Brick(proc, 3),
     //new Space(3, 1),new Space(3, 2))
@@ -106,9 +106,9 @@ object Main extends App {
       //new Note("Test note"),
       //new Constant[Int](1001),
       //new Constant[Int](1001),
-      new Constant[Boolean](1, true),
-      new Constant[Boolean](2, true),
-      new Constant[Boolean](3, false),
+      new Constant[Boolean](1, true,1),
+      new Constant[Boolean](2, true,1),
+      new Constant[Boolean](3, false,1),
       new ContainerBrick(4, "container brick", "", CompositeValues(), proc2, "brick", "containerbrick", 4),
       new ExpandBrick(5, "expand brick", "", CompositeValues(), proc2, "brick", "expandbrick", 5))//,
     //new Brick(proc, 3),
@@ -121,14 +121,14 @@ object Main extends App {
 
   println(proc2.spaces.length)
   println(proc2.spaces.head)
-  proc2.spaces.head.addToSpace(new Constant[Boolean](1, true), "container")
-  proc2.spaces.head.addToSpace(new Constant[Boolean](2, true), "container")
-  proc2.spaces.head.addToSpace(new Constant[Boolean](3, true), "container")
+  proc2.spaces.head.addToSpace(new Constant[Boolean](1, true,1), "container")
+  proc2.spaces.head.addToSpace(new Constant[Boolean](2, true,1), "container")
+  proc2.spaces.head.addToSpace(new Constant[Boolean](3, true,1), "container")
 
   println(proc2.spaces.last)
-  proc2.spaces.last.addToSpace(new Constant[Boolean](1, true), "expands")
-  proc2.spaces.last.addToSpace(new Constant[Boolean](1, true), "expands")
-  proc2.spaces.last.addToSpace(new Constant[Boolean](1, true), "expands")
+  proc2.spaces.last.addToSpace(new Constant[Boolean](1, true,1), "expands")
+  proc2.spaces.last.addToSpace(new Constant[Boolean](1, true,1), "expands")
+  proc2.spaces.last.addToSpace(new Constant[Boolean](1, true,1), "expands")
   println("******" + proc2.spaces.last.index)
   println(proc2.spaces.last.expands.head)
   InvokeTracer.run_proc(proc2)

@@ -13,6 +13,7 @@ case class BPLoggerResult(
                            station: BPStation,
                            invoked: Boolean = false,
                            expanded: Boolean = false,
+                           container: Boolean = false,
                            date: Date = Calendar.getInstance().getTime())
 class BPLogger {
   var logs: Array[BPLoggerResult] = Array.empty

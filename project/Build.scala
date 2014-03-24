@@ -35,7 +35,7 @@ object Build extends Build {
     .settings(revolverSettings: _*)
     .settings(
       libraryDependencies ++=
-        List(akkaActor,akkaSlf4j, slick, postgres, logbackClassic, sprayCan, sprayClient, sprayRouting, hdrHistogram, sprayJson)) 
+        List(akkaActor,akkaSlf4j, slick, postgres, slickpg, logbackClassic, sprayCan, sprayClient, sprayRouting, hdrHistogram, sprayJson))
         //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
         //test(scalatest, akkaTestKit, sprayTestkit))
     .dependsOn(bpCore)

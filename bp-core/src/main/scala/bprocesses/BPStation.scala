@@ -24,6 +24,7 @@ class BPStation(val bp: BProcess) {
   def isRunned:Boolean  = started && !(finished && paused)
   def isPaused:Boolean  = paused
   def isInFront:Boolean = !inspace
+  def isStopped:Boolean = !state
 
   def update_state(state: Boolean) = { this.state = state }
   def update_step(v: Int)          = { this.step  = v     }
@@ -45,9 +46,9 @@ class BPStation(val bp: BProcess) {
   def inContainer(v: Boolean) = { this.incontainer = v }
   def inExpand(v: Boolean)    = { this.inexpands   = v }
 
-  def update_started(s: Boolean)  = this.started  = s
-  def update_paused(p: Boolean)   = this.paused   = p
-  def update_finished(f: Boolean) = this.finished = f
+  def update_started(s: Boolean)  = { this.started  = s }
+  def update_paused(p: Boolean)   = { this.paused   = p }
+  def update_finished(f: Boolean) = { this.finished = f }
 
   /**
    * Representation

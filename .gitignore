@@ -4,6 +4,7 @@
 .worksheet/
 .cache/
 target/
+slick-pg/
 .classpath
 .project
 project/target

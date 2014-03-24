@@ -12,6 +12,7 @@ object Dependencies {
   val akkaVersion  = "2.2.3"
 
   val slick           = "com.typesafe.slick"        %%  "slick"                 % "2.0.0"
+  val slickpg         = "com.github.tminglei"       % "slick-pg_2.10"           % "0.5.2.1"
   val slf4j           = "org.slf4j"                 %   "slf4j-nop"             % "1.6.4"
   //val json4s-n        = "org.json4s"                %%  "json4s-native"         % "3.2.6"
   //val json4s-j        = "org.json4s"                %%  "json4s-jackson"        % "3.2.6"

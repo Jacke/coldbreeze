@@ -29,7 +29,6 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
 
 /**
  *  In-Process collection methods
- *
  */
 
   def allElements: List[ProcElems] = { 
@@ -83,7 +82,7 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
   def addToSpace(elem: ProcElems, space: Space, space_role:String) = {
     space.addToSpace(elem, space_role)
   }
-
+  def orderNum():Int = variety.sortBy(_.order).last.order + 1
 
 /**
  *  Owners

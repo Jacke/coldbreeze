@@ -46,6 +46,7 @@ trait SprayService extends HttpService {
         complete {
           ElementRegistrator.apply
           ElementTracer.els.map(keepr => KeeprDAO.tupled(Keepr.unapply(keepr).get))
+
         }
       }
     } ~
@@ -68,14 +69,15 @@ trait SprayService extends HttpService {
               {
                 //suplier.toString
                 ctx ⇒
-                  val obj = FirstExample.pull_object(suplier)
-                  if (obj.isSuccess) {
-                    suplier.id = Option(obj.get)
-
-                    ctx.complete(suplier)
-                  } else {
-                    ctx complete (BadRequest, obj.failed.toString)
-                  }
+                                          "ss"
+                  //val obj = FirstExample.pull_object(suplier)
+                  //if (obj.isSuccess) {
+                  //  suplier.id = Option(obj.get)
+//
+                  //  ctx.complete(suplier)
+                  //} else {
+                  //  ctx complete (BadRequest, obj.failed.toString)
+                  //}
                 //handleRestMsg[Either[Long, ErrorMsg]](InsertReq(suplier)).onSuccess {
                 //  case Left(id)     ⇒ ctx.complete(Created, IdRsp(id))
                 //  case Right(error) ⇒ if (error.is404) ctx complete NotFound else ctx complete (BadRequest, error.content)
@@ -85,12 +87,12 @@ trait SprayService extends HttpService {
       } ~
       path("process") {
         get(
-          complete(FirstExample.getAll))
+          complete(BPDTO.getAll))
       } ~
       path("process" / IntNumber)(id ⇒
         get(
           complete(
-            FirstExample.get(id).head))) ~
+            BPDTO.get(id).head))) ~
       pathPrefix("process" / IntNumber) { id ⇒
         path("blocks") {
           get {

@@ -1,10 +1,4 @@
-
-* Space container invoke
-* Space expands expand(update)
-
-
 Blocks
-  * SpaceControl iface
   * Collection
   * Result
   * Checker
@@ -14,11 +8,6 @@ Blocks
   * Companion ResAct -> Input, Times ...
   * Loop - Cycle
   ** Condition
-  * DAO Blocks
-  * DAO Resources
-  * Slick integration
-  * DB Scheme
-  * API End-Point
   || Process owning, viewers, access // by owning tables Employees/Clients/Firm + Groups assigns
   * scope ctx, bp views
 
@@ -36,6 +25,11 @@ Blocks
 
 
 
+  * DAO Blocks
+  * DAO Resources
+  * DB Scheme
+  * Slick integration
+  * API End-Point
 
 
 
@@ -51,6 +45,13 @@ Blocks
 
 
 * Blocks {
+  ** Input block while proc/context running(wait for input if it paused)
+  * RunFromSpace
+  * Data sync from logger to composite values of proc elements
+  * TempItem Restore(expands, input)
+
+
+
   * bRICK pOINTER FOR rEStYPE(INTVAL)
   * GroupPointer fetch before invoke
   * Composite values getter and setters
@@ -59,10 +60,12 @@ Blocks
   encrypt password https://github.com/softwaremill/bootzooka
   * Dopel feature
 
-  ** Input block while proc/context running(wait for input if it paused)
-  * Data sync from logger to composite values of proc elements
-  * TempItem Restore(expands, input)
 }
+
+
+
+
+
 
 
 

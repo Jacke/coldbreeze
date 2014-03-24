@@ -21,9 +21,9 @@ class Block(val id: Int,
   values: CompositeValues,
   bprocess: BProcess,
   b_type: String, 
-  b_title: String, 
-  order: Int, 
-  val space: Option[Space], 
+  b_title: String,
+  var order: Int,
+  val space_parent: Option[Space],
   val space_role: Option[String]
   ) extends ProcElems {
 

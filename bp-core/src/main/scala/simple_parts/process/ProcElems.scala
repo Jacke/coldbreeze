@@ -10,6 +10,7 @@ trait ProcElems {
   val space_id: Option[Space] = None
   val temp = false
   val refresh = false
+  var order: Int
 
   def invoke()
   def init() = {

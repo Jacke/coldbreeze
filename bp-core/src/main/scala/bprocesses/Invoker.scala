@@ -31,7 +31,7 @@ class BPMarker(bp: BProcess) {
       station.update_paused(false)
       move
     }
-    // start from space
+    // Todo: start from space
     /**
      * inspace
      *   1 level
@@ -53,7 +53,7 @@ class BPMarker(bp: BProcess) {
           front(elem) 
         }
 
-      toLogger(bp, BPLoggerResult(elem, order = 1, space = 0, station = toStation(bp), invoked = true, expanded = false))
+      toLogger(bp, BPLoggerResult(elem, order = 1, space = 0, station = toStation(bp), invoked = true, expanded = false, container = false))
       toStation(bp).update_step(station.step + 1)
 
       if (isInFront) { 
@@ -64,7 +64,7 @@ class BPMarker(bp: BProcess) {
       }
     }
   }
-  def space_move = {
+  def space_move = { // TODO: Space_move
 
   }
   def end = {
@@ -75,7 +75,7 @@ class BPMarker(bp: BProcess) {
   }
   // utils
   def blocator: Boolean = {
-    station.state && !station.started
+    station.state && !station.started && !station.isPaused
   }
   /**
    * Instruction execution
@@ -85,10 +85,13 @@ class BPMarker(bp: BProcess) {
 
 
   def runContainer(space: Space) {
+    var counter = 0
     for (b ← space.container) {
       if (station.state) {
+
         println("Invoking the: " + b);
         b.invoke
+        toLogger(station.bp, BPLoggerResult(b, order = counter + 1, space = space.index, station = toStation(station.bp), invoked = true, expanded = false, container = true))
         println(station.step)
         //proc.step = proc.step + 1;
       } else {
