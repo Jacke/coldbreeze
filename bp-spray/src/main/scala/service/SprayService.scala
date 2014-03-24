@@ -12,13 +12,31 @@ import spray.json.DefaultJsonProtocol._
 import models.DAO.KeeprDAO
 import models.DAO.BProcessDTO
 
+import java.sql.{Timestamp, Time, Date}
+import java.util.Calendar
+import java.text.SimpleDateFormat
+import javax.xml.bind.DatatypeConverter
 
 import models.DAO._
 
+import models.DAO.BPStationDTO1
+case class BPInfo(elements: List[UndefElement], station: List[BPStationDTO1], logger: List[BPLoggerDTO1])
 object MessageJsonProtocol extends DefaultJsonProtocol {
   //implicit val format = jsonFormat2(Message)
   //implicit val msgformat = jsonFormat2(MessagesList)
+
+  implicit val DateFormat = new RootJsonFormat[java.sql.Date] {
+  lazy val format = new java.text.SimpleDateFormat()
+  def read(json: JsValue): java.sql.Date = java.sql.Date.valueOf((json.compactPrint))
+  def write(date: java.sql.Date) = JsString(Calendar.getInstance().getTime().toString)
+  }
+
   implicit val supformat = jsonFormat3(BProcessDTO)
+  implicit val loggerformat = jsonFormat10(BPLoggerDTO1)
+  implicit val elsformat = jsonFormat10(UndefElement)
+
+  implicit val stationformat = jsonFormat14(BPStationDTO1)
+  implicit val bpinfoformat = jsonFormat3(BPInfo)
   //implicit val suppsformat = jsonFormat1(BProcessesDTO)
   implicit val el_tracer = jsonFormat3(KeeprDAO)
 
@@ -87,14 +105,16 @@ trait SprayService extends HttpService {
               }
           })
       } ~
-      path("process") {
+      path("processes") {
         get(
           complete(BPDTO.getAll))
       } ~
       path("process" / IntNumber)(id ⇒
         get(
           complete(
-            BPDTO.get(id).head))) ~
+            BPInfo(ProcElemCRUD.findByBPId(id), BPStationDTO.findByBPId(id), BPLoggerDTO.findByBPId(id))
+            )
+          )) ~
       pathPrefix("process" / IntNumber) { id ⇒
         path("blocks") {
           get {

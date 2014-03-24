@@ -1,6 +1,6 @@
 'use strict';
 
-/* Directives */
+/* Directives 
 
 
 angular.module('myApp.directives', []).
@@ -8,4 +8,4 @@ angular.module('myApp.directives', []).
     return function(scope, elm, attrs) {
       elm.text(version);
     };
-  }]);
+  }]); */

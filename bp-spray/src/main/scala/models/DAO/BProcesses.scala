@@ -53,10 +53,10 @@ object BPDTO {
       println(q3.list)
       q3.list //.map(Supplier.tupled(_))
   }
-  println(get(222))
+
   def getAll = database withSession {
     implicit session ⇒
-      val q3 = for { s ← bprocesses } yield s <> (BProcessDTO.tupled, BProcessDTO.unapply _)
+      val q3 = for { s ← bprocesses if s.business === 1} yield s <> (BProcessDTO.tupled, BProcessDTO.unapply _)
       q3.list.sortBy(_.id)
     //suppliers foreach {
     //  case (id, title, address, city, state, zip) ⇒

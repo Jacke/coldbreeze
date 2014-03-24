@@ -50,12 +50,36 @@ class BPStations(tag: Tag) extends Table[
     inspace,
     incontainer,
     inexpands,
-    paused) //<> (Supplier.tupled, Supplier.unapply)
+    paused) //<> (BPStationDTO.tupled, BPStationDTO.unapply)
 
 }
+case class BPStationDTO1(
+id: Option[Int],
+process: Int,
+logger:Int,
+state:Boolean,
+step:Int,
+space:Int,
+container_step: List[Int],
+expand_step: List[Int],
+started: Boolean,
+finished: Boolean,
+inspace: Boolean,
+incontainer: Boolean,
+inexpands: Boolean,
+paused: Boolean)
+
 
 object BPStationDTO {
+  import models.DAO.FirstExample.database
+  import models.DAO.BPDTO.bprocesses
   val bpstations = TableQuery[BPStations]
 
+  def findByBPId(id: Int) = {
+    database withSession { implicit session =>
+     val q3 = for { st ← bpstations if st.process === id } yield st <> (BPStationDTO1.tupled, BPStationDTO1.unapply _)
 
+      q3.list 
+    }
+  }
 }

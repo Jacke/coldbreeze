@@ -11,11 +11,13 @@ var myApp =
     ]
   );
 myApp.config(['$routeProvider', function($routeProvider) {
-    $routeProvider.when('/structure', {templateUrl: 'partials/structure_map.html', controller: 'StrcCtrl'});
-    $routeProvider.when('/production', {templateUrl: 'partials/production_map.html', controller: 'PrdCtrl'});
-    $routeProvider.when('/reports', {templateUrl: 'partials/reports.html', controller: 'ReportsCtrl'});
     $routeProvider.when('/process', {templateUrl: 'partials/process.html', controller: 'ProcessCtrl'});
-    $routeProvider.otherwise({redirectTo: '/structure'});
+    $routeProvider.when('/user-list', {templateUrl: 'partials/user-list.html', controller: 'UserListCtrl'});
+    $routeProvider.when('/user-detail/:id', {templateUrl: 'partials/user-detail.html', controller: 'UserDetailCtrl'});
+    $routeProvider.when('/user-creation', {templateUrl: 'partials/user-creation.html', controller: 'UserCreationCtrl'});
+    $routeProvider.otherwise({redirectTo: '/process'});
+    
+  
   }]);
 
 // Declare app level module which depends on filters, and services
@@ -27,7 +29,7 @@ myApp.config(['$routeProvider', function($routeProvider) {
 //  }]);
 
 
-/* Filters */
+/* Filters 
 
 angular.module('myApp.filters', []).
   filter('interpolate', ['version', function(version) {
@@ -35,3 +37,4 @@ angular.module('myApp.filters', []).
       return String(text).replace(/\%VERSION\%/mg, version);
     }
   }]);
+*/

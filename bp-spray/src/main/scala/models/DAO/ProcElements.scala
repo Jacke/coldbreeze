@@ -1,6 +1,5 @@
 package models.DAO
-import scala.slick.driver.PostgresDriver.simple._
-
+import models.DAO.driver.MyPostgresDriver.simple._
 /**
  * ProcElements scheme
  */
@@ -15,7 +14,7 @@ class ProcElements(tag: Tag) extends Table[(Option[Int], String, String, Int, In
   def order = column[Int]("order")
   def space_parent = column[Option[Int]]("space_id")
   def space_role = column[Option[String]]("space_role")
-  //values: CompositeValues,
+  // TODO: values: CompositeValues,
 
   def * = (id.?, title, desc, business, bprocess, b_type, type_title, space_parent, space_role, order)// <> (UndefElement.tupled, UndefElement.unapply)
 
@@ -39,17 +38,21 @@ case class KeeprDAO(eltype:String, elname:String, desc:String)
  */
 object ProcElemCRUD {
   import models.DAO.FirstExample.database
+  import models.DAO.BPDTO.bprocesses
+
 
   val proc_elements = TableQuery[ProcElements]
   /**
    * Find a specific entity by id.
    */
-  //def findById(id: Int):Boolean = {
-  //  database withSession { implicit session =>
-  //  val byId = proc_elements.findBy(_.id)
-  //  byId(id).list.headOption
-  //  }
-  //}
+  def findByBPId(id: Int) = {
+    database withSession { implicit session =>
+     val q3 = for { el ← proc_elements if el.bprocess === id } yield el <> (UndefElement.tupled, UndefElement.unapply _)
+      println(q3.selectStatement)
+      println(q3.list)
+      q3.list 
+    }
+  }
 
   /**
    * Delete a specific entity by id. If successfully completed return true, else false
