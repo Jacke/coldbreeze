@@ -9,7 +9,7 @@ import java.util.{Date, Calendar}
 case class BPLoggerResult(
                            element: ProcElems,
                            order: Int,
-                           space: Int,
+                           space: Option[Int],
                            station: BPStation,
                            invoked: Boolean = false,
                            expanded: Boolean = false,

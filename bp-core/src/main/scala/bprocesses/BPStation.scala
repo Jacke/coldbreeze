@@ -50,6 +50,34 @@ class BPStation(val bp: BProcess) {
   def update_paused(p: Boolean)   = { this.paused   = p }
   def update_finished(f: Boolean) = { this.finished = f }
 
+  def update_variables(
+                        new_state:Boolean,
+                        new_step:Int,
+                        new_space:Int,
+                        new_container_step: Array[Int],
+                        new_expand_step: Array[Int],
+                        new_started:Boolean,
+                        new_finished:Boolean,
+                        new_inspace:Boolean,
+                        new_incontainer:Boolean,
+                        new_inexpands:Boolean,
+                        new_paused:Boolean
+                        ) 
+  {
+                       
+                        state = new_state
+                        step = new_step
+                        space = new_space
+                        container_step = new_container_step
+                        expand_step = new_expand_step
+                        started = new_started
+                        finished = new_finished
+                        inspace = new_inspace
+                        incontainer = new_incontainer
+                        inexpands = new_inexpands
+                        paused = new_paused
+  } 
+
   /**
    * Representation
    */

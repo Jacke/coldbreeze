@@ -19,6 +19,36 @@ object FirstExample {
 
 object BPSerial {
   import main.scala.bprocesses.BProcess
+
+  // caster
+  def BPRun(id: Int) {
+    // find
+    // find elems
+    // find spaces
+    // find space elems
+
+    // instanciate
+    // invoke
+    // save
+  }
+  def BPRunFrom(id: Int) {
+    // find
+    // find elems
+    // find spaces
+    // find space elems
+
+    // find station
+    // find logger
+    // invoke runfrom
+    // save
+  }
+/**
+  * Composite plugin
+  * BPLink
+  * Foreignkey ondelete
+  * Joda datetime
+  * Auth
+  **/
   def instance(bpdto: BProcessDTO, els: List[UndefElement]) = {// :BProcess = {
     println(bpdto)
     println(els)

@@ -5,7 +5,6 @@ import models.DAO.driver.MyPostgresDriver.simple._
 class BPStations(tag: Tag) extends Table[
   (Option[Int],
    Int,
-   Int,
    Boolean,
    Int,
    Int,
@@ -23,7 +22,7 @@ class BPStations(tag: Tag) extends Table[
   def process = column[Int]("process_id")
 
 
-  def logger = column[Int]("logger_id")
+  //def logger = column[Int]("logger_id")
   def state = column[Boolean]("state")
   def step = column[Int]("step")
   def space = column[Int]("space")
@@ -39,7 +38,7 @@ class BPStations(tag: Tag) extends Table[
 
   def * = (id.?,
     process,
-    logger,
+    //logger,
     state,
     step,
     space,
@@ -56,7 +55,6 @@ class BPStations(tag: Tag) extends Table[
 case class BPStationDTO1(
 id: Option[Int],
 process: Int,
-logger:Int,
 state:Boolean,
 step:Int,
 space:Int,
@@ -67,13 +65,41 @@ finished: Boolean,
 inspace: Boolean,
 incontainer: Boolean,
 inexpands: Boolean,
-paused: Boolean)
+paused: Boolean) 
+
 
 
 object BPStationDTO {
   import models.DAO.FirstExample.database
   import models.DAO.BPDTO.bprocesses
+  import main.scala.bprocesses.BPStation
+
   val bpstations = TableQuery[BPStations]
+
+  def from_origin_station(station: BPStation, bp_dto: BProcessDTO):BPStationDTO1 = {
+    BPStationDTO1(
+        None,
+        bp_dto.id.get,
+        station.state,
+        station.step,
+        station.space,
+        station.container_step.toList,
+        station.expand_step.toList,
+        station.started,
+        station.finished,
+        station.inspace,
+        station.incontainer,
+        station.inexpands,
+        station.paused)
+  }
+  //def to_origin_station(station: BPStationDTO1):BPStation = {
+
+  //}
+
+  def pull_object(s: BPStationDTO1) = database withSession {
+    implicit session ⇒
+      bpstations returning bpstations.map(_.id) += BPStationDTO1.unapply(s).get
+  }
 
   def findByBPId(id: Int) = {
     database withSession { implicit session =>
@@ -82,4 +108,5 @@ object BPStationDTO {
       q3.list 
     }
   }
+
 }

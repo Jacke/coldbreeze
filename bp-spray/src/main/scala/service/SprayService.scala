@@ -35,7 +35,7 @@ object MessageJsonProtocol extends DefaultJsonProtocol {
   implicit val loggerformat = jsonFormat10(BPLoggerDTO1)
   implicit val elsformat = jsonFormat10(UndefElement)
 
-  implicit val stationformat = jsonFormat14(BPStationDTO1)
+  implicit val stationformat = jsonFormat13(BPStationDTO1)
   implicit val bpinfoformat = jsonFormat3(BPInfo)
   //implicit val suppsformat = jsonFormat1(BProcessesDTO)
   implicit val el_tracer = jsonFormat3(KeeprDAO)

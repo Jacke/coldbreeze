@@ -59,6 +59,9 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
       None
     }
   }
+  def findObjectByOrder(n: Int):Option[ProcElems] = {
+    variety.find(elem => elem.order == n)
+  }
   def getElemsLength = variety.length - variety.collect { case space: Space => space }.length
   def getSpaceByIndex(index: Int) = spaces(index-1)
   def getSpaceQuantity = spaces.length

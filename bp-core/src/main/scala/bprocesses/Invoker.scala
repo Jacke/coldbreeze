@@ -53,7 +53,7 @@ class BPMarker(bp: BProcess) {
           front(elem) 
         }
 
-      toLogger(bp, BPLoggerResult(elem, order = 1, space = 0, station = toStation(bp), invoked = true, expanded = false, container = false))
+      toLogger(bp, BPLoggerResult(elem, order = 1, space = Option(0), station = toStation(bp), invoked = true, expanded = false, container = false))
       toStation(bp).update_step(station.step + 1)
 
       if (isInFront) { 
@@ -91,7 +91,7 @@ class BPMarker(bp: BProcess) {
 
         println("Invoking the: " + b);
         b.invoke
-        toLogger(station.bp, BPLoggerResult(b, order = counter + 1, space = space.index, station = toStation(station.bp), invoked = true, expanded = false, container = true))
+        toLogger(station.bp, BPLoggerResult(b, order = counter + 1, space = Option(space.index), station = toStation(station.bp), invoked = true, expanded = false, container = true))
         println(station.step)
         //proc.step = proc.step + 1;
       } else {

@@ -20,6 +20,8 @@ class ProcElements(tag: Tag) extends Table[(Option[Int], String, String, Int, In
 
 }
 
+import main.scala.simple_parts.process._
+import main.scala.bprocesses._
 
 case class UndefElement(id: Option[Int],
                         title:String,
@@ -30,7 +32,23 @@ case class UndefElement(id: Option[Int],
                         type_title:String,
                         space_parent:Option[Int],
                         space_role:Option[String],
-                        order:Int)
+                        order:Int) {
+  def cast(process: BProcess):Option[ProcElems] = { 
+// TODO: to space casting 
+    this match {
+      case x if (x.b_type == "block" | x.type_title == "test block") => { 
+        Option(
+          new Block(id.get,title,desc,CompositeValues(),process,b_type,type_title,order) 
+        )
+      }
+      case _ => None
+    }
+  
+  }
+}
+
+
+
 case class KeeprDAO(eltype:String, elname:String, desc:String)
 
 /**

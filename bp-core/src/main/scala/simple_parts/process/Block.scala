@@ -21,10 +21,10 @@ class Block(val id: Int,
   values: CompositeValues,
   bprocess: BProcess,
   b_type: String, 
-  b_title: String,
+  type_title: String,
   var order: Int,
-  val space_parent: Option[Space],
-  val space_role: Option[String]
+  val space_parent: Option[Space] = None,
+  val space_role: Option[String] = None
   ) extends ProcElems {
 
 

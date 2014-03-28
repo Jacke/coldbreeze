@@ -1,48 +1,94 @@
-package main.scala
+package service
 
 //import main.scala.process_parts._
 //import main.scala.utils._
 //import main.scala.MM._
-/*
-import akka.actor.ActorSystem
-import scala.util.Properties.{ lineSeparator ⇒ newLine }
+import models.DAO._
+import main.scala.utils._
+import main.scala.bprocesses._
+import main.scala.resources.scopes._
+
 
 object BPServiceApp extends App {
 
-  val system = ActorSystem("bp-service-system")
+   println("test")
+   ElementRegistrator.apply
+   // caster
+   val process_dto = BPDTO.get(1)
+   val target = ProcElemCRUD.findByBPId(1)
+   println(target)
+   
+   val process = new BProcess(new Managment)
 
-  val hostname = Settings(system).hostname
-  val port = Settings(system).port
-  val timeout = Settings(system).timeout
-  system.actorOf(BPService.props(hostname, port, timeout), "bp-service")
+   val arrays = target.map(c => c.cast(process)).flatten.toArray
+   println(arrays)
+   process.push {
+    arrays
+   }   
+   println(process.variety.length)
 
-  system.awaitTermination()
+   InvokeTracer.run_proc(process)
+   // save log & station
+   println(process.station.represent)
+   println(process.logger.logs.map(log => println(log.element.id)))
+   //println(ElementTracer.findByInfo(target.head.b_type, target.head.type_title))
+
+  // station -> stationdb
+  val dbstation = BPStationDTO.from_origin_station(process.station, process_dto)
+  println(dbstation)
+  
+  val station_id = BPStationDTO.pull_object(dbstation)
+  println("station id" + station_id)
+
+  // logger -> loggerdb
+  val dblogger = BPLoggerDTO.from_origin_lgr(process.logger, process_dto, station_id)//, station:Int = 1)
+  println(dblogger)
+  dblogger.foreach(log => BPLoggerDTO.pull_object(log))
+
+
+  // loggerdb -> logger(bp)
+  val process1 = new BProcess(new Managment)
+  process1.variety = process.variety
+  println(process.logger.logs)
+  println("process1.variety" + process1.variety.length)
+
+  println("ssss"+process1.findObjectByOrder(1))
+  println(process1.findObjectByOrder(3).get)
+  println(process1.variety.map(elem => elem.order).last)
+  println(process1.variety.find(elem => elem.order == 3))
+
+  println(dblogger.get.map(log => println(log.order)))
+  val logger_results = dblogger.get.map(log => BPLoggerResult(process1.findObjectByOrder(log.order).get, log.order, None, //log.space
+     process1.station, log.invoked, log.expanded, log.container, new java.util.Date(log.date.getTime()))
+) 
+  println(logger_results)
+  
+
+  // stationdb -> station(bp)
+  process1.station.update_variables(
+                                dbstation.state,
+                                dbstation.step,
+                                dbstation.space,
+                                dbstation.container_step.toArray,
+                                dbstation.expand_step.toArray,
+                                dbstation.started,
+                                dbstation.finished,
+                                dbstation.inspace,
+                                dbstation.incontainer,
+                                dbstation.inexpands,
+                                dbstation.paused
+                                )
+
+println("is work?", process1.station.represent)
+
+
+  // change log & station
+
+
+  // save to space
+
 }
-import akka.actor.{ ActorLogging, ActorRef, Props }
-import akka.io.IO
-import scala.concurrent.duration.{ DurationInt, FiniteDuration }
-import spray.can.Http
-import spray.http.StatusCodes
-import spray.httpx.SprayJsonSupport
-import spray.json.DefaultJsonProtocol
-import spray.routing.{ HttpServiceActor, Route }
-import spray.routing.authentication.BasicAuth
-
-object BPService {
-
-  object Message extends DefaultJsonProtocol {
-    implicit val format = jsonFormat2(apply)
-  }
-  object Status extends DefaultJsonProtocol {
-    implicit val format = jsonFormat2(apply)
-  }
-  type Result = String
-  case class Message(username: String, text: String)
-  case class Status(username: String, logs: List[Result])
-  def props(hostname: String, port: Int, timeout: FiniteDuration): Props =
-    Props(new BPService(hostname, port, timeout))
-}
-
+/*
 class BPService(hostname: String, port: Int, timeout: FiniteDuration) extends HttpServiceActor
     with ActorLogging with SprayJsonSupport {
 

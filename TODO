@@ -1,35 +1,17 @@
-Blocks
-  * Collection
-  * Result
-  * Checker
-  * Confirm
-  * Stopper Pause
+
+
+
+
+
+
+
   * Ownings
   * Companion ResAct -> Input, Times ...
-  * Loop - Cycle
-  ** Condition
-  || Process owning, viewers, access // by owning tables Employees/Clients/Firm + Groups assigns
-  * scope ctx, bp views
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-  * DAO Blocks
-  * DAO Resources
-  * DB Scheme
-  * Slick integration
-  * API End-Point
+  * Data sync from logger to composite values of proc elements
+    * TempItem Restore(expands, input)
+  ** Input block while proc/context running(wait for input if it paused)
 
 
 
@@ -45,10 +27,19 @@ Blocks
 
 
 * Blocks {
-  ** Input block while proc/context running(wait for input if it paused)
+
   * RunFromSpace
-  * Data sync from logger to composite values of proc elements
-  * TempItem Restore(expands, input)
+
+Blocks
+  ** Condition
+  * Confirm
+  * Collection
+  * Result
+  * Checker
+  * Stopper Pause
+  * Loop - Cycle
+  || Process owning, viewers, access // by owning tables Employees/Clients/Firm + Groups assigns
+  * scope ctx, bp views
 
 
 
@@ -57,7 +48,6 @@ Blocks
   * Composite values getter and setters
 
   * error handling [checker before invoke, brick error - though invoking] /isOptionalLink/* checker for arguments and params [ ]
-  encrypt password https://github.com/softwaremill/bootzooka
   * Dopel feature
 
 }

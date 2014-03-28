@@ -14,7 +14,7 @@ class BPLoggers(tag: Tag) extends Table[
    Int,
    Int,
    Int,
-   Int,
+   Option[Int],
    Int,
    Boolean,
    Boolean,
@@ -26,7 +26,7 @@ class BPLoggers(tag: Tag) extends Table[
 
   def element   = column[Int]("proc_element_id")
   def order     = column[Int]("order")
-  def space     = column[Int]("space_id")
+  def space     = column[Option[Int]]("space_id", O.Nullable)
   def station   = column[Int]("station_id")
   def invoked   = column[Boolean]("invoked")
   def expanded  = column[Boolean]("expanded")
@@ -52,7 +52,7 @@ id: Option[Int],
 process: Int,
 element: Int,
 order: Int,    
-space: Int,    
+space: Option[Int],    
 station: Int,  
 invoked: Boolean,  
 expanded: Boolean, 
@@ -64,9 +64,45 @@ object BPLoggerDTO {
 
   import models.DAO.FirstExample.database
   import models.DAO.BPDTO.bprocesses
+  import main.scala.bprocesses.BPLogger
+  def from_origin_lgr(logger: BPLogger, bp_dto: BProcessDTO, station:Int = 1):Option[List[BPLoggerDTO1]] = {
+    val result = logger.logs.map(lgr => 
+      BPLoggerDTO1(
+        None,
+        bp_dto.id.get,
+        lgr.element.id,
+        lgr.element.order,    
+        None,//lgr.element.space,    
+        station,  
+        lgr.invoked,  
+        lgr.expanded, 
+        lgr.container,
+        new java.sql.Date(lgr.date.getTime())
+        )
+     )
+    if (result.isEmpty) {
+      None
+    } else {
+      Option(result.toList)
+    }
+  }
 
 
   val proc_elements = TableQuery[ProcElements]
+
+
+  def pull_object(s: BPLoggerDTO1) = database withSession {
+    implicit session ⇒
+      bploggers returning bploggers.map(_.id) += BPLoggerDTO1.unapply(s).get
+  }
+
+  def pull_object(s: List[BPLoggerDTO1]) = database withSession {
+    implicit session ⇒
+      s.foreach(log => 
+      bploggers returning bploggers.map(_.id) += BPLoggerDTO1.unapply(log).get
+      )
+  }
+
   /**
    * Find a specific entity by id.
    */

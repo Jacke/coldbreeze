@@ -51,7 +51,7 @@ object BPDTO {
       val q3 = for { s ← bprocesses if s.id === k } yield s <> (BProcessDTO.tupled, BProcessDTO.unapply _)
       println(q3.selectStatement)
       println(q3.list)
-      q3.list //.map(Supplier.tupled(_))
+      q3.list.head //.map(Supplier.tupled(_))
   }
 
   def getAll = database withSession {
