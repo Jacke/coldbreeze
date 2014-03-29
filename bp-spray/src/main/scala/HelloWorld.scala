@@ -9,7 +9,7 @@ import main.scala.bprocesses._
 import main.scala.resources.scopes._
 
 
-object BPServiceApp extends App {
+object BPServiceApp { //extends App {
 
    println("test")
    ElementRegistrator.apply
@@ -80,10 +80,6 @@ object BPServiceApp extends App {
                                 )
 
 println("is work?", process1.station.represent)
-
-
-  // change log & station
-
 
   // save to space
 

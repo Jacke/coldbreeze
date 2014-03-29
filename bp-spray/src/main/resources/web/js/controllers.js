@@ -43,7 +43,10 @@ angular.module(
 
     /* callback for ng-click 'editUser': */
     $scope.editUser = function (userId) {
-      $location.path('/user-detail/' + userId);
+      $location.path('/bp-detail/' + userId);
+    };
+    $scope.showUser = function (userId) {
+      $location.path('/show-detail/' + userId);
     };
 
     /* callback for ng-click 'deleteUser': */
@@ -54,26 +57,46 @@ angular.module(
 
     /* callback for ng-click 'createUser': */
     $scope.createNewUser = function () {
-      $location.path('/user-creation');
+      $location.path('/bp-creation');
     };
+   
 
     $scope.users = UsersFactory.query();
   }]);
 
-  gabblerControllers.controller('UserDetailCtrl', ['$scope', '$routeParams', 'UserFactory', '$location',
-  function ($scope, $routeParams, UserFactory, $location) {
+  gabblerControllers.controller('UserDetailCtrl', ['$scope', '$routeParams', 'UserFactory', '$location', '$http',
+  function ($scope, $routeParams, UserFactory, $location, $http) {
 
 
     $scope.updateUser = function () {
       UserFactory.update($scope.user);
-      $location.path('/user-list');
+      $location.path('/bp-list');
     };
+
 
 
     $scope.cancel = function () {
-      $location.path('/user-list');
+      $location.path('/bp-list');
     };
-
+    $scope.invokeBP = function (bpid) {
+        $http({
+        url: 'process/' + bpid + '/invoke',
+        method: "POST",
+        data: {  }
+        })
+        .then(function(response) {
+          // success
+          console.log(response);
+          $scope.invoke_res = [response];
+        }, 
+        function(response) { // optional
+          // failed
+        }
+        );
+    }
+    $scope.invoke_res = [];
+    $scope.bpid = $routeParams.id;
+    $scope.selectedTab = 1;
     $scope.user = UserFactory.show({id: $routeParams.id});
   }]);
 
@@ -83,7 +106,7 @@ angular.module(
   
     $scope.createNewUser = function () {
       UsersFactory.create($scope.user);
-      $location.path('/user-list');
+      $location.path('/bp-list');
     }
   }]);
 

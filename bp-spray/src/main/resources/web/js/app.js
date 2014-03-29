@@ -12,9 +12,10 @@ var myApp =
   );
 myApp.config(['$routeProvider', function($routeProvider) {
     $routeProvider.when('/process', {templateUrl: 'partials/process.html', controller: 'ProcessCtrl'});
-    $routeProvider.when('/user-list', {templateUrl: 'partials/user-list.html', controller: 'UserListCtrl'});
-    $routeProvider.when('/user-detail/:id', {templateUrl: 'partials/user-detail.html', controller: 'UserDetailCtrl'});
-    $routeProvider.when('/user-creation', {templateUrl: 'partials/user-creation.html', controller: 'UserCreationCtrl'});
+    $routeProvider.when('/bp-list', {templateUrl: 'partials/user-list.html', controller: 'UserListCtrl'});
+    $routeProvider.when('/bp-detail/:id', {templateUrl: 'partials/user-detail.html', controller: 'UserDetailCtrl'});
+    $routeProvider.when('/show-detail/:id', {templateUrl: 'partials/show-detail.html', controller: 'UserDetailCtrl'});
+    $routeProvider.when('/bp-creation', {templateUrl: 'partials/user-creation.html', controller: 'UserCreationCtrl'});
     $routeProvider.otherwise({redirectTo: '/process'});
     
   

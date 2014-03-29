@@ -125,6 +125,14 @@ trait SprayService extends HttpService {
             get {
               complete("logs" + id)
             }
+          } ~
+          path("invoke") {
+            post {
+              complete { 
+                BPSerial.BPRun(id) 
+                BPStationDTO.findByBPId(id).last        
+               }
+            }
           }
       } ~
       pathPrefix("api") {
