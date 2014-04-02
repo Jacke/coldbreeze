@@ -12,7 +12,7 @@ class Employees(tag: Tag) extends Table[(Option[Int], String)](tag, "employees")
 
 }
 
-object BusinessDTO {
+object EmployeeDTO {
   val employees = TableQuery[Employees]
 
 

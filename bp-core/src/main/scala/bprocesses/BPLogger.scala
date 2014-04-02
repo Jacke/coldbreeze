@@ -1,25 +1,35 @@
 package main.scala.bprocesses
 
 import main.scala.simple_parts.process._
-import java.util.{Date, Calendar}
+import com.github.nscala_time.time.Imports._
 
 /**
  * BPLogger
  */
 case class BPLoggerResult(
                            element: ProcElems,
+                           composite: Option[CompositeValues],
                            order: Int,
                            space: Option[Int],
                            station: BPStation,
                            invoked: Boolean = false,
                            expanded: Boolean = false,
                            container: Boolean = false,
-                           date: Date = Calendar.getInstance().getTime())
+                           date: org.joda.time.DateTime = DateTime.now)
 class BPLogger {
   var logs: Array[BPLoggerResult] = Array.empty
   def log(result: BPLoggerResult) = {
     //Thread.sleep(1000)
     logs = logs :+ result
+  }
+  def isInvoked(el: ProcElems):Boolean = {
+    logs.find(log => log.order == el.order).get.invoked
+  }
+  def valChanged(el: ProcElems) = {
+    val target = logs.find(log => log.order == el.order)
+    if (target.isDefined) {
+      el.values == target.get.composite
+    }
   }
 }
 

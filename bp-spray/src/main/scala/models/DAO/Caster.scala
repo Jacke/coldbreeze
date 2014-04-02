@@ -1,7 +1,7 @@
 package models.DAO
 import main.scala.utils.ElementTracer
 import main.scala.utils.Keepr
-import main.scala.simple_parts.process.CompositeValues
+//import main.scala.simple_parts.process.CompositeValues
 import main.scala.simple_parts.process.Block
 
 object Caster {
@@ -13,7 +13,7 @@ object Caster {
       case ("block", "test_block") => new Block(undef.id.get,
                                                 undef.title,
                                                 undef.desc,
-                                                CompositeValues(),
+                                                Option(main.scala.simple_parts.process.CompositeValues()),
                                                 proc,
                                                 undef.b_type,
                                                 undef.type_title,

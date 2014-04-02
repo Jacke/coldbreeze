@@ -12,28 +12,66 @@ import spray.json.DefaultJsonProtocol._
 import models.DAO.KeeprDAO
 import models.DAO.BProcessDTO
 
-import java.sql.{Timestamp, Time, Date}
-import java.util.Calendar
-import java.text.SimpleDateFormat
-import javax.xml.bind.DatatypeConverter
+
+import org.joda.time.{DateTimeZone, Instant}
+import org.joda.time.format.ISODateTimeFormat
+import org.joda.time.DateTime
 
 import models.DAO._
 
 import models.DAO.BPStationDTO1
 case class BPInfo(elements: List[UndefElement], station: List[BPStationDTO1], logger: List[BPLoggerDTO1])
+/*
+trait DateTimeJsonFormat extends JsonFormat[DateTime] {
+  private val dateTimeFmt = org.joda.time.format.ISODateTimeFormat.dateTime
+  def write(x: DateTime) = JsString(dateTimeFmt.print(x))
+  def read(value: JsValue) = value match {
+    case JsString(x) => dateTimeFmt.parseDateTime(x)
+    case x => deserializationError("Expected DateTime as JsString, but got " + x)
+  }
+}
+
+trait LocalDateJsonFormat extends JsonFormat[LocalDate] {
+  def write(x: LocalDate) = JsString(x.toString)
+  def read(value: JsValue) = value match {
+    case JsString(x) => org.joda.time.LocalDate.Parse(x)
+    case x => deserializationError("Expected LocalDate as JsString, but got " + x)
+  }
+*/
 object MessageJsonProtocol extends DefaultJsonProtocol {
   //implicit val format = jsonFormat2(Message)
   //implicit val msgformat = jsonFormat2(MessagesList)
 
-  implicit val DateFormat = new RootJsonFormat[java.sql.Date] {
-  lazy val format = new java.text.SimpleDateFormat()
-  def read(json: JsValue): java.sql.Date = java.sql.Date.valueOf((json.compactPrint))
-  def write(date: java.sql.Date) = JsString(Calendar.getInstance().getTime().toString)
+
+
+
+  /*implicit object dtf extends DateTimeJsonFormat
+  implicit object ldf extends LocalDateJsonFormat
+  */
+
+  private val timeZone = DateTimeZone.UTC
+
+  implicit def instantFormat = new JsonFormat[Instant] {
+    def write(instant: Instant) = JsString(instant.toDateTime(timeZone).toString(ISODateTimeFormat.dateTimeNoMillis))
+    def read(json: JsValue) = json match {
+      case JsString(str) => Instant.parse(str)
+      case _ => deserializationError("Unknown Instant format")
+    }
   }
 
-  implicit val supformat = jsonFormat3(BProcessDTO)
-  implicit val loggerformat = jsonFormat10(BPLoggerDTO1)
-  implicit val elsformat = jsonFormat10(UndefElement)
+  implicit object DateTimeJsonFormat extends JsonFormat[DateTime] {
+    def write(x: DateTime) = JsNumber(x.getMillis)
+    def read(value: JsValue) = value match {
+      case JsNumber(x) => new DateTime(x.toLong)
+      case x => deserializationError("Expected DateTime as JsNumber, but got " + x)
+    }
+  }
+
+  
+  implicit val supformat = jsonFormat6(CompositeValues)
+  implicit val sup1format = jsonFormat3(BProcessDTO)
+  implicit val loggerformat = jsonFormat11(BPLoggerDTO1)
+  implicit val elsformat = jsonFormat11(UndefElement)
 
   implicit val stationformat = jsonFormat13(BPStationDTO1)
   implicit val bpinfoformat = jsonFormat3(BPInfo)
@@ -82,7 +120,14 @@ trait SprayService extends HttpService {
         }
       }
     } ~
-      path("process") {
+    path("error") { 
+      get {
+        complete {
+          "Xx"
+        }
+      }
+     } ~
+    path("process") {
         post(
           entity(as[BProcessDTO]) {
             suplier ⇒

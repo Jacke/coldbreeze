@@ -27,7 +27,7 @@ object Main extends App {
         new Constant[Boolean](1, true,1),
         new Constant[Boolean](2, true,1),
         new Constant[Boolean](3, false,1),
-        new Brick(4, "test brick", "", CompositeValues(), proc, "brick", "test_brick", 4))//,
+        new Brick(4, "test brick", "", Option(CompositeValues()), proc, "brick", "test_brick", 4))//,
         //new Brick(proc, 3),
         //new Space(3, 1),new Space(3, 2))
         }
@@ -75,7 +75,7 @@ object Main extends App {
       new Constant[Boolean](1, true, 1),
       new Constant[Boolean](2, true, 2),
       new Constant[Boolean](3, false, 3),
-      new Brick(4, "test brick", "", CompositeValues(), proc, "brick", "test_brick", 4))//,
+      new Brick(4, "test brick", "", Option(CompositeValues()), proc, "brick", "test_brick", 4))//,
     //new Brick(proc, 3),
     //new Space(3, 1),new Space(3, 2))
   }
@@ -109,8 +109,8 @@ object Main extends App {
       new Constant[Boolean](1, true,1),
       new Constant[Boolean](2, true,1),
       new Constant[Boolean](3, false,1),
-      new ContainerBrick(4, "container brick", "", CompositeValues(), proc2, "brick", "containerbrick", 4),
-      new ExpandBrick(5, "expand brick", "", CompositeValues(), proc2, "brick", "expandbrick", 5))//,
+      new ContainerBrick(4, "container brick", "", Option(CompositeValues()), proc2, "brick", "containerbrick", 4),
+      new ExpandBrick(5, "expand brick", "", Option(CompositeValues()), proc2, "brick", "expandbrick", 5))//,
     //new Brick(proc, 3),
     //new Space(3, 1),new Space(3, 2))
   }

@@ -18,7 +18,7 @@ import main.scala.bprocesses._
 class Block(val id: Int,
   title: String, 
   desc: String, 
-  values: CompositeValues,
+  val values: Option[CompositeValues],
   bprocess: BProcess,
   b_type: String, 
   type_title: String,

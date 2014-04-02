@@ -12,7 +12,7 @@ class Clients(tag: Tag) extends Table[(Option[Int], String)](tag, "clients") {
 
 }
 
-object BusinessDTO {
+object ClientDTO {
   val clients = TableQuery[Clients]
 
 

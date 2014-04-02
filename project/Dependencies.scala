@@ -21,9 +21,11 @@ object Dependencies {
 
   val sprayJson       = "io.spray"                  %%  "spray-json"            % "1.2.5"
   val sprayJsonLenses = "net.virtual-void"          %%  "json-lenses"           % "0.5.3"
-  val scalatest       = "org.specs2"                %% "specs2" % "2.3.8"       % "test"
+  val scalatest       = "org.specs2"                %%  "specs2" % "2.3.8"      % "test"
   val logback         = "ch.qos.logback"            %   "logback-classic"       % "1.0.13"
   val snakeYaml       = "org.yaml"                  %   "snakeyaml"             % "1.13"
+  val nscala          = "com.github.nscala-time"    %%  "nscala-time"           % "0.8.0"
+  val slickjoda      = "com.github.tminglei"       % "slick-pg_joda-time_2.10" % "0.5.2.2"
   val hdrHistogram    = "org.hdrhistogram"          %   "HdrHistogram"          % "1.0.8"
   val sprayCan        = "io.spray"                  %   "spray-can"             % sprayVersion
   val sprayRouting    = "io.spray"                  %   "spray-routing"         % sprayVersion

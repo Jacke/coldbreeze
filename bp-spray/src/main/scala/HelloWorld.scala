@@ -7,7 +7,7 @@ import models.DAO._
 import main.scala.utils._
 import main.scala.bprocesses._
 import main.scala.resources.scopes._
-
+import com.github.nscala_time.time.Imports._
 
 object BPServiceApp { //extends App {
 
@@ -58,9 +58,9 @@ object BPServiceApp { //extends App {
   println(process1.variety.find(elem => elem.order == 3))
 
   println(dblogger.get.map(log => println(log.order)))
-  val logger_results = dblogger.get.map(log => BPLoggerResult(process1.findObjectByOrder(log.order).get, log.order, None, //log.space
-     process1.station, log.invoked, log.expanded, log.container, new java.util.Date(log.date.getTime()))
-) 
+  val logger_results = dblogger.get.map(log => BPLoggerResult(process1.findObjectByOrder(log.order).get, composite=None, log.order, None, process1.station, log.invoked, log.expanded, log.container, log.date))
+  //log.space /|\
+
   println(logger_results)
   
 

@@ -3,10 +3,7 @@ package models.DAO
 
 
 import models.DAO.driver.MyPostgresDriver.simple._
-import java.sql.{Timestamp, Time, Date}
-import java.util.Calendar
-import java.text.SimpleDateFormat
-import javax.xml.bind.DatatypeConverter
+import com.github.nscala_time.time.Imports._
 import com.github.tminglei.slickpg.date.PgDateJavaTypes
 
 class BPLoggers(tag: Tag) extends Table[
@@ -19,7 +16,8 @@ class BPLoggers(tag: Tag) extends Table[
    Boolean,
    Boolean,
    Boolean,
-   Date
+   org.joda.time.DateTime,
+   Option[List[CompositeValues]]
    )](tag, "bploggers") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def process = column[Int]("process_id")
@@ -31,7 +29,8 @@ class BPLoggers(tag: Tag) extends Table[
   def invoked   = column[Boolean]("invoked")
   def expanded  = column[Boolean]("expanded")
   def container = column[Boolean]("container")
-  def date      = column[Date]("date")
+  def date      = column[org.joda.time.DateTime]("date")
+  def comps     = column[Option[List[CompositeValues]]]("comps", O.DBType("compositevalues[]"))
 
 
   def * = (id.?,
@@ -43,7 +42,8 @@ class BPLoggers(tag: Tag) extends Table[
            invoked,
            expanded,
            container,
-           date
+           date,
+           comps
           ) //<> (Supplier.tupled, Supplier.unapply)
 
 }
@@ -57,7 +57,9 @@ station: Int,
 invoked: Boolean,  
 expanded: Boolean, 
 container: Boolean,
-date: Date)
+date: org.joda.time.DateTime,
+comps: Option[List[CompositeValues]]
+)
 
 object BPLoggerDTO {
   val bploggers = TableQuery[BPLoggers]
@@ -77,9 +79,10 @@ object BPLoggerDTO {
         lgr.invoked,  
         lgr.expanded, 
         lgr.container,
-        new java.sql.Date(lgr.date.getTime())
+        lgr.date,
+        None)
         )
-     )
+     
     if (result.isEmpty) {
       None
     } else {
