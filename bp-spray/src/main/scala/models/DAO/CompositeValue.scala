@@ -117,7 +117,7 @@ class PgCompositeSupportTest {
   }
 
 
-ProcElemCRUD.update(6, (None, "xx", "", 2,2,"block","test block", None,None,1,Option(List(CompositeValues(a_string = "betas")))))
+ProcElemCRUD.update(6, (Option(6), "xx", "", 2,2,"block","test block", None,None,1,Option(List(CompositeValues(a_string = "betas")))))
 
   /**
    *

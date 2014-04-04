@@ -78,6 +78,8 @@ object MessageJsonProtocol extends DefaultJsonProtocol {
   //implicit val suppsformat = jsonFormat1(BProcessesDTO)
   implicit val el_tracer = jsonFormat3(KeeprDAO)
 
+  implicit val PortofolioFormats = jsonFormat3(InvokeRequest)
+
 }
 //object MessagesListJsonProtocol extends DefaultJsonProtocol {
 //  implicit val format = jsonFormat2(MessagesList.apply)
@@ -88,7 +90,7 @@ object MessageJsonProtocol extends DefaultJsonProtocol {
  *   - a REST under `spray-json-message/`
  *   - a HTML under `spray-html/`
  */
-
+case class InvokeRequest(station: Option[Int], calls: List[String], inputs: List[String])
 
 trait SprayService extends HttpService {
   import spray.http.StatusCodes.{ Created, BadRequest, NotFound, OK }
@@ -173,10 +175,17 @@ trait SprayService extends HttpService {
           } ~
           path("invoke") {
             post {
-              complete { 
-                BPSerial.BPRun(id) 
-                BPStationDTO.findByBPId(id).last        
-               }
+             /*formFields('color, 'age.as[Int]) { (color, age) =>
+              complete {
+              s"The color is '$color' and the age ten years ago was ${age - 10}"
+              }
+                //BPSerial.BPRun(id) 
+                //BPStationDTO.findByBPId(id).last        
+              
+              }*/
+              entity(as[InvokeRequest]) { request =>
+                complete(request)
+              }
             }
           }
       } ~
