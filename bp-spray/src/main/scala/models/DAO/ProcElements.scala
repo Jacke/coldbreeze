@@ -6,12 +6,12 @@ import models.DAO.driver.MyPostgresDriver.simple._
  * ProcElements scheme
  */
  case class CompositeValues(
-                              a_string: String = "",
-                              b_string: String = "",
-                              a_int: Int = 0,
-                              b_int: Int = 0,
-                              a_bool: Boolean = false,
-                              b_bool: Boolean = false
+                              a_string: Option[String] = None,
+                              b_string: Option[String] = None,
+                              a_int: Option[Int] = None,
+                              b_int: Option[Int] = None,
+                              a_bool: Option[Boolean] = None,
+                              b_bool: Option[Boolean] = None
                               )
 
 class ProcElements(tag: Tag) extends Table[(Option[Int], String, String, Int, Int, String, String, Option[Int], Option[String], Int, Option[List[CompositeValues]])](tag, "proc_elements") {

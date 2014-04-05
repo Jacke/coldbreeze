@@ -22,21 +22,21 @@ trait ProcElems {
 }
 
 case class CompositeValues(
-  var a_string: String = "", 
-  var b_string: String = "", 
-  var a_int: Int = 0, 
-  var b_int: Int = 0, 
-  var a_bool: Boolean = false, 
-  var b_bool: Boolean = false
+  var a_string: Option[String] = None,
+  var b_string: Option[String] = None,
+  var a_int: Option[Int] = None,
+  var b_int: Option[Int] = None,
+  var a_bool: Option[Boolean] = None,
+  var b_bool: Option[Boolean] = None
   ) 
 {
   def update(
-      n_a_string: String, 
-      n_b_string: String, 
-      n_a_int: Int, 
-      n_b_int: Int, 
-      n_a_bool: Boolean, 
-      n_b_bool: Boolean
+      n_a_string: Option[String],
+      n_b_string: Option[String],
+      n_a_int: Option[Int],
+      n_b_int: Option[Int],
+      n_a_bool: Option[Boolean],
+      n_b_bool: Option[Boolean]
       ) {
       a_string = n_a_string
       b_string = n_b_string
