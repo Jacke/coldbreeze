@@ -1,33 +1,54 @@
 
 'use strict';
 
-var myApp =
+var minorityApp =
   angular.module(
-    'myApp',
+    'minorityApp',
     [
-      'myApp.services',
-      'myApp.controllers',
-      'ngRoute'
+      'minorityApp.services',
+      'minorityApp.controllers',
+      'ngRoute',
+      'ngResource',
+      'chieffancypants.loadingBar',
+      'ngCookies',
+      'angularLocalStorage'
     ]
   );
-myApp.config(['$routeProvider', function($routeProvider) {
-    $routeProvider.when('/process', {templateUrl: 'partials/process.html', controller: 'ProcessCtrl'});
-    $routeProvider.when('/bp-list', {templateUrl: 'partials/user-list.html', controller: 'UserListCtrl'});
-    $routeProvider.when('/bp-detail/:id', {templateUrl: 'partials/user-detail.html', controller: 'UserDetailCtrl'});
-    $routeProvider.when('/show-detail/:id', {templateUrl: 'partials/show-detail.html', controller: 'UserDetailCtrl'});
-    $routeProvider.when('/bp-creation', {templateUrl: 'partials/user-creation.html', controller: 'UserCreationCtrl'});
-    $routeProvider.otherwise({redirectTo: '/process'});
+
+minorityApp.config(['$routeProvider', function($routeProvider) {
+
+    // BProcess
+/*I*/$routeProvider.when('/bprocesses', {templateUrl: 'partials/forms/bprocesses/bp-list.html', controller: 'BProcessListCtrl'});
+/*C*/$routeProvider.when('/bprocess/new', {templateUrl: 'partials/forms/bprocesses/bp-new.html', controller: 'BPCreationCtrl'});
+/*R*/$routeProvider.when('/bprocess/:id/show', {templateUrl: 'partials/forms/bprocesses/bp-detail.html', controller: 'BProcessDetailCtrl'});
+/*U*/$routeProvider.when('/bprocess/:id/edit', {templateUrl: 'partials/bprocesses/bp-edit.html', controller: 'BProcessDetailCtrl'});
+/*a*/
+
+    // Proc Elements
+/*I*/$routeProvider.when('/bprocess/:BPid/elements', {templateUrl: 'partials/forms/bp_elements/bpelem-list.html', controller: 'BPelementListCtrl'});
+/*C*/$routeProvider.when('/bprocess/:BPid/element/new', {templateUrl: 'partials/forms/bp_elements/bpelem-new.html', controller: 'BPelementCreationCtrl'});
+/*R*/$routeProvider.when('/bprocess/:BPid/element/:id/show', {templateUrl: 'partials/forms/bp_elements/bpelem-detail.html', controller: 'BPelementDetailCtrl'});
+/*U*/$routeProvider.when('/bprocess/:BPid/element/:id/edit', {templateUrl: 'partials/forms/bp_elements/bpelem-edit.html', controller: 'BPelementDetailCtrl'});
+   
+    // Stations
+/*I*/$routeProvider.when('/bprocess/:BPid/stations', {templateUrl: 'partials/forms/bp_elements/bp-list.html', controller: 'BPstationListCtrl'});
+/*C*/$routeProvider.when('/bprocess/:BPid/station/new', {templateUrl: 'partials/forms/bp_elements/bp-new.html', controller: 'BPstationCreationCtrl'});
+/*R*/$routeProvider.when('/bprocess/:BPid/station/:id/show', {templateUrl: 'partials/forms/bp_elements/bp-detail.html', controller: 'BPstationDetailCtrl'});
+/*U*/$routeProvider.when('/bprocess/:BPid/station/:id/edit', {templateUrl: 'partials/forms/bp_elements/bp-edit.html', controller: 'BPstationDetailCtrl'});    
+    
+    // Loggers
+/*I*/$routeProvider.when('/bprocess/:BPid/logs', {templateUrl: 'partials/forms/bp_elements/bp-list.html', controller: 'BPloggerListCtrl'});
+/*R*/$routeProvider.when('/bprocess/:BPid/log/:id/show', {templateUrl: 'partials/forms/bp_elements/bp-detail.html', controller: 'BPloggerDetailCtrl'});
+/*C  $routeProvider.when('/bprocess/:BPid/log/new', {templateUrl: 'partials/bp_elements/bp-new.html', controller: 'BPCreationCtrl'}); */
+/*U$routeProvider.when('/bprocess/:BPid/log/:id/edit', {templateUrl: 'partials/bp_elements/bp-edit.html', controller: 'BProcessDetailCtrl'});*/
+     
+     // Inputs
+/*C*/$routeProvider.when('/bprocess/:BPid/request', {templateUrl: 'partials/inputs/inputs.html', controller: 'BPRequestCtrl'}); 
+    
+     $routeProvider.otherwise({redirectTo: '/bprocesses'});
     
   
   }]);
-
-// Declare app level module which depends on filters, and services
-//angular.module('myApp', ['myApp.filters', 'myApp.services', 'myApp.directives', 'myApp.controllers']).
-//  config(['$routeProvider', function($routeProvider) {
-//    $routeProvider.when('/view1', {templateUrl: 'partials/partial1.html', controller: 'MyCtrl1'});
-//    $routeProvider.when('/view2', {templateUrl: 'partials/partial2.html', controller: 'MyCtrl2'});
-//    $routeProvider.otherwise({redirectTo: '/view1'});
-//  }]);
 
 
 /* Filters 

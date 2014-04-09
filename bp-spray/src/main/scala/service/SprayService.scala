@@ -95,21 +95,13 @@ case class InvokeRequest(station: Option[Int], calls: List[String], inputs: List
 trait SprayService extends HttpService {
   import spray.http.StatusCodes.{ Created, BadRequest, NotFound, OK }
   //import MessagesListJsonProtocol._
-  import MessageJsonProtocol._
+  //import MessageJsonProtocol._
+  import DefaultJsonProtocol._
   import main.scala.utils.ElementTracer
   import main.scala.utils.ElementRegistrator
   import main.scala.utils.Keepr
 
   def adRoute: Route =
-    path("proc_elements") {
-      get {
-        complete {
-          ElementRegistrator.apply
-          ElementTracer.els.map(keepr => KeeprDAO.tupled(Keepr.unapply(keepr).get))
-
-        }
-      }
-    } ~
     path("checkin") {
       get {
         complete {
@@ -125,71 +117,12 @@ trait SprayService extends HttpService {
     path("error") { 
       get {
         complete {
-          "Xx"
+          ("true")
         }
       }
-     } ~
-    path("process") {
-        post(
-          entity(as[BProcessDTO]) {
-            suplier ⇒
-              {
-                //suplier.toString
-                ctx ⇒
-                                          "ss"
-                  //val obj = FirstExample.pull_object(suplier)
-                  //if (obj.isSuccess) {
-                  //  suplier.id = Option(obj.get)
-//
-                  //  ctx.complete(suplier)
-                  //} else {
-                  //  ctx complete (BadRequest, obj.failed.toString)
-                  //}
-                //handleRestMsg[Either[Long, ErrorMsg]](InsertReq(suplier)).onSuccess {
-                //  case Left(id)     ⇒ ctx.complete(Created, IdRsp(id))
-                //  case Right(error) ⇒ if (error.is404) ctx complete NotFound else ctx complete (BadRequest, error.content)
-                //}
-              }
-          })
-      } ~
-      path("processes") {
-        get(
-          complete(BPDTO.getAll))
-      } ~
-      path("process" / IntNumber)(id ⇒
-        get(
-          complete(
-            BPInfo(ProcElemCRUD.findByBPId(id), BPStationDTO.findByBPId(id), BPLoggerDTO.findByBPId(id))
-            )
-          )) ~
-      pathPrefix("process" / IntNumber) { id ⇒
-        path("blocks") {
-          get {
-            complete("checker" + id)
-          }
-        } ~
-          path("logs") {
-            get {
-              complete("logs" + id)
-            }
-          } ~
-          path("invoke") {
-            post {
-             /*formFields('color, 'age.as[Int]) { (color, age) =>
-              complete {
-              s"The color is '$color' and the age ten years ago was ${age - 10}"
-              }
-                //BPSerial.BPRun(id) 
-                //BPStationDTO.findByBPId(id).last        
-              
-              }*/
-              entity(as[InvokeRequest]) { request =>
-                complete(request)
-              }
-            }
-          }
-      } ~
-      pathPrefix("api") {
+     } 
+
+     /* pathPrefix("api") {
         path("launch") {
           get {
             // logs in array
@@ -206,7 +139,7 @@ trait SprayService extends HttpService {
             }
             // invoke 
           }*/
-      }
+      }*/
 
   //path("order" / IntNumber)(id =>
   //  get(
@@ -220,11 +153,11 @@ trait SprayService extends HttpService {
   //    )
   //  )
   //)
-  path("foo") {
-    parameters('color, 'count.as[Int]) { (color, count) ⇒
-      complete(s"The color is '$color' and you have $count of it.")
-    }
-  }
+  //////path("foo") {
+  //////  parameters('color, 'count.as[Int]) { (color, count) ⇒
+  //////    complete(s"The color is '$color' and you have $count of it.")
+  //////  }
+  //////}
 
   //path("spray-html") {
   //  get {

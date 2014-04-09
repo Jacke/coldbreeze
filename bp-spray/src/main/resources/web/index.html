@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="en" ng-app="myApp">
+<html lang="en" ng-app="minorityApp">
 <head>
   <meta charset="utf-8">
-  <title>Minority</title>
+  <title>Minority | Processes as a Service</title>
   <link rel="stylesheet" href="css/app.css"/>
 </head>
 <body><nav class="navbar navbar-default navbar-fixed-top" data-role="navigation">
@@ -20,25 +20,33 @@
   </div>
 </nav>
 <div class="container">
-<li><a href="#/structure">Structure</a></li>
-<li><a href="#/production">Production</a></li>
-<li><a href="#/reports">Reports</a></li>
-<li><a href="#/process">Process</a></li>
-<li><a href="#/bp-list">bp-list</a></li>
-        <li><a href="#/bp-detail/1">business_process/1</a></li>
-        <li><a href="#/bp-creation">bp-creation</a></li>
 
-  <div>Minority App version:<span app-version></span></div></div>
-<div id="main" class="container" data-ng-view></div>
+<li><a href="#/bprocesses">BProcesses</a></li>
+<li><a href="#/bp-detail/1">business_process/1</a></li>
+<li><a href="#/bp-creation">bp-creation</a></li>
+
+<!--  <div>Minority App version:<span app-version></span></div></div>-->
+<awesomeError></awesomeError>
+<div id="main" class="container" data-ng-view>
+</div>
 
 
   <!-- In production use:
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
   -->
-  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.6/angular.js"></script>
-  <script src="js/filters.js"></script>
+  <script src="bower_components/angular/angular.js"></script>
+  <!-- Libs -->
+  <script src="/bower_components/angular-resource/angular-resource.js"></script>
+  <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+  <script src="bower_components/angular-loading-bar/src/loading-bar.js"></script>
+  <link rel="stylesheet" href="bower_components/angular-loading-bar/src/loading-bar.css"/>
+  <script src="bower_components/angularLocalStorage/src/angularLocalStorage.js"></script>
+  <script src="bower_components/angular-errors-directive/angular-awesome-error.js"></script>
 
+
+  
   <script src="js/app.js"></script>
+  <script src="js/filters.js"></script>
   <script src="js/services.js"></script>
   <script src="js/controllers.js"></script>
 

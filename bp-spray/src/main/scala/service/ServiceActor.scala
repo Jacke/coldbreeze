@@ -13,7 +13,8 @@ import spray.routing._
  */
 class ServiceActor
     extends Actor
-    with SprayService {
+    with SprayService
+    with BPServices {
 
   def actorRefFactory = context
 
@@ -28,7 +29,7 @@ class ServiceActor
   //var storedCompleter: Option[Completer] = None
 
   def receive: Receive = {
-    runRoute(adRoute ~ staticRoute)
+    runRoute(adRoute ~ BPServiceRoute ~ staticRoute)
 
   }
 }

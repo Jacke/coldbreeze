@@ -6,114 +6,204 @@
     $templateCache.removeAll();
   });
 });*/
-angular.module('myApp.controllers', []).
-  controller('ProcessCtrl', [function() {
+angular.module('minorityApp.controllers', []).
+  controller('BProcessListCtrl', [function () {
 
   }])
-  .controller('PrdCtrl', [function() {
-
-  }])  
-  .controller('ReportsCtrl', [function() {
-
-  }])  
-  .controller('UserListCtrl', [function () {
+  .controller('BProcessDetailCtrl', [function () {
 
   }])
-  .controller('UserDetailCtrl', [function () {
-
-  }])
-  .controller('UserCreationCtrl', [function () {
+  .controller('BPCreationCtrl', [function () {
 
   }]);
   
 
-var gabblerControllers =
+var minorityControllers =
 angular.module(
-  'myApp.controllers',
+  'minorityApp.controllers',
   [
-    'myApp.services'
+    'minorityApp.services'
   ]
 );
 
 
+// INDEX
+minorityControllers.controller('BProcessListCtrl', ['$scope', 'BProcessesFactory','BProcessFactory', '$location', function ($scope, BProcessesFactory, BProcessFactory, $location) {
+
+  /* callback for ng-click 'editUser': */
+  $scope.editBP = function (bpId) {
+    $location.path('/bp-detail/' + bpId + '/edit');
+  };
+  $scope.showBP = function (bpId) {
+    $location.path('/bprocess/' + bpId + '/show');
+  };
+  /* callback for ng-click 'deleteUser': */
+  $scope.deleteBP = function (bpId) {
+    BProcessFactory.delete({ id: bpId });
+    $scope.bprocesses = BProcessesFactory.query();
+  };
+  /* callback for ng-click 'createBP': */
+  $scope.createNewBP = function () {
+    $location.path('/bprocess/new');
+  };
+ 
+  $scope.bprocesses = BProcessesFactory.query();
+}]);
 
 
-
-  gabblerControllers.controller('UserListCtrl', ['$scope', 'UsersFactory','UserFactory', '$location', function ($scope, UsersFactory, UserFactory, $location) {
-
-    /* callback for ng-click 'editUser': */
-    $scope.editUser = function (userId) {
-      $location.path('/bp-detail/' + userId);
-    };
-    $scope.showUser = function (userId) {
-      $location.path('/show-detail/' + userId);
-    };
-
-    /* callback for ng-click 'deleteUser': */
-    $scope.deleteUser = function (userId) {
-      UserFactory.delete({ id: userId });
-      $scope.users = UsersFactory.query();
-    };
-
-    /* callback for ng-click 'createUser': */
-    $scope.createNewUser = function () {
-      $location.path('/bp-creation');
-    };
-   
-
-    $scope.users = UsersFactory.query();
-  }]);
-
-  gabblerControllers.controller('UserDetailCtrl', ['$scope', '$routeParams', 'UserFactory', '$location', '$http',
-  function ($scope, $routeParams, UserFactory, $location, $http) {
+// READ
+minorityControllers.controller('BProcessDetailCtrl', ['$scope', '$routeParams', 'BProcessFactory', '$location', '$http',
+function ($scope, $routeParams, BProcessFactory, $location, $http) {
 
 
-    $scope.updateUser = function () {
-      UserFactory.update($scope.user);
-      $location.path('/bp-list');
-    };
+  $scope.updateBP = function () {
+    BProcessFactory.update($scope.bprocess);
+    $location.path('/bprocesses');
+  };
+  $scope.cancel = function () {
+    $location.path('/bprocesses');
+  };
+  $scope.invokeBP = function (bpId) {
+      $http({
+      url: 'process/' + bpId + '/invoke',
+      method: "POST",
+      data: {  }
+      })
+      .then(function(response) {
+        // success
+        console.log(response);
+        $scope.invoke_res = [response];
+      }, 
+      function(response) { // optional
+        // failed
+      }
+      );
+  }
+  $scope.invoke_res = [];
+  $scope.bpId = $routeParams.id;
+  $scope.selectedTab = 1;
+  $scope.bprocess = BProcessFactory.show({id: $routeParams.id});
+}]);
 
 
-
-    $scope.cancel = function () {
-      $location.path('/bp-list');
-    };
-    $scope.invokeBP = function (bpid) {
-        $http({
-        url: 'process/' + bpid + '/invoke',
-        method: "POST",
-        data: {  }
-        })
-        .then(function(response) {
-          // success
-          console.log(response);
-          $scope.invoke_res = [response];
-        }, 
-        function(response) { // optional
-          // failed
-        }
-        );
+// CREATE
+minorityControllers.controller('BPCreationCtrl', ['$scope', 'BProcessesFactory', '$location',
+  function ($scope, BProcessesFactory, $location) {
+    $scope.createNewBP = function () {
+      BProcessesFactory.create($scope.bprocess);
+      $location.path('/bprocesses');
     }
-    $scope.invoke_res = [];
-    $scope.bpid = $routeParams.id;
-    $scope.selectedTab = 1;
-    $scope.user = UserFactory.show({id: $routeParams.id});
-  }]);
+}]);
 
-  gabblerControllers.controller('UserCreationCtrl', ['$scope', 'UsersFactory', '$location',
-  function ($scope, UsersFactory, $location) {
 
+
+
+/**
+ * BP Elements
+ */
+// INDEX
+minorityControllers.controller('BPelementListCtrl', ['$scope', 'BPElemsFactory','BPElemFactory', '$location', '$route', 
+  function ($scope, BPElemsFactory, BPElemFactory, $location, $route) {
+
+  /* callback for ng-click 'editUser': */
+  $scope.editElem = function (bpId) {
+    $location.path('/bp-detail/' + bpId + '/edit');
+  };
+  $scope.showElem = function (bpId) {
+    $location.path('/bprocess/' + bpId + '/show');
+  };
+  /* callback for ng-click 'deleteUser': */
+  $scope.deleteElem = function (bpId) {
+    BPElemFactory.delete({ id: bpId });
+    $scope.bprocesses = BPElemsFactory.query();
+  };
+  /* callback for ng-click 'createBP': */
+  $scope.createNewElem = function () {
+    $location.path('/bprocess/new');
+  };
+ 
+  $scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
+}]);
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * BP Station
+ */
+// INDEX
+minorityControllers.controller('BPstationListCtrl', ['$scope', 'BPElemsFactory','BPElemFactory', '$location', function ($scope, BPElemsFactory, BPElemFactory, $location) {
+
+  /* callback for ng-click 'editUser': */
+  $scope.editElem = function (bpId) {
+    $location.path('/bp-detail/' + bpId + '/edit');
+  };
+  $scope.showElem = function (bpId) {
+    $location.path('/bprocess/' + bpId + '/show');
+  };
+  /* callback for ng-click 'deleteUser': */
+  $scope.deleteElem = function (bpId) {
+    BProcessFactory.delete({ id: bpId });
+    $scope.bprocesses = BProcessesFactory.query();
+  };
+  /* callback for ng-click 'createBP': */
+  $scope.createNewElem = function () {
+    $location.path('/bprocess/new');
+  };
+ 
+  $scope.bprocesses = BProcessesFactory.query();
+}]);
+
+/**
+ * BP Log
+ */
+// INDEX
+minorityControllers.controller('BPloggerListCtrl', ['$scope', 'BPElemsFactory','BPElemFactory', '$location', function ($scope, BPElemsFactory, BPElemFactory, $location) {
+
+  /* callback for ng-click 'editUser': */
+  $scope.editElem = function (bpId) {
+    $location.path('/bp-detail/' + bpId + '/edit');
+  };
+  $scope.showElem = function (bpId) {
+    $location.path('/bprocess/' + bpId + '/show');
+  };
+  /* callback for ng-click 'deleteUser': */
+  $scope.deleteElem = function (bpId) {
+    BProcessFactory.delete({ id: bpId });
+    $scope.bprocesses = BProcessesFactory.query();
+  };
+  /* callback for ng-click 'createBP': */
+  $scope.createNewElem = function () {
+    $location.path('/bprocess/new');
+  };
+ 
+  $scope.bprocesses = BProcessesFactory.query();
+}]);
+
+
+
+/*
+minorityControllers.controller('BProcessListCtrl', ['$scope', 'BProcess', function($scope, Process){
+  // Find Processes
+  $scope.findProcceses = function () {
+    $scope.processes = [];
+    var processes = BProcess.query(function() {
+      $scope.processes = processes.concat($scope.processes);
+    });
+  }
   
-    $scope.createNewUser = function () {
-      UsersFactory.create($scope.user);
-      $location.path('/bp-list');
-    }
-  }]);
-
-
-
-
-gabblerControllers.controller('ProcessCtrl', ['$scope', 'Message', function($scope, Message) {
+}]);
+*/
+/**
+minorityControllers.controller('ProcessCtrl', ['$scope', 'Message', function($scope, Message) {
 
 //$scope.messages = [{'username': "lol", "text":"textss", "value": false, "type": "Block"}, $scope.mess];
 //$scope.messages = []
@@ -146,4 +236,4 @@ $scope.sendMessage = function() {
   //"zip": "" });
 };
 }]);
-
+**/

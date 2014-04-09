@@ -118,7 +118,8 @@ object Main extends App {
   // init space elems
   proc2.elements_init
 
-
+  // TODO: Space shit above and below
+  /*
   println(proc2.spaces.length)
   println(proc2.spaces.head)
   proc2.spaces.head.addToSpace(new Constant[Boolean](1, true,1), "container")
@@ -129,10 +130,12 @@ object Main extends App {
   proc2.spaces.last.addToSpace(new Constant[Boolean](1, true,1), "expands")
   proc2.spaces.last.addToSpace(new Constant[Boolean](1, true,1), "expands")
   proc2.spaces.last.addToSpace(new Constant[Boolean](1, true,1), "expands")
-  println("******" + proc2.spaces.last.index)
-  println(proc2.spaces.last.expands.head)
-  InvokeTracer.run_proc(proc2)
-  println(proc2.spaces.last.expands.head) // must be false
+  */
+  // TODO: Space shit above and below
+  //println("******" + proc2.spaces.last.index)
+  //println(proc2.spaces.last.expands.head)
+  //InvokeTracer.run_proc(proc2)
+  //println(proc2.spaces.last.expands) // must be false
 
   /****
 

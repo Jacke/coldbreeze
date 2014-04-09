@@ -148,10 +148,21 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
 /**
  * Temp process elements restoring, after pause
  */
+// TODO: Temp process elements restoring, after pause
+
   def restoreProcElems {
     println(variety.filter(elem => (elem.temp || elem.refresh)))
+    // update
   }
 
+  /**
+   * Composite values restore
+   */
+ // TODO: Composite values restore
+  def restoreCVOfElems {
+    println(variety.filter(elem => logger.valChanged(elem)))
+    // update CV
+  }
 
 /**
  * Process returning

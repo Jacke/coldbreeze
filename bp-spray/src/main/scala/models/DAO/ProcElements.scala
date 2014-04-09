@@ -27,7 +27,7 @@ class ProcElements(tag: Tag) extends Table[(Option[Int], String, String, Int, In
   def space_role = column[Option[String]]("space_role")
   def comps = column[Option[List[CompositeValues]]]("comps", O.DBType("compositevalues[]"))
   //def bpFK = foreignKey ;;;;;;;
-  // TODO: values: CompositeValues,
+  // TODO: foreign key
 
   def * = (id.?, title, desc, business, bprocess, b_type, type_title, space_parent, space_role, order, comps)// <> (UndefElement.tupled, UndefElement.unapply)
 
@@ -102,6 +102,10 @@ object ProcElemCRUD {
       case None => false
       }
     }
+  }
+  def update_order(id: Int, order_num: Int): String = {
+    // TODO: update_order
+    "true && true"
   }
 
   /**

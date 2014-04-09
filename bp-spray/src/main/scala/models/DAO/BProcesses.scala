@@ -35,10 +35,11 @@ object BPDTO {
 
   val bprocesses = TableQuery[BProcesses]
 
-  def pull_object(s: BProcessDTO) = Try(database withSession {
+  def pull_object(s: BProcessDTO) = database withSession {
     implicit session ⇒
-      bprocesses returning bprocesses.map(_.id) += BProcessDTO.unapply(s).get
-  })
+      val tuple = BProcessDTO.unapply(s).get
+      bprocesses returning bprocesses.map(_.id) += (value = (None, s.title, s.business))//(BProcessDTO.unapply(s).get._2, BProcessDTO.unapply(s).get._3)
+  }
 
   def pull(id: Option[Int] = None, title: String, business: Int) = Try(database withSession {
     implicit session ⇒
@@ -53,6 +54,31 @@ object BPDTO {
       println(q3.list)
       q3.list.head //.map(Supplier.tupled(_))
   }
+  /**
+   * Update a bprocess
+   * @param id
+   * @param bprocess
+   */
+  def update(id: Int, bprocess: BProcessDTO) = database withSession { implicit session ⇒
+    val bpToUpdate: BProcessDTO = bprocess.copy(Option(id))
+    bprocesses.where(_.id === id).update(BProcessDTO.unapply(bpToUpdate).get)
+  }
+  /**
+   * Delete a bprocess
+   * @param id
+   */
+  def delete(id: Int) = database withSession { implicit session ⇒
+
+    bprocesses.where(_.id === id).delete
+  }
+  /**
+   * Count all bprocesses
+   */
+  def count: Int = database withSession { implicit session ⇒
+    Query(bprocesses.length).first
+  }
+
+
 
   def getAll = database withSession {
     implicit session ⇒

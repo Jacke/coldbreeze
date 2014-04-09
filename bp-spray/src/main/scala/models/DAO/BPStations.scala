@@ -108,5 +108,9 @@ object BPStationDTO {
       q3.list 
     }
   }
+  def findById(id: Int) = {
+    // TODO: findById
+    "YO"
+  }
 
 }

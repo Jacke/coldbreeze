@@ -5,12 +5,54 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+* Angular controller and services for app
+* Error ajax
+* Foreign key
+* RunFrom TRY
+* Input try
+* Data sync from logger to composite values of proc elements
+* TempItem Restore(expands, input)
+* Space schema basic
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+* Space Data sync from logger to composite values of proc elements
+* Space TempItem Restore(expands, input)
+
   * Ownings
   * Companion ResAct -> Input, Times ...
 
 
-  * Data sync from logger to composite values of proc elements
-    * TempItem Restore(expands, input)
   ** Input block while proc/context running(wait for input if it paused)
 
 
@@ -19,7 +61,9 @@
 
 
 
-
+* Id splitting to trait, restrict ID using in code
+* Change ID to LONG everywhere
+* selector attributes for Station while INPUT REQUEST occurred
 
 
 

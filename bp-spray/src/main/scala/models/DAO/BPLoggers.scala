@@ -106,6 +106,11 @@ object BPLoggerDTO {
       )
   }
 
+  def findById(id: Int) = {
+    // TODO: findById
+    "YO"
+  }
+
   /**
    * Find a specific entity by id.
    */

@@ -29,7 +29,7 @@ class BPLogger {
     val target = logs.find(log => log.order == el.order)
     if (target.isDefined) {
       el.values == target.get.composite
-    }
+    } else false
   }
 }
 
