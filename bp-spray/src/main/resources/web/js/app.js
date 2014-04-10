@@ -31,14 +31,14 @@ minorityApp.config(['$routeProvider', function($routeProvider) {
 /*U*/$routeProvider.when('/bprocess/:BPid/element/:id/edit', {templateUrl: 'partials/forms/bp_elements/bpelem-edit.html', controller: 'BPelementDetailCtrl'});
    
     // Stations
-/*I*/$routeProvider.when('/bprocess/:BPid/stations', {templateUrl: 'partials/forms/bp_elements/bp-list.html', controller: 'BPstationListCtrl'});
-/*C*/$routeProvider.when('/bprocess/:BPid/station/new', {templateUrl: 'partials/forms/bp_elements/bp-new.html', controller: 'BPstationCreationCtrl'});
-/*R*/$routeProvider.when('/bprocess/:BPid/station/:id/show', {templateUrl: 'partials/forms/bp_elements/bp-detail.html', controller: 'BPstationDetailCtrl'});
-/*U*/$routeProvider.when('/bprocess/:BPid/station/:id/edit', {templateUrl: 'partials/forms/bp_elements/bp-edit.html', controller: 'BPstationDetailCtrl'});    
+/*I*/$routeProvider.when('/bprocess/:BPid/stations', {templateUrl: 'partials/forms/bpstations/bpstation-list.html', controller: 'BPstationListCtrl'});
+/*C*/$routeProvider.when('/bprocess/:BPid/station/new', {templateUrl: 'partials/forms/bpstations/bpstation-new.html', controller: 'BPstationCreationCtrl'});
+/*R*/$routeProvider.when('/bprocess/:BPid/station/:id/show', {templateUrl: 'partials/forms/bpstations/bpstation-detail.html', controller: 'BPstationDetailCtrl'});
+/*U*/$routeProvider.when('/bprocess/:BPid/station/:id/edit', {templateUrl: 'partials/forms/bpstations/bpstation-edit.html', controller: 'BPstationDetailCtrl'});    
     
     // Loggers
-/*I*/$routeProvider.when('/bprocess/:BPid/logs', {templateUrl: 'partials/forms/bp_elements/bp-list.html', controller: 'BPloggerListCtrl'});
-/*R*/$routeProvider.when('/bprocess/:BPid/log/:id/show', {templateUrl: 'partials/forms/bp_elements/bp-detail.html', controller: 'BPloggerDetailCtrl'});
+/*I*/$routeProvider.when('/bprocess/:BPid/logs', {templateUrl: 'partials/forms/bploggers/logger-list.html', controller: 'BPloggerListCtrl'});
+/*R*/$routeProvider.when('/bprocess/:BPid/log/:id/show', {templateUrl: 'partials/forms/bploggers/logger-detail.html', controller: 'BPloggerDetailCtrl'});
 /*C  $routeProvider.when('/bprocess/:BPid/log/new', {templateUrl: 'partials/bp_elements/bp-new.html', controller: 'BPCreationCtrl'}); */
 /*U$routeProvider.when('/bprocess/:BPid/log/:id/edit', {templateUrl: 'partials/bp_elements/bp-edit.html', controller: 'BProcessDetailCtrl'});*/
      

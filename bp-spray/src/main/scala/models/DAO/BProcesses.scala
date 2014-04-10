@@ -14,7 +14,8 @@ class BProcesses(tag: Tag) extends Table[(Option[Int], String, Int)](tag, "bproc
   def business = column[Int]("business_id")
   // Every table needs a * projection with the same type as the table's type parameter
   def * = (id.?, title, business) //<> (Supplier.tupled, Supplier.unapply)
-
+  
+  def businessFK = foreignKey("business_fk", business, Businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 }
 
 

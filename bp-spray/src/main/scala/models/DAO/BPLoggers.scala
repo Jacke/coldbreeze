@@ -20,7 +20,7 @@ class BPLoggers(tag: Tag) extends Table[
    Option[List[CompositeValues]]
    )](tag, "bploggers") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
-  def process = column[Int]("process_id")
+  def bprocess = column[Int]("process_id")
 
   def element   = column[Int]("proc_element_id")
   def order     = column[Int]("order")
@@ -46,10 +46,15 @@ class BPLoggers(tag: Tag) extends Table[
            comps
           ) //<> (Supplier.tupled, Supplier.unapply)
 
+def bpFK = foreignKey("bprocess_fk", bprocess, BProcesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+def procelemFK = foreignKey("procelem_fk", element, ProcElements)(_.id, onDelete = ForeignKeyAction.Cascade)
+def stationFK = foreignKey("b_fk", station, BPStations)(_.id, onDelete = ForeignKeyAction.Cascade)
+// TODO: Space FK  def bFK = foreignKey("b_fk", (k1, k2), bs)(b => (b.f1, b.f2), onDelete = ForeignKeyAction.Cascade)
+
 }
 case class BPLoggerDTO1(
 id: Option[Int],
-process: Int,
+bprocess: Int,
 element: Int,
 order: Int,    
 space: Option[Int],    
@@ -106,6 +111,18 @@ object BPLoggerDTO {
       )
   }
 
+  def lastRunOfBP(id: Int):Option[org.joda.time.DateTime] = database withSession {
+    implicit session ⇒
+    val q3 = (for { logger ← bploggers if logger.bprocess === id } yield logger).take(1) 
+    q3.firstOption.foreach {
+      case (a,b,c,d,e,f,g,j,k,date,x) => return Some(date)
+      
+    }
+    return None
+    
+     // BPLoggerDTO1.tupled(q3.firstOption) //<> (BPLoggerDTO1.tupled, BPLoggerDTO1.unapply _)
+  }
+
   def findById(id: Int) = {
     // TODO: findById
     "YO"
@@ -116,7 +133,7 @@ object BPLoggerDTO {
    */
   def findByBPId(id: Int) = {
     database withSession { implicit session =>
-     val q3 = for { logger ← bploggers if logger.process === id } yield logger <> (BPLoggerDTO1.tupled, BPLoggerDTO1.unapply _)
+     val q3 = for { logger ← bploggers if logger.bprocess === id } yield logger <> (BPLoggerDTO1.tupled, BPLoggerDTO1.unapply _)
       q3.list 
     }
   }

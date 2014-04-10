@@ -140,7 +140,8 @@ minorityControllers.controller('BPelementListCtrl', ['$scope', 'BPElemsFactory',
  * BP Station
  */
 // INDEX
-minorityControllers.controller('BPstationListCtrl', ['$scope', 'BPElemsFactory','BPElemFactory', '$location', function ($scope, BPElemsFactory, BPElemFactory, $location) {
+minorityControllers.controller('BPstationListCtrl', ['$scope', 'BPStationsFactory','BPStationFactory', '$location', '$route',
+  function ($scope, BPStationsFactory, BPStationFactory, $location, $route) {
 
   /* callback for ng-click 'editUser': */
   $scope.editElem = function (bpId) {
@@ -151,22 +152,22 @@ minorityControllers.controller('BPstationListCtrl', ['$scope', 'BPElemsFactory',
   };
   /* callback for ng-click 'deleteUser': */
   $scope.deleteElem = function (bpId) {
-    BProcessFactory.delete({ id: bpId });
-    $scope.bprocesses = BProcessesFactory.query();
+    BPStationFactory.delete({ id: bpId });
+    $scope.bpstations = BPStationsFactory.query();
   };
   /* callback for ng-click 'createBP': */
   $scope.createNewElem = function () {
     $location.path('/bprocess/new');
   };
- 
-  $scope.bprocesses = BProcessesFactory.query();
+  $scope.bpstations = BPStationsFactory.query({ BPid: $route.current.params.BPid });
 }]);
 
 /**
  * BP Log
  */
 // INDEX
-minorityControllers.controller('BPloggerListCtrl', ['$scope', 'BPElemsFactory','BPElemFactory', '$location', function ($scope, BPElemsFactory, BPElemFactory, $location) {
+minorityControllers.controller('BPloggerListCtrl', ['$scope', 'BPLogsFactory','BPLogFactory', 'BPLogStationFactory', '$location', '$route',
+  function ($scope, BPLogsFactory, BPLogFactory, BPLogStationFactory, $location, $route) {
 
   /* callback for ng-click 'editUser': */
   $scope.editElem = function (bpId) {
@@ -177,15 +178,15 @@ minorityControllers.controller('BPloggerListCtrl', ['$scope', 'BPElemsFactory','
   };
   /* callback for ng-click 'deleteUser': */
   $scope.deleteElem = function (bpId) {
-    BProcessFactory.delete({ id: bpId });
-    $scope.bprocesses = BProcessesFactory.query();
+    BPLogFactory.delete({ id: bpId });
+    $scope.bplogs = BPLogsFactory.query();
   };
   /* callback for ng-click 'createBP': */
   $scope.createNewElem = function () {
     $location.path('/bprocess/new');
   };
  
-  $scope.bprocesses = BProcessesFactory.query();
+  $scope.bplogs = BPLogsFactory.query({ BPid: $route.current.params.BPid });
 }]);
 
 
@@ -215,25 +216,5 @@ $scope.getMessages = function() {
 
   console.log(messages);
 };
-$scope.getMessages();
-$scope.message = new Message({  "id": null,
-  "title": "",
-  "address": "",
-  "city": "",
-  "state": "",
-  "zip": "" });
 
-$scope.sendMessage = function() {
-  var object = $scope.message.$save(); // POST Request
-  console.log($scope.message);
-  console.log(object);
-  $scope.getMessages();
-  //$scope.message = new Message({  "id": null,
-  //"title": "",
-  //"address": "",
-  //"city": "",
-  //"state": "",
-  //"zip": "" });
-};
-}]);
 **/

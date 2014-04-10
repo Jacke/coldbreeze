@@ -26,10 +26,11 @@ class ProcElements(tag: Tag) extends Table[(Option[Int], String, String, Int, In
   def space_parent = column[Option[Int]]("space_id")
   def space_role = column[Option[String]]("space_role")
   def comps = column[Option[List[CompositeValues]]]("comps", O.DBType("compositevalues[]"))
-  //def bpFK = foreignKey ;;;;;;;
-  // TODO: foreign key
-
   def * = (id.?, title, desc, business, bprocess, b_type, type_title, space_parent, space_role, order, comps)// <> (UndefElement.tupled, UndefElement.unapply)
+
+  def businessFK = foreignKey("business_fk", business, Businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK = foreignKey("bprocess_fk", bprocess, BProcesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  // TODO: Space FK
 
 }
 
@@ -49,6 +50,7 @@ case class UndefElement(id: Option[Int],
                         comps: Option[List[CompositeValues]]) {
   def cast(process: BProcess):Option[ProcElems] = { 
 // TODO: to space casting 
+// TODO: Refactor
     this match {
       case x if (x.b_type == "block" | x.type_title == "test block") => { 
         Option(

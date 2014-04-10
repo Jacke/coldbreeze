@@ -19,25 +19,42 @@
 
 
 
-* Angular controller and services for app
-* Error ajax
-* Foreign key
+
 * RunFrom TRY
+
+
 * Input try
+http://jsfiddle.net/fdDph/9/
+http://plnkr.co/edit/mNs6HB86p6ioByul0GD9?p=preview
+http://embed.plnkr.co/TAXmsQlSkYhY2isCKIAw/preview
+
+
 * Data sync from logger to composite values of proc elements
 * TempItem Restore(expands, input)
 * Space schema basic
+* JOIN 
+http://stackoverflow.com/questions/16707373/inner-join-doesnt-work-in-slick
+http://stackoverflow.com/questions/14377023/outer-join-with-scala-slick
+http://stackoverflow.com/questions/22436428/join-tables-in-different-databases-using-slick-2-with-auto-generated-data-model
 
 
 
 
 
 
+* SSL http://spray.io/documentation/1.1-M7/spray-can/http-client/#ssl-support
+* Spray outlook https://github.com/ctcarrier/ttpresentation/tree/master/src/main/scala/com/ttpresentation https://github.com/ctcarrier/bl-rest
+* PASSWORD SALT 
+https://github.com/scalapenos/spray-auth/blob/master/src/test/scala/scalapenos/spray/auth/CryptoSupportSpec.scala 
+https://github.com/agrublev/angularLocalStorage
 
+* Connection limit https://github.com/spray/connection-test
+* Error ajax
+http://kufli.blogspot.ru/2013/08/sprayio-rest-service-exception.html
+http://plnkr.co/edit/lzYaZt?p=preview
+http://www.egobrain.ru/blog/2014/02/13/obrabotka-oshibok-poumolchaniiu-angularjs/
 
-
-
-
+* Security Restrict DTO Action(bprocess, procelems, space, check access)
 
 
 

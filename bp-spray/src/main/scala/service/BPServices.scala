@@ -92,6 +92,24 @@ trait BPServices extends HttpService {
         get {
           complete(BPLoggerDTO.findByBPId(id))
         }
+      } ~
+      path("stations") {
+        get {
+          complete(BPStationDTO.findByBPId(id))
+        }
+      } ~ // Active
+      path("active_stations") {
+        get {
+          complete(BPStationDTO.areActiveForBP(id))
+        }
+      } ~ // Last run
+      path("last_run") {
+        get {
+          complete(BPLoggerDTO.lastRunOfBP(id) match {
+            case Some(date) => date.toJson.toString
+            case _ => "Not found"
+            })
+        }
       }
     } ~
     elemsRoute ~
@@ -149,7 +167,11 @@ trait BPServices extends HttpService {
     }
   }
   val inputRoute:Route =
-    path("invoke") {
+  // /bprocess/:id/request
+    path("request") {
+      get {
+        complete(BPRequestScheme TODO)
+      }
       post {
         /*formFields('color, 'age.as[Int]) { (color, age) =>
          complete {
@@ -165,4 +187,11 @@ trait BPServices extends HttpService {
         }
       }
     }
+
+  /**
+  ** Resources routes
+  **/
+  val BusinessesRoute:Route =
+  val EmployeesRoute:Route =
+  val ClientsRoute:Route =
 }

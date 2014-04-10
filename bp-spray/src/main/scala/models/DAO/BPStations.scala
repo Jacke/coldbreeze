@@ -108,6 +108,16 @@ object BPStationDTO {
       q3.list 
     }
   }
+  def areActiveForBP(id: Int) = {
+     database withSession { implicit session =>
+        val q3 = for { st ← bpstations 
+          if st.process === id 
+          if st.finished === false
+          } yield st <> (BPStationDTO1.tupled, BPStationDTO1.unapply _)
+
+        q3.list 
+     }
+  }
   def findById(id: Int) = {
     // TODO: findById
     "YO"
