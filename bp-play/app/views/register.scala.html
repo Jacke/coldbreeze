@@ -1,0 +1,19 @@
+@(form: Form[(String, String)], token: Token)(implicit request: RequestHeader)
+@import helper.twitterBootstrap._
+@main("Register") {
+    <h1>Register</h1>
+    @form.globalError.map { error =>
+      <p class="error">@error.message</p>
+    }
+    @helper.form(routes.Authentication.register(token.token)) {
+      @helper.CSRF.formField
+      <p>
+	@token.email
+      </p>
+      @helper.inputText(form("name"), 'placeholder -> "Name", '_label -> "", '_showConstraints -> false)
+      @helper.inputPassword(form("password"), 'placeholder -> "Password", '_label -> "", '_showConstraints -> false)
+      <p>
+        <button type="submit" id="register-button">Submit</button>
+      </p>
+    }
+}

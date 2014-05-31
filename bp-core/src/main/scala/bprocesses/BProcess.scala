@@ -32,10 +32,16 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
  */
 
   def allElements: List[ProcElems] = { 
-    (variety ++ spaces.collect 
-      { case space: Space => space.allElements }
-    ).toList.asInstanceOf[List[ProcElems]] // flatten
-  
+    flat(
+      (variety ++ spaces.collect
+        { case space: Space => space.allElements }
+      ).toList.asInstanceOf[List[ProcElems]]
+    )
+  }
+
+  def flat[T](ls: List[T]): List[T]= ls flatten {
+      case t: List[T] =>  flat(t)
+      case c => List(c)
   }
   def blk = variety.collect { case block: Block ⇒ block }
   def rsl = variety.collect { case brick: Result ⇒ brick }
@@ -62,7 +68,18 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
   def findObjectByOrder(n: Int):Option[ProcElems] = {
     variety.find(elem => elem.order == n)
   }
+  def findEverywhereByOrder(n: Int, space: Option[Int] = None):Option[ProcElems] = {
+    space match {
+      case Some(index) => spaces(index).allElements.find(elem => elem.order == n)
+      case _ => allElements.find (elem => elem.order == n)
+    }
+  }
   def getElemsLength = variety.length - variety.collect { case space: Space => space }.length
+  def getSpace(index: Int, space_type:String) = spaces(index-1).space_elems(space_type)
+  def getSpaceStep(space_type:String) = space_type match {
+    case "container" => station.contStepVal
+    case "expands" => station.expStepVal
+  }
   def getSpaceByIndex(index: Int) = spaces(index-1)
   def getSpaceQuantity = spaces.length
 
@@ -148,10 +165,10 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
 /**
  * Temp process elements restoring, after pause
  */
-// TODO: Temp process elements restoring, after pause
 
   def restoreProcElems {
-    println(variety.filter(elem => (elem.temp || elem.refresh)))
+    // TODO: For actually temp elements
+    // println(allElements.filter(elem => (elem.temp || elem.refresh)))
     // update
   }
 
@@ -160,8 +177,36 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
    */
  // TODO: Composite values restore
   def restoreCVOfElems {
-    println(variety.filter(elem => logger.valChanged(elem)))
+    val target = allElements.filter(elem => logger.valChanged(elem))
+    println(target)
     // update CV
+    target.foreach {
+      elem =>
+      val changer = logger.valChanger(elem)
+      elem.values.get.update(
+      n_a_string = changer.a_string,
+      n_b_string = changer.a_string,
+      n_a_int = changer.a_int,
+      n_b_int = changer.b_int,
+      n_a_bool = changer.a_bool,
+      n_b_bool = changer.b_bool
+      )
+
+    }
+
+  }
+
+  /**
+   * Copy CompositeValues in heap
+   * So all values stay mutable
+   * @param values
+   * @return copied CV
+   */
+  def copyCV(values: Option[CompositeValues]):Option[CompositeValues] = {
+    values match {
+      case None           => None
+      case Some(defvalue) => Option(defvalue.copy())
+    }
   }
 
 /**

@@ -19,8 +19,8 @@ import org.joda.time.DateTime
 
 import models.DAO._
 
-import models.DAO.BPStationDTO1
-case class BPInfo(elements: List[UndefElement], station: List[BPStationDTO1], logger: List[BPLoggerDTO1])
+import models.DAO.BPStationDTO
+case class BPInfo(elements: List[UndefElement], station: List[BPStationDTO], logger: List[BPLoggerDTO])
 /*
 trait DateTimeJsonFormat extends JsonFormat[DateTime] {
   private val dateTimeFmt = org.joda.time.format.ISODateTimeFormat.dateTime
@@ -41,7 +41,6 @@ trait LocalDateJsonFormat extends JsonFormat[LocalDate] {
 object MessageJsonProtocol extends DefaultJsonProtocol {
   //implicit val format = jsonFormat2(Message)
   //implicit val msgformat = jsonFormat2(MessagesList)
-
 
 
 
@@ -66,20 +65,21 @@ object MessageJsonProtocol extends DefaultJsonProtocol {
       case x => deserializationError("Expected DateTime as JsNumber, but got " + x)
     }
   }
-
+/*
   
   implicit val supformat = jsonFormat6(CompositeValues)
   implicit val sup1format = jsonFormat3(BProcessDTO)
-  implicit val loggerformat = jsonFormat11(BPLoggerDTO1)
-  implicit val elsformat = jsonFormat11(UndefElement)
+  implicit val loggerformat = jsonFormat11(BPLoggerDTO)
+ // implicit val elsformat = jsonFormat11(UndefElement)
+  implicit val userformat = jsonFormat3(User)
 
-  implicit val stationformat = jsonFormat13(BPStationDTO1)
-  implicit val bpinfoformat = jsonFormat3(BPInfo)
+  implicit val stationformat = jsonFormat13(BPStationDTO)
+ // implicit val bpinfoformat = jsonFormat3(BPInfo)
   //implicit val suppsformat = jsonFormat1(BProcessesDTO)
   implicit val el_tracer = jsonFormat3(KeeprDAO)
 
   implicit val PortofolioFormats = jsonFormat3(InvokeRequest)
-
+*/
 }
 //object MessagesListJsonProtocol extends DefaultJsonProtocol {
 //  implicit val format = jsonFormat2(MessagesList.apply)
@@ -100,6 +100,20 @@ trait SprayService extends HttpService {
   import main.scala.utils.ElementTracer
   import main.scala.utils.ElementRegistrator
   import main.scala.utils.Keepr
+
+
+  import spray.util.LoggingContext
+  import spray.http.StatusCodes._
+  import spray.routing._
+
+  implicit def myExceptionHandler(implicit log: LoggingContext) =
+    ExceptionHandler {
+      case e: ArithmeticException =>
+        requestUri { uri =>
+          log.warning("Request to {} could not be handled normally", uri)
+          complete(InternalServerError, "Bad numbers, bad result!!!")
+        }
+    }
 
   def adRoute: Route =
     path("checkin") {

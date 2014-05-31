@@ -1,28 +1,12 @@
 package models.DAO
 
 import models.DAO.driver.MyPostgresDriver.simple._
+import models.DAO.conversion.DatabaseCred
 
-class BPStations(tag: Tag) extends Table[
-  (Option[Int],
-   Int,
-   Boolean,
-   Int,
-   Int,
-   List[Int],
-   List[Int],
-   Boolean,
-   Boolean,
-   Boolean,
-   Boolean,
-   Boolean,
-   Boolean
-   )](tag, "bpstations") {
+class BPStations(tag: Tag) extends Table[BPStationDTO](tag, "bpstations") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
-  //def title = column[String]("title")
   def process = column[Int]("process_id")
 
-
-  //def logger = column[Int]("logger_id")
   def state = column[Boolean]("state")
   def step = column[Int]("step")
   def space = column[Int]("space")
@@ -38,7 +22,6 @@ class BPStations(tag: Tag) extends Table[
 
   def * = (id.?,
     process,
-    //logger,
     state,
     step,
     space,
@@ -49,10 +32,14 @@ class BPStations(tag: Tag) extends Table[
     inspace,
     incontainer,
     inexpands,
-    paused) //<> (BPStationDTO.tupled, BPStationDTO.unapply)
+    paused) <> (BPStationDTO.tupled, BPStationDTO.unapply)
 
 }
-case class BPStationDTO1(
+
+/*
+  Case class
+ */
+case class BPStationDTO(
 id: Option[Int],
 process: Int,
 state:Boolean,
@@ -65,19 +52,25 @@ finished: Boolean,
 inspace: Boolean,
 incontainer: Boolean,
 inexpands: Boolean,
-paused: Boolean) 
+paused: Boolean)
+
+/*
+  DataConversion
+ */
+object BPStationDCO {
+
+}
 
 
-
-object BPStationDTO {
-  import models.DAO.FirstExample.database
-  import models.DAO.BPDTO.bprocesses
+object BPStationDAO {
+  import DatabaseCred.database
+  import models.DAO.BPDAO.bprocesses
   import main.scala.bprocesses.BPStation
 
   val bpstations = TableQuery[BPStations]
 
-  def from_origin_station(station: BPStation, bp_dto: BProcessDTO):BPStationDTO1 = {
-    BPStationDTO1(
+  def from_origin_station(station: BPStation, bp_dto: BProcessDTO):BPStationDTO = {
+    BPStationDTO(
         None,
         bp_dto.id.get,
         station.state,
@@ -96,14 +89,14 @@ object BPStationDTO {
 
   //}
 
-  def pull_object(s: BPStationDTO1) = database withSession {
+  def pull_object(s: BPStationDTO) = database withSession {
     implicit session ⇒
-      bpstations returning bpstations.map(_.id) += BPStationDTO1.unapply(s).get
+      bpstations returning bpstations.map(_.id) += s //BPStationDTO.unapply(s).get
   }
 
   def findByBPId(id: Int) = {
     database withSession { implicit session =>
-     val q3 = for { st ← bpstations if st.process === id } yield st <> (BPStationDTO1.tupled, BPStationDTO1.unapply _)
+     val q3 = for { st ← bpstations if st.process === id } yield st// <> (BPStationDTO.tupled, BPStationDTO.unapply _)
 
       q3.list 
     }
@@ -113,14 +106,17 @@ object BPStationDTO {
         val q3 = for { st ← bpstations 
           if st.process === id 
           if st.finished === false
-          } yield st <> (BPStationDTO1.tupled, BPStationDTO1.unapply _)
+          } yield st// <> (BPStationDTO.tupled, BPStationDTO.unapply _)
 
-        q3.list 
+        q3.list
      }
   }
-  def findById(id: Int) = {
-    // TODO: findById
-    "YO"
-  }
+  def findById(id: Int):Option[BPStationDTO] = {
+    database withSession {
+    implicit session =>
+      val q3 = for { s <- bpstations if s.id === id } yield s// <> (BPStationDTO.tupled, BPStationDTO.unapply _)
+
+      q3.list.headOption //.map(Supplier.tupled(_))
+  } }
 
 }

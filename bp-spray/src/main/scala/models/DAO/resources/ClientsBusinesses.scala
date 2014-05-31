@@ -2,14 +2,19 @@ package models.DAO.resources
 
 
 import models.DAO.driver.MyPostgresDriver.simple._
+import scala.slick.model.ForeignKeyAction
+
+import models.DAO.resources.BusinessDTO._
+import models.DAO.resources.ClientDAO._
+import models.DAO.conversion.DatabaseCred
 
 
-class ClientsBusinesses(tag: Tag) extends Table[Int, Int)](tag, "clients_businesses") {
+class ClientsBusinesses(tag: Tag) extends Table[(Int, Int)](tag, "clients_businesses") {
   def client_id = column[Int]("client_id")
   def business_id = column[Int]("business_id")
   
-  def clientFK = foreignKey("client_fk", client_id, Clients)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def businessFK = foreignKey("business_fk", business_id, Businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def clientFK = foreignKey("client_fk", client_id, clients)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def businessFK = foreignKey("business_fk", business_id, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (client_id, business_id) 
 
@@ -17,7 +22,8 @@ class ClientsBusinesses(tag: Tag) extends Table[Int, Int)](tag, "clients_busines
 
 
 object ClientBusinessDAO {
-  import models.DAO.FirstExample.database
+  import scala.util.Try
+  import DatabaseCred.database
 
   val clients_businesses = TableQuery[ClientsBusinesses]
 
@@ -40,15 +46,21 @@ object ClientBusinessDAO {
 
   def deleteByClient(client_id: Int) = database withSession { implicit session ⇒
 
-    clients_businesses.where(_.id === client_id).delete
+    clients_businesses.where(_.client_id === client_id).delete
   }
 
   def getAll = database withSession {
     implicit session ⇒
       val q3 = for { s ← clients_businesses } yield s
-      q3.list.sortBy(_.client_id)
+      q3.list.sortBy(_._1) // client_id
   }
 
+  def ddl_create = {
+    database withSession {
+      implicit session =>
+      clients_businesses.ddl.create
+    }
+  }
 }
 
 

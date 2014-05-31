@@ -8,8 +8,12 @@ class BPStation(val bp: BProcess) {
   var state = true
   var step = 0
   var space = 0
+  // Step for space nesting
   var container_step = Array.empty[Int]
   var expand_step = Array.empty[Int]
+  // State for space nesting
+  var container_state = Array.empty[Boolean]
+  var expand_state = Array.empty[Boolean]
   var started: Boolean = false
   var finished: Boolean = false
   var inspace: Boolean = false
@@ -25,26 +29,42 @@ class BPStation(val bp: BProcess) {
   def isPaused:Boolean  = paused
   def isInFront:Boolean = !inspace
   def isStopped:Boolean = !state
+  def contStepVal:Int = {
+    if (container_step.length > 0) {
+      container_step.last
+    }
+    else { 0 }
+  }
+  def expStepVal:Int = {
+    if (expand_step.length > 0) {
+      expand_step.last
+    }
+    else { 0 }
+  }
 
   def update_state(state: Boolean) = { this.state = state }
   def update_step(v: Int)          = { this.step  = v     }
   def update_space(v: Int)         = { this.space = v     }
   
-  def update_container_step(v: Int) = this.container_step :+ v
-  def update_expand_step(v: Int)    = this.expand_step    :+ v
+  def update_container_step(v: Int)       = this.container_step = this.container_step   :+ v
+  def update_container_state(v: Boolean)  = this.container_state = this.container_state  :+ v
+  def change_container_step(v: Int)       = this.container_step(this.container_step.length-1) = v
+  def update_expand_step(v: Int)          = this.expand_step = this.expand_step      :+ v
+  def change_expand_step(v: Int)          = this.expand_step(this.expand_step.length-1) =  v
+  def update_expand_state(v: Boolean)     = this.expand_state = this.expand_state     :+ v
 
-  def flush_container_step()
-  {
-    if(!this.container_step.isEmpty){ this.container_step = this.container_step.init }
-  }
-  def flush_expand_step()
-  {
-   if(!this.expand_step.isEmpty)    { this.expand_step    = this.expand_step.init    }
-  }
+  def flush_container_step()   = if(!this.container_step.isEmpty) { this.container_step = this.container_step.init }
+  def flush_container_state()  = if(!this.container_state.isEmpty){ this.container_state = this.container_state.init }
+
+  def flush_expand_step()      = if(!this.expand_step.isEmpty)    { this.expand_step    = this.expand_step.init }
+  def flush_expand_state()     = if(!this.expand_state.isEmpty)   { this.expand_state    = this.expand_state.init }
 
   def inSpace(v: Boolean)     = { this.inspace     = v }
   def inContainer(v: Boolean) = { this.incontainer = v }
   def inExpand(v: Boolean)    = { this.inexpands   = v }
+
+  def current_expand_state:Boolean    = if(!this.container_state.isEmpty){ this.container_state.last } else { false }
+  def current_container_state:Boolean = if(!this.expand_state.isEmpty)   { this.expand_state.last } else { false }
 
   def update_started(s: Boolean)  = { this.started  = s }
   def update_paused(p: Boolean)   = { this.paused   = p }
@@ -87,8 +107,12 @@ class BPStation(val bp: BProcess) {
       |state          $state
       |step           $step
       |space          $space
-      |container_step $container_step
-      |expand_step    $expand_step
+      |container_step ${container_step.length}
+      |expand_step    ${expand_step.length}
+      | ${container_step.toList}
+      | ${expand_step.toList}
+      | ${expand_state.toList}
+      | ${container_state.toList}
       |started        $started
       |finished       $finished
       |inspace        $inspace

@@ -1,0 +1,38 @@
+ <div class="span6">
+  <table class="table table-striped table-condensed">
+    <thead>
+      <tr>
+        <th style="min-width: 80px;">Element</th>
+        <th style="min-width: 80px;">Title</th>
+        <th style="min-width: 80px;">Desc</th>
+        <th style="min-width: 80px;">Business</th>
+        <th style="min-width: 80px;">BProcess</th>
+        <th style="min-width: 80px;">Type</th>
+        <th style="min-width: 80px;">Type title</th>
+        <th style="min-width: 80px;">Order</th>
+        <th style="min-width: 80px;">Comps</th>
+        <th style="width:20px;">&nbsp;</th>
+        <th style="width:20px;">&nbsp;</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="bpelem in bpelems | orderBy:predicate:order">
+        <td>{{ bpelem.id }}</td>
+        <td>{{ bpelem.title }}</td>
+        <td>{{ bpelem.desc }}</td>
+        <td>{{ bpelem.business }}</td>
+        <td>{{ bpelem.bprocess }}</td>
+        <td>{{ bpelem.b_type }}</td>
+        <td>{{ bpelem.type_title }}</td>
+        <td>{{ bpelem.order }}</td>
+        <td><pre>{{ bpelem.comps | json}}</pre></td>
+
+        <td><a ng-click="showBP(bpelem.id)" class="btn btn-small btn-primary">show</a></td>
+        <td><a ng-click="editBP(bpelem.id)" class="btn btn-small btn-primary">edit</a></td>
+        <td><a ng-click="deleteBP(bpelem.id)" class="btn btn-small btn-danger">delete</a></td>
+      </tr>
+    </tbody>
+  </table>
+  <a ng-click="createNewBP()" class="btn btn-small">create new BPElement</a>
+</div>-->
+{{ bpelems }}

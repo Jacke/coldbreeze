@@ -19,7 +19,7 @@ class Block(val id: Int,
   title: String, 
   desc: String, 
   val values: Option[CompositeValues],
-  bprocess: BProcess,
+  val bprocess: BProcess,
   b_type: String, 
   type_title: String,
   var order: Int,
@@ -35,10 +35,5 @@ class Block(val id: Int,
     println("invoked block")
   }
 
-  def expand(obj: ProcElems) = {
-    if (space_role == "expands") {
-      // Change element
-      // Change link of that element
-    }
-  }
+
 }

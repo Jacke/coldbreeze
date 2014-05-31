@@ -4,6 +4,7 @@ import spray.revolver.RevolverPlugin.Revolver
 import sbtrelease.ReleasePlugin._
 import com.typesafe.sbt.SbtScalariform
 import com.typesafe.sbt.SbtScalariform.ScalariformKeys
+//import twirl.sbt.TwirlPlugin._
 
 object Settings {
     import com.markatta.sbttaglist.TagListPlugin
@@ -11,12 +12,17 @@ object Settings {
 
   lazy val basicSettings = seq(
     organization  := "minority-bp",
-    scalaVersion  := "2.10.3",
+    scalaVersion  := "2.11.0",
     resolvers    ++= Dependencies.resolutionRepos,
+    //org.scalastyle.sbt.ScalastylePlugin.Settings,
     //resolvers    ++= Seq("snapshots", "releases").map(Resolver.sonatypeRepo),
     resolvers ++= Seq("Maven Central Server" at "http://repo1.maven.org/maven2"),
     //resolvers += Resolver.sonatypeRepo("snapshots"),
-    
+
+    unmanagedJars in Compile += file("lib/slick-pg_2.11.jar"),
+    unmanagedJars in Compile += file("lib/slick-pg_core_2.11.jar"),
+    unmanagedJars in Compile += file("lib/slick-pg_joda-time_2.11.jar"),
+
     fork in run   := true,
     scalacOptions := Seq(
       "-encoding",
@@ -43,10 +49,12 @@ object Settings {
   
   import spray.revolver.RevolverPlugin.Revolver._
   lazy val revolverSettings = Revolver.settings ++ seq(reJRebelJar := "~/.jrebel/jrebel.jar")
-  lazy val formatSettings = SbtScalariform.scalariformSettings ++ Seq(
-    ScalariformKeys.preferences in Compile := formattingPreferences,
-    ScalariformKeys.preferences in Test    := formattingPreferences
-  )
+  //lazy val formatSettings = Twirl.settings
+  //SbtScalariform.scalariformSettings ++ Seq(
+  //  Twirl.settings,
+    //ScalariformKeys.preferences in Compile := formattingPreferences,
+  //  ScalariformKeys.preferences in Test    := formattingPreferences
+  //)
 
 
 

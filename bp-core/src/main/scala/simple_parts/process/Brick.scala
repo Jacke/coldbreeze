@@ -11,12 +11,13 @@ import scala.util.Try
 import main.scala.utils.ElementTracer
 import main.scala.utils.Space
 import main.scala.bprocesses._
+import main.scala.bprocesses.BProcess
 
 class Brick(val id: Int,
             title: String,
             desc: String,
             val values: Option[CompositeValues],
-            bprocess: BProcess,
+            val bprocess: BProcess,
             b_type: String,
             type_title: String,
             var order: Int,
@@ -26,12 +27,8 @@ class Brick(val id: Int,
 
   override def toString = s"Brick:"
   def invoke {
-    println("move to space")
-
     bprocess.marker.moveToSpace
     println("bprocess.marker.moveToSpace")
-    println(bprocess.station.represent)
-    println("bprocess.station.represent")
     bprocess.marker.moveUpFront
     println("bprocess.marker.moveUpFront")
   }
@@ -58,7 +55,7 @@ class ExpandBrick(override val id: Int,
                   title: String,
                   desc: String,
                   override val values: Option[CompositeValues],
-                  bprocess: BProcess,
+                  override val bprocess: BProcess,
                   b_type: String,
                   type_title: String,
                   order: Int,
@@ -89,12 +86,12 @@ class ExpandBrick(override val id: Int,
     // TODO: Move in Invoke file Temp solution
 
 
-    getSpace(this).get.updateElem(getSpace(this).get.expands(0), new Constant[Boolean](1, false,1))
+    getSpace(this).get.updateElem(getSpace(this).get.expands(0), new Constant[Boolean](1, false, bprocess,1))
 
     bprocess.marker.toLogger(
       bprocess.marker.station.bp,
       BPLoggerResult
-        (new Constant[Boolean](1, false,1),
+        (new Constant[Boolean](1, false, bprocess,1),
             order = 1,
             space = Option(getSpace(this).get.index),
             composite=None,
@@ -103,14 +100,14 @@ class ExpandBrick(override val id: Int,
             expanded = true,
             container = false)
     )
-    getSpace(this).get.updateElem(getSpace(this).get.expands(1), new Constant[Boolean](1, false,1))
+    getSpace(this).get.updateElem(getSpace(this).get.expands(1), new Constant[Boolean](1, false, bprocess,1))
     /**
      * TODO: Move in Invoke file Temp solution
      */
     bprocess.marker.toLogger(
       bprocess.marker.station.bp,
       BPLoggerResult
-        (new Constant[Boolean](1, false,1),
+        (new Constant[Boolean](1, false, bprocess,1),
             order = 1,
             space = Option(getSpace(this).get.index),
             composite=None,
@@ -119,14 +116,14 @@ class ExpandBrick(override val id: Int,
             expanded = true,
             container = false)
     )
-    getSpace(this).get.updateElem(getSpace(this).get.expands(2), new Constant[Boolean](1, false,1))
+    getSpace(this).get.updateElem(getSpace(this).get.expands(2), new Constant[Boolean](1, false, bprocess,1))
     /**
      * TODO: Move in Invoke file Temp solution
      */
     bprocess.marker.toLogger(
       bprocess.marker.station.bp,
       BPLoggerResult
-        (new Constant[Boolean](1, false,1),
+        (new Constant[Boolean](1, false, bprocess,1),
             order = 1,
             space = Option(getSpace(this).get.index),
             composite=None,
@@ -152,7 +149,7 @@ class ContainerBrick(override val id: Int,
                      title: String,
                      desc: String,
                      override val values: Option[CompositeValues],
-                     bprocess: BProcess,
+                     override val bprocess: BProcess,
                      b_type: String,
                      type_title: String,
                      order: Int,
@@ -179,9 +176,14 @@ class ContainerBrick(override val id: Int,
     bprocess.marker.moveToSpace
     //println("bprocess.marker.moveToSpace")
     bprocess.marker.moveToContainer
-    bprocess.marker.runContainer(getSpace(this).get)
-    //println("bprocess.station.represent")
-    bprocess.marker.moveUpFront
+    println("run container")
+    //bprocess.marker.runContainer(getSpace(this).get, 0)//bprocess.station.contStepVal)
+    println(bprocess.station.represent)
+    
+
+    //bprocess.marker.moveUpFront
+
+
     //println("bprocess.marker.moveUpFront")
   }
 

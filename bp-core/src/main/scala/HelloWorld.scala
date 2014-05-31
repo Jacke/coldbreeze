@@ -8,8 +8,229 @@ import main.scala.utils._
 import main.scala.resources.scopes._
 
 import main.scala.bprocesses.links._
+import main.scala.utils.Space
+
+
+
 
 object Main extends App {
+
+
+ println(
+    """
+      |1)
+      |Block
+      |BrICK -> Space
+      |         Block
+      |         Block
+      |Block <-
+    """.stripMargin)
+  val proc12 = new BProcess(new Managment)
+  proc12.push {
+    Array[ProcElems](
+      new Constant[Boolean](1, false, proc12, 1),
+      new ContainerBrick(2, "container brick", "", Option(CompositeValues()), proc12, "brick", "containerbrick", 2),
+      new Constant[Boolean](3, false, proc12, 3)
+      )//new ExpandBrick(5, "expand brick", "", Option(CompositeValues()), proc12, "brick", "expandbrick", 5))//,
+  }
+  def getSpace(brick: Brick):Option[Space] = {
+    proc12.spaces.find(space => (space.brick_owner == brick))
+  }
+  proc12.elements_init
+  // Add element for expanding
+  proc12.spaces.last.addToSpace(new PrintValue[Boolean](1, true, proc12, 1,
+    values = Option(CompositeValues(a_string = Option("x1")))), "container")
+
+  proc12.spaces.last.addToSpace(new PrintValue[Boolean](1, true, proc12, 1,
+    values = Option(CompositeValues(a_string = Option("x2")))), "container")
+
+  // Run process
+  //////////InvokeTracer.run_proc(proc12)
+  // Run from
+  // ******************************************************************************************
+  //TODO
+  // ******************************************************************************************
+
+
+
+
+
+ println(
+    """
+      |2)
+      |Block
+      |Brick -> Space
+      |         Brick -> Space
+      |                  Block
+      |                  Block
+      |         Block <-
+      |Block <-
+    """.stripMargin)
+
+  val proc123 = new BProcess(new Managment)
+  proc123.push {
+    Array[ProcElems](
+      new Constant[Boolean](1, true, proc123, 1),
+      new ContainerBrick(4, "container brick", "", Option(CompositeValues()), proc123, "brick", "containerbrick", 4))//,
+      //new ExpandBrick(5, "expand brick", "", Option(CompositeValues()), proc123, "brick", "expandbrick", 5))//,
+  }
+  proc123.elements_init
+
+  // Add element to expand
+  val space_ptr = proc123.spaces.last
+  space_ptr.addToSpace(new Constant[Boolean](1, true, proc123, 1, space_id = Option(space_ptr)), "container")
+  space_ptr.addToSpace(new Constant[Boolean](1, false, proc123, 1, space_id = Option(space_ptr)), "container")
+
+  space_ptr.addToSpace(
+    new ContainerBrick
+      (4, "container brick", "", Option(CompositeValues()), proc123, "brick", "containerbrick", 4), "container")
+
+  space_ptr.addToSpace(
+    new PrintValue[Boolean](2, true, proc123, 2,
+      values = Option(CompositeValues(a_string = Option("********"))), space_id = Option(space_ptr)), "container")
+
+  // add space to co container
+  proc123.spaces.last.container.last.init
+  proc123.spaces = proc123.spaces :+ Space.apply(2, proc123.spaces.last.container(2).asInstanceOf[Brick], is_subbricks = false, is_container = true)
+  // add element to cocobrick
+ proc123.spaces.last.addToSpace(new PrintValue[Boolean](1, true, proc123, 1,
+    values = Option(CompositeValues(a_string = Option("x1"))), space_id = Option(proc123.spaces.last)), "container")
+proc123.spaces.last.addToSpace(new PrintValue[Boolean](2, true, proc123, 2,
+    values = Option(CompositeValues(a_string = Option("x2"))), space_id = Option(proc123.spaces.last)), "container")
+
+
+  println(proc123.spaces.length)
+  InvokeTracer.run_proc(proc123)
+  //println(proc123.station.represent)
+
+
+
+
+
+
+  println(
+    """
+      |3) Upadte temp element && expand tests
+      |Block
+      |Brick -> Space
+      |         Expand
+      |         Brick -> Space
+      |                  Epand
+      |                  Expand
+      |         Expand <-
+      |Block <-
+    """.stripMargin
+    )
+
+  val proc1234 = new BProcess(new Managment)
+  proc1234.push {
+    Array[ProcElems](
+      new Constant[Boolean](1, true, proc1234, 1),
+      new ContainerBrick(4, "container brick", "", Option(CompositeValues()), proc1234, "brick", "containerbrick", 2))//,
+      //new ExpandBrick(5, "expand brick", "", Option(CompositeValues()), proc123, "brick", "expandbrick", 5))//,
+  }
+  proc1234.elements_init
+  // Add element to expand
+  val space_ptr1234 = proc1234.spaces.last
+  
+  space_ptr1234.addToSpace(new Constant[Boolean](1, true, proc1234, 1, space_id = Option(space_ptr1234)), "container")
+  space_ptr1234.addToSpace(new Constant[Boolean](1, false, proc1234, 2, space_id = Option(space_ptr1234)), "container")
+  space_ptr1234.addToSpace(new ContainerBrick(4, "container brick", "", Option(CompositeValues()), proc1234, "brick", "containerbrick", 3), "container")
+  space_ptr1234.addToSpace(new PrintValue[Boolean](2, true, proc1234, 4,
+    values = Option(CompositeValues(a_string = Option("********"))), space_id = Option(space_ptr1234)), "container")
+
+  // add space to co container
+ space_ptr1234.container.last.init
+  proc1234.spaces = proc1234.spaces :+ Space.apply(2, proc1234.spaces.last.container(2).asInstanceOf[Brick], is_subbricks = false, is_container = true)
+  // add element to cocobrick
+proc1234.spaces.last.addToSpace(new PrintValue[Boolean](1, true, proc1234, 1, space_id = Option(proc1234.spaces.last),
+    values = Option(CompositeValues(a_string = Option("x1")))), "container")
+proc1234.spaces.last.addToSpace(new PrintValue[Boolean](2, true, proc1234, 2, space_id = Option(proc1234.spaces.last),
+    values = Option(CompositeValues(a_string = Option("x2")))), "container")
+proc1234.spaces.last.addToSpace(new PrintValue[Boolean](3, true, proc1234, 3, space_id = Option(proc1234.spaces.last),
+    values = Option(CompositeValues(a_string = Option("x3")))), "container")
+
+  println(proc1234.spaces.length)
+  InvokeTracer.run_proc(proc1234)
+
+
+  println(
+    """
+      | Logstep check
+    """.stripMargin
+    )
+    println("\n\n\n\n")
+    println(proc123.logger.logs.map(log => log.step).mkString(", "))
+    // 1, 2, 1, 2, 3, 1, 2, 4
+    println(proc1234.logger.logs.map(log => log.step).mkString(", "))
+
+    println("\n\n\n\n")
+
+    println(proc123.logger.updateExpChecker(proc123.spaces.last.container.head))
+    
+    /* EXPAND UPDATE */
+    //val expand_false_target = proc123.logger.logs.last.element
+    //println(proc123.logger.isExpandUpdated(expand_false_target)) // must be false
+
+    println(proc123.spaces.map(_.brick_owner).mkString(", ")) // Many space for one brick
+
+
+  proc1234.spaces.last.container.find(_.id == 3).get.values.get.a_string = Option("x33111")
+
+  println(
+    """
+      |Restore CV
+    """.stripMargin)
+
+  println(proc1234.spaces.last.container.find(_.id == 3).get.values.get.a_string)
+  proc1234.restoreCVOfElems
+  println(proc1234.spaces.last.container.find(_.id == 3).get.values.get.a_string)
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+object Main12 {
+
+
+
   //Tryin2.argparams
   //Tryin3.frame
   //Tryin3.invoke_block
@@ -24,9 +245,9 @@ object Main extends App {
         //new Note("Test note"),
         //new Constant[Int](1001),
         //new Constant[Int](1001),
-        new Constant[Boolean](1, true,1),
-        new Constant[Boolean](2, true,1),
-        new Constant[Boolean](3, false,1),
+        new Constant[Boolean](1, true,proc, 1),
+        new Constant[Boolean](2, true,proc, 1),
+        new Constant[Boolean](3, false,proc, 1),
         new Brick(4, "test brick", "", Option(CompositeValues()), proc, "brick", "test_brick", 4))//,
         //new Brick(proc, 3),
         //new Space(3, 1),new Space(3, 2))
@@ -72,9 +293,9 @@ object Main extends App {
       //new Note("Test note"),
       //new Constant[Int](1001),
       //new Constant[Int](1001),
-      new Constant[Boolean](1, true, 1),
-      new Constant[Boolean](2, true, 2),
-      new Constant[Boolean](3, false, 3),
+      new Constant[Boolean](1, true,proc1, 1),
+      new Constant[Boolean](2, true,proc1, 2),
+      new Constant[Boolean](3, false,proc1, 3),
       new Brick(4, "test brick", "", Option(CompositeValues()), proc, "brick", "test_brick", 4))//,
     //new Brick(proc, 3),
     //new Space(3, 1),new Space(3, 2))
@@ -106,9 +327,9 @@ object Main extends App {
       //new Note("Test note"),
       //new Constant[Int](1001),
       //new Constant[Int](1001),
-      new Constant[Boolean](1, true,1),
-      new Constant[Boolean](2, true,1),
-      new Constant[Boolean](3, false,1),
+      new Constant[Boolean](1, true,proc1, 1),
+      new Constant[Boolean](2, true,proc1, 1),
+      new Constant[Boolean](3, false,proc1, 1),
       new ContainerBrick(4, "container brick", "", Option(CompositeValues()), proc2, "brick", "containerbrick", 4),
       new ExpandBrick(5, "expand brick", "", Option(CompositeValues()), proc2, "brick", "expandbrick", 5))//,
     //new Brick(proc, 3),
@@ -118,7 +339,6 @@ object Main extends App {
   // init space elems
   proc2.elements_init
 
-  // TODO: Space shit above and below
   /*
   println(proc2.spaces.length)
   println(proc2.spaces.head)

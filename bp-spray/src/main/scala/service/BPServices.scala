@@ -18,24 +18,64 @@ import org.joda.time.format.ISODateTimeFormat
 import org.joda.time.DateTime
 
 import models.DAO._
+import models.DAO.resources._
 
-import models.DAO.BPStationDTO1
+import models.DAO.BPStationDTO
 
+import scala.concurrent.ExecutionContext
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent._
 
-trait BPServices extends HttpService {
+trait BPServices extends HttpService
+ {
+  //this: ECProvider =>
+
+  //implicit val executionContext: ExecutionContext
+
   import main.scala.utils.ElementTracer
   import main.scala.utils.ElementRegistrator
   import main.scala.utils.Keepr
   import MessageJsonProtocol._
+
+
+  import CustomAuthentication._
 
   def BPServiceRoute: Route =
 
   /**
    * Process service
    */
+  path("register") {
+    get
+        complete {
+
+          "Ok"
+        }
+
+  }/*
+   ~
+  path("auth") {
+    post(
+      entity(as[User]) {
+        cred =>
+        complete {
+          CustomAuthentication.authController.user_profile(cred)
+        }
+        })
+  } ~
+  path("whoami") {
+    
+      authenticate(authenticateUser) { user =>
+          complete {
+            Map("name" -> user.email, "token" -> user.token.get).asInstanceOf[Map[String, String]].toJson.toString
+          }
+        }
+     
+    
+  } ~
   path("bprocesses") {
     get(
-      complete(BPDTO.getAll))
+      complete(BPDAO.getAll))
   } ~
   path("bprocesses") {
     post(
@@ -46,7 +86,7 @@ trait BPServices extends HttpService {
           
             println(bprocess)
             //BPDTO.pull(None, bprocess.title, bprocess.business)
-            BPDTO.pull_object(bprocess).toJson.toString
+            BPDAO.pull_object(bprocess).toJson.toString
           //val obj = FirstExample.pull_object(suplier)
           //if (obj.isSuccess) {
           //  suplier.id = Option(obj.get)
@@ -65,52 +105,55 @@ trait BPServices extends HttpService {
   path("bprocess_full" / IntNumber)(id ⇒
     get(
       complete(
-          BPInfo(ProcElemCRUD.findByBPId(id), BPStationDTO.findByBPId(id), BPLoggerDTO.findByBPId(id))
+          BPInfo(ProcElemDAO.findByBPId(id), BPStationDAO.findByBPId(id), BPLoggerDAO.findByBPId(id))
         )
       )) ~
     pathPrefix("bprocess" / IntNumber) { id ⇒
       path("info") {
         get {
-          complete(BPDTO.get(id))
+          complete(BPDAO.get(id))
         } ~
         put { 
               entity(as[BProcessDTO]){ bprocess ⇒
-                complete(BPDTO.update(id, bprocess).toJson.toString)
+                complete(BPDAO.update(id, bprocess).toJson.toString)
               }
         } ~
         delete {
-            complete(BPDTO.delete(id).toJson.toString)
+            complete(BPDAO.delete(id).toJson.toString)
         }
       } ~
       // Blocks
       path("elements") {
         get {
-          complete(ProcElemCRUD.findByBPId(id))
+          complete(ProcElemDAO.findByBPId(id))
         }
       } ~
       path("logs") {
         get {
-          complete(BPLoggerDTO.findByBPId(id))
+          complete(BPLoggerDAO.findByBPId(id))
         }
       } ~
       path("stations") {
         get {
-          complete(BPStationDTO.findByBPId(id))
+          complete(BPStationDAO.findByBPId(id))
         }
       } ~ // Active
       path("active_stations") {
         get {
-          complete(BPStationDTO.areActiveForBP(id))
+          complete(BPStationDAO.areActiveForBP(id))
         }
       } ~ // Last run
       path("last_run") {
         get {
-          complete(BPLoggerDTO.lastRunOfBP(id) match {
+          complete(BPLoggerDAO.lastRunOfBP(id) match {
             case Some(date) => date.toJson.toString
             case _ => "Not found"
             })
         }
       }
+    } ~
+    pathPrefix("businesses" / IntNumber){ id =>
+       complete(ClientDAO.getBusiness(id))
     } ~
     elemsRoute ~
     // Logs
@@ -133,12 +176,12 @@ trait BPServices extends HttpService {
     path("block" / IntNumber) { id =>
       path("info") {
         get {
-          complete(ProcElemCRUD.findById(id))
+          complete(ProcElemDAO.findById(id))
         }
       }
       path("order" / IntNumber) { orderNum =>
         post {
-          complete(ProcElemCRUD.update_order(id, orderNum))
+          complete(ProcElemDAO.update_order(id, orderNum))
         }
       }
     }
@@ -146,31 +189,31 @@ trait BPServices extends HttpService {
   val loggersRoute:Route =
     path("logs" / IntNumber) { id ⇒
       get {
-        complete(BPLoggerDTO.findByBPId(id))
+        complete(BPLoggerDAO.findByBPId(id))
       }
     } ~
     path("log" / IntNumber) { id =>
       get {
-          complete(BPLoggerDTO.findById(id))
+          complete(BPLoggerDAO.findById(id))
       }
     }
 
   val stationsRoute:Route =
   path("stations" / IntNumber) { id ⇒
     get {
-      complete(BPStationDTO.findByBPId(id))
+      complete(BPStationDAO.findByBPId(id))
     }
   } ~
   path("station" / IntNumber) { id =>
     get {
-        complete(BPStationDTO.findById(id))
+        complete(BPStationDAO.findById(id).get)
     }
   }
   val inputRoute:Route =
   // /bprocess/:id/request
     path("request") {
       get {
-        complete(BPRequestScheme TODO)
+        complete("{station: null}")//(BPRequestScheme TODO)
       }
       post {
         /*formFields('color, 'age.as[Int]) { (color, age) =>
@@ -191,7 +234,26 @@ trait BPServices extends HttpService {
   /**
   ** Resources routes
   **/
-  val BusinessesRoute:Route =
-  val EmployeesRoute:Route =
-  val ClientsRoute:Route =
+  val businessesRoute:Route =
+    path("businesses") {
+      get {
+        complete("businesses")
+      }
+    }
+  val employeesRoute:Route =
+    path("employees") {
+      get {
+        complete("employees")
+      }
+    }
+  
+  val clientsRoute:Route = 
+    path("clients") {
+      get {
+        complete("clients")
+      }
+    }*/
+
 }
+
+

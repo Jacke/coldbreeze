@@ -1,6 +1,7 @@
 package models.DAO.resources
 
 import models.DAO.driver.MyPostgresDriver.simple._
+import models.DAO.conversion.DatabaseCred
 
 class Businesses(tag: Tag) extends Table[(Option[Int], String)](tag, "businesses") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
@@ -18,7 +19,8 @@ class Businesses(tag: Tag) extends Table[(Option[Int], String)](tag, "businesses
 case class BusinessDTO(var id: Option[Int], title: String)
 
 object BusinessDAO {
-  import models.DAO.FirstExample.database
+  import scala.util.Try
+  import DatabaseCred.database
 
   val businesses = TableQuery[Businesses]
   
@@ -42,7 +44,7 @@ object BusinessDAO {
       val q3 = for { s ← businesses if s.id === k } yield s <> (BusinessDTO.tupled, BusinessDTO.unapply _)
       println(q3.selectStatement)
       println(q3.list)
-      q3.list.head //.map(Supplier.tupled(_))
+      q3.list.headOption //.map(Supplier.tupled(_))
   }
   /**
    * Update a business
@@ -80,4 +82,10 @@ object BusinessDAO {
     //}
   }
 
+   def ddl_create = {
+    database withSession {
+      implicit session =>
+      businesses.ddl.create
+    }
+  }
 }

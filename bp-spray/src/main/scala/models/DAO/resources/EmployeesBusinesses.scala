@@ -2,14 +2,17 @@ package models.DAO.resources
 
 
 import models.DAO.driver.MyPostgresDriver.simple._
+import scala.slick.model.ForeignKeyAction
+import models.DAO.resources.BusinessDTO._
+import models.DAO.resources.EmployeeDAO._
+import models.DAO.conversion.DatabaseCred
 
-
-class EmployeesBusinesses(tag: Tag) extends Table[Int, Int)](tag, "employees_businesses") {
+class EmployeesBusinesses(tag: Tag) extends Table[(Int, Int)](tag, "employees_businesses") {
   def employee_id = column[Int]("employee_id")
   def business_id = column[Int]("business_id")
   
-  def employeeFK = foreignKey("employee_fk", employee_id, Employees)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def businessFK = foreignKey("business_fk", business_id, Businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def employeeFK = foreignKey("employee_fk", employee_id, models.DAO.resources.EmployeeDAO.employees)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def businessFK = foreignKey("business_fk", business_id, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (employee_id, business_id) //<> (Supplier.tupled, Supplier.unapply)
 
@@ -17,7 +20,8 @@ class EmployeesBusinesses(tag: Tag) extends Table[Int, Int)](tag, "employees_bus
 
 
 object EmployeesBusinessDAO {
-  import models.DAO.FirstExample.database
+  import scala.util.Try
+  import DatabaseCred.database
 
   val employees_businesses = TableQuery[EmployeesBusinesses]
 
@@ -37,13 +41,20 @@ object EmployeesBusinessDAO {
 
   def deleteByEmployee(employee_id: Int) = database withSession { implicit session ⇒
 
-    employees_businesses.where(_.id === employee_id).delete
+    employees_businesses.where(_.employee_id === employee_id).delete
   }
 
   def getAll = database withSession {
     implicit session ⇒
       val q3 = for { s ← employees_businesses } yield s 
-      q3.list.sortBy(_.employee_id)
+      q3.list.sortBy(_._1)
+  }
+
+  def ddl_create = {
+    database withSession {
+      implicit session =>
+      employees_businesses.ddl.create
+    }
   }
 
 }

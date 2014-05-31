@@ -1,6 +1,7 @@
 package main.scala.simple_parts.process
 
 import main.scala.utils.Space
+import main.scala.bprocesses.BProcess
 import scala.util.{Try, Success, Failure}
 /**
  * @author Sobolev
@@ -13,6 +14,7 @@ trait ProcElems {
   val refresh = false
   var order: Int
   val values: Option[CompositeValues]
+  val bprocess: BProcess
 
   def invoke()
   def init() = {
@@ -45,4 +47,5 @@ case class CompositeValues(
       a_bool   = n_a_bool
       b_bool   = n_b_bool
       }
+  override def toString() = s"$a_string, $a_string, $a_int, $b_int, $a_bool, $b_bool"
 }

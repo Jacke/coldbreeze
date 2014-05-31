@@ -10,6 +10,9 @@ angular.module('minorityApp.controllers', []).
   controller('BProcessListCtrl', [function () {
 
   }])
+  .controller('UserController', [function () {
+
+  }])
   .controller('BProcessDetailCtrl', [function () {
 
   }])
@@ -25,6 +28,117 @@ angular.module(
     'minorityApp.services'
   ]
 );
+
+/**
+ * Auth
+ */
+minorityControllers.controller('UserController', ['$scope', '$http', '$window', '$location', 'toaster', '$rootScope',
+  function ($scope, $http, $window, $location, toaster, $rootScope) {
+    $scope.signin = function(user) {
+      console.log(user)
+      $http.post('http://127.0.0.1:8080/auth', user)
+        .success(function (data) {
+            toaster.pop('success', "title", "text");
+            $scope.$broadcast('show error', 'settingsPage', 'INVALID_DATE'); // to show error msg
+            $rootScope.$emit("isLogged", {profile: data});
+
+            $window.sessionStorage.setItem('token', data.token);
+            $location.path('/');
+        })
+        .error(function () {
+            $window.sessionStorage.removeItem('token');
+            toaster.pop('error', "title", '<ul><li>Username or password invalid.</li></ul>', null, 'trustedHtml');
+        });
+    };
+}]);
+/*
+ * Reg
+ */ 
+minorityControllers.controller('RegController', ['$scope', '$http', '$window', '$location', 'toaster', 
+  function ($scope, $http, $window, $location, toaster) {
+ 
+    $scope.reg = function(user) {
+      $http.post('http://127.0.0.1:8080/register', user)
+        .success(function (data) {
+            // Stores the token until the user closes the browser window.
+            console.log(data);
+            $location.path('/auth');
+        })
+        .error(function () {
+            toaster.pop('error', "title", '<ul><li>Error. Please try later.</li></ul>', null, 'trustedHtml');
+        });
+    };
+}]);
+/*
+ * Profile
+ */
+minorityControllers.controller('ProfileController', ['$scope', '$http', '$window', '$location', 'toaster', 
+  function ($rootScope, $scope, $http, $window, $location, toaster) {
+
+    
+    $scope.retrive = function(user) {
+        var token = $window.sessionStorage.getItem('token')
+      if (token) {
+        $http.defaults.headers.common['Access_Token'] = token;
+        $http.defaults.headers.common['Access_Name'] = 'John'; 
+ 
+        $http.post('http://127.0.0.1:8080/whoami', {headers:  {'Access_Token': token, 'Access_Name': 'John'}})
+          .success(function (profile) {
+              // Stores the token until the user closes the browser window.
+              console.log(profile);
+              $scope.profile = profile;
+              
+          })
+          .error(function () {
+          });
+      }
+      else {
+        toaster.pop('error', "title", '<ul><li>Forbidden</li></ul>', null, 'trustedHtml');
+      };
+    }
+
+    $scope.retrive();
+}]);
+
+minorityControllers.controller('UserInfoCtrl', function ($rootScope, $scope, $http, $window, $location) {
+  $scope.isLogged = false;
+  $scope.user = {};
+
+  $scope.retrive = function(user) {
+        var token = $window.sessionStorage.getItem('token')
+      if (token) {
+        $http.defaults.headers.common['Access_Token'] = token;
+        $http.defaults.headers.common['Access_Name'] = 'John'; 
+ 
+        $http.post('http://127.0.0.1:8080/whoami', {headers:  {'Access_Token': token, 'Access_Name': 'John'}})
+          .success(function (profile) {
+              // Stores the token until the user closes the browser window.
+              console.log(profile);
+              $scope.user = profile;
+              $scope.isLogged = true;
+          })
+          .error(function () {
+          });
+      };
+      } 
+
+  $rootScope.$on("isLogged", function (event, args) {
+     console.log(">>>>>>>>>>>>>>>>>");
+     $scope.user = args.profile;
+     $scope.isLogged = true;
+  });
+  $scope.logout = function() {
+      $window.sessionStorage.removeItem('token');
+      $scope.isLogged = false;
+      $scope.user = {};
+      $location.path('/');
+  }
+
+  $scope.retrive();
+});
+
+
+
 
 
 // INDEX

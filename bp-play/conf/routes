@@ -1,0 +1,58 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Enable webjar based resources to be returned
+GET         /webjars/*file              controllers.WebJarAssets.at(file)
+
+# Home page
+GET         /                           controllers.Application.index()
+
+# BProcess
+#GET         /bprocesses                 BPDAO.getAll
+#POST        /bprocesses                 entity(as[BProcessDTO])        BPDAO.pull_object(bprocess)
+#GET         /bprocess_full/:id          BPInfo(ProcElemDAO.findByBPId(id), BPStationDAO.findByBPId(id), BPLoggerDAO.findByBPId(id))
+#GET         /bprocess/:id/info
+#GET         /bprocess/:id/elements        ProcElemDAO.findByBPId(id)
+#GET         /bprocess/:id/logs            BPLoggerDAO.findByBPId(id)
+#GET         /bprocess/:id/stations        BPStationDAO.findByBPId(id)
+#GET         /bprocess/:id/active_stations BPStationDAO.areActiveForBP(id)
+#GET         /bprocess/:id/last_run        BPLoggerDAO.lastRunOfBP(id)
+
+#GET         /businesses/:id  ClientDAO.getBusiness(id)
+
+#GET  /block/:id/info                ProcElemDAO.findById(id)
+#POST /block/:id/order               ProcElemDAO.update_order(id, orderNum)
+#GET  /logs/:id                      BPLoggerDAO.findByBPId(id)
+#GET  /log/:id                       BPLoggerDAO.findById(id)
+#GET  /stations/:id                  BPStationDAO.findByBPId(id)
+#GET  /station/:id                   BPStationDAO.findById(id)
+#POST /request                       entity(as[InvokeRequest])
+
+
+GET         /bprocess/index             controllers.Application.bprocesses()
+GET         /bprocess                   controllers.Application.bprocess()
+
+# Sign up
+GET         /signup                     controllers.Authentication.prepareSignup
+POST        /signup                     controllers.Authentication.sendSignupEmail
+GET         /register/:token            controllers.Authentication.prepareRegister(token: String)
+POST        /register/:token            controllers.Authentication.register(token: String)
+
+# Send token by email
+GET         /api/v1/token/get           controllers.Application.getToken()
+GET         /api/v1/token/              controllers.Application.readToken()
+GET         /api/v1/token/:token        controllers.Application.readByToken(token: String)
+
+# Reset password
+GET         /reset                      controllers.Authentication.prepareReset
+POST        /reset                      controllers.Authentication.sendResetEmail
+
+# Authentication
+GET         /login                      controllers.Authentication.login
+POST        /login                      controllers.Authentication.authenticate
+GET         /logout                     controllers.Authentication.logout
+
+# Map the JS resource paths
+GET         /*file                      controllers.Assets.at(path="/public", file)
+

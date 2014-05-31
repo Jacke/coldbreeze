@@ -1,21 +1,23 @@
 package models.DAO
 
 import models.DAO.driver.MyPostgresDriver.simple._
+import scala.slick.model.ForeignKeyAction
 
-class BPSpaces(tag: Tag) extends Table[(Option[Int], Int, Int, Int)](tag, "bpspaces") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
-  def process = column[Int]("process_id")
+class BPSpaces(tag: Tag) extends Table[BPSpaceDTO](tag, "bpspaces") {
+  def id        = column[Int]("id", O.PrimaryKey, O.AutoInc)
+  def process   = column[Int]("process_id")
+  def index     = column[Int]("index")
+  def container = column[Boolean]("container", O.Default(false))
+  def subbrick  = column[Boolean]("subbrick",  O.Default(false))
 
-  def index   = column[Int]("index")
-  def brick_owner     = column[Int]("brick_owner")
 
 
-
-  def * = (id.?, process, index, brick_owner) //<> (Supplier.tupled, Supplier.unapply)
+  def * = (id.?, process, index, container, subbrick) <> (BPSpaceDTO.tupled, BPSpaceDTO.unapply)
 
 }
+case class BPSpaceDTO(id: Option[Int], process: Int, index:Int, container:Boolean, subbrick:Boolean)
 
-object BPSpaceDTO {
+object BPSpaceDAO {
   val bpspaces = TableQuery[BPSpaces]
 
 

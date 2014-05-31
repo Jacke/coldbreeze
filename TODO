@@ -1,4 +1,44 @@
 
+объявления
+оптимизация изображений
+
+второй квадратик новостная лента мбуз дкгб 
+ 
+вопрос ответ в режиме онлайн
+
+
+
+Article of element updating:
+ 
+        +--------------+
+        |   Block1     |
+        |              |
+        +--------------+
+
+        +--------------+    +----------------+      +--------------+
+        |   Brick2     +---->   Expand3      |   +--+   Expand5    |
+        |              |    |                |   |  |              |
+        +--------------+    +----------------+   |  +--------------+
+                            +----------------+   |  +--------------+
+                            |                |   |  |   Expand6    |
+                            |   Brick4       +---+  |              |
+                            |                |      |              |
+                            +----------------+      +--------------+
+                            +----------------+
+                            |                |
+                            |   Expand7      |
+                            |                |
+                            +----------------+
+Обновление происходит если начинать с блоков, которые позже expand.
+Например если начало идет с 4 блока
+то блок 3 обновится
+если начало идет с 6 блока, то блоки 3 и 5 обновятся
+Если начало идет с 7 блока, то блоки 3 5 6 должны обновится
+Для проверки обновления существует метод
+  updateChecker(element, station_checker:Boolean = false) of BPLogger class
+По умолочанию, он проверяет expands в логах, но при true вторым аргументом, он будет скать по шагам
+
+Далее запускается обновление у всех элементов в процессе, которые требуют обновлений(EXPAND, TEMPORARLY(INPUTS PLACEHOLDER))
 
 
 
@@ -6,21 +46,42 @@
 
 
 
+----------
+Instanciate
+----------
+
+
+
+----------
+Sygnals
+----------
+Paused
+----------
+Codelint
+----------
+Station & logger after every move update to db observer
+----------
+update element
+----------
+order assign, movements with orders
+----------
+autojoin test
+----------
+
+----------
+ischeme, icall
+----------
+condition
+----------
+ownership resact block
+----------
+CRUD 
+------------
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-* RunFrom TRY
 
 
 * Input try
@@ -29,87 +90,47 @@ http://plnkr.co/edit/mNs6HB86p6ioByul0GD9?p=preview
 http://embed.plnkr.co/TAXmsQlSkYhY2isCKIAw/preview
 
 
+-------------------------------------------------------
+-------------------------------------------------------
 * Data sync from logger to composite values of proc elements
+
+
 * TempItem Restore(expands, input)
-* Space schema basic
-* JOIN 
-http://stackoverflow.com/questions/16707373/inner-join-doesnt-work-in-slick
-http://stackoverflow.com/questions/14377023/outer-join-with-scala-slick
-http://stackoverflow.com/questions/22436428/join-tables-in-different-databases-using-slick-2-with-auto-generated-data-model
+* RunFromSpace
+* Space Data sync from logger to composite values of proc elements
+* Space TempItem Restore(expands, input)
 
 
 
+Input -> Input call -> Station
 
 
 
-* SSL http://spray.io/documentation/1.1-M7/spray-can/http-client/#ssl-support
-* Spray outlook https://github.com/ctcarrier/ttpresentation/tree/master/src/main/scala/com/ttpresentation https://github.com/ctcarrier/bl-rest
-* PASSWORD SALT 
-https://github.com/scalapenos/spray-auth/blob/master/src/test/scala/scalapenos/spray/auth/CryptoSupportSpec.scala 
-https://github.com/agrublev/angularLocalStorage
-
-* Connection limit https://github.com/spray/connection-test
 * Error ajax
 http://kufli.blogspot.ru/2013/08/sprayio-rest-service-exception.html
 http://plnkr.co/edit/lzYaZt?p=preview
 http://www.egobrain.ru/blog/2014/02/13/obrabotka-oshibok-poumolchaniiu-angularjs/
 
+
+
 * Security Restrict DTO Action(bprocess, procelems, space, check access)
 
-
-
-
-
-
-
-
-* Space Data sync from logger to composite values of proc elements
-* Space TempItem Restore(expands, input)
-
-  * Ownings
-  * Companion ResAct -> Input, Times ...
-
-
-  ** Input block while proc/context running(wait for input if it paused)
-
-
-
-
-
-
-
-* Id splitting to trait, restrict ID using in code
 * Change ID to LONG everywhere
 * selector attributes for Station while INPUT REQUEST occurred
 
 
 
 
+  * Ownings
+  * Companion ResAct -> Input, Times ...
 
 
 * Blocks {
-
-  * RunFromSpace
-
-Blocks
   ** Condition
   * Confirm
-  * Collection
-  * Result
-  * Checker
-  * Stopper Pause
-  * Loop - Cycle
+
   || Process owning, viewers, access // by owning tables Employees/Clients/Firm + Groups assigns
   * scope ctx, bp views
-
-
-
-  * bRICK pOINTER FOR rEStYPE(INTVAL)
-  * GroupPointer fetch before invoke
-  * Composite values getter and setters
-
-  * error handling [checker before invoke, brick error - though invoking] /isOptionalLink/* checker for arguments and params [ ]
-  * Dopel feature
 
 }
 
@@ -122,19 +143,42 @@ Blocks
 
 
 
-* Assembled
-  * BProcess returns
-  * CTX[Res -> BPS]
-  * FrameMarker
-  * main.scala.maps.FrameLink ctx-ctx links
-  ** main.scala.utils.Space || Make support for frame elements
-  * Assembly Function [ Provide access to triple (object, params, arguments)] 1. req(el, in), assebmly(frame), running
-  ** [* CHAIN Invoke -> Process -> Process ]
-  * Return in BProcess  [ Blocks that comes after process invoked ]
-  * Return in ProcElems [ Block that return blocks and arg&params ] 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 * Misc
-  
+
+    * error handling [checker before invoke, brick error - though invoking] /isOptionalLink/* checker for arguments and params [ ]
+    * Dopel feature
+
   * Graph.js
 
   /** 2 Books read **/
@@ -154,7 +198,17 @@ Blocks
   * Observer block http://www.activiti.org/userguide/index.html#bpmnEvents
   * Triggers(that runs something just from template and request[POST /auth/token?acton=...])
 
-  * Merchant?
+* Assembled
+  * BProcess returns
+  * CTX[Res -> BPS]
+  * FrameMarker
+  * main.scala.maps.FrameLink ctx-ctx links
+  ** main.scala.utils.Space || Make support for frame elements
+  * Assembly Function [ Provide access to triple (object, params, arguments)] 1. req(el, in), assebmly(frame), running
+  ** [* CHAIN Invoke -> Process -> Process ]
+  * Return in BProcess  [ Blocks that comes after process invoked ]
+  * Return in ProcElems [ Block that return blocks and arg&params ]
+
   * Bridge
   * Behav Resources
   * Behav model methods and elements

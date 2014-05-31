@@ -17,18 +17,6 @@ var expands: Array[ProcElems] = Array.empty[ProcElems]
 def init { }
 
 // Searcher
-///////////////////////def searchObjById(id: Int, space_role: String) {
-///////////////////////  if (space_role == "subbrick") {
-///////////////////////    subbricks.find(obj => obj.id == id)
-///////////////////////  }
-///////////////////////  if (space_role == "container") {
-///////////////////////    container.find(obj => obj.id == id)
-///////////////////////  }
-///////////////////////  if (space_role == "expands") {
-///////////////////////    expands.find(obj => obj.id == id)
-///////////////////////  }
-///////////////////////  else { None }
-///////////////////////}
 def searchObj(look:ProcElems,space_role: String) {
   if (space_role == "subbrick") {
     subbricks.find(obj => obj == look)
@@ -42,13 +30,13 @@ def searchObj(look:ProcElems,space_role: String) {
 }
 def levelOfObject(obj: ProcElems):String = {
   if (subbricks.contains(obj)) { // && is_subbricks) {
-    "SubBricks"
+    "subbrick"
   }
   if (container.contains(obj)) { // && is_container) {
-    "Container"
+    "container"
   } 
   if (expands.contains(obj)) { // && is_expander) {
-    "Expands"
+    "expands"
   }
   else {
   "None"
@@ -56,33 +44,50 @@ def levelOfObject(obj: ProcElems):String = {
 }
 def getBrick = brick_owner
 
-def spaceOrderNum(c: Array[ProcElems]):Int = c.sortBy(_.order).last.order + 1
+def spaceOrderNum(c: Array[ProcElems]):Int = c.sortBy(_.order).last.order + 1 // TODO: UNSTABLE!!!!
+
+def getOrderNum(tpe: String):Int = tpe match {
+  case "subbrick" => subbricks.length + 1
+  case "container" => container.length + 1
+  case "expands" => expands.length + 1
+  case _ => 0
+}
+def findByOrder(tpe: String, order: Int):Option[ProcElems] = tpe match {
+  case "subbrick" => subbricks.find(el => el.order == order)
+  case "container" => container.find(el => el.order == order)
+  case "expands" => expands.find(el => el.order == order)
+  case _ => None
+}
+def space_elems(space_type: String) = space_type match {
+  case "subbrick" => subbricks
+  case "container" => container
+  case "expands" => expands
+  case _ => expands
+}
+
 
 def allElements:List[ProcElems] = (subbricks ++ container ++ expands).toList
 
 // Element control
 def addToSpace(elem: ProcElems, space_role:String) {
   if (space_role == "subbrick") {
-    // TODO: Space order
-    //println(spaceOrderNum(subbricks))
+    elem.order = getOrderNum(space_role)
     subbricks = subbricks :+ elem.order.asInstanceOf[SubBrick]
   }
   if (space_role == "container") {
-    // TODO: Space order
-    println(spaceOrderNum(container))
+    elem.order = getOrderNum(space_role)
     container = container :+ elem
   }
   if (space_role == "expands") {
-    // TODO: Space order
-    println(spaceOrderNum(expands))
+    elem.order = getOrderNum(space_role)
     expands = expands :+ elem
   }
 }
 def updateElem(old: ProcElems, newone: ProcElems) {
   levelOfObject(old) match {
-    case "SubBricks" => subbricks.update(subbricks.indexOf(old), newone.asInstanceOf[SubBrick])
-    case "Container" => container.update(container.indexOf(old), newone)
-    case "Expands"   => expands.update(expands.indexOf(old), newone)
+    case "subbrick" => subbricks.update(subbricks.indexOf(old), newone.asInstanceOf[SubBrick])
+    case "container" => container.update(container.indexOf(old), newone)
+    case "expands"   => expands.update(expands.indexOf(old), newone)
     case _           => None
   }
 }

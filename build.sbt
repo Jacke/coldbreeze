@@ -14,7 +14,6 @@
 
 //resolvers ++= Seq("snapshots", "releases").map(Resolver.sonatypeRepo)
 
-libraryDependencies += "com.lihaoyi.utest" % "utest_2.10" % "0.1.1"
 
 testFrameworks += new TestFramework("utest.runner.JvmFramework")
 

@@ -11,7 +11,7 @@ trait BPLinkContainer[T] extends LinkContainer { self =>
   
   var links: Array[BPLink] = _
 
-  def add_link(x: T) = links :+ x
+  //def add_link(x: T) = links :+ x
 
   def update_link(old: ProcElems, newone: ProcElems) = {
 
@@ -41,7 +41,7 @@ trait FrameLinkContainer[T] extends LinkContainer { self =>
   
   var links: Array[T] = _
 
-  def add_link(x: T) = links :+ x
+  //def add_link(x: T) = links :+ x
 
   //def showLinks = links.map(s ⇒ s.from.toString
   //  + Console.RED + " -> " + Console.WHITE +

@@ -7,7 +7,7 @@ import com.github.nscala_time.time.Imports._
  * BPLogger
  */
 case class BPLoggerResult(
-                           element: ProcElems,
+                           val element: ProcElems,
                            composite: Option[CompositeValues],
                            order: Int,
                            space: Option[Int],
@@ -15,21 +15,60 @@ case class BPLoggerResult(
                            invoked: Boolean = false,
                            expanded: Boolean = false,
                            container: Boolean = false,
-                           date: org.joda.time.DateTime = DateTime.now)
+                           date: org.joda.time.DateTime = DateTime.now,
+                           var step: Int = 0) extends BPLoggerUtil {
+  step = log_step_inc(element.bprocess, element)
+}
+trait BPLoggerUtil {
+  val space: Option[Int]
+  def log_step_inc(bp: BProcess, el: ProcElems):Int =
+      if (this.space.isDefined && el.space_id.isDefined) {
+          val elemLogs = bp.logger.logs.filter(log => log.space.isDefined && log.space == Some(el.space_id.get.index)).sortBy(_.step)
+
+        if (elemLogs.length < 1)
+          1
+        else
+          elemLogs.last.step + 1
+      }
+      else {
+        val elemLogs = bp.logger.logs.sortBy(_.step)
+        if (elemLogs.length < 1)
+          1
+        else
+          elemLogs.last.step + 1
+    }
+}
+
 class BPLogger {
-  var logs: Array[BPLoggerResult] = Array.empty
+  var logs: Array[BPLoggerResult] = Array.empty[BPLoggerResult]
   def log(result: BPLoggerResult) = {
-    //Thread.sleep(1000)
     logs = logs :+ result
   }
   def isInvoked(el: ProcElems):Boolean = {
     logs.find(log => log.order == el.order).get.invoked
   }
-  def valChanged(el: ProcElems) = {
-    val target = logs.find(log => log.order == el.order)
+  def isExpanded(el: ProcElems):Boolean = {
+    logs.find(log => log.order == el.order && log.invoked == false).get.expanded
+  }
+  def valChanged(el: ProcElems):Boolean = {
+    val target = logs.find(log => log.element == el)
     if (target.isDefined) {
-      el.values == target.get.composite
+      el.values != target.get.composite
     } else false
+  }
+
+  /**
+   * ProcElems that are changed own CV
+   * @param el
+   * @return
+   */
+  def valChanger(el: ProcElems):CompositeValues = {
+    val target = logs.find(log => log.element == el)
+    target.get.composite.get
+  }
+
+  def updateExpChecker(el: ProcElems):Boolean = {
+   logs.find(log => log.order == el.order && log.space.getOrElse(0) == el.space_id.get.index && log.expanded && log.invoked).isDefined
   }
 }
 
