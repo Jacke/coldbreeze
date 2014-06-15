@@ -1,10 +1,14 @@
 package main.scala.bprocesses
 
+import bprocesses.{BPStationState, BPStationLogger}
+
 class BPStation(val bp: BProcess) {
   /**
    * Mutable statuses of process
    */
   val logger = new BPLogger
+  val station_logger = new BPStationLogger
+
   var state = true
   var step = 0
   var space = 0
@@ -121,4 +125,23 @@ class BPStation(val bp: BProcess) {
       |paused         $paused
       |****************
     """.stripMargin
+
+  /**
+   * Represent BPStation variables as
+   * @return BPStationState object
+   */
+  def state_represent: BPStationState = new BPStationState(
+    state = this.state,
+    step = this.step,
+    space = this.space,
+    container_step = this.container_step,
+    expand_step = this.expand_step,
+    container_state = this.container_state,
+    expand_state = this.expand_state,
+    started = this.started,
+    finished = this.finished,
+    inspace = this.inspace,
+    incontainer = this.incontainer,
+    inexpands = this.inexpands,
+    paused = this.paused)
 }

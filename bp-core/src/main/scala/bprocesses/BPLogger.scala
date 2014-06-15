@@ -40,10 +40,36 @@ trait BPLoggerUtil {
 }
 
 class BPLogger {
+  /**
+   * Logs after computation
+   */
   var logs: Array[BPLoggerResult] = Array.empty[BPLoggerResult]
+  /**
+   * Logs before computation
+   */
+  var logs_before: Array[BPLoggerResult] = Array.empty[BPLoggerResult]
+
+  def logBefore(result: BPLoggerResult) = {
+    logs_before = logs_before :+ result
+  }
   def log(result: BPLoggerResult) = {
     logs = logs :+ result
   }
+
+  /**
+   * Return map of steps and 2 BPLoggerResults(before and after computation)
+   * @return Map [Step, List(BPLoggerResultBefore, BPLoggerResultAfter)
+   */
+  def beforeAfter:Map[Int, List[BPLoggerResult]] = {
+    val before = logs_before map { l => (l.step, l) } toMap
+    val after = logs map { l => (l.step, l) } toMap
+    val merged = before.toSeq ++ after.toSeq
+
+    val grouped = merged.groupBy(_._1)
+    val cleaned = grouped.mapValues(_.map(_._2).toList)
+    cleaned
+  }
+
   def isInvoked(el: ProcElems):Boolean = {
     logs.find(log => log.order == el.order).get.invoked
   }

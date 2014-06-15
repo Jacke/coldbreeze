@@ -4,14 +4,51 @@ import spray.revolver.RevolverPlugin.Revolver
 import sbtrelease.ReleasePlugin._
 import com.typesafe.sbt.SbtScalariform
 import com.typesafe.sbt.SbtScalariform.ScalariformKeys
+import com.typesafe.sbt.web.Import._
+import com.typesafe.sbt.gzip.Import._ 
+
+import com.typesafe.sbt.digest.Import._
+import com.typesafe.sbt.rjs.Import._
 //import twirl.sbt.TwirlPlugin._
 
 object Settings {
     import com.markatta.sbttaglist.TagListPlugin
     TagListPlugin.tagListSettings
 
+    // sbt-web configuration
+    // https://github.com/sbt/sbt-web
+    //
+
+    // Configure the steps of the asset pipeline (used in stage and dist tasks)
+    // rjs = RequireJS, uglifies, shrinks to one file, replaces WebJars with CDN
+    // digest = Adds hash to filename
+    // gzip = Zips all assets, Asset controller serves them automatically when client accepts them
+    pipelineStages := Seq(rjs, digest, gzip)
+
+    // RequireJS with sbt-rjs (https://github.com/sbt/sbt-rjs#sbt-rjs)
+    // ~~~
+    RjsKeys.paths += ("jsRoutes" -> ("/jsroutes" -> "empty:"))
+
+    //RjsKeys.mainModule := "main"
+
+    // Asset hashing with sbt-digest (https://github.com/sbt/sbt-digest)
+    // ~~~
+    // md5 | sha1
+    //DigestKeys.algorithms := "md5"
+    //includeFilter in digest := "..."
+    //excludeFilter in digest := "..."
+
+    // HTTP compression with sbt-gzip (https://github.com/sbt/sbt-gzip)
+    // ~~~
+    // includeFilter in GzipKeys.compress := "*.html" || "*.css" || "*.js"
+    // excludeFilter in GzipKeys.compress := "..."
+
+    // JavaScript linting with sbt-jshint (https://github.com/sbt/sbt-jshint)
+    // ~~~
+    // JshintKeys.config := ".jshintrc"
+
   lazy val basicSettings = seq(
-    organization  := "minority-bp",
+    organization  := "net.empireinc",
     scalaVersion  := "2.11.0",
     resolvers    ++= Dependencies.resolutionRepos,
     //org.scalastyle.sbt.ScalastylePlugin.Settings,

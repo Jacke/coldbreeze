@@ -1,0 +1,21 @@
+@(form: Form[(String, String)])(implicit request: RequestHeader)
+@main("Login") {
+    <h1>Login</h1>
+    @form.globalError.map { error =>
+      <p class="error">@error.message</p>
+    }
+    <p>Or <a href="/signup">Signup</a></p>
+    @helper.form(routes.Authentication.authenticate) {
+      @helper.CSRF.formField
+      <p>
+        <input type="email" name="email" placeholder="Email" id="email" value="@form("email").value" />
+      </p>
+      <p>
+        <input type="password" name="password" placeholder="Password" id="password" />
+      </p>
+      <p><a href="/reset">Forgot you passowrd?</a></p>
+      <p>
+        <button type="submit" id="login-button">Login</button>
+      </p>
+    }
+}

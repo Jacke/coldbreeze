@@ -16,6 +16,7 @@ object Dependencies {
 
   val async           = "org.scala-lang.modules"    %% "scala-async"            % "0.9.1"
   val shapeless       = "com.chuusai"               %% "shapeless"              % "1.2.4"
+  val dispatch        = "net.databinder.dispatch"   %% "dispatch-core"          % "0.11.1"
   val scalaz          = "org.scalaz"                %% "scalaz-core"            % "7.0.6"
   val slick           = "com.typesafe.slick"        %  "slick_2.11.0-RC4"       % "2.1.0-M1"
 //val slickpg         = "com.github.tminglei"       % "slick-pg_2.11"           % "0.6.0-M1"
@@ -26,8 +27,18 @@ object Dependencies {
   val postgres        = "postgresql"                %   "postgresql"            % "9.1-901.jdbc4"
 //val mongodb         = "org.mongodb"               %% "casbah"                 % "2.7.0-RC0"
 
-  val play            = "org.webjars"               %% "webjars-play"           % "2.3.0-RC1-1"
-  val angular         = "org.webjars"               % "angularjs"               % "1.2.13"
+  val play            = "org.webjars"               %% "webjars-play"           % "2.3.0"
+  val playslick       = "com.typesafe.play"         %  "play-slick_2.10"        % "0.7.0-M1"
+  val playauth        = "jp.t2v"                    %% "play2-auth"             % "0.12.0"
+  val playctrl        = "jp.t2v"                    %% "stackable-controller"   % "0.4.0"
+  val playflyway      = "com.github.tototoshi"      %% "play-flyway"            % "1.1.0"
+  val angular         = "org.webjars"               %  "angularjs"              % "1.2.16-2"  exclude("org.webjars", "jquery")
+  val requirejs       = "org.webjars"               %  "requirejs"              % "2.1.11-1"
+  val underscore      = "org.webjars"               %  "underscorejs"           % "1.6.0-3"
+  val jquery          = "org.webjars"               %  "jquery"                 % "1.11.1"
+  val bootstrap       = "org.webjars"               %  "bootstrap"              % "3.1.1-1"   exclude("org.webjars", "jquery")
+
+
   val bcrypt          = "com.github.t3hnar"         % "scala-bcrypt_2.11"       % "2.4"
   val mailer          = "com.typesafe"              % "play-plugins-mailer_2.10"% "2.2.0"
   val cache           = "com.typesafe.play"         %% "filters-helpers"        % "2.3.0-RC1" 

@@ -1,5 +1,8 @@
 import sbt._
 import Keys._
+import com.typesafe.sbt.web.Import._
+import com.typesafe.sbt.web._
+
 import play.PlayScala
 import play.Play.autoImport._
 import PlayKeys._
@@ -12,7 +15,7 @@ object Build extends Build {
   mainClass := Some("main.scala.BPServiceApp")
 
   lazy val root = Project("root", file("."))
-    .aggregate(bpCore, bpSpray, bpPlay)
+    .aggregate(bpCore, bpDao, bpWeb)
     .settings(basicSettings: _*)
     //.settings(formatSettings: _*)
     .settings(noPublishing: _*)
@@ -26,13 +29,13 @@ object Build extends Build {
 
     .settings(
       libraryDependencies ++=
-        List(async, reflect, scalaz, nscala, play, scalatest, scalaLog, logback, sprayClient, hdrHistogram))
+        List(async, reflect, dispatch, scalaz, nscala, play, scalatest, scalaLog, logback, sprayClient, hdrHistogram))
         //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
         //provided(logback) ++
         //test(scalatest, akkaTestKit, sprayTestkit, akkaSlf4j, logback))
 
 
-  lazy val bpSpray = Project("bp-spray", file("bp-spray"))
+  lazy val bpDao = Project("bp-dao", file("bp-dao"))
     .settings(basicSettings: _*)
     //.settings(formatSettings: _*)
     .settings(revolverSettings: _*)
@@ -43,17 +46,25 @@ object Build extends Build {
         //test(scalatest, akkaTestKit, sprayTestkit))
     .dependsOn(bpCore)
 
-  lazy val bpPlay = Project("bp-play", file("bp-play"))
+  lazy val bpWeb = Project("bp-web", file("bp-web"))
     .enablePlugins(PlayScala)
+    .enablePlugins(SbtWeb)
     .settings(basicSettings: _*)
     //.settings(formatSettings: _*)
     .settings(revolverSettings: _*)
     .settings(
       libraryDependencies ++=
-        List(async, akkaActor, akkaSlf4j, slick, play, cache, filter, jdbc, anorm, shapeless, mailer, angular, scalatest, reflect, bcrypt, postgres, logbackClassic, scalaLog, hdrHistogram))
+        List(async, akkaActor, akkaSlf4j, slick, play, 
+          requirejs,
+          underscore,
+          jquery,
+          bootstrap, 
+          angular,
+          
+      playauth, playflyway, playctrl, cache, filter, jdbc, anorm, shapeless, mailer, scalatest, reflect, bcrypt, postgres, logbackClassic, scalaLog, hdrHistogram))
         //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
         //test(scalatest, akkaTestKit, sprayTestkit))
-    .dependsOn(bpCore)
+    .dependsOn(bpCore, bpDao)
 
 
 

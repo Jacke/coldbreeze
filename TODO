@@ -1,6 +1,5 @@
 
 объявления
-оптимизация изображений
 
 второй квадратик новостная лента мбуз дкгб 
  
@@ -47,37 +46,45 @@ Article of element updating:
 
 
 ----------
+- Play Slick
+
+
+https://github.com/mohiva/play-silhouette
+http://securesocial.ws/guide/user-service.html
+
+
+
+
+
+
+
+
+
+
+----------
+----------
 Instanciate
 ----------
-
-
-
 ----------
-Sygnals
-----------
-Paused
-----------
-Codelint
 ----------
 Station & logger after every move update to db observer
 ----------
-update element
 ----------
-order assign, movements with orders
 ----------
 autojoin test
 ----------
-
 ----------
 ischeme, icall
 ----------
-condition
+condition through sygnals
 ----------
-ownership resact block
 ----------
-CRUD 
+CRUD
+* RunFromSpace
 ------------
+* Security Restrict DTO Action(bprocess, procelems, space, check access)
 
+* Change ID to LONG everywhere
 
 
 
@@ -92,16 +99,6 @@ http://embed.plnkr.co/TAXmsQlSkYhY2isCKIAw/preview
 
 -------------------------------------------------------
 -------------------------------------------------------
-* Data sync from logger to composite values of proc elements
-
-
-* TempItem Restore(expands, input)
-* RunFromSpace
-* Space Data sync from logger to composite values of proc elements
-* Space TempItem Restore(expands, input)
-
-
-
 Input -> Input call -> Station
 
 
@@ -111,18 +108,6 @@ http://kufli.blogspot.ru/2013/08/sprayio-rest-service-exception.html
 http://plnkr.co/edit/lzYaZt?p=preview
 http://www.egobrain.ru/blog/2014/02/13/obrabotka-oshibok-poumolchaniiu-angularjs/
 
-
-
-* Security Restrict DTO Action(bprocess, procelems, space, check access)
-
-* Change ID to LONG everywhere
-* selector attributes for Station while INPUT REQUEST occurred
-
-
-
-
-  * Ownings
-  * Companion ResAct -> Input, Times ...
 
 
 * Blocks {
@@ -141,6 +126,9 @@ http://www.egobrain.ru/blog/2014/02/13/obrabotka-oshibok-poumolchaniiu-angularjs
 
 
 
+
+
+TRY https://github.com/t2v/stackable-controller
 
 
 
