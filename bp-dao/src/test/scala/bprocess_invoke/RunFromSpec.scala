@@ -88,8 +88,12 @@ class RunFromSpec extends Specification with ProcessSample {
 }
 
 class ConditionSpec extends Specification with ProcessSample {
-
+ ss
 }
 class OrderSpec extends  Specification with ProcessSample {
 
 }
+// Run BP from DB when it paused
+// update CV from logger
+// check log and log cv for updates
+//

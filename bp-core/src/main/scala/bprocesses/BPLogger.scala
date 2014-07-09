@@ -2,6 +2,7 @@ package main.scala.bprocesses
 
 import main.scala.simple_parts.process._
 import com.github.nscala_time.time.Imports._
+import scala.collection.immutable.TreeMap
 
 /**
  * BPLogger
@@ -67,7 +68,8 @@ class BPLogger {
 
     val grouped = merged.groupBy(_._1)
     val cleaned = grouped.mapValues(_.map(_._2).toList)
-    cleaned
+    val sortedMap = TreeMap(cleaned.toSeq:_*)
+    sortedMap
   }
 
   def isInvoked(el: ProcElems):Boolean = {

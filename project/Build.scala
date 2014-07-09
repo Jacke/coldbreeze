@@ -29,7 +29,9 @@ object Build extends Build {
 
     .settings(
       libraryDependencies ++=
-        List(async, reflect, dispatch, scalaz, nscala, play, scalatest, scalaLog, logback, sprayClient, hdrHistogram))
+        List(async, reflect, akkaActor, dispatch, scalaz, mechanize,nscala, play, scalatest, scalaLog, 
+logback, 
+sprayClient, hdrHistogram))
         //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
         //provided(logback) ++
         //test(scalatest, akkaTestKit, sprayTestkit, akkaSlf4j, logback))
@@ -41,7 +43,7 @@ object Build extends Build {
     .settings(revolverSettings: _*)
     .settings(
       libraryDependencies ++=
-        List(async, akkaActor,akkaSlf4j, slick, play, scalatest, reflect, postgres, logbackClassic, scalaLog, sprayCan, sprayRouting, hdrHistogram, sprayJson))
+        List(async, akkaSlf4j, slick, play, scalatest, reflect, postgres, logbackClassic, scalaLog, sprayCan, sprayRouting, hdrHistogram, sprayJson))
         //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
         //test(scalatest, akkaTestKit, sprayTestkit))
     .dependsOn(bpCore)
@@ -61,10 +63,31 @@ object Build extends Build {
           bootstrap, 
           angular,
           
-      playauth, playflyway, playctrl, cache, filter, jdbc, anorm, shapeless, mailer, scalatest, reflect, bcrypt, postgres, logbackClassic, scalaLog, hdrHistogram))
+      playauth, jsonvariants, playflyway, playctrl, cache, filter, jdbc, anorm, shapeless, mailer, scalatest, reflect, bcrypt, postgres, logbackClassic, scalaLog, hdrHistogram))
         //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
         //test(scalatest, akkaTestKit, sprayTestkit))
     .dependsOn(bpCore, bpDao)
+  
+  lazy val reactivedocs = Project("reactive-docs", file("reactive-docs"))
+    .enablePlugins(PlayScala)
+    .enablePlugins(SbtWeb)
+    .settings(basicSettings: _*)
+    //.settings(formatSettings: _*)
+    .settings(revolverSettings: _*)
+    .settings(
+      libraryDependencies ++=
+        List(async, akkaActor, akkaSlf4j, slick, play, 
+          requirejs,
+          underscore,
+          jquery,
+          bootstrap, 
+          angular,
+          
+      playauth, jsonvariants, playflyway, playctrl, cache, filter, jdbc, anorm, shapeless, mailer, scalatest, reflect, bcrypt, postgres, logbackClassic, scalaLog, hdrHistogram))
+        //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
+        //test(scalatest, akkaTestKit, sprayTestkit))
+    .dependsOn(bpCore, bpDao)
+
 
 
 

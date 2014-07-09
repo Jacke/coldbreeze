@@ -54,6 +54,9 @@ class DCOSpec extends Specification with ProcessSample {
     "from origin" in {
       process.variety.length > 1
     }
+    "find space elem by order, type"
+    "spaceelemcv update from logger"
+    
   }
 
   "ProcElem" should {

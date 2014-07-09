@@ -7,6 +7,7 @@ object Dependencies {
     "spray nightlies repo" at "http://nightlies.spray.io",
      "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
     "Maven Central Server" at "http://repo1.maven.org/maven2",
+    "Sonatype snapshots"   at "https://oss.sonatype.org/content/repositories/snapshots/",
      Resolver.url( "Reflect GitHub Repository", url( "http://taig.github.io/Reflect/release/" ) )( Resolver.ivyStylePatterns )
   )
 
@@ -25,12 +26,14 @@ object Dependencies {
 //val json4s-n        = "org.json4s"                %%  "json4s-native"         % "3.2.6"
 //val json4s-j        = "org.json4s"                %%  "json4s-jackson"        % "3.2.6"
   val postgres        = "postgresql"                %   "postgresql"            % "9.1-901.jdbc4"
-//val mongodb         = "org.mongodb"               %% "casbah"                 % "2.7.0-RC0"
+//val mongodb         = "org.mongodb"               %% "casbah"                % "2.7.0-RC0"
+  val mechanize       = "com.gistlabs"              %  "mechanize"              % "0.11.0"
 
   val play            = "org.webjars"               %% "webjars-play"           % "2.3.0"
   val playslick       = "com.typesafe.play"         %  "play-slick_2.10"        % "0.7.0-M1"
   val playauth        = "jp.t2v"                    %% "play2-auth"             % "0.12.0"
   val playctrl        = "jp.t2v"                    %% "stackable-controller"   % "0.4.0"
+  val jsonvariants    = "org.julienrf"              %% "play-json-variants"     % "0.2-SNAPSHOT"
   val playflyway      = "com.github.tototoshi"      %% "play-flyway"            % "1.1.0"
   val angular         = "org.webjars"               %  "angularjs"              % "1.2.16-2"  exclude("org.webjars", "jquery")
   val requirejs       = "org.webjars"               %  "requirejs"              % "2.1.11-1"

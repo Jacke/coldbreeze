@@ -99,6 +99,8 @@ trait Moves {
   val bp:BProcess
   def toStation(bp: BProcess): BPStation 
   def toLogger(bp: BProcess, result: BPLoggerResult)
+  def toLoggerBefore(bp: BProcess, result: BPLoggerResult) = bp.logger.logBefore(result)
+  def toStationLogger = {}
   def step_inc
   def endOrPause
   def isElementEnded:Boolean = station.step == bp.getElemsLength
@@ -136,6 +138,18 @@ def move:Unit = {
        * Usuall launch
        */
       val elem = bp.variety(toStation(bp).step)
+
+      toLoggerBefore(bp, BPLoggerResult(
+        elem,
+        composite = bp.copyCV(elem.values),
+        order     = elem.order,
+        space     = None,
+        station   = toStation(bp),
+        invoked   = true,
+        expanded  = false,
+        container = false)
+      )
+
       println("**** RUN" + elem.toString + " ****")
       front(elem)
       toLogger(bp, BPLoggerResult(
@@ -169,6 +183,8 @@ def move:Unit = {
     for (b ← space.expands.drop(ex_step)) {
       if (station.state) {
 
+        toLoggerBefore(station.bp, BPLoggerResult(b, order = counter + 1, space = Option(space.index), composite=bp.copyCV(b.values), station = toStation(station.bp), invoked = true, expanded = true, container = false))
+
         println("Invoking the: " + b);
         b.invoke
         // TODO: Elem invoked
@@ -183,7 +199,7 @@ def move:Unit = {
     // moveUpFront
   }
 
-  def runContainer(space: Space, con_step: Int) {
+ def runContainer(space: Space, con_step: Int) {
     println("move upfront")
     println("bp.spaces.indexOf(space)+1 == station.space")
     println(bp.spaces.indexOf(space)+1 == station.space)
@@ -196,7 +212,8 @@ def move:Unit = {
       if (station.state) {
 
         if (bp.spaces.indexOf(space)+1 == station.space) {
-        println("Invoking the: " + el);
+          toLoggerBefore(station.bp, BPLoggerResult(el, order = counter + 1, space = Option(space.index), composite=bp.copyCV(el.values), station = toStation(station.bp), invoked = true, expanded = false, container = true))
+          println("Invoking the: " + el);
         station.change_container_step(station.container_step.last + 1)
         el.invoke
         // TODO: Elem invoked
