@@ -8,7 +8,32 @@ GET         /webjars/*file              controllers.WebJarAssets.at(file)
 # Home page
 GET         /                           controllers.Application.index()
 GET         /index11                    controllers.Application.index11()
-POST    /login                  controllers.Application.login()
+#POST    /login                  controllers.Application.login()
+
+# Login page
+GET     /login                      securesocial.controllers.LoginPage.login
+GET     /logout                     securesocial.controllers.LoginPage.logout
+
+# User Registration and password handling 
+GET     /signup                     securesocial.controllers.Registration.startSignUp
+POST    /signup                     securesocial.controllers.Registration.handleStartSignUp
+GET     /signup/:token              securesocial.controllers.Registration.signUp(token)
+POST    /signup/:token              securesocial.controllers.Registration.handleSignUp(token)
+GET     /reset                      securesocial.controllers.Registration.startResetPassword
+POST    /reset                      securesocial.controllers.Registration.handleStartResetPassword
+GET     /reset/:token               securesocial.controllers.Registration.resetPassword(token)
+POST    /reset/:token               securesocial.controllers.Registration.handleResetPassword(token)
+GET     /password                   securesocial.controllers.PasswordChange.page
+POST    /password                   securesocial.controllers.PasswordChange.handlePasswordChange
+
+# Providers entry points
+GET     /authenticate/:provider     securesocial.controllers.ProviderController.authenticate(provider)
+POST    /authenticate/:provider     securesocial.controllers.ProviderController.authenticateByPost(provider)
+GET     /not-authorized             securesocial.controllers.ProviderController.notAuthorized
+
+# Custom
+GET        /custom/login        @controllers.CustomLoginController.login
+GET        /custom/logout       @controllers.CustomLoginController.logout
 
 
 # BProcess
@@ -36,25 +61,16 @@ POST    /login                  controllers.Application.login()
 GET         /bprocess/index             controllers.Application.bprocesses()
 GET         /bprocess                   controllers.Application.bprocess()
 
-# Sign up
-GET         /signup                     controllers.Authentication.prepareSignup
-POST        /signup                     controllers.Authentication.sendSignupEmail
-GET         /register/:token            controllers.Authentication.prepareRegister(token: String)
-POST        /register/:token            controllers.Authentication.register(token: String)
+
+
+
+
 
 # Send token by email
 GET         /api/v1/token/get           controllers.APIController.getToken()
 GET         /api/v1/token/              controllers.APIController.readToken()
 GET         /api/v1/token/:token        controllers.APIController.readByToken(token: String)
 
-# Reset password
-GET         /reset                      controllers.Authentication.prepareReset
-POST        /reset                      controllers.Authentication.sendResetEmail
-
-# Authentication
-GET         /login                      controllers.Authentication.login
-POST        /login                      controllers.Authentication.authenticate
-GET         /logout                     controllers.Authentication.logout
 
 # JavaScript routes object
 GET     /jsroutes.js            controllers.Application.jsRoutes()
@@ -63,3 +79,18 @@ GET     /assets/*file           controllers.Assets.versioned(path="/public", fil
 # Map the JS resource paths
 GET         /*file                      controllers.Assets.at(path="/public", file)
 
+# Sign up
+#GET         /signup                     controllers.Authentication.prepareSignup
+#POST        /signup                     controllers.Authentication.sendSignupEmail
+#GET         /register/:token            controllers.Authentication.prepareRegister(token: String)
+#POST        /register/:token            controllers.Authentication.register(token: String)
+
+
+# Reset password
+#GET         /reset                      controllers.Authentication.prepareReset
+#POST        /reset                      controllers.Authentication.sendResetEmail
+
+# Authentication
+#GET         /login                      controllers.Authentication.login
+#POST        /login                      controllers.Authentication.authenticate
+#GET         /logout                     controllers.Authentication.logout

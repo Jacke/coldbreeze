@@ -40,6 +40,8 @@ object Dependencies {
   val underscore      = "org.webjars"               %  "underscorejs"           % "1.6.0-3"
   val jquery          = "org.webjars"               %  "jquery"                 % "1.11.1"
   val bootstrap       = "org.webjars"               %  "bootstrap"              % "3.1.1-1"   exclude("org.webjars", "jquery")
+  val securesocial    = "ws.securesocial"           %% "securesocial"           % "master-SNAPSHOT"
+
 
 
   val bcrypt          = "com.github.t3hnar"         % "scala-bcrypt_2.11"       % "2.4"

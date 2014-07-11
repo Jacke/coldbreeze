@@ -25,7 +25,7 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
   var station = new BPStation(this)
   var logger = station.logger
   val marker =  new BPMarker(this)
-  val errors = new BPErrorCatcher(this)
+  val errors = new BottomLine(this)
 
 /**
  *  In-Process collection methods

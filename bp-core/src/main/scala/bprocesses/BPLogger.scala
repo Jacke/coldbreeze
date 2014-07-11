@@ -102,12 +102,18 @@ class BPLogger {
 
 
 
-class BPErrorCatcher(bp: BProcess) {
+
+
+class BottomLine(bp: BProcess) {
   var errors: Array[BPError] = Array.empty
   var req_link: Array[ReqLink] = Array.empty
 
   def reg_req_link(el: ProcElems, q: Int) = {
     req_link = req_link :+ ReqLink(el, q)
+  }
+
+  def soft_reg(error: BPError) {
+    errors = errors :+ error
   }
 
   def reg(error: BPError) { 

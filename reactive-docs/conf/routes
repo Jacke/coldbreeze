@@ -1,11 +1,23 @@
+->         /auth                securesocial.Routes
 
-GET        /                    controllers.Application.index
+GET        /                    @controllers.Application.index
 
-GET        /up/:idx   controllers.Application.moveUp(idx)
-GET        /down/:idx controllers.Application.moveDown(idx) 
+
+GET        /only-twitter        @controllers.Application.onlyTwitter
+GET        /link-result         @controllers.Application.linkResult
+GET        /current-user        @controllers.Application.currentUser
+GET        /custom/login        @controllers.CustomLoginController.login
+GET        /custom/logout       @controllers.CustomLoginController.logout
+
+
+
+#GET        /up/:idx   controllers.Application.moveUp(idx)
+#GET        /down/:idx controllers.Application.moveDown(idx) 
 
 GET        /sum/:password       controllers.SumController.socket(password)
 GET        /doc/:password       controllers.DocController.socket(password)
 
 # Use `Assets.versioned` to enable Play 2.3's Asset Fingerprinting
+GET        /assets/*file        controllers.Assets.at(path="/public", file)
 GET        /assets/*file        controllers.Assets.versioned(path="/public", file: Asset)
+

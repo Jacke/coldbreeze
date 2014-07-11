@@ -1,66 +1,66 @@
-@import scala.collection.mutable.ListBuffer
-@(doc_elements: ListBuffer[DocElems])
-@import models.DocumentResults._
-<!DOCTYPE html>
+@(user: securesocial.core.BasicProfile)(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment[service.DemoUser])
+@import securesocial.core.IdentityProvider
 
-<html>
-    <head>
-        <title>Welcome to Play 2.3</title>
-        <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main.css")">
-        <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
-        <script data-main="@routes.Assets.versioned("javascripts/main.js")"
-            src="@routes.Assets.versioned("lib/requirejs/require.js")" type="text/javascript"></script>
-    </head>
-    <body>
-        <div class="container">
-            <h1>Welcome to Play 2.3</h1>
-  
-            <p>
-                <ul id="ordered">@doc_elements.map { element => 
-                  <li id="@element.order">@element — @element.order</li>
-                  }
-                </ul>
-<hr><hr><hr><hr><hr><hr><hr><hr>
-                        <p>
-                The following is a demo showing some CoffeeScript code involving multiple
-                files using RequireJS.  This code is also unit tested using mocha.
-            </p>
+@import securesocial.core.IdentityProvider
+@import securesocial.core.providers.UsernamePasswordProvider
+@import securesocial.core.AuthenticationMethod._
+@import play.api.{Logger, Play}
+@import helper._
+@import play.api.Play
 
-            <p class="source-maps">
-                To see Play's source map support, inspect this paragraph with your browsers developer tools.  Locate
-                the place where the <code>source-maps</code> style is defined, and browse to the source code.  You
-                should find yourself looking at the declaration in <code>main.less</code>.
-            </p>
+@main("SecureSocial - Sample Protected Page") {
+<div class="page-header">
+    <h2><img src="@user.avatarUrl.getOrElse("")" alt="@user.firstName.getOrElse("")" width="40px" height="40px"/> Welcome @user.firstName.getOrElse("")</h2>
+</div>
 
-            <p>
-                Similarly with CoffeeScript, if you use your browsers script developer tools to open
-                <code>Controller.coffee</code>, then you should be able to set a breakpoint in there.
-            </p>
+<div class="clearfix">
+    <h2>User Details</h2>
 
-            <div id="login">
-                <div class="form-group">
-                    <label for="password">Password:</label>
-                    <input id="password" class="form-control" type="text" value="secret"/>
-                </div>
-                <button class="btn btn-default" id="connect">Connect</button>
-            </div>
+    <ul>
+        <li>User Id: @user.userId</li>
+        <li>Fist name: @user.firstName.getOrElse("")</li>
+        <li>Last name: @user.lastName.</li>
+        <li>Full name: @user.fullName.getOrElse("")</li>
+        <li>Logged in from: @user.providerId</li>
+        <li>Email: @user.email.map { email => @email }.getOrElse("Not Available")</li>
+        <li>Authentication method: @user.authMethod</li>
+    </ul>
 
-            <div id="connecting">Connecting...</div>
+    @user.oAuth1Info.map { info =>
+        <h2>OAuth1 Info</h2>
 
-            <div id="sum">
-                <div class="form-group">
-                    <label for="sumValues">Sum the following comma separated values:</label>
-                    <input id="sumValues" class="form-control" type="text" value="1,2,3"/>
-                </div>
-                <dl>
-                    <dt>Result</dt>
-                    <dd id="sumResult"></dd>
-                </dl>
+        <ul>
+            <li>Token: @info.token</li>
+            <li>Secret: @info.secret</li>
+        </ul>
+    }
 
-                <button class="btn btn-default" id="submitSum">Sum</button>
-                <button class="btn btn-default" id="disconnect">Disconnect</button>
-            </div>
+    @user.oAuth2Info.map { info =>
+        <h2>OAuth2 Info</h2>
 
-        </div>
-    </body>
-</html>
+        <ul>
+            <li>Access Token: @info.accessToken</li>
+            @info.tokenType.map { t => <li>Token Type: @t</li> }
+            @info.expiresIn.map { exp => <li>Expires in: @exp seconds</li>}
+            @info.refreshToken.map { rt => <li>Refresh Token: @rt</li>}
+        </ul>
+    }
+    <hr>
+    @user.passwordInfo.map { info =>
+        <a class="btn" href="@securesocial.controllers.routes.PasswordChange.page.absoluteURL(IdentityProvider.sslEnabled)">Change Password</a>
+    }
+
+    <span>Link this account to
+
+    @env.providers.values.map { provider =>
+        @if( provider.authMethod == OAuth1 || provider.authMethod == OAuth2 ) {
+            @defining( "images/providers/%s.png".format(provider.id) ) { imageUrl =>
+            <a href="@env.routes.authenticationUrl(provider.id, Some("/link-result"))"> <img src="securesocial.controllers.routes.Assets.at(imageUrl)"/></a>
+            }
+        }
+    }
+    </span>
+    <hr>
+    <a class="btn" href="@securesocial.controllers.routes.LoginPage.logout()">Logout</a>
+</div>
+}

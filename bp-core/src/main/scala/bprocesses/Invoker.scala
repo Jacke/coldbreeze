@@ -1,5 +1,6 @@
 package main.scala.bprocesses
 
+import bprocesses.BPStationLoggerResult
 import main.scala.simple_parts.process._
 import main.scala.utils.Space
 /***
@@ -24,7 +25,7 @@ with Determs
 
   // exec
   def invokeExpand = {
-    bp.getSpaceByIndex(station.space).expands.map(ex => ex.invoke) // доделать.get
+    bp.getSpaceByIndex(station.space).expands.map(ex => ex.invoke)
   }
   def invokeContainer = {
     bp.getSpaceByIndex(station.space).container.map(ex => ex.invoke)
@@ -39,8 +40,8 @@ object InvokeTracer {
   import main.scala.bprocesses.PullCustomException
 
   def run_proc(proc: BProcess) {
-    if (proc.station.inspace) { // TODO: Run from inspace
-      throw PullCustomException.create("bad things")
+    if (proc.station.inspace) {
+      proc.marker.start_from
     }
 
     if (!proc.station.isStarted) {
@@ -97,10 +98,12 @@ trait Sygnals {
 trait Moves {
   var station:BPStation
   val bp:BProcess
-  def toStation(bp: BProcess): BPStation 
+  def toStation(bp: BProcess): BPStation
+
   def toLogger(bp: BProcess, result: BPLoggerResult)
   def toLoggerBefore(bp: BProcess, result: BPLoggerResult) = bp.logger.logBefore(result)
-  def toStationLogger = {}
+  def toStationLogger(sygnal: String) = bp.station.station_logger.log(BPStationLoggerResult(bp.station, sygnal, bp.station.state_represent))
+
   def step_inc
   def endOrPause
   def isElementEnded:Boolean = station.step == bp.getElemsLength
@@ -135,7 +138,7 @@ def move:Unit = {
     } else {
 
       /**
-       * Usuall launch
+       * Front launch
        */
       val elem = bp.variety(toStation(bp).step)
 
@@ -175,29 +178,7 @@ def move:Unit = {
 /*** Instruction execution */
   def front(b: ProcElems) = b.invoke
   def thru_container = runContainer(bp.spaces(station.space-1),station.contStepVal)
-  def thru_expander  =  runExpand(bp.spaces(station.space-1), station.expStepVal)
-
-
- def runExpand(space: Space, ex_step: Int) {
-    var counter = 0
-    for (b ← space.expands.drop(ex_step)) {
-      if (station.state) {
-
-        toLoggerBefore(station.bp, BPLoggerResult(b, order = counter + 1, space = Option(space.index), composite=bp.copyCV(b.values), station = toStation(station.bp), invoked = true, expanded = true, container = false))
-
-        println("Invoking the: " + b);
-        b.invoke
-        // TODO: Elem invoked
-        station.change_expand_step(station.expand_step.last + 1)
-
-        toLogger(station.bp, BPLoggerResult(b, order = counter + 1, space = Option(space.index), composite=bp.copyCV(b.values), station = toStation(station.bp), invoked = true, expanded = true, container = false))
-        println(station.step)
-      } else {
-        println(station.step + "state false")
-      }
-    }
-    // moveUpFront
-  }
+  def thru_expander  =  { }
 
  def runContainer(space: Space, con_step: Int) {
     println("move upfront")
@@ -216,7 +197,7 @@ def move:Unit = {
           println("Invoking the: " + el);
         station.change_container_step(station.container_step.last + 1)
         el.invoke
-        // TODO: Elem invoked
+        // TODO: Elem invoked sygnal?
 
         toLogger(station.bp, BPLoggerResult(el, order = counter + 1, space = Option(space.index), composite=bp.copyCV(el.values), station = toStation(station.bp), invoked = true, expanded = false, container = true))
         }
@@ -322,17 +303,23 @@ trait Restrictors {
 }
 
 object SygnalHandler {
+  def toStationLogger(bp:BProcess,
+                      sygnal: String) = bp.station.station_logger.log(BPStationLoggerResult(bp.station, sygnal, bp.station.state_represent))
+
   def push(bp:BProcess, elem: ProcElems, syginfo:String, space_type: Option[String] = None) {
     syginfo match {
       case "elem_invoked" => {
         bp.marker.elem_invoked
+        toStationLogger(bp, "elem_invoked")
         // TODO: Logger
       }
       case "sp_elem_invoked" => {
         bp.marker.sp_elem_invoked(space_type.get)
+        toStationLogger(bp, "sp_elem_invoked")
       }
       case "pause" => {
         bp.station.update_paused(true)
+        toStationLogger(bp, "pause")
       }
     }
   }

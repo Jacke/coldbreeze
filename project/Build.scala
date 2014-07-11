@@ -62,8 +62,9 @@ sprayClient, hdrHistogram))
           jquery,
           bootstrap, 
           angular,
+
           
-      playauth, jsonvariants, playflyway, playctrl, cache, filter, jdbc, anorm, shapeless, mailer, scalatest, reflect, bcrypt, postgres, logbackClassic, scalaLog, hdrHistogram))
+      playauth,securesocial, jsonvariants, playflyway, playctrl, cache, filter, jdbc, anorm, shapeless, mailer, scalatest, reflect, bcrypt, postgres, logbackClassic, scalaLog, hdrHistogram))
         //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
         //test(scalatest, akkaTestKit, sprayTestkit))
     .dependsOn(bpCore, bpDao)
@@ -83,7 +84,7 @@ sprayClient, hdrHistogram))
           bootstrap, 
           angular,
           
-      playauth, jsonvariants, playflyway, playctrl, cache, filter, jdbc, anorm, shapeless, mailer, scalatest, reflect, bcrypt, postgres, logbackClassic, scalaLog, hdrHistogram))
+      playauth,securesocial, jsonvariants, playflyway, playctrl, cache, filter, jdbc, anorm, shapeless, mailer, scalatest, reflect, bcrypt, postgres, logbackClassic, scalaLog, hdrHistogram))
         //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
         //test(scalatest, akkaTestKit, sprayTestkit))
     .dependsOn(bpCore, bpDao)

@@ -1,5 +1,6 @@
 package main.scala
 
+import _root_.bprocesses.Parallel
 import main.scala.bprocesses._
 import main.scala.simple_parts.process._
 import main.scala.simple_parts.process.control._
@@ -11,101 +12,252 @@ import main.scala.bprocesses.links._
 import main.scala.utils.Space
 
 
-object ProcessThread extends App {
-
-import akka.actor._
- 
-case object PingMessage
-case object PongMessage
-case object StartMessage
-case object StopMessage
- 
-/**
- * An Akka Actor example written by Alvin Alexander of
- * <a href="http://devdaily.com" title="http://devdaily.com">http://devdaily.com</a>
- *
- * Shared here under the terms of the Creative Commons
- * Attribution Share-Alike License: <a href="http://creativecommons.org/licenses/by-sa/2.5/" title="http://creativecommons.org/licenses/by-sa/2.5/">http://creativecommons.org/licenses/by-sa/2.5/</a>
- *
- * more akka info: <a href="http://doc.akka.io/docs/akka/snapshot/scala/actors.html" title="http://doc.akka.io/docs/akka/snapshot/scala/actors.html">http://doc.akka.io/docs/akka/snapshot/scala/actors.html</a>
- */
-class Ping(pong: ActorRef) extends Actor {
-  var count = 0
-  def incrementAndPrint { count += 1; println("ping") }
-  def receive = {
-    case StartMessage =>
-        incrementAndPrint
-        pong ! PingMessage
-    case PongMessage =>
-        incrementAndPrint
-        if (count > 99) {
-          sender ! StopMessage
-          println("ping stopped")
-          context.stop(self)
-        } else {
-          sender ! PingMessage
-        }
-  }
-}
- 
-class Pong extends Actor {
-  def receive = {
-    case PingMessage =>
-        println("  pong")
-        sender ! PongMessage
-    case StopMessage =>
-        println("pong stopped")
-        context.stop(self)
-  }
-}
- 
-
-  val system = ActorSystem("PingPongSystem")
-  val pong = system.actorOf(Props[Pong], name = "pong")
-  val ping = system.actorOf(Props(new Ping(pong)), name = "ping")
-  // start them going
-  ping ! StartMessage
 
 
-  Thread.sleep(1000)
-  system.shutdown
-/**
-  *  Process thread
-  */
-  /*
-    BPStation
-    inthread: Bool
-    threads_steps[n1, n]
-  */
-class ProcessThread(num: Int, step: Int = 0, complete: Boolean = false) extends Actor {
-  def receive = {
-    case PingMessage =>
-        println("  pong")
-        sender ! PongMessage
-    case StopMessage =>
-        println("pong stopped")
-        context.stop(self)
-    case "move" => println("i'm moving")
-    case "end" => println("looks like thread ended")
-    // Execution logic
+object Finalize extends App {
+  /****************************************************************************
+   * Block run
+   *******************************************************************************************/
+  def first() = {
+    val proc1 = new BProcess(new Managment)
+    proc1.push {
+      Array[ProcElems](
+        new Constant[Boolean](1, false, proc1, 1),
+        new Constant[Boolean](2, false, proc1, 2)
+      )
     }
+    proc1.elements_init
+    InvokeTracer.run_proc(proc1)
   }
-  // Init
 
-/**
-  * Nested thread
-  */
-  // Init in thread
-  // new All thread dao, that aren't completed
+  /********************************************************************************
+   * Block run from
+   *********************************************************************************************/
+  def second() = {
+    val proc2 = new BProcess(new Managment)
+    proc2.push {
+      Array[ProcElems](
+        new Constant[Boolean](1, false, proc2, 1),
+        new Constant[Boolean](2, false, proc2, 2),
+        new Constant[Boolean](3, false, proc2, 3)
+      )
+    }
+    proc2.elements_init
+    proc2.station.update_started(true)
+    proc2.station.update_step(2)
+    println("****started******")
+    InvokeTracer.run_proc(proc2)
+  }
+  /********************************************************************************************
+   * Brick container run
+   *********************************************************************************************/
+  def third() = {
+    val proc123 = new BProcess(new Managment)
+    proc123.push {
+      Array[ProcElems](
+        new Constant[Boolean](1, true, proc123, 1),
+        new ContainerBrick(4, "container brick", "", Option(CompositeValues()), proc123, "brick", "containerbrick", 4))//,
+      //new ExpandBrick(5, "expand brick", "", Option(CompositeValues()), proc123, "brick", "expandbrick", 5))//,
+    }
+    proc123.elements_init
+
+    // Add element to expand
+    val space_ptr = proc123.spaces.last
+    space_ptr.addToSpace(new Constant[Boolean](1, true, proc123, 1, space_id = Option(space_ptr)), "container")
+    space_ptr.addToSpace(new Constant[Boolean](1, false, proc123, 1, space_id = Option(space_ptr)), "container")
 
 
+
+    println(proc123.spaces.length)
+    InvokeTracer.run_proc(proc123)
+   }
+
+
+
+  /**************************************************************
+   * Brick container run from
+   *********************************************************************/
+  def fourth() =
+  {
+    val proc123 = new BProcess(new Managment)
+    proc123.push {
+      Array[ProcElems](
+        new Constant[Boolean](1, true, proc123, 1),
+        new ContainerBrick(4, "container brick", "", Option(CompositeValues()), proc123, "brick", "containerbrick", 4))//,
+      //new ExpandBrick(5, "expand brick", "", Option(CompositeValues()), proc123, "brick", "expandbrick", 5))//,
+    }
+    proc123.elements_init
+
+    // Add element to expand
+    val space_ptr = proc123.spaces.last
+    space_ptr.addToSpace(new Constant[Boolean](1, true, proc123, 1, space_id = Option(space_ptr)), "container")
+    space_ptr.addToSpace(new Constant[Boolean](1, false, proc123, 1, space_id = Option(space_ptr)), "container")
+
+
+
+    println(proc123.spaces.length)
+    proc123.station.update_started(true)
+    proc123.station.step = 1
+    proc123.station.inspace = true
+    proc123.station.space = 1
+    proc123.station.container_step = Array(1)
+    InvokeTracer.run_proc(proc123)
+  }
+
+  /******************************************************************
+   * Brick nested container
+   ***********************************************************************/
+  def fifth() = {
+  val proc123 = new BProcess(new Managment)
+    proc123.push {
+      Array[ProcElems](
+      new Constant[Boolean](1, true, proc123, 1),
+      new ContainerBrick(4, "container brick", "", Option(CompositeValues()), proc123, "brick", "containerbrick", 4))//,
+      //new ExpandBrick(5, "expand brick", "", Option(CompositeValues()), proc123, "brick", "expandbrick", 5))//,
+  }
+    proc123.elements_init
+
+    // Add element to expand
+  val space_ptr = proc123.spaces.last
+    space_ptr.addToSpace(new Constant[Boolean](1, true, proc123, 1, space_id = Option(space_ptr)), "container")
+    space_ptr.addToSpace(new Constant[Boolean](1, false, proc123, 1, space_id = Option(space_ptr)), "container")
+
+    space_ptr.addToSpace(
+    new ContainerBrick
+    (4, "container brick", "", Option(CompositeValues()), proc123, "brick", "containerbrick", 4), "container")
+
+    space_ptr.addToSpace(
+    new PrintValue[Boolean](2, true, proc123, 2,
+      values = Option(CompositeValues(a_string = Option("********"))), space_id = Option(space_ptr)), "container")
+
+    // add space to co container
+    proc123.spaces.last.container.last.init
+    proc123.spaces = proc123.spaces :+ Space.apply(2, proc123.spaces.last.container(2).asInstanceOf[Brick], is_subbricks = false, is_container = true)
+    // add element to cocobrick
+    proc123.spaces.last.addToSpace(new PrintValue[Boolean](1, true, proc123, 1,
+      values = Option(CompositeValues(a_string = Option("x1"))), space_id = Option(proc123.spaces.last)), "container")
+    proc123.spaces.last.addToSpace(new PrintValue[Boolean](2, true, proc123, 2,
+      values = Option(CompositeValues(a_string = Option("x2"))), space_id = Option(proc123.spaces.last)), "container")
+
+
+    println(proc123.spaces.length)
+    InvokeTracer.run_proc(proc123)
+  }
+
+  /*************************************************************
+   * Brick nested container run from
+   *************************************************************/
+  def sixth() = {
+    val proc123 = new BProcess(new Managment)
+    proc123.push {
+      Array[ProcElems](
+        new Constant[Boolean](1, true, proc123, 1),
+        new ContainerBrick(2, "container brick", "", Option(CompositeValues()), proc123, "brick", "containerbrick", 2))//,
+      //new ExpandBrick(5, "expand brick", "", Option(CompositeValues()), proc123, "brick", "expandbrick", 5))//,
+    }
+    proc123.elements_init
+
+    // Add element to expand
+    val space_ptr = proc123.spaces.last
+    space_ptr.addToSpace(new Constant[Boolean](1, true, proc123, 1, space_id = Option(space_ptr)), "container")
+    space_ptr.addToSpace(new Constant[Boolean](2, false, proc123, 2, space_id = Option(space_ptr)), "container")
+
+    space_ptr.addToSpace(
+      new ContainerBrick
+      (3, "container brick", "", Option(CompositeValues()), proc123, "brick", "containerbrick", 3), "container")
+
+    space_ptr.addToSpace(
+      new PrintValue[Boolean](4, true, proc123, 4,
+        values = Option(CompositeValues(a_string = Option("********"))), space_id = Option(space_ptr)), "container")
+
+    // add space to co container
+    proc123.spaces.last.container.last.init
+    proc123.spaces = proc123.spaces :+ Space.apply(2, proc123.spaces.last.container(2).asInstanceOf[Brick], is_subbricks = false, is_container = true)
+    // add element to cocobrick
+    proc123.spaces.last.addToSpace(new PrintValue[Boolean](1, true, proc123, 1,
+      values = Option(CompositeValues(a_string = Option("x1"))), space_id = Option(proc123.spaces.last)), "container")
+    proc123.spaces.last.addToSpace(new PrintValue[Boolean](2, true, proc123, 2,
+      values = Option(CompositeValues(a_string = Option("x2"))), space_id = Option(proc123.spaces.last)), "container")
+
+
+    println(proc123.spaces.length)
+    proc123.station.update_started(true)
+    proc123.station.step = 1
+    proc123.station.inspace = true
+    proc123.station.space = 2
+    proc123.station.container_step = Array(2, 1)
+    InvokeTracer.run_proc(proc123)
+  }
+
+
+  first()
+  println(
+    """
+      |
+      |
+      | Block run from
+      |
+      |
+    """.
+      stripMargin)
+  second()
+  println(
+    """
+      |
+      |
+      |   Brick container run
+      |
+      |
+    """.
+      stripMargin)
+  third()
+  println(
+    """
+      |
+      |
+      |   Brick container run from
+      |
+      |
+    """.
+      stripMargin)
+  fourth()
+println(
+    """
+      |
+      |
+      | Brick nested container
+      |
+      |
+    """.
+      stripMargin)
+  fifth()
+  println(
+    """
+      |
+      |
+      | Brick nested container run from
+      |
+      |
+    """.
+      stripMargin)
+  sixth()
+
+
+
+  println(
+    """
+      |Thread
+    """.stripMargin)
+  Parallel.apply
 }
+
+
 
 object Main extends App {
 
 
- println(
-    """
+ println("""
+
       |1)
       |Block
       |BrICK -> Space
@@ -220,7 +372,7 @@ proc123.spaces.last.addToSpace(new PrintValue[Boolean](2, true, proc123, 2,
   proc1234.elements_init
   // Add element to expand
   val space_ptr1234 = proc1234.spaces.last
-  
+
   space_ptr1234.addToSpace(new Constant[Boolean](1, true, proc1234, 1, space_id = Option(space_ptr1234)), "container")
   space_ptr1234.addToSpace(new Constant[Boolean](1, false, proc1234, 2, space_id = Option(space_ptr1234)), "container")
   space_ptr1234.addToSpace(new ContainerBrick(4, "container brick", "", Option(CompositeValues()), proc1234, "brick", "containerbrick", 3), "container")

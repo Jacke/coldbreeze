@@ -1,56 +1,4 @@
 
-объявления
-
-второй квадратик новостная лента мбуз дкгб 
- 
-вопрос ответ в режиме онлайн
-
-
-
-Article of element updating:
- 
-        +--------------+
-        |   Block1     |
-        |              |
-        +--------------+
-
-        +--------------+    +----------------+      +--------------+
-        |   Brick2     +---->   Expand3      |   +--+   Expand5    |
-        |              |    |                |   |  |              |
-        +--------------+    +----------------+   |  +--------------+
-                            +----------------+   |  +--------------+
-                            |                |   |  |   Expand6    |
-                            |   Brick4       +---+  |              |
-                            |                |      |              |
-                            +----------------+      +--------------+
-                            +----------------+
-                            |                |
-                            |   Expand7      |
-                            |                |
-                            +----------------+
-Обновление происходит если начинать с блоков, которые позже expand.
-Например если начало идет с 4 блока
-то блок 3 обновится
-если начало идет с 6 блока, то блоки 3 и 5 обновятся
-Если начало идет с 7 блока, то блоки 3 5 6 должны обновится
-Для проверки обновления существует метод
-  updateChecker(element, station_checker:Boolean = false) of BPLogger class
-По умолочанию, он проверяет expands в логах, но при true вторым аргументом, он будет скать по шагам
-
-Далее запускается обновление у всех элементов в процессе, которые требуют обновлений(EXPAND, TEMPORARLY(INPUTS PLACEHOLDER))
-
-
-
-
-
-
-
-----------
-- Play Slick
-
-
-https://github.com/mohiva/play-silhouette
-http://securesocial.ws/guide/user-service.html
 
 
 
@@ -61,34 +9,17 @@ http://securesocial.ws/guide/user-service.html
 
 
 
-----------
-----------
-Instanciate
-----------
-----------
-----------
-Station & logger after every move update to db observer
-----------
-----------
-----------
-autojoin test
-----------
-----------
-ischeme, icall
-----------
-condition through sygnals
-----------
-----------
-CRUD
-* RunFromSpace
-------------
+
+
+
+
+
+
+
+
+
 * Security Restrict DTO Action(bprocess, procelems, space, check access)
-
 * Change ID to LONG everywhere
-
-
-
-
 
 
 * Input try
@@ -111,22 +42,8 @@ http://www.egobrain.ru/blog/2014/02/13/obrabotka-oshibok-poumolchaniiu-angularjs
 
 
 * Blocks {
-  ** Condition
-  * Confirm
-
   || Process owning, viewers, access // by owning tables Employees/Clients/Firm + Groups assigns
-  * scope ctx, bp views
-
-}
-
-
-
-
-
-
-
-
-
+  }
 
 TRY https://github.com/t2v/stackable-controller
 
@@ -164,17 +81,8 @@ TRY https://github.com/t2v/stackable-controller
 
 * Misc
 
-    * error handling [checker before invoke, brick error - though invoking] /isOptionalLink/* checker for arguments and params [ ]
-    * Dopel feature
-
+  * Dopel feature
   * Graph.js
-
-  /** 2 Books read **/
-    http://www.mulesoft.com/platform/soa
-    http://www.activiti.org/userguide/index.html#bpmnSequenceFlow
-    http://www.activiti.org/userguide/index.html#bpmnTask
-    http://www.activiti.org/userguide/index.html#bpmnGateways
-    http://www.activiti.org/userguide/index.html#bpmnSubprocessAndCallActivity
 
 
 /Final/
