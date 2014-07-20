@@ -9,7 +9,7 @@ import play.api.http.MimeTypes
 import play.api.libs.json._
 import views._
 
-
+/*
 object APIController extends Controller with Secured  {
   def readToken() = SecureAction { user => _ =>
     Ok(User.findByEmail(user).get.token)
@@ -26,3 +26,4 @@ object APIController extends Controller with Secured  {
     }
   }
 }
+*/

@@ -33,7 +33,7 @@ object Dependencies {
   val playslick       = "com.typesafe.play"         %  "play-slick_2.10"        % "0.7.0-M1"
   val playauth        = "jp.t2v"                    %% "play2-auth"             % "0.12.0"
   val playctrl        = "jp.t2v"                    %% "stackable-controller"   % "0.4.0"
-  val jsonvariants    = "org.julienrf"              %% "play-json-variants"     % "0.2-SNAPSHOT"
+  val jsonvariants    = "org.julienrf"              %% "play-json-variants"     % "0.2"
   val playflyway      = "com.github.tototoshi"      %% "play-flyway"            % "1.1.0"
   val angular         = "org.webjars"               %  "angularjs"              % "1.2.16-2"  exclude("org.webjars", "jquery")
   val requirejs       = "org.webjars"               %  "requirejs"              % "2.1.11-1"
