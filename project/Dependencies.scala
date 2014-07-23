@@ -51,6 +51,9 @@ object Dependencies {
   val jdbc            = "com.typesafe.play"         %% "play-jdbc"              % "2.3.0-RC1"
   val anorm           = "com.typesafe.play"         %% "anorm"                  % "2.3.0-RC1"
 
+  val jodatime        = "joda-time" % "joda-time" % "2.3"
+  val jodaconvert     = "org.joda" % "joda-convert" % "1.6"
+  val jodamapper      = "com.github.tototoshi" %% "slick-joda-mapper" % "1.2.0-SNAPSHOT"
 
   val akkaActor       = "com.typesafe.akka"         %%  "akka-actor"            % akkaVersion
   val akkaSlf4j       = "com.typesafe.akka"         %%  "akka-slf4j"            % akkaVersion

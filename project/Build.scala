@@ -43,7 +43,9 @@ sprayClient, hdrHistogram))
     .settings(revolverSettings: _*)
     .settings(
       libraryDependencies ++=
-        List(async, akkaSlf4j, slick, play, scalatest, reflect, postgres, logbackClassic, scalaLog, sprayCan, sprayRouting, hdrHistogram, sprayJson))
+        List(async, akkaSlf4j, slick, play,jodatime,
+jodaconvert,
+jodamapper, scalatest, reflect, postgres, logbackClassic, scalaLog, sprayCan, sprayRouting, hdrHistogram, sprayJson))
         //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
         //test(scalatest, akkaTestKit, sprayTestkit))
     .dependsOn(bpCore)

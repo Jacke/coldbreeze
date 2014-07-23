@@ -22,6 +22,8 @@ import securesocial.core.providers.{UsernamePasswordProvider, MailToken}
 import scala.concurrent.Future
 import securesocial.core.services.{UserService, SaveMode}
 
+import models.AccountsDAO
+import models.TokensDAO
 
 /**
  * A Sample In Memory user service in Scala
@@ -39,7 +41,7 @@ class InMemoryUserService extends UserService[DemoUser] {
 
   def find(providerId: String, userId: String): Future[Option[BasicProfile]] = {
     if ( logger.isDebugEnabled ) {
-      logger.debug("users = %s".format(users))
+      //logger.debug("users = %s".format(users))
     }
     val result = for (
       user <- users.values ;
@@ -47,12 +49,15 @@ class InMemoryUserService extends UserService[DemoUser] {
     ) yield {
       basicProfile
     }
-    Future.successful(result.headOption)
+
+    logger.debug("users find = %s".format(AccountsDAO.find(providerId, userId)))
+
+    Future.successful(AccountsDAO.find(providerId, userId))
   }
 
   def findByEmailAndProvider(email: String, providerId: String): Future[Option[BasicProfile]] = {
     if ( logger.isDebugEnabled ) {
-      logger.debug("users = %s".format(users))
+      //logger.debug("users = %s".format(users))
     }
     val someEmail = Some(email)
     val result = for (
@@ -61,13 +66,19 @@ class InMemoryUserService extends UserService[DemoUser] {
     ) yield {
       basicProfile
     }
-    Future.successful(result.headOption)
+    logger.debug("users findByEmailAndProvider = %s".format(AccountsDAO.findByEmailAndProvider(email, providerId)))
+
+
+    Future.successful(AccountsDAO.findByEmailAndProvider(email, providerId))
   }
 
   def save(user: BasicProfile, mode: SaveMode): Future[DemoUser] = {
     mode match {
       case SaveMode.SignUp =>
         val newUser = DemoUser(user, List(user))
+
+        AccountsDAO.save(user)
+        
         users = users + ((user.providerId, user.userId) -> newUser)
       case SaveMode.LoggedIn =>
 
@@ -88,6 +99,9 @@ class InMemoryUserService extends UserService[DemoUser] {
       case None =>
         val newUser = DemoUser(user, List(user))
         users = users + ((user.providerId, user.userId) -> newUser)
+
+        AccountsDAO.save(newUser.main)
+        
         Future.successful(newUser)
     }
   }
@@ -107,21 +121,24 @@ class InMemoryUserService extends UserService[DemoUser] {
     Future.successful {
       tokens += (token.uuid -> token)
       token
+      TokensDAO.saveToken(token)
     }
   }
 
   def findToken(token: String): Future[Option[MailToken]] = {
-    Future.successful { tokens.get(token) }
+    Future.successful { TokensDAO.findToken(token) } //tokens.get(token) }
   }
 
   def deleteToken(uuid: String): Future[Option[MailToken]] = {
+    TokensDAO.deleteToken(uuid)
     Future.successful {
-      tokens.get(uuid) match {
+      TokensDAO.deleteToken(uuid)
+      /*tokens.get(uuid) match {
         case Some(token) =>
           tokens -= uuid
           Some(token)
         case None => None
-      }
+      }*/
     }
   }
 
@@ -134,7 +151,7 @@ class InMemoryUserService extends UserService[DemoUser] {
   }
 
   override def updatePasswordInfo(user: DemoUser, info: PasswordInfo): Future[Option[BasicProfile]] = {
-    Future.successful {
+    Future.successful {/*
       for (
         found <- users.values.find(_ == user);
         identityWithPasswordInfo <- found.identities.find(_.providerId == UsernamePasswordProvider.UsernamePassword)
@@ -144,18 +161,20 @@ class InMemoryUserService extends UserService[DemoUser] {
         val updatedIdentities = found.identities.patch(idx, Seq(updated), 1)
         found.copy(identities = updatedIdentities)
         updated
-      }
+      }*/
+      AccountsDAO.updatePasswordInfo(user, info)
     }
   }
 
   override def passwordInfoFor(user: DemoUser): Future[Option[PasswordInfo]] = {
-    Future.successful {
+    Future.successful {/*
       for (
         found <- users.values.find(_ == user);
         identityWithPasswordInfo <- found.identities.find(_.providerId == UsernamePasswordProvider.UsernamePassword)
       ) yield {
         identityWithPasswordInfo.passwordInfo.get
-      }
+      }*/
+      AccountsDAO.passwordInfoFor(user)
     }
   }
 }
