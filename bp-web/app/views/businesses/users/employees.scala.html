@@ -1,7 +1,8 @@
 @import models.DAO.resources.BusinessServiceDTO
+@import models.DAO.resources.EmployeeDTO
 @import models.DAO.resources.BusinessDTO
 @import helper._
-@(currentPage: Page[BusinessServiceDTO], currentOrderBy: Int, currentFilter: String, businesses: List[BusinessDTO])(implicit flash: play.api.mvc.Flash)
+@(currentPage: Page[EmployeeDTO], currentOrderBy: Int, currentFilter: String, businesses: List[BusinessDTO], assignedBiz: List[BusinessDTO])(implicit flash: play.api.mvc.Flash)
 
 @****************************************
 * Helper generating navigation links *
@@ -16,16 +17,11 @@
         <a href="#">@title</a>
     </th>
 }
-@biz(ser: BusinessServiceDTO) = {
-  @{businesses.find(b => b.id == Some(ser.business_id)) match {
-   case Some(business) => <b> @{business.title} </b>
-   case _ => <b></b>
- }}
-}
 
-@main("Services") {
+
+@main("Employees") {
     
-    <h1>Messages("Services")</h1>
+    <h1>Messages("Employees")</h1>
 
     flash.get("success").map { message =>
         <div class="alert-message warning">
@@ -35,12 +31,12 @@
 
     <div id="actions">
         
-        @helper.form(action=routes.BusinessServiceController.index()) {
+        @helper.form(action=users.routes.EmployeeController.index()) {
             <input type="search" id="searchbox" name="f" value="@currentFilter" placeholder="Filter by name...">
             <input type="submit" id="searchsubmit" value="Filter by name" class="btn primary">
         }
         
-        <a class="btn success" id="add" href="@routes.BusinessServiceController.create()">Add a new services</a>
+        <a class="btn success" id="add" href="@users.routes.EmployeeController.create()">Add a new Employee</a>
         
     </div>
     
@@ -49,29 +45,36 @@
         <table class="computers zebra-striped">
             <thead>
                 <tr>
-                    @header(1, "Service id")
+                    @header(1, "Employee id")
                     @header(2, "Name")
                     @header(3, "")
-                    @header(4, "Business Title")
                 </tr>
             </thead>
             <tbody>
                 @entities.map {
                  case (entity) => {
                         <tr>
-                            <td><a href="@routes.BusinessServiceController.update(entity.id.get)">@entity.id</a></td>
+                            <td><a href="@users.routes.EmployeeController.update(entity.id.get)">@entity.id</a></td>
                             <td>
-                                @entity.title
+                                @entity.uid
                             </td>
                             <td>
-                              @form(routes.BusinessServiceController.destroy(entity.id.get), 'class -> "topRight") {
-                                  <input type="submit" value="Delete this service" class="btn danger">
+                              @form(users.routes.EmployeeController.destroy(entity.id.get), 'class -> "topRight") {
+                                  <input type="submit" value="Delete this employee" class="btn danger">
                               }
                                 
                             </td>
                             <td>
-                                
-                                @biz(entity)
+                              Assign to:
+                              @businesses.map { business =>
+                                  <b><a href="@users.routes.EmployeeController.assign_business(entity.id.get, business.id.get)">@business.title</a></b>
+                              }
+                            </td>
+                            <td> 
+                            Assigned:
+                              @assignedBiz.map { business =>
+                                  <b><a href="@users.routes.EmployeeController.unassign_business(entity.id.get, business.id.get)">@business.title</a></b>
+                              }
                             </td>
                         </tr>
                      }

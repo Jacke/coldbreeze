@@ -1,22 +1,22 @@
 package models.DAO.resources
 
-import models.DAO.driver.MyPostgresDriver.simple._
+import scala.slick.driver.PostgresDriver.simple._
 import models.DAO.conversion.DatabaseCred
 
 class Clients(tag: Tag) extends Table[(Option[Int], String)](tag, "clients") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
-  def title = column[String]("title")
+  def uid = column[String]("uid")
 
 
 
-  def * = (id.?, title) //<> (Supplier.tupled, Supplier.unapply)
+  def * = (id.?, uid) //<> (Supplier.tupled, Supplier.unapply)
 
   def cb = ClientBusinessDAO.clients_businesses.filter(_.client_id === id).flatMap(_.businessFK)
 
 
 }
 
-case class ClientDTO(var id: Option[Int], title: String)
+case class ClientDTO(var id: Option[Int], uid: String)
 
 object ClientDAO {
   import scala.util.Try
@@ -30,13 +30,13 @@ object ClientDAO {
   def pull_object(s: ClientDTO) = database withSession {
     implicit session ⇒
       val tuple = ClientDTO.unapply(s).get
-      clients returning clients.map(_.id) += (value = (None, s.title))//(BusinessDTO.unapply(s).get._2, BusinessDTO.unapply(s).get._3)
+      clients returning clients.map(_.id) += (value = (None, s.uid))//(BusinessDTO.unapply(s).get._2, BusinessDTO.unapply(s).get._3)
   }
 
-  def pull(id: Option[Int] = None, title: String) = Try(database withSession {
+  def pull(id: Option[Int] = None, uid: String) = Try(database withSession {
     implicit session ⇒
 
-      clients += (id, title)
+      clients += (id, uid)
   }).isSuccess
 
   def get(k: Int) = database withSession {
@@ -47,19 +47,7 @@ object ClientDAO {
       q3.list.headOption //.map(Supplier.tupled(_))
   }
 
-  def getBusiness(k: Int) = database withSession {
-    implicit session ⇒
-      val q1 = (for { 
-      s ← clients if s.id === k
-      j <- s.cb
-      } yield (s.id, j.title))
-      println("Manual join")
-      println(q1.selectStatement)
-
-      println(q1.run.toSet)
-      q1.run.toSet
-      //q1.list.head //.map(Supplier.tupled(_))
-  }
+ 
   /**
    * Update a client
    * @param id
@@ -91,8 +79,8 @@ object ClientDAO {
       val q3 = for { s ← clients } yield s <> (ClientDTO.tupled, ClientDTO.unapply _)
       q3.list.sortBy(_.id)
     //suppliers foreach {
-    //  case (id, title, address, city, state, zip) ⇒
-    //    Supplier(id, title, address, city, state, zip)
+    //  case (id, uid, address, city, state, zip) ⇒
+    //    Supplier(id, uid, address, city, state, zip)
     //}
   }
 

@@ -208,6 +208,20 @@
 </script>
 <script>
 $(function domReadyLoginFlow () {
+  $('.form-horizontal button').on('click', function(event) {
+
+event.preventDefault();
+  var name = $('.form-horizontal #username').val();
+  var pswd = $('.form-horizontal #password').val();
+  $.post( "http://localhost:9000/auth/api/authenticate/userpass", { username: name , password: pswd })
+.done(function( data ) {
+console.log(data.token);
+localStorage.setItem("token", data.token);
+$('.form-horizontal')[0].submit();
+});
+
+ 
+})
   $('.loginView a.switchView').on('click', function clickViewSwitch(e) {
     var nextPage;
     e.preventDefault();
@@ -290,6 +304,7 @@ $(function domReadyLoginFlow () {
     }).trigger('change');
   }
 });
+
 </script>
 </body>
 </html>

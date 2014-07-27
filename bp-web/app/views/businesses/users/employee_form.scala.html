@@ -1,4 +1,4 @@
-@(serviceForm: Form[models.DAO.resources.BusinessServiceDTO])
+@(serviceForm: Form[models.DAO.resources.EmployeeDTO])
 
 @import helper._
 
@@ -13,18 +13,17 @@
 
 <div class="row">
 <div class="col-md-8">
-@form(routes.BusinessServiceController.create_new()) {
+@form(users.routes.EmployeeController.create_new()) {
 <fieldset>
 
 
 
-@inputText(serviceForm("title"), '_label -> "Name", 'class -> "form-control")
-@inputText(serviceForm("business_id"), '_label -> "Business", 'class -> "form-control")
+@inputText(serviceForm("uid"), '_label -> "Name", 'class -> "form-control")
 </fieldset>
 
 <div class="actions">
 <input type="submit" value="Create this service" class="btn btn-primary"> or
-<a href="@routes.BusinessServiceController.index()" class="btn btn-default">Cancel</a>
+<a href="@users.routes.EmployeeController.index()" class="btn btn-default">Cancel</a>
 </div>  
 }
 </div>

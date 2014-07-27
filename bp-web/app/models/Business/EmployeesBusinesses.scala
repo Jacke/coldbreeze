@@ -1,7 +1,7 @@
 package models.DAO.resources
 
 
-import models.DAO.driver.MyPostgresDriver.simple._
+import scala.slick.driver.PostgresDriver.simple._
 import scala.slick.model.ForeignKeyAction
 import models.DAO.resources.BusinessDTO._
 import models.DAO.resources.EmployeeDAO._
@@ -43,11 +43,15 @@ object EmployeesBusinessDAO {
 
     employees_businesses.where(_.employee_id === employee_id).delete
   }
+  def deleteByEmployeeAndBusiness(employee_id: Int, business_id: Int) = database withSession { implicit session ⇒
+    employees_businesses.filter(em => em.employee_id === employee_id && em.business_id === business_id).delete
+    //employees_businesses.where(_.employee_id === employee_id &&& _.business_id === business_id).delete
+  }
 
   def getAll = database withSession {
     implicit session ⇒
       val q3 = for { s ← employees_businesses } yield s 
-      q3.list.sortBy(_._1)
+      q3.list//.sortBy(_._1)
   }
 
   def ddl_create = {

@@ -13,18 +13,18 @@ import models.DAO.conversion.DatabaseCred
 class BProcesses(tag: Tag) extends Table[BProcessDTO](tag, "bprocesses") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc) // This is the primary key column
   def title = column[String]("title")
-  def business = column[Int]("business_id")
+  def service = column[Int]("service_id")
   // Every table needs a * projection with the same type as the table's type parameter
-  def * = (id.?, title, business) <> (BProcessDTO.tupled, BProcessDTO.unapply)
+  def * = (id.?, title, service) <> (BProcessDTO.tupled, BProcessDTO.unapply)
   
-  def businessFK = foreignKey("business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def serviceFK = foreignKey("service_fk", service, models.DAO.resources.BusinessServiceDAO.business_services)(_.id, onDelete = ForeignKeyAction.Cascade)
 }
 
 
 /*
   Case class
  */
-case class BProcessDTO(var id: Option[Int], title: String, business: Int)
+case class BProcessDTO(var id: Option[Int], title: String, service: Int)
 
 /*
   DataConversion
@@ -50,10 +50,10 @@ object BPDAO {
       bprocesses returning bprocesses.map(_.id) += s
   }
 
-  def pull(id: Option[Int] = None, title: String, business: Int) = Try(database withSession {
+  def pull(id: Option[Int] = None, title: String, service: Int) = Try(database withSession {
     implicit session ⇒
 
-      bprocesses += BProcessDTO(id, title, business)
+      bprocesses += BProcessDTO(id, title, service)
   }).isSuccess
 
   def get(k: Int) = database withSession {
@@ -87,11 +87,16 @@ object BPDAO {
     Query(bprocesses.length).first
   }
 
-
+  def ddl_create = {
+    database withSession {
+      implicit session =>
+      bprocesses.ddl.create
+    }
+  }
 
   def getAll = database withSession {
-    implicit session ⇒ // TODO: s.business === 1 CHANGE DAT
-      val q3 = for { s ← bprocesses if s.business === 1} yield s
+    implicit session ⇒ // TODO: s.service === 1 CHANGE DAT
+      val q3 = for { s ← bprocesses if s.service === 1} yield s
       q3.list.sortBy(_.id)
     //suppliers foreach {
     //  case (id, title, address, city, state, zip) ⇒

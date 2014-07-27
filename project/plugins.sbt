@@ -1,5 +1,7 @@
 resolvers += "Sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/"
 
+resolvers += "bintray-sbt-plugin-releases" at "http://dl.bintray.com/content/sbt/sbt-plugin-releases"
+
 resolvers += "Kamon Releases" at "http://repo.kamon.io"
 
 resolvers += "Maven Central" at "http://repo1.maven.org/maven2"
@@ -43,3 +45,7 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-gzip" % "1.0.0")
 addSbtPlugin("com.typesafe.sbt" % "sbt-coffeescript" % "1.0.0")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-mocha" % "1.0.0")
+
+addSbtPlugin("me.lessis" % "bintray-sbt" % "0.1.1")
+
+//addSbtPlugin("au.com.onegeek.sbtdotenv" % "sbt-dotenv" % "1.0.17")

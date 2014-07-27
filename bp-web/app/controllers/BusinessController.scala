@@ -1,4 +1,6 @@
 package controllers
+
+import models.DAO.resources.{BusinessDAO, BusinessDTO}
 import play.api._
 import play.api.mvc._
 import play.twirl.api.Html
@@ -7,40 +9,80 @@ import play.twirl.api.Html
 import play.api.http.MimeTypes
 import play.api.libs.json._
 import play.api.cache._
+import play.api.data._
+import play.api.data.Forms._
+import java.util.UUID
 
 import views._
+import models.Page
 import models.User
 import service.DemoUser
 import securesocial.core._
+import models.DAO.resources.web._
+
 /**
  * Created by Sobolev on 22.07.2014.
  */
 class BusinessController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
   import play.api.Play.current
+ 
+   val Home = Redirect(routes.BusinessController.index())
 
- def index() = Action(parse.json) { implicit request =>
-    
-      Ok(views.html.index11())
-    
-  }
-  def newone() = Action(parse.json) { implicit request =>
-    
-      Ok(views.html.index11())
-    
-  }
-  def create() = Action(parse.json) { implicit request =>
-    
-      Ok(views.html.index11())
+   val businessForm = Form(
+    mapping(
+      "id" -> optional(number),
+      "title" -> nonEmptyText)(BusinessDTO.apply)(BusinessDTO.unapply))
+ 
+ def index() = Action { implicit request =>
+      val businesses = BusinessDAO.getAll
+      Ok(views.html.businesses.index(
+        Page(businesses, 1, 1, businesses.length), 1, "%"))
     
   }
-  def update() = Action(parse.json) { implicit request =>
-    
-      Ok(views.html.index11())
+  def create() = Action { implicit request =>
+        Ok(views.html.businesses.business_form(businessForm))    
+  }
+  def create_new() = Action { implicit request => 
+    println(request)
+    println(businessForm.bindFromRequest)
+    businessForm.bindFromRequest.fold(
+      formWithErrors => BadRequest(views.html.businesses.business_form(formWithErrors)),
+      entity => {
+
+          BusinessDAO.pull_object(entity)
+          Home.flashing("success" -> s"Entity ${entity.title} has been created")
+        
+      })
+  }
+  def update(id: Int) = Action { implicit request =>
+      val business = BusinessDAO.get(id)
+      business match {
+        case Some(business) =>
+        val biz = BusinessDTO(business.id, business.title)
+         Ok(views.html.businesses.business_edit_form(id, businessForm.fill(biz))) 
+        case None => Ok("not found")
+      }
+
+      
     
   }
-  def destroy() = Action(parse.json) { implicit request =>
+  def update_make(id: Int) = Action { implicit request =>
+      businessForm.bindFromRequest.fold(
+        formWithErrors => BadRequest(views.html.businesses.business_edit_form(id, formWithErrors)),
+        entity => {
+          Home.flashing(BusinessDAO.update(id,entity) match {
+            case 0 => "failure" -> s"Could not update entity ${entity.title}"
+            case _ => "success" -> s"Entity ${entity.title} has been updated"
+          })
+        })
     
-      Ok(views.html.index11())
+  }
+  def destroy(id: Int) = Action { implicit request =>
+    
+      Home.flashing(BusinessDAO.delete(id) match {
+        case 0 => "failure" -> "Entity has Not been deleted"
+        case x => "success" -> s"Entity has been deleted (deleted $x row(s))"
+      })
     
   }
 

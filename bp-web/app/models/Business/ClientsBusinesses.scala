@@ -1,7 +1,7 @@
 package models.DAO.resources
 
 
-import models.DAO.driver.MyPostgresDriver.simple._
+import scala.slick.driver.PostgresDriver.simple._
 import scala.slick.model.ForeignKeyAction
 
 import models.DAO.resources.BusinessDTO._
