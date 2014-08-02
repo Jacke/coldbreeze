@@ -71,6 +71,12 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
   def index = SecuredAction { implicit request =>
     Ok(views.html.index(request.user.main))
   }
+  def app() = SecuredAction { implicit request =>
+    Ok(views.html.app())
+  }
+  def whoami = SecuredAction { implicit request =>
+    Ok(Json.toJson(Map("email" -> request.user.main.userId, "business" -> "0")))
+  }
 
   // a sample action using an authorization implementation
   def onlyTwitter = SecuredAction(WithProvider("twitter")) { implicit request =>
@@ -102,12 +108,133 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
   def index11 = Action {
     Ok(views.html.index11())
   }
+  /**
+  * Mocks
+  */
   def bprocesses = Action {
-    Ok(Json.toJson(4))
+    Ok(Json.toJson(Array(4)))
   }
+  import models.DAO.BProcessDTO
+  import models.DAO.BPDAO
+  implicit val BProcessDTOReads = Json.reads[BProcessDTO]
+  implicit val BProcessDTOWrites = Json.format[BProcessDTO]
+
   def bprocess = Action {
-    Ok(Json.toJson(Person("xxx", 12, None )))
+    Ok(Json.toJson(BPDAO.getAll))
   }
+  def create_bprocess1 = Action { implicit request =>
+    println(request.body)
+    Ok(Json.toJson(Array(BProcessDTO(Some(1), "12", 1, 1))))
+  }
+  def show_bprocess(id: Int) = Action { implicit request =>
+    BPDAO.get(id) match {
+      case Some(bprocess) => Ok(Json.toJson(bprocess))
+      case _ => BadRequest(Json.obj("status" -> "Not found"))
+    }
+  }
+  def create_bprocess = Action(BodyParsers.parse.json) { request =>
+  val bpResult = request.body.validate[BProcessDTO]
+  bpResult.fold(
+    errors => {
+      BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
+    },
+    bprocess => { 
+      BPDAO.pull_object(bprocess)
+      Ok(Json.obj("status" ->"OK", "message" -> ("Bprocess '"+bprocess.id+"' saved.") ))  
+    }
+  )
+}
+  def update_bprocess(id: Int) = Action(BodyParsers.parse.json) { implicit request =>
+    val bpResult = request.body.validate[BProcessDTO]
+  bpResult.fold(
+    errors => {
+      BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
+    },
+    bprocess => { 
+      BPDAO.update(id, bprocess)
+      Ok(Json.obj("status" ->"OK", "message" -> ("Bprocess '"+bprocess.title+"' saved.") ))  
+    }
+  )
+
+  }
+  def delete_bprocess = Action { implicit request => 
+    println(request.body)
+    Ok(Json.toJson(true))
+  }
+/**
+For this Action we’ll need to define an implicit Reads[Place] to convert a JsValue to our model.
+
+implicit val locationReads: Reads[Location] = (
+  (JsPath \ "lat").read[Double] and
+  (JsPath \ "long").read[Double]
+)(Location.apply _)
+
+implicit val placeReads: Reads[Place] = (
+  (JsPath \ "name").read[String] and
+  (JsPath \ "location").read[Location]
+)(Place.apply _)
+
+Next we’ll define the Action.
+
+def savePlace = Action(BodyParsers.parse.json) { request =>
+  val placeResult = request.body.validate[Place]
+  placeResult.fold(
+    errors => {
+      BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
+    },
+    place => { 
+      Place.save(place)
+      Ok(Json.obj("status" ->"OK", "message" -> ("Place '"+place.name+"' saved.") ))  
+    }
+  )
+}
+*/
+import models.DAO.UndefElement
+import models.DAO.CompositeValues
+implicit val CompositeVReads = Json.reads[CompositeValues]
+implicit val CompositeVWrites = Json.format[CompositeValues]
+implicit val UndefElementReads = Json.reads[UndefElement]
+implicit val UndefElementWrites = Json.format[UndefElement]
+  def bpElems(id: Int) = Action {
+     Ok(Json.toJson(Array(
+      UndefElement(Some(1), "title", "desc", 1, id, "b_type", "type_title", None, order = 1, Some(List(CompositeValues(Some("a"), Some("b"), Some(1) ))) ),
+      UndefElement(Some(2), "title", "desc", 1, id, "b_type", "type_title", None, order = 2, Some(List(CompositeValues(Some("a"), Some("b"), Some(1) ))) ),
+      UndefElement(Some(3), "title", "desc", 1, id, "b_type", "type_title", None, order = 3, Some(List(CompositeValues(Some("a"), Some("b"), Some(1) ))) )
+
+
+      )))
+  }
+  def createBpElem(id: Int) = Action { implicit request =>
+    println(request.body)
+     Ok(Json.toJson(Array(UndefElement(Some(1), "title", "desc", 1, 1, "b_type", "type_title", None, order = 1, Some(List(CompositeValues(Some("a"), Some("b"), Some(1) ))) ))))
+  }
+  def updateBpElem(id: Int) = Action { implicit request => 
+    println(request.body)
+     Ok(Json.toJson(Array(UndefElement(Some(1), "title", "desc", 1, 1, "b_type", "type_title", None, order = 1, Some(List(CompositeValues(Some("a"), Some("b"), Some(1) ))) ))))
+  }
+
+
+
+  def bpstation = Action {
+    Ok(Json.toJson(Array(Person("xxx", 12, None ))))
+  }
+  def bpstationLogger = Action {
+    Ok(Json.toJson(Array(Person("xxx", 12, None ))))
+  }
+  def bplogger = Action {
+    Ok(Json.toJson(Array(Person("xxx", 12, None ))))
+  }
+  def bpSpaceElems = Action {
+    Ok(Json.toJson(Array(Person("xxx", 12, None ))))
+  }
+  def bpSpaces = Action {
+    Ok(Json.toJson(Array(Person("xxx", 12, None ))))
+  }
+  def bpThreads = Action {
+    Ok(Json.toJson(Array(Person("xxx", 12, None ))))
+  }
+
+
 
 
 

@@ -12,8 +12,8 @@
       <tr ng-repeat="bprocess in bprocesses">
         <td>{{ bprocess.title }}</td>
         <td>{{ bprocess.business }}</td>
-        <td><a ng-click="showBP(bprocess.id)" class="btn btn-small btn-primary">show</a></td>
-        <td><a ng-click="editBP(bprocess.id)" class="btn btn-small btn-primary">edit</a></td>
+        <td><a ng-click="showBP(bprocess.id)" class="btn btn-small btn-primary">edit</a></td>
+        <td><a href="/a#/bprocess/{{ bprocess.id }}/elements" class="btn btn-small btn-primary">elements</a></td>
         <td><a ng-click="deleteBP(bprocess.id)" class="btn btn-small btn-danger">delete</a></td>
         <td><a href="process/{{ bprocess.id }}/invoke">invoke</a></td>
       </tr>

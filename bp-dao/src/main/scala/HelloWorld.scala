@@ -9,15 +9,29 @@ import main.scala.bprocesses._
 import main.scala.resources.scopes._
 import com.github.nscala_time.time.Imports._
 
+
+import main.scala.bprocesses._
+import main.scala.simple_parts.process.ProcElems
+import main.scala.simple_parts.process.ContainerBrick
+import main.scala.simple_parts.process.control._
+import main.scala.simple_parts.process.data._
+import main.scala.utils._
+import main.scala.resources.scopes._
+
+import main.scala.bprocesses.links._
+import main.scala.utils.Space
+
+
 object BPServiceApp extends App {
    def check = "test"
 
    println("test")
    ElementRegistrator.apply
    // caster
-   val process_dto = BPDAO.get(1).get
-   val target = ProcElemDAO.findByBPId(1)
+   val process_dto = BPDAO.get(3).get
+   val target = ProcElemDAO.findByBPId(3)
    println(target)
+
    
    val process = new BProcess(new Managment)
 
@@ -26,7 +40,175 @@ object BPServiceApp extends App {
    process.push {
     arrays
    }   
+   //process.push {
+   //   Array[ProcElems](
+   //     new ContainerBrick(2, "container brick", "", None, process, "brick", "containerbrick", 2))//,
+   // }
+   println(process.variety)
    println(process.variety.length)
+
+  println(process.findFrontBrick()(0))
+
+  //Space.apply(index: Int, brick: Brick, is_subbricks: Boolean = true, is_container: Boolean = true, is_expander: Boolean = true)   
+  val test_space = BPSpaceDAO.findByBPId(3)
+  println(test_space)
+  println(test_space.length)
+
+  /*
+  SpaceElementDTO(id: Option[Int],
+                        title:String,
+                        desc:String,
+                        business:Int,
+                        bprocess:Int,
+                        b_type:String,
+                        type_title:String,
+                        space_own:Option[Int],
+                        space_owned: Int,
+                        space_role:Option[String],
+                        order:Int,
+                        comps: Option[List[CompositeValues]])
+  */
+  val space_elems = SpaceElemDAO.findByBPId(3)
+  println(space_elems)
+
+  
+
+  // Pull front spaces
+  val front_bricks = process.findFrontBrick()
+  println(front_bricks.length)
+  // FILTER NESTED SPACES
+
+  println(process.review())
+  println("")
+  println("")
+  println("")
+  println("")
+  val nested_spaces_ids = space_elems.flatMap(space_elem => space_elem.space_own)
+
+  val front_space_space_elems = space_elems.filter(space_elem => !nested_spaces_ids.contains(space_elem.space_owned))
+  val nested_space_space_elems = space_elems.filter(space_elem => nested_spaces_ids.contains(space_elem.space_owned))
+
+  val front_space_space_elems_ids = front_space_space_elems.map(space_elem => space_elem.space_owned)
+  val nested_space_space_elems_ids = nested_space_space_elems.map(space_elem => space_elem.space_owned)
+
+  val front_spaces = test_space.filter(space => front_space_space_elems_ids.contains(space.id.get))
+  val converted_space = front_spaces.map(space => space.cast(process, front_space_space_elems)).flatten.toArray    
+  converted_space.foreach(sp => println(sp.index + " " + sp.id + " " + sp.brick_owner))
+
+  println(process.review())
+  println("")
+  println("")
+  println("")
+  println("")
+
+  /*
+  val nested_spaces_ids = space_elems.flatMap(space_elem => space_elem.space_own)
+  //
+  val front_space_space_elems = space_elems.filter(space_elem => !nested_spaces_ids.contains(space_elem.space_owned))
+  val nested_space_space_elems = space_elems.filter(space_elem => nested_spaces_ids.contains(space_elem.space_owned))
+
+  val front_space_space_elems_ids = front_space_space_elems.map(space_elem => space_elem.space_owned)
+  val nested_space_space_elems_ids = nested_space_space_elems.map(space_elem => space_elem.space_owned)
+
+  println("nested_space_space_elems_ids")
+  nested_space_space_elems_ids.foreach(id => println(id))
+  //front_space_space_elems.foreach(id => println(id.space_own))
+ 
+  val front_spaces = test_space.filter(space => front_space_space_elems_ids.contains(space.id.get))
+  val front_space_space_elems_index = front_spaces.map(sp => (sp.id.get -> sp.index)).toMap
+
+      println("front_spaces.length " + front_spaces.length)
+  //// Convert front_space_elems to initial and
+  val list_space_elems:Map[Int, List[SpaceElementDTO]] = { 
+    front_space_space_elems_ids.map { id =>
+      id -> front_space_space_elems.filter(spelem => spelem.id.get == id) //.toMap
+  }.toMap
+}
+  val list_space_elemsz:List[(Int, List[SpaceElementDTO])] = { 
+    front_space_space_elems_ids.map { id =>
+      (id, front_space_space_elems.filter(spelem => spelem.id.get == id)) //.toMap
+  }
+ } 
+ println(list_space_elemsz)
+
+  println("finding container brick" )
+  front_space_space_elems_ids.foreach(println(_))
+  println("list_space_elems: " + list_space_elems.size)
+  list_space_elems.foreach { 
+    case(id, va) => println("ID: " + id + "value " + va + "length" + va.length)
+  }
+  println("""
+     INDEXXESS
+
+
+
+    """)
+  front_space_space_elems_index.foreach { 
+    case(id, va) => println("ID: " + id + "value " + va)
+  }
+  front_spaces.foreach(sp => println(sp.index))
+
+
+  val converted_space = front_spaces.map(space => space.cast(process, front_space_space_elems)).flatten.toArray    
+  println("converted_space " + converted_space.length)
+  converted_space.foreach(sp => println(sp.index))
+
+  println("""
+     w??????????
+
+
+
+    """)
+
+
+
+
+
+  converted_space.foreach { fspace =>
+    list_space_elems.foreach { case(id, elems) =>
+      println("list_space_elems.foreach ")
+
+      elems.foreach { elem =>
+        println("elems.foreach { elem =>")
+        println(elems.length)
+        println("checking " + fspace.index + " " + front_space_space_elems_index.get(elem.space_owned).get)
+        if (front_space_space_elems_index.get(elem.space_owned).get == fspace.index) {
+          println(elem.castToSpace(process, fspace).get)
+          fspace.addToSpace(elem.castToSpace(process, fspace).get, elem.space_role.get)
+          //fspace.addToSpace(,space_id = Option(fspace), "container")
+        }
+      }
+    }
+    process.spaces = process.spaces :+ fspace
+
+
+  }
+  process.spaces.foreach(sp => println(sp.index))
+  // Check filling
+
+  println("Check filling")
+  process.spaces.foreach(space => println(space.container.length))
+
+  ///////////////println("front_space_space_elems.length " + front_space_space_elems.length)
+  // Pull nested spaces
+  //front_space_space_elems.map()
+  //process.spaces.foreach(_.addToSpace(space_id = Option(space_ptr)), "container")) 
+  // addToSpace(
+  //  new PrintValue[Boolean](2, true, proc123, 2,
+  //    values = Option(CompositeValues(a_string = Option("********"))), space_id = Option(space_ptr)), "container")
+
+  // Fill nested space
+  */
+
+
+
+
+
+
+
+
+
+
 ///////////
 /*
    InvokeTracer.run_proc(process)

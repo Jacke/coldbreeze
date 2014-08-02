@@ -186,8 +186,8 @@ import main.scala.resources.scopes._
   /**
    *  Thread <: Space
    */
-  val threadspace1 = main.scala.utils.Space(index=1, parbrick.asInstanceOf[Brick], is_subbricks = false, is_container = true, is_expander = false)
-  val threadspace2 = main.scala.utils.Space(index=2, parbrick.asInstanceOf[Brick], is_subbricks = false, is_container = true, is_expander = false)
+  val threadspace1 = main.scala.utils.Space(index=1, brick = parbrick.asInstanceOf[Brick], is_subbricks = false, is_container = true, is_expander = false)
+  val threadspace2 = main.scala.utils.Space(index=2, brick = parbrick.asInstanceOf[Brick], is_subbricks = false, is_container = true, is_expander = false)
 
 
   /**

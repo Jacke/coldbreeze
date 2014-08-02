@@ -1,7 +1,9 @@
 @import models.DAO.resources.BusinessServiceDTO
+@import models.DAO.resources.EmployeeDTO
+@import models.DAO.resources.BusinessDTO
 @import models.DAO.resources.ClientDTO
 @import helper._
-@(currentPage: Page[ClientDTO], currentOrderBy: Int, currentFilter: String)(implicit flash: play.api.mvc.Flash)
+@(currentPage: Page[ClientDTO], currentOrderBy: Int, currentFilter: String, businesses: List[BusinessDTO], assignedBiz: List[BusinessDTO])(implicit flash: play.api.mvc.Flash)
 
 @****************************************
 * Helper generating navigation links *
@@ -62,7 +64,17 @@
                                   <input type="submit" value="Delete this client" class="btn danger">
                               }
                                 
+                            <td>
+                              Assign to:
+                              @businesses.map { business =>
+                                  <b><a href="@users.routes.EmployeeController.assign_business(entity.id.get, business.id.get)">@business.title</a></b>
+                              }
                             </td>
+                            <td> 
+                            Assigned:
+                              @assignedBiz.map { business =>
+                                  <b><a href="@users.routes.EmployeeController.unassign_business(entity.id.get, business.id.get)">@business.title</a></b>
+                              }
                             </td>
                         </tr>
                      }

@@ -43,7 +43,9 @@ object ClientBusinessDAO {
       println(q3.list)
       q3.list 
   }
-
+  def deleteByClientAndBusiness(client_id: Int, business_id: Int) = database withSession { implicit session ⇒
+    clients_businesses.filter(em => em.client_id === client_id && em.business_id === business_id).delete
+  }
   def deleteByClient(client_id: Int) = database withSession { implicit session ⇒
 
     clients_businesses.where(_.client_id === client_id).delete

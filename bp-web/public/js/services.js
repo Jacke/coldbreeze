@@ -16,7 +16,7 @@ minorityAppServices.factory(
   });
 
 
-var baseUrl = 'http://127.0.0.1\\:8080';
+var baseUrl = 'http://localhost\\:9000';
 
 minorityAppServices.factory('AuthInterceptor', function ($window, $q) {
     return {

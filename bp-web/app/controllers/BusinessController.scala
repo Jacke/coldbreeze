@@ -1,6 +1,9 @@
 package controllers
 
 import models.DAO.resources.{BusinessDAO, BusinessDTO}
+import models.DAO.resources.EmployeesBusinessDAO
+import models.DAO.resources.EmployeeDAO
+
 import play.api._
 import play.api.mvc._
 import play.twirl.api.Html
@@ -42,14 +45,20 @@ class BusinessController(override implicit val env: RuntimeEnvironment[DemoUser]
   def create() = Action { implicit request =>
         Ok(views.html.businesses.business_form(businessForm))    
   }
-  def create_new() = Action { implicit request => 
-    println(request)
-    println(businessForm.bindFromRequest)
+  def create_new() = SecuredAction { implicit request =>
+
     businessForm.bindFromRequest.fold(
       formWithErrors => BadRequest(views.html.businesses.business_form(formWithErrors)),
       entity => {
 
-          BusinessDAO.pull_object(entity)
+          val biz_id = BusinessDAO.pull_object(entity)
+          val emp_id = EmployeeDAO.getByUID(request.user.main.userId) 
+          emp_id match {
+            case Some(employee) => EmployeesBusinessDAO.pull(employee_id = employee.id.get, business_id = biz_id)
+            case _ =>
+          }
+          
+          
           Home.flashing("success" -> s"Entity ${entity.title} has been created")
         
       })

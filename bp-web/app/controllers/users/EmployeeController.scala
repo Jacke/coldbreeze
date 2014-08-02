@@ -20,6 +20,7 @@ import models.Page
 import models.User
 import service.DemoUser
 import securesocial.core._
+import models.DAO.resources.ClientBusinessDAO
 import models.DAO.resources.web._
 
 /**

@@ -68,6 +68,10 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
   def findObjectByOrder(n: Int):Option[ProcElems] = {
     variety.find(elem => elem.order == n)
   }
+  def findFrontBrick():Array[Brick] = {
+    variety.collect { case brick: Brick => brick }
+    //new ContainerBrick(4, "container brick", "", Option(CompositeValues()), this, "brick", "containerbrick", 4)
+  }
   def findEverywhereByOrder(n: Int, space: Option[Int] = None):Option[ProcElems] = {
     space match {
       case Some(index) => spaces(index).allElements.find(elem => elem.order == n)
@@ -217,4 +221,17 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
   // execute return block
   // push complete result 
   //}
+
+  /**
+   *  Review
+   */
+   def review(): String = {
+    s"""
+      |****************
+      |spaces          ${spaces.length}
+      |variety         ${variety.length}
+      |frontbrick      ${findFrontBrick.length}
+      |****************
+    """.stripMargin
+   }
 }

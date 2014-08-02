@@ -217,6 +217,7 @@ event.preventDefault();
 .done(function( data ) {
 console.log(data.token);
 localStorage.setItem("token", data.token);
+sessionStorage.setItem("token", data.token);
 $('.form-horizontal')[0].submit();
 });
 

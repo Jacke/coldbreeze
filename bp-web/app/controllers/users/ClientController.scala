@@ -1,6 +1,7 @@
 package controllers.users
 
 import models.DAO.resources.{ClientDTO, ClientDAO}
+import models.DAO.resources.ClientBusinessDAO
 import play.api._
 import play.api.mvc._
 import play.twirl.api.Html
@@ -19,6 +20,7 @@ import models.User
 import service.DemoUser
 import securesocial.core._
 import models.DAO.resources.web._
+import models.DAO.resources.ClientBusinessDAO
 
 /**
  * Created by Sobolev on 22.07.2014.
@@ -35,8 +37,12 @@ class ClientController(override implicit val env: RuntimeEnvironment[DemoUser]) 
  
  def index() = Action { implicit request =>
       val clients = ClientDAO.getAll
+      val businesses = models.DAO.resources.BusinessDAO.getAll
+      val cbs = ClientBusinessDAO.getAll
+      val assign = businesses.filter(b => !(cbs.map(eb => eb._2).contains(b.id.get)))
+      val assigned = businesses.filter(b => cbs.map(eb => eb._2).contains(b.id.get))
       Ok(views.html.businesses.users.clients(
-        Page(clients, 1, 1, clients.length), 1, "%"))
+        Page(clients, 1, 1, clients.length), 1, "%", assign, assigned))
     
   }
   def create() = Action { implicit request =>
@@ -75,6 +81,26 @@ class ClientController(override implicit val env: RuntimeEnvironment[DemoUser]) 
             case _ => "success" -> s"Entity ${entity.uid} has been updated"
           })
         })
+    
+  }
+  def assign_business(client_id: Int, business_id: Int) = Action { implicit request =>
+      val business = BusinessDAO.get(business_id)
+      business match {
+        case Some(business) => 
+          ClientBusinessDAO.pull(client_id = client_id, business_id = business_id)
+          Home.flashing("success" -> s"Client $client_id was assigned")
+        case None => Home.flashing("failure" -> s"Business with $business_id not found")
+      }
+    
+  }
+  def unassign_business(client_id: Int, business_id: Int) = Action { implicit request =>
+      val business = BusinessDAO.get(business_id)
+      business match {
+        case Some(business) => 
+          ClientBusinessDAO.deleteByClientAndBusiness(client_id, business_id)
+          Home.flashing("success" -> s"Client $client_id was assigned")
+        case None => Home.flashing("failure" -> s"Business with $business_id not found")
+      }
     
   }
   def destroy(id: Int) = Action { implicit request =>

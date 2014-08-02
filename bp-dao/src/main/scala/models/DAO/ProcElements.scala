@@ -8,6 +8,7 @@ import models.DAO.resources.BusinessDTO._
 import com.github.tminglei.slickpg.composite._
 import models.DAO.conversion.{DatabaseCred, Implicits}
 
+import main.scala.simple_parts.process.data.Constant
 /**
  * ProcElements scheme
  */
@@ -38,7 +39,7 @@ class ProcElements(tag: Tag) extends Table[UndefElement](tag, "proc_elements") {
 
   def businessFK = foreignKey("business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
   def bpFK = foreignKey("bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
-  // TODO: Space FK
+
 
 }
 
@@ -64,6 +65,16 @@ case class UndefElement(id: Option[Int],
     println("block castiong")
     println(order)
     this match {
+      case y if (y.b_type == "brick" | y.type_title == "container_brick") => {
+        Option(
+            new ContainerBrick(id.get, title, desc,Implicits.fetch_cv(comps), process, b_type, type_title, order)
+          )
+      }
+      case constant if (constant.b_type == "block" | constant.type_title == "constant") => {
+        Option(
+           new Constant[Boolean](id.get, true, process, order, space_id = None)
+        )
+      }
       case x if (x.b_type == "block" | x.type_title == "test block") => { 
         Option(
           new Block(id.get,title,desc,Implicits.fetch_cv(comps),process,b_type,type_title,order)
@@ -131,6 +142,13 @@ object ProcElemDAO {
     "true && true"
   }
 
+
+  def ddl_create = {
+    database withSession {
+      implicit session =>
+      proc_elements.ddl.create
+    }
+  }
   /**
    * Delete a specific entity by id. If successfully completed return true, else false
    */

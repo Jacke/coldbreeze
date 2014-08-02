@@ -29,18 +29,25 @@ object EmployeeDAO {
       employees returning employees.map(_.id) += (value = (None, s.uid))//(EmployeeDTO.unapply(s).get._2, EmployeeDTO.unapply(s).get._3)
   }
 
-  def pull(id: Option[Int] = None, uid: String) = Try(database withSession {
+  def pull(id: Option[Int] = None, uid: String) = database withSession {
     implicit session ⇒
 
-      employees += (id, uid)
-  }).isSuccess
-
+      //employees += (id, uid)
+      employees returning employees.map(_.id) += (value = (None, uid))
+  }
   def get(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← employees if s.id === k } yield s <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)
       println(q3.selectStatement)
       println(q3.list)
       q3.list.headOption //.map(Supplier.tupled(_))
+  }
+  def getByUID(uid: String) = database withSession {
+    implicit session =>
+    val q3 = for { s ← employees if s.uid === uid } yield s <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)
+      println(q3.selectStatement)
+      println(q3.list)
+      q3.list.headOption
   }
   
  

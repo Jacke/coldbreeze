@@ -5,7 +5,7 @@ import main.scala.bprocesses.links._
 import main.scala.simple_parts.process.Brick
 
 
-class Space(val index: Int, val brick_owner: Brick) {
+class Space(val index: Int, val brick_owner: Brick, val id: Option[Int] = None) {
   
 
 private var state = true
@@ -135,28 +135,28 @@ trait SpaceExpandComponent { self: Space =>
 
 
 object Space {
-  def apply(index: Int, brick: Brick, is_subbricks: Boolean = true, is_container: Boolean = true, is_expander: Boolean = true):Space = {
-    val target = new Space(index, brick)
+  def apply(index: Int, brick: Brick, is_subbricks: Boolean = true, is_container: Boolean = true, is_expander: Boolean = true, id:Option[Int] = None):Space = {
+    var target = new Space(index, brick, id)
     if (is_subbricks && is_container && is_expander) {
-      val target = new Space(index, brick) with SpaceSBComponent with SpaceContainerComponent with SpaceExpandComponent
+      var target = new Space(index, brick, id) with SpaceSBComponent with SpaceContainerComponent with SpaceExpandComponent
     }
     if (is_subbricks && is_container && !is_expander) {
-      val target = new Space(index, brick) with SpaceSBComponent with SpaceContainerComponent
+      var target = new Space(index, brick, id) with SpaceSBComponent with SpaceContainerComponent
     }
     if (is_subbricks && !is_container && is_expander) {
-      val target = new Space(index, brick) with SpaceSBComponent with SpaceExpandComponent
+      var target = new Space(index, brick, id) with SpaceSBComponent with SpaceExpandComponent
     }
     if (!is_subbricks && is_container && is_expander) {
-      val target = new Space(index, brick) with SpaceContainerComponent with SpaceExpandComponent
+      var target = new Space(index, brick, id) with SpaceContainerComponent with SpaceExpandComponent
     }
     if (is_subbricks && !is_container && !is_expander) {
-      val target = new Space(index, brick) with SpaceSBComponent
+      var target = new Space(index, brick, id) with SpaceSBComponent
     } 
     if (!is_subbricks && is_container && !is_expander) {
-      val target = new Space(index, brick) with SpaceContainerComponent
+      var target = new Space(index, brick, id) with SpaceContainerComponent
     }
     if (!is_subbricks && !is_container && is_expander) {
-      val target = new Space(index, brick) with SpaceExpandComponent
+      var target = new Space(index, brick, id) with SpaceExpandComponent
     }
     target
   }

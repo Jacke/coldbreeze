@@ -20,14 +20,12 @@ var minorityApp =
 
 minorityApp.config(['$routeProvider', function($routeProvider) {
 /*Credentials managment*/
-     $routeProvider.when('/auth', {templateUrl: 'partials/forms/auth.html', controller: 'UserController'});
-     $routeProvider.when('/reg', {templateUrl: 'partials/forms/reg.html', controller: 'RegController'});
      $routeProvider.when('/profile', {templateUrl: 'partials/forms/profile.html', controller: 'ProfileController'});
     // BProcess
 /*I*/$routeProvider.when('/bprocesses', {templateUrl: 'partials/forms/bprocesses/bp-list.html', controller: 'BProcessListCtrl'});
 /*C*/$routeProvider.when('/bprocess/new', {templateUrl: 'partials/forms/bprocesses/bp-new.html', controller: 'BPCreationCtrl'});
 /*R*/$routeProvider.when('/bprocess/:id/show', {templateUrl: 'partials/forms/bprocesses/bp-detail.html', controller: 'BProcessDetailCtrl'});
-/*U*/$routeProvider.when('/bprocess/:id/edit', {templateUrl: 'partials/bprocesses/bp-edit.html', controller: 'BProcessDetailCtrl'});
+/*U*/$routeProvider.when('/bprocess/:id/edit', {templateUrl: 'partials/forms/bprocesses/bp-edit.html', controller: 'BProcessDetailCtrl'});
 /*a*/
 
     // Proc Elements

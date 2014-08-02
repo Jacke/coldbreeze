@@ -6,6 +6,10 @@ import models.DAO.driver.MyPostgresDriver.simple._
 import scala.slick.model.ForeignKeyAction
 import models.DAO.conversion.{DatabaseCred, Implicits}
 
+import main.scala.simple_parts.process.data.Constant
+import main.scala.simple_parts.process.Block
+import main.scala.simple_parts.process.ContainerBrick
+import main.scala.utils.Space
 
 class SpaceElements(tag: Tag) extends Table[SpaceElementDTO](tag, "space_elements") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc) // This is the primary key column
@@ -29,6 +33,7 @@ class SpaceElements(tag: Tag) extends Table[SpaceElementDTO](tag, "space_element
 
   def businessFK = foreignKey("business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
   def bpFK = foreignKey("bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def spaceFK = foreignKey("bpspace_fk", space_owned, models.DAO.BPSpaceDAO.bpspaces)(_.id, onDelete = ForeignKeyAction.Cascade)
   // TODO: Space FK
 
 }
@@ -36,6 +41,7 @@ class SpaceElements(tag: Tag) extends Table[SpaceElementDTO](tag, "space_element
 /*
   Case class
  */
+
 case class SpaceElementDTO(id: Option[Int],
                         title:String,
                         desc:String,
@@ -48,7 +54,7 @@ case class SpaceElementDTO(id: Option[Int],
                         space_role:Option[String],
                         order:Int,
                         comps: Option[List[CompositeValues]]) {
-  def cast(process: BProcess):Option[ProcElems] = {
+  def cast(process: BProcess, space_dto: BPSpaceDTO):Option[ProcElems] = {
     // TODO: to space casting
     // TODO: Refactor
     println("block castiong")
@@ -57,6 +63,33 @@ case class SpaceElementDTO(id: Option[Int],
       case x if (x.b_type == "block" | x.type_title == "test block") => {
         Option(
           new Block(id.get,title,desc,Implicits.fetch_cv(comps),process,b_type,type_title,order)
+        )
+      }
+      case constant if (constant.b_type == "block" | constant.type_title == "constant") => {
+        Option(
+          new Constant[Boolean](id.get, true, process, order, space_id = process.spaces.find(space => space.index == space_dto.index))
+        )
+      }
+      case _ => None
+    }
+
+  }
+
+  def castToSpace(process: BProcess, space: Space):Option[ProcElems] = {
+    // TODO: to space casting
+    // TODO: Refactor
+    println("block castiong")
+    println(order)
+    this match {
+      case x if (x.b_type == "brick" | x.type_title == "container_brick") => {
+        Option(
+          new ContainerBrick(id.get, title, desc,Implicits.fetch_cv(comps), process, b_type, type_title, order)
+          //new Block(id.get,title,desc,Implicits.fetch_cv(comps),process,b_type,type_title,order, space_parent = Some(space), space_role)
+        )
+      }
+      case constant if (constant.b_type == "block" | constant.type_title == "constant") => {
+        Option(
+          new Constant[Boolean](id.get, true, process, order, space_id = Some(space))
         )
       }
       case _ => None
@@ -92,6 +125,12 @@ object SpaceElemDAO {
     database withSession { implicit session =>
       val q3 = for { el ← space_elements if el.bprocess === id; if el.order === order } yield el
       q3.list.headOption
+    }
+  }
+  def ddl_create = {
+    database withSession {
+      implicit session =>
+      space_elements.ddl.create
     }
   }
   def update(id: Int, entity: SpaceElementDTO):Boolean = {

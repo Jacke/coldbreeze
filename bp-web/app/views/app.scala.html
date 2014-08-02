@@ -23,11 +23,7 @@
 
 <div ng-controller="UserInfoCtrl">
   <ul>
-      <div ng-hide="isLogged">
-        <li><a href="#/reg">Reg</a></li>
-        <li><a href="#/auth">Auth</a></li>
-      </div>
-      <div ng-show="isLogged">
+      <div>
         <li><a href="#/profile">{{ user.email }}</a></li>
         <li><a href="#" ng-click="logout();">>Logout</a></li>   
       </div>    

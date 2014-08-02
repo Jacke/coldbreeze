@@ -14,9 +14,11 @@ class BProcesses(tag: Tag) extends Table[BProcessDTO](tag, "bprocesses") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc) // This is the primary key column
   def title = column[String]("title")
   def service = column[Int]("service_id")
+  def business = column[Int]("business_id")
   // Every table needs a * projection with the same type as the table's type parameter
-  def * = (id.?, title, service) <> (BProcessDTO.tupled, BProcessDTO.unapply)
+  def * = (id.?, title, service, business) <> (BProcessDTO.tupled, BProcessDTO.unapply)
   
+  def businessFK = foreignKey("business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
   def serviceFK = foreignKey("service_fk", service, models.DAO.resources.BusinessServiceDAO.business_services)(_.id, onDelete = ForeignKeyAction.Cascade)
 }
 
@@ -24,7 +26,7 @@ class BProcesses(tag: Tag) extends Table[BProcessDTO](tag, "bprocesses") {
 /*
   Case class
  */
-case class BProcessDTO(var id: Option[Int], title: String, service: Int)
+case class BProcessDTO(var id: Option[Int], title: String, service: Int, business: Int)
 
 /*
   DataConversion
@@ -50,10 +52,10 @@ object BPDAO {
       bprocesses returning bprocesses.map(_.id) += s
   }
 
-  def pull(id: Option[Int] = None, title: String, service: Int) = Try(database withSession {
+  def pull(id: Option[Int] = None, title: String, service: Int, business: Int) = Try(database withSession {
     implicit session ⇒
 
-      bprocesses += BProcessDTO(id, title, service)
+      bprocesses += BProcessDTO(id, title, service, business)
   }).isSuccess
 
   def get(k: Int) = database withSession {

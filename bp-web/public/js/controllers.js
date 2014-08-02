@@ -29,47 +29,6 @@ angular.module(
   ]
 );
 
-/**
- * Auth
- */
-minorityControllers.controller('UserController', ['$scope', '$http', '$window', '$location', 'toaster', '$rootScope',
-  function ($scope, $http, $window, $location, toaster, $rootScope) {
-
-    $scope.signin = function(user) {
-      console.log(user)
-      $http.get('http://127.0.0.1:9000/api/v1/token/get', user, {withCredentials: true})
-        .success(function (data) {
-            toaster.pop('success', "title", "text");
-            $scope.$broadcast('show error', 'settingsPage', 'INVALID_DATE'); // to show error msg
-            $rootScope.$emit("isLogged", {profile: data});
-
-            $window.sessionStorage.setItem('token', data.token);
-            $location.path('/');
-        })
-        .error(function () {
-            $window.sessionStorage.removeItem('token');
-            toaster.pop('error', "title", '<ul><li>Username or password invalid.</li></ul>', null, 'trustedHtml');
-        });
-    };
-}]);
-/*
- * Reg
- */ 
-minorityControllers.controller('RegController', ['$scope', '$http', '$window', '$location', 'toaster', 
-  function ($scope, $http, $window, $location, toaster) {
- 
-    $scope.reg = function(user) {
-      $http.post('http://127.0.0.1:8080/register', user)
-        .success(function (data) {
-            // Stores the token until the user closes the browser window.
-            console.log(data);
-            $location.path('/auth');
-        })
-        .error(function () {
-            toaster.pop('error', "title", '<ul><li>Error. Please try later.</li></ul>', null, 'trustedHtml');
-        });
-    };
-}]);
 /*
  * Profile
  */
@@ -78,12 +37,12 @@ minorityControllers.controller('ProfileController', ['$scope', '$http', '$window
 
     
     $scope.retrive = function(user) {
-        var token = $window.sessionStorage.getItem('token')
+        var token = "b8b656520e1f0314b3536f92ebcdd41ea5654ecb4467a56709d8e9337dd152c4ddf5470f6c130a78db7ceb5a90e8fbb96bd4da9df938443727d424b9eb56ac5b107647d3dd9c7c801ce22685294065acdaf6ca0706b05cfbdc475cc6ce48de4ced6ab1115a2d54bf7b551d13b1592b10b0b196f7e34063dc13d668b88eeac19c"//$window.localStorage.getItem('token')
       if (token) {
-        $http.defaults.headers.common['Access_Token'] = token;
-        $http.defaults.headers.common['Access_Name'] = 'John'; 
+        console.log(token);//$http.defaults.headers.common['X-Auth-Token'] = token;
+        //$http.defaults.headers.common['Access_Name'] = 'John'; 
  
-        $http.post('http://127.0.0.1:8080/whoami', {headers:  {'Access_Token': token, 'Access_Name': 'John'}})
+        $http.post('http://localhost:9000/whoami', {headers:  {'X-Auth-Token': token, 'Access_Name': 'John'}})
           .success(function (profile) {
               // Stores the token until the user closes the browser window.
               console.log(profile);
@@ -98,20 +57,20 @@ minorityControllers.controller('ProfileController', ['$scope', '$http', '$window
       };
     }
 
-    $scope.retrive();
+    //$scope.retrive();
 }]);
 
 minorityControllers.controller('UserInfoCtrl', function ($rootScope, $scope, $http, $window, $location) {
-  $scope.isLogged = false;
+  $scope.isLogged = true;
   $scope.user = {};
 
   $scope.retrive = function(user) {
         var token = $window.sessionStorage.getItem('token')
       if (token) {
-        $http.defaults.headers.common['Access_Token'] = token;
+        $http.defaults.headers.common['X-Auth-Token'] = token;
         $http.defaults.headers.common['Access_Name'] = 'John'; 
  
-        $http.post('http://127.0.0.1:8080/whoami', {headers:  {'Access_Token': token, 'Access_Name': 'John'}})
+        $http.post('http://localhost:9000/whoami', {headers:  {'X-Auth-Token': token, 'Access_Name': 'John'}})
           .success(function (profile) {
               // Stores the token until the user closes the browser window.
               console.log(profile);
@@ -243,7 +202,13 @@ minorityControllers.controller('BPelementListCtrl', ['$scope', 'BPElemsFactory',
 
 
 
-
+minorityControllers.controller('BPelementCreationCtrl', ['$scope', 'BPElemsFactory','BPElemFactory', '$location', '$route', 
+   function ($scope, BPElemsFactory, BPElemFactory, $location, $route) {
+    $scope.createNewBPElem = function () {
+      BPElemsFactory.create($scope.bpelem);
+      $location.path('/bprocesses');
+    }
+}]);
 
 
 
