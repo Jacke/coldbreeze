@@ -22,7 +22,8 @@ class Brick(val id: Int,
             type_title: String,
             var order: Int,
             val space_parent: Option[Space] = None,
-            val space_role: String = ""
+            val space_role: String = "",
+            val space_parent_id: Option[Int] = None
              ) extends ProcElems {
 
   override def toString = s"Brick:"
@@ -60,7 +61,8 @@ class ExpandBrick(override val id: Int,
                   type_title: String,
                   order: Int,
                   override val space_parent: Option[Space] = None,
-                  override val space_role: String = ""
+                  override val space_role: String = "",
+                  override val space_parent_id: Option[Int] = None
                    ) extends Brick(id,
   title,
   desc,
@@ -70,7 +72,8 @@ class ExpandBrick(override val id: Int,
   type_title,
   order,
   space_parent,
-  space_role
+  space_role,
+  space_parent_id
 ) {
 
   override def toString = s"Brick:"
@@ -154,7 +157,8 @@ class ContainerBrick(override val id: Int,
                      type_title: String,
                      order: Int,
                      override val space_parent: Option[Space] = None,
-                     override val space_role: String = ""
+                     override val space_role: String = "",
+                     override val space_parent_id: Option[Int] = None
                       ) extends Brick(id,
   title,
   desc,
@@ -164,7 +168,8 @@ class ContainerBrick(override val id: Int,
   type_title,
   order,
   space_parent,
-  space_role
+  space_role,
+  space_parent_id
 ) {
 
   override def toString = s"Brick:"

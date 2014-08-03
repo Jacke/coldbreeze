@@ -47,7 +47,7 @@ class BPLoggers(tag: Tag) extends Table[BPLoggerDTO](tag, "bploggers") {
 def bpFK = foreignKey("bprocess_fk", bprocess, bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 def procelemFK = foreignKey("procelem_fk", element, proc_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
 def stationFK = foreignKey("b_fk", station, bpstations)(_.id, onDelete = ForeignKeyAction.Cascade)
-// TODO: Space FK  def bFK = foreignKey("b_fk", (k1, k2), bs)(b => (b.f1, b.f2), onDelete = ForeignKeyAction.Cascade)
+def spaceFK = foreignKey("sp_fk", space, models.DAO.BPSpaceDAO.bpspaces)(_.id, onDelete = ForeignKeyAction.Cascade)
 }
 
 case class BPLoggerDTO(
@@ -112,7 +112,7 @@ object BPLoggerDAO {
    */
   def from_origin_lgr(logger: BPLogger, bp_dto: BProcessDTO, station_id:Int = 1, spaces: List[BPSpaceDTO] = List.empty[BPSpaceDTO]):Option[List[BPLoggerDTO]] = {
 
-    val space_ids:Map[Int, Option[Int]] = spaces.map(space => (space.index, space.id)) toMap
+    val space_ids:Map[Option[Int], Option[Int]] = spaces.map(space => (Some(space.index), space.id)) toMap
 
     val result:List[BPLoggerDTO] = logger.logs.toList.map { lgr =>
 
@@ -122,7 +122,7 @@ object BPLoggerDAO {
             elemId(lgr, lgr.element,"front"), // element
             elemId(lgr, lgr.element,"space"), // space_element
             lgr.element.order, // order
-            space_ids.get(lgr.space.get).get,  // space
+            space_ids.get(lgr.space).getOrElse(None),  // space
             station_id, // station
             lgr.invoked, // invoked
             lgr.expanded, // expanded
@@ -209,9 +209,11 @@ object BPLoggerDAO {
      // BPLoggerDTO1.tupled(q3.firstOption) //<> (BPLoggerDTO1.tupled, BPLoggerDTO1.unapply _)
   }
 
-  def findById(id: Int) = {
-    // TODO: findById
-    "YO"
+  def findById(id: Int):Option[BPLoggerDTO] = {
+    database withSession { implicit session =>
+      val q3 = for { logger ← bploggers if logger.id === id } yield logger// <> (BPLoggerDTO.tupled, BPLoggerDTO.unapply _)
+      q3.list.headOption
+    }
   }
 
   /**
@@ -224,6 +226,12 @@ object BPLoggerDAO {
     }
   }
 
+  def ddl_create = {
+    database withSession {
+      implicit session =>
+        bploggers.ddl.create
+    }
+  }
 }
 
 

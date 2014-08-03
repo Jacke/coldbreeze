@@ -72,6 +72,9 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
     variety.collect { case brick: Brick => brick }
     //new ContainerBrick(4, "container brick", "", Option(CompositeValues()), this, "brick", "containerbrick", 4)
   }
+  def findNestedBricks():Array[Brick] = {
+    spaces.map(space => space.findBrickInCont).flatten
+  }
   def findEverywhereByOrder(n: Int, space: Option[Int] = None):Option[ProcElems] = {
     space match {
       case Some(index) => spaces(index).allElements.find(elem => elem.order == n)
@@ -171,9 +174,7 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
  */
 
   def restoreProcElems {
-    // TODO: For actually temp elements
-    // println(allElements.filter(elem => (elem.temp || elem.refresh)))
-    // update
+   // DEPRECATED
   }
 
   /**
@@ -226,12 +227,15 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
    *  Review
    */
    def review(): String = {
-    s"""
+    val rev = s"""
       |****************
       |spaces          ${spaces.length}
       |variety         ${variety.length}
       |frontbrick      ${findFrontBrick.length}
+      |space_elems     ${spaces.map(sp => sp.container.length)}
       |****************
     """.stripMargin
-   }
+    spaces.foreach(sp => println(sp.container.length + " " + sp.id))
+   rev
+ }
 }

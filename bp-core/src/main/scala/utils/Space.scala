@@ -17,6 +17,9 @@ var expands: Array[ProcElems] = Array.empty[ProcElems]
 def init { }
 
 // Searcher
+def findBrickInCont() = {
+  container.collect { case brick: Brick => brick }
+}
 def searchObj(look:ProcElems,space_role: String) {
   if (space_role == "subbrick") {
     subbricks.find(obj => obj == look)

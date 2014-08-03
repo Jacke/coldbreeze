@@ -39,7 +39,7 @@ class DCOSpec extends Specification with ProcessSample {
   }
   "BProcess DCO" should {
     "from dto" in {
-      BProcessDTO(id = Option(1), title = "Some process", business = 1)
+      BProcessDTO(id = Option(1), title = "Some process", business = 1, service = 1)
       true
     }
     "from origin" in {

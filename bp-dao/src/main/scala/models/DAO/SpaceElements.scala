@@ -55,10 +55,7 @@ case class SpaceElementDTO(id: Option[Int],
                         order:Int,
                         comps: Option[List[CompositeValues]]) {
   def cast(process: BProcess, space_dto: BPSpaceDTO):Option[ProcElems] = {
-    // TODO: to space casting
-    // TODO: Refactor
     println("block castiong")
-    println(order)
     this match {
       case x if (x.b_type == "block" | x.type_title == "test block") => {
         Option(
@@ -76,14 +73,15 @@ case class SpaceElementDTO(id: Option[Int],
   }
 
   def castToSpace(process: BProcess, space: Space):Option[ProcElems] = {
-    // TODO: to space casting
-    // TODO: Refactor
     println("block castiong")
-    println(order)
     this match {
       case x if (x.b_type == "brick" | x.type_title == "container_brick") => {
+        println("space_parent " + process.spaces.find(_.id == space_own))
+        println("space_parent REFACTOR!!!!!!!" + space_own)
+        // TODO REFACTOR space_parent in brick
         Option(
-          new ContainerBrick(id.get, title, desc,Implicits.fetch_cv(comps), process, b_type, type_title, order)
+          new ContainerBrick(id.get, title, desc,Implicits.fetch_cv(comps), process, b_type, type_title, order, 
+            None, space_role.get, space_own)
           //new Block(id.get,title,desc,Implicits.fetch_cv(comps),process,b_type,type_title,order, space_parent = Some(space), space_role)
         )
       }

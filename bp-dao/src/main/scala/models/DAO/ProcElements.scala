@@ -67,7 +67,7 @@ case class UndefElement(id: Option[Int],
     this match {
       case y if (y.b_type == "brick" | y.type_title == "container_brick") => {
         Option(
-            new ContainerBrick(id.get, title, desc,Implicits.fetch_cv(comps), process, b_type, type_title, order)
+            new ContainerBrick(id.get, title, desc,Implicits.fetch_cv(comps), process, b_type, type_title, order, space_parent_id = space_own)
           )
       }
       case constant if (constant.b_type == "block" | constant.type_title == "constant") => {

@@ -117,6 +117,13 @@ object BPStationDAO {
       val q3 = for { s <- bpstations if s.id === id } yield s// <> (BPStationDTO.tupled, BPStationDTO.unapply _)
 
       q3.list.headOption //.map(Supplier.tupled(_))
-  } }
+    }
+  }
+  def ddl_create = {
+    database withSession {
+      implicit session =>
+        bpstations.ddl.create
+    }
+  }
 
 }

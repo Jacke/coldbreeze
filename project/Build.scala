@@ -32,6 +32,7 @@ object Build extends Build {
         List(async, reflect, akkaActor, dispatch, scalaz, mechanize,nscala, play, scalatest, scalaLog, 
 logback, 
 sprayClient, hdrHistogram))
+
         //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
         //provided(logback) ++
         //test(scalatest, akkaTestKit, sprayTestkit, akkaSlf4j, logback))

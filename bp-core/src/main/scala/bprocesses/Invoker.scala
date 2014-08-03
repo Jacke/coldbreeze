@@ -121,6 +121,10 @@ def move:Unit = {
     if (station.inspace) {
       println(">>>>>>>>inspace")
       println(station.incontainer)
+        if (bp.spaces.length < 1) {
+          moveUpFront
+          move
+        } else
         if (isSpaceEnded) {
           println("spaceended")
           moveUpFrontSpace
@@ -193,13 +197,13 @@ def move:Unit = {
       if (station.state) {
 
         if (bp.spaces.indexOf(space)+1 == station.space) {
-          toLoggerBefore(station.bp, BPLoggerResult(el, order = counter + 1, space = Option(space.index), composite=bp.copyCV(el.values), station = toStation(station.bp), invoked = true, expanded = false, container = true))
+          toLoggerBefore(station.bp, BPLoggerResult(el, order = counter + 1, space = space.id, composite=bp.copyCV(el.values), station = toStation(station.bp), invoked = true, expanded = false, container = true))
           println("Invoking the: " + el);
         station.change_container_step(station.container_step.last + 1)
         el.invoke
         // TODO: Elem invoked sygnal?
 
-        toLogger(station.bp, BPLoggerResult(el, order = counter + 1, space = Option(space.index), composite=bp.copyCV(el.values), station = toStation(station.bp), invoked = true, expanded = false, container = true))
+        toLogger(station.bp, BPLoggerResult(el, order = counter + 1, space = space.id, composite=bp.copyCV(el.values), station = toStation(station.bp), invoked = true, expanded = false, container = true))
         }
         println(station.step)
       } else {
@@ -289,8 +293,10 @@ trait Restrictors {
     station.state && !station.started && !station.isPaused
   }
   def isSpaceEnded:Boolean = {
-
-    if (station.incontainer) {
+    if (bp.spaces.length == 0) {
+      true
+    }
+    if (station.incontainer && bp.spaces.length > 0) {
       Option(bp.spaces(station.space-1).container.length) == station.container_step.lastOption
     } 
     if (station.inexpands) {

@@ -11,24 +11,46 @@ class BPSpaces(tag: Tag) extends Table[BPSpaceDTO](tag, "bpspaces") {
   def container = column[Boolean]("container", O.Default(false))
   def subbrick  = column[Boolean]("subbrick",  O.Default(false))
 
+  def brick_front  = column[Option[Int]]("brick_front_id")
+  def brick_nested = column[Option[Int]]("brick_nested_id")
+  def nestingLevel = column[Int]("nesting_level")
 
 
-  def * = (id.?, bprocess, index, container, subbrick) <> (BPSpaceDTO.tupled, BPSpaceDTO.unapply)
+
+  def * = (id.?, bprocess, index, container, subbrick, brick_front, brick_nested, nestingLevel) <> (BPSpaceDTO.tupled, BPSpaceDTO.unapply)
   def bpFK = foreignKey("bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }
-case class BPSpaceDTO(id: Option[Int], bprocess: Int, index:Int, container:Boolean, subbrick:Boolean) {
+case class BPSpaceDTO(id: Option[Int], bprocess: Int, index:Int, container:Boolean, subbrick:Boolean, brick_front:Option[Int]=None,brick_nested:Option[Int]=None, nestingLevel: Int = 1) {
   import main.scala.utils._
 import main.scala.bprocesses._
 
 
+  def cast_nested(bprocess: BProcess, space_elems: List[SpaceElementDTO]):Option[Space] = { 
+    val brick = bprocess.findNestedBricks().find(brick => brick.space_parent_id == id)
+    if (brick.isDefined) {
+    this match {
+      case x => { // find front stuff
+        Option(
+          Space.apply(index, brick.get, subbrick, container, false, id)
+        )
+      }
+      case y => { // find nested stuff
+       None
+      }
+      case _ => None
+    }
+  
+  } else {
+    None
+  }
+  }
   def cast(bprocess: BProcess, space_elems: List[SpaceElementDTO]):Option[Space] = { 
 // TODO: to space casting 
 // TODO: Refactor
 
     this match {
       case x => { // find front stuff
-        println(id)
         Option(
           Space.apply(index, bprocess.findFrontBrick()(bprocess.spaces.length), subbrick, container, false, id)
         )

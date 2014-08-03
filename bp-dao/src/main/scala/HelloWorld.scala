@@ -11,8 +11,7 @@ import com.github.nscala_time.time.Imports._
 
 
 import main.scala.bprocesses._
-import main.scala.simple_parts.process.ProcElems
-import main.scala.simple_parts.process.ContainerBrick
+import main.scala.simple_parts.process.{Brick, ProcElems, ContainerBrick}
 import main.scala.simple_parts.process.control._
 import main.scala.simple_parts.process.data._
 import main.scala.utils._
@@ -20,6 +19,8 @@ import main.scala.resources.scopes._
 
 import main.scala.bprocesses.links._
 import main.scala.utils.Space
+
+import scala.annotation.tailrec
 
 
 object BPServiceApp extends App {
@@ -30,49 +31,100 @@ object BPServiceApp extends App {
    // caster
    val process_dto = BPDAO.get(3).get
    val target = ProcElemDAO.findByBPId(3)
-   println(target)
 
-   
    val process = new BProcess(new Managment)
-
    val arrays = target.map(c => c.cast(process)).flatten.toArray
    println(arrays)
    process.push {
     arrays
-   }   
-   //process.push {
-   //   Array[ProcElems](
-   //     new ContainerBrick(2, "container brick", "", None, process, "brick", "containerbrick", 2))//,
-   // }
-   println(process.variety)
-   println(process.variety.length)
+   }
 
-  println(process.findFrontBrick()(0))
-
-  //Space.apply(index: Int, brick: Brick, is_subbricks: Boolean = true, is_container: Boolean = true, is_expander: Boolean = true)   
   val test_space = BPSpaceDAO.findByBPId(3)
-  println(test_space)
-  println(test_space.length)
+  val space_elems = SpaceElemDAO.findByBPId(3)
+
+  val front_bricks = process.findFrontBrick()
+
+
+  def makeFrontSpaces(spacesDTO:List[BPSpaceDTO], bricks: Array[Brick], spaceElems: List[SpaceElementDTO]) = {
+    val frontSpaces:List[BPSpaceDTO] = spacesDTO.filter(spaceDTO => spaceDTO.brick_front.isDefined )
+    val frontSpacesElems = spaceElems.filter(spaceElem => frontSpaces.map(_.id.get).contains(spaceElem.space_owned))
+    val origSpaces:List[Space] = frontSpaces.map(space => space.cast(process, frontSpacesElems)).flatten.toList
+    fillFrontSpaceElems(process, origSpaces, frontSpacesElems)
+  }
+  def fillFrontSpaceElems(process: BProcess, origSpaces: List[Space], FrontSpaceElems: List[SpaceElementDTO]) = {
+    origSpaces.foreach { orig =>
+      FrontSpaceElems.filter(fs => fs.space_owned == orig.id.get).foreach { spaceElem =>
+        orig.addToSpace(spaceElem.castToSpace(process, orig).get, spaceElem.space_role.get)
+      }
+      process.spaces = process.spaces :+ orig
+    }
+  }
+
+
+  def makeNestedSpaces(spacesDTO:List[BPSpaceDTO], bricks: Array[Brick], spaceElems: List[SpaceElementDTO], level: Int = 2) {
+    val nestedSpaces:List[BPSpaceDTO] = spacesDTO.filter(spaceDTO => spaceDTO.brick_nested.isDefined && spaceDTO.nestingLevel == level) // NESTING LEVEL
+    val nestedSpacesElems = spaceElems.filter(spaceElem => nestedSpaces.map(_.id.get).contains(spaceElem.space_owned))
+    val origSpaces:List[Space] = nestedSpaces.map(space => space.cast_nested(process, nestedSpacesElems)).flatten.toList
+    fillNestedSpacesElems(process, origSpaces, nestedSpacesElems, level)
+
+  }
+  def fillNestedSpacesElems(process: BProcess, origSpaces: List[Space], nestedSpacesElems: List[SpaceElementDTO], level: Int) = {
+    origSpaces.foreach { orig =>
+      nestedSpacesElems.filter(fs => fs.space_owned == orig.id.get).foreach { spaceElem =>
+        orig.addToSpace(spaceElem.castToSpace(process, orig).get, spaceElem.space_role.get)
+      }
+      process.spaces = process.spaces :+ orig
+      if (isNestedOpsLeft(process)) {
+        orig.findBrickInCont()
+        makeNestedSpaces(test_space, orig.findBrickInCont(), space_elems, level + 1)
+      }
+    }
+  }
 
   /*
-  SpaceElementDTO(id: Option[Int],
-                        title:String,
-                        desc:String,
-                        business:Int,
-                        bprocess:Int,
-                        b_type:String,
-                        type_title:String,
-                        space_own:Option[Int],
-                        space_owned: Int,
-                        space_role:Option[String],
-                        order:Int,
-                        comps: Option[List[CompositeValues]])
-  */
-  val space_elems = SpaceElemDAO.findByBPId(3)
-  println(space_elems)
+  Checkers
+   */
+  def isNestedOpsLeft(process: BProcess): Boolean = {
+    val latestNest = test_space.reduceLeft(getLatestNest).nestingLevel
+    val nowNest = test_space.find(_.id == process.spaces.last.id).get.nestingLevel
+    latestNest != nowNest
+  }
+  def maxNestedLevel(s1: SpaceElementDTO, s2: SpaceElementDTO) = if (s1.space_owned > s2.space_owned) s1 else s2
+  def maxNestedNow(s1: Space, s2: Space) = if (s1.id.get > s2.id.get) s1 else s2
+  def getLatestNest(s1: BPSpaceDTO, s2: BPSpaceDTO) = if (s1.nestingLevel > s2.nestingLevel) s1 else s2
 
-  
 
+  /*
+    Presence validation
+   */
+  if (front_bricks.length > 0 && test_space.length > 0) {
+    makeFrontSpaces(test_space, front_bricks, space_elems)
+    if (test_space.reduceLeft(getLatestNest).nestingLevel > 1) {
+      makeNestedSpaces(test_space, process.findNestedBricks(), space_elems)
+    }
+  }
+  println(process.spaces)
+  InvokeTracer.run_proc(process)
+  // save log & station
+  println(process.station.represent)
+  println(process.logger.logs.map(log => println(log.element.id)))
+  //println(ElementTracer.findByInfo(target.head.b_type, target.head.type_title))
+
+  // station -> stationdb
+  val dbstation = BPStationDAO.from_origin_station(process.station, process_dto)
+  println(dbstation)
+
+  //val station_id = BPStationDAO.pull_object(dbstation)
+  //println("station id" + station_id)
+
+
+  // logger -> loggerdb
+  //val dblogger = BPLoggerDAO.from_origin_lgr(process.logger, process_dto, station_id)//, station:Int = 1)
+  //println(dblogger)
+  //dblogger.foreach(log => BPLoggerDAO.pull_object(log))
+
+
+/*
   // Pull front spaces
   val front_bricks = process.findFrontBrick()
   println(front_bricks.length)
@@ -92,115 +144,62 @@ object BPServiceApp extends App {
   val nested_space_space_elems_ids = nested_space_space_elems.map(space_elem => space_elem.space_owned)
 
   val front_spaces = test_space.filter(space => front_space_space_elems_ids.contains(space.id.get))
+  val nested_spaces = test_space.filter(space => !front_space_space_elems_ids.contains(space.id.get))
   val converted_space = front_spaces.map(space => space.cast(process, front_space_space_elems)).flatten.toArray    
   converted_space.foreach(sp => println(sp.index + " " + sp.id + " " + sp.brick_owner))
 
   println(process.review())
   println("")
+  println("NESTED SPACE" + nested_spaces.length)
   println("")
   println("")
-  println("")
-
-  /*
-  val nested_spaces_ids = space_elems.flatMap(space_elem => space_elem.space_own)
-  //
-  val front_space_space_elems = space_elems.filter(space_elem => !nested_spaces_ids.contains(space_elem.space_owned))
-  val nested_space_space_elems = space_elems.filter(space_elem => nested_spaces_ids.contains(space_elem.space_owned))
-
-  val front_space_space_elems_ids = front_space_space_elems.map(space_elem => space_elem.space_owned)
-  val nested_space_space_elems_ids = nested_space_space_elems.map(space_elem => space_elem.space_owned)
-
-  println("nested_space_space_elems_ids")
-  nested_space_space_elems_ids.foreach(id => println(id))
-  //front_space_space_elems.foreach(id => println(id.space_own))
- 
-  val front_spaces = test_space.filter(space => front_space_space_elems_ids.contains(space.id.get))
-  val front_space_space_elems_index = front_spaces.map(sp => (sp.id.get -> sp.index)).toMap
-
-      println("front_spaces.length " + front_spaces.length)
-  //// Convert front_space_elems to initial and
-  val list_space_elems:Map[Int, List[SpaceElementDTO]] = { 
-    front_space_space_elems_ids.map { id =>
-      id -> front_space_space_elems.filter(spelem => spelem.id.get == id) //.toMap
-  }.toMap
-}
-  val list_space_elemsz:List[(Int, List[SpaceElementDTO])] = { 
-    front_space_space_elems_ids.map { id =>
-      (id, front_space_space_elems.filter(spelem => spelem.id.get == id)) //.toMap
-  }
- } 
- println(list_space_elemsz)
-
-  println("finding container brick" )
-  front_space_space_elems_ids.foreach(println(_))
-  println("list_space_elems: " + list_space_elems.size)
-  list_space_elems.foreach { 
-    case(id, va) => println("ID: " + id + "value " + va + "length" + va.length)
-  }
-  println("""
-     INDEXXESS
-
-
-
-    """)
-  front_space_space_elems_index.foreach { 
-    case(id, va) => println("ID: " + id + "value " + va)
-  }
-  front_spaces.foreach(sp => println(sp.index))
-
-
-  val converted_space = front_spaces.map(space => space.cast(process, front_space_space_elems)).flatten.toArray    
-  println("converted_space " + converted_space.length)
-  converted_space.foreach(sp => println(sp.index))
-
-  println("""
-     w??????????
-
-
-
-    """)
-
-
-
-
-
-  converted_space.foreach { fspace =>
-    list_space_elems.foreach { case(id, elems) =>
-      println("list_space_elems.foreach ")
-
-      elems.foreach { elem =>
-        println("elems.foreach { elem =>")
-        println(elems.length)
-        println("checking " + fspace.index + " " + front_space_space_elems_index.get(elem.space_owned).get)
-        if (front_space_space_elems_index.get(elem.space_owned).get == fspace.index) {
-          println(elem.castToSpace(process, fspace).get)
-          fspace.addToSpace(elem.castToSpace(process, fspace).get, elem.space_role.get)
+    converted_space.foreach { fspace =>
+      space_elems.foreach { space_elem => 
+        println(space_elem.space_owned + " " + fspace.id)
+       if (space_elem.space_owned == fspace.id.get) {
+          
+          fspace.addToSpace(space_elem.castToSpace(process, fspace).get, space_elem.space_role.get)
           //fspace.addToSpace(,space_id = Option(fspace), "container")
         }
       }
+      process.spaces = process.spaces :+ fspace
     }
-    process.spaces = process.spaces :+ fspace
+      println(process.review())
+  println("")
+  println("")
+  println("")
+  println("")
 
+// Loop
+  val converted_space_nested_space = nested_spaces.map(space => space.cast_nested(process, nested_space_space_elems)).flatten.toArray    
+  
+  def fetch_space(converted_space: Array[Space], space_elems: List[SpaceElementDTO]) = { 
+    converted_space.foreach { fspace =>
+      space_elems.foreach { space_elem => 
+        println(space_elem.space_owned + " " + fspace.id)
+       if (space_elem.space_owned == fspace.id.get) {
+          
+          fspace.addToSpace(space_elem.castToSpace(process, fspace).get, space_elem.space_role.get)
+          //fspace.addToSpace(,space_id = Option(fspace), "container")
+        }
+      }
+      process.spaces = process.spaces :+ fspace
+    }
+  }
+  fetch_space(converted_space_nested_space, nested_space_space_elems)
+  println(process.review())
+  println("")
+  println("")
+  println("")
+  println("")
+    println(process.spaces.find(_.id == Some(4)).get.container.length)
+  println(process.spaces.find(_.id == Some(4)).get.container.head.id)
+  println(process.spaces.length)
+
+  def fetch_space_elems = {
 
   }
-  process.spaces.foreach(sp => println(sp.index))
-  // Check filling
-
-  println("Check filling")
-  process.spaces.foreach(space => println(space.container.length))
-
-  ///////////////println("front_space_space_elems.length " + front_space_space_elems.length)
-  // Pull nested spaces
-  //front_space_space_elems.map()
-  //process.spaces.foreach(_.addToSpace(space_id = Option(space_ptr)), "container")) 
-  // addToSpace(
-  //  new PrintValue[Boolean](2, true, proc123, 2,
-  //    values = Option(CompositeValues(a_string = Option("********"))), space_id = Option(space_ptr)), "container")
-
-  // Fill nested space
-  */
-
-
+ */
 
 
 
