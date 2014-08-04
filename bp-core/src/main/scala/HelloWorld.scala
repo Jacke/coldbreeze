@@ -142,6 +142,7 @@ object Finalize extends App {
 
     println(proc123.spaces.length)
     InvokeTracer.run_proc(proc123)
+    println(proc123.review())
   }
 
   /*************************************************************
@@ -341,6 +342,7 @@ proc123.spaces.last.addToSpace(new PrintValue[Boolean](2, true, proc123, 2,
 
   println(proc123.spaces.length)
   InvokeTracer.run_proc(proc123)
+  println(proc123.review())
   //println(proc123.station.represent)
 
 

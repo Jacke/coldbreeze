@@ -79,6 +79,7 @@ object BPLoggerDAO {
   import DatabaseCred.database
   import models.DAO.BPDAO.bprocesses
   import main.scala.bprocesses.BPLogger
+  import models.DAO.conversion.Implicits._
 
   /**
    * Retrive element(front, space) id from logger
@@ -112,7 +113,7 @@ object BPLoggerDAO {
    */
   def from_origin_lgr(logger: BPLogger, bp_dto: BProcessDTO, station_id:Int = 1, spaces: List[BPSpaceDTO] = List.empty[BPSpaceDTO]):Option[List[BPLoggerDTO]] = {
 
-    val space_ids:Map[Option[Int], Option[Int]] = spaces.map(space => (Some(space.index), space.id)) toMap
+    //val space_ids:Map[Option[Int], Option[Int]] = spaces.map(space => (Some(space.index), space.id)) toMap
 
     val result:List[BPLoggerDTO] = logger.logs.toList.map { lgr =>
 
@@ -122,13 +123,13 @@ object BPLoggerDAO {
             elemId(lgr, lgr.element,"front"), // element
             elemId(lgr, lgr.element,"space"), // space_element
             lgr.element.order, // order
-            space_ids.get(lgr.space).getOrElse(None),  // space
+            lgr.space,  // space
             station_id, // station
             lgr.invoked, // invoked
             lgr.expanded, // expanded
             lgr.container, // container
             lgr.date, // date
-            None,
+            pull_cv(lgr.composite),
             lgr.step) // comps
 
 

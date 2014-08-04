@@ -19,6 +19,7 @@ import main.scala.resources.scopes._
 
 import main.scala.bprocesses.links._
 import main.scala.utils.Space
+import models.DAO.conversion.Implicits.fetch_cv
 
 import scala.annotation.tailrec
 
@@ -114,148 +115,44 @@ object BPServiceApp extends App {
   val dbstation = BPStationDAO.from_origin_station(process.station, process_dto)
   println(dbstation)
 
-  //val station_id = BPStationDAO.pull_object(dbstation)
-  //println("station id" + station_id)
-
-
-  // logger -> loggerdb
-  //val dblogger = BPLoggerDAO.from_origin_lgr(process.logger, process_dto, station_id)//, station:Int = 1)
-  //println(dblogger)
-  //dblogger.foreach(log => BPLoggerDAO.pull_object(log))
-
-
-/*
-  // Pull front spaces
-  val front_bricks = process.findFrontBrick()
-  println(front_bricks.length)
-  // FILTER NESTED SPACES
-
-  println(process.review())
-  println("")
-  println("")
-  println("")
-  println("")
-  val nested_spaces_ids = space_elems.flatMap(space_elem => space_elem.space_own)
-
-  val front_space_space_elems = space_elems.filter(space_elem => !nested_spaces_ids.contains(space_elem.space_owned))
-  val nested_space_space_elems = space_elems.filter(space_elem => nested_spaces_ids.contains(space_elem.space_owned))
-
-  val front_space_space_elems_ids = front_space_space_elems.map(space_elem => space_elem.space_owned)
-  val nested_space_space_elems_ids = nested_space_space_elems.map(space_elem => space_elem.space_owned)
-
-  val front_spaces = test_space.filter(space => front_space_space_elems_ids.contains(space.id.get))
-  val nested_spaces = test_space.filter(space => !front_space_space_elems_ids.contains(space.id.get))
-  val converted_space = front_spaces.map(space => space.cast(process, front_space_space_elems)).flatten.toArray    
-  converted_space.foreach(sp => println(sp.index + " " + sp.id + " " + sp.brick_owner))
-
-  println(process.review())
-  println("")
-  println("NESTED SPACE" + nested_spaces.length)
-  println("")
-  println("")
-    converted_space.foreach { fspace =>
-      space_elems.foreach { space_elem => 
-        println(space_elem.space_owned + " " + fspace.id)
-       if (space_elem.space_owned == fspace.id.get) {
-          
-          fspace.addToSpace(space_elem.castToSpace(process, fspace).get, space_elem.space_role.get)
-          //fspace.addToSpace(,space_id = Option(fspace), "container")
-        }
-      }
-      process.spaces = process.spaces :+ fspace
-    }
-      println(process.review())
-  println("")
-  println("")
-  println("")
-  println("")
-
-// Loop
-  val converted_space_nested_space = nested_spaces.map(space => space.cast_nested(process, nested_space_space_elems)).flatten.toArray    
-  
-  def fetch_space(converted_space: Array[Space], space_elems: List[SpaceElementDTO]) = { 
-    converted_space.foreach { fspace =>
-      space_elems.foreach { space_elem => 
-        println(space_elem.space_owned + " " + fspace.id)
-       if (space_elem.space_owned == fspace.id.get) {
-          
-          fspace.addToSpace(space_elem.castToSpace(process, fspace).get, space_elem.space_role.get)
-          //fspace.addToSpace(,space_id = Option(fspace), "container")
-        }
-      }
-      process.spaces = process.spaces :+ fspace
-    }
-  }
-  fetch_space(converted_space_nested_space, nested_space_space_elems)
-  println(process.review())
-  println("")
-  println("")
-  println("")
-  println("")
-    println(process.spaces.find(_.id == Some(4)).get.container.length)
-  println(process.spaces.find(_.id == Some(4)).get.container.head.id)
-  println(process.spaces.length)
-
-  def fetch_space_elems = {
-
-  }
- */
-
-
-
-
-
-
-
-
-///////////
-/*
-   InvokeTracer.run_proc(process)
-   // save log & station
-   println(process.station.represent)
-   println(process.logger.logs.map(log => println(log.element.id)))
-   //println(ElementTracer.findByInfo(target.head.b_type, target.head.type_title))
-
-  // station -> stationdb
-  val dbstation = BPStationDAO.from_origin_station(process.station, process_dto)
-  println(dbstation)
-  
   val station_id = BPStationDAO.pull_object(dbstation)
   println("station id" + station_id)
 
 
   // logger -> loggerdb
-  val dblogger = BPLoggerDAO.from_origin_lgr(process.logger, process_dto, station_id)//, station:Int = 1)
-  println(dblogger)
+  val dblogger = BPLoggerDAO.from_origin_lgr(process.logger, process_dto, station_id, test_space)//, station:Int = 1)
+  //println(dblogger)
   dblogger.foreach(log => BPLoggerDAO.pull_object(log))
+
 
  /////////////
  ///////////
   // loggerdb -> logger(bp)
   val process1 = new BProcess(new Managment)
   process1.variety = process.variety
+  process1.spaces = process.spaces
   println(process.logger.logs)
   println("process1.variety" + process1.variety.length)
 
-  println("ssss"+process1.findObjectByOrder(1))
-  println(process1.findObjectByOrder(3).get)
-  println(process1.variety.map(elem => elem.order).last)
-  println(process1.variety.find(elem => elem.order == 3))
+//  println("ssss"+process1.findObjectByOrder(1))
+//  println(process1.findObjectByOrder(3).get)
+ // println(process1.variety.map(elem => elem.order).last)
+//  println(process1.variety.find(elem => elem.order == 3))
 
   println(dblogger.get.map(log => println(log.order)))
   val logger_results = dblogger.get.map(log =>
     BPLoggerResult(
       process1.findObjectByOrder(log.order).get,
-      composite=None,
+      composite=fetch_cv(log.comps),
       order = log.order,
-      space = None,
+      space = log.space,
       station = process1.station,
       invoked = log.invoked,
       expanded = log.expanded,
       container = log.container,
       date = log.date))
   //log.space /|\
-
+  process1.logger.logs = logger_results.toArray
   println(logger_results)
   
 //////
@@ -277,6 +174,6 @@ object BPServiceApp extends App {
 println("is work?", process1.station.represent)
 
   // save to space
-*/
+
 }
 

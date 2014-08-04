@@ -8,6 +8,7 @@ import main.scala.simple_parts.process.{ProcElems, Block}
 
 object Implicits {
 
+
   /**
    * Cast ProcElemDTO to Origin ProcElem
    * @param undef DTO of ProcElem
@@ -84,6 +85,25 @@ object Implicits {
     case None => { None }
     }
   }
+  def pull_cv(cv: Option[main.scala.simple_parts.process.CompositeValues]): Option[List[CompositeValues]] = {
+    cv match {
+      case Some(x) => {
+        Option(List(CompositeValues(
+          x.a_string,
+          x.b_string,
+          x.a_int,
+          x.b_int,
+          x.a_bool,
+          x.b_bool
+        )
+        ))
+
+      }
+      case _ => None
+    }
+  }
+
+
 
 
 }

@@ -181,7 +181,7 @@ def move:Unit = {
 }
 /*** Instruction execution */
   def front(b: ProcElems) = b.invoke
-  def thru_container = runContainer(bp.spaces(station.space-1),station.contStepVal)
+  def thru_container = runContainer(bp.spaces(station.space-1),station.contStepVal) // BUG
   def thru_expander  =  { }
 
  def runContainer(space: Space, con_step: Int) {
