@@ -6,7 +6,7 @@ import models.DAO.driver.MyPostgresDriver.simple._
 import scala.slick.model.ForeignKeyAction
 import models.DAO.conversion.{DatabaseCred, Implicits}
 
-import main.scala.simple_parts.process.data.Constant
+import main.scala.simple_parts.process.data.{Confirm, Note, Constant}
 import main.scala.simple_parts.process.Block
 import main.scala.simple_parts.process.ContainerBrick
 import main.scala.utils.Space
@@ -67,6 +67,24 @@ case class SpaceElementDTO(id: Option[Int],
           new Constant[Boolean](id.get, true, process, order, space_id = process.spaces.find(space => space.index == space_dto.index))
         )
       }
+      case note if (note.b_type == "block" | note.type_title == "note") => Option(new Note( id.get,
+        title,
+        desc,
+        Implicits.fetch_cv(comps),
+        process,
+        b_type,
+        type_title,
+        order,
+        None))
+      case confirm if (confirm.b_type == "block" | confirm.type_title == "confirm") => Option(new Confirm( id.get,
+        title,
+        desc,
+        Implicits.fetch_cv(comps),
+        process,
+        b_type,
+        type_title,
+        order,
+        None))
       case _ => None
     }
 
@@ -90,6 +108,24 @@ case class SpaceElementDTO(id: Option[Int],
           new Constant[Boolean](id.get, true, process, order, space_id = Some(space))
         )
       }
+      case note if (note.b_type == "block" | note.type_title == "note") => Option(new Note( id.get,
+        title,
+        desc,
+        Implicits.fetch_cv(comps),
+        process,
+        b_type,
+        type_title,
+        order,
+        None))
+      case confirm if (confirm.b_type == "block" | confirm.type_title == "confirm") => Option(new Confirm( id.get,
+        title,
+        desc,
+        Implicits.fetch_cv(comps),
+        process,
+        b_type,
+        type_title,
+        order,
+        None))
       case _ => None
     }
 

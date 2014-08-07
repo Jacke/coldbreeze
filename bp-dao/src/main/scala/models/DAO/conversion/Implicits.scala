@@ -1,5 +1,6 @@
 package models.DAO.conversion
 
+import main.scala.simple_parts.process.data.{Confirm, Note}
 import main.scala.utils.Space
 import models.DAO.{BPSpaceDTO, SpaceElementDTO, CompositeValues, UndefElement}
 
@@ -18,6 +19,24 @@ object Implicits {
   def fromProcElemDTO(undef: UndefElement, proc: main.scala.bprocesses.BProcess) = {
 
     (undef.b_type, undef.type_title) match {
+      case ("block", "note") => new Note( undef.id.get,
+                                          undef.title,
+                                          undef.desc,
+                                          fetch_cv(undef.comps),
+                                          proc,
+                                          undef.b_type,
+                                          undef.type_title,
+                                          undef.order,
+                                          None)
+      case ("block", "confirm") => new Confirm(undef.id.get,
+                                               undef.title,
+                                               undef.desc,
+                                               fetch_cv(undef.comps),
+                                               proc,
+                                               undef.b_type,
+                                               undef.type_title,
+                                               undef.order,
+                                               None)
       case ("block", "test_block") => new Block(undef.id.get,
                                                 undef.title,
                                                 undef.desc,

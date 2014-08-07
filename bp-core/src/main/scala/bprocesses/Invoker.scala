@@ -112,7 +112,7 @@ trait Moves {
 
 def move:Unit = {
     // ended?
-    if ((!station.inspace && isElementEnded) || blocator)
+    if ((!station.inspace && isElementEnded) || blocator || station.paused)
     {
       endOrPause
     }

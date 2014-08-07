@@ -233,10 +233,16 @@ implicit val UndefElementWrites = Json.format[UndefElement]
   def bpThreads = Action {
     Ok(Json.toJson(Array(Person("xxx", 12, None ))))
   }
+}
 
+trait SubdomainController extends Controller {
+  def WithSubdomain(f: => String => Request[AnyContent] => Result) = Action { implicit request =>
+    val splitDomain = request.domain.split("\\.")
 
-
-
-
-
+    if (splitDomain.length < 2) {
+      BadRequest("Domain not found!")
+    } else {
+      f(splitDomain.head)(request)
+    }
+  }
 }

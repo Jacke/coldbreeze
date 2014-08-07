@@ -22,9 +22,11 @@ class Confirm(val id: Int,
       println("move on")
     } else {
       println("pause process")
+      println("\n\n\n\n\n\n\n\n")
+      //bprocess.station.update_paused(true)
     }
   }
-
+  // InputCall
   def confirmed {
     values.get.a_bool = Option(true)
   }

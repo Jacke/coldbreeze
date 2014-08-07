@@ -3,14 +3,14 @@
 # ~~~~
 
 # Enable webjar based resources to be returned
-GET           /webjars/*file          controllers.WebJarAssets.at(file)
+GET         /webjars/*file                                      controllers.WebJarAssets.at(file)
 
 # Home page
-GET           /                       @controllers.Application.index()
-GET           /index11                @controllers.Application.index11()
+GET         /                                                   @controllers.Application.index()
+GET         /index11                                            @controllers.Application.index11()
 #POST    /login                  @controllers.Application.login()
 
-->            /auth                   securesocial.Routes
+->          /auth                                               securesocial.Routes
 
 # Login page
 #GET     /login                      securesocial.controllers.LoginPage.login
@@ -20,7 +20,7 @@ GET           /index11                @controllers.Application.index11()
 #GET     /signup                     securesocial.controllers.Registration.startSignUp
 #POST    /signup                     securesocial.controllers.Registration.handleStartSignUp
 #GET     /signup/:token              securesocial.controllers.Registration.signUp(token)
-POST          /signup/:token          @controllers.CustomRegistrationController.handleSignUp(token)
+POST        /signup/:token                                      @controllers.CustomRegistrationController.handleSignUp(token)
 #GET     /reset                      securesocial.controllers.Registration.startResetPassword
 #POST    /reset                      securesocial.controllers.Registration.handleStartResetPassword
 #GET     /reset/:token               securesocial.controllers.Registration.resetPassword(token)
@@ -33,67 +33,68 @@ POST          /signup/:token          @controllers.CustomRegistrationController.
 #POST    /authenticate/:provider     securesocial.controllers.ProviderController.authenticateByPost(provider)
 #GET     /not-authorized             securesocial.controllers.ProviderController.notAuthorized
 
-GET           /only-twitter           @controllers.Application.onlyTwitter
-GET           /link-result            @controllers.Application.linkResult
-GET           /current-user           @controllers.Application.currentUser
+GET         /only-twitter                                       @controllers.Application.onlyTwitter
+GET         /link-result                                        @controllers.Application.linkResult
+GET         /current-user                                       @controllers.Application.currentUser
 
 # Custom
-GET           /custom/login           @controllers.CustomLoginController.login
-GET           /custom/logout          @controllers.CustomLoginController.logout
+GET         /custom/login                                       @controllers.CustomLoginController.login
+GET         /custom/logout                                      @controllers.CustomLoginController.logout
 
 # Businesses
-GET           /businesses             @controllers.BusinessController.index()
-GET           /business/create        @controllers.BusinessController.create()
-POST          /business/create        @controllers.BusinessController.create_new()
-GET           /business/update/:id    @controllers.BusinessController.update(id: Int)
-POST          /business/update/:id    @controllers.BusinessController.update_make(id: Int)
+GET         /businesses                                         @controllers.BusinessController.index()
+GET         /business/create                                    @controllers.BusinessController.create()
+POST        /business/create                                    @controllers.BusinessController.create_new()
+GET         /business/update/:id                                @controllers.BusinessController.update(id: Int)
+POST        /business/update/:id                                @controllers.BusinessController.update_make(id: Int)
 # Services
-GET           /services               @controllers.BusinessServiceController.index()
-GET           /service/create         @controllers.BusinessServiceController.create()
-POST          /service/create         @controllers.BusinessServiceController.create_new()
-GET           /service/update/:id     @controllers.BusinessServiceController.update(id: Int)
-POST          /service/update/:id     @controllers.BusinessServiceController.update_make(id: Int)
-POST          /service/:id/destroy    @controllers.BusinessServiceController.destroy(id: Int)
+GET         /services                                           @controllers.BusinessServiceController.index()
+GET         /service/create                                     @controllers.BusinessServiceController.create()
+POST        /service/create                                     @controllers.BusinessServiceController.create_new()
+GET         /service/update/:id                                 @controllers.BusinessServiceController.update(id: Int)
+POST        /service/update/:id                                 @controllers.BusinessServiceController.update_make(id: Int)
+POST        /service/:id/destroy                                @controllers.BusinessServiceController.destroy(id: Int)
 # Employees
-GET           /employees              @controllers.users.EmployeeController.index()
-GET           /employee/create        @controllers.users.EmployeeController.create()
-POST          /employee/create        @controllers.users.EmployeeController.create_new()
-GET           /employee/update/:id    @controllers.users.EmployeeController.update(id: Int)
+GET         /employees                                          @controllers.users.EmployeeController.index()
+GET         /employee/create                                    @controllers.users.EmployeeController.create()
+POST        /employee/create                                    @controllers.users.EmployeeController.create_new()
+GET         /employee/update/:id                                @controllers.users.EmployeeController.update(id: Int)
 
-GET           /employee/:employee_id/assign/:business_id   @controllers.users.EmployeeController.assign_business(employee_id: Int, business_id: Int)
-GET           /employee/:employee_id/unassign/:business_id @controllers.users.EmployeeController.unassign_business(employee_id: Int, business_id: Int)
+GET         /employee/:employee_id/assign/:business_id          @controllers.users.EmployeeController.assign_business(employee_id: Int, business_id: Int)
+GET         /employee/:employee_id/unassign/:business_id        @controllers.users.EmployeeController.unassign_business(employee_id: Int, business_id: Int)
 
-POST          /employee/update/:id    @controllers.users.EmployeeController.update_make(id: Int)
-POST          /employee/:id/destroy   @controllers.users.EmployeeController.destroy(id: Int)
+POST        /employee/update/:id                                @controllers.users.EmployeeController.update_make(id: Int)
+POST        /employee/:id/destroy                               @controllers.users.EmployeeController.destroy(id: Int)
 # Clients
-GET           /clients                @controllers.users.ClientController.index()
-GET           /client/create          @controllers.users.ClientController.create()
-POST          /client/create          @controllers.users.ClientController.create_new()
-GET           /client/update/:id      @controllers.users.ClientController.update(id: Int)
-POST          /client/update/:id      @controllers.users.ClientController.update_make(id: Int)
-POST          /client/:id/destroy     @controllers.users.ClientController.destroy(id: Int)
-GET           /client/:client_id/assign/:business_id @controllers.users.ClientController.assign_business(client_id: Int, business_id: Int)
-GET /client/:client_id/unassign/:business_id @controllers.users.ClientController.unassign_business(client_id: Int, business_id: Int)
+GET         /clients                                            @controllers.users.ClientController.index()
+GET         /client/create                                      @controllers.users.ClientController.create()
+POST        /client/create                                      @controllers.users.ClientController.create_new()
+GET         /client/update/:id                                  @controllers.users.ClientController.update(id: Int)
+POST        /client/update/:id                                  @controllers.users.ClientController.update_make(id: Int)
+POST        /client/:id/destroy                                 @controllers.users.ClientController.destroy(id: Int)
+GET         /client/:client_id/assign/:business_id              @controllers.users.ClientController.assign_business(client_id: Int, business_id: Int)
+GET         /client/:client_id/unassign/:business_id            @controllers.users.ClientController.unassign_business(client_id: Int, business_id: Int)
 
 
 # App
-GET          /a                      @controllers.Application.app()
-POST          /whoami                 @controllers.Application.whoami()
+
+GET         /a                                                  @controllers.Application.app()
+POST        /whoami                                             @controllers.Application.whoami()
 
 
 
 
 ##################################################################
 # BProcess
-GET           /bprocess/index         @controllers.Application.bprocesses()
-GET           /bprocesses             @controllers.Application.bprocess()
-POST          /bprocesses             @controllers.Application.create_bprocess()
-GET           /bprocess/:id/info      @controllers.Application.show_bprocess(id: Int)
-PUT           /bprocess/:id/info      @controllers.Application.update_bprocess(id: Int)
+GET         /bprocess/index                                     @controllers.Application.bprocesses()
+GET         /bprocesses                                         @controllers.Application.bprocess()
+POST        /bprocesses                                         @controllers.Application.create_bprocess()
+GET         /bprocess/:id/info                                  @controllers.Application.show_bprocess(id: Int)
+PUT         /bprocess/:id/info                                  @controllers.Application.update_bprocess(id: Int)
 
 # BProcess Front Elements
-GET           /bprocess/:id/elements @controllers.Application.bpElems(id: Int)
-POST          /bprocess/:id/elements @controllers.Application.createBpElem(id: Int)
+GET         /bprocess/:id/elements                              @controllers.Application.bpElems(id: Int)
+POST        /bprocess/:id/elements                              @controllers.Application.createBpElem(id: Int)
 
 #GET         /bprocesses                 BPDAO.getAll
 #POST        /bprocesses                 entity(as[BProcessDTO])        BPDAO.pull_object(bprocess)
@@ -132,9 +133,9 @@ POST          /bprocess/:id/elements @controllers.Application.createBpElem(id: I
 
 
 # JavaScript routes object
-GET           /jsroutes.js            @controllers.Application.jsRoutes()
+GET         /jsroutes.js                                        @controllers.Application.jsRoutes()
 
-GET           /assets/*file           controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file                                       controllers.Assets.versioned(path="/public", file: Asset)
 # Map the JS resource paths
-GET           /*file                  controllers.Assets.at(path="/public", file)
+GET         /*file                                              controllers.Assets.at(path="/public", file)
 

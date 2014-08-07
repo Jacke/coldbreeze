@@ -11,7 +11,7 @@ import com.github.nscala_time.time.Imports._
 
 
 import main.scala.bprocesses._
-import main.scala.simple_parts.process.{Brick, ProcElems, ContainerBrick}
+import main.scala.simple_parts.process.{CompositeValues, Brick, ProcElems, ContainerBrick}
 import main.scala.simple_parts.process.control._
 import main.scala.simple_parts.process.data._
 import main.scala.utils._
@@ -35,8 +35,35 @@ object BPServiceApp extends App {
 
    val process = new BProcess(new Managment)
    val arrays = target.map(c => c.cast(process)).flatten.toArray
+
+
    println(arrays)
-   process.push {
+  process.push { Array[ProcElems](
+    new Note(
+    id = 2,
+    title = "Some note",
+    desc = "Useful note",
+    values = None,
+    process,
+    b_type = "block",
+    type_title = "note",
+    order = 1,
+    space_parent = None,
+    space_role = None),
+
+    new Confirm(id = 3,
+      title = "Some note",
+      desc = "Useful note",
+      values = Option(CompositeValues(a_bool = Option(false))),
+      process,
+      b_type = "block",
+      type_title = "note",
+      order = 2,
+      space_parent = None,
+      space_role = None)
+  ) }
+  process.push {
+
     arrays
    }
 
@@ -94,6 +121,13 @@ object BPServiceApp extends App {
   def maxNestedNow(s1: Space, s2: Space) = if (s1.id.get > s2.id.get) s1 else s2
   def getLatestNest(s1: BPSpaceDTO, s2: BPSpaceDTO) = if (s1.nestingLevel > s2.nestingLevel) s1 else s2
 
+  /**
+   * Validation for elements that store in spaces
+   */
+  def validateElements(test_space: List[BPSpaceDTO], space_elems: List[SpaceElementDTO]): Boolean = {
+   // TODO: 2 ITERATORS
+    true
+  }
 
   /*
     Presence validation
@@ -105,7 +139,13 @@ object BPServiceApp extends App {
     }
   }
   println(process.spaces)
-  InvokeTracer.run_proc(process)
+
+  if (validateElements(process))
+    InvokeTracer.run_proc(process)
+  else
+    println("Error")
+
+
   // save log & station
   println(process.station.represent)
   println(process.logger.logs.map(log => println(log.element.id)))
