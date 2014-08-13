@@ -8,12 +8,56 @@
 @import helper._
 @import play.api.Play
 
-@main("SecureSocial - Sample Protected Page") {
-<div class="page-header">
-    <h2><img src="@user.avatarUrl.getOrElse("")" alt="@user.firstName.getOrElse("")" width="40px" height="40px"/> Welcome @user.firstName.getOrElse("")</h2>
-</div>
 
-<div class="clearfix">
+<!doctype html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>Account - Minority</title>
+  <meta name="description" content="#">
+  <meta name="author" content="#">
+
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+  <link rel="shortcut icon" href="https://apiary.a.ssl.fastly.net/assets/icons/favicon-aa8fc5808796304b.ico">
+  <link rel="stylesheet" href="https://apiary.a.ssl.fastly.net/assets/css/normalize-c1a6015040ef1201.css">
+  <link rel="stylesheet" href="https://apiary.a.ssl.fastly.net/assets/css/font-awesome-b2431b0e6805305e.css">
+  <link rel="stylesheet" href="https://apiary.a.ssl.fastly.net/assets/css/new-11d7b73a7b6d7f70.css">
+  <link rel="stylesheet" href="https://apiary.a.ssl.fastly.net/assets/css/head-foot-977ede17d28757e5.css" media="screen, presentation" />
+  <link rel="stylesheet" href="https://apiary.a.ssl.fastly.net/assets/css/multi-ab9a0afd6c12f594.css">
+
+
+  <script src="https://apiary.a.ssl.fastly.net/assets/js/libs/jquery-1.8.3-a1bb2f1ddad0f568.js"></script>
+<style>
+.apiaryMenu .apiaryLogo a {
+    background: url('../images/minority-logo.svg') no-repeat scroll 0px 0px / contain transparent;
+    margin-top: 16px;
+    margin-left: 5px;
+    width: 72px;
+    height: 48px;
+    color: white;
+    background-color: white;
+}
+</style>
+</head>
+
+<body class="themeDark website loginFlow">
+
+  <div id="container">
+    
+ @header(Some(user))
+
+<div class="teamApisListWrap"><div class="panelLike organisationsGridLike">
+
+<div class="teamSettings">
+<div class="grids">
+  <div class="page-header">
+      <h2><img src="@user.avatarUrl.getOrElse("")" alt="@user.firstName.getOrElse("")" width="40px" height="40px"/> Welcome @user.firstName.getOrElse("")</h2>
+  </div>
+
+<div class="g1of4">
+  <div class="teamChangeBox">
     <h2>User Details ds</h2>
 
     <ul>
@@ -47,7 +91,9 @@
     }
     <hr>
     @user.passwordInfo.map { info =>
-        <a class="btn" href="@securesocial.controllers.routes.PasswordChange.page.absoluteURL(IdentityProvider.sslEnabled)">Change Password</a>
+        <p class="grids flatButtonLine">
+          <a class="flatButton" href="@securesocial.controllers.routes.PasswordChange.page.absoluteURL(IdentityProvider.sslEnabled)">Change Password</a>
+    </p>
     }
 
     <span>Link this account to
@@ -60,16 +106,48 @@
         }
     }
     </span>
-    <hr>
-    <h2>Business</h2>
-    <a href="#">new business</a>
-    <h3>Plan</h3>
-    <a href="">Free</a>
-    <h2>Services</h2>
-    <a href="#">new services</a>
-    <h3><a href="">Processes</a></h3>
-    <p>link to angular process sorted by that service</p>
+       <a class="btn" href="@securesocial.controllers.routes.LoginPage.logout()">Logout</a>
+</div></div>
 
-    <a class="btn" href="@securesocial.controllers.routes.LoginPage.logout()">Logout</a>
+
+<div class="g3of4">
+
+
+
+
+  <div class="teamChangeBox teamPaddedBox">
+  <h2 class="teamBoxHeading">Business</h2>
+    <div class="teamSettingsCheckbox">
+    <h3 class="teamSettingsHeading">Business</h3>
+      <a href="#">new business</a>
+    <p class="teamSettingsAbout">All newly created Team APIs are set to have Private Documentation and Private Traffic.</p>
+  </div>
+  </div>
+
+  <div class="teamChangeBox teamPaddedBox">
+  <h2 class="teamBoxHeading">Services</h2>
+    <div class="teamSettingsCheckbox">
+    <h3 class="teamSettingsHeading">Services</h3>
+    <a href="#">new services</a>
+    <p class="teamSettingsAbout">All newly created Team APIs are set to have Private Documentation and Private Traffic.</p>
+  </div>
+  </div>
+  <div class="teamChangeBox teamPaddedBox">
+  <h2 class="teamBoxHeading">Processes</h2>
+    <div class="teamSettingsCheckbox">
+    <h3 class="teamSettingsHeading">Processes</h3>
+    <a href="#">new services</a>
+    <p class="teamSettingsAbout">link to angular process sorted by that service.</p>
+  </div>
+  </div>
+
+
+
+
+
 </div>
-}
+  </div>
+
+   </div> 
+</div>
+

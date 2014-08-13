@@ -1,3 +1,4 @@
+@main("Minority App") { }
 <!doctype html>
 <html lang="en" ng-app="minorityApp">
 <head>
@@ -22,19 +23,12 @@
 <div class="container">
 
 <div ng-controller="UserInfoCtrl">
-  <ul>
+  <!--  <ul>
       <div>
         <li><a href="#/profile">{{ user.email }}</a></li>
-        <li><a href="#" ng-click="logout();">>Logout</a></li>   
-      </div>    
-    
-    <div ng-show="isLogged">
-      <li><a href="#/bprocesses">BProcesses</a></li>
-      <li><a href="#/bp-detail/1">business_process/1</a></li>
-      <li><a href="#/bp-creation">bp-creation</a></li>
-    </div>   
-
-  </ul>
+        <li><a href="#" ng-click="logout();">>Logout</a></li> 
+      </div>   
+  </ul>--> 
 </div>
 <!--  <div>Minority App version:<span app-version></span></div></div>-->
 <awesomeError></awesomeError>
@@ -51,6 +45,8 @@
   <script src="bower_components/angular-classy/angular-classy.min.js"></script>
   <script src="bower_components/angular-resource/angular-resource.js"></script>
   <script src="bower_components/angular-cookies/angular-cookies.js"></script>
+    <script type="text/javascript" src="bower_components/underscore/underscore.js"></script>
+  <script type="text/javascript" src="bower_components/angular-underscore/angular-underscore.js"></script>
   <script src="bower_components/angular-loading-bar/src/loading-bar.js"></script>
   <link rel="stylesheet" href="bower_components/angular-loading-bar/src/loading-bar.css"/>
   <link href="http://cdnjs.cloudflare.com/ajax/libs/angularjs-toaster/0.4.4/toaster.css" rel="stylesheet" />

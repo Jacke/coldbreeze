@@ -53,7 +53,7 @@ minorityAppServices.factory('BProcessesFactory', function ($resource) {
 });
 minorityAppServices.factory('BProcessFactory', function ($resource) {
     return $resource(baseUrl + '/bprocess/:id/info', {}, {
-        show: { method: 'GET' },
+        show: { method: 'GET', params: { id: '@id'} },
         update: { method: 'PUT', params: {id: '@id'} },
         delete: { method: 'DELETE', params: {id: '@id'} }
     })
@@ -97,11 +97,42 @@ minorityAppServices.factory('BPElemFactory', function ($resource) {
     })
 });
 
+minorityAppServices.factory('BPSpacesFactory', function ($resource) {
+    return $resource(baseUrl + '/bprocess/:BPid/spaces', {}, {
+        query: { method: 'GET', isArray: true },
+        create: { method: 'POST' }
+    })
+});
+minorityAppServices.factory('BPSpaceFactory', function ($resource) {
+    return $resource(baseUrl + '/bprocess/:BPid/space/:id', {}, {
+        show: { method: 'GET' },
+        update: { method: 'PUT', params: {id: '@id'} },
+        delete: { method: 'DELETE', params: {id: '@id'} }
+    })
+});
+minorityAppServices.factory('BPSpaceElemsFactory', function ($resource) {
+    return $resource(baseUrl + '/bprocess/:BPid/space_elems', {}, {
+        query: { method: 'GET', isArray: true },
+        create: { method: 'POST' }
+    })
+});
+minorityAppServices.factory('BPSpaceElemFactory', function ($resource) {
+    return $resource(baseUrl + '/bprocess/:BPid/space_elem/:id', {}, {
+        show: { method: 'GET' },
+        update: { method: 'PUT', params: {id: '@id'} },
+        delete: { method: 'DELETE', params: {id: '@id'} }
+    })
+});
 
 
 /*
 ** BProc stations FACTORY
 */
+minorityAppServices.factory('BPServicesFactory', function ($resource) {
+    return $resource(baseUrl + '/bprocesses/services', {}, {
+        query: { method: 'GET', isArray: true },
+    })
+});
 minorityAppServices.factory('BPStationsFactory', function ($resource) {
     return $resource(baseUrl + '/bprocess/:BPid/stations', {}, {
         query: { method: 'GET', isArray: true },

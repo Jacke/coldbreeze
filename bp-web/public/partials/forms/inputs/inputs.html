@@ -1,0 +1,53 @@
+<div class="container">
+
+<div class="tabbable tabs-below">
+  <ul class="nav nav-pills">
+    <li ng-class="{active: selectedTab == 1}">
+      <a href="/#/show-detail/{{bpid}}" ng-click="selectedTab = 1;">info</a>
+    </li>
+    <li ng-class="{active: selectedTab == 2}">
+      <a href="/#/show-detail/{{bpid}}" ng-click="selectedTab = 2;">station</a>
+    </li>
+    <li ng-class="{active: selectedTab == 3}">
+      <a href="/#/show-detail/{{bpid}}" ng-click="selectedTab = 3;">elements</a>
+    </li>
+        <li ng-class="{active: selectedTab == 4}">
+      <a href="/#/show-detail/{{bpid}}" ng-click="selectedTab = 4;">logger</a>
+    </li>
+    <li> <a href="/#/bprocesses">Back</a></li>
+  </ul>
+  
+
+  <div class="tab-content" ng-show="selectedTab == 1">
+  </div>
+   <h1>BP detail</h1>
+    <pre>{{ bprocess }}</pre>
+    <pre>{{ stations }}</pre>
+    <div ng-repeat="station in stations">
+        <pre>{{ station }}<pre>
+        <button><a ng-click="invokeBP(bpid);">Invoke from</a></button>
+      <div>
+   <pre>Business process ID: {{ bpid }} 
+        Invoke result: {{ invoke_res | json }}
+   </pre></div>
+   <a href="/#/show-detail/{{bpid}}" ng-click="invokeBP(bpid);">Invoke</a>
+  
+  <div class="tab-content" ng-show="selectedTab == 2">
+    <h3>Station</h3>
+        <pre> {{ user.station[user.station.length-1] | json }}</pre>
+  </div>
+  
+  <div class="tab-content" ng-show="selectedTab == 3">
+     <h3>Elements</h3>
+        <pre>{{ user.elements | json }}</pre>
+  </div>
+   <div class="tab-content" ng-show="selectedTab == 4">
+    <h3>Logger</h3>
+        <pre> {{ user.logger | json }}</pre>
+  </div>
+</div>
+
+
+        
+ 
+</div>

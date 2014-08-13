@@ -35,17 +35,27 @@ class BusinessServiceController(override implicit val env: RuntimeEnvironment[De
       "title" -> nonEmptyText,
       "business_id" -> number)(BusinessServiceDTO.apply)(BusinessServiceDTO.unapply))
  
- def index() = Action { implicit request =>
+ def index() = SecuredAction { implicit request =>
       val services = BusinessServiceDAO.getAll
       val businesses = BusinessDAO.getAll
       Ok(views.html.businesses.services(
         Page(services, 1, 1, services.length), 1, "%", businesses))
     
   }
-  def create() = Action { implicit request =>
+  implicit val bservicesReads = Json.reads[BusinessServiceDTO]
+  implicit val bservicesWrites = Json.format[BusinessServiceDTO]
+
+
+  def bprocesses_services() = SecuredAction { implicit request =>
+      val services = BusinessServiceDAO.getAll
+      val businesses = BusinessDAO.getAll
+      Ok(Json.toJson(services))
+  }
+  
+  def create() = SecuredAction { implicit request =>
         Ok(views.html.businesses.service_form(serviceForm))    
   }
-  def create_new() = Action { implicit request => 
+  def create_new() = SecuredAction { implicit request =>
     println(request)
     println(serviceForm.bindFromRequest)
     serviceForm.bindFromRequest.fold(
@@ -57,7 +67,7 @@ class BusinessServiceController(override implicit val env: RuntimeEnvironment[De
         
       })
   }
-  def update(id: Int) = Action { implicit request =>
+  def update(id: Int) = SecuredAction { implicit request =>
       val services = BusinessServiceDAO.get(id)
       services match {
         case Some(service) =>
@@ -69,7 +79,7 @@ class BusinessServiceController(override implicit val env: RuntimeEnvironment[De
       
     
   }
-  def update_make(id: Int) = Action { implicit request =>
+  def update_make(id: Int) = SecuredAction { implicit request =>
       serviceForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.businesses.service_edit_form(id, formWithErrors)),
         entity => {
@@ -80,7 +90,7 @@ class BusinessServiceController(override implicit val env: RuntimeEnvironment[De
         })
     
   }
-  def destroy(id: Int) = Action { implicit request =>
+  def destroy(id: Int) = SecuredAction { implicit request =>
       println("destroy")
       Home.flashing(BusinessServiceDAO.delete(id) match {
         case 0 => "failure" -> "Entity has Not been deleted"

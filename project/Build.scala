@@ -45,6 +45,8 @@ sprayClient, hdrHistogram))
     .settings(
       libraryDependencies ++=
         List(async, akkaSlf4j, slick, play,jodatime,
+slickpg, slickpgcore,
+slickjoda,
 jodaconvert,
 jodamapper, scalatest, reflect, postgres, logbackClassic, scalaLog, sprayCan, sprayRouting, hdrHistogram, sprayJson))
         //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
@@ -87,7 +89,24 @@ jodamapper, scalatest, reflect, postgres, logbackClassic, scalaLog, sprayCan, sp
           bootstrap, 
           angular,
           
-      playauth,securesocial, jsonvariants, playflyway, playctrl, cache, filter, jdbc, anorm, shapeless, mailer, scalatest, reflect, bcrypt, postgres, logbackClassic, scalaLog, hdrHistogram))
+      playauth,
+      securesocial, 
+      jsonvariants, 
+      playflyway, 
+      playctrl, 
+      cache, 
+      filter, 
+      jdbc, 
+      anorm, 
+      shapeless, 
+      mailer, 
+      scalatest, 
+      reflect, 
+      bcrypt, 
+      postgres, 
+      logbackClassic, 
+      scalaLog, 
+      hdrHistogram))
         //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
         //test(scalatest, akkaTestKit, sprayTestkit))
     .dependsOn(bpCore, bpDao)

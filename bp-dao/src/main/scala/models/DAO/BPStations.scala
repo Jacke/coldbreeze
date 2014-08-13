@@ -1,7 +1,13 @@
 package models.DAO
 
-import models.DAO.driver.MyPostgresDriver.simple._
-import models.DAO.conversion.DatabaseCred
+
+import models.DAO.driver.MyPostgresDriver1.simple._
+import scala.slick.model.ForeignKeyAction
+import models.DAO.BPDAO._
+import models.DAO.resources.BusinessDTO._
+import com.github.tminglei.slickpg.composite._
+import models.DAO.conversion.{DatabaseCred, Implicits}
+
 
 class BPStations(tag: Tag) extends Table[BPStationDTO](tag, "bpstations") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
@@ -63,9 +69,10 @@ object BPStationDCO {
 
 
 object BPStationDAO {
-  import DatabaseCred.database
   import models.DAO.BPDAO.bprocesses
   import main.scala.bprocesses.BPStation
+
+  import DatabaseCred.database
 
   val bpstations = TableQuery[BPStations]
 
@@ -101,6 +108,26 @@ object BPStationDAO {
       q3.list 
     }
   }
+  def getAll = database withSession {
+    implicit session ⇒ // TODO: s.service === 1 CHANGE DAT
+      val q3 = for { s ← bpstations } yield s
+      q3.list.sortBy(_.id)
+    //suppliers foreach {
+    //  case (id, title, address, city, state, zip) ⇒
+    //    Supplier(id, title, address, city, state, zip)
+    //}
+  }
+def update(id: Int, entity: BPStationDTO):Boolean = {
+    database withSession { implicit session =>
+      findById(id) match {
+      case Some(e) => {
+        bpstations.where(_.id === id).update(entity)
+        true
+      }
+      case None => false
+      }
+    }
+  }
   def areActiveForBP(id: Int) = {
      database withSession { implicit session =>
         val q3 = for { st ← bpstations 
@@ -119,11 +146,11 @@ object BPStationDAO {
       q3.list.headOption //.map(Supplier.tupled(_))
     }
   }
-  def ddl_create = {
+  /*def ddl_create = {
     database withSession {
       implicit session =>
         bpstations.ddl.create
     }
-  }
+  }*/
 
 }

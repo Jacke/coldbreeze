@@ -32,7 +32,7 @@ object Global extends WithFilters(new GzipFilter(shouldGzip =
     val contentType = response.headers.get("Content-Type")
     contentType.exists(_.startsWith("text/html")) || request.path.endsWith("jsroutes.js")
   }
-)) with play.api.GlobalSettings {
+), CORSFilter()) with play.api.GlobalSettings {
 
   /**
    * The runtime environment for this sample app.

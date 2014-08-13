@@ -21,7 +21,14 @@ class BPSpaces(tag: Tag) extends Table[BPSpaceDTO](tag, "bpspaces") {
   def bpFK = foreignKey("bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }
-case class BPSpaceDTO(id: Option[Int], bprocess: Int, index:Int, container:Boolean, subbrick:Boolean, brick_front:Option[Int]=None,brick_nested:Option[Int]=None, nestingLevel: Int = 1) {
+case class BPSpaceDTO(id: Option[Int], 
+                      bprocess: Int, 
+                      index:Int, 
+                      container:Boolean, 
+                      subbrick:Boolean, 
+                      brick_front:Option[Int]=None,
+                      brick_nested:Option[Int]=None, 
+                      nestingLevel: Int = 1) {
   import main.scala.utils._
 import main.scala.bprocesses._
 

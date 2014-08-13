@@ -114,6 +114,12 @@ object ProcElemDAO {
       q3.list 
     }
   }
+  def findLengthByBPId(id: Int):Int = {
+    database withSession { implicit session => 
+       val q3 = for { el ← proc_elements if el.bprocess === id } yield el// <> (UndefElement.tupled, UndefElement.unapply _)
+      Query(q3.length).first
+    }
+  }
   def findById(id: Int):Option[UndefElement] = {
     database withSession { implicit session =>
      val q3 = for { el ← proc_elements if el.id === id } yield el //<> (UndefElement.tupled, UndefElement.unapply _)
@@ -126,6 +132,10 @@ object ProcElemDAO {
       q3.list.headOption 
     }
   }
+  def pull_object(s: UndefElement) = database withSession {
+    implicit session ⇒
+      proc_elements returning proc_elements.map(_.id) += s
+  }
   def update(id: Int, entity: UndefElement):Boolean = {
     database withSession { implicit session =>
       findById(id) match {
@@ -136,6 +146,10 @@ object ProcElemDAO {
       case None => false
       }
     }
+  }
+  def delete(id: Int) = database withSession { implicit session ⇒
+
+    proc_elements.where(_.id === id).delete
   }
   def update_order(id: Int, order_num: Int): String = {
     // TODO: update_order

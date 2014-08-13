@@ -8,7 +8,11 @@ import com.github.tminglei.slickpg.utils.PgCommonJdbcTypes
 
 import com.github.tminglei.slickpg.array.PgArrayJdbcTypes
 
-import models.DAO.CompositeValues
+import models.DAO._
+
+trait WithMyDriver {
+  val driver: MyPostgresDriver
+}
 
 trait MyCompositeSupport extends PgCommonJdbcTypes
        with PgArrayJdbcTypes
@@ -23,6 +27,8 @@ trait MyCompositeSupport extends PgCommonJdbcTypes
 
       implicit val compositeTypeMapper = createCompositeJdbcType[CompositeValues]("compositevalues")
       implicit val compositeArrayTypeMapper = createCompositeListJdbcType[CompositeValues]("compositevalues")
+      
+
       //implicit val compositevaluesTypeMapper = new GenericJdbcType[CompositeValues]("compositevalues",
       //  mkCompositeConvFromString[CompositeValues], mkCompositeConvToString[CompositeValues])
       //implicit val compositevaluesArrayTypeMapper = new SimpleArrayListJdbcType[CompositeValues]("compositevalues",
@@ -55,3 +61,43 @@ with PgDateSupportJoda
 }
 
 object MyPostgresDriver extends MyPostgresDriver
+
+
+
+
+
+
+
+
+
+
+
+trait WithMyDriver1 {
+  val driver: MyPostgresDriver1
+}
+
+
+trait MyPostgresDriver1 extends PostgresDriver 
+with PgArraySupport
+//with PgDateSupport
+with PgDateSupportJoda 
+ {
+  ///
+   override lazy val Implicit = new ImplicitsPlus {}
+override val simple = new SimpleQLPlus {}
+
+
+  //////
+  trait ImplicitsPlus extends Implicits
+  with ArrayImplicits
+  with DateTimeImplicits
+
+
+
+  trait SimpleQLPlus extends SimpleQL
+  with ImplicitsPlus
+  with DateTimeImplicits
+
+}
+
+object MyPostgresDriver1 extends MyPostgresDriver1

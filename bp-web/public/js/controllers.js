@@ -18,6 +18,9 @@ angular.module('minorityApp.controllers', []).
   }])
   .controller('BPCreationCtrl', [function () {
 
+  }])
+  .controller('BPRequestCtrl', [function () {
+
   }]);
   
 
@@ -25,7 +28,8 @@ var minorityControllers =
 angular.module(
   'minorityApp.controllers',
   [
-    'minorityApp.services'
+    'minorityApp.services',
+    'angular-underscore'
   ]
 );
 
@@ -102,7 +106,8 @@ minorityControllers.controller('UserInfoCtrl', function ($rootScope, $scope, $ht
 
 
 // INDEX
-minorityControllers.controller('BProcessListCtrl', ['$scope', 'BProcessesFactory','BProcessFactory', '$location', function ($scope, BProcessesFactory, BProcessFactory, $location) {
+minorityControllers.controller('BProcessListCtrl', ['$scope', '$http', '$filter', 'BProcessesFactory','BProcessFactory', 'BPStationsFactory', 'BPServicesFactory', '$location', 
+  function ($scope, $http, $filter, BProcessesFactory, BProcessFactory, BPStationsFactory, BPServicesFactory, $location) {
 
   /* callback for ng-click 'editUser': */
   $scope.editBP = function (bpId) {
@@ -120,12 +125,82 @@ minorityControllers.controller('BProcessListCtrl', ['$scope', 'BProcessesFactory
   $scope.createNewBP = function () {
     $location.path('/bprocess/new');
   };
- 
+  $scope.services = BPServicesFactory.query();
   $scope.bprocesses = BProcessesFactory.query();
+  $scope.stations = BPStationsFactory.query();
+
+  $scope.bpElemLength = $http.get('http://localhost:9000/bprocess/elems_length')
+          .success(function (data) {
+              // Stores the token until the user closes the browser window.
+              console.log(data);
+              $scope.bpElemLength = data;
+          })
+          .error(function () {
+          });
+
+  $scope.stationPercent = function(station) {
+    console.log(station.process)
+    var found = $filter('filter')($scope.bpElemLength, {id: station.process});
+                 
+    if (found.length) {
+      console.log(found)
+             return found[0];
+         } else {
+             100;
+         }
+  }
+
+  $scope.filterService = function(service_id) {
+         var found = $filter('filter')($scope.services, {id: service_id}, true);
+         if (found.length) {
+             return found[0].title;
+         } else {
+             '';
+         }
+     }
 }]);
 
 
 // READ
+minorityControllers.controller('BPRequestCtrl', ['$scope', '$routeParams', 'BProcessFactory', 'BPStationsFactory', '$location', '$http',
+function ($scope, $routeParams, BProcessFactory, BPStationsFactory, $location, $http) {
+  console.log($routeParams.BPid)
+  $scope.bpId = $routeParams.BPid;
+
+  $scope.updateBP = function () {
+    BProcessFactory.update($scope.bprocess);
+    $location.path('/bprocesses');
+  };
+  $scope.cancel = function () {
+    $location.path('/bprocesses');
+  };
+  $scope.input = function (bpId) {
+    $location.path('/bprocess/' + bPid + '/input')
+  }
+  $scope.invokeBP = function (bpId) {
+
+      $http({
+      url: 'process/' + bpId + '/invoke',
+      method: "POST",
+      data: {  }
+      })
+      .then(function(response) {
+        // success
+        console.log(response);
+        $scope.invoke_res = [response];
+      }, 
+      function(response) { // optional
+        // failed
+      }
+      );
+  }
+  $scope.invoke_res = [];
+  $scope.bpId = $routeParams.BPid;
+  $scope.selectedTab = 1;
+  $scope.stations = BPStationsFactory.query({ BPid: $routeParams.BPid });
+  $scope.bprocess = BProcessFactory.show({ id: $routeParams.BPid });
+}]);
+
 minorityControllers.controller('BProcessDetailCtrl', ['$scope', '$routeParams', 'BProcessFactory', '$location', '$http',
 function ($scope, $routeParams, BProcessFactory, $location, $http) {
 
@@ -137,7 +212,11 @@ function ($scope, $routeParams, BProcessFactory, $location, $http) {
   $scope.cancel = function () {
     $location.path('/bprocesses');
   };
+  $scope.input = function (bpId) {
+    $location.path('/bprocess/' + bPid + '/input')
+  }
   $scope.invokeBP = function (bpId) {
+
       $http({
       url: 'process/' + bpId + '/invoke',
       method: "POST",
@@ -176,8 +255,11 @@ minorityControllers.controller('BPCreationCtrl', ['$scope', 'BProcessesFactory',
  * BP Elements
  */
 // INDEX
-minorityControllers.controller('BPelementListCtrl', ['$scope', 'BPElemsFactory','BPElemFactory', '$location', '$route', 
-  function ($scope, BPElemsFactory, BPElemFactory, $location, $route) {
+minorityControllers.controller('BPelementListCtrl', ['$scope', 'BPElemsFactory','BPElemFactory', 'BPSpacesFactory', 'BPSpaceFactory', 'BPSpaceElemsFactory', 'BPSpaceElemFactory', '$location', '$route', 
+  function ($scope, BPElemsFactory, BPElemFactory, BPSpacesFactory, BPSpaceFactory, BPSpaceElemsFactory, BPSpaceElemFactory, $location, $route) {
+  $scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
+  $scope.spaces =  BPSpacesFactory.query({ BPid: $route.current.params.BPid });
+  $scope.spaceelems = BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid });
 
   /* callback for ng-click 'editUser': */
   $scope.editElem = function (bpId) {
@@ -191,12 +273,51 @@ minorityControllers.controller('BPelementListCtrl', ['$scope', 'BPElemsFactory',
     BPElemFactory.delete({ id: bpId });
     $scope.bprocesses = BPElemsFactory.query();
   };
+
+  $scope.deleteSpace = function (bpId) {
+    BPSpaceFactory.delete({ id: bpId });
+    $scope.bprocesses = BPSpacesFactory.query();
+  }; 
+  $scope.deleteSpaceElem = function (bpId) {
+    BPSpaceElemFactory.delete({ id: bpId });
+    $scope.bprocesses = BPSpaceElemsFactory.query();
+  };
   /* callback for ng-click 'createBP': */
   $scope.createNewElem = function () {
     $location.path('/bprocess/new');
   };
+
+  $scope.newBpelem = { comps: [ { "a_string" : null} ] }
+  $scope.newSpaceelem = { comps: [ { "a_string" : null} ] }
+
+  /* CU */
+  $scope.updateElem = function (obj) {
+    console.log(obj)
+  }
+  $scope.createNewElem = function () {
+    console.log($scope.newBpelem)
+  }
+  $scope.updateSpace = function (obj) {
+    console.log(obj)
+  }
+  $scope.createNewSpace = function () {
+    console.log($scope.newSpace)
+  }
+  $scope.updateSpaceElem = function (obj) {
+    console.log(obj)
+
+  }
+  $scope.createSpaceElem = function () {
+    console.log($scope.newSpaceelem)
+  }
+
+
+  $scope.frontSpace = function (elem_id) { // : spaceObj
+    var result = _.find($scope.spaces, function(space){ return space.brick_front == elem_id; });
+    console.log(result);
+    result
+  }
  
-  $scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
 }]);
 
 
@@ -220,10 +341,11 @@ minorityControllers.controller('BPelementCreationCtrl', ['$scope', 'BPElemsFacto
  * BP Station
  */
 // INDEX
-minorityControllers.controller('BPstationListCtrl', ['$scope', 'BPStationsFactory','BPStationFactory', '$location', '$route',
-  function ($scope, BPStationsFactory, BPStationFactory, $location, $route) {
+minorityControllers.controller('BPstationListCtrl', ['$scope', '$filter', 'BProcessesFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
+  function ($scope, $filter, BProcessesFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
 
   /* callback for ng-click 'editUser': */
+
   $scope.editElem = function (bpId) {
     $location.path('/bp-detail/' + bpId + '/edit');
   };
@@ -240,6 +362,28 @@ minorityControllers.controller('BPstationListCtrl', ['$scope', 'BPStationsFactor
     $location.path('/bprocess/new');
   };
   $scope.bpstations = BPStationsFactory.query({ BPid: $route.current.params.BPid });
+  $scope.logs = BPLogsFactory.query({  BPid: $route.current.params.BPid });
+  $scope.bprocesses = BProcessesFactory.query();
+  $scope.stationByProcess = function (processId) {
+        var found = $filter('filter')($scope.bprocesses, {id: processId}, true);
+         if (found.length) {
+             console.log(found)
+             return found[0];
+         } else {
+             '1';
+         }
+  }
+  $scope.logsByStation = function (stationId) {
+         var found = $filter('filter')($scope.logs, {station: stationId}, true);
+         if (found.length) {
+             console.log(found)
+             return found[0].id;
+         } else {
+             '';
+         }
+     }
+
+  
 }]);
 
 /**

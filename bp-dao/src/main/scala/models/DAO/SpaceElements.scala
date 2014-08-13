@@ -161,6 +161,10 @@ object SpaceElemDAO {
       q3.list.headOption
     }
   }
+  def pull_object(s: SpaceElementDTO) = database withSession {
+    implicit session ⇒
+      space_elements returning space_elements.map(_.id) += s
+  }
   def ddl_create = {
     database withSession {
       implicit session =>
@@ -174,6 +178,10 @@ object SpaceElemDAO {
         case None => false
       }
     }
+  }
+  def delete(id: Int) = database withSession { implicit session ⇒
+
+    space_elements.where(_.id === id).delete
   }
   def update_order(id: Int, order_num: Int): String = {
     // TODO: update_order

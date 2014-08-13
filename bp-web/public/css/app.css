@@ -7281,3 +7281,15 @@ h4 {
 .brick {
   background: #dddddd;
 }
+
+
+.front-blocks, .front-blocks:before, .front-blocks:after {
+  box-sizing: initial;
+}
+
+.front-blocks .control-group *, .front-blocks .control-group *:before, .front-blocks .control-group *:after {
+  box-sizing: initial;
+}
+.front-blocks .controls, .front-blocks .controls:before, .front-blocks .controls:after {
+  box-sizing: initial;
+}

@@ -14,7 +14,8 @@ var minorityApp =
       'angularLocalStorage',
       'classy',
       'ngAngularError',
-      'ngAnimate', 'toaster'
+      'ngAnimate', 'toaster',
+      'angular-underscore'
     ]
   );
 
@@ -47,7 +48,7 @@ minorityApp.config(['$routeProvider', function($routeProvider) {
 /*U$routeProvider.when('/bprocess/:BPid/log/:id/edit', {templateUrl: 'partials/bp_elements/bp-edit.html', controller: 'BProcessDetailCtrl'});*/
      
      // Inputs
-/*C*/$routeProvider.when('/bprocess/:BPid/request', {templateUrl: 'partials/inputs/inputs.html', controller: 'BPRequestCtrl'}); 
+/*C*/$routeProvider.when('/bprocess/:BPid/input', {templateUrl: 'partials/forms/inputs/inputs.html', controller: 'BPRequestCtrl'}); 
     
      $routeProvider.otherwise({redirectTo: '/bprocesses'});
     

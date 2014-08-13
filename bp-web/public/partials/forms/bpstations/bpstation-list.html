@@ -21,3 +21,23 @@
   </table>
   <a ng-click="createNewBP()" class="btn btn-small">create new Business process</a>
 </div>--> {{ bpstations }}
+          <div class="stations" ng-repeat="station in bpstations">
+           <p>
+            {{ station.id}}
+            {{ station.id}}
+            {{ stationByProcess(station.id).id }}
+            {{ stationByProcess(station.id).title }}
+            {{ station.started}}
+            {{ station.finished}} 
+           </p>
+          <h3>Logs</h3>
+          <p>
+          {{ bplogs }}
+          {{ logsByStation(station.id) }}
+
+          <div ng-if="station.finished == false">
+          <a ng-click="haltStation(station.id)" class="btn btn-big">Halt</a>
+          </div>
+
+           <hr>
+          </div>

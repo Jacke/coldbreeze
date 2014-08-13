@@ -25,7 +25,8 @@ object ViewTemplates1 {
     }
 
     override def getStartSignUpPage(form: Form[String])(implicit request: RequestHeader, lang: Lang): Html = {
-      securesocial.views.html.Registration.startSignUp(form)(request, lang, env)
+      println("getStartSignUpPage")
+      views.html.custom.startSignUp(form)(request, lang, env)
     }
 
     override def getStartResetPasswordPage(form: Form[String])(implicit request: RequestHeader, lang: Lang): Html = {

@@ -36,7 +36,7 @@ class BusinessController(override implicit val env: RuntimeEnvironment[DemoUser]
       "id" -> optional(number),
       "title" -> nonEmptyText)(BusinessDTO.apply)(BusinessDTO.unapply))
  
- def index() = Action { implicit request =>
+ def index() = SecuredAction { implicit request =>
       val businesses = BusinessDAO.getAll
       Ok(views.html.businesses.index(
         Page(businesses, 1, 1, businesses.length), 1, "%"))
@@ -63,7 +63,7 @@ class BusinessController(override implicit val env: RuntimeEnvironment[DemoUser]
         
       })
   }
-  def update(id: Int) = Action { implicit request =>
+  def update(id: Int) = SecuredAction { implicit request =>
       val business = BusinessDAO.get(id)
       business match {
         case Some(business) =>
@@ -75,7 +75,7 @@ class BusinessController(override implicit val env: RuntimeEnvironment[DemoUser]
       
     
   }
-  def update_make(id: Int) = Action { implicit request =>
+  def update_make(id: Int) = SecuredAction { implicit request =>
       businessForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.businesses.business_edit_form(id, formWithErrors)),
         entity => {
@@ -86,7 +86,7 @@ class BusinessController(override implicit val env: RuntimeEnvironment[DemoUser]
         })
     
   }
-  def destroy(id: Int) = Action { implicit request =>
+  def destroy(id: Int) = SecuredAction { implicit request =>
     
       Home.flashing(BusinessDAO.delete(id) match {
         case 0 => "failure" -> "Entity has Not been deleted"

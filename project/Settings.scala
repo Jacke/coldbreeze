@@ -56,9 +56,9 @@ object Settings {
     resolvers ++= Seq("Maven Central Server" at "http://repo1.maven.org/maven2"),
     //resolvers += Resolver.sonatypeRepo("snapshots"),
 
-    unmanagedJars in Compile += file("lib/slick-pg_2.11.jar"),
-    unmanagedJars in Compile += file("lib/slick-pg_core_2.11.jar"),
-    unmanagedJars in Compile += file("lib/slick-pg_joda-time_2.11.jar"),
+    //unmanagedJars in Compile += file("lib/slick-pg_2.11.jar"),
+    //unmanagedJars in Compile += file("lib/slick-pg_core_2.11.jar"),
+    //unmanagedJars in Compile += file("lib/slick-pg_joda-time_2.11.jar"),
 
     fork in run   := true,
     scalacOptions := Seq(

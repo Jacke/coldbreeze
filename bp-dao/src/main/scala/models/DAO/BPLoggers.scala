@@ -216,7 +216,20 @@ object BPLoggerDAO {
       q3.list.headOption
     }
   }
+  def findByStation(id: Int):List[BPLoggerDTO] = {
+    database withSession { implicit session =>
+    val q3 = for { logger <- bploggers if logger.station === id } yield logger
+    q3.list
+    }
+  }
+  def pull_new_object(s: BPLoggerDTO, station_id:Int) = database withSession {
+    implicit session ⇒
+   //   ???
+   //   FIND LOGS BY STATION
+   //   ESCAPE THEM AND ADD ONLY NEW
 
+      bploggers returning bploggers.map(_.id) += s //BPLoggerDTO.unapply(s).get
+  }
   /**
    * Find a specific entity by id.
    */

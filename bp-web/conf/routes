@@ -88,23 +88,58 @@ POST        /whoami                                             @controllers.App
 # BProcess
 GET         /bprocess/index                                     @controllers.Application.bprocesses()
 GET         /bprocesses                                         @controllers.Application.bprocess()
+GET         /bprocesses/services                                @controllers.BusinessServiceController.bprocesses_services()
 POST        /bprocesses                                         @controllers.Application.create_bprocess()
 GET         /bprocess/:id/info                                  @controllers.Application.show_bprocess(id: Int)
+
 PUT         /bprocess/:id/info                                  @controllers.Application.update_bprocess(id: Int)
 
 # BProcess Front Elements
 GET         /bprocess/:id/elements                              @controllers.Application.bpElems(id: Int)
-POST        /bprocess/:id/elements                              @controllers.Application.createBpElem(id: Int)
+GET         /bprocess/:id/spaces                                @controllers.Application.spaces(id: Int)
+GET         /bprocess/:id/space_elems                           @controllers.Application.spaceElems(id: Int)
+
+
+
+# Stations
+GET         /bprocess/stations                       @controllers.BusinessProcessController.all_stations()
+GET         /bprocess/:id/stations                   @controllers.BusinessProcessController.station_index(id: Int)
+GET         /bprocess/:id/station/:station_id        @controllers.BusinessProcessController.show_station(id: Int, station_id: Int)
+# Logs
+GET         /bprocess/:id/logs                       @controllers.BusinessProcessController.logs_index(id: Int)
+
+# Elements
+GET         /bprocess/:id/elements        @controllers.BusinessProcessController.frontElems(id: Int)
+GET         /bprocess/:id/spaces          @controllers.BusinessProcessController.spaces(id: Int)
+GET         /bprocess/:id/space_elements  @controllers.BusinessProcessController.spaceElems(id: Int)
+GET         /bprocess/elems_length        @controllers.BusinessProcessController.bpElemLength()
+ 
+###############
+# Elements CUDs
+POST /bprocess/:id/elements                  @controllers.BusinessProcessController.createFrontElem(id: Int)
+POST /bprocess/:id/spaces                    @controllers.BusinessProcessController.createSpace(id: Int)
+POST /bprocess/:id/space_elements            @controllers.BusinessProcessController.createSpaceElem(id: Int)
+
+
+PUT  /bprocess/:id/element/:elem_id          @controllers.BusinessProcessController.updateFrontElem(id: Int, elem_id: Int)
+PUT  /bprocess/:id/spaces/:space_id          @controllers.BusinessProcessController.updateSpace(id: Int, space_id: Int)
+PUT  /bprocess/:id/space_elements/:spelem_id @controllers.BusinessProcessController.updateSpaceElem(id: Int, spelem_id: Int)
+
+
+POST /bprocess/:id/element/:elem_id          @controllers.BusinessProcessController.deleteFrontElem(id: Int, elem_id: Int)
+POST /bprocess/:id/spaces/:space_id          @controllers.BusinessProcessController.deleteSpace(id: Int, space_id: Int)
+POST /bprocess/:id/space_elements/:spelem_id @controllers.BusinessProcessController.deleteSpaceElem(id: Int, spelem_id: Int)
+
+
+
+
 
 #GET         /bprocesses                 BPDAO.getAll
 #POST        /bprocesses                 entity(as[BProcessDTO])        BPDAO.pull_object(bprocess)
 #GET         /bprocess_full/:id          BPInfo(ProcElemDAO.findByBPId(id), BPStationDAO.findByBPId(id), BPLoggerDAO.findByBPId(id))
 #GET         /bprocess/:id/info
-#GET         /bprocess/:id/elements        ProcElemDAO.findByBPId(id)
-#GET         /bprocess/:id/spaces        ProcElemDAO.findByBPId(id)
-#GET         /bprocess/:id/space_elements        ProcElemDAO.findByBPId(id)
 #GET         /bprocess/:id/logs            BPLoggerDAO.findByBPId(id)
-#GET         /bprocess/:id/stations        BPStationDAO.findByBPId(id)
+
 #GET         /bprocess/:id/active_stations BPStationDAO.areActiveForBP(id)
 #GET         /bprocess/:id/last_run        BPLoggerDAO.lastRunOfBP(id)
 #GET         /bprocess/:id/invoke

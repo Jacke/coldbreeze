@@ -71,7 +71,7 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
   def index = SecuredAction { implicit request =>
     Ok(views.html.index(request.user.main))
   }
-  def app() = SecuredAction { implicit request =>
+  def app() = Action { implicit request =>
     Ok(views.html.app())
   }
   def whoami = SecuredAction { implicit request =>
@@ -191,18 +191,32 @@ def savePlace = Action(BodyParsers.parse.json) { request =>
 */
 import models.DAO.UndefElement
 import models.DAO.CompositeValues
+import models.DAO._
+
 implicit val CompositeVReads = Json.reads[CompositeValues]
 implicit val CompositeVWrites = Json.format[CompositeValues]
-implicit val UndefElementReads = Json.reads[UndefElement]
+implicit val UndefElement1Reads = Json.reads[UndefElement]
 implicit val UndefElementWrites = Json.format[UndefElement]
+  implicit val SpaceElementReads = Json.reads[SpaceElementDTO]
+  implicit val SpaceElementWrites = Json.format[SpaceElementDTO] 
+  implicit val BPSpaceDTOReads = Json.reads[BPSpaceDTO]
+  implicit val BPSpaceDTOWrites = Json.format[BPSpaceDTO] 
+
   def bpElems(id: Int) = Action {
-     Ok(Json.toJson(Array(
-      UndefElement(Some(1), "title", "desc", 1, id, "b_type", "type_title", None, order = 1, Some(List(CompositeValues(Some("a"), Some("b"), Some(1) ))) ),
-      UndefElement(Some(2), "title", "desc", 1, id, "b_type", "type_title", None, order = 2, Some(List(CompositeValues(Some("a"), Some("b"), Some(1) ))) ),
-      UndefElement(Some(3), "title", "desc", 1, id, "b_type", "type_title", None, order = 3, Some(List(CompositeValues(Some("a"), Some("b"), Some(1) ))) )
+     Ok(Json.toJson( 
+      List(UndefElement(Some(1),"test","test",1,2,"brick","container_brick",Some(1),1,Some(List(CompositeValues(Some("a"), Some("b"), Some(1) )))), 
+          UndefElement(Some(4),"test","test",1,2,"brick","container_brick",None,3,Some(List(CompositeValues(Some("a"), Some("b"), Some(1) ))))).toArray))
+  }
+  def spaces(id: Int) = Action {
+     Ok(Json.toJson(List(BPSpaceDTO(Some(5),2,3,true,false,None,Some(6),3), BPSpaceDTO(Some(6),2,3,true,false,Some(4),None,1)).toArray
 
 
-      )))
+      ))
+  }
+  def spaceElems(id: Int) = Action {
+     Ok(Json.toJson(
+      List(SpaceElementDTO(Some(6),"test","test",1,2,"brick","container_brick",Some(5),4,Some("container"),1,Some(List(CompositeValues(Some("a"), Some("b"), Some(1) )))), 
+           SpaceElementDTO(Some(7),"test","test",1,2,"block","constant",None,5,Some("container"),1,Some(List(CompositeValues(Some("a"), Some("b"), Some(1) ))))).toArray))
   }
   def createBpElem(id: Int) = Action { implicit request =>
     println(request.body)

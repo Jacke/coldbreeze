@@ -19,10 +19,11 @@ object Dependencies {
   val shapeless       = "com.chuusai"               %% "shapeless"              % "1.2.4"
   val dispatch        = "net.databinder.dispatch"   %% "dispatch-core"          % "0.11.1"
   val scalaz          = "org.scalaz"                %% "scalaz-core"            % "7.0.6"
-  val slick           = "com.typesafe.slick"        %  "slick_2.11.0-RC4"       % "2.1.0-M1"
-//val slickpg         = "com.github.tminglei"       % "slick-pg_2.11"           % "0.6.0-M1"
-//val slickpgcore     = "com.github.tminglei"       % "slick-pg_core_2.11"      % "0.6.0-M1"
-  val slf4j           = "org.slf4j"                 %   "slf4j-nop"             % "1.7.3"
+  val slick           = "com.typesafe.slick"        %  "slick_2.11"             % "2.1.0"
+  val slickpg         = "com.github.tminglei"       %  "slick-pg_2.11"          % "0.6.1"
+  val slickpgcore     = "com.github.tminglei"       %  "slick-pg_core_2.11"     % "0.6.1"
+  val slickpgplay     = "com.github.tminglei"       %% "slick-pg_play-json"     % "0.6.1"
+  val slf4j           = "org.slf4j"                 %  "slf4j-nop"              % "1.7.3"
 //val json4s-n        = "org.json4s"                %%  "json4s-native"         % "3.2.6"
 //val json4s-j        = "org.json4s"                %%  "json4s-jackson"        % "3.2.6"
   val postgres        = "postgresql"                %   "postgresql"            % "9.1-901.jdbc4"
@@ -30,7 +31,7 @@ object Dependencies {
   val mechanize       = "com.gistlabs"              %  "mechanize"              % "0.11.0"
 
   val play            = "org.webjars"               %% "webjars-play"           % "2.3.0"
-  val playslick       = "com.typesafe.play"         %  "play-slick_2.10"        % "0.7.0-M1"
+  val playslick       = "com.typesafe.play"         %  "play-slick_2.10"        % "0.8.0"
   val playauth        = "jp.t2v"                    %% "play2-auth"             % "0.12.0"
   val playctrl        = "jp.t2v"                    %% "stackable-controller"   % "0.4.0"
   val jsonvariants    = "org.julienrf"              %% "play-json-variants"     % "0.2"
@@ -51,9 +52,9 @@ object Dependencies {
   val jdbc            = "com.typesafe.play"         %% "play-jdbc"              % "2.3.0-RC1"
   val anorm           = "com.typesafe.play"         %% "anorm"                  % "2.3.0-RC1"
 
-  val jodatime        = "joda-time" % "joda-time" % "2.3"
+  val jodatime        = "joda-time" % "joda-time"   % "2.4"
   val jodaconvert     = "org.joda" % "joda-convert" % "1.6"
-  val jodamapper      = "com.github.tototoshi" %% "slick-joda-mapper" % "1.2.0-SNAPSHOT"
+  val jodamapper      = "com.github.tototoshi"      %% "slick-joda-mapper" % "1.2.0"
 
   val akkaActor       = "com.typesafe.akka"         %%  "akka-actor"            % akkaVersion
   val akkaSlf4j       = "com.typesafe.akka"         %%  "akka-slf4j"            % akkaVersion
@@ -61,7 +62,7 @@ object Dependencies {
   val logback         = "ch.qos.logback"            %   "logback-classic"       % "1.0.13"
   val reflect         = "com.taig"                  %%  "reflect"               % "0.9.3-BETA"
   val nscala          = "com.github.nscala-time"    %%  "nscala-time"           % "1.0.0"
-  //val slickjoda       = "com.github.tminglei"       % "slick-pg_joda-time_2.11" % "0.6.0-M1"
+  val slickjoda       = "com.github.tminglei"       % "slick-pg_joda-time_2.11" % "0.6.1"
   val hdrHistogram    = "org.hdrhistogram"          %   "HdrHistogram"          % "1.0.8"
   val sprayCan        = "io.spray"                  %%   "spray-can"             % sprayVersion
   val sprayRouting    = "io.spray"                  %%   "spray-routing"         % sprayVersion
