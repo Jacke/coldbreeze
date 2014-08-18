@@ -1,5 +1,5 @@
 <div class="container">
-  <h1>BProcess 1</h1>
+  <h1>Process `{{ bprocess.title }}`</h1>
 
   <form novalidate="novalidate" class="form-horizontal">
     <div class="control-group">
@@ -11,9 +11,14 @@
     </div>
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">Business id:</label>
-      {{ bprocess.elements }}
       <div class="controls">
         <input type="text" id="inputBusinessId" ng-model="bprocess.business"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">Service id:</label>
+      <div class="controls">
+        <input type="number" id="inputServiceId" ng-model="bprocess.service" placeholder="Service ID" required/>
       </div>
     </div>
     <div class="control-group">

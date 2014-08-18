@@ -292,8 +292,14 @@ def all_stations() = Action { implicit request =>
 def show_station(id: Int, station_id: Int) = Action { implicit request =>
   Ok(Json.toJson(
     BPStationDAO.findById(station_id)))
-
 }
+// /bprocess/:id/station/:station_id/halt  
+def halt_station(id: Int, station_id: Int) = Action { implicit request =>
+  Ok(Json.toJson(
+    BPStationDAO.haltUpdate(station_id)))
+}
+
+
 // /bprocess/:id/logs  
 def logs_index(id: Int) = Action { implicit request => 
   Ok(Json.toJson(BPLoggerDAO.findByBPId(id)))

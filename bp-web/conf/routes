@@ -98,13 +98,14 @@ PUT         /bprocess/:id/info                                  @controllers.App
 GET         /bprocess/:id/elements                              @controllers.Application.bpElems(id: Int)
 GET         /bprocess/:id/spaces                                @controllers.Application.spaces(id: Int)
 GET         /bprocess/:id/space_elems                           @controllers.Application.spaceElems(id: Int)
-
+GET         /bprocess/:id/logs                                  @controllers.Application.logs(id: Int)  
 
 
 # Stations
 GET         /bprocess/stations                       @controllers.BusinessProcessController.all_stations()
 GET         /bprocess/:id/stations                   @controllers.BusinessProcessController.station_index(id: Int)
 GET         /bprocess/:id/station/:station_id        @controllers.BusinessProcessController.show_station(id: Int, station_id: Int)
+POST        /bprocess/:id/station/:station_id/halt   @controllers.BusinessProcessController.halt_station(id: Int, station_id: Int)
 # Logs
 GET         /bprocess/:id/logs                       @controllers.BusinessProcessController.logs_index(id: Int)
 

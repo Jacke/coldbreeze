@@ -202,9 +202,13 @@ implicit val UndefElementWrites = Json.format[UndefElement]
   implicit val BPSpaceDTOReads = Json.reads[BPSpaceDTO]
   implicit val BPSpaceDTOWrites = Json.format[BPSpaceDTO] 
 
+  implicit val BPLoggerDTOReads = Json.reads[BPLoggerDTO]
+  implicit val BPLoggerDTOWrites = Json.format[BPLoggerDTO] 
+
   def bpElems(id: Int) = Action {
      Ok(Json.toJson( 
-      List(UndefElement(Some(1),"test","test",1,2,"brick","container_brick",Some(1),1,Some(List(CompositeValues(Some("a"), Some("b"), Some(1) )))), 
+      List(UndefElement(Some(1),"test","test",1,2,"brick","container_brick",Some(1),1,Some(List(CompositeValues(a_int = Some(1) )))),
+          UndefElement(Some(1),"test","test",1,2,"brick","container_brick",Some(1),1,Some(List(CompositeValues(a_int = Some(1) )))), 
           UndefElement(Some(4),"test","test",1,2,"brick","container_brick",None,3,Some(List(CompositeValues(Some("a"), Some("b"), Some(1) ))))).toArray))
   }
   def spaces(id: Int) = Action {
@@ -213,6 +217,15 @@ implicit val UndefElementWrites = Json.format[UndefElement]
 
       ))
   }
+
+import com.github.nscala_time.time.Imports._
+
+def logs(id: Int) = Action {
+  Ok(Json.toJson(
+    Array(BPLoggerDTO(Some(1),2,Some(2),None,1,None,1,true,false,false,DateTime.now,Some(List(CompositeValues(Some("a"), Some("b"), Some(1) ))),1), BPLoggerDTO(Some(2),2,Some(3),None,2,None,1,true,false,false,DateTime.now,Some(List(CompositeValues(Some("a"), Some("b"), Some(1) ))),2), BPLoggerDTO(Some(3),2,Some(4),None,3,None,1,true,false,false,DateTime.now,Some(List(CompositeValues(Some("a"), Some("b"), Some(1) ))),3))
+    ))
+}
+
   def spaceElems(id: Int) = Action {
      Ok(Json.toJson(
       List(SpaceElementDTO(Some(6),"test","test",1,2,"brick","container_brick",Some(5),4,Some("container"),1,Some(List(CompositeValues(Some("a"), Some("b"), Some(1) )))), 

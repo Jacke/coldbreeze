@@ -162,10 +162,14 @@ minorityControllers.controller('BProcessListCtrl', ['$scope', '$http', '$filter'
 
 
 // READ
+
 minorityControllers.controller('BPRequestCtrl', ['$scope', '$routeParams', 'BProcessFactory', 'BPStationsFactory', '$location', '$http',
 function ($scope, $routeParams, BProcessFactory, BPStationsFactory, $location, $http) {
   console.log($routeParams.BPid)
   $scope.bpId = $routeParams.BPid;
+
+//minorityControllers.controller('BPRequestCtrl', ['$scope', '$filter','$routeParams','BProcessesFactory','BProcessFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route', '$http',
+//function ($scope, $filter, $routeParams, BProcessesFactory, BProcessFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route, $http) {
 
   $scope.updateBP = function () {
     BProcessFactory.update($scope.bprocess);
@@ -373,11 +377,29 @@ minorityControllers.controller('BPstationListCtrl', ['$scope', '$filter', 'BProc
              '1';
          }
   }
+  $scope.haltStation = function (stationId) {
+    
+    $http({
+      url: '/bprocess/' + bpId + '/station/' + stationId + '/halt',
+      method: "POST",
+      data: {  }
+      })
+      .then(function(response) {
+        // success
+        console.log(response);
+        //$scope.invoke_res = [response];
+      }, 
+      function(response) { // optional
+        // failed
+      }
+      );
+
+  }
   $scope.logsByStation = function (stationId) {
          var found = $filter('filter')($scope.logs, {station: stationId}, true);
          if (found.length) {
              console.log(found)
-             return found[0].id;
+             return found;
          } else {
              '';
          }

@@ -1,43 +1,80 @@
-<!--<div class="span6">
-  <table class="table table-striped table-condensed">
-    <thead>
-      <tr>
-        <th style="min-width: 80px;">BP Title</th>
-        <th style="min-width: 80px;">Business id</th>
-        <th style="width:20px;">&nbsp;</th>
-        <th style="width:20px;">&nbsp;</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr ng-repeat="bprocess in bprocesses">
-        <td>{{ bprocess.title }}</td>
-        <td>{{ bprocess.business }}</td>
-        <td><a ng-click="showBP(bprocess.id)" class="btn btn-small btn-primary">show</a></td>
-        <td><a ng-click="editBP(bprocess.id)" class="btn btn-small btn-primary">edit</a></td>
-        <td><a ng-click="deleteBP(bprocess.id)" class="btn btn-small btn-danger">delete</a></td>
-        <td><a href="process/{{ bprocess.id }}/invoke">invoke</a></td>
-      </tr>
-    </tbody>
-  </table>
-  <a ng-click="createNewBP()" class="btn btn-small">create new Business process</a>
-</div>--> {{ bpstations }}
-          <div class="stations" ng-repeat="station in bpstations">
+<div class="stations" ng-repeat="station in bpstations"style="clear: both;">
+           <h3>Station #{{ station.id }}</h3>
            <p>
-            {{ station.id}}
-            {{ station.id}}
             {{ stationByProcess(station.id).id }}
             {{ stationByProcess(station.id).title }}
-            {{ station.started}}
-            {{ station.finished}} 
+           
            </p>
+            <div class=" col-md-9 col-lg-9 "> 
+                  <table class="table table-user-information">
+                    <tbody>
+                      <tr>
+                        <td> station.started </td>
+<td> station.finished </td>
+<td> station.state </td>
+<td> station.step </td>
+<td> station.space </td>
+<td> station.container_step </td>
+<td> station.expand_step </td>
+<td> station.inspace </td>
+<td> station.incontainer </td>
+<td> station.inexpands </td>
+<td> station.paused </td>
+                      </tr>
+                      <tr>
+            <td> {{ station.started}} </td>
+            <td>{{ station.finished}} </td>
+            <td>{{ station.state }}</td> 
+            <td> {{ station.step }}</td>
+            <td> {{ station.space }}</td>
+            <td>{{ station.container_step }}</td> 
+            <td> {{ station.expand_step }}</td>
+            <td> {{ station.inspace }}</td>
+            <td> {{ station.incontainer }}</td>
+            <td> {{ station.inexpands }}</td>
+            <td>    {{ station.paused }}</td>
+            </tr>
+                   
+                        
+                    
+                    </tbody>
+                  </table>
+           <p>
+          
+          </p> 
           <h3>Logs</h3>
           <p>
-          {{ bplogs }}
-          {{ logsByStation(station.id) }}
+          <div class="logs" ng-repeat="log in logsByStation(station.id)">
+                  <table class="table table-user-information">
+                    <tbody>
+                      <tr>
+                        <td> log.element </td>
+<td> log.station </td>
+<td> log.invoked </td>
+<td> log.expanded </td>
+<td> log.container </td>
+<td> log.date </td>
+<td> log.step </td>
+<td> log.comps </td>
 
-          <div ng-if="station.finished == false">
+                      </tr>
+                      <tr>
+<td> {{ log.element }} </td>
+<td> {{ log.station }} </td>
+<td> {{ log.invoked }} </td>
+<td> {{ log.expanded }} </td>
+<td> {{ log.container }} </td>
+<td> {{ log.date }} </td>
+<td> {{ log.step }} </td>
+<td> {{ log.comps }} </td>
+            </tr>
+                    </tbody>
+                  </table>
+          </div>
+          <div ng-if="station.finished == true">
           <a ng-click="haltStation(station.id)" class="btn btn-big">Halt</a>
           </div>
+          {{ bplogs }}
 
            <hr>
           </div>

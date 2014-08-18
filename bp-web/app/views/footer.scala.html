@@ -1,0 +1,51 @@
+@(user: Option[securesocial.core.BasicProfile] = None)(implicit request: Option[RequestHeader] = None, env: Option[securesocial.core.RuntimeEnvironment[service.DemoUser]] = None)
+@import securesocial.core.IdentityProvider
+
+@import securesocial.core.IdentityProvider
+@import securesocial.core.providers.UsernamePasswordProvider
+@import securesocial.core.AuthenticationMethod._
+@import play.api.{Logger, Play}
+@import helper._
+@import play.api.Play
+
+<!-- website-footer -->
+
+<footer class="applicationFooter">
+
+  <div class="applicationFooterRow">
+    <div class="applicationFooterColumns">
+    <div class="applicationFooterColumn">
+    </div><div class="applicationFooterColumn">
+      <h3 class="applicationFooterTitle">Platform</h3>
+      <ul class="applicationFooterList">
+        <li><a class="applicationFooterListLink" href="#">How It Works</a></li>
+        <li><a class="applicationFooterListLink" href="# ">Product</a></li>
+        <li><a class="applicationFooterListLink" href="#">Pricing</a></li>
+        <li><a class="applicationFooterListLink" href="# ">Help</a></li>
+      </ul>
+    </div><div class="applicationFooterColumn">
+      <h3 class="applicationFooterTitle">Company</h3>
+      <ul class="applicationFooterList">
+        <li><a class="applicationFooterListLink" href="#">Blog</a></li>
+        <li><a class="applicationFooterListLink" href="#">Team</a></li>
+        <li><a class="applicationFooterListLink" href="#">Jobs</a></li>
+        <li><a class="applicationFooterListLink" href="#">Contact</a></li>
+        <li><a class="applicationFooterListLink" href="#">Press Kit</a></li>
+      </ul>
+    </div><div class="applicationFooterColumn">
+      <h3 class="applicationFooterTitle">Company</h3>
+      <ul class="applicationFooterList">
+        <li><a class="applicationFooterListLink" href="#">Blog</a></li>
+        <li><a class="applicationFooterListLink" href="#">Team</a></li>
+        <li><a class="applicationFooterListLink" href="#">Jobs</a></li>
+        <li><a class="applicationFooterListLink" href="#">Contact</a></li>
+        <li><a class="applicationFooterListLink" href="#">Press Kit</a></li>
+      </ul>
+    </div></div>
+  </div>
+
+  <div class="applicationFooterRow">
+    <p class="applicationFooterCopyright"> 2014 &copy; Empire InCloud Inc. All rights reserved. <span class="applicationFooterCopyrightLinks">• <a href="http://empireinc.net/tos" class="applicationFooterCopyrightLink">Terms</a> • <a href="https://www.iubenda.com/privacy-policy/323220" class="applicationFooterCopyrightLink">Privacy</a></span></p>
+  </div>
+</footer>
+<!-- /website-footer -->

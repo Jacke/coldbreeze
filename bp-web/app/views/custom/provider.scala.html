@@ -17,41 +17,46 @@
 
             @if( provider.authMethod == UserPassword ) {
                 <form action = "@env.routes.authenticationUrl("userpass")"
-                      class="form-horizontal" autocomplete="off" method="POST">
-                    <fieldset>
+                      class="form-horizontal" autocomplete="off" method="POST" class="loginInputs">
+                    <!-- <fieldset>-->
+
+
 
                         @if( UsernamePasswordProvider.withUserNameSupport ) {
                             @helper.inputText(
                                 loginForm.get("username"),
                                 '_label -> Messages("securesocial.signup.username"),
-                                'class -> "input-xlarge"
+                                'class -> "textField block"
                             )
                         } else {
                             @helper.inputText(
                                 loginForm.get("username"),
                                 '_label -> Messages("securesocial.signup.email1"),
-                                'class -> "input-xlarge"
+                                'class -> "textField block"
                             )
                         }
 
                         @helper.inputPassword(
                             loginForm.get("password"),
                             '_label -> Messages("securesocial.signup.password1"),
-                            'class -> "input-xlarge"
+                            'class -> "textField block"
                         )
 
                         <div class="form-actions">
-                            <button type="submit" class="btn btn-primary">@Messages("securesocial.login.title")</button>
+                          <p class="loginText">
+                            <button type="submit" id="l_submit" class="loginButton block actionOk" tabindex="6">@Messages("securesocial.login.title")</button></p>
                         </div>
                         <div class="clearfix">
-                            <p><a href="@env.routes.resetPasswordUrl">@Messages("securesocial.login.forgotPassword") </a></p>
+                            <p><a class="loginText"><a tabindex="5" class="forgottenPass" href="@env.routes.resetPasswordUrl">@Messages("securesocial.login.forgotPassword") </a></p>
                         </div>
                         @if(Play.current.configuration.getBoolean("securesocial.registrationEnabled").getOrElse(true) ){
                              <div class="clearfix">
-                                 <p>@Messages("securesocial.login.signUp") <a href="@env.routes.signUpUrl">@Messages("securesocial.login.here")</a></p>
+                                <p class="loginText">Need an account? <a tabindex="7" class="switchView" href="@env.routes.signUpUrl">Sign up now</a>.</p>
+
+                                 <!-- <p>@Messages("securesocial.login.signUp") <a href="@env.routes.signUpUrl">@Messages("securesocial.login.here")</a></p>-->
                               </div>
                             }
-                    </fieldset>
+                    <!-- </fieldset>-->
                 </form>
             }
 }.getOrElse {

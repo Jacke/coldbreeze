@@ -1,5 +1,96 @@
 <div class="container">
 
+<div class="initily-invoke">
+  <h3>Run from scratch</h3>
+<a ng-click="runInitially()" class="btn btn-big btn-success">Run</a>
+</div>
+<pre>Change to only active station</pre>
+<div class="stations" ng-repeat="station in stations | limitTo:2"style="clear: both;">
+           <h3>Station #{{ station.id }}</h3>
+           <p>
+            {{ stationByProcess(station.id).id }}
+            {{ stationByProcess(station.id).title }}
+           
+           </p>
+            <div class=" col-md-9 col-lg-9 "> 
+                  <table class="table table-user-information">
+                    <tbody>
+                      <tr>
+                        <td> station.started </td>
+<td> station.finished </td>
+<td> station.state </td>
+<td> station.step </td>
+<td> station.space </td>
+<td> station.container_step </td>
+<td> station.expand_step </td>
+<td> station.inspace </td>
+<td> station.incontainer </td>
+<td> station.inexpands </td>
+<td> station.paused </td>
+                      </tr>
+                      <tr>
+            <td> {{ station.started}} </td>
+            <td>{{ station.finished}} </td>
+            <td>{{ station.state }}</td> 
+            <td> {{ station.step }}</td>
+            <td> {{ station.space }}</td>
+            <td>{{ station.container_step }}</td> 
+            <td> {{ station.expand_step }}</td>
+            <td> {{ station.inspace }}</td>
+            <td> {{ station.incontainer }}</td>
+            <td> {{ station.inexpands }}</td>
+            <td>    {{ station.paused }}</td>
+            </tr>
+                    </tbody>
+                  </table>
+           <p>
+          
+          </p> 
+          <h3>Logs</h3>
+          <p>
+          <div class="logs" ng-repeat="log in logsByStation(station.id)">
+                  <table class="table table-user-information">
+                    <tbody>
+                      <tr>
+                        <td> log.element </td>
+<td> log.station </td>
+<td> log.invoked </td>
+<td> log.expanded </td>
+<td> log.container </td>
+<td> log.date </td>
+<td> log.step </td>
+<td> log.comps </td>
+
+                      </tr>
+                      <tr>
+<td> {{ log.element }} </td>
+<td> {{ log.station }} </td>
+<td> {{ log.invoked }} </td>
+<td> {{ log.expanded }} </td>
+<td> {{ log.container }} </td>
+<td> {{ log.date }} </td>
+<td> {{ log.step }} </td>
+<td> {{ log.comps }} </td>
+            </tr>
+                    </tbody>
+                  </table>
+          </div>
+          <div ng-if="station.finished == true">
+          <a ng-click="haltStation(station.id)" class="btn btn-big btn-danger">Halt</a>
+          <div class="runFrom">
+          <h3>Run from specific active point</h3>
+          <pre> Parameters for run from </pre>
+          <a ng-click="runFrom(station.id)" class="btn btn-big btn-success">Run from</a>
+          </div>
+          </div>
+
+          {{ bplogs }}
+
+           <hr>
+          </div>
+
+
+<!--
 <div class="tabbable tabs-below">
   <ul class="nav nav-pills">
     <li ng-class="{active: selectedTab == 1}">
@@ -46,7 +137,7 @@
         <pre> {{ user.logger | json }}</pre>
   </div>
 </div>
-
+-->
 
         
  
