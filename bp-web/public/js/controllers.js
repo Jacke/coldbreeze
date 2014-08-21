@@ -259,8 +259,8 @@ minorityControllers.controller('BPCreationCtrl', ['$scope', 'BProcessesFactory',
  * BP Elements
  */
 // INDEX
-minorityControllers.controller('BPelementListCtrl', ['$scope', 'BPElemsFactory','BPElemFactory', 'BPSpacesFactory', 'BPSpaceFactory', 'BPSpaceElemsFactory', 'BPSpaceElemFactory', '$location', '$route', 
-  function ($scope, BPElemsFactory, BPElemFactory, BPSpacesFactory, BPSpaceFactory, BPSpaceElemsFactory, BPSpaceElemFactory, $location, $route) {
+minorityControllers.controller('BPelementListCtrl', ['$scope', '$routeParams', 'BPElemsFactory','BPElemFactory', 'BPSpacesFactory', 'BPSpaceFactory', 'BPSpaceElemsFactory', 'BPSpaceElemFactory', '$location', '$route', 
+  function ($scope, $routeParams, BPElemsFactory, BPElemFactory, BPSpacesFactory, BPSpaceFactory, BPSpaceElemsFactory, BPSpaceElemFactory, $location, $route) {
   $scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
   $scope.spaces =  BPSpacesFactory.query({ BPid: $route.current.params.BPid });
   $scope.spaceelems = BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid });
@@ -296,10 +296,13 @@ minorityControllers.controller('BPelementListCtrl', ['$scope', 'BPElemsFactory',
 
   /* CU */
   $scope.updateElem = function (obj) {
-    console.log(obj)
+    console.log(obj)  
+
+    BPElemFactory.update(obj);
   }
   $scope.createNewElem = function () {
-    console.log($scope.newBpelem)
+    console.log($scope.newBpelem);
+    BPElemsFactory.create($scope.newBpelem);
   }
   $scope.updateSpace = function (obj) {
     console.log(obj)
@@ -321,6 +324,7 @@ minorityControllers.controller('BPelementListCtrl', ['$scope', 'BPElemsFactory',
     console.log(result);
     result
   }
+  $scope.BPid = $routeParams.id;
  
 }]);
 

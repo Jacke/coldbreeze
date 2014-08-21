@@ -68,7 +68,7 @@ import play.api.Play.current
 
 /* Index */
 def frontElems(id: Int) = Action { implicit request =>
-  println(ProcElemDAO.findByBPId(id))
+
   Ok(Json.toJson(ProcElemDAO.findByBPId(id)))
 }
 def show_elem_length(id: Int):Int = { 
@@ -173,10 +173,16 @@ val SpaceElementForm = Form(
 
 
 
-def createFrontElem(id: Int) = Action(BodyParsers.parse.json) { implicit request =>
-  val placeResult = request.body.validate[UndefElement]  
-     println(placeResult)
-    println(request.body);  Ok("x")
+def createFrontElem() = Action(BodyParsers.parse.json) { implicit request =>
+
+  request.body.validate[UndefElement].map{ 
+    case entity => ProcElemDAO.pull_object(entity) match {
+            case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not update front element ${entity.title}")))
+            case _ =>  Ok(Json.toJson(Map("success" ->  s"Entity ${entity.title} has been updated")))
+          }
+    }.recoverTotal{
+      e => BadRequest("formWithErrors")
+    }
   /*
   UndefElementForm.bindFromRequest.fold(
       formWithErrors => BadRequest("formWithErrors"),
@@ -217,15 +223,23 @@ def createSpaceElem(id: Int) = Action(BodyParsers.parse.json) { implicit request
 
 
 /* Update */
-def updateFrontElem(id: Int, elem_id: Int) = Action(BodyParsers.parse.json) { implicit request =>
-  UndefElementForm.bindFromRequest.fold(
-        formWithErrors => BadRequest("formWithErrors"),
-        entity => {
-          ProcElemDAO.update(id,entity) match {
+def updateFrontElem(bpId: Int, elem_id: Int) = Action(BodyParsers.parse.json) { implicit request =>
+  println(request.body.validate[UndefElement])
+  println
+  //request.body.validate[UndefElement].map{ 
+  //  case entity => { 
+  //    println(entity)
+  //    ProcElemDAO.update(elem_id,entity)
+  //  }
+  //}
+  request.body.validate[UndefElement].map{ 
+    case entity => ProcElemDAO.update(elem_id,entity) match {
             case false =>  Ok(Json.toJson(Map("failure" ->  s"Could not update front element ${entity.title}")))
             case _ =>  Ok(Json.toJson(Map("success" ->  s"Entity ${entity.title} has been updated")))
           }
-        })
+    }.recoverTotal{
+      e => BadRequest("formWithErrors")
+    }
 }
 def updateSpace(id: Int, space_id: Int) = Action(BodyParsers.parse.json) { implicit request =>
   BPSpaceForm.bindFromRequest.fold(

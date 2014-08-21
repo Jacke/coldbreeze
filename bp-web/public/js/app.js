@@ -15,7 +15,8 @@ var minorityApp =
       'classy',
       'ngAngularError',
       'ngAnimate', 'toaster',
-      'angular-underscore'
+      'angular-underscore',
+      'ui.bootstrap'
     ]
   );
 

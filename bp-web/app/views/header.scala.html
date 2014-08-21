@@ -19,9 +19,14 @@
 <nav class="apiMenu menuCell menuTeam">
   <ul class="apiMenuList apiMenuTexts">
     <li class="apiMenuItem">
-      <a id="teamMembersLink" class="vIcoIn menuTeamLink" href="#">
+      <a id="teamMembersLink" class="vIcoIn menuTeamLink" href="@routes.Application.peoples()">
         <span class="vIco vPeople vDefaultState"></span>
         People      </a>
+    </li>
+    <li class="apiMenuItem">
+      <a id="teamMembersLink" class="vIcoIn menuTeamLink" href="@routes.Application.list()">
+        <span class="vIco vAPIs vDefaultState"></span>
+        List template      </a>
     </li>
     <li class="apiMenuItem">
       <a id="teamApisLink" class="vIcoIn menuTeamLink" href="@routes.BusinessServiceController.index()">

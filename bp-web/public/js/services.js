@@ -86,13 +86,13 @@ minorityAppServices.factory('BProcessFactory', function ($resource) {
 minorityAppServices.factory('BPElemsFactory', function ($resource) {
     return $resource(baseUrl + '/bprocess/:BPid/elements', {}, {
         query: { method: 'GET', isArray: true },
-        create: { method: 'POST' }
+        create: { method: 'POST', params: {id: '@BPid'}  }
     })
 });
 minorityAppServices.factory('BPElemFactory', function ($resource) {
     return $resource(baseUrl + '/bprocess/:BPid/element/:id', {}, {
         show: { method: 'GET' },
-        update: { method: 'PUT', params: {id: '@id'} },
+        update: { method: 'PUT', params: {id: '@id', BPid: '@bprocess'} },
         delete: { method: 'DELETE', params: {id: '@id'} }
     })
 });

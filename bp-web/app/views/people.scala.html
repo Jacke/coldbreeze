@@ -1,0 +1,250 @@
+@()(implicit request: RequestHeader)
+@import securesocial.core.IdentityProvider
+
+@import securesocial.core.IdentityProvider
+@import securesocial.core.providers.UsernamePasswordProvider
+@import securesocial.core.AuthenticationMethod._
+@import play.api.{Logger, Play}
+@import helper._
+@import play.api.Play
+
+
+
+
+
+<!doctype html>
+<!--[if lt IE 7 ]> <html class="no-js ie6" lang="en"> <![endif]-->
+<!--[if IE 7 ]>    <html class="no-js ie7" lang="en"> <![endif]-->
+<!--[if IE 8 ]>    <html class="no-js ie8" lang="en"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>Manage Team - Minority</title>
+  <meta name="description" content="A place where APIs are kept">
+  <meta name="author" content="apiary.io">
+
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+
+  <link rel="stylesheet" href="https://apiary.a.ssl.fastly.net/assets/css/normalize-c1a6015040ef1201.css">
+  <link rel="stylesheet" href="https://apiary.a.ssl.fastly.net/assets/css/font-awesome-b2431b0e6805305e.css">
+  <link rel="stylesheet" href="https://apiary.a.ssl.fastly.net/assets/css/new-11d7b73a7b6d7f70.css">
+  <link rel="stylesheet" href="https://apiary.a.ssl.fastly.net/assets/css/head-foot-977ede17d28757e5.css" media="screen, presentation" />
+  <link rel="stylesheet" href="https://apiary.a.ssl.fastly.net/assets/css/multi-ab9a0afd6c12f594.css">
+
+
+  <script src="https://apiary.a.ssl.fastly.net/assets/js/libs/jquery-1.8.3-a1bb2f1ddad0f568.js"></script>
+<style>
+.apiaryMenu .apiaryLogo a {
+    background: url('../images/minority-logo.svg') no-repeat scroll 0px 0px / contain transparent;
+    margin-top: 16px;
+    margin-left: 5px;
+    width: 72px;
+    height: 48px;
+    color: white;
+    background-color: white;
+}
+</style>
+</head>
+
+<body class="themeDark">
+
+  <div id="container">
+    
+  
+
+@header(user = None)  
+
+    
+<div class="manageWholeTeam peoplePanel">
+
+<div class="panelLike organisationsGrid">
+
+<div class="organisationsGridMenu">
+  <h2 class="organisationsGridHeadline">Members</h2>
+  <ul>
+        <li data-attr="show" data-target=".tabsWrap" data-filter="all" class="filterGridItems changeData active">All <span class="badgeLike">2</span></li>
+    <li data-attr="show" data-target=".tabsWrap" data-filter="admin" class="filterGridItems changeData">Administrators <span class="badgeLike">1</span></li>
+    <li data-attr="show" data-target=".tabsWrap" data-filter="member" class="filterGridItems changeData">Members <span class="badgeLike">1</span></li>
+    <li data-attr="show" data-target=".tabsWrap" data-filter="invite" class="filterGridItems changeData">Invitations <span class="badgeLike">1</span></li>
+  </ul>
+</div>
+
+<div class="organisationsGridCards">
+
+  <div class="addPeople grids">
+    <div class="infoMessage"></div>
+    <div id="addMembersForm" class="zeroH">
+      <form class="addAllowedUser addUsersToGroup" data-where="ul.profilesList" action="https://login.apiary.io/organisations/allow-user" method="post">
+        <textarea class="flatTextarea" id="newUsersForGroup" required="required" name="emails" placeholder="E-mail address(es) comma separated" cols="50" rows="3"></textarea>
+        <div class="grids">
+          <div class="g1of2">
+            <span class="flatCheckbox"><input id="teamAdminRole" type="checkbox" name="admin" value="yes">&nbsp;<label for="teamAdminRole">Administrator&nbsp;Role</label></span>
+            <span class="flatCheckbox"><input id="teamAdminRole" type="checkbox" name="admin" value="yes">&nbsp;<label for="teamAdminRole">Observer&nbsp;Role</label></span>
+            <span class="flatCheckbox"><input id="teamAdminRole" type="checkbox" name="admin" value="yes">&nbsp;<label for="teamAdminRole">Actor&nbsp;Role</label></span>
+          </div>
+          <div class="g1of2">
+            <button type="submit" class="button small blue flatButton posRight"><i></i><span>Send Invites</span></button>
+            <button class="cancelButton dark button small flatButton"><i></i><span>Cancel</span></button>
+          </div>
+        </div>
+        <div class="clr"></div>
+        <input type="hidden" name="_csrf" value="CHnWUSDSee+AkMnXpmaEfztdQobfrq60DvXtI=" />
+      </form>
+    </div>
+    <span data-target="#addMembersForm" data-focus="#addMembersForm" data-toggle-class="zeroH" class="hiddenToggler isHidden addMembersLink"><span class="badgeIco"><span class="vIco vAddMembers vShineState"></span></span> Add People to Team</span>
+    <div class="teamApisListFilter filterLayer">
+      <span class="magnifyGlass vIco vLoupe vLight2State"></span>
+      <input type="text" size="47" data-list=".profilesList &gt; li.userCard.listItem" data-fresh="1" data-playevents="1" data-childs=".userName" data-toggle-class="hidden" class="filterInput teamApisListFilterInput" placeholder="Search People">
+    </div>
+  </div>
+
+  <div class="tabsWrap" data-show="all"><ul data-menu=".organisationsGridMenu" class="profilesList userCard list grids">
+                      <li class="userCard listItem" data-role="member" data-type="Invite" data-id="4ffd538f12600b01000049bc">
+<div class="userCardFront">
+
+<figure class="userAvatar">
+  <img src="https://secure.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=70&amp;d=https%3A%2F%2Fapiary.a.ssl.fastly.net%2Fassets%2Fimages%2Fdefault_user_avatar-8f601fa59d98081b.png" height="70" width="70" />
+</figure>
+
+<span class="infoIco icon-time" title="Waiting user invitation acceptance."></span>
+
+<span class="userName">
+<b class="block">Anonymous</b>
+  </span>
+<span class="infoIco opposite icon-star hidden" title="Member"></span>
+<span class="userCardMenuHandle">&#x2261;</span></div></li>          
+                          <li class="userCard listItem" data-selfie="1" data-role="admin" data-type="Admin" data-id="509045720dfd280200000240">
+<div class="userCardFront">
+
+<figure class="userAvatar">
+  <img src="https://avatars.githubusercontent.com/u/485466?s=70&amp;d=https%3A%2F%2Fapiary.a.ssl.fastly.net%2Fassets%2Fimages%2Fdefault_user_avatar-8f601fa59d98081b.png" height="70" width="70" />
+</figure>
+
+
+<span class="userName">
+<b class="block">Stanislav Sobolev</b>
+  <a href="mailto:iamjackegmail.com">iamjackegmail.com</a>
+</span>
+<span class="infoIco opposite icon-star hintMe" title="Admin"></span>
+</div></li>          
+    <li class="userCardBlankSlate">
+      <span class="switchByDataAttr" data-role="all">
+        <i class="vIco vPeople vDefaultState"></i><br>
+        <strong>You have no members at the moment</strong>
+        Click on Add Members to invite them.
+      </span>
+      <span class="switchByDataAttr" data-role="member">
+        <i class="vIco vEmpty"></i><br>
+        Members can by default edit Team API Blueprints.
+      </span>
+      <span class="switchByDataAttr" data-role="admin">
+        <i class="vIco vEmpty"></i><br>
+        Admins of the Team are able to <!-- change Team Settings &amp;  --> manage Team Members.
+      </span>
+      <span class="switchByDataAttr" data-type="Invite">
+        <i class="vIco vEmpty"></i><br>
+        There are no pending Team Invitations.<br>
+        Click on Add Members to invite new members.
+      </span>
+    </li>
+
+        <li class="userCard userCardMenu okMenu inactiveMenu">
+      <ul>
+        <li class="dropdownListItem onlyMember morphAdmin"><a class="dropdownLink" data-csrftoken="CHnWUSDSee%2BAkMnXpmaEfztdQobfrq60DvXtI%3D" data-type="POST" data-target-role="Admin" href="/organisations/promote/">Promote to Admin</a></li>
+        <li class="dropdownListItem onlyAdmin morphMember"><a class="dropdownLink" data-csrftoken="CHnWUSDSee%2BAkMnXpmaEfztdQobfrq60DvXtI%3D" data-type="POST" data-target-role="Member" href="/organisations/demote/">Demote to Member</a></li>
+        <li class="dropdownListItem onlyAdmin removeAdmin"><a class="dropdownLink" data-csrftoken="CHnWUSDSee%2BAkMnXpmaEfztdQobfrq60DvXtI%3D" data-type="DELETE" href="/organisations/remove/admin/">Remove Admin</a></li>
+        <li class="dropdownListItem onlyMember removeMember"><a class="dropdownLink" data-csrftoken="CHnWUSDSee%2BAkMnXpmaEfztdQobfrq60DvXtI%3D" data-type="DELETE" href="/organisations/remove/member/">Remove Member</a></li>
+        <li class="dropdownListItem onlyInvite resendInvite"><a class="dropdownLink" data-csrftoken="CHnWUSDSee%2BAkMnXpmaEfztdQobfrq60DvXtI%3D" data-type="POST" href="/organisations/resend/">Resend invitation mail</a></li>
+        <li class="dropdownListItem onlyInvite removeInvite"><a class="dropdownLink" data-csrftoken="CHnWUSDSee%2BAkMnXpmaEfztdQobfrq60DvXtI%3D" data-type="GET" href="/organisations/invitations/53e3a33ca1fce6020000000d/decline/">Cancel invitation</a></li>
+      </ul>
+    </li>
+  </ul></div>
+</div>
+
+</div></div>
+
+  </div>
+
+<script>
+window.config = {
+  "baseAjaxUrl": "http://apiary.io/"
+};
+</script>
+
+  <!--a href="https://www.iubenda.com/privacy-policy/323220" id="privacy-policy" title="Privacy Policy">Privacy Policy</a-->
+
+        <script src="https://apiary.a.ssl.fastly.net/assets/js/libs/tipsy-012f30b117d79e4b.js"></script>
+  <script src="https://apiary.a.ssl.fastly.net/assets/components/diacritics-4a719096d14e9e72.js"></script>
+  <script src="https://apiary.a.ssl.fastly.net/assets/js/global-signedin-2d5f31b345d61509.js"></script>
+  <script src="https://apiary.a.ssl.fastly.net/assets/js/people-manager-89d0525834c79dbf.js"></script>
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-18252923-1', 'apiary.io');
+  ga('send', 'pageview');
+
+</script>
+
+<script type="text/javascript">
+  /* <![CDATA[ */
+    var google_conversion_id = 977730005;
+    var google_custom_params = window.google_tag_params;
+    var google_remarketing_only = true;
+  /* ]]> */
+ (function(d, t) {
+  var g = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+  g.async = true;
+  g.src = ('https:' == location.protocol ? 'https://' : 'http://') + 'www.googleadservices.com/pagead/conversion.js';
+  s.parentNode.insertBefore(g, s);
+ })(document, 'script');
+</script>
+<script id="IntercomSettingsScriptTag">
+  var intercomSettings = {"app_id":"8dy7eohb","user_id":"509045720dfd280200000240","user_hash":"3e8e13271eeb55ecdfb8935d044e3fe7a227732c14a0a6ee3345114ff29efdb0","email":"iamjackegmail.com","name":"Stanislav Sobolev","created_at":1351632242,"custom_data":{"twitter":"stanthoughts","github":"Jacke","blueprint_size":1029,"subdomain":"cz, jacke, x10, x13","count_github_associated_apis":0,"team_page_members_visited":true},"company":{"id":"53e3a33ca1fce6020000000d","name":"Empire InCloud","created_at":1407427388,"count_team_members":1,"count_custom_templates":1,"count_team_apis":2,"count_github_associated_team_apis":2},"widget":{"activator":"#Intercom","use_counter":true}}
+  intercomSettings.widget.activator_html=function (obj) {
+    var unread_count;
+    unread_count = obj.owner.store.get_unread_count();
+    unread_count || (unread_count = 0);
+    if (unread_count > 0) {
+      return "" + obj.original_html + "<span class=\"unreadCounter\">" + unread_count + "</span>";
+    } else {
+      return obj.original_html;
+    }
+  }
+</script>
+<script>
+  (function(){
+    var w=window;
+    var ic=w.Intercom;
+    if(typeof ic==="function"){
+      ic('reattach_activator');
+      ic('update',intercomSettings);
+    }else{
+      var d=document;
+      var i=function(){i.c(arguments)};
+      i.q=[];
+      i.c=function(args){i.q.push(args)};
+      w.Intercom=i;
+      function l(){
+        var s=d.createElement('script');s.type='text/javascript';
+        s.async=true;
+        s.src='https://static.intercomcdn.com/intercom.v1.js';
+        var x=d.getElementsByTagName('script')[0];
+        x.parentNode.insertBefore(s,x);
+      }
+      if(w.attachEvent){
+        w.attachEvent('onload',l);
+      }else{
+        w.addEventListener('load',l,false);
+      }
+    }
+  })()
+</script>
+</body>
+</html>

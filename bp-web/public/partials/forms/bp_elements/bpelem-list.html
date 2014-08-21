@@ -1,3 +1,438 @@
+<link rel="stylesheet" type="text/css" href="css/default.css" />
+<link rel="stylesheet" type="text/css" href="css/component.css" />
+
+
+<div class="flex ng-scope">
+<div class="row">
+  <div class="column-7--hand">
+    <div class="box flexcontainer">
+    <a href="#" tooltip="Some container" tooltip-placement="bottom">Cn</a>
+      <div class="row">
+        <div class="column-9--hand">
+          
+          <div class="box--first flexcontainer">
+            <div class="row">
+              <div class="column-4--hand">
+                <div class="box--nested">
+                </div>
+              </div>
+              <div class="column-8--hand">
+                <a href="#" tooltip="Some block">
+                  Block title
+                  <div class="box--nested">
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="column-3--hand">
+          <div class="box--first flexcontainer">
+            <div class="row">
+              <div class="column-auto--hand">
+                <div class="box--nested">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="column-5--hand">
+    <div class="box flexcontainer">
+      <div class="row">
+        <div class="column-12--hand">
+          <div class="box--first flexcontainer">
+            <div class="row"><div class="column-6--hand">
+              <div class="box--nested">
+              </div>
+            </div>
+            <div class="column-6--hand">
+              <a href="#" tooltip="Some block">
+              <div class="box--nested">
+              </div></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+</div>
+
+
+
+<script>/*
+var ModalEffects = (function() {
+
+  function init() {
+
+    var overlay = document.querySelector( '.md-overlay' );
+
+    [].slice.call( document.querySelectorAll( '.md-trigger' ) ).forEach( function( el, i ) {
+
+      var modal = document.querySelector( '#' + el.getAttribute( 'data-modal' ) ),
+        close = modal.querySelector( '.md-close' );
+
+      function removeModal( hasPerspective ) {
+        classie.remove( modal, 'md-show' );
+
+        if( hasPerspective ) {
+          classie.remove( document.documentElement, 'md-perspective' );
+        }
+      }
+
+      function removeModalHandler() {
+        removeModal( classie.has( el, 'md-setperspective' ) ); 
+      }
+
+      el.addEventListener( 'click', function( ev ) {
+        classie.add( modal, 'md-show' );
+        overlay.removeEventListener( 'click', removeModalHandler );
+        overlay.addEventListener( 'click', removeModalHandler );
+
+        if( classie.has( el, 'md-setperspective' ) ) {
+          setTimeout( function() {
+            classie.add( document.documentElement, 'md-perspective' );
+          }, 25 );
+        }
+      });
+
+      close.addEventListener( 'click', function( ev ) {
+        ev.stopPropagation();
+        removeModalHandler();
+      });
+
+    } );
+
+  }
+
+  init();
+
+})();*/
+</script>
+<!-- All modals added here for the demo. You would of course just have one, dynamically created -->
+
+    <div class="md-modal md-effect-2" id="modal-2">
+      <div class="md-content">
+        <h3>Modal Dialog</h3>
+        <div>
+          <p>This is a modal window. You can do the following things with it:</p>
+          <ul>
+            <li><strong>Read:</strong> modal windows will probably tell you something important so don't forget to read what they say.</li>
+            <li><strong>Look:</strong> a modal window enjoys a certain kind of attention; just look at it and appreciate its presence.</li>
+            <li><strong>Close:</strong> click on the button below to close the modal.</li>
+          </ul>
+          <button class="md-close">Close me!</button>
+        </div>
+      </div>
+    </div>
+    <div class="md-modal md-effect-3" id="modal-3">
+      <div class="md-content">
+        <h3>Modal Dialog</h3>
+        <div>
+          <p>This is a modal window. You can do the following things with it:</p>
+          <ul>
+            <li><strong>Read:</strong> modal windows will probably tell you something important so don't forget to read what they say.</li>
+            <li><strong>Look:</strong> a modal window enjoys a certain kind of attention; just look at it and appreciate its presence.</li>
+            <li><strong>Close:</strong> click on the button below to close the modal.</li>
+          </ul>
+          <button class="md-close">Close me!</button>
+        </div>
+      </div>
+    </div>
+    <div class="md-modal md-effect-4" id="modal-4">
+      <div class="md-content">
+        <h3>Modal Dialog</h3>
+        <div>
+          <p>This is a modal window. You can do the following things with it:</p>
+          <ul>
+            <li><strong>Read:</strong> modal windows will probably tell you something important so don't forget to read what they say.</li>
+            <li><strong>Look:</strong> a modal window enjoys a certain kind of attention; just look at it and appreciate its presence.</li>
+            <li><strong>Close:</strong> click on the button below to close the modal.</li>
+          </ul>
+          <button class="md-close">Close me!</button>
+        </div>
+      </div>
+    </div>
+    <div class="md-modal md-effect-5" id="modal-5">
+      <div class="md-content">
+        <h3>Modal Dialog</h3>
+        <div>
+          <p>This is a modal window. You can do the following things with it:</p>
+          <ul>
+            <li><strong>Read:</strong> modal windows will probably tell you something important so don't forget to read what they say.</li>
+            <li><strong>Look:</strong> a modal window enjoys a certain kind of attention; just look at it and appreciate its presence.</li>
+            <li><strong>Close:</strong> click on the button below to close the modal.</li>
+          </ul>
+          <button class="md-close">Close me!</button>
+        </div>
+      </div>
+    </div>
+    <div class="md-modal md-effect-6" id="modal-6">
+      <div class="md-content">
+        <h3>Modal Dialog</h3>
+        <div>
+          <p>This is a modal window. You can do the following things with it:</p>
+          <ul>
+            <li><strong>Read:</strong> modal windows will probably tell you something important so don't forget to read what they say.</li>
+            <li><strong>Look:</strong> a modal window enjoys a certain kind of attention; just look at it and appreciate its presence.</li>
+            <li><strong>Close:</strong> click on the button below to close the modal.</li>
+          </ul>
+          <button class="md-close">Close me!</button>
+        </div>
+      </div>
+    </div>
+    <div class="md-modal md-effect-7" id="modal-7">
+      <div class="md-content">
+        <h3>Modal Dialog</h3>
+        <div>
+          <p>This is a modal window. You can do the following things with it:</p>
+          <ul>
+            <li><strong>Read:</strong> modal windows will probably tell you something important so don't forget to read what they say.</li>
+            <li><strong>Look:</strong> a modal window enjoys a certain kind of attention; just look at it and appreciate its presence.</li>
+            <li><strong>Close:</strong> click on the button below to close the modal.</li>
+          </ul>
+          <button class="md-close">Close me!</button>
+        </div>
+      </div>
+    </div>
+    <div class="md-modal md-effect-8" id="modal-8">
+      <div class="md-content">
+        <h3>Modal Dialog</h3>
+        <div>
+          <p>This is a modal window. You can do the following things with it:</p>
+          <ul>
+            <li><strong>Read:</strong> modal windows will probably tell you something important so don't forget to read what they say.</li>
+            <li><strong>Look:</strong> a modal window enjoys a certain kind of attention; just look at it and appreciate its presence.</li>
+            <li><strong>Close:</strong> click on the button below to close the modal.</li>
+          </ul>
+          <button class="md-close">Close me!</button>
+        </div>
+      </div>
+    </div>
+    <div class="md-modal md-effect-9" id="modal-9">
+      <div class="md-content">
+        <h3>Modal Dialog</h3>
+        <div>
+          <p>This is a modal window. You can do the following things with it:</p>
+          <ul>
+            <li><strong>Read:</strong> modal windows will probably tell you something important so don't forget to read what they say.</li>
+            <li><strong>Look:</strong> a modal window enjoys a certain kind of attention; just look at it and appreciate its presence.</li>
+            <li><strong>Close:</strong> click on the button below to close the modal.</li>
+          </ul>
+          <button class="md-close">Close me!</button>
+        </div>
+      </div>
+    </div>
+    <div class="md-modal md-effect-10" id="modal-10">
+      <div class="md-content">
+        <h3>Modal Dialog</h3>
+        <div>
+          <p>This is a modal window. You can do the following things with it:</p>
+          <ul>
+            <li><strong>Read:</strong> modal windows will probably tell you something important so don't forget to read what they say.</li>
+            <li><strong>Look:</strong> a modal window enjoys a certain kind of attention; just look at it and appreciate its presence.</li>
+            <li><strong>Close:</strong> click on the button below to close the modal.</li>
+          </ul>
+          <button class="md-close">Close me!</button>
+        </div>
+      </div>
+    </div>
+    <div class="md-modal md-effect-11" id="modal-11">
+      <div class="md-content">
+        <h3>Modal Dialog</h3>
+        <div>
+          <p>This is a modal window. You can do the following things with it:</p>
+          <ul>
+            <li><strong>Read:</strong> modal windows will probably tell you something important so don't forget to read what they say.</li>
+            <li><strong>Look:</strong> a modal window enjoys a certain kind of attention; just look at it and appreciate its presence.</li>
+            <li><strong>Close:</strong> click on the button below to close the modal.</li>
+          </ul>
+          <button class="md-close">Close me!</button>
+        </div>
+      </div>
+    </div>
+    <div class="md-modal md-effect-12" id="modal-12">
+      <div class="md-content">
+        <h3>Modal Dialog</h3>
+        <div>
+          <p>This is a modal window. You can do the following things with it:</p>
+          <ul>
+            <li><strong>Read:</strong> modal windows will probably tell you something important so don't forget to read what they say.</li>
+            <li><strong>Look:</strong> a modal window enjoys a certain kind of attention; just look at it and appreciate its presence.</li>
+            <li><strong>Close:</strong> click on the button below to close the modal.</li>
+          </ul>
+          <button class="md-close">Close me!</button>
+        </div>
+      </div>
+    </div>
+    <div class="md-modal md-effect-13" id="modal-13">
+      <div class="md-content">
+        <h3>Modal Dialog</h3>
+        <div>
+          <p>This is a modal window. You can do the following things with it:</p>
+          <ul>
+            <li><strong>Read:</strong> modal windows will probably tell you something important so don't forget to read what they say.</li>
+            <li><strong>Look:</strong> a modal window enjoys a certain kind of attention; just look at it and appreciate its presence.</li>
+            <li><strong>Close:</strong> click on the button below to close the modal.</li>
+          </ul>
+          <button class="md-close">Close me!</button>
+        </div>
+      </div>
+    </div>
+    <div class="md-modal md-effect-14" id="modal-14">
+      <div class="md-content">
+        <h3>Modal Dialog</h3>
+        <div>
+          <p>This is a modal window. You can do the following things with it:</p>
+          <ul>
+            <li><strong>Read:</strong> modal windows will probably tell you something important so don't forget to read what they say.</li>
+            <li><strong>Look:</strong> a modal window enjoys a certain kind of attention; just look at it and appreciate its presence.</li>
+            <li><strong>Close:</strong> click on the button below to close the modal.</li>
+          </ul>
+          <button class="md-close">Close me!</button>
+        </div>
+      </div>
+    </div>
+    <div class="md-modal md-effect-15" id="modal-15">
+      <div class="md-content">
+        <h3>Modal Dialog</h3>
+        <div>
+          <p>This is a modal window. You can do the following things with it:</p>
+          <ul>
+            <li><strong>Read:</strong> modal windows will probably tell you something important so don't forget to read what they say.</li>
+            <li><strong>Look:</strong> a modal window enjoys a certain kind of attention; just look at it and appreciate its presence.</li>
+            <li><strong>Close:</strong> click on the button below to close the modal.</li>
+          </ul>
+          <button class="md-close">Close me!</button>
+        </div>
+      </div>
+    </div>
+    <div class="md-modal md-effect-16" id="modal-16">
+      <div class="md-content">
+        <h3>Modal Dialog</h3>
+        <div>
+          <p>This is a modal window. You can do the following things with it:</p>
+          <ul>
+            <li><strong>Read:</strong> modal windows will probably tell you something important so don't forget to read what they say.</li>
+            <li><strong>Look:</strong> a modal window enjoys a certain kind of attention; just look at it and appreciate its presence.</li>
+            <li><strong>Close:</strong> click on the button below to close the modal.</li>
+          </ul>
+          <button class="md-close">Close me!</button>
+        </div>
+      </div>
+    </div>
+    <div class="md-modal md-effect-17" id="modal-17">
+      <div class="md-content">
+        <h3>Modal Dialog</h3>
+        <div>
+          <p>This is a modal window. You can do the following things with it:</p>
+          <ul>
+            <li><strong>Read:</strong> modal windows will probably tell you something important so don't forget to read what they say.</li>
+            <li><strong>Look:</strong> a modal window enjoys a certain kind of attention; just look at it and appreciate its presence.</li>
+            <li><strong>Close:</strong> click on the button below to close the modal.</li>
+          </ul>
+          <button class="md-close">Close me!</button>
+        </div>
+      </div>
+    </div>
+    <div class="md-modal md-effect-18" id="modal-18">
+      <div class="md-content">
+        <h3>Modal Dialog</h3>
+        <div>
+          <p>This is a modal window. You can do the following things with it:</p>
+          <ul>
+            <li><strong>Read:</strong> modal windows will probably tell you something important so don't forget to read what they say.</li>
+            <li><strong>Look:</strong> a modal window enjoys a certain kind of attention; just look at it and appreciate its presence.</li>
+            <li><strong>Close:</strong> click on the button below to close the modal.</li>
+          </ul>
+          <button class="md-close">Close me!</button>
+        </div>
+      </div>
+    </div>
+    <div class="md-modal md-effect-19" id="modal-19">
+      <div class="md-content">
+        <h3>Modal Dialog</h3>
+        <div>
+          <p>This is a modal window. You can do the following things with it:</p>
+          <ul>
+            <li><strong>Read:</strong> modal windows will probably tell you something important so don't forget to read what they say.</li>
+            <li><strong>Look:</strong> a modal window enjoys a certain kind of attention; just look at it and appreciate its presence.</li>
+            <li><strong>Close:</strong> click on the button below to close the modal.</li>
+          </ul>
+          <button class="md-close">Close me!</button>
+        </div>
+      </div>
+    </div>
+    <div class="md-modal md-effect-20" id="modal-20">
+      <div class="md-content">
+        <h3>Modal Dialog</h3>
+        <div>
+          <p>This is a modal window. You can do the following things with it:</p>
+          <ul>
+            <li><strong>Read:</strong> modal windows will probably tell you something important so don't forget to read what they say.</li>
+            <li><strong>Look:</strong> a modal window enjoys a certain kind of attention; just look at it and appreciate its presence.</li>
+            <li><strong>Close:</strong> click on the button below to close the modal.</li>
+          </ul>
+          <button class="md-close">Close me!</button>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <!-- Top Navigation -->
+      <div class="codrops-top clearfix">
+        <a class="codrops-icon codrops-icon-prev" href="http://tympanus.net/Development/DynamicGrid/"><span>Previous Demo</span></a>
+        <span class="right"><a class="codrops-icon codrops-icon-drop" href="http://tympanus.net/codrops/?p=15313"><span>Back to the Codrops Article</span></a></span>
+      </div>
+      <header>
+        <h1>Nifty Modal Window Effects <span>Some inspiration for different modal window appearances</span></h1>
+      </header>
+      <div class="main clearfix">
+        <div class="column">
+          <p>There are many possibilities for modal overlays to appear. Here are some modern ways of showing them using CSS transitions and animations.</p>
+        </div>
+        <div class="column">
+          <button class="md-trigger" data-modal="modal-2">Slide in (right)</button>
+          <button class="md-trigger" data-modal="modal-3">Slide in (bottom)</button>
+          <button class="md-trigger" data-modal="modal-4">Newspaper</button>
+          <button class="md-trigger" data-modal="modal-5">Fall</button>
+          <button class="md-trigger" data-modal="modal-6">Side Fall</button>
+          <button class="md-trigger" data-modal="modal-7">Sticky Up</button>
+          <button class="md-trigger" data-modal="modal-8">3D Flip (horizontal)</button>
+          <button class="md-trigger" data-modal="modal-9">3D Flip (vertical)</button>
+          <button class="md-trigger" data-modal="modal-10">3D Sign</button>
+          <button class="md-trigger" data-modal="modal-11">Super Scaled</button>
+          <button class="md-trigger" data-modal="modal-12">Just Me</button>
+          <button class="md-trigger" data-modal="modal-13">3D Slit</button>
+          <button class="md-trigger" data-modal="modal-14">3D Rotate Bottom</button>
+          <button class="md-trigger" data-modal="modal-15">3D Rotate In Left</button>
+          <button class="md-trigger" data-modal="modal-16">Blur</button>
+          <!-- special modal that will add a perspective class to the html element -->
+          <button class="md-trigger md-setperspective" data-modal="modal-17">Let me in</button>
+          <button class="md-trigger md-setperspective" data-modal="modal-18">Make way!</button>
+          <button class="md-trigger md-setperspective" data-modal="modal-19">Slip from top</button>
+        </div>
+      </div>
+    </div><!-- /container -->
+    <div class="md-overlay"></div><!-- the overlay element -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <div class="span8 container">
 
 <div class="front-blocks" ng-repeat="bpelem in bpelems" style="padding: 2px 10px;">
@@ -6,12 +441,15 @@
     <li><a href="" role="tab" data-toggle="tab" ng:click="selected=2">Edit</a></li>
     <li><a href="" role="tab" data-toggle="tab" ng:click="selected=3">New</a></li>
   </ul>
+  <!-- data-modal="modal-1"> -->
+  <button class="md-trigger" data-ng-attr-data-modal="modal-2{{bpelem.id}}">Edit modal</button>
 
   <div class="tab-content">
     <div class="block-card tab-pane active" id="show">
       {{ bpelem.title }}
       {{ bpelem.b_type }}
       {{ bpelem.type_title }}
+      {{ bpelem.order }}
       <pre>{{ bpelem.comps[0] | json }}</pre>
     </div>
   <div class="tab-pane active" id="edit" ng:show="selected == 2">
@@ -64,15 +502,21 @@
         <input type="text" id="inputBusinessId" ng-model="bpelem.space_own"/>
       </div>
     </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">order:</label>
+      <div class="controls">
+        <input type="number" id="inputBusinessId" ng-model="bpelem.order"/>
+      </div>
+    </div>
       <div class="control-group">
       <label class="control-label" for="inputBusinessId">Composite:</label>
       <div class="controls">
         <input type="text" id="input_a_string" ng-model="bpelem.comps[0].a_string"/>
         <input type="text" id="input_b_string" ng-model="bpelem.comps[0].b_string"/>
-        <input type="text" id="input_a_int" ng-model="bpelem.comps[0].a_int"/>
-        <input type="text" id="input_b_int" ng-model="bpelem.comps[0].b_int"/>
-        <input type="text" id="input_a_bool" ng-model="bpelem.comps[0].a_bool"/>
-        <input type="text" id="input_b_bool" ng-model="bpelem.comps[0].b_bool"/>
+        <input type="number" id="input_a_int" ng-model="bpelem.comps[0].a_int"/>
+        <input type="number" id="input_b_int" ng-model="bpelem.comps[0].b_int"/>
+        <input type="checkbox" id="input_a_bool" ng-model="bpelem.comps[0].a_bool"/>
+        <input type="checkbox" id="input_b_bool" ng-model="bpelem.comps[0].b_bool"/>
       </div>
     </div>
 
@@ -86,6 +530,92 @@
   </div>
 </div>
 
+
+
+<div ng-attr-id="modal-1{{bpelem.id}}"></div>
+<div class="md-modal md-effect-1" ng-attr-id="modal-2{{bpelem.id}}">
+      <div class="md-content">
+        <h3>Edit</h3>
+        <div>
+
+  <form novalidate="novalidate" class="form-horizontal">
+    <div class="control-group">
+      <label class="control-label" for="inputTitle">Title:</label>
+      <div class="controls">
+        <input type="text" id="inputTitle" ng-model="bpelem.title"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">Desc:</label>
+      <div class="controls">
+        <input type="text" id="inputBusinessId" ng-model="bpelem.desc"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">Desc:</label>
+      <div class="controls">
+        <input type="text" id="inputBusinessId" ng-model="bpelem.desc"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">business:</label>
+      <div class="controls">
+        <input type="text" id="inputBusinessId" ng-model="bpelem.business"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">bprocess:</label>
+      <div class="controls">
+        <input type="text" id="inputBusinessId" ng-model="bpelem.bprocess"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">b_type:</label>
+      <div class="controls">
+        <input type="text" id="inputBusinessId" ng-model="bpelem.b_type"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">type_title:</label>
+      <div class="controls">
+        <input type="text" id="inputBusinessId" ng-model="bpelem.type_title"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">space_own:</label>
+      <div class="controls">
+        <input type="text" id="inputBusinessId" ng-model="bpelem.space_own"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">order:</label>
+      <div class="controls">
+        <input type="number" id="inputBusinessId" ng-model="bpelem.order"/>
+      </div>
+    </div>
+      <div class="control-group">
+      <label class="control-label" for="inputBusinessId">Composite:</label>
+      <div class="controls">
+        <input type="text" id="input_a_string" ng-model="bpelem.comps[0].a_string"/>
+        <input type="text" id="input_b_string" ng-model="bpelem.comps[0].b_string"/>
+        <input type="text" id="input_a_int" ng-model="bpelem.comps[0].a_int"/>
+        <input type="text" id="input_b_int" ng-model="bpelem.comps[0].b_int"/>
+        <input type="checkbox" id="input_a_bool" ng-model="bpelem.comps[0].a_bool"/>
+        <input type="checkbox" id="input_b_bool" ng-model="bpelem.comps[0].b_bool"/>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <div class="controls">
+        <a ng-click="cancel()" class="btn btn-small">cancel</a>
+        <a ng-click="updateElem(bpelem)" class="btn btn-small btn-primary">update Elem</a>
+      </div>
+    </div>
+  </form>
+          <button class="md-close">Close me!</button>
+        </div>
+      </div>
+</div>
 
 <div class="front-blocks" ng:show="selected == 3"> 
  <form novalidate="novalidate" class="form-horizontal">
@@ -102,21 +632,15 @@
       </div>
     </div>
     <div class="control-group">
-      <label class="control-label" for="inputBusinessId">Desc:</label>
-      <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="newBpelem.desc"/>
-      </div>
-    </div>
-    <div class="control-group">
       <label class="control-label" for="inputBusinessId">business:</label>
       <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="newBpelem.business"/>
+        <input type="number" id="inputBusinessId" ng-model="newBpelem.business"/>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">bprocess:</label>
       <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="newBpelem.bprocess"/>
+        <input type="number" id="inputBusinessId" ng-model="newBpelem.bprocess"/>
       </div>
     </div>
     <div class="control-group">
@@ -134,7 +658,13 @@
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">space_own:</label>
       <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="newBpelem.space_own"/>
+        <input type="number" id="inputBusinessId" ng-model="newBpelem.space_own"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">order:</label>
+      <div class="controls">
+        <input type="number" id="inputBusinessId" ng-model="newBpelem.order"/>
       </div>
     </div>
       <div class="control-group">
@@ -142,10 +672,11 @@
       <div class="controls">
         <input type="text" id="input_a_string" ng-model="newBpelem.comps[0].a_string"/>
         <input type="text" id="input_b_string" ng-model="newBpelem.comps[0].b_string"/>
-        <input type="text" id="input_a_int" ng-model="newBpelem.comps[0].a_int"/>
-        <input type="text" id="input_b_int" ng-model="newBpelem.comps[0].b_int"/>
-        <input type="text" id="input_a_bool" ng-model="newBpelem.comps[0].a_bool"/>
-        <input type="text" id="input_b_bool" ng-model="newBpelem.comps[0].b_bool"/>
+        <input type="number" id="input_a_int" ng-model="newBpelem.comps[0].a_int"/>
+        <input type="number" id="input_b_int" ng-model="newBpelem.comps[0].b_int"/>
+        <input type="checkbox" id="input_a_bool" ng-model="newBpelem.comps[0].a_bool"/>
+        <input type="checkbox" id="input_b_bool" ng-model="newBpelem.comps[0].b_bool"/>
+      
       </div>
     </div>
     <div class="control-group">
@@ -334,6 +865,7 @@
 
 
 
+
 <div class="space-blocks" ng-repeat="spaceelem in spaceelems" style="padding: 2px 10px;">
   <ul class="nav nav-tabs" role="tablist">
     <li class="active"><a href="" role="tab" data-toggle="tab" ng:click="selected=1">Show</a></li>
@@ -446,21 +978,15 @@
       </div>
     </div>
     <div class="control-group">
-      <label class="control-label" for="inputBusinessId">Desc:</label>
-      <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="newSpaceelem.desc"/>
-      </div>
-    </div>
-    <div class="control-group">
       <label class="control-label" for="inputBusinessId">business:</label>
       <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="newSpaceelem.business"/>
+        <input type="number" id="inputBusinessId" ng-model="newSpaceelem.business"/>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">bprocess:</label>
       <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="newSpaceelem.bprocess"/>
+        <input type="number" id="inputBusinessId" ng-model="newSpaceelem.bprocess"/>
       </div>
     </div>
     <div class="control-group">
@@ -478,13 +1004,13 @@
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">space_own:</label>
       <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="newSpaceelem.space_own"/>
+        <input type="number" id="inputBusinessId" ng-model="newSpaceelem.space_own"/>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">space_own:</label>
       <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="newSpaceelem.space_owned"/>
+        <input type="number" id="inputBusinessId" ng-model="newSpaceelem.space_owned"/>
       </div>
     </div>
     <div class="control-group">
@@ -498,8 +1024,8 @@
       <div class="controls">
         <input type="text" id="input_a_string" ng-model="newSpaceelem.comps[0].a_string"/>
         <input type="text" id="input_b_string" ng-model="newSpaceelem.comps[0].b_string"/>
-        <input type="text" id="input_a_int" ng-model="newSpaceelem.comps[0].a_int"/>
-        <input type="text" id="input_b_int" ng-model="newSpaceelem.comps[0].b_int"/>
+        <input type="number" id="input_a_int" ng-model="newSpaceelem.comps[0].a_int"/>
+        <input type="number" id="input_b_int" ng-model="newSpaceelem.comps[0].b_int"/>
         <input type="text" id="input_a_bool" ng-model="newSpaceelem.comps[0].a_bool"/>
         <input type="text" id="input_b_bool" ng-model="newSpaceelem.comps[0].b_bool"/>
       </div>

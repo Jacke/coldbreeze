@@ -67,6 +67,12 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
     
   }
 
+  def peoples() = Action { implicit request =>
+    Ok(views.html.people())
+  }
+  def list() = Action { implicit request =>
+    Ok(views.html.list())
+  }
 
   def index = SecuredAction { implicit request =>
     Ok(views.html.index(request.user.main))

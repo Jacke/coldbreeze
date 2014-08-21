@@ -7,6 +7,7 @@ import play.PlayScala
 import play.Play.autoImport._
 import PlayKeys._
 
+import com.typesafe.sbt.less.Import._ 
 
 object Build extends Build {
   import Settings._
@@ -57,8 +58,14 @@ jodamapper, scalatest, reflect, postgres, logbackClassic, scalaLog, sprayCan, sp
     .enablePlugins(PlayScala)
     .enablePlugins(SbtWeb)
     .settings(basicSettings: _*)
-    //.settings(formatSettings: _*)
+    .settings((WebKeys.public in Assets) := (classDirectory in Compile).value / "public")
+    //.settings(formatSettings: _*)(WebKeys.public in Assets) := (classDirectory in Compile).value / "public",
     .settings(revolverSettings: _*)
+    //.settings((compile in Compile) <<= (compile in Compile).dependsOn(WebKeys.assets in Assets))
+    .settings(includeFilter in(Assets, LessKeys.less) := "*.less")
+    .settings(excludeFilter in(Assets, LessKeys.less) := "_*.less")
+    .settings(mainClass in Compile := Some("ProdNettyServer"))
+    .settings(mainClass in (Compile, run) := Some("DevNettyServer"))
     .settings(
       libraryDependencies ++=
         List(async, akkaActor, akkaSlf4j, slick, play, 
@@ -73,7 +80,27 @@ jodamapper, scalatest, reflect, postgres, logbackClassic, scalaLog, sprayCan, sp
         //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
         //test(scalatest, akkaTestKit, sprayTestkit))
     .dependsOn(bpCore, bpDao)
-  
+    /*
+  lazy val main = withProfile(Project("cms", file(".")).enablePlugins(com.typesafe.sbt.web.SbtWeb, play.PlayScala).settings(buildSettings ++ Seq(
+    libraryDependencies ++= appDependencies,
+    allDependencies := allDependencies.value.map(_.exclude("com.typesafe.play", "play-docs_2.10")),
+    // Put all assets in the public classes directory
+    (WebKeys.public in Assets) := (classDirectory in Compile).value / "public",
+    // Ensure that assets are compiled when compile is done
+    (compile in Compile) <<= (compile in Compile).dependsOn(WebKeys.assets in Assets),
+    includeFilter in(Assets, LessKeys.less) := "*.less",
+    excludeFilter in(Assets, LessKeys.less) := "_*.less",
+mainClass in Compile := Some("ProdNettyServer"),
+mainClass in (Compile, run) := Some("DevNettyServer"),
+//workaround for gen-idea
+    sourceGenerators in Compile += task {
+      val dir: File = (sourceManaged in Compile).value / "controllers"
+      val dirs = Seq(dir / "ref", dir / "javascript")
+      dirs.foreach(_.mkdirs)
+      Seq[File]()
+    }
+  ): _*))
+*/
   lazy val reactivedocs = Project("reactive-docs", file("reactive-docs"))
     .enablePlugins(PlayScala)
     .enablePlugins(SbtWeb)
