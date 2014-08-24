@@ -57,17 +57,17 @@ case class SpaceElementDTO(id: Option[Int],
   def cast(process: BProcess, space_dto: BPSpaceDTO):Option[ProcElems] = {
     println("block castiong")
     this match {
-      case x if (x.b_type == "block" | x.type_title == "test block") => {
+      case x if (x.b_type == "block" && x.type_title == "test block") => {
         Option(
           new Block(id.get,title,desc,Implicits.fetch_cv(comps),process,b_type,type_title,order)
         )
       }
-      case constant if (constant.b_type == "block" | constant.type_title == "constant") => {
+      case constant if (constant.b_type == "block" && constant.type_title == "constant") => {
         Option(
           new Constant[Boolean](id.get, true, process, order, space_id = process.spaces.find(space => space.index == space_dto.index))
         )
       }
-      case note if (note.b_type == "block" | note.type_title == "note") => Option(new Note( id.get,
+      case note if (note.b_type == "block" && note.type_title == "note") => Option(new Note( id.get,
         title,
         desc,
         Implicits.fetch_cv(comps),
@@ -76,7 +76,7 @@ case class SpaceElementDTO(id: Option[Int],
         type_title,
         order,
         None))
-      case confirm if (confirm.b_type == "block" | confirm.type_title == "confirm") => Option(new Confirm( id.get,
+      case confirm if (confirm.b_type == "block" && confirm.type_title == "confirm") => Option(new Confirm( id.get,
         title,
         desc,
         Implicits.fetch_cv(comps),
@@ -103,12 +103,12 @@ case class SpaceElementDTO(id: Option[Int],
           //new Block(id.get,title,desc,Implicits.fetch_cv(comps),process,b_type,type_title,order, space_parent = Some(space), space_role)
         )
       }
-      case constant if (constant.b_type == "block" | constant.type_title == "constant") => {
+      case constant if (constant.b_type == "block" && constant.type_title == "constant") => {
         Option(
           new Constant[Boolean](id.get, true, process, order, space_id = Some(space))
         )
       }
-      case note if (note.b_type == "block" | note.type_title == "note") => Option(new Note( id.get,
+      case note if (note.b_type == "block" && note.type_title == "note") => Option(new Note( id.get,
         title,
         desc,
         Implicits.fetch_cv(comps),
@@ -117,7 +117,7 @@ case class SpaceElementDTO(id: Option[Int],
         type_title,
         order,
         None))
-      case confirm if (confirm.b_type == "block" | confirm.type_title == "confirm") => Option(new Confirm( id.get,
+      case confirm if (confirm.b_type == "block" && confirm.type_title == "confirm") => Option(new Confirm( id.get,
         title,
         desc,
         Implicits.fetch_cv(comps),

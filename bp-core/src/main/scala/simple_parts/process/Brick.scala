@@ -39,8 +39,9 @@ class Brick(val id: Int,
   def getSpace(brick: Brick):Option[Space] = {
     bprocess.spaces.find(space => (space.brick_owner == brick))
   }
-  def getSpaces = {
-    bprocess.spaces.map(space => space.searchObj(this, space_role))
+  def getSpaces(brick: Brick):Array[Space] = {
+    bprocess.spaces.filter(space => (space.brick_owner == brick))
+    //bprocess.spaces.map(space => space.searchObj(this, space_role))
   }
 
   override def init {
@@ -178,7 +179,8 @@ class ContainerBrick(override val id: Int,
       "CONTAINER" +
       "SPACE")
 
-    bprocess.marker.moveToSpace
+    bprocess.marker.moveToSpaceByIndx(getSpace(this).get.index)//.moveToSpace
+
     //println("bprocess.marker.moveToSpace")
     bprocess.marker.moveToContainer
     println("run container")

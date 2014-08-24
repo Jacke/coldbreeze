@@ -159,6 +159,7 @@ def move:Unit = {
 
       println("**** RUN" + elem.toString + " ****")
       front(elem)
+      println(elem.getClass)
       toLogger(bp, BPLoggerResult(
                                   elem,
                                   composite = bp.copyCV(elem.values),
@@ -226,6 +227,10 @@ def move:Unit = {
     station.update_space(station.space + 1)
     station.inSpace(true)
 
+  }
+  def moveToSpaceByIndx(index: Int) = {
+    station.update_space(index)
+    station.inSpace(true)
   }
   def moveToExpand = {
     station.inExpand(true)

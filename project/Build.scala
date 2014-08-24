@@ -46,8 +46,10 @@ sprayClient, hdrHistogram))
     .settings(
       libraryDependencies ++=
         List(async, akkaSlf4j, slick, play,jodatime,
-slickpg, slickpgcore,
-slickjoda,
+          //slickpg,
+          //slickpgcore,
+          //slickpgplay,
+//slickjoda,
 jodaconvert,
 jodamapper, scalatest, reflect, postgres, logbackClassic, scalaLog, sprayCan, sprayRouting, hdrHistogram, sprayJson))
         //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++

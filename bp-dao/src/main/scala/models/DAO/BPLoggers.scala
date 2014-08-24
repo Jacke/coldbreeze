@@ -5,7 +5,7 @@ import main.scala.bprocesses.{BProcess, BPLoggerResult}
 import main.scala.simple_parts.process.ProcElems
 import models.DAO.driver.MyPostgresDriver.simple._
 import com.github.nscala_time.time.Imports._
-import com.github.tminglei.slickpg.date.PgDateJdbcTypes
+//import com.github.tminglei.slickpg.date.PgDateJdbcTypes
 import scala.slick.model.ForeignKeyAction
 
 import models.DAO.ProcElemDAO._
@@ -87,15 +87,31 @@ object BPLoggerDAO {
    * @param target
    * @return
    */
-  def elemId(logger: BPLoggerResult, target: ProcElems, mean: String): Option[Int] = {
+  def spElemId(target: ProcElems): Option[Int] = {
+    target.space_id match {
+      case Some(space) => Some(target.id)
+      case _ => None
+    }
+  }
+  def elemId(target: ProcElems, mean: String): Option[Int] = {
     if (mean == "space") {
+      println("mean == space")
+      println("")      
+      println(target.id)
+      println(target.space_id)
+      println("********")
+      println("")   
+ 
       target.space_id match {
-        case Some(id) => Some(target.id)
+        case Some(space) => { 
+          space.id
+        }
         case _ => None
       }
     }
 
     if (mean == "front") {
+
       target.space_id match {
         case None => Some(target.id)
         case _    => None
@@ -113,15 +129,13 @@ object BPLoggerDAO {
    */
   def from_origin_lgr(logger: BPLogger, bp_dto: BProcessDTO, station_id:Int = 1, spaces: List[BPSpaceDTO] = List.empty[BPSpaceDTO]):Option[List[BPLoggerDTO]] = {
 
-    //val space_ids:Map[Option[Int], Option[Int]] = spaces.map(space => (Some(space.index), space.id)) toMap
-
     val result:List[BPLoggerDTO] = logger.logs.toList.map { lgr =>
 
           BPLoggerDTO(
             None, // id
             bp_dto.id.get, // bprocess
-            elemId(lgr, lgr.element,"front"), // element
-            elemId(lgr, lgr.element,"space"), // space_element
+            elemId(lgr.element,"front"), // element
+            spElemId(lgr.element), // space_element
             lgr.element.order, // order
             lgr.space,  // space
             station_id, // station

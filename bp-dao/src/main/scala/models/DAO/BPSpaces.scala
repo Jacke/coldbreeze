@@ -52,14 +52,14 @@ import main.scala.bprocesses._
     None
   }
   }
-  def cast(bprocess: BProcess, space_elems: List[SpaceElementDTO]):Option[Space] = { 
+  def castFront(bprocess: BProcess, space_elems: List[SpaceElementDTO]):Option[Space] = {
 // TODO: to space casting 
 // TODO: Refactor
 
     this match {
       case x => { // find front stuff
         Option(
-          Space.apply(index, bprocess.findFrontBrick()(bprocess.spaces.length), subbrick, container, false, id)
+          Space.apply(index, bprocess.findFrontBrickById(brick_front).get, subbrick, container, false, id)
         )
       }
       case y => { // find nested stuff

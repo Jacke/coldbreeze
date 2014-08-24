@@ -102,7 +102,7 @@ PUT         /bprocess/:id/info                                  @controllers.App
 #GET        /bprocess/:id/elements                              @controllers.Application.bpElems(id: Int)
 #GET         /bprocess/:id/spaces                                @controllers.Application.spaces(id: Int)
 #GET         /bprocess/:id/space_elems                           @controllers.Application.spaceElems(id: Int)
-GET         /bprocess/:id/logs                                  @controllers.Application.logs(id: Int)  
+#GET         /bprocess/:id/logs                                  @controllers.Application.logs(id: Int)  
 
 
 # Stations
@@ -116,24 +116,24 @@ GET         /bprocess/:id/logs                       @controllers.BusinessProces
 # Elements
 GET         /bprocess/:id/elements           @controllers.BusinessProcessController.frontElems(id: Int)
 GET         /bprocess/:id/spaces          @controllers.BusinessProcessController.spaces(id: Int)
-GET         /bprocess/:id/space_elements  @controllers.BusinessProcessController.spaceElems(id: Int)
+GET         /bprocess/:id/space_elems  @controllers.BusinessProcessController.spaceElems(id: Int)
 GET         /bprocess/elems_length        @controllers.BusinessProcessController.bpElemLength()
  
 ###############
 # Elements CUDs
-POST /bprocess/elements                  @controllers.BusinessProcessController.createFrontElem()
-POST /bprocess/:id/spaces                    @controllers.BusinessProcessController.createSpace(id: Int)
-POST /bprocess/:id/space_elements            @controllers.BusinessProcessController.createSpaceElem(id: Int)
-
+POST /bprocess/elements                      @controllers.BusinessProcessController.createFrontElem()
+POST /bprocess/spaces                    @controllers.BusinessProcessController.createSpace()
+POST /bprocess/space_elems            @controllers.BusinessProcessController.createSpaceElem()
+#### Make parameterized /|\ ??????
 
 PUT  /bprocess/:bpId/element/:elem_id          @controllers.BusinessProcessController.updateFrontElem(bpId: Int, elem_id: Int)
-PUT  /bprocess/:id/spaces/:space_id          @controllers.BusinessProcessController.updateSpace(id: Int, space_id: Int)
-PUT  /bprocess/:id/space_elements/:spelem_id @controllers.BusinessProcessController.updateSpaceElem(id: Int, spelem_id: Int)
+PUT  /bprocess/:id/spaces/:space_id            @controllers.BusinessProcessController.updateSpace(id: Int, space_id: Int)
+PUT  /bprocess/:id/space_elem/:spelem_id   @controllers.BusinessProcessController.updateSpaceElem(id: Int, spelem_id: Int)
 
 
-POST /bprocess/:id/element/:elem_id/delete          @controllers.BusinessProcessController.deleteFrontElem(id: Int, elem_id: Int)
-POST /bprocess/:id/spaces/:space_id/delete          @controllers.BusinessProcessController.deleteSpace(id: Int, space_id: Int)
-POST /bprocess/:id/space_elements/:spelem_id/delete @controllers.BusinessProcessController.deleteSpaceElem(id: Int, spelem_id: Int)
+DELETE /bprocess/:bpID/element/:elem_id          @controllers.BusinessProcessController.deleteFrontElem(bpID: Int, elem_id: Int)
+DELETE /bprocess/:bpID/space/:space_id          @controllers.BusinessProcessController.deleteSpace(bpID: Int, space_id: Int)
+DELETE /bprocess/:bpID/space_elem/:spelem_id @controllers.BusinessProcessController.deleteSpaceElem(bpID: Int, spelem_id: Int)
 
 
 
@@ -147,7 +147,7 @@ POST /bprocess/:id/space_elements/:spelem_id/delete @controllers.BusinessProcess
 
 #GET         /bprocess/:id/active_stations BPStationDAO.areActiveForBP(id)
 #GET         /bprocess/:id/last_run        BPLoggerDAO.lastRunOfBP(id)
-#GET         /bprocess/:id/invoke
+POST         /bprocess/:bpID/invoke  @controllers.BusinessProcessController.invoke(bpID: Int)
 
 
 #GET  /block/:id/info                ProcElemDAO.findById(id)

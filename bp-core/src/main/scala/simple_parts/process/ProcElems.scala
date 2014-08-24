@@ -20,7 +20,9 @@ trait ProcElems {
   def init() = {
     println(this)
   }
-  
+
+  def calls(param: String) = {}
+  def activeCalls():List[String] = { List.empty[String] }
 }
 
 case class CompositeValues(
@@ -48,4 +50,6 @@ case class CompositeValues(
       b_bool   = n_b_bool
       }
   override def toString() = s"$a_string, $a_string, $a_int, $b_int, $a_bool, $b_bool"
+
+
 }

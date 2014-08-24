@@ -191,33 +191,34 @@ def createFrontElem() = Action(BodyParsers.parse.json) { implicit request =>
           Ok(Json.toJson(Map("success" -> s"Front element ${entity.title} has been created")))
       })   */
 }
-def createSpace(id: Int) = Action(BodyParsers.parse.json) { implicit request =>
+def createSpace() = Action(BodyParsers.parse.json) { implicit request =>
 
   val placeResult = request.body.validate[BPSpaceDTO]  
-   println(placeResult)
-  println(request.body);  Ok("x")
-/*
-  BPSpaceForm.bindFromRequest.fold(
-      formWithErrors => BadRequest("formWithErrors"),
-      entity => {
-          val elem_id = BPSpaceDAO.pull_object(entity)
-          Ok(Json.toJson(Map("success" -> s"Space ${entity.id} has been created")))
-      }) */
-      
+   request.body.validate[BPSpaceDTO].map{ 
+    case entity => BPSpaceDAO.pull_object(entity) match {
+            case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not update front element ${entity.index}")))
+            case _ =>  Ok(Json.toJson(Map("success" ->  s"Entity ${entity.index} has been updated")))
+          }
+    }.recoverTotal{
+      e => BadRequest("formWithErrors")
+    }
 }
-def createSpaceElem(id: Int) = Action(BodyParsers.parse.json) { implicit request =>
+def createSpaceElem() = Action(BodyParsers.parse.json) { implicit request =>
 
   val placeResult = request.body.validate[SpaceElementDTO]  
   println(placeResult)
-  println(request.body);  Ok("x")
-/*
-  SpaceElementForm.bindFromRequest.fold(
-      formWithErrors => BadRequest("formWithErrors"),
-      entity => {
-          val elem_id = SpaceElemDAO.pull_object(entity)
-          Ok(Json.toJson(Map("success" -> s"Space element ${entity.title} has been created")))
-      })
-*/
+  println(request.body)
+    request.body.validate[SpaceElementDTO].map{ 
+    case entity => println(entity)
+  }
+  request.body.validate[SpaceElementDTO].map{ 
+    case entity => SpaceElemDAO.pull_object(entity) match {
+            case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not update front element ${entity.title}")))
+            case _ =>  Ok(Json.toJson(Map("success" ->  s"Entity ${entity.title} has been updated")))
+          }
+    }.recoverTotal{
+      e => BadRequest("formWithErrors")
+    }
 }
 
 
@@ -242,25 +243,26 @@ def updateFrontElem(bpId: Int, elem_id: Int) = Action(BodyParsers.parse.json) { 
     }
 }
 def updateSpace(id: Int, space_id: Int) = Action(BodyParsers.parse.json) { implicit request =>
-  BPSpaceForm.bindFromRequest.fold(
-        formWithErrors => BadRequest("formWithErrors"),
-        entity => {
-          BPSpaceDAO.update(id,entity) match {
-            case 0 =>  Ok(Json.toJson(Map("failure" ->  s"Could not update space ${entity.id}")))
-            case _ =>  Ok(Json.toJson(Map("success" ->  s"Entity ${entity.id} has been updated")))
+
+  request.body.validate[BPSpaceDTO].map{ 
+    case entity => BPSpaceDAO.update(space_id,entity) match {
+            case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not update front element ${entity.id}")))
+            case _@x =>  Ok(Json.toJson(Map("success" ->  s"Entity ${x} has been updated")))
           }
-        })
+    }.recoverTotal{
+      e => BadRequest("formWithErrors")
+    }
 }
 def updateSpaceElem(id: Int, spelem_id: Int) = Action(BodyParsers.parse.json) { implicit request =>
-
-    SpaceElementForm.bindFromRequest.fold(
-        formWithErrors => BadRequest("formWithErrors"),
-        entity => {
-          SpaceElemDAO.update(id,entity) match {
-            case false =>  Ok(Json.toJson(Map("failure" ->  s"Could not update space elem ${entity.title}")))
-            case _ =>  Ok(Json.toJson(Map("success" ->  s"Entity ${entity.id} has been updated")))
+  request.body.validate[SpaceElementDTO].map{ 
+    case entity => SpaceElemDAO.update(spelem_id,entity) match {
+            case false =>  Ok(Json.toJson(Map("failure" ->  s"Could not update front element ${entity.title}")))
+            case _ =>  Ok(Json.toJson(Map("success" ->  s"Entity ${entity.title} has been updated")))
           }
-        })
+    }.recoverTotal{
+      e => BadRequest("formWithErrors")
+    }
+
 }
 
 
@@ -268,20 +270,22 @@ def updateSpaceElem(id: Int, spelem_id: Int) = Action(BodyParsers.parse.json) { 
 
 
 /* Delete */
-def deleteFrontElem(id: Int, elem_id: Int) = Action { implicit request =>
-  ProcElemDAO.delete(id) match {
+def deleteFrontElem(bpID: Int, elem_id: Int) = Action { implicit request =>
+  ProcElemDAO.delete(elem_id) match {
         case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
         case x =>  Ok(Json.toJson(Map("success" -> s"Entity has been deleted (deleted $x row(s))")))
       }
 }
-def deleteSpace(id: Int, space_id: Int) = Action { implicit request =>
-    BPSpaceDAO.delete(id) match {
+def deleteSpace(bpID: Int, space_id: Int) = Action { implicit request =>
+    println(bpID)
+    BPSpaceDAO.delete(space_id) match {
         case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
         case x =>  Ok(Json.toJson(Map("success" -> s"Entity has been deleted (deleted $x row(s))")))
       }
 }
-def deleteSpaceElem(id: Int, spelem_id: Int) = Action { implicit request =>
-    SpaceElemDAO.delete(id) match {
+def deleteSpaceElem(bpID: Int, spelem_id: Int) = Action { implicit request =>
+    println(bpID)
+    SpaceElemDAO.delete(spelem_id) match {
         case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
         case x =>  Ok(Json.toJson(Map("success" -> s"Entity has been deleted (deleted $x row(s))")))
       }
@@ -323,6 +327,13 @@ def logs_index(id: Int) = Action { implicit request =>
   /**
    * Input calls
    */
+   def invoke(bpID: Int)  = Action { implicit request =>
+    service.RunnerWrapper.run(bpID) match {
+      case Some(station_id) => Ok(Json.toJson(Map("success" -> station_id)))
+      case _ => Ok(Json.toJson(Map("error" -> "Error output")))
+    }
+    
+  }
   /**
    * Halt
    */

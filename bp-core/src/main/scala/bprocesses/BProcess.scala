@@ -10,6 +10,8 @@ import main.scala.utils.resources.OwnershipContainer
 import main.scala.resources._
 import main.scala.simple_parts.process.resource.ResAct
 
+import scala.util.Try
+
 class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: Option[Array[Group]] = None) extends BPLinkContainer[BPLink] 
    with OwnershipContainer
    with BPFlow 
@@ -65,8 +67,15 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
       None
     }
   }
-  def findObjectByOrder(n: Int):Option[ProcElems] = {
-    variety.find(elem => elem.order == n)
+  def findObjectByOrder(n: Option[Int]):Option[ProcElems] = {
+    variety.find(elem => Some(elem.order) == n)
+  }
+  def findObjectById(element: Option[Int], space_element:Option[Int]):Option[ProcElems] ={
+    allElements.find(elem => Some(elem.id) == element | Some(elem.id) == space_element)
+  }
+
+  def findFrontBrickById(id: Option[Int]):Option[Brick] = {
+    variety.collect { case brick: Brick => brick }.find(brick => Some(brick.id) == id)
   }
   def findFrontBrick():Array[Brick] = {
     variety.collect { case brick: Brick => brick }
@@ -177,6 +186,20 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
    // DEPRECATED
   }
 
+
+  def inputPmsApply(params: Map[Int, String]) {
+    params.foreach {case (key, value) =>
+      allElements.find(elem => elem.id == key) match {
+        case Some(elem) => {
+          val tryg = Try(elem.calls(value))
+          println(tryg.isSuccess)
+        }
+        case _ =>
+      }
+
+    }
+    //for ((id, param) <- params)
+  }
   /**
    * Composite values restore
    */

@@ -93,7 +93,7 @@ minorityAppServices.factory('BPElemFactory', function ($resource) {
     return $resource(baseUrl + '/bprocess/:BPid/element/:id', {}, {
         show: { method: 'GET' },
         update: { method: 'PUT', params: {id: '@id', BPid: '@bprocess'} },
-        delete: { method: 'DELETE', params: {id: '@id'} }
+        delete: { method: 'DELETE', params: {id: '@id', BPid: '@bprocess'} }
     })
 });
 
@@ -106,8 +106,8 @@ minorityAppServices.factory('BPSpacesFactory', function ($resource) {
 minorityAppServices.factory('BPSpaceFactory', function ($resource) {
     return $resource(baseUrl + '/bprocess/:BPid/space/:id', {}, {
         show: { method: 'GET' },
-        update: { method: 'PUT', params: {id: '@id'} },
-        delete: { method: 'DELETE', params: {id: '@id'} }
+        update: { method: 'PUT', params: {id: '@id', BPid: '@bprocess'} },
+        delete: { method: 'DELETE', params: {id: '@id', BPid: '@bprocess'} }
     })
 });
 minorityAppServices.factory('BPSpaceElemsFactory', function ($resource) {
@@ -119,8 +119,8 @@ minorityAppServices.factory('BPSpaceElemsFactory', function ($resource) {
 minorityAppServices.factory('BPSpaceElemFactory', function ($resource) {
     return $resource(baseUrl + '/bprocess/:BPid/space_elem/:id', {}, {
         show: { method: 'GET' },
-        update: { method: 'PUT', params: {id: '@id'} },
-        delete: { method: 'DELETE', params: {id: '@id'} }
+        update: { method: 'PUT', params: {id: '@id', BPid: '@bprocess'} },
+        delete: { method: 'DELETE', params: {id: '@id', BPid: '@bprocess'} }
     })
 });
 

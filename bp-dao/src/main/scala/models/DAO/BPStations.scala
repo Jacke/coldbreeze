@@ -146,6 +146,17 @@ def update(id: Int, entity: BPStationDTO):Boolean = {
       q3.list.headOption //.map(Supplier.tupled(_))
     }
   }
+  def haltUpdate(id: Int):Boolean = {
+    database withSession { implicit session =>
+      findById(id) match {
+      case Some(e) => {
+        bpstations.where(_.id === id).update(e.copy(state = false))
+        true
+      }
+      case None => false
+      }
+    }
+  }
   /*def ddl_create = {
     database withSession {
       implicit session =>

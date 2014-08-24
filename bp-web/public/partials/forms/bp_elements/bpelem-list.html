@@ -434,6 +434,80 @@ var ModalEffects = (function() {
 
 
 <div class="span8 container">
+  <ul class="nav nav-tabs" role="tablist">
+    <li><a href="" role="tab" data-toggle="tab" ng:click="newselected=1">New</a></li>
+  </ul>
+    <div class="tab-content">
+<div class="tab-pane active" id="edit" ng:show="newselected == 1">
+ <form novalidate="novalidate" class="form-horizontal">
+    <div class="control-group">
+      <label class="control-label" for="inputTitle">Title:</label>
+      <div class="controls">
+        <input type="text" id="inputTitle" ng-model="newBpelem.title"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">Desc:</label>
+      <div class="controls">
+        <input type="text" id="inputBusinessId" ng-model="newBpelem.desc"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">business:</label>
+      <div class="controls">
+        <input type="number" id="inputBusinessId" ng-model="newBpelem.business"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">bprocess:</label>
+      <div class="controls">
+        <input type="number" id="inputBusinessId" ng-model="newBpelem.bprocess"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">b_type:</label>
+      <div class="controls">
+        <input type="text" id="inputBusinessId" ng-model="newBpelem.b_type"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">type_title:</label>
+      <div class="controls">
+        <input type="text" id="inputBusinessId" ng-model="newBpelem.type_title"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">space_own:</label>
+      <div class="controls">
+        <input type="number" id="inputBusinessId" ng-model="newBpelem.space_own"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">order:</label>
+      <div class="controls">
+        <input type="number" id="inputBusinessId" ng-model="newBpelem.order"/>
+      </div>
+    </div>
+      <div class="control-group">
+      <label class="control-label" for="inputBusinessId">Composite:</label>
+      <div class="controls">
+        <input type="text" id="input_a_string" ng-model="newBpelem.comps[0].a_string"/>
+        <input type="text" id="input_b_string" ng-model="newBpelem.comps[0].b_string"/>
+        <input type="number" id="input_a_int" ng-model="newBpelem.comps[0].a_int"/>
+        <input type="number" id="input_b_int" ng-model="newBpelem.comps[0].b_int"/>
+        <input type="checkbox" id="input_a_bool" ng-model="newBpelem.comps[0].a_bool"/>
+        <input type="checkbox" id="input_b_bool" ng-model="newBpelem.comps[0].b_bool"/>
+      
+      </div>
+    </div>
+    <div class="control-group">
+      <div class="controls">
+        <a ng-click="createNewElem()" class="btn btn-small btn-primary">create new Elem</a>
+      </div>
+    </div>
+  </form>
+</div></div>
+
 
 <div class="front-blocks" ng-repeat="bpelem in bpelems" style="padding: 2px 10px;">
   <ul class="nav nav-tabs" role="tablist">
@@ -524,6 +598,7 @@ var ModalEffects = (function() {
       <div class="controls">
         <a ng-click="cancel()" class="btn btn-small">cancel</a>
         <a ng-click="updateElem(bpelem)" class="btn btn-small btn-primary">update Elem</a>
+        <a ng-click="deleteElem(bpelem)" class="btn btn-small btn-primary btn-danger">delete Elem</a>
       </div>
     </div>
   </form>
@@ -706,11 +781,80 @@ var ModalEffects = (function() {
 
 
 
+
+
+
+
+
+
+  <ul class="nav nav-tabs" role="tablist">
+    <li><a href="" role="tab" data-toggle="tab" ng:click="newselected=2">New</a></li>
+  </ul>
+    <div class="tab-content">
+<div class="tab-pane active" id="edit" ng:show="newselected == 2">
+<form novalidate="novalidate" class="form-horizontal">
+    <div class="control-group">
+      <label class="control-label" for="inputTitle">Space id:</label>
+      <div class="controls">
+        <input type="number" id="inputTitle" ng-model="newSpace.id"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">space.bprocess:</label>
+      <div class="controls">
+        <input type="number" id="inputBusinessId" ng-model="newSpace.bprocess"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">space.index:</label>
+      <div class="controls">
+        <input type="number" id="inputBusinessId" ng-model="newSpace.index"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">space.container:</label>
+      <div class="controls">
+        <input type="checkbox" id="inputBusinessId" ng-model="newSpace.container"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">space.subbrick:</label>
+      <div class="controls">
+        <input type="checkbox" id="inputBusinessId" ng-model="newSpace.subbrick"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">space.brick_front:</label>
+      <div class="controls">
+        <input type="number" id="inputBusinessId" ng-model="newSpace.brick_front"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">space.brick_nested:</label>
+
+      <div class="controls">
+        <input type="number" id="inputBusinessId" ng-model="newSpace.brick_nested"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">space.nestingLevel:</label>
+      <div class="controls">
+        <input type="number" id="inputBusinessId" ng-model="newSpace.nestingLevel"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <div class="controls">
+        <a ng-click="createNewSpace()" class="btn btn-small btn-primary">create new Space</a>
+      </div>
+    </div>
+  </form>
+</div></div>
+
+
 <div class="front-blocks" ng-repeat="space in spaces" style="padding: 2px 10px;">
   <ul class="nav nav-tabs" role="tablist">
     <li class="active"><a href="" role="tab" data-toggle="tab" ng:click="spselected=1">Show</a></li>
     <li><a href="" role="tab" data-toggle="tab" ng:click="spselected=2">Edit</a></li>
-    <li><a href="" role="tab" data-toggle="tab" ng:click="spselected=3">New</a></li>
   </ul>
 
   <div class="tab-content">
@@ -777,6 +921,7 @@ var ModalEffects = (function() {
       <div class="controls">
         <a ng-click="cancel()" class="btn btn-small">cancel</a>
         <a ng-click="updateSpace(space)" class="btn btn-small btn-primary">update Space</a>
+        <a ng-click="deleteSpace(space)" class="btn btn-small btn-danger">delete Space</a>
       </div>
     </div>
   </form>
@@ -784,93 +929,118 @@ var ModalEffects = (function() {
 
 
 
-<div class="tab-pane active" id="new" ng:show="spselected == 3">  
- <form novalidate="novalidate" class="form-horizontal">
-    <div class="control-group">
-      <label class="control-label" for="inputTitle">Space id:</label>
-      <div class="controls">
-        <input type="text" id="inputTitle" ng-model="newSpace.id"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">space.bprocess:</label>
-      <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="newSpace.bprocess"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">space.index:</label>
-      <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="newSpace.index"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">space.container:</label>
-      <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="newSpace.container"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">space.subbrick:</label>
-      <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="newSpace.subbrick"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">space.brick_front:</label>
-      <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="newSpace.brick_front"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">space.brick_nested:</label>
 
+</div>
+</div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <ul class="nav nav-tabs" role="tablist">
+    <li><a href="" role="tab" data-toggle="tab" ng:click="newselected=3">New</a></li>
+  </ul>
+    <div class="tab-content">
+<div class="tab-pane active" id="edit" ng:show="newselected == 3">
+ <form novalidate="novalidate" class="form-horizontal">
+        <div class="control-group">
+      <label class="control-label" for="inputTitle">Title:</label>
       <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="newSpace.brick_nested"/>
+        <input type="text" id="inputTitle" ng-model="newSpaceelem.title"/>
       </div>
     </div>
     <div class="control-group">
-      <label class="control-label" for="inputBusinessId">space.nestingLevel:</label>
+      <label class="control-label" for="inputBusinessId">Desc:</label>
       <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="newSpace.nestingLevel"/>
+        <input type="text" id="inputBusinessId" ng-model="newSpaceelem.desc"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">business:</label>
+      <div class="controls">
+        <input type="number" id="inputBusinessId" ng-model="newSpaceelem.business"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">bprocess:</label>
+      <div class="controls">
+        <input type="number" id="inputBusinessId" ng-model="newSpaceelem.bprocess"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">b_type:</label>
+      <div class="controls">
+        <input type="text" id="inputBusinessId" ng-model="newSpaceelem.b_type"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">type_title:</label>
+      <div class="controls">
+        <input type="text" id="inputBusinessId" ng-model="newSpaceelem.type_title"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">space_own:</label>
+      <div class="controls">
+        <input type="number" id="inputBusinessId" ng-model="newSpaceelem.space_own"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">space_owned:</label>
+      <div class="controls">
+        <input type="number" id="inputBusinessId" ng-model="newSpaceelem.space_owned"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">space_role:</label>
+      <div class="controls">
+        <input type="text" id="inputBusinessId" ng-model="newSpaceelem.space_role"/>
+      </div>
+    </div>
+        <div class="control-group">
+      <label class="control-label" for="inputBusinessId">order:</label>
+      <div class="controls">
+        <input type="number" id="inputBusinessId" ng-model="newSpaceelem.order"/>
+      </div>
+    </div>
+      <div class="control-group">
+      <label class="control-label" for="inputBusinessId">Composite:</label>
+      <div class="controls">
+        <input type="text" id="input_a_string" ng-model="newSpaceelem.comps[0].a_string"/>
+        <input type="text" id="input_b_string" ng-model="newSpaceelem.comps[0].b_string"/>
+        <input type="number" id="input_a_int" ng-model="newSpaceelem.comps[0].a_int"/>
+        <input type="number" id="input_b_int" ng-model="newSpaceelem.comps[0].b_int"/>
+        <input type="text" id="input_a_bool" ng-model="newSpaceelem.comps[0].a_bool"/>
+        <input type="text" id="input_b_bool" ng-model="newSpaceelem.comps[0].b_bool"/>
       </div>
     </div>
     <div class="control-group">
       <div class="controls">
-        <a ng-click="createNewSpace()" class="btn btn-small btn-primary">create new Space</a>
+        <a ng-click="createSpaceElem()" class="btn btn-small btn-primary">create new spaceelem</a>
       </div>
     </div>
   </form>
-</div>
-
-</div>
-</div>
-
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+</div></div>
 
 <div class="space-blocks" ng-repeat="spaceelem in spaceelems" style="padding: 2px 10px;">
   <ul class="nav nav-tabs" role="tablist">
     <li class="active"><a href="" role="tab" data-toggle="tab" ng:click="selected=1">Show</a></li>
     <li><a href="" role="tab" data-toggle="tab" ng:click="selected=2">Edit</a></li>
-    <li><a href="" role="tab" data-toggle="tab" ng:click="selected=3">New</a></li>
   </ul>
 
   <div class="tab-content">
@@ -942,6 +1112,12 @@ var ModalEffects = (function() {
         <input type="text" id="inputBusinessId" ng-model="spaceelem.space_role"/>
       </div>
     </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">order:</label>
+      <div class="controls">
+        <input type="text" id="inputBusinessId" ng-model="spaceelem.order"/>
+      </div>
+    </div>
       <div class="control-group">
       <label class="control-label" for="inputBusinessId">Composite:</label>
       <div class="controls">
@@ -957,86 +1133,14 @@ var ModalEffects = (function() {
       <div class="controls">
         <a ng-click="cancel()" class="btn btn-small">cancel</a>
         <a ng-click="updateSpaceElem(spaceelem)" class="btn btn-small btn-primary">update spaceelem</a>
+        <a ng-click="deleteSpaceElem(spaceelem)" class="btn btn-small btn-danger">delete spaceelem</a>
+        
       </div>
     </div>
   </form>
   </div>
 
 
-<div class="tab-pane active" id="newSpaceElem" ng:show="selected == 3"> 
- <form novalidate="novalidate" class="form-horizontal">
-        <div class="control-group">
-      <label class="control-label" for="inputTitle">Title:</label>
-      <div class="controls">
-        <input type="text" id="inputTitle" ng-model="newSpaceelem.title"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">Desc:</label>
-      <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="newSpaceelem.desc"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">business:</label>
-      <div class="controls">
-        <input type="number" id="inputBusinessId" ng-model="newSpaceelem.business"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">bprocess:</label>
-      <div class="controls">
-        <input type="number" id="inputBusinessId" ng-model="newSpaceelem.bprocess"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">b_type:</label>
-      <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="newSpaceelem.b_type"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">type_title:</label>
-      <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="newSpaceelem.type_title"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">space_own:</label>
-      <div class="controls">
-        <input type="number" id="inputBusinessId" ng-model="newSpaceelem.space_own"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">space_own:</label>
-      <div class="controls">
-        <input type="number" id="inputBusinessId" ng-model="newSpaceelem.space_owned"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">space_own:</label>
-      <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="newSpaceelem.space_role"/>
-      </div>
-    </div>
-      <div class="control-group">
-      <label class="control-label" for="inputBusinessId">Composite:</label>
-      <div class="controls">
-        <input type="text" id="input_a_string" ng-model="newSpaceelem.comps[0].a_string"/>
-        <input type="text" id="input_b_string" ng-model="newSpaceelem.comps[0].b_string"/>
-        <input type="number" id="input_a_int" ng-model="newSpaceelem.comps[0].a_int"/>
-        <input type="number" id="input_b_int" ng-model="newSpaceelem.comps[0].b_int"/>
-        <input type="text" id="input_a_bool" ng-model="newSpaceelem.comps[0].a_bool"/>
-        <input type="text" id="input_b_bool" ng-model="newSpaceelem.comps[0].b_bool"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <div class="controls">
-        <a ng-click="createSpaceElem()" class="btn btn-small btn-primary">create new spaceelem</a>
-      </div>
-    </div>
-  </form>
-</div>
 </div>
 </div>
 

@@ -8,7 +8,7 @@ import models.DAO.resources.BusinessDTO._
 import com.github.tminglei.slickpg.composite._
 import models.DAO.conversion.{DatabaseCred, Implicits}
 
-import main.scala.simple_parts.process.data.Constant
+import main.scala.simple_parts.process.data.{Confirm, Constant}
 /**
  * ProcElements scheme
  */
@@ -65,20 +65,24 @@ case class UndefElement(id: Option[Int],
     println("block castiong")
     println(order)
     this match {
-      case y if (y.b_type == "brick" | y.type_title == "container_brick") => {
+      case y if (y.b_type == "brick" && y.type_title == "container_brick") => {
         Option(
             new ContainerBrick(id.get, title, desc,Implicits.fetch_cv(comps), process, b_type, type_title, order, space_parent_id = space_own)
           )
       }
-      case constant if (constant.b_type == "block" | constant.type_title == "constant") => {
+      case constant if (constant.b_type == "block" && constant.type_title == "constant") => {
         Option(
-           new Constant[Boolean](id.get, true, process, order, space_id = None)
+           new Constant[Boolean](id.get, true, process, order, space_id = None, values = Implicits.fetch_cv(comps))
         )
       }
-      case x if (x.b_type == "block" | x.type_title == "test block") => { 
+      case x if (x.b_type == "block" && x.type_title == "test block") => {
         Option(
           new Block(id.get,title,desc,Implicits.fetch_cv(comps),process,b_type,type_title,order)
         )
+      }
+      case conf if (conf.b_type == "block" && conf.type_title == "confirm") => {
+        Option(
+          new main.scala.simple_parts.process.data.Confirmation(id.get,title,desc,Implicits.fetch_cv(comps),process,b_type,type_title,order))
       }
       case _ => None
     }

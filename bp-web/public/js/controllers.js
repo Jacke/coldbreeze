@@ -181,10 +181,10 @@ function ($scope, $routeParams, BProcessFactory, BPStationsFactory, $location, $
   $scope.input = function (bpId) {
     $location.path('/bprocess/' + bPid + '/input')
   }
-  $scope.invokeBP = function (bpId) {
-
+  $scope.runInitially = function () {
+      
       $http({
-      url: 'process/' + bpId + '/invoke',
+      url: 'bprocess/' + $routeParams.BPid + '/invoke',
       method: "POST",
       data: {  }
       })
@@ -192,6 +192,7 @@ function ($scope, $routeParams, BProcessFactory, BPStationsFactory, $location, $
         // success
         console.log(response);
         $scope.invoke_res = [response];
+        $location.path('/bprocess/' + $routeParams.BPid + '/stations')
       }, 
       function(response) { // optional
         // failed
@@ -273,19 +274,9 @@ minorityControllers.controller('BPelementListCtrl', ['$scope', '$routeParams', '
     $location.path('/bprocess/' + bpId + '/show');
   };
   /* callback for ng-click 'deleteUser': */
-  $scope.deleteElem = function (bpId) {
-    BPElemFactory.delete({ id: bpId });
-    $scope.bprocesses = BPElemsFactory.query();
-  };
 
-  $scope.deleteSpace = function (bpId) {
-    BPSpaceFactory.delete({ id: bpId });
-    $scope.bprocesses = BPSpacesFactory.query();
-  }; 
-  $scope.deleteSpaceElem = function (bpId) {
-    BPSpaceElemFactory.delete({ id: bpId });
-    $scope.bprocesses = BPSpaceElemsFactory.query();
-  };
+
+
   /* callback for ng-click 'createBP': */
   $scope.createNewElem = function () {
     $location.path('/bprocess/new');
@@ -293,30 +284,71 @@ minorityControllers.controller('BPelementListCtrl', ['$scope', '$routeParams', '
 
   $scope.newBpelem = { comps: [ { "a_string" : null} ] }
   $scope.newSpaceelem = { comps: [ { "a_string" : null} ] }
+  $scope.newBpelem = { desc: "" }
+  $scope.newSpaceelem = { desc:  "" }
 
-  /* CU */
+
+
+
+
+
+
+  /* Front CUD */
   $scope.updateElem = function (obj) {
     console.log(obj)  
 
     BPElemFactory.update(obj);
+    $scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
   }
   $scope.createNewElem = function () {
     console.log($scope.newBpelem);
     BPElemsFactory.create($scope.newBpelem);
+    $scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
   }
+  $scope.deleteElem = function (bpId) {
+    BPElemFactory.delete({ id: bpId.id, BPid: $route.current.params.BPid });
+    $scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
+  };
+
+
+  /* SPACES CUD */
   $scope.updateSpace = function (obj) {
     console.log(obj)
+    BPSpaceFactory.update(obj);
+    $scope.spaces =  BPSpacesFactory.query({ BPid: $route.current.params.BPid });
   }
   $scope.createNewSpace = function () {
     console.log($scope.newSpace)
+    BPSpacesFactory.create($scope.newSpace);
+    $scope.spaces =  BPSpacesFactory.query({ BPid: $route.current.params.BPid });
   }
-  $scope.updateSpaceElem = function (obj) {
-    console.log(obj)
+  $scope.deleteSpace = function (bpId) {
+    BPSpaceFactory.delete({ id: bpId.id, BPid: $route.current.params.BPid });
+    $scope.spaces =  BPSpacesFactory.query({ BPid: $route.current.params.BPid });
+  }; 
 
+
+
+
+
+  /* Space Elem CUD */
+  $scope.updateSpaceElem = function (obj) {
+    console.log(obj);
+    BPSpaceElemFactory.update(obj);
+    $scope.spaceelems =  BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid });
   }
   $scope.createSpaceElem = function () {
-    console.log($scope.newSpaceelem)
+    console.log($scope.newSpaceelem);
+    BPSpaceElemsFactory.create($scope.newSpaceelem);
+    $scope.spaceelems =  BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid });
   }
+  $scope.deleteSpaceElem = function (bpId) {
+    BPSpaceElemFactory.delete({ id: bpId.id, BPid: $route.current.params.BPid });
+    $scope.spaceelems =  BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid });
+  };
+
+
+
 
 
   $scope.frontSpace = function (elem_id) { // : spaceObj
