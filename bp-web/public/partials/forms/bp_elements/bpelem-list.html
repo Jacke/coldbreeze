@@ -383,18 +383,8 @@ var ModalEffects = (function() {
       </div>
     </div>
     <div class="container">
-      <!-- Top Navigation -->
-      <div class="codrops-top clearfix">
-        <a class="codrops-icon codrops-icon-prev" href="http://tympanus.net/Development/DynamicGrid/"><span>Previous Demo</span></a>
-        <span class="right"><a class="codrops-icon codrops-icon-drop" href="http://tympanus.net/codrops/?p=15313"><span>Back to the Codrops Article</span></a></span>
-      </div>
-      <header>
-        <h1>Nifty Modal Window Effects <span>Some inspiration for different modal window appearances</span></h1>
-      </header>
+      <!--
       <div class="main clearfix">
-        <div class="column">
-          <p>There are many possibilities for modal overlays to appear. Here are some modern ways of showing them using CSS transitions and animations.</p>
-        </div>
         <div class="column">
           <button class="md-trigger" data-modal="modal-2">Slide in (right)</button>
           <button class="md-trigger" data-modal="modal-3">Slide in (bottom)</button>
@@ -411,13 +401,13 @@ var ModalEffects = (function() {
           <button class="md-trigger" data-modal="modal-14">3D Rotate Bottom</button>
           <button class="md-trigger" data-modal="modal-15">3D Rotate In Left</button>
           <button class="md-trigger" data-modal="modal-16">Blur</button>
-          <!-- special modal that will add a perspective class to the html element -->
+
           <button class="md-trigger md-setperspective" data-modal="modal-17">Let me in</button>
           <button class="md-trigger md-setperspective" data-modal="modal-18">Make way!</button>
           <button class="md-trigger md-setperspective" data-modal="modal-19">Slip from top</button>
         </div>
       </div>
-    </div><!-- /container -->
+    </div>-->
     <div class="md-overlay"></div><!-- the overlay element -->
 
 
@@ -435,7 +425,7 @@ var ModalEffects = (function() {
 
 <div class="span8 container">
   <ul class="nav nav-tabs" role="tablist">
-    <li><a href="" role="tab" data-toggle="tab" ng:click="newselected=1">New</a></li>
+    <li><a href="" role="tab" data-toggle="tab" ng:click="newselected=1">New Front Element</a></li>
   </ul>
     <div class="tab-content">
 <div class="tab-pane active" id="edit" ng:show="newselected == 1">
@@ -509,7 +499,7 @@ var ModalEffects = (function() {
 </div></div>
 
 
-<div class="front-blocks" ng-repeat="bpelem in bpelems" style="padding: 2px 10px;">
+<div class="front-blocks" ng-repeat="bpelem in bpelems | orderBy:predicate:order" style="padding: 2px 10px;">
   <ul class="nav nav-tabs" role="tablist">
     <li class="active"><a href="" role="tab" data-toggle="tab" ng:click="selected=1">Show</a></li>
     <li><a href="" role="tab" data-toggle="tab" ng:click="selected=2">Edit</a></li>
@@ -788,7 +778,7 @@ var ModalEffects = (function() {
 
 
   <ul class="nav nav-tabs" role="tablist">
-    <li><a href="" role="tab" data-toggle="tab" ng:click="newselected=2">New</a></li>
+    <li><a href="" role="tab" data-toggle="tab" ng:click="newselected=2">New Space</a></li>
   </ul>
     <div class="tab-content">
 <div class="tab-pane active" id="edit" ng:show="newselected == 2">
@@ -851,7 +841,7 @@ var ModalEffects = (function() {
 </div></div>
 
 
-<div class="front-blocks" ng-repeat="space in spaces" style="padding: 2px 10px;">
+<div class="front-blocks" ng-repeat="space in spaces | orderBy:predicate:order" style="padding: 2px 10px;">
   <ul class="nav nav-tabs" role="tablist">
     <li class="active"><a href="" role="tab" data-toggle="tab" ng:click="spselected=1">Show</a></li>
     <li><a href="" role="tab" data-toggle="tab" ng:click="spselected=2">Edit</a></li>
@@ -953,7 +943,7 @@ var ModalEffects = (function() {
 
 
   <ul class="nav nav-tabs" role="tablist">
-    <li><a href="" role="tab" data-toggle="tab" ng:click="newselected=3">New</a></li>
+    <li><a href="" role="tab" data-toggle="tab" ng:click="newselected=3">New Space Element</a></li>
   </ul>
     <div class="tab-content">
 <div class="tab-pane active" id="edit" ng:show="newselected == 3">
@@ -1037,7 +1027,7 @@ var ModalEffects = (function() {
   </form>
 </div></div>
 
-<div class="space-blocks" ng-repeat="spaceelem in spaceelems" style="padding: 2px 10px;">
+<div class="space-blocks" ng-repeat="spaceelem in spaceelems | orderBy:predicate:order" style="padding: 2px 10px;">
   <ul class="nav nav-tabs" role="tablist">
     <li class="active"><a href="" role="tab" data-toggle="tab" ng:click="selected=1">Show</a></li>
     <li><a href="" role="tab" data-toggle="tab" ng:click="selected=2">Edit</a></li>

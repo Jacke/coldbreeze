@@ -1,5 +1,5 @@
 <div class="stations" ng-repeat="station in bpstations"style="clear: both;">
-           <h3>Station #{{ station.id }}</h3>
+           <h3>Station #{{ $index + 1 }}</h3>
            <p>
             {{ stationByProcess(station.id).id }}
             {{ stationByProcess(station.id).title }}

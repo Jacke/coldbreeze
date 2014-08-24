@@ -5,8 +5,8 @@
 <a ng-click="runInitially()" class="btn btn-big btn-success">Run</a>
 </div>
 <pre>Change to only active station</pre>
-<div class="stations" ng-repeat="station in stations | limitTo:2"style="clear: both;">
-           <h3>Station #{{ station.id }}</h3>
+<div class="stations" ng-repeat="station in stations | filter:filterExpression"style="clear: both;">
+           <h3>Station #{{ $index+1 }}</h3>
            <p>
             {{ stationByProcess(station.id).id }}
             {{ stationByProcess(station.id).title }}
@@ -75,7 +75,7 @@
                     </tbody>
                   </table>
           </div>
-          <div ng-if="station.finished == true">
+          <div ng-if="station.paused == true">
           <a ng-click="haltStation(station.id)" class="btn btn-big btn-danger">Halt</a>
           <div class="runFrom">
           <h3>Run from specific active point</h3>
@@ -83,16 +83,16 @@
           <div class="params">
           <div class="param">
               <p>Confirm block</p>
-              <input type="checkbox" id="input_a_string"/>
+              <div ng-repeat="cont in station.params" class="controls">
+                   <input type="number" class="xdTextBox" ng-model="cont.elem"/>
+                   <input type="text" class="xdTextBox" ng-model="cont.param" value="confirmed"/>
+              
+                </div>
           </div></div>
-          <a ng-click="runFrom(station.id)" class="btn btn-big btn-success">Run from</a>
+          <button ng-click="addParam(station)">Add input params</button>
+          <a ng-click="runFrom(station.id, station)" class="btn btn-big btn-success">Run from</a>
           </div>
           </div>
-          <div class="params">
-          <div class="param">
-              <p>Confirm block</p>
-              <input type="checkbox" id="input_a_string"/>
-          </div></div>
           {{ bplogs }}
 
            <hr>

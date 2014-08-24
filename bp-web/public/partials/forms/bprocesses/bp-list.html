@@ -22,10 +22,10 @@
         <td><a href="/a#/bprocess/{{ bprocess.id }}/elements" class="btn btn-small btn-primary">Elements</a></td>
         <td><a ng-click="deleteBP(bprocess.id)" class="btn btn-small btn-danger">Delete</a></td>
         <td><a href="/a#/bprocess/{{ bprocess.id }}/stations">Show All stations</a></td>
-        <td ng-repeat="station in stations | filter: { finished: true, process: bprocess.id }">
+        <td ng-repeat="station in stations | filter: { finished: false, paused: true, process: bprocess.id }">
               <div class="progress">
-              <div class="progress-bar" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;">
-              <a href="/a#/bprocess/{{ bprocess.id }}/station/{{ station.id }}">{{ stationPercent(station) }} 60%</a><
+              <div class="progress-bar" role="progressbar" aria-valuenow="{{station.step*10}}" aria-valuemin="0" aria-valuemax="100" style="width: {{station.step*10}}%;">
+              <a href="/a#/bprocess/{{ bprocess.id }}/input">{{ stationPercent(station) }} {{station.step*10}}%</a><
               </div>
               </div>
         </td>

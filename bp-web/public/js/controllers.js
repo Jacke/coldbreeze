@@ -181,6 +181,9 @@ function ($scope, $routeParams, BProcessFactory, BPStationsFactory, $location, $
   $scope.input = function (bpId) {
     $location.path('/bprocess/' + bPid + '/input')
   }
+  $scope.filterExpression = function(station) {
+  return (station.finished != true && station.paused == true);
+  }
   $scope.runInitially = function () {
       
       $http({
@@ -199,10 +202,42 @@ function ($scope, $routeParams, BProcessFactory, BPStationsFactory, $location, $
       }
       );
   }
+  $scope.runFrom = function (stationID, station) {
+    console.log(station.params)
+    $http({
+      url: 'bprocess/' + $routeParams.BPid + '/invoke_from/' + stationID,
+      method: "POST",
+      data: station.params
+      })
+      .then(function(response) {
+        // success
+        console.log(response);
+        $scope.invoke_res = [response];
+        //$location.path('/bprocess/' + $routeParams.BPid + '/stations')
+      }, 
+      function(response) { // optional
+        // failed
+      }
+      );
+  }
+  $scope.addParam = function (station) {
+      if(typeof station.params === 'undefined') {
+        station.params = [];
+      }
+      station.params.push({elem: '', param: 'confirmed' });
+    }
+
+  $scope.defaultParam = function () {
+      var targets = _.filter($scope.stations, function(station){ return station.paused == true; });
+      _.each(targets, function(target) { target.params = [] }); 
+      _.each(targets, function(target) { target.params.push({elem: '', param: '' }); }); 
+  }
+  
   $scope.invoke_res = [];
   $scope.bpId = $routeParams.BPid;
   $scope.selectedTab = 1;
   $scope.stations = BPStationsFactory.query({ BPid: $routeParams.BPid });
+  $scope.defaultParam();
   $scope.bprocess = BProcessFactory.show({ id: $routeParams.BPid });
 }]);
 

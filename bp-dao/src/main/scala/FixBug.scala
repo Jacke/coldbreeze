@@ -250,8 +250,58 @@ object RunnerWrapper {
     dblogger.foreach(log => BPLoggerDAO.pull_object(log))
   }
 
-  /* Run From
+  def runFrom(station_id:Int, bpID:Int, params: Map[Int, String]):Option[StationID]  = {
+    println(params)
+    params.foreach(println(_))
+    val process_dto = BPDAO.get(bpID).get
+    val target = ProcElemDAO.findByBPId(bpID)
+    val process = new BProcess(new Managment)
+    val arrays = target.map(c => c.cast(process)).flatten.toArray
+  process.push {
+    arrays.sortWith(_.order < _.order)
+  }
+  val logger_db = BPLoggerDAO.findByStation(station_id)
+  val db_station = BPStationDAO.findById(station_id).get
 
+  val logger_results = logger_db.map(log =>
+    BPLoggerResult(
+      process.findObjectById(log.element, log.space_elem).get,
+      composite=fetch_cv(log.comps),
+      order = log.order,
+      space = log.space,
+      station = process.station,
+      invoked = log.invoked,
+      expanded = log.expanded,
+      container = log.container,
+      date = log.date))
+
+  logger_results
+  process.logger.logs = logger_results.toArray
+  process.station.update_variables(
+    db_station.state,
+    db_station.step,
+    db_station.space,
+    db_station.container_step.toArray,
+    db_station.expand_step.toArray,
+    db_station.started,
+    db_station.finished,
+    db_station.inspace,
+    db_station.incontainer,
+    db_station.inexpands,
+    db_station.paused
+  )
+
+    process.inputPmsApply(params)
+    InvokeTracer.run_proc(process)
+
+    val station_updated = BPStationDAO.from_origin_station(process.station, process_dto)
+    BPStationDAO.update(station_id, station_updated)
+
+
+    Some(station_id)
+  }
+  /* Run From
+  
   def syncLog = {
 
   }

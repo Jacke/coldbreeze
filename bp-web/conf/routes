@@ -147,8 +147,8 @@ DELETE /bprocess/:bpID/space_elem/:spelem_id @controllers.BusinessProcessControl
 
 #GET         /bprocess/:id/active_stations BPStationDAO.areActiveForBP(id)
 #GET         /bprocess/:id/last_run        BPLoggerDAO.lastRunOfBP(id)
-POST         /bprocess/:bpID/invoke  @controllers.BusinessProcessController.invoke(bpID: Int)
-
+POST         /bprocess/:bpID/invoke                   @controllers.BusinessProcessController.invoke(bpID: Int)
+POST         /bprocess/:bpID/invoke_from/:station_id  @controllers.BusinessProcessController.invokeFrom(station_id:Int, bpID: Int)
 
 #GET  /block/:id/info                ProcElemDAO.findById(id)
 #GET  

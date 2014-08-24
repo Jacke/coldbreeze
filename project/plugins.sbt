@@ -6,6 +6,8 @@ resolvers += "Kamon Releases" at "http://repo.kamon.io"
 
 resolvers += "Maven Central" at "http://repo1.maven.org/maven2"
 
+resolvers += "Typesafe"     at "http://repo.typesafe.com/typesafe/maven-releases"
+
 resolvers += "sbt-taglist-releases" at "http://johanandren.github.com/releases/"
 
 resolvers += "spray repo" at "http://repo.spray.io"

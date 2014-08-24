@@ -332,9 +332,39 @@ def logs_index(id: Int) = Action { implicit request =>
       case Some(station_id) => Ok(Json.toJson(Map("success" -> station_id)))
       case _ => Ok(Json.toJson(Map("error" -> "Error output")))
     }
-    
+  }
+
+
+
+
+
+  implicit val InputParamReads = Json.reads[InputParams]
+  implicit val InputParamWrites = Json.format[InputParams]
+  //implicit val ListInputParamReads = Json.reads[List[InputParams]]
+  //implicit val ListInputParamWrites = Json.format[List[InputParams]]
+  def invokeFrom(station_id: Int, bpID: Int) = Action(BodyParsers.parse.json) { implicit request =>
+    val pmsResult = request.body.validate[List[InputParams]] 
+    println(pmsResult)
+
+    val genparams = pmsResult.map{ 
+      case entity => entity.map (t => t.elem.get -> t.param) toMap
+    }
+    //.map (t => t.elem.get -> t.param) toMap
+    /*
+      Applying by this template ID     PARAM
+      process.inputPmsApply(Map(30 -> "confirmed"))
+    */ 
+     
+    service.RunnerWrapper.runFrom(station_id, bpID, genparams.get) match {
+      case Some(station_id) => Ok(Json.toJson(Map("success" -> station_id)))
+      case _ => Ok(Json.toJson(Map("error" -> "Error output")))
+    }
   }
   /**
    * Halt
    */
 }
+
+  case class InputParams(elem:Option[Int] = None,  
+                         param:String, 
+                         arguments:Option[List[String]] = None)
