@@ -46,7 +46,7 @@ class BusinessServiceController(override implicit val env: RuntimeEnvironment[De
   implicit val bservicesWrites = Json.format[BusinessServiceDTO]
 
 
-  def bprocesses_services() = SecuredAction { implicit request =>
+  def bprocesses_services() = Action { implicit request =>
       val services = BusinessServiceDAO.getAll
       val businesses = BusinessDAO.getAll
       Ok(Json.toJson(services))

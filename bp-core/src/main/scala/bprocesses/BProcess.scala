@@ -189,7 +189,7 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
 
   def inputPmsApply(params: Map[Int, String]) {
     params.foreach {case (key, value) =>
-      allElements.find(elem => elem.id == key) match {
+      allElements.find(elem => elem.id == key) match { // TODO: Weak description of Front or Space elems
         case Some(elem) => {
           val tryg = Try(elem.calls(value))
           println(tryg.isSuccess)

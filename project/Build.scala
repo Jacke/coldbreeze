@@ -30,8 +30,8 @@ object Build extends Build {
 
     .settings(
       libraryDependencies ++=
-        List(async, reflect, akkaActor, dispatch, scalaz, mechanize,nscala, play, scalatest, scalaLog, 
-logback, 
+        List(async, reflect, akkaActor, scaldiakka, dispatch, scalaz, mechanize,nscala, play, scalatest, scalaLog, 
+logback, scaldi,
 sprayClient, hdrHistogram))
 
         //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
@@ -78,7 +78,7 @@ jodamapper, scalatest, reflect, postgres, logbackClassic, scalaLog, sprayCan, sp
           angular,
 
           
-      playauth,securesocial, jsonvariants, playflyway, playctrl, cache, filter, jdbc, anorm, shapeless, mailer, scalatest, reflect, bcrypt, postgres, logbackClassic, scalaLog, hdrHistogram))
+      playauth,securesocial,scaldiplay, jsonvariants, playflyway, playctrl, cache, filter, jdbc, anorm, shapeless, mailer, scalatest, reflect, bcrypt, postgres, logbackClassic, scalaLog, hdrHistogram))
         //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
         //test(scalatest, akkaTestKit, sprayTestkit))
     .dependsOn(bpCore, bpDao)

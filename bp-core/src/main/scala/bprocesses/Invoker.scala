@@ -228,9 +228,11 @@ def move:Unit = {
     station.inSpace(true)
 
   }
-  def moveToSpaceByIndx(index: Int) = {
+  def moveToSpaceByIndx(index: Int, spaceId: Option[Int] = None) = {
     station.update_space(index)
     station.inSpace(true)
+    if (spaceId.isDefined)
+      station.add_space_id(spaceId.get)
   }
   def moveToExpand = {
     station.inExpand(true)
@@ -282,6 +284,7 @@ def move:Unit = {
     station.flush_expand_step
 
 
+    station.del_space_id(station.spaces_ids.last)
     station.update_space(station.space - 1)
   }
 }

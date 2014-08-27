@@ -37,7 +37,7 @@ class RunInitiallySpec extends Specification with ProcessSample {
     }
 
     "Proc element have Composite values" in {
-      process.findObjectByOrder(1).get.values.get.a_string.isEmpty must beFalse
+      process.findObjectByOrder(Some(1)).get.values.get.a_string.isEmpty must beFalse
     }
 
     "save process result" in {
@@ -50,7 +50,7 @@ class RunInitiallySpec extends Specification with ProcessSample {
     }
 
     "fetching by order id" in {
-      process.findObjectByOrder(2).isEmpty must beFalse
+      process.findObjectByOrder(Some(2)).isEmpty must beFalse
     }
 
     "save process logger" in {

@@ -18,6 +18,7 @@ class BPStations(tag: Tag) extends Table[BPStationDTO](tag, "bpstations") {
   def space = column[Int]("space")
   def container_step = column[List[Int]]("container_step")
   def expand_step = column[List[Int]]("expand_step")
+  def spaces_ids = column[List[Int]]("spaces_ids")
   def started = column[Boolean]("started")
   def finished = column[Boolean]("finished")
   def inspace = column[Boolean]("inspace")
@@ -33,6 +34,7 @@ class BPStations(tag: Tag) extends Table[BPStationDTO](tag, "bpstations") {
     space,
     container_step,
     expand_step,
+    spaces_ids,
     started,
     finished,
     inspace,
@@ -53,6 +55,7 @@ step:Int,
 space:Int,
 container_step: List[Int],
 expand_step: List[Int],
+spaces_ids: List[Int],
 started: Boolean,
 finished: Boolean,
 inspace: Boolean,
@@ -85,6 +88,7 @@ object BPStationDAO {
         station.space,
         station.container_step.toList,
         station.expand_step.toList,
+        station.spaces_ids.toList,
         station.started,
         station.finished,
         station.inspace,

@@ -98,6 +98,7 @@ GET         /bprocess/:id/info                                  @controllers.App
 
 PUT         /bprocess/:id/info                                  @controllers.Application.update_bprocess(id: Int)
 
+
 # BProcess Front Elements
 #GET        /bprocess/:id/elements                              @controllers.Application.bpElems(id: Int)
 #GET         /bprocess/:id/spaces                                @controllers.Application.spaces(id: Int)
@@ -138,12 +139,9 @@ DELETE /bprocess/:bpID/space_elem/:spelem_id @controllers.BusinessProcessControl
 
 
 
+GET         /bprocess/:BPid/request/:station_id                @controllers.BusinessProcessController.schemes(BPid: Int, station_id: Int)
 
-#GET         /bprocesses                 BPDAO.getAll
-#POST        /bprocesses                 entity(as[BProcessDTO])        BPDAO.pull_object(bprocess)
-#GET         /bprocess_full/:id          BPInfo(ProcElemDAO.findByBPId(id), BPStationDAO.findByBPId(id), BPLoggerDAO.findByBPId(id))
-#GET         /bprocess/:id/info
-#GET         /bprocess/:id/logs            BPLoggerDAO.findByBPId(id)
+
 
 #GET         /bprocess/:id/active_stations BPStationDAO.areActiveForBP(id)
 #GET         /bprocess/:id/last_run        BPLoggerDAO.lastRunOfBP(id)

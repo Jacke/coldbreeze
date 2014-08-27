@@ -26,6 +26,7 @@ import java.lang.reflect.Constructor
 import securesocial.core.RuntimeEnvironment
 import service.{DemoUser, MyEventListener, InMemoryUserService}
 import controllers.plugin._
+import scaldi.play.ScaldiSupport
 
 object Global extends WithFilters(new GzipFilter(shouldGzip =
   (request, response) => {
@@ -44,6 +45,7 @@ object Global extends WithFilters(new GzipFilter(shouldGzip =
     override lazy val eventListeners = List(new MyEventListener())
   }
 
+  
   /**
    * An implementation that checks if the controller expects a RuntimeEnvironment and
    * passes the instance to it if required.

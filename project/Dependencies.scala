@@ -29,6 +29,9 @@ object Dependencies {
   val postgres        = "postgresql"                %   "postgresql"            % "9.1-901.jdbc4"
 //val mongodb         = "org.mongodb"               %% "casbah"                % "2.7.0-RC0"
   val mechanize       = "com.gistlabs"              %  "mechanize"              % "0.11.0"
+  val scaldi          = "org.scaldi"                %% "scaldi"                 % "0.4"
+  val scaldiplay      = "org.scaldi"                %% "scaldi-play"            % "0.4.1"
+  val scaldiakka      = "org.scaldi"                %% "scaldi-akka"            % "0.4"
 
   val play            = "org.webjars"               %% "webjars-play"           % "2.3.0"
   val playslick       = "com.typesafe.play"         %  "play-slick_2.10"        % "0.8.0"

@@ -16,7 +16,8 @@ var minorityApp =
       'ngAngularError',
       'ngAnimate', 'toaster',
       'angular-underscore',
-      'ui.bootstrap'
+      'ui.bootstrap',
+      'ui.select'
     ]
   );
 

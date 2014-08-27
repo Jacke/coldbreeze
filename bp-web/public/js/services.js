@@ -178,9 +178,9 @@ minorityAppServices.factory('BPLogStationFactory', function ($resource) {
 */
 
 minorityAppServices.factory('BPRequestFactory', function ($resource) {
-    return $resource(baseUrl + '/bprocess/:id/request', {}, {
+    return $resource(baseUrl + '/bprocess/:BPid/request/:station_id', {}, {
         //query: { method: 'GET', isArray: true },
-        scheme: { method: 'GET', params: {bprocess_id: '@id'} },
+        scheme: { method: 'GET'}, //, params: {bprocess_id: '@id'} },
         send: { method: 'POST' }
     })
 });

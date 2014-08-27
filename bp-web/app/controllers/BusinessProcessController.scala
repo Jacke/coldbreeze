@@ -360,6 +360,22 @@ def logs_index(id: Int) = Action { implicit request =>
       case _ => Ok(Json.toJson(Map("error" -> "Error output")))
     }
   }
+
+
+
+
+  def schemes(BPid: Int, station_id: Int) = Action { implicit request =>
+    val logs = BPLoggerDAO.findByStation(station_id)
+    val elem_logs_ids = logs.diff(List(logs.last)).filter(log => log.element.isDefined).map(_.element)
+    val space_logs_ids = logs.diff(List(logs.last)).filter(log => log.space_elem.isDefined).map(_.space_elem)
+    Ok(
+      Json.toJson(
+        Map("proc_elems" -> Json.toJson(ProcElemDAO.findByBPId(BPid).filter(elem => !elem_logs_ids.contains(elem.id)) ), 
+            "space_elems" -> Json.toJson(SpaceElemDAO.findByBPId(BPid).filter(elem => !space_logs_ids.contains(elem.id)) ))
+        )
+      )
+    
+  }
   /**
    * Halt
    */

@@ -179,7 +179,7 @@ class ContainerBrick(override val id: Int,
       "CONTAINER" +
       "SPACE")
 
-    bprocess.marker.moveToSpaceByIndx(getSpace(this).get.index)//.moveToSpace
+    bprocess.marker.moveToSpaceByIndx(getSpace(this).get.index, getSpace(this).get.id)//.moveToSpace
 
     //println("bprocess.marker.moveToSpace")
     bprocess.marker.moveToContainer

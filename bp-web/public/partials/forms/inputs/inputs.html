@@ -23,6 +23,7 @@
 <td> station.space </td>
 <td> station.container_step </td>
 <td> station.expand_step </td>
+<td>station.spaces_ids</td>
 <td> station.inspace </td>
 <td> station.incontainer </td>
 <td> station.inexpands </td>
@@ -36,6 +37,7 @@
             <td> {{ station.space }}</td>
             <td>{{ station.container_step }}</td> 
             <td> {{ station.expand_step }}</td>
+            <td> {{ station.spaces_ids }} </td>
             <td> {{ station.inspace }}</td>
             <td> {{ station.incontainer }}</td>
             <td> {{ station.inexpands }}</td>
@@ -83,13 +85,16 @@
           <div class="params">
           <div class="param">
               <p>Confirm block</p>
-              <div ng-repeat="cont in station.params" class="controls">
-                   <input type="number" class="xdTextBox" ng-model="cont.elem"/>
-                   <input type="text" class="xdTextBox" ng-model="cont.param" value="confirmed"/>
-              
-                </div>
+              <div ng-repeat="cont in station.params" class="controls inputRequests">
+                   <div class="request">
+                     <select ng-model="cont.elem" class="forFront" ng-options="elem.id as elem.title for elem in station.proc_elems" required></select><br>
+                     <select ng-model="cont.elem" class="forSpace"ng-options="elem.id as elem.title for elem in station.space_elems" required></select><br>
+                     <select ng-model="cont.param" class="forParam" ng-options="param.name as param.name for param in params" required></select><br>
+                </div></div>
           </div></div>
+        
           <button ng-click="addParam(station)">Add input params</button>
+          <button ng-click="delParam(station)">Del last input</button>
           <a ng-click="runFrom(station.id, station)" class="btn btn-big btn-success">Run from</a>
           </div>
           </div>

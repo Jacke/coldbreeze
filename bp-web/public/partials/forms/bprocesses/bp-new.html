@@ -16,8 +16,9 @@
         <input type="number" id="inputBusinessId" ng-model="bprocess.business" placeholder="Business ID" required/>
       </div>
       <div class="controls">
-        <input type="number" id="inputServiceId" ng-model="bprocess.service" placeholder="Service ID" required/>
+        <select ng-model="bprocess.service" ng-options="service.id as service.title for service in procServices" required></select><br>
       </div>
+
     </div>
     <div class="control-group">
       <div class="controls">

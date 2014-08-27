@@ -23,13 +23,44 @@ angular.module('minorityApp.controllers', []).
 
   }]);
   
+minorityApp.filter('propsFilter', function() {
+  return function(items, props) {
+    var out = [];
+
+    if (angular.isArray(items)) {
+      items.forEach(function(item) {
+        var itemMatches = false;
+
+        var keys = Object.keys(props);
+        for (var i = 0; i < keys.length; i++) {
+          var prop = keys[i];
+          var text = props[prop].toLowerCase();
+          if (item[prop].toString().toLowerCase().indexOf(text) !== -1) {
+            itemMatches = true;
+            break;
+          }
+        }
+
+        if (itemMatches) {
+          out.push(item);
+        }
+      });
+    } else {
+      // Let the output be the input untouched
+      out = items;
+    }
+
+    return out;
+  }
+});
 
 var minorityControllers =
 angular.module(
   'minorityApp.controllers',
   [
     'minorityApp.services',
-    'angular-underscore'
+    'angular-underscore',
+    'ui.select'
   ]
 );
 
@@ -163,13 +194,19 @@ minorityControllers.controller('BProcessListCtrl', ['$scope', '$http', '$filter'
 
 // READ
 
-minorityControllers.controller('BPRequestCtrl', ['$scope', '$routeParams', 'BProcessFactory', 'BPStationsFactory', '$location', '$http',
-function ($scope, $routeParams, BProcessFactory, BPStationsFactory, $location, $http) {
+minorityControllers.controller('BPRequestCtrl', ['$scope', '$routeParams', 'BProcessFactory', 'BPStationsFactory', 'BPRequestFactory',  '$location', '$http',
+function ($scope, $routeParams, BProcessFactory, BPStationsFactory, BPRequestFactory,  $location, $http) {
   console.log($routeParams.BPid)
   $scope.bpId = $routeParams.BPid;
 
 //minorityControllers.controller('BPRequestCtrl', ['$scope', '$filter','$routeParams','BProcessesFactory','BProcessFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route', '$http',
 //function ($scope, $filter, $routeParams, BProcessesFactory, BProcessFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route, $http) {
+
+  $scope.params = [
+     { block: 'confirm', name: 'confirmed' }
+     
+   ];
+
 
   $scope.updateBP = function () {
     BProcessFactory.update($scope.bprocess);
@@ -213,7 +250,7 @@ function ($scope, $routeParams, BProcessFactory, BPStationsFactory, $location, $
         // success
         console.log(response);
         $scope.invoke_res = [response];
-        //$location.path('/bprocess/' + $routeParams.BPid + '/stations')
+        $location.path('/bprocess/' + $routeParams.BPid + '/stations')
       }, 
       function(response) { // optional
         // failed
@@ -223,14 +260,41 @@ function ($scope, $routeParams, BProcessFactory, BPStationsFactory, $location, $
   $scope.addParam = function (station) {
       if(typeof station.params === 'undefined') {
         station.params = [];
+        $scope.defaultParam();
       }
+
+
+      
       station.params.push({elem: '', param: 'confirmed' });
-    }
+  }
+  $scope.delParam = function (station) {
+    station.params.pop();
+  }
+
 
   $scope.defaultParam = function () {
       var targets = _.filter($scope.stations, function(station){ return station.paused == true; });
-      _.each(targets, function(target) { target.params = [] }); 
-      _.each(targets, function(target) { target.params.push({elem: '', param: '' }); }); 
+      _.each(targets, function(target) { 
+        target.params = []; 
+      }); 
+      _.each(targets, function(target) { 
+        
+   
+        
+
+        BPRequestFactory.scheme({ BPid: $routeParams.BPid, station_id: target.id }).$promise.then(function(data) {
+        console.log("magic happens here");
+        console.log(data);
+
+                      //target.proc_elems = [];
+                     //target.space_elems = [];
+                  target.proc_elems = data.proc_elems; 
+                  target.space_elems = data.space_elems;
+              }, function(error) {
+                  console.log('error', error);
+        });
+        
+      }); 
   }
   
   $scope.invoke_res = [];
@@ -279,9 +343,18 @@ function ($scope, $routeParams, BProcessFactory, $location, $http) {
 }]);
 
 
+
+
+
 // CREATE
-minorityControllers.controller('BPCreationCtrl', ['$scope', 'BProcessesFactory', '$location',
-  function ($scope, BProcessesFactory, $location) {
+minorityControllers.controller('BPCreationCtrl', ['$scope', '$http', 'BProcessesFactory', 'BPServicesFactory', '$location',
+  function ($scope, $http,  BProcessesFactory, BPServicesFactory, $location) {
+
+
+
+    $scope.procServices = BPServicesFactory.query();
+
+
     $scope.createNewBP = function () {
       BProcessesFactory.create($scope.bprocess);
       $location.path('/bprocesses');

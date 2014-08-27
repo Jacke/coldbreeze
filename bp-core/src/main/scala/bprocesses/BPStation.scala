@@ -13,6 +13,7 @@ class BPStation(val bp: BProcess) {
   var step = 0
   var space = 0
   // Step for space nesting
+  var spaces_ids = Array.empty[Int]
   var container_step = Array.empty[Int]
   var expand_step = Array.empty[Int]
   // State for space nesting
@@ -49,7 +50,10 @@ class BPStation(val bp: BProcess) {
   def update_state(state: Boolean) = { this.state = state }
   def update_step(v: Int)          = { this.step  = v     }
   def update_space(v: Int)         = { this.space = v     }
-  
+  // Spaces_ids manipulations
+  def add_space_id(id: Int)        = { this.spaces_ids = this.spaces_ids   :+ id}
+  def del_space_id(id: Int)        = { this.spaces_ids = this.spaces_ids   diff Array(id) }
+
   def update_container_step(v: Int)       = this.container_step = this.container_step   :+ v
   def update_container_state(v: Boolean)  = this.container_state = this.container_state  :+ v
   def change_container_step(v: Int)       = this.container_step(this.container_step.length-1) = v
@@ -80,6 +84,7 @@ class BPStation(val bp: BProcess) {
                         new_space:Int,
                         new_container_step: Array[Int],
                         new_expand_step: Array[Int],
+                        new_spaces_ids:Array[Int],
                         new_started:Boolean,
                         new_finished:Boolean,
                         new_inspace:Boolean,
@@ -94,6 +99,7 @@ class BPStation(val bp: BProcess) {
                         space = new_space
                         container_step = new_container_step
                         expand_step = new_expand_step
+                        spaces_ids = new_spaces_ids
                         started = new_started
                         finished = new_finished
                         inspace = new_inspace
