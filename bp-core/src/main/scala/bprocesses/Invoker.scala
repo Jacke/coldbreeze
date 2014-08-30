@@ -169,8 +169,9 @@ def move:Unit = {
                                   invoked   = true,
                                   expanded  = false,
                                   container = false))
-
-      toStation(bp).update_step(station.step + 1)
+      if (!station.paused) {
+        toStation(bp).update_step(station.step + 1)
+      }
       // Sygnal step inc elem invoked
 
       if (station.isInFront | station.inspace) {
@@ -182,7 +183,7 @@ def move:Unit = {
 }
 /*** Instruction execution */
   def front(b: ProcElems) = b.invoke
-  def thru_container = runContainer(bp.spaces(station.space-1),station.contStepVal) // BUG
+  def thru_container = runContainer(bp.getSpaceById(station.spaces_ids.last),station.contStepVal) //runContainer(bp.spaces(station.space-1),station.contStepVal) // BUG
   def thru_expander  =  { }
 
  def runContainer(space: Space, con_step: Int) {
@@ -258,7 +259,8 @@ def move:Unit = {
         station.flush_container_state
         station.flush_expand_state
         
-        station.update_space(station.space - 1) } 
+        station.update_space(station.space - 1)
+        station.del_space_id(station.spaces_ids.last) } 
       else 
       { 
         moveUpFrontSpace 

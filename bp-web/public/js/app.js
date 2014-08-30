@@ -17,7 +17,10 @@ var minorityApp =
       'ngAnimate', 'toaster',
       'angular-underscore',
       'ui.bootstrap',
-      'ui.select'
+      'ui.select',
+      'ui.sortable',
+      'angularMoment',
+      'ui.tree'
     ]
   );
 

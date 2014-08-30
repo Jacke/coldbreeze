@@ -26,8 +26,10 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
     Action { implicit request =>
       Ok(
         Routes.javascriptRouter(varName)(
-          routes.javascript.CustomLoginController.login//Application.login
-          
+          routes.javascript.CustomLoginController.login,
+            routes.javascript.BusinessProcessController.frontElems,
+            routes.javascript.BusinessProcessController.spaces,
+            routes.javascript.Application.index
           // TODO Add your routes here
         )
       ).as(JAVASCRIPT)

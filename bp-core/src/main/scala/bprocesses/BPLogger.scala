@@ -79,10 +79,8 @@ class BPLogger {
     logs.find(log => log.order == el.order && log.invoked == false).get.expanded
   }
   def valChanged(el: ProcElems):Boolean = {
-    val target = logs.find(log => log.element == el)
-    if (target.isDefined) {
-      el.values != target.get.composite
-    } else false
+    val similar_targets = logs.filter(log => log.element == el)
+    similar_targets.map(tg => tg.composite != el.values).foldLeft(false)(_ || _)
   }
 
   /**
@@ -91,8 +89,9 @@ class BPLogger {
    * @return
    */
   def valChanger(el: ProcElems):CompositeValues = {
-    val target = logs.find(log => log.element == el)
-    target.get.composite.get
+    val similar_targets = logs.filter(log => log.element == el)
+    similar_targets.filter(tg => tg.composite != el.values).head.composite.get
+
   }
 
   def updateExpChecker(el: ProcElems):Boolean = {

@@ -16,7 +16,8 @@ minorityAppServices.factory(
   });
 
 
-var baseUrl = 'http://localhost\\:9000';
+var baseUrl = jsRoutes.controllers.Application.index().absoluteURL();
+//'http://localhost\\:9000';
 
 minorityAppServices.factory('AuthInterceptor', function ($window, $q) {
     return {
@@ -46,13 +47,13 @@ minorityAppServices.factory('AuthInterceptor', function ($window, $q) {
 **  Processes FACTORY
 */
 minorityAppServices.factory('BProcessesFactory', function ($resource) {
-    return $resource(baseUrl + '/bprocesses', {}, {
+    return $resource(baseUrl + 'bprocesses', {}, {
         query: { method: 'GET', isArray: true },
         create: { method: 'POST' }
     })
 });
 minorityAppServices.factory('BProcessFactory', function ($resource) {
-    return $resource(baseUrl + '/bprocess/:id/info', {}, {
+    return $resource(baseUrl + 'bprocess/:id/info', {}, {
         show: { method: 'GET', params: { id: '@id'} },
         update: { method: 'PUT', params: {id: '@id'} },
         delete: { method: 'DELETE', params: {id: '@id'} }
@@ -84,13 +85,13 @@ minorityAppServices.factory('BProcessFactory', function ($resource) {
 
 */
 minorityAppServices.factory('BPElemsFactory', function ($resource) {
-    return $resource(baseUrl + '/bprocess/:BPid/elements', {}, {
+    return $resource(baseUrl + 'bprocess/:BPid/elements', {}, {
         query: { method: 'GET', isArray: true },
         create: { method: 'POST', params: {id: '@BPid'}  }
     })
 });
 minorityAppServices.factory('BPElemFactory', function ($resource) {
-    return $resource(baseUrl + '/bprocess/:BPid/element/:id', {}, {
+    return $resource(baseUrl + 'bprocess/:BPid/element/:id', {}, {
         show: { method: 'GET' },
         update: { method: 'PUT', params: {id: '@id', BPid: '@bprocess'} },
         delete: { method: 'DELETE', params: {id: '@id', BPid: '@bprocess'} }
@@ -98,26 +99,26 @@ minorityAppServices.factory('BPElemFactory', function ($resource) {
 });
 
 minorityAppServices.factory('BPSpacesFactory', function ($resource) {
-    return $resource(baseUrl + '/bprocess/:BPid/spaces', {}, {
+    return $resource(baseUrl + 'bprocess/:BPid/spaces', {}, {
         query: { method: 'GET', isArray: true },
         create: { method: 'POST' }
     })
 });
 minorityAppServices.factory('BPSpaceFactory', function ($resource) {
-    return $resource(baseUrl + '/bprocess/:BPid/space/:id', {}, {
+    return $resource(baseUrl + 'bprocess/:BPid/space/:id', {}, {
         show: { method: 'GET' },
         update: { method: 'PUT', params: {id: '@id', BPid: '@bprocess'} },
         delete: { method: 'DELETE', params: {id: '@id', BPid: '@bprocess'} }
     })
 });
 minorityAppServices.factory('BPSpaceElemsFactory', function ($resource) {
-    return $resource(baseUrl + '/bprocess/:BPid/space_elems', {}, {
+    return $resource(baseUrl + 'bprocess/:BPid/space_elems', {}, {
         query: { method: 'GET', isArray: true },
         create: { method: 'POST' }
     })
 });
 minorityAppServices.factory('BPSpaceElemFactory', function ($resource) {
-    return $resource(baseUrl + '/bprocess/:BPid/space_elem/:id', {}, {
+    return $resource(baseUrl + 'bprocess/:BPid/space_elem/:id', {}, {
         show: { method: 'GET' },
         update: { method: 'PUT', params: {id: '@id', BPid: '@bprocess'} },
         delete: { method: 'DELETE', params: {id: '@id', BPid: '@bprocess'} }
@@ -129,18 +130,18 @@ minorityAppServices.factory('BPSpaceElemFactory', function ($resource) {
 ** BProc stations FACTORY
 */
 minorityAppServices.factory('BPServicesFactory', function ($resource) {
-    return $resource(baseUrl + '/bprocesses/services', {}, {
+    return $resource(baseUrl + 'bprocesses/services', {}, {
         query: { method: 'GET', isArray: true },
     })
 });
 minorityAppServices.factory('BPStationsFactory', function ($resource) {
-    return $resource(baseUrl + '/bprocess/:BPid/stations', {}, {
+    return $resource(baseUrl + 'bprocess/:BPid/stations', {}, {
         query: { method: 'GET', isArray: true },
         create: { method: 'POST' }
     })
 });
 minorityAppServices.factory('BPStationFactory', function ($resource) {
-    return $resource(baseUrl + '/bprocess/:BPid/station/:id', {}, {
+    return $resource(baseUrl + 'bprocess/:BPid/station/:id', {}, {
         show: { method: 'GET' },
         update: { method: 'PUT', params: {id: '@id'} },
         delete: { method: 'DELETE', params: {id: '@id'} }
@@ -152,20 +153,20 @@ minorityAppServices.factory('BPStationFactory', function ($resource) {
 ** BPLoggers FACTORY
 */
 minorityAppServices.factory('BPLogsFactory', function ($resource) {
-    return $resource(baseUrl + '/bprocess/:BPid/logs', {}, {
+    return $resource(baseUrl + 'bprocess/:BPid/logs', {}, {
         query: { method: 'GET', isArray: true },
         create: { method: 'POST' }
     })
 });
 minorityAppServices.factory('BPLogFactory', function ($resource) {
-    return $resource(baseUrl + '/bprocess/:BPid/log/:id', {}, {
+    return $resource(baseUrl + 'bprocess/:BPid/log/:id', {}, {
         show: { method: 'GET' },
         update: { method: 'PUT', params: {id: '@id'} },
         delete: { method: 'DELETE', params: {id: '@id'} }
     })
 });
 minorityAppServices.factory('BPLogStationFactory', function ($resource) {
-    return $resource(baseUrl + '/bprocess/:BPid/logs/:station_id', {}, {
+    return $resource(baseUrl + 'bprocess/:BPid/logs/:station_id', {}, {
         show: { method: 'GET' },
         update: { method: 'PUT', params: {station_id: '@station_id'} },
         delete: { method: 'DELETE', params: {station_id: '@station_id'} }
@@ -178,7 +179,7 @@ minorityAppServices.factory('BPLogStationFactory', function ($resource) {
 */
 
 minorityAppServices.factory('BPRequestFactory', function ($resource) {
-    return $resource(baseUrl + '/bprocess/:BPid/request/:station_id', {}, {
+    return $resource(baseUrl + 'bprocess/:BPid/request/:station_id', {}, {
         //query: { method: 'GET', isArray: true },
         scheme: { method: 'GET'}, //, params: {bprocess_id: '@id'} },
         send: { method: 'POST' }
@@ -194,13 +195,13 @@ minorityAppServices.factory('BPRequestFactory', function ($resource) {
 ** Business
 */
 minorityAppServices.factory('BusinessesFactory', function ($resource) {
-    return $resource(baseUrl + '/businesses/', {}, {
+    return $resource(baseUrl + 'businesses/', {}, {
         query: { method: 'GET', isArray: true },
         create: { method: 'POST' }
     })
 });
 minorityAppServices.factory('BusinessFactory', function ($resource) {
-    return $resource(baseUrl + '/business/:id', {}, {
+    return $resource(baseUrl + 'business/:id', {}, {
         show: { method: 'GET' },
         update: { method: 'PUT', params: {id: '@id'} },
         delete: { method: 'DELETE', params: {id: '@id'} }
@@ -212,13 +213,13 @@ minorityAppServices.factory('BusinessFactory', function ($resource) {
 ** Clients
 */
 minorityAppServices.factory('ClientsFactory', function ($resource) {
-    return $resource(baseUrl + '/business/:BID/clients/', {}, {
+    return $resource(baseUrl + 'business/:BID/clients/', {}, {
         query: { method: 'GET', isArray: true },
         create: { method: 'POST' }
     })
 });
 minorityAppServices.factory('ClientFactory', function ($resource) {
-    return $resource(baseUrl + '/business/:BID/client/:id', {}, {
+    return $resource(baseUrl + 'business/:BID/client/:id', {}, {
         show: { method: 'GET' },
         update: { method: 'PUT', params: {id: '@id'} },
         delete: { method: 'DELETE', params: {id: '@id'} }
@@ -230,7 +231,7 @@ minorityAppServices.factory('ClientFactory', function ($resource) {
 ** Employees
 */
 minorityAppServices.factory('EmployeesFactory', function ($resource) {
-    return $resource(baseUrl + '/business/:BID/employees/', {}, {
+    return $resource(baseUrl + 'business/:BID/employees/', {}, {
         query: { method: 'GET', isArray: true },
         create: { method: 'POST' }
     })

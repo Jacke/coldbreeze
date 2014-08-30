@@ -68,7 +68,7 @@
 <td> {{ log.invoked }} </td>
 <td> {{ log.expanded }} </td>
 <td> {{ log.container }} </td>
-<td> {{ log.date }} </td>
+<td> {{ log.date | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }} </td>
 <td> {{ log.step }} </td>
 <td> {{ log.comps }} </td>
             </tr>

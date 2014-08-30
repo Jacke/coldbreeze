@@ -2,66 +2,6 @@
 <link rel="stylesheet" type="text/css" href="css/component.css" />
 
 
-<div class="flex ng-scope">
-<div class="row">
-  <div class="column-7--hand">
-    <div class="box flexcontainer">
-    <a href="#" tooltip="Some container" tooltip-placement="bottom">Cn</a>
-      <div class="row">
-        <div class="column-9--hand">
-          
-          <div class="box--first flexcontainer">
-            <div class="row">
-              <div class="column-4--hand">
-                <div class="box--nested">
-                </div>
-              </div>
-              <div class="column-8--hand">
-                <a href="#" tooltip="Some block">
-                  Block title
-                  <div class="box--nested">
-                  </div>
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="column-3--hand">
-          <div class="box--first flexcontainer">
-            <div class="row">
-              <div class="column-auto--hand">
-                <div class="box--nested">
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="column-5--hand">
-    <div class="box flexcontainer">
-      <div class="row">
-        <div class="column-12--hand">
-          <div class="box--first flexcontainer">
-            <div class="row"><div class="column-6--hand">
-              <div class="box--nested">
-              </div>
-            </div>
-            <div class="column-6--hand">
-              <a href="#" tooltip="Some block">
-              <div class="box--nested">
-              </div></a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-
-</div>
 
 
 
@@ -114,8 +54,7 @@ var ModalEffects = (function() {
 
 })();*/
 </script>
-<!-- All modals added here for the demo. You would of course just have one, dynamically created -->
-
+  <!--
     <div class="md-modal md-effect-2" id="modal-2">
       <div class="md-content">
         <h3>Modal Dialog</h3>
@@ -381,7 +320,7 @@ var ModalEffects = (function() {
           <button class="md-close">Close me!</button>
         </div>
       </div>
-    </div>
+    </div>-->
     <div class="container">
       <!--
       <div class="main clearfix">
@@ -407,9 +346,9 @@ var ModalEffects = (function() {
           <button class="md-trigger md-setperspective" data-modal="modal-19">Slip from top</button>
         </div>
       </div>
-    </div>-->
-    <div class="md-overlay"></div><!-- the overlay element -->
-
+    </div>
+    <div class="md-overlay"></div>
+-->
 
 
 
@@ -424,6 +363,31 @@ var ModalEffects = (function() {
 
 
 <div class="span8 container">
+  
+  <div ui-tree>
+  <ol ui-tree-nodes="" ng-model="trees">
+    <li ng-repeat="trr in trees" ui-tree-node>
+      <div ui-tree-handle>
+        {{trr.title}}
+      </div>
+      <ol ui-tree-nodes="" ng-model="trr.nodes">
+        <li ng-repeat="node in trr.nodes" ui-tree-node>
+          <div ui-tree-handle>
+            Space: {{node.index}}
+          <ol ui-tree-nodes="" ng-model="node.space_elem">
+            <li ng-repeat="spelem in node.space_elem" ui-tree-node>
+              <div ui-tree-handle>
+               SpaceElem {{spelem.title}}
+              </div>
+            </li>
+          </ol>
+          </div>
+        </li>
+    </li>
+  </ol>
+</div>
+
+
   <ul class="nav nav-tabs" role="tablist">
     <li><a href="" role="tab" data-toggle="tab" ng:click="newselected=1">New Front Element</a></li>
   </ul>
@@ -445,13 +409,16 @@ var ModalEffects = (function() {
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">business:</label>
       <div class="controls">
-        <input type="number" id="inputBusinessId" ng-model="newBpelem.business"/>
+        <input type="hidden" name="value" ng-model="newBpelem.business" value="1">
+        <!-- <input type="number" id="inputBusinessId" ng-model="newBpelem.business"/> -->
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">bprocess:</label>
       <div class="controls">
-        <input type="number" id="inputBusinessId" ng-model="newBpelem.bprocess"/>
+        <input type="number" id="inputBusinessId" ng-model="newBpelem.bprocess"/> 
+       
+        <input type="hidden" name="value" ng-model="newBpelem.bprocess" value="{{ BPid }}">
       </div>
     </div>
     <div class="control-group">
@@ -492,7 +459,10 @@ var ModalEffects = (function() {
     </div>
     <div class="control-group">
       <div class="controls">
+         {{ newBpelem | json }}
+        <a ng-click="templateElem('confirm', newBpelem)" class="btn btn-small btn-primary">Confirm block template fill</a>
         <a ng-click="createNewElem()" class="btn btn-small btn-primary">create new Elem</a>
+        <a ng:click="newselected=0" class="btn btn-small btn-primary">Cancel</a>
       </div>
     </div>
   </form>
@@ -539,13 +509,13 @@ var ModalEffects = (function() {
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">business:</label>
       <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="bpelem.business"/>
+        <input type="hidden" name="value" ng-model="bpelem.business" value="1">
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">bprocess:</label>
       <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="bpelem.bprocess"/>
+        <input type="hidden" name="value" ng-model="bpelem.bprocess" value="{{ BPid }}">
       </div>
     </div>
     <div class="control-group">
@@ -587,6 +557,7 @@ var ModalEffects = (function() {
     <div class="control-group">
       <div class="controls">
         <a ng-click="cancel()" class="btn btn-small">cancel</a>
+        <a ng-click="templateElem('confirm', bpelem)" class="btn btn-small btn-primary">Confirm block template fill</a>
         <a ng-click="updateElem(bpelem)" class="btn btn-small btn-primary">update Elem</a>
         <a ng-click="deleteElem(bpelem)" class="btn btn-small btn-primary btn-danger">delete Elem</a>
       </div>
@@ -625,13 +596,14 @@ var ModalEffects = (function() {
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">business:</label>
       <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="bpelem.business"/>
+
+        <input type="hidden" name="value" ng-model="bpelem.business" value="1">
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">bprocess:</label>
       <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="bpelem.bprocess"/>
+        <input type="hidden" name="value" ng-model="bpelem.bprocess" value="{{ BPid }}">
       </div>
     </div>
     <div class="control-group">
@@ -673,6 +645,8 @@ var ModalEffects = (function() {
     <div class="control-group">
       <div class="controls">
         <a ng-click="cancel()" class="btn btn-small">cancel</a>
+        <a ng-click="templateElem('confirm', bpelem)" class="btn btn-small btn-primary">Confirm block template fill</a>
+
         <a ng-click="updateElem(bpelem)" class="btn btn-small btn-primary">update Elem</a>
       </div>
     </div>
@@ -699,13 +673,14 @@ var ModalEffects = (function() {
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">business:</label>
       <div class="controls">
-        <input type="number" id="inputBusinessId" ng-model="newBpelem.business"/>
+        <input type="hidden" name="value" ng-model="newBpelem.business" value="1">
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">bprocess:</label>
       <div class="controls">
-        <input type="number" id="inputBusinessId" ng-model="newBpelem.bprocess"/>
+       
+        <input type="hidden" name="value" ng-model="newBpelem.bprocess" value="{{ BPid }}">
       </div>
     </div>
     <div class="control-group">
@@ -746,6 +721,9 @@ var ModalEffects = (function() {
     </div>
     <div class="control-group">
       <div class="controls">
+         {{ newBpelem | json }}
+        <a ng-click="templateElem('confirm', newBpelem)" class="btn btn-small btn-primary">Confirm block template fill</a>
+
         <a ng-click="createNewElem()" class="btn btn-small btn-primary">create new Elem</a>
       </div>
     </div>
@@ -792,7 +770,7 @@ var ModalEffects = (function() {
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">space.bprocess:</label>
       <div class="controls">
-        <input type="number" id="inputBusinessId" ng-model="newSpace.bprocess"/>
+        <input type="hidden" name="value" ng-model="newSpace.bprocess" value="{{ BPid }}">
       </div>
     </div>
     <div class="control-group">
@@ -835,6 +813,7 @@ var ModalEffects = (function() {
     <div class="control-group">
       <div class="controls">
         <a ng-click="createNewSpace()" class="btn btn-small btn-primary">create new Space</a>
+        <a ng:click="newselected=0" class="btn btn-small btn-primary">Cancel</a>
       </div>
     </div>
   </form>
@@ -866,7 +845,7 @@ var ModalEffects = (function() {
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">space.bprocess:</label>
       <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="space.bprocess"/>
+        <input type="hidden" name="value" ng-model="space.bprocess" value="{{ BPid }}">
       </div>
     </div>
     <div class="control-group">
@@ -963,13 +942,13 @@ var ModalEffects = (function() {
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">business:</label>
       <div class="controls">
-        <input type="number" id="inputBusinessId" ng-model="newSpaceelem.business"/>
+        <input type="hidden" name="value" ng-model="newSpaceelem.business" value="1">
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">bprocess:</label>
       <div class="controls">
-        <input type="number" id="inputBusinessId" ng-model="newSpaceelem.bprocess"/>
+        <input type="hidden" name="value" ng-model="newSpaceelem.bprocess" value="{{ BPid }}">
       </div>
     </div>
     <div class="control-group">
@@ -1022,6 +1001,7 @@ var ModalEffects = (function() {
     <div class="control-group">
       <div class="controls">
         <a ng-click="createSpaceElem()" class="btn btn-small btn-primary">create new spaceelem</a>
+        <a ng:click="newselected=0" class="btn btn-small btn-primary">Cancel</a>
       </div>
     </div>
   </form>
@@ -1063,13 +1043,13 @@ var ModalEffects = (function() {
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">business:</label>
       <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="spaceelem.business"/>
+        <input type="hidden" name="value" ng-model="spaceelem.business" value="1">
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">bprocess:</label>
       <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="spaceelem.bprocess"/>
+        <input type="hidden" name="value" ng-model="spaceelem.bprocess" value="{{ BPid }}">
       </div>
     </div>
     <div class="control-group">
@@ -1224,4 +1204,68 @@ var ModalEffects = (function() {
   </table>
   <a ng-click="createNewBP()" class="btn btn-small">create new BPElement</a>
   <a ng-click="createNewSpace()" class="btn btn-small">create new Space</a>
+</div>
+
+
+<!--
+
+<div class="flex ng-scope">
+<div class="row">
+  <div class="column-7--hand">
+    <div class="box flexcontainer">
+    <a href="#" tooltip="Some container" tooltip-placement="bottom">Cn</a>
+      <div class="row">
+        <div class="column-9--hand">
+          
+          <div class="box--first flexcontainer">
+            <div class="row">
+              <div class="column-4--hand">
+                <div class="box--nested">
+                </div>
+              </div>
+              <div class="column-8--hand">
+                <a href="#" tooltip="Some block">
+                  Block title
+                  <div class="box--nested">
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="column-3--hand">
+          <div class="box--first flexcontainer">
+            <div class="row">
+              <div class="column-auto--hand">
+                <div class="box--nested">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="column-5--hand">
+    <div class="box flexcontainer">
+      <div class="row">
+        <div class="column-12--hand">
+          <div class="box--first flexcontainer">
+            <div class="row"><div class="column-6--hand">
+              <div class="box--nested">
+              </div>
+            </div>
+            <div class="column-6--hand">
+              <a href="#" tooltip="Some block">
+              <div class="box--nested">
+              </div></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
 </div>-->

@@ -129,6 +129,7 @@ object BPLoggerDAO {
    */
   def from_origin_lgr(logger: BPLogger, bp_dto: BProcessDTO, station_id:Int = 1, spaces: List[BPSpaceDTO] = List.empty[BPSpaceDTO]):Option[List[BPLoggerDTO]] = {
 
+     println(logger)
     val result:List[BPLoggerDTO] = logger.logs.toList.map { lgr =>
 
           BPLoggerDTO(
@@ -243,6 +244,15 @@ object BPLoggerDAO {
    //   ESCAPE THEM AND ADD ONLY NEW
 
       bploggers returning bploggers.map(_.id) += s //BPLoggerDTO.unapply(s).get
+  }
+
+  def pull_object_from(station_id: Int, s:List[BPLoggerDTO]) = database withSession {
+    implicit session ⇒
+      val q3 = for { logger <- bploggers if logger.station === station_id } yield logger
+      q3.delete
+      s.foreach(log =>
+        bploggers returning bploggers.map(_.id) += log //BPLoggerDTO.unapply(log).get
+      )
   }
   /**
    * Find a specific entity by id.

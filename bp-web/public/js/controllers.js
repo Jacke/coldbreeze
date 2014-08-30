@@ -77,7 +77,7 @@ minorityControllers.controller('ProfileController', ['$scope', '$http', '$window
         console.log(token);//$http.defaults.headers.common['X-Auth-Token'] = token;
         //$http.defaults.headers.common['Access_Name'] = 'John'; 
  
-        $http.post('http://localhost:9000/whoami', {headers:  {'X-Auth-Token': token, 'Access_Name': 'John'}})
+        $http.post(jsRoutes.controllers.Application.index().absoluteURL() + 'whoami', {headers:  {'X-Auth-Token': token, 'Access_Name': 'John'}})
           .success(function (profile) {
               // Stores the token until the user closes the browser window.
               console.log(profile);
@@ -105,7 +105,7 @@ minorityControllers.controller('UserInfoCtrl', function ($rootScope, $scope, $ht
         $http.defaults.headers.common['X-Auth-Token'] = token;
         $http.defaults.headers.common['Access_Name'] = 'John'; 
  
-        $http.post('http://localhost:9000/whoami', {headers:  {'X-Auth-Token': token, 'Access_Name': 'John'}})
+        $http.post(jsRoutes.controllers.Application.index().absoluteURL() + 'whoami', {headers:  {'X-Auth-Token': token, 'Access_Name': 'John'}})
           .success(function (profile) {
               // Stores the token until the user closes the browser window.
               console.log(profile);
@@ -160,7 +160,7 @@ minorityControllers.controller('BProcessListCtrl', ['$scope', '$http', '$filter'
   $scope.bprocesses = BProcessesFactory.query();
   $scope.stations = BPStationsFactory.query();
 
-  $scope.bpElemLength = $http.get('http://localhost:9000/bprocess/elems_length')
+  $scope.bpElemLength = $http.get(jsRoutes.controllers.Application.index().absoluteURL() + 'bprocess/elems_length')
           .success(function (data) {
               // Stores the token until the user closes the browser window.
               console.log(data);
@@ -220,6 +220,22 @@ function ($scope, $routeParams, BProcessFactory, BPStationsFactory, BPRequestFac
   }
   $scope.filterExpression = function(station) {
   return (station.finished != true && station.paused == true);
+  }
+  $scope.haltStation = function (station_id) {
+   $http({
+      url: 'bprocess/' + $routeParams.BPid + '/station/' + station_id + '/halt',
+      method: "POST",
+      data: {  }
+      })
+      .then(function(response) {
+        // success
+        console.log(response);
+        $scope.stations = BPStationsFactory.query({ BPid: $routeParams.BPid });
+      }, 
+      function(response) { // optional
+        // failed
+      }
+      );
   }
   $scope.runInitially = function () {
       
@@ -305,8 +321,8 @@ function ($scope, $routeParams, BProcessFactory, BPStationsFactory, BPRequestFac
   $scope.bprocess = BProcessFactory.show({ id: $routeParams.BPid });
 }]);
 
-minorityControllers.controller('BProcessDetailCtrl', ['$scope', '$routeParams', 'BProcessFactory', '$location', '$http',
-function ($scope, $routeParams, BProcessFactory, $location, $http) {
+minorityControllers.controller('BProcessDetailCtrl', ['$scope', '$routeParams', 'BPServicesFactory', 'BProcessFactory', '$location', '$http',
+function ($scope, $routeParams, BPServicesFactory, BProcessFactory, $location, $http) {
 
 
   $scope.updateBP = function () {
@@ -339,6 +355,7 @@ function ($scope, $routeParams, BProcessFactory, $location, $http) {
   $scope.invoke_res = [];
   $scope.bpId = $routeParams.id;
   $scope.selectedTab = 1;
+  $scope.procServices = BPServicesFactory.query();
   $scope.bprocess = BProcessFactory.show({id: $routeParams.id});
 }]);
 
@@ -368,12 +385,50 @@ minorityControllers.controller('BPCreationCtrl', ['$scope', '$http', 'BProcesses
  * BP Elements
  */
 // INDEX
-minorityControllers.controller('BPelementListCtrl', ['$scope', '$routeParams', 'BPElemsFactory','BPElemFactory', 'BPSpacesFactory', 'BPSpaceFactory', 'BPSpaceElemsFactory', 'BPSpaceElemFactory', '$location', '$route', 
-  function ($scope, $routeParams, BPElemsFactory, BPElemFactory, BPSpacesFactory, BPSpaceFactory, BPSpaceElemsFactory, BPSpaceElemFactory, $location, $route) {
+minorityControllers.controller('BPelementListCtrl', ['$scope', '$q', '$routeParams', 'BPElemsFactory','BPElemFactory', 'BPSpacesFactory', 'BPSpaceFactory', 'BPSpaceElemsFactory', 'BPSpaceElemFactory', '$location', '$route', 
+  function ($scope, $q, $routeParams, BPElemsFactory, BPElemFactory, BPSpacesFactory, BPSpaceFactory, BPSpaceElemsFactory, BPSpaceElemFactory, $location, $route) {
   $scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
   $scope.spaces =  BPSpacesFactory.query({ BPid: $route.current.params.BPid });
   $scope.spaceelems = BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid });
 
+  /* TREE BUILDER */
+  $scope.bpelems.$promise.then(function(data) {
+    $scope.spaces.$promise.then(function(data2) {
+      $scope.spaceelems.$promise.then(function(data3) {
+        $scope.builder();
+  
+  });
+  });
+  });
+
+  $scope.trees = undefined;
+
+  $scope.builder = function () {
+    var bpelemsCopy = angular.copy($scope.bpelems);
+    var spacesCopy = angular.copy($scope.spaces);
+    var spaceelemsCopy = angular.copy($scope.spaceelems);
+    $scope.trees = _.forEach(bpelemsCopy, function(val) { 
+    console.log("filtered");
+    console.log(_.filter(spacesCopy, function(space){ return space.brick_front == val.id || space.brick_nested == val.id; }));
+    console.log(val.id);
+    val.spaced = 5;
+    val.nodes = _.filter(spacesCopy, function(space){ return space.brick_front == val.id || space.brick_nested == val.id; });
+  });
+    _.forEach($scope.trees, function(tree) { 
+      var spaceFetch = function () {
+        _.forEach(tree.nodes, function(space) {
+           space.space_elem = _.filter(spaceelemsCopy, function(spelem){ return spelem.space_owned == space.id; });
+        });
+      };
+      spaceFetch();
+      spaceFetch();
+      spaceFetch();
+      spaceFetch();
+      spaceFetch();
+      // TODO: Add recursive call
+    });
+  }
+  
   /* callback for ng-click 'editUser': */
   $scope.editElem = function (bpId) {
     $location.path('/bp-detail/' + bpId + '/edit');
@@ -390,13 +445,30 @@ minorityControllers.controller('BPelementListCtrl', ['$scope', '$routeParams', '
     $location.path('/bprocess/new');
   };
 
+
+  /* 
+   Elements template
+  */
   $scope.newBpelem = { comps: [ { "a_string" : null} ] }
   $scope.newSpaceelem = { comps: [ { "a_string" : null} ] }
-  $scope.newBpelem = { desc: "" }
-  $scope.newSpaceelem = { desc:  "" }
+  $scope.templateElem = function (template_id, elem) {
+    // Confirm
+    if (template_id == "confirm") {
+      elem.b_type = "block"
+      elem.type_title = "confirm"
+      elem.comps = [ { "a_bool" : false, "b_bool": false} ]; 
+    }
+    // Container
+    // ResAct
+  };
+  $scope.templateSpaceelem = function (template_id) {
+    // Confirm
+    // Container
+    // ResAct
+  };
 
-
-
+  $scope.newBpelem = { desc: "", bprocess: parseInt($route.current.params.BPid), business: 1 }
+  $scope.newSpaceelem = { desc:  "", bprocess: parseInt($route.current.params.BPid), business: 1 }
 
 
 
@@ -464,7 +536,7 @@ minorityControllers.controller('BPelementListCtrl', ['$scope', '$routeParams', '
     console.log(result);
     result
   }
-  $scope.BPid = $routeParams.id;
+  $scope.BPid = $route.current.params.BPid;
  
 }]);
 

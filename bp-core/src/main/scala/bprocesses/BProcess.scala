@@ -97,6 +97,7 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
     case "expands" => station.expStepVal
   }
   def getSpaceByIndex(index: Int) = spaces(index-1)
+  def getSpaceById(id: Int) = spaces.find(space => space.id == Some(id)).get
   def getSpaceQuantity = spaces.length
 
 /**

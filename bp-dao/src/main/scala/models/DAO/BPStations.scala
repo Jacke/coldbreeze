@@ -155,7 +155,7 @@ def update(id: Int, entity: BPStationDTO):Boolean = {
     database withSession { implicit session =>
       findById(id) match {
       case Some(e) => {
-        bpstations.where(_.id === id).update(e.copy(state = false))
+        bpstations.where(_.id === id).update(e.copy(state = false, finished = true))
         true
       }
       case None => false
