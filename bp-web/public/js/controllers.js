@@ -459,11 +459,26 @@ minorityControllers.controller('BPelementListCtrl', ['$scope', '$q', '$routePara
       elem.comps = [ { "a_bool" : false, "b_bool": false} ]; 
     }
     // Container
+    if (template_id == "container") {
+      elem.b_type = "brick"
+      elem.type_title = "container_brick"
+      elem.comps = [ { "a_bool" : false, "b_bool": false} ]; 
+    }
     // ResAct
   };
   $scope.templateSpaceelem = function (template_id) {
-    // Confirm
+   // Confirm
+    if (template_id == "confirm") {
+      elem.b_type = "block"
+      elem.type_title = "confirm"
+      elem.comps = [ { "a_bool" : false, "b_bool": false} ]; 
+    }
     // Container
+    if (template_id == "container") {
+      elem.b_type = "brick"
+      elem.type_title = "container_brick"
+      elem.comps = [ { "a_bool" : false, "b_bool": false} ]; 
+    }
     // ResAct
   };
 
@@ -561,10 +576,65 @@ minorityControllers.controller('BPelementCreationCtrl', ['$scope', 'BPElemsFacto
  * BP Station
  */
 // INDEX
-minorityControllers.controller('BPstationListCtrl', ['$scope', '$filter', 'BProcessesFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
-  function ($scope, $filter, BProcessesFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
+minorityControllers.controller('BPstationListCtrl', ['$scope', '$filter', 'BProcessesFactory','BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
+  function ($scope, $filter, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
 
+  $scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
+  $scope.spaces =  BPSpacesFactory.query({ BPid: $route.current.params.BPid });
+  $scope.spaceelems = BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid });
   /* callback for ng-click 'editUser': */
+  $scope.bpelems.$promise.then(function(data) {
+    $scope.spaces.$promise.then(function(data2) {
+      $scope.spaceelems.$promise.then(function(data3) {
+        $scope.builder();
+  
+  });
+  });
+  });
+
+  $scope.trees = undefined;
+
+  $scope.builder = function () {
+    var bpelemsCopy = angular.copy($scope.bpelems);
+    var spacesCopy = angular.copy($scope.spaces);
+    var spaceelemsCopy = angular.copy($scope.spaceelems);
+    $scope.trees = _.forEach(bpelemsCopy, function(val) { 
+    console.log("filtered");
+    console.log(_.filter(spacesCopy, function(space){ return space.brick_front == val.id || space.brick_nested == val.id; }));
+    console.log(val.id);
+    val.spaced = 5;
+    val.nodes = _.filter(spacesCopy, function(space){ return space.brick_front == val.id || space.brick_nested == val.id; });
+  });
+    _.forEach($scope.trees, function(tree) { 
+      var spaceFetch = function () {
+        _.forEach(tree.nodes, function(space) {
+           space.space_elem = _.filter(spaceelemsCopy, function(spelem){ return spelem.space_owned == space.id; });
+        });
+      };
+      spaceFetch();
+      spaceFetch();
+      spaceFetch();
+      spaceFetch();
+      spaceFetch();
+      // TODO: Add recursive call
+    });
+  }
+
+  $scope.elemDetail = function (elemId, type) {
+    $scope.bpelems.$promise.then(function(data) {
+    $scope.spaceelems.$promise.then(function(data3) {
+        if (type == 'front') {
+          console.log(_.find(data, function (elem) { return elem.id == elemId;}));
+          _.find(data, function (elem) { return elem.id == elemId;});
+        } else {
+          console.log(_.find(data3, function (elem) {return elem.id == elemId;}));
+          _.find(data3, function (elem) {return elem.id == elemId;});     
+        }
+   });
+  });
+}
+    
+  
 
   $scope.editElem = function (bpId) {
     $location.path('/bp-detail/' + bpId + '/edit');

@@ -364,7 +364,7 @@ var ModalEffects = (function() {
 
 <div class="span8 container">
   
-  <div ui-tree>
+<div ui-tree>
   <ol ui-tree-nodes="" ng-model="trees">
     <li ng-repeat="trr in trees" ui-tree-node>
       <div ui-tree-handle>
@@ -377,7 +377,7 @@ var ModalEffects = (function() {
           <ol ui-tree-nodes="" ng-model="node.space_elem">
             <li ng-repeat="spelem in node.space_elem" ui-tree-node>
               <div ui-tree-handle>
-               SpaceElem {{spelem.title}}
+               SpaceElem: {{spelem.title}}
               </div>
             </li>
           </ol>
