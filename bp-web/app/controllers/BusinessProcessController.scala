@@ -178,7 +178,7 @@ def createFrontElem() = Action(BodyParsers.parse.json) { implicit request =>
   request.body.validate[UndefElement].map{ 
     case entity => ProcElemDAO.pull_object(entity) match {
             case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not update front element ${entity.title}")))
-            case _ =>  Ok(Json.toJson(Map("success" ->  s"Entity ${entity.title} has been updated")))
+            case _ =>  Ok(Json.toJson(_)))
           }
     }.recoverTotal{
       e => BadRequest("formWithErrors")
@@ -197,7 +197,7 @@ def createSpace() = Action(BodyParsers.parse.json) { implicit request =>
    request.body.validate[BPSpaceDTO].map{ 
     case entity => BPSpaceDAO.pull_object(entity) match {
             case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not update front element ${entity.index}")))
-            case _ =>  Ok(Json.toJson(Map("success" ->  s"Entity ${entity.index} has been updated")))
+            case _ =>  Ok(Json.toJson(_))
           }
     }.recoverTotal{
       e => BadRequest("formWithErrors")
@@ -214,7 +214,7 @@ def createSpaceElem() = Action(BodyParsers.parse.json) { implicit request =>
   request.body.validate[SpaceElementDTO].map{ 
     case entity => SpaceElemDAO.pull_object(entity) match {
             case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not update front element ${entity.title}")))
-            case _ =>  Ok(Json.toJson(Map("success" ->  s"Entity ${entity.title} has been updated")))
+            case _ =>  Ok(Json.toJson(_))
           }
     }.recoverTotal{
       e => BadRequest("formWithErrors")
@@ -236,7 +236,7 @@ def updateFrontElem(bpId: Int, elem_id: Int) = Action(BodyParsers.parse.json) { 
   request.body.validate[UndefElement].map{ 
     case entity => ProcElemDAO.update(elem_id,entity) match {
             case false =>  Ok(Json.toJson(Map("failure" ->  s"Could not update front element ${entity.title}")))
-            case _ =>  Ok(Json.toJson(Map("success" ->  s"Entity ${entity.title} has been updated")))
+            case _ =>  Ok(Json.toJson(entity.id))
           }
     }.recoverTotal{
       e => BadRequest("formWithErrors")
@@ -247,7 +247,7 @@ def updateSpace(id: Int, space_id: Int) = Action(BodyParsers.parse.json) { impli
   request.body.validate[BPSpaceDTO].map{ 
     case entity => BPSpaceDAO.update(space_id,entity) match {
             case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not update front element ${entity.id}")))
-            case _@x =>  Ok(Json.toJson(Map("success" ->  s"Entity ${x} has been updated")))
+            case _@x =>  Ok(Json.toJson(entity.id))
           }
     }.recoverTotal{
       e => BadRequest("formWithErrors")
@@ -257,7 +257,7 @@ def updateSpaceElem(id: Int, spelem_id: Int) = Action(BodyParsers.parse.json) { 
   request.body.validate[SpaceElementDTO].map{ 
     case entity => SpaceElemDAO.update(spelem_id,entity) match {
             case false =>  Ok(Json.toJson(Map("failure" ->  s"Could not update front element ${entity.title}")))
-            case _ =>  Ok(Json.toJson(Map("success" ->  s"Entity ${entity.title} has been updated")))
+            case _ =>  Ok(Json.toJson(entity.id))
           }
     }.recoverTotal{
       e => BadRequest("formWithErrors")
