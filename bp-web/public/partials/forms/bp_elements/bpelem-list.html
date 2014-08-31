@@ -360,28 +360,23 @@ var ModalEffects = (function() {
 
 
 
-
+<hr>
+<hr>
 
 <div class="span8 container">
   
 <div ui-tree>
   <ol ui-tree-nodes="" ng-model="trees">
     <li ng-repeat="trr in trees" ui-tree-node>
-      <div ui-tree-handle>
-        {{trr.title}}
-      </div>
+        id:{{trr.id}} — {{trr.title}}
       <ol ui-tree-nodes="" ng-model="trr.nodes">
         <li ng-repeat="node in trr.nodes" ui-tree-node>
-          <div ui-tree-handle>
             Space: {{node.index}}
           <ol ui-tree-nodes="" ng-model="node.space_elem">
             <li ng-repeat="spelem in node.space_elem" ui-tree-node>
-              <div ui-tree-handle>
-               SpaceElem: {{spelem.title}}
-              </div>
+               SpaceElem: id:{{spelem.id}} — {{spelem.title}}
             </li>
           </ol>
-          </div>
         </li>
     </li>
   </ol>
@@ -460,7 +455,8 @@ var ModalEffects = (function() {
     <div class="control-group">
       <div class="controls">
          {{ newBpelem | json }}
-        <a ng-click="templateElem('confirm', newBpelem)" class="btn btn-small btn-primary">Confirm block template fill</a>
+        <a ng-click="templateElem('container', newBpelem)" class="btn btn-small btn-primary">Container template fill</a>
+        <a ng-click="templateElem('confirm', newBpelem)" class="btn btn-small btn-primary">Confirm template fill</a>
         <a ng-click="createNewElem()" class="btn btn-small btn-primary">create new Elem</a>
         <a ng:click="newselected=0" class="btn btn-small btn-primary">Cancel</a>
       </div>
@@ -485,6 +481,18 @@ var ModalEffects = (function() {
       {{ bpelem.type_title }}
       {{ bpelem.order }}
       <pre>{{ bpelem.comps[0] | json }}</pre>
+      <div class="tab-pane active" id="edit" ng:show="bpelem.type_title == 'container_brick'">
+       <pre>{{ "xxx" }}</pre>
+      <div class="control-group">
+            <div class="controls">
+              <a ng-click="cancel()" class="btn btn-small">cancel</a>
+              <a ng-click="templateElem('container', bpelem)" class="btn btn-small btn-primary">Container template fill</a>
+              <a ng-click="templateElem('confirm', bpelem)" class="btn btn-small btn-primary">Confirm block template fill</a>
+              <a ng-click="updateElem(bpelem)" class="btn btn-small btn-primary">update Elem</a>
+              <a ng-click="deleteElem(bpelem)" class="btn btn-small btn-primary btn-danger">delete Elem</a>
+            </div>
+      </div>
+      </div>
     </div>
   <div class="tab-pane active" id="edit" ng:show="selected == 2">
   <form novalidate="novalidate" class="form-horizontal">
@@ -557,6 +565,7 @@ var ModalEffects = (function() {
     <div class="control-group">
       <div class="controls">
         <a ng-click="cancel()" class="btn btn-small">cancel</a>
+        <a ng-click="templateElem('container', bpelem)" class="btn btn-small btn-primary">Container template fill</a>
         <a ng-click="templateElem('confirm', bpelem)" class="btn btn-small btn-primary">Confirm block template fill</a>
         <a ng-click="updateElem(bpelem)" class="btn btn-small btn-primary">update Elem</a>
         <a ng-click="deleteElem(bpelem)" class="btn btn-small btn-primary btn-danger">delete Elem</a>
@@ -645,6 +654,7 @@ var ModalEffects = (function() {
     <div class="control-group">
       <div class="controls">
         <a ng-click="cancel()" class="btn btn-small">cancel</a>
+        <a ng-click="templateElem('container', bpelem)" class="btn btn-small btn-primary">Container template fill</a>
         <a ng-click="templateElem('confirm', bpelem)" class="btn btn-small btn-primary">Confirm block template fill</a>
 
         <a ng-click="updateElem(bpelem)" class="btn btn-small btn-primary">update Elem</a>
@@ -722,6 +732,7 @@ var ModalEffects = (function() {
     <div class="control-group">
       <div class="controls">
          {{ newBpelem | json }}
+        <a ng-click="templateElem('container', newBpelem)" class="btn btn-small btn-primary">Container template fill</a>
         <a ng-click="templateElem('confirm', newBpelem)" class="btn btn-small btn-primary">Confirm block template fill</a>
 
         <a ng-click="createNewElem()" class="btn btn-small btn-primary">create new Elem</a>
@@ -966,19 +977,23 @@ var ModalEffects = (function() {
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">space_own:</label>
       <div class="controls">
+           <select ng-model="newSpaceelem.space_own" data-ng-options="a.id as a.id for a in spaces">               
+            </select>
         <input type="number" id="inputBusinessId" ng-model="newSpaceelem.space_own"/>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">space_owned:</label>
       <div class="controls">
+           <select ng-model="newSpaceelem.space_owned" data-ng-options="a.id as a.id for a in spaces">               
+          </select>        
         <input type="number" id="inputBusinessId" ng-model="newSpaceelem.space_owned"/>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">space_role:</label>
       <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="newSpaceelem.space_role"/>
+        <input type="hidden" id="inputBusinessId" ng-model="newSpaceelem.space_role" value="container"/>
       </div>
     </div>
         <div class="control-group">
@@ -990,6 +1005,7 @@ var ModalEffects = (function() {
       <div class="control-group">
       <label class="control-label" for="inputBusinessId">Composite:</label>
       <div class="controls">
+        {{ newSpaceelem | json }}
         <input type="text" id="input_a_string" ng-model="newSpaceelem.comps[0].a_string"/>
         <input type="text" id="input_b_string" ng-model="newSpaceelem.comps[0].b_string"/>
         <input type="number" id="input_a_int" ng-model="newSpaceelem.comps[0].a_int"/>
@@ -1000,6 +1016,8 @@ var ModalEffects = (function() {
     </div>
     <div class="control-group">
       <div class="controls">
+        <a ng-click="templateElem('container', newSpaceelem)" class="btn btn-small btn-primary">Container template fill</a>
+        <a ng-click="templateElem('confirm', newSpaceelem)" class="btn btn-small btn-primary">Confirm block template fill</a>
         <a ng-click="createSpaceElem()" class="btn btn-small btn-primary">create new spaceelem</a>
         <a ng:click="newselected=0" class="btn btn-small btn-primary">Cancel</a>
       </div>
@@ -1067,19 +1085,24 @@ var ModalEffects = (function() {
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">space_own:</label>
       <div class="controls">
+           <select ng-model="spaceelem.space_own" data-ng-options="a.id as a.id for a in spaces">               
+            </select>
+
         <input type="text" id="inputBusinessId" ng-model="spaceelem.space_own"/>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">space_own:</label>
       <div class="controls">
+           <select ng-model="spaceelem.space_owned" data-ng-options="a.id as a.id for a in spaces">               
+          </select>   
         <input type="text" id="inputBusinessId" ng-model="spaceelem.space_owned"/>
       </div>
     </div>
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">space_own:</label>
       <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="spaceelem.space_role"/>
+        <input type="hidden" id="inputBusinessId" ng-model="spaceelem.space_role" value="container"/>
       </div>
     </div>
     <div class="control-group">
@@ -1102,6 +1125,8 @@ var ModalEffects = (function() {
     <div class="control-group">
       <div class="controls">
         <a ng-click="cancel()" class="btn btn-small">cancel</a>
+        <a ng-click="templateElem('container', spaceelem)" class="btn btn-small btn-primary">Container template fill</a>
+        <a ng-click="templateElem('confirm', spaceelem)" class="btn btn-small btn-primary">Confirm block template fill</a>
         <a ng-click="updateSpaceElem(spaceelem)" class="btn btn-small btn-primary">update spaceelem</a>
         <a ng-click="deleteSpaceElem(spaceelem)" class="btn btn-small btn-danger">delete spaceelem</a>
         
@@ -1197,6 +1222,8 @@ var ModalEffects = (function() {
         <td>{{ spaceelem.type_title }}</td>
         <td>{{ spaceelem.order }}</td>
         <td><pre>{{ spaceelem.comps | json}}</pre></td>
+        <a ng-click="templateElem('container', spaceelem)" class="btn btn-small btn-primary">Container template fill</a>
+        <a ng-click="templateElem('confirm', spaceelem)" class="btn btn-small btn-primary">Confirm block template fill</a>
         <td><a ng-click="editSpaceElem(spaceelem.id)" class="btn btn-small btn-primary">edit</a></td>
         <td><a ng-click="deleteSpaceElem(spaceelem.id)" class="btn btn-small btn-danger">delete</a></td>
       </tr>

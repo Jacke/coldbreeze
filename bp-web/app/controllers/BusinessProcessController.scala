@@ -178,7 +178,10 @@ def createFrontElem() = Action(BodyParsers.parse.json) { implicit request =>
   request.body.validate[UndefElement].map{ 
     case entity => ProcElemDAO.pull_object(entity) match {
             case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not update front element ${entity.title}")))
-            case _ =>  Ok(Json.toJson(_)))
+            case id =>  { 
+              println(id)
+              Ok(Json.toJson(Map("success" ->  id)))
+            }
           }
     }.recoverTotal{
       e => BadRequest("formWithErrors")
@@ -197,7 +200,7 @@ def createSpace() = Action(BodyParsers.parse.json) { implicit request =>
    request.body.validate[BPSpaceDTO].map{ 
     case entity => BPSpaceDAO.pull_object(entity) match {
             case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not update front element ${entity.index}")))
-            case _ =>  Ok(Json.toJson(_))
+            case id =>  Ok(Json.toJson(id))
           }
     }.recoverTotal{
       e => BadRequest("formWithErrors")
@@ -214,7 +217,7 @@ def createSpaceElem() = Action(BodyParsers.parse.json) { implicit request =>
   request.body.validate[SpaceElementDTO].map{ 
     case entity => SpaceElemDAO.pull_object(entity) match {
             case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not update front element ${entity.title}")))
-            case _ =>  Ok(Json.toJson(_))
+            case id =>  Ok(Json.toJson(id))
           }
     }.recoverTotal{
       e => BadRequest("formWithErrors")

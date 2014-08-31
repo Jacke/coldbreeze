@@ -5,29 +5,7 @@
             {{ stationByProcess(station.id).title }}
            
            </p>
-<div ui-tree>
-  <h3>Graph:</h3>
-  <ol ui-tree-nodes="" ng-model="trees">
-    <li ng-repeat="trr in trees" ui-tree-node>
-      <div ui-tree-handle>
-        {{trr.title}}
-      </div>
-      <ol ui-tree-nodes="" ng-model="trr.nodes">
-        <li ng-repeat="node in trr.nodes" ui-tree-node>
-          <div ui-tree-handle>
-            Space: {{node.index}}
-          <ol ui-tree-nodes="" ng-model="node.space_elem">
-            <li ng-repeat="spelem in node.space_elem" ui-tree-node>
-              <div ui-tree-handle>
-               SpaceElem {{spelem.title}}
-              </div>
-            </li>
-          </ol>
-          </div>
-        </li>
-    </li>
-  </ol>
-</div>
+
             <div class=" col-md-9 col-lg-9 "> 
                   <table class="table table-user-information">
                     <tbody>
@@ -67,8 +45,33 @@
            <p>
           
           </p> 
+          <h3>Tree</h3>
+<div ui-tree>
+  <ol ui-tree-nodes="" ng-model="trees">
+    <li ng-repeat="trr in trees" ui-tree-node>
+        id:{{trr.id}} — {{trr.title}}
+      <ol ui-tree-nodes="" ng-model="trr.nodes">
+        <li ng-repeat="node in trr.nodes" ui-tree-node>
+            Space: {{node.index}}
+          <ol ui-tree-nodes="" ng-model="node.space_elem">
+            <li ng-repeat="spelem in node.space_elem" ui-tree-node>
+               SpaceElem: id:{{spelem.id}} — {{spelem.title}}
+            </li>
+          </ol>
+        </li>
+    </li>
+  </ol>
+</div>
+<div class="active">
+<h3>Now active</h3>
+<pre>
+id:{{ elemsHash[logsByStation(station.id)[logsByStation(station.id).length-1].element].id  }} — {{ elemsHash[logsByStation(station.id)[logsByStation(station.id).length-1].element].title  }}
+id:{{ spaceElemHash[logsByStation(station.id)[logsByStation(station.id).length-1].space_elem].id  }} — {{ spaceElemHash[logsByStation(station.id)[logsByStation(station.id).length-1].space_elem].title  }}
+</pre>
+</div>
           <h3>Logs</h3>
           <p>
+
           <div class="logs" ng-repeat="log in logsByStation(station.id)">
                   <table class="table table-user-information">
                     <tbody>
@@ -85,8 +88,8 @@
 
                       </tr>
                       <tr>
-<td> {{ elemDetail(log.element, 'front').title }}  </td>                        
-<td> {{ elemDetail(log.space_elem, 'space').title }}  </td>
+<td> {{ elemsHash[log.element].id }} {{ elemsHash[log.element].title }} — {{ elemsHash[log.element].type_title }}  </td>                        
+<td> {{ spaceElemHash[log.space_elem].id }} {{ spaceElemHash[log.space_elem].title }} — {{ spaceElemHash[log.element].type_title }}  </td>
 <td> {{ log.station }} </td>
 <td> {{ log.invoked }} </td>
 <td> {{ log.expanded }} </td>
