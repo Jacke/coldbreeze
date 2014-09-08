@@ -14,14 +14,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="author" content="Minority">
 
+
   <!-- Styles -->
-  <link rel="stylesheet" href="https://apiary.a.ssl.fastly.net/assets/styles/fonts-5a302dfcbc022777.css">
-  <link rel="stylesheet" href="https://apiary.a.ssl.fastly.net/assets/styles/modules/footer/footer-454b8274181a6f12.css">
-  <link rel="stylesheet" href="https://apiary.a.ssl.fastly.net/assets/styles/modules/website-d59e710cba93c461.css">
-  <link rel="stylesheet" href="https://apiary.a.ssl.fastly.net/assets/css/loginflow-586672b39ced5cb4.css" />
+  <link rel="stylesheet" href="/css/auth/fonts.css">
+  <link rel="stylesheet" href="/css/auth/footer.css">
+  <link rel="stylesheet" href="/css/auth/website.css">
+  <link rel="stylesheet" href="/css/auth/loginflow.css" />
   <!-- /Styles -->
 
-  <link rel="shortcut icon" href="https://apiary.a.ssl.fastly.net/assets/icons/favicon-aa8fc5808796304b.ico">
+  <link rel="shortcut icon" href="/favicon.ico">
   <style>
 #websiteHeader .headerLogotype {
    position: absolute;
@@ -61,7 +62,7 @@ background-size: contain;
         @Messages(msg)
     </div>
     }
-
+    <pre>@env.routes.signUpUrl</pre>
     <form action="@env.routes.signUpUrl"
           class="loginInputs"
           autocomplete="off" method="post"
@@ -93,7 +94,7 @@ background-size: contain;
 
 </div>
 
-<script src="https://apiary.a.ssl.fastly.net/assets/components/jquery-d18996df89e346b5.js"></script>
+<script src="/js/jquery.js"></script>
 
 
 <!-- website-navigation -->
@@ -154,7 +155,8 @@ background-size: contain;
 </footer>
 <!-- /website-footer -->
 
-<script src="https://apiary.a.ssl.fastly.net/assets/js/website-scroll-ccf307156889204e.js"></script>
+<script src="/js/website-scroll.js"></script>
+<script src="/jsroutes.js"></script>
 <script>
   websiteScroll();
   document.documentElement.className += ' js';

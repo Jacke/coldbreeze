@@ -18,33 +18,44 @@ minorityControllers.controller('BPstationListCtrl', ['$scope', '$filter', 'BProc
   });
   });
 
-  $scope.trees = undefined;
+    $scope.trees = undefined;
 
   $scope.builder = function () {
+
+    var isIsEnd = function (spElems) {
+      _.forEach(spElems, function(val) { 
+         val.nodes = _.filter(spacesCopy, function(space){ return space.brick_front == val.id || space.brick_nested == val.id; });
+      });
+      _.forEach(spElems, function(tree) { 
+           _.forEach(tree.nodes, function(space) {
+               space.space_elem = _.filter(spaceelemsCopy, function(spelem){ return spelem.space_owned == space.id; });
+               isIsEnd(space.space_elem);
+          });
+      });
+    };
+    console.log("build");
     var bpelemsCopy = angular.copy($scope.bpelems);
     var spacesCopy = angular.copy($scope.spaces);
     var spaceelemsCopy = angular.copy($scope.spaceelems);
     $scope.trees = _.forEach(bpelemsCopy, function(val) { 
-    console.log("filtered");
-    console.log(_.filter(spacesCopy, function(space){ return space.brick_front == val.id || space.brick_nested == val.id; }));
-    console.log(val.id);
-    val.spaced = 5;
-    val.nodes = _.filter(spacesCopy, function(space){ return space.brick_front == val.id || space.brick_nested == val.id; });
-  });
+         val.nodes = _.filter(spacesCopy, function(space){ return space.brick_front == val.id || space.brick_nested == val.id; });
+    });
     _.forEach($scope.trees, function(tree) { 
+      
       var spaceFetch = function () {
         _.forEach(tree.nodes, function(space) {
            space.space_elem = _.filter(spaceelemsCopy, function(spelem){ return spelem.space_owned == space.id; });
+           isIsEnd(space.space_elem);
         });
       };
+      
       spaceFetch();
       spaceFetch();
       spaceFetch();
       spaceFetch();
       spaceFetch();
-      // TODO: Add recursive call
     });
-  }
+}
 
   $scope.bpelems.$promise.then(function(data) {
     $scope.spaceelems.$promise.then(function(data3) {
@@ -109,7 +120,15 @@ minorityControllers.controller('BPstationListCtrl', ['$scope', '$filter', 'BProc
          } else {
              '';
          }
-     }
+  }
+
+  /*
+  * Observers stuff
+  */
+  $scope.fetchObservers = function (stations) {
+    _.forEach(stations, function(station){ return station.obsrs = {"email": "test@mail.ru"} });
+
+  };
 
   
 }]);

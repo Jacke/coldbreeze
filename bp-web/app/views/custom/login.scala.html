@@ -13,13 +13,13 @@
   <meta name="author" content="Minority">
 
   <!-- Styles -->
-  <link rel="stylesheet" href="https://apiary.a.ssl.fastly.net/assets/styles/fonts-5a302dfcbc022777.css">
-  <link rel="stylesheet" href="https://apiary.a.ssl.fastly.net/assets/styles/modules/footer/footer-454b8274181a6f12.css">
-  <link rel="stylesheet" href="https://apiary.a.ssl.fastly.net/assets/styles/modules/website-d59e710cba93c461.css">
-  <link rel="stylesheet" href="https://apiary.a.ssl.fastly.net/assets/css/loginflow-586672b39ced5cb4.css" />
+  <link rel="stylesheet" href="/css/auth/fonts.css">
+  <link rel="stylesheet" href="/css/auth/footer.css">
+  <link rel="stylesheet" href="/css/auth/website.css">
+  <link rel="stylesheet" href="/css/auth/loginflow.css" />
   <!-- /Styles -->
 
-  <link rel="shortcut icon" href="https://apiary.a.ssl.fastly.net/assets/icons/favicon-aa8fc5808796304b.ico">
+  <link rel="shortcut icon" href="/favicon.ico">
 <style>
 #websiteHeader .headerLogotype {
    position: absolute;
@@ -52,9 +52,27 @@ display: block;
 
 <div class="loginFlowPage">
 
+@errorMsg.map { msg =>
+<div class="messageBoxWrap">
+  <p class="message">
+  @msg </p>
+</div>
+}
+@request.flash.get("success").map { msg =>
+<div class="messageBoxWrap">
+  <p class="message">
+  @msg </p>
+</div>
+}
+@request.flash.get("error").map { msg =>
+<div class="messageBoxWrap">
+  <p class="message">
+  @msg </p>
+</div>
+}
 
-          <div class="loginPage loginPage__login loginPage__active">
-      <div class="loginView">
+  <div class="loginPage loginPage__login loginPage__active">
+    <div class="loginView">
 
  
 
@@ -62,21 +80,14 @@ display: block;
 <div class="page-header">
  <h1 class="loginHeading">Sign In</h1>
 </div>
-@errorMsg.map { msg =>
-<div class="alert alert-error">
-@Messages(msg)
-</div>
-}
+
 @request.flash.get("success").map { msg =>
-<div class="alert alert-info">
-@msg
+<div class="messageBoxWrap">
+  <p class="message">
+  @msg </p>
 </div>
 }
-@request.flash.get("error").map { msg =>
-<div class="alert alert-error">
-@msg
-</div>
-}
+
 
     @defining( env.providers.values.filter( _.id != UsernamePassword) ) { externalProviders =>
 
@@ -93,9 +104,9 @@ display: block;
 
         @env.providers.get(UsernamePassword).map { up =>
             <div class="clearfix">
-                  <a class="signWithService signWithGh block" href="https://github.com/login/oauth/authorize?client_id=f739c33cbd5c32296a43&#38;redirect_uri=https%3A%2F%2Flogin.apiary.io%2Fgithub%2Flogin" tabindex="8">Continue with GitHub</a>
+                  <a class="signWithService signWithGh block" href="https://github.com/login/oauth/authorize?client_id=f739c33cbd5c32296a43&#38;redirect_uri=https%3A%2F%2F%2Fgithub%2Flogin" tabindex="8">Continue with GitHub</a>
     <span class="visuallyhidden">or</span>
-    <a class="signWithService signWithTw block" href="https://login.apiary.io/twitter/send_to_login" tabindex="9">Continue with Twitter</a>
+    <a class="signWithService signWithTw block" href="https://login.majorityapp.com/twitter/send_to_login" tabindex="9">Continue with Twitter</a>
                 @if( externalProviders.size > 0 ) {
                     <!--<p>@Messages("securesocial.login.useEmailAndPassword")</p>-->
                       <p class="loginText loginTextAfterOr"></p>
@@ -109,13 +120,8 @@ display: block;
             </div>
         }
     }
-    
+}
 
-@errorMsg
-@errorMsg.map { error => 
-  <b>error</b>
-}
-}
 </div>
     </div>
       <div class="loginPage loginPage__register">
@@ -124,15 +130,11 @@ display: block;
   <h1 class="loginHeading">Sign Up</h1>
 
 
-  <form action="/api/register" method="post" accept-charset="utf-8" class="loginInputs">
+  <form action="@env.routes.signUpUrl" method="post" accept-charset="utf-8" class="loginInputs">
     <div>
-      <input placeholder="Name" class="textField block" type="text" name="name" value="" id="r_name" tabindex="10" />
       <input required placeholder="Email" class="textField block" type="email" name="email" value="" id="r_email" tabindex="11" />
-      <input required placeholder="Password" class="textField block" type="password" name="pass" value="" id="r_pass" tabindex="12" />
     </div>
 
-    <div>
-                                                        <input type="hidden" name="resumeKey" value="1405715440" />          </div>
 
     <p class="loginText">
       <button type="submit" id="r_submit" class="loginButton block actionOk" tabindex="13">Sign up for Minority</button>
@@ -142,7 +144,7 @@ display: block;
 
   <p class="loginText">Already have an account? <a class="switchView" tabindex="14" href="/login?resumeKey=1405715440">Sign in</a>.</p>
 
-  <p class="loginText smaller">By clicking "Sign up for Minority", you agree to our <a tabindex="15" href="http://apiary.io/tos">terms of service</a> and <a tabindex="15" href="https://www.iubenda.com/privacy-policy/323220">privacy policy</a>.</p>
+  <p class="loginText smaller">By clicking "Sign up for Minority", you agree to our <a tabindex="15" href="#">terms of service</a> and <a tabindex="15" href="https://www.iubenda.com/privacy-policy/323220">privacy policy</a>.</p>
 
 </div>
     </div>
@@ -150,7 +152,7 @@ display: block;
 
 </div>
 
-<script src="https://apiary.a.ssl.fastly.net/assets/components/jquery-d18996df89e346b5.js"></script>
+<script src="/js/jquery.js"></script>
 
 
 <!-- website-navigation -->
@@ -211,28 +213,35 @@ display: block;
 </footer>
 <!-- /website-footer -->
 
-<script src="https://apiary.a.ssl.fastly.net/assets/js/website-scroll-ccf307156889204e.js"></script>
+
+<script src="/js/website-scroll.js"></script>
+<script src="/jsroutes.js"></script>
 <script>
   websiteScroll();
   document.documentElement.className += ' js';
 </script>
 <script>
 $(function domReadyLoginFlow () {
-  $('.form-horizontal button').on('click', function(event) {
+    $('.form-horizontal button').on('click', function(event) {
 
-event.preventDefault();
-  var name = $('.form-horizontal #username').val();
-  var pswd = $('.form-horizontal #password').val();
-  $.post( "http://localhost:9000/auth/api/authenticate/userpass", { username: name , password: pswd })
-.done(function( data ) {
-console.log(data.token);
-localStorage.setItem("token", data.token);
-sessionStorage.setItem("token", data.token);
-$('.form-horizontal')[0].submit();
-});
+  event.preventDefault();
+    var name = $('.form-horizontal #username').val();
+    var pswd = $('.form-horizontal #password').val();
+    $('.messageBoxWrap').remove();
+    $.post(jsRoutes.controllers.Application.index().absoluteURL() + "auth/api/authenticate/userpass", { username: name , password: pswd })
+  .done(function( data ) {
+  console.log(data.token);
+  localStorage.setItem("token", data.token);
+  sessionStorage.setItem("token", data.token);
+  $('.form-horizontal')[0].submit();
+  }).fail(function( jqXHR, textStatus) {
+      $('.loginFlowPage').prepend('<div class="messageBoxWrap"><p class="message">'+ JSON.parse(jqXHR.responseText).error +'</p></div>');
+    })
+  ;
 
- 
-})
+   
+  });
+  
   $('.loginView a.switchView').on('click', function clickViewSwitch(e) {
     var nextPage;
     e.preventDefault();

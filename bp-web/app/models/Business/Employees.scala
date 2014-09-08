@@ -3,18 +3,23 @@ package models.DAO.resources
 import scala.slick.driver.PostgresDriver.simple._
 import models.DAO.conversion.DatabaseCred
 
-class Employees(tag: Tag) extends Table[(Option[Int], String)](tag, "employees") {
+class Employees(tag: Tag) extends Table[EmployeeDTO](tag, "employees") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def uid = column[String]("uid")
+  def master_acc = column[String]("master_acc")
+  def position = column[Option[String]]("position")
+  def manager = column[Boolean]("manager")
 
 
-
-  def * = (id.?, uid) //<> (Supplier.tupled, Supplier.unapply)
-
+  def accFK = foreignKey("acc_fk", uid, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
+  def maccFK = foreignKey("macc_fk", master_acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
   def eb = EmployeesBusinessDAO.employees_businesses.filter(_.employee_id === id).flatMap(_.businessFK)
+
+  def * = (id.?, uid, master_acc, position, manager) <> (EmployeeDTO.tupled, EmployeeDTO.unapply)
+
 }
 
-case class EmployeeDTO(var id: Option[Int], uid: String)
+case class EmployeeDTO(var id: Option[Int], uid: String, master_acc:String, position:Option[String], manager:Boolean = false)
 
 
 object EmployeeDAO {
@@ -25,26 +30,20 @@ object EmployeeDAO {
 
  def pull_object(s: EmployeeDTO) = database withSession {
     implicit session ⇒
-      val tuple = EmployeeDTO.unapply(s).get
-      employees returning employees.map(_.id) += (value = (None, s.uid))//(EmployeeDTO.unapply(s).get._2, EmployeeDTO.unapply(s).get._3)
+      
+      employees returning employees.map(_.id) += s//(value = (None, s.uid))//(EmployeeDTO.unapply(s).get._2, EmployeeDTO.unapply(s).get._3)
   }
 
-  def pull(id: Option[Int] = None, uid: String) = database withSession {
-    implicit session ⇒
 
-      //employees += (id, uid)
-      employees returning employees.map(_.id) += (value = (None, uid))
-  }
   def get(k: Int) = database withSession {
     implicit session ⇒
-      val q3 = for { s ← employees if s.id === k } yield s <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)
-      println(q3.selectStatement)
-      println(q3.list)
-      q3.list.headOption //.map(Supplier.tupled(_))
+      val q3 = for { s ← employees if s.id === k } yield s// <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)
+      q3.list.headOption 
   }
+      
   def getByUID(uid: String) = database withSession {
     implicit session =>
-    val q3 = for { s ← employees if s.uid === uid } yield s <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)
+    val q3 = for { s ← employees if s.uid === uid } yield s// <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)
       println(q3.selectStatement)
       println(q3.list)
       q3.list.headOption
@@ -58,7 +57,7 @@ object EmployeeDAO {
    */
   def update(id: Int, employee: EmployeeDTO) = database withSession { implicit session ⇒
     val bpToUpdate: EmployeeDTO = employee.copy(Option(id))
-    employees.where(_.id === id).update(EmployeeDTO.unapply(bpToUpdate).get)
+    employees.filter(_.id === id).update(bpToUpdate)
   }
   /**
    * Delete a employee
@@ -66,7 +65,7 @@ object EmployeeDAO {
    */
   def delete(id: Int) = database withSession { implicit session ⇒
 
-    employees.where(_.id === id).delete
+    employees.filter(_.id === id).delete
   }
   /**
    * Count all employees
@@ -79,7 +78,7 @@ object EmployeeDAO {
 
   def getAll = database withSession {
     implicit session ⇒
-      val q3 = for { s ← employees } yield s <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)
+      val q3 = for { s ← employees } yield s //<> (EmployeeDTO.tupled, EmployeeDTO.unapply _)
       q3.list.sortBy(_.id)
     //suppliers foreach {
     //  case (id, uid, address, city, state, zip) ⇒

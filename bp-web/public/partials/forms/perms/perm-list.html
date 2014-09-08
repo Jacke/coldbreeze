@@ -1,0 +1,30 @@
+<hr>
+<hr>
+<hr>
+
+
+<div ng-include src="'partials/tree.html'"></div>
+
+<div class="perms" ng-repeat="perm in perms">
+{{ perm | json}}
+</div>
+<div class="new">
+ <div class="params">
+          <div class="param">
+              <p>Confirm block</p>
+              <div ng-repeat="perm in perms" class="controls inputRequests">
+                   <div class="request">
+                     <select ng-model="perm.f_elem" class="forFront" ng-options="elem.id as elem.title for elem in station.proc_elems" required></select><br>
+                     <select ng-model="perm.sp_elem" class="forSpace"ng-options="elem.id as elem.title for elem in station.space_elems" required></select><br>
+                     <select ng-model="perm.param" class="forParam" ng-options="param.name as param.name for param in params" required></select><br>
+                     <a ng-click="create(perm)" class="btn btn-big btn-success">Add</a>
+                </div></div>
+          </div></div>
+        
+          <button ng-click="addPerm()">Add permission</button>
+          <button ng-click="delPerm()">Del last input</button>
+          
+          
+          
+
+</div>

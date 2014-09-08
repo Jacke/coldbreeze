@@ -7,6 +7,7 @@
         <th style="min-width: 80px;">Invokation</th>
         <th style="min-width: 80px;">Edit</th>
         <th style="min-width: 80px;">Elements</th>
+        <th style="min-width: 80px;">Permission</th>
         <th style="min-width: 80px;">Delete</th>
         <th style="min-width: 80px;">Station</th>
         <th style="width:20px;">&nbsp;</th>
@@ -20,6 +21,7 @@
         <td><a href="/a#/bprocess/{{ bprocess.id }}/input" class="btn btn-small btn-success">Invoking</a></td>
         <td><a ng-click="showBP(bprocess.id)" class="btn btn-small btn-primary">Edit</a></td>
         <td><a href="/a#/bprocess/{{ bprocess.id }}/elements" class="btn btn-small btn-primary">Elements</a></td>
+        <td><a href="/a#/bprocess/{{ bprocess.id }}/perms" class="btn btn-small btn-primary">Permissions</a></td>
         <td><a ng-click="deleteBP(bprocess.id)" class="btn btn-small btn-danger">Delete</a></td>
         <td><a href="/a#/bprocess/{{ bprocess.id }}/stations">Show All stations</a></td>
         <td ng-repeat="station in stations | filter: { finished: false, paused: true, process: bprocess.id }">
@@ -34,5 +36,5 @@
 
     </tbody>
   </table>
-  <a ng-click="createNewBP()" class="btn btn-small">create new Business process</a>
+  <a ng-click="createNewBP()" class="btn btn-small">Create</a>
 </div>

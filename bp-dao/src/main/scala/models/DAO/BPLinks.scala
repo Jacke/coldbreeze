@@ -74,7 +74,7 @@ object BPLinkDAO {
    */
   def update(id: Int, bplink: BPLinkDTO) = database withSession { implicit session ⇒
     val bplinkToUpdate: BPLinkDTO = bplink.copy(Option(id))
-    bplinks.where(_.id === id).update(BPLinkDTO.unapply(bplinkToUpdate).get)
+    bplinks.filter(_.id === id).update(BPLinkDTO.unapply(bplinkToUpdate).get)
   }
 
   /**
@@ -83,7 +83,7 @@ object BPLinkDAO {
    */
   def delete(id: Int) = database withSession { implicit session ⇒
 
-    bplinks.where(_.id === id).delete
+    bplinks.filter(_.id === id).delete
   }
   /**
    * Count all bplinks

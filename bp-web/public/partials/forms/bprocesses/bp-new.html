@@ -15,14 +15,16 @@
       <div class="controls">
         <input type="number" id="inputBusinessId" ng-model="bprocess.business" placeholder="Business ID" required/>
       </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">Service:</label>
       <div class="controls">
         <select ng-model="bprocess.service" ng-options="service.id as service.title for service in procServices" required></select><br>
       </div>
-
     </div>
     <div class="control-group">
       <div class="controls">
-        <a ng-click="createNewBP()" class="btn btn-small btn-primary">create new BProcess</a>
+        <a ng-click="createNewBP()" class="btn btn-small btn-primary">Create</a>
       </div>
     </div>
   </form>

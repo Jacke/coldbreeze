@@ -72,7 +72,7 @@ object BPDAO {
    */
   def update(id: Int, bprocess: BProcessDTO) = database withSession { implicit session ⇒
     val bpToUpdate: BProcessDTO = bprocess.copy(Option(id))
-    bprocesses.where(_.id === id).update(bpToUpdate)
+    bprocesses.filter(_.id === id).update(bpToUpdate)
   }
   /**
    * Delete a bprocess
@@ -80,7 +80,7 @@ object BPDAO {
    */
   def delete(id: Int) = database withSession { implicit session ⇒
 
-    bprocesses.where(_.id === id).delete
+    bprocesses.filter(_.id === id).delete
   }
   /**
    * Count all bprocesses
@@ -98,7 +98,7 @@ object BPDAO {
 
   def getAll = database withSession {
     implicit session ⇒ // TODO: s.service === 1 CHANGE DAT
-      val q3 = for { s ← bprocesses if s.service === 1} yield s
+      val q3 = for { s ← bprocesses } yield s
       q3.list.sortBy(_.id)
     //suppliers foreach {
     //  case (id, title, address, city, state, zip) ⇒

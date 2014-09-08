@@ -48,7 +48,7 @@ object ClientBusinessDAO {
   }
   def deleteByClient(client_id: Int) = database withSession { implicit session ⇒
 
-    clients_businesses.where(_.client_id === client_id).delete
+    clients_businesses.filter(_.client_id === client_id).delete
   }
 
   def getAll = database withSession {

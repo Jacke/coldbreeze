@@ -102,15 +102,24 @@ object BPSpaceDAO {
    */
   def update(id: Int, bpspace: BPSpaceDTO) = database withSession { implicit session ⇒
     val spToUpdate: BPSpaceDTO = bpspace.copy(Option(id))
-    bpspaces.where(_.id === id).update(spToUpdate)
+    bpspaces.filter(_.id === id).update(spToUpdate)
   }
   /**
    * Delete a bpspace
    * @param id
    */
-  def delete(id: Int) = database withSession { implicit session ⇒
+  def delete(id: Int) = {
+   database withSession { implicit session ⇒
 
-    bpspaces.where(_.id === id).delete
+    val sp = get(id)
+    val res = bpspaces.filter(_.id === id).delete
+    sp match {
+       case Some(space) => renewIndex(space.bprocess, space.index)
+       case _ =>
+    }
+    res
+  }
+  
   }
   /**
    * Count all bpspaces
@@ -123,6 +132,31 @@ object BPSpaceDAO {
     database withSession {
       implicit session =>
       bpspaces.ddl.create
+    }
+  }
+/*
+(1,Some(16))
+(3,Some(17))
+(4,Some(18))
+(6,Some(19))
+.renewIndex(bprocess, 5)
+(1,Some(16))
+(3,Some(17))
+(4,Some(18))
+(5,Some(19))
+*/
+  def renewIndex(bprocess: Int, index_num: Int) = {
+    database withSession { implicit session ⇒
+      println("renewed")
+      println()
+      val q3 = for { sp ← bpspaces if sp.bprocess === bprocess && sp.index > index_num } yield sp
+
+      val ordered = q3.list.zipWithIndex.map(sp => sp._1.copy(index = (sp._2 + 1) + (index_num - 1)))
+      //val ordered = q3.list.zipWithIndex.map(sp => sp._1.copy(index = sp._2+index_num))
+      println(ordered.length)
+      ordered.foreach { sp => 
+         update(sp.id.get, sp)
+      }
     }
   }
 

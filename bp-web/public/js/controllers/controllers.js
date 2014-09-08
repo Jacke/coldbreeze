@@ -19,6 +19,9 @@ angular.module('minorityApp.controllers', []).
   .controller('BPCreationCtrl', [function () {
 
   }])
+  .controller('BPPermListCtrl', [function () {
+
+  }])
   .controller('BPRequestCtrl', [function () {
 
   }]);
@@ -60,7 +63,8 @@ angular.module(
   [
     'minorityApp.services',
     'angular-underscore',
-    'ui.select'
+    'ui.select',
+    'ngDialog'
   ]
 );
 
@@ -170,7 +174,7 @@ minorityControllers.controller('BProcessListCtrl', ['$scope', '$http', '$filter'
           });
 
   $scope.stationPercent = function(station) {
-    console.log(station.process)
+    //console.log(station.process);
     var found = $filter('filter')($scope.bpElemLength, {id: station.process});
                  
     if (found.length) {
@@ -254,4 +258,130 @@ minorityControllers.controller('BPCreationCtrl', ['$scope', '$http', 'BProcesses
 }]);
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * BP Perm
+ */
+// INDEX
+minorityControllers.controller('BPPermListCtrl', ['$scope', '$filter', 'BProcessesFactory','BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
+  function ($scope, $filter, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
+
+  $scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
+  $scope.spaces =  BPSpacesFactory.query({ BPid: $route.current.params.BPid });
+  $scope.spaceelems = BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid });
+  /* callback for ng-click 'editUser': */
+  $scope.bpelems.$promise.then(function(data) {
+    $scope.spaces.$promise.then(function(data2) {
+      $scope.spaceelems.$promise.then(function(data3) {
+        $scope.builder();
+  
+  });
+  });
+  });
+
+    $scope.trees = undefined;
+
+  $scope.builder = function () {
+
+    var isIsEnd = function (spElems) {
+      _.forEach(spElems, function(val) { 
+         val.nodes = _.filter(spacesCopy, function(space){ return space.brick_front == val.id || space.brick_nested == val.id; });
+      });
+      _.forEach(spElems, function(tree) { 
+           _.forEach(tree.nodes, function(space) {
+               space.space_elem = _.filter(spaceelemsCopy, function(spelem){ return spelem.space_owned == space.id; });
+               isIsEnd(space.space_elem);
+          });
+      });
+    };
+    console.log("build");
+    var bpelemsCopy = angular.copy($scope.bpelems);
+    var spacesCopy = angular.copy($scope.spaces);
+    var spaceelemsCopy = angular.copy($scope.spaceelems);
+    $scope.trees = _.forEach(bpelemsCopy, function(val) { 
+         val.nodes = _.filter(spacesCopy, function(space){ return space.brick_front == val.id || space.brick_nested == val.id; });
+    });
+    _.forEach($scope.trees, function(tree) { 
+      
+      var spaceFetch = function () {
+        _.forEach(tree.nodes, function(space) {
+           space.space_elem = _.filter(spaceelemsCopy, function(spelem){ return spelem.space_owned == space.id; });
+           isIsEnd(space.space_elem);
+        });
+      };
+      
+      spaceFetch();
+      spaceFetch();
+      spaceFetch();
+      spaceFetch();
+      spaceFetch();
+    });
+}
+
+  $scope.bpelems.$promise.then(function(data) {
+    $scope.spaceelems.$promise.then(function(data3) {
+      $scope.elemsHash = _.object(_.map($scope.bpelems, function(x){return [x.id, x]}));
+      $scope.spaceElemHash = _.object(_.map($scope.spaceelems, function(x){return [x.id, x]}));
+   });
+  });
+
+  $scope.addPerm = function () {
+      if(typeof $scope.perms === 'undefined') {
+        $scope.perms = [];
+        $scope.defaultParam();
+      }
+
+
+      
+      $scope.perms.push({elem: '', param: 'confirmed' });
+  }
+  $scope.delPerm = function () {
+    $scope.perms.pop();
+  }  
+  $scope.create = function (perm) {
+    console.log(perm);
+  }
+
+  $scope.defaultParam = function () {
+      var targets = _.filter($scope.stations, function(station){ return station.paused == true; });
+      _.each(targets, function(target) { 
+        target.params = []; 
+      }); 
+      _.each(targets, function(target) { 
+        
+   
+        
+
+        BPRequestFactory.scheme({ BPid: $routeParams.BPid, station_id: target.id }).$promise.then(function(data) {
+        console.log("magic happens here");
+        console.log(data);
+
+                      //target.proc_elems = [];
+                     //target.space_elems = [];
+                  target.proc_elems = data.proc_elems; 
+                  target.space_elems = data.space_elems;
+              }, function(error) {
+                  console.log('error', error);
+        });
+        
+      }); 
+  }
+
+  
+}]);
 

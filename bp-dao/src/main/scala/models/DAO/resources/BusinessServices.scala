@@ -70,14 +70,14 @@ object BusinessServiceDAO {
    */
   def update(id: Int, businessService: BusinessServiceDTO) = database withSession { implicit session ⇒
     val bpToUpdate: BusinessServiceDTO = businessService.copy(Option(id))
-    business_services.where(_.id === id).update(bpToUpdate)
+    business_services.filter(_.id === id).update(bpToUpdate)
   } /**
    * Delete a business service
    * @param id
    */
   def delete(id: Int) = database withSession { implicit session ⇒
 
-    business_services.where(_.id === id).delete
+    business_services.filter(_.id === id).delete
   }
   /**
    * Count all business_services

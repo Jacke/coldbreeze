@@ -1,0 +1,33 @@
+@(serviceForm: Form[models.DAO.resources.ActPermission])(user: Option[securesocial.core.BasicProfile] = None)
+
+@import helper._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f)}
+
+@main("") {
+<!-- Begin page content -->
+<div class="container">
+<div class="page-header">
+<h1>Add an business</h1>
+</div>
+
+<div class="row">
+<div class="col-md-8">
+@form(routes.PermissionController.create_new()) {
+<fieldset>
+
+
+
+@inputText(serviceForm("title"), '_label -> "Name", 'class -> "form-control")
+</fieldset>
+
+<div class="actions">
+<input type="submit" value="Create this business" class="btn btn-primary"> or
+<a href="@routes.PermissionController.index()" class="btn btn-default">Cancel</a>
+</div>  
+}
+</div>
+
+</div>
+</div>
+}

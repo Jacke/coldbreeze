@@ -149,6 +149,12 @@ object SpaceElemDAO {
       q3.list
     }
   }
+  def findBySpace(space_id: Int) = {
+    database withSession { implicit session =>
+     val q3 = for { el <- space_elements if el.space_owned === space_id } yield el
+     q3.list
+    }
+  }
   def findById(id: Int):Option[SpaceElementDTO] = {
     database withSession { implicit session =>
       val q3 = for { el ← space_elements if el.id === id } yield el
@@ -174,17 +180,86 @@ object SpaceElemDAO {
   def update(id: Int, entity: SpaceElementDTO):Boolean = {
     database withSession { implicit session =>
       findById(id) match {
-        case Some(e) => { space_elements.where(_.id === id).update(entity); true }
+        case Some(e) => { space_elements.filter(_.id === id).update(entity); true }
         case None => false
       }
     }
   }
-  def delete(id: Int) = database withSession { implicit session ⇒
+  def delete(id: Int) = {
+   database withSession { implicit session ⇒
 
-    space_elements.where(_.id === id).delete
+    val elem = findById(id)
+    val res = space_elements.filter(_.id === id).delete
+    elem match {
+       case Some(el) => renewOrder(el.bprocess, el.space_owned, el.order)
+       case _ =>
+    }
+    res 
   }
-  def update_order(id: Int, order_num: Int): String = {
-    // TODO: update_order
-    "true && true"
+  
   }
+
+def moveUp(bprocess: Int, element_id: Int, space_id: Int) = {
+    database withSession { implicit session =>
+      val minimum = findByBPId(bprocess).sortBy(_.order)
+      findById(element_id) match {
+        case Some(e) => { 
+          if (e.order > 1 && e.order != minimum.head.order) {
+            space_elements.filter(_.id === element_id).update(e.copy(order = e.order - 1))
+            val ch = findById(minimum.find(_.order == (e.order - 1)).get.id.get).get
+            space_elements.filter(_.id === minimum.find(_.order == (e.order - 1)).get.id.get).update(ch.copy(order = ch.order + 1))
+          }
+          true 
+        }
+        case None => false
+      }
+    }
+  }
+  def moveDown(bprocess: Int, element_id: Int, space_id: Int) = {
+    database withSession { implicit session =>
+      val maximum = findBySpace(space_id).sortBy(_.order)
+      findById(element_id) match {
+        case Some(e) => { 
+          if (e.order < maximum.last.order && e.order != maximum.last.order) {
+            space_elements.filter(_.id === element_id).update(e.copy(order = e.order + 1))
+            val ch = findById(maximum.find(_.order == (e.order + 1)).get.id.get).get
+            space_elements.filter(_.id === maximum.find(_.order == (e.order + 1)).get.id.get).update(ch.copy(order = ch.order - 1))
+          }
+          true 
+        }
+        case None => false
+      }
+    }
+  }
+
+/*
+(1,Some(16))
+(3,Some(17))
+(4,Some(18))
+(6,Some(19))
+.renewOrder(bprocess, 5)
+(1,Some(16))
+(3,Some(17))
+(4,Some(18))
+(5,Some(19))
+*/
+  def renewOrder(bprocess: Int, space_id: Int, order_num: Int) = {
+    database withSession { implicit session ⇒
+      val q3 = for { el ← space_elements if el.bprocess === bprocess && el.space_owned === space_id && el.order > order_num } yield el
+      val ordered = q3.list.zipWithIndex.map(el => el._1.copy(order = (el._2 + 1) + (order_num - 1)))
+      ordered.foreach { el => 
+         update(el.id.get, el)
+      }
+    }
+
+    
+/*
+
+    proc_elements.filter(_.bprocess === bprocess && _.order > order_num)
+     .map(x => x.order)
+     .update(_ + 1)
+
+    */
+  }
+
 }

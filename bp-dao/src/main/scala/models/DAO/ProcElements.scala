@@ -114,25 +114,25 @@ object ProcElemDAO {
    */
   def findByBPId(id: Int) = {
     database withSession { implicit session =>
-     val q3 = for { el ← proc_elements if el.bprocess === id } yield el// <> (UndefElement.tupled, UndefElement.unapply _)
+     val q3 = for { el ← proc_elements if el.bprocess === id } yield el
       q3.list 
     }
   }
   def findLengthByBPId(id: Int):Int = {
     database withSession { implicit session => 
-       val q3 = for { el ← proc_elements if el.bprocess === id } yield el// <> (UndefElement.tupled, UndefElement.unapply _)
+       val q3 = for { el ← proc_elements if el.bprocess === id } yield el
       Query(q3.length).first
     }
   }
   def findById(id: Int):Option[UndefElement] = {
     database withSession { implicit session =>
-     val q3 = for { el ← proc_elements if el.id === id } yield el //<> (UndefElement.tupled, UndefElement.unapply _)
+     val q3 = for { el ← proc_elements if el.id === id } yield el 
       q3.list.headOption
     }
   }
   def findByBPanOrder(id: Int, order: Int) = {
     database withSession { implicit session =>
-     val q3 = for { el ← proc_elements if el.bprocess === id; if el.order === order } yield el// <> (UndefElement.tupled, UndefElement.unapply _)
+     val q3 = for { el ← proc_elements if el.bprocess === id; if el.order === order } yield el
       q3.list.headOption 
     }
   }
@@ -144,20 +144,88 @@ object ProcElemDAO {
     database withSession { implicit session =>
       findById(id) match {
       case Some(e) => {
-        proc_elements.where(_.id === id).update(entity)
+        proc_elements.filter(_.id === id).update(entity)
         true
       }
       case None => false
       }
     }
   }
-  def delete(id: Int) = database withSession { implicit session ⇒
+  def delete(id: Int) = { 
+    database withSession { implicit session ⇒
 
-    proc_elements.where(_.id === id).delete
+    val elem = findById(id)
+    val res = proc_elements.filter(_.id === id).delete
+    elem match {
+       case Some(el) => renewOrder(el.bprocess, el.order)
+       case _ =>
+    }
+    res
+    }
   }
-  def update_order(id: Int, order_num: Int): String = {
-    // TODO: update_order
-    "true && true"
+  def moveUp(bprocess: Int, element_id: Int) = {
+    database withSession { implicit session =>
+      val minimum = findByBPId(bprocess).sortBy(_.order)
+      findById(element_id) match {
+        case Some(e) => { 
+          println(e.order)          
+          if (e.order > 1 && e.order != minimum.head.order) {
+            println("moved")
+            proc_elements.filter(_.id === element_id).update(e.copy(order = e.order - 1))
+            val ch = findById(minimum.find(_.order == (e.order - 1)).get.id.get).get
+            proc_elements.filter(_.id === minimum.find(_.order == (e.order - 1)).get.id.get).update(ch.copy(order = ch.order + 1))
+          }
+          true 
+        }
+        case None => false
+      }
+    }
+  }
+  def moveDown(bprocess: Int, element_id: Int) = {
+    database withSession { implicit session =>
+      val maximum = findByBPId(bprocess).sortBy(_.order)
+      findById(element_id) match {
+        case Some(e) => { 
+          println(maximum.last.order)
+          if (e.order < maximum.last.order && e.order != maximum.last.order) {
+            println("moved")
+            proc_elements.filter(_.id === element_id).update(e.copy(order = e.order + 1))
+            val ch = findById(maximum.find(_.order == (e.order + 1)).get.id.get).get
+            proc_elements.filter(_.id === maximum.find(_.order == (e.order + 1)).get.id.get).update(ch.copy(order = ch.order - 1))
+          }
+          true 
+        }
+        case None => false
+      }
+    }
+  }
+/*
+(1,Some(16))
+(3,Some(17))
+(4,Some(18))
+(6,Some(19))
+.renewOrder(bprocess, 5)
+(1,Some(16))
+(3,Some(17))
+(4,Some(18))
+(5,Some(19))
+*/
+  def renewOrder(bprocess: Int, order_num: Int) = {
+    database withSession { implicit session ⇒
+      val q3 = for { el ← proc_elements if el.bprocess === bprocess && el.order > order_num } yield el
+      val ordered = q3.list.zipWithIndex.map(el => el._1.copy(order = (el._2 + 1) + (order_num - 1)))
+      ordered.foreach { el => 
+         update(el.id.get, el)
+      }
+    }
+    
+/*
+
+    proc_elements.filter(_.bprocess === bprocess && _.order > order_num)
+     .map(x => x.order)
+     .update(_ + 1)
+
+    */
   }
 
 
@@ -173,7 +241,7 @@ object ProcElemDAO {
   //def delete(id: Int):Boolean =
   //  database withSession { implicit session =>
   //  findById(id) match {
-  //    case Some(entity) => { proc_elements.where(_.id === id).delete; true }
+  //    case Some(entity) => { proc_elements.filter(_.id === id).delete; true }
   //    case None => false
   //  }
   //  }
@@ -184,7 +252,7 @@ object ProcElemDAO {
   //def update(id: Int, entity: (Option[Int], String, String, Int, Int, String, String, Int)):Boolean = {
   //  database withSession { implicit session =>
   //    findById(id) match {
-  //    case Some(e) => { proc_elements.where(_.id === id).update(entity); true }
+  //    case Some(e) => { proc_elements.filter(_.id === id).update(entity); true }
   //    case None => false
   //    }
   //  }

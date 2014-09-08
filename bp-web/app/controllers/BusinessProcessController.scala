@@ -64,6 +64,8 @@ import play.api.Play.current
   implicit val SpaceElementWrites = Json.format[SpaceElementDTO] 
   implicit val UndefElementReads = Json.reads[UndefElement]
   implicit val UndefElementWrites = Json.format[UndefElement]
+  implicit val InputParamReads = Json.reads[InputParams]
+  implicit val InputParamWrites = Json.format[InputParams]
 
 
 /* Index */
@@ -195,12 +197,13 @@ def createFrontElem() = Action(BodyParsers.parse.json) { implicit request =>
       })   */
 }
 def createSpace() = Action(BodyParsers.parse.json) { implicit request =>
-
+  println(request.body.validate[BPSpaceDTO])
+  println
   val placeResult = request.body.validate[BPSpaceDTO]  
    request.body.validate[BPSpaceDTO].map{ 
     case entity => BPSpaceDAO.pull_object(entity) match {
             case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not update front element ${entity.index}")))
-            case id =>  Ok(Json.toJson(id))
+            case id =>  Ok(Json.toJson(Map("success" ->  id)))
           }
     }.recoverTotal{
       e => BadRequest("formWithErrors")
@@ -217,7 +220,7 @@ def createSpaceElem() = Action(BodyParsers.parse.json) { implicit request =>
   request.body.validate[SpaceElementDTO].map{ 
     case entity => SpaceElemDAO.pull_object(entity) match {
             case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not update front element ${entity.title}")))
-            case id =>  Ok(Json.toJson(id))
+            case id =>  Ok(Json.toJson(Map("success" ->  id)))
           }
     }.recoverTotal{
       e => BadRequest("formWithErrors")
@@ -245,8 +248,10 @@ def updateFrontElem(bpId: Int, elem_id: Int) = Action(BodyParsers.parse.json) { 
       e => BadRequest("formWithErrors")
     }
 }
-def updateSpace(id: Int, space_id: Int) = Action(BodyParsers.parse.json) { implicit request =>
 
+def updateSpace(id: Int, space_id: Int) = Action(BodyParsers.parse.json) { implicit request =>
+  println(request.body.validate[BPSpaceDTO])
+  println
   request.body.validate[BPSpaceDTO].map{ 
     case entity => BPSpaceDAO.update(space_id,entity) match {
             case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not update front element ${entity.id}")))
@@ -266,6 +271,22 @@ def updateSpaceElem(id: Int, spelem_id: Int) = Action(BodyParsers.parse.json) { 
       e => BadRequest("formWithErrors")
     }
 
+}
+def moveUpFrontElem(bpId: Int, elem_id: Int) = Action(BodyParsers.parse.json) { implicit request =>
+  ProcElemDAO.moveUp(bpId, elem_id)
+  Ok(Json.toJson("moved"))
+}
+def moveDownFrontElem(bpId: Int, elem_id: Int) = Action(BodyParsers.parse.json) { implicit request =>
+  ProcElemDAO.moveDown(bpId, elem_id)
+  Ok(Json.toJson("moved"))
+}
+def moveUpSpaceElem(id: Int, spelem_id: Int, space_id: Int) = Action(BodyParsers.parse.json) { implicit request =>
+    SpaceElemDAO.moveUp(id, spelem_id, space_id)
+  Ok(Json.toJson("moved"))
+}
+def moveDownSpaceElem(id: Int, spelem_id: Int, space_id: Int) = Action(BodyParsers.parse.json) { implicit request =>
+    SpaceElemDAO.moveDown(id, spelem_id, space_id)
+  Ok(Json.toJson("moved"))
 }
 
 
@@ -327,63 +348,9 @@ def logs_index(id: Int) = Action { implicit request =>
 }
 
 
-  /**
-   * Input calls
-   */
-   def invoke(bpID: Int)  = Action { implicit request =>
-    service.RunnerWrapper.run(bpID) match {
-      case Some(station_id) => Ok(Json.toJson(Map("success" -> station_id)))
-      case _ => Ok(Json.toJson(Map("error" -> "Error output")))
-    }
-  }
 
 
 
 
 
-  implicit val InputParamReads = Json.reads[InputParams]
-  implicit val InputParamWrites = Json.format[InputParams]
-  //implicit val ListInputParamReads = Json.reads[List[InputParams]]
-  //implicit val ListInputParamWrites = Json.format[List[InputParams]]
-  def invokeFrom(station_id: Int, bpID: Int) = Action(BodyParsers.parse.json) { implicit request =>
-    val pmsResult = request.body.validate[List[InputParams]] 
-    println(pmsResult)
-
-    val genparams = pmsResult.map{ 
-      case entity => entity.map (t => t.elem.get -> t.param) toMap
-    }
-    //.map (t => t.elem.get -> t.param) toMap
-    /*
-      Applying by this template ID     PARAM
-      process.inputPmsApply(Map(30 -> "confirmed"))
-    */ 
-     
-    service.RunnerWrapper.runFrom(station_id, bpID, genparams.get) match {
-      case Some(station_id) => Ok(Json.toJson(Map("success" -> station_id)))
-      case _ => Ok(Json.toJson(Map("error" -> "Error output")))
-    }
-  }
-
-
-
-
-  def schemes(BPid: Int, station_id: Int) = Action { implicit request =>
-    val logs = BPLoggerDAO.findByStation(station_id)
-    val elem_logs_ids = logs.diff(List(logs.last)).filter(log => log.element.isDefined).map(_.element)
-    val space_logs_ids = logs.diff(List(logs.last)).filter(log => log.space_elem.isDefined).map(_.space_elem)
-    Ok(
-      Json.toJson(
-        Map("proc_elems" -> Json.toJson(ProcElemDAO.findByBPId(BPid).filter(elem => !elem_logs_ids.contains(elem.id)) ), 
-            "space_elems" -> Json.toJson(SpaceElemDAO.findByBPId(BPid).filter(elem => !space_logs_ids.contains(elem.id)) ))
-        )
-      )
-    
-  }
-  /**
-   * Halt
-   */
 }
-
-  case class InputParams(elem:Option[Int] = None,  
-                         param:String, 
-                         arguments:Option[List[String]] = None)

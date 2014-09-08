@@ -100,7 +100,9 @@ class InMemoryUserService extends UserService[DemoUser] {
         val newUser = DemoUser(user, List(user))
         users = users + ((user.providerId, user.userId) -> newUser)
 
-        AccountsDAO.save(newUser.main)
+        if (!AccountsDAO.find(newUser.main.providerId, newUser.main.userId).isDefined) {
+          AccountsDAO.save(newUser.main)
+        }
         
         Future.successful(newUser)
     }

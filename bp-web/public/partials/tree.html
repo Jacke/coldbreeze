@@ -1,0 +1,79 @@
+<div class="process-tree" ui-tree="options" data-drag-enabled="false">
+  <ol ui-tree-nodes="" ng-model="trees">
+    <li ng-repeat="trr in trees" ui-tree-node>
+        Elem: id:{{trr.id}} — {{trr.title}}:{{ trr.type_title}}
+      <ol ui-tree-nodes="" ng-model="trr.nodes">
+        <li ng-repeat="node in trr.nodes" ui-tree-node>
+            Space: #{{node.index}}
+          <ol ui-tree-nodes="" ng-model="node.space_elem">
+            <li ng-repeat="spelem in node.space_elem" ui-tree-node>
+               SpaceElem: id:{{spelem.id}} — {{spelem.title}}:{{ spelem.type_title}}
+                <ol ui-tree-nodes="" ng-model="spelem.nodes">
+                        <li ng-repeat="node1 in spelem.nodes" ui-tree-node>
+                            Space: #{{node1.index}}
+                          <ol ui-tree-nodes="" ng-model="node1.space_elem">
+                            <li ng-repeat="spelem1 in node1.space_elem" ui-tree-node>
+                               SpaceElem: id:{{spelem1.id}} — {{spelem1.title}}:{{ spelem1.type_title}}
+                                  <ol ui-tree-nodes="" ng-model="spelem1.nodes">
+                                          <li ng-repeat="node2 in spelem1.nodes" ui-tree-node>
+                                              Space: #{{node2.index}}
+                                            <ol ui-tree-nodes="" ng-model="node2.space_elem">
+                                              <li ng-repeat="spelem2 in node2.space_elem" ui-tree-node>
+                                                 SpaceElem: id:{{spelem2.id}} — {{spelem2.title}}:{{ spelem2.type_title}}
+                                                  <ol ui-tree-nodes="" ng-model="spelem2.nodes">
+                                                          <li ng-repeat="node3 in spelem2.nodes" ui-tree-node>
+                                                              Space: #{{node3.index}}
+                                                            <ol ui-tree-nodes="" ng-model="node3.space_elem">
+                                                              <li ng-repeat="spelem3 in node3.space_elem" ui-tree-node>
+                                                                 SpaceElem: id:{{spelem3.id}} — {{spelem3.title}}:{{ spelem3.type_title}}
+                                                                <ol ui-tree-nodes="" ng-model="spelem3.nodes">
+                                                                      <li ng-repeat="node4 in spelem3.nodes" ui-tree-node>
+                                                                          Space: #{{node4.index}}
+                                                                        <ol ui-tree-nodes="" ng-model="node4.space_elem">
+                                                                          <li ng-repeat="spelem4 in node4.space_elem" ui-tree-node>
+                                                                             SpaceElem: id:{{spelem4.id}} — {{spelem4.title}}:{{ spelem4.type_title}}
+                                                                                  <ol ui-tree-nodes="" ng-model="spelem4.nodes">
+                                                                                          <li ng-repeat="node5 in spelem4.nodes" ui-tree-node>
+                                                                                              Space: #{{node5.index}}
+                                                                                            <ol ui-tree-nodes="" ng-model="node5.space_elem">
+                                                                                              <li ng-repeat="spelem5 in node5.space_elem" ui-tree-node>
+                                                                                                 SpaceElem: id:{{spelem5.id}} — {{spelem5.title}}:{{ spelem5.type_title}}
+                                                                                                <ol ui-tree-nodes="" ng-model="spelem5.nodes">
+                                                                                                        <li ng-repeat="node6 in spelem5.nodes" ui-tree-node>
+                                                                                                            Space: #{{node6.index}}
+                                                                                                          <ol ui-tree-nodes="" ng-model="node6.space_elem">
+                                                                                                            <li ng-repeat="spelem6 in node6.space_elem" ui-tree-node>
+                                                                                                               SpaceElem: id:{{spelem6.id}} — {{spelem6.title}}:{{ spelem6.type_title}}
+                                                                                                            </li>
+                                                                                                          </ol>
+                                                                                                        </li>
+                                                                                                </ol>                                                                                                 
+                                                                                              </li>
+                                                                                            </ol>
+                                                                                          </li>
+                                                                                  </ol>
+                                                                          </li>
+                                                                        </ol>
+                                                                      </li>
+                                                                </ol>                                                                 
+                                                              </li>
+                                                            </ol>
+                                                          </li>
+                                                  </ol>
+
+                                              </li>
+                                            </ol>
+                                          </li>
+                                  </ol>
+                            </li>
+                          </ol>
+                        </li>
+                </ol>
+
+            </li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</div>

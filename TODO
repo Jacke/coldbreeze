@@ -18,22 +18,7 @@
 
 
 
-* Security Restrict DTO Action(bprocess, procelems, space, check access)
 * Change ID to LONG everywhere
-
-
-* Input try
-http://jsfiddle.net/fdDph/9/
-http://plnkr.co/edit/mNs6HB86p6ioByul0GD9?p=preview
-http://embed.plnkr.co/TAXmsQlSkYhY2isCKIAw/preview
-
-
--------------------------------------------------------
--------------------------------------------------------
-Input -> Input call -> Station
-
-
-
 * Error ajax
 http://kufli.blogspot.ru/2013/08/sprayio-rest-service-exception.html
 http://plnkr.co/edit/lzYaZt?p=preview
@@ -44,23 +29,6 @@ http://www.egobrain.ru/blog/2014/02/13/obrabotka-oshibok-poumolchaniiu-angularjs
 * Blocks {
   || Process owning, viewers, access // by owning tables Employees/Clients/Firm + Groups assigns
   }
-
-TRY https://github.com/t2v/stackable-controller
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

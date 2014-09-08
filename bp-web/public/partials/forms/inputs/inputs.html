@@ -78,22 +78,9 @@
                   </table>
           </div>
           <div ng-if="station.paused == true">
-<div ui-tree>
-  <ol ui-tree-nodes="" ng-model="trees">
-    <li ng-repeat="trr in trees" ui-tree-node>
-        id:{{trr.id}} — {{trr.title}}
-      <ol ui-tree-nodes="" ng-model="trr.nodes">
-        <li ng-repeat="node in trr.nodes" ui-tree-node>
-            Space: {{node.index}}
-          <ol ui-tree-nodes="" ng-model="node.space_elem">
-            <li ng-repeat="spelem in node.space_elem" ui-tree-node>
-               SpaceElem: id:{{spelem.id}} — {{spelem.title}}
-            </li>
-          </ol>
-        </li>
-    </li>
-  </ol>
-</div>
+
+<div ng-include src="'partials/tree.html'"></div>
+
 <div class="active">
 <h3>Now active</h3>
 <pre>
@@ -110,8 +97,8 @@ id:{{ spaceElemHash[logsByStation(station.id)[logsByStation(station.id).length-1
               <p>Confirm block</p>
               <div ng-repeat="cont in station.params" class="controls inputRequests">
                    <div class="request">
-                     <select ng-model="cont.elem" class="forFront" ng-options="elem.id as elem.title for elem in station.proc_elems" required></select><br>
-                     <select ng-model="cont.elem" class="forSpace"ng-options="elem.id as elem.title for elem in station.space_elems" required></select><br>
+                     <select ng-model="cont.f_elem" class="forFront" ng-options="elem.id as elem.title for elem in station.proc_elems" required></select><br>
+                     <select ng-model="cont.sp_elem" class="forSpace"ng-options="elem.id as elem.title for elem in station.space_elems" required></select><br>
                      <select ng-model="cont.param" class="forParam" ng-options="param.name as param.name for param in params" required></select><br>
                 </div></div>
           </div></div>

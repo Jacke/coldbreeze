@@ -53,7 +53,7 @@ object BusinessDAO {
    */
   def update(id: Int, business: BusinessDTO) = database withSession { implicit session ⇒
     val bpToUpdate: BusinessDTO = business.copy(Option(id))
-    businesses.where(_.id === id).update(BusinessDTO.unapply(bpToUpdate).get)
+    businesses.filter(_.id === id).update(BusinessDTO.unapply(bpToUpdate).get)
   }
   /**
    * Delete a business
@@ -61,7 +61,7 @@ object BusinessDAO {
    */
   def delete(id: Int) = database withSession { implicit session ⇒
 
-    businesses.where(_.id === id).delete
+    businesses.filter(_.id === id).delete
   }
   /**
    * Count all businesses

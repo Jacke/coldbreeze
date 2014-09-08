@@ -19,12 +19,13 @@ var minorityApp =
       'ui.bootstrap',
       'ui.select',
       'ui.sortable',
+      'ngDialog',
       'angularMoment',
       'ui.tree'
     ]
   );
 
-minorityApp.config(['$routeProvider', function($routeProvider) {
+minorityApp.config(['$routeProvider','$httpProvider', function($routeProvider) {
 /*Credentials managment*/
      $routeProvider.when('/profile', {templateUrl: 'partials/forms/profile.html', controller: 'ProfileController'});
     // BProcess
@@ -45,7 +46,13 @@ minorityApp.config(['$routeProvider', function($routeProvider) {
 /*C*/$routeProvider.when('/bprocess/:BPid/station/new', {templateUrl: 'partials/forms/bpstations/bpstation-new.html', controller: 'BPstationCreationCtrl'});
 /*R*/$routeProvider.when('/bprocess/:BPid/station/:id/show', {templateUrl: 'partials/forms/bpstations/bpstation-detail.html', controller: 'BPstationDetailCtrl'});
 /*U*/$routeProvider.when('/bprocess/:BPid/station/:id/edit', {templateUrl: 'partials/forms/bpstations/bpstation-edit.html', controller: 'BPstationDetailCtrl'});    
-    
+   
+   // Permissions
+/*I*/$routeProvider.when('/bprocess/:BPid/perms', {templateUrl: 'partials/forms/perms/perm-list.html', controller: 'BPPermListCtrl'});
+/*C*/$routeProvider.when('/bprocess/:BPid/perm/new', {templateUrl: 'partials/forms/perms/perm-new.html', controller: 'BPPermCreationCtrl'});
+/*R*/$routeProvider.when('/bprocess/:BPid/perm/:id/show', {templateUrl: 'partials/forms/perms/perm-detail.html', controller: 'BPPermDetailCtrl'});
+/*U*/$routeProvider.when('/bprocess/:BPid/perm/:id/edit', {templateUrl: 'partials/forms/perms/perm-edit.html', controller: 'BPPermDetailCtrl'});
+
     // Loggers
 /*I*/$routeProvider.when('/bprocess/:BPid/logs', {templateUrl: 'partials/forms/bploggers/logger-list.html', controller: 'BPloggerListCtrl'});
 /*R*/$routeProvider.when('/bprocess/:BPid/log/:id/show', {templateUrl: 'partials/forms/bploggers/logger-detail.html', controller: 'BPloggerDetailCtrl'});
@@ -56,9 +63,21 @@ minorityApp.config(['$routeProvider', function($routeProvider) {
 /*C*/$routeProvider.when('/bprocess/:BPid/input', {templateUrl: 'partials/forms/inputs/inputs.html', controller: 'BPRequestCtrl'}); 
     
      $routeProvider.otherwise({redirectTo: '/bprocesses'});
-    
+
+
   
-  }]);
+}]).run(['$window', '$rootScope', '$injector', function($window, $rootScope,$injector) {
+    var token = $window.sessionStorage.getItem('token');
+    $injector.get("$http").defaults.transformRequest = function(data, headersGetter) {
+        //if ($rootScope.oauth) 
+        headersGetter()['X-Auth-Token'] = $window.sessionStorage.getItem('token');
+        if (data) {
+            return angular.toJson(data);
+        }
+    };
+}]);
+
+
 
 
 /* Filters 

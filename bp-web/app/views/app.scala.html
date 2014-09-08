@@ -1,8 +1,14 @@
-@main("Minority App") { 
+@(user: Option[securesocial.core.BasicProfile] = None)
+@main("Minority App", user) { 
 
 <link rel="stylesheet" href="css/app.css"/>
 <link rel="stylesheet" href="bower_components/angular-ui-select/dist/select.min.css">
 <link rel="stylesheet" href="bower_components/angular-ui-tree/dist/angular-ui-tree.min.css">
+<link rel="stylesheet" href="bower_components/ngDialog/css/ngDialog.css">
+<link rel="stylesheet" href="bower_components/ngDialog/css/ngDialog-theme-default.css">
+<link rel="stylesheet" href="bower_components/ngDialog/css/ngDialog-theme-plain.css">
+
+
 <div class="container app" ng-app="minorityApp">
 
 <div ng-controller="UserInfoCtrl">
@@ -33,7 +39,7 @@
   <script type="text/javascript" src="bower_components/underscore/underscore.js"></script>
   <script type="text/javascript" src="bower_components/moment/moment.js"></script>
   <script type="text/javascript" src="bower_components/angular-moment/angular-moment.js"></script>
-
+  <script type="text/javascript" src="bower_components/ngDialog/js/ngDialog.js"></script>
   <script type="text/javascript" src="bower_components/angular-ui-tree/dist/angular-ui-tree.js"></script>
 
   <script type="text/javascript" src="bower_components/ui-sortable/src/sortable.js"></script>

@@ -25,19 +25,19 @@
 
 @main("Services") {
     
-    <h1>Messages("Services")</h1>
+    <h1>Services</h1>
 
-    flash.get("success").map { message =>
+    <!--flash.get("success").map { message =>
         <div class="alert-message warning">
             <strong>Done!</strong> message
         </div>
-    }
+    }-->
 
     <div id="actions">
         
         @helper.form(action=routes.BusinessServiceController.index()) {
-            <input type="search" id="searchbox" name="f" value="@currentFilter" placeholder="Filter by name...">
-            <input type="submit" id="searchsubmit" value="Filter by name" class="btn primary">
+            <!--<input type="search" id="searchbox" name="f" value="@currentFilter" placeholder="Filter by name...">
+            <input type="submit" id="searchsubmit" value="Filter by name" class="btn primary">-->
         }
         
         <a class="btn success" id="add" href="@routes.BusinessServiceController.create()">Add a new services</a>
@@ -79,7 +79,7 @@
 
             </tbody>
         </table>
-
+       <!--
         <div id="pagination" class="pagination">
             <ul>
                 @currentPage.prev.map { page =>
@@ -105,7 +105,7 @@
                 }
             </ul>
         </div>
-        
+     -->   
     }.getOrElse {
         
         <div class="well">

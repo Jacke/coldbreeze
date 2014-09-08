@@ -9,6 +9,8 @@ var minorityAppServices =
     ]
   );
 
+
+
 minorityAppServices.factory(
   'Message',
   function($resource) {
@@ -24,6 +26,7 @@ minorityAppServices.factory('AuthInterceptor', function ($window, $q) {
         request: function(config) {
             config.headers = config.headers || {};
             if ($window.sessionStorage.getItem('token')) {
+                $http.defaults.headers.common['auth-token'] = $window.sessionStorage.getItem('token');
                 config.headers.Authorization = $window.sessionStorage.getItem('token');
                 config.headers.Access_Name = 'John';
             }
@@ -38,7 +41,6 @@ minorityAppServices.factory('AuthInterceptor', function ($window, $q) {
         }
     };
 });
-
 /***********************************************************************************************************************************
 ******************************************  BProcess *******************************************************************************
 ************************************************************************************************************************************/
@@ -101,7 +103,7 @@ minorityAppServices.factory('BPElemFactory', function ($resource) {
 minorityAppServices.factory('BPSpacesFactory', function ($resource) {
     return $resource(baseUrl + 'bprocess/:BPid/spaces', {}, {
         query: { method: 'GET', isArray: true },
-        create: { method: 'POST' }
+        create: { method: 'POST', params: {id: '@BPid'} }
     })
 });
 minorityAppServices.factory('BPSpaceFactory', function ($resource) {

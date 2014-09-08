@@ -20,7 +20,7 @@ GET         /index11                                            @controllers.App
 #GET     /signup                     securesocial.controllers.Registration.startSignUp
 #POST    /signup                     securesocial.controllers.Registration.handleStartSignUp
 #GET     /signup/:token              securesocial.controllers.Registration.signUp(token)
-POST        /signup/:token                                      @controllers.CustomRegistrationController.handleSignUp(token)
+POST     /signup/:token             @controllers.CustomRegistrationController.handleSignUp(token)
 #GET     /reset                      securesocial.controllers.Registration.startResetPassword
 #POST    /reset                      securesocial.controllers.Registration.handleStartResetPassword
 #GET     /reset/:token               securesocial.controllers.Registration.resetPassword(token)
@@ -47,6 +47,13 @@ GET         /business/create                                    @controllers.Bus
 POST        /business/create                                    @controllers.BusinessController.create_new()
 GET         /business/update/:id                                @controllers.BusinessController.update(id: Int)
 POST        /business/update/:id                                @controllers.BusinessController.update_make(id: Int)
+# Elem perms
+GET         /elemperms                                          @controllers.PermissionController.index()
+GET         /elemperm/create                                    @controllers.PermissionController.create()
+POST        /elemperm/create                                    @controllers.PermissionController.create_new()
+GET         /elemperm/update/:id                                @controllers.PermissionController.update(id: Int)
+POST        /elemperm/update/:id                                @controllers.PermissionController.update_make(id: Int)
+
 # Services
 GET         /services                                           @controllers.BusinessServiceController.index()
 GET         /service/create                                     @controllers.BusinessServiceController.create()
@@ -90,7 +97,6 @@ GET /lists @controllers.Application.list
 
 ##################################################################
 # BProcess
-GET         /bprocess/index                                     @controllers.Application.bprocesses()
 GET         /bprocesses                                         @controllers.Application.bprocess()
 GET         /bprocesses/services                                @controllers.BusinessServiceController.bprocesses_services()
 POST        /bprocesses                                         @controllers.Application.create_bprocess()
@@ -128,8 +134,14 @@ POST /bprocess/space_elems            @controllers.BusinessProcessController.cre
 #### Make parameterized /|\ ??????
 
 PUT  /bprocess/:bpId/element/:elem_id          @controllers.BusinessProcessController.updateFrontElem(bpId: Int, elem_id: Int)
-PUT  /bprocess/:id/spaces/:space_id            @controllers.BusinessProcessController.updateSpace(id: Int, space_id: Int)
+PUT  /bprocess/:bpId/element/:elem_id/up       @controllers.BusinessProcessController.moveUpFrontElem(bpId: Int, elem_id: Int)
+PUT  /bprocess/:bpId/element/:elem_id/down     @controllers.BusinessProcessController.moveDownFrontElem(bpId: Int, elem_id: Int)
+
+PUT  /bprocess/:id/space/:space_id            @controllers.BusinessProcessController.updateSpace(id: Int, space_id: Int)
+
 PUT  /bprocess/:id/space_elem/:spelem_id   @controllers.BusinessProcessController.updateSpaceElem(id: Int, spelem_id: Int)
+PUT  /bprocess/:id/space_elem/:spelem_id/:space_id/up   @controllers.BusinessProcessController.moveUpSpaceElem(id: Int, spelem_id: Int, space_id: Int)
+PUT  /bprocess/:id/space_elem/:spelem_id/:space_id/down @controllers.BusinessProcessController.moveDownSpaceElem(id: Int, spelem_id: Int, space_id: Int)
 
 
 DELETE /bprocess/:bpID/element/:elem_id          @controllers.BusinessProcessController.deleteFrontElem(bpID: Int, elem_id: Int)
@@ -139,23 +151,16 @@ DELETE /bprocess/:bpID/space_elem/:spelem_id @controllers.BusinessProcessControl
 
 
 
-GET         /bprocess/:BPid/request/:station_id                @controllers.BusinessProcessController.schemes(BPid: Int, station_id: Int)
 
 
 
+
+# Input
+GET          /bprocess/:BPid/request/:station_id      @controllers.ProcessInputController.schemes(BPid: Int, station_id: Int)
+POST         /bprocess/:bpID/invoke                   @controllers.ProcessInputController.invoke(bpID: Int)
+POST         /bprocess/:bpID/invoke_from/:station_id  @controllers.ProcessInputController.invokeFrom(station_id:Int, bpID: Int)
 #GET         /bprocess/:id/active_stations BPStationDAO.areActiveForBP(id)
 #GET         /bprocess/:id/last_run        BPLoggerDAO.lastRunOfBP(id)
-POST         /bprocess/:bpID/invoke                   @controllers.BusinessProcessController.invoke(bpID: Int)
-POST         /bprocess/:bpID/invoke_from/:station_id  @controllers.BusinessProcessController.invokeFrom(station_id:Int, bpID: Int)
-
-#GET  /block/:id/info                ProcElemDAO.findById(id)
-#GET  
-#POST /block/:id/order               ProcElemDAO.update_order(id, orderNum)
-#GET  /logs/:id                      BPLoggerDAO.findByBPId(id)
-#GET  /log/:id                       BPLoggerDAO.findById(id)
-#GET  /stations/:id                  BPStationDAO.findByBPId(id)
-#GET  /station/:id                   BPStationDAO.findById(id)
-#POST /station/:id/halt              HALT
 #POST /station/:id/inputcall
 #GET /station/:id/threads
 ######################################################################

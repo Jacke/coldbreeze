@@ -55,7 +55,7 @@ object ClientDAO {
    */
   def update(id: Int, client: ClientDTO) = database withSession { implicit session ⇒
     val bpToUpdate: ClientDTO = client.copy(Option(id))
-    clients.where(_.id === id).update(ClientDTO.unapply(bpToUpdate).get)
+    clients.filter(_.id === id).update(ClientDTO.unapply(bpToUpdate).get)
   }
   /**
    * Delete a client
@@ -63,7 +63,7 @@ object ClientDAO {
    */
   def delete(id: Int) = database withSession { implicit session ⇒
 
-    clients.where(_.id === id).delete
+    clients.filter(_.id === id).delete
   }
   /**
    * Count all clients

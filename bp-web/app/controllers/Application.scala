@@ -13,7 +13,7 @@ import views._
 import models.User
 import service.DemoUser
 import securesocial.core._
-
+import controllers.users._
 
 class Application(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] { // with Secured  {
   import play.api.Play.current
@@ -29,6 +29,8 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
           routes.javascript.CustomLoginController.login,
             routes.javascript.BusinessProcessController.frontElems,
             routes.javascript.BusinessProcessController.spaces,
+            users.routes.javascript.EmployeeController.create_new,
+
             routes.javascript.Application.index
           // TODO Add your routes here
         )
@@ -50,6 +52,9 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
   //implicit val personWrites = Json.writes[Person]
 
 
+  def app() = Action { implicit request =>
+    Ok(views.html.app(None))
+  }
 /**
    * Log-in a user. Expects the credentials in the body in JSON format.
    *
@@ -78,9 +83,6 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
 
   def index = SecuredAction { implicit request =>
     Ok(views.html.index(request.user.main))
-  }
-  def app() = Action { implicit request =>
-    Ok(views.html.app())
   }
   def whoami = SecuredAction { implicit request =>
     Ok(Json.toJson(Map("email" -> request.user.main.userId, "business" -> "0")))
@@ -116,12 +118,7 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
   def index11 = Action {
     Ok(views.html.index11())
   }
-  /**
-  * Mocks
-  */
-  def bprocesses = Action {
-    Ok(Json.toJson(Array(4)))
-  }
+
   import models.DAO.BProcessDTO
   import models.DAO.BPDAO
   implicit val BProcessDTOReads = Json.reads[BProcessDTO]

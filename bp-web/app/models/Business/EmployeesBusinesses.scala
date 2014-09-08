@@ -41,11 +41,11 @@ object EmployeesBusinessDAO {
 
   def deleteByEmployee(employee_id: Int) = database withSession { implicit session ⇒
 
-    employees_businesses.where(_.employee_id === employee_id).delete
+    employees_businesses.filter(_.employee_id === employee_id).delete
   }
   def deleteByEmployeeAndBusiness(employee_id: Int, business_id: Int) = database withSession { implicit session ⇒
     employees_businesses.filter(em => em.employee_id === employee_id && em.business_id === business_id).delete
-    //employees_businesses.where(_.employee_id === employee_id &&& _.business_id === business_id).delete
+    //employees_businesses.filter(_.employee_id === employee_id &&& _.business_id === business_id).delete
   }
 
   def getAll = database withSession {

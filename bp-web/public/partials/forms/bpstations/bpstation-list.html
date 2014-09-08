@@ -46,22 +46,9 @@
           
           </p> 
           <h3>Tree</h3>
-<div ui-tree>
-  <ol ui-tree-nodes="" ng-model="trees">
-    <li ng-repeat="trr in trees" ui-tree-node>
-        id:{{trr.id}} — {{trr.title}}
-      <ol ui-tree-nodes="" ng-model="trr.nodes">
-        <li ng-repeat="node in trr.nodes" ui-tree-node>
-            Space: {{node.index}}
-          <ol ui-tree-nodes="" ng-model="node.space_elem">
-            <li ng-repeat="spelem in node.space_elem" ui-tree-node>
-               SpaceElem: id:{{spelem.id}} — {{spelem.title}}
-            </li>
-          </ol>
-        </li>
-    </li>
-  </ol>
-</div>
+
+<div ng-include src="'partials/tree.html'"></div>
+
 <div class="active">
 <h3>Now active</h3>
 <pre>
@@ -107,4 +94,32 @@ id:{{ spaceElemHash[logsByStation(station.id)[logsByStation(station.id).length-1
           {{ bplogs }}
 
            <hr>
-          </div>
+</div>
+
+
+<div class="observer">
+  <h3>Observer link: </h3>
+  <div class="observers" ng-repeat="obs in station.obsrs">
+    <h6>{{obs.name }}</h6>
+    <h6>{{ obs.email }}</h6>
+    <input type="text" id="inputTitle" ng-model="obs.link"/>
+    <a ng-click="deleteObserver(obs)" class="btn btn-small btn-primary">Delete observer</a>
+  </div>
+ <form novalidate="novalidate" class="form-horizontal">
+    <div class="control-group">
+      <label class="control-label" for="inputTitle">Link:</label>
+      <div class="controls">
+        <input type="text" id="inputTitle" ng-model="newObserver.name"/>
+        <input type="text" id="inputTitle" ng-model="newObserver.email"/>
+      </div>
+    </div>
+  
+    <div class="control-group">
+      <div class="controls">
+        <a ng-click="generateObsLink()" class="btn btn-small btn-primary">Generate</a>
+      </div>
+    </div>
+  </form>
+</div>
+
+</div>

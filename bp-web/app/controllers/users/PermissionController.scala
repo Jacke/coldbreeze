@@ -7,9 +7,13 @@ import play.twirl.api.Html
 import play.api.http.MimeTypes
 import play.api.libs.json._
 import play.api.cache._
+import play.api.data._
+import play.api.data.Forms._
 
 import views._
 import models.User
+import models.Page
+import models.DAO.resources._
 import service.DemoUser
 import securesocial.core._
 /**
@@ -18,35 +22,72 @@ import securesocial.core._
 class PermissionController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
   import play.api.Play.current
 
+val Home = Redirect(routes.BusinessController.index())
 
-/**
-  Permission for access AND view
-*/
+// case class ActPermission(var id: Option[Int], uid: String, front_elem_id:Option[Int], space_elem_id:Option[Int])
+val elemPermForm = Form(
+    mapping(
+      "id" -> optional(number),
+      "uid" -> nonEmptyText,
+      "front_elem_id" -> optional(number),
+      "space_elem_id" -> optional(number))(ActPermission.apply)(ActPermission.unapply))
+ 
+ def index() = SecuredAction { implicit request =>
+      val elemperms = ActPermissionDAO.getAll
+      Ok(views.html.permissions.element.index(
+        Page(elemperms, 1, 1, elemperms.length), 1, "%")(Some(request.user.main)))
+    
+  }
+  def create() = SecuredAction { implicit request =>
+        Ok(views.html.permissions.element.elemperm_form(elemPermForm)(Some(request.user.main)))    
+  }
+  def create_new() = SecuredAction { implicit request =>
 
+    elemPermForm.bindFromRequest.fold(
+      formWithErrors => BadRequest(views.html.permissions.element.elemperm_form(formWithErrors)(Some(request.user.main))),
+      entity => {
 
-  def index() = Action(parse.json) { implicit request =>
-    
-      Ok(views.html.index11())
+          val biz_id = ActPermissionDAO.pull_object(entity)
+          /*val emp_id = EmployeeDAO.getByUID(request.user.main.userId) 
+          emp_id match {
+            case Some(employee) => EmployeesBusinessDAO.pull(employee_id = employee.id.get, business_id = biz_id)
+            case _ =>
+          }*/
+          
+          
+          Home.flashing("success" -> s"Entity ${entity.uid} has been created")
+        
+      })
+  }
+  def update(id: Int) = SecuredAction { implicit request =>
+      val perm = ActPermissionDAO.get(id)
+      perm match {
+        case Some(x) =>
+        val prm = ActPermission(x.id, x.uid, x.front_elem_id, x.space_elem_id)
+         Ok(views.html.permissions.element.elemperm_edit_form(id, elemPermForm.fill(prm))(Some(request.user.main))) 
+        case None => Ok("not found")
+      }
+
+      
     
   }
-  def newone() = Action(parse.json) { implicit request =>
-    
-      Ok(views.html.index11())
-    
-  }
-  def create() = Action(parse.json) { implicit request =>
-    
-      Ok(views.html.index11())
-    
-  }
-  def update() = Action(parse.json) { implicit request =>
-    
-      Ok(views.html.index11())
+  def update_make(id: Int) = SecuredAction { implicit request =>
+      elemPermForm.bindFromRequest.fold(
+        formWithErrors => BadRequest(views.html.permissions.element.elemperm_edit_form(id, formWithErrors)(Some(request.user.main))),
+        entity => {
+          Home.flashing(ActPermissionDAO.update(id,entity) match {
+            case 0 => "failure" -> s"Could not update entity ${entity.uid}"
+            case _ => "success" -> s"Entity ${entity.uid} has been updated"
+          })
+        })
     
   }
-  def destroy() = Action(parse.json) { implicit request =>
+  def destroy(id: Int) = SecuredAction { implicit request =>
     
-      Ok(views.html.index11())
+      Home.flashing(ActPermissionDAO.delete(id) match {
+        case 0 => "failure" -> "Entity has Not been deleted"
+        case x => "success" -> s"Entity has been deleted (deleted $x row(s))"
+      })
     
   }
 
