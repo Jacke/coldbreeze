@@ -150,7 +150,45 @@ minorityAppServices.factory('BPStationFactory', function ($resource) {
     })
 });
 
+/*
+** Employees FACTORY
+*/
+minorityAppServices.factory('EmployeesFactory', function ($resource) {
+    return $resource(baseUrl + 'actors', {}, {
+        query: { method: 'GET', isArray: true }
+    })
+});
+/*
+** Permissions FACTORY
+*/
+minorityAppServices.factory('PermissionsFactory', function ($resource) {
+    return $resource(baseUrl + 'elemperms', {}, {
+        query: { method: 'GET', isArray: true },
+        create: { method: 'POST' }
+    })
+});
+minorityAppServices.factory('PermissionFactory', function ($resource) {
+    return $resource(baseUrl + 'elemperm/:id', {}, {
+        update: { method: 'PUT', params: {id: '@id'} },
+        delete: { method: 'DELETE', params: {id: '@id'} }
+    })
+});
 
+
+
+/* 
+** BPInputLogger FACTORY
+*/
+minorityAppServices.factory('BPInLoggersFactory', function ($resource) {
+    return $resource(baseUrl + 'bprocess/:BPid/input_logs', {}, {
+        query: { method: 'GET', isArray: true }
+    })
+});
+minorityAppServices.factory('BPInLoggersStationFactory', function ($resource) {
+    return $resource(baseUrl + 'bprocess/:BPid/input_logs/:station_id', {}, {
+        query: { method: 'GET', isArray: true }
+    })
+});
 /*
 ** BPLoggers FACTORY
 */
@@ -229,22 +267,7 @@ minorityAppServices.factory('ClientFactory', function ($resource) {
 });
 
 
-/*
-** Employees
-*/
-minorityAppServices.factory('EmployeesFactory', function ($resource) {
-    return $resource(baseUrl + 'business/:BID/employees/', {}, {
-        query: { method: 'GET', isArray: true },
-        create: { method: 'POST' }
-    })
-});
-minorityAppServices.factory('EmployeeFactory', function ($resource) {
-    return $resource(baseUrl + '/business/:BID/client/:id', {}, {
-        show: { method: 'GET' },
-        update: { method: 'PUT', params: {id: '@id'} },
-        delete: { method: 'DELETE', params: {id: '@id'} }
-    })
-});
+
 
 // Demonstrate how to register services
 // In this case it is a simple value service.

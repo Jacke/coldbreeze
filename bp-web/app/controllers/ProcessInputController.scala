@@ -61,33 +61,42 @@ class ProcessInputController(override implicit val env: RuntimeEnvironment[DemoU
   def invokeFrom(station_id: Int, bpID: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
     val pmsResult = request.body.validate[List[InputParams]] 
     println(pmsResult)
-//case class InputLogger(var id: Option[Int], action:String, arguments:List[String], front_elem_id:Option[Int], space_elem_id:Option[Int], date: org.joda.time.DateTime)
 
-val input_logs = pmsResult.map{
-                          case entity => entity.map { pm =>
-                              InputLogger(None, 
-                                uid = request.user.main.email, 
-                                action = pm.param, 
-                                arguments = List.empty[String], 
-                                front_elem_id = pm.f_elem, 
-                                space_elem_id = pm.sp_elem, 
-                                org.joda.time.DateTime.now)
-                            }
-  }
-
-input_logs.get.foreach(il => InputLoggerDAO.pull_object(il))
-
-    val genparams = pmsResult.map{ 
-      case entity => { 
-           entity.map { t =>
-            if (t.f_elem.isDefined)
-             t.f_elem.get -> t.param
-            else 
-             t.sp_elem.get -> t.param
-            } toMap
-         
+/*
+case class InputLogger(var id: Option[Int], 
+  uid:Option[String]=None, 
+  action:String, 
+  arguments:List[String], 
+  front_elem_id:Option[Int], 
+  space_elem_id:Option[Int], 
+  date: org.joda.time.DateTime,
+  station: Int)*/
+    val input_logs = pmsResult.map{
+                              case entity => entity.map { pm =>
+                                  InputLogger(None, 
+                                    uid = request.user.main.email, 
+                                    action = pm.param, 
+                                    arguments = List.empty[String], 
+                                    front_elem_id = pm.f_elem, 
+                                    space_elem_id = pm.sp_elem, 
+                                    org.joda.time.DateTime.now,
+                                    station_id)
+                                }
       }
-    }
+
+    input_logs.get.foreach(il => InputLoggerDAO.pull_object(il))
+
+        val genparams = pmsResult.map{ 
+          case entity => { 
+               entity.map { t =>
+                if (t.f_elem.isDefined)
+                 t.f_elem.get -> t.param
+                else 
+                 t.sp_elem.get -> t.param
+                } toMap
+             
+          }
+        }
     //.map (t => t.elem.get -> t.param) toMap
     /*
       Applying by this template ID     PARAM
@@ -100,8 +109,15 @@ input_logs.get.foreach(il => InputLoggerDAO.pull_object(il))
     }
   }
 
+  implicit val inLoggerReads = Json.reads[InputLogger]
+  implicit val inLoggerWrites = Json.format[InputLogger]
 
-
+  def inputLogs(BPid: Int) = Action { implicit request =>
+    Ok(Json.toJson(InputLoggerDAO.getByBP(BPid)))
+  } 
+  def inputLogsByStation(BPid: Int, station_id:Int) = Action { implicit request =>
+    Ok(Json.toJson(InputLoggerDAO.getByStation(station_id)))
+  } 
 
   def schemes(BPid: Int, station_id: Int) = Action { implicit request =>
     val logs = BPLoggerDAO.findByStation(station_id)

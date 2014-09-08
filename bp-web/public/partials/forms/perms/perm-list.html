@@ -6,23 +6,30 @@
 <div ng-include src="'partials/tree.html'"></div>
 
 <div class="perms" ng-repeat="perm in perms">
-{{ perm | json}}
+<pre>
+  <p>{{ perm.uid }}</p>
+  <p>{{ perm.front_elem_id }} {{ perm.space_elem_id }}</p>
+</pre>
+<a ng-click="delPerm(perm)" class="btn btn-danger btn-big">Delete</a>
+
 </div>
 <div class="new">
  <div class="params">
           <div class="param">
-              <p>Confirm block</p>
-              <div ng-repeat="perm in perms" class="controls inputRequests">
+              <div ng-repeat="perm in newperms" class="controls inputRequests">
                    <div class="request">
-                     <select ng-model="perm.f_elem" class="forFront" ng-options="elem.id as elem.title for elem in station.proc_elems" required></select><br>
-                     <select ng-model="perm.sp_elem" class="forSpace"ng-options="elem.id as elem.title for elem in station.space_elems" required></select><br>
-                     <select ng-model="perm.param" class="forParam" ng-options="param.name as param.name for param in params" required></select><br>
-                     <a ng-click="create(perm)" class="btn btn-big btn-success">Add</a>
+                     <select ng-model="perm.uid" class="forUID" ng-options="employee.uid as employee.uid for employee in employees" required></select><br>
+                     <select ng-model="perm.front_elem_id" class="forFrontElem" ng-options="elem.id as elem.title for elem in bpelems" required>
+                      <option value="" selected></option>
+                     </select><br>
+                     <select ng-model="perm.space_elem_id" class="forSpaceElem"ng-options="elem.id as elem.title for elem in spaceelems" required>
+                      <option value="" selected></option>
+                     </select><br>
+                     <a ng-click="createPerm(perm)" class="btn btn-big btn-success">Add</a>
                 </div></div>
           </div></div>
         
-          <button ng-click="addPerm()">Add permission</button>
-          <button ng-click="delPerm()">Del last input</button>
+          <button ng-click="addPerm()">Add another one permission</button>
           
           
           

@@ -94,7 +94,6 @@ id:{{ spaceElemHash[logsByStation(station.id)[logsByStation(station.id).length-1
           <pre> Parameters for run from </pre>
           <div class="params">
           <div class="param">
-              <p>Confirm block</p>
               <div ng-repeat="cont in station.params" class="controls inputRequests">
                    <div class="request">
                      <select ng-model="cont.f_elem" class="forFront" ng-options="elem.id as elem.title for elem in station.proc_elems" required></select><br>

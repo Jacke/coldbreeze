@@ -33,7 +33,8 @@ class BusinessServiceController(override implicit val env: RuntimeEnvironment[De
     mapping(
       "id" -> optional(number),
       "title" -> nonEmptyText,
-      "business_id" -> number)(BusinessServiceDTO.apply)(BusinessServiceDTO.unapply))
+      "business_id" -> number,
+      "master_acc" -> default(text, ""))(BusinessServiceDTO.apply)(BusinessServiceDTO.unapply))
  
  def index() = SecuredAction { implicit request =>
       val services = BusinessServiceDAO.getAll
@@ -62,7 +63,7 @@ class BusinessServiceController(override implicit val env: RuntimeEnvironment[De
       formWithErrors => BadRequest(views.html.businesses.service_form(formWithErrors)),
       entity => {
 
-          BusinessServiceDAO.pull_object(entity)
+          BusinessServiceDAO.pull_object(entity.copy(master_acc = request.user.main.email.get))
           Home.flashing("success" -> s"Entity ${entity.title} has been created")
         
       })

@@ -31,7 +31,7 @@
     <li data-attr="show" data-target=".tabsWrap" data-filter="admin" class="filterGridItems changeData">Administrators <span class="badgeLike">3</span></li>
     <li data-attr="show" data-target=".tabsWrap" data-filter="member" class="filterGridItems changeData">Members <span class="badgeLike">1</span></li>
     <li data-attr="show" data-target=".tabsWrap" data-filter="invite" class="filterGridItems changeData">Invitations <span class="badgeLike">2</span></li>
-    <li><a class="btn success" id="add" href="@users.routes.EmployeeController.create()">Add a new Employee</a></li>
+    <!--<li><a class="btn success" id="add" href="@users.routes.EmployeeController.create()">Add a new Employee</a></li>-->
   </ul>
 </div>
 
@@ -61,70 +61,59 @@
     </div>
   </div>
 
-  <div class="tabsWrap" data-show="all"><ul data-menu=".organisationsGridMenu" class="profilesList userCard list grids">
-                      <li class="userCard listItem" data-role="member" data-type="Invite" data-id="4ffd538f12600b01000049bc">
-<div class="userCardFront">
-
-<figure class="userAvatar">
-  <img src="https://secure.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=70&amp;d=https%3A%2F%2Fapiary.a.ssl.fastly.net%2Fassets%2Fimages%2Fdefault_user_avatar-8f601fa59d98081b.png" height="70" width="70" />
-</figure>
-
-<span class="infoIco icon-time" title="Waiting user invitation acceptance."></span>
-
-<span class="userName">
-<b class="block">Anonymous</b>
-  </span>
-<span class="infoIco opposite icon-star hidden" title="Member"></span>
-<span class="userCardMenuHandle">&#x2261;</span></div></li>                                <li class="userCard listItem" data-role="admin" data-type="Invite" data-id="xxxxxx.ru" data-query="code=KAuePx">
-
-
-    
+<div class="tabsWrap" data-show="all">
+  <ul data-menu=".organisationsGridMenu" class="profilesList userCard list grids">
     @Option(currentPage.items).filterNot(_.isEmpty).map { entities =>
-        
-        <table class="computers zebra-striped">
-            <thead>
-                <tr>
-                    @header(1, "Employee id")
-                    @header(2, "Name")
-                    @header(3, "")
-                </tr>
-            </thead>
-            <tbody>
-                @entities.map {
-                 case (entity) => {
-                        <tr>
-                            <td><a href="@users.routes.EmployeeController.update(entity.id.get)">@entity.id</a></td>
-                            <td>
-                                @entity.uid
-                            </td>
-                            <td>
-                              @form(users.routes.EmployeeController.destroy(entity.id.get), 'class -> "topRight") {
-                                  <input type="submit" value="Delete this employee" class="btn danger">
-                              }
-                                
-                            </td>
-                            <td>
-                              Assign to:
-                              @businesses.map { business =>
-                                  <b><a href="@users.routes.EmployeeController.assign_business(entity.id.get, business.id.get)">@business.title</a></b>
-                              }
-                            </td>
-                            <td> 
-                            Assigned:
-                              @assignedBiz.map { business =>
-                                  <b><a href="@users.routes.EmployeeController.unassign_business(entity.id.get, business.id.get)">@business.title</a></b>
-                              }
-                            </td>
-                        </tr>
-                     }
-                }
+        @entities.map {
+         case (entity) => {
+      <li class="userCard listItem" data-role="member" data-type="Invite" data-id="@entity.id">
+        <div class="userCardFront">
+        <figure class="userAvatar">
+          <img src="https://secure.gravatar.com/avatar/d41d8cd98f00b204e9800998ecf8427e?s=70&amp;d=https%3A%2F%2Fapiary.a.ssl.fastly.net%2Fassets%2Fimages%2Fdefault_user_avatar-8f601fa59d98081b.png" height="70" width="70" />
+        </figure>
 
-            </tbody>
-        </table>
-        
-    }
+        <span class="infoIco icon-time" title="Waiting user invitation acceptance."></span>
+
+        <span class="userName">
+        <b class="block">Anonymous — @{entity.uid}</b>
+          </span>
+        <span class="infoIco opposite icon-star hidden" title="Member"></span>
+         <!--
+          <li class="userCard userCardMenu okMenu inactiveMenu">
+              <ul>
+                <li class="dropdownListItem onlyMember morphAdmin"><a class="dropdownLink" data-csrftoken="GSUBn9opNZQEct5zCHuRh%2FvYODV1WQtOyAdt0%3D" data-type="POST" data-target-role="Admin" href="/organisations/promote/">Promote to Admin</a></li>
+                <li class="dropdownListItem onlyAdmin morphMember"><a class="dropdownLink" data-csrftoken="GSUBn9opNZQEct5zCHuRh%2FvYODV1WQtOyAdt0%3D" data-type="POST" data-target-role="Member" href="/organisations/demote/">Demote to Member</a></li>
+                <li class="dropdownListItem onlyAdmin removeAdmin"><a class="dropdownLink" data-csrftoken="GSUBn9opNZQEct5zCHuRh%2FvYODV1WQtOyAdt0%3D" data-type="DELETE" href="/organisations/remove/admin/">Remove Admin</a></li>
+                <li class="dropdownListItem onlyMember removeMember"><a class="dropdownLink" data-csrftoken="GSUBn9opNZQEct5zCHuRh%2FvYODV1WQtOyAdt0%3D" data-type="DELETE" href="/organisations/remove/member/"> @form(users.routes.EmployeeController.destroy(entity.id.get), 'class -> "topRight") {
+                                          <input type="submit" value="Remove Member" class="btn danger">
+        }</a></li>
+                <li class="dropdownListItem onlyInvite resendInvite"><a class="dropdownLink" data-csrftoken="GSUBn9opNZQEct5zCHuRh%2FvYODV1WQtOyAdt0%3D" data-type="POST" href="/organisations/resend/">Resend invitation mail</a></li>
+                <li class="dropdownListItem onlyInvite removeInvite"><a class="dropdownLink" data-csrftoken="GSUBn9opNZQEct5zCHuRh%2FvYODV1WQtOyAdt0%3D" data-type="GET" href="/organisations/invitations/53e3a33ca1fce6020000000d/decline/">Cancel invitation</a></li>
+              </ul>
+          </li>-->
+
+        <!--
+                                      Assign to:
+                                      @businesses.map { business =>
+                                          <b><a href="@users.routes.EmployeeController.assign_business(entity.id.get, business.id.get)">@business.title</a></b>
+                                      }
+
+                                    Assigned:
+                                      @assignedBiz.map { business =>
+                                          <b><a href="@users.routes.EmployeeController.unassign_business(entity.id.get, business.id.get)">@business.title</a></b>
+                                      }-->
+          <span class="userCardMenuHandle">&#x2261;</span>
+        </div>
+      </li>  
+}
+}
+}
 
 
+                              
+
+
+<li class="userCard listItem" data-role="admin" data-type="Invite" data-id="xxxxxx.ru" data-query="code=KAuePx">
 <div class="userCardFront">
 
 <figure class="userAvatar">
@@ -137,8 +126,12 @@
 <b class="block">Anonymous</b>
   xxxxxx.ru</span>
 <span class="infoIco opposite icon-star hintMe" title="Admin"></span>
-<span class="userCardMenuHandle">&#x2261;</span></div></li>          
-                          <li class="userCard listItem" data-role="admin" data-type="Admin" data-id="509045720dfd280200000240">
+<span class="userCardMenuHandle">&#x2261;</span></div>
+
+</li>         
+
+
+<li class="userCard listItem" data-role="admin" data-type="Admin" data-id="509045720dfd280200000240">
 <div class="userCardFront">
 
 <figure class="userAvatar">
@@ -151,7 +144,12 @@
   <a href="mailto:iamjackegmail.com">iamjackegmail.com</a>
 </span>
 <span class="infoIco opposite icon-star hintMe" title="Admin"></span>
-<span class="userCardMenuHandle">&#x2261;</span></div></li>                                <li class="userCard listItem" data-selfie="1" data-role="admin" data-type="Admin" data-id="540bca8e7621d50200003e0b">
+<span class="userCardMenuHandle">&#x2261;</span></div>
+
+</li>                                
+
+
+<li class="userCard listItem" data-selfie="1" data-role="admin" data-type="Admin" data-id="540bca8e7621d50200003e0b">
 <div class="userCardFront">
 
 <figure class="userAvatar">
@@ -164,7 +162,10 @@
   <a href="mailto:thenaswerzonegmai.com">thenaswerzoneATgmai.com</a>
 </span>
 <span class="infoIco opposite icon-star hintMe" title="Admin"></span>
-</div></li>          
+</div>
+</li>          
+
+
     <li class="userCardBlankSlate">
       <span class="switchByDataAttr" data-role="all">
         <i class="vIco vPeople vDefaultState"></i><br>
@@ -186,16 +187,7 @@
       </span>
     </li>
 
-        <li class="userCard userCardMenu okMenu inactiveMenu">
-      <ul>
-        <li class="dropdownListItem onlyMember morphAdmin"><a class="dropdownLink" data-csrftoken="GSUBn9opNZQEct5zCHuRh%2FvYODV1WQtOyAdt0%3D" data-type="POST" data-target-role="Admin" href="/organisations/promote/">Promote to Admin</a></li>
-        <li class="dropdownListItem onlyAdmin morphMember"><a class="dropdownLink" data-csrftoken="GSUBn9opNZQEct5zCHuRh%2FvYODV1WQtOyAdt0%3D" data-type="POST" data-target-role="Member" href="/organisations/demote/">Demote to Member</a></li>
-        <li class="dropdownListItem onlyAdmin removeAdmin"><a class="dropdownLink" data-csrftoken="GSUBn9opNZQEct5zCHuRh%2FvYODV1WQtOyAdt0%3D" data-type="DELETE" href="/organisations/remove/admin/">Remove Admin</a></li>
-        <li class="dropdownListItem onlyMember removeMember"><a class="dropdownLink" data-csrftoken="GSUBn9opNZQEct5zCHuRh%2FvYODV1WQtOyAdt0%3D" data-type="DELETE" href="/organisations/remove/member/">Remove Member</a></li>
-        <li class="dropdownListItem onlyInvite resendInvite"><a class="dropdownLink" data-csrftoken="GSUBn9opNZQEct5zCHuRh%2FvYODV1WQtOyAdt0%3D" data-type="POST" href="/organisations/resend/">Resend invitation mail</a></li>
-        <li class="dropdownListItem onlyInvite removeInvite"><a class="dropdownLink" data-csrftoken="GSUBn9opNZQEct5zCHuRh%2FvYODV1WQtOyAdt0%3D" data-type="GET" href="/organisations/invitations/53e3a33ca1fce6020000000d/decline/">Cancel invitation</a></li>
-      </ul>
-    </li>
+
   </ul></div>
 </div>
 

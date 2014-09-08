@@ -32,8 +32,10 @@ class EmployeeController(override implicit val env: RuntimeEnvironment[DemoUser]
    val Home = Redirect(routes.EmployeeController.index())
 
    case class UIDS(emails: List[String], manager: Boolean)
-  implicit val InputParamReads = Json.reads[UIDS]
-  implicit val InputParamWrites = Json.format[UIDS]
+  implicit val UIDSReads = Json.reads[UIDS]
+  implicit val UIDSWrites = Json.format[UIDS]
+  implicit val InputParamReads = Json.reads[EmployeeDTO]
+  implicit val InputParamWrites = Json.format[EmployeeDTO]
    //val uidsForm = Form()
    // case class EmployeeDTO(var id: Option[Int], uid: String, acc:Int, position:Option[String], manager:Boolean = false)
    val employeeForm = Form(
@@ -55,26 +57,27 @@ class EmployeeController(override implicit val env: RuntimeEnvironment[DemoUser]
         Page(employees, 1, 1, employees.length), 1, "%", assign, assigned)(Some(user)))
     
   }
+  def actors() = SecuredAction { implicit request =>
+     val user = request.user.main
+     val employees = EmployeeDAO.getAllByMaster(user.email.get)
+      Ok(Json.toJson(employees))
+  }
   def create() = Action { implicit request =>
         Ok(views.html.businesses.users.employee_form(employeeForm))    
   }
   def create_new() = SecuredAction(BodyParsers.parse.json) { implicit request => 
-    println(request)
-    println(employeeForm.bindFromRequest)
-    println("from")
-    println(request.user.main.email)
-    println(request.body.validate[UIDS])
-    Ok(Json.toJson(Map("xx" -> 1)))
-    /*
-    employeeForm.bindFromRequest.fold(
-      formWithErrors => BadRequest(views.html.businesses.users.employee_form(formWithErrors)),
-      entity => {
-          println("FIND OR CREATE!!!!!!!!!!")
-          println(models.User.findByEmail(entity.uid))
-          //EmployeeDAO.pull_object(entity)
-          Home.flashing("success" -> s"Entity ${entity.uid} has been created")
-        
-      })*/
+
+    request.body.validate[UIDS].map{ 
+      case entity => { entity.emails.map { 
+            e => EmployeeDTO(None, e, request.user.main.email.get, None, entity.manager)
+      }.map{ emp =>
+        EmployeeDAO.pull_object(emp)
+      } 
+      Ok(Json.toJson(Map("success" -> Json.toJson(entity))))
+      }
+    }.recoverTotal{
+      e => BadRequest(Json.toJson(Map("xx" -> 1)))
+    }
   }
   def update(id: Int) = Action { implicit request =>
       val employee = EmployeeDAO.get(id)

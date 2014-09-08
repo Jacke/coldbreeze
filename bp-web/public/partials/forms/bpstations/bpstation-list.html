@@ -88,6 +88,34 @@ id:{{ spaceElemHash[logsByStation(station.id)[logsByStation(station.id).length-1
                     </tbody>
                   </table>
           </div>
+          <pre>{{ allInputLogs | json }}</pre>
+          <div class="input-logs" ng-repeat="il in inputLoggers(station.id)">
+                  <h3>Input Logs</h3>
+                  <table class="table table-user-information">
+                    <tbody>
+                      <tr>
+                        <td> il.front_elem_id </td>
+                        <td> il.space_elem_id </td>
+<td> il.uid </td>
+<td> il.action </td>
+<td> il.arguments </td>
+<td> il.date </td>
+
+
+                      </tr>
+                      <tr>
+<td> {{ elemsHash[il.front_elem_id].id }} {{ elemsHash[il.front_elem_id].title }} — {{ elemsHash[il.front_elem_id].type_title }}  </td>                        
+<td> {{ spaceElemHash[il.space_elem_id].id }} {{ spaceElemHash[il.space_elem_id].title }} — {{ spaceElemHash[il.space_elem_id].type_title }}  </td>
+<td> {{ il.uid }} </td>
+<td> {{ il.action }} </td>
+<td> <pre>{{ il.arguments | json }}</pre> </td>
+<td> {{ il.date }} </td>
+
+
+            </tr>
+                    </tbody>
+                  </table>
+          </div>
           <div ng-if="station.finished == true">
           <a ng-click="haltStation(station.id)" class="btn btn-big">Halt</a>
           </div>

@@ -10,8 +10,8 @@ class Employees(tag: Tag) extends Table[EmployeeDTO](tag, "employees") {
   def position = column[Option[String]]("position")
   def manager = column[Boolean]("manager")
 
-
-  def accFK = foreignKey("acc_fk", uid, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
+  // TODO: CHECK AND FIX BELOW
+  //def accFK = foreignKey("acc_fk", uid, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
   def maccFK = foreignKey("macc_fk", master_acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
   def eb = EmployeesBusinessDAO.employees_businesses.filter(_.employee_id === id).flatMap(_.businessFK)
 
@@ -40,7 +40,11 @@ object EmployeeDAO {
       val q3 = for { s ← employees if s.id === k } yield s// <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)
       q3.list.headOption 
   }
-      
+  def getAllByMaster(mail: String) = database withSession {
+    implicit session =>
+      val q3 = for { s <- employees if s.master_acc === mail } yield s
+      q3.list
+  }
   def getByUID(uid: String) = database withSession {
     implicit session =>
     val q3 = for { s ← employees if s.uid === uid } yield s// <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)

@@ -1,6 +1,7 @@
 package models.DAO.resources
 
 import slick.driver.PostgresDriver.simple._
+import scala.slick.model.ForeignKeyAction
 //import models.DAO.driver.MyPostgresDriver.simple._
 import models.DAO.conversion.DatabaseCred
 
@@ -8,17 +9,19 @@ class BusinessServices(tag: Tag) extends Table[BusinessServiceDTO](tag, "busines
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def title = column[String]("title")
   def business_id = column[Int]("business_id")
-
+  def master_acc = column[String]("master_acc")
+   
+  //def accFK = foreignKey("macc_fk", master_acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
   def business = foreignKey("buss_fk", business_id, models.DAO.resources.BusinessDAO.businesses)(_.id)
 
-  def * = (id.?, title, business_id) <> (BusinessServiceDTO.tupled, BusinessServiceDTO.unapply)
+  def * = (id.?, title, business_id, master_acc) <> (BusinessServiceDTO.tupled, BusinessServiceDTO.unapply)
 
 }
 
 /*
   Case class
  */
-case class BusinessServiceDTO(var id: Option[Int], title: String, business_id: Int)
+case class BusinessServiceDTO(var id: Option[Int], title: String, business_id: Int, master_acc:String = "")
 
 object BusinessServiceDAO {
   import scala.util.Try
@@ -34,10 +37,10 @@ object BusinessServiceDAO {
       business_services returning business_services.map(_.id) += s
   }
 
-  def pull(id: Option[Int] = None, title: String, business_id: Int) = Try(database withSession {
+  def pull(id: Option[Int] = None, title: String, business_id: Int, master_acc:String) = Try(database withSession {
     implicit session ⇒
 
-      business_services += BusinessServiceDTO(id, title, business_id)
+      business_services += BusinessServiceDTO(id, title, business_id, master_acc)
   }).isSuccess
 
   def get(k: Int) = database withSession {

@@ -50,9 +50,10 @@ POST        /business/update/:id                                @controllers.Bus
 # Elem perms
 GET         /elemperms                                          @controllers.PermissionController.index()
 GET         /elemperm/create                                    @controllers.PermissionController.create()
-POST        /elemperm/create                                    @controllers.PermissionController.create_new()
+POST        /elemperms                                          @controllers.PermissionController.create_new()
 GET         /elemperm/update/:id                                @controllers.PermissionController.update(id: Int)
-POST        /elemperm/update/:id                                @controllers.PermissionController.update_make(id: Int)
+POST        /elemperm/:id                                       @controllers.PermissionController.update_make(id: Int)
+DELETE      /elemperm/:id                                       @controllers.PermissionController.destroy(id: Int)
 
 # Services
 GET         /services                                           @controllers.BusinessServiceController.index()
@@ -62,6 +63,7 @@ GET         /service/update/:id                                 @controllers.Bus
 POST        /service/update/:id                                 @controllers.BusinessServiceController.update_make(id: Int)
 POST        /service/:id/destroy                                @controllers.BusinessServiceController.destroy(id: Int)
 # Employees
+GET         /actors                                             @controllers.users.EmployeeController.actors()
 GET         /employees                                          @controllers.users.EmployeeController.index()
 GET         /employee/create                                    @controllers.users.EmployeeController.create()
 POST        /employee/create                                    @controllers.users.EmployeeController.create_new()
@@ -159,6 +161,9 @@ DELETE /bprocess/:bpID/space_elem/:spelem_id @controllers.BusinessProcessControl
 GET          /bprocess/:BPid/request/:station_id      @controllers.ProcessInputController.schemes(BPid: Int, station_id: Int)
 POST         /bprocess/:bpID/invoke                   @controllers.ProcessInputController.invoke(bpID: Int)
 POST         /bprocess/:bpID/invoke_from/:station_id  @controllers.ProcessInputController.invokeFrom(station_id:Int, bpID: Int)
+
+GET          /bprocess/:BPid/input_logs               @controllers.ProcessInputController.inputLogs(BPid: Int)  
+GET          /bprocess/:BPid/input_logs/:station_id   @controllers.ProcessInputController.inputLogsByStation(BPid: Int, station_id:Int)
 #GET         /bprocess/:id/active_stations BPStationDAO.areActiveForBP(id)
 #GET         /bprocess/:id/last_run        BPLoggerDAO.lastRunOfBP(id)
 #POST /station/:id/inputcall

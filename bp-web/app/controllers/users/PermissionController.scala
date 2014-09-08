@@ -23,6 +23,9 @@ class PermissionController(override implicit val env: RuntimeEnvironment[DemoUse
   import play.api.Play.current
 
 val Home = Redirect(routes.BusinessController.index())
+  implicit val PermiReads = Json.reads[ActPermission]
+  implicit val PermiWrites = Json.format[ActPermission]
+
 
 // case class ActPermission(var id: Option[Int], uid: String, front_elem_id:Option[Int], space_elem_id:Option[Int])
 val elemPermForm = Form(
@@ -34,8 +37,9 @@ val elemPermForm = Form(
  
  def index() = SecuredAction { implicit request =>
       val elemperms = ActPermissionDAO.getAll
-      Ok(views.html.permissions.element.index(
-        Page(elemperms, 1, 1, elemperms.length), 1, "%")(Some(request.user.main)))
+      Ok(Json.toJson(elemperms))
+      /*Ok(views.html.permissions.element.index(
+        Page(elemperms, 1, 1, elemperms.length), 1, "%")(Some(request.user.main)))*/
     
   }
   def create() = SecuredAction { implicit request =>
@@ -54,8 +58,8 @@ val elemPermForm = Form(
             case _ =>
           }*/
           
-          
-          Home.flashing("success" -> s"Entity ${entity.uid} has been created")
+          Ok(Json.toJson(Map("success" -> entity.uid)))
+          //Home.flashing("success" -> s"Entity ${entity.uid} has been created")
         
       })
   }
@@ -75,19 +79,19 @@ val elemPermForm = Form(
       elemPermForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.permissions.element.elemperm_edit_form(id, formWithErrors)(Some(request.user.main))),
         entity => {
-          Home.flashing(ActPermissionDAO.update(id,entity) match {
-            case 0 => "failure" -> s"Could not update entity ${entity.uid}"
-            case _ => "success" -> s"Entity ${entity.uid} has been updated"
-          })
+          ActPermissionDAO.update(id,entity) match {
+            case 0 => Ok(Json.toJson(Map("failure" -> s"${entity.uid}")))
+            case _ => Ok(Json.toJson(Map("success" -> s"${entity.uid}")))
+          }
         })
     
   }
   def destroy(id: Int) = SecuredAction { implicit request =>
     
-      Home.flashing(ActPermissionDAO.delete(id) match {
-        case 0 => "failure" -> "Entity has Not been deleted"
-        case x => "success" -> s"Entity has been deleted (deleted $x row(s))"
-      })
+      ActPermissionDAO.delete(id) match {
+        case 0 => Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
+        case x => Ok(Json.toJson(Map("success" -> s"Entity has been deleted (deleted $x row(s))")))
+      }
     
   }
 

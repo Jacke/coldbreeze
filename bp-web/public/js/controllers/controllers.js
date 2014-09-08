@@ -278,12 +278,13 @@ minorityControllers.controller('BPCreationCtrl', ['$scope', '$http', 'BProcesses
  * BP Perm
  */
 // INDEX
-minorityControllers.controller('BPPermListCtrl', ['$scope', '$filter', 'BProcessesFactory','BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
-  function ($scope, $filter, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
+minorityControllers.controller('BPPermListCtrl', ['$scope', '$filter', 'EmployeesFactory','PermissionsFactory', 'PermissionFactory', 'BProcessesFactory','BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
+  function ($scope, $filter, EmployeesFactory,PermissionsFactory, PermissionFactory, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
 
   $scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
   $scope.spaces =  BPSpacesFactory.query({ BPid: $route.current.params.BPid });
   $scope.spaceelems = BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid });
+  $scope.employees = EmployeesFactory.query();
   /* callback for ng-click 'editUser': */
   $scope.bpelems.$promise.then(function(data) {
     $scope.spaces.$promise.then(function(data2) {
@@ -294,7 +295,7 @@ minorityControllers.controller('BPPermListCtrl', ['$scope', '$filter', 'BProcess
   });
   });
 
-    $scope.trees = undefined;
+  $scope.trees = undefined;
 
   $scope.builder = function () {
 
@@ -340,6 +341,11 @@ minorityControllers.controller('BPPermListCtrl', ['$scope', '$filter', 'BProcess
    });
   });
 
+  
+
+  $scope.perms = PermissionsFactory.query();
+  $scope.newperms = [];
+
   $scope.addPerm = function () {
       if(typeof $scope.perms === 'undefined') {
         $scope.perms = [];
@@ -348,13 +354,18 @@ minorityControllers.controller('BPPermListCtrl', ['$scope', '$filter', 'BProcess
 
 
       
-      $scope.perms.push({elem: '', param: 'confirmed' });
+      $scope.newperms.push({});
   }
-  $scope.delPerm = function () {
-    $scope.perms.pop();
+  $scope.delPerm = function (perm) {
+    PermissionFactory.delete({id: perm.id}).$promise.then(function(data) {
+       $scope.perms = PermissionsFactory.query();
+    });
   }  
-  $scope.create = function (perm) {
+  $scope.createPerm = function (perm) {
     console.log(perm);
+    PermissionsFactory.create(perm).$promise.then(function(data) {
+       $scope.perms = PermissionsFactory.query();
+    });
   }
 
   $scope.defaultParam = function () {

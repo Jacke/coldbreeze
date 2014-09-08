@@ -2,8 +2,8 @@
  * BP Station
  */
 // INDEX
-minorityControllers.controller('BPstationListCtrl', ['$scope', '$filter', 'BProcessesFactory','BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
-  function ($scope, $filter, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
+minorityControllers.controller('BPstationListCtrl', ['$scope', '$filter', 'BProcessesFactory', 'BPInLoggersStationFactory','BPInLoggersFactory','BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
+  function ($scope, $filter, BProcessesFactory, BPInLoggersStationFactory,BPInLoggersFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
 
   $scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
   $scope.spaces =  BPSpacesFactory.query({ BPid: $route.current.params.BPid });
@@ -115,7 +115,6 @@ minorityControllers.controller('BPstationListCtrl', ['$scope', '$filter', 'BProc
   $scope.logsByStation = function (stationId) {
          var found = $filter('filter')($scope.logs, {station: stationId}, true);
          if (found.length) {
-             console.log(found)
              return found;
          } else {
              '';
@@ -129,7 +128,11 @@ minorityControllers.controller('BPstationListCtrl', ['$scope', '$filter', 'BProc
     _.forEach(stations, function(station){ return station.obsrs = {"email": "test@mail.ru"} });
 
   };
-
+  $scope.inputLoggers = function (stationId) {
+    _.filter($scope.allInputLogs, function(il){ return il.station == stationId; })
+    //BPInLoggersStationFactory.query({BPid: $route.current.params.BPid, station_id: stationId});
+  };
+  $scope.allInputLogs = BPInLoggersFactory.query({BPid: $route.current.params.BPid});
   
 }]);
 
