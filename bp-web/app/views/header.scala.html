@@ -1,5 +1,8 @@
-@(user: Option[securesocial.core.BasicProfile] = None)(implicit request: Option[RequestHeader] = None, env: Option[securesocial.core.RuntimeEnvironment[service.DemoUser]] = None)
+@import service.DemoUser
+
+@(user: DemoUser)(implicit request: Option[RequestHeader] = None, env: Option[securesocial.core.RuntimeEnvironment[service.DemoUser]] = None)
 @import securesocial.core.IdentityProvider
+
 
 @import securesocial.core.IdentityProvider
 @import securesocial.core.providers.UsernamePasswordProvider
@@ -12,43 +15,57 @@
 
   <div role="banner" class="apiaryLogo menuCell"><a class="absFg" title="Minority" href="http://minorityapp.com/"><span class="visuallyhidden">Minority</span></a></div>
 
-  
+
+<style>
+.uicon-svg12:hover, .uicon-svg442:hover, .uicon-svg2222:hover, .uicon-svg542:hover, .uicon-svg522:hover, .uicon-svg142:hover {
+    color: #7FDBFF;
+    text-decoration: none;
+}
+
+.uicon-svg12, .uicon-svg442, .uicon-svg2222, .uicon-svg542, .uicon-svg522, .uicon-svg142 { 
+color: white; 
+font-size: 16px;
+vertical-align: bottom;
+margin-right: 4px;
+}
+.apiMenuItem a:hover {
+color: #7FDBFF;
+text-decoration: none;
+}
+</style>
 
 
-      
 <nav class="apiMenu menuCell menuTeam">
   <ul class="apiMenuList apiMenuTexts">
     <li class="apiMenuItem">
-      <a id="teamMembersLink" class="vIcoIn menuTeamLink" href="@users.routes.EmployeeController.index()">
-        <span class="vIco vPeople vDefaultState"></span>
-        People      </a>
-    </li>
-    <li class="apiMenuItem">
-      <a id="teamMembersLink" class="vIcoIn menuTeamLink" href="@routes.Application.list()">
-        <span class="vIco vAPIs vDefaultState"></span>
-        List template      </a>
-    </li>
-    <li class="apiMenuItem">
-      <a id="teamApisLink" class="vIcoIn menuTeamLink" href="@routes.BusinessServiceController.index()">
-        <span class="vIco vAPIs vDefaultState"></span>
-        Services      </a>
+      <a id="teamMembersLink" class="vIcoIn menuTeamLink" href="@routes.ProfileController.profile()">
+       <span class="uicon-svg542"></span>
+        Profile</a>
+
     </li>
     <li class="apiMenuItem">
       <a id="teamApisLink" class="vIcoIn menuTeamLink" href="@routes.Application.app()">
-        <span class="vIco vAPIs vDefaultState"></span>
+        <span class="uicon-svg12"></span>
         Processes    </a>
     </li>
+    @if(user.isManager) {
     <li class="apiMenuItem">
-      <a id="teamSettingsLink" class="vIcoIn menuTeamLink" href="@routes.Application.index()">
-        <span class="vIco vSliders vContrastState"></span>
+      <a id="teamMembersLink" class="vIcoIn menuTeamLink" href="@users.routes.EmployeeController.index()">
+        <span class="uicon-svg442"></span>
+        People      </a>
+    </li>
+    } 
+    <li class="apiMenuItem">
+      <a id="teamSettingsLink" class="vIcoIn menuTeamLink" href="@routes.SettingController.index()">
+        <span class="uicon-svg2222"></span>
         Settings</a>
     </li>
   </ul>
 </nav>
-  
+
   <div class="menuCell menuHelp switcherWrap">
-    <span class="helpLinks switcherToggle hint vIcoIn" data-hint="Help"><span class="vIco vHelp vDefaultState"><span class="visuallyhidden">Help</span></span></span>
-    <span class="helpPopup switcherLayer visuallyhidden">
+    <span class="helpLinks switcherToggle hint vIcoIn" data-hint="Help"><span class="uicon-svg482"><span class="visuallyhidden">Help</span></span></span>
+    <span class="helpPopup switcherLayer">
       <a class="hideableHelpLink vIcoIn" target="_blank" href="#"><span class="helpText"><span class="vIco vStackOverflow vDimmedState"></span>Help by Phone</span></a>
       <a class="hideableHelpLink vIcoIn" target="_blank" href="#"><span class="helpText"><span class="vIco vBook vDimmedState"></span> Knowledge Base</span></a>
       <a class="vIcoIn" id="Intercom" href="#" title="Contact Minority Support"><span class="helpText"><span class="vIco vSpeech vDimmedState"></span> Contact Minority Support</span></a>
@@ -57,29 +74,33 @@
 
   <div class="menuCell flexibleSpace"></div>
     <div class="secondaryNav switcherWrap menuCell">
-    <div class="switcherToggle">
-@if(user.isDefined) {
-        @{user.get.userId}                                  
-}
-        <span class="gravatar"><img src="https://secure.gravatar.com/avatar/0?s=32&amp;d=https%3A%2F%2Fapiary.a.ssl.fastly.net%2Fassets%2Fimages%2Fdefault_team_avatar-5fc886aaf5739d37.png" height="32" width="32" />
-</span>
-                          </div>
-      <nav class="switcherLayer secondaryNavLayer visuallyhidden">
+    <div class="switcherToggle" data-toggle="dropdown">
+        @{user.main.userId}
+        <span class="gravatar">
+            <img src="@user.main.avatarUrl.getOrElse("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iRWJlbmVfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSIxNnB4IiBoZWlnaHQ9IjE2cHgiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTYgMTYiIHhtbDpzcGFjZT0icHJlc2VydmUiPjx0aXRsZT5EZWZhdWx0IEF2YXRhcjwvdGl0bGU+PGRlc2M+RGVmYXVsdCBBdmF0YXIgZm9yIFdDRiAyLjA8L2Rlc2M+IDxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbLnN1cmZhY2UgeyBmaWxsOiAjZmZmOyB9LnNoYWRvdyB7IGZpbGw6ICNiYmI7IH1dXT48L3N0eWxlPjwvZGVmcz48cmVjdCB4PSIwIiBjbGFzcz0ic2hhZG93IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiLz48cGF0aCBjbGFzcz0ic3VyZmFjZSIgZD0iTTMuNTI4LDE2QzMuNzc2LDExLjQ5OSw1LjY4NCw4LDgsOHM0LjIyNCwzLjQ5OSw0LjQ3Myw3Ljk5OCIvPjxjaXJjbGUgY2xhc3M9InN1cmZhY2UiIGN4PSI4IiBjeT0iNiIgcj0iMy41Ii8+PC9zdmc+")" alt="@user.main.firstName.getOrElse("")" width="32px" height="32px"/>
+        </span>
+
+    </div>
+      <nav class="switcherLayer secondaryNavLayer dropdown-menu" role="menu">
         <ul>
-                      <li class="secondaryNavItem"><a id="accountLink" class="accountLink vIcoIn" href="https://login.apiary.io/account">
-                                                <span class="smallGravatar"><img src="https://avatars.githubusercontent.com/u/485466?s=30&amp;d=https%3A%2F%2Fapiary.a.ssl.fastly.net%2Fassets%2Fimages%2Fdefault_user_avatar-8f601fa59d98081b.png" height="30" width="30" />
+                      <!--<li class="secondaryNavItem"><a id="accountLink" class="accountLink vIcoIn" href="https://login.ority.us/account">
+
+                                                <span class="smallGravatar">
+                                                    <img src="@user.main.avatarUrl.getOrElse("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iRWJlbmVfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSIxNnB4IiBoZWlnaHQ9IjE2cHgiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTYgMTYiIHhtbDpzcGFjZT0icHJlc2VydmUiPjx0aXRsZT5EZWZhdWx0IEF2YXRhcjwvdGl0bGU+PGRlc2M+RGVmYXVsdCBBdmF0YXIgZm9yIFdDRiAyLjA8L2Rlc2M+IDxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbLnN1cmZhY2UgeyBmaWxsOiAjZmZmOyB9LnNoYWRvdyB7IGZpbGw6ICNiYmI7IH1dXT48L3N0eWxlPjwvZGVmcz48cmVjdCB4PSIwIiBjbGFzcz0ic2hhZG93IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiLz48cGF0aCBjbGFzcz0ic3VyZmFjZSIgZD0iTTMuNTI4LDE2QzMuNzc2LDExLjQ5OSw1LjY4NCw4LDgsOHM0LjIyNCwzLjQ5OSw0LjQ3Myw3Ljk5OCIvPjxjaXJjbGUgY2xhc3M9InN1cmZhY2UiIGN4PSI4IiBjeT0iNiIgcj0iMy41Ii8+PC9zdmc+")" alt="@user.main.firstName.getOrElse("")" width="32px" height="32px"/>
+
 </span>
                                 Back to My Account
-                          </a></li>
+                          </a></li>-->
 
-            
-                    <li class="secondaryNavItem"><a class="changelogLink vIcoIn" href="http://apiary.io/changelog"><i class="vIco vRadio vDimmedState"></i> What's new?</a></li>
-          <li class="secondaryNavItem"><form class="logoutForm" action="https://login.apiary.io/api/logout" method="POST"><button class="logoutBtn vIcoIn" type="submit"><i class="vIco vLogout vDimmedState"></i> Sign Out</button></form></li>
+                  @if(user.isManager) {
+                    <li class="secondaryNavItem"><a class="changelogLink vIcoIn" href="@routes.PlanController.index()"><i class="uicon-svg142"></i>
+                    Plans</a></li>
+                  }
+
+          <li class="secondaryNavItem"><form class="logoutForm" action="@routes.CustomLoginController.logout()" method="POST"><button class="logoutBtn vIcoIn" type="submit"><span class="uicon-svg522 vLogout vDimmedState"></span> Sign Out</button></form></li>
         </ul>
       </nav>
     </div>
 
 </div>
 </header>
-<script src="https://apiary.a.ssl.fastly.net/assets/js/libs/md5-7f3b41b3a2a28475.js"></script>
-

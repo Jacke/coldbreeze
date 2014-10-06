@@ -18,7 +18,7 @@ minorityAppServices.factory(
   });
 
 
-var baseUrl = jsRoutes.controllers.Application.index().absoluteURL();
+var baseUrl = jsRoutes.controllers.ProfileController.profile().absoluteURL();
 //'http://localhost\\:9000';
 
 minorityAppServices.factory('AuthInterceptor', function ($window, $q) {
@@ -164,6 +164,13 @@ minorityAppServices.factory('EmployeesFactory', function ($resource) {
 minorityAppServices.factory('PermissionsFactory', function ($resource) {
     return $resource(baseUrl + 'elemperms', {}, {
         query: { method: 'GET', isArray: true },
+        create: { method: 'POST' }
+    })
+});
+
+minorityAppServices.factory('ProcPermissionsFactory', function ($resource) {
+    return $resource(baseUrl + 'bprocess/:BPid/elemperms', {}, {
+        query: { method: 'GET', isArray: false },
         create: { method: 'POST' }
     })
 });

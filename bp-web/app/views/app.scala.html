@@ -1,7 +1,10 @@
-@(user: Option[securesocial.core.BasicProfile] = None)
-@main("Minority App", user) { 
+@import service.DemoUser
 
-<link rel="stylesheet" href="css/app.css"/>
+@(user: DemoUser)
+
+@main("Minority App", user) {
+
+<link rel="stylesheet" href="css/picaso.css">
 <link rel="stylesheet" href="bower_components/angular-ui-select/dist/select.min.css">
 <link rel="stylesheet" href="bower_components/angular-ui-tree/dist/angular-ui-tree.min.css">
 <link rel="stylesheet" href="bower_components/ngDialog/css/ngDialog.css">
@@ -29,7 +32,6 @@
   <!-- In production use:
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"></script>
   -->
-  <script src="jsroutes.js"></script>
   <script src="bower_components/angular/angular.js"></script>
   <!-- Libs -->
   <script src="bower_components/angular-classy/angular-classy.min.js"></script>
@@ -59,10 +61,13 @@
   <script src="js/filters.js"></script>
   <script src="js/services.js"></script>
   <script src="js/controllers/controllers.js"></script>
+  <script src="js/controllers/procPermController.js"></script>
+  <script src="js/controllers/procController.js"></script>
   <script src="js/controllers/requestController.js"></script>
   <script src="js/controllers/loggerController.js"></script>
   <script src="js/controllers/stationController.js"></script>
   <script src="js/controllers/procElementController.js"></script>
+
 
   <script src="js/directives.js"></script>
   <script src="js/classie.js"></script>

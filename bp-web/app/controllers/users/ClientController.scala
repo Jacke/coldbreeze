@@ -1,4 +1,4 @@
-package controllers.users
+/* package controllers.users
 
 import models.DAO.resources.{ClientDTO, ClientDAO}
 import models.DAO.resources.ClientBusinessDAO
@@ -113,3 +113,4 @@ class ClientController(override implicit val env: RuntimeEnvironment[DemoUser]) 
   }
 
 }
+*/

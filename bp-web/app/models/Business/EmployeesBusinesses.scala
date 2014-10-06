@@ -31,12 +31,26 @@ object EmployeesBusinessDAO {
       employees_businesses += (employee_id, business_id)
   }).isSuccess
 
+
+
   def getByBusiness(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← employees_businesses if s.business_id === k } yield s 
       println(q3.selectStatement)
       println(q3.list)
       q3.list 
+  }
+  def getByUID(email: String):Option[Tuple2[Int, Int]] = database withSession {
+    implicit session ⇒
+      val emp = EmployeeDAO.getByUID(email) match {
+        case Some(x) => x.id.get
+        case _ => 0
+      }
+
+      val q3 = for { s ← employees_businesses if s.employee_id === emp } yield s 
+      println(q3.selectStatement)
+      println(q3.list)
+      q3.list.headOption
   }
 
   def deleteByEmployee(employee_id: Int) = database withSession { implicit session ⇒

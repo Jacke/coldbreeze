@@ -1,8 +1,7 @@
 package models
 
 
-
-
+import models.DAO.resources.{EmployeesBusinessDAO, AccountPlanDAO}
 import models.DAO.resources.BusinessDTO._
 import models.DAO.conversion.DatabaseCred
 
@@ -62,7 +61,7 @@ class Accounts(tag: Tag) extends Table[AccountDAO](tag, "accounts") {
 
   def uid = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def providerId = column[String]("providerId")
-  def userId = column[String]("userId")
+  def userId = column[String]("userId", O.PrimaryKey)
   def firstName = column[Option[String]]("firstName")
   def lastName = column[Option[String]]("lastName")
   def fullName = column[Option[String]]("fullName")
@@ -275,6 +274,12 @@ object TokensDAO {
         case None => None
       }
   }
+  def ddl_create = {
+    database withSession {
+      implicit session =>
+      tokens.ddl.create
+    }
+  }
 }
 
 object AccountsDAO {
@@ -293,6 +298,21 @@ object AccountsDAO {
     }
   }
 
+  def getRole(email: String): Option[Tuple2[Boolean, Boolean]] ={
+    val manager = AccountPlanDAO.getByMasterAcc(email).isDefined
+    val employee = models.DAO.resources.EmployeeDAO.getByUID(email) match {
+      case Some(emp) => !emp.manager
+      case _ => false
+    }
+    Some((manager, employee))
+  }
+
+  def findAllByEmails(emails: List[String]) = database withSession {
+    implicit session ⇒
+      val q3 = for { a ← accounts if a.userId inSetBind emails } yield a
+      q3.list
+  }
+
   def find(providerId: String, userId: String):Option[BasicProfile] = database withSession {
     implicit session ⇒
       val q3 = for { a ← accounts if a.providerId === providerId && a.userId === userId } yield a
@@ -304,8 +324,24 @@ object AccountsDAO {
       val q3 = for { a ← accounts if a.providerId === providerId && a.email === email } yield a
       val result = q3.list.map(s => BasicProfile.tupled(Account.unapply(s.toAccount).get))
       result.headOption
-     
+
   }
+import controllers.Credentials
+  def updateCredentials(email: String, cred: Credentials) = database withSession {
+    implicit session =>
+    val q3 = for { a ← accounts if a.email === email } yield a
+      val result = q3.list.headOption
+      result match {
+        case Some(origin) => {
+         val toUpdate = origin.copy(firstName = cred.firstName, lastName = cred.lastName, fullName = cred.fullName)
+           accounts.filter(_.email === email).update(toUpdate)
+           true
+        }
+        case _ => false
+      }
+
+  }
+
   def save(user: BasicProfile):DemoUser =  database withSession {
     implicit session ⇒
       val acc = Account.tupled(BasicProfile.unapply(user).get)
@@ -317,7 +353,7 @@ object AccountsDAO {
   def updatePasswordInfo(user: DemoUser, info: PasswordInfo): Option[BasicProfile] = database withSession {
     implicit session ⇒
       val q3 = for { a ← accounts  } yield a
-      val accs = q3.list.map { s => 
+      val accs = q3.list.map { s =>
         val acc = BasicProfile.tupled(Account.unapply(s.toAccount).get)
         DemoUser(acc, List(acc))
       }
@@ -338,7 +374,7 @@ object AccountsDAO {
   def passwordInfoFor(user: DemoUser): Option[PasswordInfo] = database withSession {
     implicit session ⇒
       val q3 = for { a ← accounts  } yield a
-      val accs = q3.list.map { s => 
+      val accs = q3.list.map { s =>
         val acc = BasicProfile.tupled(Account.unapply(s.toAccount).get)
         DemoUser(acc, List(acc))
       }
@@ -349,5 +385,11 @@ object AccountsDAO {
         identityWithPasswordInfo.passwordInfo.get
       }
 
+  }
+  def ddl_create = {
+    database withSession {
+      implicit session =>
+      accounts.ddl.create
+    }
   }
 }

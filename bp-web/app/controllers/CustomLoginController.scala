@@ -17,13 +17,17 @@ import securesocial.core.authenticator.CookieAuthenticator
 import securesocial.core.providers.UsernamePasswordProvider
 import securesocial.core.providers.utils._
 import securesocial.core.services.SaveMode
-
+import models._
 import scala.concurrent.{Await, ExecutionContext, Future}
 
 class CustomLoginController(implicit override val env: RuntimeEnvironment[DemoUser]) extends BaseLoginPage[DemoUser] {
   override def login: Action[AnyContent] = {
     Logger.debug("using CustomLoginController")
     super.login
+  }
+  override def logout: Action[AnyContent] = {
+    Logger.debug("using logout")
+    super.logout
   }
 }
 
@@ -38,6 +42,196 @@ object BaseRegistrationMsgs {
 
 
   val PasswordsDoNotMatch = "securesocial.signup.passwordsDoNotMatch"
+}
+
+
+import _root_.java.util.UUID
+import play.api.mvc.{RequestHeader, Result, Action, Controller}
+import play.api.data._
+import play.api.data.Forms._
+import play.api.data.validation.Constraints._
+import play.api.Play
+import securesocial.core.providers.UsernamePasswordProvider
+import securesocial.core._
+import com.typesafe.plugin._
+import Play.current
+import securesocial.core.providers.utils._
+import org.joda.time.DateTime
+import play.api.i18n.Messages
+import scala.Some
+import securesocial.core.providers._
+
+import scala.language.reflectiveCalls
+import securesocial.controllers.Registration
+import com.typesafe.plugin._
+import controllers._
+
+
+object CustomRegistration {
+
+  def handleStartSignUp(email: String, host: String) = {
+
+          println("boom")
+          // check if there is already an account for this email address
+          AccountsDAO.findByEmailAndProvider(email, "userpass") match {
+            case Some(user) => {
+              // user signed up already, send an email offering to login/recover password
+
+              val mail = use[MailerPlugin].email
+              mail.setSubject("Employee registration | Minority App")
+              mail.setCc(email)
+              mail.setFrom("app@minorityapp.com")
+              //views.html.mailBody.render(user).body();
+              val token = securesocial.core.providers.MailToken("XXXX",email, DateTime.now, DateTime.now.plusMinutes(60),false)
+              println(views.html.mailer.ActorAdd.render(token.email, host).body)
+              mail.sendHtml(views.html.mailer.ActorAdd.render(token.email, host).body)
+              // SEND WELCOME
+              //Mailer.sendAlreadyRegisteredEmail(user)
+            }
+            case None => {
+              val token = createToken(email, isSignUp = true)
+              //original line
+              // SEND WELCOME
+              val mail = use[MailerPlugin].email
+              mail.setSubject("Employee registration | Minority App")
+              mail.setCc(email)
+              mail.setFrom("app@minorityapp.com")
+              //views.html.mailBody.render(user).body();
+              println(views.html.mailer.ActorAdd.render(token._1, host).body)
+              mail.sendHtml(views.html.mailer.ActorAdd.render(token._1, host).body)
+
+
+              //Mailer.sendAlreadyRegisteredEmail(user)
+          }
+
+
+  }
+  }
+  private def createToken(email: String, isSignUp: Boolean): (String, MailToken) = {
+    val uuid:String = UUID.randomUUID().toString
+    val now = DateTime.now
+
+//case class MailToken(uuid: String, email: String, creationTime: DateTime, expirationTime: DateTime, isSignUp: Boolean)
+    val token = MailToken(
+      uuid, email,
+      now,
+      now.plusMinutes(60),
+      isSignUp = isSignUp)
+    TokensDAO.saveToken(token)
+    (uuid, token)
+  }
+
+}
+
+class CustomProviderController(implicit override val env: RuntimeEnvironment[DemoUser]) extends securesocial.controllers.BaseProviderController[DemoUser] {
+  import BaseRegistrationMsgs._
+  import play.api.Play
+  import play.api.Play.current
+  import play.api.i18n.Messages
+  import play.api.mvc._
+  import securesocial.core._
+  import securesocial.core.authenticator.CookieAuthenticator
+  import securesocial.core.services.SaveMode
+  import securesocial.core.utils._
+  import securesocial.controllers.ProviderControllerHelper._
+  import models.DAO.{AccountLogger, AccountLoggerDAO}
+  import scala.concurrent.Future
+
+  override def authenticate(provider: String, redirectTo: Option[String] = None) =  { 
+    println("x authenticate")
+    handleAuth(provider, redirectTo)
+  }
+  override def authenticateByPost(provider: String, redirectTo: Option[String] = None) = {
+    println("x authenticateByPost")
+    handleAuth(provider, redirectTo)
+  }
+  private def overrideOriginalUrl(session: Session, redirectTo: Option[String]) = redirectTo match {
+    case Some(url) =>
+      session + (SecureSocial.OriginalUrlKey -> url)
+    case _ =>
+      session
+  }
+  private def builder() = {
+    //todo: this should be configurable maybe
+    env.authenticatorService.find(CookieAuthenticator.Id).getOrElse {
+      logger.error(s"[securesocial] missing CookieAuthenticatorBuilder")
+      throw new AuthenticationException()
+    }
+  }
+  private def logAuth(ip: String, agent: String, email: Option[String]) = {
+    AccountLoggerDAO.pull_object(AccountLogger(None, ip, agent, email))
+  }
+  private def handleAuth(provider: String, redirectTo: Option[String]) = UserAwareAction.async { implicit request =>
+    import scala.concurrent.ExecutionContext.Implicits.global
+    val authenticationFlow = request.user.isEmpty
+    val modifiedSession = overrideOriginalUrl(request.session, redirectTo)
+
+      logAuth(request.remoteAddress, request.headers.get("User-Agent").getOrElse(""), None)
+    if (!authenticationFlow) {
+      logAuth(request.remoteAddress, request.headers.get("User-Agent").getOrElse(""), request.user.get.main.email)
+    }
+
+    env.providers.get(provider).map {
+      _.authenticate().flatMap {
+        case denied: AuthenticationResult.AccessDenied =>
+          Future.successful(Redirect(env.routes.loginPageUrl).flashing("error" -> Messages("securesocial.login.accessDenied")))
+        case failed: AuthenticationResult.Failed =>
+          logger.error(s"[securesocial] authentication failed, reason: ${failed.error}")
+          throw new AuthenticationException()
+        case flow: AuthenticationResult.NavigationFlow => Future.successful {
+          redirectTo.map { url =>
+            flow.result.addToSession(SecureSocial.OriginalUrlKey -> url)
+          } getOrElse flow.result
+        }
+        case authenticated: AuthenticationResult.Authenticated =>
+          if (authenticationFlow) {
+            val profile = authenticated.profile
+            logAuth(request.remoteAddress, request.headers.get("User-Agent").getOrElse(""), profile.email)
+
+            env.userService.find(profile.providerId, profile.userId).flatMap { maybeExisting =>
+              val mode = if (maybeExisting.isDefined) SaveMode.LoggedIn else SaveMode.SignUp
+              env.userService.save(authenticated.profile, mode).flatMap { userForAction =>
+                logger.debug(s"[securesocial] user completed authentication: provider = ${profile.providerId}, userId: ${profile.userId}, mode = $mode")
+                val evt = if (mode == SaveMode.LoggedIn) new LoginEvent(userForAction) else new SignUpEvent(userForAction)
+                val sessionAfterEvents = Events.fire(evt).getOrElse(request.session)
+                import scala.concurrent.ExecutionContext.Implicits.global
+                builder().fromUser(userForAction).flatMap { authenticator =>
+                  Redirect(toUrl(sessionAfterEvents)).withSession(sessionAfterEvents -
+                    SecureSocial.OriginalUrlKey -
+                    IdentityProvider.SessionId -
+                    OAuth1Provider.CacheKey).startingAuthenticator(authenticator)
+                }
+              }
+            }
+          } else {
+            request.user match {
+              case Some(currentUser) =>
+                for (
+                  linked <- env.userService.link(currentUser, authenticated.profile);
+                  updatedAuthenticator <- request.authenticator.get.updateUser(linked);
+                  result <- Redirect(toUrl(modifiedSession)).withSession(modifiedSession -
+                    SecureSocial.OriginalUrlKey -
+                    IdentityProvider.SessionId -
+                    OAuth1Provider.CacheKey).touchingAuthenticator(updatedAuthenticator)
+                ) yield {
+                  logger.debug(s"[securesocial] linked $currentUser to: providerId = ${authenticated.profile.providerId}")
+                  result
+                }
+              case _ =>
+                Future.successful(Unauthorized)
+            }
+          }
+      } recover {
+        case e =>
+          logger.error("Unable to log user in. An exception was thrown", e)
+          Redirect(env.routes.loginPageUrl).flashing("error" -> Messages("securesocial.login.errorLoggingIn"))
+      }
+    } getOrElse {
+      Future.successful(NotFound)
+    }
+  }
+
+
 }
 
 class CustomRegistrationController(implicit override val env: RuntimeEnvironment[DemoUser]) extends BaseRegistration[DemoUser] {

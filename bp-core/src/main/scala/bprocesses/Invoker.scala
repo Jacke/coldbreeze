@@ -1,6 +1,6 @@
 package main.scala.bprocesses
 
-import bprocesses.BPStationLoggerResult
+import main.scala.bprocesses.BPStationLoggerResult
 import main.scala.simple_parts.process._
 import main.scala.utils.Space
 /***
@@ -56,11 +56,15 @@ object InvokeTracer {
 trait Determs {
   var station:BPStation
   val bp:BProcess
-  def toStation(bp: BProcess): BPStation 
+  def toStation(bp: BProcess): BPStation
+  def toStationLogger(sygnal: String): Array[BPStationLoggerResult]
+ 
   def move
 
-  def start = {
+  def start = { 
     toStation(bp).update_started(true)
+    toStationLogger("start")
+
     move
   }
 
@@ -68,16 +72,21 @@ trait Determs {
   {
     if(station.isStarted && !station.finished) {
       station.update_paused(false)
+      toStationLogger("unpaused")
       move
     }
   }
 
   def endOrPause = {
-    if (station.isPaused)
+    if (station.isPaused) {
+      toStationLogger("paused")
       println("paused")
-    else
+    }
+    else {
       toStation(bp).update_finished(true)
+      toStationLogger("end")
       println("end")
+    }
   }
 }
 
@@ -111,6 +120,7 @@ trait Moves {
   def isSpaceEnded:Boolean
 
 def move:Unit = {
+    toStationLogger("moving")
     // ended?
     if ((!station.inspace && isElementEnded) || blocator || station.paused)
     {
@@ -122,12 +132,16 @@ def move:Unit = {
       println(">>>>>>>>inspace")
       println(station.incontainer)
         if (bp.spaces.length < 1) {
+          toStationLogger("preparemoveupfront")
           moveUpFront
+          toStationLogger("moveupfront")
           move
         } else
         if (isSpaceEnded) {
           println("spaceended")
+          toStationLogger("preparemoveupfrontspace")
           moveUpFrontSpace
+          toStationLogger("moveupfrontspace")
         } else {
           println("spacenotended")
         station match {
@@ -158,7 +172,10 @@ def move:Unit = {
       )
 
       println("**** RUN" + elem.toString + " ****")
+      toStationLogger("prepareinvoking")
+
       front(elem)
+      toStationLogger("invoked")
       println(elem.getClass)
       toLogger(bp, BPLoggerResult(
                                   elem,
@@ -202,7 +219,9 @@ def move:Unit = {
           toLoggerBefore(station.bp, BPLoggerResult(el, order = counter + 1, space = space.id, composite=bp.copyCV(el.values), station = toStation(station.bp), invoked = true, expanded = false, container = true))
           println("Invoking the: " + el);
         station.change_container_step(station.container_step.last + 1)
+        toStationLogger("prepareinvokinginspace")
         el.invoke
+        toStationLogger("invokinginspace")
         // TODO: Elem invoked sygnal?
 
         toLogger(station.bp, BPLoggerResult(el, order = counter + 1, space = space.id, composite=bp.copyCV(el.values), station = toStation(station.bp), invoked = true, expanded = false, container = true))
@@ -225,15 +244,21 @@ def move:Unit = {
   }
 
   def moveToSpace = { 
+    toStationLogger("preparemovetospace")
     station.update_space(station.space + 1)
     station.inSpace(true)
+    toStationLogger("movetospace")
+
 
   }
   def moveToSpaceByIndx(index: Int, spaceId: Option[Int] = None) = {
+    toStationLogger("preparemovetospace")
     station.update_space(index)
     station.inSpace(true)
     if (spaceId.isDefined)
       station.add_space_id(spaceId.get)
+    toStationLogger("movetospace")
+
   }
   def moveToExpand = {
     station.inExpand(true)
@@ -241,15 +266,18 @@ def move:Unit = {
     station.update_expand_state(true)
   }
   def moveToContainer = {
+    toStationLogger("preparemovetocontainer")
     station.inContainer(true)
     station.update_container_step(0)
     station.update_container_state(true)
+    toStationLogger("movetocontainer")
   }
   def moveUpFront = {
       if (    (station.container_step.length < 2 || station.container_step.isEmpty)
                                                  &&
               (station.expand_step.length < 2    || station.expand_step.isEmpty))
       {
+        toStationLogger("preparemoveupfront")
         station.inExpand(false)
         station.inContainer(false)
         station.inSpace(false)
@@ -265,8 +293,11 @@ def move:Unit = {
       { 
         moveUpFrontSpace 
       }
+      toStationLogger("moveupfront")
+
   }
   def moveUpFrontSpace = {
+    toStationLogger("preparemoveupfrontspace")
     station.inSpace(true)
 
     station.flush_container_state
@@ -288,6 +319,8 @@ def move:Unit = {
 
     station.del_space_id(station.spaces_ids.last)
     station.update_space(station.space - 1)
+    toStationLogger("moveupfrontspace")
+
   }
 }
 
@@ -306,7 +339,10 @@ trait Restrictors {
     if (bp.spaces.length == 0) {
       true
     }
-    if (station.incontainer && bp.spaces.length > 0) {
+    if (station.incontainer && bp.spaces.length == 1) {
+      Option(bp.spaces(station.space-1).container.length) == station.container_step.lastOption
+    }
+    if (station.incontainer && bp.spaces.length > 0 && bp.spaces.length != 1) {
       Option(bp.spaces(station.space-1).container.length) == station.container_step.lastOption
     } 
     if (station.inexpands) {

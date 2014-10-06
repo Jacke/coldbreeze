@@ -1,6 +1,6 @@
 
 
- 
+
 
 <div class="container">
 
@@ -17,42 +17,70 @@
 </div>
 
 </div>
+<div class="tab-content">
+
+<div class="tab-pane active" id="edit" ng:show="legend == 1" ng:init="legend=0">
+  <div ng-include src="'partials/legend.html'"></div>
+</div>
+
+</div>
 
 
 <div class="teamApisListWrap">
 <div ng:hide="tree == 1">
   <a href="" role="tab" class="createApi ajaxLink cacheable"  data-toggle="tab" ng:click="tree=1"><span class="glyphicon glyphicon-plus"></span> Tree</a>
-</div>  
+</div>
 <div ng:show="tree == 1">
   <a href="" role="tab" class="createApi ajaxLink cacheable" data-toggle="tab" ng:click="tree=0"><span class="glyphicon glyphicon-plus"></span> Tree</a>
+
 </div>
 
 
 
 
 <div class="teamApisListFilter filterLayer">
-    
-      <a href="" role="tab" class="createApi change ajaxLink cacheable" data-toggle="tab" ng:click="viewstyle=1"><span class="glyphicon glyphicon-plus"></span> Scheme</a>
-      <a href="" role="tab" class="createApi change ajaxLink cacheable" data-toggle="tab" ng:click="viewstyle=2"><span class="glyphicon glyphicon-plus"></span> Table</a>
-    
-  
-  </div>
+
+<!--      <a href="" role="tab" class="createApi change ajaxLink cacheable" data-toggle="tab" ng:click="viewstyle=1"><span class="glyphicon glyphicon-plus"></span> Scheme</a>
+      <a href="" role="tab" class="createApi change ajaxLink cacheable" data-toggle="tab" ng:click="viewstyle=2"><span class="glyphicon glyphicon-plus"></span> Table</a> -->
+      <div ng:hide="legend == 1">
+        <a href="" role="tab" class="createApi change ajaxLink cacheable" data-toggle="tab" ng:click="legend=1"><span class="glyphicon glyphicon-plus"></span> Legend</a>
+      </div>
+      <div ng:show="legend == 1">
+        <a href="" role="tab" class="createApi change ajaxLink cacheable" data-toggle="tab" ng:click="legend=0"><span class="glyphicon glyphicon-plus"></span> Legend</a>
+      </div>
+ 
 
 
 </div>
 
 
+</div>
 
+<div class="active-station-alert alert alert-info" ng:show="hasActiveStation">
+            Process arleady runned, if you edit that, all stations <strong>will be shut down</strong>. 
+            You can create <a ng:click="copyProcess()">copy</a> of that process and continue editing.
+</div>
+
+<div class="process-info">
+<h3>{{ bp.title }}</h3>
+<ul class="process-control">
+ <li><a href="" role="tab" class="createApi change ajaxLink cacheable" data-toggle="tab" ng:click="editProcess()"> Edit </a></li>
+ <li><a class="allStation" href="/a#/bprocess/{{ bp.id }}/stations">Stations</a></li>
+ <li><a class="teamApiControlsLink ajaxLink teamApisLinkPeople" ng-click="perm()">People </a></li>
+ <li><a class="teamApiControlsLink teamSettingsLink teamApisLinkSettings" ng-click="modalShare()">Share</a></li>
+</ul>
+
+</div>
 
 <div class="tab-content">
 
 
 <div class="span8 container tab-pane active" ng:show="viewstyle == 1" ng:init="viewstyle=1">
-  
 
-  <ul class="nav nav-tabs" role="tablist">
-    <a href="" ng:click="openNewElem()">.</a>
-    <li><a href="" role="tab" data-toggle="tab" ng:click="newselected=1"><span class="glyphicon glyphicon-plus"></span> New element</a></li>
+
+  <ul class="nav nav-tabs elem-nav" role="tablist">
+    <!--<a href="" ng:click="openNewElem()">.</a> -->
+    <li><a href="" role="tab" data-toggle="tab" ng:click="newselected=1"><span class="glyphicon glyphicon-plus"></span>  </a></li>
   </ul>
     <div class="tab-content">
 
@@ -67,62 +95,38 @@
       </div>
     </div>
     <div class="control-group">
-      <label class="control-label" for="inputBusinessId">Desc:</label>
+      <label class="control-label" for="inputBusinessId">Description:</label>
       <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="newBpelem.desc"/>
+        <textarea type="text" id="inputBusinessId" ng-model="newBpelem.desc"/>
       </div>
     </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">business:</label>
-      <div class="controls">
         <input type="hidden" name="value" ng-model="newBpelem.business" value="1">
-        <!-- <input type="number" id="inputBusinessId" ng-model="newBpelem.business"/> -->
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">bprocess:</label>
-      <div class="controls">
-        <input type="number" id="inputBusinessId" ng-model="newBpelem.bprocess"/> 
-       
         <input type="hidden" name="value" ng-model="newBpelem.bprocess" value="{{ BPid }}">
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">b_type:</label>
-      <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="newBpelem.b_type"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">type_title:</label>
-      <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="newBpelem.type_title"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">space_own:</label>
-      <div class="controls">
-        <input type="number" id="inputBusinessId" ng-model="newBpelem.space_own"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">order:</label>
-      <div class="controls">
-        <input type="number" id="inputBusinessId" ng-model="newBpelem.order" value="{{ orderFrontGen(newBpelem) }}"/>
-      </div>
-    </div>
+
+        <input type="hidden" id="inputBusinessId" ng-model="newBpelem.b_type"/>
+        <input type="hidden" id="inputBusinessId" ng-model="newBpelem.type_title"/>
+
+
+    <input type="hidden" id="inputBusinessId" ng-model="newBpelem.space_own"/>
+    <input type="hidden" id="inputBusinessId" ng-model="newBpelem.order" value="{{ orderFrontGen(newBpelem) }}"/>
+<!--
       <div class="control-group">
       <label class="control-label" for="inputBusinessId">Composite:</label>
       <div class="controls">
+
         <input type="text" id="input_a_string" ng-model="newBpelem.comps[0].a_string"/>
         <input type="text" id="input_b_string" ng-model="newBpelem.comps[0].b_string"/>
         <input type="number" id="input_a_int" ng-model="newBpelem.comps[0].a_int"/>
         <input type="number" id="input_b_int" ng-model="newBpelem.comps[0].b_int"/>
         <input type="checkbox" id="input_a_bool" ng-model="newBpelem.comps[0].a_bool"/>
         <input type="checkbox" id="input_b_bool" ng-model="newBpelem.comps[0].b_bool"/>
-      
+
       </div>
     </div>
+  -->
+
+
+
     <div class="control-group">
       <div class="controls">
          {{ newBpelem | json }}
@@ -136,201 +140,39 @@
 </div></div>
 
 
-<div class="front-blocks" ng-repeat="bpelem in bpelems | orderBy:'order'" style="padding: 2px 10px;">
-  <ul class="nav nav-tabs" role="tablist">
-    <li class="active"><a href="" role="tab" data-toggle="tab" ng:click="selected=1">Show</a></li>
-    <li><a href="" role="tab" data-toggle="tab" ng:click="selected=2">Edit</a></li>
-  </ul>
- 
+
+
+
+
+<div class="front-blocks" ng-repeat="bpelem in bpelems | orderBy:'order'">
+
 
   <div class="tab-content">
     <div class="block-card tab-pane active" id="show">
-      {{ bpelem.order }}: {{ bpelem.title }}
-      {{ bpelem.b_type }}
-      {{ bpelem.type_title }}
-      
-      <pre>{{ bpelem.comps[0] | json }}</pre>
-      <a href="" ng:click="moveUpElem(bpelem)"><span class="glyphicon glyphicon-arrow-up"></span> UP</a>
-      <a href="" ng:click="moveDownElem(bpelem)"><span class="glyphicon glyphicon-arrow-down"></span> DOWN</a>
+      <div class="card-pipe">
+        <span class="primary">{{ bpelem.order }}: {{ bpelem.title }}</span>
+        <span class="descr">{{ bpelem.desc }}</span>
+        <span class="type">{{ bpelem.b_type }}: {{ bpelem.type_title }}</span>
+        <ul class="elem-control elem-tabs" role="tablist">
+          <li class="active"><a href="" role="tab" data-toggle="tab" ng:click="selected=1"><span class="glyphicon glyphicon-list-alt"></span></a></li>
+          <li><a href="" role="tab" data-toggle="tab" ng:click="selected=2"><span class="glyphicon glyphicon-edit"></span></a></li>
+          <li><a ng-click="deleteElem(bpelem)"><span class="glyphicon glyphicon-remove"></span></a></li>
+          <li><a href="" ng:click="moveUpElem(bpelem)"><span class="glyphicon glyphicon-arrow-up"></span></a></li>
+          <li><a href="" ng:click="moveDownElem(bpelem)"><span class="glyphicon glyphicon-arrow-down"></span></a></li>
+        </ul>
+      </div>
+      <div class="tab-pane active" id="edit" ng:show="selected == 2">
+        <div ng-include src="'partials/forms/bp_elements/bpelem-edit.html'"></div>
+      </div>
 
-      <div class="tab-pane active" id="edit" ng:show="bpelem.type_title == 'container_brick'">
-          <div class="front-spaces" ng-repeat="space in frontSpaces[bpelem.id]">
-             Space: {{ space.index }} — <a href="#">Add to space</a>
-              <form novalidate="novalidate" class="form-horizontal">
-                      <div class="control-group">
-                    <label class="control-label" for="inputTitle">Title:</label>
-                    <div class="controls">
-                      <input type="text" id="inputTitle" ng-model="newSpaceelem.title"/>
-                    </div>
-                  </div>
-                  <div class="control-group">
-                    <label class="control-label" for="inputBusinessId">Desc:</label>
-                    <div class="controls">
-                      <input type="text" id="inputBusinessId" ng-model="newSpaceelem.desc"/>
-                    </div>
-                  </div>
-                  <div class="control-group">
-                    <label class="control-label" for="inputBusinessId">business:</label>
-                    <div class="controls">
-                      <input type="hidden" name="value" ng-model="newSpaceelem.business" value="1">
-                    </div>
-                  </div>
-                  <div class="control-group">
-                    <label class="control-label" for="inputBusinessId">bprocess:</label>
-                    <div class="controls">
-                      <input type="hidden" name="value" ng-model="newSpaceelem.bprocess" value="{{ BPid }}">
-                    </div>
-                  </div>
-                  <div class="control-group">
-                    <label class="control-label" for="inputBusinessId">b_type:</label>
-                    <div class="controls">
-                      <input type="text" id="inputBusinessId" ng-model="newSpaceelem.b_type"/>
-                    </div>
-                  </div>
-                  <div class="control-group">
-                    <label class="control-label" for="inputBusinessId">type_title:</label>
-                    <div class="controls">
-                      <input type="text" id="inputBusinessId" ng-model="newSpaceelem.type_title"/>
-                    </div>
-                  </div>
-                  <div class="control-group">
-                    <label class="control-label" for="inputBusinessId">space_own:</label>
-                    <div class="controls">
-                         <select ng-model="newSpaceelem.space_own" data-ng-options="a.id as a.id for a in spaces">               
-                          </select>
-                      <input type="number" id="inputBusinessId" ng-model="newSpaceelem.space_own"/>
-                    </div>
-                  </div>
-                  <div class="control-group">
-                    <label class="control-label" for="inputBusinessId">space_owned:</label>
-                    <div class="controls">
-                         <select ng-model="newSpaceelem.space_owned" data-ng-options="a.id as a.id for a in spaces">               
-                        </select>        
-                      <input type="number" id="inputBusinessId" ng-model="newSpaceelem.space_owned" value="{{ space.id }}"/>
-                    </div>
-                  </div>
-                  <div class="control-group">
-                    <label class="control-label" for="inputBusinessId">space_role:</label>
-                    <div class="controls">
-                      <input type="hidden" id="inputBusinessId" ng-model="newSpaceelem.space_role" value="container"/>
-                    </div>
-                  </div>
-                      <div class="control-group">
-                    <label class="control-label" for="inputBusinessId">order:</label>
-                    <div class="controls">
-                      <input type="number" id="inputBusinessId" ng-model="newSpaceelem.order" value="{{ orderNestedGen(newSpaceelem) }}"/>
-                    </div>
-                  </div>
-                    <div class="control-group">
-                    <label class="control-label" for="inputBusinessId">Composite:</label>
-                    <div class="controls">
-                      {{ newSpaceelem | json }}
-                      <input type="text" id="input_a_string" ng-model="newSpaceelem.comps[0].a_string"/>
-                      <input type="text" id="input_b_string" ng-model="newSpaceelem.comps[0].b_string"/>
-                      <input type="number" id="input_a_int" ng-model="newSpaceelem.comps[0].a_int"/>
-                      <input type="number" id="input_b_int" ng-model="newSpaceelem.comps[0].b_int"/>
-                      <input type="text" id="input_a_bool" ng-model="newSpaceelem.comps[0].a_bool"/>
-                      <input type="text" id="input_b_bool" ng-model="newSpaceelem.comps[0].b_bool"/>
-                    </div>
-                  </div>
-                  <div class="control-group">
-                    <div class="controls">
-                      <a ng-click="templateElem('container', newSpaceelem)" class="btn btn-small btn-primary">Container <span tooltip="Some container" tooltip-placement="bottom" class="glyphicon glyphicon-info-sign"></span></a>
-                      <a ng-click="templateElem('confirm', newSpaceelem)" class="btn btn-small btn-primary">Confirm <span tooltip="Some confirm" tooltip-placement="bottom" class="glyphicon glyphicon-info-sign"></span></a>
-                      <a ng-click="createSpaceElem()" class="btn btn-small btn-primary">New</a>
-                      <a ng:click="newselected=0" class="btn btn-small btn-primary">Cancel</a>
-                    </div>
-                  </div>
-                </form>
-          </div>
 
-          <div class="control-group">
-                <div class="controls">
-                  <a ng-click="deleteElem(bpelem)" class="btn btn-small btn-primary btn-danger">Delete</a>
-                </div>
-          </div>
-      </div>
-    </div>
-  <div class="tab-pane active" id="edit" ng:show="selected == 2">
-  <form novalidate="novalidate" class="form-horizontal">
-    <div class="control-group">
-      <label class="control-label" for="inputTitle">Title:</label>
-      <div class="controls">
-        <input type="text" id="inputTitle" ng-model="bpelem.title"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">Desc:</label>
-      <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="bpelem.desc"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">Desc:</label>
-      <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="bpelem.desc"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">business:</label>
-      <div class="controls">
-        <input type="hidden" name="value" ng-model="bpelem.business" value="1">
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">bprocess:</label>
-      <div class="controls">
-        <input type="hidden" name="value" ng-model="bpelem.bprocess" value="{{ BPid }}">
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">b_type:</label>
-      <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="bpelem.b_type"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">type_title:</label>
-      <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="bpelem.type_title"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">space_own:</label>
-      <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="bpelem.space_own"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">order:</label>
-      <div class="controls">
-        <input type="number" id="inputBusinessId" ng-model="bpelem.order"/>
-      </div>
-    </div>
-      <div class="control-group">
-      <label class="control-label" for="inputBusinessId">Composite:</label>
-      <div class="controls">
-        <input type="text" id="input_a_string" ng-model="bpelem.comps[0].a_string"/>
-        <input type="text" id="input_b_string" ng-model="bpelem.comps[0].b_string"/>
-        <input type="number" id="input_a_int" ng-model="bpelem.comps[0].a_int"/>
-        <input type="number" id="input_b_int" ng-model="bpelem.comps[0].b_int"/>
-        <input type="checkbox" id="input_a_bool" ng-model="bpelem.comps[0].a_bool"/>
-        <input type="checkbox" id="input_b_bool" ng-model="bpelem.comps[0].b_bool"/>
-      </div>
+
+
+      <div ng-include src="'partials/forms/bp_elements/elem_container_tmp.html'"></div>
     </div>
 
-    <div class="control-group">
-      <div class="controls">
-        <a ng-click="templateElem('container', bpelem)" class="btn btn-small btn-primary">Container <span tooltip="Some container" tooltip-placement="bottom" class="glyphicon glyphicon-info-sign"></span></a>
-        <a ng-click="templateElem('confirm', bpelem)" class="btn btn-small btn-primary">Confirm <span tooltip="Some confirm" tooltip-placement="bottom" class="glyphicon glyphicon-info-sign"></span></a>
-        <a ng-click="updateElem(bpelem)" class="btn btn-small btn-primary">Update</a>
-        <a ng-click="deleteElem(bpelem)" class="btn btn-small btn-primary btn-danger">Delete</a>
-        <a ng-click="cancel()" class="btn btn-small">Cancel</a>
-      </div>
-    </div>
-  </form>
+
   </div>
-</div>
 
 
 
@@ -361,7 +203,7 @@
 
 
   <ul class="nav nav-tabs" role="tablist">
-    <li><a href="" role="tab" data-toggle="tab" ng:click="newselected=2">New Space</a></li>
+    <!--<li><a href="" role="tab" data-toggle="tab" ng:click="newselected=2">New Space</a></li>-->
   </ul>
     <div class="tab-content">
 <div class="tab-pane active" id="edit" ng:show="newselected == 2">
@@ -421,7 +263,15 @@
 </div></div>
 
 
-<div class="front-blocks" ng-repeat="space in spaces | orderBy:'index'" style="padding: 2px 10px;">
+
+
+
+
+
+
+
+<!--
+<div class="spaces-list" ng-repeat="space in spaces | orderBy:'index'" style="padding: 2px 10px;">
   <ul class="nav nav-tabs" role="tablist">
     <li class="active"><a href="" role="tab" data-toggle="tab" ng:click="spselected=1">Show</a></li>
     <li><a href="" role="tab" data-toggle="tab" ng:click="spselected=2">Edit</a></li>
@@ -435,7 +285,7 @@
     </div>
 
 
-  <div class="tab-pane active" id="edit" ng:show="spselected == 2">  
+  <div class="tab-pane active" id="edit" ng:show="spselected == 2">
     <form novalidate="novalidate" class="form-horizontal">
     <div class="control-group">
       <label class="control-label" for="inputTitle">Space id:</label>
@@ -502,6 +352,7 @@
 
 </div>
 </div>
+-->
 
 
 
@@ -517,8 +368,7 @@
 
 
 
-
-
+<!--
 
 
   <ul class="nav nav-tabs" role="tablist">
@@ -566,7 +416,7 @@
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">space_own:</label>
       <div class="controls">
-           <select ng-model="newSpaceelem.space_own" data-ng-options="a.id as a.id for a in spaces">               
+           <select ng-model="newSpaceelem.space_own" data-ng-options="a.id as a.id for a in spaces">
             </select>
         <input type="number" id="inputBusinessId" ng-model="newSpaceelem.space_own"/>
       </div>
@@ -574,8 +424,8 @@
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">space_owned:</label>
       <div class="controls">
-           <select ng-model="newSpaceelem.space_owned" data-ng-options="a.id as a.id for a in spaces">               
-          </select>        
+           <select ng-model="newSpaceelem.space_owned" data-ng-options="a.id as a.id for a in spaces">
+          </select>
         <input type="number" id="inputBusinessId" ng-model="newSpaceelem.space_owned"/>
       </div>
     </div>
@@ -614,6 +464,9 @@
   </form>
 </div></div>
 
+
+
+
 <div class="space-blocks" ng-repeat="spaceelem in spaceelems | orderBy:'order'" style="padding: 2px 10px;">
   <ul class="nav nav-tabs" role="tablist">
     <li class="active"><a href="" role="tab" data-toggle="tab" ng:click="selected=1">Show</a></li>
@@ -622,7 +475,7 @@
 
   <div class="tab-content">
     <div class="block-card tab-pane active" id="show">
-      {{ spaceelem.order }}: {{ spaceelem.title }} OWNED BY: {{ spaceelem.space_owned }} 
+      {{ spaceelem.order }}: {{ spaceelem.title }} OWNED BY: {{ spaceelem.space_owned }}
       {{ spaceelem.b_type }}
       {{ spaceelem.type_title }}
       <pre>{{ spaceelem.comps[0] | json }}</pre>
@@ -686,7 +539,7 @@
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">space_own:</label>
       <div class="controls">
-           <select ng-model="spaceelem.space_own" data-ng-options="a.id as a.id for a in spaces">               
+           <select ng-model="spaceelem.space_own" data-ng-options="a.id as a.id for a in spaces">
             </select>
 
         <input type="text" id="inputBusinessId" ng-model="spaceelem.space_own"/>
@@ -695,8 +548,8 @@
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">space_own:</label>
       <div class="controls">
-           <select ng-model="spaceelem.space_owned" data-ng-options="a.id as a.id for a in spaces">               
-          </select>   
+           <select ng-model="spaceelem.space_owned" data-ng-options="a.id as a.id for a in spaces">
+          </select>
         <input type="text" id="inputBusinessId" ng-model="spaceelem.space_owned"/>
       </div>
     </div>
@@ -730,7 +583,7 @@
         <a ng-click="templateElem('confirm', spaceelem)" class="btn btn-small btn-primary">Confirm <span tooltip="Some confirm" tooltip-placement="bottom" class="glyphicon glyphicon-info-sign"></span></a>
         <a ng-click="updateSpaceElem(spaceelem)" class="btn btn-small btn-primary">Update</a>
         <a ng-click="deleteSpaceElem(spaceelem)" class="btn btn-small btn-danger">Delete</a>
-        
+
       </div>
     </div>
   </form>
@@ -738,7 +591,7 @@
 
 
 </div>
-</div>
+</div>-->
 
 
  </div>
@@ -851,7 +704,7 @@
     <a href="#" tooltip="Some container" tooltip-placement="bottom">Cn</a>
       <div class="row">
         <div class="column-9--hand">
-          
+
           <div class="box--first flexcontainer">
             <div class="row">
               <div class="column-4--hand">

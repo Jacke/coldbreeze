@@ -151,6 +151,11 @@ object ProcElemDAO {
       }
     }
   }
+  def getAll = database withSession {
+    implicit session ⇒ 
+      val q3 = for { s ← proc_elements } yield s
+      q3.list.sortBy(_.id)
+  }
   def delete(id: Int) = { 
     database withSession { implicit session ⇒
 

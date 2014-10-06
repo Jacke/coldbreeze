@@ -1,10 +1,11 @@
-@(id: Int, serviceForm: Form[models.DAO.resources.BusinessServiceDTO])
+@import service.DemoUser
+@(id: Int, serviceForm: Form[models.DAO.resources.BusinessServiceDTO], user: DemoUser)
 
 @import helper._
 
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f)}
 
-@main("Edit an service") {
+@main("Edit an service", user) {
 <!-- Begin page content -->
 <div class="container">
 <div class="page-header">
@@ -19,13 +20,12 @@
 
 
 @inputText(serviceForm("title"), '_label -> "Name", 'class -> "form-control")
-@inputText(serviceForm("business_id"), '_label -> "Business", 'class -> "form-control")
 </fieldset>
 
 <div class="actions">
 <input type="submit" value="Update this service" class="btn btn-primary"> or
-<a href="@routes.BusinessServiceController.index()" class="btn btn-default">Cancel</a>
-</div>  
+<a href="@routes.ProfileController.profile()" class="btn btn-default">Cancel</a>
+</div>
 }
 </div>
 

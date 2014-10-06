@@ -1,5 +1,6 @@
+@import service.DemoUser
 @import models.DAO.resources.BusinessDTO
-@(currentPage: Page[BusinessDTO], currentOrderBy: Int, currentFilter: String)(implicit flash: play.api.mvc.Flash)
+@(currentPage: Page[BusinessDTO], currentOrderBy: Int, currentFilter: String, user: DemoUser)(implicit flash: play.api.mvc.Flash)
 @****************************************
 * Helper generating navigation links *
 ****************************************@
@@ -14,7 +15,7 @@
     </th>
 }
 
-@main("Businesses") {
+@main("Businesses", user) {
     
     <h1>Messages("Businesses")</h1>
 

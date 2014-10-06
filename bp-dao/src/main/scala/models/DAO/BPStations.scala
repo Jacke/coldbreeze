@@ -109,9 +109,16 @@ object BPStationDAO {
     database withSession { implicit session =>
      val q3 = for { st ← bpstations if st.process === id } yield st// <> (BPStationDTO.tupled, BPStationDTO.unapply _)
 
-      q3.list 
+      q3.list
     }
   }
+  def haltByBPId(id: Int) = {
+    database withSession { implicit session =>
+      val q3 = for { st ← bpstations if st.process === id && st.paused === true && st.state === true } yield st// <> (BPStationDTO.tupled, BPStationDTO.unapply _)
+      q3.list.map(station => update(station.id.get, station.copy(state = false, paused = false)))
+    }
+  }
+
   def getAll = database withSession {
     implicit session ⇒ // TODO: s.service === 1 CHANGE DAT
       val q3 = for { s ← bpstations } yield s
@@ -135,13 +142,20 @@ def update(id: Int, entity: BPStationDTO):Boolean = {
   }
   def areActiveForBP(id: Int) = {
      database withSession { implicit session =>
-        val q3 = for { st ← bpstations 
-          if st.process === id 
+        val q3 = for { st ← bpstations
+          if st.process === id
           if st.finished === false
           } yield st// <> (BPStationDTO.tupled, BPStationDTO.unapply _)
 
         q3.list
      }
+  }
+  def findActiveByBPIds(ids: List[Int]) = database withSession {
+    implicit session =>
+    val q3 = for { st ← bpstations if (st.process inSetBind ids) && st.paused === true } yield st// <> (BPStationDTO.tupled, BPStationDTO.unapply _)
+
+      q3.list
+    
   }
   def findById(id: Int):Option[BPStationDTO] = {
     database withSession {
@@ -162,11 +176,11 @@ def update(id: Int, entity: BPStationDTO):Boolean = {
       }
     }
   }
-  /*def ddl_create = {
+  def ddl_create = {
     database withSession {
       implicit session =>
         bpstations.ddl.create
     }
-  }*/
+  }
 
 }

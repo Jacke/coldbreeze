@@ -19,14 +19,14 @@ import main.scala.utils.Space
 import models.DAO.conversion.Implicits.fetch_cv
 
 
-object FixBug extends App {
-  /*  def check = "test"
+object FixBug1488 { //extends App {
+    def check = "test"
 
     println("test")
     ElementRegistrator.apply
     // caster
-    val process_dto = BPDAO.get(13).get
-    val target = ProcElemDAO.findByBPId(13)
+    val process_dto = BPDAO.get(20).get
+    val target = ProcElemDAO.findByBPId(20)
 
     val process = new BProcess(new Managment)
     val arrays = target.map(c => c.cast(process)).flatten.toArray
@@ -36,32 +36,7 @@ object FixBug extends App {
       arrays.sortWith(_.order < _.order)
     }
 
-    process.push {
-      Array[ProcElems](
-        new Note(
-          id = 2,
-          title = "Some note",
-          desc = "Useful note",
-          values = None,
-          process,
-          b_type = "block",
-          type_title = "note",
-          order = 1,
-          space_parent = None,
-          space_role = None),
 
-        new Confirm(id = 3,
-          title = "Some note",
-          desc = "Useful note",
-          values = Option(CompositeValues(a_bool = Option(false))),
-          process,
-          b_type = "block",
-          type_title = "note",
-          order = 2,
-          space_parent = None,
-          space_role = None)
-      )
-    }*/
 
   //InvokeTracer.run_proc(process)
 
@@ -72,9 +47,9 @@ object FixBug extends App {
   //InvokeTracer.run_proc(process)
 
   //process
-  service.RunnerWrapper.runFrom(station_id.get, 13, Map(30 -> "confirmed"))
+  //service.RunnerWrapper.runFrom(station_id.get, 13, Map(30 -> "confirmed"))
 
-  service.RunnerWrapper.runFrom(station_id.get, 13, Map(31 -> "confirmed"))
+  //service.RunnerWrapper.runFrom(station_id.get, 13, Map(31 -> "confirmed"))
 }
 object FixBug5555 {
 
@@ -85,10 +60,10 @@ object FixBug5555 {
 
 
 
-object FixBug666 {//extends App {
-  val process_dto = BPDAO.get(13).get
-  val target = ProcElemDAO.findByBPId(13)
-  val station_id = 34
+object FixBug extends App {
+  val process_dto = BPDAO.get(9).get
+  val target = ProcElemDAO.findByBPId(9)
+  val station_id = 5
 
   val process = new BProcess(new Managment)
   val arrays = target.map(c => c.cast(process)).flatten.toArray
@@ -130,19 +105,21 @@ object FixBug666 {//extends App {
     db_station.paused
   )
   println()
+  process.inputPmsApply(Map(33 -> "confirmed"))
+  process.inputPmsApply(Map(112 -> "confirmed"))
+  process.inputPmsApply(Map(113 -> "confirmed"))
 
-  process.inputPmsApply(Map(30 -> "confirmed"))
-  process.inputPmsApply(Map(31 -> "confirmed"))
 
-  InvokeTracer.run_proc(process)
+  service.RunnerWrapper.runFrom(5, 9, Map(33 -> "confirmed", 112 -> "confirmed", 113 -> "confirmed"))
+  //InvokeTracer.run_proc(process)
   process
   println(process.station.finished)
 }
 
-object FixBug1 {
+object FixBug643673463434 {//extends App {
 
 
-  val proc = service.RunnerWrapper.initiate(12)
+  val proc = service.RunnerWrapper.initiate(9)
 
   proc.logger.logs.foreach { log =>
     println(log.element.id)
@@ -161,7 +138,7 @@ object RunnerWrapper {
   def fillFrontSpaceElems(process: BProcess, origSpaces: List[Space], FrontSpaceElems: List[SpaceElementDTO]) = {
     origSpaces.foreach { orig =>
       FrontSpaceElems.filter(fs => fs.space_owned == orig.id.get).foreach { spaceElem =>
-        orig.addToSpace(spaceElem.castToSpace(process, orig).get, spaceElem.space_role.get)
+        orig.addToSpace(spaceElem.castToSpace(process, orig).get, spaceElem.space_role.getOrElse("container")) // Default space role is container
       }
       process.spaces = process.spaces :+ orig
     }
@@ -182,7 +159,7 @@ object RunnerWrapper {
   {
     origSpaces.foreach { orig =>
       nestedSpacesElems.filter(fs => fs.space_owned == orig.id.get).sortWith(_.order < _.order).foreach { spaceElem =>
-        orig.addToSpace(spaceElem.castToSpace(process, orig).get, spaceElem.space_role.get)
+        orig.addToSpace(spaceElem.castToSpace(process, orig).get, spaceElem.space_role.getOrElse("container")) // Default space role is Container
       }
       process.spaces = process.spaces :+ orig
       if (isNestedOpsLeft(process, test_space)) {
@@ -265,6 +242,7 @@ object RunnerWrapper {
 
     val station_id = saveState(processRunned, bpDTO)
     saveLogsInit(processRunned, bpDTO, station_id, BPSpaceDAO.findByBPId(bpID))
+    saveStationLog(bpID, station_id, processRunned)
     Some(station_id)
   }
 
@@ -275,10 +253,23 @@ object RunnerWrapper {
   }
   def saveLogsInit(bprocess: BProcess, bprocess_dto: BProcessDTO, station_id: Int, spacesDTO: List[BPSpaceDTO]) = {
     val dblogger = BPLoggerDAO.from_origin_lgr(bprocess.logger, bprocess_dto, station_id, spacesDTO)
+    println(dblogger)
     dblogger.foreach(log => BPLoggerDAO.pull_object(log))
   }
+  def saveStationLog(process_id: Int, station_id: Int, bprocess: BProcess) = {
+    //val station_loggers = bprocess.station.station_logger.logs.map(s => BPStationLoggeDAO.from_origin_station(process_id, station_id, s))
+    //station_loggers.foreach(s => BPStationLoggeDAO.pull_object(s))
+  }
 
-
+  /****************************************
+  *****************************************
+  *****************************************
+  *****************************************
+  *****************************************
+  *****************************************
+  *****************************************
+  *****************************************
+  ******************************************/
   def runFrom(station_id:Int, bpID:Int, params: Map[Int, String]):Option[Int]  = {
 
     val process_dto = BPDAO.get(bpID).get
@@ -356,7 +347,7 @@ object RunnerWrapper {
 
      process
     val station_updated = BPStationDAO.from_origin_station(process.station, process_dto)
-    BPStationDAO.update(station_id, station_updated)
+    //BPStationDAO.update(station_id, station_updated)
 
 
     /* LOGS UPDATE */
@@ -365,6 +356,8 @@ object RunnerWrapper {
     println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 
     logger_db_after.foreach(log => BPLoggerDAO.pull_object_from(station_id, log))
+
+    //saveStationLog(bpID, station_id, process)
 
 
     /*            */

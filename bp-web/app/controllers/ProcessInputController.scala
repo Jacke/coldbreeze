@@ -28,7 +28,7 @@ import models.User
 import service.DemoUser
 import securesocial.core._
 import models.DAO._
-
+import models.DAO.resources._
 /**
  * Created by Sobolev on 22.07.2014.
  */
@@ -102,7 +102,8 @@ case class InputLogger(var id: Option[Int],
       Applying by this template ID     PARAM
       process.inputPmsApply(Map(30 -> "confirmed"))
     */ 
-     
+    println("PAAAAAAAARAMS")
+    println(genparams.get)
     service.RunnerWrapper.runFrom(station_id, bpID, genparams.get) match {
       case Some(station_id) => Ok(Json.toJson(Map("success" -> station_id)))
       case _ => Ok(Json.toJson(Map("error" -> "Error output")))
@@ -119,17 +120,43 @@ case class InputLogger(var id: Option[Int],
     Ok(Json.toJson(InputLoggerDAO.getByStation(station_id)))
   } 
 
-  def schemes(BPid: Int, station_id: Int) = Action { implicit request =>
+  def schemes(BPid: Int, station_id: Int) = SecuredAction { implicit request =>
     val logs = BPLoggerDAO.findByStation(station_id)
     val elem_logs_ids = logs.diff(List(logs.last)).filter(log => log.element.isDefined).map(_.element)
     val space_logs_ids = logs.diff(List(logs.last)).filter(log => log.space_elem.isDefined).map(_.space_elem)
+    // USER PERM IF ACTOR
+    val owner_email = BPDAO.findOwnerByBP(BPid)
+    val admins:List[String] = List(owner_email)//Employee.findAdminByBP(BPid) 
+    val actors = EmployeeDAO.getAllByMaster(owner_email)
+    val permited_elems = ActPermissionDAO.getByUID(request.user.main.email.get)
+
+    if (isActor(request.user.main.email.get, actors)) {
     Ok(
       Json.toJson(
-        Map("proc_elems" -> Json.toJson(ProcElemDAO.findByBPId(BPid).filter(elem => !elem_logs_ids.contains(elem.id)) ), 
-            "space_elems" -> Json.toJson(SpaceElemDAO.findByBPId(BPid).filter(elem => !space_logs_ids.contains(elem.id)) ))
+        Map("proc_elems" -> Json.toJson(ProcElemDAO.findByBPId(BPid).filter(elem => !elem_logs_ids.contains(elem.id) && permited_elems.flatMap(_.front_elem_id).contains(elem.id)   ) ), 
+            "space_elems" -> Json.toJson(SpaceElemDAO.findByBPId(BPid).filter(elem => !space_logs_ids.contains(elem.id) && permited_elems.flatMap(_.space_elem_id).contains(elem.id)   ) ))
         )
       )
+    }
+    if (isAdmin(request.user.main.email.get, admins)) {
+      Ok(
+      Json.toJson(
+        Map("proc_elems" -> Json.toJson(ProcElemDAO.findByBPId(BPid).filter(elem => !elem_logs_ids.contains(elem.id)  ) ), 
+            "space_elems" -> Json.toJson(SpaceElemDAO.findByBPId(BPid).filter(elem => !space_logs_ids.contains(elem.id) ) ))
+        )
+      )
+    }
+    else {
+      BadRequest(Json.toJson(Map("error" -> "Forbidden")))
+    }
     
+  }
+
+  def isActor(email:String, actors: List[EmployeeDTO]):Boolean = {
+    actors.map(_.master_acc).contains(email)
+  }
+  def isAdmin(email:String, admins: List[String]):Boolean = {
+    admins.contains(email)
   }
   /**
    * Halt

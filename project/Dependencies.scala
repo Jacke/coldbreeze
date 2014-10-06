@@ -7,14 +7,19 @@ object Dependencies {
     "spray nightlies repo" at "http://nightlies.spray.io",
      "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
     "Maven Central Server" at "http://repo1.maven.org/maven2",
+    "MVN" at "http://repo.typesafe.com/typesafe/releases/",
     "Sonatype snapshots"   at "https://oss.sonatype.org/content/repositories/snapshots/",
-     Resolver.url( "Reflect GitHub Repository", url( "http://taig.github.io/Reflect/release/" ) )( Resolver.ivyStylePatterns )
+     Resolver.url( "Reflect GitHub Repository", url( "http://taig.github.io/Reflect/release/" ) )( Resolver.ivyStylePatterns ),
+     Resolver.url("heroku-sbt-plugin-releases", url("http://dl.bintray.com/heroku/sbt-plugins/"))(Resolver.ivyStylePatterns),
+     Resolver.url("Edulify Repository", url("http://edulify.github.io/modules/releases/"))(Resolver.ivyStylePatterns)
+
   )
 
   val akkaVersion  = "2.3.2"
   val sprayVersion = "1.3.1-20140423"
 
 
+  val heroku          = "com.heroku"                % "sbt-heroku"              % "0.1.4"
   val async           = "org.scala-lang.modules"    %% "scala-async"            % "0.9.1"
   val shapeless       = "com.chuusai"               %% "shapeless"              % "1.2.4"
   val dispatch        = "net.databinder.dispatch"   %% "dispatch-core"          % "0.11.1"
@@ -32,11 +37,13 @@ object Dependencies {
   val scaldi          = "org.scaldi"                %% "scaldi"                 % "0.4"
   val scaldiplay      = "org.scaldi"                %% "scaldi-play"            % "0.4.1"
   val scaldiakka      = "org.scaldi"                %% "scaldi-akka"            % "0.4"
+  val hicaricp        = "com.edulify"               %% "play-hikaricp"          % "1.5.0"
 
   val play            = "org.webjars"               %% "webjars-play"           % "2.3.0"
   val playslick       = "com.typesafe.play"         %  "play-slick_2.10"        % "0.8.0"
   val playauth        = "jp.t2v"                    %% "play2-auth"             % "0.12.0"
   val playctrl        = "jp.t2v"                    %% "stackable-controller"   % "0.4.0"
+  val logentries      = "com.logentries"            % "logentries-appender"     % "1.1.21"
   val jsonvariants    = "org.julienrf"              %% "play-json-variants"     % "0.2"
   val playflyway      = "com.github.tototoshi"      %% "play-flyway"            % "1.1.0"
   val angular         = "org.webjars"               %  "angularjs"              % "1.2.16-2"  exclude("org.webjars", "jquery")
@@ -50,8 +57,9 @@ object Dependencies {
 
   val bcrypt          = "com.github.t3hnar"         % "scala-bcrypt_2.11"       % "2.4"
   val mailer          = "com.typesafe"              % "play-plugins-mailer_2.10"% "2.2.0"
-  val cache           = "com.typesafe.play"         %% "filters-helpers"        % "2.3.0-RC1" 
-  val filter          = "com.typesafe.play"         %% "play-cache"             % "2.3.0-RC1" 
+  val apamailer       = "org.apache.commons"        % "commons-email"           % "1.3.1"
+  val cache           = "com.typesafe.play"         %% "filters-helpers"        % "2.3.0-RC1"
+  val filter          = "com.typesafe.play"         %% "play-cache"             % "2.3.0-RC1"
   val jdbc            = "com.typesafe.play"         %% "play-jdbc"              % "2.3.0-RC1"
   val anorm           = "com.typesafe.play"         %% "anorm"                  % "2.3.0-RC1"
 
@@ -77,7 +85,7 @@ object Dependencies {
   val scalaLog        = "com.typesafe.scala-logging"%%  "scala-logging-slf4j"   % "2.1.2"
   val snakeYaml       = "org.yaml"                  %   "snakeyaml"             % "1.13"
   val logbackClassic  = "ch.qos.logback"            % "logback-classic"         % "1.0.13"
-  
+
   def compile   (deps: ModuleID*): Seq[ModuleID] = deps map (_ % "compile")
   def provided  (deps: ModuleID*): Seq[ModuleID] = deps map (_ % "provided")
   def test      (deps: ModuleID*): Seq[ModuleID] = deps map (_ % "test")

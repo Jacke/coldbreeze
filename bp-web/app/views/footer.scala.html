@@ -1,4 +1,5 @@
-@(user: Option[securesocial.core.BasicProfile] = None)(implicit request: Option[RequestHeader] = None, env: Option[securesocial.core.RuntimeEnvironment[service.DemoUser]] = None)
+@import service.DemoUser
+@(user: DemoUser)(implicit request: Option[RequestHeader] = None, env: Option[securesocial.core.RuntimeEnvironment[service.DemoUser]] = None)
 @import securesocial.core.IdentityProvider
 
 @import securesocial.core.IdentityProvider
@@ -45,7 +46,9 @@
   </div>
 
   <div class="applicationFooterRow">
-    <p class="applicationFooterCopyright"> 2014 &copy; Empire InCloud Inc. All rights reserved. <span class="applicationFooterCopyrightLinks">• <a href="http://empireinc.net/tos" class="applicationFooterCopyrightLink">Terms</a> • <a href="https://www.iubenda.com/privacy-policy/323220" class="applicationFooterCopyrightLink">Privacy</a></span></p>
+    <p class="applicationFooterCopyright"> 2014 &copy; Empire InCloud Inc. All rights reserved. <span class="applicationFooterCopyrightLinks"><a href="http://empireinc.net/tos" class="applicationFooterCopyrightLink">Terms</a> <a href="https://www.iubenda.com/privacy-policy/323220" class="applicationFooterCopyrightLink">Privacy</a></span></p>
   </div>
 </footer>
+
+
 <!-- /website-footer -->

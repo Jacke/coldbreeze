@@ -49,6 +49,8 @@ object BusinessDAO {
       businesses returning businesses.map(_.id) += s
   }
 
+
+
   def pull(id: Option[Int] = None, title: String) = Try(database withSession {
     implicit session ⇒
 
@@ -86,6 +88,12 @@ object BusinessDAO {
     Query(businesses.length).first
   }
 
+   def ddl_create = {
+    database withSession {
+      implicit session =>
+      businesses.ddl.create
+    }
+  }
 
 
   def getAll = database withSession {

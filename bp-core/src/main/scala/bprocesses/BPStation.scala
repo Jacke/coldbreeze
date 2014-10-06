@@ -1,6 +1,6 @@
 package main.scala.bprocesses
 
-import bprocesses.{BPStationState, BPStationLogger}
+import main.scala.bprocesses.{BPStationState, BPStationLogger}
 
 class BPStation(val bp: BProcess) {
   /**
@@ -142,6 +142,7 @@ class BPStation(val bp: BProcess) {
     space = this.space,
     container_step = this.container_step,
     expand_step = this.expand_step,
+    spaces_ids = this.spaces_ids,
     container_state = this.container_state,
     expand_state = this.expand_state,
     started = this.started,

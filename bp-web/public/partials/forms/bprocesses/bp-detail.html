@@ -1,29 +1,25 @@
 <div class="container">
-  <h1>Process `{{ bprocess.title }}`</h1>
+  <h1>Process `{{ process.title }}`</h1>
 
   <form novalidate="novalidate" class="form-horizontal">
     <div class="control-group">
       <label class="control-label" for="inputTitle">Title:</label>
 
       <div class="controls">
-        <input type="text" id="inputTitle" ng-model="bprocess.title"/>
+        <input type="text" id="inputTitle" ng-model="process.title"/>
       </div>
     </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">Business id:</label>
-      <div class="controls">
-        <input type="text" id="inputBusinessId" ng-model="bprocess.business"/>
-      </div>
-    </div>
+<input type="hidden" id="inputBusinessId" ng-init="process.business=1" placeholder="Business ID" required/>
+
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">Service id:</label>
       <div class="controls">
-        <select ng-model="bprocess.service" ng-options="service.id as service.title for service in procServices" required></select><br>
+        <select ng-model="process.service" ng-options="service.id as service.title for service in procServices" required></select><br>
       </div>
     </div>
     <div class="control-group">
       <div class="controls">
-        <a ng-click="cancel()" class="btn btn-small">Cancel</a>
+        <a ng-click="closeThisDialog()" class="btn btn-small">Cancel</a>
         <a ng-click="updateBP()" class="btn btn-small btn-primary">Update</a>
       </div>
     </div>

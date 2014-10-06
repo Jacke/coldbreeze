@@ -6,11 +6,19 @@ resolvers += "Kamon Releases" at "http://repo.kamon.io"
 
 resolvers += "Maven Central" at "http://repo1.maven.org/maven2"
 
+resolvers += "MVN" at "http://repo.typesafe.com/typesafe/releases/"
+
+
 resolvers += "Typesafe"     at "http://repo.typesafe.com/typesafe/maven-releases"
 
 resolvers += "sbt-taglist-releases" at "http://johanandren.github.com/releases/"
 
 resolvers += "spray repo" at "http://repo.spray.io"
+
+resolvers += Resolver.url("heroku-sbt-plugin-releases",
+  url("http://dl.bintray.com/heroku/sbt-plugins/"))(Resolver.ivyStylePatterns)
+
+addSbtPlugin("com.heroku" % "sbt-heroku" % "0.1.4")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-atmos" % "0.3.2")
 

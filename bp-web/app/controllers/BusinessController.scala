@@ -39,16 +39,16 @@ class BusinessController(override implicit val env: RuntimeEnvironment[DemoUser]
  def index() = SecuredAction { implicit request =>
       val businesses = BusinessDAO.getAll
       Ok(views.html.businesses.index(
-        Page(businesses, 1, 1, businesses.length), 1, "%"))
+        Page(businesses, 1, 1, businesses.length), 1, "%", request.user))
     
   }
-  def create() = Action { implicit request =>
-        Ok(views.html.businesses.business_form(businessForm))    
+  def create() = SecuredAction { implicit request =>
+        Ok(views.html.businesses.business_form(businessForm, request.user))    
   }
   def create_new() = SecuredAction { implicit request =>
 
     businessForm.bindFromRequest.fold(
-      formWithErrors => BadRequest(views.html.businesses.business_form(formWithErrors)),
+      formWithErrors => BadRequest(views.html.businesses.business_form(formWithErrors, request.user)),
       entity => {
 
           val biz_id = BusinessDAO.pull_object(entity)
@@ -68,7 +68,7 @@ class BusinessController(override implicit val env: RuntimeEnvironment[DemoUser]
       business match {
         case Some(business) =>
         val biz = BusinessDTO(business.id, business.title)
-         Ok(views.html.businesses.business_edit_form(id, businessForm.fill(biz))) 
+         Ok(views.html.businesses.business_edit_form(id, businessForm.fill(biz), request.user)) 
         case None => Ok("not found")
       }
 
@@ -77,7 +77,7 @@ class BusinessController(override implicit val env: RuntimeEnvironment[DemoUser]
   }
   def update_make(id: Int) = SecuredAction { implicit request =>
       businessForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.businesses.business_edit_form(id, formWithErrors)),
+        formWithErrors => BadRequest(views.html.businesses.business_edit_form(id, formWithErrors, request.user)),
         entity => {
           Home.flashing(BusinessDAO.update(id,entity) match {
             case 0 => "failure" -> s"Could not update entity ${entity.title}"

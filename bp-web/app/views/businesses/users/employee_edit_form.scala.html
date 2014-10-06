@@ -1,10 +1,12 @@
-@(id: Int, serviceForm: Form[models.DAO.resources.EmployeeDTO])
+@import service.DemoUser
+
+@(id: Int, serviceForm: Form[models.DAO.resources.EmployeeDTO], user: DemoUser)
 
 @import helper._
 
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f)}
 
-@main("Edit an service") {
+@main("Edit an service", user) {
 <!-- Begin page content -->
 <div class="container">
 <div class="page-header">

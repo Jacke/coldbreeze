@@ -1,0 +1,1567 @@
+.vIco {
+    overflow: hidden;
+    height: 20px;
+    width: 20px;
+    position: relative;
+    display: inline-block;
+}
+
+.vIco:after {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 24px;
+    height: 424px;
+    content: '';
+    background-color: rgba(255,255,255,0.001);
+    background-image: url("https://apiary.a.ssl.fastly.net/assets/icons/icons-sprite-2-f90c355fa4e51812.svg");
+    background-repeat: no-repeat;
+}
+
+.vAddMembers:after {
+    background-position: 0 0;
+}
+
+.vGear:after {
+    background-position: -100px 0;
+}
+
+.vPeople:after {
+    background-position: -200px 0;
+}
+
+.vHelp:after {
+    background-position: -300px 0;
+}
+
+.vSliders:after {
+    background-position: -400px 0;
+}
+
+.vLocked:after {
+    background-position: -500px 0;
+}
+
+.vTools:after {
+    background-position: -600px 0;
+}
+
+.vArrow:after {
+    background-position: -700px 0;
+}
+
+.vLogout:after {
+    background-position: -800px 0;
+}
+
+.vLoupe:after {
+    background-position: -900px 0;
+}
+
+.vRadio:after {
+    background-position: -1000px 0;
+}
+
+.vPerson:after {
+    background-position: -1100px 0;
+}
+
+.vPlusSquare:after {
+    background-position: -1200px 0;
+}
+
+.vBook:after {
+    background-position: -1298px 0;
+}
+
+.vSpeech:after {
+    background-position: -1400px 0;
+}
+
+.vStackOverflow:after {
+    background-position: -1500px 0;
+}
+
+.vAPIs:after {
+    background-position: -1600px 0;
+}
+
+.vDocument:after {
+    background-position: -1700px 0;
+}
+
+.vShineState:after {
+    -webkit-transform: translateY(0);
+    -moz-transform: translateY(0);
+    -o-transform: translateY(0);
+    -ms-transform: translateY(0);
+    transform: translateY(0);
+}
+
+.vDefaultState:after {
+    -webkit-transform: translateY(-100px);
+    -moz-transform: translateY(-100px);
+    -o-transform: translateY(-100px);
+    -ms-transform: translateY(-100px);
+    transform: translateY(-100px);
+}
+
+.vDimmedState:after {
+    -webkit-transform: translateY(-200px);
+    -moz-transform: translateY(-200px);
+    -o-transform: translateY(-200px);
+    -ms-transform: translateY(-200px);
+    transform: translateY(-200px);
+}
+
+.vContrastState:after {
+    -webkit-transform: translateY(-300px);
+    -moz-transform: translateY(-300px);
+    -o-transform: translateY(-300px);
+    -ms-transform: translateY(-300px);
+    transform: translateY(-300px);
+}
+
+.vLight2State:after {
+    -webkit-transform: translateY(-400px);
+    -moz-transform: translateY(-400px);
+    -o-transform: translateY(-400px);
+    -ms-transform: translateY(-400px);
+    transform: translateY(-400px);
+}
+
+.vIco.vEmpty:after {
+    background-image: none;
+}
+
+.vIco.vBook {
+    width: 24px;
+}
+
+.vIco.vStackOverflow {
+    width: 21px;
+    height: 26px;
+}
+
+.vIco.vStackOverflow:after {
+    top: 4px;
+}
+
+a:hover .vIco.vDefaultState:after,.vIcoIn:hover .vIco.vDefaultState:after,.vIcoHover:hover .vIco.vDefaultState:after {
+    -webkit-transform: translateY(-300px);
+    -moz-transform: translateY(-300px);
+    -o-transform: translateY(-300px);
+    -ms-transform: translateY(-300px);
+    transform: translateY(-300px);
+}
+
+.tipsy {
+    line-height: 13px;
+    font-size: 14px;
+    position: absolute;
+    padding: 6px;
+    z-index: 100000;
+    text-shadow: none;
+    pointer-events: none;
+    font-family: TitilliumText,'Proxima Nova',Helvetica,Arial,sans-serif;
+}
+
+.tipsy-inner {
+    background-color: #4f5767;
+    color: #333;
+    max-width: 200px;
+    padding: 6px 8px 8px;
+    text-align: center;
+    font-weight: 800;
+    pointer-events: none;
+}
+
+.tipsy-inner {
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+}
+
+.tipsy-arrow {
+    position: absolute;
+    width: 0;
+    height: 0;
+    line-height: 0;
+    border: 6px dashed #4f5767;
+}
+
+.tipsy-arrow-n {
+    border-bottom-color: #4f5767;
+}
+
+.tipsy-arrow-s {
+    border-top-color: #4f5767;
+}
+
+.tipsy-arrow-e {
+    border-left-color: #4f5767;
+}
+
+.tipsy-arrow-w {
+    border-right-color: #4f5767;
+}
+
+.tipsy-n .tipsy-arrow {
+    top: 0;
+    left: 50%;
+    margin-left: -6px;
+    border-bottom-style: solid;
+    border-top: none;
+    border-left-color: transparent;
+    border-right-color: transparent;
+}
+
+.tipsy-nw .tipsy-arrow {
+    top: 0;
+    left: 12px;
+    border-bottom-style: solid;
+    border-top: none;
+    border-left-color: transparent;
+    border-right-color: transparent;
+}
+
+.tipsy-ne .tipsy-arrow {
+    top: 0;
+    right: 12px;
+    border-bottom-style: solid;
+    border-top: none;
+    border-left-color: transparent;
+    border-right-color: transparent;
+}
+
+.tipsy-s .tipsy-arrow {
+    bottom: 0;
+    left: 50%;
+    margin-left: -6px;
+    border-top-style: solid;
+    border-bottom: none;
+    border-left-color: transparent;
+    border-right-color: transparent;
+}
+
+.tipsy-sw .tipsy-arrow {
+    bottom: 0;
+    left: 12px;
+    border-top-style: solid;
+    border-bottom: none;
+    border-left-color: transparent;
+    border-right-color: transparent;
+}
+
+.tipsy-se .tipsy-arrow {
+    bottom: 0;
+    right: 12px;
+    border-top-style: solid;
+    border-bottom: none;
+    border-left-color: transparent;
+    border-right-color: transparent;
+}
+
+.tipsy-e .tipsy-arrow {
+    right: 0;
+    top: 50%;
+    margin-top: -6px;
+    border-left-style: solid;
+    border-right: none;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+}
+
+.tipsy-w .tipsy-arrow {
+    left: 0;
+    top: 50%;
+    margin-top: -6px;
+    border-right-style: solid;
+    border-left: none;
+    border-top-color: transparent;
+    border-bottom-color: transparent;
+}
+
+header.fullSize {
+    position: fixed;
+    z-index: 10000;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(250,251,252,0.001);
+    min-width: 99%;
+    height: 80px;
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -ms-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+.shadowRight:before,.apiaryMenu .apiNameCell .apiSwitchName:before {
+    display: block;
+    content: '';
+    position: absolute;
+    top: 20px;
+    right: 0;
+    width: 1px;
+    bottom: 20px;
+    background-color: rgba(225,227,232,0.1);
+}
+
+.shadowLeft:before,.apiaryMenu .apiNameCell:before,.apiaryMenu .apiNameCell.switcherWrap:before,.apiaryMenu .menuTeam:before,.apiaryMenu .apiMenuList.apiMenuIcons:before {
+    display: block;
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 0;
+    width: 1px;
+    bottom: 20px;
+    background-color: rgba(225,227,232,0.1);
+}
+
+.apiaryMenu {
+    position: relative;
+    min-width: 1020px;
+    width: 100%;
+    margin: 0 auto;
+    background: #fafbfc;
+    z-index: 10000;
+    display: block;
+    text-shadow: none;
+}
+
+.apiaryMenu h1,.apiaryMenu p,.apiaryMenu ul,.apiaryMenu li,.apiaryMenu div,.apiaryMenu hgroup,.apiaryMenu a,.apiaryMenu span {
+    margin: 0;
+    padding: 0;
+    outline: none;
+    list-style: none;
+    border: 0 none;
+}
+
+.apiaryMenu .menuRow {
+    display: -webkit-box;
+    display: -moz-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: box;
+    display: flex;
+    -webkit-box-lines: single;
+    -moz-box-lines: single;
+    -o-box-lines: single;
+    -webkit-flex-wrap: nowrap;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    -webkit-box-orient: horizontal;
+    -moz-box-orient: horizontal;
+    -o-box-orient: horizontal;
+    -webkit-box-lines: single;
+    -moz-box-lines: single;
+    -o-box-lines: single;
+    -webkit-flex-flow: row nowrap;
+    -ms-flex-flow: row nowrap;
+    flex-flow: row nowrap;
+}
+
+.apiaryMenu .menuCell {
+    -webkit-box-flex: 1;
+    -moz-box-flex: 1;
+    -o-box-flex: 1;
+    box-flex: 1;
+    -webkit-flex: 1 0 auto;
+    -ms-flex: 1 0 auto;
+    flex: 1 0 auto;
+    position: relative;
+    vertical-align: top;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.apiaryMenu .menuCell.flexibleSpace {
+    -webkit-box-flex: 1;
+    -moz-box-flex: 1;
+    -o-box-flex: 1;
+    box-flex: 1;
+    -webkit-flex: 1 1 0;
+    -ms-flex: 1 1 0;
+    flex: 1 1 0;
+}
+
+.apiaryMenu .apiaryLogo {
+    display: inline-block;
+    height: 80px;
+    -webkit-box-flex: 1;
+    -moz-box-flex: 1;
+    -o-box-flex: 1;
+    box-flex: 1;
+    -webkit-flex: 0 0 80px;
+    -ms-flex: 0 0 80px;
+    flex: 0 0 80px;
+    width: 80px;
+}
+
+.apiaryMenu .apiNameCell {
+    -webkit-box-flex: 1;
+    -moz-box-flex: 1;
+    -o-box-flex: 1;
+    box-flex: 1;
+    -webkit-flex: 0 1 auto;
+    -ms-flex: 0 1 auto;
+    flex: 0 1 auto;
+    min-width: 150px;
+    max-width: 500px;
+}
+
+.apiaryMenu .apiNameCell.switcherWrap {
+    -webkit-box-flex: 1;
+    -moz-box-flex: 1;
+    -o-box-flex: 1;
+    box-flex: 1;
+    -webkit-flex: 1 0 250px;
+    -ms-flex: 1 0 250px;
+    flex: 1 0 250px;
+}
+
+.apiaryMenu .createApiCell {
+    vertical-align: middle;
+}
+
+.apiaryMenu .plusSign,.apiaryMenu .createApi {
+    -webkit-transition-property: all;
+    -moz-transition-property: all;
+    -o-transition-property: all;
+    -ms-transition-property: all;
+    transition-property: all;
+    -webkit-transition-duration: .2s;
+    -moz-transition-duration: .2s;
+    -o-transition-duration: .2s;
+    -ms-transition-duration: .2s;
+    transition-duration: .2s;
+    -webkit-transition-timing-function: ease-in-out;
+    -moz-transition-timing-function: ease-in-out;
+    -o-transition-timing-function: ease-in-out;
+    -ms-transition-timing-function: ease-in-out;
+    transition-timing-function: ease-in-out;
+    -webkit-transition-delay: 0;
+    -moz-transition-delay: 0;
+    -o-transition-delay: 0;
+    -ms-transition-delay: 0;
+    transition-delay: 0;
+}
+
+.apiaryMenu .createApi {
+    padding: 12px 30px 8px 57px;
+    position: relative;
+    line-height: 30px;
+    font-weight: bold;
+    background-color: #49cc90;
+    color: #fff;
+    font-size: 16px;
+    vertical-align: middle;
+    text-shadow: none;
+    display: block;
+}
+
+.apiaryMenu .createApi .plusSign {
+    position: absolute;
+    top: 50%;
+    left: 29px;
+    margin-top: -9px;
+}
+
+.apiaryMenu .createApi:hover {
+    background-color: #31ad74;
+    color: #fff;
+}
+
+.apiaryMenu .apiaryLogo {
+    width: 100%;
+}
+
+
+
+.apiaryMenu .apiaryLogo a {
+
+    
+    
+
+    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiID8+PCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj48c3ZnIHdpZHRoPSIxMzZwdCIgaGVpZ2h0PSI5MHB0IiB2aWV3Qm94PSIwIDAgMTM2IDkwIiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgaWQ9IiM3Nzc4N2NmZiI+PHBhdGggZmlsbD0iIzRjNTI2NCIgb3BhY2l0eT0iMS4wMCIgZD0iIE0gMC4wMCAwLjAwIEwgMTM2LjAwIDAuMDAgTCAxMzYuMDAgOTAuMDAgTCAwLjAwIDkwLjAwIEwgMC4wMCAwLjAwIE0gMTguNzkgMzUuNzEgQyAxNy42NSA0OC40NCAxOC41OSA2MS40MCAxOC4zNSA3NC4yMiBDIDI3LjM2IDY4LjA1IDM1Ljc0IDYwLjk5IDQ0LjE1IDU0LjA1IEMgMzkuNTkgNDguNjAgMzQuMDAgNDQuMTYgMjkuMTYgMzguOTggQyA0Mi40NiA0OC41NCA1NC45MCA1OS4yNSA2OC4wNCA2OS4wMyBDIDgxLjIwIDU5LjMzIDkzLjU5IDQ4LjYyIDEwNi43OSAzOC45NyBDIDEwMi4yMiA0NC4zNSA5Ni41OSA0OC42OSA5MS44OSA1My45NiBDIDEwMC4zNyA2MC43OSAxMDguNzkgNjcuNzMgMTE3LjYzIDc0LjEwIEMgMTE3LjY5IDYxLjIxIDExNy44MSA0OC4zMSAxMTcuNTggMzUuNDIgQyAxMDkuMzIgMjkuMDQgMTAxLjI1IDIyLjQzIDkyLjk3IDE2LjA3IEMgODQuNDIgMjIuMjUgNzYuNjEgMjkuNDAgNjguMDAgMzUuNTAgQyA1OS4zOSAyOS40MCA1MS41OSAyMi4yNSA0My4wMiAxNi4wOCBDIDM0Ljk4IDIyLjY1IDI2LjI5IDI4LjU2IDE4Ljc5IDM1LjcxIFoiIC8+PC9nPjxnIGlkPSIjZmFmYWZhZmYiPjwvZz48L3N2Zz4=) no-repeat scroll 0px 0px / contain transparent;
+    margin-top: 16px;
+margin-left: 5px;
+width: 71px;
+height: 47px;
+color: white;
+background-color: white;
+}
+.apiaryMenu .apiaryLogo a:hover {
+border: none;
+background-color: #7FDBFF;
+}
+.apiaryMenu .apiSwitcher {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    vertical-align: top;
+    padding: 0;
+    overflow: hidden;
+    font-weight: bold;
+    -webkit-transition-property: all;
+    -moz-transition-property: all;
+    -o-transition-property: all;
+    -ms-transition-property: all;
+    transition-property: all;
+    -webkit-transition-duration: .1s;
+    -moz-transition-duration: .1s;
+    -o-transition-duration: .1s;
+    -ms-transition-duration: .1s;
+    transition-duration: .1s;
+    -webkit-transition-timing-function: ease-in-out;
+    -moz-transition-timing-function: ease-in-out;
+    -o-transition-timing-function: ease-in-out;
+    -ms-transition-timing-function: ease-in-out;
+    transition-timing-function: ease-in-out;
+    -webkit-transition-delay: 0;
+    -moz-transition-delay: 0;
+    -o-transition-delay: 0;
+    -ms-transition-delay: 0;
+    transition-delay: 0;
+}
+
+.apiaryMenu .apiSwitcher.switcherToggle {
+    cursor: pointer;
+}
+
+.apiaryMenu .apiSwitcher .dropdownIcon {
+    position: absolute;
+    top: 50%;
+    margin-top: -10px;
+    right: 15px;
+    width: 20px;
+    height: 20px;
+    -webkit-transform: rotate(0);
+    -moz-transform: rotate(0);
+    -o-transform: rotate(0);
+    -ms-transform: rotate(0);
+    transform: rotate(0);
+    opacity: .6;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=60)";
+    filter: alpha(opacity=60);
+    background-color: rgba(255,255,255,0.001);
+    -webkit-transition-property: all;
+    -moz-transition-property: all;
+    -o-transition-property: all;
+    -ms-transition-property: all;
+    transition-property: all;
+    -webkit-transition-duration: .2s;
+    -moz-transition-duration: .2s;
+    -o-transition-duration: .2s;
+    -ms-transition-duration: .2s;
+    transition-duration: .2s;
+    -webkit-transition-timing-function: ease-in-out;
+    -moz-transition-timing-function: ease-in-out;
+    -o-transition-timing-function: ease-in-out;
+    -ms-transition-timing-function: ease-in-out;
+    transition-timing-function: ease-in-out;
+    -webkit-transition-delay: 0;
+    -moz-transition-delay: 0;
+    -o-transition-delay: 0;
+    -ms-transition-delay: 0;
+    transition-delay: 0;
+}
+
+.apiaryMenu .switcherWrap.selected .apiSwitcher,.apiaryMenu .switcherWrap.selected .switcherToggle,.apiaryMenu .switcherWrap:hover .switcherToggle,.apiaryMenu .apiNameCell.switcherWrap .apiSwitcher:hover,.apiaryMenu a.apiLines:hover {
+    background-color: #e8ebf2;
+}
+
+.apiaryMenu .switcherWrap.selected .switcherToggle,.apiaryMenu .switcherWrap .switcherToggle:hover {
+    color: #000;
+}
+
+.apiaryMenu .apiSwitcher:hover .dropdownIcon {
+    opacity: 1;
+    -ms-filter: none;
+    filter: none;
+    -webkit-transform: rotate(0);
+    -moz-transform: rotate(0);
+    -o-transform: rotate(0);
+    -ms-transform: rotate(0);
+    transform: rotate(0);
+}
+
+.apiaryMenu .switcherWrap.selected .apiSwitcher .dropdownIcon {
+    opacity: 1;
+    -ms-filter: none;
+    filter: none;
+    -webkit-transform: rotate(180deg);
+    -moz-transform: rotate(180deg);
+    -o-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    transform: rotate(180deg);
+}
+
+.apiaryMenu .isPrivateApi .vIco {
+    position: absolute;
+    top: 50%;
+    left: 5px;
+    margin-top: -10px;
+    opacity: .6;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=60)";
+    filter: alpha(opacity=60);
+}
+
+.apiaryMenu .apiLines {
+    position: relative;
+    vertical-align: top;
+    display: block;
+    overflow: hidden;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 0 35px 0 30px;
+    height: 80px;
+}
+
+.apiaryMenu .isSelected {
+    background-color: #e8ebf2;
+}
+
+.apiaryMenu .apiName {
+    padding-top: 24px;
+    line-height: 20px;
+    font-size: 16px;
+    color: #555;
+    font-weight: bold;
+}
+
+.apiaryMenu .apiName.oneLiner {
+    line-height: 20px;
+    padding-top: 30px;
+}
+
+.apiaryMenu .apiOwner {
+    font-size: 14px;
+    line-height: 18px;
+    display: block;
+    font-style: normal;
+    font-weight: normal;
+    color: #555;
+}
+
+.apiaryMenu .apiSwitcherLayer {
+    display: block;
+    position: absolute;
+    top: 80px;
+    left: 0;
+    right: 0;
+    height: auto;
+    min-width: 100%;
+    max-width: 500px;
+    background-color: #f0f2f8;
+    z-index: 10000;
+}
+
+.apiaryMenu .apiSwitcherLayer .apiListItem {
+    border-top: 1px solid #e1e3e8;
+}
+
+.apiaryMenu .apiSwitcherLayer .apiListItem:first-child {
+    border-top: none;
+}
+
+.apiaryMenu .apiSwitcherLayer .apiListItem.isSelected {
+    border-bottom: 1px solid #e1e3e8;
+}
+
+.apiaryMenu .apiSwitcherLayer .apiLines {
+    height: 70px;
+}
+
+.apiaryMenu .apiSwitcherLayer .apiName {
+    padding-top: 17px;
+}
+
+.apiaryMenu .apiSwitcherLayer .apiName.oneLiner {
+    padding-top: 25px;
+}
+
+.apiaryMenu .apiSwitcherLayer .usersApisListFilter {
+    background-color: #4f5767;
+    color: #9098aa;
+    height: 30px;
+    padding: 11px 30px 9px;
+    position: relative;
+}
+
+.apiaryMenu .apiSwitcherLayer .magnifyGlass {
+    position: absolute;
+    left: 31px;
+    top: 50%;
+    margin-top: -9px;
+    opacity: .6;
+    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=60)";
+    filter: alpha(opacity=60);
+}
+
+.apiaryMenu .apiSwitcherLayer .usersApisListFilterInput {
+    outline: none;
+    position: relative;
+    border: 0;
+    background-color: rgba(0,0,0,0.001);
+    color: #adb3be;
+    text-shadow: none;
+    text-indent: 23px;
+    padding: .4em .5em .3em;
+    margin: 0;
+    display: block;
+    font-size: 16px;
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.apiaryMenu .apiSwitcherLayer .usersApisList {
+    overflow-y: auto;
+    max-height: 525px;
+}
+
+.apiaryMenu .apiMenu {
+    -webkit-box-flex: 1;
+    -moz-box-flex: 1;
+    -o-box-flex: 1;
+    box-flex: 1;
+    -webkit-flex: 0 0 auto;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    font-size: 120%;
+}
+
+.apiaryMenu .apiMenuList.apiMenuIcons {
+    display: table-row;
+}
+
+.apiaryMenu .apiMenuItem {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.apiaryMenu .apiMenuItem a {
+    display: inline-block;
+    padding: 31px 10px 29px;
+    min-width: 0;
+    float: left;
+    height: 20px;
+    line-height: 20px;
+    color: #959cad;
+    white-space: nowrap;
+}
+
+.apiaryMenu .apiMenuItem a.menuTeamLink {
+    padding-right: 25px;
+}
+
+.apiaryMenu .apiMenuItem a.menuTeamLink .vIco {
+    margin-top: -1px;
+    float: left;
+    margin-right: 10px;
+}
+
+.apiaryMenu .apiMenuItem a.selected,.apiaryMenu .apiMenuItem a:hover {
+    color: #000;
+}
+
+.apiaryMenu .apiMenuTexts .apiMenuItem:first-child a {
+    padding-left: 28px;
+}
+
+.apiaryMenu .apiMenuTexts .apiMenuItem:last-child a {
+    padding-right: 28px;
+}
+
+.apiaryMenu .apiMenuItem .apiMenuIcons .apiMenuItem a {
+    float: left;
+    min-width: 38px;
+    padding: 30px 0;
+}
+
+.apiaryMenu .apiMenuItem #peopleLink {
+    margin-left: 15px;
+}
+
+.apiaryMenu .menuHelp {
+    -webkit-box-flex: 1;
+    -moz-box-flex: 1;
+    -o-box-flex: 1;
+    box-flex: 1;
+    -webkit-flex: 0 0 auto;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+}
+
+.apiaryMenu .menuHelp.selected .switcherToggle,.apiaryMenu .menuHelp:hover .switcherToggle {
+    background: none;
+}
+
+.apiaryMenu .menuHelp .helpLinks {
+    color: #959cad;
+    display: block;
+    text-align: center;
+    line-height: 20px;
+    height: 20px;
+    width: 44px;
+    padding: 30px 0 30px 0;
+    cursor: pointer;
+}
+
+.apiaryMenu .menuHelp .helpPopup {
+    position: absolute;
+    top: 100%;
+    margin-right: 0;
+    right: -1px;
+    font-weight: normal;
+    font-size: 16px;
+    white-space: nowrap;
+}
+
+.apiaryMenu .menuHelp .helpPopup a {
+    display: inline-block;
+    color: #959cad;
+}
+
+.apiaryMenu .menuHelp .helpPopup a.hideableHelpLink {
+    display: none;
+}
+
+.apiaryMenu .menuHelp .helpPopup span.helpText {
+    display: none;
+    line-height: 1;
+}
+
+.apiaryMenu .menuHelp .helpPopup .unreadCounter {
+    position: relative;
+    left: 0;
+    right: 0;
+    top: 0;
+    font-size: 14px;
+    margin: 0 0 0 7px;
+    padding: 1px 8px;
+    -webkit-box-shadow: 0 1px 0 rgba(255,255,255,0.5);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.5);
+    -webkit-border-radius: 9px;
+    border-radius: 9px;
+    font-weight: 600;
+    background-color: #f0f2f8;
+    color: #555;
+}
+
+.apiaryMenu .menuHelp .helpPopup .unreadCounter:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent #f0f2f8 transparent;
+    top: -10px;
+    left: 50%;
+    margin-left: -5px;
+    display: none;
+}
+
+.apiaryMenu .menuHelp .helpPopup.visuallyhidden {
+    clip: auto;
+    overflow: visible;
+    height: 0;
+    width: 100%;
+}
+
+.apiaryMenu .menuHelp .helpPopup.visuallyhidden .unreadCounter {
+    position: absolute;
+    left: 50%;
+    right: auto;
+    margin: 0 0 0 -1em;
+    top: 100%;
+    text-align: center;
+}
+
+.apiaryMenu .menuHelp .helpPopup.visuallyhidden .unreadCounter:after {
+    display: block;
+}
+
+.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer {
+    margin-top: -10px;
+    margin-right: 0;
+    -webkit-border-radius: 3px;
+    border-radius: 3px;
+    -webkit-box-shadow: 0 0 1px 1px rgba(173,184,217,0.4);
+    box-shadow: 0 0 1px 1px rgba(173,184,217,0.4);
+}
+
+.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer:after,.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer:before {
+    pointer-events: none;
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 2em;
+    margin-right: -17px;
+    margin-top: -16px;
+    border: 8px solid transparent;
+    border-bottom-color: rgba(173,184,217,0.6);
+}
+
+.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer:after {
+    margin: -14px -16px 0 0;
+    border-width: 7px;
+    border-bottom-color: #f0f2f8;
+}
+
+.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer a,.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer a.hideableHelpLink {
+    background-color: #f0f2f8;
+    display: block;
+    padding: 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    border-top: 1px solid #e1e3e8;
+}
+
+.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer a:hover,.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer a.hideableHelpLink:hover {
+    color: #000;
+}
+
+.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer a:first-child,.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer a.hideableHelpLink:first-child {
+    -webkit-border-top-left-radius: 3px;
+    border-top-left-radius: 3px;
+    -webkit-border-top-right-radius: 3px;
+    border-top-right-radius: 3px;
+    border-top: none;
+}
+
+.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer a:last-child,.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer a.hideableHelpLink:last-child {
+    -webkit-border-bottom-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    -webkit-border-bottom-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer span.helpText {
+    padding: 0 20px 0 60px;
+    line-height: 60px;
+    font-size: 16px;
+    font-weight: 800;
+    position: relative;
+    display: inline-block;
+    font-family: TitilliumText,'Proxima Nova',Helvetica,Arial,sans-serif;
+}
+
+.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer span.helpText .vIco {
+    position: absolute;
+    top: 50%;
+    margin-top: -10px;
+    left: 20px;
+}
+
+.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer span.helpText .vIco.vStackOverflow {
+    margin-top: -14px;
+}
+
+.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer span.helpText .vSpeech {
+    -webkit-transform: scale(1.2);
+    -moz-transform: scale(1.2);
+    -o-transform: scale(1.2);
+    -ms-transform: scale(1.2);
+    transform: scale(1.2);
+}
+
+.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer span.helpText .vBook {
+    margin-left: -2px;
+}
+
+.apiaryMenu .secondaryNav {
+    -webkit-box-flex: 1;
+    -moz-box-flex: 1;
+    -o-box-flex: 1;
+    box-flex: 1;
+    -webkit-flex: 0 1 auto;
+    -ms-flex: 0 1 auto;
+    flex: 0 1 auto;
+    font-weight: 200;
+    font-size: 16px;
+    height: 80px;
+    -webkit-align-self: flex-end;
+    -ms-flex-item-align: end;
+    -webkit-align-self: flex-end;
+    align-self: flex-end;
+    -ms-flex-item-align: end;
+    color: #555;
+}
+
+.apiaryMenu .secondaryNav .switcherLayer {
+    right: 0;
+    top: 100%;
+    text-align: left;
+    white-space: nowrap;
+    left: auto;
+    width: auto;
+    position: absolute;
+    text-shadow: none;
+}
+
+.apiaryMenu .secondaryNav .secondaryNavLayer {
+    background-color: #f0f2f8;
+    min-width: 100%;
+}
+
+.apiaryMenu .secondaryNav .secondaryNavItem {
+    border-top: 1px solid #676d81;
+}
+
+.apiaryMenu .secondaryNav .secondaryNavItem:last-child,.apiaryMenu .secondaryNav .secondaryNavItem:first-child {
+    border-top: none;
+}
+
+.apiaryMenu .secondaryNav .secondaryNavItem a,.apiaryMenu .secondaryNav .secondaryNavItem .logoutBtn {
+    padding: 22px 20px 18px 53px;
+    display: block;
+    margin: 0;
+    border: none;
+    font-size: 16px;
+    line-height: 20px;
+    color: #fff;
+    font-weight: 400;
+    display: block;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    text-shadow: none;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    text-align: left;
+    cursor: pointer;
+    position: relative;
+}
+
+.apiaryMenu .secondaryNav .secondaryNavItem a .vIco,.apiaryMenu .secondaryNav .secondaryNavItem .logoutBtn .vIco,.apiaryMenu .secondaryNav .secondaryNavItem a i[class^='icon-'],.apiaryMenu .secondaryNav .secondaryNavItem .logoutBtn i[class^='icon-'] {
+    font-size: 20px;
+    position: absolute;
+    top: 50%;
+    left: 20px;
+    margin-top: -10px;
+    color: #7376f0;
+}
+
+.apiaryMenu .secondaryNav .secondaryNavItem a:hover,.apiaryMenu .secondaryNav .secondaryNavItem .logoutBtn:hover {
+    color: #000;
+    background-color: #e8ebf2;
+}
+
+.apiaryMenu .secondaryNav .secondaryNavItem .secondaryNavMenuTwoLines {
+    padding-top: 12px;
+    padding-bottom: 10px;
+}
+
+.apiaryMenu .secondaryNav .secondaryNavItem .secondaryNavMenuDuoLine {
+    display: block;
+    padding: 2px 0;
+    line-height: 16px;
+}
+
+.apiaryMenu .secondaryNav .secondaryNavItem .secondaryNavMenuDuoLine:first-of-type {
+    font-size: 14px;
+    line-height: 14px;
+}
+
+.apiaryMenu .secondaryNav .logoutForm {
+    overflow: hidden;
+    border-top: 1px solid #e1e3e8;
+}
+
+.apiaryMenu .secondaryNav .logoutBtn {
+    height: 61px;
+    width: 100%;
+}
+
+.apiaryMenu .secondaryNav .switcherToggle {
+    line-height: 44px;
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    padding: 19px 25px 17px;
+    cursor: pointer;
+    background-color: rgba(232,235,242,0.001);
+    -webkit-transition-property: all;
+    -moz-transition-property: all;
+    -o-transition-property: all;
+    -ms-transition-property: all;
+    transition-property: all;
+    -webkit-transition-duration: .1s;
+    -moz-transition-duration: .1s;
+    -o-transition-duration: .1s;
+    -ms-transition-duration: .1s;
+    transition-duration: .1s;
+    -webkit-transition-timing-function: ease-in-out;
+    -moz-transition-timing-function: ease-in-out;
+    -o-transition-timing-function: ease-in-out;
+    -ms-transition-timing-function: ease-in-out;
+    transition-timing-function: ease-in-out;
+    -webkit-transition-delay: 0;
+    -moz-transition-delay: 0;
+    -o-transition-delay: 0;
+    -ms-transition-delay: 0;
+    transition-delay: 0;
+}
+
+.apiaryMenu .secondaryNav.dualLine {
+    -webkit-box-flex: 1;
+    -moz-box-flex: 1;
+    -o-box-flex: 1;
+    box-flex: 1;
+    -webkit-flex: 0 0 auto;
+    -ms-flex: 0 0 auto;
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+.apiaryMenu .secondaryNav.dualLine .switcherToggle {
+    text-align: right;
+    cursor: default;
+    line-height: 20px;
+    padding: 20px 25px 0;
+}
+
+.apiaryMenu .secondaryNav .headSignInLinks,.apiaryMenu .secondaryNav .poweredByApiary {
+    color: #777;
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.apiaryMenu .secondaryNav .poweredByApiary {
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.apiaryMenu .secondaryNav .headSignInLinks a,.apiaryMenu .secondaryNav .poweredByApiary a {
+    color: #959cad;
+}
+
+.apiaryMenu .secondaryNav .headSignInLinks a:hover,.apiaryMenu .secondaryNav .poweredByApiary a:hover {
+    color: #959cad;
+}
+
+.apiaryMenu .secondaryNav .gravatar {
+    display: inline-block;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    vertical-align: middle;
+    margin: 0 0 0 10px;
+    overflow: hidden;
+}
+
+.apiaryMenu .secondaryNav .gravatar img {
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    background-color: transparent;
+    display: block;
+}
+
+.apiaryMenu .secondaryNav .smallGravatar {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    margin-top: -15px;
+}
+
+.apiaryMenu .secondaryNav .smallGravatar,.apiaryMenu .secondaryNav .smallGravatar img {
+    width: 30px;
+    height: 30px;
+    border: 0;
+    display: block;
+    -webkit-border-radius: 15px;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.headSignInLink,.headSignUpLink,.headSignUpLink em {
+    font-style: normal;
+    display: inline-block;
+    padding: 0 10px;
+}
+
+.withRibbon .secondaryNav .switcherToggle {
+    padding-right: 90px;
+}
+
+#container {
+    padding-top: 81px;
+}
+
+#container #rightColumn {
+    display: block;
+    position: fixed;
+    top: 81px;
+    bottom: 0;
+    right: 20px;
+    width: 250px;
+    padding-top: 17px;
+    -webkit-transform: translate3d(0,0,0);
+    -moz-transform: translate3d(0,0,0);
+    -o-transform: translate3d(0,0,0);
+    -ms-transform: translate3d(0,0,0);
+    transform: translate3d(0,0,0);
+    overflow-y: auto;
+}
+
+#container #rightColumn p.title {
+    padding: 10px 0 5px;
+    margin: 0;
+}
+
+#container #thead {
+    top: 143px;
+}
+
+#container #toolbar {
+    height: 58px;
+}
+
+#container #workarea {
+    background-color: #fff;
+    padding-top: 26px;
+}
+
+#container .downloadedFrom {
+    position: absolute;
+    top: 37px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 13px;
+}
+
+#container #codeWrapper {
+    top: 166px;
+}
+
+#container #documentationContainer {
+    padding: 20px 0 15px;
+}
+
+#container #leftColumn {
+    margin-left: 20px;
+}
+
+#container #rightColumn {
+    right: 30px;
+    width: 245px;
+}
+
+#container #traffic,#container #trafficInspector {
+    position: absolute;
+    top: 81px;
+}
+
+#container #traffic #upperBar,#container #trafficInspector #upperBar {
+    position: fixed;
+    height: 60px;
+    width: 100%;
+    top: 81px;
+    padding-top: 10px;
+}
+
+#container #traffic #upperBar .switchTool,#container #trafficInspector #upperBar .switchTool {
+    top: 15px;
+    line-height: 32px;
+}
+
+#container #traffic #stream,#container #trafficInspector #stream {
+    top: 62px;
+}
+
+.themeDark .vContrastState:after {
+    -webkit-transform: translateY(0);
+    -moz-transform: translateY(0);
+    -o-transform: translateY(0);
+    -ms-transform: translateY(0);
+}
+
+.themeDark .tipsy-inner {
+    background-color: #656d7e;
+    color: #fff;
+}
+
+.themeDark .tipsy-arrow-n {
+    border-bottom-color: #656d7e;
+}
+
+.themeDark .tipsy-arrow-s {
+    border-top-color: #656d7e;
+}
+
+.themeDark .tipsy-arrow-e {
+    border-left-color: #656d7e;
+}
+
+.themeDark .tipsy-arrow-w {
+    border-right-color: #656d7e;
+}
+
+.themeDark header.fullSize {
+    background: rgba(76,82,100,0.001);
+}
+
+.themeDark .shadowRight:before {
+    background-color: rgba(193,198,209,0.1);
+}
+
+.themeDark .shadowLeft:before {
+    background-color: rgba(193,198,209,0.1);
+}
+
+.themeDark .apiaryMenu {
+    background: #4c5264;
+}
+
+.themeDark .apiaryMenu .createApi {
+    background-color: #49cc90;
+    color: #fff;
+}
+
+.themeDark .apiaryMenu .createApi:hover {
+    background-color: #37c383;
+    color: #fff;
+}
+
+.themeDark .apiaryMenu .switcherWrap.selected .apiSwitcher {
+    background-color: #575e70;
+}
+
+.themeDark .apiaryMenu .switcherWrap.selected .switcherToggle {
+    background-color: #575e70;
+}
+
+.themeDark .apiaryMenu .switcherWrap:hover .switcherToggle {
+    background-color: #575e70;
+}
+
+.themeDark .apiaryMenu .apiNameCell.switcherWrap .apiSwitcher:hover {
+    background-color: #575e70;
+}
+
+.themeDark .apiaryMenu a.apiLines:hover {
+    background-color: #575e70;
+}
+
+.themeDark .apiaryMenu .switcherWrap.selected .switcherToggle {
+    color: #fff;
+}
+
+.themeDark .apiaryMenu .switcherWrap .switcherToggle:hover {
+    color: #fff;
+}
+
+.themeDark .apiaryMenu .isSelected {
+    background-color: #575e70;
+}
+
+.themeDark .apiaryMenu .isSelected .apiLines .apiName {
+    color: #fff;
+}
+
+.themeDark .apiaryMenu .apiName {
+    color: #fff;
+}
+
+.themeDark .apiaryMenu .apiOwner {
+    color: #959cad;
+}
+
+.themeDark .apiaryMenu .apiSwitcherLayer {
+    background-color: #4e5364;
+}
+
+.themeDark .apiaryMenu .apiSwitcherLayer .apiListItem {
+    border-top-color: rgba(193,198,209,0.1);
+}
+
+.themeDark .apiaryMenu .apiSwitcherLayer .apiListItem.isSelected {
+    border-bottom-color: rgba(193,198,209,0.1);
+}
+
+.themeDark .apiaryMenu .apiSwitcherLayer .usersApisListFilter {
+    background-color: #3a3f4f;
+    color: #8f8f8f;
+}
+
+.themeDark .apiaryMenu .apiMenuItem a {
+    color: #959cad;
+}
+
+.themeDark .apiaryMenu .apiMenuItem a.selected {
+    color: #fff;
+}
+
+.themeDark .menuTeamLink:hover * {
+    color: #7FDBFF !important;
+}
+.themeDark .apiaryMenu .apiMenuItem a:hover {
+color: #7FDBFF;
+}
+
+.themeDark .apiaryMenu .menuHelp.selected .switcherToggle {
+    background: none;
+}
+
+.themeDark .apiaryMenu .menuHelp:hover .switcherToggle {
+    background: none;
+}
+
+.themeDark .apiaryMenu .menuHelp .helpLinks {
+    color: #959cad;
+}
+
+.themeDark .apiaryMenu .menuHelp .helpPopup a {
+    color: #fff;
+}
+
+.themeDark .apiaryMenu .menuHelp .helpPopup .unreadCounter {
+    background-color: #4e5364;
+    color: #ddd;
+}
+
+.themeDark .apiaryMenu .menuHelp .helpPopup .unreadCounter:after {
+    border-bottom-color: #4e5364;
+}
+
+.themeDark .apiaryMenu .menuHelp.selected .helpPopup.switcherLayer {
+    -webkit-box-shadow: 0 0 1px 1px rgba(107,114,137,0.4);
+}
+
+.themeDark .apiaryMenu .menuHelp.selected .helpPopup.switcherLayer:after {
+    border-bottom-color: rgba(107,114,137,0.6);
+}
+
+.themeDark .apiaryMenu .menuHelp.selected .helpPopup.switcherLayer:before {
+    border-bottom-color: rgba(107,114,137,0.6);
+}
+
+.themeDark .apiaryMenu .menuHelp.selected .helpPopup.switcherLayer:after {
+    border-bottom-color: #575e70;
+}
+
+.themeDark .apiaryMenu .menuHelp.selected .helpPopup.switcherLayer a {
+    background-color: #575e70;
+}
+
+.themeDark .apiaryMenu .menuHelp.selected .helpPopup.switcherLayer a.hideableHelpLink {
+    background-color: #575e70;
+}
+
+.themeDark .apiaryMenu .menuHelp.selected .helpPopup.switcherLayer a:hover {
+    color: #fff;
+    background-color: #676d81;
+}
+
+.themeDark .apiaryMenu .menuHelp.selected .helpPopup.switcherLayer a.hideableHelpLink:hover {
+    color: #fff;
+    background-color: #676d81;
+}
+
+.themeDark .apiaryMenu .menuHelp.selected .helpPopup.switcherLayer a {
+    border-top-color: rgba(193,198,209,0.1);
+}
+
+.themeDark .apiaryMenu .menuHelp.selected .helpPopup.switcherLayer a.hideableHelpLink {
+    border-top-color: rgba(193,198,209,0.1);
+}
+
+.themeDark .apiaryMenu .secondaryNav {
+    color: #ddd;
+}
+
+.themeDark .apiaryMenu .secondaryNav .secondaryNavLayer {
+    background-color: #575e70;
+}
+
+.themeDark .apiaryMenu .secondaryNav .secondaryNavItem {
+    border-top-color: #676d81;
+}
+
+.themeDark .apiaryMenu .secondaryNav .secondaryNavItem a {
+    color: #fff;
+}
+
+.themeDark .apiaryMenu .secondaryNav .secondaryNavItem .logoutBtn {
+    color: #fff;
+}
+
+.themeDark .apiaryMenu .secondaryNav .secondaryNavItem a .vIco {
+    color: #fff;
+}
+
+.themeDark .apiaryMenu .secondaryNav .secondaryNavItem .logoutBtn .vIco {
+    color: #fff;
+}
+
+.themeDark .apiaryMenu .secondaryNav .secondaryNavItem a i[class^='icon-'] {
+    color: #fff;
+}
+
+.themeDark .apiaryMenu .secondaryNav .secondaryNavItem .logoutBtn i[class^='icon-'] {
+    color: #fff;
+}
+
+.themeDark .apiaryMenu .secondaryNav .secondaryNavItem a:hover {
+    color: #fff;
+    background-color: #676d81;
+}
+
+.themeDark .apiaryMenu .secondaryNav .secondaryNavItem .logoutBtn:hover {
+    color: #fff;
+    background-color: #676d81;
+}
+
+.themeDark .apiaryMenu .secondaryNav .logoutForm {
+    border-top-color: rgba(193,198,209,0.1);
+    background-color: #575e70;
+}
+
+.themeDark .apiaryMenu .secondaryNav .logoutBtn {
+    background-color: #575e70;
+}
+
+.themeDark .apiaryMenu .secondaryNav .switcherToggle {
+    background-color: rgba(87,94,112,0.001);
+}
+
+.themeDark .apiaryMenu .secondaryNav .headSignInLinks {
+    color: #aaa;
+}
+
+.themeDark .apiaryMenu .secondaryNav .poweredByApiary {
+    color: #aaa;
+}
+
+.themeDark .apiaryMenu .secondaryNav .poweredByApiary {
+    color: #fff;
+}
+
+.themeDark .apiaryMenu .secondaryNav .headSignInLinks a {
+    color: #6c9cff;
+}
+
+.themeDark .apiaryMenu .secondaryNav .poweredByApiary a {
+    color: #6c9cff;
+}
+
+.themeDark .apiaryMenu .secondaryNav .headSignInLinks a:hover {
+    color: #4482ff;
+}
+
+.themeDark .apiaryMenu .secondaryNav .poweredByApiary a:hover {
+    color: #4482ff;
+}

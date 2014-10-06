@@ -1,0 +1,11 @@
+@(mailToken: String, host: String)
+@import securesocial.core.IdentityProvider
+<html>
+  <body>
+    <p>Hello, Someone added you as actor</p>
+
+    <p>Please follow this
+      <a href="http://@host/auth/signup/@mailToken">link</a> to complete your registration.
+    </p>
+  </body>
+</html>

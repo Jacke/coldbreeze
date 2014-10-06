@@ -1,16 +1,32 @@
 package models.DAO
-/*
+
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 
 import slick.driver.PostgresDriver
 import com.github.tminglei.slickpg._
-import com.github.tminglei.slickpg.PgArraySupport
-import com.github.tminglei.slickpg.PgDateSupport
-import com.github.tminglei.slickpg.utils.PgCommonJdbcTypes
-import com.github.tminglei.slickpg.array.PgArrayJavaTypes
+
 import scala.slick.jdbc.{StaticQuery => Q}
 
+import scala.slick.driver.PostgresDriver.simple._
+
+import scala.slick.model.ForeignKeyAction
+import models.DAO.resources.BusinessDTO._
+import models.DAO.conversion.DatabaseCred
+
+object CVDAO {
+  import scala.util.Try
+  import scala.slick.driver.PostgresDriver.simple._
+  import DatabaseCred.database
+def createShit: Unit = {
+    database withSession { implicit session: Session =>
+      (Q[Int] + "create type compositevalues as (a_string text, b_string text, a_int int8, b_int int8, a_bool boolean, b_bool boolean)").first
+      //new MyPostgresDriver1.TableDDLBuilder(CompositeTests.baseTableRow).buildDDL create
+    }
+  }
+}
+
+/*
 trait MyPostgresDriver extends PostgresDriver
 with PgArraySupport
  {

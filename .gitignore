@@ -13,6 +13,8 @@ project/target
 
 *.class
 *.log
+*.crt
+*.keystore
 
 # sbt specific
 .cache/

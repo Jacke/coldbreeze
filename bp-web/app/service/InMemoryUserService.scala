@@ -182,6 +182,23 @@ class InMemoryUserService extends UserService[DemoUser] {
 }
 
 // a simple User class that can have multiple identities
-case class DemoUser(main: BasicProfile, identities: List[BasicProfile])
+case class DemoUser(main: BasicProfile, identities: List[BasicProfile], var permissions: Option[Tuple2[Boolean, Boolean]] = None) {
+  permissions = AccountsDAO.getRole(main.userId)
+  def renewPermissions() = {
+      permissions = AccountsDAO.getRole(main.userId)
+  }
+  def isManager:Boolean = {
+    if (permissions.isDefined)
+      permissions.get._1
+    else
+      false
+  }
+  def isEmployee:Boolean = {
+    if (permissions.isDefined)
+      permissions.get._2
+    else
+      false
+  }
+}
 
 

@@ -9,17 +9,14 @@
         <input type="text" id="inputTitle" ng-model="bprocess.title" placeholder="Title" required/>
       </div>
     </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">Business ID:</label>
 
-      <div class="controls">
-        <input type="number" id="inputBusinessId" ng-model="bprocess.business" placeholder="Business ID" required/>
-      </div>
-    </div>
+
+        <input type="hidden" id="inputBusinessId" ng-init="bprocess.business=1" placeholder="Business ID" required/>
+
     <div class="control-group">
       <label class="control-label" for="inputBusinessId">Service:</label>
       <div class="controls">
-        <select ng-model="bprocess.service" ng-options="service.id as service.title for service in procServices" required></select><br>
+        <select ng-inig="bprocess.service=parseInt($routeParams.service)" ng-model="bprocess.service" ng-options="service.id as service.title for service in procServices" required></select><br>
       </div>
     </div>
     <div class="control-group">

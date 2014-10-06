@@ -1,4 +1,7 @@
-@(title: String, user: Option[securesocial.core.BasicProfile] = None)(content: Html)
+@import service.DemoUser
+
+@(title: String, user: DemoUser)(content: Html)
+
 <!doctype html>
 <head>
   <meta charset="utf-8">
@@ -10,38 +13,29 @@
 
   <meta http-equiv="X-UA-Compatible" content="chrome=1">
 
-  <link rel="stylesheet" href="https://apiary.a.ssl.fastly.net/assets/css/normalize-c1a6015040ef1201.css">
-  <link rel="stylesheet" href="https://apiary.a.ssl.fastly.net/assets/css/font-awesome-b2431b0e6805305e.css">
-  <link rel="stylesheet" href="https://apiary.a.ssl.fastly.net/assets/css/new-11d7b73a7b6d7f70.css">
-  <link rel="stylesheet" href="https://apiary.a.ssl.fastly.net/assets/css/head-foot-977ede17d28757e5.css" media="screen, presentation" />
-  <link rel="stylesheet" href="https://apiary.a.ssl.fastly.net/assets/css/multi-ab9a0afd6c12f594.css">
+  <link rel="stylesheet" href="/css/font-awesome.css">
+  <link rel="stylesheet" href="/css/new.css">
+  <link rel="stylesheet" href="/css/head-foot.css" media="screen, presentation" />
+  <link rel="stylesheet" href="/css/multi.css">
   <link rel="stylesheet" href="@routes.Assets.at("css/app.css")"/>
   <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("favicon.png")">
-  <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/bootstrap.min.css")"> 
-  <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/main.css")"> 
+  <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("css/bootstrap.css")">
+  <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.at("stylesheets/main1.css")">
   <script src="@routes.Assets.at("javascripts/jquery-1.9.0.min.js")" type="text/javascript"></script>
-  <script src="@routes.Assets.at("javascripts/signslide.js")" type="text/javscript"></script>
+  <script src="@routes.Assets.at("javascripts/header.js")" type="text/javascript"></script>
   <script src="/jsroutes.js"></script>
+  <script src="/bower_components/bootstrap/js/dropdown.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+  <link href="http://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
 
-<style>
-.apiaryMenu .apiaryLogo a {
-    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiID8+PCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj48c3ZnIHdpZHRoPSIxMzZwdCIgaGVpZ2h0PSI5MHB0IiB2aWV3Qm94PSIwIDAgMTM2IDkwIiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgaWQ9IiM3Nzc4N2NmZiI+PHBhdGggZmlsbD0iIzc3Nzg3YyIgb3BhY2l0eT0iMS4wMCIgZD0iIE0gMC4wMCAwLjAwIEwgMTM2LjAwIDAuMDAgTCAxMzYuMDAgOTAuMDAgTCAwLjAwIDkwLjAwIEwgMC4wMCAwLjAwIE0gMTguNzkgMzUuNzEgQyAxNy42NSA0OC40NCAxOC41OSA2MS40MCAxOC4zNSA3NC4yMiBDIDI3LjM2IDY4LjA1IDM1Ljc0IDYwLjk5IDQ0LjE1IDU0LjA1IEMgMzkuNTkgNDguNjAgMzQuMDAgNDQuMTYgMjkuMTYgMzguOTggQyA0Mi40NiA0OC41NCA1NC45MCA1OS4yNSA2OC4wNCA2OS4wMyBDIDgxLjIwIDU5LjMzIDkzLjU5IDQ4LjYyIDEwNi43OSAzOC45NyBDIDEwMi4yMiA0NC4zNSA5Ni41OSA0OC42OSA5MS44OSA1My45NiBDIDEwMC4zNyA2MC43OSAxMDguNzkgNjcuNzMgMTE3LjYzIDc0LjEwIEMgMTE3LjY5IDYxLjIxIDExNy44MSA0OC4zMSAxMTcuNTggMzUuNDIgQyAxMDkuMzIgMjkuMDQgMTAxLjI1IDIyLjQzIDkyLjk3IDE2LjA3IEMgODQuNDIgMjIuMjUgNzYuNjEgMjkuNDAgNjguMDAgMzUuNTAgQyA1OS4zOSAyOS40MCA1MS41OSAyMi4yNSA0My4wMiAxNi4wOCBDIDM0Ljk4IDIyLjY1IDI2LjI5IDI4LjU2IDE4Ljc5IDM1LjcxIFoiIC8+PC9nPjxnIGlkPSIjZmFmYWZhZmYiPjwvZz48L3N2Zz4=) no-repeat scroll 0px 0px / contain transparent;
-    margin-top: 16px;
-    margin-left: 5px;
-    width: 72px;
-    height: 48px;
-    color: white;
-    background-color: white;
-}
-</style>
 </head>
 
 <body class="themeDark website loginFlow">
 
   <div id="container">
-        
-        @header(user)  
-        
+
+        @header(user)
+
         @content
 
 

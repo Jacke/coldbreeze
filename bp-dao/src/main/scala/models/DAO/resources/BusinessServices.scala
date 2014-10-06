@@ -45,7 +45,7 @@ object BusinessServiceDAO {
 
   def get(k: Int) = database withSession {
     implicit session ⇒
-      val q3 = for { s ← business_services if s.id === k } yield s //<> (BusinessService.tupled, BusinessService.unapply _)
+      val q3 = for { s ← business_services if s.id === k } yield s 
       println(q3.selectStatement)
       println(q3.list)
       q3.list.headOption
@@ -53,7 +53,7 @@ object BusinessServiceDAO {
   def getBusiness(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← business_services
-                     b <- s.business if s.id === k } yield (s, b) //<> (BusinessService.tupled, BusinessService.unapply _)
+                     b <- s.business if s.id === k } yield (s, b) 
       println(q3.selectStatement)
       println(q3.list)
       q3.list.headOption
@@ -61,10 +61,16 @@ object BusinessServiceDAO {
   def getByBusiness(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← business_services
-                     b <- s.business if b.id === k } yield (s) //<> (BusinessService.tupled, BusinessService.unapply _)
+                     b <- s.business if b.id === k } yield (s) 
       println(q3.selectStatement)
       println(q3.list)
       q3.list.headOption
+  }
+
+  def getByMaster(email: String) = database withSession {
+    implicit session =>
+    val q3 = for { s ← business_services if s.master_acc === email } yield s 
+    q3.list.sortBy(_.id)
   }
   /**
    * Update a business service

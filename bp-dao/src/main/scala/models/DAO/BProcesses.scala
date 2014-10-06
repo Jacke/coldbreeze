@@ -52,6 +52,25 @@ object BPDAO {
       bprocesses returning bprocesses.map(_.id) += s
   }
 
+  def findOwnerByBP(BPid: Int) = database withSession {
+    implicit session =>
+      val q3 = for { bp ← bprocesses 
+                     srv <- models.DAO.resources.BusinessServiceDAO.business_services
+        if bp.id === BPid && srv.id === bp.service  } yield srv
+      q3.list.headOption.get.master_acc
+
+  }
+  def getByServices(services: List[Int]) = database withSession {
+    implicit session =>
+      val q3 = for { s ← bprocesses if s.service inSetBind services } yield s
+      q3.list
+  }
+  def checkTitle(title: String) = database withSession {
+    implicit service =>
+     val q3 = for { s ← bprocesses if s.title === title } yield s
+      q3.list.headOption
+  }
+
   def pull(id: Option[Int] = None, title: String, service: Int, business: Int) = Try(database withSession {
     implicit session ⇒
 

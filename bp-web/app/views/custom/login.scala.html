@@ -81,12 +81,7 @@ display: block;
  <h1 class="loginHeading">Sign In</h1>
 </div>
 
-@request.flash.get("success").map { msg =>
-<div class="messageBoxWrap">
-  <p class="message">
-  @msg </p>
-</div>
-}
+
 
 
     @defining( env.providers.values.filter( _.id != UsernamePassword) ) { externalProviders =>
@@ -104,9 +99,6 @@ display: block;
 
         @env.providers.get(UsernamePassword).map { up =>
             <div class="clearfix">
-                  <a class="signWithService signWithGh block" href="https://github.com/login/oauth/authorize?client_id=f739c33cbd5c32296a43&#38;redirect_uri=https%3A%2F%2F%2Fgithub%2Flogin" tabindex="8">Continue with GitHub</a>
-    <span class="visuallyhidden">or</span>
-    <a class="signWithService signWithTw block" href="https://login.majorityapp.com/twitter/send_to_login" tabindex="9">Continue with Twitter</a>
                 @if( externalProviders.size > 0 ) {
                     <!--<p>@Messages("securesocial.login.useEmailAndPassword")</p>-->
                       <p class="loginText loginTextAfterOr"></p>
@@ -228,7 +220,7 @@ $(function domReadyLoginFlow () {
     var name = $('.form-horizontal #username').val();
     var pswd = $('.form-horizontal #password').val();
     $('.messageBoxWrap').remove();
-    $.post(jsRoutes.controllers.Application.index().absoluteURL() + "auth/api/authenticate/userpass", { username: name , password: pswd })
+    $.post(jsRoutes.controllers.ProfileController.profile().absoluteURL() + "auth/api/authenticate/userpass", { username: name , password: pswd })
   .done(function( data ) {
   console.log(data.token);
   localStorage.setItem("token", data.token);

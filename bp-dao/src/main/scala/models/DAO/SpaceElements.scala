@@ -84,7 +84,8 @@ case class SpaceElementDTO(id: Option[Int],
         b_type,
         type_title,
         order,
-        None))
+        space_parent = process.spaces.find(_.id == Some(space_owned)),
+        space_role = Some("container")))
       case _ => None
     }
 
@@ -99,7 +100,7 @@ case class SpaceElementDTO(id: Option[Int],
         // TODO REFACTOR space_parent in brick
         Option(
           new ContainerBrick(id.get, title, desc,Implicits.fetch_cv(comps), process, b_type, type_title, order, 
-            None, space_role.get, space_own)
+            None, space_role.getOrElse("container"), space_own) // Default space role is Container
           //new Block(id.get,title,desc,Implicits.fetch_cv(comps),process,b_type,type_title,order, space_parent = Some(space), space_role)
         )
       }
@@ -125,7 +126,10 @@ case class SpaceElementDTO(id: Option[Int],
         b_type,
         type_title,
         order,
-        None))
+        space_parent = Some(space),
+        space_id = Some(space),
+        space_role = Some("container")
+        ))
       case _ => None
     }
 
@@ -161,6 +165,13 @@ object SpaceElemDAO {
       q3.list.headOption
     }
   }
+  def findByIds(ids: List[Int]) = {
+    database withSession { implicit session =>
+      val q3 = for { el ← space_elements if el.id inSetBind ids } yield el
+      q3.list
+               
+    }
+  }
   def findByBPanOrder(id: Int, order: Int) = {
     database withSession { implicit session =>
       val q3 = for { el ← space_elements if el.bprocess === id; if el.order === order } yield el
@@ -184,6 +195,11 @@ object SpaceElemDAO {
         case None => false
       }
     }
+  }
+  def getAll = database withSession {
+    implicit session ⇒ 
+      val q3 = for { s ← space_elements } yield s
+      q3.list.sortBy(_.id)
   }
   def delete(id: Int) = {
    database withSession { implicit session ⇒

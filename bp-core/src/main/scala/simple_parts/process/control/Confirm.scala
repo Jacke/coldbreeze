@@ -13,7 +13,8 @@ class Confirm(val id: Int,
             type_title: String = "confirm",
             var order: Int,
             val space_parent: Option[Space] = None,
-            val space_role: Option[String] = None
+            val space_role: Option[String] = None,
+            override val space_id: Option[Space] = None
              ) extends ProcElems {
 
 

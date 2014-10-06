@@ -1,10 +1,11 @@
-@(serviceForm: Form[models.DAO.resources.BusinessDTO])
+@import service.DemoUser
+@(serviceForm: Form[models.DAO.resources.BusinessDTO], user: DemoUser)
 
 @import helper._
 
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f)}
 
-@main("playing-kundera-cassandra") {
+@main("Add business", user) {
 <!-- Begin page content -->
 <div class="container">
 <div class="page-header">

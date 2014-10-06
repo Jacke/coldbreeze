@@ -46,6 +46,7 @@ class BPLoggers(tag: Tag) extends Table[BPLoggerDTO](tag, "bploggers") {
 
 def bpFK = foreignKey("bprocess_fk", bprocess, bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 def procelemFK = foreignKey("procelem_fk", element, proc_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
+def spaceelemFK = foreignKey("spaceelem_fk", space_elem, SpaceElemDAO.space_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
 def stationFK = foreignKey("b_fk", station, bpstations)(_.id, onDelete = ForeignKeyAction.Cascade)
 def spaceFK = foreignKey("sp_fk", space, models.DAO.BPSpaceDAO.bpspaces)(_.id, onDelete = ForeignKeyAction.Cascade)
 }
@@ -55,11 +56,11 @@ id: Option[Int],
 bprocess: Int,
 element: Option[Int],
 space_elem: Option[Int],
-order: Int,    
-space: Option[Int],    
-station: Int,  
-invoked: Boolean,  
-expanded: Boolean, 
+order: Int,
+space: Option[Int],
+station: Int,
+invoked: Boolean,
+expanded: Boolean,
 container: Boolean,
 date: org.joda.time.DateTime,
 comps: Option[List[CompositeValues]],
@@ -96,27 +97,35 @@ object BPLoggerDAO {
   def elemId(target: ProcElems, mean: String): Option[Int] = {
     if (mean == "space") {
       println("mean == space")
-      println("")      
+      println("")
       println(target.id)
       println(target.space_id)
       println("********")
-      println("")   
- 
-      target.space_id match {
-        case Some(space) => { 
+      println("")
+
+      /*target.space_id match {
+        case Some(space) => {
           space.id
         }
         case _ => None
-      }
-    }
+      }*/
+      target.space_id match {
+        case Some(space) => {
+          println(">>>>>>>>")
 
-    if (mean == "front") {
+          Some(target.id)
+        }
+        case None => None
+      }
+    } else if (mean == "front") {
 
       target.space_id match {
         case None => Some(target.id)
         case _    => None
       }
-    } else { None }
+    } else {
+      println("Nonezzzzz")
+      None }
   }
 
   /**
@@ -135,8 +144,8 @@ object BPLoggerDAO {
           BPLoggerDTO(
             None, // id
             bp_dto.id.get, // bprocess
-            elemId(lgr.element,"front"), // element
-            spElemId(lgr.element), // space_element
+            element = elemId(lgr.element,"front"), // element
+            space_elem = elemId(lgr.element, "space"), // space_element
             lgr.element.order, // order
             lgr.space,  // space
             station_id, // station
@@ -208,20 +217,20 @@ object BPLoggerDAO {
 
   def pull_object(s: List[BPLoggerDTO]) = database withSession {
     implicit session ⇒
-      s.foreach(log => 
+      s.foreach(log =>
       bploggers returning bploggers.map(_.id) += log //BPLoggerDTO.unapply(log).get
       )
   }
 
   def lastRunOfBP(id: Int):Option[org.joda.time.DateTime] = database withSession {
     implicit session ⇒
-    val q3 = (for { logger ← bploggers if logger.bprocess === id } yield logger).take(1) 
+    val q3 = (for { logger ← bploggers if logger.bprocess === id } yield logger).take(1)
     q3.firstOption.foreach {
       case a:BPLoggerDTO => return Some(a.date)
-      
+
     }
     return None
-    
+
      // BPLoggerDTO1.tupled(q3.firstOption) //<> (BPLoggerDTO1.tupled, BPLoggerDTO1.unapply _)
   }
 
@@ -260,7 +269,7 @@ object BPLoggerDAO {
   def findByBPId(id: Int) = {
     database withSession { implicit session =>
      val q3 = for { logger ← bploggers if logger.bprocess === id } yield logger// <> (BPLoggerDTO.tupled, BPLoggerDTO.unapply _)
-      q3.list 
+      q3.list
     }
   }
 
@@ -271,5 +280,3 @@ object BPLoggerDAO {
     }
   }
 }
-
-

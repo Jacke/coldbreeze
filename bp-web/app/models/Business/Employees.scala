@@ -33,16 +33,22 @@ object EmployeeDAO {
       
       employees returning employees.map(_.id) += s//(value = (None, s.uid))//(EmployeeDTO.unapply(s).get._2, EmployeeDTO.unapply(s).get._3)
   }
+def pull_object_for(s: EmployeeDTO, email: String) = database withSession {
+  implicit session ⇒
 
+    if (!getAllByMaster(email).map(_.uid).contains(s.uid)) {
 
+      employees returning employees.map(_.id) += s //(value = (None, s.uid))//(EmployeeDTO.unapply(s).get._2, EmployeeDTO.unapply(s).get._3)
+    }
+ }
   def get(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← employees if s.id === k } yield s// <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)
       q3.list.headOption 
   }
-  def getAllByMaster(mail: String) = database withSession {
+  def getAllByMaster(email: String) = database withSession {
     implicit session =>
-      val q3 = for { s <- employees if s.master_acc === mail } yield s
+      val q3 = for { s <- employees if s.master_acc === email } yield s
       q3.list
   }
   def getByUID(uid: String) = database withSession {
