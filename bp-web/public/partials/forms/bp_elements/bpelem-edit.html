@@ -1,4 +1,4 @@
-<form novalidate="novalidate" class="form-horizontal">
+<form novalidate="novalidate" class="form-horizontal form-edit-bpelem" ng-class="bpelem.type_title">
   <div class="control-group">
     <label class="control-label" for="inputTitle">Title:</label>
     <div class="controls">
@@ -8,12 +8,12 @@
   <div class="control-group">
     <label class="control-label" for="inputBusinessId">Description:</label>
     <div class="controls">
-      <input type="text" id="inputBusinessId" ng-model="bpelem.desc"/>
+      <textarea type="text" id="inputBusinessId" ng-model="bpelem.desc"/>
     </div>
   </div>
 
-      <input type="hidden" name="value" ng-model="bpelem.business" value="1">
-      <input type="hidden" name="value" ng-model="bpelem.bprocess" value="{{ BPid }}">
+      <input type="hidden" name="value" ng-model="bpelem.business" value="{{ business }}">
+      <input type="hidden" name="value" ng-model="bpelem.bprocess" value="{{ parseInt(BPid) }}">
       <input type="hidden" id="inputBusinessId" ng-model="bpelem.b_type"/>
       <input type="hidden" id="inputBusinessId" ng-model="bpelem.type_title"/>
       <input type="hidden" id="inputBusinessId" ng-model="bpelem.order"/>
@@ -35,11 +35,7 @@
 
   <div class="control-group">
     <div class="controls">
-      <!--
-      <a ng-click="templateElem('container', bpelem)" class="btn btn-small btn-primary">Container <span tooltip="Some container" tooltip-placement="bottom" class="glyphicon glyphicon-info-sign"></span></a>
-      <a ng-click="templateElem('confirm', bpelem)" class="btn btn-small btn-primary">Confirm <span tooltip="Some confirm" tooltip-placement="bottom" class="glyphicon glyphicon-info-sign"></span></a>
-      -->
-      <a ng-click="updateElem(bpelem)" class="btn btn-small btn-primary">Update</a>
+      <a ng-click="updateElem(bpelem)" loading class="btn btn-small btn-primary">Update</a>
       <a ng-click="deleteElem(bpelem)" class="btn btn-small btn-primary btn-danger">Delete</a>
 
     </div>

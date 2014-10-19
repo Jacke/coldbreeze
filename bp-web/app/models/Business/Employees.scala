@@ -1,5 +1,7 @@
 package models.DAO.resources
 
+import play.api.db.DB
+
 import scala.slick.driver.PostgresDriver.simple._
 import models.DAO.conversion.DatabaseCred
 
@@ -27,6 +29,7 @@ object EmployeeDAO {
   import DatabaseCred.database
 
  val employees = TableQuery[Employees]
+  //val db = DB.getDataSource()
 
  def pull_object(s: EmployeeDTO) = database withSession {
     implicit session ⇒

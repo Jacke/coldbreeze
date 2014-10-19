@@ -1,0 +1,96 @@
+<div class="tree-thumb process-tree" ui-tree="options" data-drag-enabled="false">
+  <ol ui-tree-nodes="" ng-model="bprocess.trees">
+
+    <li ng-repeat="trr in bprocess.trees | orderBy:'order'" ui-tree-node>
+        <div class="elem-card {{ trr.type_title }} {{ $parent.highlightActive(station, trr) }}">
+         {{trr.title}}
+        </div>
+      <ol ui-tree-nodes="" ng-model="trr.nodes">
+        <li ng-repeat="node in trr.nodes" ui-tree-node class="space-container">
+            Space: #{{node.index}}
+          <ol ui-tree-nodes="" ng-model="node.space_elem">
+            <li ng-repeat="spelem in node.space_elem | orderBy:'order'" ui-tree-node>
+              <div class="elem-card {{ spelem.type_title }} {{ $parent.highlightActive(station, spelem) }}">
+                 {{spelem.title}}
+               </div>
+                <ol ui-tree-nodes="" ng-model="spelem.nodes">
+                        <li ng-repeat="node1 in spelem.nodes" ui-tree-node class="space-container">
+                            Space: #{{node1.index}}
+                          <ol ui-tree-nodes="" ng-model="node1.space_elem">
+                            <li ng-repeat="spelem1 in node1.space_elem | orderBy:'order'" ui-tree-node>
+                              <div class="elem-card {{ spelem1.type_title }} {{ $parent.highlightActive(station, spelem1) }}">
+                                 {{spelem1.title}}
+                               <div>
+                                  <ol ui-tree-nodes="" ng-model="spelem1.nodes">
+                                          <li ng-repeat="node2 in spelem1.nodes" ui-tree-node class="space-container">
+                                              Space: #{{node2.index}}
+                                            <ol ui-tree-nodes="" ng-model="node2.space_elem">
+                                              <li ng-repeat="spelem2 in node2.space_elem | orderBy:'order'" ui-tree-node>
+                                                <div class="elem-card {{ spelem2.type_title }} {{ $parent.highlightActive(station, spelem2) }}">
+                                                   {{spelem2.title}}
+                                                 </div>
+                                                  <ol ui-tree-nodes="" ng-model="spelem2.nodes">
+                                                          <li ng-repeat="node3 in spelem2.nodes" ui-tree-node class="space-container">
+                                                              Space: #{{node3.index}}
+                                                            <ol ui-tree-nodes="" ng-model="node3.space_elem | orderBy:'order'">
+                                                              <li ng-repeat="spelem3 in node3.space_elem" ui-tree-node>
+                                                                <div class="elem-card {{ spelem3.type_title }} {{ $parent.highlightActive(station, spelem3) }}">
+                                                                   {{spelem3.title}}
+                                                               </div>
+                                                                <ol ui-tree-nodes="" ng-model="spelem3.nodes">
+                                                                      <li ng-repeat="node4 in spelem3.nodes" ui-tree-node class="space-container">
+                                                                          Space: #{{node4.index}}
+                                                                        <ol ui-tree-nodes="" ng-model="node4.space_elem | orderBy:'order'">
+                                                                          <li ng-repeat="spelem4 in node4.space_elem" ui-tree-node>
+                                                                            <div class="elem-card {{ spelem4.type_title }} {{ $parent.highlightActive(station, spelem4) }}">
+                                                                               {{spelem4.title}}
+                                                                             </div>
+                                                                                  <ol ui-tree-nodes="" ng-model="spelem4.nodes">
+                                                                                          <li ng-repeat="node5 in spelem4.nodes" ui-tree-node class="space-container">
+                                                                                              Space: #{{node5.index}}
+                                                                                            <ol ui-tree-nodes="" ng-model="node5.space_elem | orderBy:'order'">
+                                                                                              <li ng-repeat="spelem5 in node5.space_elem" ui-tree-node>
+                                                                                                <div class="elem-card {{ spelem5.type_title }} {{ $parent.highlightActive(station, spelem5) }}">
+                                                                                                   {{spelem5.title}}
+                                                                                               </div>
+                                                                                                <ol ui-tree-nodes="" ng-model="spelem5.nodes">
+                                                                                                        <li ng-repeat="node6 in spelem5.nodes" ui-tree-node class="space-container">
+                                                                                                            Space: #{{node6.index}}
+                                                                                                          <ol ui-tree-nodes="" ng-model="node6.space_elem | orderBy:'order'">
+                                                                                                            <li ng-repeat="spelem6 in node6.space_elem" ui-tree-node>
+                                                                                                              <div class="elem-card {{ spelem6.type_title }} {{ $parent.highlightActive(station, spelem6) }}">
+                                                                                                               {{spelem6.title}}
+                                                                                                             </div>
+                                                                                                            </li>
+                                                                                                          </ol>
+                                                                                                        </li>
+                                                                                                </ol>                                                                                                 
+                                                                                              </li>
+                                                                                            </ol>
+                                                                                          </li>
+                                                                                  </ol>
+                                                                          </li>
+                                                                        </ol>
+                                                                      </li>
+                                                                </ol>                                                                 
+                                                              </li>
+                                                            </ol>
+                                                          </li>
+                                                  </ol>
+
+                                              </li>
+                                            </ol>
+                                          </li>
+                                  </ol>
+                            </li>
+                          </ol>
+                        </li>
+                </ol>
+
+            </li>
+          </ol>
+        </li>
+      </ol>
+    </li>
+  </ol>
+</div>

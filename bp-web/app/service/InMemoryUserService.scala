@@ -17,6 +17,7 @@
 package service
 
 import play.api.Logger
+import play.api.i18n.Lang
 import securesocial.core._
 import securesocial.core.providers.{UsernamePasswordProvider, MailToken}
 import scala.concurrent.Future
@@ -182,10 +183,25 @@ class InMemoryUserService extends UserService[DemoUser] {
 }
 
 // a simple User class that can have multiple identities
-case class DemoUser(main: BasicProfile, identities: List[BasicProfile], var permissions: Option[Tuple2[Boolean, Boolean]] = None) {
-  permissions = AccountsDAO.getRole(main.userId)
+case class DemoUser(main: BasicProfile, identities: List[BasicProfile], var permissions: Option[Tuple3[Boolean, Boolean, String]] = None, var lang: Option[Lang] = None) {
+  permissions = AccountsDAO.getRolesAndLang(main.userId)
+
+
+  lang = Some(country(AccountsDAO.getRolesAndLang(main.userId).get._3))
+
+  def country(lang: String):Lang = {
+    lang match {
+      case "ru" => Lang("ru", "RU")
+      case "en" => Lang("en", "US")
+      case _ => Lang("en", "US")
+    }
+  }
+
+  def renewLang() = {
+      lang = Some(country(AccountsDAO.getRolesAndLang(main.userId).get._3))
+  }
   def renewPermissions() = {
-      permissions = AccountsDAO.getRole(main.userId)
+      permissions = AccountsDAO.getRolesAndLang(main.userId)
   }
   def isManager:Boolean = {
     if (permissions.isDefined)

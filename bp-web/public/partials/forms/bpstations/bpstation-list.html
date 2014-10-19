@@ -104,11 +104,12 @@ input.switch:active:checked::before, input.switch.touch:hover:checked::before {
 
 
 </style>
-<h1>Stations</h1>
+<div class="allStations">
+<h1>{{ 'STATIONS' | translate }}</h1>
 
 
 <div class="active-switcher">
-<input type="checkbox" class="switch" id="switch-1"/>
+<input type="checkbox" class="switch" id="switch-1" data-ng-model="onlyActive"/>
 </div>
 <script>
 document.addEventListener('touchmove', function(e){}, false);
@@ -122,7 +123,7 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 </script>
 
 
-<div class="stations" ng-repeat="station in bpstations"style="clear: both;">
+<div class="stations" ng-repeat="station in bpstations | filter:isOnlyActive" style="clear: both;">
 
               <span class="number {{ station.state }}">{{ $index + 1 }}</span>
 
@@ -138,45 +139,19 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 <div class="col-xs-3 state-box-container">
   <div class="station-markers">
   <ul class="station-states">
-                      <li class="state started {{ station.started }}"> Started </li>
-                      <li class="state finished {{ station.finished }}"> Finished </li>
-                      <li class="state paused {{ station.paused }}"> Paused </li>
+                      <li class="state started {{ station.started }}"> {{ 'STARTED' | translate }} </li>
+                      <li class="state finished {{ station.finished }}"> {{ 'PAUSED' | translate }} </li>
+                      <li class="state paused {{ station.paused }}"> {{ 'FINISHED' | translate }} </li>
   </ul>
   </div>
 
 </div>
 
 
-<!--
-<div class="col-xs-3">
-<p> station.step {{ station.step }} </p>
-<p> station.space {{ station.space }} </p>
-<p> station.container_step {{ station.container_step }} </p>
-<p> station.expand_step {{ station.expand_step }} </p>
-<p> station.spaces_ids {{ station.spaces_ids }} </p>
 </div>
-<div class="col-xs-3">
-<p> station.inspace {{ station.inspace }} </p>
-<p> station.incontainer {{ station.incontainer }} </p>
-<p> station.inexpands {{ station.inexpands }} </p>
-</div>-->
-</div>
-
-
-<!--
-<div class="active" ng-if="station.paused == true">
-<h3>Now active</h3>
-<pre>
-id:{{ elemsHash[logsByStation(station.id)[logsByStation(station.id).length-1].element].id  }} — {{ elemsHash[logsByStation(station.id)[logsByStation(station.id).length-1].element].title  }}
-id:{{ spaceElemHash[logsByStation(station.id)[logsByStation(station.id).length-1].space_elem].id  }} — {{ spaceElemHash[logsByStation(station.id)[logsByStation(station.id).length-1].space_elem].title  }}
-</pre>
-</div>
--->
-
-
 <div class="row">
 <div class="col-xs-5">
-<h3><a ng-click="expand = !expand">Logs</a></h3>
+<h3><a ng-click="expand = !expand">{{ 'LOGS' | translate }}</a></h3>
 
 <div class="slide" ng-show="expand">
 
@@ -185,21 +160,20 @@ id:{{ spaceElemHash[logsByStation(station.id)[logsByStation(station.id).length-1
                   <table class="table table-user-information">
                     <tbody>
                       <tr>
-                        <td> Element </td>
-                        <td> Element </td>
+                        <td> {{ 'ELEMENT' | translate }} </td>
 <!--<td> log.station </td>
 <td> log.invoked </td>
 <td> log.expanded </td>
 <td> log.container </td>
 -->
-<td> Date </td>
-<td> Step </td>
-<td> Constants </td>
+<td> {{ 'DATE' | translate }} </td>
+<td> {{ 'STEP' | translate }} </td>
+<td> {{ 'CV' | translate }} </td>
 
                       </tr>
                       <tr>
-<td> {{ elemsHash[log.element].id }} {{ elemsHash[log.element].title }} — {{ elemsHash[log.element].type_title }}  </td>
-<td> {{ spaceElemHash[log.space_elem].id }} {{ spaceElemHash[log.space_elem].title }} — {{ spaceElemHash[log.element].type_title }}  </td>
+<td> {{ elemsHash[log.element].id }} {{ elemsHash[log.element].title }}  {{ elemsHash[log.element].type_title }}
+{{ spaceElemHash[log.space_elem].id }} {{ spaceElemHash[log.space_elem].title }} {{ spaceElemHash[log.element].type_title }}  </td>
 <!--<td> {{ log.station }} </td>
 <td> {{ log.invoked }} </td>
 <td> {{ log.expanded }} </td>
@@ -216,26 +190,25 @@ id:{{ spaceElemHash[logsByStation(station.id)[logsByStation(station.id).length-1
 </div>
 
 <div class="col-xs-5">
-<h3><a ng-click="expandil = !expandil">Input Logs</a></h3>
+<h3><a ng-click="expandil = !expandil">{{ 'ILOGS' | translate }}</a></h3>
 <div class="slide" ng-show="expandil">
           <div class="input-logs" ng-repeat="il in inputLoggers[station.id]">
-                  <h3>Input Logs</h3>
                   <table class="table table-user-information">
                     <tbody>
                       <tr>
-                        <td> Element </td>
-                        <td> Element </td>
-<td> User </td>
-<td> Action </td>
-<td> Arguments </td>
-<td> Date </td>
+                        <td> {{ 'ELEMENT' | translate }} </td>
+<td> {{ 'USER' | translate }} </td>
+<td> {{ 'ACTION' | translate }} </td>
+<td> {{ 'ARGUMENTS' | translate }} </td>
+<td> {{ 'DATE' | translate }} </td>
 
 
                       </tr>
                       <tr>
-<td> {{ elemsHash[il.front_elem_id].id }} {{ elemsHash[il.front_elem_id].title }} — {{ elemsHash[il.front_elem_id].type_title }}  </td>
-<td> {{ spaceElemHash[il.space_elem_id].id }} {{ spaceElemHash[il.space_elem_id].title }} — {{ spaceElemHash[il.space_elem_id].type_title }}  </td>
-<td> {{ il.uid }} </td>
+<td> {{ elemsHash[il.front_elem_id].id }} {{ elemsHash[il.front_elem_id].title }} {{ elemsHash[il.front_elem_id].type_title }} 
+     {{ spaceElemHash[il.space_elem_id].id }} {{ spaceElemHash[il.space_elem_id].title }} {{ spaceElemHash[il.space_elem_id].type_title }}
+  </td>
+<td> <a href="employees/">{{ il.uid }}</a></td>
 <td> {{ il.action }} </td>
 <td> <pre>{{ il.arguments | json }}</pre> </td>
 <td> {{ il.date | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }} </td>
@@ -250,7 +223,7 @@ id:{{ spaceElemHash[logsByStation(station.id)[logsByStation(station.id).length-1
 </div>
 
           <div ng-if="station.paused == true && station.finished == false">
-          <a ng-click="haltStation(station.id)" class="btn btn-danger btn-big">Turn down</a>
+          <a ng-click="haltStation(station.id)" class="btn btn-danger btn-big">{{ 'TURN_DOWN' | translate }}</a>
           </div>
 
            <hr>
@@ -282,4 +255,5 @@ id:{{ spaceElemHash[logsByStation(station.id)[logsByStation(station.id).length-1
   </form>
 </div>
 -->
+</div>
 </div>

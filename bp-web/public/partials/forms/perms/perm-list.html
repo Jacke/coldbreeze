@@ -1,5 +1,5 @@
 <div class="container">
-<h3 class="primary">Permissions:</h3>
+<h3 class="primary">{{ 'PERMISSIONS' | translate }}:</h3>
 <div ng-include src="'partials/tree.html'"></div>
 
 
@@ -28,23 +28,23 @@
               <div ng-repeat="bpelem in bpelems | filter:filterPerms" class="controls inputRequests">
                    <div class="request">
                     <p>{{bpelem.title}}</p>
-                     <select ng-model="bpelem.perm.uid" class="forUID" ng-options="employee.uid as employee.uid for employee in employees" required></select><br>
-                     <a ng-click="createPerm(bpelem.perm, bpelem, 'front')" class="btn btn-big btn-success">Add</a>
+                     <select ng-model="bpelem.perm.uid" class="forUID" ng-options="employee.uid as credFetch(employee.uid) for employee in employees" required></select><br>
+                     <a ng-click="createPerm(bpelem.perm, bpelem, 'front')" class="btn btn-big btn-success">{{ 'ADD' | translate }}</a>
               <div class="perms" ng-repeat="perm in perms | filter:byObjId(bpelem)">
-                <pre>{{ perm.uid }} {{ bpelem.id }}</pre>
-                <a ng-click="delPerm(perm)" class="btn btn-danger btn-big">Delete</a>
+                <pre>{{ credFetch(perm.uid)  }} {{ bpelem.title }}</pre>
+                <a ng-click="delPerm(perm)" class="btn btn-danger btn-big">{{ 'DELETE' | translate }}</a>
               </div>
                 </div>
               <div ng-repeat="spaceelem in spaceelems | filter:filterPerms" class="controls inputRequests">
                    <div class="request">
                     <p>{{spaceelem.title}}</p>
-                     <select ng-model="spaceelem.perm.uid" class="forUID" ng-options="employee.uid as employee.uid for employee in employees" required></select><br>
+                     <select ng-model="spaceelem.perm.uid" class="forUID" ng-options="employee.uid as credFetch(employee.uid) for employee in employees" required></select><br>
 
-                     <a ng-click="createPerm(spaceelem.perm, spaceelem, 'space')" class="btn btn-big btn-success">Add</a>
+                     <a ng-click="createPerm(spaceelem.perm, spaceelem, 'space')" class="btn btn-big btn-success">{{ 'ADD' | translate }}</a>
                 </div>
                 <div class="perms" ng-repeat="perm in perms | filter:byObjId(spaceelem)">
-                <pre>{{ perm.uid }} {{ spaceelem.id }}</pre>
-                <a ng-click="delPerm(perm)" class="btn btn-danger btn-big">Delete</a>
+                <pre>{{ credFetch(perm.uid) }} {{ spaceelem.title }}</pre>
+                <a ng-click="delPerm(perm)" class="btn btn-danger btn-big">{{ 'DELETE' | translate }}</a>
                 </div>
               </div>
               </div>

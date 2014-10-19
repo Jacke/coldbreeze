@@ -1,6 +1,128 @@
 
 'use strict';
 
+
+var translationsEN = {
+  PERMISSIONS: 'Permissions',
+  DELETE: 'Delete',
+  ADD: 'Add',
+  PEOPLE: 'People',
+  SHARE: 'Share',
+  STATIONS: 'Stations',
+  ALL_SERVICES: 'All services',
+  SERVICE: 'Service',
+  NEW_PROCESS:'New process',
+  PROCESS:'Process',
+  TREE: 'Tree',
+  EDIT: 'Edit',
+  ADD_TO_SPACE: 'Add to space',
+  UPDATE: 'Update',
+  CREATE: 'Create',
+  CONTAINER: 'Container',
+  CONFIRM: 'Confirm',
+  CANCEL: 'Cancel',
+  TITLE: 'Title',
+  DESC: 'Description',
+  CONFDESC: 'Some confirm',
+  CONTDESC: 'Some container',
+  CONFDESCFULL: 'Conf description',
+  CONTDESCFULL: 'Container description',
+  RUNNED: 'Process arleady runned, if you edit that, all stations',
+  WILL_BE_SHUTDOWN:'will be shut down' ,
+  CREATE_OR_COPY: 'You can create',
+  CREATE_OR_COPY2: 'of that process and continue editing.',
+  COPY: 'copy',
+  SEARCH_PROC: 'Search processes',
+  CREATE_NEW_PROC: 'Create new Process',
+  AFTER_PAYING: 'This features avaliable only after paying',
+  OBSERVERS: 'OBSERVERS',
+  EMBEDING: 'EMBEDING',
+  OBSERV_DESC: 'Client access to your process stations',
+  EMB_DESC: 'Embed your processes to your website',
+  STARTED: 'Started',
+  FINISHED: 'Finished',
+  PAUSED: 'Paused',
+  LOGS: 'Logs',
+  ILOGS: 'Input Logs',
+  RUN: 'Launch',
+  RUN_SCRATCH: 'Run from scratch',
+  RUN_FROM_DESC: 'Arleady runned and paused',
+  TURN_DOWN: 'Turn down',
+  RUN_FROM: 'Run from',
+  RUN_FROM_ANOT: 'Run from specific active point',
+  // Tables
+  ELEMENT: 'Element',
+  DATE: 'Date',
+  STEP: 'Step',
+  CV: 'Values',
+  USER: 'User',
+  ACTION: 'Action',
+  ARGIMENTS: 'Arguments',
+  INVOKED: 'Invoked'
+};
+ 
+var translationsRU= {
+  PERMISSIONS: 'Права',
+  DELETE: 'Delete',
+  ADD: 'Add',
+  PEOPLE: 'People',
+  SHARE: 'Share',
+  STATIONS: 'Stations',
+  SERVICE: 'Service',
+  ALL_SERVICES: 'All services',
+  NEW_PROCESS:'New process',
+  PROCESS:'Process',
+  TREE: 'Tree',
+  EDIT: 'Edit',
+  ADD_TO_SPACE: 'Add to space',
+  UPDATE: 'Update',
+  CREATE: 'Create',
+  CONTAINER: 'Container',
+  CONFIRM: 'Confirm',
+  CANCEL: 'Cancel',
+  TITLE: 'Title',
+  DESC: 'Description',
+  CONFDESC: 'Some confirm',
+  CONTDESC: 'Some container',
+  CONFDESCFULL: 'Conf description',
+  CONTDESCFULL: 'Container description',
+  RUNNED: 'Process arleady runned, if you edit that, all stations',
+  WILL_BE_SHUTDOWN:'will be shut down.' ,
+  CREATE_OR_COPY: 'You can create',
+  CREATE_OR_COPY2: 'of that process and continue editing.',
+  COPY: 'copy',
+  SEARCH_PROC: 'Search processes',
+  CREATE_NEW_PROC: '',
+  AFTER_PAYING: 'This features avaliable only after paying',
+  OBSERVERS: 'OBSERVERS',
+  EMBEDING: 'EMBEDING',
+  OBSERV_DESC: 'Client access to your process stations',
+  EMB_DESC: 'Embed your processes to your website',
+  STARTED: 'Started',
+  FINISHED: 'Finished',
+  PAUSED: 'Paused',
+  LOGS: 'Logs',
+  ILOGS: 'Input Logs',
+  RUN: 'Launch',
+  RUN_SCRATCH: 'Run from scratch',
+  RUN_FROM_DESC: 'Arleady runned and paused',
+  TURN_DOWN: 'Turn down',
+  RUN_FROM: 'Run from',
+  RUN_FROM_ANOT: 'Run from specific active point',
+  // Tables
+  ELEMENT: 'Element',
+  DATE: 'Date',
+  STEP: 'Step',
+  CV: 'Values',
+  USER: 'User',
+  ACTION: 'Action',
+  ARGIMENTS: 'Arguments',
+  INVOKED: 'Invoked'
+};
+
+
+
+
 var minorityApp =
   angular.module(
     'minorityApp',
@@ -22,7 +144,8 @@ var minorityApp =
       'ui.sortable',
       'ngDialog',
       'angularMoment',
-      'ui.tree'
+      'ui.tree',
+      'pascalprecht.translate'
     ]
   );
 minorityApp.filter('slice', function() {
@@ -30,6 +153,49 @@ minorityApp.filter('slice', function() {
     return arr.slice(arr.length-start, end);
   };
 });
+minorityApp.config(['$translateProvider', function ($translateProvider) {
+  // add translation tables
+  $translateProvider.translations('en', translationsEN);
+  $translateProvider.translations('ru', translationsRU);
+  //$translateProvider.useLocalStorage();
+  $translateProvider.preferredLanguage('en');
+  
+  $translateProvider.fallbackLanguage('en');
+}]);
+minorityApp.directive('loading', ['$http' , function ($http) {
+    return {
+        restrict: 'A',
+        link: function (scope, element, attrs) {
+            var oldNgClick = attrs.ngClick;
+            scope.isLoading = function () {
+                return $http.pendingRequests.length > 0;
+            };
+ 
+            scope.$watch(scope.isLoading, function (value) {
+                if (value) {
+                    element.attr("disabled", "disabled");
+                    $(element).click(function (event) {
+                        event.preventDefault();
+                    });
+ 
+                } else {
+ 
+                    if (oldNgClick) {
+                        attrs.$set('ngClick', oldNgClick);
+                        element.bind('click', function () {
+                            scope.$apply(attrs.ngClick);
+                        });
+                    } else {
+                        $(element).unbind('click');
+                    }
+                    element.removeAttr("disabled");
+ 
+                }
+            });
+        }
+    };
+ 
+}]);
 minorityApp.config(['$routeProvider','$httpProvider', function($routeProvider) {
 /*Credentials managment*/
      $routeProvider.when('/profile', {templateUrl: 'partials/forms/profile.html', controller: 'ProfileController'});
@@ -57,13 +223,6 @@ minorityApp.config(['$routeProvider','$httpProvider', function($routeProvider) {
 /*C*/$routeProvider.when('/bprocess/:BPid/perm/new', {templateUrl: 'partials/forms/perms/perm-new.html', controller: 'BPPermCreationCtrl'});
 /*R*/$routeProvider.when('/bprocess/:BPid/perm/:id/show', {templateUrl: 'partials/forms/perms/perm-detail.html', controller: 'BPPermDetailCtrl'});
 /*U*/$routeProvider.when('/bprocess/:BPid/perm/:id/edit', {templateUrl: 'partials/forms/perms/perm-edit.html', controller: 'BPPermDetailCtrl'});
-
-    // Loggers
-/*I*/$routeProvider.when('/bprocess/:BPid/logs', {templateUrl: 'partials/forms/bploggers/logger-list.html', controller: 'BPloggerListCtrl'});
-/*R*/$routeProvider.when('/bprocess/:BPid/log/:id/show', {templateUrl: 'partials/forms/bploggers/logger-detail.html', controller: 'BPloggerDetailCtrl'});
-/*C  $routeProvider.when('/bprocess/:BPid/log/new', {templateUrl: 'partials/bp_elements/bp-new.html', controller: 'BPCreationCtrl'}); */
-/*U$routeProvider.when('/bprocess/:BPid/log/:id/edit', {templateUrl: 'partials/bp_elements/bp-edit.html', controller: 'BProcessDetailCtrl'});*/
-
      // Inputs
 /*C*/$routeProvider.when('/bprocess/:BPid/input', {templateUrl: 'partials/forms/inputs/inputs.html', controller: 'BPRequestCtrl'});
 

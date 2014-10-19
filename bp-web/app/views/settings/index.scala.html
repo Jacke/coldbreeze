@@ -46,7 +46,7 @@
 }
 </style>
 
-<div class="teamApisListWrap"><div class="panelLike organisationsGridLike">
+<div class="teamApisListWrap settings-page"><div class="panelLike organisationsGridLike">
 
 <div class="teamSettings">
 <div class="grids">
@@ -61,7 +61,7 @@
         </div>
 
 
-<div class="container">
+<div class="container setting-container">
 
 
 @form(routes.SettingController.update_credentials()) {
@@ -71,7 +71,8 @@
 
 @inputText(serviceForm("firstName"), '_label -> "First name", 'class -> "form-control")
 @inputText(serviceForm("lastName"), '_label -> "Last name", 'class -> "form-control")
-@inputText(serviceForm("fullName"), '_label -> "Full name", 'class -> "form-control")
+@select(field = serviceForm("lang").copy(value=serviceForm("lang").value.map {x=>Some(x)}.getOrElse(Some("en"))), options = Seq("en"->"English", "de" -> "Deutch", "sp" -> "Spanish", "ch" -> "Chinese", "ru"->"Русский"), '_label -> "Language", 'class -> "form-control")
+
 
 
 </fieldset>
@@ -80,19 +81,29 @@
 <input type="submit" value="Update" class="btn btn-primary">
 </div>  
 }
-</div>
-
 @user.main.passwordInfo.map { info =>
         <p class="grids flatButtonLine">
           <a class="flatButton" href="@securesocial.controllers.routes.PasswordChange.page.absoluteURL(IdentityProvider.sslEnabled)">Change Password</a>
     </p>
     }
+</div>
+
 
 
 
 </div>
 
+<!--
+    <span>Link this account to
 
+    env.providers.values.map { provider =>
+        if( provider.authMethod == OAuth1 || provider.authMethod == OAuth2 ) {
+            defining( "images/providers/%s.png".format(provider.id) ) { imageUrl =>
+            <a href="env.routes.authenticationUrl(provider.id, Some("/link-result"))"> <img src="securesocial.controllers.routes.Assets.at(imageUrl)"/></a>
+            }
+        }
+    }
+    </span>-->
 
 
 

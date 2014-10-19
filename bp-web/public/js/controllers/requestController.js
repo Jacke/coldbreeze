@@ -126,20 +126,22 @@ $scope.builder = function (station) {
   }
   $scope.filterInputs = function(elem) {
     return (elem.type_title == "confirm");
-  }
-  $scope.highlightActive = function (station, elem_id) {
+  };
+
+  $scope.highlightActive = function (station, elem) {
      var front, nest;
      front = $scope.elemsHash[$scope.logsByStation(station.id)[$scope.logsByStation(station.id).length-1].element];  
      nest = $scope.spaceElemHash[$scope.logsByStation(station.id)[$scope.logsByStation(station.id).length-1].space_elem];  
-     if (front != undefined && front.id == elem_id) {
+     if (front != undefined && front.id == elem.id) {
        return "active";
      } 
-     if (nest != undefined && nest.id == elem_id) {
+     if (nest != undefined && nest.id == elem.id && elem.space_owned != undefined) {
       return "active";
      } else {
      return "passive"
      }
-  }
+  };
+
   $scope.haltStation = function (station_id) {
    $http({
       url: 'bprocess/' + $scope.bpId + '/station/' + station_id + '/halt',
@@ -155,7 +157,7 @@ $scope.builder = function (station) {
         // failed
       }
       );
-  }
+  };
   $scope.runInitially = function () {
 
       $http({

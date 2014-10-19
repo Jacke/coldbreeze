@@ -16,6 +16,7 @@ import main.scala.resources.scopes._
 
 import main.scala.bprocesses.links._
 import main.scala.utils.Space
+import main.scala.utils.InputParamProc
 import models.DAO.conversion.Implicits.fetch_cv
 
 
@@ -105,12 +106,13 @@ object FixBug extends App {
     db_station.paused
   )
   println()
-  process.inputPmsApply(Map(33 -> "confirmed"))
-  process.inputPmsApply(Map(112 -> "confirmed"))
-  process.inputPmsApply(Map(113 -> "confirmed"))
+  //process.inputPmsApply(Map(33 -> "confirmed"))
+  //process.inputPmsApply(Map(112 -> "confirmed"))
+  //process.inputPmsApply(Map(113 -> "confirmed"))
 
 
-  service.RunnerWrapper.runFrom(5, 9, Map(33 -> "confirmed", 112 -> "confirmed", 113 -> "confirmed"))
+  // case class InputParamProc(felem: Option[Int], selem: Option[Int], param: String, args: List[String])
+  //service.RunnerWrapper.runFrom(5, 9, Map(33 -> "confirmed", 112 -> "confirmed", 113 -> "confirmed"))
   //InvokeTracer.run_proc(process)
   process
   println(process.station.finished)
@@ -270,7 +272,7 @@ object RunnerWrapper {
   *****************************************
   *****************************************
   ******************************************/
-  def runFrom(station_id:Int, bpID:Int, params: Map[Int, String]):Option[Int]  = {
+  def runFrom(station_id:Int, bpID:Int, params: List[InputParamProc]):Option[Int]  = {
 
     val process_dto = BPDAO.get(bpID).get
     val target = ProcElemDAO.findByBPId(bpID)
@@ -345,9 +347,9 @@ object RunnerWrapper {
     process.inputPmsApply(params)
     InvokeTracer.run_proc(process)
 
-     process
+    process
     val station_updated = BPStationDAO.from_origin_station(process.station, process_dto)
-    //BPStationDAO.update(station_id, station_updated)
+    BPStationDAO.update(station_id, station_updated)
 
 
     /* LOGS UPDATE */

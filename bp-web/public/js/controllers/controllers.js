@@ -107,12 +107,12 @@ minorityControllers.controller('ProfileController', ['$scope', '$http', '$window
     //$scope.retrive();
 }]);
 */
-minorityControllers.controller('UserInfoCtrl', function ($rootScope, $scope, $http, $window, $location) {
+minorityControllers.controller('UserInfoCtrl', function ($rootScope, $translate, $scope, $http, $window, $location) {
   $scope.isLogged = true;
   $scope.user = {};
 
   $scope.retrive = function(user) {
-        var token = $window.sessionStorage.getItem('token')
+        var token = $window.sessionStorage.getItem('token');
       if (token) {
         $http.defaults.headers.common['X-Auth-Token'] = token;
         $http.defaults.headers.common['Access_Name'] = 'user';
@@ -123,6 +123,12 @@ minorityControllers.controller('UserInfoCtrl', function ($rootScope, $scope, $ht
               console.log(profile);
               $rootScope.manager = profile.manager;
               $rootScope.employee = profile.employee;
+              $window.sessionStorage.setItem('business', profile.business);
+              if (!$window.sessionStorage.getItem('lang')) {
+                $window.sessionStorage.setItem('lang', profile.lang);
+
+              }
+              $translate.use(profile.lang);
               $rootScope.business = profile.business;
               $scope.user = profile;
               $scope.isLogged = true;

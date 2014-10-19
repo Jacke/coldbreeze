@@ -63,21 +63,20 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
     Ok(views.html.list())
   }
 
-case class WhoAmIdentify(email: String, business: Int = 0, manager: Boolean, employee: Boolean)
+case class WhoAmIdentify(email: String, business: Int = 0, manager: Boolean, employee: Boolean, lang: String = "en")
   implicit val WhoAmIdentifyReads = Json.reads[WhoAmIdentify]
   implicit val WhoAmIdentifyWrites = Json.format[WhoAmIdentify]
   def whoami = SecuredAction { implicit request =>
     val email = request.user.main.email.get
 
-    val (isManager, isEmployee):(Boolean, Boolean) = AccountsDAO.getRole(email).get
+    val (isManager, isEmployee, lang):(Boolean, Boolean, String) = AccountsDAO.getRolesAndLang(email).get
     val business_request:Option[Tuple2[Int, Int]] = models.DAO.resources.EmployeesBusinessDAO.getByUID(email) 
     val business = business_request match {
       case Some(biz) => biz._2
       case _ => 1
     }
 
-
-    Ok(Json.toJson(WhoAmIdentify(request.user.main.userId, business, isManager, isEmployee)))
+    Ok(Json.toJson(WhoAmIdentify(request.user.main.userId, business, isManager, isEmployee, lang)))
   }
 
   // a sample action using an authorization implementation

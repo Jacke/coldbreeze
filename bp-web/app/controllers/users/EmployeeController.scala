@@ -22,10 +22,12 @@ import service.DemoUser
 import securesocial.core._
 import models.DAO.resources.ClientBusinessDAO
 import models.DAO.resources.web._
-
+import models.AccountDAO
 /**
  * Created by Sobolev on 22.07.2014.
  */
+case class ActorCont(emps: List[EmployeeDTO], creds:List[AccountDAO])
+
 class EmployeeController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
   import play.api.Play.current
 
@@ -36,6 +38,11 @@ class EmployeeController(override implicit val env: RuntimeEnvironment[DemoUser]
   implicit val UIDSWrites = Json.format[UIDS]
   implicit val InputParamReads = Json.reads[EmployeeDTO]
   implicit val InputParamWrites = Json.format[EmployeeDTO]
+  implicit val AccountReads = Json.reads[AccountDAO]
+  implicit val AccountWrites = Json.format[AccountDAO]
+  implicit val ActorContReads = Json.reads[ActorCont]
+  implicit val ActorContWrites = Json.format[ActorCont]
+
    //val uidsForm = Form()
    // case class EmployeeDTO(var id: Option[Int], uid: String, acc:Int, position:Option[String], manager:Boolean = false)
    val employeeForm = Form(
@@ -61,8 +68,10 @@ class EmployeeController(override implicit val env: RuntimeEnvironment[DemoUser]
   }
   def actors() = SecuredAction { implicit request =>
      val user = request.user.main
-     val employees = EmployeeDAO.getAllByMaster(user.email.get)
-      Ok(Json.toJson(employees))
+     val employees:List[EmployeeDTO] = EmployeeDAO.getAllByMaster(user.email.get)
+     val creds:List[AccountDAO] =  models.AccountsDAO.findAllByEmails(employees.map(_.master_acc))
+
+      Ok(Json.toJson(ActorCont(employees, creds)))
   }
   def create() = SecuredAction { implicit request =>
         Ok(views.html.businesses.users.employee_form(employeeForm, request.user))

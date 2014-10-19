@@ -11,6 +11,7 @@
 @import helper._
 @import play.api.Play
 
+
 <header class="fullSize"><div class="apiaryMenu"><div class="wholeMenu menuRow">
 
   <div role="banner" class="apiaryLogo menuCell"><a class="absFg" title="Minority" href="http://minorityapp.com/"><span class="visuallyhidden">Minority</span></a></div>
@@ -34,31 +35,30 @@ text-decoration: none;
 }
 </style>
 
-
 <nav class="apiMenu menuCell menuTeam">
   <ul class="apiMenuList apiMenuTexts">
     <li class="apiMenuItem">
       <a id="teamMembersLink" class="vIcoIn menuTeamLink" href="@routes.ProfileController.profile()">
        <span class="uicon-svg542"></span>
-        Profile</a>
+        @Messages("nav.profile")(LangDet.getLang(user) )  </a>
 
     </li>
     <li class="apiMenuItem">
       <a id="teamApisLink" class="vIcoIn menuTeamLink" href="@routes.Application.app()">
         <span class="uicon-svg12"></span>
-        Processes    </a>
+        @Messages("nav.processes")(LangDet.getLang(user) )  </a>
     </li>
     @if(user.isManager) {
     <li class="apiMenuItem">
       <a id="teamMembersLink" class="vIcoIn menuTeamLink" href="@users.routes.EmployeeController.index()">
-        <span class="uicon-svg442"></span>
-        People      </a>
+        <span class="uicon-svg98"></span>
+        @Messages("nav.people")(LangDet.getLang(user) )  </a>
     </li>
     } 
     <li class="apiMenuItem">
       <a id="teamSettingsLink" class="vIcoIn menuTeamLink" href="@routes.SettingController.index()">
         <span class="uicon-svg2222"></span>
-        Settings</a>
+        @Messages("nav.settings")(LangDet.getLang(user) )  </a>
     </li>
   </ul>
 </nav>

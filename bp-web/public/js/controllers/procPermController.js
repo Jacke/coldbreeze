@@ -11,7 +11,10 @@ minorityControllers.controller('BPPermListCtrl', ['$scope', '$filter', 'Employee
   $scope.bpelems = BPElemsFactory.query({ BPid: $scope.BPid });
   $scope.spaces =  BPSpacesFactory.query({ BPid: $scope.BPid });
   $scope.spaceelems = BPSpaceElemsFactory.query({ BPid: $scope.BPid });
-  $scope.employees = EmployeesFactory.query();
+  EmployeesFactory.query().$promise.then( function(data) {
+    $scope.employees = data.emps;
+    $scope.creds = data.creds;
+  });
   /* callback for ng-click 'editUser': */
   $scope.bpelems.$promise.then(function(data) {
     $scope.spaces.$promise.then(function(data2) {
@@ -67,10 +70,19 @@ $scope.builder = function () {
       $scope.spaceElemHash = _.object(_.map($scope.spaceelems, function(x){return [x.id, x]}));
    });
   });
+  $scope.credFetch = function (email) {
+    var res = _.find($scope.creds, function(cr){ return cr.userId == email});
+    if (res != undefined) {
+      return email + " " + res.fullName;
+    } else if (res == undefined) {
+      return email + "  Anonymous";
+    }
+  };
 
 
   ProcPermissionsFactory.query({ BPid: $scope.BPid }).$promise.then(function(qu){
-      $scope.perms = qu.perms;
+      console.log(qu);
+      $scope.perms = qu.elemperms;
       $scope.accounts = qu.accounts;
       $scope.emps = qu.employees;
   });

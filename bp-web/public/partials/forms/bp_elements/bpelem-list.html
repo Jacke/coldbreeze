@@ -19,19 +19,20 @@
 </div>
 <div class="tab-content">
 
+<!--
 <div class="tab-pane active" id="edit" ng:show="legend == 1" ng:init="legend=0">
   <div ng-include src="'partials/legend.html'"></div>
 </div>
 
 </div>
-
+-->
 
 <div class="teamApisListWrap">
 <div ng:hide="tree == 1">
-  <a href="" role="tab" class="createApi ajaxLink cacheable"  data-toggle="tab" ng:click="tree=1"><span class="glyphicon glyphicon-plus"></span> Tree</a>
+  <a href="" role="tab" class="createApi ajaxLink cacheable"  data-toggle="tab" ng:click="tree=1"><span class="glyphicon glyphicon-plus"></span> {{ 'TREE' | translate }}</a>
 </div>
 <div ng:show="tree == 1">
-  <a href="" role="tab" class="createApi ajaxLink cacheable" data-toggle="tab" ng:click="tree=0"><span class="glyphicon glyphicon-plus"></span> Tree</a>
+  <a href="" role="tab" class="createApi ajaxLink cacheable" data-toggle="tab" ng:click="tree=0"><span class="glyphicon glyphicon-plus"></span> {{ 'TREE' | translate }}</a>
 
 </div>
 
@@ -42,12 +43,13 @@
 
 <!--      <a href="" role="tab" class="createApi change ajaxLink cacheable" data-toggle="tab" ng:click="viewstyle=1"><span class="glyphicon glyphicon-plus"></span> Scheme</a>
       <a href="" role="tab" class="createApi change ajaxLink cacheable" data-toggle="tab" ng:click="viewstyle=2"><span class="glyphicon glyphicon-plus"></span> Table</a> -->
+      <!--
       <div ng:hide="legend == 1">
         <a href="" role="tab" class="createApi change ajaxLink cacheable" data-toggle="tab" ng:click="legend=1"><span class="glyphicon glyphicon-plus"></span> Legend</a>
       </div>
       <div ng:show="legend == 1">
         <a href="" role="tab" class="createApi change ajaxLink cacheable" data-toggle="tab" ng:click="legend=0"><span class="glyphicon glyphicon-plus"></span> Legend</a>
-      </div>
+      </div>-->
  
 
 
@@ -57,17 +59,17 @@
 </div>
 
 <div class="active-station-alert alert alert-info" ng:show="hasActiveStation">
-            Process arleady runned, if you edit that, all stations <strong>will be shut down</strong>. 
-            You can create <a ng:click="copyProcess()">copy</a> of that process and continue editing.
+  {{ 'RUNNED' | translate }} <strong>{{ 'WILL_BE_SHUTDOWN' | translate }}</strong>
+{{ 'CREATE_OR_COPY' | translate }} <a ng:click="copyProcess()">{{ 'COPY' | translate }}</a> {{ 'CREATE_OR_COPY2' | translate }}
 </div>
 
-<div class="process-info">
+<div class="process-info header-frame">
 <h3>{{ bp.title }}</h3>
 <ul class="process-control">
- <li><a href="" role="tab" class="createApi change ajaxLink cacheable" data-toggle="tab" ng:click="editProcess()"> Edit </a></li>
- <li><a class="allStation" href="/a#/bprocess/{{ bp.id }}/stations">Stations</a></li>
- <li><a class="teamApiControlsLink ajaxLink teamApisLinkPeople" ng-click="perm()">People </a></li>
- <li><a class="teamApiControlsLink teamSettingsLink teamApisLinkSettings" ng-click="modalShare()">Share</a></li>
+ <li><a href="" role="tab" class="createApi change ajaxLink cacheable" data-toggle="tab" ng:click="editProcess()"> {{ 'EDIT' | translate }} </a></li>
+ <li><a class="allStation" href="/a#/bprocess/{{ bp.id }}/stations">{{ 'STATIONS' | translate }}</a></li>
+ <li><a class="teamApiControlsLink ajaxLink teamApisLinkPeople" ng-click="perm()">{{ 'PEOPLE' | translate }} </a></li>
+ <li><a class="teamApiControlsLink teamSettingsLink teamApisLinkSettings" ng-click="modalShare()">{{ 'SHARE' | translate }}</a></li>
 </ul>
 
 </div>
@@ -84,23 +86,33 @@
   </ul>
     <div class="tab-content">
 
+<div class="elem-desc" ng:show="newselected != 1 && bpelems.length < 1">
+<div class="confirm-desc">
+<h3>{{ 'CONFIRM' | translate }} </h3>
+<p>{{ 'CONFDESCFULL' | translate }} </p>
+</div>
+<div class="container-desc">
+<h3>{{ 'CONTAINER' | translate }} </h3>
+<p>{{ 'CONTDESCFULL' | translate }} </p>
+</div>
 
+</div>
 
 <div class="tab-pane active" id="edit" ng:show="newselected == 1">
- <form novalidate="novalidate" class="form-horizontal">
+ <form novalidate="novalidate" class="form-horizontal form-new-bpelem" ng-class="newBpelem.type_title">
     <div class="control-group">
-      <label class="control-label" for="inputTitle">Title:</label>
+      <label class="control-label" for="inputTitle">{{ 'TITLE' | translate }}:</label>
       <div class="controls">
         <input type="text" id="inputTitle" ng-model="newBpelem.title"/>
       </div>
     </div>
     <div class="control-group">
-      <label class="control-label" for="inputBusinessId">Description:</label>
+      <label class="control-label" for="inputBusinessId">{{ 'DESC' | translate }}:</label>
       <div class="controls">
         <textarea type="text" id="inputBusinessId" ng-model="newBpelem.desc"/>
       </div>
     </div>
-        <input type="hidden" name="value" ng-model="newBpelem.business" value="1">
+        <input type="hidden" name="value" ng-model="newBpelem.business" value="{{ business() }}">
         <input type="hidden" name="value" ng-model="newBpelem.bprocess" value="{{ BPid }}">
 
         <input type="hidden" id="inputBusinessId" ng-model="newBpelem.b_type"/>
@@ -129,11 +141,12 @@
 
     <div class="control-group">
       <div class="controls">
-         {{ newBpelem | json }}
-        <a ng-click="templateElem('container', newBpelem)" class="btn btn-small btn-primary">Container <span tooltip="Some container" tooltip-placement="bottom" class="glyphicon glyphicon-info-sign"></span></a>
-        <a ng-click="templateElem('confirm', newBpelem)" class="btn btn-small btn-primary">Confirm <span tooltip="Some confirm" tooltip-placement="bottom" class="glyphicon glyphicon-info-sign"></span></a>
-        <a ng-click="createNewElem()" class="btn btn-small btn-primary">Create</a>
-        <a ng:click="newselected=0" class="btn btn-small btn-primary">Cancel</a>
+        <div class="templateButton">
+          <a ng-click="templateElem('container', newBpelem)" class="btn btn-small btn-primary container_brick">{{ 'CONFIRM' | translate }} <span tooltip="{{ 'CONTDESC' | translate }}" tooltip-placement="bottom" class="glyphicon glyphicon-info-sign"></span></a>
+          <a ng-click="templateElem('confirm', newBpelem)" class="btn btn-small btn-primary confirm">{{ 'CONTAINER' | translate }} <span tooltip="{{ 'CONFDESC' | translate }}" tooltip-placement="bottom" class="glyphicon glyphicon-info-sign"></span></a>
+        </div>
+        <a ng-click="createNewElem()" loading class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</a>
+        <a ng:click="newselected=0" class="btn btn-small btn-primary">{{ 'CANCEL' | translate }}</a>
       </div>
     </div>
   </form>

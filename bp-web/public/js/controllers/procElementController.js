@@ -6,14 +6,19 @@
  * BP Elements
  */
 // INDEX
-minorityControllers.controller('BPelementListCtrl', ['$rootScope', '$scope', '$q', '$http', '$routeParams', 'toaster', 'BPStationsFactory', 'BProcessesFactory', 'ngDialog', 'BPElemsFactory','BPElemFactory', 'BPSpacesFactory', 'BPSpaceFactory', 'BPSpaceElemsFactory', 'BPSpaceElemFactory', '$location', '$route',
-  function ($rootScope, $scope, $q,$http, $routeParams, toaster, BPStationsFactory, BProcessesFactory, ngDialog, BPElemsFactory, BPElemFactory, BPSpacesFactory, BPSpaceFactory, BPSpaceElemsFactory, BPSpaceElemFactory, $location, $route) {
+minorityControllers.controller('BPelementListCtrl', ['$window','$filter', '$rootScope', '$scope', '$q', '$http', '$routeParams', 'toaster', 'BPStationsFactory', 'BProcessesFactory', 'ngDialog', 'BPElemsFactory','BPElemFactory', 'BPSpacesFactory', 'BPSpaceFactory', 'BPSpaceElemsFactory', 'BPSpaceElemFactory', '$location', '$route',
+  function ($window, $filter, $rootScope, $scope, $q,$http, $routeParams, toaster, BPStationsFactory, BProcessesFactory, ngDialog, BPElemsFactory, BPElemFactory, BPSpacesFactory, BPSpaceFactory, BPSpaceElemsFactory, BPSpaceElemFactory, $location, $route) {
   $scope.route = jsRoutes.controllers.BusinessProcessController;
+  $scope.businessSet = $rootScope.business;
 
+  $scope.business = function () {
+     return parseInt($window.sessionStorage.getItem('business'));
+      
+  }  
   $scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
   $scope.spaces =  BPSpacesFactory.query({ BPid: $route.current.params.BPid });
   $scope.spaces.$promise.then(function(sps) {
-    _.forEach(sps, function(sp){ sp.newSpaceelem = { desc:  "", bprocess: parseInt($route.current.params.BPid), business: $rootScope.business, space_role: "container",  comps: [ { "a_string" : null} ] }
+    _.forEach(sps, function(sp){ sp.newSpaceelem = { desc:  "", bprocess: parseInt($route.current.params.BPid), business: $scope.business(), space_role: "container",  comps: [ { "a_string" : null} ] }
 });
   });
   $scope.spaceelems = BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid });
@@ -28,8 +33,17 @@ minorityControllers.controller('BPelementListCtrl', ['$rootScope', '$scope', '$q
 
     });
   });
-
-
+  $scope.mySpaceElems = function(space_elems, space_id) {
+     var res = _.filter(space_elems, function(elem){ return elem.space_owned == space_id });
+     if (res == undefined) {
+      return [];
+     } else {
+      return res;
+     }
+  };
+  $scope.highlightActive = function() {
+    return false;
+  }
   $scope.copyProcess = function () {
     var data = {};
     $http.post($scope.route.copy($scope.bp.id, $scope.bp.title + " Copy").url, data).success(function(success) {
@@ -244,37 +258,37 @@ minorityControllers.controller('BPelementListCtrl', ['$rootScope', '$scope', '$q
    Elements template
   */
   $scope.newSpace = { bprocess: $route.current.params.BPid, nestingLevel: 1, container:false,subbrick:false }
-  $scope.newBpelem = { desc: "", bprocess: parseInt($route.current.params.BPid), business: $rootScope.business, comps: [ { "a_string" : null} ] }
-  //$scope.newSpaceelem = { desc:  "", bprocess: parseInt($route.current.params.BPid), business: $rootScope.business, space_role: "container",  comps: [ { "a_string" : null} ] }
+  $scope.newBpelem = { desc: "", bprocess: parseInt($route.current.params.BPid), business: $scope.business(), comps: [ { "a_string" : null} ] }
+  //$scope.newSpaceelem = { desc:  "", bprocess: parseInt($route.current.params.BPid), business: $scope.business, space_role: "container",  comps: [ { "a_string" : null} ] }
 
 
 
   $scope.templateElem = function (template_id, elem) {
     // Confirm
     if (template_id == "confirm") {
-      elem.b_type = "block"
-      elem.type_title = "confirm"
-      elem.comps = [ { "a_bool" : false, "b_bool": false} ];
+      $scope.newBpelem.b_type = "block";
+      $scope.newBpelem.type_title = "confirm";
+      $scope.newBpelem.comps = [ { "a_bool" : false, "b_bool": false} ];
     }
     // Container
     if (template_id == "container") {
-      elem.b_type = "brick"
-      elem.type_title = "container_brick"
-      elem.comps = [ { "a_bool" : false, "b_bool": false} ];
+      $scope.newBpelem.b_type = "brick";
+      $scope.newBpelem.type_title = "container_brick";
+      $scope.newBpelem.comps = [ { "a_bool" : false, "b_bool": false} ];
     }
     // ResAct
   };
-  $scope.templateSpaceelem = function (template_id) {
+  $scope.templateSpaceElem = function (template_id, elem) {
    // Confirm
     if (template_id == "confirm") {
-      elem.b_type = "block"
-      elem.type_title = "confirm"
+      elem.b_type = "block";
+      elem.type_title = "confirm";
       elem.comps = [ { "a_bool" : false, "b_bool": false} ];
     }
     // Container
     if (template_id == "container") {
-      elem.b_type = "brick"
-      elem.type_title = "container_brick"
+      elem.b_type = "brick";
+      elem.type_title = "container_brick";
       elem.comps = [ { "a_bool" : false, "b_bool": false} ];
     }
     // ResAct
@@ -396,7 +410,7 @@ minorityControllers.controller('BPelementListCtrl', ['$rootScope', '$scope', '$q
           BPSpacesFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(data) {
                 $scope.spaces = data;
             $scope.spaces.$promise.then(function(sps) {
-            _.forEach(sps, function(sp){ sp.newSpaceelem = { desc:  "", bprocess: parseInt($route.current.params.BPid), business: $rootScope.business, space_role: "container",  comps: [ { "a_string" : null} ] }
+            _.forEach(sps, function(sp){ sp.newSpaceelem = { desc:  "", bprocess: parseInt($route.current.params.BPid), business: $scope.business(), space_role: "container",  comps: [ { "a_string" : null} ] }
             });
             });
                 
@@ -412,7 +426,7 @@ minorityControllers.controller('BPelementListCtrl', ['$rootScope', '$scope', '$q
       };
 
       $scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
-      $scope.newBpelem = { desc: "", bprocess: parseInt($route.current.params.BPid), business: $rootScope.business }
+      $scope.newBpelem = { desc: "", bprocess: parseInt($route.current.params.BPid), business: $scope.business() };
       $scope.trees = undefined;
       $scope.newselected = 0;
       console.log("builder");
@@ -745,9 +759,9 @@ $scope.createSpaceElemFromSpace = function (obj) {
               obj.id = elem_data.success;
               BPSpaceElemFactory.update(obj).$promise.then(function(data) {
                 $scope.spaceelems =  BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid });
-                obj = { desc:  "", bprocess: parseInt($route.current.params.BPid), business: $rootScope.business,  comps: [ { "a_string" : null} ] };
+                obj = { desc:  "", bprocess: parseInt($route.current.params.BPid), business: $scope.business,  comps: [ { "a_string" : null} ] };
               });
-               _.forEach(data, function(sp){ sp.newSpaceelem = { desc:  "", bprocess: parseInt($route.current.params.BPid), business: $rootScope.business, space_owned: sp.id, space_role: "container",  comps: [ { "a_string" : null} ] }});
+               _.forEach(data, function(sp){ sp.newSpaceelem = { desc:  "", bprocess: parseInt($route.current.params.BPid), business: $scope.business(), space_owned: sp.id, space_role: "container",  comps: [ { "a_string" : null} ] }});
 
 
               $scope.spaces = data;
@@ -795,12 +809,12 @@ $scope.createSpaceElem = function (obj) {
                 obj_to_update.id = elem_data.success;
                 BPSpaceElemFactory.update(obj_to_update).$promise.then(function(data) {
                   $scope.spaceelems =  BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid });
-                  obj = { desc:  "", bprocess: parseInt($route.current.params.BPid), business: $rootScope.business, space_owned: old_sp,  comps: [ { "a_string" : null} ] };
+                  obj = { desc:  "", bprocess: parseInt($route.current.params.BPid), business: $scope.business, space_owned: old_sp,  comps: [ { "a_string" : null} ] };
                 });
 
 
 
-               _.forEach(data, function(sp){ sp.newSpaceelem = { desc:  "", bprocess: parseInt($route.current.params.BPid), business: $rootScope.business, space_owned: sp.id, space_role: "container",  comps: [ { "a_string" : null} ] }});
+               _.forEach(data, function(sp){ sp.newSpaceelem = { desc:  "", bprocess: parseInt($route.current.params.BPid), business: $scope.business(), space_owned: sp.id, space_role: "container",  comps: [ { "a_string" : null} ] }});
 
 
                 $scope.spaces = data;
@@ -817,7 +831,7 @@ $scope.createSpaceElem = function (obj) {
       };
         $scope.spaceelems =  BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid });
         $scope.spaces = BPSpacesFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(data) {
-                       _.forEach(data, function(sp){ sp.newSpaceelem = { desc:  "", bprocess: parseInt($route.current.params.BPid), business: $rootScope.business, space_owned: sp.id, space_role: "container",  comps: [ { "a_string" : null} ] }});
+                       _.forEach(data, function(sp){ sp.newSpaceelem = { desc:  "", bprocess: parseInt($route.current.params.BPid), business: $scope.business(), space_owned: sp.id, space_role: "container",  comps: [ { "a_string" : null} ] }});
         });
 
         

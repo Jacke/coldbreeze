@@ -83,6 +83,9 @@ class Accounts(tag: Tag) extends Table[AccountDAO](tag, "accounts") {
   def password = column[String]("password")
   def salt = column[Option[String]]("salt")
 
+
+  def lang = column[String]("lang")
+
   def * = (providerId,
            userId,
            firstName,
@@ -93,7 +96,8 @@ class Accounts(tag: Tag) extends Table[AccountDAO](tag, "accounts") {
            authMethod,
     token, secret,
     accessToken, tokenType, expiresIn, refreshToken,
-    hasher, password, salt) <> (AccountDAO.tupled, AccountDAO.unapply)
+    hasher, password, salt,
+    lang) <> (AccountDAO.tupled, AccountDAO.unapply)
 }
 
 case class AccountDAO(providerId: String,
@@ -108,7 +112,9 @@ case class AccountDAO(providerId: String,
 
 accessToken:Option[String], tokenType:Option[String], expiresIn:Option[Int], refreshToken:Option[String],
 
-hasher:String, password:String, salt:Option[String]
+hasher:String, password:String, salt:Option[String],
+
+lang: String = "en"
 
                        ) {
   import AccImplicits._
@@ -298,15 +304,24 @@ object AccountsDAO {
     }
   }
 
-  def getRole(email: String): Option[Tuple2[Boolean, Boolean]] ={
+  def getRolesAndLang(email: String): Option[Tuple3[Boolean, Boolean, String]] ={
     val manager = AccountPlanDAO.getByMasterAcc(email).isDefined
     val employee = models.DAO.resources.EmployeeDAO.getByUID(email) match {
       case Some(emp) => !emp.manager
       case _ => false
     }
-    Some((manager, employee))
+    val lang = getLang(email)
+    Some((manager, employee, lang))
   }
 
+  def getLang(email: String) = database withSession {
+    implicit session ⇒
+      val q3 = for { a ← accounts if a.userId === email } yield a
+      q3.list.headOption match {
+        case Some(account) => account.lang
+        case _ => "en"
+      }
+  }
   def findAllByEmails(emails: List[String]) = database withSession {
     implicit session ⇒
       val q3 = for { a ← accounts if a.userId inSetBind emails } yield a
@@ -333,13 +348,20 @@ import controllers.Credentials
       val result = q3.list.headOption
       result match {
         case Some(origin) => {
-         val toUpdate = origin.copy(firstName = cred.firstName, lastName = cred.lastName, fullName = cred.fullName)
+         val toUpdate = origin.copy(firstName = cred.firstName, lastName = cred.lastName, fullName = cred.fullName, lang = cred.lang)
            accounts.filter(_.email === email).update(toUpdate)
            true
         }
         case _ => false
       }
 
+  }
+  def fetchCredentials(email: String) = database withSession {
+    implicit session =>
+    findByEmailAndProvider(email, "userpass") match {
+      case Some(user) => Some(Credentials(user.firstName, user.lastName, user.fullName, getLang(user.email.get)))
+      case _ => None
+    }
   }
 
   def save(user: BasicProfile):DemoUser =  database withSession {

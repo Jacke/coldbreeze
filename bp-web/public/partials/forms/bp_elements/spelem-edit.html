@@ -1,14 +1,14 @@
-<form novalidate="novalidate" class="form-horizontal">
+<form novalidate="novalidate" class="form-horizontal form-edit-spaceelem" ng-class="spaceelem.type_title">
 <div class="control-group">
-  <label class="control-label" for="inputTitle">Title:</label>
+  <label class="control-label" for="inputTitle">{{ 'TITLE' | translate }}:</label>
   <div class="controls">
     <input type="text" id="inputTitle" ng-model="spaceelem.title"/>
   </div>
 </div>
 <div class="control-group">
-  <label class="control-label" for="inputBusinessId">Description:</label>
+  <label class="control-label" for="inputBusinessId">{{ 'DESC' | translate }}:</label>
   <div class="controls">
-    <input type="text" id="inputBusinessId" ng-model="spaceelem.desc"/>
+    <textarea type="text" id="inputBusinessId" ng-model="spaceelem.desc"/>
   </div>
 </div>
 
@@ -32,7 +32,7 @@
 
   </div>
 </div>-->
-    <input type="hidden" name="value" ng-model="spaceelem.business" value="1">
+    <input type="hidden" name="value" ng-model="spaceelem.business" value="{{ business }}">
     <input type="hidden" name="value" ng-model="spaceelem.bprocess" value="{{ BPid }}">
     <input type="hidden" id="inputBusinessId" ng-model="spaceelem.b_type"/>
     <input type="hidden" id="inputBusinessId" ng-model="spaceelem.type_title"/>
@@ -78,8 +78,8 @@
      <a ng-click="templateElem('container', spaceelem)" class="btn btn-small btn-primary">Container <span tooltip="Some container" tooltip-placement="bottom" class="glyphicon glyphicon-info-sign"></span></a>
     <a ng-click="templateElem('confirm', spaceelem)" class="btn btn-small btn-primary">Confirm <span tooltip="Some confirm" tooltip-placement="bottom" class="glyphicon glyphicon-info-sign"></span></a>
   -->
-    <a ng-click="updateSpaceElem(spaceelem)" class="btn btn-small btn-primary">Update</a>
-    <a ng-click="deleteSpaceElem(spaceelem)" class="btn btn-small btn-danger">Delete</a>
+    <a ng-click="updateSpaceElem(spaceelem)" loading class="btn btn-small btn-primary">{{ 'UPDATE' | translate }}</a>
+    <a ng-click="deleteSpaceElem(spaceelem)" class="btn btn-small btn-danger">{{ 'DELETE' | translate }}</a>
 
   </div>
 </div>

@@ -34,14 +34,14 @@ object EmployeesBusinessDAO {
 
 
   def getByBusiness(k: Int) = database withSession {
-    implicit session ⇒
+    implicit session =>
       val q3 = for { s ← employees_businesses if s.business_id === k } yield s 
       println(q3.selectStatement)
       println(q3.list)
       q3.list 
   }
   def getByUID(email: String):Option[Tuple2[Int, Int]] = database withSession {
-    implicit session ⇒
+    implicit session =>
       val emp = EmployeeDAO.getByUID(email) match {
         case Some(x) => x.id.get
         case _ => 0

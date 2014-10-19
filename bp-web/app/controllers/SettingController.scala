@@ -29,7 +29,16 @@ import models.DAO.resources._
 import models.DAO.CompositeValues
 import play.api.Play.current
 
-case class Credentials(firstName:  Option[String], lastName:  Option[String], fullName: Option[String])
+case class Credentials(firstName:  Option[String], lastName:  Option[String], fullName: Option[String], lang: String = "en") {
+  def getFullName: Option[String] = {
+    (firstName, lastName) match {
+      case (Some(first), Some(last)) => Some(first + " " + last)
+      case (None, Some(last)) => Some(last)
+      case (Some(first), None) => Some(first)
+      case (None, None) => Some("")  
+    }
+  }
+}
 
 class SettingController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
  
@@ -40,12 +49,15 @@ class SettingController(override implicit val env: RuntimeEnvironment[DemoUser])
   mapping(
     "firstName" -> optional(text),
     "lastName" -> optional(text),
-    "fullName" -> optional(text))(Credentials.apply)(Credentials.unapply)) 
+    "fullName" -> optional(text),
+    "lang" -> text)(Credentials.apply)(Credentials.unapply)) 
 
  def index() = SecuredAction { implicit request =>
- 	val plans = List()
  	
- 	Ok(views.html.settings.index(credForm, request.user))
+  val plans = List()
+ 	val cred = models.AccountsDAO.fetchCredentials(request.user.main.email.get)
+
+ 	Ok(views.html.settings.index(credForm.fill(cred.get), request.user))
  }
 
  def update_credentials() = SecuredAction { implicit request =>
@@ -53,7 +65,8 @@ class SettingController(override implicit val env: RuntimeEnvironment[DemoUser])
     credForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.settings.index(credForm.fill(cred), request.user)),
         entity => {
-          Home.flashing(AccountsDAO.updateCredentials(request.user.main.email.get, entity) match {
+          println(entity)
+          Home.flashing(AccountsDAO.updateCredentials(request.user.main.email.get, entity.copy(fullName = entity.getFullName, lang = entity.lang)) match {
             case false => "failure" -> s"Could not update entity ${entity}"
             case _ => "success" -> s"Entity ${entity} has been updated"
           })

@@ -66,36 +66,38 @@ $scope.builder = function (station) {
 
 
 
+$scope.stationsRefresh = function() {
+
+  BPStationsFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(data) {
+
+           $scope.bpstations = data;      
+           console.log("boom");
+      $scope.bpelems.$promise.then(function(data34) {
+      $scope.spaces.$promise.then(function(data2) {
+      $scope.spaceelems.$promise.then(function(data3) {
+      $scope.logs.$promise.then(function(loggg) {
+              _.forEach(data, function(station) { $scope.builder(station) });
+               console.log(data);  
+    });
+    });
+    });
+    });
+         // Highlight
 
 
-BPStationsFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(data) {
+    });
+};
 
-         $scope.bpstations = data;      
-         console.log("boom");
-    $scope.bpelems.$promise.then(function(data34) {
-    $scope.spaces.$promise.then(function(data2) {
-    $scope.spaceelems.$promise.then(function(data3) {
-    $scope.logs.$promise.then(function(loggg) {
-            _.forEach(data, function(station) { $scope.builder(station) });
-             console.log(data);  
-  });
-  });
-  });
-  });
-       // Highlight
+$scope.stationsRefresh();
 
-
-  });
-
-
-  $scope.highlightActive = function (station, elem_id) {
+  $scope.highlightActive = function (station, elem) {
      var front, nest;
      front = $scope.elemsHash[$scope.logsByStation(station.id)[$scope.logsByStation(station.id).length-1].element];  
      nest = $scope.spaceElemHash[$scope.logsByStation(station.id)[$scope.logsByStation(station.id).length-1].space_elem];  
-     if (front != undefined && front.id == elem_id) {
+     if (front != undefined && front.id == elem.id && station.finished == false) {
        return "active";
      } 
-     if (nest != undefined && nest.id == elem_id) {
+     if (nest != undefined && nest.id == elem.id && elem.space_owned != undefined && station.finished == false) {
       return "active";
      } else {
      return "passive"
@@ -122,7 +124,7 @@ BPStationsFactory.query({ BPid: $route.current.params.BPid }).$promise.then(func
       })
       .then(function(response) {
         // success
-        console.log(response);
+        $scope.stationsRefresh();
         //$scope.invoke_res = [response];
       },
       function(response) { // optional
@@ -139,6 +141,27 @@ BPStationsFactory.query({ BPid: $route.current.params.BPid }).$promise.then(func
              '';
          }
   }
+  $scope.onlyActive = false;
+
+
+  $scope.isOnlyActive = function(station) {
+    if ($scope.onlyActive) {
+      return station.paused == true && station.state != false; 
+    }
+    else {
+      return station;
+    }
+  }
+
+
+
+
+
+
+
+
+
+
 
   /*
   * Observers stuff

@@ -11,6 +11,7 @@ import main.scala.resources._
 import main.scala.simple_parts.process.resource.ResAct
 
 import scala.util.Try
+import main.scala.utils.InputParamProc
 
 class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: Option[Array[Group]] = None) extends BPLinkContainer[BPLink] 
    with OwnershipContainer
@@ -187,10 +188,42 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
    // DEPRECATED
   }
 
+  // case class InputParamProc(felem: Option[Int], selem: Option[Int], param: String, args: List[String])
+  def inputPmsApply(paramsList: List[InputParamProc]) {
+    paramsList.foreach { paramElem =>
+      (paramElem.felem, paramElem.selem) match {
+        case (Some(felem_id), None) => {
+          variety.find(_.id == felem_id) match {
+            case Some(elem) => Try(elem.calls(paramElem.param))
+            case _ => -1
+          }
+        }
+        case (None, Some(selem_id)) => {
+          spaces.collect { case space: Space => space.allElements }
+            .toList.asInstanceOf[List[ProcElems]].find(_.id == selem_id) match {
+              case Some(elem) => Try(elem.calls(paramElem.param))
+              case _ => -1
+            }
 
-  def inputPmsApply(params: Map[Int, String]) {
-    params.foreach {case (key, value) =>
-      allElements.find(elem => elem.id == key) match { // TODO: Weak description of Front or Space elems
+        }
+        case _ => -1
+      }
+    
+    }
+
+    /*
+
+
+  def allElements: List[ProcElems] = { 
+    flat(
+      (variety ++ spaces.collect
+        { case space: Space => space.allElements }
+      ).toList.asInstanceOf[List[ProcElems]]
+    )
+  }
+
+    {case (key, value) =>
+      allElements.find(elem => elem.id == key) match { 
         case Some(elem) => {
           val tryg = Try(elem.calls(value))
           println(tryg.isSuccess)
@@ -198,7 +231,9 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
         case _ =>
       }
 
-    }
+      }
+*/
+    
     //for ((id, param) <- params)
   }
   /**

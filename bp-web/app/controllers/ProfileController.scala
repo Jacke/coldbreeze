@@ -28,7 +28,7 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
       
       val email = request.user.main.email.get
 
-      var (isManager, isEmployee) = AccountsDAO.getRole(email).get
+      var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(email).get
 
       if (!request.user.isEmployee && !arePlanExist(email)) {
         val emp_id = EmployeeDAO.pull_object(EmployeeDTO(None, email, email, None, true))

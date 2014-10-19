@@ -1,12 +1,12 @@
 <div class="container">
-<h3 class="primary">Invoking</h3>
+<h3 class="primary">{{ 'RUN' | translate }}</h3>
 <div class="initily-invoke">
-  <h3>Run from scratch</h3>
-<a ng-click="runInitially()" class="btn btn-big btn-success modal-success">Run</a>
+  <h3>{{ 'RUN_SCRATCH' | translate }}</h3>
+<a ng-click="runInitially()" class="btn btn-big btn-success modal-success">{{ 'RUN' | translate }}</a>
 </div>
 
 <div class="empty-notice" ng-show="(bpstations | filter:filterExpression).length">
-<h3>Arleady runned and paused:</h3>
+<h3>{{ 'RUN_FROM_DESC' | translate }}:</h3>
 </div>
 <div class="stations input-stations" ng-repeat="station in bpstations | filter:filterExpression" style="clear: both;">
            <span class="number small {{ station.state }}">{{ $index + 1 }}</span>
@@ -20,9 +20,9 @@
   <div class="station-markers">
     
   <ul class="station-states">
-                      <li class="state started {{ station.started }}"> Started </li>
-                      <li class="state paused {{ station.paused }}"> Paused </li>
-                      <li class="state finished {{ station.finished }}"> Finished </li>
+                      <li class="state started {{ station.started }}"> {{ 'STARTED' | translate }} </li>
+                      <li class="state paused {{ station.paused }}"> {{ 'PAUSED' | translate }} </li>
+                      <li class="state finished {{ station.finished }}"> {{ 'FINISHED' | translate }} </li>
   </ul>
   </div>
   <!--          <p> station.started — {{ station.started}} </p>
@@ -38,7 +38,7 @@
             <p> station.inexpands — {{ station.inexpands }}</p>
             <p> station.paused — {{ station.paused }}</p>
 --> 
-          <h3><a ng-click="expand = !expand">Logs</a></h3>
+          <h3><a ng-click="expand = !expand">{{ 'LOGS' | translate }}</a></h3>
           <div class="slide" ng-show="expand">
 
           <div class="logs" ng-repeat="log in logsByStation(station.id)">
@@ -48,23 +48,20 @@
 <table class="table table-user-information">
                     <tbody>
                       <tr>
-                        <td> Element </td>
-                        <td> Space_elem </td>
-<td> Station </td>
-<td> Invoked </td>
-<td> Expanded </td>
-<td> Container </td>
-<td> Date </td>
-<td> Step </td>
-<td> Comps </td>
+                        <td> {{ 'ELEMENT' | translate }} </td>
+<td> {{ 'STATIONS' | translate }} </td>
+<td> {{ 'INVOKED' | translate }} </td>
+<td> {{ 'CONTAINER' | translate }} </td>
+<td> {{ 'DATE' | translate }} </td>
+<td> {{ 'STEP' | translate }} </td>
+<td> {{ 'CV' | translate }} </td>
 
                       </tr>
                       <tr>
-<td> {{ elemsHash[log.element].id }} {{ elemsHash[log.element].title }} — {{ elemsHash[log.element].type_title }}  </td>
-<td> {{ spaceElemHash[log.space_elem].id }} {{ spaceElemHash[log.space_elem].title }} — {{ spaceElemHash[log.element].type_title }}  </td>
+<td> {{ elemsHash[log.element].id }} {{ elemsHash[log.element].title }} — {{ elemsHash[log.element].type_title }} 
+{{ spaceElemHash[log.space_elem].id }} {{ spaceElemHash[log.space_elem].title }} — {{ spaceElemHash[log.element].type_title }}  </td>
 <td> {{ log.station }} </td>
 <td> {{ log.invoked }} </td>
-<td> {{ log.expanded }} </td>
 <td> {{ log.container }} </td>
 <td> {{ log.date | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }} </td>
 <td> {{ log.step }} </td>
@@ -81,9 +78,9 @@
           <div ng-if="station.paused == true">
 
 <div ng-include src="'partials/treeInStation.html'"></div>
-          <a ng-click="haltStation(station.id)" class="btn btn-big btn-danger">Turn down</a>
+          <a ng-click="haltStation(station.id)" class="btn btn-big btn-danger">{{ 'TURN_DOWN' | translate }}</a>
           <div class="runFrom">
-          <h3>Run from specific active point</h3>
+          <h3>{{ 'RUN_FROM_ANOT' | translate }}</h3>
           <div class="params">
 
         </div>
@@ -116,7 +113,7 @@
                 </div>
               </div>
 
-          <a ng-click="runFrom(station.id, station)" class="btn btn-big btn-success">Run from</a>
+          <a ng-click="runFrom(station.id, station)" class="btn btn-big btn-success">{{ 'RUN_FROM' | translate }}</a>
 
           </div>
           </div>

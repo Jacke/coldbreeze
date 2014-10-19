@@ -1,9 +1,9 @@
 <div class="container">
-  <h1>Create a new BProcess</h1>
+  <h1>{{ 'CREATE_NEW_PROC' | translate }} </h1>
 
   <form novalidate="novalidate" class="form-horizontal">
     <div class="control-group">
-      <label class="control-label" for="inputTitle">Title:</label>
+      <label class="control-label" for="inputTitle">{{ 'TITLE' | translate }}:</label>
 
       <div class="controls">
         <input type="text" id="inputTitle" ng-model="bprocess.title" placeholder="Title" required/>
@@ -11,17 +11,17 @@
     </div>
 
 
-        <input type="hidden" id="inputBusinessId" ng-init="bprocess.business=1" placeholder="Business ID" required/>
+        <input type="hidden" id="inputBusinessId" ng-model="bprocess.business" ng-init="bprocess.business=business" placeholder="Business ID" required/>
 
     <div class="control-group">
-      <label class="control-label" for="inputBusinessId">Service:</label>
+      <label class="control-label" for="inputBusinessId">{{ 'SERVICE' | translate }}:</label>
       <div class="controls">
         <select ng-inig="bprocess.service=parseInt($routeParams.service)" ng-model="bprocess.service" ng-options="service.id as service.title for service in procServices" required></select><br>
       </div>
     </div>
     <div class="control-group">
       <div class="controls">
-        <a ng-click="createNewBP()" class="btn btn-small btn-primary">Create</a>
+        <a ng-click="createNewBP()" class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</a>
       </div>
     </div>
   </form>

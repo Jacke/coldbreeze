@@ -29,6 +29,7 @@ import service.DemoUser
 import securesocial.core._
 import models.DAO._
 import models.DAO.resources._
+import main.scala.utils.InputParamProc
 /**
  * Created by Sobolev on 22.07.2014.
  */
@@ -85,23 +86,18 @@ case class InputLogger(var id: Option[Int],
       }
 
     input_logs.get.foreach(il => InputLoggerDAO.pull_object(il))
+        
 
+        // case class InputParamProc(felem: Option[Int], selem: Option[Int], param: String, args: List[String])
         val genparams = pmsResult.map{ 
           case entity => { 
                entity.map { t =>
-                if (t.f_elem.isDefined)
-                 t.f_elem.get -> t.param
-                else 
-                 t.sp_elem.get -> t.param
-                } toMap
+                InputParamProc(t.f_elem, t.sp_elem, t.param, t.arguments.getOrElse(List.empty[String]))
+                } 
              
           }
         }
-    //.map (t => t.elem.get -> t.param) toMap
-    /*
-      Applying by this template ID     PARAM
-      process.inputPmsApply(Map(30 -> "confirmed"))
-    */ 
+
     println("PAAAAAAAARAMS")
     println(genparams.get)
     service.RunnerWrapper.runFrom(station_id, bpID, genparams.get) match {

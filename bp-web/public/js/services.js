@@ -155,7 +155,7 @@ minorityAppServices.factory('BPStationFactory', function ($resource) {
 */
 minorityAppServices.factory('EmployeesFactory', function ($resource) {
     return $resource(baseUrl + 'actors', {}, {
-        query: { method: 'GET', isArray: true }
+        query: { method: 'GET', isArray: false }
     })
 });
 /*

@@ -107,7 +107,7 @@ mainClass in (Compile, run) := Some("DevNettyServer"),
     }
   ): _*))
 */
-  lazy val reactivedocs = Project("reactive-docs", file("reactive-docs"))
+  lazy val reactivedocs = Project("databoard", file("databoard"))
     .enablePlugins(PlayScala)
     .enablePlugins(SbtWeb)
     .settings(basicSettings: _*)

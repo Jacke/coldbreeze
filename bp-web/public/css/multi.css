@@ -750,7 +750,7 @@ body .panelLegacy .githubLogin a {
 }
 
 .website.loginFlow {
-    background-color: #f0f1f4;
+    background-color: #f0f4f7;
 }
 
 #container .organisationsGridCards .addPeople .flatTextarea {
@@ -1298,7 +1298,7 @@ text-decoration: none;
 }
 
 .teamApisListWrap .teamApisLinkPeople:after,.teamSettingsWrap .teamApisLinkPeople:after {
-    content: 'People';
+    content: '';
 }
 
 .teamApisListWrap .teamApisLinkSettings:after,.teamSettingsWrap .teamApisLinkSettings:after {
@@ -1307,10 +1307,10 @@ text-decoration: none;
 
 
 .teamApisListWrap .teamApisLinkStations:after, .teamSettingsWrap .teamApisLinkStations:after {
-  content: 'Stations';
+  content: '';
 }
 .teamApisListWrap .teamApisLinkDelete:after, .teamSettingsWrap .teamApisLinkDelete:after {
-  content: 'Delete';
+  content: '';
 }
 
 .teamApisListWrap .teamApisListGithub,.teamSettingsWrap .teamApisListGithub {
@@ -1366,7 +1366,7 @@ background-color: #49CC90;
 .teamApisListWrap .teamApisListControls,.teamSettingsWrap .teamApisListControls {
     float: none;
     position: absolute;
-    right: 70px;
+    right: 96px;
     top: 30px;
     -webkit-border-radius: 6px;
     border-radius: 6px;

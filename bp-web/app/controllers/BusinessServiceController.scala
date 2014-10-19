@@ -58,9 +58,9 @@ class BusinessServiceController(override implicit val env: RuntimeEnvironment[De
   implicit val bservicesWrites = Json.format[BusinessServiceDTO]
 
 
-  def bprocesses_services() = Action { implicit request =>
+  def bprocesses_services() = SecuredAction { implicit request =>
       val services = BusinessServiceDAO.getAll.filter(service => service.master_acc == request.user.main.email.get)
-      val businesses = BusinessDAO.getAll.contains(EmployeesBusinessDAO.getByUID(request.user.main.email.get).map(e => Some(e.business_id)))
+      val businesses = BusinessDAO.getAll.contains(EmployeesBusinessDAO.getByUID(request.user.main.email.get).map(e => Some(e._2)))
       Ok(Json.toJson(services))
   }
 
