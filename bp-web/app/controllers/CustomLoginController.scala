@@ -65,9 +65,18 @@ import scala.language.reflectiveCalls
 import securesocial.controllers.Registration
 import com.typesafe.plugin._
 import controllers._
-
+import play.api.i18n.Lang
 
 object CustomRegistration {
+
+  def handleObserver(email: String, host: String, hash_code: String, lang: Lang = Lang("en", "US")) = {
+     val mail = use[MailerPlugin].email
+              mail.setSubject("You added as observer | Minority App")
+              mail.setCc(email)
+              mail.setFrom("app@minorityapp.com")
+
+              mail.sendHtml(views.html.mailer.ObserverAdd.render(email, host, hash_code).body)
+  }
 
   def handleStartSignUp(email: String, host: String) = {
 
@@ -273,6 +282,9 @@ class CustomRegistrationController(implicit override val env: RuntimeEnvironment
                 saved <- env.userService.save(toSave, SaveMode.SignUp) ;
                 deleted <- env.userService.deleteToken(t.uuid)
               ) yield {
+                // Set language that user set in his browser
+                AccountsDAO.updateLang(toSave.email.get, request.acceptLanguages.head.language)
+
                 if (UsernamePasswordProvider.sendWelcomeEmail)
                   env.mailer.sendWelcomeEmail(newUser)
                 val eventSession = Events.fire(new SignUpEvent(saved)).getOrElse(request.session)

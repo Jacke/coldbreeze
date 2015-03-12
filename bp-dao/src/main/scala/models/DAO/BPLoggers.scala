@@ -279,4 +279,10 @@ object BPLoggerDAO {
         bploggers.ddl.create
     }
   }
+  def ddl_drop = {
+    database withSession {
+      implicit session =>
+        bploggers.ddl.drop
+    }
+  }
 }

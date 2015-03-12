@@ -8,15 +8,16 @@ import models.DAO.conversion.DatabaseCred
 class Plans(tag: Tag) extends Table[PlanDTO](tag, "plans") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def title = column[String]("title")
+  def price = column[BigDecimal]("price")
 
-  def * = (id.?, title) <> (PlanDTO.tupled, PlanDTO.unapply)
+  def * = (id.?, title, price) <> (PlanDTO.tupled, PlanDTO.unapply)
 
 }
 
 /*
   Case class
  */
-case class PlanDTO(var id: Option[Int], title: String)
+case class PlanDTO(var id: Option[Int], title: String, price: BigDecimal)
 
 object PlanDAO {
   import scala.util.Try
@@ -40,17 +41,19 @@ object PlanDAO {
    * @param id
    * @param business service
    */
-  def update(id: Int, businessService: PlanDTO) = database withSession { implicit session ⇒
-    val bpToUpdate: PlanDTO = businessService.copy(Option(id))
-    plans.filter(_.id === id).update(bpToUpdate)
-  } /**
+  def update(id: Int, plan: PlanDTO) = database withSession { implicit session ⇒
+    val planToUpdate: PlanDTO = plan.copy(Option(id))
+    plans.filter(_.id === id).update(planToUpdate)
+  } 
+
+  /**
    * Delete a business service
    * @param id
    */
   def delete(id: Int) = database withSession { implicit session ⇒
-
     plans.filter(_.id === id).delete
   }
+  
   /**
    * Count all business_services
    */
@@ -71,6 +74,17 @@ object PlanDAO {
     database withSession {
       implicit session =>
       plans.ddl.create
+      // Add default plan
+      pull_object(PlanDTO(None, "Trial", 0))
+      pull_object(PlanDTO(None, "Startup", 50.0))
+      pull_object(PlanDTO(None, "Company", 160.0))
+    }
+  }
+  def ddl_drop = {
+    database withSession {
+      implicit session =>
+        plans.ddl.drop
+
     }
   }
 }

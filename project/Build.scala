@@ -16,6 +16,8 @@ object Build extends Build {
 
   mainClass := Some("main.scala.BPServiceApp")
 
+  initialCommands in console := "ammonite.repl.Repl.main(null)"
+    
   lazy val root = Project("root", file("."))
     .aggregate(bpCore, bpDao, bpWeb)
     .settings(basicSettings: _*)
@@ -31,7 +33,7 @@ object Build extends Build {
 
     .settings(
       libraryDependencies ++=
-        List(async, reflect, akkaActor, scaldiakka, dispatch, scalaz, mechanize,nscala, play, scalatest, scalaLog, 
+        List(async, amonite, reflect, akkaActor, scaldiakka, dispatch, scalaz, mechanize,nscala, play, scalatest, scalaLog, 
 logback, scaldi,
 sprayClient, hdrHistogram))
 

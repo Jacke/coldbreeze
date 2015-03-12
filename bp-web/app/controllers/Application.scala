@@ -16,6 +16,9 @@ import models.{AccountsDAO, User}
 import service.DemoUser
 import securesocial.core._
 import controllers.users._
+import models.DAO.resources._
+
+
 
 class Application(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] { // with Secured  {
   import play.api.Play.current
@@ -35,7 +38,8 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
             users.routes.javascript.EmployeeController.create_new,
 
             routes.javascript.Application.index,
-            routes.javascript.ProfileController.profile
+            routes.javascript.ProfileController.profile,
+            routes.javascript.BusinessProcessController.update_note
           // TODO Add your routes here
         )
       ).as(JAVASCRIPT)
@@ -49,21 +53,20 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
 
 
   def app() = SecuredAction { implicit request =>
-    Ok(views.html.app(request.user))
+    // Expired checking
+    val user = request.user.main.userId
+    val current_plan = AccountPlanDAO.getByMasterAcc(user).get
+    println(current_plan.expired_at)
+    if (current_plan.expired_at.isBefore( org.joda.time.DateTime.now() ) ) {
+      Redirect(routes.PlanController.index)
+    } else {
+      Ok(views.html.app(request.user))
+    }
   }
 
 
-  /* 
-    Templates
-  */
-  def peoples() = Action { implicit request =>
-    Ok(views.html.people())
-  }
-  def list() = Action { implicit request =>
-    Ok(views.html.list())
-  }
 
-case class WhoAmIdentify(email: String, business: Int = 0, manager: Boolean, employee: Boolean, lang: String = "en")
+case class WhoAmIdentify(email: String, business: Int = 0, manager: Boolean, employee: Boolean, lang: String = "en", payed: Boolean = false, env: String = "prod")
   implicit val WhoAmIdentifyReads = Json.reads[WhoAmIdentify]
   implicit val WhoAmIdentifyWrites = Json.format[WhoAmIdentify]
   def whoami = SecuredAction { implicit request =>
@@ -75,8 +78,11 @@ case class WhoAmIdentify(email: String, business: Int = 0, manager: Boolean, emp
       case Some(biz) => biz._2
       case _ => 1
     }
+    val current_plan = AccountPlanDAO.getByMasterAcc(email).get
 
-    Ok(Json.toJson(WhoAmIdentify(request.user.main.userId, business, isManager, isEmployee, lang)))
+    val env_mode = play.api.Play.current.mode
+
+    Ok(Json.toJson(WhoAmIdentify(request.user.main.userId, business, isManager, isEmployee, lang, payed = current_plan.expired_at.isAfter( org.joda.time.DateTime.now()), env_mode.toString() )))
   }
 
   // a sample action using an authorization implementation
@@ -84,13 +90,10 @@ case class WhoAmIdentify(email: String, business: Int = 0, manager: Boolean, emp
     Ok("You can see this because you logged in using Twitter")
   }
 
-  def linkResult = SecuredAction { implicit request =>
-    Ok(views.html.linkResult(request.user))
-  }
 
   /**
    * Sample use of SecureSocial.currentUser. Access the /current-user to test it
-   */
+   
   def currentUser = Action.async { implicit request =>
     import play.api.libs.concurrent.Execution.Implicits._
     SecureSocial.currentUser[DemoUser].map { maybeUser =>
@@ -98,16 +101,13 @@ case class WhoAmIdentify(email: String, business: Int = 0, manager: Boolean, emp
       Ok(s"Your id is $userId")
     }
   }
-
+*/
 
 // An Authorization implementation that only authorizes uses that logged in using twitter
   case class WithProvider(provider: String) extends Authorization[DemoUser] {
     def isAuthorized(user: DemoUser, request: RequestHeader) = {
       user.main.providerId == provider
     }
-  }
-  def index11 = Action {
-    Ok(views.html.index11())
   }
 
 
@@ -154,44 +154,15 @@ implicit val BPSpaceDTOWrites = Json.format[BPSpaceDTO]
 implicit val BPLoggerDTOReads = Json.reads[BPLoggerDTO]
 implicit val BPLoggerDTOWrites = Json.format[BPLoggerDTO] 
 
-def bpElems(id: Int) = Action {
-     Ok(Json.toJson( 
-      List(UndefElement(Some(1),"test","test",1,2,"brick","container_brick",Some(1),1,Some(List(CompositeValues(a_int = Some(1) )))),
-          UndefElement(Some(1),"test","test",1,2,"brick","container_brick",Some(1),1,Some(List(CompositeValues(a_int = Some(1) )))), 
-          UndefElement(Some(4),"test","test",1,2,"brick","container_brick",None,3,Some(List(CompositeValues(Some("a"), Some("b"), Some(1) ))))).toArray))
-}
-def spaces(id: Int) = Action {
-     Ok(Json.toJson(List(BPSpaceDTO(Some(5),2,3,true,false,None,Some(6),3), BPSpaceDTO(Some(6),2,3,true,false,Some(4),None,1)).toArray
-
-
-      ))
-}
-
 import com.github.nscala_time.time.Imports._
 
-def logs(id: Int) = Action {
-  Ok(Json.toJson(
-    Array(BPLoggerDTO(Some(1),2,Some(2),None,1,None,1,true,false,false,DateTime.now,Some(List(CompositeValues(Some("a"), Some("b"), Some(1) ))),1), BPLoggerDTO(Some(2),2,Some(3),None,2,None,1,true,false,false,DateTime.now,Some(List(CompositeValues(Some("a"), Some("b"), Some(1) ))),2), BPLoggerDTO(Some(3),2,Some(4),None,3,None,1,true,false,false,DateTime.now,Some(List(CompositeValues(Some("a"), Some("b"), Some(1) ))),3))
-    ))
-}
-
-  def spaceElems(id: Int) = Action {
-     Ok(Json.toJson(
-      List(SpaceElementDTO(Some(6),"test","test",1,2,"brick","container_brick",Some(5),4,Some("container"),1,Some(List(CompositeValues(Some("a"), Some("b"), Some(1) )))), 
-           SpaceElementDTO(Some(7),"test","test",1,2,"block","constant",None,5,Some("container"),1,Some(List(CompositeValues(Some("a"), Some("b"), Some(1) ))))).toArray))
-  }
-  def createBpElem(id: Int) = Action { implicit request =>
-    println(request.body)
-     Ok(Json.toJson(Array(UndefElement(Some(1), "title", "desc", 1, 1, "b_type", "type_title", None, order = 1, Some(List(CompositeValues(Some("a"), Some("b"), Some(1) ))) ))))
-  }
-  def updateBpElem(id: Int) = Action { implicit request => 
-    println(request.body)
-     Ok(Json.toJson(Array(UndefElement(Some(1), "title", "desc", 1, 1, "b_type", "type_title", None, order = 1, Some(List(CompositeValues(Some("a"), Some("b"), Some(1) ))) ))))
-  }
-
 
 
 }
+
+
+
+
 
 trait SubdomainController extends Controller {
   def WithSubdomain(f: => String => Request[AnyContent] => Result) = Action { implicit request =>

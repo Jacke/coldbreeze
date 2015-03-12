@@ -11,7 +11,22 @@ import models.DAO.BProcessDTO
 
 object DatabaseCred {
   import scala.slick.driver.PostgresDriver.simple._
-  val database = Database.forURL("jdbc:postgresql://localhost/minority", driver = "org.postgresql.Driver", user = "postgres", password = "12344321")
+  var database = Database.forURL("jdbc:postgresql://localhost/minority1", driver = "org.postgresql.Driver", user = "postgres", password = "12344321")
+  database.createSession().conn.getMetaData().getURL()
+
+  def switchTo(db_type: String) = {
+    db_type match {
+    case "test" => database = Database.forURL("jdbc:postgresql://localhost/minority1_test", 
+                                               driver = "org.postgresql.Driver", 
+                                               user = "postgres", 
+                                               password = "12344321")
+    case "prod" => database = Database.forURL("jdbc:postgresql://localhost/minority1", 
+                                               driver = "org.postgresql.Driver", 
+                                               user = "postgres", 
+                                               password = "12344321")
+    }
+  }
+
 
 }
 

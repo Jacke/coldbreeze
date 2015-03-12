@@ -40,6 +40,16 @@ object EmployeesBusinessDAO {
       println(q3.list)
       q3.list 
   }
+  def isEmployable(business_id: Int, email: String) = database withSession {
+    implicit session =>
+    val emp = EmployeeDAO.getByUID(email) match {
+        case Some(x) => x.id.get
+        case _ => 0
+      }
+
+      val q3 = for { s ← employees_businesses if s.employee_id === emp && s.business_id === business_id } yield s 
+      q3.list.headOption.isDefined
+  }
   def getByUID(email: String):Option[Tuple2[Int, Int]] = database withSession {
     implicit session =>
       val emp = EmployeeDAO.getByUID(email) match {
@@ -72,6 +82,12 @@ object EmployeesBusinessDAO {
     database withSession {
       implicit session =>
       employees_businesses.ddl.create
+    }
+  }
+  def ddl_drop = {
+    database withSession {
+      implicit session =>
+        employees_businesses.ddl.drop
     }
   }
 

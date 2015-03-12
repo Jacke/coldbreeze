@@ -22,9 +22,6 @@
                 <form action = "@env.routes.authenticationUrl("userpass")"
                       class="form-horizontal" autocomplete="off" method="POST" class="loginInputs">
                     <!-- <fieldset>-->
-
-
-
                         @if( UsernamePasswordProvider.withUserNameSupport ) {
                             @helper.inputText(
                                 loginForm.get("username"),
@@ -50,13 +47,13 @@
                             <button type="submit" id="l_submit" class="loginButton block actionOk" tabindex="6">@Messages("securesocial.login.title")</button></p>
                         </div>
                         <div class="clearfix">
-                            <p><a class="loginText"><a tabindex="5" class="forgottenPass" href="@env.routes.resetPasswordUrl">@Messages("securesocial.login.forgotPassword") </a></p>
+                            <p><a class="loginText"><a tabindex="5" class="forgottenPass" href="@env.routes.startResetPasswordUrl">@Messages("securesocial.login.forgotPassword") </a></p>
                         </div>
                         @if(Play.current.configuration.getBoolean("securesocial.registrationEnabled").getOrElse(true) ){
                              <div class="clearfix">
-                                <p class="loginText">Need an account? <a tabindex="7" class="switchView" href="@env.routes.signUpUrl">Sign up now</a>.</p>
+                                <p class="loginText">@Messages("custom.needAccount") <a tabindex="7" class="switchView" href="@env.routes.handleStartSignUpUrl">@Messages("custom.signUp") now</a>.</p>
 
-                                 <!-- <p>@Messages("securesocial.login.signUp") <a href="@env.routes.signUpUrl">@Messages("securesocial.login.here")</a></p>-->
+                                 <!-- <p>@Messages("securesocial.login.signUp") <a href="@env.routes.handleStartSignUpUrl">@Messages("securesocial.login.here")</a></p>-->
                               </div>
                             }
                     <!-- </fieldset>-->

@@ -19,10 +19,15 @@ import models.DAO._
 
 case class employeeParams(perms: List[ActPermission], bps: List[BProcessDTO], elems_titles:Map[Int, String], res_acts: List[ResAct])
 case class managerParams(business: BusinessDTO)
+case class planInfo(title: String, expire_at: org.joda.time.DateTime)
+
 class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
 
+  val Home = Redirect(routes.ProfileController.profile())
+  
   def profile = SecuredAction { implicit request =>
 
+      // TODO: service.getByBusiness that manager participated
       val services = BusinessServiceDAO.getByMaster(request.user.main.email.get)
       val businesses = BusinessDAO.getAll
       
@@ -30,20 +35,34 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
 
       var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(email).get
 
+      // Initiate env for new user
       if (!request.user.isEmployee && !arePlanExist(email)) {
         val emp_id = EmployeeDAO.pull_object(EmployeeDTO(None, email, email, None, true))
-        val biz_id = BusinessDAO.pull_object(BusinessDTO(None, "Your Company")) 
+        val biz_id = BusinessDAO.pull_object(BusinessDTO(None, "Your Company", country = "", city = "", address = None, walkthrough = true))
+        
+ 
         EmployeesBusinessDAO.pull(emp_id, biz_id)
 
         assignToTrial(email)
-        request.user.renewPermissions() // Update var's of user
-        var (isEmployee, isManager) = (request.user.isEmployee, request.user.isManager)
+        
+        //request.user.renewPermissions() // Update var's of user
+        //var (isEmployee, isManager) = (request.user.isEmployee, request.user.isManager)
+        
+        Home
+      } else {
+
+        val plan = planFetch(email, isManager)
+
+        val managerParams = makeManagerParams(email, isManager)
+
+        val walkthrought:Boolean = managerParams match {
+            case  Some(param) => param.business.walkthrough
+            case _ => false
+        }
+
+        Ok(views.html.profile(request.user, managerParams, makeEmployeeParams(email, isEmployee), plan, walkthrought ) (
+            Page(services, 1, 1, services.length), 1, "%", businesses))
       }
-
-
-    Ok(views.html.profile(request.user, makeManagerParams(email, isManager), makeEmployeeParams(email, isEmployee))(
-        Page(services, 1, 1, services.length), 1, "%", businesses))
-
   }
 
 
@@ -51,6 +70,14 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
 /*
  Private operations
 */
+private def planFetch(email: String, isManager: Boolean):Option[planInfo] = {
+    if (isManager) {
+      val plan = AccountPlanDAO.getPlanByMasterAcc(email)
+      Some(planInfo(plan._2.title, plan._1))
+    } else {
+        None
+    }
+}
 
 private def profilePerms(uid: String) = {
   ActPermissionDAO.getByUID(uid)

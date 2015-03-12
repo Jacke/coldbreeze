@@ -2,6 +2,7 @@ package infra.paypal.objects
 
 import play.api.libs.json.Json
 import infra.paypal.format.EnumFormat
+import java.util.regex.Pattern;
 
 /**
  *        This object represents a payer’s funding instrument, such as a credit card or token that represents a credit card.
@@ -38,6 +39,23 @@ object CardType extends Enumeration with EnumFormat {
   val MasterCard = Value("mastercard")
   val AmericanExpress = Value("amex")
   val Discover = Value("discover")
+
+val visa = """^4[0-9]{12}(?:[0-9]{3})?$""".r
+val mastercard = """^5[1-5][0-9]{14}$""".r
+val americanexpress = """^3[47][0-9]{13}$""".r
+val discover = """^6(?:011|5[0-9]{2})[0-9]{12}$""".r
+
+  def fetchType(number: String) = {
+
+
+
+      number match {
+        case visa(_) => CardType.Visa
+        case mastercard(_) => CardType.MasterCard
+        case americanexpress(_) => CardType.AmericanExpress
+        case discover(_) => CardType.Discover
+      }
+  }
 
   implicit val format = valueFormat
 }

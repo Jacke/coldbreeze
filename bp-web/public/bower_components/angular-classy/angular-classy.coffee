@@ -1,5 +1,5 @@
 ###
-Angular Classy 0.4.1
+Angular Classy 0.4.2
 Dave Jeffery, @DaveJ
 License: MIT
 ###
@@ -79,8 +79,10 @@ classFns =
     $scope = parent[parent.constructor::__options._scopeName]
     for key, fn of parent.constructor::
       continue unless angular.isFunction(fn)
-      continue if key in ['constructor', 'init', 'watch'] or key[0] is '_'
-      $scope[key] = angular.bind(parent, fn)
+      continue if key in ['constructor', 'init', 'watch']
+      parent[key] = angular.bind(parent, fn)
+      if key[0] isnt '_'
+        $scope[key] = parent[key]
 
   bindDependencies: (parent, args) ->
     injectObject = parent.__classyControllerInjectObject

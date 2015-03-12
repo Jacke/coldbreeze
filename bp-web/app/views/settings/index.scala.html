@@ -6,7 +6,7 @@
 @import service.DemoUser
 
 @import helper._
-@(serviceForm: Form[controllers.Credentials], user:DemoUser)(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment[service.DemoUser])
+@(serviceForm: Form[controllers.Credentials], bizForm: Form[models.DAO.resources.web.BizFormDTO], user:DemoUser, isManager: Boolean = false)(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment[service.DemoUser])
 
 @import securesocial.core.IdentityProvider
 
@@ -21,16 +21,10 @@
 @import helper._
 
 
-@main("Plans", user) {
+@main(Messages("page.settings")(LangDet.getLang(user) ), user) {
 <style>
-/*
- * Sidebar
- */
-
-/* Hide for mobile, show later */
-/* Sidebar navigation */
 .nav-sidebar {
-  margin-right: -21px; /* 20px padding + 1px border */
+  margin-right: 10px;
   margin-bottom: 20px;
   margin-left: -20px;
 }
@@ -51,19 +45,31 @@
 <div class="teamSettings">
 <div class="grids">
   <div class="page-header">
-      <h2><img src="@user.main.avatarUrl.getOrElse("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iRWJlbmVfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSIxNnB4IiBoZWlnaHQ9IjE2cHgiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTYgMTYiIHhtbDpzcGFjZT0icHJlc2VydmUiPjx0aXRsZT5EZWZhdWx0IEF2YXRhcjwvdGl0bGU+PGRlc2M+RGVmYXVsdCBBdmF0YXIgZm9yIFdDRiAyLjA8L2Rlc2M+IDxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbLnN1cmZhY2UgeyBmaWxsOiAjZmZmOyB9LnNoYWRvdyB7IGZpbGw6ICNiYmI7IH1dXT48L3N0eWxlPjwvZGVmcz48cmVjdCB4PSIwIiBjbGFzcz0ic2hhZG93IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiLz48cGF0aCBjbGFzcz0ic3VyZmFjZSIgZD0iTTMuNTI4LDE2QzMuNzc2LDExLjQ5OSw1LjY4NCw4LDgsOHM0LjIyNCwzLjQ5OSw0LjQ3Myw3Ljk5OCIvPjxjaXJjbGUgY2xhc3M9InN1cmZhY2UiIGN4PSI4IiBjeT0iNiIgcj0iMy41Ii8+PC9zdmc+")" alt="@user.main.firstName.getOrElse("")" width="40px" height="40px"/> Welcome @user.main.firstName.getOrElse("")</h2>
+      <h2><img src="@user.main.avatarUrl.getOrElse("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iRWJlbmVfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSIxNnB4IiBoZWlnaHQ9IjE2cHgiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTYgMTYiIHhtbDpzcGFjZT0icHJlc2VydmUiPjx0aXRsZT5EZWZhdWx0IEF2YXRhcjwvdGl0bGU+PGRlc2M+RGVmYXVsdCBBdmF0YXIgZm9yIFdDRiAyLjA8L2Rlc2M+IDxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbLnN1cmZhY2UgeyBmaWxsOiAjZmZmOyB9LnNoYWRvdyB7IGZpbGw6ICNiYmI7IH1dXT48L3N0eWxlPjwvZGVmcz48cmVjdCB4PSIwIiBjbGFzcz0ic2hhZG93IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiLz48cGF0aCBjbGFzcz0ic3VyZmFjZSIgZD0iTTMuNTI4LDE2QzMuNzc2LDExLjQ5OSw1LjY4NCw4LDgsOHM0LjIyNCwzLjQ5OSw0LjQ3Myw3Ljk5OCIvPjxjaXJjbGUgY2xhc3M9InN1cmZhY2UiIGN4PSI4IiBjeT0iNiIgcj0iMy41Ii8+PC9zdmc+")" alt="@user.main.firstName.getOrElse("")" width="40px" height="40px"/> @Messages("profile.welcome")(LangDet.getLang(user) ) @user.main.firstName.getOrElse("")</h2>
   </div>
+<!--  
+<div class="deleteInfo">
+    <h3>@Messages("page.deleteInfo")</h3>
+</div>
+-->
+
+<div class="tabpanel">
+
 <div class="col-sm-3 col-md-2 sidebar">
-          <ul class="nav nav-sidebar">
-            <li class="active"><a href="#">Credentials</a></li>
-            <li><a href="#">Social linking</a></li>
-          </ul>
-        </div>
+    <ul id="sideTab" class="nav nav-sidebar" role="tablist">
+        <li class="active"><a href="#personal" aria-controls="personal" role="tab" data-toggle="tab">@Messages("page.credentials")(LangDet.getLang(user) )</a></li>
+        @if(isManager) {
+          <li><a href="#business" aria-controls="business" role="tab" data-toggle="tab">Business Info</a></li>
+        }
+        <li><a href="#password" aria-controls="password" role="tab" data-toggle="tab">Password</a></li>
+    </ul>
+</div>
 
 
 <div class="container setting-container">
 
-
+<div class="tab-content">
+<div class="tab-pane" id="personal">
 @form(routes.SettingController.update_credentials()) {
 <fieldset>
 
@@ -71,7 +77,264 @@
 
 @inputText(serviceForm("firstName"), '_label -> "First name", 'class -> "form-control")
 @inputText(serviceForm("lastName"), '_label -> "Last name", 'class -> "form-control")
-@select(field = serviceForm("lang").copy(value=serviceForm("lang").value.map {x=>Some(x)}.getOrElse(Some("en"))), options = Seq("en"->"English", "de" -> "Deutch", "sp" -> "Spanish", "ch" -> "Chinese", "ru"->"Русский"), '_label -> "Language", 'class -> "form-control")
+@select(field = serviceForm("lang").copy(value=serviceForm("lang").value.map {x=>Some(x)}.getOrElse(Some("en"))), options = Seq("en"->"English", "de" -> "Deutch", "sp" -> "Spanish", "ch" -> "Chinese", "ru"->"Русский"), 
+  '_label -> "Language", 'class -> "form-control")
+
+@inputText(serviceForm("phone"), '_label -> "Phone", 'class -> "form-control")
+
+<!--
+select(serviceForm("country"), options = Seq("US"->"USA", "UK" -> "United kingdom", "SP" -> "Spain", "RU" -> "Россия", "CA"->"Canada"), '_label -> "Country", 'class -> "form-control")
+-->
+<label for="select-country">@Messages("settings.country")(LangDet.getLang(user) ):</label>
+<select name="country" id="select-country" class="demo-default form-control" placeholder="Select a country...">
+                <option value="">@Messages("settings.selectCountry")(LangDet.getLang(user) )...</option>
+              <option value="AF">Afghanistan</option>
+                <option value="AX">&Aring;land Islands</option>
+                <option value="AL">Albania</option>
+                <option value="DZ">Algeria</option>
+                <option value="AS">American Samoa</option>
+                <option value="AD">Andorra</option>
+                <option value="AO">Angola</option>
+                <option value="AI">Anguilla</option>
+                <option value="AQ">Antarctica</option>
+                <option value="AG">Antigua and Barbuda</option>
+                <option value="AR">Argentina</option>
+                <option value="AM">Armenia</option>
+                <option value="AW">Aruba</option>
+                <option value="AU">Australia</option>
+                <option value="AT">Austria</option>
+                <option value="AZ">Azerbaijan</option>
+                <option value="BS">Bahamas</option>
+                <option value="BH">Bahrain</option>
+                <option value="BD">Bangladesh</option>
+                <option value="BB">Barbados</option>
+                <option value="BY">Belarus</option>
+                <option value="BE">Belgium</option>
+                <option value="BZ">Belize</option>
+                <option value="BJ">Benin</option>
+                <option value="BM">Bermuda</option>
+                <option value="BT">Bhutan</option>
+                <option value="BO">Bolivia, Plurinational State of</option>
+                <option value="BA">Bosnia and Herzegovina</option>
+                <option value="BW">Botswana</option>
+                <option value="BV">Bouvet Island</option>
+                <option value="BR">Brazil</option>
+                <option value="IO">British Indian Ocean Territory</option>
+                <option value="BN">Brunei Darussalam</option>
+                <option value="BG">Bulgaria</option>
+                <option value="BF">Burkina Faso</option>
+                <option value="BI">Burundi</option>
+                <option value="KH">Cambodia</option>
+                <option value="CM">Cameroon</option>
+                <option value="CA">Canada</option>
+                <option value="CV">Cape Verde</option>
+                <option value="KY">Cayman Islands</option>
+                <option value="CF">Central African Republic</option>
+                <option value="TD">Chad</option>
+                <option value="CL">Chile</option>
+                <option value="CN">China</option>
+                <option value="CX">Christmas Island</option>
+                <option value="CC">Cocos (Keeling) Islands</option>
+                <option value="CO">Colombia</option>
+                <option value="KM">Comoros</option>
+                <option value="CG">Congo</option>
+                <option value="CD">Congo, the Democratic Republic of the</option>
+                <option value="CK">Cook Islands</option>
+                <option value="CR">Costa Rica</option>
+                <option value="CI">C&ocirc;te d'Ivoire</option>
+                <option value="HR">Croatia</option>
+                <option value="CU">Cuba</option>
+                <option value="CY">Cyprus</option>
+                <option value="CZ">Czech Republic</option>
+                <option value="DK">Denmark</option>
+                <option value="DJ">Djibouti</option>
+                <option value="DM">Dominica</option>
+                <option value="DO">Dominican Republic</option>
+                <option value="EC">Ecuador</option>
+                <option value="EG">Egypt</option>
+                <option value="SV">El Salvador</option>
+                <option value="GQ">Equatorial Guinea</option>
+                <option value="ER">Eritrea</option>
+                <option value="EE">Estonia</option>
+                <option value="ET">Ethiopia</option>
+                <option value="FK">Falkland Islands (Malvinas)</option>
+                <option value="FO">Faroe Islands</option>
+                <option value="FJ">Fiji</option>
+                <option value="FI">Finland</option>
+                <option value="FR">France</option>
+                <option value="GF">French Guiana</option>
+                <option value="PF">French Polynesia</option>
+                <option value="TF">French Southern Territories</option>
+                <option value="GA">Gabon</option>
+                <option value="GM">Gambia</option>
+                <option value="GE">Georgia</option>
+                <option value="DE">Germany</option>
+                <option value="GH">Ghana</option>
+                <option value="GI">Gibraltar</option>
+                <option value="GR">Greece</option>
+                <option value="GL">Greenland</option>
+                <option value="GD">Grenada</option>
+                <option value="GP">Guadeloupe</option>
+                <option value="GU">Guam</option>
+                <option value="GT">Guatemala</option>
+                <option value="GG">Guernsey</option>
+                <option value="GN">Guinea</option>
+                <option value="GW">Guinea-Bissau</option>
+                <option value="GY">Guyana</option>
+                <option value="HT">Haiti</option>
+                <option value="HM">Heard Island and McDonald Islands</option>
+                <option value="VA">Holy See (Vatican City State)</option>
+                <option value="HN">Honduras</option>
+                <option value="HK">Hong Kong</option>
+                <option value="HU">Hungary</option>
+                <option value="IS">Iceland</option>
+                <option value="IN">India</option>
+                <option value="ID">Indonesia</option>
+                <option value="IR">Iran, Islamic Republic of</option>
+                <option value="IQ">Iraq</option>
+                <option value="IE">Ireland</option>
+                <option value="IM">Isle of Man</option>
+                <option value="IL">Israel</option>
+                <option value="IT">Italy</option>
+                <option value="JM">Jamaica</option>
+                <option value="JP">Japan</option>
+                <option value="JE">Jersey</option>
+                <option value="JO">Jordan</option>
+                <option value="KZ">Kazakhstan</option>
+                <option value="KE">Kenya</option>
+                <option value="KI">Kiribati</option>
+                <option value="KP">Korea, Democratic People's Republic of</option>
+                <option value="KR">Korea, Republic of</option>
+                <option value="KW">Kuwait</option>
+                <option value="KG">Kyrgyzstan</option>
+                <option value="LA">Lao People's Democratic Republic</option>
+                <option value="LV">Latvia</option>
+                <option value="LB">Lebanon</option>
+                <option value="LS">Lesotho</option>
+                <option value="LR">Liberia</option>
+                <option value="LY">Libyan Arab Jamahiriya</option>
+                <option value="LI">Liechtenstein</option>
+                <option value="LT">Lithuania</option>
+                <option value="LU">Luxembourg</option>
+                <option value="MO">Macao</option>
+                <option value="MK">Macedonia, the former Yugoslav Republic of</option>
+                <option value="MG">Madagascar</option>
+                <option value="MW">Malawi</option>
+                <option value="MY">Malaysia</option>
+                <option value="MV">Maldives</option>
+                <option value="ML">Mali</option>
+                <option value="MT">Malta</option>
+                <option value="MH">Marshall Islands</option>
+                <option value="MQ">Martinique</option>
+                <option value="MR">Mauritania</option>
+                <option value="MU">Mauritius</option>
+                <option value="YT">Mayotte</option>
+                <option value="MX">Mexico</option>
+                <option value="FM">Micronesia, Federated States of</option>
+                <option value="MD">Moldova, Republic of</option>
+                <option value="MC">Monaco</option>
+                <option value="MN">Mongolia</option>
+                <option value="ME">Montenegro</option>
+                <option value="MS">Montserrat</option>
+                <option value="MA">Morocco</option>
+                <option value="MZ">Mozambique</option>
+                <option value="MM">Myanmar</option>
+                <option value="NA">Namibia</option>
+                <option value="NR">Nauru</option>
+                <option value="NP">Nepal</option>
+                <option value="NL">Netherlands</option>
+                <option value="AN">Netherlands Antilles</option>
+                <option value="NC">New Caledonia</option>
+                <option value="NZ">New Zealand</option>
+                <option value="NI">Nicaragua</option>
+                <option value="NE">Niger</option>
+                <option value="NG">Nigeria</option>
+                <option value="NU">Niue</option>
+                <option value="NF">Norfolk Island</option>
+                <option value="MP">Northern Mariana Islands</option>
+                <option value="NO">Norway</option>
+                <option value="OM">Oman</option>
+                <option value="PK">Pakistan</option>
+                <option value="PW">Palau</option>
+                <option value="PS">Palestinian Territory, Occupied</option>
+                <option value="PA">Panama</option>
+                <option value="PG">Papua New Guinea</option>
+                <option value="PY">Paraguay</option>
+                <option value="PE">Peru</option>
+                <option value="PH">Philippines</option>
+                <option value="PN">Pitcairn</option>
+                <option value="PL">Poland</option>
+                <option value="PT">Portugal</option>
+                <option value="PR">Puerto Rico</option>
+                <option value="QA">Qatar</option>
+                <option value="RE">R&eacute;union</option>
+                <option value="RO">Romania</option>
+                <option value="RU">Россия</option>
+                <option value="RW">Rwanda</option>
+                <option value="BL">Saint Barth&eacute;lemy</option>
+                <option value="SH">Saint Helena, Ascension and Tristan da Cunha</option>
+                <option value="KN">Saint Kitts and Nevis</option>
+                <option value="LC">Saint Lucia</option>
+                <option value="MF">Saint Martin (French part)</option>
+                <option value="PM">Saint Pierre and Miquelon</option>
+                <option value="VC">Saint Vincent and the Grenadines</option>
+                <option value="WS">Samoa</option>
+                <option value="SM">San Marino</option>
+                <option value="ST">Sao Tome and Principe</option>
+                <option value="SA">Saudi Arabia</option>
+                <option value="SN">Senegal</option>
+                <option value="RS">Serbia</option>
+                <option value="SC">Seychelles</option>
+                <option value="SL">Sierra Leone</option>
+                <option value="SG">Singapore</option>
+                <option value="SK">Slovakia</option>
+                <option value="SI">Slovenia</option>
+                <option value="SB">Solomon Islands</option>
+                <option value="SO">Somalia</option>
+                <option value="ZA">South Africa</option>
+                <option value="GS">South Georgia and the South Sandwich Islands</option>
+                <option value="ES">Spain</option>
+                <option value="LK">Sri Lanka</option>
+                <option value="SD">Sudan</option>
+                <option value="SR">Suriname</option>
+                <option value="SJ">Svalbard and Jan Mayen</option>
+                <option value="SZ">Swaziland</option>
+                <option value="SE">Sweden</option>
+                <option value="CH">Switzerland</option>
+                <option value="SY">Syrian Arab Republic</option>
+                <option value="TW">Taiwan, Province of China</option>
+                <option value="TJ">Tajikistan</option>
+                <option value="TZ">Tanzania, United Republic of</option>
+                <option value="TH">Thailand</option>
+                <option value="TL">Timor-Leste</option>
+                <option value="TG">Togo</option>
+                <option value="TK">Tokelau</option>
+                <option value="TO">Tonga</option>
+                <option value="TT">Trinidad and Tobago</option>
+                <option value="TN">Tunisia</option>
+                <option value="TR">Turkey</option>
+                <option value="TM">Turkmenistan</option>
+                <option value="TC">Turks and Caicos Islands</option>
+                <option value="TV">Tuvalu</option>
+                <option value="UG">Uganda</option>
+                <option value="UA">Ukraine</option>
+                <option value="AE">United Arab Emirates</option>
+                <option value="GB">United Kingdom</option>
+                <option value="US">United States</option>
+                <option value="UM">United States Minor Outlying Islands</option>
+                <option value="UY">Uruguay</option>
+                <option value="UZ">Uzbekistan</option>
+                <option value="VU">Vanuatu</option>
+                <option value="VE">Venezuela, Bolivarian Republic of</option>
+                <option value="VN">Viet Nam</option>
+                <option value="VG">Virgin Islands, British</option>
+                <option value="VI">Virgin Islands, U.S.</option>
+                <option value="WF">Wallis and Futuna</option>
+                <option value="EH">Western Sahara</option>
+                <option value="YE">Yemen</option>
+                <option value="ZM">Zambia</option>
+                <option value="ZW">Zimbabwe</option>
+            </select>
 
 
 
@@ -81,21 +344,46 @@
 <input type="submit" value="Update" class="btn btn-primary">
 </div>  
 }
+</div>
+</div>
+
+@if(isManager) {
+<div class="tab-content">
+<div class="tab-pane" id="business">
+@form(routes.SettingController.update_biz_credentials()) {
+<fieldset>
+   @inputText(bizForm("title"), '_label -> Messages("settings.businessName")(LangDet.getLang(user) ), 'class -> "form-control")   
+   @inputText(bizForm("phone"), '_label -> Messages("settings.phone")(LangDet.getLang(user) ), 'class -> "form-control")   
+   @inputText(bizForm("website"), '_label -> Messages("settings.website")(LangDet.getLang(user) ), 'class -> "form-control")  
+   @inputText(bizForm("country"), '_label -> Messages("settings.country")(LangDet.getLang(user) ), 'class -> "form-control")  
+   @inputText(bizForm("city"), '_label -> Messages("settings.city")(LangDet.getLang(user) ), 'class -> "form-control")  
+   @inputText(bizForm("address"), '_label -> Messages("settings.address")(LangDet.getLang(user) ), 'class -> "form-control")  
+</fieldset>
+<div class="actions">
+<input type="submit" value="Update" class="btn btn-primary">
+</div> 
+}
+</div>
+</div>
+}
+
+
+<div class="tab-content">
+<div class="tab-pane" id="password">
 @user.main.passwordInfo.map { info =>
         <p class="grids flatButtonLine">
-          <a class="flatButton" href="@securesocial.controllers.routes.PasswordChange.page.absoluteURL(IdentityProvider.sslEnabled)">Change Password</a>
+          <a class="flatButton" href="@securesocial.controllers.routes.PasswordChange.page.absoluteURL(IdentityProvider.sslEnabled)">@Messages("settings.changePassword")(LangDet.getLang(user) )</a>
     </p>
     }
 </div>
-
-
-
-
 </div>
+</div>
+</div>
+
+
 
 <!--
     <span>Link this account to
-
     env.providers.values.map { provider =>
         if( provider.authMethod == OAuth1 || provider.authMethod == OAuth2 ) {
             defining( "images/providers/%s.png".format(provider.id) ) { imageUrl =>
@@ -104,12 +392,18 @@
         }
     }
     </span>-->
-
-
-
 </div> 
 </div>
 </div>
 </div>
+</div>
+<script type="text/javascript">
 
+$('#select-country').selectize();
+$('#sideTab a').click(function (e) {
+  e.preventDefault()
+  $(this).tab('show')
+});
+
+</script>
 }

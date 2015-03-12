@@ -3,6 +3,7 @@ package models.DAO
 
 import models.DAO.driver.MyPostgresDriver.simple._
 import scala.slick.model.ForeignKeyAction
+import com.github.nscala_time.time.Imports._
 import models.DAO.BPDAO._
 import models.DAO.resources.BusinessDTO._
 import com.github.tminglei.slickpg.composite._
@@ -35,7 +36,12 @@ class ProcElements(tag: Tag) extends Table[UndefElement](tag, "proc_elements") {
 
   def order = column[Int]("order")
   def comps = column[Option[List[CompositeValues]]]("comps", O.DBType("compositevalues[]"))
-  def * = (id.?, title, desc, business, bprocess, b_type, type_title, space_own, order, comps) <> (UndefElement.tupled, UndefElement.unapply)
+    
+  def created_at = column[Option[org.joda.time.DateTime]]("created_at")
+  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
+    
+  def * = (id.?, title, desc, business, bprocess, b_type, type_title, space_own, order, comps,
+           created_at, updated_at) <> (UndefElement.tupled, UndefElement.unapply)
 
   def businessFK = foreignKey("business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
   def bpFK = foreignKey("bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
@@ -58,7 +64,10 @@ case class UndefElement(id: Option[Int],
                         type_title:String,
                         space_own:Option[Int],
                         order:Int,
-                        comps: Option[List[CompositeValues]]) {
+                        comps: Option[List[CompositeValues]],
+created_at:Option[org.joda.time.DateTime] = None,
+updated_at:Option[org.joda.time.DateTime] = None) {
+  
   def cast(process: BProcess):Option[ProcElems] = { 
 // TODO: to space casting 
 // TODO: Refactor
@@ -238,6 +247,12 @@ object ProcElemDAO {
     database withSession {
       implicit session =>
       proc_elements.ddl.create
+    }
+  }
+  def ddl_drop = {
+    database withSession {
+      implicit session =>
+        proc_elements.ddl.drop
     }
   }
   /**

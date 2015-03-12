@@ -79,7 +79,7 @@ angular.module(
 /*
  * Profile
  *//*
-minorityControllers.controller('ProfileController', ['$scope', '$http', '$window', '$location', 'toaster',
+minorityControllers.controller('ProfileController', ['$rootScope', '$scope', '$http', '$window', '$location', 'toaster',
   function ($rootScope, $scope, $http, $window, $location, toaster) {
 
 
@@ -89,10 +89,11 @@ minorityControllers.controller('ProfileController', ['$scope', '$http', '$window
         console.log(token);//$http.defaults.headers.common['X-Auth-Token'] = token;
         //$http.defaults.headers.common['Access_Name'] = 'user';
 
-        $http.post(jsRoutes.controllers.ProfileController.profile().absoluteURL() + 'whoami', {headers:  {'X-Auth-Token': token, 'Access_Name': 'user'}})
+        $http.post(jsRoutes.controllers.ProfileController.profile().absoluteURL(document.ssl_enabled) + 'whoami', {headers:  {'X-Auth-Token': token, 'Access_Name': 'user'}})
           .success(function (profile) {
               // Stores the token until the user closes the browser window.
               console.log(profile);
+              $rootScope.manager = profile.manager;
               $scope.profile = profile;
 
           })
@@ -117,12 +118,15 @@ minorityControllers.controller('UserInfoCtrl', function ($rootScope, $translate,
         $http.defaults.headers.common['X-Auth-Token'] = token;
         $http.defaults.headers.common['Access_Name'] = 'user';
 
-        $http.post(jsRoutes.controllers.ProfileController.profile().absoluteURL() + 'whoami', {headers:  {'X-Auth-Token': token, 'Access_Name': 'user'}})
+        $http.post(jsRoutes.controllers.ProfileController.profile().absoluteURL(document.ssl_enabled) + 'whoami', {headers:  {'X-Auth-Token': token, 'Access_Name': 'user'}})
           .success(function (profile) {
               // Stores the token until the user closes the browser window.
               console.log(profile);
               $rootScope.manager = profile.manager;
+              $window.sessionStorage.setItem('manager', profile.manager);
+
               $rootScope.employee = profile.employee;
+              $rootScope.payed = profile.payed;
               $window.sessionStorage.setItem('business', profile.business);
               if (!$window.sessionStorage.getItem('lang')) {
                 $window.sessionStorage.setItem('lang', profile.lang);

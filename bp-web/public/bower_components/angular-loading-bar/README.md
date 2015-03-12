@@ -7,13 +7,15 @@ This is mostly cool because you simply include it in your app, and it works.  Th
 
 **Requirements:** AngularJS 1.2+
 
+**File Size:** 2.4Kb minified, 0.5Kb gzipped
+
 
 ## Usage:
 
-1. include the loading bar as a dependency for your app.  If you want animations, include `ngAnimate` as well.
+1. include the loading bar as a dependency for your app.  If you want animations, include `ngAnimate` as well. *note: ngAnimate is optional*
 
     ```js
-    angular.module('myApp', ['chieffancypants.loadingBar', 'ngAnimate'])
+    angular.module('myApp', ['angular-loading-bar', 'ngAnimate'])
     ```
     
 2. include the supplied CSS file (or create your own).
@@ -46,27 +48,37 @@ Additionally, Angular was created as a highly testable framework, so it pains me
 
 ## Configuration
 
-**Turn the spinner on or off:**  
+#### Turn the spinner on or off:
 The insertion of the spinner can be controlled through configuration.  It's on by default, but if you'd like to turn it off, simply configure the service:
 
 ```js
-angular.module('myApp', ['chieffancypants.loadingBar'])
-  .config(function(cfpLoadingBarProvider) {
+angular.module('myApp', ['angular-loading-bar'])
+  .config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
     cfpLoadingBarProvider.includeSpinner = false;
-  })
+  }])
 ```
 
-**Turn the loading bar on or off:**  
+#### Turn the loading bar on or off:
 Like the spinner configuration above, the loading bar can also be turned off for cases where you only want the spinner:
 
 ```js
-angular.module('myApp', ['chieffancypants.loadingBar'])
-  .config(function(cfpLoadingBarProvider) {
+angular.module('myApp', ['angular-loading-bar'])
+  .config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
     cfpLoadingBarProvider.includeBar = false;
-  })
+  }])
 ```
 
-**Ignoring particular XHR requests:**  
+#### Latency Threshold
+By default, the loading bar will only display after it has been waiting for a response for over 100ms.  This helps keep things feeling snappy, and avoids the annoyingness of showing a loading bar every few seconds on really chatty applications.  This threshold is totally configurable:
+
+```js
+angular.module('myApp', ['angular-loading-bar'])
+  .config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
+    cfpLoadingBarProvider.latencyThreshold = 500;
+  }])
+```
+
+#### Ignoring particular XHR requests:
 The loading bar can also be forced to ignore certain requests, for example, when long-polling or periodically sending debugging information back to the server.
 
 ```js
@@ -96,19 +108,19 @@ $http.get('/status', {
 
 
 ## How it works:
-This library is split into two components, an $http `interceptor`, and a `service`:
+This library is split into two modules, an $http `interceptor`, and a `service`:
 
 **Interceptor**  
-The interceptor simply listens for all outgoing XHR requests, and then instructs the loadingBar service to start, stop, and increment accordingly.  There is no public API for the interceptor.
+The interceptor simply listens for all outgoing XHR requests, and then instructs the loadingBar service to start, stop, and increment accordingly.  There is no public API for the interceptor.  It can be used stand-alone by including `cfp.loadingBarInterceptor` as a dependency for your module.
 
 **Service**  
 The service is responsible for the presentation of the loading bar.  It injects the loading bar into the DOM, adjusts the width whenever `set()` is called, and `complete()`s the whole show by removing the loading bar from the DOM.
 
 ## Service API (advanced usage)
-Under normal circumstances you won't need to use this.  However, if you wish to use the loading bar without the interceptor, you can do that as well.  Simply include the loading bar service as a dependency instead of the interceptor in your angular module:
+Under normal circumstances you won't need to use this.  However, if you wish to use the loading bar without the interceptor, you can do that as well.  Simply include the loading bar service as a dependency instead of the main `angular-loading-bar` module:
 
 ```js
-angular.module('myApp', ['cfpLoadingBar'])
+angular.module('myApp', ['cfp.loadingBar'])
 ```
 
 
@@ -133,12 +145,19 @@ cfpLoadingBar.complete()
 
 ```
 
+## Events
+The loading bar broadcasts the following events over $rootScope allowing further customization:
+
+**`cfpLoadingBar:loading`** triggered upon each XHR request that is not already cached
+
+**`cfpLoadingBar:loaded`** triggered each time an XHR request recieves a response (either successful or error)
+
+**`cfpLoadingBar:started`** triggered once upon the first XHR request.  Will trigger again if another request goes out after `cfpLoadingBar:completed` has triggered.
+
+**`cfpLoadingBar:completed`** triggered once when the all XHR requests have returned (either successfully or not)
+
 ## Credits: 
 Credit goes to [rstacruz](https://github.com/rstacruz) for his excellent [nProgress](https://github.com/rstacruz/nprogress).
 
 ## License:
 Licensed under the MIT license
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/chieffancypants/angular-loading-bar/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-

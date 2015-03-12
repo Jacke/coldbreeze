@@ -118,7 +118,12 @@ angular.module('mgcrea.ngStrap.modal', ['mgcrea.ngStrap.helpers.dimensions'])
         $modal.show = function() {
 
           scope.$emit(options.prefixEvent + '.show.before', $modal);
-          var parent = options.container ? findElement(options.container) : null;
+          var parent;
+          if(angular.isElement(options.container)) {
+            parent = options.container;
+          } else {
+            parent = options.container ? findElement(options.container) : null;
+          }
           var after = options.container ? null : options.element;
 
           // Fetch a cloned element linked from template
@@ -142,7 +147,7 @@ angular.module('mgcrea.ngStrap.modal', ['mgcrea.ngStrap.helpers.dimensions'])
             scope.$emit(options.prefixEvent + '.show', $modal);
           });
           scope.$isShown = true;
-          scope.$$phase || scope.$root.$$phase || scope.$digest();
+          scope.$$phase || (scope.$root && scope.$root.$$phase) || scope.$digest();
           // Focus once the enter-animation has started
           // Weird PhantomJS bug hack
           var el = modalElement[0];
@@ -172,14 +177,14 @@ angular.module('mgcrea.ngStrap.modal', ['mgcrea.ngStrap.helpers.dimensions'])
             scope.$emit(options.prefixEvent + '.hide', $modal);
             bodyElement.removeClass(options.prefixClass + '-open');
             if(options.animation) {
-              bodyElement.addClass(options.prefixClass + '-with-' + options.animation);
+              bodyElement.removeClass(options.prefixClass + '-with-' + options.animation);
             }
           });
           if(options.backdrop) {
             $animate.leave(backdropElement, function() {});
           }
           scope.$isShown = false;
-          scope.$$phase || scope.$root.$$phase || scope.$digest();
+          scope.$$phase || (scope.$root && scope.$root.$$phase) || scope.$digest();
 
           // Unbind events
           if(options.backdrop) {

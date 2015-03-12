@@ -1,6 +1,6 @@
 /**
  * angular-strap
- * @version v2.0.0 - 2014-04-07
+ * @version v2.0.5 - 2014-08-07
  * @link http://mgcrea.github.io/angular-strap
  * @author Olivier Louvignes (olivier@mg-crea.com)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -19,7 +19,8 @@ angular.module('mgcrea.ngStrap.helpers.dateParser', []).provider('$dateParser', 
       };
     this.$get = [
       '$locale',
-      function ($locale) {
+      'dateFilter',
+      function ($locale, dateFilter) {
         var DateParserFactory = function (config) {
           var options = angular.extend({}, defaults, config);
           var $dateParser = {};
@@ -91,15 +92,17 @@ angular.module('mgcrea.ngStrap.helpers.dateParser', []).provider('$dateParser', 
               return !isNaN(date.getTime());
             return regex.test(date);
           };
-          $dateParser.parse = function (value, baseDate) {
+          $dateParser.parse = function (value, baseDate, format) {
             if (angular.isDate(value))
-              return value;
-            var matches = regex.exec(value);
+              value = dateFilter(value, format || $dateParser.$format);
+            var formatRegex = format ? regExpForFormat(format) : regex;
+            var formatSetMap = format ? setMapForFormat(format) : setMap;
+            var matches = formatRegex.exec(value);
             if (!matches)
               return false;
-            var date = baseDate || new Date(0);
+            var date = baseDate || new Date(0, 0, 1);
             for (var i = 0; i < matches.length - 1; i++) {
-              setMap[i] && setMap[i].call(date, matches[i + 1]);
+              formatSetMap[i] && formatSetMap[i].call(date, matches[i + 1]);
             }
             return date;
           };
@@ -119,7 +122,8 @@ angular.module('mgcrea.ngStrap.helpers.dateParser', []).provider('$dateParser', 
             }
             // Sort result map
             angular.forEach(map, function (v) {
-              sortedMap.push(v);
+              if (v)
+                sortedMap.push(v);
             });
             return sortedMap;
           }

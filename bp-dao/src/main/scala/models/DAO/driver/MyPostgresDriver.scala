@@ -10,6 +10,9 @@ import com.github.tminglei.slickpg.array.PgArrayJdbcTypes
 
 import models.DAO._
 
+import scala.slick.driver.PostgresDriver._
+import scala.slick.driver.PostgresDriver.simple._
+
 trait WithMyDriver {
   val driver: MyPostgresDriver
 }

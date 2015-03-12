@@ -14,7 +14,7 @@
     height: 424px;
     content: '';
     background-color: rgba(255,255,255,0.001);
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/icons/icons-sprite-2-f90c355fa4e51812.svg");
+    background-image: url("/images/icons-sprite-2-f90c355fa4e51812.svg");
     background-repeat: no-repeat;
 }
 
@@ -165,7 +165,9 @@ a:hover .vIco.vDefaultState:after,.vIcoIn:hover .vIco.vDefaultState:after,.vIcoH
     pointer-events: none;
     font-family: TitilliumText,'Proxima Nova',Helvetica,Arial,sans-serif;
 }
-
+.secondaryNavItem a:hover {
+    text-decoration: none;
+}
 .tipsy-inner {
     background-color: #4f5767;
     color: #333;
@@ -296,7 +298,7 @@ header.fullSize {
     backface-visibility: hidden;
 }
 
-.shadowRight:before,.apiaryMenu .apiNameCell .apiSwitchName:before {
+.shadowRight:before,.minorityMenu .apiNameCell .apiSwitchName:before {
     display: block;
     content: '';
     position: absolute;
@@ -307,7 +309,7 @@ header.fullSize {
     background-color: rgba(225,227,232,0.1);
 }
 
-.shadowLeft:before,.apiaryMenu .apiNameCell:before,.apiaryMenu .apiNameCell.switcherWrap:before,.apiaryMenu .menuTeam:before,.apiaryMenu .apiMenuList.apiMenuIcons:before {
+.shadowLeft:before,.minorityMenu .apiNameCell:before,.minorityMenu .apiNameCell.switcherWrap:before,.minorityMenu .menuTeam:before,.minorityMenu .apiMenuList.apiMenuIcons:before {
     display: block;
     content: '';
     position: absolute;
@@ -318,7 +320,7 @@ header.fullSize {
     background-color: rgba(225,227,232,0.1);
 }
 
-.apiaryMenu {
+.minorityMenu {
     position: relative;
     min-width: 1020px;
     width: 100%;
@@ -329,7 +331,7 @@ header.fullSize {
     text-shadow: none;
 }
 
-.apiaryMenu h1,.apiaryMenu p,.apiaryMenu ul,.apiaryMenu li,.apiaryMenu div,.apiaryMenu hgroup,.apiaryMenu a,.apiaryMenu span {
+.minorityMenu h1,.minorityMenu p,.minorityMenu ul,.minorityMenu li,.minorityMenu div,.minorityMenu hgroup,.minorityMenu a,.minorityMenu span {
     margin: 0;
     padding: 0;
     outline: none;
@@ -337,7 +339,7 @@ header.fullSize {
     border: 0 none;
 }
 
-.apiaryMenu .menuRow {
+.minorityMenu .menuRow {
     display: -webkit-box;
     display: -moz-box;
     display: -webkit-flex;
@@ -361,7 +363,7 @@ header.fullSize {
     flex-flow: row nowrap;
 }
 
-.apiaryMenu .menuCell {
+.minorityMenu .menuCell {
     -webkit-box-flex: 1;
     -moz-box-flex: 1;
     -o-box-flex: 1;
@@ -376,7 +378,7 @@ header.fullSize {
     box-sizing: border-box;
 }
 
-.apiaryMenu .menuCell.flexibleSpace {
+.minorityMenu .menuCell.flexibleSpace {
     -webkit-box-flex: 1;
     -moz-box-flex: 1;
     -o-box-flex: 1;
@@ -386,7 +388,7 @@ header.fullSize {
     flex: 1 1 0;
 }
 
-.apiaryMenu .apiaryLogo {
+.minorityMenu .minorityLogo {
     display: inline-block;
     height: 80px;
     -webkit-box-flex: 1;
@@ -399,7 +401,7 @@ header.fullSize {
     width: 80px;
 }
 
-.apiaryMenu .apiNameCell {
+.minorityMenu .apiNameCell {
     -webkit-box-flex: 1;
     -moz-box-flex: 1;
     -o-box-flex: 1;
@@ -411,7 +413,7 @@ header.fullSize {
     max-width: 500px;
 }
 
-.apiaryMenu .apiNameCell.switcherWrap {
+.minorityMenu .apiNameCell.switcherWrap {
     -webkit-box-flex: 1;
     -moz-box-flex: 1;
     -o-box-flex: 1;
@@ -421,11 +423,11 @@ header.fullSize {
     flex: 1 0 250px;
 }
 
-.apiaryMenu .createApiCell {
+.minorityMenu .createApiCell {
     vertical-align: middle;
 }
 
-.apiaryMenu .plusSign,.apiaryMenu .createApi {
+.minorityMenu .plusSign,.minorityMenu .createApi {
     -webkit-transition-property: all;
     -moz-transition-property: all;
     -o-transition-property: all;
@@ -448,7 +450,7 @@ header.fullSize {
     transition-delay: 0;
 }
 
-.apiaryMenu .createApi {
+.minorityMenu .createApi {
     padding: 12px 30px 8px 57px;
     position: relative;
     line-height: 30px;
@@ -461,25 +463,25 @@ header.fullSize {
     display: block;
 }
 
-.apiaryMenu .createApi .plusSign {
+.minorityMenu .createApi .plusSign {
     position: absolute;
     top: 50%;
     left: 29px;
     margin-top: -9px;
 }
 
-.apiaryMenu .createApi:hover {
+.minorityMenu .createApi:hover {
     background-color: #31ad74;
     color: #fff;
 }
 
-.apiaryMenu .apiaryLogo {
+.minorityMenu .minorityLogo {
     width: 100%;
 }
 
 
 
-.apiaryMenu .apiaryLogo a {
+.minorityMenu .minorityLogo a {
 
     
     
@@ -492,11 +494,11 @@ height: 47px;
 color: white;
 background-color: white;
 }
-.apiaryMenu .apiaryLogo a:hover {
+.minorityMenu .minorityLogo a:hover {
 border: none;
 background-color: #7FDBFF;
 }
-.apiaryMenu .apiSwitcher {
+.minorityMenu .apiSwitcher {
     position: relative;
     display: inline-block;
     width: 100%;
@@ -526,11 +528,11 @@ background-color: #7FDBFF;
     transition-delay: 0;
 }
 
-.apiaryMenu .apiSwitcher.switcherToggle {
+.minorityMenu .apiSwitcher.switcherToggle {
     cursor: pointer;
 }
 
-.apiaryMenu .apiSwitcher .dropdownIcon {
+.minorityMenu .apiSwitcher .dropdownIcon {
     position: absolute;
     top: 50%;
     margin-top: -10px;
@@ -568,15 +570,15 @@ background-color: #7FDBFF;
     transition-delay: 0;
 }
 
-.apiaryMenu .switcherWrap.selected .apiSwitcher,.apiaryMenu .switcherWrap.selected .switcherToggle,.apiaryMenu .switcherWrap:hover .switcherToggle,.apiaryMenu .apiNameCell.switcherWrap .apiSwitcher:hover,.apiaryMenu a.apiLines:hover {
+.minorityMenu .switcherWrap.selected .apiSwitcher,.minorityMenu .switcherWrap.selected .switcherToggle,.minorityMenu .switcherWrap:hover .switcherToggle,.minorityMenu .apiNameCell.switcherWrap .apiSwitcher:hover,.minorityMenu a.apiLines:hover {
     background-color: #e8ebf2;
 }
 
-.apiaryMenu .switcherWrap.selected .switcherToggle,.apiaryMenu .switcherWrap .switcherToggle:hover {
+.minorityMenu .switcherWrap.selected .switcherToggle,.minorityMenu .switcherWrap .switcherToggle:hover {
     color: #000;
 }
 
-.apiaryMenu .apiSwitcher:hover .dropdownIcon {
+.minorityMenu .apiSwitcher:hover .dropdownIcon {
     opacity: 1;
     -ms-filter: none;
     filter: none;
@@ -587,7 +589,7 @@ background-color: #7FDBFF;
     transform: rotate(0);
 }
 
-.apiaryMenu .switcherWrap.selected .apiSwitcher .dropdownIcon {
+.minorityMenu .switcherWrap.selected .apiSwitcher .dropdownIcon {
     opacity: 1;
     -ms-filter: none;
     filter: none;
@@ -598,7 +600,7 @@ background-color: #7FDBFF;
     transform: rotate(180deg);
 }
 
-.apiaryMenu .isPrivateApi .vIco {
+.minorityMenu .isPrivateApi .vIco {
     position: absolute;
     top: 50%;
     left: 5px;
@@ -608,7 +610,7 @@ background-color: #7FDBFF;
     filter: alpha(opacity=60);
 }
 
-.apiaryMenu .apiLines {
+.minorityMenu .apiLines {
     position: relative;
     vertical-align: top;
     display: block;
@@ -621,11 +623,11 @@ background-color: #7FDBFF;
     height: 80px;
 }
 
-.apiaryMenu .isSelected {
+.minorityMenu .isSelected {
     background-color: #e8ebf2;
 }
 
-.apiaryMenu .apiName {
+.minorityMenu .apiName {
     padding-top: 24px;
     line-height: 20px;
     font-size: 16px;
@@ -633,12 +635,12 @@ background-color: #7FDBFF;
     font-weight: bold;
 }
 
-.apiaryMenu .apiName.oneLiner {
+.minorityMenu .apiName.oneLiner {
     line-height: 20px;
     padding-top: 30px;
 }
 
-.apiaryMenu .apiOwner {
+.minorityMenu .apiOwner {
     font-size: 14px;
     line-height: 18px;
     display: block;
@@ -647,7 +649,7 @@ background-color: #7FDBFF;
     color: #555;
 }
 
-.apiaryMenu .apiSwitcherLayer {
+.minorityMenu .apiSwitcherLayer {
     display: block;
     position: absolute;
     top: 80px;
@@ -660,31 +662,31 @@ background-color: #7FDBFF;
     z-index: 10000;
 }
 
-.apiaryMenu .apiSwitcherLayer .apiListItem {
+.minorityMenu .apiSwitcherLayer .apiListItem {
     border-top: 1px solid #e1e3e8;
 }
 
-.apiaryMenu .apiSwitcherLayer .apiListItem:first-child {
+.minorityMenu .apiSwitcherLayer .apiListItem:first-child {
     border-top: none;
 }
 
-.apiaryMenu .apiSwitcherLayer .apiListItem.isSelected {
+.minorityMenu .apiSwitcherLayer .apiListItem.isSelected {
     border-bottom: 1px solid #e1e3e8;
 }
 
-.apiaryMenu .apiSwitcherLayer .apiLines {
+.minorityMenu .apiSwitcherLayer .apiLines {
     height: 70px;
 }
 
-.apiaryMenu .apiSwitcherLayer .apiName {
+.minorityMenu .apiSwitcherLayer .apiName {
     padding-top: 17px;
 }
 
-.apiaryMenu .apiSwitcherLayer .apiName.oneLiner {
+.minorityMenu .apiSwitcherLayer .apiName.oneLiner {
     padding-top: 25px;
 }
 
-.apiaryMenu .apiSwitcherLayer .usersApisListFilter {
+.minorityMenu .apiSwitcherLayer .usersApisListFilter {
     background-color: #4f5767;
     color: #9098aa;
     height: 30px;
@@ -692,7 +694,7 @@ background-color: #7FDBFF;
     position: relative;
 }
 
-.apiaryMenu .apiSwitcherLayer .magnifyGlass {
+.minorityMenu .apiSwitcherLayer .magnifyGlass {
     position: absolute;
     left: 31px;
     top: 50%;
@@ -702,7 +704,7 @@ background-color: #7FDBFF;
     filter: alpha(opacity=60);
 }
 
-.apiaryMenu .apiSwitcherLayer .usersApisListFilterInput {
+.minorityMenu .apiSwitcherLayer .usersApisListFilterInput {
     outline: none;
     position: relative;
     border: 0;
@@ -720,12 +722,12 @@ background-color: #7FDBFF;
     box-sizing: border-box;
 }
 
-.apiaryMenu .apiSwitcherLayer .usersApisList {
+.minorityMenu .apiSwitcherLayer .usersApisList {
     overflow-y: auto;
     max-height: 525px;
 }
 
-.apiaryMenu .apiMenu {
+.minorityMenu .apiMenu {
     -webkit-box-flex: 1;
     -moz-box-flex: 1;
     -o-box-flex: 1;
@@ -736,17 +738,17 @@ background-color: #7FDBFF;
     font-size: 120%;
 }
 
-.apiaryMenu .apiMenuList.apiMenuIcons {
+.minorityMenu .apiMenuList.apiMenuIcons {
     display: table-row;
 }
 
-.apiaryMenu .apiMenuItem {
+.minorityMenu .apiMenuItem {
     display: table-cell;
     text-align: center;
     vertical-align: middle;
 }
 
-.apiaryMenu .apiMenuItem a {
+.minorityMenu .apiMenuItem a {
     display: inline-block;
     padding: 31px 10px 29px;
     min-width: 0;
@@ -757,39 +759,39 @@ background-color: #7FDBFF;
     white-space: nowrap;
 }
 
-.apiaryMenu .apiMenuItem a.menuTeamLink {
+.minorityMenu .apiMenuItem a.menuTeamLink {
     padding-right: 25px;
 }
 
-.apiaryMenu .apiMenuItem a.menuTeamLink .vIco {
+.minorityMenu .apiMenuItem a.menuTeamLink .vIco {
     margin-top: -1px;
     float: left;
     margin-right: 10px;
 }
 
-.apiaryMenu .apiMenuItem a.selected,.apiaryMenu .apiMenuItem a:hover {
+.minorityMenu .apiMenuItem a.selected,.minorityMenu .apiMenuItem a:hover {
     color: #000;
 }
 
-.apiaryMenu .apiMenuTexts .apiMenuItem:first-child a {
+.minorityMenu .apiMenuTexts .apiMenuItem:first-child a {
     padding-left: 28px;
 }
 
-.apiaryMenu .apiMenuTexts .apiMenuItem:last-child a {
+.minorityMenu .apiMenuTexts .apiMenuItem:last-child a {
     padding-right: 28px;
 }
 
-.apiaryMenu .apiMenuItem .apiMenuIcons .apiMenuItem a {
+.minorityMenu .apiMenuItem .apiMenuIcons .apiMenuItem a {
     float: left;
     min-width: 38px;
     padding: 30px 0;
 }
 
-.apiaryMenu .apiMenuItem #peopleLink {
+.minorityMenu .apiMenuItem #peopleLink {
     margin-left: 15px;
 }
 
-.apiaryMenu .menuHelp {
+.minorityMenu .menuHelp {
     -webkit-box-flex: 1;
     -moz-box-flex: 1;
     -o-box-flex: 1;
@@ -799,11 +801,11 @@ background-color: #7FDBFF;
     flex: 0 0 auto;
 }
 
-.apiaryMenu .menuHelp.selected .switcherToggle,.apiaryMenu .menuHelp:hover .switcherToggle {
+.minorityMenu .menuHelp.selected .switcherToggle,.minorityMenu .menuHelp:hover .switcherToggle {
     background: none;
 }
 
-.apiaryMenu .menuHelp .helpLinks {
+.minorityMenu .menuHelp .helpLinks {
     color: #959cad;
     display: block;
     text-align: center;
@@ -814,7 +816,7 @@ background-color: #7FDBFF;
     cursor: pointer;
 }
 
-.apiaryMenu .menuHelp .helpPopup {
+.minorityMenu .menuHelp .helpPopup {
     position: absolute;
     top: 100%;
     margin-right: 0;
@@ -824,21 +826,21 @@ background-color: #7FDBFF;
     white-space: nowrap;
 }
 
-.apiaryMenu .menuHelp .helpPopup a {
+.minorityMenu .menuHelp .helpPopup a {
     display: inline-block;
     color: #959cad;
 }
 
-.apiaryMenu .menuHelp .helpPopup a.hideableHelpLink {
+.minorityMenu .menuHelp .helpPopup a.hideableHelpLink {
     display: none;
 }
 
-.apiaryMenu .menuHelp .helpPopup span.helpText {
+.minorityMenu .menuHelp .helpPopup span.helpText {
     display: none;
     line-height: 1;
 }
 
-.apiaryMenu .menuHelp .helpPopup .unreadCounter {
+.minorityMenu .menuHelp .helpPopup .unreadCounter {
     position: relative;
     left: 0;
     right: 0;
@@ -855,7 +857,7 @@ background-color: #7FDBFF;
     color: #555;
 }
 
-.apiaryMenu .menuHelp .helpPopup .unreadCounter:after {
+.minorityMenu .menuHelp .helpPopup .unreadCounter:after {
     content: '';
     position: absolute;
     width: 0;
@@ -869,14 +871,14 @@ background-color: #7FDBFF;
     display: none;
 }
 
-.apiaryMenu .menuHelp .helpPopup.visuallyhidden {
+.minorityMenu .menuHelp .helpPopup.visuallyhidden {
     clip: auto;
     overflow: visible;
     height: 0;
     width: 100%;
 }
 
-.apiaryMenu .menuHelp .helpPopup.visuallyhidden .unreadCounter {
+.minorityMenu .menuHelp .helpPopup.visuallyhidden .unreadCounter {
     position: absolute;
     left: 50%;
     right: auto;
@@ -885,11 +887,11 @@ background-color: #7FDBFF;
     text-align: center;
 }
 
-.apiaryMenu .menuHelp .helpPopup.visuallyhidden .unreadCounter:after {
+.minorityMenu .menuHelp .helpPopup.visuallyhidden .unreadCounter:after {
     display: block;
 }
 
-.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer {
+.minorityMenu .menuHelp.selected .helpPopup.switcherLayer {
     margin-top: -10px;
     margin-right: 0;
     -webkit-border-radius: 3px;
@@ -898,7 +900,7 @@ background-color: #7FDBFF;
     box-shadow: 0 0 1px 1px rgba(173,184,217,0.4);
 }
 
-.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer:after,.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer:before {
+.minorityMenu .menuHelp.selected .helpPopup.switcherLayer:after,.minorityMenu .menuHelp.selected .helpPopup.switcherLayer:before {
     pointer-events: none;
     content: '';
     position: absolute;
@@ -910,13 +912,13 @@ background-color: #7FDBFF;
     border-bottom-color: rgba(173,184,217,0.6);
 }
 
-.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer:after {
+.minorityMenu .menuHelp.selected .helpPopup.switcherLayer:after {
     margin: -14px -16px 0 0;
     border-width: 7px;
     border-bottom-color: #f0f2f8;
 }
 
-.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer a,.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer a.hideableHelpLink {
+.minorityMenu .menuHelp.selected .helpPopup.switcherLayer a,.minorityMenu .menuHelp.selected .helpPopup.switcherLayer a.hideableHelpLink {
     background-color: #f0f2f8;
     display: block;
     padding: 0;
@@ -926,11 +928,11 @@ background-color: #7FDBFF;
     border-top: 1px solid #e1e3e8;
 }
 
-.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer a:hover,.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer a.hideableHelpLink:hover {
+.minorityMenu .menuHelp.selected .helpPopup.switcherLayer a:hover,.minorityMenu .menuHelp.selected .helpPopup.switcherLayer a.hideableHelpLink:hover {
     color: #000;
 }
 
-.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer a:first-child,.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer a.hideableHelpLink:first-child {
+.minorityMenu .menuHelp.selected .helpPopup.switcherLayer a:first-child,.minorityMenu .menuHelp.selected .helpPopup.switcherLayer a.hideableHelpLink:first-child {
     -webkit-border-top-left-radius: 3px;
     border-top-left-radius: 3px;
     -webkit-border-top-right-radius: 3px;
@@ -938,14 +940,14 @@ background-color: #7FDBFF;
     border-top: none;
 }
 
-.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer a:last-child,.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer a.hideableHelpLink:last-child {
+.minorityMenu .menuHelp.selected .helpPopup.switcherLayer a:last-child,.minorityMenu .menuHelp.selected .helpPopup.switcherLayer a.hideableHelpLink:last-child {
     -webkit-border-bottom-left-radius: 3px;
     border-bottom-left-radius: 3px;
     -webkit-border-bottom-right-radius: 3px;
     border-bottom-right-radius: 3px;
 }
 
-.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer span.helpText {
+.minorityMenu .menuHelp.selected .helpPopup.switcherLayer span.helpText {
     padding: 0 20px 0 60px;
     line-height: 60px;
     font-size: 16px;
@@ -955,18 +957,18 @@ background-color: #7FDBFF;
     font-family: TitilliumText,'Proxima Nova',Helvetica,Arial,sans-serif;
 }
 
-.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer span.helpText .vIco {
+.minorityMenu .menuHelp.selected .helpPopup.switcherLayer span.helpText .vIco {
     position: absolute;
     top: 50%;
     margin-top: -10px;
     left: 20px;
 }
 
-.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer span.helpText .vIco.vStackOverflow {
+.minorityMenu .menuHelp.selected .helpPopup.switcherLayer span.helpText .vIco.vStackOverflow {
     margin-top: -14px;
 }
 
-.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer span.helpText .vSpeech {
+.minorityMenu .menuHelp.selected .helpPopup.switcherLayer span.helpText .vSpeech {
     -webkit-transform: scale(1.2);
     -moz-transform: scale(1.2);
     -o-transform: scale(1.2);
@@ -974,11 +976,11 @@ background-color: #7FDBFF;
     transform: scale(1.2);
 }
 
-.apiaryMenu .menuHelp.selected .helpPopup.switcherLayer span.helpText .vBook {
+.minorityMenu .menuHelp.selected .helpPopup.switcherLayer span.helpText .vBook {
     margin-left: -2px;
 }
 
-.apiaryMenu .secondaryNav {
+.minorityMenu .secondaryNav {
     -webkit-box-flex: 1;
     -moz-box-flex: 1;
     -o-box-flex: 1;
@@ -997,7 +999,7 @@ background-color: #7FDBFF;
     color: #555;
 }
 
-.apiaryMenu .secondaryNav .switcherLayer {
+.minorityMenu .secondaryNav .switcherLayer {
     right: 0;
     top: 100%;
     text-align: left;
@@ -1008,20 +1010,20 @@ background-color: #7FDBFF;
     text-shadow: none;
 }
 
-.apiaryMenu .secondaryNav .secondaryNavLayer {
+.minorityMenu .secondaryNav .secondaryNavLayer {
     background-color: #f0f2f8;
     min-width: 100%;
 }
 
-.apiaryMenu .secondaryNav .secondaryNavItem {
+.minorityMenu .secondaryNav .secondaryNavItem {
     border-top: 1px solid #676d81;
 }
 
-.apiaryMenu .secondaryNav .secondaryNavItem:last-child,.apiaryMenu .secondaryNav .secondaryNavItem:first-child {
+.minorityMenu .secondaryNav .secondaryNavItem:last-child,.minorityMenu .secondaryNav .secondaryNavItem:first-child {
     border-top: none;
 }
 
-.apiaryMenu .secondaryNav .secondaryNavItem a,.apiaryMenu .secondaryNav .secondaryNavItem .logoutBtn {
+.minorityMenu .secondaryNav .secondaryNavItem a,.minorityMenu .secondaryNav .secondaryNavItem .logoutBtn {
     padding: 22px 20px 18px 53px;
     display: block;
     margin: 0;
@@ -1042,7 +1044,7 @@ background-color: #7FDBFF;
     position: relative;
 }
 
-.apiaryMenu .secondaryNav .secondaryNavItem a .vIco,.apiaryMenu .secondaryNav .secondaryNavItem .logoutBtn .vIco,.apiaryMenu .secondaryNav .secondaryNavItem a i[class^='icon-'],.apiaryMenu .secondaryNav .secondaryNavItem .logoutBtn i[class^='icon-'] {
+.minorityMenu .secondaryNav .secondaryNavItem a .vIco,.minorityMenu .secondaryNav .secondaryNavItem .logoutBtn .vIco,.minorityMenu .secondaryNav .secondaryNavItem a i[class^='icon-'],.minorityMenu .secondaryNav .secondaryNavItem .logoutBtn i[class^='icon-'] {
     font-size: 20px;
     position: absolute;
     top: 50%;
@@ -1051,38 +1053,38 @@ background-color: #7FDBFF;
     color: #7376f0;
 }
 
-.apiaryMenu .secondaryNav .secondaryNavItem a:hover,.apiaryMenu .secondaryNav .secondaryNavItem .logoutBtn:hover {
+.minorityMenu .secondaryNav .secondaryNavItem a:hover,.minorityMenu .secondaryNav .secondaryNavItem .logoutBtn:hover {
     color: #000;
     background-color: #e8ebf2;
 }
 
-.apiaryMenu .secondaryNav .secondaryNavItem .secondaryNavMenuTwoLines {
+.minorityMenu .secondaryNav .secondaryNavItem .secondaryNavMenuTwoLines {
     padding-top: 12px;
     padding-bottom: 10px;
 }
 
-.apiaryMenu .secondaryNav .secondaryNavItem .secondaryNavMenuDuoLine {
+.minorityMenu .secondaryNav .secondaryNavItem .secondaryNavMenuDuoLine {
     display: block;
     padding: 2px 0;
     line-height: 16px;
 }
 
-.apiaryMenu .secondaryNav .secondaryNavItem .secondaryNavMenuDuoLine:first-of-type {
+.minorityMenu .secondaryNav .secondaryNavItem .secondaryNavMenuDuoLine:first-of-type {
     font-size: 14px;
     line-height: 14px;
 }
 
-.apiaryMenu .secondaryNav .logoutForm {
+.minorityMenu .secondaryNav .logoutForm {
     overflow: hidden;
     border-top: 1px solid #e1e3e8;
 }
 
-.apiaryMenu .secondaryNav .logoutBtn {
+.minorityMenu .secondaryNav .logoutBtn {
     height: 61px;
     width: 100%;
 }
 
-.apiaryMenu .secondaryNav .switcherToggle {
+.minorityMenu .secondaryNav .switcherToggle {
     line-height: 44px;
     position: relative;
     display: inline-block;
@@ -1112,7 +1114,7 @@ background-color: #7FDBFF;
     transition-delay: 0;
 }
 
-.apiaryMenu .secondaryNav.dualLine {
+.minorityMenu .secondaryNav.dualLine {
     -webkit-box-flex: 1;
     -moz-box-flex: 1;
     -o-box-flex: 1;
@@ -1123,14 +1125,14 @@ background-color: #7FDBFF;
     white-space: nowrap;
 }
 
-.apiaryMenu .secondaryNav.dualLine .switcherToggle {
+.minorityMenu .secondaryNav.dualLine .switcherToggle {
     text-align: right;
     cursor: default;
     line-height: 20px;
     padding: 20px 25px 0;
 }
 
-.apiaryMenu .secondaryNav .headSignInLinks,.apiaryMenu .secondaryNav .poweredByApiary {
+.minorityMenu .secondaryNav .headSignInLinks {
     color: #777;
     margin: 0;
     padding: 0;
@@ -1138,20 +1140,16 @@ background-color: #7FDBFF;
     font-weight: 400;
 }
 
-.apiaryMenu .secondaryNav .poweredByApiary {
-    font-weight: 600;
-    font-size: 16px;
-}
 
-.apiaryMenu .secondaryNav .headSignInLinks a,.apiaryMenu .secondaryNav .poweredByApiary a {
+.minorityMenu .secondaryNav .headSignInLinks a {
     color: #959cad;
 }
 
-.apiaryMenu .secondaryNav .headSignInLinks a:hover,.apiaryMenu .secondaryNav .poweredByApiary a:hover {
+.minorityMenu .secondaryNav .headSignInLinks a:hover {
     color: #959cad;
 }
 
-.apiaryMenu .secondaryNav .gravatar {
+.minorityMenu .secondaryNav .gravatar {
     display: inline-block;
     -webkit-border-radius: 50%;
     border-radius: 50%;
@@ -1162,21 +1160,21 @@ background-color: #7FDBFF;
     overflow: hidden;
 }
 
-.apiaryMenu .secondaryNav .gravatar img {
+.minorityMenu .secondaryNav .gravatar img {
     -webkit-border-radius: 50%;
     border-radius: 50%;
     background-color: transparent;
     display: block;
 }
 
-.apiaryMenu .secondaryNav .smallGravatar {
+.minorityMenu .secondaryNav .smallGravatar {
     position: absolute;
     top: 50%;
     left: 15px;
     margin-top: -15px;
 }
 
-.apiaryMenu .secondaryNav .smallGravatar,.apiaryMenu .secondaryNav .smallGravatar img {
+.minorityMenu .secondaryNav .smallGravatar,.minorityMenu .secondaryNav .smallGravatar img {
     width: 30px;
     height: 30px;
     border: 0;
@@ -1322,246 +1320,222 @@ background-color: #7FDBFF;
     background-color: rgba(193,198,209,0.1);
 }
 
-.themeDark .apiaryMenu {
+.themeDark .minorityMenu {
     background: #4c5264;
 }
 
-.themeDark .apiaryMenu .createApi {
+.themeDark .minorityMenu .createApi {
     background-color: #49cc90;
     color: #fff;
 }
 
-.themeDark .apiaryMenu .createApi:hover {
+.themeDark .minorityMenu .createApi:hover {
     background-color: #37c383;
     color: #fff;
 }
 
-.themeDark .apiaryMenu .switcherWrap.selected .apiSwitcher {
+.themeDark .minorityMenu .switcherWrap.selected .apiSwitcher {
     background-color: #575e70;
 }
 
-.themeDark .apiaryMenu .switcherWrap.selected .switcherToggle {
+.themeDark .minorityMenu .switcherWrap.selected .switcherToggle {
     background-color: #575e70;
 }
 
-.themeDark .apiaryMenu .switcherWrap:hover .switcherToggle {
+.themeDark .minorityMenu .switcherWrap:hover .switcherToggle {
     background-color: #575e70;
 }
 
-.themeDark .apiaryMenu .apiNameCell.switcherWrap .apiSwitcher:hover {
+.themeDark .minorityMenu .apiNameCell.switcherWrap .apiSwitcher:hover {
     background-color: #575e70;
 }
 
-.themeDark .apiaryMenu a.apiLines:hover {
+.themeDark .minorityMenu a.apiLines:hover {
     background-color: #575e70;
 }
 
-.themeDark .apiaryMenu .switcherWrap.selected .switcherToggle {
+.themeDark .minorityMenu .switcherWrap.selected .switcherToggle {
     color: #fff;
 }
 
-.themeDark .apiaryMenu .switcherWrap .switcherToggle:hover {
+.themeDark .minorityMenu .switcherWrap .switcherToggle:hover {
     color: #fff;
 }
 
-.themeDark .apiaryMenu .isSelected {
+.themeDark .minorityMenu .isSelected {
     background-color: #575e70;
 }
 
-.themeDark .apiaryMenu .isSelected .apiLines .apiName {
+.themeDark .minorityMenu .isSelected .apiLines .apiName {
     color: #fff;
 }
 
-.themeDark .apiaryMenu .apiName {
+.themeDark .minorityMenu .apiName {
     color: #fff;
 }
 
-.themeDark .apiaryMenu .apiOwner {
+.themeDark .minorityMenu .apiOwner {
     color: #959cad;
 }
 
-.themeDark .apiaryMenu .apiSwitcherLayer {
+.themeDark .minorityMenu .apiSwitcherLayer {
     background-color: #4e5364;
 }
 
-.themeDark .apiaryMenu .apiSwitcherLayer .apiListItem {
+.themeDark .minorityMenu .apiSwitcherLayer .apiListItem {
     border-top-color: rgba(193,198,209,0.1);
 }
 
-.themeDark .apiaryMenu .apiSwitcherLayer .apiListItem.isSelected {
+.themeDark .minorityMenu .apiSwitcherLayer .apiListItem.isSelected {
     border-bottom-color: rgba(193,198,209,0.1);
 }
 
-.themeDark .apiaryMenu .apiSwitcherLayer .usersApisListFilter {
+.themeDark .minorityMenu .apiSwitcherLayer .usersApisListFilter {
     background-color: #3a3f4f;
     color: #8f8f8f;
 }
 
-.themeDark .apiaryMenu .apiMenuItem a {
+.themeDark .minorityMenu .apiMenuItem a {
     color: #959cad;
 }
 
-.themeDark .apiaryMenu .apiMenuItem a.selected {
+.themeDark .minorityMenu .apiMenuItem a.selected {
     color: #fff;
 }
 
 .themeDark .menuTeamLink:hover * {
     color: #7FDBFF !important;
 }
-.themeDark .apiaryMenu .apiMenuItem a:hover {
+.themeDark .minorityMenu .apiMenuItem a:hover {
 color: #7FDBFF;
 }
 
-.themeDark .apiaryMenu .menuHelp.selected .switcherToggle {
+.themeDark .minorityMenu .menuHelp.selected .switcherToggle {
     background: none;
 }
 
-.themeDark .apiaryMenu .menuHelp:hover .switcherToggle {
+.themeDark .minorityMenu .menuHelp:hover .switcherToggle {
     background: none;
 }
 
-.themeDark .apiaryMenu .menuHelp .helpLinks {
+.themeDark .minorityMenu .menuHelp .helpLinks {
     color: #959cad;
 }
 
-.themeDark .apiaryMenu .menuHelp .helpPopup a {
+.themeDark .minorityMenu .menuHelp .helpPopup a {
     color: #fff;
 }
 
-.themeDark .apiaryMenu .menuHelp .helpPopup .unreadCounter {
+.themeDark .minorityMenu .menuHelp .helpPopup .unreadCounter {
     background-color: #4e5364;
     color: #ddd;
 }
 
-.themeDark .apiaryMenu .menuHelp .helpPopup .unreadCounter:after {
+.themeDark .minorityMenu .menuHelp .helpPopup .unreadCounter:after {
     border-bottom-color: #4e5364;
 }
 
-.themeDark .apiaryMenu .menuHelp.selected .helpPopup.switcherLayer {
+.themeDark .minorityMenu .menuHelp.selected .helpPopup.switcherLayer {
     -webkit-box-shadow: 0 0 1px 1px rgba(107,114,137,0.4);
 }
 
-.themeDark .apiaryMenu .menuHelp.selected .helpPopup.switcherLayer:after {
+.themeDark .minorityMenu .menuHelp.selected .helpPopup.switcherLayer:after {
     border-bottom-color: rgba(107,114,137,0.6);
 }
 
-.themeDark .apiaryMenu .menuHelp.selected .helpPopup.switcherLayer:before {
+.themeDark .minorityMenu .menuHelp.selected .helpPopup.switcherLayer:before {
     border-bottom-color: rgba(107,114,137,0.6);
 }
 
-.themeDark .apiaryMenu .menuHelp.selected .helpPopup.switcherLayer:after {
+.themeDark .minorityMenu .menuHelp.selected .helpPopup.switcherLayer:after {
     border-bottom-color: #575e70;
 }
 
-.themeDark .apiaryMenu .menuHelp.selected .helpPopup.switcherLayer a {
+.themeDark .minorityMenu .menuHelp.selected .helpPopup.switcherLayer a {
     background-color: #575e70;
 }
 
-.themeDark .apiaryMenu .menuHelp.selected .helpPopup.switcherLayer a.hideableHelpLink {
+.themeDark .minorityMenu .menuHelp.selected .helpPopup.switcherLayer a.hideableHelpLink {
     background-color: #575e70;
 }
 
-.themeDark .apiaryMenu .menuHelp.selected .helpPopup.switcherLayer a:hover {
+.themeDark .minorityMenu .menuHelp.selected .helpPopup.switcherLayer a:hover {
     color: #fff;
     background-color: #676d81;
 }
 
-.themeDark .apiaryMenu .menuHelp.selected .helpPopup.switcherLayer a.hideableHelpLink:hover {
+.themeDark .minorityMenu .menuHelp.selected .helpPopup.switcherLayer a.hideableHelpLink:hover {
     color: #fff;
     background-color: #676d81;
 }
 
-.themeDark .apiaryMenu .menuHelp.selected .helpPopup.switcherLayer a {
+.themeDark .minorityMenu .menuHelp.selected .helpPopup.switcherLayer a {
     border-top-color: rgba(193,198,209,0.1);
 }
 
-.themeDark .apiaryMenu .menuHelp.selected .helpPopup.switcherLayer a.hideableHelpLink {
+.themeDark .minorityMenu .menuHelp.selected .helpPopup.switcherLayer a.hideableHelpLink {
     border-top-color: rgba(193,198,209,0.1);
 }
 
-.themeDark .apiaryMenu .secondaryNav {
+.themeDark .minorityMenu .secondaryNav {
     color: #ddd;
 }
 
-.themeDark .apiaryMenu .secondaryNav .secondaryNavLayer {
+.themeDark .minorityMenu .secondaryNav .secondaryNavLayer {
     background-color: #575e70;
 }
 
-.themeDark .apiaryMenu .secondaryNav .secondaryNavItem {
+.themeDark .minorityMenu .secondaryNav .secondaryNavItem {
     border-top-color: #676d81;
 }
 
-.themeDark .apiaryMenu .secondaryNav .secondaryNavItem a {
+.themeDark .minorityMenu .secondaryNav .secondaryNavItem a {
     color: #fff;
 }
 
-.themeDark .apiaryMenu .secondaryNav .secondaryNavItem .logoutBtn {
+.themeDark .minorityMenu .secondaryNav .secondaryNavItem .logoutBtn {
     color: #fff;
 }
 
-.themeDark .apiaryMenu .secondaryNav .secondaryNavItem a .vIco {
+.themeDark .minorityMenu .secondaryNav .secondaryNavItem a .vIco {
     color: #fff;
 }
 
-.themeDark .apiaryMenu .secondaryNav .secondaryNavItem .logoutBtn .vIco {
+.themeDark .minorityMenu .secondaryNav .secondaryNavItem .logoutBtn .vIco {
     color: #fff;
 }
 
-.themeDark .apiaryMenu .secondaryNav .secondaryNavItem a i[class^='icon-'] {
+.themeDark .minorityMenu .secondaryNav .secondaryNavItem a i[class^='icon-'] {
     color: #fff;
 }
-
-.themeDark .apiaryMenu .secondaryNav .secondaryNavItem .logoutBtn i[class^='icon-'] {
+.themeDark .minorityMenu .secondaryNav .secondaryNavItem .logoutBtn i[class^='icon-'] {
     color: #fff;
 }
-
-.themeDark .apiaryMenu .secondaryNav .secondaryNavItem a:hover {
+.themeDark .minorityMenu .secondaryNav .secondaryNavItem a:hover {
     color: #fff;
     background-color: #676d81;
 }
-
-.themeDark .apiaryMenu .secondaryNav .secondaryNavItem .logoutBtn:hover {
+.themeDark .minorityMenu .secondaryNav .secondaryNavItem .logoutBtn:hover {
     color: #fff;
     background-color: #676d81;
 }
-
-.themeDark .apiaryMenu .secondaryNav .logoutForm {
+.themeDark .minorityMenu .secondaryNav .logoutForm {
     border-top-color: rgba(193,198,209,0.1);
     background-color: #575e70;
 }
-
-.themeDark .apiaryMenu .secondaryNav .logoutBtn {
+.themeDark .minorityMenu .secondaryNav .logoutBtn {
     background-color: #575e70;
 }
-
-.themeDark .apiaryMenu .secondaryNav .switcherToggle {
+.themeDark .minorityMenu .secondaryNav .switcherToggle {
     background-color: rgba(87,94,112,0.001);
 }
-
-.themeDark .apiaryMenu .secondaryNav .headSignInLinks {
+.themeDark .minorityMenu .secondaryNav .headSignInLinks {
     color: #aaa;
 }
 
-.themeDark .apiaryMenu .secondaryNav .poweredByApiary {
-    color: #aaa;
-}
-
-.themeDark .apiaryMenu .secondaryNav .poweredByApiary {
-    color: #fff;
-}
-
-.themeDark .apiaryMenu .secondaryNav .headSignInLinks a {
+.themeDark .minorityMenu .secondaryNav .headSignInLinks a {
     color: #6c9cff;
 }
-
-.themeDark .apiaryMenu .secondaryNav .poweredByApiary a {
-    color: #6c9cff;
-}
-
-.themeDark .apiaryMenu .secondaryNav .headSignInLinks a:hover {
-    color: #4482ff;
-}
-
-.themeDark .apiaryMenu .secondaryNav .poweredByApiary a:hover {
+.themeDark .minorityMenu .secondaryNav .headSignInLinks a:hover {
     color: #4482ff;
 }

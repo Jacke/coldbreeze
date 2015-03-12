@@ -86,6 +86,9 @@ class Accounts(tag: Tag) extends Table[AccountDAO](tag, "accounts") {
 
   def lang = column[String]("lang")
 
+  def country = column[Option[String]]("country")
+  def phone = column[Option[String]]("phone")
+
   def * = (providerId,
            userId,
            firstName,
@@ -97,7 +100,7 @@ class Accounts(tag: Tag) extends Table[AccountDAO](tag, "accounts") {
     token, secret,
     accessToken, tokenType, expiresIn, refreshToken,
     hasher, password, salt,
-    lang) <> (AccountDAO.tupled, AccountDAO.unapply)
+    lang, country, phone) <> (AccountDAO.tupled, AccountDAO.unapply)
 }
 
 case class AccountDAO(providerId: String,
@@ -114,7 +117,9 @@ accessToken:Option[String], tokenType:Option[String], expiresIn:Option[Int], ref
 
 hasher:String, password:String, salt:Option[String],
 
-lang: String = "en"
+lang: String = "en",
+country: Option[String] = None,
+phone: Option[String] = None
 
                        ) {
   import AccImplicits._
@@ -286,6 +291,12 @@ object TokensDAO {
       tokens.ddl.create
     }
   }
+  def ddl_drop = {
+    database withSession {
+      implicit session =>
+        tokens.ddl.drop
+    }
+  }
 }
 
 object AccountsDAO {
@@ -322,6 +333,14 @@ object AccountsDAO {
         case _ => "en"
       }
   }
+  def updateLang(email: String, lang: String) = database withSession {
+    implicit session ⇒
+      val q3 = for { a ← accounts if a.userId === email } yield a
+      q3.list.headOption match {
+        case Some(account) => accounts.filter(_.email === email).update(account.copy(lang = lang)) 
+        case _ => "en"
+      }
+  }
   def findAllByEmails(emails: List[String]) = database withSession {
     implicit session ⇒
       val q3 = for { a ← accounts if a.userId inSetBind emails } yield a
@@ -348,7 +367,7 @@ import controllers.Credentials
       val result = q3.list.headOption
       result match {
         case Some(origin) => {
-         val toUpdate = origin.copy(firstName = cred.firstName, lastName = cred.lastName, fullName = cred.fullName, lang = cred.lang)
+         val toUpdate = origin.copy(firstName = cred.firstName, lastName = cred.lastName, fullName = cred.fullName, lang = cred.lang, country = cred.country, phone = cred.phone)
            accounts.filter(_.email === email).update(toUpdate)
            true
         }
@@ -412,6 +431,12 @@ import controllers.Credentials
     database withSession {
       implicit session =>
       accounts.ddl.create
+    }
+  }
+  def ddl_drop = {
+    database withSession {
+      implicit session =>
+        accounts.ddl.drop
     }
   }
 }

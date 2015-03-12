@@ -1,6 +1,6 @@
 /**
  * angular-strap
- * @version v2.0.0 - 2014-04-07
+ * @version v2.0.5 - 2014-08-07
  * @link http://mgcrea.github.io/angular-strap
  * @author Olivier Louvignes (olivier@mg-crea.com)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -9,6 +9,9 @@
 angular.module('mgcrea.ngStrap.popover', ['mgcrea.ngStrap.tooltip']).provider('$popover', function () {
   var defaults = this.defaults = {
       animation: 'am-fade',
+      customClass: '',
+      container: false,
+      target: false,
       placement: 'right',
       template: 'popover/popover.tpl.html',
       contentTemplate: false,
@@ -17,8 +20,7 @@ angular.module('mgcrea.ngStrap.popover', ['mgcrea.ngStrap.tooltip']).provider('$
       html: false,
       title: '',
       content: '',
-      delay: 0,
-      container: false
+      delay: 0
     };
   this.$get = [
     '$tooltip',
@@ -54,11 +56,13 @@ angular.module('mgcrea.ngStrap.popover', ['mgcrea.ngStrap.tooltip']).provider('$
           'contentTemplate',
           'placement',
           'container',
+          'target',
           'delay',
           'trigger',
           'keyboard',
           'html',
-          'animation'
+          'animation',
+          'customClass'
         ], function (key) {
           if (angular.isDefined(attr[key]))
             options[key] = attr[key];
@@ -86,6 +90,14 @@ angular.module('mgcrea.ngStrap.popover', ['mgcrea.ngStrap.tooltip']).provider('$
             popover && popover.$applyPlacement();
           });
         }, true);
+        // Visibility binding support
+        attr.bsShow && scope.$watch(attr.bsShow, function (newValue, oldValue) {
+          if (!popover || !angular.isDefined(newValue))
+            return;
+          if (angular.isString(newValue))
+            newValue = newValue.match(',?(popover),?');
+          newValue === true ? popover.show() : popover.hide();
+        });
         // Initialize popover
         var popover = $popover(element, options);
         // Garbage collection

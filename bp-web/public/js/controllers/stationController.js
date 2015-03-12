@@ -2,12 +2,26 @@
  * BP Station
  */
 // INDEX
-minorityControllers.controller('BPstationListCtrl', ['$http','$scope', '$filter', 'BProcessesFactory', 'BPInLoggersStationFactory','BPInLoggersFactory','BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
-  function ($http, $scope, $filter, BProcessesFactory, BPInLoggersStationFactory,BPInLoggersFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
-
+minorityControllers.controller('BPstationListCtrl', ['$http', '$window', '$scope', '$filter', '$rootScope','ObserversFactory', 'ObserverFactory', 'BProcessesFactory', 'BPInLoggersStationFactory','BPInLoggersFactory','BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
+  function ($http, $window, $scope, $filter, $rootScope, ObserversFactory, ObserverFactory, BProcessesFactory, BPInLoggersStationFactory,BPInLoggersFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
+  $scope.bpId = $route.current.params.BPid;
   $scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
   $scope.spaces =  BPSpacesFactory.query({ BPid: $route.current.params.BPid });
   $scope.spaceelems = BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid });
+
+
+$scope.isManager = function () {
+  if ($scope.isManagerVal == undefined && $rootScope.manager != undefined) {
+    $scope.isManagerVal = $rootScope.manager;
+    return $scope.isManagerVal;
+  } else {
+    return $window.localStorage.manager == "true";
+  }
+};
+
+$scope.isManagerVal = $scope.isManager();
+$scope.isManager();
+
   /* callback for ng-click 'editUser': */
   $scope.bpelems.$promise.then(function(data) {
     $scope.spaces.$promise.then(function(data2) {
@@ -70,7 +84,8 @@ $scope.stationsRefresh = function() {
 
   BPStationsFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(data) {
 
-           $scope.bpstations = data;      
+           $scope.bpstations = data; 
+           $scope.fetchObservers($scope.bpstations);     
            console.log("boom");
       $scope.bpelems.$promise.then(function(data34) {
       $scope.spaces.$promise.then(function(data2) {
@@ -142,20 +157,38 @@ $scope.stationsRefresh();
          }
   }
   $scope.onlyActive = false;
-
+  $scope.onlyCanceled = false;
+  $scope.onlyFinished = false;
 
   $scope.isOnlyActive = function(station) {
-    if ($scope.onlyActive) {
+    if ($scope.onlyActive && !$scope.onlyPaused && !$scope.onlyFinished) {
       return station.paused == true && station.state != false; 
     }
+    if (!$scope.onlyActive && !$scope.onlyPaused && $scope.onlyFinished) {
+      return station.finished == true; 
+    }
+    if (!$scope.onlyActive && $scope.onlyCanceled) {
+      return station.canceled == true; 
+    }
+    
+    
     else {
       return station;
     }
   }
 
 
+  $scope.updateNote = function(station) {
 
-
+    var token = $window.sessionStorage.getItem('token');
+    $http.post(jsRoutes.controllers.BusinessProcessController.update_note(station.process, station.id).absoluteURL(document.ssl_enabled), {msg: station.note})
+          .success(function (note_success) {
+              console.log(note_success);
+              console.log(station.note);
+          })
+          .error(function () {
+          });
+  }
 
 
 
@@ -167,9 +200,27 @@ $scope.stationsRefresh();
   * Observers stuff
   */
   $scope.fetchObservers = function (stations) {
-    _.forEach(stations, function(station){ return station.obsrs = {"email": "test@mail.ru"} });
+    _.forEach(stations, function(station){ 
+      station.newObserver = {bprocess: $scope.bpId, station_id: station.id};
+      return station.obsrs = ObserversFactory.query({ process: $scope.bpId, station: station.id}); 
+    });
 
   };
+  $scope.deleteObserver = function(observe_id) {
+      ObserverFactory.delete({ observe_id: observe_id }).$promise.then( function() {
+          $scope.fetchObservers($scope.bpstations);
+      });
+  }
+  $scope.createNewObserver = function(newObserver) {
+
+      ObserversFactory.create(newObserver).$promise.then( function(data) {
+         $scope.fetchObservers($scope.bpstations);
+      });
+      
+  }
+
+
+
   //$scope.inputLoggers = function (stationId) {
     //_.filter($scope.allInputLogs, function(il){ return il.station == stationId; })
     //BPInLoggersStationFactory.query({BPid: $route.current.params.BPid, station_id: stationId});

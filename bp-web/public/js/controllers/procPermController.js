@@ -4,8 +4,20 @@
  * BP Perm
  */
 // INDEX
-minorityControllers.controller('BPPermListCtrl', ['$scope', '$filter', 'EmployeesFactory','ProcPermissionsFactory','PermissionsFactory', 'PermissionFactory', 'BProcessesFactory','BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
-  function ($scope, $filter, EmployeesFactory,ProcPermissionsFactory,PermissionsFactory, PermissionFactory, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
+minorityControllers.controller('BPPermListCtrl', ['$scope', '$filter', '$rootScope','EmployeesFactory','ProcPermissionsFactory','PermissionsFactory', 'PermissionFactory', 'BProcessesFactory','BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route', '$window',
+  function ($scope, $filter, $rootScope,EmployeesFactory,ProcPermissionsFactory,PermissionsFactory, PermissionFactory, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route, $window) {
+
+$scope.isManager = function () {
+  if ($scope.isManagerVal == undefined && $rootScope.manager != undefined) {
+    $scope.isManagerVal = $rootScope.manager;
+    return $scope.isManagerVal;
+  } else {
+    return $window.localStorage.manager == "true";
+  }
+};
+
+$scope.isManagerVal = $scope.isManager();
+$scope.isManager();
 
 
   $scope.bpelems = BPElemsFactory.query({ BPid: $scope.BPid });

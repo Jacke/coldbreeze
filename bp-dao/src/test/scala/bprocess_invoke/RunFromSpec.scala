@@ -21,7 +21,7 @@ trait ProcessSample {
   lazy val dblogger = BPLoggerDAO.from_origin_lgr(process.logger, process_dto, station_id)//, station:Int = 1)
 
 }
-
+/*
 class RunInitiallySpec extends Specification with ProcessSample {
 
 
@@ -97,3 +97,5 @@ class OrderSpec extends  Specification with ProcessSample {
 // update CV from logger
 // check log and log cv for updates
 //
+
+*/

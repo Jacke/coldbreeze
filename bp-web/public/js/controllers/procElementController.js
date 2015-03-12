@@ -11,6 +11,21 @@ minorityControllers.controller('BPelementListCtrl', ['$window','$filter', '$root
   $scope.route = jsRoutes.controllers.BusinessProcessController;
   $scope.businessSet = $rootScope.business;
 
+console.log("instantiate");
+
+$scope.isManager = function () {
+  if ($scope.isManagerVal == undefined && $rootScope.manager != undefined) {
+    $scope.isManagerVal = $rootScope.manager;
+    return $scope.isManagerVal;
+  } else {
+    return $window.localStorage.manager == "true";
+  }
+};
+
+$scope.isManagerVal = $scope.isManager();
+$scope.isManager();
+
+
   $scope.business = function () {
      return parseInt($window.sessionStorage.getItem('business'));
       
@@ -46,7 +61,7 @@ minorityControllers.controller('BPelementListCtrl', ['$window','$filter', '$root
   }
   $scope.copyProcess = function () {
     var data = {};
-    $http.post($scope.route.copy($scope.bp.id, $scope.bp.title + " Copy").url, data).success(function(success) {
+    $http.post($scope.route.copy($scope.bp.id, $scope.bp.title + " Copy").absoluteURL(document.ssl_enabled), data).success(function(success) {
         console.log(success);
         $location.path('/bprocesses');
     }).error(function (error) {
@@ -54,6 +69,12 @@ minorityControllers.controller('BPelementListCtrl', ['$window','$filter', '$root
     });
   };
 
+  $scope.testing = function (elem) {
+  $scope.updateElem(elem);
+  var z = BPElemsFactory.query({ BPid: $route.current.params.BPid });
+  console.log("test");
+  console.log(z);
+}
   /** 
    * Modals window
    */
@@ -240,17 +261,21 @@ minorityControllers.controller('BPelementListCtrl', ['$window','$filter', '$root
 
 
 
-  /* callback for ng-click 'editUser': */
   $scope.editElem = function (bpId) {
     $location.path('/bp-detail/' + bpId + '/edit');
   };
   $scope.showElem = function (bpId) {
     $location.path('/bprocess/' + bpId + '/show');
   };
-  /* callback for ng-click 'deleteUser': */
 
 
-
+  // Flush form
+  //
+  $scope.flushEditForm = function(form, space) {
+   space.newSpaceelem = { desc:  "", bprocess: parseInt($route.current.params.BPid), business: $scope.business,  comps: [ { "a_string" : null} ] };
+   form = { desc:  "", bprocess: parseInt($route.current.params.BPid), business: $scope.business,  comps: [ { "a_string" : null} ] };
+   $scope.cneedit = false;
+  }
 
 
 
@@ -259,7 +284,7 @@ minorityControllers.controller('BPelementListCtrl', ['$window','$filter', '$root
   */
   $scope.newSpace = { bprocess: $route.current.params.BPid, nestingLevel: 1, container:false,subbrick:false }
   $scope.newBpelem = { desc: "", bprocess: parseInt($route.current.params.BPid), business: $scope.business(), comps: [ { "a_string" : null} ] }
-  //$scope.newSpaceelem = { desc:  "", bprocess: parseInt($route.current.params.BPid), business: $scope.business, space_role: "container",  comps: [ { "a_string" : null} ] }
+  $scope.newSpaceelem = { desc:  "", bprocess: parseInt($route.current.params.BPid), business: $scope.business, space_role: "container",  comps: [ { "a_string" : null} ] }
 
 
 
@@ -784,6 +809,7 @@ $scope.createSpaceElemFromSpace = function (obj) {
               $scope.reloadTree($scope.trees);
 };
 $scope.createSpaceElem = function (obj) {
+    console.log("elemcreatecalled" + obj);
 
     BPSpaceElemsFactory.create(obj).$promise.then(function(elem_data) {
 
@@ -814,7 +840,8 @@ $scope.createSpaceElem = function (obj) {
 
 
 
-               _.forEach(data, function(sp){ sp.newSpaceelem = { desc:  "", bprocess: parseInt($route.current.params.BPid), business: $scope.business(), space_owned: sp.id, space_role: "container",  comps: [ { "a_string" : null} ] }});
+               _.forEach(data, function(sp){ 
+            sp.newSpaceelem = { desc:  "", bprocess: parseInt($route.current.params.BPid), business: $scope.business(), space_owned: sp.id, space_role: "container",  comps: [ { "a_string" : null} ] }});
 
 
                 $scope.spaces = data;
@@ -860,7 +887,7 @@ $scope.deleteSpaceElem = function (obj) {
       }
       else {
             $scope.spaceelems =  BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid });
-
+            $scope.reloadTree($scope.trees);
       }
     $scope.reloadTree($scope.trees);
     });

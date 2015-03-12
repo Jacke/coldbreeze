@@ -5,11 +5,11 @@
 
 @implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f)}
 
-@main("Edit business", user) {
+@main(Messages("businesses.editBusiness"), user) {
 <!-- Begin page content -->
 <div class="container">
 <div class="page-header">
-<h1>Edit the business</h1>
+<h1>Messages("businesses.editBusiness")</h1>
 </div>
 
 <div class="row">
@@ -19,12 +19,12 @@
 
 
 
-@inputText(serviceForm("title"), '_label -> "Name", 'class -> "form-control")
+@inputText(serviceForm("title"), '_label -> Messages("businesses.name"), 'class -> "form-control")
 </fieldset>
 
 <div class="actions">
-<input type="submit" value="Edit this business" class="btn btn-primary"> or
-<a href="@routes.BusinessController.index()" class="btn btn-default">Cancel</a>
+<input type="submit" value="Edit this business" class="btn btn-primary"> Messages("custom.or")
+<a href="@routes.BusinessController.index()" class="btn btn-default">Messages("custom.cancel")</a>
 </div>  
 }
 </div>

@@ -65,6 +65,12 @@ object AccountLoggerDAO {
       account_loggers.ddl.create
     }
   }
+  def ddl_drop = {
+    database withSession {
+      implicit session =>
+        account_loggers.ddl.drop
+    }
+  }
 
 }
 

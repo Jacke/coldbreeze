@@ -1,6 +1,6 @@
 /**
  * angular-strap
- * @version v2.0.0 - 2014-04-07
+ * @version v2.0.5 - 2014-08-07
  * @link http://mgcrea.github.io/angular-strap
  * @author Olivier Louvignes (olivier@mg-crea.com)
  * @license MIT License, http://www.opensource.org/licenses/MIT
@@ -35,10 +35,9 @@ angular.module('mgcrea.ngStrap.aside', ['mgcrea.ngStrap.modal']).provider('$asid
   ];
 }).directive('bsAside', [
   '$window',
-  '$location',
   '$sce',
   '$aside',
-  function ($window, $location, $sce, $aside) {
+  function ($window, $sce, $aside) {
     var requestAnimationFrame = $window.requestAnimationFrame || $window.setTimeout;
     return {
       restrict: 'EAC',

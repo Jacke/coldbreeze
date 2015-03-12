@@ -7,6 +7,7 @@ angular.module('mgcrea.ngStrap.select', ['mgcrea.ngStrap.tooltip', 'mgcrea.ngStr
     var defaults = this.defaults = {
       animation: 'am-fade',
       prefixClass: 'select',
+      prefixEvent: '$select',
       placement: 'bottom-left',
       template: 'select/select.tpl.html',
       trigger: 'focus',
@@ -15,17 +16,20 @@ angular.module('mgcrea.ngStrap.select', ['mgcrea.ngStrap.tooltip', 'mgcrea.ngStr
       html: false,
       delay: 0,
       multiple: false,
+      allNoneButtons: false,
       sort: true,
       caretHtml: '&nbsp;<span class="caret"></span>',
       placeholder: 'Choose among the following...',
       maxLength: 3,
-      maxLengthHtml: 'selected'
+      maxLengthHtml: 'selected',
+      iconCheckmark: 'glyphicon glyphicon-ok'
     };
 
     this.$get = function($window, $document, $rootScope, $tooltip) {
 
       var bodyEl = angular.element($window.document.body);
-      var isTouch = 'createTouch' in $window.document;
+      var isNative = /(ip(a|o)d|iphone|android)/ig.test($window.navigator.userAgent);
+      var isTouch = ('createTouch' in $window.document) && isNative;
 
       function SelectFactory(element, controller, config) {
 
@@ -35,12 +39,13 @@ angular.module('mgcrea.ngStrap.select', ['mgcrea.ngStrap.tooltip', 'mgcrea.ngStr
         var options = angular.extend({}, defaults, config);
 
         $select = $tooltip(element, options);
-        var parentScope = config.scope;
         var scope = $select.$scope;
 
         scope.$matches = [];
         scope.$activeIndex = 0;
         scope.$isMultiple = options.multiple;
+        scope.$showAllNoneButtons = options.allNoneButtons && options.multiple;
+        scope.$iconCheckmark = options.iconCheckmark;
 
         scope.$activate = function(index) {
           scope.$$postDigest(function() {
@@ -60,6 +65,22 @@ angular.module('mgcrea.ngStrap.select', ['mgcrea.ngStrap.tooltip', 'mgcrea.ngStr
 
         scope.$isActive = function(index) {
           return $select.$isActive(index);
+        };
+
+        scope.$selectAll = function () {
+          for (var i = 0; i < scope.$matches.length; i++) {
+            if (!scope.$isActive(i)) {
+              scope.$select(i);
+            }
+          }
+        };
+
+        scope.$selectNone = function () {
+          for (var i = 0; i < scope.$matches.length; i++) {
+            if (scope.$isActive(i)) {
+              scope.$select(i);
+            }
+          }
         };
 
         // Public methods
@@ -82,22 +103,20 @@ angular.module('mgcrea.ngStrap.select', ['mgcrea.ngStrap.tooltip', 'mgcrea.ngStr
 
         $select.select = function(index) {
           var value = scope.$matches[index].value;
-          $select.activate(index);
-          if(options.multiple) {
-            controller.$setViewValue(scope.$activeIndex.map(function(index) {
-              return scope.$matches[index].value;
-            }));
-          } else {
-            controller.$setViewValue(value);
-          }
-          controller.$render();
-          if(parentScope) parentScope.$digest();
-          // Hide if single select
-          if(!options.multiple) {
-            $select.hide();
-          }
+          scope.$apply(function() {
+            $select.activate(index);
+            if(options.multiple) {
+              controller.$setViewValue(scope.$activeIndex.map(function(index) {
+                return scope.$matches[index].value;
+              }));
+            } else {
+              controller.$setViewValue(value);
+              // Hide if single select
+              $select.hide();
+            }
+          });
           // Emit event
-          scope.$emit('$select.select', value, index);
+          scope.$emit(options.prefixEvent + '.select', value, index);
         };
 
         // Protected methods
@@ -159,7 +178,7 @@ angular.module('mgcrea.ngStrap.select', ['mgcrea.ngStrap.tooltip', 'mgcrea.ngStr
           evt.stopPropagation();
 
           // Select with enter
-          if(evt.keyCode === 13 || evt.keyCode === 9) {
+          if(!options.multiple && (evt.keyCode === 13 || evt.keyCode === 9)) {
             return $select.select(scope.$activeIndex);
           }
 
@@ -192,7 +211,7 @@ angular.module('mgcrea.ngStrap.select', ['mgcrea.ngStrap.tooltip', 'mgcrea.ngStr
           if(options.keyboard) {
             element.off('keydown', $select.$onKeyDown);
           }
-          _hide();
+          _hide(true);
         };
 
         return $select;
@@ -217,7 +236,7 @@ angular.module('mgcrea.ngStrap.select', ['mgcrea.ngStrap.tooltip', 'mgcrea.ngStr
 
         // Directive options
         var options = {scope: scope};
-        angular.forEach(['placement', 'container', 'delay', 'trigger', 'keyboard', 'html', 'animation', 'template', 'placeholder', 'multiple', 'maxLength', 'maxLengthHtml'], function(key) {
+        angular.forEach(['placement', 'container', 'delay', 'trigger', 'keyboard', 'html', 'animation', 'template', 'placeholder', 'multiple', 'allNoneButtons', 'maxLength', 'maxLengthHtml'], function(key) {
           if(angular.isDefined(attr[key])) options[key] = attr[key];
         });
 
@@ -250,6 +269,7 @@ angular.module('mgcrea.ngStrap.select', ['mgcrea.ngStrap.tooltip', 'mgcrea.ngStr
         scope.$watch(attr.ngModel, function(newValue, oldValue) {
           // console.warn('scope.$watch(%s)', attr.ngModel, newValue, oldValue);
           select.$updateActiveIndex();
+          controller.$render();
         }, true);
 
         // Model rendering in view

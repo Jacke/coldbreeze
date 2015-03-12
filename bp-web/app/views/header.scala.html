@@ -12,9 +12,9 @@
 @import play.api.Play
 
 
-<header class="fullSize"><div class="apiaryMenu"><div class="wholeMenu menuRow">
+<header class="fullSize"><div class="minorityMenu"><div class="wholeMenu menuRow">
 
-  <div role="banner" class="apiaryLogo menuCell"><a class="absFg" title="Minority" href="http://minorityapp.com/"><span class="visuallyhidden">Minority</span></a></div>
+  <div role="banner" class="minorityLogo menuCell"><a class="absFg" title="Minority" href="http://minorityapp.com/"><span class="visuallyhidden">Minority</span></a></div>
 
 
 <style>
@@ -64,11 +64,11 @@ text-decoration: none;
 </nav>
 
   <div class="menuCell menuHelp switcherWrap">
-    <span class="helpLinks switcherToggle hint vIcoIn" data-hint="Help"><span class="uicon-svg482"><span class="visuallyhidden">Help</span></span></span>
+    <span class="helpLinks switcherToggle hint vIcoIn" data-hint="Help"><span class="uicon-svg482"><span class="visuallyhidden">@Messages("page.help")</span></span></span>
     <span class="helpPopup switcherLayer">
-      <a class="hideableHelpLink vIcoIn" target="_blank" href="#"><span class="helpText"><span class="vIco vStackOverflow vDimmedState"></span>Help by Phone</span></a>
-      <a class="hideableHelpLink vIcoIn" target="_blank" href="#"><span class="helpText"><span class="vIco vBook vDimmedState"></span> Knowledge Base</span></a>
-      <a class="vIcoIn" id="Intercom" href="#" title="Contact Minority Support"><span class="helpText"><span class="vIco vSpeech vDimmedState"></span> Contact Minority Support</span></a>
+      <a class="hideableHelpLink vIcoIn" target="_blank" href="minorityapp.com/contacts"><span class="helpText"><span class="vIco vStackOverflow vDimmedState"></span>@Messages("page.helpByPhone")</span></a>
+      <a class="hideableHelpLink vIcoIn" target="_blank" href="http://minorityapp.com/help/"><span class="helpText"><span class="vIco vBook vDimmedState"></span> Instructions</span></a>
+      <a class="vIcoIn" id="Intercom" target="_blank" href="minorityapp.com/contacts" title="Contact Support"><span class="helpText"><span class="vIco vSpeech vDimmedState"></span> @Messages("page.contactSupport") </span></a>
     </span>
   </div>
 
@@ -94,10 +94,10 @@ text-decoration: none;
 
                   @if(user.isManager) {
                     <li class="secondaryNavItem"><a class="changelogLink vIcoIn" href="@routes.PlanController.index()"><i class="uicon-svg142"></i>
-                    Plans</a></li>
+                    @Messages("page.plans") </a></li>
                   }
 
-          <li class="secondaryNavItem"><form class="logoutForm" action="@routes.CustomLoginController.logout()" method="POST"><button class="logoutBtn vIcoIn" type="submit"><span class="uicon-svg522 vLogout vDimmedState"></span> Sign Out</button></form></li>
+          <li class="secondaryNavItem"><form class="logoutForm" action="@routes.CustomLoginController.logout()" method="POST"><button class="logoutBtn vIcoIn" type="submit"><span class="uicon-svg522 vLogout vDimmedState"></span> @Messages("page.signout") </button></form></li>
         </ul>
       </nav>
     </div>

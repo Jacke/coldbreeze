@@ -34,7 +34,15 @@ class BusinessController(override implicit val env: RuntimeEnvironment[DemoUser]
    val businessForm = Form(
     mapping(
       "id" -> optional(number),
-      "title" -> nonEmptyText)(BusinessDTO.apply)(BusinessDTO.unapply))
+      "title" -> nonEmptyText,
+      "phone" -> optional(text),
+      "website" -> optional(text),
+      "country" -> text,
+      "city" -> text,
+      "address" -> optional(text),
+"walkthrough" -> boolean, 
+"created_at"-> optional(jodaDate),
+"updated_at"-> optional(jodaDate))(BusinessDTO.apply)(BusinessDTO.unapply))
  
  def index() = SecuredAction { implicit request =>
       val businesses = BusinessDAO.getAll
@@ -67,7 +75,7 @@ class BusinessController(override implicit val env: RuntimeEnvironment[DemoUser]
       val business = BusinessDAO.get(id)
       business match {
         case Some(business) =>
-        val biz = BusinessDTO(business.id, business.title)
+        val biz = BusinessDTO(business.id, business.title, business.phone, business.website, business.country, business.city, business.address)
          Ok(views.html.businesses.business_edit_form(id, businessForm.fill(biz), request.user)) 
         case None => Ok("not found")
       }

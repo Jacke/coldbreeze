@@ -108,9 +108,20 @@ input.switch:active:checked::before, input.switch.touch:hover:checked::before {
 <h1>{{ 'STATIONS' | translate }}</h1>
 
 
+
 <div class="active-switcher">
 <input type="checkbox" class="switch" id="switch-1" data-ng-model="onlyActive"/>
 </div>
+  
+<div class="station-filters">
+  <ul>
+    <li><label><input type="checkbox" name="response" value="true" data-ng-model="onlyCanceled"/>{{ 'CANCELED' | translate }}</label></li>
+    <li><label><input type="checkbox" name="response" value="true" data-ng-model="onlyFinished"/>{{ 'FINISHED' | translate }}</label></li>
+  </ul>
+</div>  
+
+  
+  
 <script>
 document.addEventListener('touchmove', function(e){}, false);
 var _switch   = document.getElementById("switch-1"),
@@ -126,11 +137,9 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 <div class="stations" ng-repeat="station in bpstations | filter:isOnlyActive" style="clear: both;">
 
               <span class="number {{ station.state }}">{{ $index + 1 }}</span>
-
            <!--<p>
             {{ stationByProcess(station.id).id }}
             {{ stationByProcess(station.id).title }}
-
           </p>-->
 
 
@@ -140,15 +149,60 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
   <div class="station-markers">
   <ul class="station-states">
                       <li class="state started {{ station.started }}"> {{ 'STARTED' | translate }} </li>
-                      <li class="state finished {{ station.finished }}"> {{ 'PAUSED' | translate }} </li>
-                      <li class="state paused {{ station.paused }}"> {{ 'FINISHED' | translate }} </li>
+                      <li class="state paused {{ station.paused }}"> {{ 'PAUSED' | translate }} </li>
+                      <li class="state finished {{ station.finished }}"> {{ 'FINISHED' | translate }} </li>
+    <li class="state canceled {{ station.canceled }}"> {{ 'CANCELED' | translate }} </li>
   </ul>
+  </div>
+  <div class="station-settings">
+  <div class="note">
+    <input type="text" class="station-note" ng-model="station.note">
+    <a ng-click="updateNote(station)" ng-show="isManagerVal">Update note</a> 
+  </div>
+
+
+  <div class="station-observers" ng-show="isManagerVal">
+
+      <div class="observer">
+        <h3>{{ 'OBSERVER' | translate }}: </h3>
+        <div class="observers" ng-repeat="obs in station.obsrs">
+          <h6> {{ obs.fullName }}</h6>
+          <input type="text" class="input-mini input-monospace js-url-field" value="http://min.ority.us/observe/{{ obs.hash_code }}">
+          <a ng-click="deleteObserver(obs.id)" class="btn btn-small btn-primary">{{ 'DELETE' | translate}}</a>
+        </div>
+
+<form novalidate="novalidate" class="form-horizontal">
+      <input type="hidden" id="inputTitle" ng-model="station.newObserver.observer.bprocess" ng-init="station.newObserver.observer.bprocess=station.process" required/>
+      <label class="control-label" for="inputTitle">{{ 'EMAILS' | translate }}:</label>
+    <div class="controls">
+        <textarea type="text" id="inputBusinessId" ng-model="station.newObserver.emails" ng-init="station.newObserver.emails = []"/>
+        <input type="text" id="inputFullName" ng-model="station.newObserver.observer.fullName" placeholder="{{ 'FULL_NAME' | translate }}" required/>
+      </div>
+    </div>
+    <input type="hidden" id="inputTitle" ng-model="station.newObserver.observer.station_id" ng-init="station.newObserver.observer.station_id=station.id" required/>
+
+    <div class="control-group">
+      <div class="controls">
+        <a ng-click="createNewObserver(station.newObserver)" class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</a>
+      </div>
+    </div>
+</form>
+
+
+
+
+      </div>
+</div>
+  
   </div>
 
 </div>
+  
+  
+  
 
 
-</div>
+
 <div class="row">
 <div class="col-xs-5">
 <h3><a ng-click="expand = !expand">{{ 'LOGS' | translate }}</a></h3>
@@ -223,37 +277,12 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 </div>
 
           <div ng-if="station.paused == true && station.finished == false">
-          <a ng-click="haltStation(station.id)" class="btn btn-danger btn-big">{{ 'TURN_DOWN' | translate }}</a>
+          <a ng-click="haltStation(station.id)" class="btn btn-danger btn-big" ng-show="isManagerVal">{{ 'TURN_DOWN' | translate }}</a>
           </div>
 
            <hr>
 </div>
 
-<!--
-<div class="observer">
-  <h3>Observer link: </h3>
-  <div class="observers" ng-repeat="obs in station.obsrs">
-    <h6>{{obs.name }}</h6>
-    <h6>{{ obs.email }}</h6>
-    <input type="text" id="inputTitle" ng-model="obs.link"/>
-    <a ng-click="deleteObserver(obs)" class="btn btn-small btn-primary">Delete observer</a>
-  </div>
- <form novalidate="novalidate" class="form-horizontal">
-    <div class="control-group">
-      <label class="control-label" for="inputTitle">Link:</label>
-      <div class="controls">
-        <input type="text" id="inputTitle" ng-model="newObserver.name"/>
-        <input type="text" id="inputTitle" ng-model="newObserver.email"/>
-      </div>
-    </div>
 
-    <div class="control-group">
-      <div class="controls">
-        <a ng-click="generateObsLink()" class="btn btn-small btn-primary">Generate</a>
-      </div>
-    </div>
-  </form>
-</div>
--->
 </div>
 </div>

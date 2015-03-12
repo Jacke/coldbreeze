@@ -41,7 +41,7 @@
 
 .applicationFooterLogoContainer .logo {
     background: transparent;
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/images/icons-774685da8394c6a1.png");
+    background-image: url("/images/icons-774685da8394c6a1.png");
     height: 40px;
     left: 0;
     position: absolute;
@@ -77,20 +77,6 @@
     height: 70px
 }
 
-.applicationFooterLogotypeContainer .logotype {
-    background: transparent;
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/images/logos-bb5cd82c0351330b.png");
-    width: 100px;
-    height: 70px;
-    left: 0;
-    position: absolute;
-    top: 0;
-    -webkit-transition: opacity 0.15s;
-    -moz-transition: opacity 0.15s;
-    -o-transition: opacity 0.15s;
-    -ms-transition: opacity 0.15s;
-    transition: opacity 0.15s
-}
 
 .applicationFooterLogotypeContainer .passiveLogotype {
     background-position: -15px -12px;
@@ -185,7 +171,7 @@
 
 .applicationFooterIconContainer .icon {
     background: transparent;
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/images/icons-774685da8394c6a1.png");
+    background-image: url("/images/icons-774685da8394c6a1.png");
     height: 40px;
     left: 0;
     position: absolute;

@@ -8,14 +8,15 @@ var translationsEN = {
   ADD: 'Add',
   PEOPLE: 'People',
   SHARE: 'Share',
-  STATIONS: 'Stations',
+  STATIONS: 'Launches',
   ALL_SERVICES: 'All services',
   SERVICE: 'Service',
   NEW_PROCESS:'New process',
   PROCESS:'Process',
   TREE: 'Tree',
   EDIT: 'Edit',
-  ADD_TO_SPACE: 'Add to space',
+  ADD_TO_SPACE: 'Add',
+  SPACE: 'Space',
   UPDATE: 'Update',
   CREATE: 'Create',
   CONTAINER: 'Container',
@@ -23,24 +24,25 @@ var translationsEN = {
   CANCEL: 'Cancel',
   TITLE: 'Title',
   DESC: 'Description',
-  CONFDESC: 'Some confirm',
-  CONTDESC: 'Some container',
-  CONFDESCFULL: 'Conf description',
-  CONTDESCFULL: 'Container description',
-  RUNNED: 'Process arleady runned, if you edit that, all stations',
+  CONFDESC: 'Element, that require confirmation from user before it will completed.',
+  CONTDESC: 'Element, that store inside other element.',
+  CONFDESCFULL: 'Element, that require confirmation from user before it will completed. Use it, for steps that require confirmation from employee.',
+  CONTDESCFULL: 'Element, that store inside other element. Use it, for separate your process logic.',
+  RUNNED: 'Process arleady runned, if you edit that, all launches',
   WILL_BE_SHUTDOWN:'will be shut down' ,
   CREATE_OR_COPY: 'You can create',
   CREATE_OR_COPY2: 'of that process and continue editing.',
   COPY: 'copy',
   SEARCH_PROC: 'Search processes',
-  CREATE_NEW_PROC: 'Create new Process',
+  CREATE_NEW_PROC: 'Create Process',
   AFTER_PAYING: 'This features avaliable only after paying',
   OBSERVERS: 'OBSERVERS',
   EMBEDING: 'EMBEDING',
-  OBSERV_DESC: 'Client access to your process stations',
+  OBSERV_DESC: 'Client access to your process launches',
   EMB_DESC: 'Embed your processes to your website',
   STARTED: 'Started',
   FINISHED: 'Finished',
+  CANCELED: 'Canceled',
   PAUSED: 'Paused',
   LOGS: 'Logs',
   ILOGS: 'Input Logs',
@@ -58,66 +60,82 @@ var translationsEN = {
   USER: 'User',
   ACTION: 'Action',
   ARGIMENTS: 'Arguments',
-  INVOKED: 'Invoked'
+  INVOKED: 'Invoked',
+  SHOW_ALL: 'Show all',
+  EMBED_AFTER_TRIAL: 'Embeding on your Website or Application will be avaliable after one week of using Minority.',
+  EMAILS: 'Emails',
+  MAKE_CONFIRMED: 'Its confirmed',
+  FULL_NAME: 'Full name',
+  ADD_OBSERVER: 'Add observer',
+  OPEN: 'Open'
 };
  
 var translationsRU= {
   PERMISSIONS: 'Права',
-  DELETE: 'Delete',
-  ADD: 'Add',
-  PEOPLE: 'People',
-  SHARE: 'Share',
-  STATIONS: 'Stations',
-  SERVICE: 'Service',
-  ALL_SERVICES: 'All services',
-  NEW_PROCESS:'New process',
-  PROCESS:'Process',
-  TREE: 'Tree',
-  EDIT: 'Edit',
-  ADD_TO_SPACE: 'Add to space',
-  UPDATE: 'Update',
-  CREATE: 'Create',
-  CONTAINER: 'Container',
-  CONFIRM: 'Confirm',
-  CANCEL: 'Cancel',
-  TITLE: 'Title',
-  DESC: 'Description',
-  CONFDESC: 'Some confirm',
-  CONTDESC: 'Some container',
-  CONFDESCFULL: 'Conf description',
-  CONTDESCFULL: 'Container description',
-  RUNNED: 'Process arleady runned, if you edit that, all stations',
-  WILL_BE_SHUTDOWN:'will be shut down.' ,
-  CREATE_OR_COPY: 'You can create',
-  CREATE_OR_COPY2: 'of that process and continue editing.',
-  COPY: 'copy',
-  SEARCH_PROC: 'Search processes',
-  CREATE_NEW_PROC: '',
-  AFTER_PAYING: 'This features avaliable only after paying',
-  OBSERVERS: 'OBSERVERS',
-  EMBEDING: 'EMBEDING',
-  OBSERV_DESC: 'Client access to your process stations',
-  EMB_DESC: 'Embed your processes to your website',
-  STARTED: 'Started',
-  FINISHED: 'Finished',
-  PAUSED: 'Paused',
-  LOGS: 'Logs',
-  ILOGS: 'Input Logs',
-  RUN: 'Launch',
-  RUN_SCRATCH: 'Run from scratch',
-  RUN_FROM_DESC: 'Arleady runned and paused',
-  TURN_DOWN: 'Turn down',
-  RUN_FROM: 'Run from',
-  RUN_FROM_ANOT: 'Run from specific active point',
+  DELETE: 'Удалить',
+  ADD: 'Добавить',
+  PEOPLE: 'Люди',
+  SHARE: 'Поделиться',
+  STATIONS: 'Запуски',
+  SERVICE: 'Услуга',
+  ALL_SERVICES: 'Все услуги',
+  NEW_PROCESS:'Новый процесс',
+  PROCESS:'Процесс',
+  TREE: 'Дерево',
+  EDIT: 'Редактировать',
+  ADD_TO_SPACE: 'Добавить',
+  SPACE: 'Пространство',
+  UPDATE: 'Обновить',
+  CREATE: 'Добавить',
+  CONTAINER: 'Контейнер',
+  CONFIRM: 'Потдверждение',
+  CANCEL: 'Отменить',
+  TITLE: 'Заголовок',
+  DESC: 'Описание',
+  CONFDESC: 'Блок Подтверждения',
+  CONTDESC: 'Блок контейнер',
+  CONFDESCFULL: 'Описание блока подтверждения',
+  CONTDESCFULL: 'Описание контейнера',
+  RUNNED: 'Процесс уже запущен, если выхотите редактировать его',
+  WILL_BE_SHUTDOWN:'будет отключен.' ,
+  CREATE_OR_COPY: 'Вы можете создать',
+  CREATE_OR_COPY2: 'этого процесса и продолжить редактирование.',
+  COPY: 'копию',
+  SEARCH_PROC: 'Поиск процессов',
+  CREATE_NEW_PROC: 'Создать процесс',
+  AFTER_PAYING: 'Эта функция будет доступна после оплаты',
+  OBSERVERS: 'Наблюдятели',
+  EMBEDING: 'Встраивание',
+  OBSERV_DESC: 'Доступ для ваших клиентов к актуальному состоянию процесса.',
+  EMB_DESC: 'Встраивание процесса на сайт',
+  STARTED: 'Запущен',
+  FINISHED: 'Заверщен',
+  CANCELED: 'Отменен',
+  PAUSED: 'Приостановлен',
+  LOGS: 'Логи',
+  ILOGS: 'Логи взаимодействия',
+  RUN: 'Запуск',
+  RUN_SCRATCH: 'Запуск с чистого листа',
+  RUN_FROM_DESC: 'Запуск с приостановленного состояния',
+  TURN_DOWN: 'Завершить',
+  RUN_FROM: 'Запуск с',
+  RUN_FROM_ANOT: 'Запуск с приостановленного состояния',
   // Tables
-  ELEMENT: 'Element',
-  DATE: 'Date',
-  STEP: 'Step',
-  CV: 'Values',
-  USER: 'User',
-  ACTION: 'Action',
-  ARGIMENTS: 'Arguments',
-  INVOKED: 'Invoked'
+  ELEMENT: 'Элемент',
+  DATE: 'Дата',
+  STEP: 'Шаг',
+  CV: 'Значения',
+  USER: 'Пользователь',
+  ACTION: 'Действие',
+  ARGIMENTS: 'Аргументы',
+  INVOKED: 'Выполнен',
+  SHOW_ALL: 'Показать все',
+  EMBED_AFTER_TRIAL: 'Встраивание Minority на ваш ВебСайт или приложение будет доступно после одной недели использования Minority.',
+  EMAILS: 'Emails',
+  MAKE_CONFIRMED: 'Подтверждить',
+  FULL_NAME: 'Имя',
+  ADD_OBSERVER: 'Добавить наблюдателя',
+  OPEN: 'Открыть'
 };
 
 
@@ -127,6 +145,7 @@ var minorityApp =
   angular.module(
     'minorityApp',
     [
+  
       'minorityApp.services',
       'minorityApp.controllers',
       'ngRoute',
@@ -136,7 +155,6 @@ var minorityApp =
       'angularLocalStorage',
       'classy',
       'ngAngularError',
-      'ngAnimate',
       'toaster',
       'angular-underscore',
       'ui.bootstrap',
@@ -145,7 +163,8 @@ var minorityApp =
       'ngDialog',
       'angularMoment',
       'ui.tree',
-      'pascalprecht.translate'
+      'pascalprecht.translate',
+      'pageslide-directive'
     ]
   );
 minorityApp.filter('slice', function() {
@@ -196,11 +215,34 @@ minorityApp.directive('loading', ['$http' , function ($http) {
     };
  
 }]);
-minorityApp.config(['$routeProvider','$httpProvider', function($routeProvider) {
+minorityApp.config(['$locationProvider','$routeProvider', '$httpProvider', function($locationProvider, $routeProvider, $httpProvide) {
+
+//$locationProvider.html5Mode(true);
+
 /*Credentials managment*/
      $routeProvider.when('/profile', {templateUrl: 'partials/forms/profile.html', controller: 'ProfileController'});
-    // BProcess
-/*I*/$routeProvider.when('/bprocesses', {templateUrl: 'partials/forms/bprocesses/bp-list.html', controller: 'BProcessListCtrl'});
+// BProcess
+/*I*/$routeProvider.when('/bprocesses', {
+                 templateUrl: 'partials/forms/bprocesses/bp-list.html', 
+                 controller: 'BProcessListCtrl',
+                 resolve: { Auth: ['$http', '$q', '$window', '$rootScope', function($http, $q, $window, $rootScope) {
+//                    var deffered = $q.defer();
+//                    var token = $window.sessionStorage.getItem('token'); 
+ //                   $rootScope.whoami = $http.post('https://min.ority.us/whoami', {headers:  {'X-Auth-Token': token, 'Access_Name': 'user'}})
+  //                    .then(function (profile) {
+   //                    console.log("profile " + profile);
+     //                  $window.sessionStorage.setItem('manager', profile.manager);
+                $rootScope.manager = $window.localStorage.getItem('manager') == "true";
+                $rootScope.business = parseInt($window.localStorage.getItem('business'));
+         //              $window.localStorage.setItem('business', profile.business);
+               $rootScope.employee = $window.localStorage.getItem('employee') == "true";
+           //            deffered.resolve(profile);
+             //           })
+
+               //         return deffered.promise;
+                    }]
+                  }
+                });
 /*C*/$routeProvider.when('/bprocess/new', {templateUrl: 'partials/forms/bprocesses/bp-new.html', controller: 'BPCreationCtrl'});
 /*R*/$routeProvider.when('/bprocess/:id/show', {templateUrl: 'partials/forms/bprocesses/bp-detail.html', controller: 'BProcessDetailCtrl'});
 /*a*/
@@ -230,11 +272,13 @@ minorityApp.config(['$routeProvider','$httpProvider', function($routeProvider) {
 
 
 
-}]).run(['$window', '$rootScope', '$injector', function($window, $rootScope,$injector) {
+}]).run(['$q','$window','$http' ,'$rootScope', '$injector', function($q, $window, $http, $rootScope,$injector) {
     var token = $window.sessionStorage.getItem('token');
+
+ 
     $injector.get("$http").defaults.transformRequest = function(data, headersGetter) {
-        //if ($rootScope.oauth)
         headersGetter()['X-Auth-Token'] = $window.sessionStorage.getItem('token');
+
         if (data) {
             return angular.toJson(data);
         }
@@ -253,3 +297,40 @@ angular.module('myApp.filters', []).
     }
   }]);
 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

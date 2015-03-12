@@ -7,7 +7,6 @@ GET         /webjars/*file                                      controllers.WebJ
 
 # Home page
 GET         /                                                   @controllers.ProfileController.profile()
-GET         /index11                                            @controllers.Application.index11()
 
 GET     /auth/authenticate/:provider     @controllers.CustomProviderController.authenticate(provider)
 POST    /auth/authenticate/:provider     @controllers.CustomProviderController.authenticateByPost(provider)
@@ -38,8 +37,6 @@ POST     /signup/:token             @controllers.CustomRegistrationController.ha
 
 
 GET         /only-twitter                                       @controllers.Application.onlyTwitter
-GET         /link-result                                        @controllers.Application.linkResult
-GET         /current-user                                       @controllers.Application.currentUser
 
 # Custom
 GET         /custom/login                                       @controllers.CustomLoginController.login
@@ -99,15 +96,29 @@ POST        /whoami                                             @controllers.App
 
 # Plans
 GET        /plans                                               @controllers.PlanController.index()
-POST       /plan/switch                                         @controllers.PlanController.switch()
-POST       /plan/checkout                                       @controllers.PlanController.checkout()
+POST       /plan/switch/:plan_id                                @controllers.PlanController.switch(plan_id: Int)
+POST       /plan/checkout/:bill_id                              @controllers.PlanController.checkout(bill_id: Int)
+POST       /plan/billinginfo                                    @controllers.PlanController.update_billinginfos()
+
+# Settings
 GET        /settings                                            @controllers.SettingController.index()
 POST       /settings/update_cred                                @controllers.SettingController.update_credentials()
+POST       /settings/update_business                            @controllers.SettingController.update_biz_credentials()
 
-# Templates
-GET /peoples @controllers.Application.peoples
+# Observers
+GET        /observe/:hash_code                                  @controllers.ObserverController.show(hash_code: String)
 
-GET /lists @controllers.Application.list
+GET        /observers/:process/:station                         @controllers.ObserverController.indexStation(process: Int, station: Int)
+GET        /observers/:process                                  @controllers.ObserverController.index(process: Int)
+POST       /observers                                           @controllers.ObserverController.create()
+DELETE     /observe/:observe_id                                 @controllers.ObserverController.destroy(observe_id: Int)  
+
+
+# Walkthrough
+GET        /walkthrough                                         @controllers.WalkthroughController.index()
+
+
+
 
 
 
@@ -123,9 +134,12 @@ POST        /bprocess/:bpId/copy/:title                         @controllers.Bus
 
 # Stations
 GET         /bprocess/stations                       @controllers.BusinessProcessController.all_stations()
+GET         /bprocess/:id/stations/around            @controllers.BusinessProcessController.stations_elems_around(id: Int)
 GET         /bprocess/:id/stations                   @controllers.BusinessProcessController.station_index(id: Int)
 GET         /bprocess/:id/station/:station_id        @controllers.BusinessProcessController.show_station(id: Int, station_id: Int)
 POST        /bprocess/:id/station/:station_id/halt   @controllers.BusinessProcessController.halt_station(id: Int, station_id: Int)
+POST        /bprocess/:id/station/:station_id/note   @controllers.BusinessProcessController.update_note(id: Int, station_id: Int)
+
 # Logs
 GET         /bprocess/:id/logs                       @controllers.BusinessProcessController.logs_index(id: Int)
 

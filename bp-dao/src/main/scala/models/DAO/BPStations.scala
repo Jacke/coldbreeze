@@ -26,6 +26,14 @@ class BPStations(tag: Tag) extends Table[BPStationDTO](tag, "bpstations") {
   def inexpands = column[Boolean]("inexpands")
   def paused = column[Boolean]("paused")
 
+  def note = column[Option[String]]("note")
+  def canceled = column[Boolean]("canceled", O.Default(false))
+
+  def created_at = column[Option[org.joda.time.DateTime]]("created_at")
+  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
+  def session = column[Int]("session_id")
+
+  def sesFK = foreignKey("session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?,
     process,
@@ -40,7 +48,10 @@ class BPStations(tag: Tag) extends Table[BPStationDTO](tag, "bpstations") {
     inspace,
     incontainer,
     inexpands,
-    paused) <> (BPStationDTO.tupled, BPStationDTO.unapply)
+    paused, 
+    note,
+    canceled,
+    created_at, updated_at,session) <> (BPStationDTO.tupled, BPStationDTO.unapply)
 
 }
 
@@ -61,14 +72,11 @@ finished: Boolean,
 inspace: Boolean,
 incontainer: Boolean,
 inexpands: Boolean,
-paused: Boolean)
-
-/*
-  DataConversion
- */
-object BPStationDCO {
-
-}
+paused: Boolean,
+note: Option[String] = Some(""),
+canceled: Boolean = false,
+created_at:Option[org.joda.time.DateTime] = None,
+updated_at:Option[org.joda.time.DateTime] = None,session: Int = 1) // TODO: Avoid default value
 
 
 object BPStationDAO {
@@ -79,7 +87,7 @@ object BPStationDAO {
 
   val bpstations = TableQuery[BPStations]
 
-  def from_origin_station(station: BPStation, bp_dto: BProcessDTO):BPStationDTO = {
+  def from_origin_station(station: BPStation, bp_dto: BProcessDTO, session_id: Int = 1):BPStationDTO = {
     BPStationDTO(
         None,
         bp_dto.id.get,
@@ -94,15 +102,35 @@ object BPStationDAO {
         station.inspace,
         station.incontainer,
         station.inexpands,
-        station.paused)
+        station.paused, session = session_id)
   }
   //def to_origin_station(station: BPStationDTO1):BPStation = {
 
   //}
+  var noteFunction: (String => String) = { lang =>
+    lang match {
+      case "ru" => "Заметка о станции"
+      case "en" => "Station's note"
+      case _ => "Station's note"
+    }
 
-  def pull_object(s: BPStationDTO) = database withSession {
+  }
+
+
+  def defineNoteFN(fn: String => String) = {
+    noteFunction = fn
+  }
+
+  def pull_object(s: BPStationDTO, lang: Option[String] = Some("en")) = database withSession {
     implicit session ⇒
-      bpstations returning bpstations.map(_.id) += s //BPStationDTO.unapply(s).get
+      bpstations returning bpstations.map(_.id) += s.copy(note = Some(noteFunction(lang.get)) )  
+  }
+  def updateNote(id: Int, msg: String) = { database withSession { implicit session =>
+      findById(id) match {
+        case Some(station) => update(id, station.copy(note = Some(msg)))
+        case _ => -1
+      }
+    }
   }
 
   def findByBPId(id: Int) = {
@@ -169,7 +197,7 @@ def update(id: Int, entity: BPStationDTO):Boolean = {
     database withSession { implicit session =>
       findById(id) match {
       case Some(e) => {
-        bpstations.filter(_.id === id).update(e.copy(state = false, finished = true, paused = false))
+        bpstations.filter(_.id === id).update(e.copy(state = false, finished = true, paused = false, canceled = true))
         true
       }
       case None => false
@@ -180,6 +208,12 @@ def update(id: Int, entity: BPStationDTO):Boolean = {
     database withSession {
       implicit session =>
         bpstations.ddl.create
+    }
+  }
+  def ddl_drop = {
+    database withSession {
+      implicit session =>
+        bpstations.ddl.drop
     }
   }
 

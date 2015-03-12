@@ -5,7 +5,8 @@ import main.scala.simple_parts.process.{Block, ProcElems}
 import models.DAO.driver.MyPostgresDriver.simple._
 import scala.slick.model.ForeignKeyAction
 import models.DAO.conversion.{DatabaseCred, Implicits}
-
+import com.github.nscala_time.time.Imports._
+  
 import main.scala.simple_parts.process.data.{Confirm, Note, Constant}
 import main.scala.simple_parts.process.Block
 import main.scala.simple_parts.process.ContainerBrick
@@ -26,10 +27,15 @@ class SpaceElements(tag: Tag) extends Table[SpaceElementDTO](tag, "space_element
 
   def order = column[Int]("order")
   def comps = column[Option[List[CompositeValues]]]("comps", O.DBType("compositevalues[]"))
+    
+  def created_at = column[Option[org.joda.time.DateTime]]("created_at")
+  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
+    
   def * = (id.?, title, desc,  business,
            bprocess,   b_type, type_title,
            space_own,  space_owned,
-           space_role, order, comps) <> (SpaceElementDTO.tupled, SpaceElementDTO.unapply)
+           space_role, order, comps,
+           created_at, updated_at) <> (SpaceElementDTO.tupled, SpaceElementDTO.unapply)
 
   def businessFK = foreignKey("business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
   def bpFK = foreignKey("bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
@@ -53,7 +59,10 @@ case class SpaceElementDTO(id: Option[Int],
                         space_owned: Int,
                         space_role:Option[String],
                         order:Int,
-                        comps: Option[List[CompositeValues]]) {
+                        comps: Option[List[CompositeValues]],
+created_at:Option[org.joda.time.DateTime] = None,
+updated_at:Option[org.joda.time.DateTime] = None) {
+  
   def cast(process: BProcess, space_dto: BPSpaceDTO):Option[ProcElems] = {
     println("block castiong")
     this match {
@@ -186,6 +195,12 @@ object SpaceElemDAO {
     database withSession {
       implicit session =>
       space_elements.ddl.create
+    }
+  }
+  def ddl_drop = {
+    database withSession {
+      implicit session =>
+        space_elements.ddl.drop
     }
   }
   def update(id: Int, entity: SpaceElementDTO):Boolean = {

@@ -28,8 +28,10 @@ import models._
 import models.DAO.resources._
 import models.DAO.CompositeValues
 import play.api.Play.current
+import models.DAO.resources.web.BizFormDTO
 
-case class Credentials(firstName:  Option[String], lastName:  Option[String], fullName: Option[String], lang: String = "en") {
+
+case class Credentials(firstName:  Option[String], lastName:  Option[String], fullName: Option[String], lang: String = "en", country: Option[String] = None, phone: Option[String] = None) {
   def getFullName: Option[String] = {
     (firstName, lastName) match {
       case (Some(first), Some(last)) => Some(first + " " + last)
@@ -50,33 +52,81 @@ class SettingController(override implicit val env: RuntimeEnvironment[DemoUser])
     "firstName" -> optional(text),
     "lastName" -> optional(text),
     "fullName" -> optional(text),
-    "lang" -> text)(Credentials.apply)(Credentials.unapply)) 
+    "lang" -> text,
+    "country" -> optional(text),
+    "phone" -> optional(text))(Credentials.apply)(Credentials.unapply)) 
+
+  val bizForm = Form(
+    mapping(
+      "title" -> text,
+      "phone" -> optional(text),
+      "website" -> optional(text),
+      "country" -> text,
+      "city" -> text,
+      "address" -> optional(text)
+    )(BizFormDTO.apply)(BizFormDTO.unapply))
+
+
+
+
 
  def index() = SecuredAction { implicit request =>
  	
   val plans = List()
  	val cred = models.AccountsDAO.fetchCredentials(request.user.main.email.get)
+  val biz0 = fetchBiz(request.user.main.userId)
+  val biz = BizFormDTO(biz0.title, biz0.phone, biz0.website, biz0.country, biz0.city, biz0.address)
+  var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
 
- 	Ok(views.html.settings.index(credForm.fill(cred.get), request.user))
+ 	Ok(views.html.settings.index(credForm.fill(cred.get), bizForm.fill(biz), request.user, isManager))
  }
+
+
 
  def update_credentials() = SecuredAction { implicit request =>
     val cred = Credentials(request.user.main.firstName, request.user.main.lastName, request.user.main.fullName)
     credForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.settings.index(credForm.fill(cred), request.user)),
+        formWithErrors => Redirect(routes.SettingController.index),//BadRequest(views.html.settings.index(credForm.fill(cred), request.user)),
         entity => {
           println(entity)
-          Home.flashing(AccountsDAO.updateCredentials(request.user.main.email.get, entity.copy(fullName = entity.getFullName, lang = entity.lang)) match {
+          Home.flashing(AccountsDAO.updateCredentials(
+            request.user.main.email.get, entity.copy(fullName = entity.getFullName, 
+                                                     lang = entity.lang, 
+                                                     country = entity.country, 
+                                                     phone = entity.phone)) match {
             case false => "failure" -> s"Could not update entity ${entity}"
             case _ => "success" -> s"Entity ${entity} has been updated"
           })
         })
  }
- def update_email() = SecuredAction { implicit request =>
-   	Ok(views.html.settings.index(credForm, request.user))
-???
+ 
+
+ def update_biz_credentials() = SecuredAction { implicit request =>
+  
+  val founded_biz = fetchBiz(request.user.main.userId)
+  val biz = BizFormDTO(founded_biz.title, founded_biz.phone, founded_biz.website, founded_biz.country, founded_biz.city, founded_biz.address)
+    bizForm.bindFromRequest.fold(
+        formWithErrors => Redirect(routes.SettingController.index),//BadRequest(views.html.settings.index(credForm.fill(cred), request.user)),
+        entity => {
+          println(entity)
+          Home.flashing(models.DAO.resources.web.BusinessDAO.updateCredentials(
+            founded_biz.id.get, entity) match {
+            case false => "failure" -> s"Could not update entity ${entity}"
+            case _ => "success" -> s"Entity ${entity} has been updated"
+          })
+        })
+
  }
 
+ def update_email() = SecuredAction { implicit request =>
+   	Redirect(routes.SettingController.index)
+    ???
+ }
+
+
+private def fetchBiz(email: String) = {
+  BusinessDAO.get(EmployeesBusinessDAO.getByUID(email).get._2).get
+}
 
 
 }

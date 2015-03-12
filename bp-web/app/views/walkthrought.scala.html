@@ -1,0 +1,27 @@
+@import service.DemoUser
+@import controllers.employeeParams
+@import controllers.managerParams
+@import controllers.planInfo
+@import models.DAO.resources.ActPermission
+@import models.DAO.resources.BusinessServiceDTO
+@import models.DAO.resources.BusinessDTO
+@import controllers.BusinessServiceForms._
+
+@(user: DemoUser)(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment[service.DemoUser])
+
+@import securesocial.core.IdentityProvider
+@import securesocial.core.IdentityProvider
+@import securesocial.core.providers.UsernamePasswordProvider
+@import securesocial.core.AuthenticationMethod._
+@import play.api.{Logger, Play}
+@import helper._
+@import play.api.Play
+@import models.DAO.resources.BusinessServiceDTO
+@import models.DAO.resources.BusinessDTO
+@import helper._
+
+
+
+@main(Messages("page.walkthrough")(LangDet.getLang(user) ), user) {
+<b>Walkthrought</b>
+}

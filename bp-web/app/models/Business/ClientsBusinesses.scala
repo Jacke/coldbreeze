@@ -28,6 +28,23 @@ object ClientBusinessDAO {
   val clients_businesses = TableQuery[ClientsBusinesses]
 
 
+  def addAsClient(uid: String, business_id: Int) = database withSession { implicit session =>
+    val client_id = ClientDAO.pull_new_object(ClientDTO(None, uid))
+    client_id match {
+      case Some(id) => pull_new(id, business_id)
+      case _ => false
+    }
+  }
+
+
+  def pull_new(client_id: Int, business_id: Int) = Try(database withSession {
+    implicit session ⇒
+      if (!getByBusinessAndClient(client_id, business_id).isDefined) {
+        clients_businesses += (client_id, business_id)
+      } else {
+        false
+      }
+  }).isSuccess
 
 
   def pull(client_id: Int, business_id: Int) = Try(database withSession {
@@ -35,6 +52,15 @@ object ClientBusinessDAO {
 
       clients_businesses += (client_id, business_id)
   }).isSuccess
+
+
+  def getByBusinessAndClient(client: Int, k: Int) = database withSession {
+    implicit session ⇒
+      val q3 = for { s ← clients_businesses if s.business_id === k && s.client_id === client } yield s
+      println(q3.selectStatement)
+      println(q3.list)
+      q3.list.headOption 
+  }
 
   def getByBusiness(k: Int) = database withSession {
     implicit session ⇒

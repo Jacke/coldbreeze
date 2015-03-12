@@ -15,7 +15,7 @@ angular.module('mgcrea.ngStrap.helpers.dateParser', [])
     strict: false
   };
 
-  this.$get = function($locale) {
+  this.$get = function($locale, dateFilter) {
 
     var DateParserFactory = function(config) {
 
@@ -66,7 +66,7 @@ angular.module('mgcrea.ngStrap.helpers.dateParser', [])
         'M'     : function(value) { return this.setMonth(1 * value - 1); },
         'yyyy'  : proto.setFullYear,
         'yy'    : function(value) { return this.setFullYear(2000 + 1 * value); },
-        'y'    : proto.setFullYear
+        'y'     : proto.setFullYear
       };
 
       var regex, setMap;
@@ -82,13 +82,15 @@ angular.module('mgcrea.ngStrap.helpers.dateParser', [])
         return regex.test(date);
       };
 
-      $dateParser.parse = function(value, baseDate) {
-        if(angular.isDate(value)) return value;
-        var matches = regex.exec(value);
+      $dateParser.parse = function(value, baseDate, format) {
+        if(angular.isDate(value)) value = dateFilter(value, format || $dateParser.$format);
+        var formatRegex = format ? regExpForFormat(format) : regex;
+        var formatSetMap = format ? setMapForFormat(format) : setMap;
+        var matches = formatRegex.exec(value);
         if(!matches) return false;
-        var date = baseDate || new Date(0);
+        var date = baseDate || new Date(0, 0, 1);
         for(var i = 0; i < matches.length - 1; i++) {
-          setMap[i] && setMap[i].call(date, matches[i+1]);
+          formatSetMap[i] && formatSetMap[i].call(date, matches[i+1]);
         }
         return date;
       };
@@ -109,7 +111,7 @@ angular.module('mgcrea.ngStrap.helpers.dateParser', [])
         }
         // Sort result map
         angular.forEach(map, function(v) {
-          sortedMap.push(v);
+          if(v) sortedMap.push(v);
         });
         return sortedMap;
       }

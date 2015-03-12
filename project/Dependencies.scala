@@ -29,8 +29,8 @@ object Dependencies {
   val slickpgcore     = "com.github.tminglei"       %  "slick-pg_core_2.11"     % "0.6.3"
   val slickpgplay     = "com.github.tminglei"       %% "slick-pg_play-json"     % "0.6.3"
   val slf4j           = "org.slf4j"                 %  "slf4j-nop"              % "1.7.3"
-//val json4s-n        = "org.json4s"                %%  "json4s-native"         % "3.2.6"
-//val json4s-j        = "org.json4s"                %%  "json4s-jackson"        % "3.2.6"
+  val json4sNative    = "org.json4s"                %% "json4s-native"          % "3.2.10"
+  val json4sJackson   = "org.json4s"                %% "json4s-jackson"         % "3.2.10"
   val postgres        = "postgresql"                %   "postgresql"            % "9.1-901.jdbc4"
 //val mongodb         = "org.mongodb"               %% "casbah"                % "2.7.0-RC0"
   val mechanize       = "com.gistlabs"              %  "mechanize"              % "0.11.0"
@@ -53,7 +53,7 @@ object Dependencies {
   val bootstrap       = "org.webjars"               %  "bootstrap"              % "3.1.1-1"   exclude("org.webjars", "jquery")
   val securesocial    = "ws.securesocial"           %% "securesocial"           % "master-SNAPSHOT"
 
-
+  val amonite         = "com.lihaoyi"               %% "ammonite-repl"          % "0.2.4" % "test"
 
   val bcrypt          = "com.github.t3hnar"         % "scala-bcrypt_2.11"       % "2.4"
   val mailer          = "com.typesafe"              % "play-plugins-mailer_2.10"% "2.2.0"

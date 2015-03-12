@@ -177,5 +177,11 @@ def update(id: Int, entity: BPStationLoggerDTO):Boolean = {
         bpstationloggers.ddl.create
     }
   }
+  def ddl_drop = {
+    database withSession {
+      implicit session =>
+        bpstationloggers.ddl.drop
+    }
+  }
 
 }

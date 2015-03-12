@@ -2,14 +2,27 @@
 
 
 
-minorityControllers.controller('BPRequestCtrl', ['$scope', '$routeParams','$route','$filter','BPLogsFactory', 'BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory', 'BProcessFactory', 'BPStationsFactory', 'BPRequestFactory',  '$location', '$http',
-function ($scope, $routeParams,$route,$filter,BPLogsFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BProcessFactory, BPStationsFactory, BPRequestFactory,  $location, $http) {
+minorityControllers.controller('BPRequestCtrl', ['$scope', '$window','$routeParams','$route', '$rootScope','$filter','BPLogsFactory', 'BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory', 'BProcessFactory', 'BPStationsFactory', 'BPRequestFactory',  '$location', '$http',
+function ($scope, $window,$routeParams,$route, $rootScope,$filter,BPLogsFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BProcessFactory, BPStationsFactory, BPRequestFactory,  $location, $http) {
 
   console.log($routeParams.BPid);
   console.log($scope.bpId);
   if ($routeParams.BPid != undefined) {
    $scope.bpId = $routeParams.BPid;
   }
+
+$scope.isManager = function () {
+  if ($scope.isManagerVal == undefined && $rootScope.manager != undefined) {
+    $scope.isManagerVal = $rootScope.manager;
+    return $scope.isManagerVal;
+  } else {
+    return $window.localStorage.manager == "true";
+  }
+};
+
+$scope.isManagerVal = $scope.isManager();
+$scope.isManager();
+
 
   $scope.bpelems = BPElemsFactory.query({ BPid: $scope.bpId }); 
   $scope.spaces =  BPSpacesFactory.query({ BPid: $scope.bpId });
@@ -235,9 +248,9 @@ $scope.builder = function (station) {
 
 
         BPRequestFactory.scheme({ BPid: $scope.bpId, station_id: target.id }).$promise.then(function(data) {
-        console.log("magic happens here");
-        console.log(data);
-
+                console.log("magic happens here");
+                console.log(data);
+                $(".inputRequests:not(:eq(0))").toggle();
                       //target.proc_elems = [];
                      //target.space_elems = [];
                   target.proc_elems = data.proc_elems;
@@ -263,8 +276,10 @@ $scope.builder = function (station) {
         $scope.spaces.$promise.then(function(data2) {
           $scope.spaceelems.$promise.then(function(data3) {
             $scope.logs.$promise.then(function(loggg) {
-       _.forEach(data, function(station) { $scope.builder(station) });
-         console.log(data);  
+               _.forEach(data, function(station) { $scope.builder(station);  $(".inputRequests:not(:eq(0))").toggle(); });
+                  console.log(data);  
+                   $(".inputRequests:not(:eq(0))").toggle();
+                 
   });
   });
   });
@@ -272,8 +287,17 @@ $scope.builder = function (station) {
 
 
   });
+
+
   $scope.defaultParam();
   $scope.bprocess = BProcessFactory.show({ id: $scope.bpId });
+
+  $scope.showAll = function () {
+    $(".inputRequests:not(:eq(0))").toggle();
+  }
+
+
+
 }]).animation('.slide', function() {
   var NgHideClassName = 'ng-hide';
   return {

@@ -16,7 +16,7 @@ import play.api.data.Forms._
 import play.api.data.format.Formats
 import play.api.data.format.Formatter
 import play.api.data.FormError
-
+import play.api.Logger
 
 import views._
 import models.User
@@ -29,9 +29,28 @@ import models.DAO.resources._
 import models.DAO.CompositeValues
 import play.api.Play.current
 
+case class StationNoteMsg(msg: String)
+
 class BusinessProcessController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
 
-
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  // TODO: Created_at updated_at for every elements PLUS FOR BUSINESS
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  
+  
   implicit val CompositeVReads = Json.reads[CompositeValues]
   implicit val CompositeVWrites = Json.format[CompositeValues]
   implicit val stationReads = Json.reads[BPStationDTO]
@@ -49,11 +68,13 @@ class BusinessProcessController(override implicit val env: RuntimeEnvironment[De
   implicit val InputParamWrites = Json.format[InputParams]
   implicit val BProcessDTOReads = Json.reads[BProcessDTO]
   implicit val BProcessDTOWrites = Json.format[BProcessDTO]
+  implicit val StationNoteReads = Json.reads[StationNoteMsg]
+  implicit val StationNoteWrites = Json.format[StationNoteMsg]
 
 
 
   def bprocess = SecuredAction { implicit request =>
-    val bprocess = BPDAO.getAll
+    val bprocess = BPDAO.getAll // TODO: Not safe
     val user_services = BusinessServiceDAO.getByMaster(request.user.main.email.getOrElse("")).map(_.id)
     println(user_services)
     // TODO: Add for actor, if they assigned to process
@@ -163,9 +184,7 @@ class BusinessProcessController(override implicit val env: RuntimeEnvironment[De
       case _ => false
     }
   }
-  def observe() = {
-    ???
-  }
+
   def embed() = {
     ???
   }
@@ -176,10 +195,16 @@ class BusinessProcessController(override implicit val env: RuntimeEnvironment[De
       case _ => BadRequest(Json.obj("status" -> "Not found"))
     }
   }
-  def create_bprocess = SecuredAction(BodyParsers.parse.json) { request =>
+
+
+
+def create_bprocess = SecuredAction(BodyParsers.parse.json) { request =>
   val bpResult = request.body.validate[BProcessDTO]
-  bpResult.fold(
+    Logger.debug(s"trying create process with $bpResult")
+   println(bpResult)
+   bpResult.fold(
     errors => {
+       Logger.error(s"error with $bpResult")
       BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
     },
     bprocess => { 
@@ -262,7 +287,9 @@ val UndefElementForm = Form(
       "type_title" -> nonEmptyText,
       "space_own" -> optional(number),
       "order" -> number,
-      "comps" -> optional(list(of[CompositeValues]))
+      "comps" -> optional(list(of[CompositeValues])),
+      "created_at" -> optional(jodaDate),
+      "updated_at" -> optional(jodaDate)
       )(UndefElement.apply)(UndefElement.unapply))
 /*
 id: Option[Int], 
@@ -283,7 +310,9 @@ val BPSpaceForm = Form(
       "subbrick" -> boolean,
       "brick_front" -> optional(number),
       "brick_nested" -> optional(number),
-      "nestingLevel" -> number)(BPSpaceDTO.apply)(BPSpaceDTO.unapply))
+      "nestingLevel" -> number,
+      "created_at" -> optional(jodaDate),
+      "updated_at" -> optional(jodaDate))(BPSpaceDTO.apply)(BPSpaceDTO.unapply))
 /*
 id: Option[Int],
                         title:String,
@@ -311,7 +340,9 @@ val SpaceElementForm = Form(
       "space_owned" -> number,
       "space_role" -> optional(text),
       "order" -> number,
-      "comps" -> optional(list(of[CompositeValues])))(SpaceElementDTO.apply)(SpaceElementDTO.unapply))
+      "comps" -> optional(list(of[CompositeValues])),
+      "created_at" -> optional(jodaDate),
+      "updated_at" -> optional(jodaDate))(SpaceElementDTO.apply)(SpaceElementDTO.unapply))
 
 
 
@@ -321,7 +352,7 @@ def createFrontElem() = SecuredAction(BodyParsers.parse.json) { implicit request
 
   request.body.validate[UndefElement].map{ 
     case entity => haltActiveStations(entity.bprocess); ProcElemDAO.pull_object(entity) match {
-            case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not update front element ${entity.title}")))
+            case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not create front element ${entity.title}")))
             case id =>  { 
               println(id)
               Ok(Json.toJson(Map("success" ->  id)))
@@ -330,13 +361,6 @@ def createFrontElem() = SecuredAction(BodyParsers.parse.json) { implicit request
     }.recoverTotal{
       e => BadRequest("formWithErrors")
     }
-  /*
-  UndefElementForm.bindFromRequest.fold(
-      formWithErrors => BadRequest("formWithErrors"),
-      entity => {
-          val elem_id = ProcElemDAO.pull_object(entity)
-          Ok(Json.toJson(Map("success" -> s"Front element ${entity.title} has been created")))
-      })   */
 }
 def createSpace() = SecuredAction(BodyParsers.parse.json) { implicit request =>
   println(request.body.validate[BPSpaceDTO])
@@ -344,7 +368,7 @@ def createSpace() = SecuredAction(BodyParsers.parse.json) { implicit request =>
   val placeResult = request.body.validate[BPSpaceDTO]  
    request.body.validate[BPSpaceDTO].map{ 
     case entity => haltActiveStations(entity.bprocess);BPSpaceDAO.pull_object(entity) match {
-            case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not update front element ${entity.index}")))
+            case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not create space ${entity.index}")))
             case id =>  Ok(Json.toJson(Map("success" ->  id)))
           }
     }.recoverTotal{
@@ -361,7 +385,7 @@ def createSpaceElem() = SecuredAction(BodyParsers.parse.json) { implicit request
   }
   request.body.validate[SpaceElementDTO].map{ 
     case entity => haltActiveStations(entity.bprocess);SpaceElemDAO.pull_object(entity) match {
-            case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not update front element ${entity.title}")))
+            case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not create space element ${entity.title}")))
             case id =>  Ok(Json.toJson(Map("success" ->  id)))
           }
     }.recoverTotal{
@@ -396,7 +420,7 @@ def updateSpace(id: Int, space_id: Int) = SecuredAction(BodyParsers.parse.json) 
   println
   request.body.validate[BPSpaceDTO].map{ 
     case entity => BPSpaceDAO.update(space_id,entity) match {
-            case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not update front element ${entity.id}")))
+            case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not update space ${entity.id}")))
             case _@x =>  Ok(Json.toJson(entity.id))
           }
     }.recoverTotal{
@@ -406,7 +430,7 @@ def updateSpace(id: Int, space_id: Int) = SecuredAction(BodyParsers.parse.json) 
 def updateSpaceElem(id: Int, spelem_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
   request.body.validate[SpaceElementDTO].map{ 
     case entity => SpaceElemDAO.update(spelem_id,entity) match {
-            case false =>  Ok(Json.toJson(Map("failure" ->  s"Could not update front element ${entity.title}")))
+            case false =>  Ok(Json.toJson(Map("failure" ->  s"Could not update space element ${entity.title}")))
             case _ =>  Ok(Json.toJson(entity.id))
           }
     }.recoverTotal{
@@ -481,6 +505,35 @@ def halt_station(id: Int, station_id: Int) = SecuredAction { implicit request =>
     BPStationDAO.haltUpdate(station_id)))
 }
 
+// /bprocess/:id/stations/around  
+import helpers.ElemAround
+import helpers.AroundAttr
+import helpers.ListAround
+import play.api.data.validation._
+
+      
+implicit val AroundAttrReads = Json.reads[AroundAttr]
+implicit val AroundAttrWrites = Json.format[AroundAttr]
+
+  
+implicit val ElemAroundReads = Json.reads[ElemAround]
+implicit val ElemAroundWrites = Json.format[ElemAround]
+
+  
+implicit val ListAroundReads = Json.reads[ListAround]
+implicit val ListAroundWrites = Json.format[ListAround]
+//implicit val AroundMapReads = Json.reads[Map[Int, ElemAround]]
+//implicit val AroundMapWrites = Json.format[Map[Int, ElemAround]]
+  
+
+
+  
+def stations_elems_around(id: Int) = SecuredAction { implicit request =>
+  Ok(Json.toJson(helpers.ElemAround.detectForProcess(id)))
+  
+}
+  
+  
 
 // /bprocess/:id/logs  
 def logs_index(id: Int) = SecuredAction { implicit request => 
@@ -488,9 +541,43 @@ def logs_index(id: Int) = SecuredAction { implicit request =>
 }
 
 
+  
+  
+  
+/**
+ * Update station note
+ *
+ */
+def update_note(id: Int, station_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+  val perm = true // TODO: Make permission !!!
+
+  request.body.validate[StationNoteMsg].map{ 
+    case entity => {
+        if (perm) {
+          BPStationDAO.updateNote(station_id, entity.msg)
+          Ok(Json.toJson(Map("success" -> s"station $id note updated")))
+        } else {
+          BadRequest("Access Denied")
+        }
+
+        }
+    }.recoverTotal{
+      e => BadRequest("formWithErrors")
+    }
+
+ 
+  
+}
 
 
+/*
+  Histories methods
+ */
+import ProcHistoryDAO._
 
+private def action(what: String) = {
+  ???
+}
 
 
 }

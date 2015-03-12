@@ -89,7 +89,7 @@ class BusinessServiceController(override implicit val env: RuntimeEnvironment[De
       val services = BusinessServiceDAO.get(id)
       services match {
         case Some(service) =>
-        val srvc = BusinessServiceDTO(service.id, service.title, service.business_id)
+        val srvc = BusinessServiceDTO(service.id, service.title, service.business_id, request.user.main.email.get) 
          Ok(views.html.businesses.service_edit_form(id, serviceForm.fill(srvc), request.user))
         case None => Ok("not found")
       }
@@ -98,10 +98,12 @@ class BusinessServiceController(override implicit val env: RuntimeEnvironment[De
 
   }
   def update_make(id: Int) = SecuredAction { implicit request =>
+      val service = BusinessServiceDAO.get(id).get
+
       serviceForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.businesses.service_edit_form(id, formWithErrors, request.user)),
         entity => {
-          Home.flashing(BusinessServiceDAO.update(id,entity) match {
+          Home.flashing(BusinessServiceDAO.update(id,entity.copy(business_id = service.business_id, master_acc = request.user.main.email.get) ) match {
             case 0 => "failure" -> s"Could not update entity ${entity.title}"
             case _ => "success" -> s"Entity ${entity.title} has been updated"
           })

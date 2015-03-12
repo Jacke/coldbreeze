@@ -2,14 +2,74 @@
 <div class="active-station-alert alert alert-info" ng:hide="hasPayingPlan">
             {{ 'AFTER_PAYING' | translate }} 
 </div>
+<style>
+
+
+</style>
+
+
 
 <div class="observers">
 <h3 class="primary"> {{ 'OBSERVERS' | translate }} </h3> 
 <p>{{ 'OBSERV_DESC' | translate }}</p>
+
+<div ng-repeat="observer in observers">
+  {{ observer.note }}
+  {{ observer.fullName }}
+  {{ $parent.bprocess.title }}
+
+  <div class="clone-url open">
+  <h3>URL</h3>
+  <div class="input-group">
+    <input type="text" class="input-mini input-monospace js-url-field" value="http://min.ority.us/observe/{{ observer.hash_code }}">
+    <span class="input-group-button">
+      <button aria-label="Copy to clipboard" class="js-zeroclipboard minibutton zeroclipboard-button" data-clipboard-text="http://min.ority.us/observe/{{ observer.hash_code }}" data-copied-hint="Copied!" type="button"><span class="uicon-svg372"></span> </button>
+    </span>
+  </div>
+  </div>
+
+  {{ observer.created_at }}
+  <a ng-click="deleteObserver(observer.id)">{{ 'DELETE' | translate }}</a>
+
+</div>
+
+
+
+<div class="observer-form">
+  <h4>{{ 'ADD_OBSERVER' | translate  }}</h4>
+<form novalidate="novalidate" class="form-horizontal">
+      <input type="hidden" id="inputTitle" ng-model="newObserver.observer.bprocess" ng-init="newObserver.observer.bprocess=bpId" required/>
+
+      <label class="control-label" for="inputTitle">{{ 'EMAILS' | translate }}:</label>
+    <div class="controls">
+        <textarea type="text" id="inputBusinessId" ng-model="newObserver.emails" ng-init="newObserver.emails = []"/>
+        <input type="text" id="inputFullName" ng-model="newObserver.observer.fullName" placeholder="{{ 'FULL_NAME' | translate }}" required/>
+
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">{{ 'STATION' | translate }}:</label>
+      <div class="controls">
+        <select ng-model="newObserver.observer.station_id" ng-options="station.id as station.note for station in stations" required></select><br>
+      </div>
+    </div>
+    <div class="control-group">
+      <div class="controls">
+        <a ng-click="createNewObserver()" class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</a>
+      </div>
+    </div>
+</form>
+</div>
+
+
 </div>
 <div class="embed">
 <h3 class="primary"> {{ 'EMBEDING' | translate }} </h3>
 <p>{{ 'EMB_DESC' | translate }}</p>
+<div class="active-station-alert alert alert-info">
+            {{ 'EMBED_AFTER_TRIAL' | translate }} 
+</div>
+
 </div>
 
 </div>

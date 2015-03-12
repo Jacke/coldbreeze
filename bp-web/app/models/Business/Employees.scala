@@ -54,6 +54,7 @@ def pull_object_for(s: EmployeeDTO, email: String) = database withSession {
       val q3 = for { s <- employees if s.master_acc === email } yield s
       q3.list
   }
+
   def getByUID(uid: String) = database withSession {
     implicit session =>
     val q3 = for { s ← employees if s.uid === uid } yield s// <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)
@@ -103,6 +104,12 @@ def pull_object_for(s: EmployeeDTO, email: String) = database withSession {
     database withSession {
       implicit session =>
       employees.ddl.create
+    }
+  }
+  def ddl_drop = {
+    database withSession {
+      implicit session =>
+        employees.ddl.drop
     }
   }
 

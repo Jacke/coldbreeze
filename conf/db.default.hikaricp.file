@@ -1,0 +1,16 @@
+jdbcUrl=jdbc:postgresql://localhost/minority1
+driverClassName=org.postgresql.Driver
+
+username=postgres
+password=12344321
+
+connectionTestQuery=SELECT 1
+registerMbeans=true
+
+# 15 minutes
+maxLifetime=900000
+# 5 minutes
+idleTimeout=300000
+
+maximumPoolSize=20
+minimumIdle=5

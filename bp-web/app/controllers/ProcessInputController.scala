@@ -53,8 +53,11 @@ class ProcessInputController(override implicit val env: RuntimeEnvironment[DemoU
   implicit val InputParamWrites = Json.format[InputParams]
 
 
-  def invoke(bpID: Int)  = Action { implicit request =>
-    service.RunnerWrapper.run(bpID) match {
+  def invoke(bpID: Int)  = SecuredAction { implicit request =>
+    val userId = request.user.main.userId
+    val lang:String = models.AccountsDAO.getRolesAndLang(userId).get._3
+
+    service.RunnerWrapper2.run(bpID, Some(lang)) match {
       case Some(station_id) => Ok(Json.toJson(Map("success" -> station_id)))
       case _ => Ok(Json.toJson(Map("error" -> "Error output")))
     }
@@ -100,7 +103,7 @@ case class InputLogger(var id: Option[Int],
 
     println("PAAAAAAAARAMS")
     println(genparams.get)
-    service.RunnerWrapper.runFrom(station_id, bpID, genparams.get) match {
+    service.RunnerWrapper2.runFrom(station_id, bpID, genparams.get) match {
       case Some(station_id) => Ok(Json.toJson(Map("success" -> station_id)))
       case _ => Ok(Json.toJson(Map("error" -> "Error output")))
     }

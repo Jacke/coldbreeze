@@ -4,20 +4,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 * Change ID to LONG everywhere
 * Error ajax
 http://kufli.blogspot.ru/2013/08/sprayio-rest-service-exception.html
@@ -33,32 +19,12 @@ http://www.egobrain.ru/blog/2014/02/13/obrabotka-oshibok-poumolchaniiu-angularjs
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 * Misc
-
-  * Dopel feature
   * Graph.js
 
 
 /Final/
   * Collab & sharing
-  * Link block[Input, return, ...]
-  * Block store
-  * BDocuments
-  * K-V Properties for resources
   * Observer block http://www.activiti.org/userguide/index.html#bpmnEvents
   * Triggers(that runs something just from template and request[POST /auth/token?acton=...])
 
@@ -74,12 +40,8 @@ http://www.egobrain.ru/blog/2014/02/13/obrabotka-oshibok-poumolchaniiu-angularjs
   * Return in ProcElems [ Block that return blocks and arg&params ]
 
   * Bridge
-  * Behav Resources
-  * Behav model methods and elements
   * Templates BP, ctx, sbj?
   * Neo4J integration?
-  * Complex block
-  * Block register / Elem -> Block conversion
   * Sandbox for testing external Blocks
   * Service
   * RPC

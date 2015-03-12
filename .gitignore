@@ -4,6 +4,8 @@
 .worksheet/
 .cache/
 target/
+rest2/
+third-party/
 slick-pg/
 .classpath
 .project
@@ -11,6 +13,8 @@ project/target
 .DS_Store
 
 
+minority.sql
+minority2.sql
 *.class
 *.log
 *.crt

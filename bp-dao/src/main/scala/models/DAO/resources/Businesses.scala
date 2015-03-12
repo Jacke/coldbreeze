@@ -3,20 +3,36 @@ package models.DAO.resources.web
 import models.DAO.driver.MyPostgresDriver.simple._
 import models.DAO.conversion.DatabaseCred
 
-class Businesses(tag: Tag) extends Table[(Option[Int], String)](tag, "businesses") {
+import com.github.nscala_time.time.Imports._
+
+case class BizFormDTO(title: String, phone: Option[String] = None, website: Option[String] = None, country: String, city: String, address: Option[String])
+
+class Businesses(tag: Tag) extends Table[BusinessDTO](tag, "businesses") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def title = column[String]("title")
+  def phone = column[Option[String]]("phone")
+  def website = column[Option[String]]("website")
+  def country = column[String]("country")
+  def city = column[String]("city")
+  def address = column[Option[String]]("address")
+
+  def walkthrough = column[Boolean]("walkthrough")
+    
+  def created_at = column[Option[org.joda.time.DateTime]]("created_at")
+  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
 
 
-
-  def * = (id.?, title) //<> (Supplier.tupled, Supplier.unapply)
+  def * = (id.?, title, phone, website, country, city, address, walkthrough,
+           created_at, updated_at) <> (BusinessDTO.tupled, BusinessDTO.unapply)
 
 }
 
 /*
   Case class
  */
-case class BusinessDTO(var id: Option[Int], title: String)
+case class BusinessDTO(var id: Option[Int], title: String, phone: Option[String] = None, website: Option[String] = None, country: String, city: String, address: Option[String], walkthrough: Boolean = false,
+created_at:Option[org.joda.time.DateTime] = None,
+updated_at:Option[org.joda.time.DateTime] = None)
 
 object BusinessDAO {
   import scala.util.Try
@@ -29,22 +45,15 @@ object BusinessDAO {
 
   def pull_object(s: BusinessDTO) = database withSession {
     implicit session ⇒
-      val tuple = BusinessDTO.unapply(s).get
-      businesses returning businesses.map(_.id) += (value = (None, s.title))//(BusinessDTO.unapply(s).get._2, BusinessDTO.unapply(s).get._3)
+      businesses returning businesses.map(_.id) += s
   }
 
-  def pull(id: Option[Int] = None, title: String, business: Int) = Try(database withSession {
-    implicit session ⇒
-
-      businesses += (id, title)
-  }).isSuccess
 
   def get(k: Int) = database withSession {
     implicit session ⇒
-      val q3 = for { s ← businesses if s.id === k } yield s <> (BusinessDTO.tupled, BusinessDTO.unapply _)
-      println(q3.selectStatement)
-      println(q3.list)
-      q3.list.headOption //.map(Supplier.tupled(_))
+      val q3 = for { s ← businesses if s.id === k } yield s
+
+      q3.list.headOption 
   }
   /**
    * Update a business
@@ -53,7 +62,23 @@ object BusinessDAO {
    */
   def update(id: Int, business: BusinessDTO) = database withSession { implicit session ⇒
     val bpToUpdate: BusinessDTO = business.copy(Option(id))
-    businesses.filter(_.id === id).update(BusinessDTO.unapply(bpToUpdate).get)
+    businesses.filter(_.id === id).update(bpToUpdate)
+  }
+
+
+  def updateCredentials(id: Int, cred: BizFormDTO) = database withSession {
+    implicit session =>
+    val q3 = for { a ← businesses if a.id === id } yield a
+      val result = q3.list.headOption
+      result match {
+        case Some(origin) => {
+         val toUpdate = origin.copy(title = cred.title, phone = cred.phone, website = cred.website, country = cred.country, city = cred.city, address = cred.address)
+           businesses.filter(_.id === id).update(toUpdate)
+           true
+        }
+        case _ => false
+      }
+
   }
   /**
    * Delete a business
@@ -74,7 +99,7 @@ object BusinessDAO {
 
   def getAll() = database withSession {
     implicit session ⇒
-      val q3 = for { s ← businesses } yield s <> (BusinessDTO.tupled, BusinessDTO.unapply _)
+      val q3 = for { s ← businesses } yield s 
       q3.list.sortBy(_.id)
     //suppliers foreach {
     //  case (id, title, address, city, state, zip) ⇒
@@ -88,4 +113,11 @@ object BusinessDAO {
       businesses.ddl.create
     }
   }
+  def ddl_drop = {
+    database withSession {
+      implicit session =>
+      businesses.ddl.drop
+    }
+  }
+
 }

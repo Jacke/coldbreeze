@@ -1,8 +1,11 @@
 package models.DAO
 
 
-import scala.slick.driver.PostgresDriver.simple._
-
+import models.DAO.driver.MyPostgresDriver1.simple._
+import com.github.nscala_time.time.Imports._
+//import com.github.tminglei.slickpg.date.PgDateJdbcTypes
+import scala.slick.model.ForeignKeyAction
+  
 import scala.slick.model.ForeignKeyAction
 import models.DAO.resources.BusinessDTO._
 import models.DAO.conversion.DatabaseCred
@@ -11,12 +14,18 @@ import models.DAO.conversion.DatabaseCred
  * BProcess Scheme
  */
 class BProcesses(tag: Tag) extends Table[BProcessDTO](tag, "bprocesses") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc) // This is the primary key column
+  def id = column[Int]("id", O.PrimaryKey, O.AutoInc) 
   def title = column[String]("title")
   def service = column[Int]("service_id")
   def business = column[Int]("business_id")
+    
+  def created_at = column[Option[org.joda.time.DateTime]]("created_at")
+  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
+
+  def version = column[Long]("version", O.Default(1L))
+  def state_machine_type = column[String]("state_machine_type", O.Default("base"))
   // Every table needs a * projection with the same type as the table's type parameter
-  def * = (id.?, title, service, business) <> (BProcessDTO.tupled, BProcessDTO.unapply)
+  def * = (id.?, title, service, business ,created_at, updated_at, version, state_machine_type) <> (BProcessDTO.tupled, BProcessDTO.unapply)
   
   def businessFK = foreignKey("business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
   def serviceFK = foreignKey("service_fk", service, models.DAO.resources.BusinessServiceDAO.business_services)(_.id, onDelete = ForeignKeyAction.Cascade)
@@ -26,7 +35,7 @@ class BProcesses(tag: Tag) extends Table[BProcessDTO](tag, "bprocesses") {
 /*
   Case class
  */
-case class BProcessDTO(var id: Option[Int], title: String, service: Int, business: Int)
+case class BProcessDTO(var id: Option[Int], title: String, service: Int, business: Int ,created_at:Option[org.joda.time.DateTime] = None, updated_at:Option[org.joda.time.DateTime] = None, version: Long = 1L, state_machine_type: String = "base")
 
 /*
   DataConversion
@@ -41,8 +50,10 @@ object BPDAO {
    * Actions
    */
   import scala.util.Try
-  import scala.slick.driver.PostgresDriver.simple._
+
   import DatabaseCred.database
+  import models.DAO.conversion.Implicits._
+
 
 
   val bprocesses = TableQuery[BProcesses]
@@ -112,6 +123,12 @@ object BPDAO {
     database withSession {
       implicit session =>
       bprocesses.ddl.create
+    }
+  }
+  def ddl_drop = {
+    database withSession {
+      implicit session =>
+       bprocesses.ddl.drop
     }
   }
 

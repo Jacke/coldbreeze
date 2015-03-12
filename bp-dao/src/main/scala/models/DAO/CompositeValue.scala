@@ -24,6 +24,12 @@ def createShit: Unit = {
       //new MyPostgresDriver1.TableDDLBuilder(CompositeTests.baseTableRow).buildDDL create
     }
   }
+def dropShit: Unit = {
+  database withSession { implicit  session: Session =>
+    (Q[Int] + "drop type compositevalues").first
+  }
+}
+
 }
 
 /*

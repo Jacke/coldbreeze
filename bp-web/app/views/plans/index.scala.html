@@ -3,8 +3,9 @@
 @import models.DAO.resources.ActPermission
 @import models.DAO.resources.BusinessServiceDTO
 @import models.DAO.resources.BusinessDTO
+@import models.DAO.resources._
 
-@(user: DemoUser)(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment[service.DemoUser])
+@(user: DemoUser, plans: List[PlanDTO], bills: List[BillDTO], payForm: Form[PayInfo], billing_info: Form[models.DAO.BillingInfoDTO])(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment[service.DemoUser])
 
 @import securesocial.core.IdentityProvider
 
@@ -18,14 +19,223 @@
 @import models.DAO.resources.BusinessDTO
 @import helper._
 
+@main(Messages("page.plans")(LangDet.getLang(user) ), user) {
+<link rel="stylesheet" href="/css/plan.css">
 
-@main("Plans", user) {
+
+<div id="ember2864" class="ember-view settings-inner"><h1 class="settings-title">Billing Overview</h1>
+
+<h3 class="settings-insert-title">Billing Info</h3>
+<div class="settings-insert">
+  <div class="settings-insert-inner clearfix">
+    <div class="settings-insert-column settings-insert-column-left">
+      <p>Your current Plan : <script id="metamorph-80-start" type="text/x-placeholder"></script>Freemium<script id="metamorph-80-end" type="text/x-placeholder"></script></p>
+      <p>Active since : <script id="metamorph-81-start" type="text/x-placeholder"></script>n/a<script id="metamorph-81-end" type="text/x-placeholder"></script></p>
+      <p>Next billing : <script id="metamorph-82-start" type="text/x-placeholder"></script>n/a<script id="metamorph-82-end" type="text/x-placeholder"></script></p>
+    </div>
+    <div class="settings-insert-column settings-insert-column-right">
+      <p>Current Monthly Payment :
+        <script id="metamorph-83-start" type="text/x-placeholder"></script>
+          <strong>$0</strong>
+        <script id="metamorph-83-end" type="text/x-placeholder"></script>
+     </p>
+      <script id="metamorph-84-start" type="text/x-placeholder"></script><script id="metamorph-84-end" type="text/x-placeholder"></script>
+    </div>
+  </div>
+</div>
+
+<h3 class="settings-insert-title">Change your Plan</h3>
+<div class="settings-insert settings-plans" style="text-align: center;">
+  <div class="settings-insert-inner">
+    <ul id="ember2878" class="ember-view plans_collection clearfix"><li id="ember3011" class="ember-view plans_collection-item"><h3 class="plans_collection-item-header"><script id="metamorph-148-start" type="text/x-placeholder"></script>Growth<script id="metamorph-148-end" type="text/x-placeholder"></script></h3>
+
+<div class="plans_collection-item-content">
+  <div><script id="metamorph-149-start" type="text/x-placeholder"></script>Up to 500 Invoices, Bills &amp; Financial operations every month.<script id="metamorph-149-end" type="text/x-placeholder"></script></div>
+</div>
+
+<div class="plans_collection-item-price">
+  $<script id="metamorph-150-start" type="text/x-placeholder"></script>99<script id="metamorph-150-end" type="text/x-placeholder"></script> <i>/ month</i>
+</div>
+
+<div class="plans_collection-item-footer">
+  <button class="button-default button-confirm" data-ember-action="3021" data-bindattr-3022="3022"><script id="metamorph-151-start" type="text/x-placeholder"></script>Subscribe<script id="metamorph-151-end" type="text/x-placeholder"></script></button>
+</div>
+</li><li id="ember3012" class="ember-view plans_collection-item"><h3 class="plans_collection-item-header"><script id="metamorph-152-start" type="text/x-placeholder"></script>Pro<script id="metamorph-152-end" type="text/x-placeholder"></script></h3>
+
+<div class="plans_collection-item-content">
+  <div><script id="metamorph-153-start" type="text/x-placeholder"></script>Up to 1,500 Invoices, Bills &amp; Financial operations every month.<script id="metamorph-153-end" type="text/x-placeholder"></script></div>
+</div>
+
+<div class="plans_collection-item-price">
+  $<script id="metamorph-154-start" type="text/x-placeholder"></script>249<script id="metamorph-154-end" type="text/x-placeholder"></script> <i>/ month</i>
+</div>
+
+<div class="plans_collection-item-footer">
+  <button class="button-default button-confirm" data-ember-action="3023" data-bindattr-3024="3024"><script id="metamorph-155-start" type="text/x-placeholder"></script>Subscribe<script id="metamorph-155-end" type="text/x-placeholder"></script></button>
+</div>
+</li><li id="ember3013" class="ember-view plans_collection-item"><h3 class="plans_collection-item-header"><script id="metamorph-156-start" type="text/x-placeholder"></script>Enterprise<script id="metamorph-156-end" type="text/x-placeholder"></script></h3>
+
+<div class="plans_collection-item-content">
+  <div><script id="metamorph-157-start" type="text/x-placeholder"></script>Up to 4,000 Invoices, Bills &amp; Financial operations every month.<script id="metamorph-157-end" type="text/x-placeholder"></script></div>
+</div>
+
+<div class="plans_collection-item-price">
+  $<script id="metamorph-158-start" type="text/x-placeholder"></script>399<script id="metamorph-158-end" type="text/x-placeholder"></script> <i>/ month</i>
+</div>
+
+<div class="plans_collection-item-footer">
+  <button class="button-default button-confirm" data-ember-action="3025" data-bindattr-3026="3026"><script id="metamorph-159-start" type="text/x-placeholder"></script>Subscribe<script id="metamorph-159-end" type="text/x-placeholder"></script></button>
+</div>
+</li><li id="ember3020" class="ember-view plans_collection-item secondary_item"><script id="metamorph-160-start" type="text/x-placeholder"></script>
+  <script id="metamorph-161-start" type="text/x-placeholder"></script>
+    <button data-ember-action="3029" data-bindattr-3030="3030"></button>
+    or <script id="metamorph-162-start" type="text/x-placeholder"></script>Subscribe<script id="metamorph-162-end" type="text/x-placeholder"></script> to <script id="metamorph-163-start" type="text/x-placeholder"></script>Startup<script id="metamorph-163-end" type="text/x-placeholder"></script> plan with <script id="metamorph-164-start" type="text/x-placeholder"></script>Up to 200 transactions<script id="metamorph-164-end" type="text/x-placeholder"></script> for $<script id="metamorph-165-start" type="text/x-placeholder"></script>49<script id="metamorph-165-end" type="text/x-placeholder"></script> / month
+  <script id="metamorph-161-end" type="text/x-placeholder"></script>
+
+<script id="metamorph-160-end" type="text/x-placeholder"></script>
+</li></ul>
+
+    <script id="metamorph-85-start" type="text/x-placeholder"></script>
+      <p>
+        <a data-ember-action="2881" class="cancel-subscription">Cancel my subscription</a>
+      </p>
+    <script id="metamorph-85-end" type="text/x-placeholder"></script>
+  </div>
+</div>
+
+
+<h3 class="settings-insert-title">Your Billing Information</h3>
+<div class="settings-insert settings-insert-form">
+  <div class="settings-insert-inner">
+@form(routes.PlanController.update_billinginfos(), 'class -> "topRight") {
+                    @inputText(billing_info("id"), 'class -> "form-control", 'hidden -> "hidden")
+                    @inputText(billing_info("business"), 'placeholder -> "business", '_label -> "business", 'class -> "form-control", 'hidden -> "hidden")
+                    @inputText(billing_info("firstName"), 'placeholder -> "First name", '_label -> "First name", 'class -> "form-control")
+                    @inputText(billing_info("lastName"), 'placeholder -> "Last name", '_label -> "Last name", 'class -> "form-control")
+                    @inputText(billing_info("zipcode"), 'placeholder -> "Zipcode", '_label -> "Zipcode", 'class -> "form-control")
+                    @inputText(billing_info("address"), 'placeholder -> "Address", '_label -> "Address", 'class -> "form-control")
+
+                    <input type="submit" value="Update" class="btn ">
+                  }
+
+    <form id="ember2983" class="ember-view clearfix " novalidate="novalidate">
+      <div>
+        <p>
+          <input id="ember2984" class="ember-view ember-text-field settings-insert-form-firstname-input" placeholder="Firstname" type="text">
+          <input id="ember2985" class="ember-view ember-text-field settings-insert-form-lastname-input" placeholder="Lastname" type="text">
+        </p>
+      </div>
+      <div>
+        <p><input id="ember2986" class="ember-view ember-text-field settings-insert-form-address-input" placeholder="Address" type="text"></p>
+      </div>
+      <div class="settings-insert-row">
+        <div>
+          <p>
+            <input id="ember2987" class="ember-view ember-text-field settings-insert-form-state-input" placeholder="State" type="text">
+            <input id="ember2988" class="ember-view ember-text-field settings-insert-form-city-input" placeholder="City" type="text">
+            <input id="ember2989" class="ember-view ember-text-field settings-insert-form-zipcode-input" placeholder="Zipcode" type="text">
+          </p>
+        </div>
+      </div>
+      
+    </form>
+
+    <footer>
+      <button class="button-default button-confirm" type="submit" data-ember-action="2990">
+        Update
+      </button>
+    </footer>
+  </div>
+</div>
+
+<h3 class="settings-insert-title">Billing History</h3>
+<div class="settings-insert settings-billing_history">
+  <div class="settings-insert-inner">
+    <script id="metamorph-146-start" type="text/x-placeholder"></script>
+      <div class="centering">
+        No receipt yet.
+      </div>
+    <script id="metamorph-146-end" type="text/x-placeholder"></script>
+    <script id="metamorph-147-start" type="text/x-placeholder"></script><script id="metamorph-147-end" type="text/x-placeholder"></script>
+  </div>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <div class="teamApisListWrap"><div class="panelLike organisationsGridLike">
 
 <div class="teamSettings">
 <div class="grids">
   <div class="page-header">
-      <h2><img src="@user.main.avatarUrl.getOrElse("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iRWJlbmVfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSIxNnB4IiBoZWlnaHQ9IjE2cHgiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTYgMTYiIHhtbDpzcGFjZT0icHJlc2VydmUiPjx0aXRsZT5EZWZhdWx0IEF2YXRhcjwvdGl0bGU+PGRlc2M+RGVmYXVsdCBBdmF0YXIgZm9yIFdDRiAyLjA8L2Rlc2M+IDxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbLnN1cmZhY2UgeyBmaWxsOiAjZmZmOyB9LnNoYWRvdyB7IGZpbGw6ICNiYmI7IH1dXT48L3N0eWxlPjwvZGVmcz48cmVjdCB4PSIwIiBjbGFzcz0ic2hhZG93IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiLz48cGF0aCBjbGFzcz0ic3VyZmFjZSIgZD0iTTMuNTI4LDE2QzMuNzc2LDExLjQ5OSw1LjY4NCw4LDgsOHM0LjIyNCwzLjQ5OSw0LjQ3Myw3Ljk5OCIvPjxjaXJjbGUgY2xhc3M9InN1cmZhY2UiIGN4PSI4IiBjeT0iNiIgcj0iMy41Ii8+PC9zdmc+")" alt="@user.main.firstName.getOrElse("")" width="40px" height="40px"/> Welcome @user.main.firstName.getOrElse("")</h2>
+      <h2>@Messages("page.plans")(LangDet.getLang(user) )</h2>
+      <ul>
+        @plans.map { plan =>
+      	<li>@plan.title — @plan.price $ 
+                <a role="menuitem" tabindex="-1" href="#">@form(routes.PlanController.switch(plan.id.get), 'class -> "topRight") {
+                                  <input type="submit" value="Switch" class="btn danger">
+                                }
+                </a>
+
+
+        </li>
+        }
+      </ul>
+
+
+      <h2>@Messages("page.bills")(LangDet.getLang(user) )</h2>
+      <ul>
+        @bills.map { bill =>
+          <li>
+            @bill.title
+            @Messages("page.assigned")(LangDet.getLang(user) ): @bill.assigned
+            @Messages("page.approved")(LangDet.getLang(user) ): @bill.approved
+           <a role="menuitem" tabindex="-1" href="#">
+<!--
+            @form(routes.PlanController.checkout(bill.id.get), 'class -> "topRight") {
+                    @inputText(payForm("numner"), 'placeholder -> "Card number", '_label -> "numner", 'class -> "form-control")
+                    @inputText(payForm("card_type"), 'placeholder -> "", '_label -> "card_type", 'class -> "form-control")
+                    @inputText(payForm("expiry"), 'placeholder -> "MM/YY", '_label -> "exp_month", 'class -> "form-control")
+                    @inputText(payForm("expiry"), 'placeholder -> "MM/YY", '_label -> "exp_year", 'class -> "form-control")
+                    @inputText(payForm("name"), 'placeholder -> "Full name", '_label -> "fullName", 'class -> "form-control")
+
+                    <input type="submit" value="Pay" class="btn danger">
+                  }
+                  </a>
+           <a href="/pay">Pay</a>
+-->
+
+
+        <div class="card-wrapper"></div>
+
+        <div class="form-container active">
+            <form action="@routes.PlanController.checkout(bill.id.get)" method="POST" class="card-form">
+                <input placeholder="@Messages("page.cardNumber")(LangDet.getLang(user) )" type="text" name="number">
+                <input type="text" name="@Messages("page.first-name")(LangDet.getLang(user) )"/>
+                <input type="text" name="@Messages("page.last-name")(LangDet.getLang(user) )"/>                
+                <input placeholder="MM/YY" type="text" name="expiry">
+                <input placeholder="CVC" type="text" name="cvc">
+                <input type="submit" value="@Messages("page.pay")(LangDet.getLang(user) )" class="btn danger">
+
+            </form>
+        </div>
+
+
+          </li>
+        }
+      </ul>
   </div>
 
 
@@ -41,5 +251,10 @@
 </div>
 </div>
 </div>
-
+<script>
+        $('.active form').card({
+            container: $('.card-wrapper'),
+            nameInput: 'input[name="first-name"], input[name="last-name"]'
+        })
+</script>
 }

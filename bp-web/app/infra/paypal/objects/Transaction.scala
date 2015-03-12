@@ -30,14 +30,14 @@ object RelatedResource {
       case "refund" => Refund.format.reads(json \ "refund")
       case "capture" => Capture.format.reads(json \ "capture")
       case "authorization" =>
-        Authorization.format.reads(json \ "authorization")
+        AuthorizationB.format.reads(json \ "authorization")
     }
 
     def writes(o: RelatedResource): JsValue = o match {
       case s : Sale => Json.obj("sale" -> s)
       case r : Refund => Json.obj("refund" -> r)
       case c : Capture => Json.obj("capture" -> c)
-      case a : Authorization => Json.obj("authorization" -> a)
+      case a : AuthorizationB => Json.obj("authorization" -> a)
     }
   }
 }

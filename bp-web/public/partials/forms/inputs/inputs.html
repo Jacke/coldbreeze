@@ -1,5 +1,5 @@
 <div class="container">
-<h3 class="primary">{{ 'RUN' | translate }}</h3>
+<h1>{{ 'RUN' | translate }}</h1>
 <div class="initily-invoke">
   <h3>{{ 'RUN_SCRATCH' | translate }}</h3>
 <a ng-click="runInitially()" class="btn btn-big btn-success modal-success">{{ 'RUN' | translate }}</a>
@@ -78,7 +78,7 @@
           <div ng-if="station.paused == true">
 
 <div ng-include src="'partials/treeInStation.html'"></div>
-          <a ng-click="haltStation(station.id)" class="btn btn-big btn-danger">{{ 'TURN_DOWN' | translate }}</a>
+          <a ng-click="haltStation(station.id)" class="btn btn-big btn-danger" ng-show="isManagerVal">{{ 'TURN_DOWN' | translate }}</a>
           <div class="runFrom">
           <h3>{{ 'RUN_FROM_ANOT' | translate }}</h3>
           <div class="params">
@@ -93,8 +93,12 @@
               <div ng-repeat="bpelem in station.proc_elems | filter:filterInputs " class="controls inputRequests">
                    <div class="request">
                     <p>{{bpelem.title}}</p>
+                    <!--<div>
                      <select ng-model="bpelem.param" class="forParam" ng-options="param.name as param.name for param in params" required></select><br>
-                    <!--<button ng-click="addParam(station, bpelem, null,bpelem.param)" class="btn btn-big btn-success">Add input params</button>-->
+                    </div>-->
+                    <div class="request-template">
+                       <div ng-include src="'partials/forms/inputs/input_template.html'"></div>
+                    </div>
 
               <div class="params" ng-repeat="cont in station.params">
                 <pre>{{ cont.param }} {{ bpelem.id }}</pre>
@@ -107,12 +111,17 @@
               <div ng-repeat="spaceelem in station.space_elems" class="controls inputRequests">
                    <div class="request">
                     <p>{{spaceelem.title}}</p>
+                    <!--<div>
                     <select ng-model="spaceelem.param" class="forParam" ng-options="param.name as param.name for param in params" required></select><br>
-                    <!--<button ng-click="addParam(station, null, spaceelem, spaceelem.param)" class="btn btn-big btn-success">Add input params</button>-->
+                    </div>-->
+
+                    <div class="request-template">
+                       <div ng-include src="'partials/forms/inputs/input_template.html'"></div>
+                    </div>
 
                 </div>
               </div>
-
+          <a ng-click="showAll()" class="btn btn-big btn-success">{{ 'SHOW_ALL' | translate }}</a>
           <a ng-click="runFrom(station.id, station)" class="btn btn-big btn-success">{{ 'RUN_FROM' | translate }}</a>
 
           </div>

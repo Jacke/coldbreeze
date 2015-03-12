@@ -1,6 +1,9 @@
 package models.DAO
 
-import slick.driver.PostgresDriver.simple._
+//import slick.driver.PostgresDriver.simple._
+import models.DAO.driver.MyPostgresDriver1.simple._
+
+import com.github.nscala_time.time.Imports._
 import models.DAO.conversion.DatabaseCred
 import scala.slick.model.ForeignKeyAction
 
@@ -15,9 +18,13 @@ class BPSpaces(tag: Tag) extends Table[BPSpaceDTO](tag, "bpspaces") {
   def brick_nested = column[Option[Int]]("brick_nested_id")
   def nestingLevel = column[Int]("nesting_level")
 
+  
+  def created_at = column[Option[org.joda.time.DateTime]]("created_at")
+  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
 
 
-  def * = (id.?, bprocess, index, container, subbrick, brick_front, brick_nested, nestingLevel) <> (BPSpaceDTO.tupled, BPSpaceDTO.unapply)
+  def * = (id.?, bprocess, index, container, subbrick, brick_front, brick_nested, nestingLevel,
+           created_at, updated_at) <> (BPSpaceDTO.tupled, BPSpaceDTO.unapply)
   def bpFK = foreignKey("bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }
@@ -28,8 +35,11 @@ case class BPSpaceDTO(id: Option[Int],
                       subbrick:Boolean, 
                       brick_front:Option[Int]=None,
                       brick_nested:Option[Int]=None, 
-                      nestingLevel: Int = 1) {
-  import main.scala.utils._
+                      nestingLevel: Int = 1,
+created_at:Option[org.joda.time.DateTime] = None,
+updated_at:Option[org.joda.time.DateTime] = None) {
+  
+import main.scala.utils._
 import main.scala.bprocesses._
 
 
@@ -132,6 +142,12 @@ object BPSpaceDAO {
     database withSession {
       implicit session =>
       bpspaces.ddl.create
+    }
+  }
+  def ddl_drop = {
+    database withSession {
+      implicit session =>
+        bpspaces.ddl.drop
     }
   }
 /*

@@ -1,4 +1,4 @@
-﻿.hidden {
+.hidden {
     display: none !important;
     visibility: hidden
 }
@@ -549,18 +549,6 @@ body.website {
     position: relative;
 }
 
-.website .commandLineTools h1:before {
-    content: '';
-    float: left;
-    background: url("https://apiary.a.ssl.fastly.net/assets/images/website/icons/ctools-877ed486cdd8d7eb.png") center top no-repeat;
-    margin-top: 0;
-    height: 100px;
-    width: 80px;
-    margin-bottom: -130px;
-    margin-right: 30px;
-    margin-top: 70px;
-    vertical-align: top
-}
 
 .website .commandLineTools p {
     clear: left;
@@ -636,7 +624,7 @@ body.website {
 
 .website .aboutDiscussion .ilu {
     float: left;
-    background: url("https://apiary.a.ssl.fastly.net/assets/images/website/how-it-works-icons-c97b12a21cce8bfc.png") 0 -522px no-repeat;
+    background: url("/images/how-it-works-icons-c97b12a21cce8bfc.png") 0 -522px no-repeat;
     height: 140px;
     width: 200px;
     margin-right: 40px;
@@ -658,7 +646,7 @@ body.website {
 }
 
 .website footer .applicationFooterLogoContainer .logo,.website footer .applicationFooterIconContainer .icon {
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/icons-footer-4726054fcbdd7919.png")
+    background-image: url("/images/icons-footer-4726054fcbdd7919.png")
 }
 
 .website footer .applicationFooterLogotypeContainer .logotype,.website footer .applicationFooterLogotypeContainer {
@@ -745,7 +733,7 @@ body.website {
 #navigation .backToTop {
     height: 79px;
     width: 75px;
-    background: #fff url("https://apiary.a.ssl.fastly.net/assets/images/website/social-profiles-b414abaaed3bd29c.png") -184px 10px no-repeat;
+    background: #fff url("/images/social-profiles-b414abaaed3bd29c.png") -184px 10px no-repeat;
     position: absolute;
     top: -79px;
     right: 0;
@@ -803,7 +791,7 @@ body.website {
     opacity: .6;
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=60)";
     filter: alpha(opacity=60);
-    background: url("https://apiary.a.ssl.fastly.net/assets/images/website/social-profiles-b414abaaed3bd29c.png") -199px 0 no-repeat
+    background: url("/images/social-profiles-b414abaaed3bd29c.png") -199px 0 no-repeat
 }
 
 #websiteHeader .positioning {
@@ -816,7 +804,7 @@ body.website {
     width: 100%;
     top: 0;
     left: 0;
-    background: url("https://apiary.a.ssl.fastly.net/assets/images/website/logotype-apiary-cb8fa3918bdf3961.png") 0 0 no-repeat
+    
 }
 
 #websiteHeader .headerLogotypeLink {
@@ -1070,7 +1058,7 @@ body.website {
     left: -37px;
     top: 50%;
     margin-top: -12px;
-    background: url("https://apiary.a.ssl.fastly.net/assets/images/website/github-alt-a31667b442f1a14b.png") center center no-repeat;
+    background: url("/images/github-alt-a31667b442f1a14b.png") center center no-repeat;
     -webkit-background-size: contain;
     -moz-background-size: contain;
     background-size: contain
@@ -1114,7 +1102,7 @@ body.website {
 
 .website .sectionHeadline:after,.website .sectionHeadline:before {
     content: '';
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/icons/hex-372f894190b5a99a.png");
+    background-image: url("/images/hex-372f894190b5a99a.png");
     background-repeat: no-repeat;
     background-position: center center;
     height: 90px;
@@ -1177,74 +1165,34 @@ body.website {
     max-width: 99%
 }
 
+/* assets//images/website/icons 
+
 .pricingPlans .sectionHeadline:before {
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/icons/pricing-6349eee05473ed9e.png")
+    background-image: url("/pricing-6349eee05473ed9e.png")
 }
 
 .featuredAPIs .sectionHeadline:before {
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/icons/featured-f5dbabce86d0b210.png")
+    background-image: url("/featured-f5dbabce86d0b210.png")
 }
 
 .whatPeopleSay .sectionHeadline:before {
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/icons/twitter-1777aaab1c221481.png")
+    background-image: url("/twitter-1777aaab1c221481.png")
 }
 
 .trafficInspector .sectionHeadline:before {
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/icons/inspector-49a8773ccaeba0ff.png")
+    background-image: url("/inspector-49a8773ccaeba0ff.png")
 }
 
 .serverMock:before {
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/icons/mock-db68e29de489bd70.png")
+    background-image: url("/mock-db68e29de489bd70.png")
 }
 
 .gitHubConnection:before {
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/icons/git-cb4310256a7db702.png")
+    background-image: url("/git-cb4310256a7db702.png")
 }
 
-.promo {
-    background: #2b2f3e url("https://apiary.a.ssl.fastly.net/assets/images/website/homepage-hexa-header-lines-6f5adaa6c46130fc.png") center center no-repeat;
-}
 
-.homepage .promoArrowDown {
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    cursor: pointer;
-    margin: -50px 0 0 -22px;
-    height: 44px;
-    width: 44px;
-    -webkit-transform: translateY(0);
-    -moz-transform: translateY(0);
-    -o-transform: translateY(0);
-    -ms-transform: translateY(0);
-    transform: translateY(0);
-    opacity: .5;
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
-    filter: alpha(opacity=50);
-    -webkit-transition: all 0.2s ease-in-out;
-    -moz-transition: all 0.2s ease-in-out;
-    -o-transition: all 0.2s ease-in-out;
-    -ms-transition: all 0.2s ease-in-out;
-    transition: all 0.2s ease-in-out;
-    background: url("https://apiary.a.ssl.fastly.net/assets/images/website/arrowDown-d0bf37d2b3c8d271.png") 0 0 no-repeat;
-}
-
-.homepage .promoArrowDown:hover {
-    opacity: .95;
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=95)";
-    filter: alpha(opacity=95)
-}
-
-#scrollBody .promoArrowDown {
-    opacity: .001;
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=0)";
-    filter: alpha(opacity=0);
-    -webkit-transform: translateY(100px);
-    -moz-transform: translateY(100px);
-    -o-transform: translateY(100px);
-    -ms-transform: translateY(100px);
-    transform: translateY(100px)
-}
+*/
 
 .homepage .promo {
     position: relative;
@@ -1351,35 +1299,6 @@ body.website {
     -o-transform: rotate(120deg);
     -ms-transform: rotate(120deg);
     transform: rotate(120deg)
-}
-
-.homepage .promo .bottomCallToAction .sectionHeadline .hex {
-    -webkit-transition: all 0.3s ease;
-    -moz-transition: all 0.3s ease;
-    -o-transition: all 0.3s ease;
-    -ms-transition: all 0.3s ease;
-    transition: all 0.3s ease;
-    -webkit-animation: pulse .9s ease 1.6s infinite alternate-reverse;
-    -moz-animation: pulse .9s ease 1.6s infinite alternate-reverse;
-    -o-animation: pulse .9s ease 1.6s infinite alternate-reverse;
-    -ms-animation: pulse .9s ease 1.6s infinite alternate-reverse;
-    animation: pulse .9s ease 1.6s infinite alternate-reverse;
-    height: 94px;
-    margin: 0 auto;
-    width: 94px;
-    background: url("https://apiary.a.ssl.fastly.net/assets/images/website/icons/hex-372f894190b5a99a.png") center center no-repeat;
-    position: relative;
-}
-
-.homepage .promo .bottomCallToAction .sectionHeadline .hex:after {
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 94px;
-    content: '';
-    background: url("https://apiary.a.ssl.fastly.net/assets/images/website/icons/cog-47a33496f37ec022.png") center center no-repeat
 }
 
 .folioA,.promo .bottomCallToAction {
@@ -2020,7 +1939,7 @@ body.website {
     color: #f00;
     font-size: 11px;
     font-weight: bold;
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/social-profiles-b414abaaed3bd29c.png");
+    background-image: url("/images/social-profiles-b414abaaed3bd29c.png");
     background-repeat: no-repeat;
     content: ' '
 }
@@ -2183,160 +2102,6 @@ body.website {
     background-size: contain
 }
 
-.adrianBg .investorBg:before {
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/investors/adriankunzle-df34521103b77e41.png")
-}
-
-.andyBg .investorBg:before {
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/investors/andymcloughlin-df37493ebe78f397.png")
-}
-
-.estherBg .investorBg:before {
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/investors/estherdyson-90ca18e5564fd7ed.png")
-}
-
-.jamesBg .investorBg:before {
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/investors/jameslindenbaum-a9c21437bc2a3f89.png")
-}
-
-.neilBg .investorBg:before {
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/investors/neildavidson-6a73e515277f53a6.png")
-}
-
-.flybridgeCapitalVenturesBg .investorBg:before {
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/investors/flybridge-a988d28dfb0c0504.png")
-}
-
-.baselineVenturesBg .investorBg:before {
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/investors/baseline-ea843f8a92db3628.png")
-}
-
-.xgVentureBg .investorBg:before {
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/investors/xg-da8e324594e68956.png")
-}
-
-.credoVenturesBg .investorBg:before {
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/investors/credo-3b5f192e0406c1d6.png")
-}
-
-.companyAccelerated .sectionHeadline {
-    padding-bottom: 20px
-}
-
-.companyAccelerated .columns {
-    margin-left: -30px;
-}
-
-.companyAccelerated .columns figure {
-    margin: 0;
-    padding: 0;
-    line-height: 120px;
-    height: 120px;
-    display: block;
-    text-align: center
-}
-
-.companyAccelerated .columns img {
-    line-height: 120px;
-    vertical-align: middle
-}
-
-.companyWhere {
-    background-color: #000;
-    position: relative;
-    overflow: hidden;
-    min-height: 360px;
-}
-
-.companyWhere .sectionHeadline {
-    color: #fff
-}
-
-.companyWhere .sfBg,.companyWhere .prgBg {
-    opacity: .6;
-    -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=60)";
-    filter: alpha(opacity=60);
-    background-repeat: no-repeat;
-    background-position: center left;
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    background-size: cover;
-    min-height: 350px;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 50%;
-    background-image: url("https://maps.googleapis.com/maps/api/staticmap?center=50.066717,14.403855&scale=2&zoom=17&format=png&sensor=false&size=512x512&maptype=roadmap&visual_refresh=true&style=visibility:on%7Cinvert_lightness:true%7Csaturation:-100&style=feature:poi%7Cvisibility:simplified&style=feature:transit%7Cvisibility:simplified&style=feature:transit.station%7Cvisibility:on&markers=color:0x5f5cf6%7CRadlicka+50+Praha+Czech+Republic");
-    margin: 0 0 0 5px;
-    -webkit-transition: opacity linear 0.3s;
-    -moz-transition: opacity linear 0.3s;
-    -o-transition: opacity linear 0.3s;
-    -ms-transition: opacity linear 0.3s;
-    transition: opacity linear 0.3s;
-}
-
-.companyWhere .sfBg:hover,.companyWhere .prgBg:hover,.companyWhere .sfBg:focus,.companyWhere .prgBg:focus {
-    opacity: 1;
-    -ms-filter: none;
-    filter: none
-}
-
-.companyWhere .sfBg {
-    right: 50%;
-    left: 0;
-    margin: 0 5px 0 0;
-    background-position: center right;
-    background-image: url("https://maps.googleapis.com/maps/api/staticmap?center=37.77417,-122.412441&scale=2&zoom=17&format=png&sensor=false&size=512x512&maptype=roadmap&visual_refresh=true&style=visibility:on%7Cinvert_lightness:true%7Csaturation:-100&style=feature:poi%7Cvisibility:simplified&style=feature:transit%7Cvisibility:simplified&style=feature:transit.station%7Cvisibility:on&markers=color:0x5f5cf6%7C325+Ninth+Street+San+Francisco,CA")
-}
-
-.companyWhere .semiTransparentBg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 150px;
-    background-color: rgba(47,50,56,0.86);
-    border-bottom: 6px solid #000
-}
-
-.companyWhere .addressOffice {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 50%;
-    padding-top: 5px;
-    font-size: 13px;
-    line-height: 19px;
-    color: #e6e6e6;
-    text-align: left;
-}
-
-.companyWhere .addressOffice a {
-    color: #e6e6e6;
-}
-
-.companyWhere .addressOffice a:hover {
-    color: #fff
-}
-
-.companyWhere .addressOffice p {
-    margin: 0;
-    padding: 0
-}
-
-.companyWhere .addressOffice .city {
-    color: #9494ff;
-    font-weight: bold;
-    font-size: 19px;
-    padding-right: 10px
-}
-
-.companyWhere .addressOffice.addressRight {
-    right: 0;
-    left: auto;
-    text-align: right
-}
 
 .productPage .intro {
     margin-top: -6px;
@@ -2439,643 +2204,6 @@ body.website {
 .productPage .features .blockGrid {
     margin: 0 auto;
     width: 80%;
-}
-
-.productPage .features .blockGrid .feature.one {
-    min-height: 250px;
-    width: 25%;
-    display: -webkit-inline-box;
-    display: -moz-inline-box;
-    display: -webkit-inline-flex;
-    display: -ms-inline-flexbox;
-    display: inline-box;
-    display: inline-flex;
-    background-color: #fff;
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/product/one-14e4337ca241c014.png");
-    background-repeat: no-repeat;
-    background-position: center 50px;
-    -webkit-box-shadow: 0 0 0 3px rgba(0,0,0,0);
-    box-shadow: 0 0 0 3px rgba(0,0,0,0);
-    -webkit-transition: all 0.15s ease-in-out;
-    -moz-transition: all 0.15s ease-in-out;
-    -o-transition: all 0.15s ease-in-out;
-    -ms-transition: all 0.15s ease-in-out;
-    transition: all 0.15s ease-in-out;
-    margin: 15px;
-}
-
-@media (max-width: 900px) {
-    .productPage .features .blockGrid .feature.one {
-        width:40%
-    }
-}
-
-@media (max-width: 500px) {
-    .productPage .features .blockGrid .feature.one {
-        width:90%
-    }
-}
-
-.productPage .features .blockGrid .feature.one p {
-    width: 65%;
-    margin: 7em auto;
-    margin-bottom: 0;
-    line-height: 1.3;
-}
-
-.productPage .features .blockGrid .feature.one p em {
-    font-style: normal;
-    font-weight: bold;
-    line-height: 2
-}
-
-.productPage .features .blockGrid .feature:hover {
-    -webkit-box-shadow: 0 0 8px 3px rgba(0,0,0,0.05);
-    box-shadow: 0 0 8px 3px rgba(0,0,0,0.05);
-    -webkit-transition: all 0.15s ease-in-out;
-    -moz-transition: all 0.15s ease-in-out;
-    -o-transition: all 0.15s ease-in-out;
-    -ms-transition: all 0.15s ease-in-out;
-    transition: all 0.15s ease-in-out
-}
-
-.productPage .features .blockGrid .feature.two {
-    min-height: 250px;
-    width: 25%;
-    display: -webkit-inline-box;
-    display: -moz-inline-box;
-    display: -webkit-inline-flex;
-    display: -ms-inline-flexbox;
-    display: inline-box;
-    display: inline-flex;
-    background-color: #fff;
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/product/two-604795c8e3facd4d.png");
-    background-repeat: no-repeat;
-    background-position: center 50px;
-    -webkit-box-shadow: 0 0 0 3px rgba(0,0,0,0);
-    box-shadow: 0 0 0 3px rgba(0,0,0,0);
-    -webkit-transition: all 0.15s ease-in-out;
-    -moz-transition: all 0.15s ease-in-out;
-    -o-transition: all 0.15s ease-in-out;
-    -ms-transition: all 0.15s ease-in-out;
-    transition: all 0.15s ease-in-out;
-    margin: 15px;
-}
-
-@media (max-width: 900px) {
-    .productPage .features .blockGrid .feature.two {
-        width:40%
-    }
-}
-
-@media (max-width: 500px) {
-    .productPage .features .blockGrid .feature.two {
-        width:90%
-    }
-}
-
-.productPage .features .blockGrid .feature.two p {
-    width: 65%;
-    margin: 7em auto;
-    margin-bottom: 0;
-    line-height: 1.3;
-}
-
-.productPage .features .blockGrid .feature.two p em {
-    font-style: normal;
-    font-weight: bold;
-    line-height: 2
-}
-
-.productPage .features .blockGrid .feature:hover {
-    -webkit-box-shadow: 0 0 8px 3px rgba(0,0,0,0.05);
-    box-shadow: 0 0 8px 3px rgba(0,0,0,0.05);
-    -webkit-transition: all 0.15s ease-in-out;
-    -moz-transition: all 0.15s ease-in-out;
-    -o-transition: all 0.15s ease-in-out;
-    -ms-transition: all 0.15s ease-in-out;
-    transition: all 0.15s ease-in-out
-}
-
-.productPage .features .blockGrid .feature.three {
-    min-height: 250px;
-    width: 25%;
-    display: -webkit-inline-box;
-    display: -moz-inline-box;
-    display: -webkit-inline-flex;
-    display: -ms-inline-flexbox;
-    display: inline-box;
-    display: inline-flex;
-    background-color: #fff;
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/product/three-e874a11d8987d5c4.png");
-    background-repeat: no-repeat;
-    background-position: center 50px;
-    -webkit-box-shadow: 0 0 0 3px rgba(0,0,0,0);
-    box-shadow: 0 0 0 3px rgba(0,0,0,0);
-    -webkit-transition: all 0.15s ease-in-out;
-    -moz-transition: all 0.15s ease-in-out;
-    -o-transition: all 0.15s ease-in-out;
-    -ms-transition: all 0.15s ease-in-out;
-    transition: all 0.15s ease-in-out;
-    margin: 15px;
-}
-
-@media (max-width: 900px) {
-    .productPage .features .blockGrid .feature.three {
-        width:40%
-    }
-}
-
-@media (max-width: 500px) {
-    .productPage .features .blockGrid .feature.three {
-        width:90%
-    }
-}
-
-.productPage .features .blockGrid .feature.three p {
-    width: 65%;
-    margin: 7em auto;
-    margin-bottom: 0;
-    line-height: 1.3;
-}
-
-.productPage .features .blockGrid .feature.three p em {
-    font-style: normal;
-    font-weight: bold;
-    line-height: 2
-}
-
-.productPage .features .blockGrid .feature:hover {
-    -webkit-box-shadow: 0 0 8px 3px rgba(0,0,0,0.05);
-    box-shadow: 0 0 8px 3px rgba(0,0,0,0.05);
-    -webkit-transition: all 0.15s ease-in-out;
-    -moz-transition: all 0.15s ease-in-out;
-    -o-transition: all 0.15s ease-in-out;
-    -ms-transition: all 0.15s ease-in-out;
-    transition: all 0.15s ease-in-out
-}
-
-.productPage .features .blockGrid .feature.four {
-    min-height: 250px;
-    width: 25%;
-    display: -webkit-inline-box;
-    display: -moz-inline-box;
-    display: -webkit-inline-flex;
-    display: -ms-inline-flexbox;
-    display: inline-box;
-    display: inline-flex;
-    background-color: #fff;
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/product/four-f7fe0519ced9fe8b.png");
-    background-repeat: no-repeat;
-    background-position: center 50px;
-    -webkit-box-shadow: 0 0 0 3px rgba(0,0,0,0);
-    box-shadow: 0 0 0 3px rgba(0,0,0,0);
-    -webkit-transition: all 0.15s ease-in-out;
-    -moz-transition: all 0.15s ease-in-out;
-    -o-transition: all 0.15s ease-in-out;
-    -ms-transition: all 0.15s ease-in-out;
-    transition: all 0.15s ease-in-out;
-    margin: 15px;
-}
-
-@media (max-width: 900px) {
-    .productPage .features .blockGrid .feature.four {
-        width:40%
-    }
-}
-
-@media (max-width: 500px) {
-    .productPage .features .blockGrid .feature.four {
-        width:90%
-    }
-}
-
-.productPage .features .blockGrid .feature.four p {
-    width: 65%;
-    margin: 7em auto;
-    margin-bottom: 0;
-    line-height: 1.3;
-}
-
-.productPage .features .blockGrid .feature.four p em {
-    font-style: normal;
-    font-weight: bold;
-    line-height: 2
-}
-
-.productPage .features .blockGrid .feature:hover {
-    -webkit-box-shadow: 0 0 8px 3px rgba(0,0,0,0.05);
-    box-shadow: 0 0 8px 3px rgba(0,0,0,0.05);
-    -webkit-transition: all 0.15s ease-in-out;
-    -moz-transition: all 0.15s ease-in-out;
-    -o-transition: all 0.15s ease-in-out;
-    -ms-transition: all 0.15s ease-in-out;
-    transition: all 0.15s ease-in-out
-}
-
-.productPage .features .blockGrid .feature.five {
-    min-height: 250px;
-    width: 25%;
-    display: -webkit-inline-box;
-    display: -moz-inline-box;
-    display: -webkit-inline-flex;
-    display: -ms-inline-flexbox;
-    display: inline-box;
-    display: inline-flex;
-    background-color: #fff;
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/product/five-d8bbaed643cceb56.png");
-    background-repeat: no-repeat;
-    background-position: center 50px;
-    -webkit-box-shadow: 0 0 0 3px rgba(0,0,0,0);
-    box-shadow: 0 0 0 3px rgba(0,0,0,0);
-    -webkit-transition: all 0.15s ease-in-out;
-    -moz-transition: all 0.15s ease-in-out;
-    -o-transition: all 0.15s ease-in-out;
-    -ms-transition: all 0.15s ease-in-out;
-    transition: all 0.15s ease-in-out;
-    margin: 15px;
-}
-
-@media (max-width: 900px) {
-    .productPage .features .blockGrid .feature.five {
-        width:40%
-    }
-}
-
-@media (max-width: 500px) {
-    .productPage .features .blockGrid .feature.five {
-        width:90%
-    }
-}
-
-.productPage .features .blockGrid .feature.five p {
-    width: 65%;
-    margin: 7em auto;
-    margin-bottom: 0;
-    line-height: 1.3;
-}
-
-.productPage .features .blockGrid .feature.five p em {
-    font-style: normal;
-    font-weight: bold;
-    line-height: 2
-}
-
-.productPage .features .blockGrid .feature:hover {
-    -webkit-box-shadow: 0 0 8px 3px rgba(0,0,0,0.05);
-    box-shadow: 0 0 8px 3px rgba(0,0,0,0.05);
-    -webkit-transition: all 0.15s ease-in-out;
-    -moz-transition: all 0.15s ease-in-out;
-    -o-transition: all 0.15s ease-in-out;
-    -ms-transition: all 0.15s ease-in-out;
-    transition: all 0.15s ease-in-out
-}
-
-.productPage .features .blockGrid .feature.six {
-    min-height: 250px;
-    width: 25%;
-    display: -webkit-inline-box;
-    display: -moz-inline-box;
-    display: -webkit-inline-flex;
-    display: -ms-inline-flexbox;
-    display: inline-box;
-    display: inline-flex;
-    background-color: #fff;
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/product/six-e645a587464fac72.png");
-    background-repeat: no-repeat;
-    background-position: center 50px;
-    -webkit-box-shadow: 0 0 0 3px rgba(0,0,0,0);
-    box-shadow: 0 0 0 3px rgba(0,0,0,0);
-    -webkit-transition: all 0.15s ease-in-out;
-    -moz-transition: all 0.15s ease-in-out;
-    -o-transition: all 0.15s ease-in-out;
-    -ms-transition: all 0.15s ease-in-out;
-    transition: all 0.15s ease-in-out;
-    margin: 15px;
-}
-
-@media (max-width: 900px) {
-    .productPage .features .blockGrid .feature.six {
-        width:40%
-    }
-}
-
-@media (max-width: 500px) {
-    .productPage .features .blockGrid .feature.six {
-        width:90%
-    }
-}
-
-.productPage .features .blockGrid .feature.six p {
-    width: 65%;
-    margin: 7em auto;
-    margin-bottom: 0;
-    line-height: 1.3;
-}
-
-.productPage .features .blockGrid .feature.six p em {
-    font-style: normal;
-    font-weight: bold;
-    line-height: 2
-}
-
-.productPage .features .blockGrid .feature:hover {
-    -webkit-box-shadow: 0 0 8px 3px rgba(0,0,0,0.05);
-    box-shadow: 0 0 8px 3px rgba(0,0,0,0.05);
-    -webkit-transition: all 0.15s ease-in-out;
-    -moz-transition: all 0.15s ease-in-out;
-    -o-transition: all 0.15s ease-in-out;
-    -ms-transition: all 0.15s ease-in-out;
-    transition: all 0.15s ease-in-out
-}
-
-.productPage .insight {
-    padding: 7em 0 7em 0;
-    color: #fff;
-    width: 100%;
-    margin: 0 auto;
-}
-
-.productPage .insight img {
-    width: 50%;
-    height: auto;
-}
-
-@media (max-width: 900px) {
-    .productPage .insight img {
-        width:90%
-    }
-}
-
-.productPage .insight .textInsight {
-    padding-top: 3.5em;
-    color: #747d93;
-    float: right;
-    width: 40%;
-    font-size: 22px;
-}
-
-@media (max-width: 900px) {
-    .productPage .insight .textInsight {
-        width:90%;
-        float: left
-    }
-}
-
-.productPage .connect {
-    margin-top: -6px;
-    padding-bottom: 0;
-    width: 100%;
-    background-color: #6461a1;
-    text-align: center;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    line-height: 1.3;
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/product/pplmap-2x-fd60aad3c4a114f7.png");
-    background-repeat: no-repeat;
-    background-position: calc(50% - 600px) 70%;-webkit-background-size:336px 323px;
-    -moz-background-size:336px 323px;background-size:336px 323px;}
-
-@media (max-width: 960px) {
-    .productPage .connect {
-        margin-top:0
-    }
-}
-
-.productPage .connect h2 {
-    margin-top: 16px;
-    font-size: 46px;
-    color: #fff;
-    font-weight: 100
-}
-
-.productPage .connect p {
-    margin-top: 24px;
-    line-height: 30px;
-    font-size: 22px;
-    color: #e3e4ff;
-}
-
-.productPage .connect p em {
-    font-weight: bold;
-    font-style: normal
-}
-
-.productPage .connect img {
-    margin-top: 30px
-}
-
-@media (min-width: 900px) {
-    .productPage .connect img:not(.cover) {
-        width:900px;
-        height: auto
-    }
-}
-
-@media (max-width: 960px) {
-    .productPage .connect {
-        -webkit-background-size:0 0;
-        -moz-background-size: 0 0;
-        background-size: 0 0
-    }
-}
-
-.productPage .coordinate {
-    margin-top: -6px;
-    padding-bottom: 0;
-    width: 100%;
-    background-color: #fff;
-    text-align: center;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    line-height: 1.3;
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/product/apimap-2x-55ad4be9964e32da.png");
-    background-repeat: no-repeat;
-    background-position: 50% 80%;
-    -webkit-background-size: 1333.2px 417.6px;
-    -moz-background-size: 1333.2px 417.6px;
-    background-size: 1333.2px 417.6px;
-}
-
-@media (max-width: 960px) {
-    .productPage .coordinate {
-        margin-top:0
-    }
-}
-
-.productPage .coordinate h2 {
-    margin-top: 16px;
-    font-size: 46px;
-    color: #3c4151;
-    font-weight: 100
-}
-
-.productPage .coordinate p {
-    margin-top: 24px;
-    line-height: 30px;
-    font-size: 22px;
-    color: #747d93;
-}
-
-.productPage .coordinate p em {
-    font-weight: bold;
-    font-style: normal
-}
-
-.productPage .coordinate img {
-    margin-top: 30px
-}
-
-@media (min-width: 900px) {
-    .productPage .coordinate img:not(.cover) {
-        width:900px;
-        height: auto
-    }
-}
-
-@media (max-width: 960px) {
-    .productPage .coordinate {
-        -webkit-background-size:0 0;
-        -moz-background-size: 0 0;
-        background-size: 0 0
-    }
-}
-
-.productPage .control {
-    margin-top: -6px;
-    padding-bottom: 0;
-    width: 100%;
-    background-color: #718092;
-    text-align: center;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    line-height: 1.3;
-    background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/product/settings-2x-0ebe91eedaff2371.png");
-    background-repeat: no-repeat;
-    background-position: 50% 35%;
-    -webkit-background-size: 74px 84px;
-    -moz-background-size: 74px 84px;
-    background-size: 74px 84px;
-}
-
-@media (max-width: 960px) {
-    .productPage .control {
-        margin-top:0
-    }
-}
-
-.productPage .control h2 {
-    margin-top: 16px;
-    font-size: 46px;
-    color: #fff;
-    font-weight: 100
-}
-
-.productPage .control p {
-    margin-top: 24px;
-    line-height: 30px;
-    font-size: 22px;
-    color: #d5daeb;
-}
-
-.productPage .control p em {
-    font-weight: bold;
-    font-style: normal
-}
-
-.productPage .control img {
-    margin-top: 30px
-}
-
-@media (min-width: 900px) {
-    .productPage .control img:not(.cover) {
-        width:900px;
-        height: auto
-    }
-}
-
-@media (max-width: 960px) {
-    .productPage .control {
-        -webkit-background-size:0 0;
-        -moz-background-size: 0 0;
-        background-size: 0 0
-    }
-}
-
-.productPage .trial {
-    margin-top: -6px;
-    padding-bottom: 0;
-    width: 100%;
-    background-color: #fff;
-    text-align: center;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    line-height: 1.3;
-}
-
-@media (max-width: 960px) {
-    .productPage .trial {
-        margin-top:0
-    }
-}
-
-.productPage .trial h2 {
-    margin-top: 16px;
-    font-size: 46px;
-    color: #3c4151;
-    font-weight: 100
-}
-
-.productPage .trial p {
-    margin-top: 24px;
-    line-height: 30px;
-    font-size: 22px;
-    color: #747d93;
-}
-
-.productPage .trial p em {
-    font-weight: bold;
-    font-style: normal
-}
-
-.productPage .trial img {
-    margin-top: 30px
-}
-
-@media (min-width: 900px) {
-    .productPage .trial img:not(.cover) {
-        width:900px;
-        height: auto
-    }
-}
-
-.productPage .trial h2 {
-    font-weight: 300
-}
-
-.productPage .trial .trial {
-    padding-top: 4em;
-    padding-bottom: 4em;
-}
-
-.productPage .trial .trial a {
-    background: #9489f4;
-    color: #fff;
-    font-family: 'Proxima Nova',sans-serif;
-    font-weight: bold;
-    font-size: 16px;
-    padding: 1.5em;
-    -webkit-border-radius: 2em;
-    border-radius: 2em
-}
-
-.productPage .trial .trial span {
-    display: block;
-    margin-top: 3em
 }
 
 .columns .column {
@@ -3686,21 +2814,7 @@ body.website {
         margin-top: 0
     }
 
-    .website .linkedInLink:after {
-        background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/icons/linkedin-bb916109a9fa980a.png")
-    }
 
-    .website .dribbbleLink:after {
-        background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/icons/dribbble-582544ef68f1aa3f.png")
-    }
-
-    .website .githubLink:after {
-        background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/icons/github-99a4e1cda08b69b6.png")
-    }
-
-    .website .twitterLink:after {
-        background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/icons/twitter_link-ea4a4237cc8a5e01.png")
-    }
 
     .website .linksOutside {
         opacity: 1;
@@ -4014,117 +3128,6 @@ body.website {
 
     .website #websiteHeader,.website #navigation {
         position: absolute
-    }
-
-    .website .promo .bottomCallToAction .sectionHeadline .hex {
-        background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/icons/hex2x-3cb64b89d94954a2.png");
-        -webkit-background-size: 80px 90px;
-        -moz-background-size: 80px 90px;
-        background-size: 80px 90px;
-    }
-
-    .website .promo .bottomCallToAction .sectionHeadline .hex:after {
-        background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/icons/cog2x-089e4dee37294247.png");
-        -webkit-background-size: 50px 50px;
-        -moz-background-size: 50px 50px;
-        background-size: 50px 50px
-    }
-
-    .adrianBg .investorBg:before {
-        background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/investors/adriankunzle2x-61d01cc2ed0b111b.png")
-    }
-
-    .andyBg .investorBg:before {
-        background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/investors/andymcloughlin2x-5e640a297fdd21e6.png")
-    }
-
-    .estherBg .investorBg:before {
-        background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/investors/estherdyson2x-0ea213920eefc414.png")
-    }
-
-    .jamesBg .investorBg:before {
-        background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/investors/jameslindenbaum2x-859e421c99f68a9d.png")
-    }
-
-    .neilBg .investorBg:before {
-        background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/investors/neildavidson2x-dad3802edb79a9b8.png")
-    }
-
-    .flybridgeCapitalVenturesBg .investorBg:before {
-        -webkit-background-size: 153px auto;
-        -moz-background-size: 153px auto;
-        background-size: 153px auto;
-        background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/investors/flybridge2x-7442d9a1ddad5121.png")
-    }
-
-    .baselineVenturesBg .investorBg:before {
-        -webkit-background-size: 135px auto;
-        -moz-background-size: 135px auto;
-        background-size: 135px auto;
-        background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/investors/baseline2x-c02cc41eae531248.png")
-    }
-
-    .xgVentureBg .investorBg:before {
-        -webkit-background-size: 150px auto;
-        -moz-background-size: 150px auto;
-        background-size: 150px auto;
-        background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/investors/xg2x-7e3dfdb47d979315.png")
-    }
-
-    .credoVenturesBg .investorBg:before {
-        -webkit-background-size: 95px auto;
-        -moz-background-size: 95px auto;
-        background-size: 95px auto;
-        background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/investors/credo2x-579d544e32ee363d.png")
-    }
-
-    #websiteHeader .headerLogotype {
-        background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/logotype-apiary-2x-335f1341b12de2c8.png");
-        -webkit-background-size: 174px auto;
-        -moz-background-size: 174px auto;
-        background-size: 174px auto
-    }
-
-    .website .promo .bottomCallToAction .sectionHeadline:before {
-        background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/icons/hex2x-3cb64b89d94954a2.png");
-        -webkit-background-size: 80px auto;
-        -moz-background-size: 80px auto;
-        background-size: 80px auto
-    }
-
-    .website .promo .bottomCallToAction .sectionHeadline:after {
-        background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/icons/cog2x-089e4dee37294247.png");
-        -webkit-background-size: 56px auto;
-        -moz-background-size: 56px auto;
-        background-size: 56px auto
-    }
-
-    .website .commandLineTools h1:before {
-        background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/icons/ctools2x-c523b009bcbe0962.png")
-    }
-
-    .website .pricingPlans .sectionHeadline:before {
-        background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/icons/pricing2x-eb0084c2e34453dc.png")
-    }
-
-    .website .featuredAPIs .sectionHeadline:before {
-        background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/icons/featured2x-9d0e63074195ffbc.png")
-    }
-
-    .website .whatPeopleSay .sectionHeadline:before {
-        background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/icons/twitter2x-764f4b11190ca51d.png")
-    }
-
-    .website .trafficInspector .sectionHeadline:before {
-        background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/icons/inspector2x-481145795d5debe2.png")
-    }
-
-    .website .serverMock:before {
-        background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/icons/mock2x-4cf244790b759513.png")
-    }
-
-    .website .gitHubConnection:before {
-        background-image: url("https://apiary.a.ssl.fastly.net/assets/images/website/icons/git2x-100abd6651f31214.png")
     }
 
     .website .commandLineTools h1:before,.website .sectionHeadline:after,.website .sectionHeadline:before,.website .serverMock:before,.website .gitHubConnection:before {

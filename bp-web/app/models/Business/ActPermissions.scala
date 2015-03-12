@@ -165,5 +165,11 @@ def getByUIDelemTitles(uid: String) = {
       act_permissions.ddl.create
     }
   }
+  def ddl_drop = {
+    database withSession {
+      implicit session =>
+        act_permissions.ddl.drop
+    }
+  }
 
 }

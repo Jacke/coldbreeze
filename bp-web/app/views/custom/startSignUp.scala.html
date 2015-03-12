@@ -4,47 +4,6 @@
 @implicitFieldConstructor = @{ FieldConstructor(securesocial.views.html.inputFieldConstructor.f) }
 @import securesocial.core.providers.UsernamePasswordProvider.UsernamePassword
 
-<!doctype html>
-<html prefix="og: http://ogp.me/ns#">
-<head>
-  <meta charset="utf-8">
-
-  <title>Minority — Sign in</title>
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="author" content="Minority">
-
-
-  <!-- Styles -->
-  <link rel="stylesheet" href="/css/auth/fonts.css">
-  <link rel="stylesheet" href="/css/auth/footer.css">
-  <link rel="stylesheet" href="/css/auth/website.css">
-  <link rel="stylesheet" href="/css/auth/loginflow.css" />
-  <!-- /Styles -->
-
-  <link rel="shortcut icon" href="/favicon.ico">
-  <style>
-#websiteHeader .headerLogotype {
-   position: absolute;
-height: 66px;
-width: 100px;
-top: 0px;
-left: 0px;
-background: url('../images/minority-logo.svg') no-repeat scroll 0px 0px transparent;
-background-size: contain;
-}
-</style>
-</head>
-<body class="website loginFlow">
-
-<!-- website-header -->
-  <header id="websiteHeader"><div class="positioning">
-    <a class="headerLogotypeLink" href="http://minorityapp.com/"><h1 class="visuallyhidden" title="Minority">Minority</h1><div class="headerLogotype"></div></a>
-    <a class="to_nav" href="#navigation"><span class="visuallyhidden">Go to Navigation</span></a>
-  </div></header>
-<!-- /website-header -->
-
-
 
 @views.html.custom.main("") {
 <div class="loginFlowPage">
@@ -62,8 +21,8 @@ background-size: contain;
         @Messages(msg)
     </div>
     }
-    <pre>@env.routes.signUpUrl</pre>
-    <form action="@env.routes.signUpUrl"
+    <pre>@env.routes.handleStartSignUpUrl</pre>
+    <form action="@env.routes.handleStartSignUpUrl"
           class="loginInputs"
           autocomplete="off" method="post"
     >
@@ -81,188 +40,10 @@ background-size: contain;
 
         </fieldset>
     </form>
-}
-
-  <p class="loginText">Have account? <a tabindex="7" class="switchView" href="@env.routes.loginPageUrl">Log in</a>.</p>
+  <p class="loginText">Have account? <a tabindex="7" class="switchView" href="@env.routes.loginPageUrl">@Messages("custom.logIn")</a>.</p>
 
 </div>
     </div>
 
 
-
-
-
-</div>
-
-<script src="/js/jquery.js"></script>
-
-
-<!-- website-navigation -->
-  <div id="navigation">
-    <nav class="websiteNav positioning">
-      <ul class="clearAfter websiteNavMenu">
-        <li class="websiteNavItem"><a class="websiteNavLink" href="#">How It Works</a></li>
-        <li class="websiteNavItem"><a class="websiteNavLink" href="#">Product</a></li>
-        <li class="websiteNavItem"><a class="websiteNavLink" href="#">Blog</a></li>
-        <li class="websiteNavItem"><a class="websiteNavLink" href="#">Company</a></li>
-                  <li class="websiteNavItem"><a class="websiteNavLink" href="@env.routes.loginPageUrl">Sign In</a></li>
-              </ul>
-              <a class="websiteNavLink websiteNavLinkHighlighted" href="@env.routes.loginPageUrl" class="signIn">Sign Up</a>
-            <a class="websiteNavLink backToTop" href="#~"><span class="visuallyhidden">Back to top</span></a>
-    </nav>
-  </div>
-<!-- /website-navigation -->
-
-<!-- website-footer -->
-
-<footer class="applicationFooter">
-
-  <div class="applicationFooterRow">
-    <div class="applicationFooterColumns">
-    <div class="applicationFooterColumn">
-    </div><div class="applicationFooterColumn">
-      <h3 class="applicationFooterTitle">Platform</h3>
-      <ul class="applicationFooterList">
-        <li><a class="applicationFooterListLink" href="#">How It Works</a></li>
-        <li><a class="applicationFooterListLink" href="# ">Product</a></li>
-        <li><a class="applicationFooterListLink" href="#">Pricing</a></li>
-        <li><a class="applicationFooterListLink" href="# ">Help</a></li>
-      </ul>
-    </div><div class="applicationFooterColumn">
-      <h3 class="applicationFooterTitle">Company</h3>
-      <ul class="applicationFooterList">
-        <li><a class="applicationFooterListLink" href="#">Blog</a></li>
-        <li><a class="applicationFooterListLink" href="#">Team</a></li>
-        <li><a class="applicationFooterListLink" href="#">Jobs</a></li>
-        <li><a class="applicationFooterListLink" href="#">Contact</a></li>
-        <li><a class="applicationFooterListLink" href="#">Press Kit</a></li>
-      </ul>
-    </div><div class="applicationFooterColumn">
-      <h3 class="applicationFooterTitle">Company</h3>
-      <ul class="applicationFooterList">
-        <li><a class="applicationFooterListLink" href="#">Blog</a></li>
-        <li><a class="applicationFooterListLink" href="#">Team</a></li>
-        <li><a class="applicationFooterListLink" href="#">Jobs</a></li>
-        <li><a class="applicationFooterListLink" href="#">Contact</a></li>
-        <li><a class="applicationFooterListLink" href="#">Press Kit</a></li>
-      </ul>
-    </div></div>
-  </div>
-
-  <div class="applicationFooterRow">
-    <p class="applicationFooterCopyright">&copy; Empire InCloud Inc. All rights reserved. <span class="applicationFooterCopyrightLinks">• <a href="http://empireinc.net/tos" class="applicationFooterCopyrightLink">Terms</a> • <a href="https://www.iubenda.com/privacy-policy/323220" class="applicationFooterCopyrightLink">Privacy</a></span></p>
-  </div>
-</footer>
-<!-- /website-footer -->
-
-<script src="/js/website-scroll.js"></script>
-<script src="/jsroutes.js"></script>
-<script>
-  websiteScroll();
-  document.documentElement.className += ' js';
-</script>
-<script>
-$(function domReadyLoginFlow () {
-  $('.form-horizontal button').on('click', function(event) {
-
-event.preventDefault();
-  var name = $('.form-horizontal #username').val();
-  var pswd = $('.form-horizontal #password').val();
-  $.post( "http://localhost:9000/auth/api/authenticate/userpass", { username: name , password: pswd })
-.done(function( data ) {
-console.log(data.token);
-localStorage.setItem("token", data.token);
-sessionStorage.setItem("token", data.token);
-$('.form-horizontal')[0].submit();
-});
-
- 
-})
-  $('.loginView a.switchView').on('click', function clickViewSwitch(e) {
-    var nextPage;
-    e.preventDefault();
-    e = $(this).closest('.loginPage');
-    if (e.hasClass('loginPage__active')) {
-      e.removeClass('loginPage__active');
-      nextPage = e.next();
-      if (!nextPage || !nextPage.length) {
-        nextPage = e.prev();
-      }
-      if (!nextPage || !nextPage.length) {
-        return false;
-      }
-      nextPage.addClass('loginPage__active')
-        .find('input:first-of-type').trigger('focus');
-    }
-    return false;
-  });
-
-  var suggestedEmail = null, $suggestionTip = null, $emailInputs;
-
-  $emailInputs = $('.loginView form').on('click', '.suggestionTip', function (e) {
-    var a;
-    if (a = suggestedEmail) {
-      e = $(this);
-      e.prev().val(e.find('strong').text());
-      $suggestionTip.el.addClass('notUsed');
-      $suggestionTip.el.prev().removeClass('suggestionShowed');
-    }
-  }).on('blur', 'input[type=email]', function (e) {
-    e = $(e.target);
-    e.mailcheck({
-      suggested: function ($inp, suggestion) {
-        if ($suggestionTip && suggestion && suggestion.full) {
-          $inp.next().find('strong').text(suggestion.full);
-          $inp.addClass('suggestionShowed').next().removeClass('notUsed');
-          suggestedEmail = suggestion;
-        }
-      },
-      empty: function ($inp) {
-        $suggestionTip.el.addClass('notUsed');
-        $suggestionTip.el.prev().removeClass('suggestionShowed');
-        suggestedEmail = null;
-      }
-    });
-  }).find('input[type=email]');
-
-  if ($emailInputs.length) {
-    $suggestionTip = {
-      el: $('<span></span>').addClass('suggestionTip notUsed').append('<span>Did you mean</span> <strong>at</strong><span>?</span>').insertAfter($emailInputs)
-    };
-    $suggestionTip.addr = $suggestionTip.el.find('strong');
-  }
-
-
-  $('.loginView form').on('submit', function submittedForm (e) {
-    var $requireds;
-    e.preventDefault();
-    e = $(this);
-    $requireds = e.find('input[required]').filter(function(){return this.value==="";});
-    if ($requireds.length) {
-      $requireds.get(0).focus();
-      return false;
-    }
-    e.find('button[type="submit"],input[type="submit"]').attr('disabled', 'disabled').text(function updateTextOfSubmit(ind, text) {
-      return text + '...';
-    });
-    e.off();
-    setTimeout(function submitTheForm () {
-      e.trigger('submit');
-    }, 200);
-  });
-
-  var el = $('input.onchangeGenerateSubdomain');
-  if (el && el.length) {
-    el.on('change keyup', function changeInputVal (e) {
-      if (this.value && this.value.trim().length > 0) {
-        $('#' + $(this).data('onchange')).text(this.value.trim().replace(/[^a-z0-9]/gi, '').toLowerCase());
-      }
-    }).trigger('change');
-  }
-});
-
-</script>
-</body>
-</html>
-
-
+}

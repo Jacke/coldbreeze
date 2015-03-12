@@ -10,7 +10,7 @@ import main.scala.bprocesses._
 import main.scala.resources.scopes._
 import com.github.nscala_time.time.Imports._
 import models.DAO.conversion.BPInitiator
-
+/*
 trait DCOSample {
   val process_dto = BPDAO.get(1).get
   val target = ProcElemDAO.findByBPId(1)
@@ -86,3 +86,4 @@ class DCOSpec extends Specification with ProcessSample {
 
 
 }
+*/

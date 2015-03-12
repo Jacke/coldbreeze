@@ -2,9 +2,9 @@
      <!-- FOR CONTAINER TEMPLATE -->
       <div class="tab-pane active" id="edit" ng:show="bpelem.type_title == 'container_brick'">
           <div class="front-spaces" ng-repeat="space in frontSpaces[bpelem.id]">
-             Space: {{ space.index }} — <a ng:click="space.cneedit=!space.cneedit">{{ 'ADD_TO_SPACE' | translate }}</a>
+             {{ 'SPACE' | translate }}: {{ space.index }} — <a ng:click="space.cneedit=!space.cneedit" ng-show="isManagerVal">{{ 'ADD_TO_SPACE' | translate }}</a>
 
-            <div class="elem-desc" ng:show="(space.cneedit == false || space.cnedit == undefined) && mySpaceElems(spaceelems, space.id).length < 1">
+            <div class="elem-desc" ng:show="(space.cneedit == false || space.cnedit == undefined) && mySpaceElems(spaceelems, space.id).length < 1 && isManagerVal">
 <div class="confirm-desc">
 <h3>{{ 'CONFIRM' | translate }}</h3>
 <p>{{ 'CONFDESCFULL' | translate }}</p>
@@ -17,76 +17,34 @@
             </div>
              <div ng:show="space.cneedit">
               <form novalidate="novalidate" class="form-horizontal form-new-spaceelem" ng-class="space.newSpaceelem.type_title">
-                      <div class="control-group">
-                    <label class="control-label" for="inputTitle">{{ 'TITLE' | translate }}:</label>
-                    <div class="controls">
-                      <input type="text" id="inputTitle" ng-model="space.newSpaceelem.title"/>
+                  <div class="control-group form-group">
+                    <label class="control-label col-sm-1" for="inputTitle">{{ 'TITLE' | translate }}:</label>
+                    <div class="controls col-xs-4">
+                      <input type="text" id="inputTitle" class="form-control" ng-model="space.newSpaceelem.title"/>
                     </div>
                   </div>
-                  <div class="control-group">
-                    <label class="control-label" for="inputBusinessId">{{ 'DESC' | translate }}:</label>
-                    <div class="controls">
-                      <textarea type="text" id="inputBusinessId" ng-model="space.newSpaceelem.desc"/>
+                  <div class="control-group form-group"">
+                    <label class="control-label col-sm-1" for="inputBusinessId">{{ 'DESC' | translate }}:</label>
+                    <div class="controls col-xs-4">
+                      <textarea type="text" id="inputBusinessId" class="form-control" ng-model="space.newSpaceelem.desc"/>
                     </div>
                   </div>
 
                       <input type="hidden" name="value" ng-model="space.newSpaceelem.business" ng-init="business" >
                       <input type="hidden" name="value" ng-model="space.newSpaceelem.bprocess" ng-init="parseInt(BPid)">
-
-
                       <input type="hidden" id="inputBusinessId" ng-model="space.newSpaceelem.b_type"/>
                       <input type="hidden" id="inputBusinessId" ng-model="space.newSpaceelem.type_title"/>
-<!--
-                  <div class="control-group">
-                    <label class="control-label" for="inputBusinessId">space_own:</label>
-                    <div class="controls">
-                         <select ng-model="space.newSpaceelem.space_own" data-ng-options="a.id as a.id for a in spaces">
-                          </select>
-                      <input type="number" id="inputBusinessId" ng-model="space.newSpaceelem.space_own"/>
-                    </div>
-                  </div>
-                  <div class="control-group">
-                    <label class="control-label" for="inputBusinessId">space_owned:</label>
-                    <div class="controls">
-                         <select ng-model="space.newSpaceelem.space_owned" data-ng-options="a.id as a.id for a in spaces">
-                        </select>
-                    </div>
-                  </div>
-                  <div class="control-group">
-                    <label class="control-label" for="inputBusinessId">space_role:</label>
-                    <div class="controls">
-                    </div>
-                  </div>
-                      <div class="control-group">
-                    <label class="control-label" for="inputBusinessId">order:</label>
-                    <div class="controls">
-                    </div>
-                  </div>-->
                       <input type="hidden" id="inputBusinessId" ng-model="space.newSpaceelem.space_owned" ng-init="space.newSpaceelem.space_owned=space.id" value="{{ space.id }}"/>
                       <input type="hidden" id="inputBusinessId" ng-model="space.newSpaceelem.space_role" ng-init="space.newSpaceelem.space_role" value="container"/>
                       <input type="hidden" id="inputBusinessId" ng-model="space.newSpaceelem.order" value="{{ orderNestedGen(space.newSpaceelem) }}"/>
-<!--
-                    <div class="control-group">
-                    <label class="control-label" for="inputBusinessId">Composite:</label>
-                    <div class="controls">
-                      {{ space.newSpaceelem | json }}
-                      <input type="text" id="input_a_string" ng-model="space.newSpaceelem.comps[0].a_string"/>
-                      <input type="text" id="input_b_string" ng-model="space.newSpaceelem.comps[0].b_string"/>
-                      <input type="number" id="input_a_int" ng-model="space.newSpaceelem.comps[0].a_int"/>
-                      <input type="number" id="input_b_int" ng-model="space.newSpaceelem.comps[0].b_int"/>
-                      <input type="text" id="input_a_bool" ng-model="space.newSpaceelem.comps[0].a_bool"/>
-                      <input type="text" id="input_b_bool" ng-model="space.newSpaceelem.comps[0].b_bool"/>
-                    </div>
-                  </div>
--->
-                  <div class="control-group">
-                    <div class="controls">
+
+              <div class="control-group form-group"">
+                    <div class="controls col-xs-4">
                       <div class="templateButton">
                         <a ng-click="templateSpaceElem('container', space.newSpaceelem)" class="btn btn-small btn-primary container_brick">{{ 'CONTAINER' | translate }} <span tooltip="{{ 'CONTDESC' | translate }}" tooltip-placement="bottom" class="glyphicon glyphicon-info-sign"></span></a>
                         <a ng-click="templateSpaceElem('confirm', space.newSpaceelem)" class="btn btn-small btn-primary confirm">{{ 'CONFIRM' | translate }} <span tooltip="{{ 'CONFDESC' | translate }}" tooltip-placement="bottom" class="glyphicon glyphicon-info-sign"></span></a>
                       </div>
-                      <a ng-click="createSpaceElem(space.newSpaceelem);cneedit=!cneedit" loading class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</a>
-                      <!--<a ng:click="newselected=0" class="btn btn-small btn-primary">Cancel</a>--> 
+                      <a ng-click="createSpaceElem(space.newSpaceelem);flushEditForm(space.newSpaceelem, space);cneedit=!cneedit" class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</a>
                     </div>
                   </div>
                 </form>
@@ -98,7 +56,7 @@
 
 
 
-                  <ul class="elem-control elem-tabs" role="tablist">
+                  <ul class="elem-control elem-tabs" role="tablist" ng-show="isManagerVal">
                     <li class="active"><a href="" role="tab" data-toggle="tab" ng:click="selected=1"><span class="glyphicon glyphicon-list-alt"></span></a></li>
                     <li><a href="" role="tab" data-toggle="tab" ng:click="selected=2"><span class="glyphicon glyphicon-edit"></span></a></li>
                     <li><a ng-click="deleteSpaceElem(spaceelem)"><span class="glyphicon glyphicon-remove"></span></a></li>

@@ -13,10 +13,10 @@ import infra.paypal.format.{EnumFormat, DateTimeFormat}
  * @param state	enum	State of the authorization. Either pending, authorized, captured, partially_captured, expired, or voided. Assigned in response.
  * @param parent_payment	string	ID of the payment resource on which this transaction is based. Assigned in response.
  * @param id	string	ID of the authorization transaction. Assigned in response.
- * @param valid_until	date_time	Authorization expiration time and date as defined in RFC 3339 Section 5.6. Assigned in response.
+ * @param valid_until	date_time	AuthorizationB expiration time and date as defined in RFC 3339 Section 5.6. Assigned in response.
  * @param links	array of links objects	HATEOAS links related to this request. Assigned in response.
  */
-case class Authorization(
+case class AuthorizationB(
                           amount: Option[Amount] = None,
                           create_time: Option[DateTime] = None,
                           update_time: Option[DateTime] = None,
@@ -38,10 +38,10 @@ object AuthorizationState extends Enumeration with EnumFormat {
   implicit val format = valueFormat
 }
 
-object Authorization {
+object AuthorizationB {
   implicit private val df = DateTimeFormat.ZDateTimeReads
 
-  implicit val format = Json.format[Authorization]
+  implicit val format = Json.format[AuthorizationB]
 
   case class Capture(amount: Amount, is_final_capture: Boolean = false)
 

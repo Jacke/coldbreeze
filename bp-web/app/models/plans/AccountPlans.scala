@@ -1,29 +1,33 @@
 package models.DAO.resources
 
-import slick.driver.PostgresDriver.simple._
+import models.DAO.driver.MyPostgresDriver1.simple._
+import com.github.tminglei.slickpg.composite._
+import models.DAO.conversion.{DatabaseCred, Implicits}
 import scala.slick.model.ForeignKeyAction
-//import models.DAO.driver.MyPostgresDriver.simple._
-import models.DAO.conversion.DatabaseCred
+import org.joda.time.DateTime
+
 
 class AccountPlans(tag: Tag) extends Table[AccountPlanDTO](tag, "account_plans") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def business_id = column[Option[Int]]("business_id")
   def master_acc = column[String]("master_acc")
   def plan = column[Int]("plan_id") 
+  def expired_at = column[DateTime]("expired_at")
 
   def planFK = foreignKey("plan_fk", plan, models.DAO.resources.PlanDAO.plans)(_.id, onDelete = ForeignKeyAction.Cascade)
   def accFK = foreignKey("macc_fk", master_acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
   def business = foreignKey("buss_fk", business_id, models.DAO.resources.BusinessDAO.businesses)(_.id)
 
+  def planJoin = models.DAO.resources.PlanDAO.plans.filter(_.id === plan)
 
-  def * = (id.?, business_id, master_acc, plan) <> (AccountPlanDTO.tupled, AccountPlanDTO.unapply)
+  def * = (id.?, business_id, master_acc, plan, expired_at) <> (AccountPlanDTO.tupled, AccountPlanDTO.unapply)
 
 }
 
 /*
   Case class
  */
-case class AccountPlanDTO(var id: Option[Int], business_id: Option[Int], master_acc: String, plan: Int)
+case class AccountPlanDTO(var id: Option[Int], business_id: Option[Int], master_acc: String, plan: Int = 1, expired_at: DateTime = DateTime.now().plusDays(5))
 
 object AccountPlanDAO {
   import scala.util.Try
@@ -44,6 +48,15 @@ object AccountPlanDAO {
   	implicit session =>
   	val q3 = for { s ← account_plans if s.master_acc === email } yield s 
       q3.list.headOption
+  }
+  def getPlanByMasterAcc(email: String):Tuple2[DateTime, PlanDTO] = { database withSession {
+    implicit session =>
+       val q1 = (for {
+      s <- account_plans
+      p <- s.planJoin
+    } yield ((s.expired_at, p)))
+      q1.list.headOption.get
+    }
   }
   /**
    * Update a business service
@@ -76,10 +89,16 @@ object AccountPlanDAO {
       q3.list.sortBy(_.id)
   }
 
-   def ddl_create = {
+  def ddl_create = {
     database withSession {
       implicit session =>
       account_plans.ddl.create
+    }
+  }
+  def ddl_drop = {
+    database withSession {
+      implicit session =>
+        account_plans.ddl.drop
     }
   }
 }

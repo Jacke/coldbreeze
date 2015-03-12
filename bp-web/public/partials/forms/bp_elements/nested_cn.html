@@ -1,5 +1,5 @@
-Space: {{ space.index }} — <a ng:click="space.cneedit=!space.cneedit">{{ 'ADD_TO_SPACE' | translate }}</a>
-<div class="elem-desc" ng:show="(space.cneedit == false || space.cnedit == undefined) && mySpaceElems(spaceelems, space.id).length < 1">
+Space: {{ space.index }} — <a ng:click="space.cneedit=!space.cneedit" ng-show="isManagerVal">{{ 'ADD_TO_SPACE' | translate }}</a>
+<div class="elem-desc" ng:show="(space.cneedit == false || space.cnedit == undefined) && mySpaceElems(spaceelems, space.id).length < 1 && isManagerVal">
 <div class="confirm-desc">
 <h3>{{ 'CONFIRM' | translate }}</h3>
 <p>{{ 'CONFDESCFULL' | translate }}</p>
@@ -13,16 +13,16 @@ Space: {{ space.index }} — <a ng:click="space.cneedit=!space.cneedit">{{ 'ADD_
 
 <div ng:show="space.cneedit">
  <form novalidate="novalidate" class="form-horizontal form-new-spaceelem" ng-class="space.newSpaceelem.type_title">
-         <div class="control-group">
-       <label class="control-label" for="inputTitle">{{ 'TITLE' | translate }}:</label>
-       <div class="controls">
-         <input type="text" id="inputTitle" ng-model="space.newSpaceelem.title"/>
+     <div class="control-group form-group">
+       <label class="control-label col-sm-1" for="inputTitle">{{ 'TITLE' | translate }}:</label>
+       <div class="controls col-xs-4">
+         <input type="text" class="form-control" id="inputTitle" ng-model="space.newSpaceelem.title"/>
        </div>
      </div>
-     <div class="control-group">
-       <label class="control-label" for="inputBusinessId">{{ 'DESC' | translate }}:</label>
-       <div class="controls">
-         <textarea type="text" id="inputBusinessId" ng-model="space.newSpaceelem.desc"/>
+     <div class="control-group form-group">
+       <label class="control-label col-sm-1" for="inputBusinessId">{{ 'DESC' | translate }}:</label>
+       <div class="controls col-xs-4">
+         <textarea type="text" class="form-control" id="inputBusinessId" ng-model="space.newSpaceelem.desc"/>
        </div>
      </div>
 
@@ -67,8 +67,8 @@ Space: {{ space.index }} — <a ng:click="space.cneedit=!space.cneedit">{{ 'ADD_
    <input type="hidden" name="value" ng-model="space.newSpaceelem.bprocess" value="{{ BPid }}">
    <input type="hidden" id="inputBusinessId" ng-model="space.newSpaceelem.b_type"/>
    <input type="hidden" id="inputBusinessId" ng-model="space.newSpaceelem.type_title"/>
-    <input type="hidden" id="inputBusinessId" ng-model="space.newSpaceelem.space_owned" ng-init="space.newSpaceelem.space_owned=space.id" value="{{ space.id }}"/>
-    <input type="hidden" id="inputBusinessId" ng-model="space.newSpaceelem.space_role" ng-init="space.newSpaceelem.space_role" value="container"/>
+   <input type="hidden" id="inputBusinessId" ng-model="space.newSpaceelem.space_owned" ng-init="space.newSpaceelem.space_owned=space.id" value="{{ space.id }}"/>
+   <input type="hidden" id="inputBusinessId" ng-model="space.newSpaceelem.space_role" ng-init="space.newSpaceelem.space_role" value="container"/>
 <!--
        <div class="control-group">
        <label class="control-label" for="inputBusinessId">Composite:</label>
@@ -83,13 +83,13 @@ Space: {{ space.index }} — <a ng:click="space.cneedit=!space.cneedit">{{ 'ADD_
        </div>
      </div>
 -->
-     <div class="control-group">
-       <div class="controls">
+     <div class="control-group form-group">
+       <div class="controls col-xs-4">
           <div class="templateButton">
              <a ng-click="templateSpaceElem('container', space.newSpaceelem)" class="btn btn-small btn-primary container_brick">{{ 'CONTAINER' | translate }} <span tooltip="{{ 'CONTDESC' | translate }}" tooltip-placement="bottom" class="glyphicon glyphicon-info-sign"></span></a>
              <a ng-click="templateSpaceElem('confirm', space.newSpaceelem)" class="btn btn-small btn-primary confirm">{{ 'CONFIRM' | translate }} <span tooltip="{{ 'CONFDESC' | translate }}" tooltip-placement="bottom" class="glyphicon glyphicon-info-sign"></span></a>
           </div>
-         <a ng-click="createSpaceElemFromSpace(space.newSpaceelem);cneedit=!cneedit" loading class="btn btn-small btn-primary">{{ 'NEW' | translate }}</a>
+         <a ng-click="createSpaceElemFromSpace(space.newSpaceelem);flushEditForm(space.newSpaceelem, space);cneedit=!cneedit" class="btn btn-small btn-primary">{{ 'NEW' | translate }}</a>
        </div>
      </div>
    </form>

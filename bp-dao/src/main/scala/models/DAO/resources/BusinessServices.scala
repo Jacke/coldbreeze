@@ -113,4 +113,10 @@ object BusinessServiceDAO {
       business_services.ddl.create
     }
   }
+  def ddl_drop = {
+    database withSession {
+      implicit session =>
+        business_services.ddl.drop
+    }
+  }
 }

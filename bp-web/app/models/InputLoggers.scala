@@ -91,6 +91,12 @@ object InputLoggerDAO {
       input_loggers.ddl.create
     }
   }
+  def ddl_drop = {
+    database withSession {
+      implicit session =>
+        input_loggers.ddl.drop
+    }
+  }
 
 }
 

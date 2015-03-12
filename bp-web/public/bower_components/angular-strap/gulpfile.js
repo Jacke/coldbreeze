@@ -2,23 +2,40 @@
 
 var gulp = require('gulp');
 var path = require('path');
+var util = require('util');
 var gutil = require('gulp-util');
+var merge = require('merge-stream');
 var changed = require('gulp-changed');
 var rename = require('gulp-rename');
-
 var pkg = require('./package.json');
+var chalk = require('chalk');
+var fs = require('fs');
 
-var paths = {
-  src: 'src',
+// CONFIG
+//
+
+var src = {
+  cwd: 'src',
   dist: 'dist',
-  docs: 'docs',
-  pages: 'pages',
   scripts: '*/*.js',
-  templates: '{,*/}*.tpl.html',
-  views: 'views/{,*/}*.html',
-  images: 'images/**/*.{jpg,png,svg}',
+  index: 'module.js',
+  templates: '*/*.tpl.html',
+};
+
+var docs = {
+  cwd: 'docs',
+  tmp: '.tmp',
+  dist: 'pages',
+  index: 'index.html',
+  views: 'views/**/*.html',
+  scripts: 'scripts/**/*.js',
+  images: 'images/{,*/}*.{jpg,png,svg}',
   styles: 'styles/*.less',
-  data: 'data/{,*/}*.json'
+};
+
+var ports = {
+  docs: 9090,
+  pages: 9090
 };
 
 var banner = gutil.template('/**\n' +
@@ -33,20 +50,20 @@ var banner = gutil.template('/**\n' +
 // CLEAN
 //
 var clean = require('gulp-clean');
-gulp.task('clean:dev', function() {
+gulp.task('clean:tmp', function() {
   return gulp.src(['.tmp/*'], {read: false})
     .pipe(clean());
 });
 gulp.task('clean:test', function() {
-  return gulp.src(['test/.tmp/*'], {read: false})
+  return gulp.src(['test/.tmp/*', 'test/coverage/*'], {read: false})
     .pipe(clean());
 });
 gulp.task('clean:dist', function() {
-  return gulp.src(['.tmp/*', paths.dist + '/*'], {read: false})
+  return gulp.src([src.dist + '/*'], {read: false})
     .pipe(clean());
 });
 gulp.task('clean:pages', function() {
-  return gulp.src([paths.pages + '/*', '!' + paths.pages + '/.git'], {read: false})
+  return gulp.src([docs.dist + '/*', '!' + docs.dist + '/1.0', '!' + docs.dist + '/static', '!' + docs.dist + '/dist', '!' + docs.dist + '/.git'], {read: false})
     .pipe(clean());
 });
 
@@ -56,37 +73,38 @@ gulp.task('clean:pages', function() {
 var connect = require('gulp-connect');
 gulp.task('connect:docs', function() {
   connect.server({
-    root: ['.tmp', '.dev', paths.docs, paths.src],
-    port: 9000,
+    root: ['.tmp', '.dev', docs.cwd, src.cwd],
+    port: ports.docs,
     livereload: true
   });
 });
 gulp.task('connect:pages', function() {
   connect.server({
-    root: [paths.pages],
-    port: 8080,
+    root: [docs.dist],
+    port: ports.pages,
   });
+});
+var chrome = require('gulp-open');
+gulp.task('open:docs', function(){
+  gulp.src(docs.index, {cwd: docs.cwd})
+  .pipe(chrome('', {url: 'http://localhost:' + ports.docs}));
+});
+gulp.task('open:pages', function(){
+  gulp.src(docs.index, {cwd: docs.dist})
+  .pipe(chrome('', {url: 'http://localhost:' + ports.pages}));
 });
 
 
 // WATCH
 //
-gulp.task('watch:dev', function() {
-  gulp.watch(paths.scripts, {cwd: paths.src}, ['scripts:dev']);
-});
+var watch = require('gulp-watch');
 gulp.task('watch:docs', function() {
-  gulp.watch(paths.scripts, {cwd: paths.docs}, ['scripts:docs']);
-  gulp.watch(paths.styles, {cwd: paths.docs}, ['styles:docs']);
-  gulp.watch(paths.views, {cwd: paths.docs}, ['views:docs']);
+  watch({glob: path.join(docs.cwd, docs.scripts)}).pipe(connect.reload());
+  watch({glob: path.join(docs.cwd, 'styles/**/*.less')}, ['styles:docs']);
+  watch({glob: [path.join(docs.cwd, docs.index), path.join(docs.cwd, docs.views)]}).pipe(connect.reload());
 });
-
-
-// OPEN
-//
-var chrome = require('gulp-open');
-gulp.task('open:docs', function(){
-  gulp.src(paths.docs + '/index.html')
-  .pipe(chrome('', {url: 'http://localhost:' + 9000}));
+gulp.task('watch:dev', function() {
+  watch({glob: [path.join(src.cwd, src.index), path.join(src.cwd, src.scripts)]}).pipe(connect.reload());
 });
 
 
@@ -95,147 +113,268 @@ gulp.task('open:docs', function(){
 var uglify = require('gulp-uglify');
 var ngmin = require('gulp-ngmin');
 var concat = require('gulp-concat-util');
-gulp.task('scripts:dev', function() {
-  gulp.src(['module.js', paths.scripts], {cwd: paths.src})
-    .pipe(connect.reload());
+var sourcemaps = require('gulp-sourcemaps');
+gulp.task('scripts:dist', function(foo) {
+
+  var merged = merge(
+
+    // Build unified package
+    gulp.src([src.index, src.scripts], {cwd: src.cwd})
+      .pipe(sourcemaps.init())
+      .pipe(ngmin())
+      .pipe(concat(pkg.name + '.js', {process: function(src) { return '// Source: ' + path.basename(this.path) + '\n' + (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1'); }}))
+      .pipe(concat.header('(function(window, document, undefined) {\n\'use strict\';\n'))
+      .pipe(concat.footer('\n})(window, document);\n'))
+      .pipe(concat.header(banner))
+      .pipe(gulp.dest(src.dist))
+      .pipe(rename(function(path) { path.extname = '.min.js'; }))
+      .pipe(uglify())
+      .pipe(concat.header(banner))
+      .pipe(sourcemaps.write('./'))
+      .pipe(gulp.dest(src.dist)),
+
+    // Build individual modules
+    gulp.src(src.scripts, {cwd: src.cwd})
+      .pipe(sourcemaps.init())
+      .pipe(ngmin())
+      .pipe(rename(function(path){ path.dirname = ''; })) // flatten
+      .pipe(concat.header(banner))
+      .pipe(gulp.dest(path.join(src.dist, 'modules')))
+      .pipe(rename(function(path) { path.extname = '.min.js'; }))
+      .pipe(uglify())
+      .pipe(concat.header(banner))
+      .pipe(sourcemaps.write('./'))
+      .pipe(gulp.dest(path.join(src.dist, 'modules')))
+
+  );
+
+  merged.on('error', function(err) {
+    gutil.log(chalk.red(util.format('Plugin error: %s', err.message)));
+  });
+
+  return merged;
+
 });
-gulp.task('scripts:dist', function() {
+gulp.task('scripts:pages', function(foo) {
 
-  // Build unified package
-  gulp.src(['module.js', paths.scripts], {cwd: paths.src})
-    .pipe(ngmin())
-    .pipe(concat(pkg.name + '.js', {process: function(src) { return '// Source: ' + this.path + '\n' + (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1'); }}))
-    .pipe(concat.header('(function(window, document, undefined) {\n\'use strict\';\n'))
-    .pipe(concat.footer('\n})(window, document);\n'))
-    .pipe(concat.header(banner))
-    .pipe(gulp.dest('dist'))
-    .pipe(rename(function(path) { path.extname = '.min.js'; }))
-    .pipe(uglify({outSourceMap: true}))
-    .pipe(concat.header(banner))
-    .pipe(gulp.dest('dist'));
+  var merged = merge(
 
-  // Build individual modules
-  gulp.src(paths.scripts, {cwd: paths.src})
-    .pipe(ngmin())
-    .pipe(rename(function(path){ path.dirname = ''; })) // flatten
-    .pipe(concat.header(banner))
-    .pipe(gulp.dest('dist/modules'))
-    .pipe(rename(function(path) { path.extname = '.min.js'; }))
-    .pipe(uglify({outSourceMap: true}))
-    .pipe(concat.header(banner))
-    .pipe(gulp.dest('dist/modules'));
+    // Build unified package
+    gulp.src([src.index, src.scripts], {cwd: src.cwd})
+      .pipe(sourcemaps.init())
+      .pipe(ngmin())
+      .pipe(concat(pkg.name + '.js', {process: function(src) { return '// Source: ' + path.basename(this.path) + '\n' + (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1'); }}))
+      .pipe(concat.header('(function(window, document, undefined) {\n\'use strict\';\n'))
+      .pipe(concat.footer('\n})(window, document);\n'))
+      .pipe(concat.header(banner))
+      .pipe(gulp.dest(path.join(docs.dist, 'scripts')))
+      .pipe(rename(function(path) { path.extname = '.min.js'; }))
+      .pipe(uglify())
+      .pipe(concat.header(banner))
+      .pipe(sourcemaps.write('./'))
+      .pipe(gulp.dest(path.join(docs.dist, 'scripts')))
+
+  );
+
+  merged.on('error', function(err) {
+    gutil.log(chalk.red(util.format('Plugin error: %s', err.message)));
+  });
+
+  return merged;
 
 });
-
 
 // TEMPLATES
 //
 var ngtemplate = require('gulp-ngtemplate');
 var uglify = require('gulp-uglify');
 var ngmin = require('gulp-ngmin');
+var createModuleName = function(src) { return 'mgcrea.ngStrap.' + src.split(path.sep)[0]; };
 gulp.task('templates:dist', function() {
-  // Build unified package
-  gulp.src(paths.templates, {cwd: paths.src})
-    .pipe(htmlmin({removeComments: true, collapseWhitespace: true}))
-    .pipe(ngtemplate({module: function(src) { return 'mgcrea.ngStrap.' + src.split('/')[0]; }}))
-    .pipe(ngmin())
-    .pipe(concat(pkg.name + '.tpl.js', {process: function(src) { return '// Source: ' + this.path + '\n' + (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1'); }}))
-    .pipe(concat.header('(function(window, document, undefined) {\n\'use strict\';\n\n'))
-    .pipe(concat.footer('\n\n})(window, document);\n'))
-    .pipe(concat.header(banner))
-    .pipe(gulp.dest('dist'))
-    .pipe(rename(function(path) { path.extname = '.min.js'; }))
-    .pipe(uglify({outSourceMap: true}))
-    .pipe(concat.header(banner))
-    .pipe(gulp.dest('dist'));
-  // Build individual modules
-  gulp.src(paths.templates, {cwd: paths.src})
-    .pipe(htmlmin({removeComments: true, collapseWhitespace: true}))
-    .pipe(ngtemplate({module: function(src) { return 'mgcrea.ngStrap.' + src.split('/')[0]; }}))
-    .pipe(ngmin())
-    .pipe(rename(function(path){ path.dirname = ''; })) // flatten
-    .pipe(concat.header(banner))
-    .pipe(gulp.dest('dist/modules'))
-    .pipe(rename(function(path) { path.extname = '.min.js'; }))
-    .pipe(uglify({outSourceMap: false}))
-    .pipe(concat.header(banner))
-    .pipe(gulp.dest('dist/modules'));
+
+  var merged = merge(
+
+    // Build unified package
+    gulp.src(src.templates, {cwd: src.cwd})
+      .pipe(htmlmin({removeComments: true, collapseWhitespace: true}))
+      .pipe(ngtemplate({module: createModuleName}))
+      .pipe(ngmin())
+      .pipe(concat(pkg.name + '.tpl.js', {process: function(src) { return '// Source: ' + path.basename(this.path) + '\n' + (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1'); }}))
+      .pipe(concat.header('(function(window, document, undefined) {\n\'use strict\';\n\n'))
+      .pipe(concat.footer('\n\n})(window, document);\n'))
+      .pipe(concat.header(banner))
+      .pipe(gulp.dest(src.dist))
+      .pipe(rename(function(path) { path.extname = '.min.js'; }))
+      .pipe(uglify())
+      .pipe(concat.header(banner))
+      .pipe(gulp.dest(src.dist)),
+
+    // Build individual modules
+    gulp.src(src.templates, {cwd: src.cwd})
+      .pipe(htmlmin({removeComments: true, collapseWhitespace: true}))
+      .pipe(ngtemplate({module: createModuleName}))
+      .pipe(ngmin())
+      .pipe(rename(function(path){ path.dirname = ''; })) // flatten
+      .pipe(concat.header(banner))
+      .pipe(gulp.dest(path.join(src.dist, 'modules')))
+      .pipe(rename(function(path) { path.extname = '.min.js'; }))
+      .pipe(uglify())
+      .pipe(concat.header(banner))
+      .pipe(gulp.dest(path.join(src.dist, 'modules')))
+
+  );
+
+  merged.on('error', function(err) {
+    gutil.log(chalk.red(util.format('Plugin error: %s', err.message)));
+  });
+
+  return merged;
+
+});
+gulp.task('templates:pages', function() {
+
+  var merged = merge(
+
+    // Build docs partials
+    gulp.src(['views/sidebar.html', 'views/partials/*.html'], {cwd: docs.cwd, base: docs.cwd})
+      .pipe(htmlmin({removeComments: true, collapseWhitespace: true}))
+      .pipe(ngtemplate({module: 'mgcrea.ngStrapDocs'}))
+      .pipe(ngmin())
+      .pipe(concat('docs.tpl.js', {process: function(src) { return '// Source: ' + path.basename(this.path) + '\n' + (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1'); }}))
+      .pipe(concat.header('(function(window, document, undefined) {\n\'use strict\';\n\n'))
+      .pipe(concat.footer('\n\n})(window, document);\n'))
+      .pipe(gulp.dest(path.join(docs.dist, 'scripts')))
+      .pipe(rename(function(path) { path.extname = '.min.js'; }))
+      .pipe(uglify())
+      .pipe(concat.header(banner))
+      .pipe(gulp.dest(path.join(docs.dist, 'scripts'))),
+
+    // Build demo partials
+    gulp.src('*/docs/*.tpl.demo.html', {cwd: src.cwd})
+      .pipe(htmlmin({removeComments: true, collapseWhitespace: true}))
+      .pipe(ngtemplate({module: 'mgcrea.ngStrapDocs'}))
+      .pipe(ngmin())
+      .pipe(concat('demo.tpl.js', {process: function(src) { return '// Source: ' + path.basename(this.path) + '\n' + (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1'); }}))
+      .pipe(concat.header('(function(window, document, undefined) {\n\'use strict\';\n\n'))
+      .pipe(concat.footer('\n\n})(window, document);\n'))
+      .pipe(concat.header(banner))
+      .pipe(gulp.dest(path.join(docs.dist, 'scripts')))
+      .pipe(rename(function(path) { path.extname = '.min.js'; }))
+      .pipe(uglify())
+      .pipe(concat.header(banner))
+      .pipe(gulp.dest(path.join(docs.dist, 'scripts'))),
+
+    // Build unified package
+    gulp.src(src.templates, {cwd: src.cwd})
+      .pipe(htmlmin({removeComments: true, collapseWhitespace: true}))
+      .pipe(ngtemplate({module: createModuleName}))
+      .pipe(ngmin())
+      .pipe(concat(pkg.name + '.tpl.js', {process: function(src) { return '// Source: ' + path.basename(this.path) + '\n' + (src.trim() + '\n').replace(/(^|\n)[ \t]*('use strict'|"use strict");?\s*/g, '$1'); }}))
+      .pipe(concat.header('(function(window, document, undefined) {\n\'use strict\';\n\n'))
+      .pipe(concat.footer('\n\n})(window, document);\n'))
+      .pipe(concat.header(banner))
+      .pipe(gulp.dest(path.join(docs.dist, 'scripts')))
+      .pipe(rename(function(path) { path.extname = '.min.js'; }))
+      .pipe(uglify())
+      .pipe(concat.header(banner))
+      .pipe(gulp.dest(path.join(docs.dist, 'scripts')))
+
+  );
+
+  merged.on('error', function(err) {
+    gutil.log(chalk.red(util.format('Plugin error: %s', err.message)));
+  });
+
+  return merged;
+
 });
 gulp.task('templates:test', function() {
+
   // Build individual modules
-  return gulp.src(paths.templates, {cwd: paths.src})
+  return gulp.src(src.templates, {cwd: src.cwd})
     .pipe(htmlmin({removeComments: true, collapseWhitespace: true}))
-    .pipe(ngtemplate({module: function(src) { return 'mgcrea.ngStrap.' + src.split('/')[0]; }}))
+    .pipe(ngtemplate({module: createModuleName}))
     .pipe(ngmin())
     .pipe(rename(function(path){ path.dirname = ''; })) // flatten
     .pipe(concat.header(banner))
     .pipe(gulp.dest('test/.tmp/templates'));
-});
-gulp.task('templates:docs', function() {
-  gulp.src(paths.views, {cwd: paths.docs})
-    .pipe(htmlmin({removeComments: true, collapseWhitespace: true}))
-    .pipe(ngtemplate({module: 'mgcrea.ngStrapDocs'}))
-    // .pipe(ngmin())
-    // .pipe(rename(function(path){ path.dirname = ''; })) // flatten
-    // .pipe(concat.header(banner))
-    .pipe(gulp.dest('.tmp/templates'));
+
 });
 
 
 // STYLES
 //
-var less = require('gulp-less');
 var prefix = require('gulp-autoprefixer');
+var less = require('gulp-less');
+var safeLess = merge(less());
+safeLess.on('error', function(err) {
+  gutil.log(chalk.red(util.format('Plugin error: %s', err.message)));
+});
 gulp.task('styles:docs', function() {
-  gulp.src(paths.styles, {cwd: paths.docs})
+  return gulp.src(docs.styles, {cwd: docs.cwd, base: docs.cwd})
     .pipe(changed('.tmp/styles'))
     .pipe(less())
-    .pipe(prefix('last 1 version', '> 1%', 'ie 8'))
-    .pipe(gulp.dest('.tmp/styles'))
+    .pipe(prefix('last 1 version'))
+    .pipe(gulp.dest(docs.tmp))
     .pipe(connect.reload());
 });
 gulp.task('styles:pages', function() {
-  gulp.src(paths.styles, {cwd: paths.docs})
-    .pipe(less())
+  return gulp.src(docs.styles, {cwd: docs.cwd, base: docs.cwd})
+    .pipe(safeLess)
     .pipe(prefix('last 1 version', '> 1%', 'ie 8'))
-    .pipe(gulp.dest('dist/styles'));
+    .pipe(concat.header(banner))
+    .pipe(gulp.dest(docs.dist));
 });
+
 
 // VIEWS
 //
 var htmlmin = require('gulp-htmlmin');
-gulp.task('views:docs', function() {
-  gulp.src(paths.views, {cwd: paths.docs})
-    .pipe(connect.reload());
-});
-gulp.task('views:dist', function() {
-  gulp.src(paths.views, {cwd: paths.src})
-    .pipe(htmlmin({collapseWhitespace: true}))
-    .pipe(gulp.dest('dist'));
-});
-
-
-// PAGES
-//
 var usemin = require('gulp-usemin');
 var nginclude = require('gulp-nginclude');
 var cleancss = require('gulp-cleancss');
-gulp.task('usemin:pages', function() {
-  gulp.src('index.html', {cwd: paths.docs})
-    .pipe(nginclude({assetsDirs: [paths.src]}))
-    .pipe(usemin({
-      js: [uglify(), concat.header(banner)],
-      css: [cleancss(), concat.header(banner)]
-    }))
-    .pipe(gulp.dest('pages'));
+gulp.task('views:pages', function() {
+
+  var merged = merge(
+
+    // Build views
+    // gulp.src(docs.views, {cwd: docs.cwd})
+    //   .pipe(htmlmin({collapseWhitespace: true}))
+    //   .pipe(gulp.dest(docs.dist)),
+
+    // Build index
+    gulp.src(docs.index, {cwd: docs.cwd})
+      .pipe(nginclude({assetsDirs: [src.cwd]}))
+      .pipe(usemin({
+        js: [ngmin(), uglify(), concat.header(banner)],
+        lib: ['concat'], // supeseeded by scripts:pages & templates:pages
+        css: [cleancss(), concat.header(banner)]
+      }))
+      .pipe(gulp.dest(docs.dist))
+
+  );
+
+  merged.on('error', function(err) {
+    gutil.log(chalk.red(util.format('Plugin error: %s', err.message)));
+  });
+
+  return merged;
 });
 
 
 // TEST
 //
+var jshint = require('gulp-jshint');
+var stylish = require('jshint-stylish');
+gulp.task('jshint', function() {
+  gulp.src(src.scripts, {cwd: src.cwd})
+    .pipe(changed(src.scripts))
+    .pipe(jshint())
+    .pipe(jshint.reporter(stylish));
+});
 var karma = require('karma').server;
+var coveralls = require('gulp-coveralls');
 gulp.task('karma:unit', ['templates:test'], function() {
-
   karma.start({
     configFile: path.join(__dirname, 'test/karma.conf.js'),
     browsers: ['PhantomJS'],
@@ -245,10 +384,8 @@ gulp.task('karma:unit', ['templates:test'], function() {
     gutil.log('Karma has exited with ' + code);
     process.exit(code);
   });
-
 });
 gulp.task('karma:server', ['templates:test'], function() {
-
   karma.start({
     configFile: path.join(__dirname, 'test/karma.conf.js'),
     browsers: ['PhantomJS'],
@@ -258,33 +395,52 @@ gulp.task('karma:server', ['templates:test'], function() {
     gutil.log('Karma has exited with ' + code);
     process.exit(code);
   });
+});
+// codeclimate-test-reporter
+gulp.task('karma:travis', ['templates:test'], function() {
+  karma.start({
+    configFile: path.join(__dirname, 'test/karma.conf.js'),
+    browsers: ['PhantomJS'],
+    reporters: ['dots', 'coverage'],
+    singleRun: true
+  }, function(code) {
+    gutil.log('Karma has exited with ' + code);
+    gulp.src('test/coverage/**/lcov.info')
+      .pipe(coveralls())
+      .on('end', function() {
+        process.exit(code);
+      });
+  });
 
 });
 
 
-// // COPY
-// // ----------------------------------
-// gulp.task('copy:dist', function() {
-//   // @TODO clean up this so the files keep them ref path
-//   // @TODO usemin?
-//   gulp.src([paths.images, paths.data], {cwd: paths.src, base: paths.src})
-//     .pipe(gulp.dest('dist'));
-// });
-
-// gulp.task('copy_bower', function() {
-//   return gulp.src([
-//     'app/bower_components/angular/angular.*',
-//     'app/bower_components/bootstrap/dist/**/*'
-//   ])
-//     .pipe(gulp.dest('dist/bower_components'));
-// });
+// COPY
+//
+gulp.task('copy:pages', function() {
+  gulp.src(['favicon.ico', docs.images], {cwd: docs.cwd, base: docs.cwd})
+    .pipe(gulp.dest(docs.dist));
+});
 
 
 // DEFAULT
 //
-gulp.task('default', ['build']);
-gulp.task('test', ['clean:test', 'karma:unit']);
-gulp.task('build', ['clean:dist', 'templates:dist', 'scripts:dist']);
-gulp.task('pages', ['clean:pages', 'styles:docs', 'usemin:pages']);
-gulp.task('serve', ['clean:dist', 'styles:docs', 'connect:docs', 'watch:docs', 'watch:dev', 'open:docs']);
-
+var runSequence = require('run-sequence');
+gulp.task('default', ['dist']);
+gulp.task('build', ['dist']);
+gulp.task('test', function() {
+  runSequence('clean:test', 'templates:test', ['jshint', 'karma:unit']);
+});
+gulp.task('test:server', function() {
+  runSequence('clean:test', 'templates:test', 'karma:server');
+});
+gulp.task('dist', function() {
+  runSequence('clean:dist', ['templates:dist', 'scripts:dist']);
+});
+gulp.task('pages', function() {
+  runSequence('clean:pages', 'styles:docs', 'views:pages', ['templates:pages', 'scripts:pages', 'copy:pages']);
+});
+gulp.task('serve', function() {
+  runSequence('clean:tmp', ['styles:docs', 'connect:docs'], ['open:docs', 'watch:docs']); // , 'watch:dev'
+});
+gulp.task('serve:pages', ['connect:pages', 'open:pages']);

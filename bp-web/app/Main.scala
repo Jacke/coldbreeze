@@ -26,7 +26,8 @@ class NettyServer(mode: Mode.Value) {
   new play.core.server.NettyServer(
     new StaticApplication(new File(System.getProperty("user.dir")), mode),
     Option(System.getProperty("http.port")).map(Integer.parseInt).orElse(Some(9000)),
-    Option(System.getProperty("https.port")).map(Integer.parseInt),
+    //Option(System.getProperty("https.port")).map(Integer.parseInt),
+    None.map(Integer.parseInt),
     Option(System.getProperty("http.address")).getOrElse("0.0.0.0")
     , mode
   )

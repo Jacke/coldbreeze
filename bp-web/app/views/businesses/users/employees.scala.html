@@ -21,13 +21,13 @@
 }
 
 
-@main("Employees", user) {
+@main(Messages("businesses.members"), user) {
 <div class="manageWholeTeam peoplePanel">
 
 <div class="panelLike organisationsGrid">
 
 <div class="organisationsGridMenu">
-  <h2 class="organisationsGridHeadline">Members</h2>
+  <h2 class="organisationsGridHeadline">@Messages("businesses.members")</h2>
   <ul>
     <li data-attr="show" data-target=".tabsWrap" data-filter="all" class="filterGridItems changeData active">All <span class="badgeLike">@currentPage.items.length</span></li>
     <!--
@@ -50,14 +50,14 @@
             <span class="flatCheckbox"><input id="teamAdminRole" type="checkbox" name="admin">&nbsp;<label for="teamAdminRole">Administrator&nbsp;Role</label></span>
           </div>
           <div class="g1of2">
-            <button type="submit" class="button small blue flatButton posRight"><i></i><span>Send Invites</span></button>
-            <a class="cancelButton dark button small flatButton"><i></i><span>Cancel</span></a>
+            <button type="submit" class="button small blue flatButton posRight"><i></i><span>@Messages("custom.send")</span></button>
+            <a class="cancelButton dark button small flatButton"><i></i><span>@Messages("custom.cancel")</span></a>
           </div>
         </div>
         <div class="clr"></div>
       </form>
     </div>
-    <span data-target="#addMembersForm" data-focus="#addMembersForm" data-toggle-class="zeroH" class="hiddenToggler isHidden addMembersLink"><span class="badgeIco"><span class="vIco vAddMembers vShineState"></span></span> Add People to Team</span>
+    <span data-target="#addMembersForm" data-focus="#addMembersForm" data-toggle-class="zeroH" class="hiddenToggler isHidden addMembersLink"><span class="badgeIco"><span class="vIco vAddMembers vShineState"></span></span>@Messages("businesses.addPeople")</span>
     <div class="teamApisListFilter filterLayer">
       <span class="magnifyGlass vIco vLoupe vLight2State"></span>
       <input type="text" size="47" data-list=".profilesList &gt; li.userCard.listItem" data-fresh="1" data-playevents="1" data-childs=".userName" data-toggle-class="hidden" class="filterInput teamApisListFilterInput" placeholder="Search People">
@@ -88,9 +88,12 @@
           <div class="dropmenu" style="display: inline;">
           <span class="userCardMenuHandle" role="button" data-toggle="dropdown">&#x2261;</span>
             <ul id="menu1" class="dropdown-menu" role="menu" aria-labelledby="drop4">
-              <li role="presentation" class="dropdownListItem onlyMember morphAdmin"><a role="menuitem" tabindex="-1" href="#">@form(users.routes.EmployeeController.destroy(entity.id.get), 'class -> "topRight") {
-                                  <input type="submit" value="Delete this employee" class="btn danger">
-                              }</a></li>
+              <li role="presentation" class="dropdownListItem onlyMember morphAdmin">
+                <a role="menuitem" tabindex="-1" href="#">@form(users.routes.EmployeeController.destroy(entity.id.get), 'class -> "topRight") {
+                  <input type="submit" value="Delete this employee" class="btn danger">
+                }
+                </a>
+              </li>
               <li role="presentation" class="divider"></li>
               <li role="presentation" class="dropdownListItem onlyMember morphAdmin"><a role="menuitem" tabindex="-1" href="#"> </a></li>
             </ul>
@@ -109,14 +112,14 @@
         <span class="infoIco icon-time" title="Waiting user invitation acceptance."></span>
 
         <span class="userName">
-        <b class="block">Anonymous — @{entity.uid}</b>
+        <b class="block">@Messages("businesses.anonymous") — @{entity.uid}</b>
           </span>
         <span class="infoIco opposite icon-star hidden" title="Member"></span>
           <div class="dropmenu" style="display: inline;">
           <span class="userCardMenuHandle" role="button" data-toggle="dropdown">&#x2261;</span>
             <ul id="menu1" class="dropdown-menu" role="menu" aria-labelledby="drop4">
               <li role="presentation" class="dropdownListItem onlyMember morphAdmin"><a role="menuitem" tabindex="-1" href="#">@form(users.routes.EmployeeController.destroy(entity.id.get), 'class -> "topRight") {
-                                  <input type="submit" value="Delete this employee" class="btn danger">
+                                  <input type="submit" value='@Messages("custom.delete")' class="btn danger">
                               }</a></li>
               <li role="presentation" class="divider"></li>
               <li role="presentation" class="dropdownListItem onlyMember morphAdmin"><a role="menuitem" tabindex="-1" href="#"> </a></li>

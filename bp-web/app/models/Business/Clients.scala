@@ -26,7 +26,16 @@ object ClientDAO {
 
 
 
-
+  def pull_new_object(s: ClientDTO):Option[Int] = database withSession {
+    implicit session ⇒
+      if (!getByUID(s.uid).isDefined) {
+        val tuple = ClientDTO.unapply(s).get
+        val z = clients returning clients.map(_.id) += (value = (None, s.uid))//(BusinessDTO.unapply(s).get._2, BusinessDTO.unapply(s).get._3)
+        Some(z)
+      } else {
+        None
+      }
+  }
   def pull_object(s: ClientDTO) = database withSession {
     implicit session ⇒
       val tuple = ClientDTO.unapply(s).get
@@ -46,7 +55,13 @@ object ClientDAO {
       println(q3.list)
       q3.list.headOption //.map(Supplier.tupled(_))
   }
-
+  def getByUID(uid: String) = database withSession {
+    implicit session ⇒
+      val q3 = for { s ← clients if s.uid === uid } yield s <> (ClientDTO.tupled, ClientDTO.unapply _)
+      println(q3.selectStatement)
+      println(q3.list)
+      q3.list.headOption //.map(Supplier.tupled(_))
+  }
  
   /**
    * Update a client

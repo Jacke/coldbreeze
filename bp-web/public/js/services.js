@@ -18,7 +18,7 @@ minorityAppServices.factory(
   });
 
 
-var baseUrl = jsRoutes.controllers.ProfileController.profile().absoluteURL();
+var baseUrl = jsRoutes.controllers.ProfileController.profile().absoluteURL(document.ssl_enabled);
 //'http://localhost\\:9000';
 
 minorityAppServices.factory('AuthInterceptor', function ($window, $q) {
@@ -139,14 +139,15 @@ minorityAppServices.factory('BPServicesFactory', function ($resource) {
 minorityAppServices.factory('BPStationsFactory', function ($resource) {
     return $resource(baseUrl + 'bprocess/:BPid/stations', {}, {
         query: { method: 'GET', isArray: true },
-        create: { method: 'POST' }
+        create: { method: 'POST' },
+        note: { method: 'POST' }
     })
 });
 minorityAppServices.factory('BPStationFactory', function ($resource) {
     return $resource(baseUrl + 'bprocess/:BPid/station/:id', {}, {
         show: { method: 'GET' },
         update: { method: 'PUT', params: {id: '@id'} },
-        delete: { method: 'DELETE', params: {id: '@id'} }
+        delete: { method: 'DELETE', params: {id: '@id'} } 
     })
 });
 
@@ -273,6 +274,22 @@ minorityAppServices.factory('ClientFactory', function ($resource) {
     })
 });
 
+
+/*
+** Observers
+*/
+minorityAppServices.factory('ObserversFactory', function ($resource) {
+    return $resource(baseUrl + 'observers/:process/:station', {}, {
+        query: { method: 'GET', params: {id: '@process', station: '@station'}, isArray: true },
+        create: { method: 'POST' }
+    })
+});
+minorityAppServices.factory('ObserverFactory', function ($resource) {
+    return $resource(baseUrl + 'observe/:observe_id', {}, {
+        show: { method: 'GET' },
+        delete: { method: 'DELETE', params: {observe_id: '@observe_id'} }
+    })
+});
 
 
 

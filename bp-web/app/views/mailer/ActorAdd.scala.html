@@ -2,10 +2,10 @@
 @import securesocial.core.IdentityProvider
 <html>
   <body>
-    <p>Hello, Someone added you as actor</p>
+    <p>@Messages("mail.hello"), @Messages("mail.actorAdded")</p>
 
-    <p>Please follow this
-      <a href="http://@host/auth/signup/@mailToken">link</a> to complete your registration.
+    <p>@Messages("mail.follow")
+      <a href="http://@host/auth/signup/@mailToken">@Messages("mail.link")</a> @Messages("mail.toComplee").
     </p>
   </body>
 </html>

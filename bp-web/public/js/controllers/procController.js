@@ -1,13 +1,26 @@
 
 // INDEX
-minorityControllers.controller('BProcessListCtrl', ['$scope','$translate' ,'$rootScope', 'ngDialog', '$http', '$routeParams', '$filter', 'BPElemsFactory','BPSpacesFactory', 'BPSpaceElemsFactory',  'BProcessesFactory','BProcessFactory', 'BPStationsFactory', 'BPServicesFactory', '$location',
-  function ($scope,$translate, $rootScope,ngDialog, $http, $routeParams, $filter, BPElemsFactory, BPSpacesFactory, BPSpaceElemsFactory, BProcessesFactory, BProcessFactory, BPStationsFactory, BPServicesFactory, $location) {
+minorityControllers.controller('BProcessListCtrl', ['$scope','$window','$translate' ,'$rootScope', 'ngDialog', '$http', '$routeParams', '$filter', 'BPElemsFactory','BPSpacesFactory', 'BPSpaceElemsFactory',  'BProcessesFactory','BProcessFactory', 'BPStationsFactory', 'BPServicesFactory', '$location',
+  function ($scope, $window, $translate, $rootScope, ngDialog, $http, $routeParams, $filter, BPElemsFactory, BPSpacesFactory, BPSpaceElemsFactory, BProcessesFactory, BProcessFactory, BPStationsFactory, BPServicesFactory, $location) {
 
 
  $scope.changeLanguage = function () {
     $translate.use($rootScope.lang);
   };
 $scope.changeLanguage();
+
+
+$scope.isManager = function () {
+  if ($scope.isManagerVal == undefined && $rootScope.manager != undefined) {
+    $scope.isManagerVal = $rootScope.manager;
+    return $scope.isManagerVal;
+  } else {
+    return $window.localStorage.manager == "true";
+  }
+};
+
+$scope.isManagerVal = $scope.isManager();
+$scope.isManager();
 
 /*
 *  Thumbnail tree builder
@@ -47,6 +60,15 @@ $scope.builderFetch = function (bp) {
   });
   });
 };
+
+$scope.showInlineLaunch = function (station) {
+  if (station.inlineLaunchShow) {
+    station.inlineLaunchShow = false;
+  } else {
+    station.inlineLaunchShow = true;
+  }
+  return station;
+}
 
 $scope.builder = function (bp, data, data2,data3) {
 
@@ -106,12 +128,12 @@ $scope.emptyElemCheck = function(col) {
   }
 }
 
-  /* callback for ng-click 'editUser': */
   $scope.editBP = function (bpId) {
     $location.path('/bp-detail/' + bpId + '/edit');
   };
-  $scope.modalShare = function () {
+  $scope.modalShare = function (bpId) {
     //$scope.BPid = process.id;
+    $scope.bpId = bpId;
     //$scope.process = process;
     ngDialog.open({
       template: 'partials/forms/share/share.html',
@@ -132,10 +154,12 @@ $scope.emptyElemCheck = function(col) {
 
   $scope.business = $rootScope.business;
 
-  /* callback for ng-click 'deleteUser': */
   $scope.deleteBP = function (bpId) {
     BProcessFactory.delete({ id: bpId }).$promise.then(function(data) {
       $scope.bprocesses = BProcessesFactory.query();
+          $scope.bprocesses.$promise.then(function (processes) {
+              _.forEach(processes, function(proc) { $scope.builderFetch(proc); })
+          });
     });
   };
   $scope.hasActiveStation = function (bprocess) {
@@ -161,14 +185,16 @@ $scope.emptyElemCheck = function(col) {
   $scope.services = BPServicesFactory.query();
 
   if ($routeParams.service != undefined) {
-      BProcessesFactory.query().$promise.then(function(data){
+      $scope.bprocesses = BProcessesFactory.query();
+      $scope.bprocesses.$promise.then(function(data){
         $scope.service_id = $routeParams.service;
         $scope.bprocesses = _.filter(data, function(proc){ return proc.service == $routeParams.service });
       });
 
   } else {
-  $scope.bprocesses = BProcessesFactory.query();
+      $scope.bprocesses = BProcessesFactory.query();
   }
+  
   // Init thumb
   $scope.bprocesses.$promise.then(function (processes) {
     _.forEach(processes, function(proc) { $scope.builderFetch(proc); })
@@ -179,7 +205,10 @@ $scope.emptyElemCheck = function(col) {
 
   $scope.stations = BPStationsFactory.query();
 
-  $scope.bpElemLength = $http.get(jsRoutes.controllers.ProfileController.profile().absoluteURL() + 'bprocess/elems_length')
+  $scope.stations.$promise.then(function(data) {
+    $scope.stations = _.forEach(data, function(d) { d.inlineLaunchShow = false; return d });
+  });
+  $scope.bpElemLength = $http.get(jsRoutes.controllers.ProfileController.profile().absoluteURL(document.ssl_enabled) + 'bprocess/elems_length')
           .success(function (data) {
               // Stores the token until the user closes the browser window.
               console.log(data);
@@ -259,15 +288,21 @@ function ($scope, $routeParams, BPServicesFactory, BProcessFactory, $location, $
 
 
 // CREATE
-minorityControllers.controller('BPCreationCtrl', ['$rootScope','$scope', '$http','$routeParams', 'BProcessesFactory', 'BPServicesFactory', '$location',
-  function ($rootScope, $scope, $http,$routeParams,  BProcessesFactory, BPServicesFactory, $location) {
+minorityControllers.controller('BPCreationCtrl', ['$window', '$rootScope','$scope', '$http','$routeParams', 'BProcessesFactory', 'BPServicesFactory', '$location',
+  function ($window, $rootScope, $scope, $http,$routeParams,  BProcessesFactory, BPServicesFactory, $location) {
 
     if ($routeParams.service != undefined) {
       $scope.bprocess = { service: parseInt($routeParams.service) };
     }
 
     $scope.procServices = BPServicesFactory.query();
-    $scope.business = $rootScope.business;
+    
+    if ($window.sessionStorage.getItem('business') != undefined) {
+      $scope.business = parseInt($window.sessionStorage.getItem('business'));
+    } 
+    else {
+      $scope.business = $rootScope.business;
+    }
     $scope.close = function(){
       $scope.closeThisDialog();
     }
@@ -279,7 +314,9 @@ minorityControllers.controller('BPCreationCtrl', ['$rootScope','$scope', '$http'
           $routeParams.service = undefined;
           $scope.closeThisDialog();
           $scope.$parent.bprocesses = BProcessesFactory.query();
-
+          $scope.$parent.bprocesses.$promise.then(function (processes) {
+              _.forEach(processes, function(proc) { $scope.$parent.builderFetch(proc); })
+          });
            //$location.path('/bprocesses');
     });
     }
@@ -327,14 +364,51 @@ minorityControllers.controller('BPCreationCtrl', ['$rootScope','$scope', '$http'
 
 
 // Share
-minorityControllers.controller('ProcShareCtrl', ['$scope', '$http','$routeParams', 'BProcessesFactory', 'BPServicesFactory', '$location',
-  function ($scope, $http,$routeParams,  BProcessesFactory, BPServicesFactory, $location) {
+minorityControllers.controller('ProcShareCtrl', ['$scope', '$http', '$rootScope', '$routeParams', 'BPStationsFactory', 'ObserversFactory',
+'ObserverFactory', 'BProcessesFactory', 'BPServicesFactory', '$location',
+  function ($scope, $http,$rootScope, $routeParams, BPStationsFactory, ObserversFactory, ObserverFactory, BProcessesFactory, BPServicesFactory, $location) {
 
-    $scope.hasPayingPlan = false;
+    $scope.hasPayingPlan = $rootScope.payed;
 
     $scope.close = function(){
       $scope.closeThisDialog();
     }
+
+
+
+    $scope.observers = ObserversFactory.query({ process: $scope.bpId });
+    $scope.stations = BPStationsFactory.query({ BPid: $scope.bpId });
+
+    $scope.createNewObserver = function() {
+      console.log($scope.newObserver)
+      $scope.newObserver = ObserversFactory.create($scope.newObserver).$promise.then( function(data) {
+         $scope.observers = ObserversFactory.query({ process: $scope.bpId, station: $scope.station});
+         $scope.newObserver = {bprocess: $scope.bpId, station_id: $scope.station};
+      });
+      
+    }
+
+    $scope.deleteObserver = function(observe_id) {
+      ObserverFactory.delete({ observe_id: observe_id }).$promise.then( function() {
+          $scope.observers = ObserversFactory.query($scope.bpId, $scope.station);
+      });
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }]);
