@@ -12,72 +12,15 @@
   </div>
 </div>
 
-<!--
-<div class="control-group">
-  <label class="control-label" for="inputBusinessId">business:</label>
-  <div class="controls">
-  </div>
-</div>
-<div class="control-group">
-  <label class="control-label" for="inputBusinessId">bprocess:</label>
-  <div class="controls">
-  </div>
-</div>
-
-
-  <label class="control-label" for="inputBusinessId">space_own:</label>
-  <div class="controls">
-       <select ng-model="spaceelem.space_own" data-ng-options="a.id as a.id for a in spaces">
-        </select>
-
-  </div>
-</div>-->
     <input type="hidden" name="value" ng-model="spaceelem.business" value="{{ business }}">
     <input type="hidden" name="value" ng-model="spaceelem.bprocess" value="{{ BPid }}">
     <input type="hidden" id="inputBusinessId" ng-model="spaceelem.b_type"/>
     <input type="hidden" id="inputBusinessId" ng-model="spaceelem.type_title"/>
     <input type="hidden" id="inputBusinessId" ng-model="spaceelem.space_own"/>
-<!--
-<div class="control-group">
-  <label class="control-label" for="inputBusinessId">space_own:</label>
-  <div class="controls">
-       <select ng-model="spaceelem.space_owned" data-ng-options="a.id as a.id for a in spaces">
-      </select>
-    <input type="text" id="inputBusinessId" ng-model="spaceelem.space_owned"/>
-  </div>
-</div>
-<div class="control-group">
-  <label class="control-label" for="inputBusinessId">space_own:</label>
-  <div class="controls">
-    <input type="hidden" id="inputBusinessId" ng-model="spaceelem.space_role" value="container"/>
-  </div>
-</div>
-<div class="control-group">
-  <label class="control-label" for="inputBusinessId">order:</label>
-  <div class="controls">
-    <input type="text" id="inputBusinessId" ng-model="spaceelem.order"/>
-  </div>
-</div>-->
-<!--
-  <div class="control-group">
-  <label class="control-label" for="inputBusinessId">Composite:</label>
-  <div class="controls">
-    <input type="text" id="input_a_string" ng-model="spaceelem.comps[0].a_string"/>
-    <input type="text" id="input_b_string" ng-model="spaceelem.comps[0].b_string"/>
-    <input type="text" id="input_a_int" ng-model="spaceelem.comps[0].a_int"/>
-    <input type="text" id="input_b_int" ng-model="spaceelem.comps[0].b_int"/>
-    <input type="text" id="input_a_bool" ng-model="spaceelem.comps[0].a_bool"/>
-    <input type="text" id="input_b_bool" ng-model="spaceelem.comps[0].b_bool"/>
-  </div>
-</div>
--->
 
 <div class="control-group form-group">
   <div class="controls col-xs-4">
-<!--
-     <a ng-click="templateElem('container', spaceelem)" class="btn btn-small btn-primary">Container <span tooltip="Some container" tooltip-placement="bottom" class="glyphicon glyphicon-info-sign"></span></a>
-    <a ng-click="templateElem('confirm', spaceelem)" class="btn btn-small btn-primary">Confirm <span tooltip="Some confirm" tooltip-placement="bottom" class="glyphicon glyphicon-info-sign"></span></a>
-  -->
+
     <a ng-click="updateSpaceElem(spaceelem)" class="btn btn-small btn-primary">{{ 'UPDATE' | translate }}</a>
     <a ng-click="deleteSpaceElem(spaceelem)" class="btn btn-small btn-danger">{{ 'DELETE' | translate }}</a>
 

@@ -26,63 +26,13 @@ Space: {{ space.index }} — <a ng:click="space.cneedit=!space.cneedit" ng-show=
        </div>
      </div>
 
-<!--
-     <div class="control-group">
-       <label class="control-label" for="inputBusinessId">business:</label>
-       <div class="controls">
-       </div>
-     </div>
-     <div class="control-group">
-       <label class="control-label" for="inputBusinessId">bprocess:</label>
-       <div class="controls">
-       </div>
-     </div>
-     <div class="control-group">
-       <label class="control-label" for="inputBusinessId">space_own:</label>
-       <div class="controls">
-            <select ng-model="space.newSpaceelem.space_own" data-ng-options="a.id as a.id for a in spaces">
-             </select>
-         <input type="number" id="inputBusinessId" ng-model="space.newSpaceelem.space_own"/>
-       </div>
-     </div>
-     <div class="control-group">
-       <label class="control-label" for="inputBusinessId">space_owned:</label>
-       <div class="controls">
-            <select ng-model="space.newSpaceelem.space_owned" data-ng-options="a.id as a.id for a in spaces">
-           </select>
-       </div>
-     </div>
-     <div class="control-group">
-       <label class="control-label" for="inputBusinessId">space_role:</label>
-       <div class="controls">
-       </div>
-     </div>
-         <div class="control-group">
-       <label class="control-label" for="inputBusinessId">order:</label>
-       <div class="controls">
-         <input type="number" id="inputBusinessId" ng-model="space.newSpaceelem.order" value="{{ orderNestedGen(space.newSpaceelem) }}"/>
-       </div>
-     </div>-->
+
    <input type="hidden" name="value" ng-model="space.newSpaceelem.business" value="business">
    <input type="hidden" name="value" ng-model="space.newSpaceelem.bprocess" value="{{ BPid }}">
    <input type="hidden" id="inputBusinessId" ng-model="space.newSpaceelem.b_type"/>
    <input type="hidden" id="inputBusinessId" ng-model="space.newSpaceelem.type_title"/>
    <input type="hidden" id="inputBusinessId" ng-model="space.newSpaceelem.space_owned" ng-init="space.newSpaceelem.space_owned=space.id" value="{{ space.id }}"/>
    <input type="hidden" id="inputBusinessId" ng-model="space.newSpaceelem.space_role" ng-init="space.newSpaceelem.space_role" value="container"/>
-<!--
-       <div class="control-group">
-       <label class="control-label" for="inputBusinessId">Composite:</label>
-       <div class="controls">
-         {{ space.newSpaceelem | json }}
-         <input type="text" id="input_a_string" ng-model="space.newSpaceelem.comps[0].a_string"/>
-         <input type="text" id="input_b_string" ng-model="space.newSpaceelem.comps[0].b_string"/>
-         <input type="number" id="input_a_int" ng-model="space.newSpaceelem.comps[0].a_int"/>
-         <input type="number" id="input_b_int" ng-model="space.newSpaceelem.comps[0].b_int"/>
-         <input type="text" id="input_a_bool" ng-model="space.newSpaceelem.comps[0].a_bool"/>
-         <input type="text" id="input_b_bool" ng-model="space.newSpaceelem.comps[0].b_bool"/>
-       </div>
-     </div>
--->
      <div class="control-group form-group">
        <div class="controls col-xs-4">
           <div class="templateButton">

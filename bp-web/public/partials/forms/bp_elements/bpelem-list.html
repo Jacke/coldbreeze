@@ -1,11 +1,4 @@
-
-
-
-
 <div class="container">
-
-
-
 
 
 <hr>
@@ -28,7 +21,6 @@
   <a href="" role="tab" class="createApi ajaxLink cacheable" data-toggle="tab" ng:click="tree=0"><span class="glyphicon glyphicon-chevron-up"></span> {{ 'TREE' | translate }}</a>
 
 </div>
-
 
 
 
@@ -100,21 +92,6 @@
         <input type="hidden" id="inputBusinessId" ng-model="newBpelem.type_title"/>
         <input type="hidden" id="inputBusinessId" ng-model="newBpelem.space_own"/>
         <input type="hidden" id="inputBusinessId" ng-model="newBpelem.order" value="{{ orderFrontGen(newBpelem) }}"/>
-<!--
-      <div class="control-group form-group">
-      <label class="control-label" for="inputBusinessId">Composite:</label>
-      <div class="controls">
-        <input type="text" id="input_a_string" ng-model="newBpelem.comps[0].a_string"/>
-        <input type="text" id="input_b_string" ng-model="newBpelem.comps[0].b_string"/>
-        <input type="number" id="input_a_int" ng-model="newBpelem.comps[0].a_int"/>
-        <input type="number" id="input_b_int" ng-model="newBpelem.comps[0].b_int"/>
-        <input type="checkbox" id="input_a_bool" ng-model="newBpelem.comps[0].a_bool"/>
-        <input type="checkbox" id="input_b_bool" ng-model="newBpelem.comps[0].b_bool"/>
-      </div>
-    </div>
--->
-
-
 
     <div class="control-group form-group" ng-show="isManagerVal">
       <div class="controls col-xs-4">
@@ -132,11 +109,8 @@
 
 
 
-
-
 <div class="front-blocks" ng-repeat="bpelem in bpelems | orderBy:'order'">
-
-
+  
   <div class="tab-content">
     <div class="block-card tab-pane active" id="show">
       <div class="card-pipe">
@@ -154,18 +128,10 @@
       <div class="tab-pane active" id="edit" ng:show="selected == 2">
         <div ng-include src="'partials/forms/bp_elements/bpelem-edit.html'"></div>
       </div>
-
-
-
-
+      
       <div ng-include src="'partials/forms/bp_elements/elem_container_tmp.html'"></div>
     </div>
-
-
   </div>
-
-
-
 </div>
 
 

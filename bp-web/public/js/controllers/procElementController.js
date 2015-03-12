@@ -8,10 +8,11 @@
 // INDEX
 minorityControllers.controller('BPelementListCtrl', ['$window','$filter', '$rootScope', '$scope', '$q', '$http', '$routeParams', 'toaster', 'BPStationsFactory', 'BProcessesFactory', 'ngDialog', 'BPElemsFactory','BPElemFactory', 'BPSpacesFactory', 'BPSpaceFactory', 'BPSpaceElemsFactory', 'BPSpaceElemFactory', '$location', '$route',
   function ($window, $filter, $rootScope, $scope, $q,$http, $routeParams, toaster, BPStationsFactory, BProcessesFactory, ngDialog, BPElemsFactory, BPElemFactory, BPSpacesFactory, BPSpaceFactory, BPSpaceElemsFactory, BPSpaceElemFactory, $location, $route) {
+    
+    
   $scope.route = jsRoutes.controllers.BusinessProcessController;
   $scope.businessSet = $rootScope.business;
 
-console.log("instantiate");
 
 $scope.isManager = function () {
   if ($scope.isManagerVal == undefined && $rootScope.manager != undefined) {
@@ -62,7 +63,6 @@ $scope.isManager();
   $scope.copyProcess = function () {
     var data = {};
     $http.post($scope.route.copy($scope.bp.id, $scope.bp.title + " Copy").absoluteURL(document.ssl_enabled), data).success(function(success) {
-        console.log(success);
         $location.path('/bprocesses');
     }).error(function (error) {
       toaster.pop('error', "Operation fail", "Please try something else");
@@ -72,8 +72,6 @@ $scope.isManager();
   $scope.testing = function (elem) {
   $scope.updateElem(elem);
   var z = BPElemsFactory.query({ BPid: $route.current.params.BPid });
-  console.log("test");
-  console.log(z);
 }
   /** 
    * Modals window
@@ -158,7 +156,7 @@ $scope.isManager();
           });
       });
     };
-    console.log("build");
+     
     var bpelemsCopy = angular.copy($scope.bpelems);
     var spacesCopy = angular.copy($scope.spaces);
     var spaceelemsCopy = angular.copy($scope.spaceelems);
@@ -189,7 +187,7 @@ $scope.isManager();
         return (data.type == destType); // only accept the same type
       },
       dropped: function(event) {
-        console.log(event);
+         
         var sourceNode = event.source.nodeScope;
         var destNodes = event.dest.nodesScope;
         // update changes to server
@@ -219,7 +217,7 @@ $scope.isManager();
           });
       });
     };
-    console.log("build");
+     
     var bpelemsCopy = angular.copy($scope.bpelems);
     var spacesCopy = angular.copy($scope.spaces);
     var spaceelemsCopy = angular.copy($scope.spaceelems);
@@ -337,8 +335,8 @@ $scope.isManager();
   $scope.orderNestedGen = function (elem) {
     if (elem != undefined) {
       var elms = _.filter($scope.spaceelems, function(elms){ return elms.space_owned == elem.space_owned });
-      //console.log("::::::::::");
-      //console.log(elms);
+      // 
+      // 
 
     if (_.last(elms) != undefined && _.last(elms).order != undefined) {
       elem.order = (_.max(_.map(elms, function(l){return l.order})) + 1);
@@ -375,7 +373,7 @@ $scope.isManager();
       })
       .then(function(response) {
         // success
-        console.log(response);
+         
         $scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
         $scope.reloadTree($scope.trees);
       },
@@ -393,7 +391,7 @@ $scope.isManager();
       })
       .then(function(response) {
         // success
-        console.log(response);
+         
         $scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
         $scope.reloadTree($scope.trees);
       },
@@ -406,7 +404,7 @@ $scope.isManager();
 
 
   $scope.updateElem = function (obj) {
-    console.log(obj)
+     
 
     BPElemFactory.update(obj).$promise.then(function(data) {
       $scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
@@ -414,12 +412,12 @@ $scope.isManager();
       });
   }
   $scope.createNewElem = function () {
-    console.log($scope.newBpelem);
+     
 
 
     BPElemsFactory.create($scope.newBpelem).$promise.then(function(data) {
-      console.log("DAAAAAATA");
-      console.log(data);
+       
+       
     /* Element with spaces */
       if ($scope.newBpelem.type_title == "container_brick") {
         var space = {
@@ -454,7 +452,7 @@ $scope.isManager();
       $scope.newBpelem = { desc: "", bprocess: parseInt($route.current.params.BPid), business: $scope.business() };
       $scope.trees = undefined;
       $scope.newselected = 0;
-      console.log("builder");
+       
       $scope.reloadTree($scope.trees);
     });
 
@@ -553,12 +551,12 @@ $scope.nested_travers = function(obj, spaces, space_elements) {
   spelems_init_idsLEFT = _.map(space_elems_initLEFT, function(sp){ return sp.id }); // init ids
   elems_ids = elems_ids.concat(spelems_init_idsLEFT);
 
-  console.log(obj);
-  console.log(spaces);
-  console.log(space_elements);
+   
+   
+   
 
-  console.log(sps_ids);
-  console.log(elems_ids);
+   
+   
 
 
 
@@ -613,17 +611,17 @@ setTimeout(function() {
 }
 
   function filteringNested(obj){
-      console.log("filteringNested");
+       
       var deferred = $q.defer();
       var pms = [];
 
       $scope.nested_travers(obj, $scope.spaces, $scope.spaceelems).then(function(IDS) {
         var spsIds = IDS[0];//_.filter($scope.spaces, function(space) {return space.brick_front == obj.id});
         var spElms = IDS[1];//_.filter($scope.spelem, function(elem) {return _.contain(spsIds, elem.space_own)});
-        console.log(spsIds);
-        console.log(spElms);
-        console.log("IDS");
-        console.log(IDS);
+         
+         
+         
+         
 
         angular.forEach(spsIds, function(sid) {
           pms.push(BPSpaceFactory.delete({ id: sid, BPid: $route.current.params.BPid }).$promise);
@@ -639,7 +637,7 @@ setTimeout(function() {
 
       //var z = _.map(spsIds, function(sid) { BPSpaceFactory.delete({ id: sid.id, BPid: $route.current.params.BPid }) });
       //var zz = _.map(spElms, function(sid) { BPSpaceElemFactory.delete({ id: sid.id, BPid: $route.current.params.BPid })  });
-    console.log(pms);
+     
     //deferred.resolve(zz);
   return $q.all(pms);
 
@@ -648,7 +646,7 @@ setTimeout(function() {
   };
 
   function filteringNestedInNested(obj){
-          console.log("filteringNestedInNested");
+           
 
       var deferred = $q.defer();
       var pms = [];
@@ -658,10 +656,10 @@ setTimeout(function() {
      $scope.nested_travers(obj, $scope.spaces, $scope.spaceelems).then(function(IDS) { //$scope.nestedIterator([_.findDeep($scope.trees, {'id': obj.id})]);
         var spsIds = IDS[0]; //_.filter($scope.spaces, function(space) {return space.brick_nested == obj.id});
         var spElms = IDS[1]; //_.filter($scope.spelem, function(elem) {return _.contain(spsIds, elem.space_own)});
-        console.log(spsIds);
-        console.log(spElms);
-        console.log("IDS");
-        console.log(IDS);
+         
+         
+         
+         
 
         angular.forEach(spsIds, function(sid) {
           pms.push(BPSpaceFactory.delete({ id: sid, BPid: $route.current.params.BPid }).$promise);
@@ -675,7 +673,7 @@ setTimeout(function() {
 
       //var z = _.map(spsIds, function(sid) { BPSpaceFactory.delete({ id: sid.id, BPid: $route.current.params.BPid }) });
       //var zz = _.map(spElms, function(sid) { BPSpaceElemFactory.delete({ id: sid.id, BPid: $route.current.params.BPid })  });
-    console.log(pms);
+     
     //deferred.resolve(zz);
   return $q.all(pms);
   //return deferred.promise;
@@ -688,8 +686,8 @@ setTimeout(function() {
       if (obj.type_title == "container_brick") {
 
         filteringNested(obj).then(function(data) {
-            console.log(">>>>>>>>");
-            console.log(data);
+             
+             
             $scope.spaces =  BPSpacesFactory.query({ BPid: $route.current.params.BPid });
             $scope.spaceelems =  BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid });
          });
@@ -703,7 +701,7 @@ setTimeout(function() {
 
   /* SPACES CUD */
   $scope.updateSpace = function (obj) {
-    console.log(obj)
+     
     BPSpaceFactory.update(obj).$promise.then(function(data) {
       $scope.spaces =  BPSpacesFactory.query({ BPid: $route.current.params.BPid });
     });
@@ -733,7 +731,7 @@ setTimeout(function() {
       })
       .then(function(response) {
         // success
-        console.log(response);
+         
         $scope.spaceelems =  BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid });
         $scope.reloadTree($scope.trees);
       },
@@ -750,7 +748,7 @@ setTimeout(function() {
       })
       .then(function(response) {
         // success
-        console.log(response);
+         
         $scope.spaceelems =  BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid });
         $scope.reloadTree($scope.trees);
       },
@@ -764,8 +762,8 @@ $scope.createSpaceElemFromSpace = function (obj) {
   BPSpaceElemsFactory.create(obj).$promise.then(function(elem_data) {
 
     if (obj.type_title == "container_brick") {
-      console.log("elem data");
-      console.log(elem_data);
+       
+       
 
       var space = {
           "bprocess": obj.bprocess,
@@ -809,13 +807,13 @@ $scope.createSpaceElemFromSpace = function (obj) {
               $scope.reloadTree($scope.trees);
 };
 $scope.createSpaceElem = function (obj) {
-    console.log("elemcreatecalled" + obj);
+     
 
     BPSpaceElemsFactory.create(obj).$promise.then(function(elem_data) {
 
       if (obj.type_title == "container_brick") {
-        console.log("elem data");
-        console.log(elem_data);
+         
+         
 
         var space = {
             "bprocess": obj.bprocess,
@@ -868,7 +866,7 @@ $scope.createSpaceElem = function (obj) {
 };
 
 $scope.updateSpaceElem = function (obj) {
-    console.log(obj);
+     
     BPSpaceElemFactory.update(obj).$promise.then(function(data) {
       $scope.spaceelems =  BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid });
       $scope.reloadTree($scope.trees);
@@ -879,8 +877,8 @@ $scope.deleteSpaceElem = function (obj) {
       if (obj.type_title == "container_brick") {
 
         filteringNestedInNested(obj).then(function(data) {
-            console.log(">>>>>>>>");
-            console.log(data);
+             
+             
             $scope.spaces =  BPSpacesFactory.query({ BPid: $route.current.params.BPid });
             $scope.spaceelems =  BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid });
          });
@@ -900,7 +898,7 @@ $scope.deleteSpaceElem = function (obj) {
 
 $scope.frontSpace = function (elem_id) { // : spaceObj
     var result = _.find($scope.spaces, function(space){ return space.brick_front == elem_id; });
-    console.log(result);
+     
     result
   }
   $scope.BPid = $route.current.params.BPid;
