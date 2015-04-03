@@ -57,8 +57,8 @@ class ProcessInputController(override implicit val env: RuntimeEnvironment[DemoU
     val userId = request.user.main.userId
     val lang:String = models.AccountsDAO.getRolesAndLang(userId).get._3
 
-    service.RunnerWrapper2.run(bpID, Some(lang)) match {
-      case Some(station_id) => Ok(Json.toJson(Map("success" -> station_id)))
+    service.Build.run(bpID, Some(lang)) match {
+      case Some(station_id) => Ok(Json.toJson(Map("success" -> "station_id")))
       case _ => Ok(Json.toJson(Map("error" -> "Error output")))
     }
   }
@@ -103,7 +103,7 @@ case class InputLogger(var id: Option[Int],
 
     println("PAAAAAAAARAMS")
     println(genparams.get)
-    service.RunnerWrapper2.runFrom(station_id, bpID, genparams.get, session_id = 1) match {
+    service.Build.runFrom(station_id, bpID, genparams.get, session_id = 1) match {
       case Some(station_id) => Ok(Json.toJson(Map("success" -> station_id)))
       case _ => Ok(Json.toJson(Map("error" -> "Error output")))
     }

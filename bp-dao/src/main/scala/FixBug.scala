@@ -25,7 +25,7 @@ import main.scala.simple_parts.process.Units._
 
 
 object TestRunning extends App {
-  Build.run(22)
+  Build.run(24)
 }
   
 object Build {
@@ -104,19 +104,19 @@ object Build {
     //presenceValidate
     val bpDTO = BPDAO.get(bpID).get
     val processRunned1 = initiate(bpID, false, bpDTO)
-    //val processRunned2 = initiate2(bpID, false, processRunned1, bpDTO, session_id)
    
-    Some(processRunned1) match {
-      case Some(process) => process.allElements.foreach { element =>
+     processRunned1.allElements.foreach { element =>
           println()
           println("Title " + element.title + " " + element.id)
           println("states: " + element.states.length)
           println("session_states: " + element.session_states.length)
           println("reactions: " + element.reactions.length)
           println()
-      }
-    }
+   }
+    
+    println("elements length" + processRunned1.allElements.length)
     Some(processRunned1)
+
   }
  
 
@@ -140,21 +140,23 @@ def initiate(bpID: Int, run_proc: Boolean = true, bpDTO: BProcessDTO, lang: Opti
     process.push {
       arrays.sortWith(_.order < _.order)
     }
+    println("elements " + process.allElements.length + " " + target.length)
     //process_dto
         val session_id = 1 // REMOVE THIS!!
 
-    //initiate2(bpID, false, process, bpDTO,target, session_id)
+    initiate2(bpID, false, process, bpDTO,target, session_id)
     process
   }
-def initiate2(bpID: Int, run_proc: Boolean = true, processRunned: BProcess, bpDTO: BProcessDTO, target: List[UndefElement],session_id: Int, lang: Option[String] = Some("en") ):BProcess = {
+def initiate2(bpID: Int, run_proc: Boolean = true, processRunned: BProcess, bpDTO: BProcessDTO, target: List[UndefElement], session_id: Int, lang: Option[String] = Some("en") ):BProcess = {
     val test_space = BPSpaceDAO.findByBPId(bpID)
     val space_elems = SpaceElemDAO.findByBPId(bpID)
     val process = processRunned
     val front_bricks = process.findFrontBrick()
 
-    val session_id = saveSession(processRunned, bpDTO, lang)
+    // Generate sessions
+    //val session_id = saveSession(processRunned, bpDTO, lang)
     val station_id = saveState(processRunned, bpDTO, session_id, lang)
-    val session_states_ids = saveSessionStates(processRunned, bpDTO, session_id)
+    //val session_states_ids = saveSessionStates(processRunned, bpDTO, session_id)
     saveLogsInit(processRunned, bpDTO, station_id, BPSpaceDAO.findByBPId(bpID))
     saveStationLog(bpID, station_id, processRunned)
 
@@ -170,30 +172,31 @@ def initiate2(bpID: Int, run_proc: Boolean = true, processRunned: BProcess, bpDT
     }
 
     val states:List[BPState] = BPStateDAO.findByBP(bpID)
-    val session_states:List[BPSessionState] = BPSessionStateDAO.findByBPAndSession(bpID, session_id)
+    //val session_states:List[BPSessionState] = BPSessionStateDAO.findByBPAndSession(bpID, session_id)
     val switches:List[UnitSwitcher] = SwitcherDAO.findByBPId(bpID)
     val reactions:List[UnitReaction] = ReactionDAO.findByBP(bpID)
     val reaction_state_out:List[UnitReactionStateOut] = ReactionStateOutDAO.findByReactions(reactions.map(react => react.id.get))
     val topologs = ElemTopologDAO.findByBP(bpID)
 
+    println("states found: " + states.length)
     reactions.foreach { react => react.reaction_state_outs ++= reaction_state_out.filter(sout => sout.reaction == react.id.get) }
     states.foreach { state => state.switchers ++= switches.filter(sw => sw.state_ref == state.id.get) }
-    session_states.foreach { session_state => session_state.switchers ++= switches.filter(sw => Some(sw.state_ref) == session_state.origin_state)  }
+    //session_states.foreach { session_state => session_state.switchers ++= switches.filter(sw => Some(sw.state_ref) == session_state.origin_state)  }
   
 
     process.variety.foreach { element =>
       element.states ++= states.filter(state => state.front_elem_id == Some(element.id)) 
-      element.session_states ++=  session_states.filter(state => state.front_elem_id == Some(element.id)) 
+      //element.session_states ++=  session_states.filter(state => state.front_elem_id == Some(element.id)) 
       element.reactions ++= reactions.filter(react => Some(react.element) == topologs.find(topo => topo.front_elem_id == Some(element.id)).get.front_elem_id ) 
     }
     process.spacesElements.foreach { element => 
       element.states ++=  states.filter(state => state.space_elem_id == Some(element.id)) 
-      element.session_states ++=  session_states.filter(state => state.space_elem_id == Some(element.id)) 
+      //element.session_states ++=  session_states.filter(state => state.space_elem_id == Some(element.id)) 
       element.reactions ++= reactions.filter(react => Some(react.element) == topologs.find(topo => topo.space_elem_id == Some(element.id)).get.space_elem_id ) 
     }
     process.spaces.foreach { space => 
       space.states ++=  states.filter(state => state.space_id == space.id) 
-      space.session_states ++=  session_states.filter(state => state.space_id == space.id) 
+      //space.session_states ++=  session_states.filter(state => state.space_id == space.id) 
     }
 
 

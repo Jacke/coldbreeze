@@ -1,4 +1,11 @@
 /*
+Elements mocking */
+.mocking.elements {
+  display: none;
+}
+
+
+/*
  
  Reflects
  
@@ -38,8 +45,8 @@
 
 .proc-element {
     background: white;
-    /* padding: 7px 11px 11px 24px; */
     margin-bottom: 20px;
+    width: 50%;
     border-radius: 7px;
 }
 .space-blocks.ng-scope {
@@ -62,6 +69,9 @@ margin-top: -3px;
 padding-top: 3px;
 position: relative;
 }
+.element-header .info h6.desc {
+    padding-bottom: 8px;
+}
 .proc-element .info h4.title {
 padding-top: 11px;
 }
@@ -81,6 +91,8 @@ text-shadow: none;
     height: 38px;
     position: absolute;
     top: 0;
+      padding-top: 1.7%;
+  padding-left: 2.9%;
     right: 0;
     border-bottom-right-radius: 7px;
   padding-top: 1%;

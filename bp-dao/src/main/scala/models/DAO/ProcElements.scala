@@ -79,24 +79,26 @@ updated_at:Option[org.joda.time.DateTime] = None) {
     this match {
       case y if (y.b_type == "brick" && y.type_title == "container_brick") => {
         Option(
-            new ContainerBrick(id.get, title, desc,Implicits.fetch_cv(comps), process, b_type, type_title, order, space_parent_id = space_own)
+            new ContainerBrick(id.get, title, desc,None, process, b_type, type_title, order, space_parent_id = space_own)
           )
       }
       case constant if (constant.b_type == "block" && constant.type_title == "constant") => {
         Option(
-           new Constant[Boolean](id.get, true, process, order, space_id = None, values = Implicits.fetch_cv(comps))
+           new Constant[Boolean](id.get, true, process, order, space_id = None, values = None)
         )
       }
       case x if (x.b_type == "block" && x.type_title == "test block") => {
         Option(
-          new Block(id.get,title,desc,Implicits.fetch_cv(comps),process,b_type,type_title,order)
+          new Block(id.get,title,desc,None,process,b_type,type_title,order)
         )
       }
       case conf if (conf.b_type == "block" && conf.type_title == "confirm") => {
         Option(
-          new Confirm(id.get,title,desc,Implicits.fetch_cv(comps),process,b_type,type_title,order))
+          new Confirm(id.get,title,desc,None,process,b_type,type_title,order))
       }
-      case _ => None
+      case _ => Option(
+          new Block(id.get,title,desc,None,process,b_type,type_title,order)
+        )
     }
   
   }

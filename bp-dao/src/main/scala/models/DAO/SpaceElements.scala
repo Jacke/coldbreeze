@@ -80,7 +80,7 @@ updated_at:Option[org.joda.time.DateTime] = None) {
       case note if (note.b_type == "block" && note.type_title == "note") => Option(new Note( id.get,
         title,
         desc,
-        Implicits.fetch_cv(comps),
+        None,
         process,
         b_type,
         type_title,
@@ -89,14 +89,16 @@ updated_at:Option[org.joda.time.DateTime] = None) {
       case confirm if (confirm.b_type == "block" && confirm.type_title == "confirm") => Option(new Confirm( id.get,
         title,
         desc,
-        Implicits.fetch_cv(comps),
+        None,
         process,
         b_type,
         type_title,
         order,
         space_parent = process.spaces.find(_.id == Some(space_owned)),
         space_role = Some("container")))
-      case _ => None
+      case _ => Option(
+          new Block(id.get,title,desc,Implicits.fetch_cv(comps),process,b_type,type_title,order)
+        )
     }
 
   }
@@ -109,7 +111,7 @@ updated_at:Option[org.joda.time.DateTime] = None) {
         println("space_parent REFACTOR!!!!!!!" + space_own)
         // TODO REFACTOR space_parent in brick
         Option(
-          new ContainerBrick(id.get, title, desc,Implicits.fetch_cv(comps), process, b_type, type_title, order, 
+          new ContainerBrick(id.get, title, desc,None, process, b_type, type_title, order, 
             None, space_role.getOrElse("container"), space_own) // Default space role is Container
           //new Block(id.get,title,desc,Implicits.fetch_cv(comps),process,b_type,type_title,order, space_parent = Some(space), space_role)
         )
@@ -122,7 +124,7 @@ updated_at:Option[org.joda.time.DateTime] = None) {
       case note if (note.b_type == "block" && note.type_title == "note") => Option(new Note( id.get,
         title,
         desc,
-        Implicits.fetch_cv(comps),
+        None,
         process,
         b_type,
         type_title,
@@ -131,7 +133,7 @@ updated_at:Option[org.joda.time.DateTime] = None) {
       case confirm if (confirm.b_type == "block" && confirm.type_title == "confirm") => Option(new Confirm( id.get,
         title,
         desc,
-        Implicits.fetch_cv(comps),
+        None,
         process,
         b_type,
         type_title,
@@ -140,7 +142,9 @@ updated_at:Option[org.joda.time.DateTime] = None) {
         space_id = Some(space),
         space_role = Some("container")
         ))
-      case _ => None
+      case _ => Option(
+          new Block(id.get,title,desc,None,process,b_type,type_title,order, space_parent = Some(space))
+        )
     }
 
   }
