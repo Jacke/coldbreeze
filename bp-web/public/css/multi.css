@@ -2903,7 +2903,7 @@ h1,h1 em {
 }
 
 body {
-    min-width: 1020px;
+    min-width: 100%;
     background-color: #fff;
     text-shadow: 0 1px 0 rgba(255,255,255,0.6);
     color: #333;

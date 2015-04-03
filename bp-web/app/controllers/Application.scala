@@ -10,6 +10,7 @@ import play.api.libs.json._
 import play.api.cache._
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
+import play.api.Logger
 
 import views._
 import models.{AccountsDAO, User}
@@ -22,6 +23,8 @@ import models.DAO.resources._
 
 class Application(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] { // with Secured  {
   import play.api.Play.current
+
+  val applicationLogger = Logger("application")
   /**
    * Returns the JavaScript router that the client can use for "type-safe" routes.
    * Uses browser caching; set duration (in seconds) according to your release cycle.
@@ -56,7 +59,7 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
     // Expired checking
     val user = request.user.main.userId
     val current_plan = AccountPlanDAO.getByMasterAcc(user).get
-    println(current_plan.expired_at)
+    applicationLogger.info(s"Plan expired_at: ${current_plan.expired_at}")
     if (current_plan.expired_at.isBefore( org.joda.time.DateTime.now() ) ) {
       Redirect(routes.PlanController.index)
     } else {
@@ -64,6 +67,15 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
     }
   }
 
+  case class ConfigurationWrapper(switcher_options: List[String], switcher_cmd: List[String], switcher_target: List[String])
+  implicit val ConfigurationWrapperReads = Json.reads[ConfigurationWrapper]
+  implicit val ConfigurationWrapperWrites = Json.format[ConfigurationWrapper]
+  def configuration() = Action { implicit request =>
+    Ok(Json.toJson(ConfigurationWrapper(
+      main.scala.bprocesses.refs.UnitRefs.SwitcherConfiguration.switcher_options,
+      main.scala.bprocesses.refs.UnitRefs.SwitcherConfiguration.switcher_cmd,
+      main.scala.bprocesses.refs.UnitRefs.SwitcherConfiguration.switcher_target)))
+  }
 
 
 case class WhoAmIdentify(email: String, business: Int = 0, manager: Boolean, employee: Boolean, lang: String = "en", payed: Boolean = false, env: String = "prod")

@@ -11,6 +11,7 @@ import main.scala.simple_parts.process.data.{Confirm, Note, Constant}
 import main.scala.simple_parts.process.Block
 import main.scala.simple_parts.process.ContainerBrick
 import main.scala.utils.Space
+import main.scala.simple_parts.process.Units._
 
 class SpaceElements(tag: Tag) extends Table[SpaceElementDTO](tag, "space_elements") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc) // This is the primary key column
@@ -144,6 +145,51 @@ updated_at:Option[org.joda.time.DateTime] = None) {
 
   }
 }
+
+
+/*
+  DataConversion
+ */
+object SpaceElemDCO {
+
+  def conv(el: main.scala.bprocesses.refs.UnitRefs.UnitSpaceElementRef, business: Int, process: Int, space_own:Option[Int], space_owned: Int): UnitSpaceElement = {
+    UnitSpaceElement(
+None,
+                        el.title,
+                        el.desc,
+                        business,
+                        process,
+                        el.b_type,
+                        el.type_title,
+                        space_own,
+                        space_owned,
+                        space_role = Some("container"),
+                        el.order,
+el.created_at,
+el.updated_at 
+)
+  }
+  def conv2(el: main.scala.bprocesses.refs.UnitRefs.UnitSpaceElementRef, business: Int, process: Int, space_own:Option[Int], space_owned: Int): SpaceElementDTO = {
+    SpaceElementDTO(
+None,
+                        el.title,
+                        el.desc,
+                        business,
+                        process,
+                        el.b_type,
+                        el.type_title,
+                        space_own,
+                        space_owned,
+                        space_role = Some("container"),
+                        el.order,
+                        comps = None,
+el.created_at,
+el.updated_at 
+)
+  }
+}
+
+
 /**
  * Actions
  */
@@ -160,6 +206,14 @@ object SpaceElemDAO {
     database withSession { implicit session =>
       val q3 = for { el ← space_elements if el.bprocess === id } yield el
       q3.list
+    }
+  }
+  def lastOrderOfBP(id: Int, space_id: Int):Int = {
+    database withSession { implicit session =>
+       val q3 = for { el ← space_elements if el.bprocess === id && el.space_owned === space_id } yield el
+       val xs = q3.list.map(_.order)
+      if (xs.isEmpty) 1
+      else xs.max + 1
     }
   }
   def findBySpace(space_id: Int) = {

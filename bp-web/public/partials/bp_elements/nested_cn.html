@@ -1,0 +1,54 @@
+Space: {{ space.index }} — 
+<a ng:click="space.cneedit=!space.cneedit" ng-show="isManagerVal">{{ 'ADD_TO_SPACE' | translate }}</a>
+
+<div class="state" ng-class="state.on" ng-repeat="state in space.states">
+  <div class="switcher" ng-repeat="switcher in state.switches">
+  <span class="switcher-icon" ng-class="switcher.switch_type"></span>{{ state.title }} — {{ state.opposite }}
+</div>
+</div>
+<div class="elem-desc" ng:show="(space.cneedit == false || space.cnedit == undefined) && mySpaceElems(spaceelems, space.id).length < 1 && isManagerVal">
+<div class="confirm-desc">
+<h3>{{ 'CONFIRM' | translate }}</h3>
+<p>{{ 'CONFDESCFULL' | translate }}</p>
+</div>
+<div class="container-desc">
+<h3>{{ 'CONTAINER' | translate }}</h3>
+<p>{{ 'CONTDESCFULL' | translate }}</p>
+</div>
+
+</div>
+
+<div ng:show="space.cneedit">
+ <form novalidate="novalidate" class="form-horizontal form-new-spaceelem" ng-class="space.newSpaceelem.type_title">
+     <div class="control-group form-group">
+       <label class="control-label col-sm-1" for="inputTitle">{{ 'TITLE' | translate }}:</label>
+       <div class="controls col-xs-4">
+         <input type="text" class="form-control" id="inputTitle" ng-model="space.newSpaceelem.title"/>
+       </div>
+     </div>
+     <div class="control-group form-group">
+       <label class="control-label col-sm-1" for="inputBusinessId">{{ 'DESC' | translate }}:</label>
+       <div class="controls col-xs-4">
+         <textarea type="text" class="form-control" id="inputBusinessId" ng-model="space.newSpaceelem.desc"/>
+       </div>
+     </div>
+
+
+   <input type="hidden" name="value" ng-model="space.newSpaceelem.business" value="business">
+   <input type="hidden" name="value" ng-model="space.newSpaceelem.process" value="{{ BPid }}">
+   <input type="hidden" id="inputBusinessId" ng-model="space.newSpaceelem.b_type"/>
+   <input type="hidden" id="inputBusinessId" ng-model="space.newSpaceelem.type_title"/>
+   <input type="hidden" id="inputBusinessId" ng-model="space.newSpaceelem.space_owned" ng-init="space.newSpaceelem.space_owned=space.id" value="{{ space.id }}"/>
+   <input type="hidden" id="inputBusinessId" ng-model="space.newSpaceelem.space_role" ng-init="space.newSpaceelem.space_role" value="container"/>
+     <div class="control-group form-group">
+       <div class="controls col-xs-8">
+          <div class="templateButton">
+              <div class="ref" ng-repeat="ref in refs">
+                <a ng-click="refElem(ref, space.newSpaceelem)" class="btn btn-small btn-primary container_brick">{{ ref.ref.title }} <span tooltip="{{ 'CONTDESC' | translate }}" tooltip-placement="bottom" class="glyphicon glyphicon-info-sign"></span></a>
+              </div>
+          </div>
+         <a ng-click="createSpaceElemFromSpace(space.newSpaceelem);flushEditForm(space.newSpaceelem, space);cneedit=!cneedit" class="btn btn-small btn-primary">{{ 'NEW' | translate }}</a>
+       </div>
+     </div>
+   </form>
+ </div>

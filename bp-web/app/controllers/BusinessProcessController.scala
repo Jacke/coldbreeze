@@ -29,7 +29,17 @@ import models.DAO.resources._
 import models.DAO.CompositeValues
 import play.api.Play.current
 
+import main.scala.bprocesses._
+import main.scala.simple_parts.process.Units._
+import models.DAO.reflect._
+
+
 case class StationNoteMsg(msg: String)
+case class RefElemContainer(title: String, desc: String = "", business: Int, process: Int, ref: Int, space_id: Option[Int]= None)
+
+
+case class ReactionCollection(reaction: UnitReaction,
+reaction_state_outs: List[UnitReactionStateOut])
 
 class BusinessProcessController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
 
@@ -71,7 +81,23 @@ class BusinessProcessController(override implicit val env: RuntimeEnvironment[De
   implicit val StationNoteReads = Json.reads[StationNoteMsg]
   implicit val StationNoteWrites = Json.format[StationNoteMsg]
 
+  implicit val RefElemContainerReads = Json.reads[RefElemContainer]
+  implicit val RefElemContainerWrites = Json.format[RefElemContainer]
+  implicit val RefResultedReads = Json.reads[models.DAO.reflect.RefResulted]
+  implicit val RefResultedWrites = Json.format[models.DAO.reflect.RefResulted]
 
+implicit val BPSessionStateReads = Json.reads[BPSessionState]
+implicit val BPSessionStateWrites = Json.format[BPSessionState]
+implicit val BPStateReads = Json.reads[BPState]
+implicit val BPStateWrites = Json.format[BPState]
+implicit val UnitSwitcherReads = Json.reads[UnitSwitcher]
+implicit val UnitSwitcherWrites = Json.format[UnitSwitcher]
+implicit val UnitReactionReads = Json.reads[UnitReaction]
+implicit val UnitReactionWrites = Json.format[UnitReaction]
+implicit val UnitReactionStateOutReads = Json.reads[UnitReactionStateOut]
+implicit val UnitReactionStateOutWrites = Json.format[UnitReactionStateOut]
+implicit val ReactionCollectionReads = Json.reads[ReactionCollection]
+implicit val ReactionCollectionWrites = Json.format[ReactionCollection]
 
   def bprocess = SecuredAction { implicit request =>
     val bprocess = BPDAO.getAll // TODO: Not safe
@@ -349,13 +375,12 @@ val SpaceElementForm = Form(
 
 def createFrontElem() = SecuredAction(BodyParsers.parse.json) { implicit request =>
 
-
-  request.body.validate[UndefElement].map{ 
-    case entity => haltActiveStations(entity.bprocess); ProcElemDAO.pull_object(entity) match {
-            case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not create front element ${entity.title}")))
+  request.body.validate[RefElemContainer].map{ 
+    case entity => haltActiveStations(entity.process); RefDAO.retrive(entity.ref, entity.process, entity.business, in = "front", entity.title, entity.desc, space_id = None) match {//ProcElemDAO.pull_object(entity) match {
+            case None =>  Ok(Json.toJson(Map("failure" ->  s"Could not create front element ${entity.title}")))
             case id =>  { 
               println(id)
-              Ok(Json.toJson(Map("success" ->  id)))
+              Ok(Json.toJson(Map("success" ->  Json.toJson(id))))
             }
           }
     }.recoverTotal{
@@ -375,18 +400,20 @@ def createSpace() = SecuredAction(BodyParsers.parse.json) { implicit request =>
       e => BadRequest("formWithErrors")
     }
 }
-def createSpaceElem() = SecuredAction(BodyParsers.parse.json) { implicit request =>
 
-  val placeResult = request.body.validate[SpaceElementDTO]  
+def createSpaceElem() = SecuredAction(BodyParsers.parse.json) { implicit request =>
+//RefDAO.retrive(k: Int, entity.bprocess, entity.business, in = "nested", entity.title, entity.desc, space_id: Option[Int] = None)
+//models.DAO.reflect.RefResulted
+  val placeResult = request.body.validate[RefElemContainer]  
   println(placeResult)
   println(request.body)
-    request.body.validate[SpaceElementDTO].map{ 
+    request.body.validate[RefElemContainer].map{ 
     case entity => println(entity)
   }
-  request.body.validate[SpaceElementDTO].map{ 
-    case entity => haltActiveStations(entity.bprocess);SpaceElemDAO.pull_object(entity) match {
-            case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not create space element ${entity.title}")))
-            case id =>  Ok(Json.toJson(Map("success" ->  id)))
+  request.body.validate[RefElemContainer].map{ 
+    case entity => haltActiveStations(entity.process); RefDAO.retrive(entity.ref, entity.process, entity.business, in = "nested", entity.title, entity.desc, entity.space_id) match { //SpaceElemDAO.pull_object(entity) match {
+            case None =>  Ok(Json.toJson(Map("failure" ->  s"Could not create space element ${entity.title}")))
+            case id =>  Ok(Json.toJson(Map("success" ->  Json.toJson(id))))
           }
     }.recoverTotal{
       e => BadRequest("formWithErrors")
@@ -397,14 +424,6 @@ def createSpaceElem() = SecuredAction(BodyParsers.parse.json) { implicit request
 
 /* Update */
 def updateFrontElem(bpId: Int, elem_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
-  println(request.body.validate[UndefElement])
-  println
-  //request.body.validate[UndefElement].map{ 
-  //  case entity => { 
-  //    println(entity)
-  //    ProcElemDAO.update(elem_id,entity)
-  //  }
-  //}
   request.body.validate[UndefElement].map{ 
     case entity => ProcElemDAO.update(elem_id,entity) match {
             case false =>  Ok(Json.toJson(Map("failure" ->  s"Could not update front element ${entity.title}")))
@@ -416,8 +435,6 @@ def updateFrontElem(bpId: Int, elem_id: Int) = SecuredAction(BodyParsers.parse.j
 }
 
 def updateSpace(id: Int, space_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
-  println(request.body.validate[BPSpaceDTO])
-  println
   request.body.validate[BPSpaceDTO].map{ 
     case entity => BPSpaceDAO.update(space_id,entity) match {
             case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not update space ${entity.id}")))
@@ -463,7 +480,7 @@ def moveDownSpaceElem(id: Int, spelem_id: Int, space_id: Int) = SecuredAction(Bo
 def deleteFrontElem(bpID: Int, elem_id: Int) = SecuredAction { implicit request =>
   haltActiveStations(bpID);ProcElemDAO.delete(elem_id) match {
         case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
-        case x =>  Ok(Json.toJson(Map("success" -> s"Entity has been deleted (deleted $x row(s))")))
+        case x =>  deleteOwnedSpace(elem_id = Some(elem_id), spelem_id = None);Ok(Json.toJson(Map("success" -> s"Entity has been deleted (deleted $x row(s))")))
       }
 }
 def deleteSpace(bpID: Int, space_id: Int) = SecuredAction { implicit request =>
@@ -475,8 +492,49 @@ def deleteSpace(bpID: Int, space_id: Int) = SecuredAction { implicit request =>
 def deleteSpaceElem(bpID: Int, spelem_id: Int) = SecuredAction { implicit request =>
     haltActiveStations(bpID);SpaceElemDAO.delete(spelem_id) match {
         case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
-        case x =>  Ok(Json.toJson(Map("success" -> s"Entity has been deleted (deleted $x row(s))")))
+        case x =>  deleteOwnedSpace(elem_id = None, spelem_id = Some(spelem_id));Ok(Json.toJson(Map("success" -> s"Entity has been deleted (deleted $x row(s))")))
       }
+}
+
+/**
+ * State, reactions, switchers
+ **/
+def state_index(BPid: Int) = SecuredAction { implicit request => 
+  Ok(Json.toJson(BPStateDAO.findByBP(BPid)))
+}
+def state_session_index(BPid: Int, session_id: Int) = SecuredAction { implicit request => 
+  Ok(Json.toJson(BPSessionStateDAO.findByBPAndSession(BPid, session_id)))
+}
+def update_session_state(BPid: Int, session_id: Int, state_id: Int) = SecuredAction { implicit request =>
+  Ok(Json.toJson("Ok"))
+}
+def delete_session_state(BPid: Int, session_id: Int, state_id: Int) = SecuredAction { implicit request =>
+  Ok(Json.toJson("Ok"))
+}
+def update_state(BPid: Int, state_id: Int) = SecuredAction { implicit request =>
+  Ok(Json.toJson("Ok"))
+}
+def delete_state(BPid: Int, state_id: Int) = SecuredAction { implicit request =>
+  Ok(Json.toJson("Ok"))
+}
+def switches_index(BPid: Int) = SecuredAction { implicit request => 
+  Ok(Json.toJson(SwitcherDAO.findByBPId(BPid)))
+}
+def update_switcher(id: Int) = SecuredAction { implicit request => 
+  Ok(Json.toJson("Ok"))
+}
+def delete_switcher(id: Int) = SecuredAction { implicit request => 
+  Ok(Json.toJson("Ok"))
+}
+def reactions_index(BPid: Int) = SecuredAction { implicit request => 
+  Ok(Json.toJson(ReactionDAO.findByBP(BPid).map(react => ReactionCollection(react, ReactionStateOutDAO
+findByReaction(react.id.get)))))
+}
+def update_reaction(id: Int) = SecuredAction { implicit request => 
+  Ok(Json.toJson("Ok"))
+}
+def delete_reaction(id: Int) = SecuredAction { implicit request => 
+  Ok(Json.toJson("Ok"))
 }
 
 
@@ -577,6 +635,16 @@ import ProcHistoryDAO._
 
 private def action(what: String) = {
   ???
+}
+
+
+private def deleteOwnedSpace(elem_id:Option[Int],spelem_id:Option[Int]) {
+  if (elem_id.isDefined) {
+    BPSpaceDAO.deleteOwnedSpace(elem_id,spelem_id)
+  }
+  if (spelem_id.isDefined) {
+    BPSpaceDAO.deleteOwnedSpace(elem_id,spelem_id)
+  }
 }
 
 

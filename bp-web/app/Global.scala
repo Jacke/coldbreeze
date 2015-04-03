@@ -4,36 +4,36 @@ import play.api.GlobalSettings
 import play.api.mvc.WithFilters
 import play.filters.gzip.GzipFilter
 
-
-/**
- * Copyright 2014 Jorge Aliss (jaliss at gmail dot com) - twitter: @jaliss
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
 import controllers.CustomRoutesService
 import java.lang.reflect.Constructor
 import securesocial.core.RuntimeEnvironment
 import service.{DemoUser, MyEventListener, InMemoryUserService}
 import controllers.plugin._
 import scaldi.play.ScaldiSupport
+import controllers.Default
+import play.api.Logger
+import play.api.mvc.{SimpleResult, RequestHeader, Filter, Result}
+import scala.concurrent._
 
+
+object AccessLoggingFilter extends Filter {
+  def apply(next: (RequestHeader) => Future[Result])(request: RequestHeader): Future[Result] = {
+    val result = next(request)
+    val msg = s"method=${request.method} uri=${request.uri} remote-address=${request.remoteAddress} " +
+      s"domain=${request.domain} query-string=${request.rawQueryString} " +
+      s"referrer=${request.headers.get("referer").getOrElse("N/A")} " +
+      s"user-agent=[${request.headers.get("user-agent").getOrElse("N/A")}]"
+    play.Logger.of("accesslog").info(msg)
+    result
+  }
+}
+ 
 object Global extends WithFilters(new GzipFilter(shouldGzip =
   (request, response) => {
     val contentType = response.headers.get("Content-Type")
     contentType.exists(_.startsWith("text/html")) || request.path.endsWith("jsroutes.js")
   }
-), CORSFilter()) with play.api.GlobalSettings {
+), CORSFilter(), AccessLog(), AccessLoggingFilter) with play.api.GlobalSettings {
 
   /**
    * The runtime environment for this sample app.
@@ -64,5 +64,17 @@ object Global extends WithFilters(new GzipFilter(shouldGzip =
       _.asInstanceOf[Constructor[A]].newInstance(MyRuntimeEnvironment)
     }
     instance.getOrElse(super.getControllerInstance(controllerClass))
+  }
+}
+case class AccessLog() extends Filter {
+
+  def apply(f: (RequestHeader) => Future[SimpleResult])(request: RequestHeader): Future[SimpleResult] = {
+    val msg = s"method=${request.method} uri=${request.uri} remote-address=${request.remoteAddress} " +
+      s"domain=${request.domain} query-string=${request.rawQueryString} " +
+      s"referrer=${request.headers.get("referer").getOrElse("N/A")} " +
+      s"user-agent=[${request.headers.get("user-agent").getOrElse("N/A")}]"
+    play.Logger.of("accesslog").info(msg)
+    //play.Logger.info(msg)
+    f(request)
   }
 }

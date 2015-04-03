@@ -6,6 +6,8 @@ import models.DAO.driver.MyPostgresDriver1.simple._
 import com.github.nscala_time.time.Imports._
 import models.DAO.conversion.DatabaseCred
 import scala.slick.model.ForeignKeyAction
+import main.scala.simple_parts.process.Units._
+import main.scala.bprocesses.refs.UnitRefs._  
 
 class BPSpaces(tag: Tag) extends Table[BPSpaceDTO](tag, "bpspaces") {
   def id        = column[Int]("id", O.PrimaryKey, O.AutoInc)
@@ -80,7 +82,22 @@ import main.scala.bprocesses._
   
   }
 }
-
+object SpaceDCO {
+  def conv(el: UnitSpaceRef, business: Int, process: Int, index: Int, brick_front: Int): BPSpaceDTO = {
+    BPSpaceDTO(
+None,
+                      process, 
+                      index, 
+                      container = true, 
+                      subbrick = false, 
+                      brick_front = Some(brick_front),
+                      brick_nested=None, 
+                      nestingLevel = 1,
+el.created_at,
+el.updated_at 
+)
+  }
+}
 
 object BPSpaceDAO {
   import models.DAO.conversion.DatabaseCred._
@@ -91,13 +108,28 @@ object BPSpaceDAO {
       bpspaces returning bpspaces.map(_.id) += s
   }
 
+  def lastIndexOfSpace(id: Int) = database withSession {
+    implicit session =>
+      val q3 = for { s ← bpspaces if s.id === id } yield s
+      val xs = q3.list.map(_.index)
 
+      if (xs.isEmpty) 1
+      else xs.max + 1
+  }
   def get(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← bpspaces if s.id === k } yield s
-      println(q3.selectStatement)
-      println(q3.list)
       q3.list.headOption //.map(Supplier.tupled(_))
+  }
+  def getAllByFront(k: Int) = database withSession {
+    implicit session ⇒
+      val q3 = for { s ← bpspaces if s.brick_front === k } yield s
+      q3.list //.map(Supplier.tupled(_))
+  }
+  def getAllByNested(k: Int) = database withSession {
+    implicit session ⇒
+      val q3 = for { s ← bpspaces if s.brick_nested === k } yield s
+      q3.list //.map(Supplier.tupled(_))
   }
   def findByBPId(id: Int) = {
     database withSession { implicit session =>
@@ -105,6 +137,14 @@ object BPSpaceDAO {
       q3.list 
     }
   }
+  def deleteOwnedSpace(elem_id:Option[Int],spelem_id:Option[Int]) {
+  if (elem_id.isDefined) {
+      getAllByFront(elem_id.get).map(_.id.get).foreach{ id => delete(id) }
+  }
+  if (spelem_id.isDefined) {
+      getAllByNested(spelem_id.get).map(_.id.get).foreach{ id => delete(id) }
+  }
+}
   /**
    * Update a bpspace
    * @param id

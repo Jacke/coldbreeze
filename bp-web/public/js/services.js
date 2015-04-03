@@ -151,6 +151,194 @@ minorityAppServices.factory('BPStationFactory', function ($resource) {
     })
 });
 
+
+/*
+** Sessions FACTORY
+*/
+minorityAppServices.factory('BPSessionsFactory', function ($resource) {
+    return $resource(baseUrl + 'bprocess/:BPid/sessions', {}, {
+        query: { method: 'GET', isArray: true }
+        //create: { method: 'POST' },
+
+    })
+});
+minorityAppServices.factory('BPSessionFactory', function ($resource) {
+    return $resource(baseUrl + 'bprocess/:BPid/session/:id', {}, {
+        show: { method: 'GET' },
+        delete: { method: 'DELETE', params: {id: '@id'} } 
+    })
+});
+/*
+** State FACTORY
+*/
+minorityAppServices.factory('BPStatesFactory', function ($resource) {
+    return $resource(baseUrl + 'bprocess/:BPid/states', {}, {
+        query: { method: 'GET', isArray: true }
+    })
+});
+minorityAppServices.factory('BPStateFactory', function ($resource) {
+    return $resource(baseUrl + 'bprocess/:BPid/state/:id', {}, {
+        show: { method: 'GET' },
+        delete: { method: 'DELETE', params: {id: '@id'} } 
+    })
+});
+minorityAppServices.factory('BPSessionStatesFactory', function ($resource) {
+    return $resource(baseUrl + 'bprocess/:BPid/session/:id/states', {}, {
+        query: { method: 'GET', isArray: true }
+    })
+});
+minorityAppServices.factory('BPSessionStateFactory', function ($resource) {
+    return $resource(baseUrl + 'bprocess/:BPid/session/:id/state/:state_id', {}, {
+        show: { method: 'GET' },
+        delete: { method: 'DELETE', params: {id: '@id', state_id: '@state_id'} } 
+    })
+});
+minorityAppServices.factory('SwitchesFactory', function ($resource) {
+    return $resource(baseUrl + 'bprocess/:BPid/switches', {}, {
+        query: { method: 'GET', isArray: true },
+        create: { method: 'POST' }
+
+    })
+});
+minorityAppServices.factory('SwitchFactory', function ($resource) {
+    return $resource(baseUrl + 'bprocess/switch/:id', {}, {
+        update: { method: 'PUT', params: {id: '@id'} }, 
+        delete: { method: 'DELETE', params: {id: '@id'} } 
+    })
+});
+// Reaction
+minorityAppServices.factory('ReactionsFactory', function ($resource) {
+    return $resource(baseUrl + 'bprocess/:BPid/reactions', {}, {
+        query: { method: 'GET', isArray: true },
+        create: { method: 'POST' }
+
+    })
+});
+minorityAppServices.factory('ReactionFactory', function ($resource) {
+    return $resource(baseUrl + 'bprocess/reaction/:id', {}, {
+        update: { method: 'PUT', params: {id: '@id'} }, 
+        delete: { method: 'DELETE', params: {id: '@id'} } 
+    })
+});
+
+
+
+
+
+
+
+/************************************************************************************************
+**
+** Refs Factories
+**
+*************************************************************************************************/
+minorityAppServices.factory('RefsFactory', function ($resource) {
+    return $resource(baseUrl + 'refs/', {}, {
+        query: { method: 'GET', isArray: true },
+        create: { method: 'POST' }
+    })
+});
+minorityAppServices.factory('RefFactory', function ($resource) {
+    return $resource(baseUrl + 'ref/:id', {}, {
+        update: { method: 'PUT', params: {id: '@id'} },
+        delete: { method: 'DELETE', params: {id: '@id'} } 
+    })
+});
+
+
+
+
+
+
+
+// ELEMS
+minorityAppServices.factory('RefElemsFactory', function ($resource) {
+    return $resource(baseUrl + 'ref/:id/elems', {}, {
+        query: { method: 'GET', isArray: true },
+        create: { method: 'POST' }
+    })
+});
+minorityAppServices.factory('RefElemFactory', function ($resource) {
+    return $resource(baseUrl + 'ref/elem/:id', {}, {
+        update: { method: 'PUT', params: {id: '@id'} }, 
+        delete: { method: 'DELETE', params: {id: '@id'} } 
+    })
+});
+// SPACES
+minorityAppServices.factory('RefSpacesFactory', function ($resource) {
+    return $resource(baseUrl + 'ref/:id/spaces', {}, {
+        query: { method: 'GET', isArray: true },
+        create: { method: 'POST' }
+    })
+});
+minorityAppServices.factory('RefSpaceFactory', function ($resource) {
+    return $resource(baseUrl + 'ref/space/:id', {}, {
+        update: { method: 'PUT', params: {id: '@id'} }, 
+        delete: { method: 'DELETE', params: {id: '@id'} } 
+    })
+});
+// SPACE ELEMENTS
+minorityAppServices.factory('RefSpaceElemsFactory', function ($resource) {
+    return $resource(baseUrl + 'ref/:id/spaceelems', {}, {
+        query: { method: 'GET', isArray: true },
+        create: { method: 'POST' }
+    })
+});
+minorityAppServices.factory('RefSpaceElemFactory', function ($resource) {
+    return $resource(baseUrl + 'ref/spaceelem/:id', {}, {
+        update: { method: 'PUT', params: {id: '@id'} }, 
+        delete: { method: 'DELETE', params: {id: '@id'} } 
+    })
+});
+// STATES
+minorityAppServices.factory('RefStatesFactory', function ($resource) {
+    return $resource(baseUrl + 'ref/:id/states', {}, {
+        query: { method: 'GET', isArray: true },
+        create: { method: 'POST' }
+
+    })
+});
+minorityAppServices.factory('RefStateFactory', function ($resource) {
+    return $resource(baseUrl + 'ref/state/:id', {}, {
+        update: { method: 'PUT', params: {id: '@id'} }, 
+        delete: { method: 'DELETE', params: {id: '@id'} } 
+    })
+});
+// SWITCHES
+minorityAppServices.factory('RefSwitchesFactory', function ($resource) {
+    return $resource(baseUrl + 'ref/:id/switches', {}, {
+        query: { method: 'GET', isArray: true },
+        create: { method: 'POST' }
+
+    })
+});
+minorityAppServices.factory('RefSwitchFactory', function ($resource) {
+    return $resource(baseUrl + 'ref/switch/:id', {}, {
+        update: { method: 'PUT', params: {id: '@id'} }, 
+        delete: { method: 'DELETE', params: {id: '@id'} } 
+    })
+});
+// Reaction
+minorityAppServices.factory('RefReactionsFactory', function ($resource) {
+    return $resource(baseUrl + 'ref/:id/reactions', {}, {
+        query: { method: 'GET', isArray: true },
+        create: { method: 'POST' }
+
+    })
+});
+minorityAppServices.factory('RefReactionFactory', function ($resource) {
+    return $resource(baseUrl + 'ref/reaction/:id', {}, {
+        update: { method: 'PUT', params: {id: '@id'} }, 
+        delete: { method: 'DELETE', params: {id: '@id'} } 
+    })
+});
+
+
+
+
+
+
+
 /*
 ** Employees FACTORY
 */
@@ -159,6 +347,8 @@ minorityAppServices.factory('EmployeesFactory', function ($resource) {
         query: { method: 'GET', isArray: false }
     })
 });
+
+
 /*
 ** Permissions FACTORY
 */

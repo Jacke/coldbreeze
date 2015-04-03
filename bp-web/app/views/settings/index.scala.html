@@ -68,8 +68,7 @@
 
 <div class="container setting-container">
 
-<div class="tab-content">
-<div class="tab-pane" id="personal">
+<div class="tab-pane active" id="personal">
 @form(routes.SettingController.update_credentials()) {
 <fieldset>
 
@@ -345,10 +344,8 @@ select(serviceForm("country"), options = Seq("US"->"USA", "UK" -> "United kingdo
 </div>  
 }
 </div>
-</div>
 
 @if(isManager) {
-<div class="tab-content">
 <div class="tab-pane" id="business">
 @form(routes.SettingController.update_biz_credentials()) {
 <fieldset>
@@ -364,18 +361,15 @@ select(serviceForm("country"), options = Seq("US"->"USA", "UK" -> "United kingdo
 </div> 
 }
 </div>
-</div>
 }
 
 
-<div class="tab-content">
 <div class="tab-pane" id="password">
 @user.main.passwordInfo.map { info =>
         <p class="grids flatButtonLine">
           <a class="flatButton" href="@securesocial.controllers.routes.PasswordChange.page.absoluteURL(IdentityProvider.sslEnabled)">@Messages("settings.changePassword")(LangDet.getLang(user) )</a>
     </p>
     }
-</div>
 </div>
 </div>
 </div>

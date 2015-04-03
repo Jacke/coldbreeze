@@ -26,7 +26,7 @@ object ElemAround {
       pre = Option(AroundAttr(proc.variety(st.step-2).id, "prev"))
     } 
     
-    if (proc.variety.length > st.step && st.step != proc.variety) {
+    if (proc.variety.length > st.step && st.step != proc.variety.length) {
       nex = Option(AroundAttr(proc.variety(st.step).id, "next"))
     } 
     var now = Option(AroundAttr(proc.variety(st.step-1).id, "now"))

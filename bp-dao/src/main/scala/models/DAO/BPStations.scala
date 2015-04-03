@@ -32,7 +32,7 @@ class BPStations(tag: Tag) extends Table[BPStationDTO](tag, "bpstations") {
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
   def session = column[Int]("session_id")
-
+  def front = column[Boolean]("front")
   def sesFK = foreignKey("session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?,
@@ -51,7 +51,7 @@ class BPStations(tag: Tag) extends Table[BPStationDTO](tag, "bpstations") {
     paused, 
     note,
     canceled,
-    created_at, updated_at,session) <> (BPStationDTO.tupled, BPStationDTO.unapply)
+    created_at, updated_at,session, front) <> (BPStationDTO.tupled, BPStationDTO.unapply)
 
 }
 
@@ -76,7 +76,7 @@ paused: Boolean,
 note: Option[String] = Some(""),
 canceled: Boolean = false,
 created_at:Option[org.joda.time.DateTime] = None,
-updated_at:Option[org.joda.time.DateTime] = None,session: Int = 1) // TODO: Avoid default value
+updated_at:Option[org.joda.time.DateTime] = None, session: Int = 1, front: Boolean = true) // TODO: Avoid default value
 
 
 object BPStationDAO {
@@ -87,7 +87,7 @@ object BPStationDAO {
 
   val bpstations = TableQuery[BPStations]
 
-  def from_origin_station(station: BPStation, bp_dto: BProcessDTO, session_id: Int = 1):BPStationDTO = {
+  def from_origin_station(station: BPStation, bp_dto: BProcessDTO, session_id: Int = 1, front: Boolean = true):BPStationDTO = {
     BPStationDTO(
         None,
         bp_dto.id.get,

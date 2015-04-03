@@ -1,0 +1,28 @@
+<form novalidate="novalidate" class="form-horizontal form-edit-bpelem" ng-class="bpelem.type_title">
+  <div class="control-group form-group">
+    <label class="control-label col-sm-1" class="form-control" for="inputTitle">Title:</label>
+    <div class="controls col-xs-4">
+      <input type="text" id="inputTitle" ng-model="bpelem.title"/>
+    </div>
+  </div>
+  <div class="control-group form-group">
+    <label class="control-label col-sm-1" for="inputBusinessId">Description:</label>
+    <div class="controls col-xs-4">
+      <textarea type="text" class="form-control" id="inputBusinessId" ng-model="bpelem.desc"/>
+    </div>
+  </div>
+
+      <input type="hidden" name="value" ng-model="bpelem.business" value="{{ business }}">
+      <input type="hidden" name="value" ng-model="bpelem.process" value="{{ parseInt(BPid) }}">
+      <input type="hidden" id="inputBusinessId" ng-model="bpelem.b_type"/>
+      <input type="hidden" id="inputBusinessId" ng-model="bpelem.type_title"/>
+      <input type="hidden" id="inputBusinessId" ng-model="bpelem.order"/>
+      <input type="hidden" id="inputBusinessId" ng-model="bpelem.space_own"/>
+
+  <div class="control-group form-group">
+    <div class="controls col-xs-4">
+      <a ng-click="updateElem(bpelem)" class="btn btn-small btn-primary">Update</a>
+      <a ng-click="deleteElem(bpelem)" class="btn btn-small btn-primary btn-danger">Delete</a>
+    </div>
+  </div>
+</form>

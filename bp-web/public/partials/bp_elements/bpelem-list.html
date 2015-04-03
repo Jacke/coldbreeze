@@ -1,0 +1,476 @@
+<div class="container">
+<div class="traverse-marker"></div>
+
+<hr>
+
+<div class="tab-content">
+
+<div class="tab-pane active" id="edit" ng:show="tree == 1 && bpelems.length > 0" ng:init="tree=1">
+  <div ng-include src="'partials/tree.html'"></div>
+</div>
+
+</div>
+<div class="tab-content">
+
+
+<div class="teamApisListWrap">
+<div ng:hide="tree == 1">
+  <a href="" role="tab" class="createApi ajaxLink cacheable"  data-toggle="tab" ng:click="tree=1"><span class="glyphicon glyphicon-chevron-down"></span> {{ 'TREE' | translate }}</a>
+</div>
+<div ng:show="tree == 1">
+  <a href="" role="tab" class="createApi ajaxLink cacheable" data-toggle="tab" ng:click="tree=0"><span class="glyphicon glyphicon-chevron-up"></span> {{ 'TREE' | translate }}</a>
+</div>
+
+
+
+<div class="teamApisListFilter filterLayer">
+
+
+</div>
+
+
+</div>
+
+<div class="active-station-alert alert alert-info" ng:show="hasActiveStation">
+  {{ 'RUNNED' | translate }} <strong>{{ 'WILL_BE_SHUTDOWN' | translate }}</strong>
+{{ 'CREATE_OR_COPY' | translate }} <a ng:click="copyProcess()">{{ 'COPY' | translate }}</a> {{ 'CREATE_OR_COPY2' | translate }}
+</div>
+
+<div class="process-info header-frame">
+<h3><edit-in-place value="bp.title"></edit-in-place></h3>
+<ul class="process-control" ng-show="isManagerVal">
+ <li><a href="" role="tab" class="createApi change ajaxLink cacheable" data-toggle="tab" ng:click="editProcess()"> {{ 'EDIT' | translate }} </a></li>
+ <li><a class="allStation" href="/a#/bprocess/{{ bp.id }}/stations">{{ 'STATIONS' | translate }}</a></li>
+ <li><a class="teamApiControlsLink ajaxLink teamApisLinkPeople" ng-click="perm()">{{ 'PEOPLE' | translate }} </a></li>
+ <li><a class="teamApiControlsLink teamSettingsLink teamApisLinkSettings" ng-click="modalShare()">{{ 'SHARE' | translate }}</a></li>
+</ul>
+
+</div>
+
+<div class="tab-content">
+
+
+<div class="span8 container tab-pane active" ng:show="viewstyle == 1" ng:init="viewstyle=1">
+
+
+  <ul class="nav nav-tabs elem-nav" role="tablist" ng-show="isManagerVal">
+    <!--<a href="" ng:click="openNewElem()">.</a> -->
+    <li><a href="" role="tab" class="addElemTab" data-toggle="tab" ng:click="newselected=1"><span class="glyphicon glyphicon-plus"></span>  </a></li>
+  </ul>
+    <div class="tab-content">
+
+
+<!--
+<div class="elem-desc" ng:show="newselected != 1 && bpelems.length < 1 && isManagerVal">
+<div class="confirm-desc">
+<h3>{{ 'CONFIRM' | translate }} </h3>
+<p>{{ 'CONFDESCFULL' | translate }} </p>
+</div>
+<div class="container-desc">
+<h3>{{ 'CONTAINER' | translate }} </h3>
+<p>{{ 'CONTDESCFULL' | translate }} </p>
+</div>
+
+</div> -->
+
+<div class="tab-pane active" id="edit" ng:show="newselected == 1">
+ <form novalidate="novalidate" class="form-horizontal form-new-bpelem" ng-class="newBpelem.type_title">
+    <div class="control-group form-group">
+      <label class="control-label col-sm-1" for="inputTitle">{{ 'TITLE' | translate }}:</label>
+      <div class="controls col-xs-4">
+        <input type="text" id="inputTitle" class="form-control" ng-model="newBpelem.title"/>
+      </div>
+    </div>
+    <div class="control-group form-group">
+      <label class="control-label col-sm-1" for="inputBusinessId">{{ 'DESC' | translate }}:</label>
+      <div class="controls col-xs-4">
+        <textarea type="text" class="form-control" id="inputBusinessId" ng-model="newBpelem.desc"/>
+      </div>
+    </div>
+        <input type="hidden" name="value" ng-model="newBpelem.business" value="{{ business() }}">
+        <input type="hidden" name="value" ng-model="newBpelem.process" value="{{ BPid }}">
+        <input type="hidden" id="inputBusinessId" ng-model="newBpelem.b_type"/>
+        <input type="hidden" id="inputBusinessId" ng-model="newBpelem.type_title"/>
+        <input type="hidden" id="inputBusinessId" ng-model="newBpelem.space_own"/>
+        <input type="hidden" id="inputBusinessId" ng-model="newBpelem.order" value="{{ orderFrontGen(newBpelem) }}"/>
+        <input type="hidden" id="inputBusinessId" ng-model="newBpelem.ref"/>
+
+    <div class="control-group form-group" ng-show="isManagerVal">
+      <div class="controls col-xs-8">
+        <div class="templateButton">
+          <div class="ref" ng-repeat="ref in refs">
+            <a ng-click="refElem(ref, newBpelem)" class="btn btn-small btn-primary container_brick">{{ ref.ref.title }} <span tooltip="{{ 'CONTDESC' | translate }}" tooltip-placement="bottom" class="glyphicon glyphicon-info-sign"></span></a>
+          </div>
+
+        </div>
+        <a ng-click="createNewElem()" class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</a>
+        <a ng:click="newselected=0" class="btn btn-small btn-primary">{{ 'CANCEL' | translate }}</a>
+      </div>
+    </div>
+  </form>
+</div></div>
+
+<div class="elements" ng-repeat="bpelem in bpelems | orderBy:'order'">
+<div class="proc-element" ng-class="'elem-'+bpelem.id">
+    <div class="element-header">
+    <div class="primary-states">
+    </div>
+    <div class="info">
+      <div class="type">{{ type_short[bpelem.type_title] }}</div>
+      <h4 class="title">{{ bpelem.title }}</h4>
+      <h6 class="desc">{{ bpelem.desc }}</h6>
+    </div>
+    <ul class="elem-control elem-tabs" role="tablist" ng-show="isManagerVal">
+      <li><a role="tab" data-toggle="tab" ng:init="selected=1" ng:click="selected == 1 ? selected=2 : selected=1"><span class="glyphicon glyphicon-edit"></span></a></li>
+      <li><a ng-click="deleteElem(bpelem)"><span class="glyphicon glyphicon-remove"></span></a></li>
+      <li><a ng:click="moveUpElem(bpelem)"><span class="glyphicon glyphicon-arrow-up"></span></a></li>
+      <li><a ng:click="moveDownElem(bpelem)"><span class="glyphicon glyphicon-arrow-down"></span></a></li>
+    </ul>
+    </div>
+    <div class="tab-pane active" id="edit" ng:show="selected == 2">
+        <div ng-include src="'partials/bp_elements/bpelem-edit.html'"></div>
+    </div>
+    <div class="right-bar" ng:init="exp=false" ng-class="exp == active ? 'exp-active' : 'exp-disabled'">
+      <div class="states-row">
+        <div class="state-row">
+          <div class="row-top">
+            <div class="state" ng-class="state.on" ng-repeat="state in bpelem.states">
+              <div class="switcher" ng-repeat="switcher in state.switches">
+              <span class="switcher-icon" ng-class="switcher.switch_type"></span>{{ state.title }} — {{ state.opposite }}
+            </div>
+            </div>
+            
+          </div>
+          <div class="row-bottom">
+           
+          </div>
+        </div>
+      </div>
+      <div class="expanded-element" ng:show="exp == active">
+      </div>
+      <div class="row-selector"></div>
+      <div class="elem-expander" ng:click="exp == false ? exp=active : exp=false"><span class="uicon-svg93"></span></spa></div>
+    </div>
+
+<div class="proc-element-spaces">
+      <!--<div class="proc-space">
+        <div class="space-subbricks">
+          <div class="space-subbrick">
+            <div class="element-header">
+                  <div class="primary-states">
+                  </div>
+                  <div class="info">
+                    <h4 class="title">Subbrick</h4>
+                  </div>
+                  </div>
+                  
+          </div>
+        </div>
+        <div class="space-elements">
+            <div class="space-element">
+            <div class="element-header">
+                <div class="primary-states">
+                </div>
+                <div class="info">
+                  <div class="type">CF</div>
+                  <h4 class="title">Element</h4>
+                  <h6 class="desc">On front</h6>
+                </div>
+                </div>
+                <div class="right-bar">
+                  <div class="states-row">
+                    <div class="state-row">
+                      <div class="row-top">
+                        s top <b>Bold </b>
+                      </div>
+                      <div class="row-bottom">
+                        s bottom
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row-selector"></div>
+                </div>          
+            </div>
+        </div>
+      </div>-->
+
+          <div ng-include src="'partials/bp_elements/elem_container_tmp.html'"></div>
+        </div>
+  </div>  
+</div>
+  
+ <!-- 
+<div class="front-blocks" ng-repeat="bpelem in bpelems | orderBy:'order'">
+  
+  <div class="tab-content">
+    <div class="block-card tab-pane active" id="show">
+      <div class="card-pipe">
+        <span class="primary">{{ bpelem.order }}: {{ bpelem.title }}</span>
+        <span class="descr">{{ bpelem.desc }}</span>
+        <span class="type">{{ bpelem.b_type }}: {{ bpelem.type_title }}</span>
+        <ul class="elem-control elem-tabs" role="tablist" ng-show="isManagerVal">
+          <li class="active"><a href="" role="tab" data-toggle="tab" ng:click="selected=1"><span class="glyphicon glyphicon-list-alt"></span></a></li>
+          <li><a href="" role="tab" data-toggle="tab" ng:click="selected=2"><span class="glyphicon glyphicon-edit"></span></a></li>
+          <li><a ng-click="deleteElem(bpelem)"><span class="glyphicon glyphicon-remove"></span></a></li>
+          <li><a href="" ng:click="moveUpElem(bpelem)"><span class="glyphicon glyphicon-arrow-up"></span></a></li>
+          <li><a href="" ng:click="moveDownElem(bpelem)"><span class="glyphicon glyphicon-arrow-down"></span></a></li>
+        </ul>
+      </div>
+      <div class="tab-pane active" id="edit" ng:show="selected == 2">
+        <div ng-include src="'partials/bp_elements/bpelem-edit.html'"></div>
+      </div>
+      
+      <div ng-include src="'partials/bp_elements/elem_container_tmp.html'"></div>
+    </div>
+  </div>
+</div>-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <ul class="nav nav-tabs" role="tablist">
+    <!--<li><a href="" role="tab" data-toggle="tab" ng:click="newselected=2">New Space</a></li>-->
+  </ul>
+    <div class="tab-content">
+<div class="tab-pane active" id="edit" ng:show="newselected == 2">
+<form novalidate="novalidate" class="form-horizontal">
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">space.bprocess:</label>
+      <div class="controls">
+        <input type="number" id="inputBusinessId" ng-model="newSpace.bprocess" value="{{ BPid }}"/>
+        <input type="hidden" name="value" ng-model="newSpace.bprocess" value="{{ BPid }}">
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">space.index:</label>
+      <div class="controls">
+      <input type="number" id="inputBusinessId" ng-model="newSpace.index" value="{{ indexSpaceGen(newSpace) }}"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">space.container:</label>
+      <div class="controls">
+        <input type="checkbox" id="inputBusinessId" ng-model="newSpace.container" value="false"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">space.subbrick:</label>
+      <div class="controls">
+        <input type="checkbox" id="inputBusinessId" ng-model="newSpace.subbrick" value="false"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">space.brick_front:</label>
+      <div class="controls">
+        <input type="number" id="inputBusinessId" ng-model="newSpace.brick_front"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">space.brick_nested:</label>
+
+      <div class="controls">
+        <input type="number" id="inputBusinessId" ng-model="newSpace.brick_nested"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputBusinessId">space.nestingLevel:</label>
+      <div class="controls">
+        <input type="number" id="inputBusinessId" ng-model="newSpace.nestingLevel"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <div class="controls">
+        {{ newSpace }}
+        <a ng-click="createNewSpace()" class="btn btn-small btn-primary">Create</a>
+        <a ng:click="newselected=0" class="btn btn-small btn-primary">Cancel</a>
+      </div>
+    </div>
+  </form>
+</div></div>
+
+
+
+
+
+
+
+
+
+ </div>
+
+
+
+
+
+</div>
+</div>
+  
+
+  
+<div class="elements">
+  
+  
+  <div class="proc-element">
+    <div class="element-header">
+    <div class="primary-states">
+    </div>
+    <div class="info">
+      <div class="type">CF</div>
+      <h4 class="title">Element</h4>
+      <h6 class="desc">Desc with nesting structure</h6>
+    </div>
+    </div>
+    <div class="right-bar">
+      <div class="states-row">
+        <div class="state-row">
+          <div class="row-top">
+            s top <b>Bold </b>
+          </div>
+          <div class="row-bottom">
+            s bottom
+          </div>
+        </div>
+      </div>
+      <div class="row-selector"></div>
+    </div>
+    <div class="proc-element-spaces">
+      <div class="proc-space">
+        <div class="space-subbricks">
+          <div class="space-subbrick">
+            <div class="element-header">
+                  <div class="primary-states">
+                  </div>
+                  <div class="info">
+                    <h4 class="title">Subbrick</h4>
+                  </div>
+                  </div>
+                  
+          </div>
+        </div>
+        <div class="space-elements">
+            <div class="space-element">
+            <div class="element-header">
+                <div class="primary-states">
+                </div>
+                <div class="info">
+                  <div class="type">CF</div>
+                  <h4 class="title">Element</h4>
+                  <h6 class="desc">On front</h6>
+                </div>
+                </div>
+                <div class="right-bar">
+                  <div class="states-row">
+                    <div class="state-row">
+                      <div class="row-top">
+                        s top <b>Bold </b>
+                      </div>
+                      <div class="row-bottom">
+                        s bottom
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row-selector"></div>
+                </div>          
+            </div>
+        </div>
+      </div>
+      
+      <div class="proc-space">
+        <div class="space-subbricks">
+        </div>
+        <div class="space-elements">
+            <div class="space-element">
+            <div class="element-header">
+                <div class="primary-states">
+                </div>
+                <div class="info">
+                   <div class="type">CF</div>
+                  <h4 class="title">Element</h4>
+                  <h6 class="desc">On front</h6>
+                </div>
+                </div>
+                <div class="right-bar">
+                  <div class="states-row">
+                    <div class="state-row">
+                      <div class="row-top">
+                        s top <b>Bold </b>
+                      </div>
+                      <div class="row-bottom">
+                        s bottom
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row-selector"></div>
+                </div>          
+            </div>
+        </div>
+      </div>
+            
+      
+      
+    </div>
+  </div>
+  
+</div>
+  
+  
+<div id="proc-sessions" class="proc-sessions" ng-init="session_bar='hiding'"ng-class="session_bar" ng-click="session_bar == 'hiding' ? session_bar='shown' : session_bar='hiding'">
+    
+<div ng-click="changeSession(session)" ng-repeat="session in sessions" class="current-proc-session-info proc-session"  data-desc="Session #{{$index+1 }}">
+</div> 
+    <div class="proc-session active" ng-click="resetSession()" data-desc="Model">
+    </div> 
+</div>
+</div>
+
+
+
+
+<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+<style>
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400,700,600);
+</style>
+
+
+
+
+
+
+
+
+
+
+
+<script>
+$(document).ready( function() {
+  $('.proc-session').each(function(index, element) {
+    // element == this
+    $(element).not('.active').addClass('done');
+    //$('.done').html('<i class="icon-ok"></i>');
+    if($(this).is('.active')) {
+      return false;
+    }
+  });    
+});
+</script>

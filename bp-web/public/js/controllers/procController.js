@@ -136,7 +136,7 @@ $scope.emptyElemCheck = function(col) {
     $scope.bpId = bpId;
     //$scope.process = process;
     ngDialog.open({
-      template: 'partials/forms/share/share.html',
+      template: 'partials/share/share.html',
       controller: 'ProcShareCtrl',
       scope: $scope
     });
@@ -146,7 +146,7 @@ $scope.emptyElemCheck = function(col) {
   $scope.perm = function(proc_id) {
     $scope.BPid = proc_id;
     ngDialog.open({
-      template: 'partials/forms/perms/perm-list.html',
+      template: 'partials/perms/perm-list.html',
       controller: 'BPPermListCtrl',
       scope: $scope
     });
@@ -177,7 +177,7 @@ $scope.emptyElemCheck = function(col) {
   /* callback for ng-click 'createBP': */
   $scope.createNewBP = function () {
     ngDialog.open({
-      template: 'partials/forms/bprocesses/bp-new.html',
+      template: 'partials/bprocesses/bp-new.html',
       controller: 'BPCreationCtrl',
       scope: $scope
     });
@@ -240,7 +240,7 @@ $scope.emptyElemCheck = function(col) {
   $scope.openInvoke = function(proc_id) {
     $scope.bpId = proc_id;
     ngDialog.open({
-      template: 'partials/forms/inputs/inputs.html',
+      template: 'partials/inputs/inputs.html',
       controller: 'BPRequestCtrl',
       scope: $scope
     })

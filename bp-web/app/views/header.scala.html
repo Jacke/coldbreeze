@@ -48,6 +48,11 @@ text-decoration: none;
         <span class="uicon-svg12"></span>
         @Messages("nav.processes")(LangDet.getLang(user) )  </a>
     </li>
+    <li class="apiMenuItem">
+      <a id="teamApisLink" class="vIcoIn menuTeamLink" href="/a#/ref">
+        <span class="uicon-svg14"></span>
+        Refs</a>
+    </li> 
     @if(user.isManager) {
     <li class="apiMenuItem">
       <a id="teamMembersLink" class="vIcoIn menuTeamLink" href="@users.routes.EmployeeController.index()">

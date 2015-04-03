@@ -12,6 +12,11 @@ slick-pg/
 project/target
 .DS_Store
 
+fonts/
+
+promo/
+brief/
+swan/
 
 minority.sql
 minority2.sql

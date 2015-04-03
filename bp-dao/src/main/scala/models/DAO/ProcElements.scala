@@ -8,6 +8,7 @@ import models.DAO.BPDAO._
 import models.DAO.resources.BusinessDTO._
 import com.github.tminglei.slickpg.composite._
 import models.DAO.conversion.{DatabaseCred, Implicits}
+import main.scala.simple_parts.process.Units._
 
 import main.scala.simple_parts.process.data.{Confirm, Constant}
 /**
@@ -68,6 +69,8 @@ case class UndefElement(id: Option[Int],
 created_at:Option[org.joda.time.DateTime] = None,
 updated_at:Option[org.joda.time.DateTime] = None) {
   
+  
+
   def cast(process: BProcess):Option[ProcElems] = { 
 // TODO: to space casting 
 // TODO: Refactor
@@ -103,7 +106,37 @@ updated_at:Option[org.joda.time.DateTime] = None) {
   DataConversion
  */
 object ProcElemDCO {
-
+  def conv(el: UnitElement): UndefElement = {
+    UndefElement(None,
+                        el.title,
+                        el.desc,
+                        el.business,
+                        el.bprocess,
+                        el.b_type,
+                        el.type_title,
+                        el.space_own,
+                        el.order,
+                        Some(List()),
+el.created_at,
+el.updated_at)
+  }
+  def conv_nested(el: UnitElement, space_own:Option[Int], space_owned:Int): SpaceElementDTO = {
+    SpaceElementDTO(None,
+                        el.title,
+                        el.desc,
+                        el.business,
+                        el.bprocess,
+                        el.b_type,
+                        el.type_title,
+                        space_own,
+                        space_owned,
+                        space_role = None, // TODO: May change sometime
+                        el.order,
+                        Some(List()),
+el.created_at,
+el.updated_at)
+  }
+  
 }
 
 
@@ -125,6 +158,14 @@ object ProcElemDAO {
     database withSession { implicit session =>
      val q3 = for { el ← proc_elements if el.bprocess === id } yield el
       q3.list 
+    }
+  }
+  def lastOrderOfBP(id: Int):Int = {
+    database withSession { implicit session =>
+       val q3 = for { el ← proc_elements if el.bprocess === id } yield el
+       val xs = q3.list.map(_.order)
+      if (xs.isEmpty) 1
+      else xs.max + 1
     }
   }
   def findLengthByBPId(id: Int):Int = {

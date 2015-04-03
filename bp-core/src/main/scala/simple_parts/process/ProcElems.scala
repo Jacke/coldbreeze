@@ -3,6 +3,11 @@ package main.scala.simple_parts.process
 import main.scala.utils.Space
 import main.scala.bprocesses.BProcess
 import scala.util.{Try, Success, Failure}
+import scala.collection.mutable.ListBuffer  
+import main.scala.bprocesses._
+import main.scala.simple_parts.process.Units._
+
+
 /**
  * @author Sobolev
  *
@@ -20,6 +25,9 @@ trait ProcElems {
   def init() = {
     println(this)
   }
+  var states:ListBuffer[BPState] = ListBuffer() 
+  var session_states:ListBuffer[BPSessionState] = ListBuffer() 
+  var reactions:ListBuffer[UnitReaction] = ListBuffer()  
 
   def calls(param: String) = {}
   def activeCalls():List[String] = { List.empty[String] }

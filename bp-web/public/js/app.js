@@ -220,10 +220,10 @@ minorityApp.config(['$locationProvider','$routeProvider', '$httpProvider', funct
 //$locationProvider.html5Mode(true);
 
 /*Credentials managment*/
-     $routeProvider.when('/profile', {templateUrl: 'partials/forms/profile.html', controller: 'ProfileController'});
+     $routeProvider.when('/profile', {templateUrl: 'partials/profile.html', controller: 'ProfileController'});
 // BProcess
 /*I*/$routeProvider.when('/bprocesses', {
-                 templateUrl: 'partials/forms/bprocesses/bp-list.html', 
+                 templateUrl: 'partials/bprocesses/bp-list.html', 
                  controller: 'BProcessListCtrl',
                  resolve: { Auth: ['$http', '$q', '$window', '$rootScope', function($http, $q, $window, $rootScope) {
 //                    var deffered = $q.defer();
@@ -243,30 +243,34 @@ minorityApp.config(['$locationProvider','$routeProvider', '$httpProvider', funct
                     }]
                   }
                 });
-/*C*/$routeProvider.when('/bprocess/new', {templateUrl: 'partials/forms/bprocesses/bp-new.html', controller: 'BPCreationCtrl'});
-/*R*/$routeProvider.when('/bprocess/:id/show', {templateUrl: 'partials/forms/bprocesses/bp-detail.html', controller: 'BProcessDetailCtrl'});
+/*C*/$routeProvider.when('/bprocess/new', {templateUrl: 'partials/bprocesses/bp-new.html', controller: 'BPCreationCtrl'});
+/*R*/$routeProvider.when('/bprocess/:id/show', {templateUrl: 'partials/bprocesses/bp-detail.html', controller: 'BProcessDetailCtrl'});
 /*a*/
     // Embed
-/*I*/$routeProvider.when('/bprocess/:BPid/embed', {templateUrl: 'partials/forms/bp_elements/embeded.html', controller: 'BPEmbededCtrl'});
+/*I*/$routeProvider.when('/bprocess/:BPid/embed', {templateUrl: 'partials/bp_elements/embeded.html', controller: 'BPEmbededCtrl'});
     // Proc Elements
-/*I*/$routeProvider.when('/bprocess/:BPid/elements', {templateUrl: 'partials/forms/bp_elements/bpelem-list.html', controller: 'BPelementListCtrl'});
-/*C*/$routeProvider.when('/bprocess/:BPid/element/new', {templateUrl: 'partials/forms/bp_elements/bpelem-new.html', controller: 'BPelementCreationCtrl'});
-/*R*/$routeProvider.when('/bprocess/:BPid/element/:id/show', {templateUrl: 'partials/forms/bp_elements/bpelem-detail.html', controller: 'BPelementDetailCtrl'});
-/*U*/$routeProvider.when('/bprocess/:BPid/element/:id/edit', {templateUrl: 'partials/forms/bp_elements/bpelem-edit.html', controller: 'BPelementDetailCtrl'});
+/*I*/$routeProvider.when('/bprocess/:BPid/elements', {templateUrl: 'partials/bp_elements/bpelem-list.html', controller: 'BPelementListCtrl'});
+/*C*/$routeProvider.when('/bprocess/:BPid/element/new', {templateUrl: 'partials/bp_elements/bpelem-new.html', controller: 'BPelementCreationCtrl'});
+/*R*/$routeProvider.when('/bprocess/:BPid/element/:id/show', {templateUrl: 'partials/bp_elements/bpelem-detail.html', controller: 'BPelementDetailCtrl'});
+/*U*/$routeProvider.when('/bprocess/:BPid/element/:id/edit', {templateUrl: 'partials/bp_elements/bpelem-edit.html', controller: 'BPelementDetailCtrl'});
 
     // Stations
-/*I*/$routeProvider.when('/bprocess/:BPid/stations', {templateUrl: 'partials/forms/bpstations/bpstation-list.html', controller: 'BPstationListCtrl'});
-/*C*/$routeProvider.when('/bprocess/:BPid/station/new', {templateUrl: 'partials/forms/bpstations/bpstation-new.html', controller: 'BPstationCreationCtrl'});
-/*R*/$routeProvider.when('/bprocess/:BPid/station/:id/show', {templateUrl: 'partials/forms/bpstations/bpstation-detail.html', controller: 'BPstationDetailCtrl'});
-/*U*/$routeProvider.when('/bprocess/:BPid/station/:id/edit', {templateUrl: 'partials/forms/bpstations/bpstation-edit.html', controller: 'BPstationDetailCtrl'});
+/*I*/$routeProvider.when('/bprocess/:BPid/stations', {templateUrl: 'partials/bpstations/bpstation-list.html', controller: 'BPstationListCtrl'});
+/*C*/$routeProvider.when('/bprocess/:BPid/station/new', {templateUrl: 'partials/bpstations/bpstation-new.html', controller: 'BPstationCreationCtrl'});
+/*R*/$routeProvider.when('/bprocess/:BPid/station/:id/show', {templateUrl: 'partials/bpstations/bpstation-detail.html', controller: 'BPstationDetailCtrl'});
+/*U*/$routeProvider.when('/bprocess/:BPid/station/:id/edit', {templateUrl: 'partials/bpstations/bpstation-edit.html', controller: 'BPstationDetailCtrl'});
 
    // Permissions
-/*I*/$routeProvider.when('/bprocess/:BPid/perms', {templateUrl: 'partials/forms/perms/perm-list.html', controller: 'BPPermListCtrl'});
-/*C*/$routeProvider.when('/bprocess/:BPid/perm/new', {templateUrl: 'partials/forms/perms/perm-new.html', controller: 'BPPermCreationCtrl'});
-/*R*/$routeProvider.when('/bprocess/:BPid/perm/:id/show', {templateUrl: 'partials/forms/perms/perm-detail.html', controller: 'BPPermDetailCtrl'});
-/*U*/$routeProvider.when('/bprocess/:BPid/perm/:id/edit', {templateUrl: 'partials/forms/perms/perm-edit.html', controller: 'BPPermDetailCtrl'});
+/*I*/$routeProvider.when('/bprocess/:BPid/perms', {templateUrl: 'partials/perms/perm-list.html', controller: 'BPPermListCtrl'});
+/*C*/$routeProvider.when('/bprocess/:BPid/perm/new', {templateUrl: 'partials/perms/perm-new.html', controller: 'BPPermCreationCtrl'});
+/*R*/$routeProvider.when('/bprocess/:BPid/perm/:id/show', {templateUrl: 'partials/perms/perm-detail.html', controller: 'BPPermDetailCtrl'});
+/*U*/$routeProvider.when('/bprocess/:BPid/perm/:id/edit', {templateUrl: 'partials/perms/perm-edit.html', controller: 'BPPermDetailCtrl'});
      // Inputs
-/*C*/$routeProvider.when('/bprocess/:BPid/input', {templateUrl: 'partials/forms/inputs/inputs.html', controller: 'BPRequestCtrl'});
+/*C*/$routeProvider.when('/bprocess/:BPid/input', {templateUrl: 'partials/inputs/inputs.html', controller: 'BPRequestCtrl'});
+     // Reflections
+/*I*/$routeProvider.when('/ref', {templateUrl: 'partials/reflections/ref-list.html', controller: 'ReflectionCtrl'});  
+/*C*/$routeProvider.when('/ref/new', {templateUrl: 'partials/reflections/ref-list.html', controller: 'ReflectionCtrl'});  
+  
 
      $routeProvider.otherwise({redirectTo: '/bprocesses'});
 
@@ -275,7 +279,18 @@ minorityApp.config(['$locationProvider','$routeProvider', '$httpProvider', funct
 }]).run(['$q','$window','$http' ,'$rootScope', '$injector', function($q, $window, $http, $rootScope,$injector) {
     var token = $window.sessionStorage.getItem('token');
 
- 
+    $rootScope.type_short = {"container_brick":"CN", "confirm":"CF" }; // Letters for element types
+    $http({
+      url: 'configuration/',
+      method: "PUT",
+      data: {  }
+      })
+      .then(function(response) {
+        $rootScope.switcher_conf = response;
+      },
+      function(response) { }
+      );
+
     $injector.get("$http").defaults.transformRequest = function(data, headersGetter) {
         headersGetter()['X-Auth-Token'] = $window.sessionStorage.getItem('token');
 

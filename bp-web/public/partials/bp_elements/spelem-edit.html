@@ -1,0 +1,29 @@
+<form novalidate="novalidate" class="form-horizontal form-edit-spaceelem" ng-class="spaceelem.type_title">
+<div class="control-group form-group">
+  <label class="control-label col-sm-1" for="inputTitle">{{ 'TITLE' | translate }}:</label>
+  <div class="controls col-xs-4">
+    <input type="text" class="form-control" id="inputTitle" ng-model="spaceelem.title"/>
+  </div>
+</div>
+<div class="control-group form-group">
+  <label class="control-label col-sm-1" for="inputBusinessId">{{ 'DESC' | translate }}:</label>
+  <div class="controls">
+    <textarea type="text" id="inputBusinessId" class="form-control" ng-model="spaceelem.desc"/>
+  </div>
+</div>
+
+    <input type="hidden" name="value" ng-model="spaceelem.business" value="{{ business }}">
+    <input type="hidden" name="value" ng-model="spaceelem.process" value="{{ BPid }}">
+    <input type="hidden" id="inputBusinessId" ng-model="spaceelem.b_type"/>
+    <input type="hidden" id="inputBusinessId" ng-model="spaceelem.type_title"/>
+    <input type="hidden" id="inputBusinessId" ng-model="spaceelem.space_own"/>
+
+<div class="control-group form-group">
+  <div class="controls col-xs-4">
+
+    <a ng-click="updateSpaceElem(spaceelem)" class="btn btn-small btn-primary">{{ 'UPDATE' | translate }}</a>
+    <a ng-click="deleteSpaceElem(spaceelem)" class="btn btn-small btn-danger">{{ 'DELETE' | translate }}</a>
+
+  </div>
+</div>
+</form>

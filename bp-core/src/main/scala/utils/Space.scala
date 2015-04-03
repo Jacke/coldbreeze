@@ -3,7 +3,9 @@ import main.scala.simple_parts.process._
 import main.scala.bprocesses.InvokeTracer
 import main.scala.bprocesses.links._
 import main.scala.simple_parts.process.Brick
-
+import main.scala.bprocesses._
+import main.scala.simple_parts.process.Units._
+import scala.collection.mutable.ListBuffer  
 
 class Space(val index: Int, val brick_owner: Brick, val id: Option[Int] = None) {
   
@@ -13,6 +15,8 @@ var subbricks = Array.empty[SubBrick]
 var container: Array[ProcElems] = Array.empty[ProcElems]
 var expands: Array[ProcElems] = Array.empty[ProcElems]
 
+var states:ListBuffer[BPState] = ListBuffer() 
+var session_states:ListBuffer[BPSessionState] = ListBuffer() 
 // init
 def init { }
 

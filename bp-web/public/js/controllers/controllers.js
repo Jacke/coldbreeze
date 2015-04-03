@@ -70,8 +70,7 @@ angular.module(
     'minorityApp.services',
     'angular-underscore',
     'ui.select',
-    'ngDialog',
-    'ngAnimate', 
+    'ngDialog', 
     'toaster'
   ]
 );

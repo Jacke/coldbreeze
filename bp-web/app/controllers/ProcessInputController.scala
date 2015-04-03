@@ -103,7 +103,7 @@ case class InputLogger(var id: Option[Int],
 
     println("PAAAAAAAARAMS")
     println(genparams.get)
-    service.RunnerWrapper2.runFrom(station_id, bpID, genparams.get) match {
+    service.RunnerWrapper2.runFrom(station_id, bpID, genparams.get, session_id = 1) match {
       case Some(station_id) => Ok(Json.toJson(Map("success" -> station_id)))
       case _ => Ok(Json.toJson(Map("error" -> "Error output")))
     }

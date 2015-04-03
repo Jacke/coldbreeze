@@ -47,10 +47,10 @@ object BPSessionDAO {
       bpsessions returning bpsessions.map(_.id) += s
   }
 
-  def findByBP(id: Int):Option[BPSession] = database withSession {
+  def findByBP(id: Int):List[BPSession] = database withSession {
     implicit session =>
     val q3 = for { s <- bpsessions if s.process === id } yield s
-    q3.list.headOption
+    q3.list
   }
   def getByProcesses(processes: List[Int]) = database withSession {
     implicit session =>

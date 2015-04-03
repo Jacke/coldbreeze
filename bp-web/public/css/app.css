@@ -1,3 +1,277 @@
+/*
+ 
+ Reflects
+ 
+*/
+.ref-element input#inputBusinessId {
+    clear: both;
+    display: block;
+}
+.ref-element .control-group.form-group {
+    clear: both;
+    padding-top: 10px;
+    display: block;
+}
+
+.ref-element input#inputTitle {
+    clear: both;
+    display: block;
+    width: 400px;
+    padding-top: 22px;
+    margin-bottom: 10px;
+}
+.templateButton .ref {
+    display: inline-block;
+}
+
+.templateButton {
+    width: 100%;
+}
+
+/******/
+
+
+.elements {
+    padding-top: 10px;
+    clear: both;
+}
+
+.proc-element {
+    background: white;
+    /* padding: 7px 11px 11px 24px; */
+    margin-bottom: 20px;
+    border-radius: 7px;
+}
+.space-blocks.ng-scope {
+    position: relative;
+}
+
+.proc-element .right-bar {
+    background: #b6c2c9;
+    border-bottom-right-radius: 7px;
+    border-bottom-left-radius: 7px;
+    color: #f2f4f6;
+}
+
+.proc-element .info {
+padding: 0px 11px 3px 25px;
+border-left: 2px solid #95a5a6;
+margin-top: -3px;
+}
+.proc-element .element-header {
+padding-top: 3px;
+position: relative;
+}
+.proc-element .info h4.title {
+padding-top: 11px;
+}
+.proc-element .right-bar {
+  border-left: solid 2px #7f8c8d;
+  padding: 7px 11px 11px 24px;
+  position: relative;
+}
+
+.proc-element .right-bar * {
+display: inline;
+text-shadow: none;
+}
+.proc-element .elem-expander {
+    background: #c8d2d7;
+    width: 45px;
+    height: 38px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-bottom-right-radius: 7px;
+  padding-top: 1%;
+  padding-left: 1.3%;
+  cursor: pointer;
+}
+.proc-element .right-bar.exp-active {
+    background: #3bc0c3;
+}
+
+.proc-element .right-bar.exp-active .elem-expander {
+    background: #3fced1;
+    color: white;
+}
+.expanded-element {
+  display: block !important;
+  padding-top: 16px;
+  background: #f6f7f8;
+  color: black;
+  margin-top: 11px;
+  margin-left: -24px;
+  margin-bottom: -11px;
+  margin-right: -12px;
+  padding-left: 13px;
+  padding-bottom: 29px;
+  border-radius: 0px 0px 6px 5px;
+}
+.proc-element .right-bar b {
+    color: white;
+}
+
+
+.proc-element.invoking .info { 
+ border-left: solid 2px #f1c40f;
+
+}
+.proc-element.invoking .right-bar {
+ border-left: solid 2px #cca711; 
+}
+
+.proc-element.invoked .info {
+border-left: 2px solid #4dbd74;
+}
+.proc-element.invoked .right-bar {
+    border-left: solid 2px #238345;
+}
+
+
+
+
+.proc-element-spaces .proc-space {
+    margin-left: 20px;
+    display: inline-block;
+    width: 30%;
+  float: left;
+}
+
+.proc-element-spaces {
+    background-color: #f0f4f7;
+}
+
+.proc-space .space-element {
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;      
+    box-shadow: inset 0px 0px 4px 0px #ADB0B2;
+}
+
+.proc-space .space-element .element-header {
+    padding-top: 0px;
+    margin-top: -10px;
+}
+
+
+.space-element {
+    background: white;
+    /* padding: 7px 11px 11px 24px; */
+    margin-bottom: 20px;
+    border-radius: 7px;
+}
+
+
+.space-element .right-bar {
+    background: #b6c2c9;
+    border-bottom-right-radius: 7px;
+    border-bottom-left-radius: 7px;
+    color: #f2f4f6;
+}
+
+.space-element .info {
+padding: 0px 11px 3px 25px;
+border-left: 2px solid #95a5a6;
+margin-top: -3px;
+}
+.space-element .element-header {
+padding-top: 3px;
+}
+.space-element .info h4.title {
+padding-top: 4px;
+}
+.space-element .right-bar {
+    padding: 7px 11px 11px 24px;
+}
+
+.space-element .right-bar * {
+display: inline;
+text-shadow: none;
+}
+
+.space-element .right-bar b {
+    color: white;
+}
+.space-element .info {
+padding: 0px 11px 3px 25px;
+border-left: 2px solid #95a5a6;
+margin-top: 10px;
+padding-top: 7px;
+padding-bottom: 1px;
+}
+.space-element .right-bar {
+    border-left: solid 2px #7f8c8d;
+}
+.space-element.invoking .info { 
+ border-left: solid 2px #f1c40f;
+
+}
+.space-element.invoking .right-bar {
+ border-left: solid 2px #cca711; 
+}
+
+.space-element.invoked .info {
+border-left: 2px solid #4dbd74;
+}
+.space-element.invoked .right-bar {
+    border-left: solid 2px #238345;
+}
+
+
+
+
+
+
+
+
+
+.space-subbrick {
+margin-bottom: 11px;
+border-radius: 7px;
+  margin-top: -13px;
+}
+
+
+.space-subbrick .right-bar {
+    background: #b6c2c9;
+    border-bottom-right-radius: 7px;
+    border-bottom-left-radius: 7px;
+    color: black;
+}
+
+.space-subbrick .info {
+padding: 0px 11px 3px 25px;
+border-left: 0;
+margin-top: 0px;
+background: #ecf0f1;
+}
+.space-subbrick .element-header {
+padding-top: 3px;
+}
+.space-subbrick .info h4.title {
+padding-top: 11px;
+font-size: 12px;
+}
+
+
+
+.info .type {
+display: inline-block;
+float: left;
+width: 59px;
+height: 56px;
+margin-top: 0px;
+margin-right: 18px;
+line-height: 55px;
+font-size: 35px;
+border: 1px solid #23BE65;
+border-radius: 32px;
+color: white;
+background: #2ecc71;
+padding-left: 7px;
+font-family: 'Proxima Nova','Helvetica',sans-serif;
+font-weight: 100;
+}
 
 .proc-session {
     padding-top: 32px;
@@ -6,17 +280,29 @@
 .proc-session.done, .proc-session.active {
     padding-top: 0px;
 }
-  
+
+div#proc-sessions.hiding {
+    bottom: -122px;
+}  
 #proc-sessions {
-  width: 100%;
-  margin: 50px auto;
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 10px;
-    background-color: #e6e6e6;
-  font-family: 'Open Sans', sans-serif;
+width: 100%;
+margin: 50px auto;
+position: fixed;
+left: 0;
+bottom: -50px;
+background-color: #e6e6e6;
+font-family: 'Open Sans', sans-serif;
+padding-left: 73px;
+padding-top: 21px;
+padding-bottom: 9px;
+border-radius: 6px 6px 0px 0px;
+padding-left: 35%;
 }
+#proc-sessions a {
+    margin-left: 40px;
+    margin-right: 40px;
+}
+
 
 .proc-session {
   width: 40px;
@@ -30,10 +316,11 @@
   font-weight: 600;
   text-align: center;
   line-height: 88px;
+  cursor: pointer;
 }
 
 .proc-session:first-child {
-  line-height: 40px;
+  line-height: 102px;
 }
 
 .proc-session:nth-child(n+2) {
@@ -93,7 +380,12 @@
 
 
 
-
+.proc-element ul.elem-control.elem-tabs {
+  display: inline-block;
+  position: absolute;
+  top: 20%;
+  right: 1%;
+}
 
 
 
@@ -262,7 +554,6 @@ margin-right: -4px;
     margin-top: -3px;
 
 }
-
 
 
 .page-walkthrought h2 {
@@ -1292,28 +1583,6 @@ form.form-edit-spaceelem.container_brick {
 
 
 
-form.form-new-bpelem {
-    padding-left: 30px;
-    /* color: white; */
-    padding-bottom: 20px;
-}
-.form-new-bpelem .controls {
-    width: 25%;
-    margin: 0 auto;
-}
-.form-new-bpelem .controls input {
-    width: 100%;
-}
-
-.form-new-bpelem .controls textarea#inputBusinessId {
-    width: 100%;
-}
-
-
-
-
-
-
 
 
 
@@ -2255,6 +2524,7 @@ font-weight:400;
 .app.container {
 padding-bottom: 225px;
 margin-top: -9px;
+position:relative;
 }
 
 .front-blocks, .front-blocks:before, .front-blocks:after {
@@ -2413,24 +2683,53 @@ ul.elem-control.elem-tabs {
 
 
 
+.nav-sidebar > .active > a, .nav-sidebar > .active > a:hover, .nav-sidebar > .active > a:focus {
+    background-color: #7FDBFF !important;
+}
+
+
+.btn-primary {
+    font-size: 14px;
+  font-weight: bold;
+}
+.settings-page .actions {
+    padding-top: 23px;
+    padding-bottom: 12px;
+}
+
+
+
+.settings-page .setting-container .tab-pane {
+    display: none;
+}
+.settings-page .setting-container .tab-pane.active {
+  display: block;
+  width: 20%;
+  margin-left: 17%;
+}
+dd {
+    margin-bottom: 3px;
+}
+
+.setting-container dd {
+    padding-bottom: 16px;
+}
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+.traverse-marker {
+  position: absolute;
+  height: 20px;
+  top: 0px;
+  width: 20px;
+  left: 24px;
+background: #e74c3c;
+  transition: all 1s ease-in-out;
+  border-radius: 5px 10px 10px 5px;
+}
 
 
 

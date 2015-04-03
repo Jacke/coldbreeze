@@ -2,6 +2,7 @@ package util
 import models._
 import models.DAO._
 import models.DAO.resources._
+import models.DAO.reflect._
 
 object DLL_Initiator {
   def initiate:Boolean = {
@@ -11,12 +12,33 @@ object DLL_Initiator {
     BusinessServiceDAO.ddl_create
     BPDAO.ddl_create
     CVDAO.createShit
+    BPSessionDAO.ddl_create
     BPStationDAO.ddl_create
     BPSpaceDAO.ddl_create
     ProcElemDAO.ddl_create
     SpaceElemDAO.ddl_create
+    ElemTopologDAO.ddl_create
+
     BPLoggerDAO.ddl_create
+    BPStateDAO.ddl_create
+    BPSessionStateDAO.ddl_create
     BPStationLoggeDAO.ddl_create
+    SwitcherDAO.ddl_create
+      
+    // 23.03.15  
+    RefDAO.ddl_create
+ProcElemReflectionDAO.ddl_create
+SpaceReflectionDAO.ddl_create
+SpaceElementReflectionDAO.ddl_create      
+BPStateRefDAO.ddl_create
+SwitcherRefDAO.ddl_create
+ReflectElemTopologDAO.ddl_create
+ReactionRefDAO.ddl_create
+ReactionStateOutRefDAO.ddl_create
+ReactionDAO.ddl_create
+ReactionStateOutDAO.ddl_create
+
+
     // Resources
     TokensDAO.ddl_create
     AccountsDAO.ddl_create
@@ -66,12 +88,32 @@ object DLL_Initiator {
     BusinessServiceDAO.ddl_drop
     BPDAO.ddl_drop
     CVDAO.dropShit
+    BPSessionDAO.ddl_drop
     BPStationDAO.ddl_drop
     BPSpaceDAO.ddl_drop
     ProcElemDAO.ddl_drop
     SpaceElemDAO.ddl_drop
+    ElemTopologDAO.ddl_drop
     BPLoggerDAO.ddl_drop
+    BPStateDAO.ddl_drop
+    BPSessionStateDAO.ddl_drop
     BPStationLoggeDAO.ddl_drop
+    SwitcherDAO.ddl_drop
+    
+    // 23.03.15  
+    ProcElemReflectionDAO.ddl_drop  
+    SpaceReflectionDAO.ddl_drop
+SpaceElementReflectionDAO.ddl_drop  
+BPStateRefDAO.ddl_drop
+SwitcherRefDAO.ddl_drop      
+ReflectElemTopologDAO.ddl_drop
+    RefDAO.ddl_drop        
+ReactionRefDAO.ddl_drop
+ReactionStateOutRefDAO.ddl_drop
+ReactionDAO.ddl_drop
+ReactionStateOutDAO.ddl_drop
+
+
     // Resources
     TokensDAO.ddl_drop
     AccountsDAO.ddl_drop

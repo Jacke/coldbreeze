@@ -92,7 +92,7 @@ POST        /employee/:id/destroy                               @controllers.use
 GET         /test                                               @controllers.Application.index()
 GET         /a                                                  @controllers.Application.app()
 POST        /whoami                                             @controllers.Application.whoami()
-
+PUT         /configuration/ 									@controllers.Application.configuration()
 
 # Plans
 GET        /plans                                               @controllers.PlanController.index()
@@ -139,6 +139,91 @@ GET         /bprocess/:id/stations                   @controllers.BusinessProces
 GET         /bprocess/:id/station/:station_id        @controllers.BusinessProcessController.show_station(id: Int, station_id: Int)
 POST        /bprocess/:id/station/:station_id/halt   @controllers.BusinessProcessController.halt_station(id: Int, station_id: Int)
 POST        /bprocess/:id/station/:station_id/note   @controllers.BusinessProcessController.update_note(id: Int, station_id: Int)
+
+
+
+
+
+
+# Sessions
+GET          /bprocess/:BPid/sessions        @controllers.SessionsController.index(BPid: Int)
+#GET         /bprocess/:BPid/session/:id     #
+#DELETE      /bprocess/:BPid/session/:id     #
+
+
+# States, switcher and reactions with outputs
+GET /bprocess/:BPid/states        			  	  @controllers.BusinessProcessController.state_index(BPid: Int)
+GET /bprocess/:BPid/session/:session_id/states    @controllers.BusinessProcessController.state_session_index(BPid: Int, session_id: Int)
+PUT    /bprocess/:BPid/session/:session_id/state/:state_id @controllers.BusinessProcessController.update_session_state(BPid: Int, session_id: Int, state_id: Int)
+DELETE /bprocess/:BPid/session/:session_id/state/:state_id @controllers.BusinessProcessController.delete_session_state(BPid: Int, session_id: Int, state_id: Int)
+PUT    /bprocess/:BPid/state/:state_id  @controllers.BusinessProcessController.update_state(BPid: Int, state_id: Int)
+DELETE /bprocess/:BPid/state/:state_id  @controllers.BusinessProcessController.delete_state(BPid: Int, state_id: Int)
+
+GET 			/bprocess/:BPid/switches		  @controllers.BusinessProcessController.switches_index(BPid: Int)
+PUT 			/bprocess/switch/:id 			  @controllers.BusinessProcessController.update_switcher(id: Int)
+DELETE 			/bprocess/switch/:id 			  @controllers.BusinessProcessController.delete_switcher(id: Int)
+
+GET 			/bprocess/:BPid/reactions		  @controllers.BusinessProcessController.reactions_index(BPid: Int)
+PUT 			/bprocess/reaction/:id 			  @controllers.BusinessProcessController.update_reaction(id: Int)
+DELETE 			/bprocess/reaction/:id            @controllers.BusinessProcessController.delete_reaction(id: Int)
+
+
+
+
+
+
+################
+# Reflections
+###
+
+GET  		/refs 							@controllers.ReflectionsController.index()		
+POST        /refs							@controllers.ReflectionsController.create()
+PUT     	/ref/:id                        @controllers.ReflectionsController.update(id: Int)
+DELETE  	/ref/:id                        @controllers.ReflectionsController.delete(id: Int)
+
+POST		/ref/:id/elems  		   @controllers.ReflectionsController.elem_create(id: Int)
+PUT			/ref/elem/:elem_id         @controllers.ReflectionsController.elem_update(elem_id: Int)
+DELETE		/ref/elem/:elem_id         @controllers.ReflectionsController.elem_delete(elem_id: Int)
+POST		/ref/:id/spaces		       @controllers.ReflectionsController.space_create(id: Int)	
+PUT		    /ref/space/:space_id       @controllers.ReflectionsController.space_update(space_id: Int)
+DELETE		/ref/space/:space_id       @controllers.ReflectionsController.space_delete(space_id: Int)
+
+DELETE		/ref/:id/spaceelems        @controllers.ReflectionsController.spaceelems_create(id: Int)
+
+PUT         /ref/spaceelem/:spelem_id  @controllers.ReflectionsController.spaceelems_update(spelem_id: Int)
+DELETE		/ref/spaceelem/:spelem_id  @controllers.ReflectionsController.spaceelems_delete(spelem_id: Int)
+
+POST		/ref/:id/states            @controllers.ReflectionsController.state_create(id: Int)
+PUT			/ref/state/:state_id       @controllers.ReflectionsController.state_update(state_id: Int)
+DELETE		/ref/state/:state_id       @controllers.ReflectionsController.state_delete(state_id: Int)
+
+POST		/ref/:id/switches          @controllers.ReflectionsController.switche_create(id: Int)
+PUT			/ref/switch/:switch_id     @controllers.ReflectionsController.switche_update(switch_id: Int)
+DELETE		/ref/switch/:switch_id     @controllers.ReflectionsController.switche_delete(switch_id: Int)
+
+POST		/ref/:id/reactions  	    @controllers.ReflectionsController.reaction_create(id: Int)
+PUT			/ref/reactions/:reaction_id @controllers.ReflectionsController.reaction_update(reaction_id: Int)
+DELETE		/ref/reactions/:reaction_id @controllers.ReflectionsController.reaction_delete(reaction_id: Int)
+
+
+PUT  /ref/:id/element/:elem_id/up             @controllers.ReflectionsController.moveUpFrontElem(id: Int, elem_id: Int)
+PUT  /ref/:id/element/:elem_id/down           @controllers.ReflectionsController.moveDownFrontElem(id: Int, elem_id: Int)
+PUT  /ref/:id/space_elem/:spelem_id/:space_id/up   @controllers.ReflectionsController.moveUpSpaceElem(id: Int, spelem_id: Int, space_id: Int)
+PUT  /ref/:id/space_elem/:spelem_id/:space_id/down @controllers.ReflectionsController.moveDownSpaceElem(id: Int, spelem_id: Int, space_id: Int)
+
+##############################
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Logs
 GET         /bprocess/:id/logs                       @controllers.BusinessProcessController.logs_index(id: Int)

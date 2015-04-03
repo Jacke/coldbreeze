@@ -41,6 +41,14 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
       ).toList.asInstanceOf[List[ProcElems]]
     )
   }
+  
+  def spacesElements: List[ProcElems] = {
+    flat(
+      (spaces.collect
+        { case space: Space => space.allElements }
+      ).toList.asInstanceOf[List[ProcElems]]
+    )
+  }
 
   def flat[T](ls: List[T]): List[T]= ls flatten {
       case t: List[T] =>  flat(t)

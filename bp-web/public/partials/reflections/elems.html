@@ -1,0 +1,136 @@
+  <!-- CREATE ELEM -->
+ <form novalidate="novalidate" class="form-horizontal form-new-bpelem">
+    <div class="control-group form-group">
+      <label class="control-label col-sm-1" for="inputTitle">{{ 'TITLE' | translate }}:</label>
+      <div class="controls col-xs-4">
+        <input type="text" id="inputTitle" class="form-control" ng-model="newBpelem.title"/>
+      </div>
+    </div>
+    <div class="control-group form-group">
+      <label class="control-label col-sm-1" for="inputBusinessId">{{ 'DESC' | translate }}:</label>
+      <div class="controls col-xs-4">
+        <textarea type="text" class="form-control" id="inputBusinessId" ng-model="newBpelem.desc"/>
+      </div>
+    </div>
+        <input type="hidden" name="value" ng-model="newBpelem.reflection" value="{{ bpelem.reflection }}">
+        <input type="hidden" id="inputBusinessId" ng-model="newBpelem.b_type"/>
+        <input type="hidden" id="inputBusinessId" ng-model="newBpelem.type_title"/>
+        <input type="hidden" id="inputBusinessId" ng-model="newBpelem.space_own"/>
+    <div class="control-group form-group">
+      <label class="control-label col-sm-1" for="inputBusinessId">Order</label>
+      <div class="controls col-xs-4">
+        <input type="number" id="inputBusinessId" ng-model="newBpelem.order" value="{{ orderFrontGen(newBpelem) }}"/>
+      </div>
+    </div>    
+    <div class="control-group form-group">
+      <label class="control-label col-sm-1" for="inputBusinessId">b_type</label>
+      <div class="controls col-xs-4">
+        <input type="text" id="inputTitle" class="form-control" placeholder="b_type" ng-model="newBpelem.b_type"/>
+      </div>
+    </div>
+    <div class="control-group form-group">
+      <label class="control-label col-sm-1" for="inputBusinessId">type_title</label>
+      <div class="controls col-xs-4">
+        <input type="text" id="inputTitle" class="form-control" placeholder="type_title" ng-model="newBpelem.type_title"/>
+      </div>
+    </div>
+
+
+    <div class="control-group form-group" ng-show="isManagerVal">
+      <div class="controls col-xs-4">
+        
+        <a ng-click="createNewElem(newBpelem)" class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</a>
+        <a ng:click="newselected=0" class="btn btn-small btn-primary">{{ 'CANCEL' | translate }}</a>
+      </div>
+    </div>
+  </form>
+
+
+<div class="elements" ng-repeat="bpelem in refs.unitelement | orderBy:'order'" class="ref-elem">
+<div class="proc-element" ng-class="'elem-'+bpelem.id">
+    <div class="element-header">
+    <div class="primary-states">
+    </div>
+    <div class="info">
+      <div class="type">{{ type_short[bpelem.type_title] }}</div>
+      <h4 class="title">{{ bpelem.title }}</h4>
+      <h6 class="desc">{{ bpelem.desc }}</h6>
+    </div>
+    <ul class="elem-control elem-tabs" role="tablist" ng-show="isManagerVal">
+      <li><a role="tab" data-toggle="tab" ng:init="selected=1" ng:click="selected == 1 ? selected=2 : selected=1"><span class="glyphicon glyphicon-edit"></span></a></li>
+      <li><a ng-click="deleteElem(bpelem)"><span class="glyphicon glyphicon-remove"></span></a></li>
+      <li><a ng:click="moveUpElem(bpelem, bpelem.reflection)"><span class="glyphicon glyphicon-arrow-up"></span></a></li>
+      <li><a ng:click="moveDownElem(bpelem, bpelem.reflection)"><span class="glyphicon glyphicon-arrow-down"></span></a></li>
+    </ul>
+    </div>
+   
+<div class="update">
+ <!-- UPDATE ELEM -->
+ <form novalidate="novalidate" class="form-horizontal form-new-bpelem">
+    <div class="control-group form-group">
+      <label class="control-label col-sm-1" for="inputTitle">{{ 'TITLE' | translate }}:</label>
+      <div class="controls col-xs-4">
+        <input type="text" id="inputTitle" class="form-control" ng-model="bpelem.title"/>
+      </div>
+    </div>
+    <div class="control-group form-group">
+      <label class="control-label col-sm-1" for="inputBusinessId">{{ 'DESC' | translate }}:</label>
+      <div class="controls col-xs-4">
+        <textarea type="text" class="form-control" id="inputBusinessId" ng-model="bpelem.desc"/>
+      </div>
+    </div>
+    <div class="control-group form-group">
+      <label class="control-label col-sm-1" for="inputBusinessId">Order</label>
+      <div class="controls col-xs-4">
+        <input type="number" id="inputBusinessId" ng-model="bpelem.order" value="{{ orderFrontGen(bpelem) }}"/>
+      </div>
+    </div>    
+    <div class="control-group form-group">
+      <label class="control-label col-sm-1" for="inputBusinessId">b_type</label>
+      <div class="controls col-xs-4">
+        <input type="text" id="inputTitle" class="form-control" placeholder="b_type" ng-model="bpelem.b_type"/>
+      </div>
+    </div>
+    <div class="control-group form-group">
+      <label class="control-label col-sm-1" for="inputBusinessId">type_title</label>
+      <div class="controls col-xs-4">
+        <input type="text" id="inputTitle" class="form-control" placeholder="type_title" ng-model="bpelem.type_title"/>
+      </div>
+    </div>
+
+        <input type="hidden" name="value" ng-model="bpelem.reflection" value="{{ bpelem.reflection }}">
+        <input type="hidden" id="inputBusinessId" ng-model="bpelem.b_type"/>
+        <input type="hidden" id="inputBusinessId" ng-model="bpelem.type_title"/>
+        <input type="hidden" id="inputBusinessId" ng-model="bpelem.space_own"/>
+    <div class="control-group form-group" ng-show="isManagerVal">
+      <div class="controls col-xs-4">
+        <a ng-click="updateElem(bpelem)" class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</a>
+        <a ng:click="newselected=0" class="btn btn-small btn-primary">{{ 'CANCEL' | translate }}</a>
+      </div>
+    </div>
+  </form>
+
+
+
+<div ng-include src="'partials/reflections/elem_states.html'"></div>
+<div ng-include src="'partials/reflections/elem_reactions.html'"></div>
+
+
+
+
+    </div>
+  </div>  
+
+
+<div ng-include src="'partials/reflections/spaces.html'"></div>
+
+</div>
+
+
+
+</div>
+
+</div>
+
+</div>
+</div>
