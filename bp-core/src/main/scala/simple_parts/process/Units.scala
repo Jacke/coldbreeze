@@ -7,20 +7,52 @@ import scala.collection.mutable.ListBuffer
 
 object Units {
  /*
- case class UnitElement(
-  val id: Int,
-  title: String, 
-  desc: String, 
-  val values: Option[CompositeValues],
-  val bprocess: BProcess,
-  b_type: String, 
-  type_title: String,
-  var order: Int,
-  val space_parent: Option[Space] = None,
-  val space_role: Option[String] = None
-  ) extends ProcElems {
-    def invoke():Unit = {  } 
-  }*/
+
+ case class UnitElement(override val id: Option[Int],
+                        override val title:String,
+                        desc:String,
+                        business:Int,
+                        bprocess:Int,
+                        b_type:String,
+                        type_title:String,
+                        space_own:Option[Int],
+                        override val order:Int,
+created_at:Option[org.joda.time.DateTime] = None,
+updated_at:Option[org.joda.time.DateTime] = None) extends ProcElems {
+
+
+  def invoke {
+    println("invoke confirm")
+   
+  }
+
+}
+  
+case class UnitSpaceElement(
+                        override val id: Option[Int],
+                        override val title:String,
+                        desc:String,
+                        business:Int,
+                        bprocess:Int,
+                        b_type:String,
+                        type_title:String,
+                        space_own:Option[Int],
+                        space_owned: Int,
+                        space_role:Option[String],
+                        override val order:Int,
+created_at:Option[org.joda.time.DateTime] = None,
+updated_at:Option[org.joda.time.DateTime] = None
+) extends ProcElems {
+
+
+  def invoke {
+    println("invoke confirm")
+   
+  }
+
+}
+
+*/
   
  case class UnitElement(id: Option[Int],
                         title:String,
@@ -32,7 +64,7 @@ object Units {
                         space_own:Option[Int],
                         order:Int,
 created_at:Option[org.joda.time.DateTime] = None,
-updated_at:Option[org.joda.time.DateTime] = None)
+updated_at:Option[org.joda.time.DateTime] = None) 
    
  case class UnitSpace(
   id: Option[Int], 

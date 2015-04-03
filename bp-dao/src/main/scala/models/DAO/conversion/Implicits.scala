@@ -79,7 +79,7 @@ object Implicits {
    * @return Origin Space
    */
   def findSpParent(orig: Array[Space], dto: List[BPSpaceDTO], elem: SpaceElementDTO):Option[Space] = {
-    orig.find(sp => sp.index == dto.find(sp => sp.id == elem.space_owned).get.index )
+    orig.find(sp => sp.index == dto.find(sp => sp.id == Some(elem.space_owned)).get.index )
   }
 
   /**

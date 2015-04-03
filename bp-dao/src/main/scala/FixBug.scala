@@ -24,14 +24,8 @@ import main.scala.simple_parts.process.Units._
 
 
 
-object FixBug extends App {
-  val process_dto = BPDAO.get(18).get
-  val target = ProcElemDAO.findByBPId(18)
-  val station_id = 5
-
-  val process = new BProcess(new Managment)
-  val arrays = target.map(c => c.cast(process)).flatten.toArray
-
+object TestRunning extends App {
+  RunnerWrapper2.run(22)
 }
   
 object RunnerWrapper2 {
@@ -106,13 +100,23 @@ object RunnerWrapper2 {
   //def run(bpID: Int, lang: Option[String] = Some("en")):Option[Int] = { Some(1) }
   //def runFrom(station_id:Int, bpID:Int, params: List[InputParamProc]):Option[Int] = { Some(1) }
   
-  def run(bpID: Int, lang: Option[String] = Some("en") ):Option[Int] = {
+  def run(bpID: Int, lang: Option[String] = Some("en") ):Option[BProcess] = {
     //presenceValidate
     val bpDTO = BPDAO.get(bpID).get
     val processRunned1 = initiate(bpID, false, bpDTO)
     //val processRunned2 = initiate2(bpID, false, processRunned1, bpDTO, session_id)
    
-    None
+    Some(processRunned1) match {
+      case Some(process) => process.allElements.foreach { element =>
+          println()
+          println("Title " + element.title + " " + element.id)
+          println("states: " + element.states.length)
+          println("session_states: " + element.session_states.length)
+          println("reactions: " + element.reactions.length)
+          println()
+      }
+    }
+    Some(processRunned1)
   }
  
 
@@ -139,7 +143,8 @@ def initiate(bpID: Int, run_proc: Boolean = true, bpDTO: BProcessDTO, lang: Opti
     //process_dto
         val session_id = 1 // REMOVE THIS!!
 
-    initiate2(bpID, false, process, bpDTO,target, session_id)
+    //initiate2(bpID, false, process, bpDTO,target, session_id)
+    process
   }
 def initiate2(bpID: Int, run_proc: Boolean = true, processRunned: BProcess, bpDTO: BProcessDTO, target: List[UndefElement],session_id: Int, lang: Option[String] = Some("en") ):BProcess = {
     val test_space = BPSpaceDAO.findByBPId(bpID)

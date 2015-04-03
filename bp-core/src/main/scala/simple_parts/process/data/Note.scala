@@ -6,7 +6,7 @@ import main.scala.simple_parts.process.CompositeValues
 import main.scala.utils.Space
 
 class Note(val id: Int,
-            title: String,
+            override val title: String,
             desc: String,
             val values: Option[CompositeValues],
             val bprocess: BProcess,

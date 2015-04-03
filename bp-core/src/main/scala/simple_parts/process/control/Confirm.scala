@@ -5,7 +5,7 @@ import main.scala.simple_parts.process.{ProcElems, CompositeValues, Block}
 import main.scala.utils.Space
 
 class Confirm(val id: Int,
-            title: String,
+            override val title: String,
             desc: String,
             val values: Option[CompositeValues] = Option(CompositeValues(a_bool = Option(false))),
             val bprocess: BProcess,
@@ -43,7 +43,7 @@ class Confirm(val id: Int,
 
 
 class Confirmation(val id: Int,
-              title: String,
+              override val title: String,
               desc: String,
               val values: Option[CompositeValues] = Option(CompositeValues(a_bool = Option(false))),
               val bprocess: BProcess,

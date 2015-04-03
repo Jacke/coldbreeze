@@ -17,6 +17,7 @@ trait ProcElems {
   val space_id: Option[Space] = None
   val temp = false
   val refresh = false
+  val title: String = ""
   var order: Int
   val values: Option[CompositeValues]
   val bprocess: BProcess

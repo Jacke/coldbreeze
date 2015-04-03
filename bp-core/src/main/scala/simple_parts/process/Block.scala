@@ -16,7 +16,7 @@ import main.scala.bprocesses._
  */
 
 class Block(val id: Int,
-  title: String, 
+  override val title: String, 
   desc: String, 
   val values: Option[CompositeValues],
   val bprocess: BProcess,

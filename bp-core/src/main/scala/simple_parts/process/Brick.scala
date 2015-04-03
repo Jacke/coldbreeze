@@ -150,7 +150,7 @@ class ExpandBrick(override val id: Int,
   }
 }
 class ContainerBrick(override val id: Int,
-                     title: String,
+                     override val title: String,
                      desc: String,
                      override val values: Option[CompositeValues],
                      override val bprocess: BProcess,

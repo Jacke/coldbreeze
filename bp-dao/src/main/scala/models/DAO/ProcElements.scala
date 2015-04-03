@@ -94,7 +94,7 @@ updated_at:Option[org.joda.time.DateTime] = None) {
       }
       case conf if (conf.b_type == "block" && conf.type_title == "confirm") => {
         Option(
-          new main.scala.simple_parts.process.data.Confirmation(id.get,title,desc,Implicits.fetch_cv(comps),process,b_type,type_title,order))
+          new Confirm(id.get,title,desc,Implicits.fetch_cv(comps),process,b_type,type_title,order))
       }
       case _ => None
     }
