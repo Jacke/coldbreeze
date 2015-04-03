@@ -25,10 +25,10 @@ import main.scala.simple_parts.process.Units._
 
 
 object TestRunning extends App {
-  RunnerWrapper2.run(22)
+  Build.run(22)
 }
   
-object RunnerWrapper2 {
+object Build {
   
   
   def saveSession(bprocess: BProcess, bprocess_dto: BProcessDTO, lang: Option[String] = Some("en")) = {
