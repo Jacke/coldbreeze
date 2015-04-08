@@ -15,8 +15,8 @@ object Dependencies {
 
   )
 
-  val akkaVersion  = "2.3.2"
-  val sprayVersion = "1.3.1-20140423"
+  val akkaVersion     = "2.3.2"
+  val sprayVersion    = "1.3.1-20140423"
 
 
   val heroku          = "com.heroku"                % "sbt-heroku"              % "0.1.4"
@@ -63,9 +63,9 @@ object Dependencies {
   val jdbc            = "com.typesafe.play"         %% "play-jdbc"              % "2.3.0-RC1"
   val anorm           = "com.typesafe.play"         %% "anorm"                  % "2.3.0-RC1"
 
-  val jodatime        = "joda-time" % "joda-time"   % "2.4"
-  val jodaconvert     = "org.joda" % "joda-convert" % "1.6"
-  val jodamapper      = "com.github.tototoshi"      %% "slick-joda-mapper" % "1.2.0"
+  val jodatime        = "joda-time"                 % "joda-time"               % "2.4"
+  val jodaconvert     = "org.joda"                  % "joda-convert"            % "1.6"
+  val jodamapper      = "com.github.tototoshi"      %% "slick-joda-mapper"      % "1.2.0"
 
   val akkaActor       = "com.typesafe.akka"         %%  "akka-actor"            % akkaVersion
   val akkaSlf4j       = "com.typesafe.akka"         %%  "akka-slf4j"            % akkaVersion
@@ -75,14 +75,14 @@ object Dependencies {
   val nscala          = "com.github.nscala-time"    %%  "nscala-time"           % "1.0.0"
   val slickjoda       = "com.github.tminglei"       % "slick-pg_joda-time_2.11" % "0.6.1"
   val hdrHistogram    = "org.hdrhistogram"          %   "HdrHistogram"          % "1.0.8"
-  val sprayCan        = "io.spray"                  %%   "spray-can"             % sprayVersion
-  val sprayRouting    = "io.spray"                  %%   "spray-routing"         % sprayVersion
-  val sprayTestkit    = "io.spray"                  %%   "spray-testkit"         % sprayVersion
+  val sprayCan        = "io.spray"                  %%   "spray-can"            % sprayVersion
+  val sprayRouting    = "io.spray"                  %%   "spray-routing"        % sprayVersion
+  val sprayTestkit    = "io.spray"                  %%   "spray-testkit"        % sprayVersion
   val sprayJson       = "io.spray"                  %%  "spray-json"            % "1.2.6"
   val sprayJsonLenses = "net.virtual-void"          %%  "json-lenses"           % "0.5.5-SNAPSHOT"
   val sprayClient     = "io.spray"                  %%  "spray-client"          % sprayVersion
   val scalatest       = "org.specs2"                %%  "specs2" % "2.3.12"     % "test"
-  val scalaLog        = "com.typesafe.scala-logging"%%  "scala-logging-slf4j"   % "2.1.2"
+  val scalaLog        = "com.typesafe.scala-logging"%%  "scala-logging"         % "3.1.0"
   val snakeYaml       = "org.yaml"                  %   "snakeyaml"             % "1.13"
   val logbackClassic  = "ch.qos.logback"            % "logback-classic"         % "1.0.13"
 

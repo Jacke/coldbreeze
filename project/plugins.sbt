@@ -1,5 +1,7 @@
 resolvers += "Sonatype snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/"
 
+resolvers += "sonatype-releases" at "https://oss.sonatype.org/content/repositories/releases/"
+
 resolvers += "bintray-sbt-plugin-releases" at "http://dl.bintray.com/content/sbt/sbt-plugin-releases"
 
 resolvers += "Kamon Releases" at "http://repo.kamon.io"
@@ -18,7 +20,13 @@ resolvers += "spray repo" at "http://repo.spray.io"
 resolvers += Resolver.url("heroku-sbt-plugin-releases",
   url("http://dl.bintray.com/heroku/sbt-plugins/"))(Resolver.ivyStylePatterns)
 
-addSbtPlugin("com.heroku" % "sbt-heroku" % "0.1.4")
+
+resolvers += "Linter Repository" at "https://hairyfotr.github.io/linteRepo/releases"
+
+addCompilerPlugin("com.foursquare.lint" %% "linter" % "0.1.9")
+
+addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "0.6.0")
+
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-atmos" % "0.3.2")
 

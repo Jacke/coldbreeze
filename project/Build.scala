@@ -6,7 +6,6 @@ import com.typesafe.sbt.web._
 import play.PlayScala
 import play.Play.autoImport._
 import PlayKeys._
-import com.heroku.sbt.HerokuPlugin.autoImport._
 
 import com.typesafe.sbt.less.Import._ 
 
@@ -67,7 +66,6 @@ jodamapper, scalatest, reflect, postgres, logbackClassic, scalaLog, sprayCan, sp
     //.settings(formatSettings: _*)(WebKeys.public in Assets) := (classDirectory in Compile).value / "public",
     .settings(revolverSettings: _*)
     //.settings((compile in Compile) <<= (compile in Compile).dependsOn(WebKeys.assets in Assets))
-    .settings(herokuAppName in Compile := "minority-staging")
     .settings(includeFilter in(Assets, LessKeys.less) := "*.less")
     .settings(excludeFilter in(Assets, LessKeys.less) := "_*.less")
     .settings(mainClass in Compile := Some("ProdNettyServer"))
