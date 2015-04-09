@@ -5,3 +5,9 @@ dependencies:
   cache_directories:
     - "~/.ivy2"
     - "~/.sbt"
+
+test:
+  override:
+    - sbt bo-core/test:compile # use PHPunit for testing
+  post:
+    - sbt bp-core/test:test # add an extra test type
