@@ -14,6 +14,5 @@
 
 //resolvers ++= Seq("snapshots", "releases").map(Resolver.sonatypeRepo)
 
-
 testFrameworks += new TestFramework("utest.runner.JvmFramework")
 

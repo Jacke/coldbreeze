@@ -12,6 +12,7 @@ import models.DAO.ProcElemDAO._
 import models.DAO.BPDAO._
 import models.DAO.BPStationDAO._
 import models.DAO.conversion.DatabaseCred
+import main.scala.bprocesses._
   
 import main.scala.bprocesses.{BPState, BPSessionState} 
   
@@ -78,7 +79,31 @@ object BPStateDAO {
       q3.list
   }
 
+  def findOrCreateForElem(k: List[BPState], front_elem_id:Option[Int], space_elem_id:Option[Int]):List[Int] = database withSession {
+    implicit session =>
+     val titles = k.map(state => state.title)
+     val q3 = for { s <- bpstates if (s.title inSetBind titles) && (s.front_elem_id === front_elem_id) && (s.space_elem_id === space_elem_id) } yield s
+     val existed = q3.list
+     val filtereds = k.filter(state => !(existed.map(_.title).contains(state.title)) )
+     filtereds.map(filtered => pull_object(filtered))
+  }
 
+  def findOrCreateForSpace(k: List[BPState], space_id:Int):List[Int] = database withSession {
+    implicit session =>
+     val titles = k.map(state => state.title)
+     val q3 = for { s <- bpstates if (s.title inSetBind titles) && (s.space_id === space_id) } yield s
+     val existed = q3.list
+     val filtereds = k.filter(state => !(existed.map(_.title).contains(state.title)) )
+     filtereds.map(filtered => pull_object(filtered))
+  }
+  def findOrCreateForProcess(k: List[BPState], process_id:Int):List[Int] = database withSession {
+    implicit session =>
+     val titles = k.map(state => state.title)
+     val q3 = for { s <- bpstates if (s.title inSetBind titles) && (s.process === process_id) && (s.process_state === true) } yield s
+     val existed = q3.list
+     val filtereds = k.filter(state => !(existed.map(_.title).contains(state.title)) )
+     filtereds.map(filtered => pull_object(filtered))
+  }
   def get(k: Int):Option[BPState] = database withSession {
     implicit session ⇒
       val q3 = for { s ← bpstates if s.id === k } yield s
@@ -157,6 +182,47 @@ class BPSessionStates(tag: Tag) extends Table[BPSessionState](tag, "sessionstate
 
   def bpFK = foreignKey("bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
  
+}
+class SessionStateLogs(tag: Tag) extends Table[SessionStateLog](tag, "session_state_logs") {
+  def id = column[Int]("id", O.PrimaryKey, O.AutoInc) 
+  def session = column[Int]("session_id")
+
+  def on = column[Boolean]("on", O.Default(false))  
+  def on_rate = column[Int]("on_rate", O.Default(0))  
+
+  def reason = column[String]("reason")  
+  def created_at = column[Option[org.joda.time.DateTime]]("created_at")
+  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
+
+  def lang = column[String]("lang", O.Default("en"))  
+  def * = (id.?, session, on, on_rate,reason,
+           created_at, updated_at) <> (SessionStateLog.tupled, SessionStateLog.unapply)
+  def sesFK = foreignKey("session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
+} 
+object SessionStateLogDAO {
+import scala.util.Try
+import DatabaseCred.database
+import models.DAO.conversion.Implicits._
+
+val session_state_logs = TableQuery[SessionStateLogs]
+
+def getBySession(id: Int):Option[SessionStateLog] = database withSession {
+    implicit session =>
+    val q3 = for { s <- session_state_logs if s.session === id } yield s
+    q3.list.headOption
+  }
+ def ddl_create = {
+    database withSession {
+      implicit session =>
+      session_state_logs.ddl.create
+    }
+  }
+  def ddl_drop = {
+    database withSession {
+      implicit session =>
+       session_state_logs.ddl.drop
+    }
+  }
 }
 
 

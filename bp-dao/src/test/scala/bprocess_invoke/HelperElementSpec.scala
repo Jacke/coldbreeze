@@ -12,7 +12,10 @@ class HelperElementSpec extends Specification {
 
 
  "State" should {
-   val state = BPState(None, 1,1, title = "confirmed", opposite = "")
+   val state = BPState(None, process = 1, title = "confirmed", opposite = "", process_state = false, on = false, on_rate = 0,
+     front_elem_id = None,
+     space_elem_id = None,
+     space_id = None)
     "craftable" in {
       state.title == "confirmed"
     }

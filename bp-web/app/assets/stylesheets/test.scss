@@ -1,0 +1,25 @@
+@import 'bem';
+
+@include b(test) {
+    background: red;
+    @include e(element){
+        font-size: 14px;
+        @include v(activated) {
+            color: white;
+        }
+
+        @include m(big) {
+            font-size: 18px;
+        }
+    };
+    @include m(modifier) {
+        color: blue;
+        @include v(activated) {
+            color: white;
+        }
+
+        @include e(subelement) {
+            background: gray;
+        }
+    }
+}

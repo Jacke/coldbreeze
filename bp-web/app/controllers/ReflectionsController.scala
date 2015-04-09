@@ -33,6 +33,7 @@ import main.scala.bprocesses.BPSession
 import models.DAO.reflect._  
 import main.scala.bprocesses.refs.UnitRefs._
 import main.scala.bprocesses.refs.{BPStateRef} 
+import models.DAO.conversion._
 
 class ReflectionsController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
   // case classes
@@ -135,6 +136,8 @@ def elem_create(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit requ
             case id =>  { 
               println(id)
               makeTopolog(entity.reflection, Some(id), None)
+            
+              AutoTracer.defaultStatesForRefElem(entity.reflection, front_elem_id = Some(id), space_elem_id = None)
               Ok(Json.toJson(Map("success" ->  id)))
             }
           }
@@ -152,7 +155,11 @@ def space_create(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit req
    request.body.validate[UnitSpaceRef].map{ 
     case entity => SpaceReflectionDAO.pull_object(entity.copy(index = SpaceReflectionDAO.lastIndexOfSpace(entity.reflection))) match {
             case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not create space ${entity.index}")))
-            case id =>  Ok(Json.toJson(Map("success" ->  id)))
+            case id =>  { 
+              
+                AutoTracer.defaultStatesForSpace(ref_id = entity.reflection, space_id = Some(id))
+              Ok(Json.toJson(Map("success" ->  id)))
+            }
           }
     }.recoverTotal{
       e => BadRequest("formWithErrors")
@@ -168,7 +175,14 @@ def spaceelems_create(id: Int) = SecuredAction(BodyParsers.parse.json) { implici
     case entity => SpaceElementReflectionDAO.pull_object(entity.copy(
                                                         order = SpaceElementReflectionDAO.lastOrderOfSpace(entity.reflection, entity.ref_space_owned))) match {
             case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not create space element ${entity.title}")))
-            case id =>  makeTopolog(entity.reflection, None, Some(id)); Ok(Json.toJson(Map("success" ->  id)))
+            case id =>  { 
+              makeTopolog(entity.reflection, None, Some(id))
+              AutoTracer.defaultStatesForRefElem(entity.reflection, front_elem_id = None, space_elem_id = Some(id))
+                                                
+              
+              Ok(Json.toJson(Map("success" ->  id)))
+
+            }
           }
     }.recoverTotal{
       e => BadRequest("formWithErrors")

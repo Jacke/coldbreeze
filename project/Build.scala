@@ -5,6 +5,7 @@ import com.typesafe.sbt.web._
 
 import play.PlayScala
 import play.Play.autoImport._
+import sass.Import._
 import PlayKeys._
 
 import com.typesafe.sbt.less.Import._ 
@@ -20,6 +21,7 @@ object Build extends Build {
   lazy val root = Project("root", file("."))
     .aggregate(bpCore, bpDao, bpWeb)
     .settings(basicSettings: _*)
+
     //.settings(formatSettings: _*)
     .settings(noPublishing: _*)
     .settings(revolverSettings: _*)
@@ -66,6 +68,10 @@ jodamapper, scalatest, reflect, postgres, logbackClassic, scalaLog, sprayCan, sp
     //.settings(formatSettings: _*)(WebKeys.public in Assets) := (classDirectory in Compile).value / "public",
     .settings(revolverSettings: _*)
     //.settings((compile in Compile) <<= (compile in Compile).dependsOn(WebKeys.assets in Assets))
+    .settings(sassOptions in Assets ++= Seq("--compass", "-r", "compass"))
+/*.settings(
+    sassOptions := Seq("--compass")
+)*/
     .settings(includeFilter in(Assets, LessKeys.less) := "*.less")
     .settings(excludeFilter in(Assets, LessKeys.less) := "_*.less")
     .settings(mainClass in Compile := Some("ProdNettyServer"))

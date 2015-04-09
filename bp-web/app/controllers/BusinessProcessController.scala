@@ -32,7 +32,7 @@ import play.api.Play.current
 import main.scala.bprocesses._
 import main.scala.simple_parts.process.Units._
 import models.DAO.reflect._
-
+import models.DAO.conversion._
 
 case class StationNoteMsg(msg: String)
 case class RefElemContainer(title: String, desc: String = "", business: Int, process: Int, ref: Int, space_id: Option[Int]= None)
@@ -234,8 +234,14 @@ def create_bprocess = SecuredAction(BodyParsers.parse.json) { request =>
       BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
     },
     bprocess => { 
-      BPDAO.pull_object(bprocess)
-      Ok(Json.obj("status" ->"OK", "message" -> ("Bprocess '"+bprocess.id+"' saved.") ))  
+      BPDAO.pull_object(bprocess) match {
+        case id => { 
+          AutoTracer.defaultStatesForProcess(process_id = id)
+          Ok(Json.obj("status" ->"OK", "message" -> ("Bprocess '"+bprocess.id+"' saved.") ))  
+        }
+        case _ => BadRequest(Json.obj("status" -> "Cannot create process"))
+      }
+      
     }
   )
 }

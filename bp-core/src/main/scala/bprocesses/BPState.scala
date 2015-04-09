@@ -12,8 +12,8 @@ case class BPSessionState(
   title:        String, 
   var opposite: String = "",
   process_state:Boolean = false,
-  on: Boolean = false,
-  on_rate: Int = 0,
+  var on: Boolean = false,
+  var on_rate: Int = 0,
   front_elem_id:Option[Int],
   space_elem_id:Option[Int],
   space_id:Option[Int],
@@ -40,8 +40,8 @@ case class BPState(
   title:        String, 
   var opposite: String = "",
   process_state:Boolean = false,
-  on: Boolean = false,
-  on_rate: Int = 0,
+  var on: Boolean = false,
+  var on_rate: Int = 0,
   front_elem_id:Option[Int],
   space_elem_id:Option[Int],
   space_id:Option[Int],
@@ -62,3 +62,11 @@ case class BPState(
   var switchers:ListBuffer[UnitSwitcher] = ListBuffer()     
   
 }
+
+case class SessionStateLog(var id: Option[Int], 
+  state_id: Int, 
+  on: Boolean, 
+  on_rate: Int, 
+  reason: String,
+  created_at:   Option[org.joda.time.DateTime] = None, 
+  updated_at:   Option[org.joda.time.DateTime] = None) 

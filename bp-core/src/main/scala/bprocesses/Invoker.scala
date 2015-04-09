@@ -170,8 +170,9 @@ def move:Unit = {
         expanded  = false,
         container = false)
       )
+      println("<<<<<<<<<")
 
-      println("**** RUN" + elem.toString + " ****")
+      //println("**** RUN" + elem.toString + " ****")
       toStationLogger("prepareinvoking")
 
       front(elem)

@@ -38,6 +38,7 @@ ReactionStateOutRefDAO.ddl_create
 ReactionDAO.ddl_create
 ReactionStateOutDAO.ddl_create
 
+SessionStateLogDAO.ddl_create
 
     // Resources
     TokensDAO.ddl_create
@@ -113,6 +114,7 @@ ReactionStateOutRefDAO.ddl_drop
 ReactionDAO.ddl_drop
 ReactionStateOutDAO.ddl_drop
 
+SessionStateLogDAO.ddl_drop
 
     // Resources
     TokensDAO.ddl_drop

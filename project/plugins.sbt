@@ -10,6 +10,8 @@ resolvers += "Maven Central" at "http://repo1.maven.org/maven2"
 
 resolvers += "MVN" at "http://repo.typesafe.com/typesafe/releases/"
 
+resolvers += Resolver.url("GitHub repository", url("http://shaggyyeti.github.io/releases"))(Resolver.ivyStylePatterns)
+
 
 resolvers += "Typesafe"     at "http://repo.typesafe.com/typesafe/maven-releases"
 
@@ -67,5 +69,12 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-mocha" % "1.0.0")
 addSbtPlugin("me.lessis" % "bintray-sbt" % "0.1.1")
   
   
+//addSbtPlugin("default" % "sbt-sass" % "0.1.9")
+
+
+resolvers += Resolver.url("GitHub repository", url("http://shaggyyeti.github.io/releases"))(Resolver.ivyStylePatterns)
+
+addSbtPlugin("default" % "sbt-sass" % "0.1.9")
+
 
 //addSbtPlugin("au.com.onegeek.sbtdotenv" % "sbt-dotenv" % "1.0.17")

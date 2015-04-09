@@ -95,6 +95,22 @@ object BPStateRefDAO {
        q3.list                   
     } 
   }
+  def findOrCreateForElem(k: List[BPStateRef], front_elem_id:Option[Int], space_elem_id:Option[Int]):List[Int] = database withSession {
+    implicit session =>
+     val titles = k.map(state => state.title)
+     val q3 = for { s <- state_refs if (s.title inSetBind titles) && (s.front_elem_id === front_elem_id) && (s.space_elem_id === space_elem_id) } yield s
+     val existed = q3.list
+     val filtereds = k.filter(state => existed.map(_.title).contains(state.title) )
+     filtereds.map(filtered => pull_object(filtered))
+  }
+  def findOrCreateForSpace(k: List[BPStateRef], space_id:Int):List[Int] = database withSession {
+    implicit session =>
+     val titles = k.map(state => state.title)
+     val q3 = for { s <- state_refs if (s.title inSetBind titles) && (s.space_id === space_id) } yield s
+     val existed = q3.list
+     val filtereds = k.filter(state => existed.map(_.title).contains(state.title) )
+     filtereds.map(filtered => pull_object(filtered))
+  }
   def retrive(k: Int, process: Int, front_elem_id:Option[Int],
   space_elem_id:Option[Int], state_id:Option[Int]):List[BPState] = database withSession {
     implicit session =>

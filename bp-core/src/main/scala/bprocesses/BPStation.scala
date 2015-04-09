@@ -108,6 +108,31 @@ class BPStation(val bp: BProcess) {
                         paused = new_paused
   } 
 
+
+  def applySwitcher(fn: String, target: String) = {
+    target match {
+      case "step" => {
+        fn match {
+          case "inc" => { 
+            if (inspace && container_state.length > 0) {change_container_step(container_step.last + 1)}
+            if (!inspace) {update_step(step + 1);}
+          }
+          case "dec" => { 
+            if (inspace || container_state.length > 0) {change_container_step(container_step.last - 1)}
+            if (!inspace) {update_step(step - 1)}           
+          }
+          case "res" => { 
+            if (inspace || container_state.length > 0) {change_container_step(0)}
+            if (!inspace) {update_step(0)}           
+          }
+        }
+      }
+      case "space" => {
+
+      }
+    }
+  }
+
   /**
    * Representation
    */

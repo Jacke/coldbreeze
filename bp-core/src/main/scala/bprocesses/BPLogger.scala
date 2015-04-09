@@ -3,6 +3,7 @@ package main.scala.bprocesses
 import main.scala.simple_parts.process._
 import com.github.nscala_time.time.Imports._
 import scala.collection.immutable.TreeMap
+import main.scala.bprocesses._
 
 /**
  * BPLogger
@@ -58,6 +59,14 @@ class BPLogger {
   }
 
   /**
+   * Logs for sessions, when state is changed
+   */
+  var session_state_logs: Array[SessionStateLog] = Array.empty[SessionStateLog]
+  def sessionStateLog(result: SessionStateLog) = {
+    session_state_logs = session_state_logs :+ result
+  }
+
+  /**
    * Return map of steps and 2 BPLoggerResults(before and after computation)
    * @return Map [Step, List(BPLoggerResultBefore, BPLoggerResultAfter)
    */
@@ -103,7 +112,7 @@ class BPLogger {
 
 
 
-class BottomLine(bp: BProcess) {
+class ProcessBottomLine(bp: BProcess) {
   var errors: Array[BPError] = Array.empty
   var req_link: Array[ReqLink] = Array.empty
 

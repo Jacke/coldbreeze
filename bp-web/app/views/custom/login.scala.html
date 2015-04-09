@@ -30,10 +30,10 @@
         @if( externalProviders.size > 0 ) {
             <div class="clearfix">
                 <!--  <p>@Messages("securesocial.login.instructions")</p> -->
-                <p>
+                <p> <!--
                     @for(p <- externalProviders) {
                         @views.html.custom.provider(p.id)
-                    }
+                    }-->
                 </p>
             </div>
         }
@@ -52,7 +52,7 @@
     }
 </div>
     </div>
-
+<!--
 <div class="loginPage loginPage__register">
   <div class="loginView">
 
@@ -71,10 +71,10 @@
 
   </form>
 
-  <p class="loginText">@Messages("custom.haveAccount")<a class="switchView" tabindex="14" href="/login?resumeKey=1405715440">@Messages("custom.signIn")</a>.</p>
+  <p class="loginText">@Messages("custom.haveAccount")<a class="switchView" tabindex="14" href="/login">@Messages("custom.signIn")</a>.</p>
 
   <p class="loginText smaller">@Messages("custom.byClicking") <a tabindex="15" href="#">@Messages("footer.terms")</a> @Messages("custom.and") <a tabindex="15" href="https://www.iubenda.com/privacy-policy/323220">@Messages("footer.privacy")y</a>.</p>
 
   </div>
-</div> 
+</div> -->
 }

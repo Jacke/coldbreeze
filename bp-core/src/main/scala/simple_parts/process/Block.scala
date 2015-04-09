@@ -32,6 +32,7 @@ class Block(val id: Int,
   override def toString = s"Block: $title"
 
   override def invoke {
+      println(">>>>>>>>>>>>")
     println("invoked block")
   }
 

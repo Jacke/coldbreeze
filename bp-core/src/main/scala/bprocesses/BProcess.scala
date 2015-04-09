@@ -12,8 +12,10 @@ import main.scala.simple_parts.process.resource.ResAct
 
 import scala.util.Try
 import main.scala.utils.InputParamProc
+import scala.collection.mutable.ListBuffer  
+import main.scala.simple_parts.process.Units._
 
-class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: Option[Array[Group]] = None) extends BPLinkContainer[BPLink] 
+class BProcess(scope: Scope, val id: Option[Int] = None, resources: Option[Array[Resource]] = None, groups: Option[Array[Group]] = None) extends BPLinkContainer[BPLink] 
    with OwnershipContainer
    with BPFlow 
 {
@@ -27,8 +29,13 @@ class BProcess(scope: Scope, resources: Option[Array[Resource]] = None, groups: 
   links = Array.empty[BPLink]
   var station = new BPStation(this)
   var logger = station.logger
-  val marker =  new BPMarker(this)
-  val errors = new BottomLine(this)
+  val marker =  new BPMarker(this) // Will deprecated and removed soon
+  val nimarker = new NIMarker(this)
+  val errors = new ProcessBottomLine(this)
+  // States
+  var states:ListBuffer[BPState] = ListBuffer() 
+  var session_states:ListBuffer[BPSessionState] = ListBuffer() 
+
 
 /**
  *  In-Process collection methods
