@@ -8,6 +8,6 @@ dependencies:
 
 test:
   override:
-    - sbt bo-core/test:compile # use PHPunit for testing
+    - sbt bp-core/test:compile # use PHPunit for testing
   post:
     - sbt bp-core/test:test # add an extra test type
