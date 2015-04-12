@@ -81,6 +81,9 @@ object Build {
     println(dblogger)
     dblogger.foreach(log => BPLoggerDAO.pull_object(log))
   }
+  def saveSessionStateLogs(bprocess: BProcess, bprocess_dto: BProcessDTO) = {
+    bprocess.station.station_logger.session_state_logs.foreach(obj => SessionStateLogDAO.pull_object(obj))
+  }
   def saveStationLog(process_id: Int, station_id: Int, bprocess: BProcess) = {
     val station_loggers = bprocess.station.station_logger.logs.map(s => BPStationLoggeDAO.from_origin_station(process_id, station_id, s))
     station_loggers.foreach(s => BPStationLoggeDAO.pull_object(s))
@@ -140,6 +143,8 @@ object Build {
     println("elements length" + processRunned1.allElements.length)
     Some(processRunned1)
 
+
+
   }
  
 
@@ -165,9 +170,9 @@ def initiate(bpID: Int, run_proc: Boolean = true, bpDTO: BProcessDTO, lang: Opti
     }
     println("elements " + process.allElements.length + " " + target.length)
     //process_dto
-        val session_id = 1 // REMOVE THIS!!
+       // val session_id = 1 // REMOVE THIS!!
 
-    initiate2(bpID, true, process, bpDTO,target, session_id, Some("en"), false) // TODO: Change to true
+    initiate2(bpID, true, process, bpDTO,target, Some("en"), true) // TODO: Change to true
     process
   }
 def initiate2(bpID: Int, 
@@ -175,7 +180,7 @@ def initiate2(bpID: Int,
   processRunned: BProcess, 
   bpDTO: BProcessDTO, 
   target: List[UndefElement], 
-  session_id: Int, 
+  //session_id: Int, 
   lang: Option[String] = Some("en"),
   with_pulling: Boolean = false):BProcess = 
 {
@@ -185,9 +190,12 @@ def initiate2(bpID: Int,
     val front_bricks = process.findFrontBrick()
 
     // Generate sessions
-    //val session_id = saveSession(processRunned, bpDTO, lang)
+    val session_id = saveSession(processRunned, bpDTO, lang)
+    // Update session for process
+    processRunned.session_id = session_id
+
     val station_id = saveState(processRunned, bpDTO, session_id, lang)
-    //val session_states_ids = saveSessionStates(processRunned, bpDTO, session_id)
+    val session_states_ids = saveSessionStates(processRunned, bpDTO, session_id)
     saveLogsInit(processRunned, bpDTO, station_id, BPSpaceDAO.findByBPId(bpID))
     saveStationLog(bpID, station_id, processRunned)
 
@@ -211,10 +219,11 @@ def initiate2(bpID: Int,
     **/    
     var session_states:List[BPSessionState] = List()
     if (with_pulling) {
+    //} else {
+      session_states = Build.saveSessionStates(processRunned, bpDTO, session_id, pulling = true).session_states
+     
       val obj = BPSessionStateDAO.findByBPAndSession(bpID, session_id)
       session_states = SessionStatesContainer(obj, obj.map(o => o.id.getOrElse(0))).session_states
-    } else {
-       session_states = Build.saveSessionStates(processRunned, bpDTO, session_id, pulling = false).session_states
     }
 
 
@@ -259,7 +268,18 @@ def initiate2(bpID: Int,
       NInvoker.run_proc(process)
     else
       println("Error")
+
+
+
+    /**
+    *  Save state and logs
+    **/
+    saveLogsInit(process, bpDTO, station_id, test_space)
+    saveSessionStateLogs(process, bpDTO)
+    saveStationLog(bpID, station_id, process)
+
     process
+
 }  
   
 def runFrom(station_id:Int, bpID:Int, params: List[InputParamProc], session_id: Int):Option[Int]  = {

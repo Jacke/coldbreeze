@@ -3,13 +3,21 @@ package main.scala.bprocesses
 import main.scala.bprocesses.BPStation
 import main.scala.simple_parts.process.ProcElems
 import org.joda.time.DateTime
-
+import main.scala.bprocesses._
 
 class BPStationLogger {
   var logs: Array[BPStationLoggerResult] = Array.empty[BPStationLoggerResult]
   def log(result: BPStationLoggerResult): Array[BPStationLoggerResult] = {
     logs = logs :+ result
     logs
+  }
+
+  /**
+   * Logs for sessions, when state is changed
+   */
+  var session_state_logs: Array[SessionStateLog] = Array.empty[SessionStateLog]
+  def sessionStateLog(result: SessionStateLog) = {
+    session_state_logs = session_state_logs :+ result
   }
 
 }

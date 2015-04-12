@@ -61,6 +61,15 @@ class BPStation(val bp: BProcess) {
   def change_expand_step(v: Int)          = this.expand_step(this.expand_step.length-1) =  v
   def update_expand_state(v: Boolean)     = this.expand_state = this.expand_state     :+ v
 
+  def absoluteStepInc() = {
+    if (inspace) {
+      change_container_step(container_step.last + 1)
+    }
+    if (isInFront) {
+      update_step(step + 1)
+    }
+  }
+
   def flush_container_step()   = if(!this.container_step.isEmpty) { this.container_step = this.container_step.init }
   def flush_container_state()  = if(!this.container_state.isEmpty){ this.container_state = this.container_state.init }
 
@@ -108,14 +117,44 @@ class BPStation(val bp: BProcess) {
                         paused = new_paused
   } 
 
+  
 
-  def applySwitcher(fn: String, target: String) = {
+
+  def applySwitcher(fn: String, target: String, switch_type: String) = {
+    /*
+          case "n" => {
+                  bp.station.applySwitcher(switcher.fn, switcher.target)
+                } /* For next */
+          case "p" => { 
+            bp.station.applySwitcher(switcher.fn, switcher.target)
+          } /* For pause */
+          case "play" => {
+            bp.station.applySwitcher(switcher.fn, switcher.target)
+          }
+          case "stp" => {
+            bp.station.applySwitcher(switcher.fn, switcher.target)
+          }
+          case "in" => {
+            bp.station.applySwitcher(switcher.fn, switcher.target)
+          } /* For in */
+          case "out" => {
+            bp.station.applySwitcher(switcher.fn, switcher.target)
+          } /* For out */
+          case "inn" => {
+            bp.station.applySwitcher(switcher.fn, switcher.target)
+          } /* For in next */
+          case "outn" => {
+            bp.station.applySwitcher(switcher.fn, switcher.target)
+          } /* For out next */          
+          case _ => 
+    */
+
     target match {
       case "step" => {
         fn match {
           case "inc" => { 
-            if (inspace && container_state.length > 0) {change_container_step(container_step.last + 1)}
-            if (!inspace) {update_step(step + 1);}
+            println("absoluteStepInc()")
+            absoluteStepInc()
           }
           case "dec" => { 
             if (inspace || container_state.length > 0) {change_container_step(container_step.last - 1)}
@@ -127,7 +166,86 @@ class BPStation(val bp: BProcess) {
           }
         }
       }
+      case "proc" => {
+        fn match {
+          case "pause" => {
+            bp.station.update_paused(true)
+          }
+          case "stop" => {
+            bp.station.update_state(false)
+          }
+          case "play" => {
+            bp.station.update_paused(false)
+          }
+        }
+      }
       case "space" => {
+        fn match {
+          case "inn" => {
+            // in
+            bp.marker.moveToSpaceByIndx(getSpace(this).get.index, getSpace(this).get.id)//.moveToSpace
+            //println("bp.marker.moveToSpace")
+            bp.marker.moveToContainer
+            //bp.marker.runContainer(getSpace(this).get, 0)//bp.station.contStepVal)
+            println(bprocess.station.represent)
+            absoluteStepInc()
+          }
+          case "outn" => {
+            // out
+  def moveUpFront = {
+      if (    (station.container_step.length < 2 || station.container_step.isEmpty)
+                                                 &&
+              (station.expand_step.length < 2    || station.expand_step.isEmpty))
+      {
+        toStationLogger("preparemoveupfront")
+        station.inExpand(false)
+        station.inContainer(false)
+        station.inSpace(false)
+        station.flush_container_step
+        station.flush_expand_step
+        
+        station.flush_container_state
+        station.flush_expand_state
+        
+        station.update_space(station.space - 1)
+        station.del_space_id(station.spaces_ids.last) } 
+      else 
+      { 
+        moveUpFrontSpace 
+      }
+      toStationLogger("moveupfront")
+
+  }
+  def moveUpFrontSpace = {
+    toStationLogger("preparemoveupfrontspace")
+    station.inSpace(true)
+
+    station.flush_container_state
+    station.flush_expand_state
+    if (station.current_expand_state) {
+    station.inExpand(true)
+    } else {
+    station.inExpand(false)
+    }
+    if (station.current_container_state) {
+    station.inContainer(true)
+    } else {
+      station.inContainer(false)
+    }
+
+    station.flush_container_step
+    station.flush_expand_step
+
+
+    station.del_space_id(station.spaces_ids.last)
+    station.update_space(station.space - 1)
+    toStationLogger("moveupfrontspace")
+
+  }
+}
+            absoluteStepInc()
+          }
+        }
 
       }
     }

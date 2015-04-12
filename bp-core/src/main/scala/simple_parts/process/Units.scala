@@ -88,22 +88,11 @@ state_ref:Int,
 session_state_ref: Option[Int] = None,                            
 fn: String,
 target: String,
+override_group: Int = 0,
 created_at:Option[org.joda.time.DateTime] = None,
 updated_at:Option[org.joda.time.DateTime] = None) {
-  
-   def operation(): String = {
-      switch_type match { 
-        case "n" => println("next");"next"
-        case "p" => println("pause");"pause"
-        case "play" => println("play");"play"
-        case "stp" => println("stop");"stop"
-        case "in" => println("in");"in"
-        case "out" => println("out");"out"
-        case _ => ""
-      } 
-   }
-   
- }
+
+}
   
 case class UnitSpaceElement(
    id: Option[Int],
@@ -131,8 +120,24 @@ from_state: Option[Int],
 created_at:Option[org.joda.time.DateTime] = None,
 updated_at:Option[org.joda.time.DateTime] = None) {
     var reaction_state_outs:ListBuffer[UnitReactionStateOut] = ListBuffer() 
-
- }
+    
+    def execute(bp: BProcess) {
+      /**
+       * TODO: Add logic and expressions execution
+       */
+      // find element by topolog
+      val element = 
+      reaction_state_outs.foreach { out => 
+        element.session_states.find(st => st.id.getOrElse(0) == out.state_ref) match {
+          case Some(state) => {
+            // update state with
+            state.on = out.on
+            state.on_rate = out.on_rate
+          }
+        }
+      }
+    }
+ } 
 
  case class UnitReactionStateOut(id: Option[Int],
   state_ref: Int,

@@ -23,6 +23,7 @@ class SwitcherRefs(tag: Tag) extends Table[UnitSwitcherRef](tag, "switcher_refs"
   def state_ref = column[Int]("state_ref_id")
   def fn = column[String]("fn")
   def target = column[String]("target")  
+  def override_group = column[Int]("override_group", O.Default(0))
     
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
@@ -36,6 +37,7 @@ priority,
 state_ref,
 fn,
 target,
+override_group,
 created_at, updated_at) <> (UnitSwitcherRef.tupled, UnitSwitcherRef.unapply)
 
   def state_refFK = foreignKey("state_ref_fk", state_ref, models.DAO.reflect.BPStateRefDAO.state_refs)(_.id, onDelete = ForeignKeyAction.Cascade)

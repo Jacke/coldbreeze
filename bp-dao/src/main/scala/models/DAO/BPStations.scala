@@ -132,11 +132,16 @@ object BPStationDAO {
       }
     }
   }
+  def findBySession(id: Int) = {
+    database withSession { implicit session =>
+     val q3 = for { st ← bpstations if st.session === id } yield st
+      q3.list.headOption
+    }
+  }
 
   def findByBPId(id: Int) = {
     database withSession { implicit session =>
-     val q3 = for { st ← bpstations if st.process === id } yield st// <> (BPStationDTO.tupled, BPStationDTO.unapply _)
-
+     val q3 = for { st ← bpstations if st.process === id } yield st
       q3.list
     }
   }

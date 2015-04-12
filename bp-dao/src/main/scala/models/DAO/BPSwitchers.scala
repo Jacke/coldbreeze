@@ -23,6 +23,7 @@ class BPSwitchers(tag: Tag) extends Table[UnitSwitcher](tag, "bpswitchers") {
   def session_state = column[Option[Int]]("session_state", O.Default(None))
   def fn = column[String]("fn")
   def target = column[String]("target")
+  def override_group = column[Int]("override_group", O.Default(0))
     
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
@@ -35,6 +36,7 @@ state,
 session_state, 
 fn,
 target,          
+override_group,
 created_at, updated_at) <> (UnitSwitcher.tupled, UnitSwitcher.unapply)
 
 def stateFK = foreignKey("statefk", state, models.DAO.BPStateDAO.bpstates)(_.id, onDelete = ForeignKeyAction.Cascade)

@@ -15,7 +15,7 @@ import main.scala.utils.InputParamProc
 import scala.collection.mutable.ListBuffer  
 import main.scala.simple_parts.process.Units._
 
-class BProcess(scope: Scope, val id: Option[Int] = None, resources: Option[Array[Resource]] = None, groups: Option[Array[Group]] = None) extends BPLinkContainer[BPLink] 
+class BProcess(scope: Scope, val id: Option[Int] = None, var assigned_session_id: Option[Int] = None, resources: Option[Array[Resource]] = None, groups: Option[Array[Group]] = None) extends BPLinkContainer[BPLink] 
    with OwnershipContainer
    with BPFlow 
 {
@@ -32,6 +32,16 @@ class BProcess(scope: Scope, val id: Option[Int] = None, resources: Option[Array
   val marker =  new BPMarker(this) // Will deprecated and removed soon
   val nimarker = new NIMarker(this)
   val errors = new ProcessBottomLine(this)
+
+  // Session id retriving 
+  // TODO: Make that id constant while process creating
+  var session_id = 0
+
+  if (assigned_session_id.isDefined) {
+    session_id = assigned_session_id.get
+  }
+  
+
   // States
   var states:ListBuffer[BPState] = ListBuffer() 
   var session_states:ListBuffer[BPSessionState] = ListBuffer() 

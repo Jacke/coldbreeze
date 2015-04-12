@@ -32,7 +32,7 @@ class Refs(tag: Tag) extends Table[Ref](tag, "refs") {
 }
 
 case class Ref(id: Option[Int], title: String, host: String = "", desc: Option[String] = None,
-created_at:Option[org.joda.time.DateTime], updated_at:Option[org.joda.time.DateTime])
+created_at:Option[org.joda.time.DateTime] = None, updated_at:Option[org.joda.time.DateTime] = None)
 
 
   case class RetrivedRef(

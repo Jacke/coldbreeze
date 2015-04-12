@@ -74,10 +74,10 @@ trait NIDeterms extends StateLigher {
   def toStation(bp: BProcess): BPStation
   def toStationLogger(sygnal: String): Array[BPStationLoggerResult]
 
-  def lightElem(elem: ProcElems, state: String, rate: Int = 100):Unit
-  def haltElem(elem: ProcElems, state: String, rate: Int = 0):Unit
-  def lightProcess(state: String, rate: Int = 100):Unit
-  def haltProcess(state: String, rate:Int = 0):Unit
+  def lightElem(elem: ProcElems, state: String, rate: Int = 100, reason: String = "flow"):Unit
+  def haltElem(elem: ProcElems, state: String, rate: Int = 0, reason: String = "flow"):Unit
+  def lightProcess(state: String, rate: Int = 100, reason: String = "flow"):Unit
+  def haltProcess(state: String, rate:Int = 0, reason: String = "flow"):Unit
 
   def move
 
@@ -142,6 +142,7 @@ trait NIMoves extends StateLigher {
   def toLogger(bp: BProcess, result: BPLoggerResult)
   def toLoggerBefore(bp: BProcess, result: BPLoggerResult) = bp.logger.logBefore(result)
   def toStationLogger(sygnal: String) = bp.station.station_logger.log(BPStationLoggerResult(bp.station, sygnal, bp.station.state_represent))
+  def commonBottomLine(elem: ProcElems) 
 
   def step_inc
   def endOrPause
@@ -162,6 +163,7 @@ trait NIMoves extends StateLigher {
 def move:Unit = {
 
     NInvoker.toApplogger("moving")
+    NInvoker.toApplogger(station.step)
     toStationLogger("moving")
     loopNumAdd()
     // ended?
@@ -176,14 +178,14 @@ def move:Unit = {
       NInvoker.toApplogger(station.incontainer)
         if (bp.spaces.length < 1) {
           toStationLogger("preparemoveupfront")
-          moveUpFront
+          //moveUpFront
           toStationLogger("moveupfront")
           move
         } else
         if (isSpaceEnded) {
           NInvoker.toApplogger("spaceended")
           toStationLogger("preparemoveupfrontspace")
-          moveUpFrontSpace
+          //moveUpFrontSpace
           toStationLogger("moveupfrontspace")
         } else {
           NInvoker.toApplogger("spacenotended")
@@ -202,47 +204,8 @@ def move:Unit = {
        * Front launch
        */
       val elem = bp.variety(toStation(bp).step)
-
-      toLoggerBefore(bp, BPLoggerResult(
-        elem,
-        composite = bp.copyCV(elem.values),
-        order     = elem.order,
-        space     = None,
-        station   = toStation(bp),
-        invoked   = true,
-        expanded  = false,
-        container = false)
-      )
-
-      NInvoker.toApplogger("Switchers:")
-      elem.session_states.foreach { state => 
-        NInvoker.toApplogger(state.title + " " + state.switchers.length.toString)
-        state.switchers.foreach(sw => NInvoker.toApplogger(sw.toString))
-       }
-      NInvoker.toApplogger("**** RUN" + elem.toString + " ****")
-
-      toStationLogger("prepareinvoking")
-      lightElem(elem = elem, state = "initiated")
-
-      front(elem)
-      lightElem(elem = elem, state = "invoked")
-      toStationLogger("invoked")
-      NInvoker.toApplogger(elem.getClass)
-      toLogger(bp, BPLoggerResult(
-                                  elem,
-                                  composite = bp.copyCV(elem.values),
-                                  order     = elem.order,
-                                  space     = None,
-                                  station   = toStation(bp),
-                                  invoked   = true,
-                                  expanded  = false,
-                                  container = false))
-      if (!station.paused) {
-        lightElem(elem = elem, state = "finished")
-        // DEPRECATED WITH : lightElem(elem = elem, state = "invoked")
-        //toStation(bp).update_step(station.step + 1)
-      }
-      // Sygnal step inc elem invoked
+      commonBottomLine(elem) 
+     
 
       if (station.isInFront | station.inspace) {
         move //  NInvoker.toApplogger("station")

@@ -124,33 +124,22 @@ priority: Int = 2,
 state_ref:Int,
 fn: String,
 target: String,
+override_group: Int = 0,
 created_at:Option[org.joda.time.DateTime] = None,
 updated_at:Option[org.joda.time.DateTime] = None) { 
-  def operation(): String = {
-      switch_type match { 
-        case "n" => println("next");"next"
-        case "p" => println("pause");"pause"
-        case "play" => println("play");"play"
-        case "stp" => println("stop");"stop"
-        case "in" => println("in");"in"
-        case "out" => println("out");"out"
-        case _ => ""
-      } 
-   }
 
    def reflect(process: Int, state_ref: Int, session: Option[Int] = None):UnitSwitcher = {
-    
      UnitSwitcher(None,
-process,
-switch_type, 
-priority,                            
-state_ref,
-session_state_ref = session,  
-fn,
-target,                          
-created_at,
-updated_at)
-     
+                  process,
+                  switch_type, 
+                  priority,                            
+                  state_ref,
+                  session_state_ref = session,  
+                  fn,
+                  target,           
+                  override_group,               
+                  created_at,
+                  updated_at)
    }
 }
    

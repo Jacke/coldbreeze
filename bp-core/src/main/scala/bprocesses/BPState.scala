@@ -64,6 +64,7 @@ case class BPState(
 }
 
 case class SessionStateLog(var id: Option[Int], 
+  session_id: Int,
   state_id: Int, 
   on: Boolean, 
   on_rate: Int, 
