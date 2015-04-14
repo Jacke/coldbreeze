@@ -39,8 +39,8 @@ POST     /signup/:token             @controllers.CustomRegistrationController.ha
 GET         /only-twitter                                       @controllers.Application.onlyTwitter
 
 # Custom
-GET         /custom/login                                       @controllers.CustomLoginController.login
-POST        /custom/logout                                      @controllers.CustomLoginController.logout
+GET         /auth/login                                         @controllers.CustomLoginController.login
+POST        /auth/logout                                        @controllers.CustomLoginController.logout
 
 # Businesses
 GET         /businesses                                         @controllers.BusinessController.index()

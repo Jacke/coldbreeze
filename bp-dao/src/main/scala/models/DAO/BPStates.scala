@@ -33,6 +33,9 @@ class BPStates(tag: Tag) extends Table[BPState](tag, "bpstates") {
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
 
+
+  def middle = Column[Title]("middle", O.Default(""))
+  def middleable = Column[Boolean]("middleable", O.Default(false))
   def lang = column[String]("lang", O.Default("en"))  
   def * = (id.?, process, title, opposite,
                                           process_state,
@@ -40,7 +43,7 @@ class BPStates(tag: Tag) extends Table[BPState](tag, "bpstates") {
                                           front_elem_id,
                                           space_elem_id,
                                           space_id,
-           created_at, updated_at, lang) <> (BPState.tupled, BPState.unapply)
+           created_at, updated_at, lang, middle, middleable) <> (BPState.tupled, BPState.unapply)
 
   def bpFK = foreignKey("bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
   def procelemFK = foreignKey("procelem_fk", front_elem_id, proc_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
@@ -165,6 +168,8 @@ class BPSessionStates(tag: Tag) extends Table[BPSessionState](tag, "sessionstate
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
 
+  def middle = Column[Title]("middle", O.Default(""))
+  def middleable = Column[Boolean]("middleable", O.Default(false))
   def lang = column[String]("lang", O.Default("en"))  
   def * = (id.?, process, session, title, opposite,
                                           process_state,
@@ -173,7 +178,7 @@ class BPSessionStates(tag: Tag) extends Table[BPSessionState](tag, "sessionstate
                                           space_elem_id,
                                           space_id,
                                           origin_state,
-           created_at, updated_at, lang) <> (BPSessionState.tupled, BPSessionState.unapply)
+           created_at, updated_at, lang, middle, middleable) <> (BPSessionState.tupled, BPSessionState.unapply)
   def sesFK = foreignKey("session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
   def procelemFK = foreignKey("procelem_fk", front_elem_id, proc_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
   def spaceelemFK = foreignKey("spaceelem_fk", space_elem_id, SpaceElemDAO.space_elements)(_.id, onDelete = ForeignKeyAction.Cascade)

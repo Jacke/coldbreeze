@@ -17,7 +17,9 @@ case class BPStateRef(
   space_id: Option[Int],
   created_at:   Option[org.joda.time.DateTime] = None, 
   updated_at:   Option[org.joda.time.DateTime] = None, 
-  lang:         String = "en") {
+  lang:         String = "en",
+  middle: String = ""
+  middleable: Boolean = false) {
   
      /**
       * Opposition of state
@@ -44,7 +46,9 @@ case class BPStateRef(
   space_id,
   created_at, 
   updated_at, 
-  lang)
+  lang,
+  middle,
+middleable)
     
     }
 
@@ -64,7 +68,9 @@ case class BPStateRef(
   origin_state = None,
   created_at, 
   updated_at, 
-  lang)
+  lang,
+  middle,
+middleable)
   
   }
   

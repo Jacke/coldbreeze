@@ -20,7 +20,9 @@ case class BPSessionState(
   origin_state: Option[Int] = None,
   created_at:   Option[org.joda.time.DateTime] = None, 
   updated_at:   Option[org.joda.time.DateTime] = None, 
-  lang:         String = "en") {
+  lang:         String = "en",
+  middle: String = ""
+  middleable: Boolean = false) {
   
      /**
       * Opposition of state
@@ -30,6 +32,9 @@ case class BPSessionState(
          case "en" => opposite = "un" + title // title = confirmed opposite = unconfirmed
          case _ => opposite = "--" + title    // title = confirmed opposite = --confirmed
        }
+     }
+     def isInMiddle(): Boolean {
+      on_rate > 0
      }
   var switchers:ListBuffer[UnitSwitcher] = ListBuffer()
 }
@@ -47,7 +52,9 @@ case class BPState(
   space_id:Option[Int],
   created_at:   Option[org.joda.time.DateTime] = None, 
   updated_at:   Option[org.joda.time.DateTime] = None, 
-  lang:         String = "en") {
+  lang:         String = "en",
+  middle: String = ""
+  middleable: Boolean = false) {
   
      /**
       * Opposition of state
@@ -58,7 +65,9 @@ case class BPState(
          case _ => opposite = "--" + title    // title = confirmed opposite = --confirmed
        }
      }
-
+     def isInMiddle(): Boolean {
+      on_rate > 0
+     }
   var switchers:ListBuffer[UnitSwitcher] = ListBuffer()     
   
 }
