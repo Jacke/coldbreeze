@@ -11,6 +11,8 @@ slick-pg/
 .project
 project/target
 .DS_Store
+.sass-cache/
+
 
 fonts/
 
