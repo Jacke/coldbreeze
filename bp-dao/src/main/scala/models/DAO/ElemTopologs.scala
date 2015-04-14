@@ -12,6 +12,7 @@ import models.DAO.ProcElemDAO._
 import models.DAO.BPDAO._
 import models.DAO.BPStationDAO._
 import models.DAO.conversion.DatabaseCred
+import main.scala.simple_parts.process.Units._
     
 class ElemTopologs(tag: Tag) extends Table[ElemTopology](tag, "elem_topologs") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc) 
@@ -37,14 +38,7 @@ class ElemTopologs(tag: Tag) extends Table[ElemTopology](tag, "elem_topologs") {
   def spaceFK = foreignKey("bpspace_fk", space_id, models.DAO.BPSpaceDAO.bpspaces)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }
-case class ElemTopology(id: Option[Int], 
-  process: Int, 
-  front_elem_id: Option[Int], 
-  space_elem_id: Option[Int], 
-  hash: String = "", 
-  created_at: Option[org.joda.time.DateTime] = None,
-  updated_at: Option[org.joda.time.DateTime] = None,
-  space_id: Option[Int] = None)
+
 
 object ElemTopologDAO {
   /**

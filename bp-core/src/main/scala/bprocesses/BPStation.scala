@@ -1,5 +1,9 @@
 package main.scala.bprocesses
 
+import main.scala.simple_parts.process._
+import main.scala.utils.Space
+import main.scala.bprocesses._
+import main.scala.simple_parts.process.Units._
 import main.scala.bprocesses.{BPStationState, BPStationLogger}
 
 class BPStation(val bp: BProcess) {
@@ -117,10 +121,58 @@ class BPStation(val bp: BProcess) {
                         paused = new_paused
   } 
 
-  
+  def moveUpFront = {
+      if (    (container_step.length < 2 || container_step.isEmpty)
+                                                 &&
+              (expand_step.length < 2    || expand_step.isEmpty))
+      {
+        inExpand(false)
+        inContainer(false)
+        inSpace(false)
+        flush_container_step
+        flush_expand_step
+        
+        flush_container_state
+        flush_expand_state
+        
+        update_space(space - 1)
+        del_space_id(spaces_ids.last) } 
+      else 
+      { 
+        moveUpFrontSpace 
+      }
+
+  }
+  def moveUpFrontSpace = {
+    inSpace(true)
+
+    flush_container_state
+    flush_expand_state
+    if (current_expand_state) {
+    inExpand(true)
+    } else {
+    inExpand(false)
+    }
+    if (current_container_state) {
+    inContainer(true)
+    } else {
+      inContainer(false)
+    }
+
+    flush_container_step
+    flush_expand_step
 
 
-  def applySwitcher(fn: String, target: String, switch_type: String) = {
+    del_space_id(spaces_ids.last)
+    update_space(space - 1)
+
+  }
+  def getSpace(brick: ProcElems):Option[Space] = {
+    bp.spaces.find(space => (space.brick_owner == brick))
+  }
+
+
+  def applySwitcher(fn: String, target: String, switch_type: String, el: ProcElems, selector:String = "") = { // TODO: Selector
     /*
           case "n" => {
                   bp.station.applySwitcher(switcher.fn, switcher.target)
@@ -183,66 +235,16 @@ class BPStation(val bp: BProcess) {
         fn match {
           case "inn" => {
             // in
-            bp.marker.moveToSpaceByIndx(getSpace(this).get.index, getSpace(this).get.id)//.moveToSpace
+            val space:Option[Space] = getSpace(el)
+            bp.marker.moveToSpaceByIndx(space.get.index, space.get.id)//.moveToSpace
             //println("bp.marker.moveToSpace")
             bp.marker.moveToContainer
             //bp.marker.runContainer(getSpace(this).get, 0)//bp.station.contStepVal)
-            println(bprocess.station.represent)
+            //println(bp.station.represent)
             absoluteStepInc()
           }
           case "outn" => {
-            // out
-  def moveUpFront = {
-      if (    (station.container_step.length < 2 || station.container_step.isEmpty)
-                                                 &&
-              (station.expand_step.length < 2    || station.expand_step.isEmpty))
-      {
-        toStationLogger("preparemoveupfront")
-        station.inExpand(false)
-        station.inContainer(false)
-        station.inSpace(false)
-        station.flush_container_step
-        station.flush_expand_step
-        
-        station.flush_container_state
-        station.flush_expand_state
-        
-        station.update_space(station.space - 1)
-        station.del_space_id(station.spaces_ids.last) } 
-      else 
-      { 
-        moveUpFrontSpace 
-      }
-      toStationLogger("moveupfront")
-
-  }
-  def moveUpFrontSpace = {
-    toStationLogger("preparemoveupfrontspace")
-    station.inSpace(true)
-
-    station.flush_container_state
-    station.flush_expand_state
-    if (station.current_expand_state) {
-    station.inExpand(true)
-    } else {
-    station.inExpand(false)
-    }
-    if (station.current_container_state) {
-    station.inContainer(true)
-    } else {
-      station.inContainer(false)
-    }
-
-    station.flush_container_step
-    station.flush_expand_step
-
-
-    station.del_space_id(station.spaces_ids.last)
-    station.update_space(station.space - 1)
-    toStationLogger("moveupfrontspace")
-
-  }
-}
+            moveUpFront
             absoluteStepInc()
           }
         }

@@ -232,6 +232,8 @@ def initiate2(bpID: Int,
     val reaction_state_out:List[UnitReactionStateOut] = ReactionStateOutDAO.findByReactions(reactions.map(react => react.id.get))
     val topologs = ElemTopologDAO.findByBP(bpID)
 
+    process.topology = topologs
+
     println("states found: " + states.length)
     println("session_states found: " + session_states.length)    
     states.foreach { state =>

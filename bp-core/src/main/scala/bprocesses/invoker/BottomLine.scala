@@ -17,16 +17,19 @@ trait BottomLine extends StateLigher {
 
   val bp: BProcess
   def toLogger(bp: BProcess, result: BPLoggerResult)
-  def toLoggerBefore(bp: BProcess, result: BPLoggerResult) = bp.logger.logBefore(result)
-  def toStationLogger(sygnal: String) = bp.station.station_logger.log(BPStationLoggerResult(bp.station, sygnal, bp.station.state_represent))
+  def toStation(bp: BProcess): BPStation
+  def toLoggerBefore(bp: BProcess, result: BPLoggerResult)
+  def toStationLogger(sygnal: String): Array[BPStationLoggerResult] 
 
 
   def bottomLineOperate(el: ProcElems) = {
     val reactions = collectReactions(el)
     applyReactions(el, reactions)
   	val switchers = collectSwitchers(el)
-  	decision(switchers)
+  	decision(switchers, el)
   }
+
+
 /**
 *
 * Prepare for decision
@@ -41,8 +44,9 @@ trait BottomLine extends StateLigher {
   def collectReactions(el: ProcElems) = {
   	val reactions: List[UnitReaction] = el.reactions.toList
   	val auto_started_creations = reactions.filter(reaction => reaction.autostart == true)
+  	reactions
   }
-  def applyReactions(el: ProcElems, reactions: = List[UnitReaction]) = {
+  def applyReactions(el: ProcElems, reactions: List[UnitReaction]) = {
   		reactions.foreach(reaction => reaction.execute(bp))
   }
 /**
@@ -93,9 +97,10 @@ def commonBottomLine(elem: ProcElems) = {
                                   invoked   = true,
                                   expanded  = false,
                                   container = false))
-  if (!station.paused) {
+  if (!bp.station.paused) {
     lightElem(elem = elem, state = "finished")
-    // DEPRECATED WITH : lightElem(elem = elem, state = "invoked")
+
+    // \|/ DEPRECATED WITH : lightElem(elem = elem, state = "invoked")
     //toStation(bp).update_step(station.step + 1)
   }
   // Sygnal step inc elem invoked
@@ -112,13 +117,13 @@ def commonBottomLine(elem: ProcElems) = {
 * Desicion making about marker movement
 *
 **/
-  def decision(switchers: List[UnitSwitcher]) = {
+  def decision(switchers: List[UnitSwitcher], el: ProcElems) = {
 
     switchers.foreach { switcher =>
- 		applySwitcher(switcher)
+ 		applySwitcher(switcher, el)
     }
 
-    def applySwitcher(switcher: UnitSwitcher) {
+    def applySwitcher(switcher: UnitSwitcher, el: ProcElems) {
     	/*
     	switcher.switch_type match {
         	case "n" => {
@@ -148,7 +153,7 @@ def commonBottomLine(elem: ProcElems) = {
         	case _ => 
         } */       
 
-        bp.station.applySwitcher(switcher.fn, switcher.target, switcher.switch_type)
+        bp.station.applySwitcher(switcher.fn, switcher.target, switcher.switch_type, el)
     }
     println(bp.nimarker)
     println(bp.station)

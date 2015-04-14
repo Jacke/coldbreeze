@@ -32,12 +32,12 @@ def addRefElements() = {
 // PH
 val ph_ref = RefDAO.pull_object(Ref(None, 
 	"Placeholder", "", 
-	"Element used for fill the hole betwen other elements. When it's launch, nothing happens and it will be skipped."))
+	Some("Element used for fill the hole betwen other elements. When it's launch, nothing happens and it will be skipped.")))
 
 
 val ph_el = ProcElemReflectionDAO.pull_object(UnitElementRef(id = None,
                         reflection = ph_ref,
-                        title = "PLACEHOLDER",
+                        title = "Placeholder",
                         desc = "",
                         b_type = "block",
                         type_title = "placeholder",
@@ -47,18 +47,18 @@ created_at = None,
 updated_at = None) )
 
 val ph_topo = makeTopolog(ref = ph_ref, 
-	front_elem_id = ph_el, 
+	front_elem_id = Some(ph_el), 
 	space_elem_id = None)
 
 val ph_el_state = BPStateRefDAO.pull_object(BPStateRef(
   None, 
   reflection = ph_el,
   title = "invoked", 
-  opposite = "",
+  opposite = "uninvoked",
   process_state = false,
   on= false,
   on_rate = 0,
-  front_elem_id = ph_el,
+  front_elem_id = Some(ph_el),
   space_elem_id = None,
   space_id = None))
 
@@ -84,47 +84,74 @@ override_group = 0))
 // CF
 val cf_ref = RefDAO.pull_object(Ref(None, 
 	"Confirmation", "", 
-	"Element used for confirming action. When it's launch, and it's not confirmed, process will be paused until confirmed reaction was executed."))
+	Some("Element used for confirming action. When it's launch, and it's not confirmed, process will be paused until confirmed reaction was executed.")))
 
 
-val cf_el_id = ProcElemReflectionDAO.pull_object(UnitElementRef(id: Option[Int],
-                        reflection: Int,
-                        title:String,
-                        desc:String,
-                        b_type:String,
-                        type_title:String,
-                        space_own:Option[Int],
-                        order:Int,
-created_at:Option[org.joda.time.DateTime] = None,
-updated_at:Option[org.joda.time.DateTime] = None) )
-makeTopolog(ref = cf_ref, 
-	front_elem_id = cf_el_id, 
+val cf_el_id = ProcElemReflectionDAO.pull_object(UnitElementRef(None,
+                        reflection = cf_ref,
+                        title = "Confirmation",
+                        desc = "",
+                        b_type = "block",
+                        type_title = "confirm",
+                        space_own = None,
+                        order = 1) )
+val cf_elem_topo = makeTopolog(ref = cf_ref, 
+	front_elem_id = Some(cf_el_id), 
 	space_elem_id = None)
-val cf_el_state_id = BPStateRefDAO.pull_object(BPStateRef(
-  var id:Option[Int], 
-  reflection:   Int,
-  title:        String, 
-  var opposite: String = "",
-  process_state:Boolean = false,
-  on:Boolean = false,
-  on_rate: Int = 0,
-  front_elem_id:Option[Int],
-  space_elem_id:Option[Int],
-  space_id: Option[Int],
-  created_at:   Option[org.joda.time.DateTime] = None, 
-  updated_at:   Option[org.joda.time.DateTime] = None, 
-  lang:         String = "en"))
-SwitcherRefDAO.pull_object(UnitSwitcherRef(id: Option[Int],
-reflection: Int,
-switch_type:String, 
-priority: Int = 2,                            
-state_ref:Int,
-fn: String,
-target: String,
-override_group: Int = 0,
-created_at:Option[org.joda.time.DateTime] = None,
-updated_at:Option[org.joda.time.DateTime] = None))
 
+val cf_el_state_id_inv = BPStateRefDAO.pull_object(BPStateRef(
+  None, 
+  reflection = cf_ref,
+  title = "invoked", 
+  opposite=  "uninvoked",
+  process_state= false,
+  on= false,
+  on_rate = 0,
+  front_elem_id = Some(cf_el_id),
+  space_elem_id = None,
+  space_id = None))
+val cf_el_state_id_cf = BPStateRefDAO.pull_object(BPStateRef(
+  None, 
+  reflection = cf_ref,
+  title = "confirmed", 
+  opposite=  "unconfirmed",
+  process_state= false,
+  on= false,
+  on_rate = 0,
+  front_elem_id = Some(cf_el_id),
+  space_elem_id = None,
+  space_id = None))
+
+val first_sw = SwitcherRefDAO.pull_object(UnitSwitcherRef(None,
+reflection = cf_ref,
+switch_type = "p", 
+priority= 2,                            
+state_ref = cf_el_state_id_inv,
+fn = "paused",
+target = "process",
+override_group = 1))
+val second_sw = SwitcherRefDAO.pull_object(UnitSwitcherRef(None,
+reflection = cf_ref,
+switch_type = "n", 
+priority= 2,                            
+state_ref = cf_el_state_id_cf,
+fn = "inc",
+target = "step",
+override_group = 1))
+
+val cf_reaction = ReactionRefDAO.pull_object(UnitReactionRef(
+    None,
+    reflection = cf_ref,
+    autostart = false, 
+    element = cf_elem_topo,
+    from_state = None))
+val cf_reaction_out = ReactionStateOutRefDAO.pull_object(UnitReactionStateOutRef(None,
+  state_ref = cf_el_state_id_cf,
+  reaction = cf_ref,
+  on = true,
+  on_rate = 100
+  ))
+}
 
 
 
@@ -141,48 +168,75 @@ updated_at:Option[org.joda.time.DateTime] = None))
 // CN
  val cn_ref = RefDAO.pull_object(Ref(None, 
 	"Container", "", 
-	"Element used for storing other elements by decomposing hard action to easy one. May have containers too inside."))
+	Some("Element used for storing other elements by decomposing hard action to easy one. May have containers too inside.")))
 
 
-val cn_elem_id = ProcElemReflectionDAO.pull_object(UnitElementRef(id: Option[Int],
-                        reflection: Int,
-                        title:String,
-                        desc:String,
-                        b_type:String,
-                        type_title:String,
-                        space_own:Option[Int],
-                        order:Int,
-created_at:Option[org.joda.time.DateTime] = None,
-updated_at:Option[org.joda.time.DateTime] = None) )
+val cn_elem_id = ProcElemReflectionDAO.pull_object(UnitElementRef(None,
+                        reflection = cn_ref,
+                        title = "Container",
+                        desc = "",
+                        b_type = "brick",
+                        type_title = "container_brick",
+                        space_own = None,
+                        order = 1) )
 
 makeTopolog(ref = cn_ref, 
-	front_elem_id = cn_elem_id, 
+	front_elem_id = Some(cn_elem_id), 
 	space_elem_id = None)
 
-BPStateRefDAO.pull_object(BPStateRef(
-  var id:Option[Int], 
-  reflection:   Int,
-  title:        String, 
-  var opposite: String = "",
-  process_state:Boolean = false,
-  on:Boolean = false,
-  on_rate: Int = 0,
-  front_elem_id:Option[Int],
-  space_elem_id:Option[Int],
-  space_id: Option[Int],
-  created_at:   Option[org.joda.time.DateTime] = None, 
-  updated_at:   Option[org.joda.time.DateTime] = None, 
-  lang:         String = "en"))
-SwitcherRefDAO.pull_object(UnitSwitcherRef(id: Option[Int],
-reflection: Int,
-switch_type:String, 
-priority: Int = 2,                            
-state_ref:Int,
-fn: String,
-target: String,
-override_group: Int = 0,
-created_at:Option[org.joda.time.DateTime] = None,
-updated_at:Option[org.joda.time.DateTime] = None))
+val cn_el_state_id_inv = BPStateRefDAO.pull_object(BPStateRef(
+  None, 
+  reflection = cn_ref,
+  title = "invoked", 
+  opposite=  "uninvoked",
+  process_state= false,
+  on= false,
+  on_rate = 0,
+  front_elem_id = Some(cn_elem_id),
+  space_elem_id = None,
+  space_id = None))
+
+
+val cn_first_sw = SwitcherRefDAO.pull_object(UnitSwitcherRef(None,
+reflection = cn_ref,
+switch_type = "inn", 
+priority= 2,                            
+state_ref = cn_el_state_id_inv,
+fn = "inn",
+target = "space",
+override_group = 0))
+
+val cn_space = SpaceReflectionDAO.pull_object(UnitSpaceRef(
+   None, 
+   reflection = cn_ref,
+    index = 1, 
+    container = true, 
+    subbrick = false, 
+    brick_front = Some(cn_elem_id),
+    brick_nested = None, 
+    nestingLevel = 1
+ ))
+val cn_space_state = BPStateRefDAO.pull_object(BPStateRef(
+  None, 
+  reflection = cn_ref,
+  title = "lap", 
+  opposite=  "",
+  process_state= false,
+  on= false,
+  on_rate = 0,
+  front_elem_id = None,
+  space_elem_id = None,
+  space_id = Some(cn_space)))
+val cn_space_sw = SwitcherRefDAO.pull_object(UnitSwitcherRef(None,
+reflection = cn_ref,
+switch_type = "outn", 
+priority= 2,                            
+state_ref = cn_space_state,
+fn = "outn",
+target = "space",
+override_group = 0))
+
+
 
 /*
 SpaceElementReflectionDAO.pull_object(UnitSpaceElementRef(
@@ -199,66 +253,8 @@ SpaceElementReflectionDAO.pull_object(UnitSpaceElementRef(
 created_at:Option[org.joda.time.DateTime] = None,
 updated_at:Option[org.joda.time.DateTime] = None
  ))*/
-SpaceReflectionDAO.pull_object(UnitSpaceRef(
-   id: Option[Int], 
-   reflection: Int,
-    index:Int, 
-    container:Boolean, 
-    subbrick:Boolean, 
-    brick_front:Option[Int]=None,
-    brick_nested:Option[Int]=None, 
-    nestingLevel: Int = 1,
-    created_at:Option[org.joda.time.DateTime] = None,
-    updated_at:Option[org.joda.time.DateTime] = None
- ))
 
 
-BPStateRefDAO.pull_object(BPStateRef(
-  var id:Option[Int], 
-  reflection:   Int,
-  title:        String, 
-  var opposite: String = "",
-  process_state:Boolean = false,
-  on:Boolean = false,
-  on_rate: Int = 0,
-  front_elem_id:Option[Int],
-  space_elem_id:Option[Int],
-  space_id: Option[Int],
-  created_at:   Option[org.joda.time.DateTime] = None, 
-  updated_at:   Option[org.joda.time.DateTime] = None, 
-  lang:         String = "en"))
-
-
-SwitcherRefDAO.pull_object(case class UnitSwitcherRef(id: Option[Int],
-reflection: Int,
-switch_type:String, 
-priority: Int = 2,                            
-state_ref:Int,
-fn: String,
-target: String,
-override_group: Int = 0,
-created_at:Option[org.joda.time.DateTime] = None,
-updated_at:Option[org.joda.time.DateTime] = None))
-
-
-
-ReactionRefDAO.pull_object(UnitReactionRef(
-    id: Option[Int],
-    reflection: Int,
-    autostart:Boolean, 
-    element: Int,
-    from_state: Option[Int],                            
-    created_at:Option[org.joda.time.DateTime] = None,
-    updated_at:Option[org.joda.time.DateTime] = None))
-ReactionStateOutRefDAO.pull_object(UnitReactionStateOutRef(id: Option[Int],
-  state_ref: Int,
-  reaction: Int,
-  on:Boolean = false,
-  on_rate: Int = 0,
-  created_at:Option[org.joda.time.DateTime] = None,
-updated_at:Option[org.joda.time.DateTime] = None
-  ))
-}
 
 
 

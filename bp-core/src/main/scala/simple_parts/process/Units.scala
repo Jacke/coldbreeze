@@ -121,23 +121,43 @@ created_at:Option[org.joda.time.DateTime] = None,
 updated_at:Option[org.joda.time.DateTime] = None) {
     var reaction_state_outs:ListBuffer[UnitReactionStateOut] = ListBuffer() 
     
+    def retriveElementByTopo(topo: ElemTopology, bp: BProcess):ProcElems = {
+      if (topo.front_elem_id.isDefined) {
+        bp.variety.find(el => topo.front_elem_id.get == el.id).get
+      } else {
+        bp.spacesElements.find(el => topo.space_elem_id.get == el.id).get
+      }
+    }
+
     def execute(bp: BProcess) {
       /**
        * TODO: Add logic and expressions execution
        */
       // find element by topolog
-      val element = 
-      reaction_state_outs.foreach { out => 
-        element.session_states.find(st => st.id.getOrElse(0) == out.state_ref) match {
-          case Some(state) => {
-            // update state with
-            state.on = out.on
-            state.on_rate = out.on_rate
+      val topo = bp.topology.find(topo => topo.id == Some(element))
+      if (topo.isDefined) {
+      val element = retriveElementByTopo(topo.get, bp)
+        reaction_state_outs.foreach { out => 
+          element.session_states.find(st => st.id.getOrElse(0) == out.state_ref) match {
+            case Some(state) => {
+              // update state with
+              state.on = out.on
+              state.on_rate = out.on_rate
+            }
           }
         }
       }
     }
  } 
+
+case class ElemTopology(id: Option[Int], 
+  process: Int, 
+  front_elem_id: Option[Int], 
+  space_elem_id: Option[Int], 
+  hash: String = "", 
+  created_at: Option[org.joda.time.DateTime] = None,
+  updated_at: Option[org.joda.time.DateTime] = None,
+  space_id: Option[Int] = None)
 
  case class UnitReactionStateOut(id: Option[Int],
   state_ref: Int,

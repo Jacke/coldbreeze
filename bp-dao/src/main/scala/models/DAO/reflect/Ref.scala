@@ -76,7 +76,17 @@ object RefDAO {
       val q3 = for { s ← refs if s.id === k } yield s
       q3.list.headOption 
   }
-
+  def getByTitle(title: String):List[Ref] = database withSession {
+    implicit session ⇒
+      val q3 = for { s ← refs if s.title === title } yield s
+      q3.list
+  }
+  def deleteByTitle(title: String) = database withSession {
+    implicit session =>
+    getByTitle(title).map(el => el.id.get).foreach { id =>
+      delete(id)
+    }
+  }
 
 private def makeTopolog(process: Int, front_elem_id: Option[Int], 
   space_elem_id: Option[Int]):Int = {
