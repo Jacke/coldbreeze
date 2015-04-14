@@ -21,7 +21,7 @@ case class BPSessionState(
   created_at:   Option[org.joda.time.DateTime] = None, 
   updated_at:   Option[org.joda.time.DateTime] = None, 
   lang:         String = "en",
-  middle: String = ""
+  middle: String = "",
   middleable: Boolean = false) {
   
      /**
@@ -33,7 +33,7 @@ case class BPSessionState(
          case _ => opposite = "--" + title    // title = confirmed opposite = --confirmed
        }
      }
-     def isInMiddle(): Boolean {
+     def isInMiddle(): Boolean = {
       on_rate > 0
      }
   var switchers:ListBuffer[UnitSwitcher] = ListBuffer()
@@ -53,7 +53,7 @@ case class BPState(
   created_at:   Option[org.joda.time.DateTime] = None, 
   updated_at:   Option[org.joda.time.DateTime] = None, 
   lang:         String = "en",
-  middle: String = ""
+  middle: String = "",
   middleable: Boolean = false) {
   
      /**
@@ -65,7 +65,7 @@ case class BPState(
          case _ => opposite = "--" + title    // title = confirmed opposite = --confirmed
        }
      }
-     def isInMiddle(): Boolean {
+     def isInMiddle(): Boolean = {
       on_rate > 0
      }
   var switchers:ListBuffer[UnitSwitcher] = ListBuffer()     

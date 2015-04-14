@@ -59,9 +59,11 @@ object Build {
           state.space_elem_id,
           space_id = state.space_id,
           origin_state = state.id,
-          Some(org.joda.time.DateTime.now()),
-          Some(org.joda.time.DateTime.now()), 
-          lang = state.lang))
+          created_at = Some(org.joda.time.DateTime.now()),
+          updated_at = Some(org.joda.time.DateTime.now()), 
+          lang = state.lang,
+          middle = state.middle,
+          middleable = state.middleable))
 
       var ids:List[Int] = List()
       if (pulling) {

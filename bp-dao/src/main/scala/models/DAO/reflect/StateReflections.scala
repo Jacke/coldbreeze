@@ -29,8 +29,8 @@ class StateRefs(tag: Tag) extends Table[BPStateRef](tag, "state_refs") {
   def space_elem_id = column[Option[Int]]("ref_space_elem_id")
     
  
-  def middle = Column[Title]("middle", O.Default(""))
-  def middleable = Column[Boolean]("middleable", O.Default(false))   
+  def middle = column[String]("middle", O.Default(""))
+  def middleable = column[Boolean]("middleable", O.Default(false))   
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
 

@@ -34,8 +34,8 @@ class BPStates(tag: Tag) extends Table[BPState](tag, "bpstates") {
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
 
 
-  def middle = Column[Title]("middle", O.Default(""))
-  def middleable = Column[Boolean]("middleable", O.Default(false))
+  def middle = column[String]("middle", O.Default(""))
+  def middleable = column[Boolean]("middleable", O.Default(false))
   def lang = column[String]("lang", O.Default("en"))  
   def * = (id.?, process, title, opposite,
                                           process_state,
@@ -168,8 +168,8 @@ class BPSessionStates(tag: Tag) extends Table[BPSessionState](tag, "sessionstate
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
 
-  def middle = Column[Title]("middle", O.Default(""))
-  def middleable = Column[Boolean]("middleable", O.Default(false))
+  def middle = column[String]("middle", O.Default(""))
+  def middleable = column[Boolean]("middleable", O.Default(false))
   def lang = column[String]("lang", O.Default("en"))  
   def * = (id.?, process, session, title, opposite,
                                           process_state,

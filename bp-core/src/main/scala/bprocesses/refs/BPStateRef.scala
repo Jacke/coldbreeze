@@ -18,7 +18,7 @@ case class BPStateRef(
   created_at:   Option[org.joda.time.DateTime] = None, 
   updated_at:   Option[org.joda.time.DateTime] = None, 
   lang:         String = "en",
-  middle: String = ""
+  middle: String = "",
   middleable: Boolean = false) {
   
      /**
