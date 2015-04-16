@@ -1102,8 +1102,12 @@ $scope.sessions.$promise.then(function(data){
   BPStationsFactory.query({ BPid: $scope.BPid }).$promise.then(function(stations) {
   _.forEach(data, function(d){ return d.stations = _.filter(stations, function(s){ return s.session == d.id }) });
   })
-   if ($scope.sessions.length > 0) {
-    $scope.changeSession($scope.sessions[0]);
+   // Change to session that signed in route params
+   if ($location.search().session != undefined) {
+    var ses  = _.find($scope.sessions, function(ses) { return ses.id == parseInt($location.search().session) });
+    if (ses) {
+      $scope.changeSession(ses);
+    }
    }
   });    
     
@@ -1127,11 +1131,14 @@ $scope.changeSession = function(session) {
   $scope.reloadResourcesForSession(session);
 }
 $scope.inSession = false;
+
+
 $scope.resetSession = function () {
   $scope.session = undefined;
   $scope.inSession = false;
   $scope.station = undefined;
   $scope.loadResources();
+  $scope.reloadResources();
   $('.traverse-marker').css('top', '0px')
 
 }

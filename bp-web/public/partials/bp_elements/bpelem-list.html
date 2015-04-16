@@ -1,8 +1,6 @@
 <div class="container">
 <div class="traverse-marker"></div>
 
-<hr>
-
 <div class="tab-content">
 
 <!-- 
@@ -43,7 +41,7 @@
 <h3><edit-in-place value="bp.title"></edit-in-place></h3>
 <ul class="process-control" ng-show="isManagerVal">
  <li><a href="" role="tab" class="createApi change ajaxLink cacheable" data-toggle="tab" ng:click="editProcess()"> {{ 'EDIT' | translate }} </a></li>
- <li><a class="allStation" href="/a#/bprocess/{{ bp.id }}/stations">{{ 'STATIONS' | translate }}</a></li>
+<!-- <li><a class="allStation" href="/a#/bprocess/{{ bp.id }}/stations">{{ 'STATIONS' | translate }}</a></li> -->
  <li><a class="teamApiControlsLink ajaxLink teamApisLinkPeople" ng-click="perm()">{{ 'PEOPLE' | translate }} </a></li>
  <li><a class="teamApiControlsLink teamSettingsLink teamApisLinkSettings" ng-click="modalShare()">{{ 'SHARE' | translate }}</a></li>
 </ul>
@@ -58,7 +56,7 @@
 
   <ul class="nav nav-tabs elem-nav" role="tablist" ng-show="isManagerVal">
     <!--<a href="" ng:click="openNewElem()">.</a> -->
-    <li><a href="" role="tab" class="addElemTab" data-toggle="tab" ng:click="newselected=1"><span class="glyphicon glyphicon-plus"></span>  </a></li>
+    <li><a href="" role="tab" class="addElemTab" data-toggle="tab" ng:click="newselected==1 ? newselected=0 : newselected=1 "><span class="glyphicon glyphicon-plus"></span>  </a></li>
   </ul>
     <div class="tab-content">
 
@@ -107,7 +105,6 @@
 
         </div>
         <a ng-click="createNewElem()" class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</a>
-        <a ng:click="newselected=0" class="btn btn-small btn-primary">{{ 'CANCEL' | translate }}</a>
       </div>
     </div>
   </form>
@@ -123,7 +120,7 @@
       <h4 class="title">{{ bpelem.title }}</h4>
       <h6 class="desc">{{ bpelem.desc }}</h6>
     </div>
-    <ul class="elem-control elem-tabs" role="tablist" ng-show="isManagerVal">
+    <ul class="elem-control elem-tabs" role="tablist" ng-show="isManagerVal && !inSession">
       <li><a role="tab" data-toggle="tab" ng:init="selected=1" ng:click="selected == 1 ? selected=2 : selected=1"><span class="glyphicon glyphicon-edit"></span></a></li>
       <li><a ng-click="deleteElem(bpelem)"><span class="glyphicon glyphicon-remove"></span></a></li>
       <li><a ng:click="moveUpElem(bpelem)"><span class="glyphicon glyphicon-arrow-up"></span></a></li>
@@ -442,8 +439,10 @@
     
     <div class="proc-session active" ng-click="resetSession()" data-desc="Model">
     </div> 
-<div ng-click="changeSession(session)" ng-repeat="session in sessions" class="current-proc-session-info proc-session"  data-desc="Session #{{$index+1 }}">
+<div ng-click="changeSession(session)" ng-repeat="session in sessions | limitTo: 5" class="current-proc-session-info proc-session"  data-desc="Session #{{$index+1 }}">
 </div> 
+
+<div class="allSessions"><a href="/a#/bprocess/{{ BPid }}/stations">All</a></div>
 </div>
 </div>
 

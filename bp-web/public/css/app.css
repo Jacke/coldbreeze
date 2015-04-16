@@ -54,6 +54,7 @@ Elements mocking */
 }
 
 .proc-element .right-bar {
+    height: 38px;
     background: #b6c2c9;
     border-bottom-right-radius: 7px;
     border-bottom-left-radius: 7px;
@@ -91,13 +92,11 @@ text-shadow: none;
     height: 38px;
     position: absolute;
     top: 0;
-      padding-top: 1.7%;
-  padding-left: 2.9%;
     right: 0;
     border-bottom-right-radius: 7px;
-  padding-top: 1%;
-  padding-left: 1.3%;
-  cursor: pointer;
+    padding-top: 1.7%;
+    padding-left: 2.9%;
+    cursor: pointer;
 }
 .proc-element .right-bar.exp-active {
     background: #3bc0c3;
@@ -298,6 +297,11 @@ div#proc-sessions.hiding {
 }  
 .current-proc-session-info.proc-session {
     padding: 0px;
+}
+.allSessions {
+    position: absolute;
+    right: 17%;
+    top: 43%;
 }
 #proc-sessions {
 width: 100%;
