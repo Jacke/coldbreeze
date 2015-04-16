@@ -42,7 +42,7 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
 
             routes.javascript.Application.index,
             routes.javascript.ProfileController.profile,
-            routes.javascript.BusinessProcessController.update_note
+            routes.javascript.ProcessSessionController.update_note
           // TODO Add your routes here
         )
       ).as(JAVASCRIPT)

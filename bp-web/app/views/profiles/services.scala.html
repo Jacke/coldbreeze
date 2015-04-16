@@ -1,0 +1,82 @@
+@import service.DemoUser
+@import controllers.employeeParams
+@import controllers.managerParams
+@import controllers.planInfo
+@import models.DAO.resources.ActPermission
+@import models.DAO.resources.BusinessServiceDTO
+@import models.DAO.resources.BusinessDTO
+@import controllers.BusinessServiceForms._
+@import securesocial.core.IdentityProvider
+@import securesocial.core.IdentityProvider
+@import securesocial.core.providers.UsernamePasswordProvider
+@import securesocial.core.AuthenticationMethod._
+@import play.api.{Logger, Play}
+@import helper._
+@import play.api.Play
+@import models.DAO.resources.BusinessServiceDTO
+@import models.DAO.resources.BusinessDTO
+@import helper._
+@(user: DemoUser, currentPage: Page[BusinessServiceDTO])(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment[service.DemoUser])
+@header_table(orderBy: Int, title: String) = {
+    <th class="headerSortDown">
+        <a href="#">@title</a>
+    </th>
+}
+  @if(user.isManager) {
+    <div class="teamSettingsCheckbox">
+    <h3 class="teamSettingsHeading">@Messages("page.services")(LangDet.getLang(user) )</h3>
+    <p class="teamSettingsAbout">@Messages("page.servicesDesc")(LangDet.getLang(user) )</p>
+    </div>  
+  <div class="teamChangeBox teamPaddedBox">
+      @Option(currentPage.items).filterNot(_.isEmpty).map { entities =>
+        <table class="computers zebra-striped">
+            <thead>
+                <tr>
+                    @header_table(1, Messages("page.service")(LangDet.getLang(user) ) )
+                    @header_table(2, "")
+                    @header_table(3, "")
+                </tr>
+            </thead>
+            <tbody>
+                @entities.map {
+                 case (entity) => {
+                        <tr>
+                            <td>
+<a href="@routes.Application.app()#/bprocesses?service=@entity.id">@entity.title</a></td>
+                            <td>
+                                <a href="@routes.BusinessServiceController.update(entity.id.get)">@Messages("page.rename")(LangDet.getLang(user) )</a>
+
+                            </td>
+                            <td>
+                              @form(routes.BusinessServiceController.destroy(entity.id.get), 'class -> "topRight") {
+                                  <input type="submit" value="Delete service" class="btn danger">
+                              }
+                            </td>
+                        </tr>
+                     }
+                }
+            </tbody>
+        </table>
+    }
+
+  <!-- <h2 class="teamBoxHeading">@Messages("page.managerBoard")(LangDet.getLang(user) ) </h2> -->
+    <div class="teamSettingsCheckbox">
+    <div id="actions">
+      <!--<a class="btn success" id="add" href="@routes.BusinessServiceController.create()">Add a service</a>-->
+        @form(routes.BusinessServiceController.create_new()) {
+        <fieldset>
+
+
+
+        @inputText(serviceForm("title"), '_label -> Messages("page.name")(LangDet.getLang(user) ), 'class -> "form-control")
+        </fieldset>
+
+        <div class="actions">
+        <input type="submit" value="Create service" class="btn btn-primary"> 
+        </div>
+        }
+    </div>
+
+  </div>
+  </div>
+  }

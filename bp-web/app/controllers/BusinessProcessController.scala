@@ -34,7 +34,7 @@ import main.scala.simple_parts.process.Units._
 import models.DAO.reflect._
 import models.DAO.conversion._
 
-case class StationNoteMsg(msg: String)
+
 case class RefElemContainer(title: String, desc: String = "", business: Int, process: Int, ref: Int, space_id: Option[Int]= None)
 
 
@@ -43,24 +43,6 @@ reaction_state_outs: List[UnitReactionStateOut])
 
 class BusinessProcessController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
 
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  // TODO: Created_at updated_at for every elements PLUS FOR BUSINESS
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  
-  
   implicit val CompositeVReads = Json.reads[CompositeValues]
   implicit val CompositeVWrites = Json.format[CompositeValues]
   implicit val stationReads = Json.reads[BPStationDTO]
@@ -542,97 +524,6 @@ def update_reaction(id: Int) = SecuredAction { implicit request =>
 def delete_reaction(id: Int) = SecuredAction { implicit request => 
   Ok(Json.toJson("Ok"))
 }
-
-
-
-/** 
- * Process credentials
- */
- // /bprocess/:BPid/stations
-
-def station_index(id: Int) = SecuredAction { implicit request => 
-   val result = models.DAO.BPStationDAO.findByBPId(id) //BPStationDAO.findByBPId(id)
-   Ok(Json.toJson(result))
-}
-def all_stations() = SecuredAction { implicit request =>
-  Ok(Json.toJson(BPStationDAO.getAll))
-
-}
-// /bprocess/:id/station/:station_id  
-def show_station(id: Int, station_id: Int) = SecuredAction { implicit request =>
-  Ok(Json.toJson(
-    BPStationDAO.findById(station_id)))
-}
-// /bprocess/:id/station/:station_id/halt  
-def halt_station(id: Int, station_id: Int) = SecuredAction { implicit request =>
-  Ok(Json.toJson(
-    BPStationDAO.haltUpdate(station_id)))
-}
-
-// /bprocess/:id/stations/around  
-import helpers.ElemAround
-import helpers.AroundAttr
-import helpers.ListAround
-import play.api.data.validation._
-
-      
-implicit val AroundAttrReads = Json.reads[AroundAttr]
-implicit val AroundAttrWrites = Json.format[AroundAttr]
-
-  
-implicit val ElemAroundReads = Json.reads[ElemAround]
-implicit val ElemAroundWrites = Json.format[ElemAround]
-
-  
-implicit val ListAroundReads = Json.reads[ListAround]
-implicit val ListAroundWrites = Json.format[ListAround]
-//implicit val AroundMapReads = Json.reads[Map[Int, ElemAround]]
-//implicit val AroundMapWrites = Json.format[Map[Int, ElemAround]]
-  
-
-
-  
-def stations_elems_around(id: Int) = SecuredAction { implicit request =>
-  Ok(Json.toJson(helpers.ElemAround.detectForProcess(id)))
-  
-}
-  
-  
-
-// /bprocess/:id/logs  
-def logs_index(id: Int) = SecuredAction { implicit request => 
-  Ok(Json.toJson(BPLoggerDAO.findByBPId(id)))
-}
-
-
-  
-  
-  
-/**
- * Update station note
- *
- */
-def update_note(id: Int, station_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
-  val perm = true // TODO: Make permission !!!
-
-  request.body.validate[StationNoteMsg].map{ 
-    case entity => {
-        if (perm) {
-          BPStationDAO.updateNote(station_id, entity.msg)
-          Ok(Json.toJson(Map("success" -> s"station $id note updated")))
-        } else {
-          BadRequest("Access Denied")
-        }
-
-        }
-    }.recoverTotal{
-      e => BadRequest("formWithErrors")
-    }
-
- 
-  
-}
-
 
 /*
   Histories methods

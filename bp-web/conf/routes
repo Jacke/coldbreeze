@@ -133,12 +133,13 @@ PUT         /bprocess/:id/info                                  @controllers.Bus
 POST        /bprocess/:bpId/copy/:title                         @controllers.BusinessProcessController.copy(bpId: Int, title: String) 
 
 # Stations
-GET         /bprocess/stations                       @controllers.BusinessProcessController.all_stations()
-GET         /bprocess/:id/stations/around            @controllers.BusinessProcessController.stations_elems_around(id: Int)
-GET         /bprocess/:id/stations                   @controllers.BusinessProcessController.station_index(id: Int)
-GET         /bprocess/:id/station/:station_id        @controllers.BusinessProcessController.show_station(id: Int, station_id: Int)
-POST        /bprocess/:id/station/:station_id/halt   @controllers.BusinessProcessController.halt_station(id: Int, station_id: Int)
-POST        /bprocess/:id/station/:station_id/note   @controllers.BusinessProcessController.update_note(id: Int, station_id: Int)
+GET         /sessions 								 @controllers.ProcessSessionController.all_sessions()
+GET         /bprocess/stations                       @controllers.ProcessSessionController.all_stations()
+GET         /bprocess/:id/stations/around            @controllers.ProcessSessionController.stations_elems_around(id: Int)
+GET         /bprocess/:id/stations                   @controllers.ProcessSessionController.station_index(id: Int)
+GET         /bprocess/:id/station/:station_id        @controllers.ProcessSessionController.show_station(id: Int, station_id: Int)
+POST        /bprocess/:id/station/:station_id/halt   @controllers.ProcessSessionController.halt_station(id: Int, station_id: Int)
+POST        /bprocess/:id/station/:station_id/note   @controllers.ProcessSessionController.update_note(id: Int, station_id: Int)
 
 
 
@@ -226,7 +227,7 @@ PUT  /ref/:id/space_elem/:spelem_id/:space_id/down @controllers.ReflectionsContr
 
 
 # Logs
-GET         /bprocess/:id/logs                       @controllers.BusinessProcessController.logs_index(id: Int)
+GET         /bprocess/:id/logs                       @controllers.ProcessSessionController.logs_index(id: Int)
 
 # Elements
 GET         /bprocess/:id/elements                   @controllers.BusinessProcessController.frontElems(id: Int)

@@ -40,14 +40,14 @@
         @env.providers.get(UsernamePassword).map { up =>
             <div class="clearfix">
                   <a class="signWithService signWithGh block" href="https://github.com/login/oauth/authorize?client_id=f739c33cbd5c32296a43&#38;redirect_uri=https%3A%2F%2F%2Fgithub%2Flogin" tabindex="8">Continue with GitHub</a>
-    <span class="visuallyhidden">or</span>
+    <span class="visuallyhidden" style="display: none;">or</span> 
     <a class="signWithService signWithTw block" href="https://login.majorityapp.com/twitter/send_to_login" tabindex="9">Continue with Twitter</a>
                 @if( externalProviders.size > 0 ) {
                     <!--<p>@Messages("securesocial.login.useEmailAndPassword")</p>-->
-                      <p class="loginText loginTextAfterOr"></p>
+                      <p class="loginText loginTextAfterOr" style="display: none;"></p>
                 } else {
                     <!--<p>@Messages("securesocial.login.useEmailAndPasswordOnly")</p>-->
-                      <p class="loginText loginTextAfterOr"></p>
+                      <p class="loginText loginTextAfterOr" style="display: none;"></p>
                 }
 
             </div>

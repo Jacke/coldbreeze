@@ -1,13 +1,17 @@
 @import 'bem';
 
 
-@include b(sessions) {
-    background: red;
+@include b(dashboard_sessions) {
+	@include b(session_header) {
+		@include e(top_bar) {
+			color: black;
+			@include e(all_sessions) {
+				float: right;
+			}
+		}
+	}
     @include e(element){
         font-size: 14px;
-        @include m(big) {
-            font-size: 18px;
-        }
     };
     @include m(modifier) {
         color: blue;
@@ -16,4 +20,28 @@
             background: gray;
         }
     }
+    @include b(profile_advices) {
+    	@include e(advice) {
+    		background: yellow;
+    		color: black;
+    	}
+    }
+
+	@include b(session_list) {
+		@include e(session) {
+			@include e(process) {
+
+			}
+			@include e(process_session) {
+				@include e(session_label) {
+					color: black;
+				}
+			}
+		}
+	}
+
+}
+
+@include b(dashboard_services) {
+
 }

@@ -255,6 +255,7 @@ minorityApp.config(['$locationProvider','$routeProvider', '$httpProvider', funct
 /*U*/$routeProvider.when('/bprocess/:BPid/element/:id/edit', {templateUrl: 'partials/bp_elements/bpelem-edit.html', controller: 'BPelementDetailCtrl'});
 
     // Stations
+/*A*/$routeProvider.when('/sessions', {templateUrl: 'partials/sessions/sessions.html', controller: 'SessionsCtrl'});
 /*I*/$routeProvider.when('/bprocess/:BPid/stations', {templateUrl: 'partials/bpstations/bpstation-list.html', controller: 'BPstationListCtrl'});
 /*C*/$routeProvider.when('/bprocess/:BPid/station/new', {templateUrl: 'partials/bpstations/bpstation-new.html', controller: 'BPstationCreationCtrl'});
 /*R*/$routeProvider.when('/bprocess/:BPid/station/:id/show', {templateUrl: 'partials/bpstations/bpstation-detail.html', controller: 'BPstationDetailCtrl'});

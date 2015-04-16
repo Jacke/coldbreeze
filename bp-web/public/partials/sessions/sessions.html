@@ -104,6 +104,72 @@ input.switch:active:checked::before, input.switch.touch:hover:checked::before {
 
 
 </style>
+
+<style>g.highcharts-grid {
+    display: none !important;
+}
+g.highcharts-axis {
+    display: none;
+}
+.highcharts-container svg text:last-child, .highcharts-button {
+  display: block;
+}
+g.highcharts-axis-labels, g.highcharts-tooltip {
+    display: block;
+}
+
+</style>
+<script>
+  $(function () {
+    $('#chart_diagram').highcharts({
+        chart: {
+            type: 'bar'
+        },
+        title: {
+            text: ''
+        },
+        xAxis: {
+            categories: ['']
+        },
+        yAxis: {
+            min: 0,
+            max: 12,
+            title: {
+                text: ''
+            }
+        },
+        
+        plotOptions: {
+            series: {
+                stacking: 'normal'
+            }
+        },
+        series: [{
+            name: 'Container',
+            data: [5]
+        }, {
+            name: 'Confirm',
+            data: [2]
+        }, {
+            name: 'Placeholder',
+            data: [5]
+        }]
+    });
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
 <div class="allStations">
 <h1>{{ 'STATIONS' | translate }}</h1>
 
@@ -137,6 +203,7 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 <div class="stations" ng-repeat="station in bpstations | filter:isOnlyActive" style="clear: both;">
 
               <span class="number {{ station.state }}">{{ $index + 1 }}</span>
+              <div id="chart_diagram"></div>
            <!--<p>
             {{ stationByProcess(station.id).id }}
             {{ stationByProcess(station.id).title }}
@@ -197,76 +264,6 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
   </div>
 
 </div>
-  
-  
-  
-
-
-<!--
-<div class="row">
-<div class="col-xs-5">
-<h3><a ng-click="expand = !expand">{{ 'LOGS' | translate }}</a></h3>
-
-<div class="slide" ng-show="expand">
-
-
-          <div class="logs" ng-repeat="log in logsByStation(station.id)">
-                  <table class="table table-user-information">
-                    <tbody>
-                      <tr>
-                        <td> {{ 'ELEMENT' | translate }} </td>
-
-<td> {{ 'DATE' | translate }} </td>
-<td> {{ 'STEP' | translate }} </td>
-<td> {{ 'CV' | translate }} </td>
-
-                      </tr>
-                      <tr>
-<td> {{ elemsHash[log.element].id }} {{ elemsHash[log.element].title }}  {{ elemsHash[log.element].type_title }}
-{{ spaceElemHash[log.space_elem].id }} {{ spaceElemHash[log.space_elem].title }} {{ spaceElemHash[log.element].type_title }}  </td>
-<td> {{ log.date | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }} </td>
-<td> {{ log.step }} </td>
-<td> {{ log.comps }} </td>
-            </tr>
-                    </tbody>
-                  </table>
-</div>
-</div>
-</div>
-
-<div class="col-xs-5">
-<h3><a ng-click="expandil = !expandil">{{ 'ILOGS' | translate }}</a></h3>
-<div class="slide" ng-show="expandil">
-          <div class="input-logs" ng-repeat="il in inputLoggers[station.id]">
-                  <table class="table table-user-information">
-                    <tbody>
-                      <tr>
-                        <td> {{ 'ELEMENT' | translate }} </td>
-<td> {{ 'USER' | translate }} </td>
-<td> {{ 'ACTION' | translate }} </td>
-<td> {{ 'ARGUMENTS' | translate }} </td>
-<td> {{ 'DATE' | translate }} </td>
-
-
-                      </tr>
-                      <tr>
-<td> {{ elemsHash[il.front_elem_id].id }} {{ elemsHash[il.front_elem_id].title }} {{ elemsHash[il.front_elem_id].type_title }} 
-     {{ spaceElemHash[il.space_elem_id].id }} {{ spaceElemHash[il.space_elem_id].title }} {{ spaceElemHash[il.space_elem_id].type_title }}
-  </td>
-<td> <a href="employees/">{{ il.uid }}</a></td>
-<td> {{ il.action }} </td>
-<td> <pre>{{ il.arguments | json }}</pre> </td>
-<td> {{ il.date | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }} </td>
-
-
-            </tr>
-                    </tbody>
-                  </table>
-          </div>
-</div>
-</div>
-</div> -->
-
           <div ng-if="station.paused == true && station.finished == false">
           <a ng-click="haltStation(station.id)" class="btn btn-danger btn-big" ng-show="isManagerVal">{{ 'TURN_DOWN' | translate }}</a>
           </div>

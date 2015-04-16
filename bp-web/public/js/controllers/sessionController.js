@@ -1,6 +1,5 @@
-
-// For specific process
-minorityControllers.controller('BPstationListCtrl', ['$http', '$window', '$scope', '$filter', '$rootScope','ObserversFactory', 'ObserverFactory', 'BProcessesFactory', 'BPInLoggersStationFactory','BPInLoggersFactory','BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
+// For all processes
+minorityControllers.controller('SessionsCtrl', ['$http', '$window', '$scope', '$filter', '$rootScope','ObserversFactory', 'ObserverFactory', 'BProcessesFactory', 'BPInLoggersStationFactory','BPInLoggersFactory','BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
   function ($http, $window, $scope, $filter, $rootScope, ObserversFactory, ObserverFactory, BProcessesFactory, BPInLoggersStationFactory,BPInLoggersFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
   $scope.bpId = $route.current.params.BPid;
   $scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
@@ -28,51 +27,6 @@ $scope.isManager();
 
   });
   });
-  });
-
-$scope.trees = undefined;
-$scope.builder = function (station) {
-
-  var isIsEnd = function (spElems) {
-    _.forEach(spElems, function(val) {
-       val.nodes = _.filter(spacesCopy, function(space){ return space.brick_front == val.id || space.brick_nested == val.id; });
-    });
-    _.forEach(spElems, function(tree) {
-         _.forEach(tree.nodes, function(space) {
-             space.space_elem = _.filter(spaceelemsCopy, function(spelem){ return spelem.space_owned == space.id; });
-             isIsEnd(space.space_elem);
-        });
-    });
-  };
-  console.log("build");
-  var bpelemsCopy = angular.copy($scope.bpelems);
-  var spacesCopy = angular.copy($scope.spaces);
-  var spaceelemsCopy = angular.copy($scope.spaceelems);
-  station.trees = _.forEach(bpelemsCopy, function(val) {
-       val.nodes = _.sortBy(_.filter(spacesCopy, function(space){ return space.brick_front == val.id || space.brick_nested == val.id; }), function(em){ return em.order; });
-  });
-  _.forEach(station.trees, function(tree) {
-
-    var spaceFetch = function () {
-      _.forEach(tree.nodes, function(space) {
-         space.space_elem = _.sortBy(_.filter(spaceelemsCopy, function(spelem){ return spelem.space_owned == space.id; }), function(em){ return em.order; });
-         isIsEnd(space.space_elem);
-      });
-    };
-
-    spaceFetch();
-    spaceFetch();
-    spaceFetch();
-    spaceFetch();
-    spaceFetch();
-  });
-}
-
-  $scope.bpelems.$promise.then(function(data) {
-    $scope.spaceelems.$promise.then(function(data3) {
-      $scope.elemsHash = _.object(_.map($scope.bpelems, function(x){return [x.id, x]}));
-      $scope.spaceElemHash = _.object(_.map($scope.spaceelems, function(x){return [x.id, x]}));
-   });
   });
 
 
@@ -176,17 +130,11 @@ $scope.stationsRefresh();
   }
 
 
-  $scope.updateNote = function(station) {
 
-    var token = $window.sessionStorage.getItem('token');
-    $http.post(jsRoutes.controllers.ProcessSessionController.update_note(station.process, station.id).absoluteURL(document.ssl_enabled), {msg: station.note})
-          .success(function (note_success) {
-              console.log(note_success);
-              console.log(station.note);
-          })
-          .error(function () {
-          });
-  }
+
+
+
+}])
 
 
 
@@ -194,51 +142,6 @@ $scope.stationsRefresh();
 
 
 
-  /*
-  * Observers stuff
-  */
-  $scope.fetchObservers = function (stations) {
-    _.forEach(stations, function(station){ 
-      station.newObserver = {bprocess: $scope.bpId, station_id: station.id};
-      return station.obsrs = ObserversFactory.query({ process: $scope.bpId, station: station.id}); 
-    });
-
-  };
-  $scope.deleteObserver = function(observe_id) {
-      ObserverFactory.delete({ observe_id: observe_id }).$promise.then( function() {
-          $scope.fetchObservers($scope.bpstations);
-      });
-  }
-  $scope.createNewObserver = function(newObserver) {
-
-      ObserversFactory.create(newObserver).$promise.then( function(data) {
-         $scope.fetchObservers($scope.bpstations);
-      });
-      
-  }
 
 
 
-  //$scope.inputLoggers = function (stationId) {
-    //_.filter($scope.allInputLogs, function(il){ return il.station == stationId; })
-    //BPInLoggersStationFactory.query({BPid: $route.current.params.BPid, station_id: stationId});
-  //};
-  $scope.allInputLogs = BPInLoggersFactory.query({BPid: $route.current.params.BPid}).$promise.then(function(data) {
-    $scope.inputLoggers = _.groupBy(data, function(x){return x.station});
-  });
-
-}]).animation('.slide', function() {
-  var NgHideClassName = 'ng-hide';
-  return {
-    beforeAddClass: function(element, className, done) {
-      if(className === NgHideClassName) {
-        jQuery(element).slideUp(done);
-      }
-    },
-    removeClass: function(element, className, done) {
-      if(className === NgHideClassName) {
-        jQuery(element).hide().slideDown(done);
-      }
-    }
-  }
-});

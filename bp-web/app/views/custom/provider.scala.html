@@ -12,7 +12,8 @@
             @if( provider.authMethod == OAuth1 || provider.authMethod == OAuth2 ) {
                 @defining( "images/providers/%s.png".format(provider.id) ) { imageUrl =>
                     @if( provider.id == "google" || provider.id == "facebook" ) {
-                    <a class="signWithService block @{"signWith" + provider.id.capitalize}" href="@env.routes.authenticationUrl(provider.id)" tabindex="8">Continue with @{provider.id.capitalize}</a><span class="visuallyhidden">or</span>
+                    <a class="signWithService block @{"signWith" + provider.id.capitalize}" href="@env.routes.authenticationUrl(provider.id)" tabindex="8">Continue with @{provider.id.capitalize}</a>
+                    <span class="visuallyhidden" style="display: none;">or</span>
                     
                     }
                 }

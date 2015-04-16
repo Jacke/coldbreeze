@@ -296,6 +296,9 @@ font-weight: 100;
 div#proc-sessions.hiding {
     bottom: -122px;
 }  
+.current-proc-session-info.proc-session {
+    padding: 0px;
+}
 #proc-sessions {
 width: 100%;
 margin: 50px auto;
@@ -308,7 +311,7 @@ padding-left: 73px;
 padding-top: 21px;
 padding-bottom: 9px;
 border-radius: 6px 6px 0px 0px;
-padding-left: 35%;
+padding-left: 30%;
 }
 #proc-sessions a {
     margin-left: 40px;

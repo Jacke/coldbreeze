@@ -41,10 +41,10 @@
             <div class="clearfix">
                 @if( externalProviders.size > 0 ) {
                     <!--<p>@Messages("securesocial.login.useEmailAndPassword")</p>-->
-                      <p class="loginText loginTextAfterOr"></p>
+                      <p class="loginText loginTextAfterOr" style="display: none;"></p>
                 } else {
                     <!--<p>@Messages("securesocial.login.useEmailAndPasswordOnly")</p>-->
-                      <p class="loginText loginTextAfterOr"></p>
+                      <p class="loginText loginTextAfterOr" style="display: none;"></p>
                 }
                @views.html.custom.provider("userpass", Some(loginForm))
             </div>

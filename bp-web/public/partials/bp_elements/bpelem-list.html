@@ -5,14 +5,17 @@
 
 <div class="tab-content">
 
+<!-- 
 <div class="tab-pane active" id="edit" ng:show="tree == 1 && bpelems.length > 0" ng:init="tree=1">
   <div ng-include src="'partials/tree.html'"></div>
 </div>
+-->
+
 
 </div>
 <div class="tab-content">
 
-
+<!--
 <div class="teamApisListWrap">
 <div ng:hide="tree == 1">
   <a href="" role="tab" class="createApi ajaxLink cacheable"  data-toggle="tab" ng:click="tree=1"><span class="glyphicon glyphicon-chevron-down"></span> {{ 'TREE' | translate }}</a>
@@ -20,7 +23,7 @@
 <div ng:show="tree == 1">
   <a href="" role="tab" class="createApi ajaxLink cacheable" data-toggle="tab" ng:click="tree=0"><span class="glyphicon glyphicon-chevron-up"></span> {{ 'TREE' | translate }}</a>
 </div>
-
+-->
 
 
 <div class="teamApisListFilter filterLayer">
@@ -437,10 +440,10 @@
   
 <div id="proc-sessions" class="proc-sessions" ng-init="session_bar='hiding'"ng-class="session_bar" ng-click="session_bar == 'hiding' ? session_bar='shown' : session_bar='hiding'">
     
-<div ng-click="changeSession(session)" ng-repeat="session in sessions" class="current-proc-session-info proc-session"  data-desc="Session #{{$index+1 }}">
-</div> 
     <div class="proc-session active" ng-click="resetSession()" data-desc="Model">
     </div> 
+<div ng-click="changeSession(session)" ng-repeat="session in sessions" class="current-proc-session-info proc-session"  data-desc="Session #{{$index+1 }}">
+</div> 
 </div>
 </div>
 

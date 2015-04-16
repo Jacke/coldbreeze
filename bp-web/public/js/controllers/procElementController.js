@@ -1110,6 +1110,7 @@ $scope.sessions.$promise.then(function(data){
 
 $scope.changeSession = function(session) {
  $scope.session = session;
+ $scope.inSession = true;
  $scope.station = _.find(session.stations, function(s) { return s.front == true })  
  $scope.session_bar = 'shown'; 
 
@@ -1125,8 +1126,10 @@ $scope.changeSession = function(session) {
  }
   $scope.reloadResourcesForSession(session);
 }
+$scope.inSession = false;
 $scope.resetSession = function () {
   $scope.session = undefined;
+  $scope.inSession = false;
   $scope.station = undefined;
   $scope.loadResources();
   $('.traverse-marker').css('top', '0px')
