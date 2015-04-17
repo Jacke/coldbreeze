@@ -56,7 +56,7 @@
 
   <ul class="nav nav-tabs elem-nav" role="tablist" ng-show="isManagerVal">
     <!--<a href="" ng:click="openNewElem()">.</a> -->
-    <li><a href="" role="tab" class="addElemTab" data-toggle="tab" ng:click="newselected==1 ? newselected=0 : newselected=1 "><span class="glyphicon glyphicon-plus"></span>  </a></li>
+    <li><a href="" role="tab" class="addElemTab" data-toggle="tab" ng:show="!inSession" ng:click="newselected==1 ? newselected=0 : newselected=1 "><span class="glyphicon glyphicon-plus"></span>  </a></li>
   </ul>
     <div class="tab-content">
 
@@ -74,7 +74,7 @@
 
 </div> -->
 
-<div class="tab-pane active" id="edit" ng:show="newselected == 1">
+<div class="tab-pane active" id="edit" ng:show="newselected == 1 && !inSession">
  <form novalidate="novalidate" class="form-horizontal form-new-bpelem" ng-class="newBpelem.type_title">
     <div class="control-group form-group">
       <label class="control-label col-sm-1" for="inputTitle">{{ 'TITLE' | translate }}:</label>
@@ -125,6 +125,9 @@
       <li><a ng-click="deleteElem(bpelem)"><span class="glyphicon glyphicon-remove"></span></a></li>
       <li><a ng:click="moveUpElem(bpelem)"><span class="glyphicon glyphicon-arrow-up"></span></a></li>
       <li><a ng:click="moveDownElem(bpelem)"><span class="glyphicon glyphicon-arrow-down"></span></a></li>
+    </ul>
+    <ul class="elem-control elem-tabs" role="tablist" ng-show="inSession">
+      <p>Launched at 00000</p>
     </ul>
     </div>
     <div class="tab-pane active" id="edit" ng:show="selected == 2">
