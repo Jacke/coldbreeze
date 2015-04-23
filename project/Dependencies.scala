@@ -51,17 +51,20 @@ object Dependencies {
   val underscore      = "org.webjars"               %  "underscorejs"           % "1.6.0-3"
   val jquery          = "org.webjars"               %  "jquery"                 % "1.11.1"
   val bootstrap       = "org.webjars"               %  "bootstrap"              % "3.1.1-1"   exclude("org.webjars", "jquery")
-  val securesocial    = "ws.securesocial"           %% "securesocial"           % "master-SNAPSHOT"
+  val securesocial    = "ws.securesocial"           %% "securesocial"           % "3.0-M3"
 
   val amonite         = "com.lihaoyi"               %% "ammonite-repl"          % "0.2.4" % "test"
 
   val bcrypt          = "com.github.t3hnar"         % "scala-bcrypt_2.11"       % "2.4"
+  val scalacheck      = "org.scalacheck"            %% "scalacheck"             % "1.11.1"
+  val mockito         = "org.mockito"               % "mockito-all"             % "1.9.5"
   val mailer          = "com.typesafe"              % "play-plugins-mailer_2.10"% "2.2.0"
   val apamailer       = "org.apache.commons"        % "commons-email"           % "1.3.1"
-  val cache           = "com.typesafe.play"         %% "filters-helpers"        % "2.3.0-RC1"
-  val filter          = "com.typesafe.play"         %% "play-cache"             % "2.3.0-RC1"
-  val jdbc            = "com.typesafe.play"         %% "play-jdbc"              % "2.3.0-RC1"
-  val anorm           = "com.typesafe.play"         %% "anorm"                  % "2.3.0-RC1"
+  val cache           = "com.typesafe.play"         %% "filters-helpers"        % "2.3.7"
+  val filter          = "com.typesafe.play"         %% "play-cache"             % "2.3.7"
+  val ptest           = "com.typesafe.play"         %% "play-test"              % "2.3.7"
+  val jdbc            = "com.typesafe.play"         %% "play-jdbc"              % "2.3.7"
+  val anorm           = "com.typesafe.play"         %% "anorm"                  % "2.3.7"
 
   val jodatime        = "joda-time"                 % "joda-time"               % "2.4"
   val jodaconvert     = "org.joda"                  % "joda-convert"            % "1.6"
