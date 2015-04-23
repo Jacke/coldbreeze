@@ -71,6 +71,12 @@ object BPDAO {
       q3.list.headOption.get.master_acc
 
   }
+
+  def findByBusiness(business: Int):List[BProcessDTO] = database withSession {
+    implicit session =>
+    val q3 = for { s ← bprocesses if s.business === business } yield s
+    q3.list
+  }
   def getByServices(services: List[Int]) = database withSession {
     implicit session =>
       val q3 = for { s ← bprocesses if s.service inSetBind services } yield s

@@ -28,23 +28,71 @@ class BPSessions(tag: Tag) extends Table[BPSession](tag, "bpsessions") {
  
 }
 
+case class SessionStatus(var percent: Int = 0, process:BProcessDTO, session: BPSession, station: Option[BPStationDTO]) 
+case class SessionContainer(process: BProcessDTO, sessions: List[SessionStatus])
 
 object BPSessionDAO {
-  /**
-   * Actions
-   */
   import scala.util.Try
-
   import DatabaseCred.database
   import models.DAO.conversion.Implicits._
 
-
+  
 
   val bpsessions = TableQuery[BPSessions]
 
   def pull_object(s: BPSession) = database withSession {
     implicit session ⇒
       bpsessions returning bpsessions.map(_.id) += s
+  }
+
+  def findByBusiness(bid: Int):List[SessionContainer] = database withSession {
+    implicit session =>
+    val p = BPDAO.findByBusiness(bid)
+    val ids = p.map(_.id.get)
+    val q3 = for { s <- bpsessions if s.process inSetBind ids } yield s
+    val sess = q3.list
+
+    p.map { p =>
+      SessionContainer(p, 
+      sess.filter(ses => ses.process == p.id.get).map { ses => 
+        val station = BPStationDAO.findBySession(ses.id.get)        
+        val element_quantity = ProcElemDAO.findByBPId(p.id.get).length
+        val step = station match {
+          case Some(station) => station.step.toDouble
+          case _ => element_quantity.toDouble
+        }
+        val percent = (step / element_quantity.toDouble * 100).toInt
+        SessionStatus(percent, p, ses, station) 
+      })
+    }
+  }
+
+  def findByProcess(pid: Int):Option[SessionContainer] = database withSession {
+    implicit session =>
+    val p = BPDAO.get(pid)
+    p match {
+      case Some(process) => {
+      val process_id = process.id.get
+      val q3 = for { s <- bpsessions if s.process === process_id } yield s
+      val sess = q3.list
+
+
+        Some(
+          SessionContainer(process, 
+          sess.filter(ses => ses.process == process_id).map { ses => 
+          val station = BPStationDAO.findBySession(ses.id.get)        
+          val element_quantity = ProcElemDAO.findByBPId(process_id).length
+          val step = station match {
+            case Some(station) => station.step.toDouble
+            case _ => element_quantity.toDouble
+          }
+          val percent = (step / element_quantity.toDouble * 100).toInt
+          SessionStatus(percent, process, ses, station) 
+          })
+        )
+      }
+      case _ => None
+    }  
   }
 
   def findByBP(id: Int):List[BPSession] = database withSession {
