@@ -35,6 +35,7 @@ import models.DAO.reflect._
 import models.DAO.conversion._
 import ProcHistoryDAO._
 import helpers._
+import decorators._
 
 case class StationNoteMsg(msg: String)
 
@@ -55,6 +56,14 @@ class ProcessSessionController(override implicit val env: RuntimeEnvironment[Dem
   implicit val ElemAroundWrites = Json.format[ElemAround]
   implicit val ListAroundReads = Json.reads[ListAround]
   implicit val ListAroundWrites = Json.format[ListAround]
+  implicit val sessionReads = Json.reads[BPSession]
+  implicit val sessionWrites = Json.format[BPSession]
+  implicit val BProcessDTOReads = Json.reads[BProcessDTO]
+  implicit val BProcessDTOWrites = Json.format[BProcessDTO]
+  implicit val SessionStatusReads = Json.reads[SessionStatus]
+  implicit val SessionStatusWrites = Json.format[SessionStatus]  
+  implicit val SessionContainerReads = Json.reads[SessionContainer]
+  implicit val SessionContainerWrites = Json.format[SessionContainer]
 
 def station_index(id: Int) = SecuredAction { implicit request => 
    val result = models.DAO.BPStationDAO.findByBPId(id) //BPStationDAO.findByBPId(id)
@@ -63,9 +72,29 @@ def station_index(id: Int) = SecuredAction { implicit request =>
 def all_stations() = SecuredAction { implicit request =>
   Ok(Json.toJson(BPStationDAO.getAll))
 }
-def all_sessions() = SecuredAction { implicit request =>
-  Ok(Json.toJson(BPStationDAO.getAll))
+
+def process_all_session(pid: Int) = SecuredAction { implicit request =>
+  val sess = BPSessionDAO.findByProcess(pid)  
+  sess match { 
+    case Some(session) => Ok(Json.toJson(sess))
+    case _ => Ok(Json.toJson(Map("status" -> 404)))
+  }
 }
+
+def all_sessions() = SecuredAction { implicit request =>
+	val email = request.user.main.email.get
+	val business_request:Option[Tuple2[Int, Int]] = models.DAO.resources.EmployeesBusinessDAO.getByUID(email) 
+    val business = business_request match {
+      case Some(biz) => biz._2
+      case _ => -1
+    }
+	val sess = BPSessionDAO.findByBusiness(business)
+  Ok(Json.toJson(sess))
+}
+
+
+
+
 // /bprocess/:id/station/:station_id  
 def show_station(id: Int, station_id: Int) = SecuredAction { implicit request =>
   Ok(Json.toJson(
