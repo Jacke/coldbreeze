@@ -32,6 +32,10 @@ import models.TokensDAO
  * IMPORTANT: This is just a sample and not suitable for a production environment since
  * it stores everything in memory.
  */
+class MyEnvironment extends RuntimeEnvironment.Default[DemoUser] {
+  override val userService: UserService[DemoUser] = new InMemoryUserService()
+}
+
 class InMemoryUserService extends UserService[DemoUser] {
   val logger = Logger("application.controllers.InMemoryUserService")
 
