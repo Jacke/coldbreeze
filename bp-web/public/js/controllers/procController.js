@@ -1,7 +1,7 @@
 
 // INDEX
-minorityControllers.controller('BProcessListCtrl', ['$scope','$window','$translate' ,'$rootScope', 'ngDialog', '$http', '$routeParams', '$filter', 'BPElemsFactory','BPSpacesFactory', 'BPSpaceElemsFactory',  'BProcessesFactory','BProcessFactory', 'BPStationsFactory', 'BPServicesFactory', '$location',
-  function ($scope, $window, $translate, $rootScope, ngDialog, $http, $routeParams, $filter, BPElemsFactory, BPSpacesFactory, BPSpaceElemsFactory, BProcessesFactory, BProcessFactory, BPStationsFactory, BPServicesFactory, $location) {
+minorityControllers.controller('BProcessListCtrl', ['$scope','$window','$translate' ,'$rootScope', 'SessionsFactory' ,'ngDialog', '$http', '$routeParams', '$filter', 'BPElemsFactory','BPSpacesFactory', 'BPSpaceElemsFactory',  'BProcessesFactory','BProcessFactory', 'BPStationsFactory', 'BPServicesFactory', '$location',
+  function ($scope, $window, $translate, $rootScope, SessionsFactory, ngDialog, $http, $routeParams, $filter, BPElemsFactory, BPSpacesFactory, BPSpaceElemsFactory, BProcessesFactory, BProcessFactory, BPStationsFactory, BPServicesFactory, $location) {
 
 
  $scope.changeLanguage = function () {
@@ -61,13 +61,13 @@ $scope.builderFetch = function (bp) {
   });
 };
 
-$scope.showInlineLaunch = function (station) {
-  if (station.inlineLaunchShow) {
-    station.inlineLaunchShow = false;
+$scope.showInlineLaunch = function (session) {
+  if (session.inlineLaunchShow) {
+    session.inlineLaunchShow = false;
   } else {
-    station.inlineLaunchShow = true;
+    session.inlineLaunchShow = true;
   }
-  return station;
+  return session;
 }
 
 $scope.builder = function (bp, data, data2,data3) {
@@ -253,6 +253,37 @@ $scope.emptyElemCheck = function(col) {
              '';
          }
      }
+
+
+
+
+
+
+/**
+*
+* Services
+*
+**/
+
+$scope.sessions = SessionsFactory.query();
+$scope.sessions.$promise.then(function (data2) {
+    _.forEach(data2.sessions, function(session) { return session.session.station = session.station })
+      $scope.bprocesses.$promise.then(function (processes) { 
+        _.forEach(processes, function(proc) { 
+          proc.sessions = _.filter(data2, function(ses) { return ses.process.id == proc.id });
+        });
+      })  
+});
+
+
+
+
+
+
+
+
+
+
 }]);
 
 

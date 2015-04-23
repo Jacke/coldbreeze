@@ -86,7 +86,10 @@ jodamapper, scalatest, reflect, postgres, logbackClassic, scalaLog, sprayCan, sp
           angular,
 
 
-          apamailer, logentries, playauth,securesocial,scaldiplay, jsonvariants, playflyway, playctrl,
+          apamailer, logentries, playauth,securesocial,
+          scalacheck,
+mockito,
+ptest, scaldiplay, jsonvariants, playflyway, playctrl,
 cache, filter, hicaricp,
 jdbc, anorm, shapeless, mailer, scalatest, reflect, bcrypt, postgres, logbackClassic, scalaLog, hdrHistogram))
         //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++

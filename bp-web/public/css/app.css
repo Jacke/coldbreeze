@@ -1184,6 +1184,9 @@ form {
 .process-tree {
     background: white;
 }
+.process-tree .elem-card {
+  background: pink;
+}
 .process-tree .elem-card.confirm {
     background: #e67e22;
 }
@@ -1439,13 +1442,13 @@ a.confirmation-btn.btn.btn-small.confirmed {
 
 
 .process-status .teamApisListControls {
-position: relative;
-width: 292px;
-display: inline-block;
-top: 0;
-margin-right: 287px;
-left: 197px;
-margin-top: -29px;
+  margin-right: 225px;
+  display: inline-block;
+  margin-left: 459px;
+  margin-top: -100px;
+  position: absolute;
+  top: 105px;
+  right: 20px;
 }
 .process-status .teamApisListControls a {
     margin-left: 0px;
@@ -1468,7 +1471,6 @@ border: none;
 .process-thumb {
 position: relative;
 display: inline-block;
-left: 0;
 border: 1px solid #d5deec;
 padding-right: 5px;
 padding-top: 5px;
@@ -1477,6 +1479,20 @@ border-radius: 6px;
 }
 
 
+.process-status {
+    position: relative;
+}
+
+.process-thumb {
+    position: absolute;
+    right: 70px;
+    top: 16px;
+    width: 19px;
+    height: 25px;
+    border-radius: 13px;
+    padding-right: 0px;
+    padding-left: 25px;
+}
 
 
 

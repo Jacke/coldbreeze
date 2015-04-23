@@ -353,6 +353,12 @@ object AccountsDAO {
       val result = q3.list.map(s => BasicProfile.tupled(Account.unapply(s.toAccount).get))
       result.headOption
   }
+
+  def deleteUser(uuid: String) = database withSession {
+    implicit session ⇒
+      val tok = findAllByEmails(List(uuid)).head
+      accounts.filter(_.userId === tok.userId).delete
+  }
   def findByEmailAndProvider(email: String, providerId: String): Option[BasicProfile] = database withSession {
     implicit session ⇒
       val q3 = for { a ← accounts if a.providerId === providerId && a.email === email } yield a

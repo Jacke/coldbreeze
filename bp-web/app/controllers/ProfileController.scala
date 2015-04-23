@@ -16,6 +16,7 @@ import securesocial.core._
 import controllers.users._
 import models.DAO.resources._
 import models.DAO._
+import decorators._
 
 case class employeeParams(perms: List[ActPermission], bps: List[BProcessDTO], elems_titles:Map[Int, String], res_acts: List[ResAct])
 case class managerParams(business: BusinessDTO)
@@ -55,12 +56,22 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
 
         val managerParams = makeManagerParams(email, isManager)
 
+        val business_id = EmployeesBusinessDAO.getByUID(email).get._2
+
         val walkthrought:Boolean = managerParams match {
             case  Some(param) => param.business.walkthrough
             case _ => false
         }
 
-        Ok(views.html.profiles.profile(request.user, managerParams, makeEmployeeParams(email, isEmployee), plan, walkthrought ) (
+        val business_request:Option[Tuple2[Int, Int]] = models.DAO.resources.EmployeesBusinessDAO.getByUID(email) 
+        val business = business_request match {
+          case Some(biz) => biz._2
+          case _ => -1
+        }        
+
+        val sessions:List[SessionContainer] = BPSessionDAO.findByBusiness(business)//BPSessionDAO.findByBusiness(business_id).map(ses => SessionDecorator(ses._1, ses._2)).toList
+
+        Ok(views.html.profiles.profile(request.user, managerParams, makeEmployeeParams(email, isEmployee), plan, walkthrought, sessions ) (
             Page(services, 1, 1, services.length), 1, "%", businesses))
       }
   }

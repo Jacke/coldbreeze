@@ -1,10 +1,56 @@
 // For all processes
-minorityControllers.controller('SessionsCtrl', ['$http', '$window', '$scope', '$filter', '$rootScope','ObserversFactory', 'ObserverFactory', 'BProcessesFactory', 'BPInLoggersStationFactory','BPInLoggersFactory','BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
-  function ($http, $window, $scope, $filter, $rootScope, ObserversFactory, ObserverFactory, BProcessesFactory, BPInLoggersStationFactory,BPInLoggersFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
-  $scope.bpId = $route.current.params.BPid;
-  $scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
-  $scope.spaces =  BPSpacesFactory.query({ BPid: $route.current.params.BPid });
-  $scope.spaceelems = BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid });
+minorityControllers.controller('SessionsCtrl', ['$http', 
+  '$window', 
+  '$scope', 
+  '$filter', 
+  '$rootScope',
+  'BPStationsFactory', 
+  'SessionsFactory',
+  'BProcessesFactory',
+  'BProcessFactory', 
+  'ObserversFactory', 
+  'ObserverFactory', 
+  'BProcessesFactory', 
+  'BPInLoggersStationFactory',
+  'BPInLoggersFactory',
+  'BPElemsFactory',
+  'BPSpacesFactory',
+  'BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
+  function ($http, $window, $scope, $filter, $rootScope,BPStationsFactory, SessionsFactory, BProcessesFactory, BProcessFactory, ObserversFactory, ObserverFactory, BProcessesFactory, BPInLoggersStationFactory,BPInLoggersFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
+
+
+/*
+$scope.processes.$promise.then(function(data) {
+  $scope.processes = data;
+  _.forEach($scope.processes, function(d) { d.sessions = []; return d.stations = BPStationsFactory.query({ BPid: d.id }); });
+  $scope.sessions.$promise.then(function (data2) {
+      _.forEach($scope.processes, function(d) { return d.sessions = _.filter(data2, function(dd) { return dd.process == d.id }) });
+
+      var stations = _.map($scope.processes, function(proc) { 
+              return proc.stations 
+            });
+
+      _.forEach(stations, function(stan) { 
+        stan.$promise.then(function(ds) {
+      _.forEach(data2, function(sess) { return sess.station = _.find(ds, function(st) { 
+        console.log(st); return st.session == sess.id }); 
+      }) 
+      })
+      });
+
+      });
+
+});
+*/
+
+$scope.sessions = SessionsFactory.query();
+$scope.sessions.$promise.then(function (data2) {
+    _.forEach(data2.sessions, function(session) { return session.session.station = session.station })
+    console.log(data2)
+});
+
+
+
 
 
 $scope.isManager = function () {
@@ -20,42 +66,7 @@ $scope.isManagerVal = $scope.isManager();
 $scope.isManager();
 
   /* callback for ng-click 'editUser': */
-  $scope.bpelems.$promise.then(function(data) {
-    $scope.spaces.$promise.then(function(data2) {
-      $scope.spaceelems.$promise.then(function(data3) {
-        //$scope.builder();
 
-  });
-  });
-  });
-
-
-
-
-$scope.stationsRefresh = function() {
-
-  BPStationsFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(data) {
-
-           $scope.bpstations = data; 
-           $scope.fetchObservers($scope.bpstations);     
-           console.log("boom");
-      $scope.bpelems.$promise.then(function(data34) {
-      $scope.spaces.$promise.then(function(data2) {
-      $scope.spaceelems.$promise.then(function(data3) {
-      $scope.logs.$promise.then(function(loggg) {
-              _.forEach(data, function(station) { $scope.builder(station) });
-               console.log(data);  
-    });
-    });
-    });
-    });
-         // Highlight
-
-
-    });
-};
-
-$scope.stationsRefresh();
 
   $scope.highlightActive = function (station, elem) {
      var front, nest;

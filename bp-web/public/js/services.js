@@ -155,11 +155,16 @@ minorityAppServices.factory('BPStationFactory', function ($resource) {
 /*
 ** Sessions FACTORY
 */
-minorityAppServices.factory('BPSessionsFactory', function ($resource) {
-    return $resource(baseUrl + 'bprocess/:BPid/sessions', {}, {
+minorityAppServices.factory('SessionsFactory', function ($resource) {
+    return $resource(baseUrl + 'sessions/', {}, {
         query: { method: 'GET', isArray: true }
         //create: { method: 'POST' },
 
+    })
+});
+minorityAppServices.factory('BPSessionsFactory', function ($resource) {
+    return $resource(baseUrl + 'bprocess/:BPid/sessions', {}, {
+        query: { method: 'GET', isArray: false }
     })
 });
 minorityAppServices.factory('BPSessionFactory', function ($resource) {

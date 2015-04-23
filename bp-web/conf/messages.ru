@@ -24,6 +24,7 @@ page.fullname=Full name
 page.business=Business
 page.yourPlan=Your Plan
 page.plans=Plans
+page.title=Title
 
 page.employeeBoard=Employee board
 page.actPermissions=Permission

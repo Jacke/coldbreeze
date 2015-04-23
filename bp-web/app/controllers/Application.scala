@@ -45,7 +45,7 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
             routes.javascript.ProcessSessionController.update_note
           // TODO Add your routes here
         )
-      ).as(JAVASCRIPT)
+      ).as("text/javascript")
     }
   }
 
@@ -56,15 +56,15 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
 
 
   def app() = SecuredAction { implicit request =>
-    // Expired checking
-    val user = request.user.main.userId
-    val current_plan = AccountPlanDAO.getByMasterAcc(user).get
-    applicationLogger.info(s"Plan expired_at: ${current_plan.expired_at}")
-    if (current_plan.expired_at.isBefore( org.joda.time.DateTime.now() ) ) {
-      Redirect(routes.PlanController.index)
-    } else {
-      Ok(views.html.app(request.user))
-    }
+    // Expired plan checking
+      val user = request.user.main.userId
+      val current_plan = AccountPlanDAO.getByMasterAcc(user).get
+      applicationLogger.info(s"Plan expired_at: ${current_plan.expired_at}")
+      if (current_plan.expired_at.isBefore( org.joda.time.DateTime.now() ) ) {
+        Redirect(routes.PlanController.index)
+      } else {
+    Ok(views.html.app(request.user))
+      }
   }
 
   case class ConfigurationWrapper(switcher_options: List[String], switcher_cmd: List[String], switcher_target: List[String])
@@ -90,7 +90,11 @@ case class WhoAmIdentify(email: String, business: Int = 0, manager: Boolean, emp
       case Some(biz) => biz._2
       case _ => 1
     }
-    val current_plan = AccountPlanDAO.getByMasterAcc(email).get
+    val current_plan = AccountPlanDAO.getByMasterAcc(email).getOrElse(
+            AccountPlanDTO(None, 
+                business_id = Some(1), 
+                master_acc = email 
+      ))
 
     val env_mode = play.api.Play.current.mode
 
