@@ -104,8 +104,74 @@ input.switch:active:checked::before, input.switch.touch:hover:checked::before {
 
 
 </style>
+
+<style>g.highcharts-grid {
+    display: none !important;
+}
+g.highcharts-axis {
+    display: none;
+}
+.highcharts-container svg text:last-child, .highcharts-button {
+  display: block;
+}
+g.highcharts-axis-labels, g.highcharts-tooltip {
+    display: block;
+}
+
+</style>
+<script>
+  $(function () {
+    $('#chart_diagram').highcharts({
+        chart: {
+            type: 'bar'
+        },
+        title: {
+            text: ''
+        },
+        xAxis: {
+            categories: ['']
+        },
+        yAxis: {
+            min: 0,
+            max: 12,
+            title: {
+                text: ''
+            }
+        },
+        
+        plotOptions: {
+            series: {
+                stacking: 'normal'
+            }
+        },
+        series: [{
+            name: 'Container',
+            data: [5]
+        }, {
+            name: 'Confirm',
+            data: [2]
+        }, {
+            name: 'Placeholder',
+            data: [5]
+        }]
+    });
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
 <div class="allStations">
-<h1>{{ 'STATIONS' | translate }}</h1>
+<h1>{{ 'SESSIONS' | translate }}</h1>
 
 
 
@@ -134,23 +200,36 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 </script>
 
 
-<div class="stations" ng-repeat="station in bpstations | filter:isOnlyActive" style="clear: both;">
+<div class="session-process">
 
-              <span class="number {{ station.state }}">{{ $index + 1 }}</span>
+<a href="/a#/bprocess/{{ sessions.process.id }}">{{ sessions.process.title }}</a>
+
+<div id="chart_diagram" style="width: 100%; height: 190px;"></div>
+<div class="stations" ng-repeat="session in sessions.sessions | limitTo: 10 | filter:isOnlyActive" style="clear: both;">
+
+        <div class="session__header">
+              <span class="number {{ session.station.state }}">{{ $index + 1 }}</span>
+              <a href="/a#/bprocess/{{ sessions.process.id }}?session={{ session.session.id }}">Session # {{ $index }} — {{session.station.note }}</a>
+              <span class="session__header__created_at">{{ session.session.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}</span>
+        </div>      
+<div class="progress">
+   <div class="progress-bar" role="progressbar" aria-valuenow="{{session.percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{session.percent}}%;">
+    {{session.percent}}%
+   </div>
+</div>              
+              
            <!--<p>
             {{ stationByProcess(station.id).id }}
             {{ stationByProcess(station.id).title }}
           </p>-->
 
-
-<div ng-include src="'partials/treeInStation.html'"></div>
 <div class="row">
 <div class="col-xs-3 state-box-container">
   <div class="station-markers">
   <ul class="station-states">
-                      <li class="state started {{ station.started }}"> {{ 'STARTED' | translate }} </li>
-                      <li class="state paused {{ station.paused }}"> {{ 'PAUSED' | translate }} </li>
-                      <li class="state finished {{ station.finished }}"> {{ 'FINISHED' | translate }} </li>
+                      <li class="state started {{ session.station.started }}"> {{ 'STARTED' | translate }} </li>
+                      <li class="state paused {{ session.station.paused }}"> {{ 'PAUSED' | translate }} </li>
+                      <li class="state finished {{ session.station.finished }}"> {{ 'FINISHED' | translate }} </li>
     <li class="state canceled {{ station.canceled }}"> {{ 'CANCELED' | translate }} </li>
   </ul>
   </div>
@@ -160,120 +239,21 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
     <a ng-click="updateNote(station)" ng-show="isManagerVal">Update note</a> 
   </div>
 
-
-  <div class="station-observers" ng-show="isManagerVal">
-
-      <div class="observer">
-        <h3>{{ 'OBSERVER' | translate }}: </h3>
-        <div class="observers" ng-repeat="obs in station.obsrs">
-          <h6> {{ obs.fullName }}</h6>
-          <input type="text" class="input-mini input-monospace js-url-field" value="http://min.ority.us/observe/{{ obs.hash_code }}">
-          <a ng-click="deleteObserver(obs.id)" class="btn btn-small btn-primary">{{ 'DELETE' | translate}}</a>
-        </div>
-
-<form novalidate="novalidate" class="form-horizontal">
-      <input type="hidden" id="inputTitle" ng-model="station.newObserver.observer.bprocess" ng-init="station.newObserver.observer.bprocess=station.process" required/>
-      <label class="control-label" for="inputTitle">{{ 'EMAILS' | translate }}:</label>
-    <div class="controls">
-        <textarea type="text" id="inputBusinessId" ng-model="station.newObserver.emails" ng-init="station.newObserver.emails = []"/>
-        <input type="text" id="inputFullName" ng-model="station.newObserver.observer.fullName" placeholder="{{ 'FULL_NAME' | translate }}" required/>
-      </div>
-    </div>
-    <input type="hidden" id="inputTitle" ng-model="station.newObserver.observer.station_id" ng-init="station.newObserver.observer.station_id=station.id" required/>
-
-    <div class="control-group">
-      <div class="controls">
-        <a ng-click="createNewObserver(station.newObserver)" class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</a>
-      </div>
-    </div>
-</form>
-
-
-
-
-      </div>
 </div>
   
-  </div>
-
-</div>
-  
-  
-  
-
-
-<!--
-<div class="row">
-<div class="col-xs-5">
-<h3><a ng-click="expand = !expand">{{ 'LOGS' | translate }}</a></h3>
-
-<div class="slide" ng-show="expand">
-
-
-          <div class="logs" ng-repeat="log in logsByStation(station.id)">
-                  <table class="table table-user-information">
-                    <tbody>
-                      <tr>
-                        <td> {{ 'ELEMENT' | translate }} </td>
-
-<td> {{ 'DATE' | translate }} </td>
-<td> {{ 'STEP' | translate }} </td>
-<td> {{ 'CV' | translate }} </td>
-
-                      </tr>
-                      <tr>
-<td> {{ elemsHash[log.element].id }} {{ elemsHash[log.element].title }}  {{ elemsHash[log.element].type_title }}
-{{ spaceElemHash[log.space_elem].id }} {{ spaceElemHash[log.space_elem].title }} {{ spaceElemHash[log.element].type_title }}  </td>
-<td> {{ log.date | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }} </td>
-<td> {{ log.step }} </td>
-<td> {{ log.comps }} </td>
-            </tr>
-                    </tbody>
-                  </table>
-</div>
 </div>
 </div>
 
-<div class="col-xs-5">
-<h3><a ng-click="expandil = !expandil">{{ 'ILOGS' | translate }}</a></h3>
-<div class="slide" ng-show="expandil">
-          <div class="input-logs" ng-repeat="il in inputLoggers[station.id]">
-                  <table class="table table-user-information">
-                    <tbody>
-                      <tr>
-                        <td> {{ 'ELEMENT' | translate }} </td>
-<td> {{ 'USER' | translate }} </td>
-<td> {{ 'ACTION' | translate }} </td>
-<td> {{ 'ARGUMENTS' | translate }} </td>
-<td> {{ 'DATE' | translate }} </td>
 
-
-                      </tr>
-                      <tr>
-<td> {{ elemsHash[il.front_elem_id].id }} {{ elemsHash[il.front_elem_id].title }} {{ elemsHash[il.front_elem_id].type_title }} 
-     {{ spaceElemHash[il.space_elem_id].id }} {{ spaceElemHash[il.space_elem_id].title }} {{ spaceElemHash[il.space_elem_id].type_title }}
-  </td>
-<td> <a href="employees/">{{ il.uid }}</a></td>
-<td> {{ il.action }} </td>
-<td> <pre>{{ il.arguments | json }}</pre> </td>
-<td> {{ il.date | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }} </td>
-
-
-            </tr>
-                    </tbody>
-                  </table>
-          </div>
+<div ng-if="station.paused == true && station.finished == false">
+<a ng-click="haltStation(station.id)" class="btn btn-danger btn-big" ng-show="isManagerVal">{{ 'TURN_DOWN' | translate }}</a>
 </div>
-</div>
-</div> -->
 
-          <div ng-if="station.paused == true && station.finished == false">
-          <a ng-click="haltStation(station.id)" class="btn btn-danger btn-big" ng-show="isManagerVal">{{ 'TURN_DOWN' | translate }}</a>
-          </div>
-
-           <hr>
+          
 </div>
 
 
 </div>
 </div>
+
+</div> <!-- session-process -->

@@ -4,6 +4,8 @@
 
 var translationsEN = {
   PERMISSIONS: 'Permissions',
+  SESSIONS: 'Sessions',
+  ALL_SESSIONS: 'All Sessions',
   DELETE: 'Delete',
   ADD: 'Add',
   PEOPLE: 'People',
@@ -75,6 +77,8 @@ var translationsRU= {
   DELETE: 'Удалить',
   ADD: 'Добавить',
   PEOPLE: 'Люди',
+  SESSIONS: 'Сессии',
+  ALL_SESSIONS: 'All Sessions',
   SHARE: 'Поделиться',
   STATIONS: 'Запуски',
   SERVICE: 'Услуга',

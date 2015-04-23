@@ -24,22 +24,30 @@
         </a>
         <span class="teamApiVanity">{{ filterService(bprocess.service) }}</span>
       </h2>
+      
+      <div class="process_content" ng:show="emptyElemCheck(bprocess.trees)">
+                <div ng-include src="'partials/treeThumb.html'"></div>
+      </div>
+
       <div class="teamApisListControls" ng-show="isManagerVal">
         <a class="teamApiControlsLink ajaxLink teamApisLinkPeople" ng-click="perm(bprocess.id)"><span class="uicon-svg98"></span> {{ 'PEOPLE' | translate }} </a>
         <a class="teamApiControlsLink teamSettingsLink teamApisLinkSettings" ng-click="modalShare(bprocess.id)"><span class="uicon-svg522"></span> {{ 'SHARE' | translate }}</a>
         <a class="teamApiControlsLink teamSettingsLink teamApisLinkDelete" ng-click="deleteBP(bprocess.id)"> <span class="uicon-svg62"></span> {{ 'DELETE' | translate }} </a>
       </div>
       <div class="process-thumb" ng:show="emptyElemCheck(bprocess.trees)">
-        <div ng-include src="'partials/treeThumb.html'"></div>
+        <!--<div ng-include src="'partials/treeThumb.html'"></div>-->
         <p class="teamApisListGithub">
-          <a class="teamApisGithubIco" ng-click="openInvoke(bprocess.id)" tooltip="{{ 'RUN' | translate }}" tooltip-placement="bottom" ></a>
+          <a class="redButton" ng-click="openInvoke(bprocess.id)" tooltip="{{ 'RUN' | translate }}" tooltip-placement="bottom" ></a>
         </p>
       </div>
     </li>
     </div>
-    <div class="stations" ng:show="emptyCheck(stations, bprocess.id)">
-        <a class="allStation" href="/a#/bprocess/{{ bprocess.id }}/stations">{{ 'STATIONS' | translate }} </a>
-        <!--<div class="station-markers">
+    
+    
+    <div class="stations"> <!-- ng:show="emptyCheck(process.stations, bprocess.id)">    | filter: { station.paused: true } | slice:2:2 -->
+      <div ng-include src="'partials/launchesBar.html'" class="launches-bar" ng-repeat="session in bprocess.sessions[0].sessions"></div>
+    <!--
+        <div class="station-markers">
               <a class="marker" href="/a#/bprocess/{{ bprocess.id }}/stations" ng-repeat="station in stations | filter: { finished: true, process: bprocess.id } | slice:2:2">
 
               <span class="number small {{ station.state }}">{{ $index + 1 }}</span>
@@ -48,20 +56,20 @@
                       <li class="state paused {{ station.paused }}"> {{ 'PAUSED' | translate }}  </li>
                       <li class="state finished {{ station.finished }}"> {{ 'FINISHED' | translate }}  </li>
                     </ul>
-        </div>
-        -->
-        <div class="station-markers" ng:show="emptyCheck(stations, bprocess.id)">
+        </div>-->
+        
+        <a class="allStation" href="/a#/bprocess/{{ bprocess.id }}/stations">{{ 'STATIONS' | translate }} </a>
+        <!--<div class="station-markers" ng:show="emptyCheck(stations, bprocess.id)">
               <a class="marker" ng-repeat="station in stations | filter: { finished: false, paused: true, process: bprocess.id }">
                 <span class="number small {{ station.state }}">{{ $index + 1 }}</span>
                     <ul class="station-states">
                       <li class="state started {{ station.started }}"> {{ parsePercent(((station.step+1)/bpElemLength[bprocess.id])*100)}}% </li>
                       <li class="state paused {{ station.paused }}"> {{ 'PAUSED' | translate }}  </li>
                       <li class="state finished {{ station.finished }}"> {{ 'FINISHED' | translate }} </li>
-                    </ul>
-                    
-                    <div ng-include src="'partials/launchesBar.html'"></div>
-        </div>
-      </div>
+                    </ul>        
+        </div>-->
+    </div>
+    
 
 
 

@@ -1,32 +1,35 @@
-<div class="ember-view automations_connected">
+<div class="automations_connected">
 
-<div class="ember-view dishes-list"><div class="ember-view dish-presentation" style="height: 75px;"><div class="dish-details">
-  <div class="dish-state left">
-    <span class="state-sign vertical-center error" data-bindattr-3038="3038"></span>
-  </div>
+<div class="dishes-list"><div class="dish-presentation" style="height: 75px;"><div class="dish-details">
+  <a href="/a#/bprocess/{{$parent.session.process.id }}?session={{$parent.session.session.id }}"><div class="dish-state left">
+    <span class="state-sign vertical-center error"></span>
+    <span class="state-percent vertical-center">{{ $parent.session.percent }}%</span>
+  </div></a>
 
+<!--
     <div class="dish-error left">
       <span class="dish-label vertical-center left">
           Unknown error
       </span>
     </div>
-
+-->
     <div class="dish-summary left">
     <span class="dish-label fixed-width vertical-center left">Active</span>
-    <div class="ember-view service_connector-icon left" style="background-image: url('https://s3-eu-west-1.amazonaws.com/sushio.prod/service_connector_logos/5171292359d601ad33000181/AmazonWebServices-Logo-500.thumb.png?1372436798');"></div>
+    
+    <!--<div class="service_connector-icon left" style="background-image: url('https://s3-eu-west-1.amazonaws.com/sushio.prod/service_connector_logos/5171292359d601ad33000181/AmazonWebServices-Logo-500.thumb.png?1372436798');"></div>-->
     <div class="linking_dots-container left"><div class="linking_dots"></div></div>
-    <div class="ember-view service_connector-icon left" style="background-image: url('https://s3-eu-west-1.amazonaws.com/sushio.prod/service_connector_logos/53f5ec2f7bb2d084af000001/open-uri20141014-2-7oamwe.thumb.?1413316482');"></div>
+    <!--<div class="service_connector-icon left" style="background-image: url('https://s3-eu-west-1.amazonaws.com/sushio.prod/service_connector_logos/53f5ec2f7bb2d084af000001/open-uri20141014-2-7oamwe.thumb.?1413316482');"></div>-->
     <span class="dish-label fixed-width vertical-center left">Next</span>
   </div>
 
   <span class="dish-label vertical-center left">Prev</span>
 
   <div class="dish-delete right">
-    <button class="icon-trash" data-ember-action="3046"></button>
+    <button class="icon-trash"></button>
   </div>
 
-  <div class="dish-operations-collapser right visible" data-bindattr-3047="3047">
-    <button class="menu-hamburger" ng-click="showInlineLaunch(station)">
+  <div class="dish-operations-collapser right visible">
+    <button class="menu-hamburger" ng-click="showInlineLaunch($parent.session)">
       <span></span><span></span><span></span>
     </button>
   </div>
@@ -34,8 +37,8 @@
 
 </div>
   
-<div class="inline-launch" ng-animate="animate" ng-show="station.inlineLaunchShow">
-  <div ng-include="" src="'partials/forms/inputs/inputs.html'"></div>
+<div class="inline-launch" ng-animate="animate" ng-show="$parent.session.inlineLaunchShow">
+  <div ng-include="" src="'partials/inputs/inputs.html'"></div>
 </div>
 
   
