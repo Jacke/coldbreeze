@@ -1,6 +1,54 @@
 @import 'bem';
 
 
+.page-header.profile_header {
+    margin-top: 0px;
+}
+.dashboard_services dd.info {
+    margin-top: 30px;
+}
+
+.dashboard_services dl#title_field {
+    margin-bottom: 5px;
+}
+.dashboard_services .teamChangeBox.teamPaddedBox {
+    width: 100%;
+    margin-left: 0px;
+    padding-left: 25px;
+}
+
+.dashboard_services table.zebra-striped {
+    width: 100%;
+}
+.dashboard_services table.zebra-striped * {
+    font-size: 12px !important;
+}
+.service-edit .input {
+    padding-bottom: 30px;
+}
+
+.service-edit span.help-inline {
+    display: none;
+}
+
+.service-edit input#title {
+    margin-bottom: -10px;
+}
+
+.service-edit .actions {
+    padding-bottom: 25px;
+}
+@include b(profile_advices) {
+	@include e(advice) {
+		padding-top: 20px;
+		margin-left: 29px;
+		background: #ecf0f1;
+		border-radius: 3px;
+		padding: 23px 23px;
+		margin-top: 15px;
+	}
+}
+
 @include b(dashboard_sessions) {
 	@include b(session_header) {
 		@include e(top_bar) {
@@ -20,19 +68,19 @@
             background: gray;
         }
     }
-    @include b(profile_advices) {
-    	@include e(advice) {
-    		background: yellow;
-    		color: black;
-    	}
-    }
-
+    /*
+		
+    */
 	@include b(session_list) {
+		padding-top: 10px;
 		@include e(session) {
 			@include e(process) {
 
 			}
 			@include e(process_session) {
+				padding-bottom: 12px;
+				margin-left: 7px;
+				padding-top: 4px;				
 				@include e(session_label) {
 					color: black;
 				}
