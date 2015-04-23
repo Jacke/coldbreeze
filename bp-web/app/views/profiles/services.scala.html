@@ -19,7 +19,7 @@
 @(user: DemoUser, currentPage: Page[BusinessServiceDTO])(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment[service.DemoUser])
 @header_table(orderBy: Int, title: String) = {
     <th class="headerSortDown">
-        <a href="#">@title</a>
+        @title
     </th>
 }
   @if(user.isManager) {
@@ -29,10 +29,10 @@
     </div>  
   <div class="teamChangeBox teamPaddedBox">
       @Option(currentPage.items).filterNot(_.isEmpty).map { entities =>
-        <table class="computers zebra-striped">
+        <table class="zebra-striped">
             <thead>
                 <tr>
-                    @header_table(1, Messages("page.service")(LangDet.getLang(user) ) )
+                    @header_table(1, Messages("page.title")(LangDet.getLang(user) ) )
                     @header_table(2, "")
                     @header_table(3, "")
                 </tr>
@@ -49,7 +49,7 @@
                             </td>
                             <td>
                               @form(routes.BusinessServiceController.destroy(entity.id.get), 'class -> "topRight") {
-                                  <input type="submit" value="Delete service" class="btn danger">
+                                  <input type="submit" value="Delete" class="btn danger">
                               }
                             </td>
                         </tr>
@@ -65,10 +65,7 @@
       <!--<a class="btn success" id="add" href="@routes.BusinessServiceController.create()">Add a service</a>-->
         @form(routes.BusinessServiceController.create_new()) {
         <fieldset>
-
-
-
-        @inputText(serviceForm("title"), '_label -> Messages("page.name")(LangDet.getLang(user) ), 'class -> "form-control")
+        @inputText(serviceForm("title"), '_label -> Messages("page.title")(LangDet.getLang(user) ), 'class -> "form-control")
         </fieldset>
 
         <div class="actions">

@@ -6,8 +6,10 @@
 @import models.DAO.resources.BusinessServiceDTO
 @import models.DAO.resources.BusinessDTO
 @import controllers.BusinessServiceForms._
+@import decorators._
+@import models.DAO._
 
-@(user: DemoUser, mngParams: Option[managerParams], empParams: Option[employeeParams], plan: Option[planInfo], walkthrought: Boolean )(currentPage: Page[BusinessServiceDTO], currentOrderBy: Int, currentFilter: String, businesses: List[BusinessDTO])(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment[service.DemoUser])
+@(user: DemoUser, mngParams: Option[managerParams], empParams: Option[employeeParams], plan: Option[planInfo], walkthrought: Boolean, sessions: List[SessionContainer] )(currentPage: Page[BusinessServiceDTO], currentOrderBy: Int, currentFilter: String, businesses: List[BusinessDTO])(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment[service.DemoUser])
 
 @import securesocial.core.IdentityProvider
 
@@ -74,7 +76,7 @@
 
 
 @main(Messages("page.profile")(LangDet.getLang(user) ), user) {
-<div class="teamApisListWrap"><div class="panelLike organisationsGridLike">
+<div class="teamApisListWrap dashboard-sessions"><div class="panelLike organisationsGridLike">
 
 <div class="teamSettings">
 <div class="grids">
@@ -110,7 +112,8 @@
 	</script>
 
 	}
-</div>
+	</div>
+
 <div class="profile_advices col-md-4">
  	<div class="profile_advices__advice">
  		Some shit from futurama
@@ -118,7 +121,7 @@
 </div>
 
 <div class="dashboard_sessions col-md-8">
-@active_sessions()
+@active_sessions(sessions)
 </div>
 
 
