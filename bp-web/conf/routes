@@ -134,6 +134,10 @@ POST        /bprocess/:bpId/copy/:title                         @controllers.Bus
 
 # Stations
 GET         /sessions 								 @controllers.ProcessSessionController.all_sessions()
+# Sessions
+GET          /bprocess/:BPid/sessions        		 @controllers.ProcessSessionController.process_all_session(BPid: Int)
+#GET         /bprocess/:BPid/session/:id     		 #
+#DELETE      /bprocess/:BPid/session/:id     		 #
 GET         /bprocess/stations                       @controllers.ProcessSessionController.all_stations()
 GET         /bprocess/:id/stations/around            @controllers.ProcessSessionController.stations_elems_around(id: Int)
 GET         /bprocess/:id/stations                   @controllers.ProcessSessionController.station_index(id: Int)
@@ -146,10 +150,6 @@ POST        /bprocess/:id/station/:station_id/note   @controllers.ProcessSession
 
 
 
-# Sessions
-GET          /bprocess/:BPid/sessions        @controllers.SessionsController.index(BPid: Int)
-#GET         /bprocess/:BPid/session/:id     #
-#DELETE      /bprocess/:BPid/session/:id     #
 
 
 # States, switcher and reactions with outputs
