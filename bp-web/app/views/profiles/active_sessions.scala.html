@@ -18,13 +18,8 @@
             @session.sessions.map { session =>
     		<div class="session_list__session__process_session">
     			<div class="session_list__session__process_session__session_label">
-<<<<<<< HEAD
-    				<label><a href="/a#/bprocess/@{session.process.id.getOrElse(0)}?session=@session.session.id">Session # @session.session.id — @session.station match {
-                    case Some(station) => { station.note }
-=======
     				<label><a href="/a#/bprocess/@{session.process.id.getOrElse(0)}/elements?session=@session.session.id">Session # @session.session.id — @session.station match {
                     case Some(station) => { @station.note }
->>>>>>> HEAD@{1}
                     case _ => { "" }
                     }
                     </a></label>

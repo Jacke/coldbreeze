@@ -210,11 +210,7 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 
         <div class="session__header">
               <span class="number {{ session.station.state }}">{{ $index + 1 }}</span>
-<<<<<<< HEAD
-              <a href="/a#/bprocess/{{ entity.process.id }}?session={{ session.session.id }}">Session # {{ $index }} — {{session.station.note }}</a>
-=======
               <a href="/a#/bprocess/{{ entity.process.id }}/elements?session={{ session.session.id }}">Session # {{ $index }} — {{session.station.note }}</a>
->>>>>>> HEAD@{1}
               <span class="session__header__created_at">{{ session.session.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}</span>
         </div>      
 <div class="progress">
