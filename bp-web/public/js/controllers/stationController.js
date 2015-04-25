@@ -189,7 +189,11 @@ $scope.stationsRefresh();
   }
 
 
+<<<<<<< HEAD
 
+=======
+$scope.date = {startDate: null, endDate: null};
+>>>>>>> HEAD@{1}
 $scope.sessions = BPSessionsFactory.query({ BPid: $route.current.params.BPid });
 $scope.sessions.$promise.then(function (data2) {
     _.forEach(data2.sessions, function(session) { return session.session.station = session.station })

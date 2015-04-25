@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container elements-list">
 <div class="traverse-marker"></div>
 
 <div class="tab-content">
@@ -58,9 +58,11 @@
     <!--<a href="" ng:click="openNewElem()">.</a> -->
     <li><a href="" role="tab" class="addElemTab" data-toggle="tab" ng:show="!inSession" ng:click="newselected==1 ? newselected=0 : newselected=1 "><span class="glyphicon glyphicon-plus"></span>  </a></li>
   </ul>
-    <div class="tab-content">
 
 
+
+
+<div class="tab-content">
 <!--
 <div class="elem-desc" ng:show="newselected != 1 && bpelems.length < 1 && isManagerVal">
 <div class="confirm-desc">
@@ -76,39 +78,46 @@
 
 <div class="tab-pane active" id="edit" ng:show="newselected == 1 && !inSession">
  <form novalidate="novalidate" class="form-horizontal form-new-bpelem" ng-class="newBpelem.type_title">
+    <div class="col-xs-3 element-form-fields">
     <div class="control-group form-group">
-      <label class="control-label col-sm-1" for="inputTitle">{{ 'TITLE' | translate }}:</label>
-      <div class="controls col-xs-4">
+      <div class="controls col-xs-8">
+        <label class="control-label col-sm-1" for="inputTitle">{{ 'TITLE' | translate }}</label>
         <input type="text" id="inputTitle" class="form-control" ng-model="newBpelem.title"/>
       </div>
     </div>
     <div class="control-group form-group">
-      <label class="control-label col-sm-1" for="inputBusinessId">{{ 'DESC' | translate }}:</label>
-      <div class="controls col-xs-4">
+      <div class="controls col-xs-8">
+        <label class="control-label col-sm-1" for="inputBusinessId">{{ 'DESC' | translate }}</label>
         <textarea type="text" class="form-control" id="inputBusinessId" ng-model="newBpelem.desc"/>
       </div>
     </div>
-        <input type="hidden" name="value" ng-model="newBpelem.business" value="{{ business() }}">
-        <input type="hidden" name="value" ng-model="newBpelem.process" value="{{ BPid }}">
-        <input type="hidden" id="inputBusinessId" ng-model="newBpelem.b_type"/>
-        <input type="hidden" id="inputBusinessId" ng-model="newBpelem.type_title"/>
-        <input type="hidden" id="inputBusinessId" ng-model="newBpelem.space_own"/>
-        <input type="hidden" id="inputBusinessId" ng-model="newBpelem.order" value="{{ orderFrontGen(newBpelem) }}"/>
-        <input type="hidden" id="inputBusinessId" ng-model="newBpelem.ref"/>
+    </div>
+    <select name="category" id="categorySelect" ng-model="newBpelem.refCategoryFilter" ng-init="newBpelem.refCategoryFilter = refCategories[0]" ng-options="option for option in refCategories"></select>
+    <div class="templateButton col-xs-8 clearfix">
+      <div class="ref" ng-repeat="ref in refs | filter: {ref: {category: newBpelem.refCategoryFilter}} ">
+        <a ng-click="refElem(ref, newBpelem)" ng-class="isSelected(ref, newBpelem)" class="btn btn-small btn-primary container_brick">{{ ref.ref.title }}</a>
+      </div>
+    </div>
+    <div class="ref-desc col-xs-8">
+      {{ newBpelem.selectedRef.ref.desc }}
+    </div>    
+    <input type="hidden" name="value" ng-model="newBpelem.business" value="{{ business() }}">
+    <input type="hidden" name="value" ng-model="newBpelem.process" value="{{ BPid }}">
+    <input type="hidden" id="input_b_type" ng-model="newBpelem.b_type"/>
+    <input type="hidden" id="input_type_title" ng-model="newBpelem.type_title"/>
+    <input type="hidden" id="input_space_own" ng-model="newBpelem.space_own"/>
+    <input type="hidden" id="input_order" ng-model="newBpelem.order" value="{{ orderFrontGen(newBpelem) }}"/>
+    <input type="hidden" id="input_ref" ng-model="newBpelem.ref"/>
 
-    <div class="control-group form-group" ng-show="isManagerVal">
-      <div class="controls col-xs-8">
-        <div class="templateButton">
-          <div class="ref" ng-repeat="ref in refs">
-            <a ng-click="refElem(ref, newBpelem)" class="btn btn-small btn-primary container_brick">{{ ref.ref.title }} <span tooltip="{{ 'CONTDESC' | translate }}" tooltip-placement="bottom" class="glyphicon glyphicon-info-sign"></span></a>
-          </div>
-
-        </div>
+    <div class="control-group form-submit form-group" style="clear:both;" ng-show="isManagerVal">
+      <div class="controls">
         <a ng-click="createNewElem()" class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</a>
       </div>
     </div>
   </form>
-</div></div>
+</div>
+
+</div><!-- tab-content -->
 
 <div class="elements" ng-repeat="bpelem in bpelems | orderBy:'order'">
 <div class="proc-element" ng-class="'elem-'+bpelem.id">
@@ -137,9 +146,9 @@
       <div class="states-row">
         <div class="state-row">
           <div class="row-top">
-            <div class="state" ng-class="state.on" ng-repeat="state in bpelem.states">
+            <div class="state" ng-class="stateClass(state)" ng-repeat="state in bpelem.states">
               <div class="switcher" ng-repeat="switcher in state.switches">
-              <span class="switcher-icon" ng-class="switcher.switch_type"></span>{{ state.title }} — {{ state.opposite }}
+              <span class="switcher-icon" ng-class="switcher.switch_type"></span>{{ stateDecoration(state) }}
             </div>
             </div>
             
@@ -438,8 +447,8 @@
 </div>
   
   
+<div class="session-info" ng-show="inSession" ng-click="session_bar == 'hiding' ? session_bar='shown' : session_bar='hiding'">{{ session | json }}</div>
 <div id="proc-sessions" class="proc-sessions" ng-init="session_bar='hiding'"ng-class="session_bar" ng-click="session_bar == 'hiding' ? session_bar='shown' : session_bar='hiding'">
-    
     <div class="proc-session active" ng-click="resetSession()" data-desc="Model">
     </div> 
 <div ng-click="changeSession(session)" ng-repeat="session in sessions | limitTo: 5" class="current-proc-session-info proc-session"  data-desc="Session #{{$index+1 }}">
