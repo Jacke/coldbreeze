@@ -121,14 +121,14 @@ $scope.reloadResources = function() {
 
 $scope.reloadResourcesForSession = function(session) {
    $scope.states = BPSessionStatesFactory.query({ BPid: $route.current.params.BPid, id: session.id });
- $scope.states.$promise.then(function (states) {
+   $scope.states.$promise.then(function (states) {
 
     _.forEach($scope.bpelems, function(z) {
     z.states = _.filter(states, function(d){ return d.front_elem_id == z.id;});
     //z.topo_id = _.find(data.topology, function(d){ return d.front_elem_id == z.id;});
     //z.reactions = _.filter(data.reaction_cn, function(sw) { return sw.reaction.element == z.topo_id }); 
 
-    _.forEach(z.states, function(st){ return st.switches = _.filter($scope.switches, function(sw) { return sw.state_ref == st.id }) });
+    _.forEach(z.states, function(st){ return st.switches = _.filter($scope.switches, function(sw) { return sw.state_ref == st.origin_state }) });
     /*if (z.b_type == "brick") {
       z.spaces = _.filter(data.unitspace, function(s){ return s.brick_front == z.id;});
         _.forEach(z.spaces, function(sp) { 
@@ -1086,33 +1086,65 @@ BPSessionStateFactory
 $scope.refs = RefsFactory.query();
 
 $scope.refs.$promise.then(function(data) {
+  $scope.refCategories = _.uniq(_.map(data, function(d){return d.ref.category}));
   console.log(data);
 });
 
     
 $scope.refElem = function (ref, elem) {
     elem.ref = ref.ref.id;
+    elem.selectedRef = ref;
+}
+$scope.isSelected = function(ref, newBpelem) {
+    if (newBpelem.ref == ref.ref.id) {
+      return 'selected'
+    }
+    else {
+      return 'unselected'
+    }
+}
+
+$scope.stateDecoration = function(state) {
+  if (state.on) {
+    if (state.on_rate < 100) {
+      return state.middle;
+    }
+    if (state.on_rate == 100) {
+      return state.title;
+    }
+  }
+  if (!state.on && $scope.inSession) {
+    return state.opposite;
+  }
+  if (!state.on && !$scope.inSession) {
+    return state.title;
+  }
 }
 
 /***
  * Session observer
  **/   
-$scope.sessions = BPSessionsFactory.query({ BPid: $scope.BPid });    
-$scope.sessions.$promise.then(function(data){
-  BPStationsFactory.query({ BPid: $scope.BPid }).$promise.then(function(stations) {
+ 
+BPSessionsFactory.query({ BPid: $scope.BPid }).$promise.then(function(data){
+  $scope.sessions = data.sessions;
+
+
+   BPStationsFactory.query({ BPid: $scope.BPid }).$promise.then(function(stations) {
   _.forEach(data, function(d){ return d.stations = _.filter(stations, function(s){ return s.session == d.id }) });
   })
    // Change to session that signed in route params
    if ($location.search().session != undefined) {
-    var ses  = _.find($scope.sessions, function(ses) { return ses.id == parseInt($location.search().session) });
-    if (ses) {
-      $scope.changeSession(ses);
-    }
+    var ses  = _.find($scope.sessions, function(ses) { return ses.session.id == parseInt($location.search().session) });
+      if (ses) {
+        $scope.changeSession(ses);
+      }
    }
   });    
     
 
 $scope.changeSession = function(session) {
+ console.log(session);
+
  $scope.session = session;
  $scope.inSession = true;
  $scope.station = _.find(session.stations, function(s) { return s.front == true })  
@@ -1128,7 +1160,7 @@ $scope.changeSession = function(session) {
   var top = $('.spelem-24').offset().top
 
  }
-  $scope.reloadResourcesForSession(session);
+  $scope.reloadResourcesForSession(session.session);
 }
 $scope.inSession = false;
 
@@ -1139,9 +1171,21 @@ $scope.resetSession = function () {
   $scope.station = undefined;
   $scope.loadResources();
   $scope.reloadResources();
-  $('.traverse-marker').css('top', '0px')
+  $('.traverse-marker').css('top', '-23px')
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 }]);

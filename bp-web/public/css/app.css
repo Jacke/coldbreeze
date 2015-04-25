@@ -29,6 +29,7 @@ Elements mocking */
 }
 .templateButton .ref {
     display: inline-block;
+    margin-right: 10px;
 }
 
 .templateButton {
@@ -54,7 +55,7 @@ Elements mocking */
 }
 
 .proc-element .right-bar {
-    height: 38px;
+    height: auto;
     background: #b6c2c9;
     border-bottom-right-radius: 7px;
     border-bottom-left-radius: 7px;
@@ -93,7 +94,6 @@ text-shadow: none;
     position: absolute;
     top: 0;
     right: 0;
-    border-bottom-right-radius: 7px;
     padding-top: 1.7%;
     padding-left: 2.9%;
     cursor: pointer;
@@ -264,7 +264,35 @@ padding-top: 11px;
 font-size: 12px;
 }
 
-
+span.switcher-icon {font-family: "fontello";
+      font-style: normal;
+      font-weight: normal;
+      speak: none;
+     
+      display: inline-block;
+      text-decoration: inherit;
+      width: 1em;
+      margin-right: .2em;
+      text-align: center;
+      /* opacity: .8; */
+     
+      /* For safety - reset parent styles, that can break glyph codes*/
+      font-variant: normal;
+      text-transform: none;
+     
+      /* fix buttons height, for twitter bootstrap */
+      line-height: 1em;
+     
+      /* Animation center compensation - margins should be symmetric */
+      /* remove if not needed */
+      margin-left: .2em;
+     
+      /* You can be more comfortable with increased icons size */
+      /* font-size: 120%; */
+     
+      /* Font smoothing. That was taken from TWBS */
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;}
 
 .info .type {
 display: inline-block;
@@ -303,7 +331,22 @@ div#proc-sessions.hiding {
     right: 17%;
     top: 43%;
 }
+.elements-list .control-group.form-submit.form-group {
+    margin-left: 15px;
+}
+select#categorySelect {
+    margin-bottom: 15px;
+    margin-top: 10px;
+    margin-left: 15px;
+}
+.ref a.selected {
+  background: gray;
+}
+.ref-desc {
+    padding-top: 15px;
+}
 #proc-sessions {
+  transition: all 0.2s cubic-bezier(0, 0, 0, 1.4);
 width: 100%;
 margin: 50px auto;
 position: fixed;
@@ -537,12 +580,6 @@ width: 300px;
 .manager-tab .actions .form-control {
     width: 100px;
 
-}
-
-
-.form-control {
-    width: 44%;
-    margin-bottom: -28px;
 }
 
 .manager-tab .actions {
@@ -2754,23 +2791,75 @@ dd {
 
 
 
-
+.session-info {
+  position: fixed;
+  bottom: 38px;
+}
 .traverse-marker {
   position: absolute;
   height: 20px;
   top: 0px;
   width: 20px;
   left: 24px;
-background: #e74c3c;
+  background: #3CE786;
   transition: all 1s ease-in-out;
   border-radius: 5px 10px 10px 5px;
 }
 
 
+.state-row .state.true {
+  color: green;
+}
+
+.state-row .state.false {
+  color: red;
+}
 
 
+.elements-list label {
+  display: inline-block;
+  max-width: 100%;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #7D7D8E;
+  font-size: 12px;
+  font-weight: bold;
+  text-align: left;
+  padding-left: 2px;
+  padding-bottom: 4px;
+}
+.elements-list textarea.form-control {
+    padding-top: 8px;
+}
+.elements-list .form-control:focus {
 
-
+      border-color: #79589F;
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px rgba(121,88,159,0.6);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,0.075),0 0 8px rgba(121,88,159,0.6);
+}
+.elements-list .form-control:focus {
+  box-shadow: inset 0 1px 2px rgba(203,203,210,0.2),0 0 4px rgba(121,88,159,0.3);
+}
+.elements-list .form-control {
+display: block;
+  width: 100%;
+  height: 32px;
+  padding: 0px 12px;
+  font-size: 14px;
+  line-height: 1.42857;
+  color: #3F3F44;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #CBCBD2;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+  -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+  -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+ 
+}
 
 
 

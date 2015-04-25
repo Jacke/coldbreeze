@@ -166,6 +166,7 @@ var minorityApp =
       'ui.sortable',
       'ngDialog',
       'angularMoment',
+      'daterangepicker',
       'ui.tree',
       'pascalprecht.translate',
       'pageslide-directive'

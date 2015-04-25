@@ -22,17 +22,18 @@ class Refs(tag: Tag) extends Table[Ref](tag, "refs") {
   def title = column[String]("title", O.PrimaryKey)
   def host = column[String]("host")
   def desc = column[Option[String]]("desc")
+  def category = column[String]("category", O.Default("Base"))
 
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
 
   def * = (id.?, title, host, desc,
-           created_at, updated_at) <> (Ref.tupled, Ref.unapply)
+           created_at, updated_at, category) <> (Ref.tupled, Ref.unapply)
 
 }
 
 case class Ref(id: Option[Int], title: String, host: String = "", desc: Option[String] = None,
-created_at:Option[org.joda.time.DateTime] = None, updated_at:Option[org.joda.time.DateTime] = None)
+created_at:Option[org.joda.time.DateTime] = None, updated_at:Option[org.joda.time.DateTime] = None, category: String = "Base")
 
 
   case class RetrivedRef(
