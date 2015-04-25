@@ -79,7 +79,7 @@ padding-top: 11px;
 }
 .proc-element .right-bar {
   border-left: solid 2px #7f8c8d;
-  padding: 7px 11px 11px 24px;
+  padding: 7px 11px 11px 16px;
   position: relative;
 }
 
@@ -262,6 +262,25 @@ padding-top: 3px;
 .space-subbrick .info h4.title {
 padding-top: 11px;
 font-size: 12px;
+}
+.state.yell {
+  color: yellow;
+  background: none;
+}
+.state.green {
+  color: green;
+  background: none;
+}
+.state.red {
+  color: red;
+  background: none;
+}
+
+span.switcher-icon.n:before {
+    font-family: FontAwesome;
+    content: "\f175";
+    font-size: 14px;
+    margin-right: 9px;
 }
 
 span.switcher-icon {font-family: "fontello";

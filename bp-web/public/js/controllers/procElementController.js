@@ -1120,6 +1120,22 @@ $scope.stateDecoration = function(state) {
     return state.title;
   }
 }
+$scope.stateClass = function(state) {
+  if (state.on) {
+    if (state.on_rate < 100) {
+      return "yell";
+    }
+    if (state.on_rate == 100) {
+      return "green";
+    }
+  }
+  if (!state.on && $scope.inSession) {
+    return "red";
+  }
+  if (!state.on && !$scope.inSession) {
+    return "";
+  }
+}
 
 /***
  * Session observer

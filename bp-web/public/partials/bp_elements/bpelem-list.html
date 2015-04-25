@@ -143,7 +143,7 @@
       <div class="states-row">
         <div class="state-row">
           <div class="row-top">
-            <div class="state" ng-class="state.on" ng-repeat="state in bpelem.states">
+            <div class="state" ng-class="stateClass(state)" ng-repeat="state in bpelem.states">
               <div class="switcher" ng-repeat="switcher in state.switches">
               <span class="switcher-icon" ng-class="switcher.switch_type"></span>{{ stateDecoration(state) }}
             </div>
