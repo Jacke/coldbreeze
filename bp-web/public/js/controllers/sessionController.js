@@ -123,24 +123,24 @@ $scope.isManager();
   $scope.onlyCanceled = false;
   $scope.onlyFinished = false;
 
-  $scope.isOnlyActive = function(station) {
+  $scope.isOnlyActive = function(session) {
     if ($scope.onlyActive && !$scope.onlyPaused && !$scope.onlyFinished) {
-      return station.paused == true && station.state != false; 
+      return session.station.paused == true && session.station.state != false; 
     }
     if (!$scope.onlyActive && !$scope.onlyPaused && $scope.onlyFinished) {
-      return station.finished == true; 
+      return session.station.finished == true; 
     }
     if (!$scope.onlyActive && $scope.onlyCanceled) {
-      return station.canceled == true; 
+      return session.station.canceled == true; 
     }
     
     
     else {
-      return station;
+      return session;
     }
   }
 
-
+$scope.date = {startDate: null, endDate: null};
 
 
 

@@ -181,8 +181,11 @@ g.highcharts-axis-labels, g.highcharts-tooltip {
   
 <div class="station-filters">
   <ul>
-    <li><label><input type="checkbox" name="response" value="true" data-ng-model="onlyCanceled"/>{{ 'CANCELED' | translate }}</label></li>
-    <li><label><input type="checkbox" name="response" value="true" data-ng-model="onlyFinished"/>{{ 'FINISHED' | translate }}</label></li>
+    <li><label><input type="checkbox" name="response" value="true" data-ng-model="onlyCanceled"/>{{ 'CANCELED' | translate }}</label>
+    </li>
+    <li><label><input type="checkbox" name="response" value="true" data-ng-model="onlyFinished"/>{{ 'FINISHED' | translate }}</label>
+    </li>
+    <li><input date-range-picker class="form-control date-picker" type="text" ng-model="date" /></li>
   </ul>
 </div>  
 
@@ -209,7 +212,7 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 
         <div class="session__header">
               <span class="number {{ session.station.state }}">{{ $index + 1 }}</span>
-              <a href="/a#/bprocess/{{ sessions.process.id }}?session={{ session.session.id }}">Session # {{ $index }} — {{session.station.note }}</a>
+              <a href="/a#/bprocess/{{ sessions.process.id }}/elements?session={{ session.session.id }}">Session # {{ $index }} — {{session.station.note }}</a>
               <span class="session__header__created_at">{{ session.session.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}</span>
         </div>      
 <div class="progress">

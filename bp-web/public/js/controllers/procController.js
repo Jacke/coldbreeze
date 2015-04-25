@@ -428,9 +428,38 @@ minorityControllers.controller('ProcShareCtrl', ['$scope', '$http', '$rootScope'
 
 
 
+  /**
+  *
+  * Run initially
+  *
+  **/
+  $scope.runInitially = function (process) {
+      $http({
+      url: 'bprocess/' + process.id + '/invoke',
+      method: "POST",
+      data: {  }
+      })
+      .then(function(response) {
+        // success
+        console.log(response);
+        $scope.invoke_res = [response];
+        $location.path('/bprocess/' + process + '/stations');
+
+      },
+      function(response) { // optional
+        // failed
+      }
+      );
+  }
+  
 
 
-
+  $scope.filterExpression = function(station) {
+  return (station.finished != true && station.paused == true);
+  }
+  $scope.filterInputs = function(elem) {
+    return (elem.type_title == "confirm");
+  };
 
 
 

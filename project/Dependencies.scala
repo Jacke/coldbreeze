@@ -9,6 +9,7 @@ object Dependencies {
     "Maven Central Server" at "http://repo1.maven.org/maven2",
     "MVN" at "http://repo.typesafe.com/typesafe/releases/",
     "Sonatype snapshots"   at "https://oss.sonatype.org/content/repositories/snapshots/",
+    "p11k" at "http://pk11-scratch.googlecode.com/svn/trunk",
      Resolver.url( "Reflect GitHub Repository", url( "http://taig.github.io/Reflect/release/" ) )( Resolver.ivyStylePatterns ),
      Resolver.url("heroku-sbt-plugin-releases", url("http://dl.bintray.com/heroku/sbt-plugins/"))(Resolver.ivyStylePatterns),
      Resolver.url("Edulify Repository", url("http://edulify.github.io/modules/releases/"))(Resolver.ivyStylePatterns)
@@ -60,8 +61,9 @@ object Dependencies {
   val mockito         = "org.mockito"               % "mockito-all"             % "1.9.5"
   val mailer          = "com.typesafe"              % "play-plugins-mailer_2.10"% "2.2.0"
   val apamailer       = "org.apache.commons"        % "commons-email"           % "1.3.1"
-  val cache           = "com.typesafe.play"         %% "filters-helpers"        % "2.3.7"
-  val filter          = "com.typesafe.play"         %% "play-cache"             % "2.3.7"
+  val filter          = "com.typesafe.play"         %% "filters-helpers"        % "2.3.7"
+  val cache           = "com.typesafe.play"         %% "play-cache"             % "2.3.7"
+  val rediscache      = "com.typesafe.play.plugins" %% "play-plugins-redis"     % "2.3.1"
   val ptest           = "com.typesafe.play"         %% "play-test"              % "2.3.7"
   val jdbc            = "com.typesafe.play"         %% "play-jdbc"              % "2.3.7"
   val anorm           = "com.typesafe.play"         %% "anorm"                  % "2.3.7"
