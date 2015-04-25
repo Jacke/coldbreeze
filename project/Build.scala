@@ -55,7 +55,7 @@ sprayClient, hdrHistogram))
           //slickpgplay,
 //slickjoda,
 jodaconvert,
-jodamapper, scalatest, reflect, postgres, logbackClassic, scalaLog, sprayCan, sprayRouting, hdrHistogram, sprayJson))
+jodamapper, scalatest,rediscache, reflect, postgres, logbackClassic, scalaLog, sprayCan, sprayRouting, hdrHistogram, sprayJson))
         //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
         //test(scalatest, akkaTestKit, sprayTestkit))
     .dependsOn(bpCore)
