@@ -446,7 +446,7 @@ minorityControllers.controller('ProcShareCtrl', ['$scope', '$http', '$rootScope'
         // success
         console.log(response);
         $scope.invoke_res = [response];
-        $location.path('/bprocess/' + process + '/stations');
+        $location.path('/bprocess/' + process.id + 'elements?session=' + response.session);
 
       },
       function(response) { // optional

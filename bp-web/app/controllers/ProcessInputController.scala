@@ -58,7 +58,7 @@ class ProcessInputController(override implicit val env: RuntimeEnvironment[DemoU
     val lang:String = models.AccountsDAO.getRolesAndLang(userId).get._3
 
     service.Build.run(bpID, Some(lang)) match {
-      case Some(station_id) => Ok(Json.toJson(Map("success" -> "station_id")))
+      case Some(station_id) => Ok(Json.toJson(Map("success" -> "station_id", "session" -> 10)))
       case _ => Ok(Json.toJson(Map("error" -> "Error output")))
     }
   }
