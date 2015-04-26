@@ -43,10 +43,14 @@ span.state-percent.vertical-center {
   cursor: pointer;
 }
 .process_content .tree-thumb.process-tree {
-    width: auto;
-    margin-right: 0;
+  width: auto;
+  margin-right: 0;
+  padding-bottom: 5px;
+  max-width: 168px;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  white-space: nowrap;
 }
-
 .process_content .tree-thumb.process-tree .elem-card {
     display: inline-block !important;
 }

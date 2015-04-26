@@ -67,14 +67,18 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
       }
   }
 
-  case class ConfigurationWrapper(switcher_options: List[String], switcher_cmd: List[String], switcher_target: List[String])
+  case class ConfigurationWrapper(switcher_options: List[String], 
+                                  switcher_cmd: List[String], 
+                                  switcher_target: List[String], 
+                                  switcher_desc: Map[String, String])
   implicit val ConfigurationWrapperReads = Json.reads[ConfigurationWrapper]
   implicit val ConfigurationWrapperWrites = Json.format[ConfigurationWrapper]
   def configuration() = Action { implicit request =>
     Ok(Json.toJson(ConfigurationWrapper(
       main.scala.bprocesses.refs.UnitRefs.SwitcherConfiguration.switcher_options,
       main.scala.bprocesses.refs.UnitRefs.SwitcherConfiguration.switcher_cmd,
-      main.scala.bprocesses.refs.UnitRefs.SwitcherConfiguration.switcher_target)))
+      main.scala.bprocesses.refs.UnitRefs.SwitcherConfiguration.switcher_target,
+      main.scala.bprocesses.refs.UnitRefs.SwitcherConfiguration.switcher_desc)))
   }
 
 

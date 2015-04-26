@@ -1120,7 +1120,19 @@ $scope.stateDecoration = function(state) {
     return state.title;
   }
 }
+$scope.switcherDecor = $rootScope.switcher_conf.switcher_desc
+$scope.switcherDecoration = function(switcher) {
+  var teta = $scope.switcherDecor[switch_type];
+  if (teta != undefined) { 
+   return " — " + teta; 
+  } else {
+    return switcher.switch_type;
+  }
+}
 $scope.stateClass = function(state) {
+  console.log("stateClass");
+  console.log(state);
+  if (state != undefined) {
   if (state.on) {
     if (state.on_rate < 100) {
       return "yell";
@@ -1135,6 +1147,14 @@ $scope.stateClass = function(state) {
   if (!state.on && !$scope.inSession) {
     return "";
   }
+  }
+}
+
+$scope.masterState = function(element) {
+  if (element != undefined && element.states != undefined && element.states.length > 0) {
+    console.log(" returned" + element.states[0]);
+    return element.states[0]; 
+  } // TODO: Made master state
 }
 
 /***

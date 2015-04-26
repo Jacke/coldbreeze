@@ -115,6 +115,13 @@ updated_at)
                                             "out") 
   val switcher_cmd: List[String] = List("inc", "dec", "reset")
   val switcher_target: List[String] = List("step", "container_step", "space", "marker", "process")
+
+  val switcher_desc: Map[String, String] = Map("n" -> "move on",
+                                            "play" -> "resume process",
+                                            "p" -> "pause process",
+                                            "stp" -> "stop process",
+                                            "inn" -> "move inside and continue",
+                                            "outn" -> "move outside and continue")
 }
    
  case class UnitSwitcherRef(id: Option[Int],

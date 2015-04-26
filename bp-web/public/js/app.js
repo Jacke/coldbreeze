@@ -151,6 +151,7 @@ var minorityApp =
     [
   
       'minorityApp.services',
+
       'minorityApp.controllers',
       'ngRoute',
       'ngResource',
@@ -169,7 +170,8 @@ var minorityApp =
       'daterangepicker',
       'ui.tree',
       'pascalprecht.translate',
-      'pageslide-directive'
+      'pageslide-directive',
+      'minorityApp.TreeBuilderService'
     ]
   );
 minorityApp.filter('slice', function() {

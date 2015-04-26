@@ -100,6 +100,9 @@
     </div>
     <div class="ref-desc col-xs-8">
       {{ newBpelem.selectedRef.ref.desc }}
+      <ul>
+        <li ng-repeat="state in newBpelem.selectedRef.bpstate"><span>State: {{state.title}}</span></li>
+      </ul>
     </div>    
     <input type="hidden" name="value" ng-model="newBpelem.business" value="{{ business() }}">
     <input type="hidden" name="value" ng-model="newBpelem.process" value="{{ BPid }}">
@@ -136,19 +139,19 @@
       <li><a ng:click="moveDownElem(bpelem)"><span class="glyphicon glyphicon-arrow-down"></span></a></li>
     </ul>
     <ul class="elem-control elem-tabs" role="tablist" ng-show="inSession">
-      <p>Launched at 00000</p>
+      <p>{{ bpelem.states.length > 0 ? "Created" + (bpelem.states[0].updated_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a') : "" }}</p>
     </ul>
     </div>
     <div class="tab-pane active" id="edit" ng:show="selected == 2">
         <div ng-include src="'partials/bp_elements/bpelem-edit.html'"></div>
     </div>
-    <div class="right-bar" ng:init="exp=false" ng-class="exp == active ? 'exp-active' : 'exp-disabled'">
+    <div class="right-bar" ng:init="exp=false" ng-class="stateClass(masterState(bpelem))" ng-class="exp == active ? 'exp-active' : 'exp-disabled'">
       <div class="states-row">
         <div class="state-row">
           <div class="row-top">
-            <div class="state" ng-class="stateClass(state)" ng-repeat="state in bpelem.states">
-              <div class="switcher" ng-repeat="switcher in state.switches">
-              <span class="switcher-icon" ng-class="switcher.switch_type"></span>{{ stateDecoration(state) }}
+            <div class="state">
+              <div class="switcher" ng-repeat="switcher in bpelem.states | limitTo: 1">
+              <span class="switcher-icon" ng-class="switcher.switch_type"></span>{{ stateDecoration(masterState(bpelem)) }}
             </div>
             </div>
             
@@ -159,9 +162,15 @@
         </div>
       </div>
       <div class="expanded-element" ng:show="exp == active">
+            <div class="state" ng-class="stateClass(state)" ng-repeat="state in bpelem.states">
+              <div class="switcher" ng-repeat="switcher in state.switches">
+              <span class="switcher-icon" ng-class="switcher.switch_type"></span>{{ stateDecoration(state) }} {{ switcherDecoration(switcher) }}
+            </div>
+            </div>      
       </div>
       <div class="row-selector"></div>
-      <div class="elem-expander" ng:click="exp == false ? exp=active : exp=false"><span class="uicon-svg93"></span></spa></div>
+      <div class="elem-expander" ng:click="exp == false ? exp=active : exp=false"><span class="uicon-svg93"></span>
+      </div>
     </div>
 
 <div class="proc-element-spaces">

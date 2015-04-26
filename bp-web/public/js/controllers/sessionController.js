@@ -45,8 +45,9 @@ $scope.processes.$promise.then(function(data) {
 
 $scope.sessions = SessionsFactory.query();
 $scope.sessions.$promise.then(function (data2) {
-    _.forEach(data2.sessions, function(session) { return session.session.station = session.station })
-    console.log(data2)
+    _.forEach(data2.sessions, function(session) { return session.session.station = session.station });
+    _.forEach(data2, function(d){ return TreeBuilder.buildFetch(d.process, function(success){}); });
+    console.log(data2);
 });
 
 

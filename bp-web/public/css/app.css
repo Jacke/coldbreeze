@@ -276,6 +276,23 @@ font-size: 12px;
   background: none;
 }
 
+
+.proc-element .right-bar.green {
+    background: green;
+color: white;
+}
+.proc-element .right-bar.yell {
+    background: yellow;
+    color: white;
+}
+
+.proc-element .right-bar.red {
+    background: red;
+    color: white;
+}
+
+
+
 span.switcher-icon.n:before {
     font-family: FontAwesome;
     content: "\f175";
@@ -884,6 +901,30 @@ padding-bottom: 65px;
     padding-bottom: 61px;
     color: white;
     width: 1196px;
+}
+li.space-container.ng-binding.ng-scope.angular-ui-tree-node {
+    clear: both;
+    display: block;
+}
+#style-1::-webkit-scrollbar-track
+{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.03);
+    border-radius: 10px;
+    background-color: #F5F5F5;
+}
+
+#style-1::-webkit-scrollbar
+{
+    width: 12px;
+    height: 6px;
+    background-color: #F5F5F5;
+}
+
+#style-1::-webkit-scrollbar-thumb
+{
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: #555;
 }
 
 .processes {

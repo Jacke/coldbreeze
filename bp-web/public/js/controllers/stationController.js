@@ -1,7 +1,7 @@
 
 // For specific process
-minorityControllers.controller('BPstationListCtrl', ['$http', '$window', '$scope', '$filter', '$rootScope','BPSessionsFactory','ObserversFactory', 'ObserverFactory', 'BProcessesFactory', 'BPInLoggersStationFactory','BPInLoggersFactory','BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
-  function ($http, $window, $scope, $filter, $rootScope,BPSessionsFactory, ObserversFactory, ObserverFactory, BProcessesFactory, BPInLoggersStationFactory,BPInLoggersFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
+minorityControllers.controller('BPstationListCtrl', ['TreeBuilder', '$http', '$window', '$scope', '$filter', '$rootScope','BPSessionsFactory','ObserversFactory', 'ObserverFactory', 'BProcessesFactory', 'BPInLoggersStationFactory','BPInLoggersFactory','BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
+  function (TreeBuilder, $http, $window, $scope, $filter, $rootScope,BPSessionsFactory, ObserversFactory, ObserverFactory, BProcessesFactory, BPInLoggersStationFactory,BPInLoggersFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
   $scope.bpId = $route.current.params.BPid;
   $scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
   $scope.spaces =  BPSpacesFactory.query({ BPid: $route.current.params.BPid });
@@ -193,8 +193,9 @@ $scope.stationsRefresh();
 $scope.date = {startDate: null, endDate: null};
 $scope.sessions = BPSessionsFactory.query({ BPid: $route.current.params.BPid });
 $scope.sessions.$promise.then(function (data2) {
-    _.forEach(data2.sessions, function(session) { return session.session.station = session.station })
-    console.log(data2)
+    _.forEach(data2.sessions, function(session) { return session.session.station = session.station });
+    _.forEach(data2, function(d){ return TreeBuilder.buildFetch(d.process, function(success){}); });
+    console.log(data2);
 });
 
 

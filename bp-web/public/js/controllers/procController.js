@@ -1,7 +1,7 @@
 
 // INDEX
-minorityControllers.controller('BProcessListCtrl', ['$scope','$window','$translate' ,'$rootScope', 'SessionsFactory' ,'ngDialog', '$http', '$routeParams', '$filter', 'BPElemsFactory','BPSpacesFactory', 'BPSpaceElemsFactory',  'BProcessesFactory','BProcessFactory', 'BPStationsFactory', 'BPServicesFactory', '$location',
-  function ($scope, $window, $translate, $rootScope, SessionsFactory, ngDialog, $http, $routeParams, $filter, BPElemsFactory, BPSpacesFactory, BPSpaceElemsFactory, BProcessesFactory, BProcessFactory, BPStationsFactory, BPServicesFactory, $location) {
+minorityControllers.controller('BProcessListCtrl', ['$scope','$window','$translate' ,'$rootScope', 'TreeBuilder', 'SessionsFactory' ,'ngDialog', '$http', '$routeParams', '$filter', 'BPElemsFactory','BPSpacesFactory', 'BPSpaceElemsFactory',  'BProcessesFactory','BProcessFactory', 'BPStationsFactory', 'BPServicesFactory', '$location',
+  function ($scope, $window, $translate, $rootScope, TreeBuilder, SessionsFactory, ngDialog, $http, $routeParams, $filter, BPElemsFactory, BPSpacesFactory, BPSpaceElemsFactory, BProcessesFactory, BProcessFactory, BPStationsFactory, BPServicesFactory, $location) {
 
 
  $scope.changeLanguage = function () {
@@ -158,7 +158,7 @@ $scope.emptyElemCheck = function(col) {
     BProcessFactory.delete({ id: bpId }).$promise.then(function(data) {
       $scope.bprocesses = BProcessesFactory.query();
           $scope.bprocesses.$promise.then(function (processes) {
-              _.forEach(processes, function(proc) { $scope.builderFetch(proc); })
+              _.forEach(processes, function(proc) { TreeBuilder.buildFetch(proc, function(success){}); });
           });
     });
   };
@@ -197,7 +197,10 @@ $scope.emptyElemCheck = function(col) {
   
   // Init thumb
   $scope.bprocesses.$promise.then(function (processes) {
-    _.forEach(processes, function(proc) { $scope.builderFetch(proc); })
+    _.forEach(processes, function(proc) { TreeBuilder.buildFetch(proc, function(success){
+      $('.process_content .tree-thumb.process-tree').dragOn();
+    }); });
+    
   });
 
 
@@ -319,8 +322,8 @@ function ($scope, $routeParams, BPServicesFactory, BProcessFactory, $location, $
 
 
 // CREATE
-minorityControllers.controller('BPCreationCtrl', ['$window', '$rootScope','$scope', '$http','$routeParams', 'BProcessesFactory', 'BPServicesFactory', '$location',
-  function ($window, $rootScope, $scope, $http,$routeParams,  BProcessesFactory, BPServicesFactory, $location) {
+minorityControllers.controller('BPCreationCtrl', ['$window', '$rootScope','$scope', '$http','$routeParams', 'TreeBuilder', 'BProcessesFactory', 'BPServicesFactory', '$location',
+  function ($window, $rootScope, $scope, $http,$routeParams,  TreeBuilder, BProcessesFactory, BPServicesFactory, $location) {
 
     if ($routeParams.service != undefined) {
       $scope.bprocess = { service: parseInt($routeParams.service) };
@@ -346,7 +349,7 @@ minorityControllers.controller('BPCreationCtrl', ['$window', '$rootScope','$scop
           $scope.closeThisDialog();
           $scope.$parent.bprocesses = BProcessesFactory.query();
           $scope.$parent.bprocesses.$promise.then(function (processes) {
-              _.forEach(processes, function(proc) { $scope.$parent.builderFetch(proc); })
+              _.forEach(processes, function(proc) { TreeBuilder.buildFetch(proc, function(success){}); })
           });
            //$location.path('/bprocesses');
     });
@@ -395,9 +398,9 @@ minorityControllers.controller('BPCreationCtrl', ['$window', '$rootScope','$scop
 
 
 // Share
-minorityControllers.controller('ProcShareCtrl', ['$scope', '$http', '$rootScope', '$routeParams', 'BPStationsFactory', 'ObserversFactory',
+minorityControllers.controller('ProcShareCtrl', ['$scope', '$http', '$rootScope', '$routeParams', 'TreeBuilder','BPStationsFactory', 'ObserversFactory',
 'ObserverFactory', 'BProcessesFactory', 'BPServicesFactory', '$location',
-  function ($scope, $http,$rootScope, $routeParams, BPStationsFactory, ObserversFactory, ObserverFactory, BProcessesFactory, BPServicesFactory, $location) {
+  function ($scope, $http,$rootScope, $routeParams,TreeBuilder, BPStationsFactory, ObserversFactory, ObserverFactory, BProcessesFactory, BPServicesFactory, $location) {
 
     $scope.hasPayingPlan = $rootScope.payed;
 
