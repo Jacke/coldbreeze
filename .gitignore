@@ -15,6 +15,7 @@ project/target
 .sass-cache/
 
 scribe-java/
+play-jsmessages/
 fonts/
 
 promo/
