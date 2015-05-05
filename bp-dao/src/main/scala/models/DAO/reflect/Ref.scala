@@ -23,17 +23,18 @@ class Refs(tag: Tag) extends Table[Ref](tag, "refs") {
   def host = column[String]("host")
   def desc = column[Option[String]]("desc")
   def category = column[String]("category", O.Default("Base"))
+  def hidden = column[Boolean]("hidden", O.Default(false))
 
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
 
   def * = (id.?, title, host, desc,
-           created_at, updated_at, category) <> (Ref.tupled, Ref.unapply)
+           created_at, updated_at, category, hidden) <> (Ref.tupled, Ref.unapply)
 
 }
 
 case class Ref(id: Option[Int], title: String, host: String = "", desc: Option[String] = None,
-created_at:Option[org.joda.time.DateTime] = None, updated_at:Option[org.joda.time.DateTime] = None, category: String = "Base")
+created_at:Option[org.joda.time.DateTime] = None, updated_at:Option[org.joda.time.DateTime] = None, category: String = "Base", hidden:Boolean = false)
 
 
   case class RetrivedRef(
@@ -99,7 +100,16 @@ private def makeTopolog(process: Int, front_elem_id: Option[Int],
   None))
 }
 
-  def retrive(k: Int, process: Int, business: Int, in: String = "front", title: String, desc:String = "", space_id: Option[Int] = None):Option[RefResulted] = database withSession {
+
+
+
+/**
+ * Map ref to existed elements and states
+ */
+  def retrive(k: Int, process: Int, 
+              business: Int, in: String = "front", 
+              title: String, desc:String = "", 
+              space_id: Option[Int] = None):Option[RefResulted] = database withSession {
     //logger.debug(k, process, business, title, desc, space_id)
     implicit session ⇒
       in match {
@@ -200,13 +210,13 @@ private def makeTopolog(process: Int, front_elem_id: Option[Int],
              
 
         Some(RefResulted(
-proc_elems = idToRefId.values.toList,
-space_elems = conv_sp_elems.values.toList,
-spaces = conv_spaces.values.toList,
-states = stateIdToRefId.values.toList,
-switches = switcherIdToRefId.values.toList,
-reactions = reactionsIdToRefId.values.toList,
-reaction_state_outs = reaction_state_outIdToRefId.values.toList
+              proc_elems = idToRefId.values.toList,
+              space_elems = conv_sp_elems.values.toList,
+              spaces = conv_spaces.values.toList,
+              states = stateIdToRefId.values.toList,
+              switches = switcherIdToRefId.values.toList,
+              reactions = reactionsIdToRefId.values.toList,
+              reaction_state_outs = reaction_state_outIdToRefId.values.toList
           )) 
      } 
       
@@ -299,13 +309,13 @@ reaction_state_outs = reaction_state_outIdToRefId.values.toList
 
       
         Some(RefResulted(
-proc_elems = idToRefId.values.toList,
-space_elems = conv_sp_elems.values.toList,
-spaces = conv_spaces.values.toList,
-states = stateIdToRefId.values.toList,
-switches = switcherIdToRefId.values.toList,
-reactions = reactionsIdToRefId.values.toList,
-reaction_state_outs = reaction_state_outIdToRefId.values.toList
+              proc_elems = idToRefId.values.toList,
+              space_elems = conv_sp_elems.values.toList,
+              spaces = conv_spaces.values.toList,
+              states = stateIdToRefId.values.toList,
+              switches = switcherIdToRefId.values.toList,
+              reactions = reactionsIdToRefId.values.toList,
+              reaction_state_outs = reaction_state_outIdToRefId.values.toList
           )) 
 
      }
@@ -338,7 +348,11 @@ reaction_state_outs = reaction_state_outIdToRefId.values.toList
        refs.ddl.drop
     }
   }
-
+  def getAllVisible = database withSession {
+    implicit session ⇒
+      val q3 = for { s ← refs if s.hidden === false } yield s
+      q3.list.sortBy(_.id)
+  }
   def getAll = database withSession {
     implicit session ⇒
       val q3 = for { s ← refs } yield s
