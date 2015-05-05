@@ -20,7 +20,7 @@ class BPStates(tag: Tag) extends Table[BPState](tag, "bpstates") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc) 
   def process = column[Int]("process_id")
   def title = column[String]("title")
-  def opposite = column[String]("opposite")
+  def neutral = column[String]("neutral")
   def process_state = column[Boolean]("is_process_state", O.Default(false))
   def on = column[Boolean]("on", O.Default(false))  
   def on_rate = column[Int]("on_rate", O.Default(0))  
@@ -36,14 +36,17 @@ class BPStates(tag: Tag) extends Table[BPState](tag, "bpstates") {
 
   def middle = column[String]("middle", O.Default(""))
   def middleable = column[Boolean]("middleable", O.Default(false))
+  def oposite = column[String]("oposite", O.Default(""))
+  def opositable = column[Boolean]("opositable", O.Default(false))   
+
   def lang = column[String]("lang", O.Default("en"))  
-  def * = (id.?, process, title, opposite,
+  def * = (id.?, process, title, neutral,
                                           process_state,
                                           on, on_rate,
                                           front_elem_id,
                                           space_elem_id,
                                           space_id,
-           created_at, updated_at, lang, middle, middleable) <> (BPState.tupled, BPState.unapply)
+           created_at, updated_at, lang, middle, middleable, oposite, opositable) <> (BPState.tupled, BPState.unapply)
 
   def bpFK = foreignKey("bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
   def procelemFK = foreignKey("procelem_fk", front_elem_id, proc_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
@@ -154,7 +157,7 @@ class BPSessionStates(tag: Tag) extends Table[BPSessionState](tag, "sessionstate
   def process = column[Int]("process_id")
   def session = column[Int]("session_id")
   def title = column[String]("title")
-  def opposite = column[String]("opposite")
+  def neutral = column[String]("neutral")
   def process_state = column[Boolean]("is_process_state", O.Default(false))
   
   def on = column[Boolean]("on", O.Default(false))  
@@ -170,15 +173,19 @@ class BPSessionStates(tag: Tag) extends Table[BPSessionState](tag, "sessionstate
 
   def middle = column[String]("middle", O.Default(""))
   def middleable = column[Boolean]("middleable", O.Default(false))
+  def oposite = column[String]("oposite", O.Default(""))
+  def opositable = column[Boolean]("opositable", O.Default(false))   
+
+
   def lang = column[String]("lang", O.Default("en"))  
-  def * = (id.?, process, session, title, opposite,
+  def * = (id.?, process, session, title, neutral,
                                           process_state,
                                           on, on_rate,
                                           front_elem_id,
                                           space_elem_id,
                                           space_id,
                                           origin_state,
-           created_at, updated_at, lang, middle, middleable) <> (BPSessionState.tupled, BPSessionState.unapply)
+           created_at, updated_at, lang, middle, middleable, oposite, opositable) <> (BPSessionState.tupled, BPSessionState.unapply)
   def sesFK = foreignKey("session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
   def procelemFK = foreignKey("procelem_fk", front_elem_id, proc_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
   def spaceelemFK = foreignKey("spaceelem_fk", space_elem_id, SpaceElemDAO.space_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
@@ -204,7 +211,7 @@ class SessionStateLogs(tag: Tag) extends Table[SessionStateLog](tag, "session_st
   def * = (id.?, session, state_id, on, on_rate,reason,
            created_at, updated_at) <> (SessionStateLog.tupled, SessionStateLog.unapply)
   def sesFK = foreignKey("session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def stateFK = foreignKey("state_fk", state_id, BPStateDAO.bpstates)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def stateFK = foreignKey("state_fk", state_id, BPSessionStateDAO.sessionstates)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 } 
 object SessionStateLogDAO {
@@ -256,10 +263,29 @@ object BPSessionStateDAO {
       sessionstates returning sessionstates.map(_.id) += s
   }
 
+  /**
+   * Filter session state with existed entity, for avoiding possible override
+   * @param s BPSessionState
+   * @return id
+   */
+  def pull_new_object(s: BPSessionState):Int = database withSession {
+    implicit session ⇒
+      findByOriginAndSession(s.origin_state, s.session) match {
+        case Some(session_state) => -1
+        case _ => sessionstates returning sessionstates.map(_.id) += s
+      }
+
+  }
+
   def findByBP(id: Int):List[BPSessionState] = database withSession {
     implicit session =>
     val q3 = for { s <- sessionstates if s.process === id } yield s
     q3.list
+  }
+  def findByOriginAndSession(origin_state_id: Option[Int], session_id: Int):Option[BPSessionState] = database withSession {
+    implicit session =>
+      val q3 = for { s <- sessionstates if s.origin_state === origin_state_id && s.session === session_id } yield s
+      q3.list.headOption
   }
   def findByBPAndSession(id: Int, session_id: Int):List[BPSessionState] = database withSession {
     implicit session =>
@@ -271,7 +297,16 @@ object BPSessionStateDAO {
       val q3 = for { s ← sessionstates if s.process inSetBind processes } yield s
       q3.list
   }
-
+  def findByOriginIds(ids: List[Int]) = database withSession {
+    implicit session =>
+    val q3 = for { s ← sessionstates if s.origin_state inSetBind ids } yield s
+      q3.list
+  }
+  def findByOriginId(id: Int) = database withSession {
+    implicit session =>
+    val q3 = for { s ← sessionstates if s.origin_state === id } yield s
+      q3.list.headOption
+  }
 
   def get(k: Int):Option[BPSessionState] = database withSession {
     implicit session ⇒

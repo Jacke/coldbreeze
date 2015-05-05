@@ -44,7 +44,7 @@ updated_at:Option[org.joda.time.DateTime] = None) {
 import main.scala.utils._
 import main.scala.bprocesses._
 
-
+  // @example method, did not fully implemented. primary implementation in Builder object.
   def cast_nested(bprocess: BProcess, space_elems: List[SpaceElementDTO]):Option[Space] = { 
     val brick = bprocess.findNestedBricks().find(brick => brick.space_parent_id == id)
     if (brick.isDefined) {

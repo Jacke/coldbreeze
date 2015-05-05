@@ -22,7 +22,7 @@ class ReactionRefs(tag: Tag) extends Table[UnitReaction](tag, "reactions") {
   def autostart = column[Boolean]("autostart")
   def element = column[Int]("element_id")
   def from_state = column[Option[Int]]("state_ref_id")
-    
+  def title = column[String]("title")  
     
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
@@ -36,6 +36,7 @@ bprocess,
 autostart, 
 element,
 from_state,
+title,
 created_at, updated_at) <> (UnitReaction.tupled, UnitReaction.unapply)
 
 }
@@ -56,12 +57,48 @@ object ReactionDAO {
       val q3 = for { s ← reactions if s.id === k } yield s
       q3.list.headOption 
   }
-  def findByBP(id: Int) = {
+  def findByBP(id: Int):List[UnitReaction] = {
      database withSession { implicit session =>
        val q3 = for { s ← reactions if s.bprocess === id } yield s
        q3.list                   
     } 
   }
+  /**
+   * Find reactions that are not executed in specific session(they may have executed, 
+   * but state out cant be equeal to session state)
+   */
+  def findUnapplied(id: Int, session_id: Int):List[UnitReaction] = {
+     database withSession { implicit session =>
+       val session_states = BPSessionStateDAO.findByBPAndSession(id, session_id)
+       val reactions:List[UnitReaction] = findByBP(id)
+       val state_outs = ReactionStateOutDAO.findByReactions(reactions.flatMap(_.id))
+
+       val unapplied_reactions = reactions.filter { reaction =>
+          println(reaction.from_state)
+          val state_out = state_outs.filter(out => Some(out.reaction) == reaction.id)
+          val session_state = session_states.find(state => state_out.map(_.state_ref).contains(state.origin_state.getOrElse(0)))//reaction.from_state == state.origin_state)
+          println(session_state)
+          session_state match {
+            case Some(state) => {
+              state_out.map { out =>
+                state.on != out.on
+                state.on_rate != out.on_rate
+              }.reduce(_||_) // OR for multiple state outs
+            }
+            case _ => { 
+              println("match false")
+              false
+            }
+          }
+
+       }
+
+       unapplied_reactions
+                   
+    } 
+  }
+
+
   def update(id: Int, switcher: UnitReaction) = database withSession { implicit session ⇒
     val switcherToUpdate: UnitReaction = switcher.copy(Option(id))
     reactions.filter(_.id === id).update(switcherToUpdate)
@@ -107,12 +144,12 @@ class ReactionStateOuts(tag: Tag) extends Table[UnitReactionStateOut](tag, "reac
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
 
 
-  def * = (id.?, 
-reaction,    
-state, 
-on, 
-on_rate,
-created_at, updated_at) <> (UnitReactionStateOut.tupled, UnitReactionStateOut.unapply)
+  def * = (id.?,
+    state,
+    reaction,
+    on,
+    on_rate,
+    created_at, updated_at) <> (UnitReactionStateOut.tupled, UnitReactionStateOut.unapply)
 
   def reaction_FK = foreignKey("reaction_fk", reaction, models.DAO.ReactionDAO.reactions)(_.id, onDelete = ForeignKeyAction.Cascade)
   def state_FK = foreignKey("state_fk", state, models.DAO.BPStateDAO.bpstates)(_.id, onDelete = ForeignKeyAction.Cascade)
@@ -136,13 +173,13 @@ object ReactionStateOutDAO {
       val q3 = for { s ← reaction_state_outs if s.id === k } yield s
       q3.list.headOption 
   }
-  def findByReaction(id: Int) = {
+  def findByReaction(id: Int):List[UnitReactionStateOut] = {
      database withSession { implicit session =>
        val q3 = for { s ← reaction_state_outs if s.reaction === id } yield s
        q3.list                   
     } 
   }
-  def findByReactions(ids: List[Int]) = {
+  def findByReactions(ids: List[Int]):List[UnitReactionStateOut] = {
      database withSession { implicit session =>
        val q3 = for { s ← reaction_state_outs if s.reaction inSetBind ids } yield s
        q3.list                   
