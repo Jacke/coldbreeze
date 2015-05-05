@@ -93,3 +93,27 @@
 @include b(dashboard_services) {
 
 }
+
+
+
+
+
+
+/**
+ * launchesBar
+ */
+ @include b(reaction_list) {
+ 	@include e(reaction) {
+ 		padding-top: 0px;
+		a.selected {
+			background: white;
+			color: black;
+			padding: 4px 2px;
+		}
+
+ 		@include e(state_outs) {
+ 			display:inline-block;
+
+ 		}
+ 	}
+ }

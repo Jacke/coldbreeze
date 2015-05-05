@@ -7,9 +7,9 @@ a.redButton {
     border-radius: 10px;
     border: red;
 }
-.process-thumb p.teamApisListGithub {
-    left: -4px;
-    top: 9px;
+.process-thumb p.tableMinListGithub {
+    left: 2px;
+    top: 10px;
 }
 
 .process_content {
@@ -27,6 +27,7 @@ a.redButton {
   width: 109.6%;
   margin-left: -64px;
   margin-bottom: 0px;
+  padding-bottom: 20px;
 }
 
 span.state-percent.vertical-center {
@@ -46,7 +47,7 @@ span.state-percent.vertical-center {
   width: auto;
   margin-right: 0;
   padding-bottom: 5px;
-  max-width: 168px;
+  max-width: 268px;
   overflow-x: scroll;
   overflow-y: hidden;
   white-space: nowrap;
@@ -59,7 +60,7 @@ span.state-percent.vertical-center {
     display: inline-block;
 }
 
-.process-status .teamApisListControls {
+.process-status .tableMinListControls {
     margin-right: 121px;
 }
 
