@@ -134,16 +134,18 @@ POST        /bprocess/:bpId/copy/:title                         @controllers.Bus
 
 # Stations
 GET         /sessions 								 @controllers.ProcessSessionController.all_sessions()
+GET         /interact/:session_id                    @controllers.InteractionController.fetchInteraction(session_id: Int)
 # Sessions
 GET          /bprocess/:BPid/sessions        		 @controllers.ProcessSessionController.process_all_session(BPid: Int)
 #GET         /bprocess/:BPid/session/:id     		 #
 #DELETE      /bprocess/:BPid/session/:id     		 #
 GET         /bprocess/stations                       @controllers.ProcessSessionController.all_stations()
-GET         /bprocess/:id/stations/around            @controllers.ProcessSessionController.stations_elems_around(id: Int)
+GET         /bprocess/:id/station/:station_id/around @controllers.ProcessSessionController.stations_elems_around(id: Int, station_id: Int)
 GET         /bprocess/:id/stations                   @controllers.ProcessSessionController.station_index(id: Int)
 GET         /bprocess/:id/station/:station_id        @controllers.ProcessSessionController.show_station(id: Int, station_id: Int)
-POST        /bprocess/:id/station/:station_id/halt   @controllers.ProcessSessionController.halt_station(id: Int, station_id: Int)
+POST        /bprocess/:id/session/:session_id/halt   @controllers.ProcessSessionController.halt_session(id: Int, session_id: Int)
 POST        /bprocess/:id/station/:station_id/note   @controllers.ProcessSessionController.update_note(id: Int, station_id: Int)
+POST        /station/:id/unlisted                    @controllers.ProcessSessionController.makeUnlisted(id: Int)
 
 
 
@@ -231,6 +233,7 @@ GET         /bprocess/:id/logs                       @controllers.ProcessSession
 
 # Elements
 GET         /bprocess/:id/elements                   @controllers.BusinessProcessController.frontElems(id: Int)
+GET         /bprocess/:id/element_topos			     @controllers.BusinessProcessController.element_topos(id: Int)
 GET         /bprocess/:id/spaces                     @controllers.BusinessProcessController.spaces(id: Int)
 GET         /bprocess/:id/space_elems                @controllers.BusinessProcessController.spaceElems(id: Int)
 GET         /bprocess/elems_length                   @controllers.BusinessProcessController.bpElemLength()
