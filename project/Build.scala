@@ -16,12 +16,18 @@ object Build extends Build {
 
   mainClass := Some("main.scala.BPServiceApp")
 
+  lazy val commonSettings = Seq(
+    ivyScala := ivyScala.value map { _.copy(overrideScalaVersion = true) }
+  )
+
+
+
   initialCommands in console := "ammonite.repl.Repl.main(null)"
     
   lazy val root = Project("root", file("."))
     .aggregate(bpCore, bpDao, bpWeb)
     .settings(basicSettings: _*)
-
+    .settings(commonSettings: _*)
     //.settings(formatSettings: _*)
     .settings(noPublishing: _*)
     .settings(revolverSettings: _*)
