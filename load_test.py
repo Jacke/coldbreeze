@@ -2,7 +2,7 @@ import unittest
 from random import random
 from funkload.FunkLoadTestCase import FunkLoadTestCase
 
-class Simple(FunkLoadTestCase):
+class Highload(FunkLoadTestCase):
     def setUp(self):
         self.server_url = self.conf_get('main', 'url')
 
