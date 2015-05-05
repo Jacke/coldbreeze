@@ -3,7 +3,7 @@ Space: {{ space.index }} —
 
 <div class="state" ng-class="state.on" ng-repeat="state in space.states">
   <div class="switcher" ng-repeat="switcher in state.switches">
-  <span class="switcher-icon" ng-class="switcher.switch_type"></span>{{ state.title }} — {{ state.opposite }}
+  <span class="switcher-icon" ng-class="switcher.switch_type"></span>{{ state.title }} — {{ state.neutral }}
 </div>
 </div>
 <div class="elem-desc" ng:show="(space.cneedit == false || space.cnedit == undefined) && mySpaceElems(spaceelems, space.id).length < 1 && isManagerVal">

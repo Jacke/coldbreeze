@@ -5,7 +5,7 @@
              {{ 'SPACE' | translate }}: {{ space.index }} — <a ng:click="space.cneedit=!space.cneedit" ng-show="isManagerVal">{{ 'ADD_TO_SPACE' | translate }}</a>
             <div class="state" ng-class="state.on" ng-repeat="state in space.states">
               <div class="switcher" ng-repeat="switcher in state.switches">
-              <span class="switcher-icon" ng-class="switcher.switch_type"></span>{{ state.title }} — {{ state.opposite }}
+              <span class="switcher-icon" ng-class="switcher.switch_type"></span>{{ state.title }} — {{ state.neutral }}
             </div>
             </div>
 
@@ -81,7 +81,7 @@
           <div class="row-top">
             <div class="state" ng-class="state.on" ng-repeat="state in spaceelem.states">
               <div class="switcher" ng-repeat="switcher in state.switches">
-              <span class="switcher-icon" ng-class="switcher.switch_type"></span>{{ state.title }} — {{ state.opposite }}
+              <span class="switcher-icon" ng-class="switcher.switch_type"></span>{{ state.title }} — {{ state.neutral }}
             </div>
             </div>
             
