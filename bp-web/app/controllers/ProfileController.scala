@@ -69,7 +69,7 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
           case _ => -1
         }        
 
-        val sessions:List[SessionContainer] = BPSessionDAO.findByBusiness(business)//BPSessionDAO.findByBusiness(business_id).map(ses => SessionDecorator(ses._1, ses._2)).toList
+        val sessions:List[SessionContainer] = BPSessionDAO.findListedByBusiness(business)//BPSessionDAO.findByBusiness(business_id).map(ses => SessionDecorator(ses._1, ses._2)).toList
 
         Ok(views.html.profiles.profile(request.user, managerParams, makeEmployeeParams(email, isEmployee), plan, walkthrought, sessions ) (
             Page(services, 1, 1, services.length), 1, "%", businesses))
