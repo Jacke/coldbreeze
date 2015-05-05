@@ -17,8 +17,8 @@ object UnitRefs {
                         type_title:String,
                         space_own:Option[Int],
                         order:Int,
-created_at:Option[org.joda.time.DateTime] = None,
-updated_at:Option[org.joda.time.DateTime] = None) { 
+created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) { 
    def reflect(business:Int, process: Int, space_own:Option[Int] = None):UnitElement = { 
        UnitElement(id, 
 title, 
@@ -44,8 +44,8 @@ updated_at)
     brick_front:Option[Int]=None,
     brick_nested:Option[Int]=None, 
     nestingLevel: Int = 1,
-    created_at:Option[org.joda.time.DateTime] = None,
-    updated_at:Option[org.joda.time.DateTime] = None
+    created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+    updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
  ) { 
    def reflect(process: Int,
     brick_front:Option[Int]=None,
@@ -79,8 +79,8 @@ case class UnitSpaceElementRef(
                         ref_space_owned: Int,
                         space_role:Option[String],
                         order:Int,
-created_at:Option[org.joda.time.DateTime] = None,
-updated_at:Option[org.joda.time.DateTime] = None
+created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
  ) { 
   def reflect(business:Int, process: Int,space_own:Option[Int], ref_space_owned: Int):UnitSpaceElement = { 
     UnitSpaceElement(id,
@@ -132,8 +132,8 @@ state_ref:Int,
 fn: String,
 target: String,
 override_group: Int = 0,
-created_at:Option[org.joda.time.DateTime] = None,
-updated_at:Option[org.joda.time.DateTime] = None) { 
+created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) { 
 
    def reflect(process: Int, state_ref: Int, session: Option[Int] = None):UnitSwitcher = {
      UnitSwitcher(None,
@@ -158,16 +158,20 @@ updated_at:Option[org.joda.time.DateTime] = None) {
     reflection: Int,
     autostart:Boolean, 
     element: Int,
-    from_state: Option[Int],                            
-    created_at:Option[org.joda.time.DateTime] = None,
-    updated_at:Option[org.joda.time.DateTime] = None) {
- def reflect(process: Int, element: Int, from_state: Option[Int]):UnitReaction = {
-    UnitReaction(None,process,autostart,
-element,
-from_state,
-created_at,
-updated_at)
+    from_state: Option[Int],  
+    title: String,                          
+    created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+    updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
 
+ def reflect(process: Int, element: Int, from_state: Option[Int]):UnitReaction = {
+    UnitReaction(None,
+                  process,
+                  autostart,
+                  element,
+                  from_state,
+                  title,
+                  created_at,
+                  updated_at)
   }
  }
 
@@ -176,8 +180,8 @@ updated_at)
   reaction: Int,
   on:Boolean = false,
   on_rate: Int = 0,
-  created_at:Option[org.joda.time.DateTime] = None,
-updated_at:Option[org.joda.time.DateTime] = None
+  created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
   ) {
   def reflect(state_ref: Int, reaction: Int):UnitReactionStateOut = {
     UnitReactionStateOut(None,

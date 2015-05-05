@@ -8,26 +8,28 @@ case class BPStateRef(
   var id:Option[Int], 
   reflection:   Int,
   title:        String, 
-  var opposite: String = "",
+  var neutral: String = "",
   process_state:Boolean = false,
   on:Boolean = false,
   on_rate: Int = 0,
   front_elem_id:Option[Int],
   space_elem_id:Option[Int],
   space_id: Option[Int],
-  created_at:   Option[org.joda.time.DateTime] = None, 
-  updated_at:   Option[org.joda.time.DateTime] = None, 
+  created_at:   Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now), 
+  updated_at:   Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now), 
   lang:         String = "en",
   middle: String = "",
-  middleable: Boolean = false) {
+  middleable: Boolean = false,
+  oposite: String = "",
+  opositable: Boolean = false) {
   
      /**
       * Opposition of state
       */
-     if (opposite == "") { 
+     if (neutral == "") { 
        lang match {
-         case "en" => opposite = "un" + title // title = confirmed opposite = unconfirmed
-         case _ => opposite = "--" + title    // title = confirmed opposite = --confirmed
+         case "en" => neutral = "un" + title // title = confirmed neutral = unconfirmed
+         case _ => neutral = "--" + title    // title = confirmed neutral = --confirmed
        }
      }
   
@@ -37,7 +39,7 @@ case class BPStateRef(
       BPState(None, 
   process,
   title, 
-  opposite,
+  neutral,
   process_state,
   on,
   on_rate,
@@ -48,7 +50,9 @@ case class BPStateRef(
   updated_at, 
   lang,
   middle,
-middleable)
+middleable,
+oposite,
+opositable)
     
     }
 
@@ -58,7 +62,7 @@ middleable)
   process,
   session,                   
   title, 
-  opposite,
+  neutral,
   process_state,
   on,
   on_rate,
@@ -70,7 +74,9 @@ middleable)
   updated_at, 
   lang,
   middle,
-middleable)
+middleable,
+oposite,
+opositable)
   
   }
   

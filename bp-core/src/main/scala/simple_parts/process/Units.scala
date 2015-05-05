@@ -17,8 +17,8 @@ object Units {
                         type_title:String,
                         space_own:Option[Int],
                         override val order:Int,
-created_at:Option[org.joda.time.DateTime] = None,
-updated_at:Option[org.joda.time.DateTime] = None) extends ProcElems {
+created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) extends ProcElems {
 
 
   def invoke {
@@ -40,8 +40,8 @@ case class UnitSpaceElement(
                         space_owned: Int,
                         space_role:Option[String],
                         override val order:Int,
-created_at:Option[org.joda.time.DateTime] = None,
-updated_at:Option[org.joda.time.DateTime] = None
+created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
 ) extends ProcElems {
 
 
@@ -63,8 +63,8 @@ updated_at:Option[org.joda.time.DateTime] = None
                         type_title:String,
                         space_own:Option[Int],
                         order:Int,
-created_at:Option[org.joda.time.DateTime] = None,
-updated_at:Option[org.joda.time.DateTime] = None) 
+created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) 
    
  case class UnitSpace(
   id: Option[Int], 
@@ -75,8 +75,8 @@ updated_at:Option[org.joda.time.DateTime] = None)
                       brick_front:Option[Int]=None,
                       brick_nested:Option[Int]=None, 
                       nestingLevel: Int = 1,
-created_at:Option[org.joda.time.DateTime] = None,
-updated_at:Option[org.joda.time.DateTime] = None
+created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
  )
    
  case class UnitMarker()
@@ -89,8 +89,8 @@ session_state_ref: Option[Int] = None,
 fn: String,
 target: String,
 override_group: Int = 0,
-created_at:Option[org.joda.time.DateTime] = None,
-updated_at:Option[org.joda.time.DateTime] = None) {
+created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
 
 }
   
@@ -106,8 +106,8 @@ case class UnitSpaceElement(
                         ref_space_owned: Int,
                         space_role:Option[String],
                         order:Int,
-created_at:Option[org.joda.time.DateTime] = None,
-updated_at:Option[org.joda.time.DateTime] = None
+created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
 )
    
  case class UnitTransition()
@@ -116,37 +116,15 @@ updated_at:Option[org.joda.time.DateTime] = None
 bprocess:Int,
 autostart:Boolean, 
 element: Int,
-from_state: Option[Int],                            
-created_at:Option[org.joda.time.DateTime] = None,
-updated_at:Option[org.joda.time.DateTime] = None) {
-    var reaction_state_outs:ListBuffer[UnitReactionStateOut] = ListBuffer() 
-    
-    def retriveElementByTopo(topo: ElemTopology, bp: BProcess):ProcElems = {
-      if (topo.front_elem_id.isDefined) {
-        bp.variety.find(el => topo.front_elem_id.get == el.id).get
-      } else {
-        bp.spacesElements.find(el => topo.space_elem_id.get == el.id).get
-      }
-    }
+from_state: Option[Int], 
+title: String,                           
+created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
 
-    def execute(bp: BProcess) {
-      /**
-       * TODO: Add logic and expressions execution
-       */
-      // find element by topolog
-      val topo = bp.topology.find(topo => topo.id == Some(element))
-      if (topo.isDefined) {
-      val element = retriveElementByTopo(topo.get, bp)
-        reaction_state_outs.foreach { out => 
-          element.session_states.find(st => st.id.getOrElse(0) == out.state_ref) match {
-            case Some(state) => {
-              // update state with
-              state.on = out.on
-              state.on_rate = out.on_rate
-            }
-          }
-        }
-      }
+
+    var reaction_state_outs:ListBuffer[UnitReactionStateOut] = ListBuffer() 
+    def execute(process: BProcess) {
+       bprocesses.ReactionExecutor.execute(process, this)
     }
  } 
 
@@ -155,8 +133,8 @@ case class ElemTopology(id: Option[Int],
   front_elem_id: Option[Int], 
   space_elem_id: Option[Int], 
   hash: String = "", 
-  created_at: Option[org.joda.time.DateTime] = None,
-  updated_at: Option[org.joda.time.DateTime] = None,
+  created_at: Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+  updated_at: Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
   space_id: Option[Int] = None)
 
  case class UnitReactionStateOut(id: Option[Int],
@@ -164,8 +142,8 @@ case class ElemTopology(id: Option[Int],
   reaction: Int,
   on:Boolean = false,
   on_rate: Int = 0,
-  created_at:Option[org.joda.time.DateTime] = None,
-updated_at:Option[org.joda.time.DateTime] = None
+  created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+  updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
   )
   
 }
