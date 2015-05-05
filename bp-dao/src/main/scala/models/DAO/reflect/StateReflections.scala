@@ -19,18 +19,21 @@ class StateRefs(tag: Tag) extends Table[BPStateRef](tag, "state_refs") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc) 
   def reflection = column[Int]("reflection_id")
   def title = column[String]("title")
-  def opposite = column[String]("opposite")
+  def neutral = column[String]("neutral")
   def process_state = column[Boolean]("process_state", O.Default(false))
   def on = column[Boolean]("on", O.Default(false)) 
   def on_rate = column[Int]("on_rate", O.Default(0))   
     
-  def space_id      = column[Option[Int]]("space_id")  
+  def space_id      = column[Option[Int]]("ref_space_id")  
   def front_elem_id = column[Option[Int]]("ref_front_elem_id")
   def space_elem_id = column[Option[Int]]("ref_space_elem_id")
     
  
   def middle = column[String]("middle", O.Default(""))
   def middleable = column[Boolean]("middleable", O.Default(false))   
+  def oposite = column[String]("oposite", O.Default(""))
+  def opositable = column[Boolean]("opositable", O.Default(false))   
+
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
 
@@ -45,28 +48,30 @@ class StateRefs(tag: Tag) extends Table[BPStateRef](tag, "state_refs") {
 var id:Option[Int], 
   reflection:   Int,
   title:        String, 
-  var opposite: String = "",
+  var neutral: String = "",
   process_state:Boolean = false,
   front_elem_id:Option[Int],
   space_elem_id:Option[Int],
-  created_at:   Option[org.joda.time.DateTime] = None, 
-  updated_at:   Option[org.joda.time.DateTime] = None, 
+  created_at:   Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now), 
+  updated_at:   Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now), 
   lang:         String = "en"*/
     
   def * = (id.?, 
 reflection, 
 title, 
-opposite,
+neutral,
 process_state,
 on,
 on_rate,
 front_elem_id,
 space_elem_id,
-space_elem_id,
+space_id,
 created_at, updated_at, 
 lang,
 middle,
-middleable) <> (BPStateRef.tupled, BPStateRef.unapply)
+middleable,
+oposite,
+opositable) <> (BPStateRef.tupled, BPStateRef.unapply)
 
 }
 
