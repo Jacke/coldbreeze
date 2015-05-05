@@ -1,12 +1,28 @@
-<div class="container">
+<div class="container" ng-controller="BPRequestCtrl" ng-init="session=$parent.$parent.session;bpId=$parent.$parent.session.process.id">
 
 
 
 
 
-<div class="empty-notice" ng-show="($parent.session.station | filter:filterExpression).length">
-<h3>{{ 'RUN_FROM_DESC' | translate }}:</h3>
+<div class="empty-notice">
 </div>
+
+<div class="stations input-stations" style="clear: both;">
+  <h3>Interact {{ $parent.session.session | json }}</h3>
+
+  <ul class="reaction_list">
+    <li class="reaction_list__reaction" ng-repeat="reaction in interactions.reactions">
+      <a ng-click="reactionSelect(reaction)" ng-class="selectedClass(reaction)">Reaction for {{ reaction.reaction.elem.element_title }}</a>
+      <span class="reaction_list__reaction__state_outs" ng-repeat="state_out in reaction.outs">{{ state_out.state_ref }} {{ state_out.on }}</span>
+    </li>
+  </ul>
+
+
+  <a ng-click="runFrom($parent.session.session.id)" class="btn btn-big btn-success">{{ 'RUN_FROM' | translate }}</a>
+  <a ng-click="haltSession($parent.session.session.id)" class="btn btn-big btn-danger" ng-show="isManagerVal">{{ 'TURN_DOWN' | translate }}</a>
+
+</div>
+<!--
 <div class="stations input-stations" style="clear: both;">
            <span class="number small {{ station.state }}">{{ $index + 1 }}</span>
            <p>
@@ -36,14 +52,13 @@
 
           <div> ng-if="$parent.session.station.paused == true">
 
-          <!--<div ng-include src="'partials/treeInStation.html'"></div>-->
           <a ng-click="haltStation($parent.session.station.id)" class="btn btn-big btn-danger" ng-show="isManagerVal">{{ 'TURN_DOWN' | translate }}</a>
           <div class="runFrom">
           <h3>{{ 'RUN_FROM_ANOT' | translate }}</h3>
           <div class="params">
           </div>
         
-          <!-- <button ng-click="addParam(station)" class="btn btn-big btn-success">Add input params</button> -->
+           <button ng-click="addParam(station)" class="btn btn-big btn-success">Add input params</button> 
 
 
 
@@ -51,9 +66,9 @@
               <div ng-repeat="bpelem in $parent.session.station.proc_elems | filter:filterInputs " class="controls inputRequests">
                    <div class="request">
                     <p>{{bpelem.title}}</p>
-                    <!--<div>
+                    <div>
                      <select ng-model="bpelem.param" class="forParam" ng-options="param.name as param.name for param in params" required></select><br>
-                    </div>-->
+                    </div>
                     <div class="request-template">
                        <div ng-include src="'partials/forms/inputs/input_template.html'"></div>
                     </div>
@@ -69,9 +84,9 @@
               <div ng-repeat="spaceelem in $parent.session.station.space_elems" class="controls inputRequests">
                    <div class="request">
                     <p>{{spaceelem.title}}</p>
-                    <!--<div>
+                    <div>
                     <select ng-model="spaceelem.param" class="forParam" ng-options="param.name as param.name for param in params" required></select><br>
-                    </div>-->
+                    </div>
 
                     <div class="request-template">
                        <div ng-include src="'partials/forms/inputs/input_template.html'"></div>
@@ -92,3 +107,4 @@
         
  
 </div>
+-->
