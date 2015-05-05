@@ -6,6 +6,7 @@
 target/
 rest2/
 third-party/
+akka-http-stream-example/
 slick-pg/
 .classpath
 .project
@@ -13,7 +14,7 @@ project/target
 .DS_Store
 .sass-cache/
 
-
+scribe-java/
 fonts/
 
 promo/
