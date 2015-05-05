@@ -134,6 +134,7 @@ class DBSpec extends PlaySpecification {
 
 
 class ProcessSpec extends PlaySpecification {
+  //DatabaseCred.switchTo("test")
 
  "add a new ideaType, using route POST /api/types" in {
   running(FakeApplication(additionalConfiguration = inMemoryDatabase())) {
