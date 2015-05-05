@@ -10,7 +10,7 @@ case class BPSessionState(
   process:      Int,
   session:      Int,
   title:        String, 
-  var opposite: String = "",
+  var neutral: String = "",
   process_state:Boolean = false,
   var on: Boolean = false,
   var on_rate: Int = 0,
@@ -22,15 +22,17 @@ case class BPSessionState(
   updated_at:   Option[org.joda.time.DateTime] = None, 
   lang:         String = "en",
   middle: String = "",
-  middleable: Boolean = false) {
+  middleable: Boolean = false,
+  oposite: String = "",
+  opositable: Boolean = false) {
   
      /**
       * Opposition of state
       */
-     if (opposite == "") { 
+     if (neutral == "") { 
        lang match {
-         case "en" => opposite = "un" + title // title = confirmed opposite = unconfirmed
-         case _ => opposite = "--" + title    // title = confirmed opposite = --confirmed
+         case "en" => neutral = "un" + title // title = confirmed neutral = unconfirmed
+         case _ => neutral = "--" + title    // title = confirmed neutral = --confirmed
        }
      }
      def isInMiddle(): Boolean = {
@@ -43,7 +45,7 @@ case class BPState(
   var id:Option[Int], 
   process:      Int,
   title:        String, 
-  var opposite: String = "",
+  var neutral: String = "",
   process_state:Boolean = false,
   var on: Boolean = false,
   var on_rate: Int = 0,
@@ -54,15 +56,17 @@ case class BPState(
   updated_at:   Option[org.joda.time.DateTime] = None, 
   lang:         String = "en",
   middle: String = "",
-  middleable: Boolean = false) {
+  middleable: Boolean = false,
+  oposite: String = "",
+  opositable: Boolean = false) {
   
      /**
       * Opposition of state
       */
-     if (opposite == "") { 
+     if (neutral == "") { 
        lang match {
-         case "en" => opposite = "un" + title // title = confirmed opposite = unconfirmed
-         case _ => opposite = "--" + title    // title = confirmed opposite = --confirmed
+         case "en" => neutral = "un" + title // title = confirmed neutral = unconfirmed
+         case _ => neutral = "--" + title    // title = confirmed neutral = --confirmed
        }
      }
      def isInMiddle(): Boolean = {

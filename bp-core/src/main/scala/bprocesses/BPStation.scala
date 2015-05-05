@@ -218,15 +218,15 @@ class BPStation(val bp: BProcess) {
           }
         }
       }
-      case "proc" => {
+      case "process" => {
         fn match {
-          case "pause" => {
+          case "paused" => {
             bp.station.update_paused(true)
           }
-          case "stop" => {
+          case "stoped" => {
             bp.station.update_state(false)
           }
-          case "play" => {
+          case "resumed" => {
             bp.station.update_paused(false)
           }
         }

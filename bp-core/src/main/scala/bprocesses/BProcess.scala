@@ -35,7 +35,7 @@ class BProcess(scope: Scope, val id: Option[Int] = None, var assigned_session_id
 
   // Session id retriving 
   // TODO: Make that id constant while process creating
-  var session_id = 0
+  var session_id = -1
 
   var topology:List[ElemTopology] = List()
 
