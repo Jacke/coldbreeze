@@ -86,6 +86,11 @@ minorityAppServices.factory('BProcessFactory', function ($resource) {
 }]
 
 */
+minorityAppServices.factory('ElementTopologsFactory', function ($resource) {
+    return $resource(baseUrl + 'bprocess/:BPid/element_topos', {}, {
+        query: { method: 'GET', isArray: true }
+    })
+});
 minorityAppServices.factory('BPElemsFactory', function ($resource) {
     return $resource(baseUrl + 'bprocess/:BPid/elements', {}, {
         query: { method: 'GET', isArray: true },
@@ -392,6 +397,14 @@ minorityAppServices.factory('BPInLoggersStationFactory', function ($resource) {
         query: { method: 'GET', isArray: true }
     })
 });
+
+
+minorityAppServices.factory('InteractionsFactory', function ($resource) {
+    return $resource(baseUrl + 'interact/:session_id', {}, {
+        query: { method: 'GET', isArray: false }
+    })
+});
+
 /*
 ** BPLoggers FACTORY
 */
