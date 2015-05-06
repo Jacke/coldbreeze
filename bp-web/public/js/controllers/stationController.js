@@ -1,6 +1,25 @@
 
 // For specific process
-minorityControllers.controller('BPstationListCtrl', ['TreeBuilder', '$http', '$window', '$scope', '$filter', '$rootScope','BPSessionsFactory','ObserversFactory', 'ObserverFactory', 'BProcessesFactory', 'BPInLoggersStationFactory','BPInLoggersFactory','BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
+minorityControllers.controller('BPstationListCtrl', ['TreeBuilder', 
+  '$http', 
+  '$window', 
+  '$scope', 
+  '$filter', 
+  '$rootScope',
+  'BPSessionsFactory',
+  'ObserversFactory', 
+  'ObserverFactory', 
+  'BProcessesFactory', 
+  'BPInLoggersStationFactory',
+  'BPInLoggersFactory',
+  'BPElemsFactory',
+  'BPSpacesFactory',
+  'BPSpaceElemsFactory',
+  'BPStationsFactory',
+  'BPStationFactory', 
+  'BPLogsFactory', 
+  '$location', 
+  '$route',
   function (TreeBuilder, $http, $window, $scope, $filter, $rootScope,BPSessionsFactory, ObserversFactory, ObserverFactory, BProcessesFactory, BPInLoggersStationFactory,BPInLoggersFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
   $scope.bpId = $route.current.params.BPid;
   $scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
@@ -103,18 +122,21 @@ $scope.stationsRefresh = function() {
 
 $scope.stationsRefresh();
 
-  $scope.highlightActive = function (station, elem) {
+
+
+
+$scope.highlightActive = function (station, elem) {
      var front, nest;
-     front = $scope.elemsHash[$scope.logsByStation(station.id)[$scope.logsByStation(station.id).length-1].element];  
-     nest = $scope.spaceElemHash[$scope.logsByStation(station.id)[$scope.logsByStation(station.id).length-1].space_elem];  
-     if (front != undefined && front.id == elem.id && station.finished == false) {
-       return "active";
-     } 
-     if (nest != undefined && nest.id == elem.id && elem.space_owned != undefined && station.finished == false) {
-      return "active";
-     } else {
+     //front = $scope.elemsHash[$scope.logsByStation(station.id)[$scope.logsByStation(station.id).length-1].element];  
+     //nest = $scope.spaceElemHash[$scope.logsByStation(station.id)[$scope.logsByStation(station.id).length-1].space_elem];  
+     //if (front != undefined && front.id == elem.id && station.finished == false) {
+     //  return "active";
+     //} 
+     //if (nest != undefined && nest.id == elem.id && elem.space_owned != undefined && station.finished == false) {
+     // return "active";
+     //} else {
      return "passive"
-     }
+     //}
   }
 
   $scope.logs = BPLogsFactory.query({  BPid: $route.current.params.BPid });
@@ -128,7 +150,27 @@ $scope.stationsRefresh();
              '1';
          }
   }
-  $scope.haltStation = function (stationId) {
+
+$scope.unlisted = function (session) {
+  $http({
+      url: '/station/' + session.id + '/unlisted/',
+      method: "POST",
+      data: {  }
+      })
+      .then(function(response) {
+        // success
+        $scope.loadSession();
+        $scope.stationsRefresh();
+        //$scope.invoke_res = [response];
+      },
+      function(response) { // optional
+        // failed
+      }
+      );
+}
+
+
+$scope.haltStation = function (stationId) {
   var bpId = $route.current.params.BPid ;
     $http({
       url: '/bprocess/' + bpId + '/station/' + stationId + '/halt',
@@ -157,6 +199,7 @@ $scope.stationsRefresh();
   $scope.onlyActive = false;
   $scope.onlyCanceled = false;
   $scope.onlyFinished = false;
+  $scope.onlyListed = false;
 
   $scope.isOnlyActive = function(station) {
     if ($scope.onlyActive && !$scope.onlyPaused && !$scope.onlyFinished) {
@@ -191,12 +234,21 @@ $scope.stationsRefresh();
 
 
 $scope.date = {startDate: null, endDate: null};
+
+$scope.loadSession = function () {
 $scope.sessions = BPSessionsFactory.query({ BPid: $route.current.params.BPid });
 $scope.sessions.$promise.then(function (data2) {
+    $scope.sessions = data2;
     _.forEach(data2.sessions, function(session) { return session.session.station = session.station });
-    _.forEach(data2, function(d){ return TreeBuilder.buildFetch(d.process, function(success){}); });
+    $scope.bprocess = data2.process;
+    TreeBuilder.buildFetch(data2.process, function(success){});
+    //_.forEach(data2, function(d){ return TreeBuilder.buildFetch(d.process, function(success){}); });
     console.log(data2);
 });
+
+};
+
+$scope.loadSession();
 
 
 
