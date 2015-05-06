@@ -16,10 +16,10 @@ object DatabaseCred {
 
   def switchTo(db_type: String) = {
     db_type match {
-    case "test" => database = Database.forURL("jdbc:postgresql://localhost/minority1_test", 
+    case "test" => database = Database.forURL("jdbc:postgresql://ec2-54-163-239-102.compute-1.amazonaws.com/der7jd9tjv79ah?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory", 
                                                driver = "org.postgresql.Driver", 
-                                               user = "postgres", 
-                                               password = "12344321")
+                                               user = "sfskpatnkbtyuz", 
+                                               password = "pfp6ghCjfD-kVJRchibq_KDWN5")
     case "prod" => database = Database.forURL("jdbc:postgresql://localhost/minority1", 
                                                driver = "org.postgresql.Driver", 
                                                user = "postgres", 
