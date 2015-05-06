@@ -52,18 +52,36 @@ val ph_topo = makeTopolog(ref = ph_ref,
 
 val ph_el_state = BPStateRefDAO.pull_object(BPStateRef(
   None, 
-  reflection = ph_el,
+  reflection = ph_ref,
   title = "invoked", 
-
-  middle = "invoking",
-  middleable = true,
-  opposite = "uninvoked",
+  neutral = "uninvoked",
   process_state = false,
   on= false,
   on_rate = 0,
   front_elem_id = Some(ph_el),
   space_elem_id = None,
-  space_id = None))
+  space_id = None,
+    middle = "invoking",
+  middleable = true,
+  created_at = Some(org.joda.time.DateTime.now),
+  updated_at = Some(org.joda.time.DateTime.now)
+  ))
+
+/*
+reflection, 
+title, 
+neutral,
+process_state,
+on,
+on_rate,
+front_elem_id,
+space_elem_id,
+space_elem_id,
+created_at, updated_at, 
+lang,
+middle,
+middleable*/
+
 
 
 SwitcherRefDAO.pull_object(UnitSwitcherRef(None,
@@ -83,7 +101,7 @@ override_group = 0))
 *******************************
 ******************************** * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  
 *******************************
-**/
+*/
 // CF
 val cf_ref = RefDAO.pull_object(Ref(None, 
 	"Confirmation", "", 
@@ -108,7 +126,7 @@ val cf_el_state_id_inv = BPStateRefDAO.pull_object(BPStateRef(
   title = "invoked", 
     middle = "invoking",
   middleable = true,
-  opposite=  "uninvoked",
+  neutral=  "uninvoked",
   process_state= false,
   on= false,
   on_rate = 0,
@@ -121,7 +139,7 @@ val cf_el_state_id_cf = BPStateRefDAO.pull_object(BPStateRef(
   title = "confirmed", 
   middle = "confirming",
   middleable = true,
-  opposite=  "unconfirmed",
+  neutral=  "unconfirmed",
   process_state= false,
   on= false,
   on_rate = 0,
@@ -150,14 +168,21 @@ val cf_reaction = ReactionRefDAO.pull_object(UnitReactionRef(
     None,
     reflection = cf_ref,
     autostart = false, 
+    title = "Confirm",
     element = cf_elem_topo,
     from_state = None))
+
+println(cf_reaction)
+println(cf_el_state_id_cf)
+
 val cf_reaction_out = ReactionStateOutRefDAO.pull_object(UnitReactionStateOutRef(None,
   state_ref = cf_el_state_id_cf,
-  reaction = cf_ref,
+  reaction = cf_reaction,
   on = true,
   on_rate = 100
   ))
+
+
 }
 
 
@@ -171,7 +196,7 @@ val cf_reaction_out = ReactionStateOutRefDAO.pull_object(UnitReactionStateOutRef
 *******************************
 ******************************** * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  
 *******************************
-**/
+*/
 // CN
  val cn_ref = RefDAO.pull_object(Ref(None, 
 	"Container", "", 
@@ -197,7 +222,7 @@ val cn_el_state_id_inv = BPStateRefDAO.pull_object(BPStateRef(
   title = "invoked", 
     middle = "invoking",
   middleable = true,
-  opposite=  "uninvoked",
+  neutral=  "uninvoked",
   process_state= false,
   on= false,
   on_rate = 0,
@@ -229,7 +254,7 @@ val cn_space_state = BPStateRefDAO.pull_object(BPStateRef(
   None, 
   reflection = cn_ref,
   title = "lap", 
-  opposite=  "",
+  neutral=  "",
   process_state= false,
   on= false,
   on_rate = 0,
