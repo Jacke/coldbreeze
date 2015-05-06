@@ -9,17 +9,16 @@ class InputLoggers(tag: Tag) extends Table[InputLogger](tag, "input_loggers") {
   def uid             = column[Option[String]]("uid")
   def action          = column[String]("action")
   def arguments       = column[List[String]]("arguments")
-  def front_elem_id   = column[Option[Int]]("front_elem_id")
-  def space_elem_id   = column[Option[Int]]("space_elem_id")
+  def reaction        = column[Int]("reaction_id")
+  def input           = column[Int]("input_id", O.AutoInc)
   def date            = column[org.joda.time.DateTime]("date")
   def station         = column[Int]("station_id")
 
 
-  def fElemFK         = foreignKey("fElemFK", front_elem_id, models.DAO.ProcElemDAO.proc_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def spElemFK        = foreignKey("spElemFK", space_elem_id, models.DAO.SpaceElemDAO.space_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def fReactionFK     = foreignKey("fReactionFK", reaction, models.DAO.ReactionDAO.reactions)(_.id, onDelete = ForeignKeyAction.Cascade)
   def statFK          = foreignKey("statFK", station, models.DAO.BPStationDAO.bpstations)(_.id, onDelete = ForeignKeyAction.Cascade)
 
-  def * = (id.?, uid, action, arguments, front_elem_id, space_elem_id, date, station) <> (InputLogger.tupled, InputLogger.unapply)
+  def * = (id.?, uid, action, arguments, reaction, input.?, date, station) <> (InputLogger.tupled, InputLogger.unapply)
 
   //def eb = EmployeesBusinessDAO.employees_businesses.filter(_.employee_id === id).flatMap(_.businessFK)
 }
@@ -28,8 +27,8 @@ case class InputLogger(var id: Option[Int],
   uid:Option[String]=None, 
   action:String, 
   arguments:List[String], 
-  front_elem_id:Option[Int], 
-  space_elem_id:Option[Int], 
+  reaction:Int, 
+  input:Option[Int], 
   date: org.joda.time.DateTime,
   station: Int)
 
@@ -39,6 +38,30 @@ object InputLoggerDAO {
   import DatabaseCred.database
 
  val input_loggers = TableQuery[InputLoggers]
+
+ def pull_for_input(s: List[InputLogger]) = database withSession {
+  implicit session =>
+    val first_one_id = s.headOption match {
+      case Some(first_one) => Some(pull_object(first_one))
+      case _ => None
+    }
+
+    val first_one = first_one_id match {
+      case Some(first_one_id) => get(first_one_id)
+      case _ => None
+    }
+
+    val input_id = first_one match {
+      case Some(first_one) => first_one.input
+      case _ => None
+    }
+    input_id match {
+      case Some(input_id) => s.tail.foreach { tailed_inlog =>
+        pull_object(tailed_inlog.copy(input = input_id)
+      }
+      case _ =>
+    }
+ }
 
  def pull_object(s: InputLogger) = database withSession {
     implicit session ⇒
