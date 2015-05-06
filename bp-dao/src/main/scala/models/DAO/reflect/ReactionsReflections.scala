@@ -21,7 +21,7 @@ class ReactionRefs(tag: Tag) extends Table[UnitReactionRef](tag, "reaction_refs"
   def autostart = column[Boolean]("autostart")
   def element = column[Int]("element_id")
   def from_state = column[Option[Int]]("state_ref_id")
-    
+  def title = column[String]("title")  
     
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
@@ -35,6 +35,7 @@ reflection,
 autostart, 
 element,
 from_state,
+title,
 created_at, updated_at) <> (UnitReactionRef.tupled, UnitReactionRef.unapply)
 
 }
@@ -111,12 +112,12 @@ class ReactionStateOutRefs(tag: Tag) extends Table[UnitReactionStateOutRef](tag,
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
 
 
-  def * = (id.?, 
-reaction,    
-state_ref, 
-on, 
-on_rate,
-created_at, updated_at) <> (UnitReactionStateOutRef.tupled, UnitReactionStateOutRef.unapply)
+  def * = (id.?,
+    state_ref,
+    reaction,
+    on,
+    on_rate,
+    created_at, updated_at) <> (UnitReactionStateOutRef.tupled, UnitReactionStateOutRef.unapply)
 
   def reaction_refFK = foreignKey("reaction_ref_fk", reaction, models.DAO.reflect.ReactionRefDAO.reaction_refs)(_.id, onDelete = ForeignKeyAction.Cascade)
   def state_refFK = foreignKey("state_ref_fk", state_ref, models.DAO.reflect.BPStateRefDAO.state_refs)(_.id, onDelete = ForeignKeyAction.Cascade)
