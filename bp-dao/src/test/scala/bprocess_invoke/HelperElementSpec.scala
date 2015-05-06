@@ -12,7 +12,7 @@ class HelperElementSpec extends Specification {
 
 
  "State" should {
-   val state = BPState(None, process = 1, title = "confirmed", opposite = "", process_state = false, on = false, on_rate = 0,
+   val state = BPState(None, process = 1, title = "confirmed", neutral = "", process_state = false, on = false, on_rate = 0,
      front_elem_id = None,
      space_elem_id = None,
      space_id = None)
@@ -20,7 +20,7 @@ class HelperElementSpec extends Specification {
       state.title == "confirmed"
     }
    "oppositable" in {
-      state.opposite == "unconfirmed"
+      state.oposite == "unconfirmed"
     }
   }
   
