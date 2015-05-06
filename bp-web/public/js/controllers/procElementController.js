@@ -1114,19 +1114,35 @@ $scope.stateDecoration = function(state) {
     }
   }
   if (!state.on && $scope.inSession) {
-    return state.opposite;
+    return state.neutral;
   }
   if (!state.on && !$scope.inSession) {
     return state.title;
   }
 }
-$scope.switcherDecor = $rootScope.switcher_conf.switcher_desc
+$scope.switcherDecor = {}
+$scope.switcherDecorPromise = $rootScope.switcher_conf2.then(function(d) {
+  if (d != undefined) {
+    $scope.switcherDecor = d.switcher_desc;
+  }
+}); 
 $scope.switcherDecoration = function(switcher) {
-  var teta = $scope.switcherDecor[switch_type];
-  if (teta != undefined) { 
-   return " — " + teta; 
+  var teta;
+  if (switcher != undefined) {
+    if ($scope.switcherDecor == {}) {
+      $rootScope.switcher_conf2.then(function(d) {
+        teta = d.switcher_desc.switcherDecor[switcher.switch_type];
+      });
+    } else {
+    teta = $scope.switcherDecor[switcher.switch_type];
+    }
+    if (teta != undefined) { 
+      return switcher.switch_type;
+    } else {
+      return " — " + teta; 
+    }
   } else {
-    return switcher.switch_type;
+    return " ";
   }
 }
 $scope.stateClass = function(state) {
