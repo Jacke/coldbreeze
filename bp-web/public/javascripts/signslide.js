@@ -705,7 +705,7 @@ retrievedJsModules = {}, retrieveLoginBox = function(link, container, cbDone, cb
         gravity: "n",
         title: "data-hint",
         live: !0
-    }), $(".teamApisListItem .vLocked").tipsy({
+    }), $(".tableMinListItem .vLocked").tipsy({
         offset: 5,
         opacity: .95,
         fade: !1,
