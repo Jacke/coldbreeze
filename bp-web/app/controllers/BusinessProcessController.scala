@@ -33,13 +33,14 @@ import main.scala.bprocesses._
 import main.scala.simple_parts.process.Units._
 import models.DAO.reflect._
 import models.DAO.conversion._
-
+import cloner.util._
 
 case class RefElemContainer(title: String, desc: String = "", business: Int, process: Int, ref: Int, space_id: Option[Int]= None)
 
 
 case class ReactionCollection(reaction: UnitReaction,
 reaction_state_outs: List[UnitReactionStateOut])
+case class ElementTopology(topo_id: Int, element_id: Int, element_title: String)
 
 class BusinessProcessController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
 
@@ -80,6 +81,8 @@ implicit val UnitReactionStateOutReads = Json.reads[UnitReactionStateOut]
 implicit val UnitReactionStateOutWrites = Json.format[UnitReactionStateOut]
 implicit val ReactionCollectionReads = Json.reads[ReactionCollection]
 implicit val ReactionCollectionWrites = Json.format[ReactionCollection]
+implicit val ElementTopologyReads = Json.reads[ElementTopology]
+implicit val ElementTopologyWrites = Json.format[ElementTopology]
 
   def bprocess = SecuredAction { implicit request =>
     val bprocess = BPDAO.getAll // TODO: Not safe
@@ -104,86 +107,16 @@ implicit val ReactionCollectionWrites = Json.format[ReactionCollection]
 
 
   def copy(bpId: Int, orig_title: String) = SecuredAction { implicit request => 
-    var title = orig_title
-    if (BPDAO.checkTitle(orig_title).isDefined) {
-      title = orig_title + " Copy"
-    } 
-    BPDAO.get(bpId) match {
-      case Some(bprocess) => {
-        val newBpId = BPDAO.pull_object(bprocess.copy(id = None, title = title))
-        val spaces = BPSpaceDAO.findByBPId(bpId)
-        val space_elems = SpaceElemDAO.findByBPId(bpId)
-        val proc_elems = ProcElemDAO.findByBPId(bpId)
-
-
-
-        var new_proc_elems_ids = Map.empty[Int, Int]
-        val new_proc_elems = proc_elems.foreach { proc_element =>
-          new_proc_elems_ids = new_proc_elems_ids ++ Map(proc_element.id.get ->
-           ProcElemDAO.pull_object(
-            UndefElement(None,
-                        proc_element.title,
-                        proc_element.desc,
-                        proc_element.business,
-                        newBpId,
-                        proc_element.b_type,
-                        proc_element.type_title,
-                        proc_element.space_own,
-                        proc_element.order,
-                        proc_element.comps)))
-        }
-        var new_space_elems_ids = Map.empty[Int, Int]
-        val new_space_elems = space_elems.foreach { space_element => 
-          new_space_elems_ids = new_space_elems_ids ++ Map(space_element.id.get ->
-                        SpaceElemDAO.pull_object(
-                            SpaceElementDTO(None,
-                                        space_element.title,
-                                        space_element.desc,
-                                        space_element.business,
-                                        newBpId,
-                                        space_element.b_type,
-                                        space_element.type_title,
-                                        space_element.space_own,
-                                        space_element.space_owned,
-                                        space_element.space_role,
-                                        space_element.order,
-                                        space_element.comps)))
-        }
-        var new_spaces_ids = Map.empty[Int, Int]
-        val nes_spaces = spaces.foreach { space => 
-          new_spaces_ids = new_spaces_ids ++ Map(space.id.get ->
-          BPSpaceDAO.pull_object(BPSpaceDTO(None, 
-                      newBpId, 
-                      space.index, 
-                      space.container, 
-                      space.subbrick, 
-                      new_proc_elems_ids.get(space.brick_front.getOrElse(0)),
-                      new_space_elems_ids.get(space.brick_nested.getOrElse(0)), 
-                      space.nestingLevel))) 
-
-        }
-        // Update space_elem spaces
-        println("new space elem ids" + new_space_elems_ids.values.toList)
-        SpaceElemDAO.findByIds(new_space_elems_ids.values.toList).foreach { new_space_elem =>
-          SpaceElemDAO.update(new_space_elem.id.get, new_space_elem.copy(space_owned = new_spaces_ids.get(new_space_elem.space_owned).get, 
-                                                                         space_own = getSpaceOwn(new_space_elem.space_own, new_spaces_ids) ))
-
-        }
-
-        Ok(Json.toJson(newBpId)) 
- 
-      }
-      case _ => BadRequest(Json.obj("status" -> "Not found"))
-    }
-  
-  }
-  // Space owned helper
-  private def getSpaceOwn(z: Option[Int], new_spaces_ids: Map[Int, Int]) = {
-     z match {
-      case Some(owned_id) => new_spaces_ids.get(owned_id)
-      case _ => None
+     val cloned:Int = cloner.util.ProcessCloner.clone(bpId, orig_title) 
+     cloned match {
+       case -1 => BadRequest(Json.toJson(Map("error" -> "Cannot copy process")))
+       case id:Int => Ok(Json.toJson(id)) 
      }
   }
+
+
+
+
   private def haltActiveStations(bpId: Int) = {
     BPDAO.get(bpId) match {
       case Some(bprocess) => {
@@ -217,7 +150,7 @@ def create_bprocess = SecuredAction(BodyParsers.parse.json) { request =>
     },
     bprocess => { 
       BPDAO.pull_object(bprocess) match {
-        case id => { 
+        case id:Int => { 
           AutoTracer.defaultStatesForProcess(process_id = id)
           Ok(Json.obj("status" ->"OK", "message" -> ("Bprocess '"+bprocess.id+"' saved.") ))  
         }
@@ -484,6 +417,34 @@ def deleteSpaceElem(bpID: Int, spelem_id: Int) = SecuredAction { implicit reques
       }
 }
 
+
+/**
+ * Element topology
+ */
+
+def element_topos(id: Int) = SecuredAction { implicit request => 
+  val topologs_dto = ElemTopologDAO.findByBP(id)
+
+  val topologs:List[ElementTopology] = topologs_dto.filter(topo => topo.front_elem_id.isDefined).map { topolog =>
+      val element = ProcElemDAO.findById(topolog.front_elem_id.get).get
+      ElementTopology(topo_id = topolog.id.get, element_id = element.id.get, element_title = element.title)
+    } ++ topologs_dto.filter(topo => topo.space_elem_id.isDefined).map { topolog => 
+      val element = SpaceElemDAO.findById(topolog.space_elem_id.get).get
+      ElementTopology(topo_id = topolog.id.get, element_id = element.id.get, element_title = element.title)
+    }
+  
+  Ok(Json.toJson(topologs))
+}
+
+
+
+
+
+
+
+
+
+
 /**
  * State, reactions, switchers
  **/
@@ -524,6 +485,20 @@ def update_reaction(id: Int) = SecuredAction { implicit request =>
 def delete_reaction(id: Int) = SecuredAction { implicit request => 
   Ok(Json.toJson("Ok"))
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*
   Histories methods
