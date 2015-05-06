@@ -29,7 +29,7 @@ font-size: 16px;
 vertical-align: bottom;
 margin-right: 4px;
 }
-.apiMenuItem a:hover {
+.minMenuItem a:hover {
 color: #7FDBFF;
 text-decoration: none;
 }
@@ -42,38 +42,38 @@ text-decoration: none;
   } }
 }
 
-<nav class="apiMenu menuCell menuTeam">
-  <ul class="apiMenuList apiMenuTexts">
-    <li class="apiMenuItem">
+<nav class="minMenu menuCell menuTeam">
+  <ul class="minMenuList minMenuTexts">
+    <li class="minMenuItem">
       <a id="teamMembersLink" class="vIcoIn menuTeamLink" href="@routes.ProfileController.profile()">
        <span class="uicon-svg542"></span>
         @Messages("nav.profile")(LangDet.getLang(user) )  </a>
 
     </li>
-    <li class="apiMenuItem">
-      <a id="teamApisLink" class="vIcoIn menuTeamLink" href="@routes.Application.app()">
+    <li class="minMenuItem">
+      <a id="teamMinsLink" class="vIcoIn menuTeamLink" href="@routes.Application.app()">
         <span class="uicon-svg12"></span>
         @Messages("nav.processes")(LangDet.getLang(user) )  </a>
     </li>
-    <li class="apiMenuItem">
-      <a id="teamApisLink" class="vIcoIn menuTeamLink" href="/a#/sessions">
+    <li class="minMenuItem">
+      <a id="teamMinsLink" class="vIcoIn menuTeamLink" href="/a#/sessions">
         <span class="uicon-svg14"></span>
         Sessions</a>
     </li> 
     <!--
-    <li class="apiMenuItem">
-      <a id="teamApisLink" class="vIcoIn menuTeamLink" href="/a#/ref">
+    <li class="minMenuItem">
+      <a id="teamMinsLink" class="vIcoIn menuTeamLink" href="/a#/ref">
         <span class="uicon-svg14"></span>
         Refs</a>
     </li> -->
     @if(user.isManager) {
-    <li class="apiMenuItem">
+    <li class="minMenuItem">
       <a id="teamMembersLink" class="vIcoIn menuTeamLink" href="@users.routes.EmployeeController.index()">
         <span class="uicon-svg98"></span>
         @Messages("nav.people")(LangDet.getLang(user) )  </a>
     </li>
     } 
-    <li class="apiMenuItem">
+    <li class="minMenuItem">
       <a id="teamSettingsLink" class="vIcoIn menuTeamLink" href="@routes.SettingController.index()">
         <span class="uicon-svg2222"></span>
         @Messages("nav.settings")(LangDet.getLang(user) )  </a>
