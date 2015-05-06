@@ -22,11 +22,32 @@ $scope.isManager = function () {
 $scope.isManagerVal = $scope.isManager();
 $scope.isManager();
 
+
+/**
+* Get prev and now and next element of station
+* @proc_id
+* @station_id
+**/
+$scope.aroundFetch = function (proc_id, station_id) {
+$http.get('/bprocess/'+proc_id+'/station/'+station_id+'/around')
+      .success(function (data) {
+          // Stores the token until the user closes the browser window.
+          console.log(data);
+          return data;
+      })
+      .error(function () {
+      });
+}
+
+
+
+
+
+
 /*
 *  Thumbnail tree builder
 */
-
-
+ 
 $scope.builderFetch = function (bp) {
   var bpelems, spaces, spaceelems;
     bpelems = BPElemsFactory.query({ BPid: bp.id });
@@ -198,7 +219,7 @@ $scope.emptyElemCheck = function(col) {
   // Init thumb
   $scope.bprocesses.$promise.then(function (processes) {
     _.forEach(processes, function(proc) { TreeBuilder.buildFetch(proc, function(success){
-      $('.process_content .tree-thumb.process-tree').dragOn();
+        $('.process_content .tree-thumb.process-tree').dragOn();
     }); });
     
   });
@@ -280,6 +301,30 @@ $scope.sessions.$promise.then(function (data2) {
 
 
 
+  /**
+  *
+  * Run initially
+  *
+  **/
+$scope.run = function (process) {
+      $http({
+      url: 'bprocess/' + process.id + '/invoke',
+      method: "POST",
+      data: {  }
+      })
+      .then(function(response) {
+        // success
+        console.log(response);
+        $scope.invoke_res = [response];
+        $location.path('/bprocess/' + process.id + 'elements?session=' + parseInt(response.session));
+
+      },
+      function(response) { // optional
+        // failed
+      }
+      );
+  }
+
 
 
 
@@ -354,6 +399,10 @@ minorityControllers.controller('BPCreationCtrl', ['$window', '$rootScope','$scop
            //$location.path('/bprocesses');
     });
     }
+
+
+
+
 }]);
 
 
@@ -430,30 +479,6 @@ minorityControllers.controller('ProcShareCtrl', ['$scope', '$http', '$rootScope'
 
 
 
-
-  /**
-  *
-  * Run initially
-  *
-  **/
-  $scope.runInitially = function (process) {
-      $http({
-      url: 'bprocess/' + process.id + '/invoke',
-      method: "POST",
-      data: {  }
-      })
-      .then(function(response) {
-        // success
-        console.log(response);
-        $scope.invoke_res = [response];
-        $location.path('/bprocess/' + process.id + 'elements?session=' + response.session);
-
-      },
-      function(response) { // optional
-        // failed
-      }
-      );
-  }
   
 
 
