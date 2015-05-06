@@ -1275,7 +1275,9 @@ form {
 }
 
 
-
+.proc-element-edit {
+  
+}
 
 
 .process-tree {
@@ -1283,6 +1285,7 @@ form {
 }
 .process-tree .elem-card {
   background: pink;
+  border-radius: 3px;
 }
 .process-tree .elem-card.confirm {
     background: #e67e22;
@@ -1538,7 +1541,7 @@ a.confirmation-btn.btn.btn-small.confirmed {
 }
 
 
-.process-status .teamApisListControls {
+.process-status .tableMinListControls {
   margin-right: 225px;
   display: inline-block;
   margin-left: 459px;
@@ -1547,20 +1550,20 @@ a.confirmation-btn.btn.btn-small.confirmed {
   top: 105px;
   right: 20px;
 }
-.process-status .teamApisListControls a {
+.process-status .tableMinListControls a {
     margin-left: 0px;
     padding-left: 26px;
 }
-.process-status .teamApisListControls a span {
+.process-status .tableMinListControls a span {
     margin-left: -13px;
     color: black;
 }
-.teamApisListName a:hover {
+.tableMinListName a:hover {
 text-decoration: none;
 border: none;
 }
 
-.teamApisListWrap span.plusSign {
+.tableMinListWrap span.plusSign {
     margin-top: -1px;
     padding-right: 25px;
 }
@@ -1604,27 +1607,27 @@ border: #ebecf0 1px solid;
 margin-right: -15px;
     
 }
-h2.teamApisListName {
+h2.tableMinListName {
     clear: both;
 }
 
-.process-status li.teamApisListItem {
+.process-status li.tableMinListItem {
     height: auto;  
     width: 1068px;
     overflow: hidden;
 }
-.process-status .teamApisListControls a:hover {
+.process-status .tableMinListControls a:hover {
     text-decoration: none;
     cursor: pointer;
 }
 
-.process-thumb p.teamApisListGithub {
+.process-thumb p.tableMinListGithub {
 opacity: 0.4;
 right: 35px;
 top: 20px;
 }
 
-.process-thumb:hover p.teamApisListGithub {
+.process-thumb:hover p.tableMinListGithub {
     opacity: 1;
 }
 .process-thumb:hover .ng-scope .tree-thumb {
@@ -2274,7 +2277,7 @@ font-size: 16px;
 font-weight: 400;
 font-family: 'Proxima Nova','Helvetica',sans-serif;
 }
-#teamapis .process {
+#tablemin .process {
   border-bottom: 1px solid #e8e8e8;
 }
 @media (min-width: 1200px) {
