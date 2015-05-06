@@ -2,14 +2,10 @@
 
 
 
-minorityControllers.controller('BPRequestCtrl', ['$scope', '$window','$routeParams','$route', '$rootScope','$filter','BPLogsFactory', 'BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory', 'BProcessFactory', 'BPStationsFactory', 'BPRequestFactory',  '$location', '$http',
-function ($scope, $window,$routeParams,$route, $rootScope,$filter,BPLogsFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BProcessFactory, BPStationsFactory, BPRequestFactory,  $location, $http) {
+minorityControllers.controller('BPRequestCtrl', ['ElementTopologsFactory', 'InteractionsFactory', '$scope', '$window','$routeParams','$route', '$rootScope','$filter','BPLogsFactory', 'BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory', 'BProcessFactory', 'BPStationsFactory', 'BPRequestFactory',  '$location', '$http',
+function (ElementTopologsFactory, InteractionsFactory, $scope, $window,$routeParams,$route, $rootScope,$filter,BPLogsFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BProcessFactory, BPStationsFactory, BPRequestFactory,  $location, $http) {
 
-  console.log($routeParams.BPid);
-  console.log($scope.bpId);
-  if ($routeParams.BPid != undefined) {
-   $scope.bpId = $routeParams.BPid;
-  }
+$scope.bpId = $scope.session.process.id;
 
 $scope.isManager = function () {
   if ($scope.isManagerVal == undefined && $rootScope.manager != undefined) {
@@ -124,6 +120,40 @@ $scope.builder = function (station) {
    ];
 
 
+   console.log($scope.session);
+   $scope.interactions = InteractionsFactory.query({session_id: $scope.session.session.id});
+   $scope.element_topologs = ElementTopologsFactory.query({ BPid: $scope.bpId });
+
+   $scope.interactions.$promise.then(function (data) {
+    $scope.element_topologs.$promise.then(function (data2) {
+        _.forEach(data.reactions, function(r) { return r.reaction.elem = _.find(data2, function(topo) { 
+          return topo.topo_id == r.reaction.element}); }
+
+    )});
+   });
+
+$scope.selectedClass = function (reaction) {
+  if (reaction.selected) {
+    return 'selected';
+  } else {
+    return '';
+  }
+}
+
+$scope.reactionSelect = function (reaction) {
+    console.log(reaction);
+    //if (reaction.selected == undefined) {
+      reaction.selected = true;
+      $scope.addParam(reaction);
+    //}
+    //if (reaction.selected) {
+    //  reaction.selected = false;
+    //  $scope.delParam(reaction);
+    //}
+  }
+
+
+
   $scope.updateBP = function () {
     BProcessFactory.update($scope.bprocess);
     $location.path('/bprocesses');
@@ -135,7 +165,7 @@ $scope.builder = function (station) {
     $location.path('/bprocess/' + bPid + '/input')
   }
   $scope.filterExpression = function(station) {
-  return (station.finished != true && station.paused == true);
+    return (station.finished != true && station.paused == true);
   }
   $scope.filterInputs = function(elem) {
     return (elem.type_title == "confirm");
@@ -155,9 +185,9 @@ $scope.builder = function (station) {
      }
   };
 
-  $scope.haltStation = function (station_id) {
+  $scope.haltSession = function (session_id) {
    $http({
-      url: 'bprocess/' + $scope.bpId + '/station/' + station_id + '/halt',
+      url: 'bprocess/' + $scope.bpId + '/session/' + session_id + '/halt',
       method: "POST",
       data: {  }
       })
@@ -191,19 +221,17 @@ $scope.builder = function (station) {
       }
       );
   }
-  $scope.runFrom = function (stationID, station) {
-    var front_params = _.filter(station.proc_elems,  function(obj) { return obj.param != undefined });
-    var space_params = _.filter(station.space_elems, function(obj) { return obj.param != undefined });
-    var params_output = _.flatten(_.map(front_params, function(v) { return {"f_elem": v.id, "param": v.param} }), _.map(space_params, function(v) { return {"sp_elem": v.id, "param": v.param} }));
+  $scope.runFrom = function (session_id) {
+    //var front_params = _.filter(station.proc_elems,  function(obj) { return obj.param != undefined });
+    //var space_params = _.filter(station.space_elems, function(obj) { return obj.param != undefined });
+    //var params_output = _.flatten(_.map(front_params, function(v) { return {"f_elem": v.id, "param": v.param} }), _.map(space_params, function(v) { return {"sp_elem": v.id, "param": v.param} }));
     // TODO: Add arguments
-    console.log(front_params);
-    console.log(space_params);
-    console.log(params_output);
+    console.log($scope.reaction_params);
     console.log("/\ params")
     $http({
-      url: 'bprocess/' + $scope.bpId + '/invoke_from/' + stationID,
+      url: 'bprocess/' + $scope.bpId + '/invoke_from/' + session_id,
       method: "POST",
-      data: params_output//station.params
+      data: $scope.reaction_params
       })
       .then(function(response) {
         // success
@@ -217,24 +245,27 @@ $scope.builder = function (station) {
       }
       );
   }
-  $scope.addParam = function (station, bpelem, spaceelem, param) {
-      if(typeof station.params === 'undefined') {
-        station.params = [];
-        $scope.defaultParam();
-      } else {
-      // TODO: Multiple params
-      console.log(param);
-      if (bpelem != null) {
-      station.params.push({bpelem: bpelem.id, param: param });
-      };
-      if (spaceelem != null) {
-      station.params.push({spaceelem: spaceelem.id, param: param });
-      };
-      };
+  $scope.reaction_params = []
+  $scope.addParam = function (reaction) {
+        console.log(reaction);
+        console.log(reaction.reaction.id);
+        if (_.find($scope.reaction_params, function(re) { return re.reaction_id == reaction.reaction.id })) {
+          $scope.delParam(reaction);
+        } else {
+        $scope.reaction_params.push({reaction_id: reaction.reaction.id });
+        }
+        console.log($scope.reaction_params);
+      
   }
-  $scope.delParam = function (station) {
-    station.params.pop();
+  $scope.delParam = function (reaction) {
+    $scope.reaction_params = _.reject($scope.reaction_params, function(el) { return el.reaction_id === reaction.reaction.id; });
   }
+
+
+
+
+
+
 
 
   $scope.defaultParam = function () {
@@ -266,11 +297,12 @@ $scope.builder = function (station) {
 
   $scope.invoke_res = [];
   $scope.selectedTab = 1;
+  /*
   BPStationsFactory.query({ BPid: $scope.bpId }).$promise.then(function(data) {
          $scope.bpstations = data;      
          console.log("boom");
 
-         _.forEach($scope.bpstations, function (st) { $scope.addParam(st); });
+         //_.forEach($scope.bpstations, function (st) { $scope.addParam(st); });
 
     $scope.bpelems.$promise.then(function(data34) {
         $scope.spaces.$promise.then(function(data2) {
@@ -291,6 +323,7 @@ $scope.builder = function (station) {
 
   $scope.defaultParam();
   $scope.bprocess = BProcessFactory.show({ id: $scope.bpId });
+*/
 
   $scope.showAll = function () {
     $(".inputRequests:not(:eq(0))").toggle();
