@@ -92,11 +92,11 @@ case class WhoAmIdentify(email: String, business: Int = 0, manager: Boolean, emp
     val business_request:Option[Tuple2[Int, Int]] = models.DAO.resources.EmployeesBusinessDAO.getByUID(email) 
     val business = business_request match {
       case Some(biz) => biz._2
-      case _ => 1
+      case _ => -1
     }
     val current_plan = AccountPlanDAO.getByMasterAcc(email).getOrElse(
             AccountPlanDTO(None, 
-                business_id = Some(1), 
+                business_id = Some(-1), 
                 master_acc = email 
       ))
 
