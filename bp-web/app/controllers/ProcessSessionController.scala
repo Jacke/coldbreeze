@@ -65,6 +65,8 @@ class ProcessSessionController(override implicit val env: RuntimeEnvironment[Dem
   implicit val SessionContainerReads = Json.reads[SessionContainer]
   implicit val SessionContainerWrites = Json.format[SessionContainer]
 
+
+
 def station_index(id: Int) = SecuredAction { implicit request => 
    val result = models.DAO.BPStationDAO.findByBPId(id) //BPStationDAO.findByBPId(id)
    Ok(Json.toJson(result))
@@ -92,7 +94,9 @@ def all_sessions() = SecuredAction { implicit request =>
   Ok(Json.toJson(sess))
 }
 
-
+def makeUnlisted(id: Int) = SecuredAction { implicit request =>
+  Ok(Json.toJson(BPSessionDAO.makeUnlisted(id)))
+}
 
 
 // /bprocess/:id/station/:station_id  
@@ -101,12 +105,15 @@ def show_station(id: Int, station_id: Int) = SecuredAction { implicit request =>
     BPStationDAO.findById(station_id)))
 }
 // /bprocess/:id/station/:station_id/halt  
-def halt_station(id: Int, station_id: Int) = SecuredAction { implicit request =>
-  Ok(Json.toJson(
-    BPStationDAO.haltUpdate(station_id)))
+def halt_session(id: Int, session_id: Int) = SecuredAction { implicit request =>
+  val station_id = BPStationDAO.findBySession(session_id) 
+  station_id match {
+    case Some(station) => BPStationDAO.haltUpdate(station.id.get);Ok(Json.toJson(Map("success" -> "halted")))
+    case _ => Ok(Json.toJson(Map("failure" -> "not halted")))
+  }
 }
-def stations_elems_around(id: Int) = SecuredAction { implicit request =>
-  Ok(Json.toJson(helpers.ElemAround.detectForProcess(id)))
+def stations_elems_around(id: Int, station_id: Int) = SecuredAction { implicit request =>
+  Ok(Json.toJson(helpers.ElemAroundBuilder.detect(id, station_id)))
   
 }
 def logs_index(id: Int) = SecuredAction { implicit request => 
