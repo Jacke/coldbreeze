@@ -89,7 +89,7 @@ implicit val RefContainerReads = Json.reads[RefContainer]
 implicit val RefContainerWrites = Json.format[RefContainer]
 
 def index() = SecuredAction { implicit request => 
-	val refs = RefDAO.getAll
+	val refs = RefDAO.getAllVisible
   val refs_collected = refs.map { ref =>
       val reactions = ReactionRefDAO.findByRef(ref.id.get)
       val reaction_outs = ReactionStateOutRefDAO.findByReactionRefs(reactions.map(_.id.get))
@@ -330,11 +330,13 @@ def reaction_update(reaction_id: Int) = SecuredAction(BodyParsers.parse.json) { 
             case _ =>  { val out_ids = ReactionStateOutRefDAO.findByReactionRef(reaction_id).map(_.id.get)
                          out_ids.foreach { id => 
                             println(id)
-                            entity.reaction_state_outs.find(_.id == id) match {
+                            entity.reaction_state_outs.find(_.id == Some(id)) match {
                               case Some(state_out) => ReactionStateOutRefDAO.update(id, state_out)
+                              case _ => BadRequest(Json.toJson(Map("error" -> "cat unpdate state out")))
                             }
                           }
-                             Ok(Json.toJson(entity.reaction.id)) 
+                          Ok(Json.toJson(entity.reaction.id)) 
+                             
                         }
           }
     }.recoverTotal{
