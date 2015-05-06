@@ -29,7 +29,7 @@ import service.DemoUser
 import securesocial.core._
 import models.DAO._
 import models.DAO.resources._
-import main.scala.utils.InputParamProc
+import main.scala.utils.{InputParamProc, ReactionActivator}
 /**
  * Created by Sobolev on 22.07.2014.
  */
@@ -51,19 +51,22 @@ class ProcessInputController(override implicit val env: RuntimeEnvironment[DemoU
   implicit val UndefElementWrites = Json.format[UndefElement]
   implicit val InputParamReads = Json.reads[InputParams]
   implicit val InputParamWrites = Json.format[InputParams]
-
+  implicit val ReactionActivatorReads = Json.reads[ReactionActivator]
+  implicit val ReactionActivatorWrites = Json.format[ReactionActivator]
+  implicit val inLoggerReads = Json.reads[InputLogger]
+  implicit val inLoggerWrites = Json.format[InputLogger]
 
   def invoke(bpID: Int)  = SecuredAction { implicit request =>
     val userId = request.user.main.userId
     val lang:String = models.AccountsDAO.getRolesAndLang(userId).get._3
 
     service.Build.run(bpID, Some(lang)) match {
-      case Some(station_id) => Ok(Json.toJson(Map("success" -> "station_id", "session" -> 10)))
+      case Some(process) => Ok(Json.toJson(Map("success" -> "station_id", "session" -> process.session_id.toString)))
       case _ => Ok(Json.toJson(Map("error" -> "Error output")))
     }
   }
-  def invokeFrom(station_id: Int, bpID: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
-    val pmsResult = request.body.validate[List[InputParams]] 
+  def invokeFrom(session_id: Int, bpID: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+    val pmsResult = request.body.validate[List[ReactionActivator]] 
     println(pmsResult)
 
 /*
@@ -75,23 +78,25 @@ case class InputLogger(var id: Option[Int],
   space_elem_id:Option[Int], 
   date: org.joda.time.DateTime,
   station: Int)*/
+     // TODO: Input logger for reaction
     val input_logs = pmsResult.map{
                               case entity => entity.map { pm =>
                                   InputLogger(None, 
                                     uid = request.user.main.email, 
-                                    action = pm.param, 
+                                    action = "input", // TODO: Add reaction title
                                     arguments = List.empty[String], 
-                                    front_elem_id = pm.f_elem, 
-                                    space_elem_id = pm.sp_elem, 
+                                    reaction = pm.reaction_id, 
+                                    input = None, 
                                     org.joda.time.DateTime.now,
                                     station_id)
                                 }
       }
-
-    input_logs.get.foreach(il => InputLoggerDAO.pull_object(il))
+   
+    InputLoggerDAO.pull_for_input(input_logs.get)
         
 
         // case class InputParamProc(felem: Option[Int], selem: Option[Int], param: String, args: List[String])
+       /*
         val genparams = pmsResult.map{ 
           case entity => { 
                entity.map { t =>
@@ -99,18 +104,15 @@ case class InputLogger(var id: Option[Int],
                 } 
              
           }
-        }
+        }*/
 
     println("PAAAAAAAARAMS")
-    println(genparams.get)
-    service.Build.runFrom(station_id, bpID, genparams.get, session_id = 1) match {
-      case Some(station_id) => Ok(Json.toJson(Map("success" -> station_id)))
+    println(pmsResult)
+    service.Build.newRunFrom(session_id = session_id,bpID = bpID, params = pmsResult.get) match {
+      case Some(process) => Ok(Json.toJson(Map("success" -> process.session_id)))
       case _ => Ok(Json.toJson(Map("error" -> "Error output")))
     }
   }
-
-  implicit val inLoggerReads = Json.reads[InputLogger]
-  implicit val inLoggerWrites = Json.format[InputLogger]
 
   def inputLogs(BPid: Int) = Action { implicit request =>
     Ok(Json.toJson(InputLoggerDAO.getByBP(BPid)))
