@@ -1205,7 +1205,7 @@ body .panelLegacy .githubLogin a {
     width: 138px;
 }
 
-.panelLike .organisationsGridCards .addPeople .teamApisListFilter {
+.panelLike .organisationsGridCards .addPeople .tableMinListFilter {
     float: left;
     margin-top: 20px;
     margin-left: 20px;
@@ -1639,14 +1639,14 @@ body .panelLegacy .githubLogin a {
     padding-top: 25px;
 }
 
-.teamSettingsWrap,.teamApisListWrap {
+.teamSettingsWrap,.tableMinListWrap {
     padding: 25px 20px;
     margin: 0 auto;
     max-width: 1320px;
     text-shadow: none;
 }
 
-.teamApisListFilter {
+.tableMinListFilter {
     float: right;
     position: relative;
     -webkit-border-radius: 4px;
@@ -1655,7 +1655,7 @@ body .panelLegacy .githubLogin a {
 background: white;
 }
 
-.teamApisListFilter .teamApisListFilterInput {
+.tableMinListFilter .tableMinListFilterInput {
     background-color: transparent;
     border: none;
     outline: none;
@@ -1671,7 +1671,7 @@ background: white;
     line-height: 16px;
 }
 
-.teamApisListFilter .magnifyGlass {
+.tableMinListFilter .magnifyGlass {
     z-index: 1;
     position: absolute;
     left: 15px;
@@ -1679,11 +1679,11 @@ background: white;
     margin-top: -10px;
 }
 
-.teamApisListWrap .flatButtonLine,.teamSettingsWrap .flatButtonLine {
+.tableMinListWrap .flatButtonLine,.teamSettingsWrap .flatButtonLine {
     margin-bottom: 0;
 }
 
-.teamApisListWrap .flatButton,.teamSettingsWrap .flatButton,.teamApisListWrap .createApi,.teamSettingsWrap .createApi {
+.tableMinListWrap .flatButton,.teamSettingsWrap .flatButton,.tableMinListWrap .createMin,.teamSettingsWrap .createMin {
     float: left;
     color: #fff;
     line-height: 20px;
@@ -1698,7 +1698,7 @@ background: white;
     box-shadow: none;
 }
 
-.teamApisListWrap .flatButton .vIco,.teamSettingsWrap .flatButton .vIco,.teamApisListWrap .createApi .vIco,.teamSettingsWrap .createApi .vIco {
+.tableMinListWrap .flatButton .vIco,.teamSettingsWrap .flatButton .vIco,.tableMinListWrap .createMin .vIco,.teamSettingsWrap .createMin .vIco {
     margin-top: -3px;
     opacity: .4;
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=40)";
@@ -1706,29 +1706,29 @@ background: white;
     vertical-align: middle;
 }
 
-.teamApisListWrap .flatButton:hover, .teamSettingsWrap .flatButton:hover, .teamApisListWrap .createApi:hover, .teamSettingsWrap .createApi:hover, .teamApisListWrap .flatButton:focus, .teamSettingsWrap .flatButton:focus, .teamApisListWrap .createApi:focus, .teamSettingsWrap .createApi:focus {
+.tableMinListWrap .flatButton:hover, .teamSettingsWrap .flatButton:hover, .tableMinListWrap .createMin:hover, .teamSettingsWrap .createMin:hover, .tableMinListWrap .flatButton:focus, .teamSettingsWrap .flatButton:focus, .tableMinListWrap .createMin:focus, .teamSettingsWrap .createMin:focus {
 background-color: #2fca84;
 color: #fff;
 cursor: pointer;
 text-decoration: none;
 }
 
-.teamApisListWrap .flatButton:hover .vIco,.teamSettingsWrap .flatButton:hover .vIco,.teamApisListWrap .createApi:hover .vIco,.teamSettingsWrap .createApi:hover .vIco,.teamApisListWrap .flatButton:focus .vIco,.teamSettingsWrap .flatButton:focus .vIco,.teamApisListWrap .createApi:focus .vIco,.teamSettingsWrap .createApi:focus .vIco {
+.tableMinListWrap .flatButton:hover .vIco,.teamSettingsWrap .flatButton:hover .vIco,.tableMinListWrap .createMin:hover .vIco,.teamSettingsWrap .createMin:hover .vIco,.tableMinListWrap .flatButton:focus .vIco,.teamSettingsWrap .flatButton:focus .vIco,.tableMinListWrap .createMin:focus .vIco,.teamSettingsWrap .createMin:focus .vIco {
     opacity: 1;
     -ms-filter: none;
     filter: none;
 }
 
-.teamApisListWrap .createApi,.teamSettingsWrap .createApi {
+.tableMinListWrap .createMin,.teamSettingsWrap .createMin {
     background-color: #49cc90;
 }
 
-.teamApisListWrap .flatGreen,.teamSettingsWrap .flatGreen {
+.tableMinListWrap .flatGreen,.teamSettingsWrap .flatGreen {
     background-color: #2fca84;
     color: #fff;
 }
 
-.teamApisListWrap .teamApisList,.teamSettingsWrap .teamApisList {
+.tableMinListWrap .tableMinList,.teamSettingsWrap .tableMinList {
     -webkit-border-radius: 5px;
     border-radius: 5px;
     font-size: 130%;
@@ -1741,7 +1741,7 @@ text-decoration: none;
     list-style-type: none;
 }
 
-.teamApisListWrap .teamApisListItem,.teamSettingsWrap .teamApisListItem {
+.tableMinListWrap .tableMinListItem,.teamSettingsWrap .tableMinListItem {
     background-color: rgba(255,255,255,0.001);
     padding: 30px 30px 30px 34px;
     margin-top: -1px;
@@ -1750,12 +1750,12 @@ text-decoration: none;
     z-index: 2;
 }
 
-.teamApisListWrap .teamApisListItem:last-child,.teamSettingsWrap .teamApisListItem:last-child {
+.tableMinListWrap .tableMinListItem:last-child,.teamSettingsWrap .tableMinListItem:last-child {
     border-bottom-color: rgba(255,255,255,0.001);
 }
 
 
-.teamApisListWrap .teamApisListName,.teamSettingsWrap .teamApisListName,.teamApisListWrap .teamApisListMaker,.teamSettingsWrap .teamApisListMaker,.teamApisListWrap .teamApisListControls,.teamSettingsWrap .teamApisListControls {
+.tableMinListWrap .tableMinListName,.teamSettingsWrap .tableMinListName,.tableMinListWrap .tableMinListMaker,.teamSettingsWrap .tableMinListMaker,.tableMinListWrap .tableMinListControls,.teamSettingsWrap .tableMinListControls {
     float: left;
     margin: 0;
     font-size: 17px;
@@ -1766,35 +1766,35 @@ text-decoration: none;
     box-sizing: border-box;
 }
 
-.teamApisListWrap .teamApisListName,.teamSettingsWrap .teamApisListName,.teamApisListWrap .teamApisListMaker,.teamSettingsWrap .teamApisListMaker,.teamApisListWrap .teamApisListControls,.teamSettingsWrap .teamApisListControls,.teamApisListWrap .teamApisTimeStamp,.teamSettingsWrap .teamApisTimeStamp,.teamApisListWrap .avatarCard,.teamSettingsWrap .avatarCard,.teamApisListWrap .teamApisListGithub,.teamSettingsWrap .teamApisListGithub {
+.tableMinListWrap .tableMinListName,.teamSettingsWrap .tableMinListName,.tableMinListWrap .tableMinListMaker,.teamSettingsWrap .tableMinListMaker,.tableMinListWrap .tableMinListControls,.teamSettingsWrap .tableMinListControls,.tableMinListWrap .teamApisTimeStamp,.teamSettingsWrap .teamApisTimeStamp,.tableMinListWrap .avatarCard,.teamSettingsWrap .avatarCard,.tableMinListWrap .tableMinListGithub,.teamSettingsWrap .tableMinListGithub {
     position: relative;
     z-index: 2;
 }
 
-.teamApisListWrap .teamApisLinkPeople:after,.teamSettingsWrap .teamApisLinkPeople:after {
+.tableMinListWrap .tableMinLinkPeople:after,.teamSettingsWrap .tableMinLinkPeople:after {
     content: '';
 }
 
-.teamApisListWrap .teamApisLinkSettings:after,.teamSettingsWrap .teamApisLinkSettings:after {
+.tableMinListWrap .tableMinLinkSettings:after,.teamSettingsWrap .tableMinLinkSettings:after {
     content: '';
 }
 
 
-.teamApisListWrap .teamApisLinkStations:after, .teamSettingsWrap .teamApisLinkStations:after {
+.tableMinListWrap .teamApisLinkStations:after, .teamSettingsWrap .teamApisLinkStations:after {
   content: '';
 }
-.teamApisListWrap .teamApisLinkDelete:after, .teamSettingsWrap .teamApisLinkDelete:after {
+.tableMinListWrap .tableMinLinkDelete:after, .teamSettingsWrap .tableMinLinkDelete:after {
   content: '';
 }
 
-.teamApisListWrap .teamApisListGithub,.teamSettingsWrap .teamApisListGithub {
+.tableMinListWrap .tableMinListGithub,.teamSettingsWrap .tableMinListGithub {
   position: absolute;
   right: 29px;
   top: 50%;
   margin-top: -9px;
 }
 
-.teamApisListWrap .teamApisTimeStamp,.teamSettingsWrap .teamApisTimeStamp {
+.tableMinListWrap .teamApisTimeStamp,.teamSettingsWrap .teamApisTimeStamp {
     padding-top: 3px;
     font-size: 14px;
     line-height: 17px;
@@ -1805,7 +1805,7 @@ text-decoration: none;
     color: #8a97b1;
 }
 
-.teamApisListWrap .teamApisGithubIco,.teamSettingsWrap .teamApisGithubIco {
+.tableMinListWrap .teamApisGithubIco,.teamSettingsWrap .teamApisGithubIco {
     display: inline-block;
     height: 27px;
     width: 27px;
@@ -1817,28 +1817,28 @@ text-decoration: none;
     background: url("/images/rocket.png") center no-repeat;
 }
 
-.teamApisListWrap .teamApisGithubIco:hover,.teamSettingsWrap .teamApisGithubIco:hover {
+.tableMinListWrap .teamApisGithubIco:hover,.teamSettingsWrap .teamApisGithubIco:hover {
     opacity: 1;
     -ms-filter: none;
     filter: none;
     border: ridge 1px #49B382;
 }
-.teamApisListWrap .teamApisGithubIco:active, .teamSettingsWrap .teamApisGithubIco:active {
+.tableMinListWrap .teamApisGithubIco:active, .teamSettingsWrap .teamApisGithubIco:active {
 background-color: #49CC90;
 }
-.teamApisListWrap .teamApisListMaker,.teamSettingsWrap .teamApisListMaker,.teamApisListWrap .avatarCard,.teamSettingsWrap .avatarCard {
+.tableMinListWrap .tableMinListMaker,.teamSettingsWrap .tableMinListMaker,.tableMinListWrap .avatarCard,.teamSettingsWrap .avatarCard {
     padding: 0 0 0 50px;
     margin: 0;
 }
 
-.teamApisListWrap .teamApisListName, .teamSettingsWrap .teamApisListName {
+.tableMinListWrap .tableMinListName, .teamSettingsWrap .tableMinListName {
 font-weight: normal;
 margin-top: -25px;
 width: 30%;
 padding-bottom: 70px;
 }
 
-.teamApisListWrap .teamApisListControls,.teamSettingsWrap .teamApisListControls {
+.tableMinListWrap .tableMinListControls,.teamSettingsWrap .tableMinListControls {
     float: none;
     position: absolute;
     right: 96px;
@@ -1859,71 +1859,71 @@ padding-bottom: 70px;
     line-height: 20px;
 }
 
-.teamApisListWrap .teamApiControlsLink,.teamSettingsWrap .teamApiControlsLink {
+.tableMinListWrap .tableMinControlsLink,.teamSettingsWrap .tableMinControlsLink {
     padding: 10px 20px 9px 50px;
     position: relative;
     float: left;
 }
 
-.teamApisListWrap .teamApiControlsLink:hover,.teamSettingsWrap .teamApiControlsLink:hover {
+.tableMinListWrap .tableMinControlsLink:hover,.teamSettingsWrap .tableMinControlsLink:hover {
     color: #718cff;
 }
 
-.teamApisListWrap .teamApiControlsLink .vIco,.teamSettingsWrap .teamApiControlsLink .vIco {
+.tableMinListWrap .tableMinControlsLink .vIco,.teamSettingsWrap .tableMinControlsLink .vIco {
     position: absolute;
     left: 20px;
     top: 50%;
     margin-top: -10px;
 }
 
-.teamApisListWrap .teamSettingsLink,.teamSettingsWrap .teamSettingsLink {
+.tableMinListWrap .teamSettingsLink,.teamSettingsWrap .teamSettingsLink {
     vertical-align: top;
     border-left: 1px solid #d5deec;
 }
 
-.teamApisListWrap .teamApiSubline,.teamSettingsWrap .teamApiSubline,.teamApisListWrap .teamApiVanity,.teamSettingsWrap .teamApiVanity {
+.tableMinListWrap .teamApiSubline,.teamSettingsWrap .teamApiSubline,.tableMinListWrap .tableMinVanity,.teamSettingsWrap .tableMinVanity {
     display: block;
     font-size: 12px;
 }
 
-.teamApisListWrap .teamApiMakerName,.teamSettingsWrap .teamApiMakerName,.teamApisListWrap .teamApiName,.teamSettingsWrap .teamApiName,.teamApisListWrap .avatarUser,.teamSettingsWrap .avatarUser {
+.tableMinListWrap .teamApiMakerName,.teamSettingsWrap .teamApiMakerName,.tableMinListWrap .tableMinName,.teamSettingsWrap .tableMinName,.tableMinListWrap .avatarUser,.teamSettingsWrap .avatarUser {
     display: block;
     font-weight: bold;
     padding-top: 1px;
     padding-bottom: 5px;
 }
 
-.teamApisListWrap .teamApiMakerName,.teamSettingsWrap .teamApiMakerName,.teamApisListWrap .teamApiName,.teamSettingsWrap .teamApiName,.teamApisListWrap .teamApiControlsLink,.teamSettingsWrap .teamApiControlsLink,.teamApisListWrap .avatarEmail,.teamSettingsWrap .avatarEmail {
+.tableMinListWrap .teamApiMakerName,.teamSettingsWrap .teamApiMakerName,.tableMinListWrap .tableMinName,.teamSettingsWrap .tableMinName,.tableMinListWrap .tableMinControlsLink,.teamSettingsWrap .tableMinControlsLink,.tableMinListWrap .avatarEmail,.teamSettingsWrap .avatarEmail {
     color: #3c4151;
 }
 
-.teamApisListWrap .teamApiName:hover,.teamSettingsWrap .teamApiName:hover,.teamApisListWrap .avatarEmail:hover,.teamSettingsWrap .avatarEmail:hover {
+.tableMinListWrap .tableMinName:hover,.teamSettingsWrap .tableMinName:hover,.tableMinListWrap .avatarEmail:hover,.teamSettingsWrap .avatarEmail:hover {
     color: #000;
 }
 
-.teamApisListWrap .teamApiMakerName,.teamSettingsWrap .teamApiMakerName {
+.tableMinListWrap .teamApiMakerName,.teamSettingsWrap .teamApiMakerName {
     padding-top: 4px;
     font-size: 15px;
     padding-bottom: 4px;
 }
 
-.teamApisListWrap .blankSlateTeamApiEmpty,.teamSettingsWrap .blankSlateTeamApiEmpty {
+.tableMinListWrap .blankSlateTeamApiEmpty,.teamSettingsWrap .blankSlateTeamApiEmpty {
     display: block;
     text-align: center;
 }
 
-.teamApisListWrap .teamApisListItem ~ .blankSlateTeamApiEmpty,.teamSettingsWrap .teamApisListItem ~ .blankSlateTeamApiEmpty {
+.tableMinListWrap .tableMinListItem ~ .blankSlateTeamApiEmpty,.teamSettingsWrap .tableMinListItem ~ .blankSlateTeamApiEmpty {
     display: none;
 }
 
-.teamApisListWrap .teamApiPrivacyState,.teamSettingsWrap .teamApiPrivacyState {
+.tableMinListWrap .teamApiPrivacyState,.teamSettingsWrap .teamApiPrivacyState {
     position: absolute;
     left: -30px;
     top: 50%;
     margin-top: -10px;
 }
 
-.teamApisListWrap .teamApiMakerAvatar,.teamSettingsWrap .teamApiMakerAvatar,.teamApisListWrap .avatarImg,.teamSettingsWrap .avatarImg {
+.tableMinListWrap .teamApiMakerAvatar,.teamSettingsWrap .teamApiMakerAvatar,.tableMinListWrap .avatarImg,.teamSettingsWrap .avatarImg {
     position: absolute;
     left: 0;
     top: 0;
@@ -2979,7 +2979,7 @@ a:hover,a:visited:hover {
     -ms-transition-delay: 0;
     transition-delay: 0;
 }
-.process-status .teamApisListControls a:active {
+.process-status .tableMinListControls a:active {
 text-decoration: none;
 cursor: pointer;
 background: #95a5a6;
@@ -4361,7 +4361,7 @@ body.connected #toolbar #leftSideTools #debuggerBtn {
     overflow: hidden;
 }
 
-.teamApisListItem .stations {
+.tableMinListItem .stations {
   clear: both;
   margin: 0 auto;
   display: block;
@@ -4374,7 +4374,7 @@ float: left;
 /* margin-top: -45px; */
 /* margin-left: -47px; */
 }
-.teamApisListItem .stations {
+.tableMinListItem .stations {
 float: left;
 padding-top: 20px;
 }

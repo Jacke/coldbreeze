@@ -309,7 +309,7 @@ header.fullSize {
     background-color: rgba(225,227,232,0.1);
 }
 
-.shadowLeft:before,.minorityMenu .apiNameCell:before,.minorityMenu .apiNameCell.switcherWrap:before,.minorityMenu .menuTeam:before,.minorityMenu .apiMenuList.apiMenuIcons:before {
+.shadowLeft:before,.minorityMenu .apiNameCell:before,.minorityMenu .apiNameCell.switcherWrap:before,.minorityMenu .menuTeam:before,.minorityMenu .minMenuList.apiMenuIcons:before {
     display: block;
     content: '';
     position: absolute;
@@ -427,7 +427,7 @@ header.fullSize {
     vertical-align: middle;
 }
 
-.minorityMenu .plusSign,.minorityMenu .createApi {
+.minorityMenu .plusSign,.minorityMenu .createMin {
     -webkit-transition-property: all;
     -moz-transition-property: all;
     -o-transition-property: all;
@@ -450,7 +450,7 @@ header.fullSize {
     transition-delay: 0;
 }
 
-.minorityMenu .createApi {
+.minorityMenu .createMin {
     padding: 12px 30px 8px 57px;
     position: relative;
     line-height: 30px;
@@ -463,14 +463,14 @@ header.fullSize {
     display: block;
 }
 
-.minorityMenu .createApi .plusSign {
+.minorityMenu .createMin .plusSign {
     position: absolute;
     top: 50%;
     left: 29px;
     margin-top: -9px;
 }
 
-.minorityMenu .createApi:hover {
+.minorityMenu .createMin:hover {
     background-color: #31ad74;
     color: #fff;
 }
@@ -738,17 +738,17 @@ background-color: #7FDBFF;
     font-size: 120%;
 }
 
-.minorityMenu .apiMenuList.apiMenuIcons {
+.minorityMenu .minMenuList.apiMenuIcons {
     display: table-row;
 }
 
-.minorityMenu .apiMenuItem {
+.minorityMenu .minMenuItem {
     display: table-cell;
     text-align: center;
     vertical-align: middle;
 }
 
-.minorityMenu .apiMenuItem a {
+.minorityMenu .minMenuItem a {
     display: inline-block;
     padding: 31px 10px 29px;
     min-width: 0;
@@ -759,35 +759,35 @@ background-color: #7FDBFF;
     white-space: nowrap;
 }
 
-.minorityMenu .apiMenuItem a.menuTeamLink {
+.minorityMenu .minMenuItem a.menuTeamLink {
     padding-right: 25px;
 }
 
-.minorityMenu .apiMenuItem a.menuTeamLink .vIco {
+.minorityMenu .minMenuItem a.menuTeamLink .vIco {
     margin-top: -1px;
     float: left;
     margin-right: 10px;
 }
 
-.minorityMenu .apiMenuItem a.selected,.minorityMenu .apiMenuItem a:hover {
+.minorityMenu .minMenuItem a.selected,.minorityMenu .minMenuItem a:hover {
     color: #000;
 }
 
-.minorityMenu .apiMenuTexts .apiMenuItem:first-child a {
+.minorityMenu .apiMenuTexts .minMenuItem:first-child a {
     padding-left: 28px;
 }
 
-.minorityMenu .apiMenuTexts .apiMenuItem:last-child a {
+.minorityMenu .apiMenuTexts .minMenuItem:last-child a {
     padding-right: 28px;
 }
 
-.minorityMenu .apiMenuItem .apiMenuIcons .apiMenuItem a {
+.minorityMenu .minMenuItem .apiMenuIcons .minMenuItem a {
     float: left;
     min-width: 38px;
     padding: 30px 0;
 }
 
-.minorityMenu .apiMenuItem #peopleLink {
+.minorityMenu .minMenuItem #peopleLink {
     margin-left: 15px;
 }
 
@@ -1324,12 +1324,12 @@ background-color: #7FDBFF;
     background: #4c5264;
 }
 
-.themeDark .minorityMenu .createApi {
+.themeDark .minorityMenu .createMin {
     background-color: #49cc90;
     color: #fff;
 }
 
-.themeDark .minorityMenu .createApi:hover {
+.themeDark .minorityMenu .createMin:hover {
     background-color: #37c383;
     color: #fff;
 }
@@ -1395,18 +1395,18 @@ background-color: #7FDBFF;
     color: #8f8f8f;
 }
 
-.themeDark .minorityMenu .apiMenuItem a {
+.themeDark .minorityMenu .minMenuItem a {
     color: #959cad;
 }
 
-.themeDark .minorityMenu .apiMenuItem a.selected {
+.themeDark .minorityMenu .minMenuItem a.selected {
     color: #fff;
 }
 
 .themeDark .menuTeamLink:hover * {
     color: #7FDBFF !important;
 }
-.themeDark .minorityMenu .apiMenuItem a:hover {
+.themeDark .minorityMenu .minMenuItem a:hover {
 color: #7FDBFF;
 }
 
