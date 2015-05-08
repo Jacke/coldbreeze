@@ -256,7 +256,7 @@ minorityApp.config(['$locationProvider','$routeProvider', '$httpProvider', funct
     // Embed
 /*I*/$routeProvider.when('/bprocess/:BPid/embed', {templateUrl: 'partials/bp_elements/embeded.html', controller: 'BPEmbededCtrl'});
     // Proc Elements
-/*I*/$routeProvider.when('/bprocess/:BPid/elements', {templateUrl: 'partials/bp_elements/bpelem-list.html', controller: 'BPelementListCtrl'});
+/*I*/$routeProvider.when('/bprocess/:BPid/elements', {templateUrl: 'partials/bp_elements/bpelem-list.html', controller: 'BPelementListCtrl', reloadOnSearch: false});
 /*C*/$routeProvider.when('/bprocess/:BPid/element/new', {templateUrl: 'partials/bp_elements/bpelem-new.html', controller: 'BPelementCreationCtrl'});
 /*R*/$routeProvider.when('/bprocess/:BPid/element/:id/show', {templateUrl: 'partials/bp_elements/bpelem-detail.html', controller: 'BPelementDetailCtrl'});
 /*U*/$routeProvider.when('/bprocess/:BPid/element/:id/edit', {templateUrl: 'partials/bp_elements/bpelem-edit.html', controller: 'BPelementDetailCtrl'});

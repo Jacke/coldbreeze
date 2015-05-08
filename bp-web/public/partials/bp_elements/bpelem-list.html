@@ -140,7 +140,7 @@
     </ul>
     <ul class="elem-control elem-tabs" role="tablist" ng-show="inSession">
       <p ng-show="bpelem.states.length > 0">
-        <abbr class="session__header__created_at" title="bpelem.states[0].updated_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a'" data-livestamp="{{bpelem.states[0].updated_at}}"></abbr>
+        <abbr class="session__header__created_at" title="{{ bpelem.states[0].updated_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" data-livestamp2="{{bpelem.states[0].updated_at}}">{{ bpelem.states[0].updated_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}</abbr>
       </p>
     </ul>
     </div>
@@ -458,12 +458,26 @@
 </div>
   
   
-<div class="session-info" ng-show="inSession" ng-click="session_bar == 'hiding' ? session_bar='shown' : session_bar='hiding'">{{ session | json }}</div>
+<div class="session-info" ng-show="inSession" ng-click="session_bar == 'hiding' ? session_bar='shown' : session_bar='hiding'">
+        <div class="progress">
+          <div class="progress-bar" role="progressbar" aria-valuenow="@{session.percent}" aria-valuemin="0" aria-valuemax="100" style="width: {{ session.percent}}%">
+            {{ session.percent}}%
+          </div>
+        </div>
+        <div class="started_at">
+          Started at: {{ session.session.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}
+        </div>
+        <div class="expand_sessions">
+          <a><span class="uicon-svg92"></span>Sessions</a>
+        </div>
+
+
+</div>
 <div id="proc-sessions" class="proc-sessions" ng-init="session_bar='hiding'"ng-class="session_bar" ng-click="session_bar == 'hiding' ? session_bar='shown' : session_bar='hiding'">
     <div class="proc-session active" ng-click="resetSession()" data-desc="Model">
     </div> 
-<div ng-click="changeSession(session)" ng-repeat="session in sessions | limitTo: 5" class="current-proc-session-info proc-session"  data-desc="Session #{{$index+1 }}">
-</div> 
+<a href="a#/bprocess/{{session.process.id}}/elements?session={{session.session.id}}" ng-click="changeSession(session)" ng-repeat="session in sessions | limitTo: 5" class="current-proc-session-info session-link proc-session"  data-desc="Session #{{$index+1 }}">
+</a> 
 
 <div class="allSessions"><a href="/a#/bprocess/{{ BPid }}/stations">All</a></div>
 </div>

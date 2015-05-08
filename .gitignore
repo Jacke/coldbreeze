@@ -13,6 +13,7 @@ slick-pg/
 project/target
 .DS_Store
 .sass-cache/
+async-socket/
 
 scribe-java/
 play-jsmessages/

@@ -7,7 +7,7 @@
  */
 // INDEX
 minorityControllers.controller('BPelementListCtrl', ['$window','$filter', '$rootScope', '$scope', '$q', '$http', '$routeParams', 
-  'toaster', 
+  'toaster', 'BPInLoggersSessionFactory',
   'BPStationsFactory', 
   'BProcessesFactory', 
   'ngDialog', 
@@ -30,7 +30,7 @@ minorityControllers.controller('BPelementListCtrl', ['$window','$filter', '$root
 'ReactionFactory',
 
   '$location', '$route',
-  function ($window, $filter, $rootScope, $scope, $q,$http, $routeParams, toaster, BPStationsFactory, BProcessesFactory, ngDialog, BPElemsFactory, BPElemFactory, BPSessionsFactory, BPStationsFactory, BPSpacesFactory, BPSpaceFactory, BPSpaceElemsFactory, BPSpaceElemFactory, BPStatesFactory, BPStateFactory, BPSessionStatesFactory, BPSessionStateFactory,RefsFactory, SwitchesFactory,SwitchFactory,ReactionsFactory,ReactionFactory, $location, $route) {
+  function ($window, $filter, $rootScope, $scope, $q,$http, $routeParams, toaster, BPInLoggersSessionFactory, BPStationsFactory, BProcessesFactory, ngDialog, BPElemsFactory, BPElemFactory, BPSessionsFactory, BPStationsFactory, BPSpacesFactory, BPSpaceFactory, BPSpaceElemsFactory, BPSpaceElemFactory, BPStatesFactory, BPStateFactory, BPSessionStatesFactory, BPSessionStateFactory,RefsFactory, SwitchesFactory,SwitchFactory,ReactionsFactory,ReactionFactory, $location, $route) {
     
     
   $scope.route = jsRoutes.controllers.BusinessProcessController;
@@ -1087,7 +1087,6 @@ $scope.refs = RefsFactory.query();
 
 $scope.refs.$promise.then(function(data) {
   $scope.refCategories = _.uniq(_.map(data, function(d){return d.ref.category}));
-  console.log(data);
 });
 
     
@@ -1146,8 +1145,6 @@ $scope.switcherDecoration = function(switcher) {
   }
 }
 $scope.stateClass = function(state) {
-  console.log("stateClass");
-  console.log(state);
   if (state != undefined) {
   if (state.on) {
     if (state.on_rate < 100) {
@@ -1168,7 +1165,6 @@ $scope.stateClass = function(state) {
 
 $scope.masterState = function(element) {
   if (element != undefined && element.states != undefined && element.states.length > 0) {
-    console.log(" returned" + element.states[0]);
     return element.states[0]; 
   } // TODO: Made master state
 }
@@ -1195,15 +1191,22 @@ BPSessionsFactory.query({ BPid: $scope.BPid }).$promise.then(function(data){
     
 
 $scope.changeSession = function(session) {
- console.log(session);
 
  $scope.session = session;
+ $location.search('session', $scope.session.session.id);
  $scope.inSession = true;
  $scope.station = _.find(session.stations, function(s) { return s.front == true })  
  $scope.session_bar = 'shown'; 
 
+ $scope.input_logs = BPInLoggersSessionFactory.query({BPid: $route.current.params.BPid, station_id: $scope.session.id});
+
+
  if ($scope.station != undefined && $scope.station.inspace == false) {
-   var elem = $scope.bpelems[$scope.station.step].id
+   if ($scope.bpelems[$scope.station.step+1] !== undefined) {
+    var elem = $scope.bpelems[$scope.station.step+1].id
+   } else {  // MAKE SAFE FOR LAST ELEMENT
+    var elem = $scope.bpelems[$scope.station.step].id
+   }
    var top = $('.elem-'+elem).offset().top
    $('.traverse-marker').css('top', top-35 + 'px')
  } 
@@ -1219,6 +1222,7 @@ $scope.inSession = false;
 
 $scope.resetSession = function () {
   $scope.session = undefined;
+  $location.search('session', null);
   $scope.inSession = false;
   $scope.station = undefined;
   $scope.loadResources();

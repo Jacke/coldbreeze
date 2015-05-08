@@ -1,7 +1,7 @@
 
 // INDEX
-minorityControllers.controller('BProcessListCtrl', ['$scope','$window','$translate' ,'$rootScope', 'TreeBuilder', 'SessionsFactory' ,'ngDialog', '$http', '$routeParams', '$filter', 'BPElemsFactory','BPSpacesFactory', 'BPSpaceElemsFactory',  'BProcessesFactory','BProcessFactory', 'BPStationsFactory', 'BPServicesFactory', '$location',
-  function ($scope, $window, $translate, $rootScope, TreeBuilder, SessionsFactory, ngDialog, $http, $routeParams, $filter, BPElemsFactory, BPSpacesFactory, BPSpaceElemsFactory, BProcessesFactory, BProcessFactory, BPStationsFactory, BPServicesFactory, $location) {
+minorityControllers.controller('BProcessListCtrl', ['$scope','$window','$translate' ,'$rootScope', 'BPInLoggersSessionFactory','TreeBuilder', 'SessionsFactory' ,'ngDialog', '$http', '$routeParams', '$filter', 'BPElemsFactory','BPSpacesFactory', 'BPSpaceElemsFactory',  'BProcessesFactory','BProcessFactory', 'BPStationsFactory', 'BPServicesFactory', '$location',
+  function ($scope, $window, $translate, $rootScope, BPInLoggersSessionFactory,TreeBuilder, SessionsFactory, ngDialog, $http, $routeParams, $filter, BPElemsFactory, BPSpacesFactory, BPSpaceElemsFactory, BProcessesFactory, BProcessFactory, BPStationsFactory, BPServicesFactory, $location) {
 
 
  $scope.changeLanguage = function () {
@@ -32,7 +32,6 @@ $scope.aroundFetch = function (proc_id, station_id) {
 $http.get('/bprocess/'+proc_id+'/station/'+station_id+'/around')
       .success(function (data) {
           // Stores the token until the user closes the browser window.
-          console.log(data);
           return data;
       })
       .error(function () {
@@ -104,7 +103,6 @@ $scope.builder = function (bp, data, data2,data3) {
           });
       });
     };
-    console.log("build thumb");
 
 
     var bpelemsCopy = angular.copy(data);
@@ -184,8 +182,6 @@ $scope.emptyElemCheck = function(col) {
     });
   };
   $scope.hasActiveStation = function (bprocess) {
-    console.log("hasActiveStation");
-    console.log(_.filter($scope.stations, function(st) { return st.paused == true && st.process == bprocess.id }).length > 0);
     _.filter($scope.stations, function(st) { return st.paused == true && st.process == bprocess.id }).length > 0;
   };
   $scope.allServices = function () {
@@ -235,25 +231,20 @@ $scope.emptyElemCheck = function(col) {
   $scope.bpElemLength = $http.get(jsRoutes.controllers.ProfileController.profile().absoluteURL(document.ssl_enabled) + 'bprocess/elems_length')
           .success(function (data) {
               // Stores the token until the user closes the browser window.
-              console.log(data);
               $scope.bpElemLength = data;
           })
           .error(function () {
           });
 
   $scope.stationPercent = function(proc_id) {
-    //console.log(station.process);
     /*var found = $filter('filter')($scope.bpElemLength, {id: station.process});
 
     if (found.length) {
-      console.log(found)
              return found[0];
          } else {
              100;
          }*/
          //$scope.bpElemLength.$promise.then(function(data) {
-            console.log("check");
-            console.log($scope.bpElemLength);
              $scope.bpElemLength[proc_id];
      //});
   };
@@ -279,7 +270,9 @@ $scope.emptyElemCheck = function(col) {
      }
 
 
-
+$scope.capitalizeFirstLetter = function (string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 
 
@@ -300,6 +293,7 @@ $scope.sessions.$promise.then(function (data2) {
 });
 
 
+    //BPInLoggersStationFactory.query({BPid: $route.current.params.BPid, session_id: stationId});
 
   /**
   *
@@ -314,13 +308,17 @@ $scope.run = function (process) {
       })
       .then(function(response) {
         // success
-        console.log(response);
-        $scope.invoke_res = [response];
-        $location.path('/bprocess/' + process.id + 'elements?session=' + parseInt(response.session));
+        $scope.invoke_res = [response.data];
+        $location.path('/a#/bprocess/' + process.id + 'elements?session=' + parseInt(response.data.session));
 
       },
       function(response) { // optional
         // failed
+        new PNotify({
+          title: 'Launch failed!',
+          text: 'Can\'t launch process.',
+          type: 'error'
+        });
       }
       );
   }
@@ -463,7 +461,6 @@ minorityControllers.controller('ProcShareCtrl', ['$scope', '$http', '$rootScope'
     $scope.stations = BPStationsFactory.query({ BPid: $scope.bpId });
 
     $scope.createNewObserver = function() {
-      console.log($scope.newObserver)
       $scope.newObserver = ObserversFactory.create($scope.newObserver).$promise.then( function(data) {
          $scope.observers = ObserversFactory.query({ process: $scope.bpId, station: $scope.station});
          $scope.newObserver = {bprocess: $scope.bpId, station_id: $scope.station};
@@ -567,7 +564,6 @@ minorityControllers.controller('BPEmbededCtrl', ['$rootScope', '$scope', '$q', '
           });
       });
     };
-    console.log("build");
     var bpelemsCopy = angular.copy($scope.bpelems);
     var spacesCopy = angular.copy($scope.spaces);
     var spaceelemsCopy = angular.copy($scope.spaceelems);

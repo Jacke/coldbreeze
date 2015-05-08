@@ -12,12 +12,12 @@ minorityControllers.controller('SessionsCtrl', ['$http',
   'ObserversFactory', 
   'ObserverFactory', 
   'BProcessesFactory', 
-  'BPInLoggersStationFactory',
+  'BPInLoggersSessionFactory',
   'BPInLoggersFactory',
   'BPElemsFactory',
   'BPSpacesFactory',
   'BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
-  function ($http, $window, $scope, $filter, $rootScope, TreeBuilder, BPStationsFactory, SessionsFactory, BProcessesFactory, BProcessFactory, ObserversFactory, ObserverFactory, BProcessesFactory, BPInLoggersStationFactory,BPInLoggersFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
+  function ($http, $window, $scope, $filter, $rootScope, TreeBuilder, BPStationsFactory, SessionsFactory, BProcessesFactory, BProcessFactory, ObserversFactory, ObserverFactory, BProcessesFactory, BPInLoggersSessionFactory,BPInLoggersFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
 
 
 /*
@@ -34,7 +34,6 @@ $scope.processes.$promise.then(function(data) {
       _.forEach(stations, function(stan) { 
         stan.$promise.then(function(ds) {
       _.forEach(data2, function(sess) { return sess.station = _.find(ds, function(st) { 
-        console.log(st); return st.session == sess.id }); 
       }) 
       })
       });
@@ -49,7 +48,6 @@ $scope.sessions = SessionsFactory.query();
 $scope.sessions.$promise.then(function (data2) {
     _.forEach(data2.sessions, function(session) { return session.session.station = session.station });
     _.forEach(data2, function(d){ return TreeBuilder.buildFetch(d.process, function(success){}); });
-    console.log(data2);
 });
 
 };
@@ -94,7 +92,6 @@ $scope.isManager();
   $scope.stationByProcess = function (processId) {
         var found = $filter('filter')($scope.bprocesses, {id: processId}, true);
          if (found.length) {
-             console.log(found)
              return found[0];
          } else {
              '1';

@@ -396,10 +396,6 @@ padding-bottom: 9px;
 border-radius: 6px 6px 0px 0px;
 padding-left: 30%;
 }
-#proc-sessions a {
-    margin-left: 40px;
-    margin-right: 40px;
-}
 
 
 .proc-session {
@@ -2855,8 +2851,47 @@ dd {
 
 
 .session-info {
-  position: fixed;
-  bottom: 38px;
+position: fixed;
+  width: 100%;
+  margin: 50px auto;
+  left: 0;
+  bottom: -50px;
+  background-color: #e6e6e6;
+  font-family: 'Open Sans', sans-serif;
+  padding-left: 73px;
+  padding-top: 23px;
+  padding-bottom: 24px;
+  border-radius: 6px 6px 0px 0px;
+}
+.session-info .progress {
+    width: 20%;
+    margin: 0 auto;
+}
+
+.session-info .started_at {
+    margin: 0 auto;
+    width: 20%;
+}
+
+.session-info .expand_sessions {
+    width: 20px;
+display: inline-block;
+  float: left;
+  margin-top: -30px;
+    height: 30px;
+}
+
+.session-info .expand_sessions a * {
+    margin-left: 6px;
+}
+
+.session-info .expand_sessions span.uicon-svg92 {
+    margin-right: 6px;
+    font-size: 14px;
+}
+
+.session-info .expand_sessions a {
+    font-size: 15px;
 }
 .traverse-marker {
   position: absolute;

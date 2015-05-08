@@ -53,7 +53,6 @@ $scope.builder = function (station) {
         });
     });
   };
-  console.log("build");
   var bpelemsCopy = angular.copy($scope.bpelems);
   var spacesCopy = angular.copy($scope.spaces);
   var spaceelemsCopy = angular.copy($scope.spaceelems);
@@ -115,21 +114,26 @@ $scope.builder = function (station) {
 
 
   $scope.params = [
-     { block: 'confirm', name: 'confirmed' }
+   
 
    ];
 
 
-   console.log($scope.session);
    $scope.interactions = InteractionsFactory.query({session_id: $scope.session.session.id});
    $scope.element_topologs = ElementTopologsFactory.query({ BPid: $scope.bpId });
 
    $scope.interactions.$promise.then(function (data) {
     $scope.element_topologs.$promise.then(function (data2) {
         _.forEach(data.reactions, function(r) { return r.reaction.elem = _.find(data2, function(topo) { 
-          return topo.topo_id == r.reaction.element}); }
+          return topo.topo_id == r.reaction.element}); 
+        })
+        _.forEach(data.reactions, function(reaction) { 
+           return _.forEach(reaction.outs, function(out) {
+              return out.state = _.find(data.outs_identity, function(iden) { return iden.origin_state == out.state_ref });
+          }) 
+        });
 
-    )});
+      });
    });
 
 $scope.selectedClass = function (reaction) {
@@ -141,16 +145,14 @@ $scope.selectedClass = function (reaction) {
 }
 
 $scope.reactionSelect = function (reaction) {
-    console.log(reaction);
-    //if (reaction.selected == undefined) {
+    if (reaction.selected == true) {
+      reaction.selected = false;
+    } else {
       reaction.selected = true;
+    
       $scope.addParam(reaction);
-    //}
-    //if (reaction.selected) {
-    //  reaction.selected = false;
-    //  $scope.delParam(reaction);
-    //}
-  }
+    }
+}
 
 
 
@@ -193,7 +195,6 @@ $scope.reactionSelect = function (reaction) {
       })
       .then(function(response) {
         // success
-        console.log(response);
         $scope.bpstations = BPStationsFactory.query({ BPid: $scope.bpId });
       },
       function(response) { // optional
@@ -201,33 +202,16 @@ $scope.reactionSelect = function (reaction) {
       }
       );
   };
-  $scope.runInitially = function () {
 
-      $http({
-      url: 'bprocess/' + $scope.bpId + '/invoke',
-      method: "POST",
-      data: {  }
-      })
-      .then(function(response) {
-        // success
-        console.log(response);
-        $scope.invoke_res = [response];
-        $scope.closeThisDialog();
-        $location.path('/bprocess/' + $scope.bpId + '/stations');
 
-      },
-      function(response) { // optional
-        // failed
-      }
-      );
-  }
+
+
   $scope.runFrom = function (session_id) {
     //var front_params = _.filter(station.proc_elems,  function(obj) { return obj.param != undefined });
     //var space_params = _.filter(station.space_elems, function(obj) { return obj.param != undefined });
     //var params_output = _.flatten(_.map(front_params, function(v) { return {"f_elem": v.id, "param": v.param} }), _.map(space_params, function(v) { return {"sp_elem": v.id, "param": v.param} }));
     // TODO: Add arguments
-    console.log($scope.reaction_params);
-    console.log("/\ params")
+
     $http({
       url: 'bprocess/' + $scope.bpId + '/invoke_from/' + session_id,
       method: "POST",
@@ -235,33 +219,44 @@ $scope.reactionSelect = function (reaction) {
       })
       .then(function(response) {
         // success
-        console.log(response);
-        $scope.invoke_res = [response];
-        $scope.closeThisDialog();
-        $location.path('/bprocess/' + $scope.bpId + '/stations')
+        $scope.invoke_res = [response.data];
+        //$scope.closeThisDialog();
+        $location.path('/a#/bprocess/' + $scope.bpId + 'elements?session=' + parseInt(response.data.session));
       },
       function(response) { // optional
         // failed
       }
       );
-  }
+  };
+
   $scope.reaction_params = []
   $scope.addParam = function (reaction) {
-        console.log(reaction);
-        console.log(reaction.reaction.id);
+
         if (_.find($scope.reaction_params, function(re) { return re.reaction_id == reaction.reaction.id })) {
           $scope.delParam(reaction);
         } else {
         $scope.reaction_params.push({reaction_id: reaction.reaction.id });
         }
-        console.log($scope.reaction_params);
       
   }
   $scope.delParam = function (reaction) {
     $scope.reaction_params = _.reject($scope.reaction_params, function(el) { return el.reaction_id === reaction.reaction.id; });
   }
 
+$scope.capitalizeFirstLetter = function (string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
+
+$scope.stateOutAct = function (act) {
+  if (act) {
+    if (act.on == true) {
+      return 'turn on';
+    } else {
+      return 'turn off';
+    }
+  } else { return ''; }
+}
 
 
 
@@ -279,8 +274,6 @@ $scope.reactionSelect = function (reaction) {
 
 
         BPRequestFactory.scheme({ BPid: $scope.bpId, station_id: target.id }).$promise.then(function(data) {
-                console.log("magic happens here");
-                console.log(data);
                 $(".inputRequests:not(:eq(0))").toggle();
                       //target.proc_elems = [];
                      //target.space_elems = [];

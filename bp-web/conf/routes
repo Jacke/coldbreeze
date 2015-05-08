@@ -35,7 +35,7 @@ POST     /signup/:token             @controllers.CustomRegistrationController.ha
 #GET     /not-authorized             securesocial.controllers.ProviderController.notAuthorized
 
 
-
+GET         /notify/									        @controllers.NotificationController.socket
 GET         /only-twitter                                       @controllers.Application.onlyTwitter
 
 # Custom
@@ -273,7 +273,7 @@ POST         /bprocess/:bpID/invoke                   @controllers.ProcessInputC
 POST         /bprocess/:bpID/invoke_from/:station_id  @controllers.ProcessInputController.invokeFrom(station_id:Int, bpID: Int)
 
 GET          /bprocess/:BPid/input_logs               @controllers.ProcessInputController.inputLogs(BPid: Int)
-GET          /bprocess/:BPid/input_logs/:station_id   @controllers.ProcessInputController.inputLogsByStation(BPid: Int, station_id:Int)
+GET          /bprocess/:BPid/input_logs/:session_id   @controllers.ProcessInputController.inputLogsBySession(BPid: Int, session_id:Int)
 #GET         /bprocess/:id/active_stations BPStationDAO.areActiveForBP(id)
 #GET         /bprocess/:id/last_run        BPLoggerDAO.lastRunOfBP(id)
 #POST /station/:id/inputcall

@@ -8,12 +8,15 @@
 </div>
 
 <div class="stations input-stations" style="clear: both;">
-  <h3>Interact {{ $parent.session.session | json }}</h3>
+  <h3>Interact</h3>
 
   <ul class="reaction_list">
     <li class="reaction_list__reaction" ng-repeat="reaction in interactions.reactions">
-      <a ng-click="reactionSelect(reaction)" ng-class="selectedClass(reaction)">Reaction for {{ reaction.reaction.elem.element_title }}</a>
-      <span class="reaction_list__reaction__state_outs" ng-repeat="state_out in reaction.outs">{{ state_out.state_ref }} {{ state_out.on }}</span>
+        <a ng-click="reactionSelect(reaction)" ng-class="selectedClass(reaction)">Reaction {{ capitalizeFirstLetter(reaction.reaction.title) }} for {{ reaction.reaction.elem.element_title }}</a>
+
+        <span class="reaction_list__reaction__state_outs" ng-repeat="state_out in reaction.outs">
+        {{ stateOutAct(state_out.state.title) }} {{ stateOutAct(state_out) }}
+        </span>
     </li>
   </ul>
 

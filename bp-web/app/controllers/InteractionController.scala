@@ -69,7 +69,7 @@ class InteractionController(override implicit val env: RuntimeEnvironment[DemoUs
   implicit val BPSessionStateWrites = Json.format[BPSessionState]
 
  case class InteractionContainer(session_container:Option[SessionContainer],
- 	reactions: List[ReactionContainer])
+ 	reactions: List[ReactionContainer], outs_identity: List[BPSessionState])
  case class ReactionContainer(session_state: Option[BPSessionState], reaction: UnitReaction, outs: List[UnitReactionStateOut])
 
   implicit val ReactionContainerReads = Json.reads[ReactionContainer]
@@ -93,7 +93,7 @@ class InteractionController(override implicit val env: RuntimeEnvironment[DemoUs
         					  reaction, reaction_outs.filter(out => Some(out.reaction) == reaction.id))
         )
 
-	   Ok(Json.toJson(InteractionContainer(result,reaction_container)))
+	   Ok(Json.toJson(InteractionContainer(result,reaction_container, session_states)))
 	}
 	case _ => BadRequest(Json.toJson(Map("error" -> "Session not found")))
   }

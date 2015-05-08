@@ -88,7 +88,7 @@ case class InputLogger(var id: Option[Int],
                                     reaction = pm.reaction_id, 
                                     input = None, 
                                     org.joda.time.DateTime.now,
-                                    station_id)
+                                    session_id)
                                 }
       }
    
@@ -117,8 +117,8 @@ case class InputLogger(var id: Option[Int],
   def inputLogs(BPid: Int) = Action { implicit request =>
     Ok(Json.toJson(InputLoggerDAO.getByBP(BPid)))
   } 
-  def inputLogsByStation(BPid: Int, station_id:Int) = Action { implicit request =>
-    Ok(Json.toJson(InputLoggerDAO.getByStation(station_id)))
+  def inputLogsBySession(BPid: Int, session_id:Int) = Action { implicit request =>
+    Ok(Json.toJson(InputLoggerDAO.getBySession(session_id)))
   } 
 
   def schemes(BPid: Int, station_id: Int) = SecuredAction { implicit request =>

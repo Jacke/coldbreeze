@@ -165,7 +165,7 @@ angular.module('cfp.loadingBar', [])
     this.latencyThreshold = 100;
     this.startSize = 0.02;
     this.parentSelector = 'body';
-    this.spinnerTemplate = '<div id="loading-bar-spinner"><div class="spinner-icon"></div></div>';
+    this.spinnerTemplate = '<div id="loading-bar-spinner"><img class="node-shield" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiID8+PCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj48c3ZnIHdpZHRoPSIxMzZwdCIgaGVpZ2h0PSI5MHB0IiB2aWV3Qm94PSIwIDAgMTM2IDkwIiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgaWQ9IiM3Nzc4N2NmZiI+PHBhdGggZmlsbD0iIzRjNTI2NCIgb3BhY2l0eT0iMS4wMCIgZD0iIE0gMC4wMCAwLjAwIEwgMTM2LjAwIDAuMDAgTCAxMzYuMDAgOTAuMDAgTCAwLjAwIDkwLjAwIEwgMC4wMCAwLjAwIE0gMTguNzkgMzUuNzEgQyAxNy42NSA0OC40NCAxOC41OSA2MS40MCAxOC4zNSA3NC4yMiBDIDI3LjM2IDY4LjA1IDM1Ljc0IDYwLjk5IDQ0LjE1IDU0LjA1IEMgMzkuNTkgNDguNjAgMzQuMDAgNDQuMTYgMjkuMTYgMzguOTggQyA0Mi40NiA0OC41NCA1NC45MCA1OS4yNSA2OC4wNCA2OS4wMyBDIDgxLjIwIDU5LjMzIDkzLjU5IDQ4LjYyIDEwNi43OSAzOC45NyBDIDEwMi4yMiA0NC4zNSA5Ni41OSA0OC42OSA5MS44OSA1My45NiBDIDEwMC4zNyA2MC43OSAxMDguNzkgNjcuNzMgMTE3LjYzIDc0LjEwIEMgMTE3LjY5IDYxLjIxIDExNy44MSA0OC4zMSAxMTcuNTggMzUuNDIgQyAxMDkuMzIgMjkuMDQgMTAxLjI1IDIyLjQzIDkyLjk3IDE2LjA3IEMgODQuNDIgMjIuMjUgNzYuNjEgMjkuNDAgNjguMDAgMzUuNTAgQyA1OS4zOSAyOS40MCA1MS41OSAyMi4yNSA0My4wMiAxNi4wOCBDIDM0Ljk4IDIyLjY1IDI2LjI5IDI4LjU2IDE4Ljc5IDM1LjcxIFoiIC8+PC9nPjxnIGlkPSIjZmFmYWZhZmYiPjwvZz48L3N2Zz4="></div>';
     this.loadingBarTemplate = '<div id="loading-bar"><div class="bar"><div class="peg"></div></div></div>';
 
     this.$get = ['$injector', '$document', '$timeout', '$rootScope', function ($injector, $document, $timeout, $rootScope) {

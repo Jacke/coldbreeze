@@ -12,13 +12,13 @@ class InputLoggers(tag: Tag) extends Table[InputLogger](tag, "input_loggers") {
   def reaction        = column[Int]("reaction_id")
   def input           = column[Int]("input_id", O.AutoInc)
   def date            = column[org.joda.time.DateTime]("date")
-  def station         = column[Int]("station_id")
+  def session         = column[Int]("session_id")
 
 
   def fReactionFK     = foreignKey("fReactionFK", reaction, models.DAO.ReactionDAO.reactions)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def statFK          = foreignKey("statFK", station, models.DAO.BPStationDAO.bpstations)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def sessionFK          = foreignKey("sessionFK", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
-  def * = (id.?, uid, action, arguments, reaction, input.?, date, station) <> (InputLogger.tupled, InputLogger.unapply)
+  def * = (id.?, uid, action, arguments, reaction, input.?, date, session) <> (InputLogger.tupled, InputLogger.unapply)
 
   //def eb = EmployeesBusinessDAO.employees_businesses.filter(_.employee_id === id).flatMap(_.businessFK)
 }
@@ -30,7 +30,7 @@ case class InputLogger(var id: Option[Int],
   reaction:Int, 
   input:Option[Int], 
   date: org.joda.time.DateTime,
-  station: Int)
+  session: Int)
 
 
 object InputLoggerDAO {
@@ -57,7 +57,7 @@ object InputLoggerDAO {
     }
     input_id match {
       case Some(input_id) => s.tail.foreach { tailed_inlog =>
-        pull_object(tailed_inlog.copy(input = input_id)
+        pull_object(tailed_inlog.copy(input = Some(input_id)))
       }
       case _ =>
     }
@@ -78,13 +78,13 @@ object InputLoggerDAO {
   def getByBP(BPid:Int) = database withSession {
     implicit session =>
     val q3 = (for {
-      ((inlogger, station), bprocesses) <- input_loggers leftJoin models.DAO.BPStationDAO.bpstations on (_.station === _.id) leftJoin BPDAO.bprocesses on (_._2.process === _.id)     
+      ((inlogger, session), bprocesses) <- input_loggers leftJoin models.DAO.BPSessionDAO.bpsessions on (_.session === _.id) leftJoin BPDAO.bprocesses on (_._2.process === _.id)     
     } yield (inlogger))
     q3.list
   }
-  def getByStation(station_id: Int) = database withSession {
+  def getBySession(session_id: Int) = database withSession {
     implicit session =>
-    val q3 = for { s <- input_loggers if s.station === station_id } yield s
+    val q3 = for { s <- input_loggers if s.session === session_id } yield s
     q3.list
   }
   

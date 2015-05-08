@@ -10,7 +10,7 @@ minorityControllers.controller('BPstationListCtrl', ['TreeBuilder',
   'ObserversFactory', 
   'ObserverFactory', 
   'BProcessesFactory', 
-  'BPInLoggersStationFactory',
+  'BPInLoggersSessionFactory',
   'BPInLoggersFactory',
   'BPElemsFactory',
   'BPSpacesFactory',
@@ -20,7 +20,7 @@ minorityControllers.controller('BPstationListCtrl', ['TreeBuilder',
   'BPLogsFactory', 
   '$location', 
   '$route',
-  function (TreeBuilder, $http, $window, $scope, $filter, $rootScope,BPSessionsFactory, ObserversFactory, ObserverFactory, BProcessesFactory, BPInLoggersStationFactory,BPInLoggersFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
+  function (TreeBuilder, $http, $window, $scope, $filter, $rootScope,BPSessionsFactory, ObserversFactory, ObserverFactory, BProcessesFactory, BPInLoggersSessionFactory,BPInLoggersFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
   $scope.bpId = $route.current.params.BPid;
   $scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
   $scope.spaces =  BPSpacesFactory.query({ BPid: $route.current.params.BPid });
@@ -63,7 +63,6 @@ $scope.builder = function (station) {
         });
     });
   };
-  console.log("build");
   var bpelemsCopy = angular.copy($scope.bpelems);
   var spacesCopy = angular.copy($scope.spaces);
   var spaceelemsCopy = angular.copy($scope.spaceelems);
@@ -103,13 +102,11 @@ $scope.stationsRefresh = function() {
 
            $scope.bpstations = data; 
            $scope.fetchObservers($scope.bpstations);     
-           console.log("boom");
       $scope.bpelems.$promise.then(function(data34) {
       $scope.spaces.$promise.then(function(data2) {
       $scope.spaceelems.$promise.then(function(data3) {
       $scope.logs.$promise.then(function(loggg) {
               _.forEach(data, function(station) { $scope.builder(station) });
-               console.log(data);  
     });
     });
     });
@@ -144,7 +141,6 @@ $scope.highlightActive = function (station, elem) {
   $scope.stationByProcess = function (processId) {
         var found = $filter('filter')($scope.bprocesses, {id: processId}, true);
          if (found.length) {
-             console.log(found)
              return found[0];
          } else {
              '1';
@@ -224,8 +220,6 @@ $scope.haltStation = function (stationId) {
     var token = $window.sessionStorage.getItem('token');
     $http.post(jsRoutes.controllers.ProcessSessionController.update_note(station.process, station.id).absoluteURL(document.ssl_enabled), {msg: station.note})
           .success(function (note_success) {
-              console.log(note_success);
-              console.log(station.note);
           })
           .error(function () {
           });
@@ -243,7 +237,6 @@ $scope.sessions.$promise.then(function (data2) {
     $scope.bprocess = data2.process;
     TreeBuilder.buildFetch(data2.process, function(success){});
     //_.forEach(data2, function(d){ return TreeBuilder.buildFetch(d.process, function(success){}); });
-    console.log(data2);
 });
 
 };

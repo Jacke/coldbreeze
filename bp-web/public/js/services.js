@@ -392,8 +392,8 @@ minorityAppServices.factory('BPInLoggersFactory', function ($resource) {
         query: { method: 'GET', isArray: true }
     })
 });
-minorityAppServices.factory('BPInLoggersStationFactory', function ($resource) {
-    return $resource(baseUrl + 'bprocess/:BPid/input_logs/:station_id', {}, {
+minorityAppServices.factory('BPInLoggersSessionFactory', function ($resource) {
+    return $resource(baseUrl + 'bprocess/:BPid/input_logs/:session_id', {}, {
         query: { method: 'GET', isArray: true }
     })
 });

@@ -23,7 +23,6 @@ var builder = function (bp, data, data2,data3) {
           });
       });
     };
-    console.log("build thumb");
 
 
     var bpelemsCopy = angular.copy(data);
