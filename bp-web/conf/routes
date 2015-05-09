@@ -288,4 +288,4 @@ GET         /jsroutes.js                                        @controllers.App
 
 GET         /assets/*file                                       controllers.Assets.versioned(path="/public", file: Asset)
 # Map the JS resource paths
-GET         /*file                                              controllers.Assets.at(path="/public", file)
+GET         /js/*file                                           controllers.Assets.at(path="/public", file)

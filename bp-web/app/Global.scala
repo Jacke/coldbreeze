@@ -14,7 +14,10 @@ import controllers.Default
 import play.api.Logger
 import play.api.mvc.{SimpleResult, RequestHeader, Filter, Result}
 import scala.concurrent._
-
+import play.api._
+import play.api.mvc._
+import play.api.mvc.Results._
+import play.api.mvc.Results.Redirect
 
 object AccessLoggingFilter extends Filter {
   def apply(next: (RequestHeader) => Future[Result])(request: RequestHeader): Future[Result] = {
@@ -47,6 +50,26 @@ object Global extends WithFilters(new GzipFilter(shouldGzip =
 
   
   /**
+   * Service pages
+   */
+   // called when a route is found, but it was not possible to bind the request parameters
+    //override def onBadRequest(request: RequestHeader, error: String) = {
+    //  BadRequest("Bad Request: " + error)
+    //} 
+   
+    // 500 - internal server error
+    //override def onError(request: RequestHeader, throwable: Throwable) = {
+    //  InternalServerError(views.html.errors.onError(throwable))
+    //}
+   
+    // 404 - page not found error
+    override def onHandlerNotFound(request: RequestHeader) = {
+      Future.successful(NotFound(views.html.custom.msg404("", request)))
+    }
+
+
+
+  /**
    * An implementation that checks if the controller expects a RuntimeEnvironment and
    * passes the instance to it if required.
    *
@@ -66,6 +89,7 @@ object Global extends WithFilters(new GzipFilter(shouldGzip =
     instance.getOrElse(super.getControllerInstance(controllerClass))
   }
 }
+
 case class AccessLog() extends Filter {
 
   def apply(f: (RequestHeader) => Future[SimpleResult])(request: RequestHeader): Future[SimpleResult] = {
