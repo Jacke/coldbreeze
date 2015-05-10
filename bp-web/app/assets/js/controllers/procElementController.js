@@ -391,10 +391,17 @@ $scope.loadResources();
       spaceFetch();
       spaceFetch();
     });
-  } 
+  }
+
+
+
+
+
+
     BPElemsFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(data) {
     BPSpacesFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(data2) {
     BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(data3) {
+    $scope.input_logs.$promise.then(function(ilogs) {  
     $scope.states.$promise.then(function(states) {
     $scope.switches.$promise.then(function(switches) {
     
@@ -405,10 +412,16 @@ $scope.loadResources();
 
     _.forEach($scope.bpelems, function(z) {
     z.states = _.filter(states, function(d){ return d.front_elem_id == z.id;});
-    //z.topo_id = _.find(data.topology, function(d){ return d.front_elem_id == z.id;});
-    //z.reactions = _.filter(data.reaction_cn, function(sw) { return sw.reaction.element == z.topo_id }); 
+    z.topo_id = _.find(data.topology, function(d){ return d.front_elem_id == z.id;});
+    z.reactions = _.filter(data.reaction_cn, function(sw) { return sw.reaction.element == z.topo_id }); 
+
+    z.ilogs = _.filter(ilogs, function(il) { return il.reaction == _.contains(_.map(z.reactions, function(r){r.id})) });
 
     _.forEach(z.states, function(st){ return st.switches = _.filter(switches, function(sw) { return sw.state_ref == st.id }) });
+   
+    // _.forEach($scope.spaces, FIND STATES)
+
+
     /*if (z.b_type == "brick") {
       z.spaces = _.filter(data.unitspace, function(s){ return s.brick_front == z.id;});
         _.forEach(z.spaces, function(sp) { 
@@ -419,9 +432,12 @@ $scope.loadResources();
     }*/
 
   });
+    
+  /* For space elements    */  
   _.forEach($scope.spaceelems, function(z) {
-    //z.topo_id = _.find(data.topology, function(d){ return d.space_elem_id == z.id;});
-    //z.reactions = _.filter(data.reaction_cn, function(sw) { return sw.reaction.element == z.topo_id }); 
+    z.topo_id = _.find(data.topology, function(d){ return d.space_elem_id == z.id;});
+    z.reactions = _.filter(data.reaction_cn, function(sw) { return sw.reaction.element == z.topo_id }); 
+    z.ilogs = _.filter(ilogs, function(il) { return il.reaction == _.contains(_.map(z.reactions, function(r){r.id})) });
     z.states = _.filter(states, function(d){ return d.space_elem_id == z.id;});
     _.forEach(z.states, function(st){ return st.switches = _.filter(switches, function(sw) { return sw.state_ref == st.id }) });
   });
@@ -429,6 +445,7 @@ $scope.loadResources();
 
 
        z($scope.trees);
+  });
   });
   });
   });

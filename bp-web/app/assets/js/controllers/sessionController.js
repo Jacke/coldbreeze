@@ -85,7 +85,7 @@ $scope.isManager();
      //}
   }
 
-  $scope.logs = BPLogsFactory.query({  BPid: $route.current.params.BPid });
+  //$scope.logs = BPLogsFactory.query({  BPid: $route.current.params.BPid });
   $scope.bprocesses = BProcessesFactory.query();
   $scope.stationByProcess = function (processId) {
         var found = $filter('filter')($scope.bprocesses, {id: processId}, true);
@@ -130,14 +130,8 @@ $scope.unlisted = function (session) {
       );
 
   }
-  $scope.logsByStation = function (stationId) {
-         var found = $filter('filter')($scope.logs, {station: stationId}, true);
-         if (found.length) {
-             return found;
-         } else {
-             '';
-         }
-  }
+
+
   $scope.onlyActive = false;
   $scope.onlyCanceled = false;
   $scope.onlyFinished = false;

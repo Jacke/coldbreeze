@@ -16,24 +16,6 @@
 
   <div role="banner" class="minorityLogo menuCell"><a class="absFg" title="Minority" href="http://minorityapp.com/"><span class="visuallyhidden">Minority</span></a></div>
 
-
-<style>
-.uicon-svg12:hover, .uicon-svg442:hover, .uicon-svg2222:hover, .uicon-svg542:hover, .uicon-svg522:hover, .uicon-svg142:hover {
-    color: #7FDBFF;
-    text-decoration: none;
-}
-
-.uicon-svg12, .uicon-svg442, .uicon-svg2222, .uicon-svg542, .uicon-svg522, .uicon-svg142 { 
-color: white; 
-font-size: 16px;
-vertical-align: bottom;
-margin-right: 4px;
-}
-.minMenuItem a:hover {
-color: #7FDBFF;
-text-decoration: none;
-}
-</style>
 @gravatar(url: Option[String]) = {
 
   @{ url match {
@@ -42,39 +24,39 @@ text-decoration: none;
   } }
 }
 
-<nav class="minMenu menuCell menuTeam">
+<nav class="minMenu menuCell menuEntity">
   <ul class="minMenuList minMenuTexts">
     <li class="minMenuItem">
-      <a id="teamMembersLink" class="vIcoIn menuTeamLink" href="@routes.ProfileController.profile()">
+      <a id="teamMembersLink" class="vIcoIn menuEntityLink" href="@routes.ProfileController.profile()">
        <span class="uicon-svg542"></span>
         @Messages("nav.profile")(LangDet.getLang(user) )  </a>
 
     </li>
     <li class="minMenuItem">
-      <a id="teamMinsLink" class="vIcoIn menuTeamLink" href="@routes.Application.app()">
+      <a id="teamMinsLink" class="vIcoIn menuEntityLink" href="@routes.Application.app()">
         <span class="uicon-svg12"></span>
         @Messages("nav.processes")(LangDet.getLang(user) )  </a>
     </li>
     <li class="minMenuItem">
-      <a id="teamMinsLink" class="vIcoIn menuTeamLink" href="/a#/sessions">
+      <a id="teamMinsLink" class="vIcoIn menuEntityLink" href="/a#/sessions">
         <span class="uicon-svg14"></span>
         Sessions</a>
     </li> 
     <!--
     <li class="minMenuItem">
-      <a id="teamMinsLink" class="vIcoIn menuTeamLink" href="/a#/ref">
+      <a id="teamMinsLink" class="vIcoIn menuEntityLink" href="/a#/ref">
         <span class="uicon-svg14"></span>
         Refs</a>
     </li> -->
     @if(user.isManager) {
     <li class="minMenuItem">
-      <a id="teamMembersLink" class="vIcoIn menuTeamLink" href="@users.routes.EmployeeController.index()">
+      <a id="teamMembersLink" class="vIcoIn menuEntityLink" href="@users.routes.EmployeeController.index()">
         <span class="uicon-svg98"></span>
         @Messages("nav.people")(LangDet.getLang(user) )  </a>
     </li>
     } 
     <li class="minMenuItem">
-      <a id="teamSettingsLink" class="vIcoIn menuTeamLink" href="@routes.SettingController.index()">
+      <a id="teamSettingsLink" class="vIcoIn menuEntityLink" href="@routes.SettingController.index()">
         <span class="uicon-svg2222"></span>
         @Messages("nav.settings")(LangDet.getLang(user) )  </a>
     </li>

@@ -6,6 +6,7 @@ minorityControllers.controller('BPstationListCtrl', ['TreeBuilder',
   '$scope', 
   '$filter', 
   '$rootScope',
+  'BProcessesFactory',
   'BPSessionsFactory',
   'ObserversFactory', 
   'ObserverFactory', 
@@ -18,7 +19,7 @@ minorityControllers.controller('BPstationListCtrl', ['TreeBuilder',
   'BPLogsFactory', 
   '$location', 
   '$route',
-  function (TreeBuilder, $http, $window, $scope, $filter, $rootScope,BPSessionsFactory, ObserversFactory, ObserverFactory,BPInLoggersFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
+  function (TreeBuilder, $http, $window, $scope, $filter, $rootScope,BProcessesFactory,BPSessionsFactory, ObserversFactory, ObserverFactory,BPInLoggersFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
   $scope.bpId = $route.current.params.BPid;
   $scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
   $scope.spaces =  BPSpacesFactory.query({ BPid: $route.current.params.BPid });

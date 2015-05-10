@@ -5,6 +5,27 @@ Elements mocking */
 }
 
 
+
+
+.uicon-svg12:hover, .uicon-svg442:hover, .uicon-svg2222:hover, .uicon-svg542:hover, .uicon-svg522:hover, .uicon-svg142:hover {
+  color: #7FDBFF;
+  text-decoration: none;
+}
+.uicon-svg12, .uicon-svg442, .uicon-svg2222, .uicon-svg542, .uicon-svg522, .uicon-svg142 {
+  color: white;font-size: 16px;
+  vertical-align: bottom;
+  margin-right: 4px;
+}
+.minMenuItem a:hover {
+  color: #7FDBFF;
+  text-decoration: none;
+}
+::selection {
+  background-color: #70c2ff;
+  color: #ffffff;
+}
+
+
 /*
  
  Reflects
@@ -1604,14 +1625,15 @@ border-radius: 6px;
 }
 
 .process-thumb {
-    position: absolute;
-    right: 70px;
-    top: 16px;
-    width: 19px;
-    height: 25px;
-    border-radius: 13px;
-    padding-right: 0px;
-    padding-left: 25px;
+  position: absolute;
+  right: 70px;
+  top: 5px;
+  width: 44px;
+  height: 41px;
+  border-radius: 30px;
+  padding-right: 0px;
+  padding-left: 25px;
+  cursor: pointer;
 }
 
 
@@ -2292,7 +2314,7 @@ table tfoot tr td {
 }
 
 
-.menuTeamLink {
+.menuEntityLink {
 font-size: 16px;
 font-weight: 400;
 font-family: 'Proxima Nova','Helvetica',sans-serif;

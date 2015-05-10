@@ -106,7 +106,7 @@ input.switch:active:checked::before, input.switch.touch:hover:checked::before {
 </style>
 
 
-<div class="allStations">
+<div class="allStations allStationsList">
 <h1>{{ 'SESSIONS' | translate }}</h1>
 
 
@@ -143,12 +143,12 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 
 <div class="session-process">
 
-<a href="/a#/bprocess/{{ sessions.process.id }}">{{ sessions.process.title }}</a>
+<h2><a href="/a#/bprocess/{{ sessions.process.id }}">{{ sessions.process.title }}</a></h2>
 
 <div class="process_content">
           <div ng-include src="'assets/partials/treeThumb.html'"></div>
 </div>
-<div class="stations" ng-repeat="session in sessions.sessions | limitTo: 10 | filter:isOnlyActive | { session: { session: onlyListed }" style="clear: both;">
+<div class="stations" ng-repeat="session in sessions.sessions | limitTo: 10 | filter: isOnlyActive | filter: { session: { session: onlyListed } }" style="clear: both;">
 
         <div class="session__header">
               <span class="number {{ session.station.state }}">{{ $index + 1 }}</span>

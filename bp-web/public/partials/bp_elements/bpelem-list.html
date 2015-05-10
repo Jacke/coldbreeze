@@ -140,8 +140,11 @@
     </ul>
     <ul class="elem-control elem-tabs" role="tablist" ng-show="inSession">
       <p ng-show="bpelem.states.length > 0">
-        <abbr class="session__header__created_at" title="{{ bpelem.states[0].updated_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" data-livestamp2="{{bpelem.states[0].updated_at}}">{{ bpelem.states[0].updated_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}</abbr>
+        <abbr class="session__header__created_at" title="{{ bpelem.states[0].updated_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="bpelem.states[0].updated_at"></abbr>
       </p>
+    </ul>
+    <ul class="elem-control elem-tabs input-logs" ng-show="inSession && bpelem.ilogs.length > 0">
+      <li ng-repeat="ilog in bpelem.ilogs">{{ ilog.uid }}</li>
     </ul>
     </div>
     <div class="tab-pane active" id="edit" class="proc-element-edit" ng:show="selected == 2">
@@ -465,7 +468,7 @@
           </div>
         </div>
         <div class="started_at">
-          Started at: {{ session.session.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}
+          Started <abbr class="session__header__created_at" title="{{ session.session.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="session.session.created_at"></abbr>
         </div>
         <div class="expand_sessions">
           <a><span class="uicon-svg92"></span>Sessions</a>

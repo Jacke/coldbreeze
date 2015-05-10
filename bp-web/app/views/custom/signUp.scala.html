@@ -62,13 +62,10 @@
   
 <div class="loginPage loginPage__register loginPage__active">
   <div class="loginView">
-
   <h1 class="loginHeading">@Messages("custom.signUp")</h1>
-
 
   <form action="@securesocial.controllers.routes.Registration.handleSignUp(mailToken).absoluteURL(IdentityProvider.sslEnabled)" method="post" accept-charset="utf-8" class="loginInputs">
     <div>
-
             @if( UsernamePasswordProvider.withUserNameSupport ) {
                 @helper.inputText(
                     signUpForm("userName"),
@@ -111,23 +108,15 @@
                 'id -> "r_pass",
                 'placeholder -> ""
             )
-
-      <!--
-      <input placeholder="Name" class="textField block" type="text" name="name" value="" id="r_name" tabindex="10" />
-      <input required placeholder="Email" class="textField block" type="email" name="email" value="" id="r_email" tabindex="11" />
-      <input required placeholder="Password" class="textField block" type="password" name="pass" value="" id="r_pass" tabindex="12" />-->
     </div>
-
-
     <p class="loginText">
       <button type="submit" id="r_submit" class="loginButton block actionOk" tabindex="13">@Messages("custom.signUpFor")</button>
     </p>
-
   </form>
 
   <p class="loginText"@Messages("custom.haveAccount") <a class="switchView" tabindex="14" href="/login">@Messages("custom.signIn")</a>.</p>
 
-  <p class="loginText smaller">@Messages("custom.byClicking") <a tabindex="15" href="#">@Messages("footer.terms")</a> @Messages("custom.and") <a tabindex="15" href="https://www.iubenda.com/privacy-policy/323220">@Messages("footer.privacy")</a>.</p>
+  <p class="loginText smaller">@Messages("custom.byClicking") <a tabindex="15" href="#">@Messages("footer.terms")</a> @Messages("custom.and") <a tabindex="15" href="https://www.iubenda.com/privacy-policy/">@Messages("footer.privacy")</a>.</p>
 
 </div>
 </div>

@@ -1,15 +1,22 @@
 a.redButton {
-    height: 20px;
-    width: 20px;
-    display: block;
-    background: red;
-    position: absolute;
-    border-radius: 10px;
-    border: red;
+  height: 37px;
+  width: 38px;
+  display: block;
+  background: #e74c3c;
+  position: absolute;
+  border-radius: 35px;
+  border: #e74c3c;
 }
 .process-thumb p.tableMinListGithub {
-    left: 2px;
-    top: 10px;
+  left: 2px;
+  top: 10px;
+}
+.process-thumb:active p.tableMinListGithub {
+    opacity: 1;
+}
+
+.process-thumb:active p.tableMinListGithub a.redButton {
+    background: #c0392b;
 }
 
 .process_content {

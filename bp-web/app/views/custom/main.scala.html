@@ -19,24 +19,7 @@
   <link rel="stylesheet" href='@routes.Assets.versioned("css/auth/loginflow.css")' />
   <!-- /Styles -->
   <script src='@routes.Assets.versioned("javascripts/ssl.js")' type="text/javascript"></script>
-
   <link rel="shortcut icon" href="/favicon.ico">
-<style>
-#websiteHeader .headerLogotype {
-position: absolute;
-height: 66px;
-width: 100px;
-top: 0px;
-left: 0px;
-background: url('../images/minority-logo.svg') no-repeat scroll 0px 0px transparent;
-background-size: contain;
-}
-.help-block {
-  font-size: 10px;
-margin-top: 0px;
-display: block;
-}
-</style>
 </head>
 <body class="website loginFlow">
 
@@ -56,7 +39,8 @@ display: block;
 
 </div>
 
-<script src="/js/jquery.js"></script>
+<script src='@routes.Assets.versioned("/js/jquery.js")'></script>
+<script src='@routes.Assets.versioned("/js/auth/auth-hooker.js")'></script>
 
 
 <!-- website-navigation -->
@@ -109,7 +93,7 @@ display: block;
   </div>
 
   <div class="applicationFooterRow">
-    <p class="applicationFooterCopyright">&copy; Empire InCloud Inc. All rights reserved. <span class="applicationFooterCopyrightLinks">• <a href="http://minorityapp.com/tos" class="applicationFooterCopyrightLink">Terms</a> • <a href="https://www.iubenda.com/privacy-policy/323220" class="applicationFooterCopyrightLink">Privacy</a></span></p>
+    <p class="applicationFooterCopyright">2014—2015 &copy; Empire InCloud Inc. All rights reserved. <span class="applicationFooterCopyrightLinks">• <a href="http://minorityapp.com/tos" class="applicationFooterCopyrightLink">Terms</a> • <a href="https://www.iubenda.com/privacy-policy/" class="applicationFooterCopyrightLink">Privacy</a></span></p>
   </div>
 </footer>
 <!-- /website-footer -->
@@ -122,129 +106,12 @@ display: block;
   document.documentElement.className += ' js';
 </script>
 <script>
-$(function domReadyLoginFlow () {
-    $('.form-horizontal button').on('click', function(event) {
-
-  event.preventDefault();
-    var name = $('.form-horizontal #username').val();
-    var pswd = $('.form-horizontal #password').val();
-    $('.messageBoxWrap').remove();
-    $.post(jsRoutes.controllers.ProfileController.profile().absoluteURL(document.ssl_enabled) + "auth/api/authenticate/userpass", { username: name , password: pswd })
-  .done(function( data ) {
-  localStorage.setItem("token", data.token);
-  sessionStorage.setItem("token", data.token);
-
-  $.ajax({url: jsRoutes.controllers.ProfileController.profile().absoluteURL(document.ssl_enabled) + "whoami", type: 'post', headers: {
-    "Access_Name": "User", "X-Auth-Token": data.token
-  }}).done(function(who) {
-    localStorage.setItem("manager", who.manager);
-    localStorage.setItem("business", who.business);
-    localStorage.setItem("employee", who.employee);
-  
-  });
-  $('.form-horizontal')[0].submit();
-
-  }).fail(function( jqXHR, textStatus) {
-      $('.loginFlowPage').prepend('<div class="messageBoxWrap"><p class="message">'+ JSON.parse(jqXHR.responseText).error +'</p></div>');
-    })
-  ;
-
-   
-  });
-  
-  $('.loginView a.switchView').on('click', function clickViewSwitch(e) {
-    var nextPage;
-    e.preventDefault();
-    e = $(this).closest('.loginPage');
-    if (e.hasClass('loginPage__active')) {
-      e.removeClass('loginPage__active');
-      nextPage = e.next();
-      if (!nextPage || !nextPage.length) {
-        nextPage = e.prev();
-      }
-      if (!nextPage || !nextPage.length) {
-        return false;
-      }
-      nextPage.addClass('loginPage__active')
-        .find('input:first-of-type').trigger('focus');
-    }
-    return false;
-  });
-
-  var suggestedEmail = null, $suggestionTip = null, $emailInputs;
-
-  $emailInputs = $('.loginView form').on('click', '.suggestionTip', function (e) {
-    var a;
-    if (a = suggestedEmail) {
-      e = $(this);
-      e.prev().val(e.find('strong').text());
-      $suggestionTip.el.addClass('notUsed');
-      $suggestionTip.el.prev().removeClass('suggestionShowed');
-    }
-  }).on('blur', 'input[type=email]', function (e) {
-    e = $(e.target);
-    e.mailcheck({
-      suggested: function ($inp, suggestion) {
-        if ($suggestionTip && suggestion && suggestion.full) {
-          $inp.next().find('strong').text(suggestion.full);
-          $inp.addClass('suggestionShowed').next().removeClass('notUsed');
-          suggestedEmail = suggestion;
-        }
-      },
-      empty: function ($inp) {
-        $suggestionTip.el.addClass('notUsed');
-        $suggestionTip.el.prev().removeClass('suggestionShowed');
-        suggestedEmail = null;
-      }
-    });
-  }).find('input[type=email]');
-
-  if ($emailInputs.length) {
-    $suggestionTip = {
-      el: $('<span></span>').addClass('suggestionTip notUsed').append('<span>Did you mean</span> <strong>at</strong><span>?</span>').insertAfter($emailInputs)
-    };
-    $suggestionTip.addr = $suggestionTip.el.find('strong');
-  }
-
-
-  $('.loginView form').on('submit', function submittedForm (e) {
-    var $requireds;
-    e.preventDefault();
-    e = $(this);
-    $requireds = e.find('input[required]').filter(function(){return this.value==="";});
-    if ($requireds.length) {
-      $requireds.get(0).focus();
-      return false;
-    }
-    e.find('button[type="submit"],input[type="submit"]').versionedtr('disabled', 'disabled').text(function updateTextOfSubmit(ind, text) {
-      return text + '...';
-    });
-    e.off();
-    setTimeout(function submitTheForm () {
-      e.trigger('submit');
-    }, 200);
-  });
-
-  var el = $('input.onchangeGenerateSubdomain');
-  if (el && el.length) {
-    el.on('change keyup', function changeInputVal (e) {
-      if (this.value && this.value.trim().length > 0) {
-        $('#' + $(this).data('onchange')).text(this.value.trim().replace(/[^a-z0-9]/gi, '').toLowerCase());
-      }
-    }).trigger('change');
-  }
-});
-
-</script>
-<script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
   m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
   ga('create', 'UA-13037685-4', 'auto');
   ga('send', 'pageview');
-
 </script>
 </body>
 </html>  

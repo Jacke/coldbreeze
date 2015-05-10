@@ -1,3 +1,18 @@
+#websiteHeader .headerLogotype {
+position: absolute;
+height: 66px;
+width: 100px;
+top: 0px;
+left: 0px;
+background: url('../images/minority-logo.svg') no-repeat scroll 0px 0px transparent;
+background-size: contain;
+}
+.help-block {
+  font-size: 10px;
+margin-top: 0px;
+display: block;
+}
+
 .website.loginFlow {
     background-color: #f0f1f4
 }

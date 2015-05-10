@@ -31,12 +31,12 @@ class ReactionRefs(tag: Tag) extends Table[UnitReactionRef](tag, "reaction_refs"
   def stateFK = foreignKey("state_fk", from_state, models.DAO.reflect.BPStateRefDAO.state_refs)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?, 
-reflection, 
-autostart, 
-element,
-from_state,
-title,
-created_at, updated_at) <> (UnitReactionRef.tupled, UnitReactionRef.unapply)
+           reflection, 
+           autostart, 
+           element,
+           from_state,
+           title,
+           created_at, updated_at) <> (UnitReactionRef.tupled, UnitReactionRef.unapply)
 
 }
 

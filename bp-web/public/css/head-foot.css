@@ -309,7 +309,7 @@ header.fullSize {
     background-color: rgba(225,227,232,0.1);
 }
 
-.shadowLeft:before,.minorityMenu .apiNameCell:before,.minorityMenu .apiNameCell.switcherWrap:before,.minorityMenu .menuTeam:before,.minorityMenu .minMenuList.apiMenuIcons:before {
+.shadowLeft:before,.minorityMenu .apiNameCell:before,.minorityMenu .apiNameCell.switcherWrap:before,.minorityMenu .menuEntity:before,.minorityMenu .minMenuList.apiMenuIcons:before {
     display: block;
     content: '';
     position: absolute;
@@ -759,11 +759,11 @@ background-color: #7FDBFF;
     white-space: nowrap;
 }
 
-.minorityMenu .minMenuItem a.menuTeamLink {
+.minorityMenu .minMenuItem a.menuEntityLink {
     padding-right: 25px;
 }
 
-.minorityMenu .minMenuItem a.menuTeamLink .vIco {
+.minorityMenu .minMenuItem a.menuEntityLink .vIco {
     margin-top: -1px;
     float: left;
     margin-right: 10px;
@@ -1403,7 +1403,7 @@ background-color: #7FDBFF;
     color: #fff;
 }
 
-.themeDark .menuTeamLink:hover * {
+.themeDark .menuEntityLink:hover * {
     color: #7FDBFF !important;
 }
 .themeDark .minorityMenu .minMenuItem a:hover {
