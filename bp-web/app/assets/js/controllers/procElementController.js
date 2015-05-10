@@ -396,7 +396,8 @@ $scope.loadResources();
 
 
 
-
+   $scope.interactions = InteractionsFactory.query({session_id: $scope.session.session.id});
+   $scope.element_topologs = ElementTopologsFactory.query({ BPid: $scope.bpId });
 
     BPElemsFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(data) {
     BPSpacesFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(data2) {

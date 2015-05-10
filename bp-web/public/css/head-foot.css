@@ -747,7 +747,9 @@ background-color: #7FDBFF;
     text-align: center;
     vertical-align: middle;
 }
-
+.minorityMenu .minMenuItem span {
+  margin-right: 3px;
+}
 .minorityMenu .minMenuItem a {
     display: inline-block;
     padding: 31px 10px 29px;
