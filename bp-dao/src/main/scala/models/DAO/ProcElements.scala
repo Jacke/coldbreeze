@@ -74,8 +74,6 @@ updated_at:Option[org.joda.time.DateTime] = None) {
   def cast(process: BProcess):Option[ProcElems] = { 
 // TODO: to space casting 
 // TODO: Refactor
-    println("block castiong")
-    println(order)
     this match {
       case y if (y.b_type == "brick" && y.type_title == "container_brick") => {
         Option(
@@ -225,9 +223,7 @@ object ProcElemDAO {
       val minimum = findByBPId(bprocess).sortBy(_.order)
       findById(element_id) match {
         case Some(e) => { 
-          println(e.order)          
           if (e.order > 1 && e.order != minimum.head.order) {
-            println("moved")
             proc_elements.filter(_.id === element_id).update(e.copy(order = e.order - 1))
             val ch = findById(minimum.find(_.order == (e.order - 1)).get.id.get).get
             proc_elements.filter(_.id === minimum.find(_.order == (e.order - 1)).get.id.get).update(ch.copy(order = ch.order + 1))
@@ -243,9 +239,7 @@ object ProcElemDAO {
       val maximum = findByBPId(bprocess).sortBy(_.order)
       findById(element_id) match {
         case Some(e) => { 
-          println(maximum.last.order)
           if (e.order < maximum.last.order && e.order != maximum.last.order) {
-            println("moved")
             proc_elements.filter(_.id === element_id).update(e.copy(order = e.order + 1))
             val ch = findById(maximum.find(_.order == (e.order + 1)).get.id.get).get
             proc_elements.filter(_.id === maximum.find(_.order == (e.order + 1)).get.id.get).update(ch.copy(order = ch.order - 1))

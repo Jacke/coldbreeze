@@ -134,7 +134,6 @@ def elem_create(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit requ
     case entity => ProcElemReflectionDAO.pull_object(entity.copy(order = ProcElemReflectionDAO.lastOrderOfRef(entity.reflection))) match {
             case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not create front element ${entity.title}")))
             case id =>  { 
-              println(id)
               makeTopolog(entity.reflection, Some(id), None)
             
               AutoTracer.defaultStatesForRefElem(entity.reflection, front_elem_id = Some(id), space_elem_id = None)
@@ -149,8 +148,7 @@ def elem_create(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit requ
 
 
 def space_create(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
-  println(request.body.validate[UnitSpaceRef])
-  println
+
   val placeResult = request.body.validate[UnitSpaceRef]  
    request.body.validate[UnitSpaceRef].map{ 
     case entity => SpaceReflectionDAO.pull_object(entity.copy(index = SpaceReflectionDAO.lastIndexOfSpace(entity.reflection))) match {
@@ -329,7 +327,6 @@ def reaction_update(reaction_id: Int) = SecuredAction(BodyParsers.parse.json) { 
             case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not update reaction ${entity.reaction.element}")))
             case _ =>  { val out_ids = ReactionStateOutRefDAO.findByReactionRef(reaction_id).map(_.id.get)
                          out_ids.foreach { id => 
-                            println(id)
                             entity.reaction_state_outs.find(_.id == Some(id)) match {
                               case Some(state_out) => ReactionStateOutRefDAO.update(id, state_out)
                               case _ => BadRequest(Json.toJson(Map("error" -> "cat unpdate state out")))

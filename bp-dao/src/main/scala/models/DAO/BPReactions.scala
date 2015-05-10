@@ -74,10 +74,8 @@ object ReactionDAO {
        val state_outs = ReactionStateOutDAO.findByReactions(reactions.flatMap(_.id))
 
        val unapplied_reactions = reactions.filter { reaction =>
-          println(reaction.from_state)
           val state_out = state_outs.filter(out => Some(out.reaction) == reaction.id)
           val session_state = session_states.find(state => state_out.map(_.state_ref).contains(state.origin_state.getOrElse(0)))//reaction.from_state == state.origin_state)
-          println(session_state)
           session_state match {
             case Some(state) => {
               state_out.map { out =>
@@ -86,7 +84,6 @@ object ReactionDAO {
               }.reduce(_||_) // OR for multiple state outs
             }
             case _ => { 
-              println("match false")
               false
             }
           }

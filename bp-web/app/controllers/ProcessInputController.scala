@@ -67,7 +67,6 @@ class ProcessInputController(override implicit val env: RuntimeEnvironment[DemoU
   }
   def invokeFrom(session_id: Int, bpID: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
     val pmsResult = request.body.validate[List[ReactionActivator]] 
-    println(pmsResult)
 
 /*
 case class InputLogger(var id: Option[Int], 
@@ -106,8 +105,6 @@ case class InputLogger(var id: Option[Int],
           }
         }*/
 
-    println("PAAAAAAAARAMS")
-    println(pmsResult)
     service.Build.newRunFrom(session_id = session_id,bpID = bpID, params = pmsResult.get) match {
       case Some(process) => Ok(Json.toJson(Map("success" -> process.session_id)))
       case _ => Ok(Json.toJson(Map("error" -> "Error output")))

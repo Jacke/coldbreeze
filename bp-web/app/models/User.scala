@@ -70,7 +70,6 @@ object User {
   }
 
   def createToken(email: String): Either[String, Token] = {
-    println(email)
     findByEmail(email) match {
       case None => Left("The email has been used.")
       case Some(user) => {

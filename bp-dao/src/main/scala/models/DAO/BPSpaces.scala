@@ -203,13 +203,9 @@ object BPSpaceDAO {
 */
   def renewIndex(bprocess: Int, index_num: Int) = {
     database withSession { implicit session ⇒
-      println("renewed")
-      println()
       val q3 = for { sp ← bpspaces if sp.bprocess === bprocess && sp.index > index_num } yield sp
-
       val ordered = q3.list.zipWithIndex.map(sp => sp._1.copy(index = (sp._2 + 1) + (index_num - 1)))
       //val ordered = q3.list.zipWithIndex.map(sp => sp._1.copy(index = sp._2+index_num))
-      println(ordered.length)
       ordered.foreach { sp => 
          update(sp.id.get, sp)
       }

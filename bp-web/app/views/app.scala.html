@@ -7,14 +7,14 @@
 
 @main(Messages("page.application"), user) {
 
-<link rel="stylesheet" href="css/picaso.css">
-<link rel="stylesheet" href="bower_components/angular-ui-select/dist/select.min.css">
-<link rel="stylesheet" href="bower_components/angular-ui-tree/dist/angular-ui-tree.min.css">
-<link rel="stylesheet" href="bower_components/ngDialog/css/ngDialog.css">
-<link rel="stylesheet" href="bower_components/ngDialog/css/ngDialog-theme-default.css">
-<link rel="stylesheet" href="bower_components/ngDialog/css/ngDialog-theme-plain.css">
-<link rel="stylesheet" href='@routes.Assets.at("stylesheets/process.css")'>
-<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/process_list.css")">
+<link rel="stylesheet" href='@routes.Assets.versioned("css/picaso.css")'>
+<link rel="stylesheet" href='@routes.Assets.versioned("bower_components/angular-ui-select/dist/select.min.css")'>
+<link rel="stylesheet" href='@routes.Assets.versioned("bower_components/angular-ui-tree/dist/angular-ui-tree.min.css")'>
+<link rel="stylesheet" href='@routes.Assets.versioned("bower_components/ngDialog/css/ngDialog.css")'>
+<link rel="stylesheet" href='@routes.Assets.versioned("bower_components/ngDialog/css/ngDialog-theme-default.css")'>
+<link rel="stylesheet" href='@routes.Assets.versioned("bower_components/ngDialog/css/ngDialog-theme-plain.css")'>
+<link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/process.css")'>
+<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/process_list.css")">
 
 <style>
 .applicationFooter {
@@ -30,63 +30,63 @@
 <div id="main" class="container" data-ng-view>
 </div>
 
-  <script src="bower_components/angular/angular.js"></script>
+  <script src='@routes.Assets.versioned("bower_components/angular/angular.js")'></script>
   <!-- Libs -->
-  <script src="bower_components/angular-pageslide-directive/src/angular-pageslide-directive.js"></script>
+  <script src='@routes.Assets.versioned("bower_components/angular-pageslide-directive/src/angular-pageslide-directive.js")'></script>
 
-  <script src="bower_components/angular-classy/angular-classy.min.js"></script>
-  <script src="bower_components/angular-resource/angular-resource.js"></script>
-  <script src="bower_components/angular-cookies/angular-cookies.js"></script>
-  <script src="bower_components/angular-ui-select/dist/select.js"></script>
+  <script src='@routes.Assets.versioned("bower_components/angular-classy/angular-classy.min.js")'></script>
+  <script src='@routes.Assets.versioned("bower_components/angular-resource/angular-resource.js")'></script>
+  <script src='@routes.Assets.versioned("bower_components/angular-cookies/angular-cookies.js")'></script>
+  <script src='@routes.Assets.versioned("bower_components/angular-ui-select/dist/select.js")'></script>
   
-  <script src="bower_components/pnotify/pnotify.core.js"></script>
-  <link rel="stylesheet" href="bower_components/pnotify/pnotify.core.css"/>
+  <script src='@routes.Assets.versioned("bower_components/pnotify/pnotify.core.js")'></script>
+  <link rel="stylesheet" href='@routes.Assets.versioned("bower_components/pnotify/pnotify.core.css")'/>
 
-  <script type="text/javascript" src="bower_components/angular-moment/angular-moment.js"></script>
+  <script type="text/javascript" src='@routes.Assets.versioned("bower_components/angular-moment/angular-moment.js")'></script>
   <script type="text/javascript" src="https://cdn.rawgit.com/mattbradley/livestampjs/1.1.2/livestamp.min.js"></script>
-  <script type="text/javascript" src="bower_components/ngDialog/js/ngDialog.js"></script>
-  <script type="text/javascript" src="bower_components/angular-ui-tree/dist/angular-ui-tree.js"></script>
+  <script type="text/javascript" src='@routes.Assets.versioned("bower_components/ngDialog/js/ngDialog.js")'></script>
+  <script type="text/javascript" src='@routes.Assets.versioned("bower_components/angular-ui-tree/dist/angular-ui-tree.js")'></script>
 
   <!--<script type="text/javascript" src="bower_components/ui-sortable/src/sortable.js"></script>-->
-  <script type="text/javascript" src="bower_components/angular-underscore/angular-underscore.js"></script>
-  <script src="bower_components/angular-loading-bar/src/loading-bar.js"></script>
-  <link rel="stylesheet" href="bower_components/angular-loading-bar/src/loading-bar.css"/>
+  <script type="text/javascript" src='@routes.Assets.versioned("bower_components/angular-underscore/angular-underscore.js")'></script>
+  <script src='@routes.Assets.versioned("bower_components/angular-loading-bar/src/loading-bar.js")'></script>
+  <link rel="stylesheet" href='@routes.Assets.versioned("bower_components/angular-loading-bar/src/loading-bar.css")'/>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/angularjs-toaster/0.4.4/toaster.css" rel="stylesheet" />
 
-  <script src="bower_components/angularjs-toaster/toaster.js"></script>
-  <script src="bower_components/angularLocalStorage/src/angularLocalStorage.js"></script>
-  <script src="bower_components/angular-errors-directive/angular-awesome-error.js"></script>
-  <script src="js/ui-bootstrap-custom-0.10.0.js"></script>
-  <script src="js/ui-bootstrap-custom-tpls-0.10.0.js"></script>
-  <script src="js/angular-translate.js"></script>
+  <script src='@routes.Assets.versioned("bower_components/angularjs-toaster/toaster.js")'></script>
+  <script src='@routes.Assets.versioned("bower_components/angularLocalStorage/src/angularLocalStorage.js")'></script>
+  <script src='@routes.Assets.versioned("bower_components/angular-errors-directive/angular-awesome-error.js")'></script>
+  <script src='@routes.Assets.versioned("js/ui-bootstrap-custom-0.10.0.js")'></script>
+  <script src='@routes.Assets.versioned("js/ui-bootstrap-custom-tpls-0.10.0.js")'></script>
+  <script src='@routes.Assets.versioned("js/angular-translate.js")'></script>
 
 
-<script src="bower_components/bootstrap-daterangepicker/daterangepicker.js"></script>
-<script src="bower_components/angular-daterangepicker/js/angular-daterangepicker.js"></script>
-<link rel="stylesheet" href="bower_components/bootstrap-daterangepicker/daterangepicker-bs3.css"/>
+<script src='@routes.Assets.versioned("bower_components/bootstrap-daterangepicker/daterangepicker.js")'></script>
+<script src='@routes.Assets.versioned("bower_components/angular-daterangepicker/js/angular-daterangepicker.js")'></script>
+<link rel="stylesheet" href='@routes.Assets.versioned("bower_components/bootstrap-daterangepicker/daterangepicker-bs3.css")'/>
 
-  <link rel="import" href="bower_components/polymer/polymer.html">
+  <link rel="import" href='@routes.Assets.versioned("bower_components/polymer/polymer.html")'>
   <!--<link rel="import" href="bower_components/core-ajax/core-ajax.html">
   <link rel="import" href="bower_components/core-component-page/core-component-page.html">
   <link rel="import" href="bower_components/core-localstorage/core-localstorage.html">-->
   
-  <script src="js/app.js"></script>
-  <script src="js/filters.js"></script>
-  <script src="js/services.js"></script>
-  <script src="js/treebuilder.js"></script>
-  <script src="js/controllers/controllers.js"></script>
-  <script src="js/controllers/procPermController.js"></script>
-  <script src="js/controllers/procController.js"></script>
-  <script src="js/controllers/requestController.js"></script>
-  <script src="js/controllers/loggerController.js"></script>
-  <script src="js/controllers/stationController.js"></script>
-  <script src="js/controllers/procElementController.js"></script>
-  <script src="js/controllers/reflectionController.js"></script>
-  <script src="js/controllers/sessionController.js"></script>
+  <script src='@routes.Assets.versioned("js/app.js")'></script>
+  <script src='@routes.Assets.versioned("js/filters.js")'></script>
+  <script src='@routes.Assets.versioned("js/services.js")'></script>
+  <script src='@routes.Assets.versioned("js/treebuilder.js")'></script>
+  <script src='@routes.Assets.versioned("js/controllers/controllers.js")'></script>
+  <script src='@routes.Assets.versioned("js/controllers/procPermController.js")'></script>
+  <script src='@routes.Assets.versioned("js/controllers/procController.js")'></script>
+  <script src='@routes.Assets.versioned("js/controllers/requestController.js")'></script>
+  <script src='@routes.Assets.versioned("js/controllers/loggerController.js")'></script>
+  <script src='@routes.Assets.versioned("js/controllers/stationController.js")'></script>
+  <script src='@routes.Assets.versioned("js/controllers/procElementController.js")'></script>
+  <script src='@routes.Assets.versioned("js/controllers/reflectionController.js")'></script>
+  <script src='@routes.Assets.versioned("js/controllers/sessionController.js")'></script>
 
-  <script src="js/directives.js"></script>
-  <script src="js/classie.js"></script>
-  <script src="js/cssParser.js"></script>
+  <script src='@routes.Assets.versioned("js/directives.js")'></script>
+  <script src='@routes.Assets.versioned("js/classie.js")'></script>
+  <script src='@routes.Assets.versioned("js/cssParser.js")'></script>
   <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

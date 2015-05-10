@@ -46,24 +46,18 @@ object BusinessServiceDAO {
   def get(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← business_services if s.id === k } yield s 
-      println(q3.selectStatement)
-      println(q3.list)
       q3.list.headOption
   }
   def getBusiness(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← business_services
                      b <- s.business if s.id === k } yield (s, b) 
-      println(q3.selectStatement)
-      println(q3.list)
       q3.list.headOption
   }
   def getByBusiness(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← business_services
                      b <- s.business if b.id === k } yield (s) 
-      println(q3.selectStatement)
-      println(q3.list)
       q3.list.headOption
   }
 

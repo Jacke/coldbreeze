@@ -129,9 +129,7 @@ def moveUp(reflection: Int, element_id: Int) = {
       val minimum = findByRef(reflection).sortBy(_.order)
       findById(element_id) match {
         case Some(e) => { 
-          println(e.order)          
           if (e.order > 1 && e.order != minimum.head.order) {
-            println("moved")
             proc_element_reflections
               .filter(_.id === element_id).update(e.copy(order = e.order - 1))
             val ch = findById(minimum.find(_.order == (e.order - 1)).get.id.get).get
@@ -150,9 +148,7 @@ def moveUp(reflection: Int, element_id: Int) = {
       val maximum = findByRef(reflection).sortBy(_.order)
       findById(element_id) match {
         case Some(e) => { 
-          println(maximum.last.order)
           if (e.order < maximum.last.order && e.order != maximum.last.order) {
-            println("moved")
             proc_element_reflections
               .filter(_.id === element_id).update(e.copy(order = e.order + 1))
             val ch = findById(maximum.find(_.order == (e.order + 1)).get.id.get).get

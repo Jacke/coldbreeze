@@ -146,7 +146,7 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 <a href="/a#/bprocess/{{ sessions.process.id }}">{{ sessions.process.title }}</a>
 
 <div class="process_content">
-          <div ng-include src="'partials/treeThumb.html'"></div>
+          <div ng-include src="'assets/partials/treeThumb.html'"></div>
 </div>
 <div class="stations" ng-repeat="session in sessions.sessions | limitTo: 10 | filter:isOnlyActive | { session: { session: onlyListed }" style="clear: both;">
 

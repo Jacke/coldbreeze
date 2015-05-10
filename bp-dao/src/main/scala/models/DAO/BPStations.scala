@@ -129,7 +129,6 @@ object BPStationDAO {
     implicit session ⇒
       findBySession(s.session) match {
         case Some(sess) => { 
-          println(">>>>>>>>>>>>>>>>>>>>>>>>>>> UPDATED")
           if (update(sess.id.get, s.copy(id = sess.id)))
             sess.id.get
           else 

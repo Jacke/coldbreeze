@@ -23,6 +23,8 @@ resolvers += Resolver.url("heroku-sbt-plugin-releases",
   url("http://dl.bintray.com/heroku/sbt-plugins/"))(Resolver.ivyStylePatterns)
 
 
+resolvers += Resolver.url("untyped", url("http://ivy.untyped.com"))(Resolver.ivyStylePatterns)
+
 resolvers += "Linter Repository" at "https://hairyfotr.github.io/linteRepo/releases"
 
 addCompilerPlugin("com.foursquare.lint" %% "linter" % "0.1.9")
@@ -52,7 +54,7 @@ addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.0")
 
 addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "0.4.0")
 
-addSbtPlugin("com.typesafe.sbt" % "sbt-jshint" % "1.0.0")
+//addSbtPlugin("com.typesafe.sbt" % "sbt-jshint" % "1.0.1")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-less" % "1.0.0")
 
@@ -78,3 +80,13 @@ addSbtPlugin("default" % "sbt-sass" % "0.1.9")
 
 
 //addSbtPlugin("au.com.onegeek.sbtdotenv" % "sbt-dotenv" % "1.0.17")
+
+
+addSbtPlugin("com.typesafe.sbt" % "sbt-uglify" % "1.0.3")
+
+addSbtPlugin("net.ground5hark.sbt" % "sbt-css-compress" % "0.1.3")
+
+addSbtPlugin("com.untyped" % "sbt-js"       % "0.8-M3")
+
+addSbtPlugin("com.untyped" % "sbt-sass"     % "0.8-M3")
+

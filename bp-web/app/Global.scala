@@ -18,6 +18,8 @@ import play.api._
 import play.api.mvc._
 import play.api.mvc.Results._
 import play.api.mvc.Results.Redirect
+import play.api.mvc.WithFilters
+import com.mohiva.play.htmlcompressor.HTMLCompressorFilter
 
 object AccessLoggingFilter extends Filter {
   def apply(next: (RequestHeader) => Future[Result])(request: RequestHeader): Future[Result] = {
@@ -36,7 +38,7 @@ object Global extends WithFilters(new GzipFilter(shouldGzip =
     val contentType = response.headers.get("Content-Type")
     contentType.exists(_.startsWith("text/html")) || request.path.endsWith("jsroutes.js")
   }
-), CORSFilter(), AccessLog(), AccessLoggingFilter) with play.api.GlobalSettings {
+), CORSFilter(), AccessLog(), AccessLoggingFilter, HTMLCompressorFilter()) with play.api.GlobalSettings {
 
   /**
    * The runtime environment for this sample app.

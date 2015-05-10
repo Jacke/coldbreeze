@@ -88,7 +88,6 @@ class SettingController(override implicit val env: RuntimeEnvironment[DemoUser])
     credForm.bindFromRequest.fold(
         formWithErrors => Redirect(routes.SettingController.index),//BadRequest(views.html.settings.index(credForm.fill(cred), request.user)),
         entity => {
-          println(entity)
           Home.flashing(AccountsDAO.updateCredentials(
             request.user.main.email.get, entity.copy(fullName = entity.getFullName, 
                                                      lang = entity.lang, 
@@ -108,7 +107,6 @@ class SettingController(override implicit val env: RuntimeEnvironment[DemoUser])
     bizForm.bindFromRequest.fold(
         formWithErrors => Redirect(routes.SettingController.index),//BadRequest(views.html.settings.index(credForm.fill(cred), request.user)),
         entity => {
-          println(entity)
           Home.flashing(models.DAO.resources.web.BusinessDAO.updateCredentials(
             founded_biz.id.get, entity) match {
             case false => "failure" -> s"Could not update entity ${entity}"

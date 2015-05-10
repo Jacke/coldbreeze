@@ -87,12 +87,10 @@ class ObserverController(override implicit val env: RuntimeEnvironment[DemoUser]
      val uuid = randomUUID.toString
      val user = request.user.main.userId
      val biz =  models.DAO.resources.EmployeesBusinessDAO.getByUID(user).get._2 
-    println(request.body.validate[ObserveSetup])
 	  request.body.validate[ObserveSetup].map{ 
 	    case entity => savePull( entity.observer.copy(hash_code = Some(uuid), created_at = Some(DateTime.now()) ), user ) match {
 	            case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not create observer ${entity.observer.id}")))
 	            case id =>  { 
-	              println(id)
                 addAsClient(entity.emails, biz)
 	              sendMailToObservers(entity.emails.take(3), host, uuid) // Limit emails, that are sended to observers down to 3
 	              Ok(Json.toJson(Map("success" ->  id)))
@@ -135,15 +133,12 @@ class ObserverController(override implicit val env: RuntimeEnvironment[DemoUser]
       val spaces = BPSpaceDAO.findByBPId(bp)
       val spaceelem = SpaceElemDAO.findByBPId(bp)
 
-      println(spaces)
-      println(spaceelem)
-      println(procelem)
       def isActive(id: Int, eltype: String):Boolean = {
         if (eltype == "front") {
-          active_elem.get("front") == id
+          active_elem.get("front") == Some(id)
         }
         else {
-          active_elem.get("nested") == id
+          active_elem.get("nested") == Some(id)
         }
       }
 
@@ -154,7 +149,7 @@ class ObserverController(override implicit val env: RuntimeEnvironment[DemoUser]
       def checkNodes(nodes: List[SpaceElementDTO], active_elem: Map[String, Int]):List[NestedTreeLeaf] = {
         nodes.map { node => 
           if (node.space_own.isDefined) {
-            val nodes = spaceelem.filter(el => Some(el.space_owned) == node.space_owned)
+            val nodes = spaceelem.filter(el => Some(el.space_owned) == Some(node.space_owned))
             NestedTreeLeaf(node, isActive(node.id.get, "nested"), node.space_owned, checkNodes(nodes, active_elem))
           } else {
             NestedTreeLeaf(node, isActive(node.id.get, "nested"), node.space_owned, List())
@@ -172,7 +167,6 @@ class ObserverController(override implicit val env: RuntimeEnvironment[DemoUser]
            TreeLeaf(proc_elem, isActive(proc_elem.id.get, "front"), List())
         }
       }
-      println(maked_tree)
       maked_tree
 
   }

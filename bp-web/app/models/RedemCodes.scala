@@ -41,8 +41,6 @@ object RedemCodesDAO {
   def get(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← redem_codes if s.id === k } yield s 
-      println(q3.selectStatement)
-      println(q3.list)
       q3.list.headOption
   }
   def getByCode(code: String) = database withSession {

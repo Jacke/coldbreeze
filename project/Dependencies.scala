@@ -45,6 +45,7 @@ object Dependencies {
   val playauth        = "jp.t2v"                    %% "play2-auth"             % "0.12.0"
   val playctrl        = "jp.t2v"                    %% "stackable-controller"   % "0.4.0"
   val logentries      = "com.logentries"            % "logentries-appender"     % "1.1.21"
+  val compressor      = "com.mohiva"                %% "play-html-compressor"   % "0.3.1"
   val jsonvariants    = "org.julienrf"              %% "play-json-variants"     % "0.2"
   val playflyway      = "com.github.tototoshi"      %% "play-flyway"            % "1.1.0"
   val angular         = "org.webjars"               %  "angularjs"              % "1.2.16-2"  exclude("org.webjars", "jquery")

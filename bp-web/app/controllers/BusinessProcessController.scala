@@ -87,7 +87,6 @@ implicit val ElementTopologyWrites = Json.format[ElementTopology]
   def bprocess = SecuredAction { implicit request =>
     val bprocess = BPDAO.getAll // TODO: Not safe
     val user_services = BusinessServiceDAO.getByMaster(request.user.main.email.getOrElse("")).map(_.id)
-    println(user_services)
     // TODO: Add for actor, if they assigned to process
     
     if (request.user.isEmployee) { 
@@ -142,8 +141,7 @@ implicit val ElementTopologyWrites = Json.format[ElementTopology]
 def create_bprocess = SecuredAction(BodyParsers.parse.json) { request =>
   val bpResult = request.body.validate[BProcessDTO]
     Logger.debug(s"trying create process with $bpResult")
-   println(bpResult)
-   bpResult.fold(
+    bpResult.fold(
     errors => {
        Logger.error(s"error with $bpResult")
       BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
@@ -154,7 +152,7 @@ def create_bprocess = SecuredAction(BodyParsers.parse.json) { request =>
           AutoTracer.defaultStatesForProcess(process_id = id)
           Ok(Json.obj("status" ->"OK", "message" -> ("Bprocess '"+bprocess.id+"' saved.") ))  
         }
-        case _ => BadRequest(Json.obj("status" -> "Cannot create process"))
+        case -1 => BadRequest(Json.obj("status" -> "Cannot create process"))
       }
       
     }
@@ -300,7 +298,6 @@ def createFrontElem() = SecuredAction(BodyParsers.parse.json) { implicit request
     case entity => haltActiveStations(entity.process); RefDAO.retrive(entity.ref, entity.process, entity.business, in = "front", entity.title, entity.desc, space_id = None) match {//ProcElemDAO.pull_object(entity) match {
             case None =>  Ok(Json.toJson(Map("failure" ->  s"Could not create front element ${entity.title}")))
             case id =>  { 
-              println(id)
               Ok(Json.toJson(Map("success" ->  Json.toJson(id))))
             }
           }
@@ -309,8 +306,6 @@ def createFrontElem() = SecuredAction(BodyParsers.parse.json) { implicit request
     }
 }
 def createSpace() = SecuredAction(BodyParsers.parse.json) { implicit request =>
-  println(request.body.validate[BPSpaceDTO])
-  println
   val placeResult = request.body.validate[BPSpaceDTO]  
    request.body.validate[BPSpaceDTO].map{ 
     case entity => haltActiveStations(entity.bprocess);BPSpaceDAO.pull_object(entity) match {
@@ -326,8 +321,6 @@ def createSpaceElem() = SecuredAction(BodyParsers.parse.json) { implicit request
 //RefDAO.retrive(k: Int, entity.bprocess, entity.business, in = "nested", entity.title, entity.desc, space_id: Option[Int] = None)
 //models.DAO.reflect.RefResulted
   val placeResult = request.body.validate[RefElemContainer]  
-  println(placeResult)
-  println(request.body)
     request.body.validate[RefElemContainer].map{ 
     case entity => println(entity)
   }

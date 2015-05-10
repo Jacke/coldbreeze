@@ -96,13 +96,6 @@ object BPLoggerDAO {
   }
   def elemId(target: ProcElems, mean: String): Option[Int] = {
     if (mean == "space") {
-      println("mean == space")
-      println("")
-      println(target.id)
-      println(target.space_id)
-      println("********")
-      println("")
-
       /*target.space_id match {
         case Some(space) => {
           space.id
@@ -111,8 +104,6 @@ object BPLoggerDAO {
       }*/
       target.space_id match {
         case Some(space) => {
-          println(">>>>>>>>")
-
           Some(target.id)
         }
         case None => None
@@ -124,8 +115,8 @@ object BPLoggerDAO {
         case _    => None
       }
     } else {
-      println("Nonezzzzz")
-      None }
+      None 
+    }
   }
 
   /**
@@ -138,7 +129,6 @@ object BPLoggerDAO {
    */
   def from_origin_lgr(logger: BPLogger, bp_dto: BProcessDTO, station_id:Int = 1, spaces: List[BPSpaceDTO] = List.empty[BPSpaceDTO]):Option[List[BPLoggerDTO]] = {
 
-     println(logger)
     val result:List[BPLoggerDTO] = logger.logs.toList.map { lgr =>
 
           BPLoggerDTO(

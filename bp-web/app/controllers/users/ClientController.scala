@@ -49,8 +49,6 @@ class ClientController(override implicit val env: RuntimeEnvironment[DemoUser]) 
         Ok(views.html.businesses.users.client_form(clientForm))    
   }
   def create_new() = Action { implicit request => 
-    println(request)
-    println(clientForm.bindFromRequest)
     clientForm.bindFromRequest.fold(
       formWithErrors => BadRequest(views.html.businesses.users.client_form(formWithErrors)),
       entity => {

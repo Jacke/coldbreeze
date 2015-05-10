@@ -65,7 +65,6 @@ created_at:Option[org.joda.time.DateTime] = None,
 updated_at:Option[org.joda.time.DateTime] = None) {
   
   def cast(process: BProcess, space_dto: BPSpaceDTO):Option[ProcElems] = {
-    println("block castiong")
     this match {
       case x if (x.b_type == "block" && x.type_title == "test block") => {
         Option(
@@ -104,10 +103,8 @@ updated_at:Option[org.joda.time.DateTime] = None) {
   }
 
   def castToSpace(process: BProcess, space: Space):Option[ProcElems] = {
-    println("block castiong")
     this match {
       case x if (x.b_type == "brick" | x.type_title == "container_brick") => {
-        println("space_parent " + process.spaces.find(_.id == space_own))
         println("space_parent REFACTOR!!!!!!!" + space_own)
         // TODO REFACTOR space_parent in brick
         Option(

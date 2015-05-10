@@ -68,8 +68,6 @@ class BusinessServiceController(override implicit val env: RuntimeEnvironment[De
         Ok(views.html.businesses.service_form(serviceForm, request.user))
   }
   def create_new() = SecuredAction { implicit request =>
-    println(request)
-    println(serviceForm.bindFromRequest)
     serviceForm.bindFromRequest.fold(
       formWithErrors => BadRequest(views.html.businesses.service_form(formWithErrors, request.user)),
       entity => {
@@ -111,7 +109,6 @@ class BusinessServiceController(override implicit val env: RuntimeEnvironment[De
 
   }
   def destroy(id: Int) = SecuredAction { implicit request =>
-      println("destroy")
       Home.flashing(BusinessServiceDAO.delete(id) match {
         case 0 => "failure" -> "Entity has Not been deleted"
         case x => "success" -> s"Entity has been deleted (deleted $x row(s))"

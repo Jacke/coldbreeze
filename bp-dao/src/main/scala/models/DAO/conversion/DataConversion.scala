@@ -70,7 +70,6 @@ object BPInitiator {
     val process = new BProcess(new Managment)  // !!!!!!!DCO!!!!!!!!!!!
 
    val arrays = els.map(c => c.cast(process)).flatten.toArray
-   println(arrays)
    process.push {
     arrays
    }   

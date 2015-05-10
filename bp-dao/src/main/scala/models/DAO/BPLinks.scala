@@ -61,8 +61,6 @@ object BPLinkDAO {
   def get(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← bplinks if s.id === k } yield s <> (BPLinkDTO.tupled, BPLinkDTO.unapply _)
-      println(q3.selectStatement)
-      println(q3.list)
       q3.list.headOption //.map(Supplier.tupled(_))
   }
 

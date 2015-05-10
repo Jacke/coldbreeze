@@ -9,6 +9,12 @@ import com.typesafe.sbt.gzip.Import._
 
 import com.typesafe.sbt.digest.Import._
 import com.typesafe.sbt.rjs.Import._
+import net.ground5hark.sbt.css.Import._
+import com.typesafe.sbt.uglify.Import._
+import com.untyped.sbtjs.Plugin._
+import com.untyped.sbtsass.Plugin._
+import UglifyKeys._
+
 //import twirl.sbt.TwirlPlugin._
 
 object Settings {
@@ -23,10 +29,14 @@ object Settings {
     // rjs = RequireJS, uglifies, shrinks to one file, replaces WebJars with CDN
     // digest = Adds hash to filename
     // gzip = Zips all assets, Asset controller serves them automatically when client accepts them
-    pipelineStages := Seq(rjs, digest, gzip)
+    pipelineStages := Seq(uglify, rjs, digest, gzip, cssCompress)
+    //pipelineStages in Assets := Seq(uglify)
+    //includeFilter in uglify := GlobFilter("*.js")
 
+    CssCompress.suffix := ".min.css"
     // RequireJS with sbt-rjs (https://github.com/sbt/sbt-rjs#sbt-rjs)
     // ~~~
+    JsKeys.filenameSuffix in Compile := ".min"
     RjsKeys.paths += ("jsRoutes" -> ("/jsroutes" -> "empty:"))
 
     //RjsKeys.mainModule := "main"

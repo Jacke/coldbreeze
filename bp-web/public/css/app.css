@@ -1494,20 +1494,44 @@ animation: redGlowIt 7s infinite;
   0% { opacity: 0; }
   100% { opacity: 1; }
 }
-.edit-in-place span {
+.edit-in-place {
     cursor: pointer;
 }
 .edit-in-place input {
     display: none;
 }
 .edit-in-place.active span {
-    display: none;
+    display: inline-block;
 }
 .edit-in-place.active input {
     display: inline-block;
 }
+.edit-in-place span {
+  display: none;
+}
+.edit-in-place edit.span {
+  display: none;   
+}
+.edit-in-place.active ok.span {
+    display: inline-block;
+}
+.edit-in-place.active edit.span {
+    display: inline-block;
+}
 
+.edit-in-place span.edit {
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
 
+.edit-in-place.active span.edit {
+    display: none;
+}
+
+.edit-in-place.active span {
+    padding-right: 2px;
+    padding-left: 14px;
+}
 
 
 

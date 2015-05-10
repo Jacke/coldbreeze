@@ -75,7 +75,7 @@ object ProcessCloner {
 
         }
         // Update space_elem spaces
-        println("new space elem ids" + new_space_elems_ids.values.toList)
+        //println("new space elem ids" + new_space_elems_ids.values.toList)
         SpaceElemDAO.findByIds(new_space_elems_ids.values.toList).foreach { new_space_elem =>
           SpaceElemDAO.update(new_space_elem.id.get, new_space_elem.copy(space_owned = new_spaces_ids.get(new_space_elem.space_owned).get, 
                                                                          space_own = getSpaceOwn(new_space_elem.space_own, new_spaces_ids) ))

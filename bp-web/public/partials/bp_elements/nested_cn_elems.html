@@ -11,7 +11,7 @@
   <li><a href="" ng:click="moveDownSpaceElem(spaceelem)"><span class="glyphicon glyphicon-arrow-down"></span></a></li>
 </ul>
 <div class="tab-pane active" id="edit" ng:show="selected == 2">
-  <div ng-include src="'partials/bp_elements/spelem-edit.html'"></div>
+  <div ng-include src="'assets/partials/bp_elements/spelem-edit.html'"></div>
 </div>
     <div class="tab-content">
       <div class="block-card tab-pane active" id="show" ng-class="'spelem-'+spaceelem.id">
@@ -29,8 +29,8 @@
 
         <div class="tab-pane active" id="edit" ng:show="spaceelem.type_title == 'container_brick'">
             <div class="nested-spaces" ng-repeat="space in nestedSpaces[spaceelem.id]">
-                <div ng-include src="'partials/bp_elements/nested_cn.html'"></div>
-                <div ng-include src="'partials/bp_elements/nested_cn_elems.html'"></div>
+                <div ng-include src="'assets/partials/bp_elements/nested_cn.html'"></div>
+                <div ng-include src="'assets/partials/bp_elements/nested_cn_elems.html'"></div>
 
 
             </div>

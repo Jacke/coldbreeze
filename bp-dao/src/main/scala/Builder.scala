@@ -37,9 +37,24 @@ object TestRunning extends App {
 }
 
 case class SessionStatesContainer(session_states: List[BPSessionState], session_states_ids: List[Int])
+
+import com.typesafe.scalalogging.Logger
+
+import org.slf4j.LoggerFactory
+
+
   
 object Build {
   
+  val appLogger = Logger(LoggerFactory.getLogger("build"))
+
+  def toApplogger(msg: Any, log_type: String = "info") = {
+    log_type match {
+      case "debug" => appLogger.info(msg.toString)
+      case "info" => appLogger.info(msg.toString)
+      case "error" => appLogger.info(msg.toString)
+    }
+  }
   
   def saveSession(bprocess: BProcess, bprocess_dto: BProcessDTO, lang: Option[String] = Some("en")) = {
     val session = BPSession(
@@ -108,7 +123,6 @@ object Build {
   }
   def saveLogsInit(bprocess: BProcess, bprocess_dto: BProcessDTO, station_id: Int, spacesDTO: List[BPSpaceDTO]) = {
     val dblogger = BPLoggerDAO.from_origin_lgr(bprocess.logger, bprocess_dto, station_id, spacesDTO)
-    println(dblogger)
     dblogger.foreach(log => BPLoggerDAO.pull_object(log))
   }
   def saveSessionStateLogs(bprocess: BProcess, bprocess_dto: BProcessDTO) = {
@@ -131,29 +145,29 @@ object Build {
     val processRunned1 = initiate(bpID, false, bpDTO, session_id = None)
    
      processRunned1.allElements.foreach { element =>
-          println()
-          println("Title " + element.title + " " + element.id)
-          println("states: " + element.states.length + ". switchers: " +element.states.map(st => st.switchers.length).length)
-          println()
-          println("session_states: " + element.session_states.length)
+          //println()
+          toApplogger("Title " + element.title + " " + element.id)
+          toApplogger("states: " + element.states.length + ". switchers: " +element.states.map(st => st.switchers.length).length)
+          //println()
+          toApplogger("session_states: " + element.session_states.length)
           element.session_states.foreach {
             state =>
-            println()
-            println("Title :   " + state.title)
-            println("Status:   " + state.on)
+            //println()
+            toApplogger("Title :   " + state.title)
+            toApplogger("Status:   " + state.on)
           }
-          println("reactions: " + element.reactions.length)
-          println()
+          toApplogger("reactions: " + element.reactions.length)
+          //println()
    }
-    println("Process #" + processRunned1.id + " session states: ")
+    toApplogger("Process #" + processRunned1.id + " session states: ")
     processRunned1.session_states.foreach {
       state => 
-      println()
-      println("Title :   " + state.title)
-      println("Status:   " + state.on)
+      //println()
+      toApplogger("Title :   " + state.title)
+      toApplogger("Status:   " + state.on)
 
     }
-    println("elements length" + processRunned1.allElements.length)
+    toApplogger("elements length" + processRunned1.allElements.length)
     Some(processRunned1)
 
   }
@@ -181,7 +195,7 @@ def initiate(bpID: Int,
     process.push {
       arrays.sortWith(_.order < _.order)
     }
-    println("elements " + process.allElements.length + " " + target.length)
+    toApplogger("elements " + process.allElements.length + " " + target.length)
     //process_dto
        // val session_id = 1 // REMOVE THIS!!
 
@@ -257,13 +271,13 @@ def initiate2(bpID: Int,
 
     process.topology = topologs
 
-    println("states found: " + states.length)
-    println("session_states found: " + session_states.length)    
+    toApplogger("states found: " + states.length)
+    toApplogger("session_states found: " + session_states.length)    
     states.foreach { state =>
-      println(state.front_elem_id)
+      toApplogger(state.front_elem_id.toString)
     }
     session_states.foreach { state =>
-      println(state.front_elem_id)
+      toApplogger(state.front_elem_id.toString)
     }
     reactions.foreach { react => react.reaction_state_outs ++= reaction_state_out.filter(sout => sout.reaction == react.id.get) }
     states.foreach { state => state.switchers ++= switches.filter(sw => sw.state_ref == state.id.get) }
@@ -311,7 +325,7 @@ def initiate2(bpID: Int,
     if (validateElements(target, test_space, space_elems) || run_proc)
       NInvoker.run_proc(process)
     else
-      println("Error")
+      toApplogger("Error")
 
 
 
@@ -434,7 +448,7 @@ def runFrom(station_id:Int, bpID:Int, params: List[InputParamProc], session_id: 
   )
     /* State sync */
     process.restoreCVOfElems
-    println(process)
+    toApplogger(process.toString)
 
     process.inputPmsApply(params)
 
@@ -449,7 +463,7 @@ def runFrom(station_id:Int, bpID:Int, params: List[InputParamProc], session_id: 
     /* LOGS UPDATE */
     logger_results
     val logger_db_after = BPLoggerDAO.from_origin_lgr(process.logger, process_dto, station_id, test_space)
-    println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+    toApplogger(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 
     logger_db_after.foreach(log => BPLoggerDAO.pull_object_from(station_id, log))
 

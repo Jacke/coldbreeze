@@ -172,8 +172,6 @@ val cf_reaction = ReactionRefDAO.pull_object(UnitReactionRef(
     element = cf_elem_topo,
     from_state = None))
 
-println(cf_reaction)
-println(cf_el_state_id_cf)
 
 val cf_reaction_out = ReactionStateOutRefDAO.pull_object(UnitReactionStateOutRef(None,
   state_ref = cf_el_state_id_cf,

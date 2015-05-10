@@ -80,7 +80,6 @@ object CustomRegistration {
 
   def handleStartSignUp(email: String, host: String) = {
 
-          println("boom")
           // check if there is already an account for this email address
           AccountsDAO.findByEmailAndProvider(email, "userpass") match {
             case Some(user) => {
@@ -92,7 +91,6 @@ object CustomRegistration {
               mail.setFrom("app@minorityapp.com")
               //views.html.mailBody.render(user).body();
               val token = securesocial.core.providers.MailToken("XXXX",email, DateTime.now, DateTime.now.plusMinutes(60),false)
-              println(views.html.mailer.ActorAdd.render(token.email, host).body)
               mail.sendHtml(views.html.mailer.ActorAdd.render(token.email, host).body)
               // SEND WELCOME
               //Mailer.sendAlreadyRegisteredEmail(user)
@@ -106,7 +104,6 @@ object CustomRegistration {
               mail.setCc(email)
               mail.setFrom("app@minorityapp.com")
               //views.html.mailBody.render(user).body();
-              println(views.html.mailer.ActorAdd.render(token._1, host).body)
               mail.sendHtml(views.html.mailer.ActorAdd.render(token._1, host).body)
 
 

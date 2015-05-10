@@ -8,7 +8,13 @@ import play.Play.autoImport._
 import sass.Import._
 import PlayKeys._
 
+import com.untyped.sbtjs.Plugin._
+import com.untyped.sbtsass.Plugin._
+
 import com.typesafe.sbt.less.Import._ 
+import com.typesafe.sbt.uglify.Import._
+import UglifyKeys._
+
 
 object Build extends Build {
   import Settings._
@@ -70,9 +76,12 @@ jodamapper, scalatest,rediscache, reflect, postgres, logbackClassic, scalaLog, s
     .enablePlugins(PlayScala)
     .enablePlugins(SbtWeb)
     .settings(basicSettings: _*)
+    .settings(pipelineStages in Assets := Seq(uglify))
     .settings((WebKeys.public in Assets) := (classDirectory in Compile).value / "public")
     //.settings(formatSettings: _*)(WebKeys.public in Assets) := (classDirectory in Compile).value / "public",
     .settings(revolverSettings: _*)
+    .settings(jsSettings : _*)
+    .settings(sassSettings : _*)
     //.settings((compile in Compile) <<= (compile in Compile).dependsOn(WebKeys.assets in Assets))
     .settings(sassOptions in Assets ++= Seq("--compass", "-r", "compass"))
 /*.settings(
@@ -93,7 +102,7 @@ jodamapper, scalatest,rediscache, reflect, postgres, logbackClassic, scalaLog, s
 
 
           apamailer, logentries, playauth,securesocial,
-          scalacheck,
+          scalacheck,compressor,
 mockito,
 ptest, scaldiplay, jsonvariants, playflyway, playctrl,
 cache, filter, hicaricp,

@@ -13,12 +13,12 @@
   <meta name="author" content="Minority">
 
   <!-- Styles -->
-  <link rel="stylesheet" href="/css/auth/fonts.css">
-  <link rel="stylesheet" href="/css/auth/footer.css">
-  <link rel="stylesheet" href="/css/auth/website.css">
-  <link rel="stylesheet" href="/css/auth/loginflow.css" />
+  <link rel="stylesheet" href='@routes.Assets.versioned("css/auth/fonts.css")'>
+  <link rel="stylesheet" href='@routes.Assets.versioned("css/auth/footer.css")'>
+  <link rel="stylesheet" href='@routes.Assets.versioned("css/auth/website.css")'>
+  <link rel="stylesheet" href='@routes.Assets.versioned("css/auth/loginflow.css")' />
   <!-- /Styles -->
-  <script src='@routes.Assets.at("javascripts/ssl.js")' type="text/javascript"></script>
+  <script src='@routes.Assets.versioned("javascripts/ssl.js")' type="text/javascript"></script>
 
   <link rel="shortcut icon" href="/favicon.ico">
 <style>
@@ -115,7 +115,7 @@ display: block;
 <!-- /website-footer -->
 
 
-<script src="/js/website-scroll.js"></script>
+<script src='@routes.Assets.versioned("assets/js/website-scroll.js")'></script>
 <script src="/jsroutes.js"></script>
 <script>
   websiteScroll();
@@ -216,7 +216,7 @@ $(function domReadyLoginFlow () {
       $requireds.get(0).focus();
       return false;
     }
-    e.find('button[type="submit"],input[type="submit"]').attr('disabled', 'disabled').text(function updateTextOfSubmit(ind, text) {
+    e.find('button[type="submit"],input[type="submit"]').versionedtr('disabled', 'disabled').text(function updateTextOfSubmit(ind, text) {
       return text + '...';
     });
     e.off();
