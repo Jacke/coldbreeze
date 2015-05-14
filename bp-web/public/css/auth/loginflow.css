@@ -4,7 +4,7 @@ height: 66px;
 width: 100px;
 top: 0px;
 left: 0px;
-background: url('../images/minority-logo.svg') no-repeat scroll 0px 0px transparent;
+background: url('/assets/images/minority-logo.svg') no-repeat scroll 0px 0px transparent;
 background-size: contain;
 }
 .help-block {
@@ -20,7 +20,20 @@ display: block;
 .loginPage__password-recovery {
     padding-top: 100px
 }
+.loginPage.loginPage__login h1 {
+    text-align: center;    
+    padding-bottom: 1.3em;    font-size: 150%;
+}
 
+.loginPage fieldset {
+    border: none;
+}
+.loginPage .form-actions {
+    padding-top: 11px;
+}
+.loginPage span.help-block {
+  display: none !important;
+}
 .loginFlowPage {
     margin: 0 auto;
     padding: 100px 20px 30px;
@@ -42,6 +55,65 @@ display: block;
 
 .loginFlowPage .loginInputs input ~ input[type="email"] ~ .suggestionTip {
     top: 2.45em
+}
+@-webkit-keyframes greenGlowIt {
+  0% { 
+    background-color: #7ccfaf; 
+    -webkit-box-shadow: 0 0 9px #ccc; 
+  }
+  50% { 
+    background-color: #47AB85; 
+    -webkit-box-shadow: 0 0 18px #91bd09; 
+  }
+  100% { 
+    background-color: #60DFAF; 
+    -webkit-box-shadow: 0 0 9px #ccc; }
+}
+
+
+@-moz-keyframes greenGlowIt {
+  0% { 
+    background-color: #7ccfaf; 
+    -moz-box-shadow: 0 0 9px #ccc; 
+  }
+  50% { 
+    background-color: #47AB85; 
+    -moz-box-shadow: 0 0 18px #91bd09; 
+  }
+  100% { 
+    background-color: #60DFAF; 
+    -moz-box-shadow: 0 0 9px #ccc; }
+}
+@-o-keyframes redGlowIt {
+  0% { 
+    background-color: #7ccfaf; 
+    -o-box-shadow: 0 0 9px #ccc; 
+  }
+  50% { 
+    background-color: #47AB85; 
+    -o-box-shadow: 0 0 18px #91bd09; 
+  }
+  100% { 
+    background-color: #60DFAF; 
+    -o-box-shadow: 0 0 9px #ccc; }
+}
+@keyframes greenGlowIt {
+  0% { 
+    background-color: #7ccfaf; 
+    box-shadow: 0 0 9px #ccc; 
+  }
+  50% { 
+    background-color: #47AB85; 
+    box-shadow: 0 0 18px #91bd09; 
+  }
+  100% { 
+    background-color: #60DFAF; 
+    box-shadow: 0 0 9px #ccc; }
+}
+button.loading {
+  -moz-animation: greenGlowIt 1.5s linear infinite;
+  -webkit-animation: greenGlowIt 1.5s linear infinite;
+  animation: greenGlowIt 1.5s linear infinite;
 }
 
 .loginFlowPage .suggestionTip {

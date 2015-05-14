@@ -4,7 +4,7 @@
 @import securesocial.core.IdentityProvider
 @import helper._
 @implicitFieldConstructor = @{ FieldConstructor(securesocial.views.html.inputFieldConstructor.f) }
-@main("") {
+@main("Sign In") {
 
 <div class="loginPage loginPage__login">
       <div class="loginView">
@@ -70,7 +70,7 @@
                 @helper.inputText(
                     signUpForm("userName"),
                     '_label -> Messages("securesocial.signup.username"),
-                    'class -> "input-xlarge",
+                    'class -> "textField block",
                     'id -> "",
                     'placeholder -> ""
                 )

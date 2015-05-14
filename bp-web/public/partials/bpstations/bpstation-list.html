@@ -1,109 +1,3 @@
-<style>
-input.switch {
-  font-size: 10px;
-  position: relative;
-  display: inline-block;
-  -webkit-appearance: none;
-  -webkit-user-select: none;
--webkit-tap-highlight-color: transparent;
--webkit-touch-callout: none;
-  appearance: none;
-  width: 9em;
-  height: 4.6em;
-  line-height: 4.6em;
-  border-radius: 2.3em;
-  margin: 0;
-  padding: 0;
-  box-shadow: inset 0 0 0 0.2em #eee;
-  outline: 1px solid transparent !important;
-  cursor: pointer;
-  border: none;
-  background: transparent;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
-  transition: box-shadow .3s ease-in-out, padding .25s ease-in-out;
-  transition-delay: .1s, 0s;
-  /* Animations if supported */
-}
-input.switch:checked {
-  transition-delay: 0s, 0s;
-  box-shadow: inset 0 0 0 2.62857em #00c169 !important;
-  padding-left: 4.4em;
-}
-input.switch.hit {
-  animation: slide-off .35s ease both;
-  -webkit-animation: slide-off .35s ease both;
-}
-input.switch.hit:checked {
-  -webkit-animation: slide-on  .35s ease both .05s;
-  animation: slide-on  .35s ease both .05s;
-}
-input.switch::before, input.switch::after {
-  content: "";
-}
-input.switch::after {
-  /* Increases hit area */
-  position: absolute;
-  top: -1.4em;
-  left: -1.4em;
-  bottom: -1.4em;
-  right: -1.4em;
-}
-input.switch::before {
-  display: inline-block;
-  height: 4.2em;
-  width: 4.2em;
-  margin: 0.2em 0 0 0.2em;
-  background-color: #fff;
-  border-radius: 2.1em;
-  box-shadow: 0 0.2em 0.4em 0 rgba(0, 0, 0, 0.2), 0 0 0.1em 0.1em rgba(0, 0, 0, 0.1);
-  transition: all .1s ease .1s;
-}
-input.switch:active::before {
-  transition: all .1s ease .05s;
-}
-input.switch.touch:hover::before {
-  transition: all .0s ease .00s;
-}
-input.switch:active::before, input.switch.touch:hover::before {
-  width: 5.0em;
-}
-input.switch:active:checked::before, input.switch.touch:hover:checked::before {
-  margin-left: -0.6em;
-}
-
-@keyframes slide-on {
-  0% {
-    padding-left: 0em;
-  }
-  60% {
-    padding-left: 4.8em;
-  }
-  100% {
-    padding-left: 4.4em;
-  }
-}
-@keyframes slide-off {
-  0% {
-    padding-left: 4.4em;
-    text-indent: 0;
-  }
-  60% {
-    padding-left: 0em;
-    text-indent: -0.4em;
-  }
-  100% {
-    padding-left: 0em;
-    text-indent: 0;
-  }
-}
-
-
-
-
-
-</style>
 
 
 <div class="allStations allStationsList">
@@ -148,14 +42,14 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 <div class="process_content">
           <div ng-include src="'assets/partials/treeThumb.html'"></div>
 </div>
-<div class="stations" ng-repeat="session in sessions.sessions | limitTo: 10 | filter: isOnlyActive | filter: { session: { session: onlyListed } }" style="clear: both;">
+<div class="stations" ng-repeat="session in sessions.sessions | limitTo: 10 | filter: isOnlyActive | filter: { session: onlyListed }" style="clear: both;">
 
         <div class="session__header">
               <span class="number {{ session.station.state }}">{{ $index + 1 }}</span>
               <a href="/a#/bprocess/{{ sessions.process.id }}/elements?session={{ session.session.id }}">Session # {{ $index }} — {{session.station.note }}</a>
 
 
-<abbr class="session__header__created_at" title="session.session.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a'" data-livestamp="{{session.session.created_at}}"></abbr>
+<abbr class="session__header__created_at" title="{{ session.session.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="session.session.created_at"></abbr>
 
               <a ng-click="unlisted(session.session)" ng-show="session.session.onlyListed">Unlisted</a>
         </div>      

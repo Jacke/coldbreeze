@@ -50,7 +50,7 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
   }
 
   def index() = Action { implicit request =>
-    Ok("test")
+    Ok("test " + request.domain.toString + " " + request.host.toString)
   }
 
 
@@ -187,11 +187,22 @@ import com.github.nscala_time.time.Imports._
 trait SubdomainController extends Controller {
   def WithSubdomain(f: => String => Request[AnyContent] => Result) = Action { implicit request =>
     val splitDomain = request.domain.split("\\.")
-
+ 
     if (splitDomain.length < 2) {
       BadRequest("Domain not found!")
     } else {
       f(splitDomain.head)(request)
     }
+  }
+}
+
+
+class TestController extends SubdomainController{
+  def index() = WithSubdomain { implicit domain => implicit request =>
+   // Domain.findByName(domain) match {
+    //  case Some(foundDomain: Domain) =>
+        Ok("domain" + domain.toString)
+      //case _ => Ok("Nothing found!")
+    //}
   }
 }

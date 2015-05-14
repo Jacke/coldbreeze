@@ -46,9 +46,22 @@ object Build extends Build {
 
     .settings(
       libraryDependencies ++=
-        List(async, amonite, reflect, akkaActor, scaldiakka, dispatch, scalaz, mechanize,nscala, play, scalatest, scalaLog, 
-logback, scaldi,
-sprayClient, hdrHistogram))
+        List(
+          async, 
+          amonite, 
+          reflect, 
+          akkaActor, 
+          scaldiakka, 
+          dispatch, 
+          scalaz, 
+          mechanize,nscala, 
+          play, 
+          scalatest, 
+          scalaLog, 
+          logback, 
+          scaldi,
+          sprayClient, 
+          hdrHistogram))
 
         //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
         //provided(logback) ++
@@ -61,13 +74,29 @@ sprayClient, hdrHistogram))
     .settings(revolverSettings: _*)
     .settings(
       libraryDependencies ++=
-        List(async, akkaSlf4j, slick, play,jodatime,
+        List(
+          async, 
+          akkaSlf4j, 
+          slick, 
+          play,
+          jodatime,
           //slickpg,
           //slickpgcore,
           //slickpgplay,
-//slickjoda,
-jodaconvert,
-jodamapper, scalatest,rediscache, reflect, postgres, logbackClassic, scalaLog, sprayCan, sprayRouting, hdrHistogram, sprayJson))
+          //slickjoda,
+          jodaconvert,
+          jodamapper, 
+          scalatest,
+          rediscache, 
+          reflect, 
+          postgres, 
+          logbackClassic, 
+          scalaLog, 
+          sprayCan, 
+          sprayRouting, 
+          hdrHistogram, 
+          sprayJson))
+
         //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
         //test(scalatest, akkaTestKit, sprayTestkit))
     .dependsOn(bpCore)
@@ -76,7 +105,7 @@ jodamapper, scalatest,rediscache, reflect, postgres, logbackClassic, scalaLog, s
     .enablePlugins(PlayScala)
     .enablePlugins(SbtWeb)
     .settings(basicSettings: _*)
-    .settings(pipelineStages in Assets := Seq(uglify))
+    //.settings(pipelineStages in Assets := Seq(uglify))
     .settings((WebKeys.public in Assets) := (classDirectory in Compile).value / "public")
     //.settings(formatSettings: _*)(WebKeys.public in Assets) := (classDirectory in Compile).value / "public",
     .settings(revolverSettings: _*)
@@ -93,20 +122,45 @@ jodamapper, scalatest,rediscache, reflect, postgres, logbackClassic, scalaLog, s
     .settings(mainClass in (Compile, run) := Some("DevNettyServer"))
     .settings(
       libraryDependencies ++=
-        List(async, akkaActor, akkaSlf4j, slick, play, 
+        List(
+          async, 
+          akkaActor, 
+          akkaSlf4j, 
+          slick, 
+          play, 
           requirejs,
           underscore,
           jquery,
           bootstrap, 
           angular,
+          apamailer, 
+          logentries, 
+          playauth,
+          securesocial,
+          scalacheck,
+          compressor,
+          mockito,
+          formtag,
+          ptest, 
+          scaldiplay, 
+          jsonvariants, 
+          playflyway, 
+          playctrl,
+          cache, 
+          filter, 
+          hicaricp,
+          jdbc, 
+          anorm, 
+          shapeless, 
+          mailer, 
+          scalatest, 
+          reflect, 
+          bcrypt, 
+          postgres, 
+          logbackClassic, 
+          scalaLog, 
+          hdrHistogram))
 
-
-          apamailer, logentries, playauth,securesocial,
-          scalacheck,compressor,
-mockito,
-ptest, scaldiplay, jsonvariants, playflyway, playctrl,
-cache, filter, hicaricp,
-jdbc, anorm, shapeless, mailer, scalatest, reflect, bcrypt, postgres, logbackClassic, scalaLog, hdrHistogram))
         //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
         //test(scalatest, akkaTestKit, sprayTestkit))
     .dependsOn(bpCore, bpDao)
@@ -120,9 +174,9 @@ jdbc, anorm, shapeless, mailer, scalatest, reflect, bcrypt, postgres, logbackCla
     (compile in Compile) <<= (compile in Compile).dependsOn(WebKeys.assets in Assets),
     includeFilter in(Assets, LessKeys.less) := "*.less",
     excludeFilter in(Assets, LessKeys.less) := "_*.less",
-mainClass in Compile := Some("ProdNettyServer"),
-mainClass in (Compile, run) := Some("DevNettyServer"),
-//workaround for gen-idea
+    mainClass in Compile := Some("ProdNettyServer"),
+    mainClass in (Compile, run) := Some("DevNettyServer"),
+    //workaround for gen-idea
     sourceGenerators in Compile += task {
       val dir: File = (sourceManaged in Compile).value / "controllers"
       val dirs = Seq(dir / "ref", dir / "javascript")
@@ -139,31 +193,35 @@ mainClass in (Compile, run) := Some("DevNettyServer"),
     .settings(revolverSettings: _*)
     .settings(
       libraryDependencies ++=
-        List(async, akkaActor, akkaSlf4j, slick, play, 
+        List(
+          async, 
+          akkaActor, 
+          akkaSlf4j, 
+          slick, 
+          play, 
           requirejs,
           underscore,
           jquery,
           bootstrap, 
-          angular,
-          
-      playauth,
-      securesocial, 
-      jsonvariants, 
-      playflyway, 
-      playctrl, 
-      cache, 
-      filter, 
-      jdbc, 
-      anorm, 
-      shapeless, 
-      mailer, 
-      scalatest, 
-      reflect, 
-      bcrypt, 
-      postgres, 
-      logbackClassic, 
-      scalaLog, 
-      hdrHistogram))
+          angular,      
+          playauth,
+          securesocial, 
+          jsonvariants, 
+          playflyway, 
+          playctrl, 
+          cache, 
+          filter, 
+          jdbc, 
+          anorm, 
+          shapeless, 
+          mailer, 
+          scalatest, 
+          reflect, 
+          bcrypt, 
+          postgres, 
+          logbackClassic, 
+          scalaLog, 
+          hdrHistogram))
         //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
         //test(scalatest, akkaTestKit, sprayTestkit))
     .dependsOn(bpCore, bpDao)

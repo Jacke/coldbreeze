@@ -12,7 +12,8 @@ object Dependencies {
     "p11k" at "http://pk11-scratch.googlecode.com/svn/trunk",
      Resolver.url( "Reflect GitHub Repository", url( "http://taig.github.io/Reflect/release/" ) )( Resolver.ivyStylePatterns ),
      Resolver.url("heroku-sbt-plugin-releases", url("http://dl.bintray.com/heroku/sbt-plugins/"))(Resolver.ivyStylePatterns),
-     Resolver.url("Edulify Repository", url("http://edulify.github.io/modules/releases/"))(Resolver.ivyStylePatterns)
+     Resolver.url("Edulify Repository", url("http://edulify.github.io/modules/releases/"))(Resolver.ivyStylePatterns),
+     Resolver.url("github repo for html5tags", url("http://loicdescotte.github.io/Play2-HTML5Tags/releases/"))(Resolver.ivyStylePatterns)
 
   )
 
@@ -43,6 +44,7 @@ object Dependencies {
   val play            = "org.webjars"               %% "webjars-play"           % "2.3.0"
   val playslick       = "com.typesafe.play"         %  "play-slick_2.10"        % "0.8.0"
   val playauth        = "jp.t2v"                    %% "play2-auth"             % "0.12.0"
+  val formtag         = "com.loicdescotte.coffeebean" % "html5tags_2.11"        % "1.2.1"
   val playctrl        = "jp.t2v"                    %% "stackable-controller"   % "0.4.0"
   val logentries      = "com.logentries"            % "logentries-appender"     % "1.1.21"
   val compressor      = "com.mohiva"                %% "play-html-compressor"   % "0.3.1"

@@ -196,20 +196,21 @@ $scope.haltStation = function (stationId) {
   $scope.onlyFinished = false;
   $scope.onlyListed = false;
 
-  $scope.isOnlyActive = function(station) {
+  $scope.isOnlyActive = function(session) {
+    //var session = session
     if ($scope.onlyActive && !$scope.onlyPaused && !$scope.onlyFinished) {
-      return station.paused == true && station.state != false; 
+      return session.paused == true && session.state != false; 
     }
     if (!$scope.onlyActive && !$scope.onlyPaused && $scope.onlyFinished) {
-      return station.finished == true; 
+      return session.finished == true; 
     }
     if (!$scope.onlyActive && $scope.onlyCanceled) {
-      return station.canceled == true; 
+      return session.canceled == true; 
     }
     
     
     else {
-      return station;
+      return session;
     }
   }
 

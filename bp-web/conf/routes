@@ -90,6 +90,7 @@ POST        /employee/:id/destroy                               @controllers.use
 # App
 
 GET         /test                                               @controllers.Application.index()
+GET         /test/test										    @controllers.TestController.index()
 GET         /a                                                  @controllers.Application.app()
 POST        /whoami                                             @controllers.Application.whoami()
 PUT         /configuration/ 									@controllers.Application.configuration()

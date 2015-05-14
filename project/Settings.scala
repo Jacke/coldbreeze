@@ -60,6 +60,7 @@ object Settings {
   lazy val basicSettings = seq(
     organization  := "net.empireinc",
     scalaVersion  := "2.11.0",
+    version       := "1.0.2",
     resolvers    ++= Dependencies.resolutionRepos,
     //org.scalastyle.sbt.ScalastylePlugin.Settings,
     //resolvers    ++= Seq("snapshots", "releases").map(Resolver.sonatypeRepo),
@@ -96,7 +97,7 @@ object Settings {
   
   import spray.revolver.RevolverPlugin.Revolver._
   lazy val revolverSettings = Revolver.settings ++ seq(reJRebelJar := "~/.jrebel/jrebel.jar")
-//++ Revolver.enableDebugging(port = 9999, suspend = true) ++ seq(reJRebelJar := "~/.jrebel/jrebel.jar")
+  //++ Revolver.enableDebugging(port = 9999, suspend = true) ++ seq(reJRebelJar := "~/.jrebel/jrebel.jar")
   //lazy val formatSettings = Twirl.settings
   //SbtScalariform.scalariformSettings ++ Seq(
   //  Twirl.settings,

@@ -153,6 +153,9 @@ $scope.unlisted = function (session) {
       return session;
     }
   }
+$scope.isOnlyListed = function(session) {
+  return session;
+}
 
 $scope.date = {startDate: null, endDate: null};
 

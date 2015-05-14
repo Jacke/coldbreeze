@@ -1,33 +1,44 @@
 
 $(function domReadyLoginFlow () {
-    $('.form-horizontal button').on('click', function(event) {
+  
+  var whoamiCreds = function (data) {
+    $.ajax({url: jsRoutes.controllers.ProfileController.profile().absoluteURL(document.ssl_enabled) + "whoami", type: 'post', headers: {
+      "Access_Name": "User", "X-Auth-Token": data.token
+    }}).done(function(who) {
+    localStorage.setItem("manager", who.manager);
+    localStorage.setItem("business", who.business);
+    localStorage.setItem("employee", who.employee);
+    //$('.form-horizontal button').toggleClass('loading');
+  });
+  }
+
+  $('.form-horizontal button').on('click', function(event) {
 
   event.preventDefault();
-    var name = $('.form-horizontal #username').val();
-    var pswd = $('.form-horizontal #password').val();
-    $('.messageBoxWrap').remove();
+  var name = $('.form-horizontal #username').val();
+  var pswd = $('.form-horizontal #password').val();
+  $('.messageBoxWrap').remove();
+  $('.form-horizontal button').toggleClass('loading');
     $.post(jsRoutes.controllers.ProfileController.profile().absoluteURL(document.ssl_enabled) + "auth/api/authenticate/userpass", { username: name , password: pswd })
   .done(function( data ) {
   localStorage.setItem("token", data.token);
   sessionStorage.setItem("token", data.token);
-
-  $.ajax({url: jsRoutes.controllers.ProfileController.profile().absoluteURL(document.ssl_enabled) + "whoami", type: 'post', headers: {
-    "Access_Name": "User", "X-Auth-Token": data.token
-  }}).done(function(who) {
-    localStorage.setItem("manager", who.manager);
-    localStorage.setItem("business", who.business);
-    localStorage.setItem("employee", who.employee);
   
-  });
+  // Fetch whoami creds
+  whoamiCreds(data);
+  // Submit main form
   $('.form-horizontal')[0].submit();
 
-  }).fail(function( jqXHR, textStatus) {
-      $('.loginFlowPage').prepend('<div class="messageBoxWrap"><p class="message">'+ JSON.parse(jqXHR.responseText).error +'</p></div>');
-    })
-  ;
 
-   
+  }).fail(function( jqXHR, textStatus) {
+      $('.form-horizontal button').toggleClass('loading');
+      $('.loginFlowPage').prepend('<div class="messageBoxWrap"><p class="message">'+ JSON.parse(jqXHR.responseText).error +'</p></div>');
+    });
+
   });
+
+
+
   
   $('.loginView a.switchView').on('click', function clickViewSwitch(e) {
     var nextPage;

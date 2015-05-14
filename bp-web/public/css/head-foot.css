@@ -482,22 +482,16 @@ header.fullSize {
 
 
 .minorityMenu .minorityLogo a {
-
-    
-    
-
-    background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiID8+PCFET0NUWVBFIHN2ZyBQVUJMSUMgIi0vL1czQy8vRFREIFNWRyAxLjEvL0VOIiAiaHR0cDovL3d3dy53My5vcmcvR3JhcGhpY3MvU1ZHLzEuMS9EVEQvc3ZnMTEuZHRkIj48c3ZnIHdpZHRoPSIxMzZwdCIgaGVpZ2h0PSI5MHB0IiB2aWV3Qm94PSIwIDAgMTM2IDkwIiB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgaWQ9IiM3Nzc4N2NmZiI+PHBhdGggZmlsbD0iIzRjNTI2NCIgb3BhY2l0eT0iMS4wMCIgZD0iIE0gMC4wMCAwLjAwIEwgMTM2LjAwIDAuMDAgTCAxMzYuMDAgOTAuMDAgTCAwLjAwIDkwLjAwIEwgMC4wMCAwLjAwIE0gMTguNzkgMzUuNzEgQyAxNy42NSA0OC40NCAxOC41OSA2MS40MCAxOC4zNSA3NC4yMiBDIDI3LjM2IDY4LjA1IDM1Ljc0IDYwLjk5IDQ0LjE1IDU0LjA1IEMgMzkuNTkgNDguNjAgMzQuMDAgNDQuMTYgMjkuMTYgMzguOTggQyA0Mi40NiA0OC41NCA1NC45MCA1OS4yNSA2OC4wNCA2OS4wMyBDIDgxLjIwIDU5LjMzIDkzLjU5IDQ4LjYyIDEwNi43OSAzOC45NyBDIDEwMi4yMiA0NC4zNSA5Ni41OSA0OC42OSA5MS44OSA1My45NiBDIDEwMC4zNyA2MC43OSAxMDguNzkgNjcuNzMgMTE3LjYzIDc0LjEwIEMgMTE3LjY5IDYxLjIxIDExNy44MSA0OC4zMSAxMTcuNTggMzUuNDIgQyAxMDkuMzIgMjkuMDQgMTAxLjI1IDIyLjQzIDkyLjk3IDE2LjA3IEMgODQuNDIgMjIuMjUgNzYuNjEgMjkuNDAgNjguMDAgMzUuNTAgQyA1OS4zOSAyOS40MCA1MS41OSAyMi4yNSA0My4wMiAxNi4wOCBDIDM0Ljk4IDIyLjY1IDI2LjI5IDI4LjU2IDE4Ljc5IDM1LjcxIFoiIC8+PC9nPjxnIGlkPSIjZmFmYWZhZmYiPjwvZz48L3N2Zz4=) no-repeat scroll 0px 0px / contain transparent;
-    margin-top: 16px;
+margin-top: 16px;
 margin-left: 5px;
 width: 71px;
 height: 47px;
 color: white;
-background-color: white;
+
 }
 .minorityMenu .minorityLogo a:hover {
 border: none;
-background-color: #7FDBFF;
-}
+    }
 .minorityMenu .apiSwitcher {
     position: relative;
     display: inline-block;
@@ -527,6 +521,27 @@ background-color: #7FDBFF;
     -ms-transition-delay: 0;
     transition-delay: 0;
 }
+.banner svg.svg-logo {
+    width: 120px;
+}
+
+svg.svg-logo {
+  width: 72px;
+  height: 49px;
+  margin-top: -1px;
+  margin-left: 0px;
+  background-color: transparent;
+}
+.silo path#svg_1 {
+    fill: transparent;
+}
+.minorityLogo:hover polygon#e1_polygon {
+  fill: #7FDBFF;
+}
+polygon#e1_polygon {
+  fill: white;
+}
+
 
 .minorityMenu .apiSwitcher.switcherToggle {
     cursor: pointer;

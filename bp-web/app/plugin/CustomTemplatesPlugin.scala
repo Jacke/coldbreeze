@@ -30,15 +30,15 @@ object ViewTemplates1 {
     }
 
     override def getStartResetPasswordPage(form: Form[String])(implicit request: RequestHeader, lang: Lang): Html = {
-      securesocial.views.html.Registration.startResetPassword(form)(request, lang, env)
+      views.html.custom.startResetPassword(form)(request, lang, env)
     }
 
     override def getResetPasswordPage(form: Form[(String, String)], token: String)(implicit request: RequestHeader, lang: Lang): Html = {
-      securesocial.views.html.Registration.resetPasswordPage(form, token)(request, lang, env)
+      views.html.custom.resetPassword(form, token)(request, lang, env)
     }
 
     override def getPasswordChangePage(form: Form[ChangeInfo])(implicit request: RequestHeader, lang: Lang): Html = {
-      securesocial.views.html.passwordChange(form)(request, lang, env)
+      views.html.custom.passwordChanged(form)(request, lang, env)
     }
 
     def getNotAuthorizedPage(implicit request: RequestHeader, lang: Lang): Html = {

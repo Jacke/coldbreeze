@@ -50,9 +50,8 @@ class BusinessServiceController(override implicit val env: RuntimeEnvironment[De
  def index() = SecuredAction { implicit request =>
       val services = BusinessServiceDAO.getAll
       val businesses = BusinessDAO.getAll
-      Ok(views.html.businesses.services(
-        Page(services, 1, 1, services.length), 1, "%", businesses, request.user))
-
+      //Ok(views.html.businesses.services(Page(services, 1, 1, services.length), 1, "%", businesses, request.user))
+      Home
   }
   implicit val bservicesReads = Json.reads[BusinessServiceDTO]
   implicit val bservicesWrites = Json.format[BusinessServiceDTO]
@@ -69,7 +68,7 @@ class BusinessServiceController(override implicit val env: RuntimeEnvironment[De
   }
   def create_new() = SecuredAction { implicit request =>
     serviceForm.bindFromRequest.fold(
-      formWithErrors => BadRequest(views.html.businesses.service_form(formWithErrors, request.user)),
+      formWithErrors => Home, //BadRequest(views.html.businesses.service_form(formWithErrors, request.user)),
       entity => {
           val uid = request.user.main.email.get
           val emp = EmployeeDAO.getByUID(uid).isDefined

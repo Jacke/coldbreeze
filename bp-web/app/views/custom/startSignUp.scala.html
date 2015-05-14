@@ -5,9 +5,8 @@
 @import securesocial.core.providers.UsernamePasswordProvider.UsernamePassword
 
 
-@views.html.custom.main("") {
+@views.html.custom.main("Sign Up") {
 <div class="loginFlowPage">
-
           <div class="loginPage loginPage__login loginPage__active">
       <div class="loginView">
 
@@ -21,7 +20,7 @@
         @Messages(msg)
     </div>
     }
-    <pre>@env.routes.handleStartSignUpUrl</pre>
+    <pre><!--@env.routes.handleStartSignUpUrl--></pre>
     <form action="@env.routes.handleStartSignUpUrl"
           class="loginInputs"
           autocomplete="off" method="post"
@@ -34,7 +33,7 @@
             )
 
     <p class="loginText">
-                <button type="submit"  id="l_submit" class="loginButton block actionOk">@Messages("securesocial.signup.createAccount")</button>
+                <button type="submit" id="l_submit" class="loginButton block actionOk">@Messages("securesocial.signup.createAccount")</button>
                 
     </p>
 

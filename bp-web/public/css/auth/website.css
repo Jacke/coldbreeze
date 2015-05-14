@@ -622,16 +622,6 @@ body.website {
     font-size: 36px
 }
 
-.website .aboutDiscussion .ilu {
-    float: left;
-    background: url("/images/how-it-works-icons-c97b12a21cce8bfc.png") 0 -522px no-repeat;
-    height: 140px;
-    width: 200px;
-    margin-right: 40px;
-    margin-bottom: 20px;
-    display: inline-block
-}
-
 .website .aboutDiscussion p {
     font-size: 18px;
     line-height: 28px
@@ -645,9 +635,6 @@ body.website {
     margin: 0
 }
 
-.website footer .applicationFooterLogoContainer .logo,.website footer .applicationFooterIconContainer .icon {
-    background-image: url("/images/icons-footer-4726054fcbdd7919.png")
-}
 
 .website footer .applicationFooterLogotypeContainer .logotype,.website footer .applicationFooterLogotypeContainer {
     height: 40px
@@ -733,7 +720,7 @@ body.website {
 #navigation .backToTop {
     height: 79px;
     width: 75px;
-    background: #fff url("/images/social-profiles-b414abaaed3bd29c.png") -184px 10px no-repeat;
+    background: #fff url("/assets/images/social-profiles-b414abaaed3bd29c.png") -184px 10px no-repeat;
     position: absolute;
     top: -79px;
     right: 0;
@@ -791,7 +778,7 @@ body.website {
     opacity: .6;
     -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=60)";
     filter: alpha(opacity=60);
-    background: url("/images/social-profiles-b414abaaed3bd29c.png") -199px 0 no-repeat
+    background: url("/assets/images/social-profiles-b414abaaed3bd29c.png") -199px 0 no-repeat
 }
 
 #websiteHeader .positioning {
@@ -1058,7 +1045,7 @@ body.website {
     left: -37px;
     top: 50%;
     margin-top: -12px;
-    background: url("/images/github-alt-a31667b442f1a14b.png") center center no-repeat;
+    background: url("/assets/images/github-alt-a31667b442f1a14b.png") center center no-repeat;
     -webkit-background-size: contain;
     -moz-background-size: contain;
     background-size: contain
@@ -1102,7 +1089,7 @@ body.website {
 
 .website .sectionHeadline:after,.website .sectionHeadline:before {
     content: '';
-    background-image: url("/images/hex-372f894190b5a99a.png");
+    background-image: url("/assets/images/hex-372f894190b5a99a.png");
     background-repeat: no-repeat;
     background-position: center center;
     height: 90px;
@@ -1939,7 +1926,7 @@ body.website {
     color: #f00;
     font-size: 11px;
     font-weight: bold;
-    background-image: url("/images/social-profiles-b414abaaed3bd29c.png");
+    background-image: url("/assets/images/social-profiles-b414abaaed3bd29c.png");
     background-repeat: no-repeat;
     content: ' '
 }

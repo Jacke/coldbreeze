@@ -1,6 +1,6 @@
 @import securesocial.core.providers.UsernamePasswordProvider.UsernamePassword
 @(loginForm: Form[(String,String)], errorMsg: Option[String] = None)(implicit request: RequestHeader, lang: Lang, env:securesocial.core.RuntimeEnvironment[_])
-@main("") {
+@main("Login") {
 
 @errorMsg.map { msg =>
 <div class="messageBoxWrap">
@@ -50,8 +50,8 @@
             </div>
         }
     }
+  </div>
 </div>
-    </div>
 
 <div class="loginPage loginPage__register">
   <div class="loginView">
