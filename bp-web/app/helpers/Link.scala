@@ -2,6 +2,16 @@ import play.api._
 import play.api.mvc._
 import play.api.i18n.Lang
 
+package helpers {
+  import service.DemoUser
+
+  object LangDet {
+  def getLang(user: DemoUser) = {
+    user.lang.getOrElse(Lang("en", "US"))
+  }
+}
+}
+
 package views.html.helper {
 
 import service.DemoUser
@@ -26,7 +36,8 @@ object LangDet {
   def getLang(user: DemoUser) = {
     user.lang.getOrElse(Lang("en", "US"))
   }
+}
 
 }
-}
+
 

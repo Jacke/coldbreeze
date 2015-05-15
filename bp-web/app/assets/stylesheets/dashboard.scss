@@ -38,6 +38,37 @@
 .service-edit .actions {
     padding-bottom: 25px;
 }
+.serviceForm dd.info {
+    display: none;
+}
+
+.serviceForm input#title.form-control {
+    width: 96%;
+    height: 35px;
+}
+
+.serviceForm dd {
+    display: inline-block;
+}
+
+.serviceForm .actions {
+    display: inline-block;
+}
+
+.serviceForm fieldset {
+    display: inline-block;
+    width: 59%;
+}
+
+.serviceForm dt {
+    display: none;
+}
+
+
+
+
+
+
 @include b(profile_advices) {
 	@include e(advice) {
 		padding-top: 20px;
@@ -89,6 +120,35 @@
 	}
 
 }
+
+
+
+.session-process .session__header {
+    display: inline-block;
+    width: 40%;
+}
+
+.session-process .progress {
+    width: 50%;
+    display: inline-block;
+    margin-bottom: -8px;
+}
+
+.session-process .station-markers {
+    width: 110%;
+}
+
+.session-process .stations {
+    padding-bottom: 25px;
+    margin-bottom: 10px;
+}
+
+.session-process .session__header a {
+    font-size: 14px;
+}
+
+
+
 
 @include b(dashboard_services) {
 

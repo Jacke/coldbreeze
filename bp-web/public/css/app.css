@@ -12,10 +12,12 @@ body.themeGrad {
   background-size: 100% 100%;
   -webkit-font-smoothing: subpixel-antialiased;
 }
-body.themeGrad div#global {
+body.themeGrad div#container.container-global {
   background: rgba(255, 255, 255, 0.93);
 }
-
+.dashboard_sessions .teamChangeBox.teamPaddedBox {
+    padding-left: 0px;
+}
 .uicon-svg12:hover, .uicon-svg442:hover, .uicon-svg2222:hover, .uicon-svg542:hover, .uicon-svg522:hover, .uicon-svg142:hover {
   color: #7FDBFF;
   text-decoration: none;
@@ -1649,11 +1651,10 @@ border-radius: 6px;
     display: inline-block;
     float: left;
 }
-
-.allSessionsList .process_content, .allStationsList, .process_content {
-    float: left;
-    margin-top: 47px;
-    margin-left: 20px;
+.allSessionsList .process_content,  .allStationsList, .process_content {
+  float: left;
+  margin-top: 41px;
+  margin-left: 15%;
 }
 
 .allStations .session-process {

@@ -1,4 +1,5 @@
 @import service.DemoUser
+@import helpers._
 @import controllers.employeeParams
 @import controllers.managerParams
 @import controllers.planInfo
@@ -11,11 +12,11 @@
 @import securesocial.core.providers.UsernamePasswordProvider
 @import securesocial.core.AuthenticationMethod._
 @import play.api.{Logger, Play}
-@import helper._
 @import play.api.Play
+@import html5.tags.html._
+
 @import models.DAO.resources.BusinessServiceDTO
 @import models.DAO.resources.BusinessDTO
-@import helper._
 @(user: DemoUser, currentPage: Page[BusinessServiceDTO])(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment[service.DemoUser])
 @header_table(orderBy: Int, title: String) = {
     <th class="headerSortDown">
@@ -60,16 +61,16 @@
     }
 
   <!-- <h2 class="teamBoxHeading">@Messages("page.managerBoard")(LangDet.getLang(user) ) </h2> -->
-    <div class="teamSettingsCheckbox">
+    <div class="teamSettingsCheckbox serviceForm">
     <div id="actions">
       <!--<a class="btn success" id="add" href="@routes.BusinessServiceController.create()">Add a service</a>-->
         @form(routes.BusinessServiceController.create_new()) {
         <fieldset>
-        @inputText(serviceForm("title"), '_label -> Messages("page.title")(LangDet.getLang(user) ), 'class -> "form-control")
+        @text(serviceForm("title"), '_label -> Messages("page.title")(LangDet.getLang(user) ), 'class -> "form-control", 'placeholder -> Messages("page.title")(LangDet.getLang(user) ))
         </fieldset>
 
         <div class="actions">
-        <input type="submit" value="Create service" class="btn btn-primary"> 
+          <input type="submit" value="Create service" class="btn btn-primary"> 
         </div>
         }
     </div>
