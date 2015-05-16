@@ -128,16 +128,24 @@
     <div class="primary-states">
     </div>
     <div class="info">
-      <div class="type">{{ type_short[bpelem.type_title] }}</div>
+      <div class="type">{{ type_short[bpelem.type_title] }}
+         <ul class="type-tabs" role="tablist" ng-show="(isManagerVal && !inSession) && selected == 2">
+           <li><a role="tab" data-toggle="tab" ng:init="selected=1" ng:click="selected == 1 ? selected=2 : selected=1">
+           <span class="glyphicon glyphicon-edit"></span></a></li>
+           <li><a ng-click="deleteElem(bpelem)"><span class="glyphicon glyphicon-remove"></span></a></li>
+           <li><a ng:click="moveUpElem(bpelem)"><span class="glyphicon glyphicon-arrow-up"></span></a></li>
+           <li><a ng:click="moveDownElem(bpelem)"><span class="glyphicon glyphicon-arrow-down"></span></a></li>
+         </ul>
+      </div>
       <h4 class="title">{{ bpelem.title }}</h4>
       <h6 class="desc">{{ bpelem.desc }}</h6>
     </div>
-    <ul class="elem-control elem-tabs" role="tablist" ng-show="isManagerVal && !inSession">
+    <!--<ul class="elem-control elem-tabs" role="tablist" ng-show="isManagerVal && !inSession">
       <li><a role="tab" data-toggle="tab" ng:init="selected=1" ng:click="selected == 1 ? selected=2 : selected=1"><span class="glyphicon glyphicon-edit"></span></a></li>
       <li><a ng-click="deleteElem(bpelem)"><span class="glyphicon glyphicon-remove"></span></a></li>
       <li><a ng:click="moveUpElem(bpelem)"><span class="glyphicon glyphicon-arrow-up"></span></a></li>
       <li><a ng:click="moveDownElem(bpelem)"><span class="glyphicon glyphicon-arrow-down"></span></a></li>
-    </ul>
+    </ul>-->
     <ul class="elem-control elem-tabs" role="tablist" ng-show="inSession">
       <p ng-show="bpelem.states.length > 0">
         <abbr class="session__header__created_at" title="{{ bpelem.states[0].updated_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="bpelem.states[0].updated_at"></abbr>
