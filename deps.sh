@@ -6,4 +6,4 @@ sudo apt-get install postgresql-9.4
 sudo apt-get install redis-server
 sudo apt-get install ruby
 sudo gem install sass
-sudo gem install compass
+sudo apt-get install compass
