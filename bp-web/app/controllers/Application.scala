@@ -24,7 +24,8 @@ import models.DAO.resources._
 class Application(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] { // with Secured  {
   import play.api.Play.current
 
-  val applicationLogger = Logger("application")
+  val applicationLogger = play.api.Logger("application")
+  
   /**
    * Returns the JavaScript router that the client can use for "type-safe" routes.
    * Uses browser caching; set duration (in seconds) according to your release cycle.
@@ -85,8 +86,11 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
 case class WhoAmIdentify(email: String, business: Int = 0, manager: Boolean, employee: Boolean, lang: String = "en", payed: Boolean = false, env: String = "prod")
   implicit val WhoAmIdentifyReads = Json.reads[WhoAmIdentify]
   implicit val WhoAmIdentifyWrites = Json.format[WhoAmIdentify]
+
   def whoami = SecuredAction { implicit request =>
     val email = request.user.main.email.get
+    applicationLogger.debug("Attempting risky calculation.")
+    applicationLogger.debug(request.host.toString)
 
     val (isManager, isEmployee, lang):(Boolean, Boolean, String) = AccountsDAO.getRolesAndLang(email).get
     val business_request:Option[Tuple2[Int, Int]] = models.DAO.resources.EmployeesBusinessDAO.getByUID(email) 
