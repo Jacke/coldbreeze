@@ -59,7 +59,8 @@ object Build extends Build {
           scalatest, 
           scalaLog, 
           logback, 
-          scaldi,
+          syslog,  
+	  scaldi,
           sprayClient, 
           hdrHistogram))
 

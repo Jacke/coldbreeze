@@ -47,6 +47,7 @@ object Dependencies {
   val formtag         = "com.loicdescotte.coffeebean" % "html5tags_2.11"        % "1.2.1"
   val playctrl        = "jp.t2v"                    %% "stackable-controller"   % "0.4.0"
   val logentries      = "com.logentries"            % "logentries-appender"     % "1.1.21"
+  val syslog   	      = "com.papertrailapp"   	% "logback-syslog4j" % "1.0.0"
   val compressor      = "com.mohiva"                %% "play-html-compressor"   % "0.3.1"
   val jsonvariants    = "org.julienrf"              %% "play-json-variants"     % "0.2"
   val playflyway      = "com.github.tototoshi"      %% "play-flyway"            % "1.1.0"

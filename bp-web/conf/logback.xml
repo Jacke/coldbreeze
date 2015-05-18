@@ -11,6 +11,12 @@
       <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
     </layout>
   </appender> -->
+<appender name="PAPERTRAIL" class="ch.qos.logback.classic.net.SyslogAppender">
+  <syslogHost><host>.papertrailapp.com</syslogHost>
+  <port>XXXXX</port>
+  <facility>USER</facility>
+  <suffixPattern>my-app: %logger %msg</suffixPattern>  
+</appender>
    <appender name="ACCESS_LOG_FILE" class="ch.qos.logback.core.FileAppender">
         <file>/logs/access.log</file>
         <encoder>
