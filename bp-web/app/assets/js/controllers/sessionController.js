@@ -1,6 +1,7 @@
 // For all processes
 minorityControllers.controller('SessionsCtrl', ['$http', 
   '$window', 
+  '$translate',
   '$scope', 
   '$filter', 
   '$rootScope',
@@ -15,7 +16,7 @@ minorityControllers.controller('SessionsCtrl', ['$http',
   'BPElemsFactory',
   'BPSpacesFactory',
   'BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
-  function ($http, $window, $scope, $filter, $rootScope, TreeBuilder, BPStationsFactory, SessionsFactory, BProcessesFactory, BProcessFactory, ObserversFactory, ObserverFactory, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
+  function ($http, $window, $translate, $scope, $filter, $rootScope, TreeBuilder, BPStationsFactory, SessionsFactory, BProcessesFactory, BProcessFactory, ObserversFactory, ObserverFactory, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
 
 
 /*
@@ -71,7 +72,28 @@ $scope.isManager();
   /* callback for ng-click 'editUser': */
 
 
-  $scope.highlightActive = function (station, elem) {
+$scope.bubbleTooltip = function(session) {
+  if (session.station.finished) {
+    return  "Finished";
+  } else if (session.station.paused) {
+     return "Paused";
+  } else if (session.station.started) { 
+     return "Started";
+  }
+ 
+
+};
+$scope.bubbleClass = function(session) {
+  if (session.station.finished) {
+    return  "finished";
+  } else if (session.station.paused) {
+     return "paused";
+  } else if (session.station.started) { 
+     return "started";
+  }
+};
+
+$scope.highlightActive = function (station, elem) {
      /*var front, nest;
      front = $scope.elemsHash[$scope.logsByStation(station.id)[$scope.logsByStation(station.id).length-1].element];  
      nest = $scope.spaceElemHash[$scope.logsByStation(station.id)[$scope.logsByStation(station.id).length-1].space_elem];  

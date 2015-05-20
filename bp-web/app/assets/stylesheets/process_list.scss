@@ -156,6 +156,24 @@ ul.type-tabs li a:hover {
 
 
 .processList .process_content {
-    margin-left: 6%;
-    margin-top: 46px;
+  margin-left: 3%;
+  margin-top: 46px;
+  max-width: 472px;
+}
+.process .process-status h2.tableMinListName {
+  width: 13%;
+}
+
+.stations .progress .progress-bar span {
+  width: 45%;
+}
+.session-process .process_content {
+  background: white;
+  margin-top: 110px;
+}
+span.number.true.paused {
+    background-color: #f1c40f;
+}
+span.number.true.finished {
+    background-color: #2c3e50;
 }

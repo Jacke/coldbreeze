@@ -3,6 +3,7 @@
 minorityControllers.controller('BPstationListCtrl', ['TreeBuilder', 
   '$http', 
   '$window', 
+  '$translate',
   '$scope', 
   '$filter', 
   '$rootScope',
@@ -19,7 +20,7 @@ minorityControllers.controller('BPstationListCtrl', ['TreeBuilder',
   'BPLogsFactory', 
   '$location', 
   '$route',
-  function (TreeBuilder, $http, $window, $scope, $filter, $rootScope,BProcessesFactory,BPSessionsFactory, ObserversFactory, ObserverFactory,BPInLoggersFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
+  function (TreeBuilder, $http, $window, $translate, $scope, $filter, $rootScope,BProcessesFactory,BPSessionsFactory, ObserversFactory, ObserverFactory,BPInLoggersFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
   $scope.bpId = $route.current.params.BPid;
   $scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
   $scope.spaces =  BPSpacesFactory.query({ BPid: $route.current.params.BPid });
@@ -119,7 +120,26 @@ $scope.stationsRefresh = function() {
 $scope.stationsRefresh();
 
 
+$scope.bubbleTooltip = function(session) {
+  if (session.station.finished) {
+    return  "Finished";
+  } else if (session.station.paused) {
+     return "Paused";
+  } else if (session.station.started) { 
+     return "Started";
+  }
+ 
 
+};
+$scope.bubbleClass = function(session) {
+  if (session.station.finished) {
+    return  "finished";
+  } else if (session.station.paused) {
+     return "paused";
+  } else if (session.station.started) { 
+     return "started";
+  }
+};
 
 $scope.highlightActive = function (station, elem) {
      var front, nest;

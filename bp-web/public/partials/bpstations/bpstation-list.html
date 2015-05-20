@@ -1,7 +1,7 @@
 
 
 <div class="allStations allStationsList">
-<h1>{{ 'SESSIONS' | translate }}</h1>
+<!--<h1>{{ 'SESSIONS' | translate }}</h1>-->
 
 
 
@@ -11,13 +11,13 @@
   
 <div class="station-filters">
   <ul>
+    <li><input date-range-picker class="form-control date-picker" type="text" placeholder="Date range" ng-model="date" /></li>
     <li><label><input type="checkbox" name="canceled" value="true" data-ng-model="onlyCanceled"/>{{ 'CANCELED' | translate }}</label>
     </li>
     <li><label><input type="checkbox" name="finished" value="true" data-ng-model="onlyFinished"/>{{ 'FINISHED' | translate }}</label>
     </li>
     <li><label><input type="checkbox" name="listed" value="true" data-ng-model="onlyListed"/>Listed</label>
     </li>
-    <li><input date-range-picker class="form-control date-picker" type="text" ng-model="date" /></li>
   </ul>
 </div>  
 
@@ -45,7 +45,7 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 <div class="stations" ng-repeat="session in sessions.sessions | limitTo: 10 | filter: isOnlyActive | filter: { session: onlyListed }" style="clear: both;">
 
         <div class="session__header">
-              <span class="number {{ session.station.state }}">{{ $index + 1 }}</span>
+              <span class="number {{ session.station.state }}" ng-class="bubbleClass(session)" tooltip="{{bubbleTooltip(session)}}">{{ $index + 1 }}</span>
               <a href="/a#/bprocess/{{ sessions.process.id }}/elements?session={{ session.session.id }}">Session # {{ $index }} — {{session.station.note }}</a>
 
 
@@ -55,7 +55,7 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
         </div>      
 <div class="progress">
    <div class="progress-bar" role="progressbar" aria-valuenow="{{session.percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{session.percent}}%;">
-    {{session.percent}}%
+    <span>{{session.percent}}%</span>
    </div>
 </div>              
               
@@ -66,6 +66,7 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 
 <div class="row">
 <div class="col-xs-3 state-box-container">
+  <!--
   <div class="station-markers">
   <ul class="station-states">
                       <li class="state started {{ session.station.started }}"> {{ 'STARTED' | translate }} </li>
@@ -73,7 +74,7 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
                       <li class="state finished {{ session.station.finished }}"> {{ 'FINISHED' | translate }} </li>
     <li class="state canceled {{ station.canceled }}"> {{ 'CANCELED' | translate }} </li>
   </ul>
-  </div>
+  </div>-->
   <div class="station-settings">
   <div class="note">
     <input type="text" class="station-note" ng-model="station.note">
