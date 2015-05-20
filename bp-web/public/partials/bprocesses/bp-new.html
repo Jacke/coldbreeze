@@ -3,11 +3,11 @@
 
   <form novalidate="novalidate" class="form-horizontal">
     <div class="control-group form-group">
-      <label class="control-label col-sm-1" for="inputTitle">{{ 'TITLE' | translate }}:</label>
+      <label class="control-label col-sm-2" for="inputTitle">{{ 'TITLE' | translate }}</label>
 
       <div class="controls">
- <div class="col-xs-4">
-        <input type="text" id="inputTitle" class="form-control" ng-model="bprocess.title" placeholder="Title" required/>
+ <div class="col-xs-7">
+        <input type="text" id="inputTitle" class="form-control" ng-model="bprocess.title" placeholder="Great process" required/>
  </div>
        </div>
     </div>
@@ -18,11 +18,12 @@
         <input type="hidden" id="inputBusinessId" ng-model="bprocess.version" ng-init="bprocess.version=1" placeholder="State machine type" required/>
 
     <div class="control-group form-group">
-      <label class="control-label col-sm-1" for="inputBusinessId">{{ 'SERVICE' | translate }}:</label>
+      <label class="control-label col-sm-2" for="inputBusinessId">{{ 'SERVICE' | translate }}</label>
       <div class="controls">
- <div class="col-xs-4">
-        <select class="form-control" ng-init="bprocess.service=parseInt($routeParams.service)" ng-model="bprocess.service" ng-options="service.id as service.title for service in procServices" required></select><br>
-      </div></div>
+        <div class="col-xs-7">
+          <select class="form-control" ng-init="bprocess.service=parseInt($routeParams.service)" ng-model="bprocess.service" ng-options="service.id as service.title for service in procServices" required></select><br>
+        </div>
+      </div>
 
     </div>
     <div class="control-group">

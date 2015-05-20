@@ -2769,7 +2769,9 @@ color:#fff;
   margin-left: -30px;
   margin-right: -31px;
 }
-
+.ngdialog form {
+  margin-top: 25px;
+}
 footer .applicationFooterListLink,footer .applicationFooterCopyrightLink {
 color:#959cad;
 font-weight:400;

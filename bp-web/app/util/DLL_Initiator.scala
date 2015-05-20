@@ -1,5 +1,6 @@
 package util
 import models._
+import models.administration._
 import models.DAO._
 import models.DAO.resources._
 import models.DAO.reflect._
@@ -52,7 +53,7 @@ SessionStateLogDAO.ddl_create
 
     PlanDAO.ddl_create
 
-
+    AdminAccountsDAO.ddl_create
     AccountPlanDAO.ddl_create
 
     AccountLoggerDAO.ddl_create
@@ -126,7 +127,7 @@ SessionStateLogDAO.ddl_drop
     ActPermissionDAO.ddl_drop
     InputLoggerDAO.ddl_drop
     PlanDAO.ddl_drop
-
+    AdminAccountsDAO.ddl_drop
     AccountPlanDAO.ddl_drop
     AccountLoggerDAO.ddl_drop
     BillDAO.ddl_drop
