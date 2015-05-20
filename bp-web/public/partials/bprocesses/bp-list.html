@@ -29,15 +29,15 @@
                 <div ng-include src="'assets/partials/treeThumb.html'"></div>
       </div>
 
-      <div class="process-thumb" ng:show="emptyElemCheck(bprocess.trees)">
-        <p class="tableMinListGithub">
-          <a class="redButton" ng-click="run(bprocess)"></a>
-        </p>
-      </div>
       <div class="tableMinListControls processListControls" ng-show="isManagerVal">
         <a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="perm(bprocess.id)"><span class="uicon-svg98"></span> {{ 'PEOPLE' | translate }} </a>
         <a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" ng-click="modalShare(bprocess.id)"><span class="uicon-svg522"></span> {{ 'SHARE' | translate }}</a>
         <a class="tableMinControlsLink teamSettingsLink tableMinLinkDelete" ng-click="deleteBP(bprocess.id)"> <span class="uicon-svg62"></span> {{ 'DELETE' | translate }} </a>
+      </div>
+      <div class="process-thumb" ng:show="emptyElemCheck(bprocess.trees)">
+        <p class="tableMinListGithub">
+          <a class="redButton" ng-click="run(bprocess)"></a>
+        </p>
       </div>
     </li>
     </div>
