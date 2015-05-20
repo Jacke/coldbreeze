@@ -1,153 +1,185 @@
 @font-face {
     font-family: 'Proxima Nova';
-    src: url("https://apiary.a.ssl.fastly.net/assets/fonts/proxima-nova/light-9fc38208684b7ad8.woff") format('woff'),url("https://apiary.a.ssl.fastly.net/assets/fonts/proxima-nova/light-d39f348a02d9ab82.ttf") format('truetype');
+    src: url("/assets/fonts/proxima-nova/light-9fc38208684b7ad8.woff") format('woff'),
+    url("/assets/fonts/proxima-nova/light-d39f348a02d9ab82.ttf") format('truetype');
     font-style: normal;
     font-weight: 200
 }
 
 @font-face {
     font-family: 'Proxima Nova';
-    src: url("https://apiary.a.ssl.fastly.net/assets/fonts/proxima-nova/thin-726fb99f463ae0e0.woff") format('woff'),url("https://apiary.a.ssl.fastly.net/assets/fonts/proxima-nova/thin-26876a34164c2106.ttf") format('truetype');
+    src: url("/assets/fonts/proxima-nova/thin-726fb99f463ae0e0.woff") format('woff'),
+    url("/assets/fonts/proxima-nova/thin-26876a34164c2106.ttf") format('truetype');
     font-style: normal;
     font-weight: 100
 }
 
 @font-face {
     font-family: 'Proxima Nova';
-    src: url("https://apiary.a.ssl.fastly.net/assets/fonts/proxima-nova/thin-italic-048a2815ca8145cf.woff") format('woff'),url("https://apiary.a.ssl.fastly.net/assets/fonts/proxima-nova/thin-italic-d64e1371f53c53eb.ttf") format('truetype');
+    src: url("/assets/fonts/proxima-nova/thin-italic-048a2815ca8145cf.woff") format('woff'),
+    url("/assets/fonts/proxima-nova/thin-italic-d64e1371f53c53eb.ttf") format('truetype');
     font-style: italic;
     font-weight: 100
 }
 
 @font-face {
     font-family: 'Proxima Nova';
-    src: url("https://apiary.a.ssl.fastly.net/assets/fonts/proxima-nova/light-italic-e92e135cbe84e083.woff") format('woff'),url("https://apiary.a.ssl.fastly.net/assets/fonts/proxima-nova/light-italic-eb00ab90dcd828a6.ttf") format('truetype');
+    src: url("/assets/fonts/proxima-nova/light-italic-e92e135cbe84e083.woff") format('woff'),
+    url("/assets/fonts/proxima-nova/light-italic-eb00ab90dcd828a6.ttf") format('truetype');
     font-style: italic;
     font-weight: 200
 }
 
 @font-face {
     font-family: 'Proxima Nova';
-    src: url("https://apiary.a.ssl.fastly.net/assets/fonts/proxima-nova/regular-85cdc399c680c56b.woff") format('woff'),url("https://apiary.a.ssl.fastly.net/assets/fonts/proxima-nova/regular-c061d74a1162875b.ttf") format('truetype');
+    src: url("/assets/fonts/proxima-nova/regular-85cdc399c680c56b.woff") format('woff'),
+    url("/assets/fonts/proxima-nova/regular-c061d74a1162875b.ttf") format('truetype');
     font-style: normal;
     font-weight: normal
 }
 
 @font-face {
     font-family: 'Proxima Nova';
-    src: url("https://apiary.a.ssl.fastly.net/assets/fonts/proxima-nova/italic-5f61cd8be0327378.woff") format('woff'),url("https://apiary.a.ssl.fastly.net/assets/fonts/proxima-nova/italic-9e2d010ee229540a.ttf") format('truetype');
+    src: url("/assets/fonts/proxima-nova/italic-5f61cd8be0327378.woff") format('woff'),
+    url("/assets/fonts/proxima-nova/italic-9e2d010ee229540a.ttf") format('truetype');
     font-style: italic;
     font-weight: normal
 }
 
 @font-face {
     font-family: 'Proxima Nova';
-    src: url("https://apiary.a.ssl.fastly.net/assets/fonts/proxima-nova/semibold-italic-c1722bd601ecda1e.woff") format('woff'),url("https://apiary.a.ssl.fastly.net/assets/fonts/proxima-nova/semibold-italic-ccf9dc8e43471654.ttf") format('truetype');
+    src: url("/assets/fonts/proxima-nova/semibold-italic-c1722bd601ecda1e.woff") format('woff'),
+    url("/assets/fonts/proxima-nova/semibold-italic-ccf9dc8e43471654.ttf") format('truetype');
     font-style: italic;
     font-weight: 600
 }
 
 @font-face {
     font-family: 'Proxima Nova';
-    src: url("https://apiary.a.ssl.fastly.net/assets/fonts/proxima-nova/semibold-313055da03a2689d.woff") format('woff'),url("https://apiary.a.ssl.fastly.net/assets/fonts/proxima-nova/semibold-25ece90e55b3d013.ttf") format('truetype');
+    src: url("/assets/fonts/proxima-nova/semibold-313055da03a2689d.woff") format('woff'),
+    url("/assets/fonts/proxima-nova/semibold-25ece90e55b3d013.ttf") format('truetype');
     font-style: normal;
     font-weight: 600
 }
 
 @font-face {
     font-family: 'Proxima Nova';
-    src: url("https://apiary.a.ssl.fastly.net/assets/fonts/proxima-nova/bold-1d4f58210b72ab24.woff") format('woff'),url("https://apiary.a.ssl.fastly.net/assets/fonts/proxima-nova/bold-ca30825b153dbd40.ttf") format('truetype');
+    src: url("/assets/fonts/proxima-nova/bold-1d4f58210b72ab24.woff") format('woff'),
+    url("/assets/fonts/proxima-nova/bold-ca30825b153dbd40.ttf") format('truetype');
     font-style: normal;
     font-weight: bold
 }
 
 @font-face {
     font-family: 'Proxima Nova';
-    src: url("https://apiary.a.ssl.fastly.net/assets/fonts/proxima-nova/bold-italic-2a389928812cd3ca.woff") format('woff'),url("https://apiary.a.ssl.fastly.net/assets/fonts/proxima-nova/bold-italic-5e146b4737632340.ttf") format('truetype');
+    src: url("/assets/fonts/proxima-nova/bold-italic-2a389928812cd3ca.woff") format('woff'),
+    url("/assets/fonts/proxima-nova/bold-italic-5e146b4737632340.ttf") format('truetype');
     font-style: italic;
     font-weight: bold
 }
 
 @font-face {
     font-family: 'Source Code Pro';
-    src: url("https://apiary.a.ssl.fastly.net/assets/fonts/source-code-pro/regular-941644e4da72fcb8.woff") format('woff'),url("https://apiary.a.ssl.fastly.net/assets/fonts/source-code-pro/regular-00230276978452ac.ttf") format('truetype');
+    src: url("/assets/fonts/source-code-pro/regular-941644e4da72fcb8.woff") format('woff'),
+    url("/assets/fonts/source-code-pro/regular-00230276978452ac.ttf") format('truetype');
     font-style: normal;
     font-weight: normal
 }
 
 @font-face {
     font-family: 'Source Code Pro';
-    src: url("https://apiary.a.ssl.fastly.net/assets/fonts/source-code-pro/bold-a3807a94a7e4925a.woff") format('woff'),url("https://apiary.a.ssl.fastly.net/assets/fonts/source-code-pro/bold-c5a70ed8271fcfdf.ttf") format('truetype');
+    src: url("/assets/fonts/source-code-pro/bold-a3807a94a7e4925a.woff") format('woff'),
+    url("/assets/fonts/source-code-pro/bold-c5a70ed8271fcfdf.ttf") format('truetype');
     font-style: normal;
     font-weight: bold
 }
 
 @font-face {
     font-family: TitilliumText;
-    src: url("https://apiary.a.ssl.fastly.net/assets/fonts/titillium/xbold-90ad431c87a9ad6c.woff") format('woff'),url("https://apiary.a.ssl.fastly.net/assets/fonts/titillium/xbold-c30731486d2eb7e9.ttf") format('truetype'),url("https://apiary.a.ssl.fastly.net/assets/fonts/titillium/xbold-491cd161b3a4139f.svg#TitilliumText25L999wt") format('svg');
+    src: url("/assets/fonts/titillium/xbold-90ad431c87a9ad6c.woff") format('woff'),
+    url("/assets/fonts/titillium/xbold-c30731486d2eb7e9.ttf") format('truetype'),
+    url("/assets/fonts/titillium/xbold-491cd161b3a4139f.svg#TitilliumText25L999wt") format('svg');
     font-weight: 900;
     font-style: normal
 }
 
 @font-face {
     font-family: TitilliumText;
-    src: url("https://apiary.a.ssl.fastly.net/assets/fonts/titillium/bold-a3f455098c306134.woff") format('woff'),url("https://apiary.a.ssl.fastly.net/assets/fonts/titillium/bold-8b89eb65b2538f15.ttf") format('truetype'),url("https://apiary.a.ssl.fastly.net/assets/fonts/titillium/bold-30ee0dc636defe51.svg#TitilliumText25L800wt") format('svg');
+    src: url("/assets/fonts/titillium/bold-a3f455098c306134.woff") format('woff'),
+    url("/assets/fonts/titillium/bold-8b89eb65b2538f15.ttf") format('truetype'),
+    url("/assets/fonts/titillium/bold-30ee0dc636defe51.svg#TitilliumText25L800wt") format('svg');
     font-weight: 800;
     font-style: normal
 }
 
 @font-face {
     font-family: TitilliumText;
-    src: url("https://apiary.a.ssl.fastly.net/assets/fonts/titillium/medium-3235c4e9d16d882a.woff") format('woff'),url("https://apiary.a.ssl.fastly.net/assets/fonts/titillium/medium-34d17d510f536438.ttf") format('truetype'),url("https://apiary.a.ssl.fastly.net/assets/fonts/titillium/medium-a3682040fb5da93c.svg#TitilliumText25L600wt") format('svg');
+    src: url("/assets/fonts/titillium/medium-3235c4e9d16d882a.woff") format('woff'),
+    url("/assets/fonts/titillium/medium-34d17d510f536438.ttf") format('truetype'),
+    url("/assets/fonts/titillium/medium-a3682040fb5da93c.svg#TitilliumText25L600wt") format('svg');
     font-weight: 600;
     font-style: normal
 }
 
 @font-face {
     font-family: TitilliumText;
-    src: url("https://apiary.a.ssl.fastly.net/assets/fonts/titillium/normal-438d985cfb98d629.woff") format('woff'),url("https://apiary.a.ssl.fastly.net/assets/fonts/titillium/normal-14c090022c903270.ttf") format('truetype'),url("https://apiary.a.ssl.fastly.net/assets/fonts/titillium/normal-3e9d0023d0f2e128.svg#TitilliumText25L400wt") format('svg');
+    src: url("/assets/fonts/titillium/normal-438d985cfb98d629.woff") format('woff'),
+    url("/assets/fonts/titillium/normal-14c090022c903270.ttf") format('truetype'),
+    url("/assets/fonts/titillium/normal-3e9d0023d0f2e128.svg#TitilliumText25L400wt") format('svg');
     font-weight: normal;
     font-style: normal
 }
 
 @font-face {
     font-family: TitilliumText;
-    src: url("https://apiary.a.ssl.fastly.net/assets/fonts/titillium/light-9ec3b1144e50ef89.woff") format('woff'),url("https://apiary.a.ssl.fastly.net/assets/fonts/titillium/light-19a2cab72c00ad14.ttf") format('truetype'),url("https://apiary.a.ssl.fastly.net/assets/fonts/titillium/light-05ea87b1e4edac65.svg#TitilliumText25L250wt") format('svg');
+    src: url("/assets/fonts/titillium/light-9ec3b1144e50ef89.woff") format('woff'),
+    url("/assets/fonts/titillium/light-19a2cab72c00ad14.ttf") format('truetype'),
+    url("/assets/fonts/titillium/light-05ea87b1e4edac65.svg#TitilliumText25L250wt") format('svg');
     font-weight: 200;
     font-style: normal
 }
 
 @font-face {
     font-family: TitilliumText;
-    src: url("https://apiary.a.ssl.fastly.net/assets/fonts/titillium/thin-95d988609b538710.woff") format('woff'),url("https://apiary.a.ssl.fastly.net/assets/fonts/titillium/thin-d9142d7c92f5c4ae.ttf") format('truetype'),url("https://apiary.a.ssl.fastly.net/assets/fonts/titillium/thin-6961bd58d3852730.svg#TitilliumText25L1wt") format('svg');
+    src: url("/assets/fonts/titillium/thin-95d988609b538710.woff") format('woff'),
+    url("/assets/fonts/titillium/thin-d9142d7c92f5c4ae.ttf") format('truetype'),
+    url("/assets/fonts/titillium/thin-6961bd58d3852730.svg#TitilliumText25L1wt") format('svg');
     font-weight: 100;
     font-style: normal
 }
 
 @font-face {
     font-family: 'Tisa Pro';
-    src: url("https://apiary.a.ssl.fastly.net/assets/fonts/tisa-pro/regular-d99d273c51efc872.woff") format('woff'),url("https://apiary.a.ssl.fastly.net/assets/fonts/tisa-pro/regular-98187f308aef7401.ttf") format('truetype'),url("https://apiary.a.ssl.fastly.net/assets/fonts/tisa-pro/regular-ddbce18e8b5f9969.svg#tisaproregular") format('svg');
+    src: url("/assets/fonts/tisa-pro/regular-d99d273c51efc872.woff") format('woff'),
+    url("/assets/fonts/tisa-pro/regular-98187f308aef7401.ttf") format('truetype'),
+    url("/assets/fonts/tisa-pro/regular-ddbce18e8b5f9969.svg#tisaproregular") format('svg');
     font-weight: normal;
     font-style: normal
 }
 
 @font-face {
     font-family: 'Tisa Pro';
-    src: url("https://apiary.a.ssl.fastly.net/assets/fonts/tisa-pro/italic-422824aa46efe4f6.woff") format('woff'),url("https://apiary.a.ssl.fastly.net/assets/fonts/tisa-pro/italic-2a6233a43e080cd4.ttf") format('truetype'),url("https://apiary.a.ssl.fastly.net/assets/fonts/tisa-pro/italic-167d20fca4f544eb.svg#tisaproitalic") format('svg');
+    src: url("/assets/fonts/tisa-pro/italic-422824aa46efe4f6.woff") format('woff'),
+    url("/assets/fonts/tisa-pro/italic-2a6233a43e080cd4.ttf") format('truetype'),
+    url("/assets/fonts/tisa-pro/italic-167d20fca4f544eb.svg#tisaproitalic") format('svg');
     font-weight: normal;
     font-style: italic
 }
 
 @font-face {
     font-family: 'Tisa Pro';
-    src: url("https://apiary.a.ssl.fastly.net/assets/fonts/tisa-pro/bold-4dafb1e7b37cd796.woff") format('woff'),url("https://apiary.a.ssl.fastly.net/assets/fonts/tisa-pro/bold-dacde6ef0582f703.ttf") format('truetype'),url("https://apiary.a.ssl.fastly.net/assets/fonts/tisa-pro/bold-8eddd591f0323818.svg#tisaprobold") format('svg');
+    src: url("/assets/fonts/tisa-pro/bold-4dafb1e7b37cd796.woff") format('woff'),
+    url("/assets/fonts/tisa-pro/bold-dacde6ef0582f703.ttf") format('truetype'),
+    url("/assets/fonts/tisa-pro/bold-8eddd591f0323818.svg#tisaprobold") format('svg');
     font-weight: bold;
     font-style: normal
 }
 
 @font-face {
     font-family: 'Tisa Pro';
-    src: url("https://apiary.a.ssl.fastly.net/assets/fonts/tisa-pro/bold-italic-83b854947c86763a.woff") format('woff'),url("https://apiary.a.ssl.fastly.net/assets/fonts/tisa-pro/bold-italic-b8435deb1ab5b82b.ttf") format('truetype'),url("https://apiary.a.ssl.fastly.net/assets/fonts/tisa-pro/bold-italic-f5cf6023e89ff8cc.svg#tisaproitalicbold") format('svg');
+    src: url("/assets/fonts/tisa-pro/bold-italic-83b854947c86763a.woff") format('woff'),
+    url("/assets/fonts/tisa-pro/bold-italic-b8435deb1ab5b82b.ttf") format('truetype'),
+    url("/assets/fonts/tisa-pro/bold-italic-f5cf6023e89ff8cc.svg#tisaproitalicbold") format('svg');
     font-weight: bold;
     font-style: italic
 }

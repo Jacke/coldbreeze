@@ -15,7 +15,7 @@
         <a ng-click="reactionSelect(reaction)" ng-class="selectedClass(reaction)">Reaction {{ capitalizeFirstLetter(reaction.reaction.title) }} for {{ reaction.reaction.elem.element_title }}</a>
 
         <span class="reaction_list__reaction__state_outs" ng-repeat="state_out in reaction.outs">
-        {{ stateOutAct(state_out.state.title) }} {{ stateOutAct(state_out) }}
+        {{ stateOutAct(state_out) }} {{ state_out.state.title }} 
         </span>
     </li>
   </ul>

@@ -69,7 +69,9 @@ class InteractionController(override implicit val env: RuntimeEnvironment[DemoUs
   implicit val BPSessionStateWrites = Json.format[BPSessionState]
 
  case class InteractionContainer(session_container:Option[SessionContainer],
- 	reactions: List[ReactionContainer], outs_identity: List[BPSessionState])
+ 	                               reactions: List[ReactionContainer], 
+                                 outs_identity: List[BPSessionState])
+
  case class ReactionContainer(session_state: Option[BPSessionState], reaction: UnitReaction, outs: List[UnitReactionStateOut])
 
   implicit val ReactionContainerReads = Json.reads[ReactionContainer]
@@ -86,8 +88,8 @@ class InteractionController(override implicit val env: RuntimeEnvironment[DemoUs
 	case Some(session) => {   
 		val process:BProcessDTO = session.process
 	    val reactions:List[UnitReaction] = ReactionDAO.findUnapplied(process.id.get, session_id)
-	    val session_states: List[BPSessionState] = BPSessionStateDAO.findByOriginIds(reactions.flatMap(_.from_state))
-	    val reaction_outs:List[UnitReactionStateOut] = ReactionStateOutDAO.findByReactions(reactions.map(_.id.get))
+      val reaction_outs:List[UnitReactionStateOut] = ReactionStateOutDAO.findByReactions(reactions.map(_.id.get))
+	    val session_states: List[BPSessionState] = BPSessionStateDAO.findByOriginIds(reaction_outs.map(_.state_ref))
         val reaction_container = reactions.map(reaction => 
         	ReactionContainer(session_state = session_states.find(state => Some(reaction.from_state) == state.origin_state),
         					  reaction, reaction_outs.filter(out => Some(out.reaction) == reaction.id))

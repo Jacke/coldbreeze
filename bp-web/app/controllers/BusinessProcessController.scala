@@ -40,7 +40,7 @@ case class RefElemContainer(title: String, desc: String = "", business: Int, pro
 
 case class ReactionCollection(reaction: UnitReaction,
 reaction_state_outs: List[UnitReactionStateOut])
-case class ElementTopology(topo_id: Int, element_id: Int, element_title: String)
+case class ElementTopology(topo_id: Int, element_id: Int, element_title: String, space_element: Boolean = false)
 
 class BusinessProcessController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
 
@@ -420,10 +420,10 @@ def element_topos(id: Int) = SecuredAction { implicit request =>
 
   val topologs:List[ElementTopology] = topologs_dto.filter(topo => topo.front_elem_id.isDefined).map { topolog =>
       val element = ProcElemDAO.findById(topolog.front_elem_id.get).get
-      ElementTopology(topo_id = topolog.id.get, element_id = element.id.get, element_title = element.title)
+      ElementTopology(topo_id = topolog.id.get, element_id = element.id.get, element_title = element.title, space_element = false)
     } ++ topologs_dto.filter(topo => topo.space_elem_id.isDefined).map { topolog => 
       val element = SpaceElemDAO.findById(topolog.space_elem_id.get).get
-      ElementTopology(topo_id = topolog.id.get, element_id = element.id.get, element_title = element.title)
+      ElementTopology(topo_id = topolog.id.get, element_id = element.id.get, element_title = element.title, space_element = true)
     }
   
   Ok(Json.toJson(topologs))

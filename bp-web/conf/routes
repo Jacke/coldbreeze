@@ -67,6 +67,7 @@ POST        /service/:id/destroy                                @controllers.Bus
 # Employees
 GET         /actors                                             @controllers.users.EmployeeController.actors()
 GET         /employees                                          @controllers.users.EmployeeController.index()
+GET         /employees/:group_id                                @controllers.users.EmployeeController.index_group(group_id: Int)
 GET         /employee/create                                    @controllers.users.EmployeeController.create()
 POST        /employee/create                                    @controllers.users.EmployeeController.create_new()
 GET         /employee/update/:id                                @controllers.users.EmployeeController.update(id: Int)
@@ -118,6 +119,15 @@ DELETE     /observe/:observe_id                                 @controllers.Obs
 # Walkthrough
 GET        /walkthrough                                         @controllers.WalkthroughController.index()
 
+
+# Groups
+
+GET    /groups									    @controllers.GroupController.index()
+POST   /group/create		    					@controllers.GroupController.create_new()
+PUT    /group/update/:id					    	@controllers.GroupController.update_make(id: Int)
+POST   /group/assign_user/:group_id/:account_id	    @controllers.GroupController.assign_user(account_id: String, group_id: Int)
+POST   /group/unassign_user/:group_id/:account_id	@controllers.GroupController.unassign_user(account_id: String, group_id: Int)
+DELETE /group/destroy/:id						    @controllers.GroupController.destroy(id: Int)
 
 
 

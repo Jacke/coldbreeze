@@ -164,7 +164,13 @@
           <div class="row-top">
             <div class="state">
               <div class="switcher" ng-repeat="switcher in bpelem.states | limitTo: 1">
-              <span class="switcher-icon" ng-class="switcher.switch_type"></span>{{ stateDecoration(masterState(bpelem)) }}
+              <div class="state-thumbnail" ng-class="stateActiveClass(masterState(bpelem))">
+              <span class="switcher-icon" ng-class="switcher.switch_type"></span>
+                  <div class="neutral">{{ masterState(bpelem).neutral }}</div>
+                  <div class="middleable">{{ masterState(bpelem).middle }}</div>
+                  <div class="oposite">{{ masterState(bpelem).oposite }}</div>
+                  <div class="ended">{{ masterState(bpelem).title }}</div>
+              </div>
             </div>
             </div>
             
@@ -175,9 +181,25 @@
         </div>
       </div>
       <div class="expanded-element" ng:show="exp == active">
+            <div class="reactions">
+              <div class="reaction" ng-repeat="reaction in bpelem.reactions">
+                <span class="reaction-icon moicon moicon-sphere"></span>
+                <div class="reaction-title">{{ capitalizeFirstLetter(reaction.reaction.title) }}</div>
+                  <span class="reaction_list__reaction__state_outs" ng-repeat="state_out in reaction.reaction_state_outs">
+                  {{ stateOutAct(state_out) }} {{ stateByStateRef(state_out.state_ref) }} 
+                  </span>
+              </div>
+            </div>
             <div class="state" ng-class="stateClass(state)" ng-repeat="state in bpelem.states">
               <div class="switcher" ng-repeat="switcher in state.switches">
-              <span class="switcher-icon" ng-class="switcher.switch_type"></span>{{ stateDecoration(state) }} {{ switcherDecoration(switcher) }}
+                <div class="state-thumbnail" ng-class="stateActiveClass(state)">
+                  <span class="switcher-icon" ng-class="switcher.switch_type"></span>
+                  <div class="neutral">{{ state.neutral }}</div>
+                  <div class="middleable">{{ state.middle }}</div>
+                  <div class="oposite">{{ state.oposite }}</div>
+                  <div class="ended">{{ state.title }}</div>
+                  {{ stateDecoration(state) }} {{ switcherDecoration(switcher) }}
+                </div>
             </div>
             </div>      
       </div>

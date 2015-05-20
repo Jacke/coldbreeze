@@ -22,6 +22,7 @@
     background-position: 0 0;
 }
 
+
 .vGear:after {
     background-position: -100px 0;
 }
@@ -778,6 +779,12 @@ polygon#e1_polygon {
 
 .minorityMenu .minMenuItem a.menuEntityLink {
     padding-right: 25px;
+}
+.themeDark .minorityMenu .minMenuItem a:focus {
+    text-decoration: none;
+}
+ul.minMenuList.minMenuTexts {
+  margin-left: 14px;
 }
 
 .minorityMenu .minMenuItem a.menuEntityLink .vIco {

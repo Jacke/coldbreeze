@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+<!--
+  <appender name="LE"
+    class="com.logentries.logback.LogentriesAppender">
+	<Debug>False</Debug>
+    <Token>9f1d3824-14a2-4b2c-a6b2-90ff57a853a3</Token>
+    <Ssl>False</Ssl>
+    <facility>USER</facility>
+    <layout>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </layout>
+  </appender> -->
+
+     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%-5relative %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+  <root level="DEBUG">
+    <appender-ref ref="STDOUT" />
+  </root>
+
+<root level="ERROR">
+    <appender-ref ref="STDOUT" />
+  </root>
+<root level="INFO">
+    <appender-ref ref="STDOUT" />
+  </root>
+
+
+  
+</configuration>

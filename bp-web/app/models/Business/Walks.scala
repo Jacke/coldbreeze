@@ -21,6 +21,11 @@ class Walks(tag: Tag) extends Table[WalkDTO](tag, "walks") {
   def * = (id.?, title, predicate, finished, started, finished_at, started_at) <> (WalkDTO.tupled, WalkDTO.unapply)
 
 }
+/**
+*  Model for Walkthrought
+*  Based on predicate checking
+*  Have not been used yet.
+**/
 
 case class WalkDTO(var id: Option[Int],
                   title: String,

@@ -20,6 +20,10 @@ import models.Page
 import models.User
 import service.DemoUser
 import securesocial.core._
+import models.DAO.resources.{AccoutGroupDTO,
+AccountGroupDAO,
+GroupDTO,
+GroupsDAO}
 import models.DAO.resources.ClientBusinessDAO
 import models.DAO.resources.web._
 import models.AccountDAO
@@ -61,11 +65,45 @@ class EmployeeController(override implicit val env: RuntimeEnvironment[DemoUser]
       val ebs = EmployeesBusinessDAO.getAll
       val assign = businesses.filter(b => !(ebs.map(eb => eb._2).contains(b.id.get)))
       val assigned = businesses.filter(b => ebs.map(eb => eb._2).contains(b.id.get))
-
+      val true_business = EmployeesBusinessDAO.getByUID(request.user.main.email.get)
+      var groups: List[GroupDTO] = List()
+      true_business match {
+        case Some(biz) => groups = GroupsDAO.getAllByBusiness(biz._2)
+        case _ => groups = List()
+      }
       Ok(views.html.businesses.users.employees(
-        Page(employees, 1, 1, employees.length), accounts, 1, "%", assign, assigned)(user))
+        Page(employees, 1, 1, employees.length), accounts, 1, "%", assign, assigned, groups)(user))
+  }
+  def index_group(group_id: Int) = SecuredAction { implicit request =>
+      val user = request.user
+      val all_employees = EmployeeDAO.getAllByMaster(user.main.email.get)
+      val grouped_employees = AccountGroupDAO.getAllByGroup(group_id).map(_.account_id)
+
+      val employees = all_employees.filter(emp => grouped_employees.contains(emp.master_acc))
+      val employees_ungrouped = all_employees.filter(emp => !grouped_employees.contains(emp.master_acc))
+
+      val accounts = models.AccountsDAO.findAllByEmails(all_employees.map(emp => emp.uid))
+      println("Accounts: ")
+      employees.map(emp => println(emp.uid))
+      println(accounts)
+
+      val businesses = BusinessDAO.getAll
+      val ebs = EmployeesBusinessDAO.getAll
+      val assign = businesses.filter(b => !(ebs.map(eb => eb._2).contains(b.id.get)))
+      val assigned = businesses.filter(b => ebs.map(eb => eb._2).contains(b.id.get))
+      val true_business = EmployeesBusinessDAO.getByUID(request.user.main.email.get)
+      var groups: List[GroupDTO] = List()
+
+      true_business match {
+        case Some(biz) => groups = GroupsDAO.getAllByBusiness(biz._2)
+        case _ => groups = List()
+      }
+      Ok(views.html.businesses.users.employees_group(
+        Page(employees, 1, 1, employees.length), accounts, 1, "%", assign, assigned, groups, employees_ungrouped)(user))
 
   }
+
+
   def actors() = SecuredAction { implicit request =>
      val user = request.user.main
      val employees:List[EmployeeDTO] = EmployeeDAO.getAllByMaster(user.email.get)

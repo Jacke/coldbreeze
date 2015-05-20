@@ -28,9 +28,10 @@ minorityControllers.controller('BPelementListCtrl', ['$window','$filter', '$root
 'SwitchFactory',
 'ReactionsFactory',
 'ReactionFactory',
+'ElementTopologsFactory',
 
   '$location', '$route',
-  function ($window, $filter, $rootScope, $scope, $q,$http, $routeParams, toaster, BPInLoggersSessionFactory, BProcessFactory, BPStationsFactory, BProcessesFactory, ngDialog, BPElemsFactory, BPElemFactory, BPSessionsFactory, BPStationsFactory, BPSpacesFactory, BPSpaceFactory, BPSpaceElemsFactory, BPSpaceElemFactory, BPStatesFactory, BPStateFactory, BPSessionStatesFactory, BPSessionStateFactory,RefsFactory, SwitchesFactory,SwitchFactory,ReactionsFactory,ReactionFactory, $location, $route) {
+  function ($window, $filter, $rootScope, $scope, $q,$http, $routeParams, toaster, BPInLoggersSessionFactory, BProcessFactory, BPStationsFactory, BProcessesFactory, ngDialog, BPElemsFactory, BPElemFactory, BPSessionsFactory, BPStationsFactory, BPSpacesFactory, BPSpaceFactory, BPSpaceElemsFactory, BPSpaceElemFactory, BPStatesFactory, BPStateFactory, BPSessionStatesFactory, BPSessionStateFactory,RefsFactory, SwitchesFactory,SwitchFactory,ReactionsFactory,ReactionFactory,ElementTopologsFactory, $location, $route) {
     
     
   $scope.route = jsRoutes.controllers.BusinessProcessController;
@@ -83,14 +84,16 @@ $scope.isManager();
   });
 $scope.reloadResources = function() {
     $scope.states = BPStatesFactory.query({ BPid: $route.current.params.BPid });
-    $scope.switches = SwitchesFactory.query({ BPid: $route.current.params.BPid });
-  $scope.switches.$promise.then(function (switches) {  
- $scope.states.$promise.then(function (states) {
+      $scope.switches = SwitchesFactory.query({ BPid: $route.current.params.BPid });
+        $scope.switches.$promise.then(function (switches) {  
+          $scope.states.$promise.then(function (states) {
+            $scope.reactions.$promise.then(function (reactions) {
+              $scope.element_topologs.$promise.then(function (topo) {
 
     _.forEach($scope.bpelems, function(z) {
     z.states = _.filter(states, function(d){ return d.front_elem_id == z.id;});
-    //z.topo_id = _.find(data.topology, function(d){ return d.front_elem_id == z.id;});
-    //z.reactions = _.filter(data.reaction_cn, function(sw) { return sw.reaction.element == z.topo_id }); 
+    z.topo_id = _.find(topo, function(d){ return d.element_id == z.id && d.space_element == false; });
+    z.reactions = _.filter(reactions, function(sw) { return z.topo_id != undefined && sw.reaction.element == z.topo_id.topo_id }); 
 
     _.forEach(z.states, function(st){ return st.switches = _.filter(switches, function(sw) { return sw.state_ref == st.id }) });
     /*if (z.b_type == "brick") {
@@ -104,8 +107,8 @@ $scope.reloadResources = function() {
 
   });
   _.forEach($scope.spaceelems, function(z) {
-    //z.topo_id = _.find(data.topology, function(d){ return d.space_elem_id == z.id;});
-    //z.reactions = _.filter(data.reaction_cn, function(sw) { return sw.reaction.element == z.topo_id }); 
+    z.topo_id = _.find(topo, function(d){ return d.space_elem_id == z.id && d.space_element == true;});
+    z.reactions = _.filter(reactions, function(sw) { return z.topo_id != undefined && sw.reaction.element == z.topo_id.topo_id }); 
     z.states = _.filter(states, function(d){ return d.space_elem_id == z.id;});
     _.forEach(z.states, function(st){ return st.switches = _.filter(switches, function(sw) { return sw.state_ref == st.id }) });
   });
@@ -114,7 +117,8 @@ $scope.reloadResources = function() {
     _.forEach(z.states, function(st){ return st.switches = _.filter(switches, function(sw) { return sw.state_ref == st.id }) });
   });
 
-
+ });
+ });
  });
  });
 }
@@ -125,10 +129,11 @@ $scope.reloadResourcesForSession = function(session) {
 
     _.forEach($scope.bpelems, function(z) {
     z.states = _.filter(states, function(d){ return d.front_elem_id == z.id;});
-    //z.topo_id = _.find(data.topology, function(d){ return d.front_elem_id == z.id;});
-    //z.reactions = _.filter(data.reaction_cn, function(sw) { return sw.reaction.element == z.topo_id }); 
+    z.topo_id = _.find($scope.element_topologs, function(d){ return d.front_elem_id == z.id;});
+    z.reactions = _.filter($scope.reactions, function(sw) { return z.topo_id != undefined && sw.reaction.element == z.topo_id.topo_id }); 
 
     _.forEach(z.states, function(st){ return st.switches = _.filter($scope.switches, function(sw) { return sw.state_ref == st.origin_state }) });
+    
     /*if (z.b_type == "brick") {
       z.spaces = _.filter(data.unitspace, function(s){ return s.brick_front == z.id;});
         _.forEach(z.spaces, function(sp) { 
@@ -140,8 +145,8 @@ $scope.reloadResourcesForSession = function(session) {
 
   });
   _.forEach($scope.spaceelems, function(z) {
-    //z.topo_id = _.find(data.topology, function(d){ return d.space_elem_id == z.id;});
-    //z.reactions = _.filter(data.reaction_cn, function(sw) { return sw.reaction.element == z.topo_id }); 
+    z.topo_id = _.find($scope.element_topologs, function(d){ return d.space_elem_id == z.id;});
+    z.reactions = _.filter($scope.reactions, function(sw) { return z.topo_id != undefined && sw.reaction.element == z.topo_id.topo_id }); 
     z.states = _.filter(states, function(d){ return d.space_elem_id == z.id;});
     _.forEach(z.states, function(st){ return st.switches = _.filter($scope.switches, function(sw) { return sw.state_ref == st.id }) });
   });
@@ -150,16 +155,17 @@ $scope.reloadResourcesForSession = function(session) {
     _.forEach(z.states, function(st){ return st.switches = _.filter($scope.switches, function(sw) { return sw.state_ref == st.id }) });
   });
 
-
+ 
  });
 }
 $scope.loadResources = function() {
-BPElemsFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(data) {
-BPSpacesFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(data2) {
-BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(data3) {
-$scope.states.$promise.then(function(states) {
-$scope.switches.$promise.then(function(switches) {
-    
+  BPElemsFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(data) {
+  BPSpacesFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(data2) {
+  BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(data3) {
+  $scope.states.$promise.then(function(states) {
+  $scope.switches.$promise.then(function(switches) {
+    $scope.reactions.$promise.then(function (reactions) {
+    $scope.element_topologs.$promise.then(function (topo) {  
 
     $scope.bpelems = data;
     $scope.spaces = data2;
@@ -167,10 +173,12 @@ $scope.switches.$promise.then(function(switches) {
 
     _.forEach($scope.bpelems, function(z) {
     z.states = _.filter(states, function(d){ return d.front_elem_id == z.id;});
-    //z.topo_id = _.find(data.topology, function(d){ return d.front_elem_id == z.id;});
-    //z.reactions = _.filter(data.reaction_cn, function(sw) { return sw.reaction.element == z.topo_id }); 
+    z.topo_id = _.find(topo, function(d){ return d.element_id == z.id && d.space_element == false;;});
+    z.reactions = _.filter(reactions, function(sw) { return z.topo_id != undefined && sw.reaction.element == z.topo_id.topo_id }); 
 
     _.forEach(z.states, function(st){ return st.switches = _.filter(switches, function(sw) { return sw.state_ref == st.id }) });
+    
+
     /*if (z.b_type == "brick") {
       z.spaces = _.filter(data.unitspace, function(s){ return s.brick_front == z.id;});
         _.forEach(z.spaces, function(sp) { 
@@ -182,8 +190,8 @@ $scope.switches.$promise.then(function(switches) {
 
   });
   _.forEach($scope.spaceelems, function(z) {
-    //z.topo_id = _.find(data.topology, function(d){ return d.space_elem_id == z.id;});
-    //z.reactions = _.filter(data.reaction_cn, function(sw) { return sw.reaction.element == z.topo_id }); 
+    z.topo_id = _.find(topo, function(d){ return d.element_id == z.id && d.space_element == true;});
+    z.reactions = _.filter(reactions, function(sw) { return z.topo_id != undefined && sw.reaction.element == z.topo_id.topo_id }); 
     z.states = _.filter(states, function(d){ return d.space_elem_id == z.id;});
     _.forEach(z.states, function(st){ return st.switches = _.filter(switches, function(sw) { return sw.state_ref == st.id }) });
   });
@@ -191,7 +199,8 @@ $scope.switches.$promise.then(function(switches) {
     z.states = _.filter(states, function(d){ return d.space_id == z.id;});
     _.forEach(z.states, function(st){ return st.switches = _.filter($scope.switches, function(sw) { return sw.state_ref == st.id }) });
   });
-
+  });
+  });
   });
   });
   });
@@ -395,17 +404,18 @@ $scope.loadResources();
 
 
 
-
+   //$scope.reactions = ReactionsFactory.query({ BPid: $scope.BPid })
    $scope.interactions = InteractionsFactory.query({session_id: $scope.session.session.id});
-   $scope.element_topologs = ElementTopologsFactory.query({ BPid: $scope.bpId });
 
     BPElemsFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(data) {
     BPSpacesFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(data2) {
     BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(data3) {
+    ReactionsFactory.query({ BPid: $scope.BPid }).$promise.then(function(reaction_array) { 
     $scope.input_logs.$promise.then(function(ilogs) {  
     $scope.states.$promise.then(function(states) {
     $scope.switches.$promise.then(function(switches) {
-    
+        console.log(ilogs);
+        console.log(reaction_array);
 
     $scope.bpelems = data;
     $scope.spaces = data2;
@@ -413,8 +423,8 @@ $scope.loadResources();
 
     _.forEach($scope.bpelems, function(z) {
     z.states = _.filter(states, function(d){ return d.front_elem_id == z.id;});
-    z.topo_id = _.find(data.topology, function(d){ return d.front_elem_id == z.id;});
-    z.reactions = _.filter(data.reaction_cn, function(sw) { return sw.reaction.element == z.topo_id }); 
+    z.topo_id = _.find(data.topology, function(d){ return d.element_id == z.id && d.space_element == false;});
+    z.reactions = _.filter(data.reaction_cn, function(sw) { return z.topo_id != undefined && sw.reaction.element == z.topo_id.topo_id }); 
 
     z.ilogs = _.filter(ilogs, function(il) { return il.reaction == _.contains(_.map(z.reactions, function(r){r.id})) });
 
@@ -436,8 +446,8 @@ $scope.loadResources();
     
   /* For space elements    */  
   _.forEach($scope.spaceelems, function(z) {
-    z.topo_id = _.find(data.topology, function(d){ return d.space_elem_id == z.id;});
-    z.reactions = _.filter(data.reaction_cn, function(sw) { return sw.reaction.element == z.topo_id }); 
+    z.topo_id = _.find(data.topology, function(d){ return d.element_id == z.id && d.space_element == true;});
+    z.reactions = _.filter(data.reaction_cn, function(sw) { return z.topo_id != undefined && sw.reaction.element == z.topo_id.topo_id }); 
     z.ilogs = _.filter(ilogs, function(il) { return il.reaction == _.contains(_.map(z.reactions, function(r){r.id})) });
     z.states = _.filter(states, function(d){ return d.space_elem_id == z.id;});
     _.forEach(z.states, function(st){ return st.switches = _.filter(switches, function(sw) { return sw.state_ref == st.id }) });
@@ -452,16 +462,17 @@ $scope.loadResources();
   });
   });
   });
+  });
 
   
 
   }
 
-  $scope.editElem = function (bpId) {
-    $location.path('/bp-detail/' + bpId + '/edit');
+  $scope.editElem = function (BPid) {
+    $location.path('/bp-detail/' + BPid + '/edit');
   };
-  $scope.showElem = function (bpId) {
-    $location.path('/bprocess/' + bpId + '/show');
+  $scope.showElem = function (BPid) {
+    $location.path('/bprocess/' + BPid + '/show');
   };
 
 
@@ -1175,6 +1186,41 @@ $scope.switcherDecoration = function(switcher) {
     return " ";
   }
 }
+$scope.stateOutAct = function (act) {
+  if (act) {
+    if (act.on == true) {
+      return 'turn on';
+    } else {
+      return 'turn off';
+    }
+  } else { return ''; }
+};
+$scope.capitalizeFirstLetter = function (string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+};
+$scope.stateByStateRef = function (state_ref) {
+  var pos_state = _.find($scope.states, function(state) { return state.id == state_ref  });
+  if (pos_state != undefined) {
+    return pos_state.title;
+  } else {
+    return "";
+  }
+};
+$scope.stateActiveClass = function(state) {
+                  //<div class="neutral">{{ state.neutral }}</div>
+                  //<div class="middleable">{{ state.middle }}</div>
+                  //<div class="oposite">{{ state.oposite }}</div>
+                  //<div class="ended">{{ state.title }}</div>
+  var prefx = "on-";
+
+  if (state) {
+    return prefx + "neutral";
+  }
+  return prefx + "middleable";
+  return prefx + "oposite";
+  return prefx + "ended";
+
+}
 $scope.stateClass = function(state) {
   if (state != undefined) {
   if (state.on) {
@@ -1220,6 +1266,9 @@ BPSessionsFactory.query({ BPid: $scope.BPid }).$promise.then(function(data){
    }
   });    
     
+$scope.reactions =  ReactionsFactory.query({ BPid: $scope.BPid });
+$scope.element_topologs = ElementTopologsFactory.query({ BPid: $scope.BPid });
+
 
 $scope.changeSession = function(session) {
 
@@ -1230,7 +1279,7 @@ $scope.changeSession = function(session) {
  $scope.session_bar = 'shown'; 
 
  $scope.input_logs = BPInLoggersSessionFactory.query({BPid: $route.current.params.BPid, station_id: $scope.session.id});
-
+ //.$promise.then(function(reaction_array) { 
 
  if ($scope.station != undefined && $scope.station.inspace == false) {
    if ($scope.bpelems[$scope.station.step+1] !== undefined) {

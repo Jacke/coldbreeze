@@ -787,10 +787,10 @@ retrievedJsModules = {}, retrieveLoginBox = function(link, container, cbDone, cb
                 return $("#invitationOverlay").remove()
             }
         })) : alert("Please enter a valid email address."))
-    }).delegate(".createApiForm", "submit", function(e) {
-        var btn, inputNewApiName;
-        return e.preventDefault(), e = $(this), inputNewApiName = e.find("input.newApiName"), inputNewApiName.length && inputNewApiName.val().trim() ? (btn = e.find(".createApiButton").val("Creating..."), e.trigger("apiary:track", {
-            apiName: inputNewApiName
+    }).delegate(".createMinForm", "submit", function(e) {
+        var btn, inputNewMinName;
+        return e.preventDefault(), e = $(this), inputNewMinName = e.find("input.newMinName"), inputNewMinName.length && inputNewMinName.val().trim() ? (btn = e.find(".createMinButton").val("Creating..."), e.trigger("minority:track", {
+            minName: inputNewMinName
         }), void $.ajax({
             url: e.attr("action"),
             type: "POST",
@@ -813,8 +813,8 @@ retrievedJsModules = {}, retrieveLoginBox = function(link, container, cbDone, cb
                     return window.location.href = data.redirectTo
                 }, 300))
             }
-        })) : (inputNewApiName.addClass("bad"), setTimeout(function() {
-            return inputNewApiName.removeClass("bad").trigger("focus")
+        })) : (inputNewMinName.addClass("bad"), setTimeout(function() {
+            return inputNewMinName.removeClass("bad").trigger("focus")
         }, 300), !1)
     })
 });

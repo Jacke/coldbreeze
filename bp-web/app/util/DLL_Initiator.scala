@@ -74,6 +74,8 @@ SessionStateLogDAO.ddl_create
     BillingInfosDAO.ddl_create
       
     WalksDAO.ddl_create
+    GroupsDAO.ddl_create
+    AccountGroupDAO.ddl_create
     BusinessWalksDAO.ddl_create
 
     AnnotationDAO.ddl_create
@@ -136,6 +138,8 @@ SessionStateLogDAO.ddl_drop
     BillingInfosDAO.ddl_drop
       
     WalksDAO.ddl_drop
+    GroupsDAO.ddl_drop
+    AccountGroupDAO.ddl_drop
     BusinessWalksDAO.ddl_drop
 
     AnnotationDAO.ddl_drop

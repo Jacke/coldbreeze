@@ -40,10 +40,14 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
             routes.javascript.BusinessProcessController.spaces,
             routes.javascript.BusinessProcessController.copy,
             users.routes.javascript.EmployeeController.create_new,
-
+            routes.javascript.GroupController.create_new,
+            routes.javascript.GroupController.destroy,
+            routes.javascript.GroupController.assign_user,
+            routes.javascript.GroupController.unassign_user,
             routes.javascript.Application.index,
             routes.javascript.ProfileController.profile,
             routes.javascript.ProcessSessionController.update_note
+
           // TODO Add your routes here
         )
       ).as("text/javascript")
