@@ -1112,7 +1112,6 @@ $scope.type_short = $rootScope.type_short;
 
 $scope.frontSpace = function (elem_id) { // : spaceObj
     var result = _.find($scope.spaces, function(space){ return space.brick_front == elem_id; });
-     
     result;
   }
   $scope.BPid = parseInt($route.current.params.BPid);

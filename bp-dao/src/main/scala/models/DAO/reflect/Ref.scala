@@ -183,11 +183,22 @@ private def makeTopolog(process: Int, front_elem_id: Option[Int],
 
 
        val topos = ReflectElemTopologDAO.findByRef(k)  
-       val topoElem = idToRefId.map(idd => 
-                          topos.find(t => t.front_elem_id == Some(idd._1)).get.id.get -> makeTopolog(process, front_elem_id = Some(idd._2), space_elem_id=None)
+       def isIdDefined(id: Int, scope: String):Boolean = {
+         scope match {
+          case "space" => topos.find(t => t.space_elem_id == Some(id)).isDefined
+          case "front" => topos.find(t => t.front_elem_id == Some(id)).isDefined
+          case _ => false
+         }
+       }
+       val topoElem = idToRefId.filter(idd => isIdDefined(idd._1, "front")).map(idd => 
+                          topos.find(t => t.front_elem_id == Some(idd._1)).get.id.get -> makeTopolog(process, 
+                                                                                                     front_elem_id = Some(idd._2), 
+                                                                                                     space_elem_id=None)
                           )
-       val topoSpaceElem = conv_sp_elems.map(idd => 
-                          topos.find(t => t.space_elem_id == Some(idd._1)).get.id.get -> makeTopolog(process, space_elem_id = Some(idd._2), front_elem_id=None)
+       val topoSpaceElem = conv_sp_elems.filter(idd => isIdDefined(idd._1, "space")).map(idd => 
+                          topos.find(t => t.space_elem_id == Some(idd._1)).get.id.get -> makeTopolog(process, 
+                                                                                                      space_elem_id = Some(idd._2), 
+                                                                                                      front_elem_id=None)
                           )
        // TOPOLOGY MAKING  
         val reactionsIdToRefId:Map[Int, Int] = (topoElem.map ( m =>
