@@ -531,6 +531,25 @@ padding-left: 30%;
 
 
 
+.processListControls a {
+    display: block;
+    float: none !important;
+}
+
+.tableMinListControls.processListControls {
+    right: 0px;
+    margin-right: 30px !important;
+    margin-top: -105px !important;
+}
+.tableMinListControls.processListControls {
+    right: 30px !important;
+    margin-right: 0px !important;
+}
+
+.processListControls a.tableMinControlsLink {
+    display: block !important;
+    float: none;
+}
 
 
 
@@ -1651,7 +1670,7 @@ border-radius: 6px;
 
 .process-thumb {
   position: absolute;
-  right: 70px;
+  right: 165px;
   top: 5px;
   width: 44px;
   height: 41px;
@@ -1660,7 +1679,6 @@ border-radius: 6px;
   padding-left: 25px;
   cursor: pointer;
 }
-
 
 .allSessionsList h2, .allStationssList h2 {
     display: inline-block;
@@ -7033,3 +7051,4 @@ Settings
   top: -50px;
   height: 0px;
 }
+

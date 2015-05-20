@@ -18,23 +18,23 @@ a.redButton {
 .process-thumb:active p.tableMinListGithub a.redButton {
     background: #c0392b;
 }
-
 .process_content {
-    top: -26px;
-    position: relative;    
-    display: inline-block;    
-    left: 0px;    
-    width: auto;
-    border: 1px solid rgb(213, 222, 236);    
-    border-image-source: initial;    
-    border-image-slice: initial;    
-    border-image-width: initial;    
-    border-image-outset: initial;    
-    border-image-repeat: initial;    
-    padding-right: 5px;  
-    padding-top: 5px;   
-    padding-bottom: 6px;
-    border-radius: 6px;
+  top: -26px;
+  position: relative;
+  display: inline-block;
+  left: 0px;
+  width: auto;
+  border: 1px solid #d5deec;
+  border-image-source: initial;
+  border-image-slice: initial;
+  border-image-width: initial;
+  border-image-outset: initial;
+  border-image-repeat: initial;
+  padding-right: 5px;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  border-radius: 6px;
+  max-width: 552px;
 }
 .process .process_content {
   top: -73px;
