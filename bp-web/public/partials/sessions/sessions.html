@@ -41,7 +41,7 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 
 <div class="session-process" ng-repeat="entity in sessions" ng-show="entity.sessions.length">
 
-<h2><a href="/a#/bprocess/{{ entity.process.id }}">{{ entity.process.title }}</a></h2>
+<h2><a href="/a#/bprocess/{{ entity.process.id }}/elements">{{ entity.process.title }}</a></h2>
 
 <div class="process_content" ng-init="bprocess=entity.process">
           <div ng-include src="'assets/partials/treeThumb.html'"></div>
