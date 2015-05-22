@@ -47,6 +47,7 @@ object Build extends Build {
     .settings(
       libraryDependencies ++=
         List(
+          scalarx,
           async, 
           amonite, 
           reflect, 

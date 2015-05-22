@@ -88,8 +88,15 @@ class InteractionController(override implicit val env: RuntimeEnvironment[DemoUs
 	case Some(session) => {   
 		val process:BProcessDTO = session.process
 	    val reactions:List[UnitReaction] = ReactionDAO.findUnapplied(process.id.get, session_id)
+      println("Reactions")
+      println(reactions.length)
+
       val reaction_outs:List[UnitReactionStateOut] = ReactionStateOutDAO.findByReactions(reactions.map(_.id.get))
+      println("Reactions")
+      println(reactions.length)      
 	    val session_states: List[BPSessionState] = BPSessionStateDAO.findByOriginIds(reaction_outs.map(_.state_ref))
+      println("Session state")
+      println(session_states.length)
         val reaction_container = reactions.map(reaction => 
         	ReactionContainer(session_state = session_states.find(state => Some(reaction.from_state) == state.origin_state),
         					  reaction, reaction_outs.filter(out => Some(out.reaction) == reaction.id))

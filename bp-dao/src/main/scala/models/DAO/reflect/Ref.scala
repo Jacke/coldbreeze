@@ -189,13 +189,14 @@ private def makeTopolog(process: Int, front_elem_id: Option[Int],
           case "front" => topos.find(t => t.front_elem_id == Some(id)).isDefined
           case _ => false
          }
-       }
-       val topoElem = idToRefId.filter(idd => isIdDefined(idd._1, "front")).map(idd => 
+       }//.filter(idd => isIdDefined(idd._1, "front"))
+       val topoElem = idToRefId.map(idd => 
                           topos.find(t => t.front_elem_id == Some(idd._1)).get.id.get -> makeTopolog(process, 
                                                                                                      front_elem_id = Some(idd._2), 
                                                                                                      space_elem_id=None)
                           )
-       val topoSpaceElem = conv_sp_elems.filter(idd => isIdDefined(idd._1, "space")).map(idd => 
+       //.filter(idd => isIdDefined(idd._1, "space"))
+       val topoSpaceElem = conv_sp_elems.map(idd => 
                           topos.find(t => t.space_elem_id == Some(idd._1)).get.id.get -> makeTopolog(process, 
                                                                                                       space_elem_id = Some(idd._2), 
                                                                                                       front_elem_id=None)
@@ -214,7 +215,7 @@ private def makeTopolog(process: Int, front_elem_id: Option[Int],
          ).toMap
 
         val reaction_state_outIdToRefId:Map[Int, Int] = reactionsIdToRefId.map { m =>
-                reaction_state_out.filter(pred => pred.state_ref == m._1).map { out => 
+                reaction_state_out.filter(pred => pred.reaction == m._1).map { out =>
         out.id.get -> ReactionStateOutDAO.pull_object(out.reflect(state_ref = stateIdToRefId.find(s => s._1 == out.state_ref).get._2, reaction = m._2))
             }
          }.flatten.toMap
@@ -313,7 +314,7 @@ private def makeTopolog(process: Int, front_elem_id: Option[Int],
 
 
         val reaction_state_outIdToRefId:Map[Int, Int] = reactionsIdToRefId.map { m =>
-                reaction_state_out.filter(pred => pred.state_ref == m._1).map { out => 
+                reaction_state_out.filter(pred => pred.reaction == m._1).map { out =>
         out.id.get -> ReactionStateOutDAO.pull_object(out.reflect(state_ref = stateIdToRefId.find(s => s._1 == out.state_ref).get._2, reaction = m._2))
             }
          }.flatten.toMap // PROBLEM
