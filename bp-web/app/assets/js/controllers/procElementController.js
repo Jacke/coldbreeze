@@ -381,6 +381,8 @@ $scope.loadResources();
       }
     };
 
+
+
   $scope.editElem = function (BPid) {
     $location.path('/bp-detail/' + BPid + '/edit');
   };
