@@ -325,7 +325,15 @@ def createSpaceElem() = SecuredAction(BodyParsers.parse.json) { implicit request
     case entity => println(entity)
   }
   request.body.validate[RefElemContainer].map{ 
-    case entity => haltActiveStations(entity.process); RefDAO.retrive(entity.ref, entity.process, entity.business, in = "nested", entity.title, entity.desc, entity.space_id) match { //SpaceElemDAO.pull_object(entity) match {
+    case entity => { 
+                haltActiveStations(entity.process); 
+                RefDAO.retrive(entity.ref, 
+                entity.process, 
+                entity.business, 
+                in = "nested", 
+                entity.title, 
+                entity.desc, 
+                entity.space_id) } match { //SpaceElemDAO.pull_object(entity) match {
             case None =>  Ok(Json.toJson(Map("failure" ->  s"Could not create space element ${entity.title}")))
             case id =>  Ok(Json.toJson(Map("success" ->  Json.toJson(id))))
           }

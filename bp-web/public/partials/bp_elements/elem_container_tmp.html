@@ -2,25 +2,28 @@
      <!-- FOR CONTAINER TEMPLATE -->
       <div class="tab-pane active" id="edit" ng:show="bpelem.type_title == 'container_brick'">
           <div class="front-spaces" ng-repeat="space in frontSpaces[bpelem.id]">
-             {{ 'SPACE' | translate }}: {{ space.index }} — <a ng:click="space.cneedit=!space.cneedit" ng-show="isManagerVal">{{ 'ADD_TO_SPACE' | translate }}</a>
-            <div class="state" ng-class="state.on" ng-repeat="state in space.states">
-              <div class="switcher" ng-repeat="switcher in state.switches">
-              <span class="switcher-icon" ng-class="switcher.switch_type"></span>{{ state.title }} — {{ state.neutral }}
-            </div>
-            </div>
 
-            <div class="elem-desc" ng:show="(space.cneedit == false || space.cnedit == undefined) && mySpaceElems(spaceelems, space.id).length < 1 && isManagerVal">
-<div class="confirm-desc">
-<h3>{{ 'CONFIRM' | translate }}</h3>
-<p>{{ 'CONFDESCFULL' | translate }}</p>
-</div>
-<div class="container-desc">
-<h3>{{ 'CONTAINER' | translate }}</h3>
-<p>{{ 'CONTDESCFULL' | translate }}</p>
-</div>
+        <div class="space-subbricks">
+          <div class="space-subbrick">
+            <div class="element-header">
+                  <div class="primary-states">
+                  </div>
+                  <div class="info">
+                   {{ 'SPACE' | translate }}: {{ space.index }} — <a ng:click="space.cneedit=!space.cneedit" ng-show="isManagerVal">{{ 'ADD_TO_SPACE' | translate }}</a>
+                  <!--
+                    <h4 class="title">Subbrick</h4> 
+                  -->
+                  </div>
+                  </div>   
+          </div>
+          <div class="state" ng-class="state.on" ng-repeat="state in space.states">
+            <div class="switcher" ng-repeat="switcher in state.switches">
+            <span class="switcher-icon" ng-class="switcher.switch_type"></span>{{ state.title }} — {{ state.neutral }}
+          </div>
+          </div>
+        </div>
 
-            </div>
-             <div ng:show="space.cneedit">
+             <div class="new-space-elem-form" ng:show="space.cneedit">
               <form novalidate="novalidate" class="form-horizontal form-new-spaceelem" ng-class="space.newSpaceelem.type_title">
                   <div class="control-group form-group">
                     <label class="control-label col-sm-1" for="inputTitle">{{ 'TITLE' | translate }}:</label>
@@ -28,7 +31,7 @@
                       <input type="text" id="inputTitle" class="form-control" ng-model="space.newSpaceelem.title"/>
                     </div>
                   </div>
-                  <div class="control-group form-group"">
+                  <div class="control-group form-group">
                     <label class="control-label col-sm-1" for="inputBusinessId">{{ 'DESC' | translate }}:</label>
                     <div class="controls col-xs-4">
                       <textarea type="text" id="inputBusinessId" class="form-control" ng-model="space.newSpaceelem.desc"/>
@@ -43,7 +46,7 @@
                       <input type="hidden" id="inputBusinessId" ng-model="space.newSpaceelem.space_role" ng-init="space.newSpaceelem.space_role" value="container"/>
                       <input type="hidden" id="inputBusinessId" ng-model="space.newSpaceelem.order" value="{{ orderNestedGen(space.newSpaceelem) }}"/>
 
-              <div class="control-group form-group"">
+              <div class="control-group form-group">
                     <div class="controls col-xs-8">
                       <div class="templateButton">
                         <div class="ref" ng-repeat="ref in refs">
@@ -56,47 +59,112 @@
                 </form>
               </div>
 
-              <div class="front-space-elems">
-                <div class="space-blocks" ng-repeat="spaceelem in spaceelems | filter:{space_owned: space.id} | orderBy:'order'" style="padding: 2px 10px;">
 
 
+              <div class="front-space-elems space-elements">
+                <div class="space-blocks space-element" ng-repeat="spaceelem in spaceelems | filter:{space_owned: space.id} | orderBy:'order'" style="padding: 2px 10px;">
+                  <div class="element-header">
+                    <div class="primary-states">
+                    </div>
+                    <div class="info">
+                      <div class="type">{{ type_short[spaceelem.type_title] }}
 
+<ul class="type-tabs" ng-init="spaceelem.hovered=false" role="tablist" ng-mouseover="spaceelem.hovered == true ? bpelspaceelemem.hovered=false : spaceelem.hovered=true" ng-show="(isManagerVal && !inSession && selected == 2) || (spaceelem.hovered == true)">
+           <li><a role="tab" data-toggle="tab" ng:init="selected=1" ng:click="selected == 1 ? selected=2 : selected=1">
+           <span class="glyphicon glyphicon-edit"></span></a></li>
+           <li><a ng-click="deleteElem(spaceelem)"><span class="glyphicon glyphicon-remove"></span></a></li>
+           <li><a ng:click="moveUpSpaceElem(spaceelem)"><span class="glyphicon glyphicon-arrow-up"></span></a></li>
+           <li><a ng:click="moveDownSpaceElem(spaceelem)"><span class="glyphicon glyphicon-arrow-down"></span></a></li>
+         </ul>
+                      </div>
+                    <h4 class="title">{{ spaceelem.title }}</h4>
+                    <h6 class="desc">{{ spaceelem.desc }}</h6>
+                    </div>
+<ul class="elem-control elem-tabs" role="tablist" ng-show="inSession">
+      <p ng-show="spaceelem.states.length > 0">
+        <abbr class="session__header__created_at" title="{{ spaceelem.states[0].updated_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="spaceelem.states[0].updated_at"></abbr>
+      </p>
+    </ul>
+    <ul class="elem-control elem-tabs input-logs" ng-show="inSession && spaceelem.ilogs.length > 0">
+      <li ng-repeat="ilog in spaceelem.ilogs">{{ ilog.uid }}</li>
+    </ul>
 
-                  <ul class="elem-control elem-tabs" role="tablist" ng-show="isManagerVal">
-                    <li class="active"><a href="" role="tab" data-toggle="tab" ng:click="selected=1"><span class="glyphicon glyphicon-list-alt"></span></a></li>
-                    <li><a href="" role="tab" data-toggle="tab" ng:click="selected=2"><span class="glyphicon glyphicon-edit"></span></a></li>
-                    <li><a ng-click="deleteSpaceElem(spaceelem)"><span class="glyphicon glyphicon-remove"></span></a></li>
-                    <li><a href="" ng:click="moveUpSpaceElem(spaceelem)"><span class="glyphicon glyphicon-arrow-up"></span></a></li>
-                    <li><a href="" ng:click="moveDownSpaceElem(spaceelem)"><span class="glyphicon glyphicon-arrow-down"></span></a></li>
-                  </ul>
+                  </div><!-- element header -->
+
                   <div class="tab-pane active" id="edit" ng:show="selected == 2">
                     <div ng-include src="'assets/partials/bp_elements/spelem-edit.html'"></div>
                   </div>
+
                   <div class="tab-content">
-                    <div class="block-card tab-pane active" id="show" ng-class="'spelem-'+spaceelem.id">
-                      <span class="primary">{{ spaceelem.order }}: {{ spaceelem.title }} </span> <!-- OWNED BY: {{ spaceelem.space_owned }} -->
-                      <span class="descr">{{ spaceelem.b_type }}</span> 
-                      <span class="type">{{ spaceelem.type_title }}</span> 
-                    </div>
+                   
+
+
+
+
+    <div class="right-bar" ng:init="exp=false" ng-class="stateClass(masterState(spaceelem))" ng-class="exp == active ? 'exp-active' : 'exp-disabled'">
+      <div class="states-row">
+        <div class="state-row">
           <div class="row-top">
-            <div class="state" ng-class="state.on" ng-repeat="state in spaceelem.states">
-              <div class="switcher" ng-repeat="switcher in state.switches">
-              <span class="switcher-icon" ng-class="switcher.switch_type"></span>{{ state.title }} — {{ state.neutral }}
+            <div class="state">
+              <div class="switcher" ng-repeat="switcher in spaceelem.states | limitTo: 1">
+              <div class="state-thumbnail" ng-class="stateActiveClass(masterState(spaceelem))">
+              <span class="switcher-icon" ng-class="switcher.switch_type"></span>
+                  <div class="neutral">{{ masterState(spaceelem).neutral }}</div>
+                  <div class="middleable">{{ masterState(spaceelem).middle }}</div>
+                  <div class="oposite">{{ masterState(spaceelem).oposite }}</div>
+                  <div class="ended">{{ masterState(spaceelem).title }}</div>
+              </div>
             </div>
             </div>
             
-          </div>                    
-                      <div class="tab-pane active" id="edit" ng:show="spaceelem.type_title == 'container_brick'">
+          </div>
+          <div class="row-bottom">
+           
+          </div>
+        </div>
+      </div>
+      <div class="expanded-element" ng:show="exp == active">
+            <div class="reactions">
+              <div class="reaction" ng-repeat="reaction in spaceelem.reactions">
+                <span class="reaction-icon moicon moicon-sphere"></span>
+                <div class="reaction-title">{{ capitalizeFirstLetter(reaction.reaction.title) }}</div>
+                  <span class="reaction_list__reaction__state_outs" ng-repeat="state_out in reaction.reaction_state_outs">
+                  {{ stateOutAct(state_out) }} {{ stateByStateRef(state_out.state_ref) }} 
+                  </span>
+              </div>
+            </div>
+            <div class="state" ng-class="stateClass(state)" ng-repeat="state in spaceelem.states">
+              <div class="switcher" ng-repeat="switcher in state.switches">
+                <div class="state-thumbnail" ng-class="stateActiveClass(state)">
+                  <span class="switcher-icon" ng-class="switcher.switch_type"></span>
+                  <div class="neutral">{{ state.neutral }}</div>
+                  <div class="middleable">{{ state.middle }}</div>
+                  <div class="oposite">{{ state.oposite }}</div>
+                  <div class="ended">{{ state.title }}</div>
+                  {{ stateDecoration(state) }} {{ switcherDecoration(switcher) }}
+                </div>
+            </div>
+            </div>      
+      </div>
+      <div class="row-selector"></div>
+      <div class="elem-expander" ng:click="exp == false ? exp=active : exp=false"><span class="uicon-svg93"></span>
+      </div>
+    </div><!-- right bar -->
+
+
+
+
+                   
+                      <div class="tab-pane active" ng:show="spaceelem.type_title == 'container_brick'">
                           <div class="nested-spaces" ng-repeat="space in nestedSpaces[spaceelem.id]">
                               <div ng-include src="'assets/partials/bp_elements/nested_cn.html'"></div>
                               <div ng-include src="'assets/partials/bp_elements/nested_cn_elems.html'"></div>
-
-
-
                           </div>
-
                       </div>
-                    </div></div>
+
+
+                    </div>
+                    </div>
               </div>
 
           </div>

@@ -138,7 +138,8 @@ private def makeTopolog(process: Int, front_elem_id: Option[Int],
        // Space fetching
        val spaces:List[UnitSpaceRef] = SpaceReflectionDAO.findByElemRefs(ref_ids)
        val conv_spaces:Map[Int,Int] = spaces.map { space => 
-          val sp = SpaceDCO.conv(space, business, process, index = last_index, space.brick_front.get)
+          val brick_front_id = idToRefId.find(idmap => space.brick_front.get == idmap._1).get._2
+          val sp = SpaceDCO.conv(space, business, process, index = last_index, brick_front_id)
           space.id.get -> BPSpaceDAO.pull_object(sp)
        }.toMap
 
@@ -256,7 +257,8 @@ private def makeTopolog(process: Int, front_elem_id: Option[Int],
                 
        val spaces:List[UnitSpaceRef] = SpaceReflectionDAO.findByElemRefs(ref_ids)
        val conv_spaces:Map[Int,Int] = spaces.map { space => 
-          val sp = SpaceDCO.conv(space, business, process, index = last_index, space.brick_front.get)
+          val brick_front_id = idToRefId.find(idmap => space.brick_front.get == idmap._1).get._2
+          val sp = SpaceDCO.conv(space, business, process, index = last_index, brick_front_id)
           space.id.get -> BPSpaceDAO.pull_object(sp)
        }.toMap
 
@@ -276,7 +278,7 @@ private def makeTopolog(process: Int, front_elem_id: Option[Int],
 
         val stateIdToRefId:Map[Int, Int] = ((idToRefId.map { m =>
                 states.filter(pred => pred.front_elem_id == Some(m._1)).map { el => 
-                 el.id.get -> BPStateDAO.pull_object(el.reflect(process, front_elem_id = Some(m._2), space_elem_id = None, space_id = None))
+                 el.id.get -> BPStateDAO.pull_object(el.reflect(process, front_elem_id = None, space_elem_id = Some(m._2), space_id = None))
                 }
 
         }) ++ (conv_spaces.map { m =>

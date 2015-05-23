@@ -15,6 +15,7 @@ body.themeGrad {
   background: -moz-linear-gradient(top, rgb(0, 145, 255) 0%, rgb(76, 138, 255) 54%, rgb(142, 132, 255) 94%, rgb(147, 132, 255) 100%);
   background: linear-gradient(to bottom, rgb(0, 145, 255) 0%, rgb(76, 138, 255) 54%, rgb(142, 132, 255) 94%, rgb(147, 132, 255) 100%);
   background-color: rgb(147, 132, 255);
+  height: 100%;
 }
 body.themeGrad div#container.container-global {
   background: rgba(255, 255, 255, 0.93);
