@@ -289,7 +289,6 @@ object Main extends App {
   //////////InvokeTracer.run_proc(proc12)
   // Run from
   // ******************************************************************************************
-  //TODO
   // ******************************************************************************************
 
 
@@ -595,7 +594,6 @@ object Main12 {
   proc2.spaces.last.addToSpace(new Constant[Boolean](1, true,1), "expands")
   proc2.spaces.last.addToSpace(new Constant[Boolean](1, true,1), "expands")
   */
-  // TODO: Space shit above and below
   //println("******" + proc2.spaces.last.index)
   //println(proc2.spaces.last.expands.head)
   //InvokeTracer.run_proc(proc2)

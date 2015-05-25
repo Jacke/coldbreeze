@@ -266,7 +266,8 @@ class BProcess(scope: Scope, val id: Option[Int] = None, var assigned_session_id
   /**
    * Composite values restore
    */
- // TODO: Composite values restore
+ // Deprecated: Composite values restore
+@deprecated("Composite values are deprecated")
   def restoreCVOfElems {
     val target = allElements.filter(elem => logger.valChanged(elem))
     println(target)

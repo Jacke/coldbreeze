@@ -495,7 +495,7 @@
 <div class="session-info" ng-show="inSession" ng-click="session_bar == 'hiding' ? session_bar='shown' : session_bar='hiding'">
         <div class="progress">
           <div class="progress-bar" role="progressbar" aria-valuenow="@{session.percent}" aria-valuemin="0" aria-valuemax="100" style="width: {{ session.percent}}%">
-            {{ session.percent}}%
+            <span>{{ session.percent}}%</span>
           </div>
         </div>
         <div class="started_at">

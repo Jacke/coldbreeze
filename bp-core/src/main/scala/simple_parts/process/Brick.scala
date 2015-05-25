@@ -87,7 +87,6 @@ class ExpandBrick(override val id: Int,
     println(getSpace(this).get.expands.length)
     bprocess.marker.moveToExpand
 
-    // TODO: Move in Invoke file Temp solution
 
 
     getSpace(this).get.updateElem(getSpace(this).get.expands(0), new Constant[Boolean](1, false, bprocess,1))

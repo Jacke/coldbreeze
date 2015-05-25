@@ -82,6 +82,8 @@ object Build extends Build {
           slick, 
           play,
           jodatime,
+          jwtCore,
+          jwtApi,
           //slickpg,
           //slickpgcore,
           //slickpgplay,
@@ -191,8 +193,21 @@ object Build extends Build {
     .enablePlugins(PlayScala)
     .enablePlugins(SbtWeb)
     .settings(basicSettings: _*)
-    //.settings(formatSettings: _*)
+    //.settings(pipelineStages in Assets := Seq(uglify))
+    .settings((WebKeys.public in Assets) := (classDirectory in Compile).value / "public")
+    //.settings(formatSettings: _*)(WebKeys.public in Assets) := (classDirectory in Compile).value / "public",
     .settings(revolverSettings: _*)
+    .settings(jsSettings : _*)
+    .settings(sassSettings : _*)
+    //.settings((compile in Compile) <<= (compile in Compile).dependsOn(WebKeys.assets in Assets))
+    .settings(sassOptions in Assets ++= Seq("--compass", "-r", "compass"))
+/*.settings(
+    sassOptions := Seq("--compass")
+)*/
+    .settings(includeFilter in(Assets, LessKeys.less) := "*.less")
+    .settings(excludeFilter in(Assets, LessKeys.less) := "_*.less")
+    .settings(mainClass in Compile := Some("ProdNettyServer"))
+    .settings(mainClass in (Compile, run) := Some("DevNettyServer"))
     .settings(
       libraryDependencies ++=
         List(
@@ -207,7 +222,9 @@ object Build extends Build {
           bootstrap, 
           angular,      
           playauth,
-          securesocial, 
+          guice,
+          silhouette,
+ //         silhouettetest,
           jsonvariants, 
           playflyway, 
           playctrl, 

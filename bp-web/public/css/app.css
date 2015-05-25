@@ -219,7 +219,9 @@ border-left: 2px solid #4dbd74;
     margin-bottom: 20px;
     border-radius: 7px;
 }
-
+.session-info .progress-bar span {
+  width: 19%;
+}
 
 .space-element .right-bar {
     background: #b6c2c9;
@@ -229,7 +231,6 @@ border-left: 2px solid #4dbd74;
 }
 
 .space-element .info {
-padding: 0px 11px 3px 25px;
 border-left: 2px solid #95a5a6;
 margin-top: -3px;
 }
@@ -283,14 +284,11 @@ border-left: 2px solid #4dbd74;
 
 
 
-
 .space-subbrick {
-margin-bottom: 11px;
-border-radius: 7px;
-  margin-top: -13px;
+  border-radius: 7px;
+  margin-top: -3px;
+  margin-left: 10px;
 }
-
-
 .space-subbrick .right-bar {
     background: #b6c2c9;
     border-bottom-right-radius: 7px;
@@ -299,10 +297,11 @@ border-radius: 7px;
 }
 
 .space-subbrick .info {
-padding: 0px 11px 3px 25px;
-border-left: 0;
-margin-top: 0px;
-background: #ecf0f1;
+  padding: 2px 11px 4px 25px;
+  border-left: 0;
+  margin-top: 0px;
+  background: #ecf0f1;
+  box-shadow: inset 0px 1px 2px 0px rgba(228, 228, 228, 1);
 }
 .space-subbrick .element-header {
 padding-top: 3px;
@@ -2738,14 +2737,13 @@ color:#fff;
     margin-bottom: 10px;
 }
 .front-spaces {
-    padding-top: 9px;
-    display: inline-block;
-    margin-right: 40px;
+  display: inline-block;
+  width: 46%;
+  float: left;
 }
 .front-space-elems {
-    margin-left: 50px;
-    padding-top: 10px;
-    padding-bottom: 15px;
+  margin-left: 10px;
+  padding-bottom: 15px;
 }
 .nested-space-elems.ng-scope {
     margin-left: 20px;
@@ -2851,9 +2849,6 @@ ul.process-control {
     display: inline-block;
 }
 
-.front-spaces {
-    margin-left: 17px;
-}
 .card-pipe {
 background: white;
 padding-bottom: 15px;

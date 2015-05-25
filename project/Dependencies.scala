@@ -10,6 +10,8 @@ object Dependencies {
     "MVN" at "http://repo.typesafe.com/typesafe/releases/",
     "Sonatype snapshots"   at "https://oss.sonatype.org/content/repositories/snapshots/",
     "p11k" at "http://pk11-scratch.googlecode.com/svn/trunk",
+    "Atlassian Releases" at "https://maven.atlassian.com/public/",
+    "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases",
      Resolver.url( "Reflect GitHub Repository", url( "http://taig.github.io/Reflect/release/" ) )( Resolver.ivyStylePatterns ),
      Resolver.url("heroku-sbt-plugin-releases", url("http://dl.bintray.com/heroku/sbt-plugins/"))(Resolver.ivyStylePatterns),
      Resolver.url("Edulify Repository", url("http://edulify.github.io/modules/releases/"))(Resolver.ivyStylePatterns),
@@ -58,6 +60,11 @@ object Dependencies {
   val jquery          = "org.webjars"               %  "jquery"                 % "1.11.1"
   val bootstrap       = "org.webjars"               %  "bootstrap"              % "3.1.1-1"   exclude("org.webjars", "jquery")
   val securesocial    = "ws.securesocial"           %% "securesocial"           % "3.0-M3"
+  val securesocialmas = "ws.securesocial"           %% "securesocial"           % "master-SNAPSHOT"
+  val jwtCore         = "com.atlassian.jwt"         % "jwt-core"                % "1.2.4"
+  val jwtApi          = "com.atlassian.jwt"         % "jwt-api"                 % "1.2.4"
+  val silhouette      = "com.mohiva"                %% "play-silhouette"        % "2.0"
+  val silhouettetest  = "com.mohiva"                %% "play-silhouette-testkit"% "2.0"   % "test"
 
   val amonite         = "com.lihaoyi"               %% "ammonite-repl"          % "0.2.4" % "test"
 
@@ -91,6 +98,7 @@ object Dependencies {
   val sprayJson       = "io.spray"                  %%  "spray-json"            % "1.2.6"
   val sprayJsonLenses = "net.virtual-void"          %%  "json-lenses"           % "0.5.5-SNAPSHOT"
   val sprayClient     = "io.spray"                  %%  "spray-client"          % sprayVersion
+  val guice           = "net.codingwell"            %% "scala-guice"            % "4.0.0-beta5"
   val scalatest       = "org.specs2"                %%  "specs2" % "2.3.12"     % "test"
   val scalaLog        = "com.typesafe.scala-logging"%%  "scala-logging"         % "3.1.0"
   val snakeYaml       = "org.yaml"                  %   "snakeyaml"             % "1.13"

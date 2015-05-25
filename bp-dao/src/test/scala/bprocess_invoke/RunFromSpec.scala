@@ -73,7 +73,6 @@ class RunFromSpec extends Specification with ProcessSample {
       process1.station.isStarted == false
     }
 
-  // TODO: Change that shit to COMPOSITE 
   println(">>>>")
   println(dblogger)
   //val logger_results = dblogger.get.map(log => BPLoggerResult(process1.findObjectByOrder(log.order).get, composite=None, log.order, None, process1.station, log.invoked, log.expanded, log.container, log.date))

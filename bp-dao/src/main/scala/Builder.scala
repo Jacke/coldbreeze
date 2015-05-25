@@ -199,7 +199,7 @@ def initiate(bpID: Int,
     //process_dto
        // val session_id = 1 // REMOVE THIS!!
 
-    initiate2(bpID, true, process, bpDTO,target, Some("en"), with_pulling = true, session_id_val = session_id, params = params) // TODO: Change to true
+    initiate2(bpID, true, process, bpDTO,target, Some("en"), with_pulling = true, session_id_val = session_id, params = params)
     process
   }
 

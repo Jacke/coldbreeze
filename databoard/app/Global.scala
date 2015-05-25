@@ -1,52 +1,110 @@
-/**
- * Copyright 2014 Jorge Aliss (jaliss at gmail dot com) - twitter: @jaliss
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
-import controllers.CustomRoutesService
-import java.lang.reflect.Constructor
-import securesocial.core.RuntimeEnvironment
-import service.{DemoUser, MyEventListener, InMemoryUserService}
+package glob
 
-object Global extends play.api.GlobalSettings {
+import play.api.GlobalSettings
+import play.api.mvc.WithFilters
+import play.filters.gzip.GzipFilter
+
+import java.lang.reflect.Constructor
+import controllers.Default
+import play.api.mvc.{RequestHeader, Filter, Result}
+import scala.concurrent._
+import play.api._
+import play.api.mvc._
+import play.api.mvc.Results._
+import play.api.mvc.Results.Redirect
+import play.api.mvc.WithFilters
+import com.google.inject.Guice
+import com.mohiva.play.silhouette.api.{ Logger, SecuredSettings }
+import controllers.routes
+import play.api.GlobalSettings
+import play.api.i18n.{ Lang, Messages }
+import play.api.mvc.Results._
+import play.api.mvc.{ RequestHeader, Result }
+import utils.di.SilhouetteModule
+
+import scala.concurrent.Future
+
+object AccessLoggingFilter extends Filter {
+  def apply(next: (RequestHeader) => Future[Result])(request: RequestHeader): Future[Result] = {
+    val result = next(request)
+    val msg = s"method=${request.method} uri=${request.uri} remote-address=${request.remoteAddress} " +
+      s"domain=${request.domain} query-string=${request.rawQueryString} " +
+      s"referrer=${request.headers.get("referer").getOrElse("N/A")} " +
+      s"user-agent=[${request.headers.get("user-agent").getOrElse("N/A")}]"
+    play.Logger.of("accesslog").info(msg)
+    result
+  }
+}
+ 
+object Global extends WithFilters(new GzipFilter(shouldGzip =
+  (request, response) => {
+    val contentType = response.headers.get("Content-Type")
+    contentType.exists(_.startsWith("text/html")) || request.path.endsWith("jsroutes.js")
+  }
+)) with Global {
+
+
+  
+  /**
+   * Service pages
+   */
+   // called when a route is found, but it was not possible to bind the request parameters
+    //override def onBadRequest(request: RequestHeader, error: String) = {
+    //  BadRequest("Bad Request: " + error)
+    //} 
+   
+    // 500 - internal server error
+    //override def onError(request: RequestHeader, throwable: Throwable) = {
+    //  InternalServerError(views.html.errors.onError(throwable))
+    //}
+   
+    // 404 - page not found error
+    override def onHandlerNotFound(request: RequestHeader) = {
+      Future.successful(NotFound("Not found"))
+    }
+}
+
+
+trait Global extends GlobalSettings with SecuredSettings with Logger {
 
   /**
-   * The runtime environment for this sample app.
+   * The Guice dependencies injector.
    */
-  object MyRuntimeEnvironment extends RuntimeEnvironment.Default[DemoUser] {
-    override lazy val routes = new CustomRoutesService()
-    override lazy val userService: InMemoryUserService = new InMemoryUserService()
-    override lazy val eventListeners = List(new MyEventListener())
+  val injector = Guice.createInjector(new SilhouetteModule)
+
+  /**
+   * Loads the controller classes with the Guice injector,
+   * in order to be able to inject dependencies directly into the controller.
+   *
+   * @param controllerClass The controller class to instantiate.
+   * @return The instance of the controller class.
+   * @throws Exception if the controller couldn't be instantiated.
+   */
+  override def getControllerInstance[A](controllerClass: Class[A]) = injector.getInstance(controllerClass)
+
+  /**
+   * Called when a user is not authenticated.
+   *
+   * As defined by RFC 2616, the status code of the response should be 401 Unauthorized.
+   *
+   * @param request The request header.
+   * @param lang The currently selected language.
+   * @return The result to send to the client.
+   */
+  override def onNotAuthenticated(request: RequestHeader, lang: Lang): Option[Future[Result]] = {
+    Some(Future.successful(Redirect(routes.ApplicationController.signIn)))
   }
 
   /**
-   * An implementation that checks if the controller expects a RuntimeEnvironment and
-   * passes the instance to it if required.
+   * Called when a user is authenticated but not authorized.
    *
-   * This can be replaced by any DI framework to inject it differently.
+   * As defined by RFC 2616, the status code of the response should be 403 Forbidden.
    *
-   * @param controllerClass
-   * @tparam A
-   * @return
+   * @param request The request header.
+   * @param lang The currently selected language.
+   * @return The result to send to the client.
    */
-  override def getControllerInstance[A](controllerClass: Class[A]): A = {
-    val instance  = controllerClass.getConstructors.find { c =>
-      val params = c.getParameterTypes
-      params.length == 1 && params(0) == classOf[RuntimeEnvironment[DemoUser]]
-    }.map {
-      _.asInstanceOf[Constructor[A]].newInstance(MyRuntimeEnvironment)
-    }
-    instance.getOrElse(super.getControllerInstance(controllerClass))
+  override def onNotAuthorized(request: RequestHeader, lang: Lang): Option[Future[Result]] = {
+    Some(Future.successful(Redirect(routes.ApplicationController.signIn).flashing("error" -> Messages("access.denied"))))
   }
 }
