@@ -26,13 +26,13 @@
              <div class="new-space-elem-form" ng:show="space.cneedit">
               <form novalidate="novalidate" class="form-horizontal form-new-spaceelem" ng-class="space.newSpaceelem.type_title">
                   <div class="control-group form-group">
-                    <label class="control-label col-sm-1" for="inputTitle">{{ 'TITLE' | translate }}:</label>
+                    <label class="control-label col-sm-2" for="inputTitle">{{ 'TITLE' | translate }}:</label>
                     <div class="controls col-xs-4">
                       <input type="text" id="inputTitle" class="form-control" ng-model="space.newSpaceelem.title"/>
                     </div>
                   </div>
                   <div class="control-group form-group">
-                    <label class="control-label col-sm-1" for="inputBusinessId">{{ 'DESC' | translate }}:</label>
+                    <label class="control-label col-sm-2" for="inputBusinessId">{{ 'DESC' | translate }}:</label>
                     <div class="controls col-xs-4">
                       <textarea type="text" id="inputBusinessId" class="form-control" ng-model="space.newSpaceelem.desc"/>
                     </div>
@@ -50,10 +50,10 @@
                     <div class="controls col-xs-8">
                       <div class="templateButton">
                         <div class="ref" ng-repeat="ref in refs">
-                          <a ng-click="refElem(ref, space.newSpaceelem)" class="btn btn-small btn-primary container_brick">{{ ref.ref.title }} <span tooltip="{{ 'CONTDESC' | translate }}" tooltip-placement="bottom" class="glyphicon glyphicon-info-sign"></span></a>
+                          <a ng-click="refElem(ref, space.newSpaceelem)" ng-hide="ref.ref.title == 'Container'" class="btn btn-small btn-primary container_brick">{{ ref.ref.title }} <span tooltip="{{ 'CONTDESC' | translate }}" tooltip-placement="bottom" class="glyphicon glyphicon-info-sign"></span></a>
                         </div>
                       </div>
-                      <a ng-click="createSpaceElem(space.newSpaceelem);flushEditForm(space.newSpaceelem, space);cneedit=!cneedit" class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</a>
+                      <a ng-click="createSpaceElem(space.newSpaceelem);flushEditForm(space.newSpaceelem, space);cneedit=!cneedit" class="btn btn-small btn-primary create-space-elem">{{ 'CREATE' | translate }}</a>
                     </div>
                   </div>
                 </form>

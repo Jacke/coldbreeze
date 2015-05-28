@@ -142,7 +142,8 @@ trait NIMoves extends StateLigher {
   def toLogger(bp: BProcess, result: BPLoggerResult)
   def toLoggerBefore(bp: BProcess, result: BPLoggerResult) = bp.logger.logBefore(result)
   def toStationLogger(sygnal: String) = bp.station.station_logger.log(BPStationLoggerResult(bp.station, sygnal, bp.station.state_represent))
-  def commonBottomLine(elem: ProcElems) 
+  def commonBottomLine(elem: ProcElems)
+  def commonSpaceBottomLine(space: Space)
 
   def step_inc
   def endOrPause
@@ -189,12 +190,9 @@ def move:Unit = {
           toStationLogger("moveupfrontspace")
         } else {
           NInvoker.toApplogger("spacenotended")
-        station match {
-          case expanded if (station.incontainer && station.inexpands) => NInvoker.toApplogger("double invokation"); thru_expander; thru_container;
-          case container => thru_container
-          case expanded =>  thru_expander
-          case _ => false
-          }
+
+          // Choose container execution
+          thru_container
           //moveUpFront
           move
         }
@@ -204,7 +202,7 @@ def move:Unit = {
        * Front launch
        */
       val elem = bp.variety(toStation(bp).step)
-      commonBottomLine(elem) 
+      commonBottomLine(elem)
      
 
       if (station.isInFront | station.inspace) {
@@ -228,19 +226,18 @@ def move:Unit = {
     NInvoker.toApplogger(space.container.length)
 
     var counter = 0
-    for (el ← space.container.drop(con_step)) {
+    val dropped = space.container.drop(con_step-1)
+    println(dropped)
+   println(dropped.length)
+    for (el ← dropped) {
       if (station.state) {
 
         if (bp.spaces.indexOf(space)+1 == station.space) {
-          toLoggerBefore(station.bp, BPLoggerResult(el, order = counter + 1, space = space.id, composite=bp.copyCV(el.values), station = toStation(station.bp), invoked = true, expanded = false, container = true))
           NInvoker.toApplogger("Invoking the: " + el);
-        station.change_container_step(station.container_step.last + 1)
-        toStationLogger("prepareinvokinginspace")
-        el.invoke
-        toStationLogger("invokinginspace")
-        // TODO: Elem invoked sygnal?
-
-        toLogger(station.bp, BPLoggerResult(el, order = counter + 1, space = space.id, composite=bp.copyCV(el.values), station = toStation(station.bp), invoked = true, expanded = false, container = true))
+          station.change_container_step(station.container_step.last + 1)
+          toStationLogger("prepareinvokinginspace")
+          commonBottomLine(el)
+          toStationLogger("invokinginspace")
         }
         NInvoker.toApplogger(station.step)
       } else {
@@ -248,11 +245,18 @@ def move:Unit = {
       }
     }
     // Move upfront
-    
+
+   commonSpaceBottomLine(space)
+
+   /** TODO: Not sure, how common space bottom line work with
+    *  moveUpFront, check for safety
+    */
     NInvoker.toApplogger("move upfront")
     NInvoker.toApplogger("bp.spaces.indexOf(space)+1 == station.space")
     NInvoker.toApplogger(bp.spaces.indexOf(space)+1 == station.space)
     if (bp.spaces.indexOf(space)+1 == station.space) {
+      println(bp.spaces.indexOf(space)+1)
+      println(station.space)
       moveUpFront
     } else { move }
     NInvoker.toApplogger(station.inspace)
@@ -275,11 +279,6 @@ def move:Unit = {
       station.add_space_id(spaceId.get)
     toStationLogger("movetospace")
 
-  }
-  def moveToExpand = {
-    station.inExpand(true)
-    station.update_expand_step(0)
-    station.update_expand_state(true)
   }
   def moveToContainer = {
     toStationLogger("preparemovetocontainer")

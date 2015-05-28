@@ -12,6 +12,7 @@ object Dependencies {
     "p11k" at "http://pk11-scratch.googlecode.com/svn/trunk",
     "Atlassian Releases" at "https://maven.atlassian.com/public/",
     "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases",
+    "softprops-maven" at "http://dl.bintray.com/content/softprops/maven",
      Resolver.url( "Reflect GitHub Repository", url( "http://taig.github.io/Reflect/release/" ) )( Resolver.ivyStylePatterns ),
      Resolver.url("heroku-sbt-plugin-releases", url("http://dl.bintray.com/heroku/sbt-plugins/"))(Resolver.ivyStylePatterns),
      Resolver.url("Edulify Repository", url("http://edulify.github.io/modules/releases/"))(Resolver.ivyStylePatterns),
@@ -43,6 +44,8 @@ object Dependencies {
   val scaldiplay      = "org.scaldi"                %% "scaldi-play"            % "0.4.1"
   val scaldiakka      = "org.scaldi"                %% "scaldi-akka"            % "0.4"
   val hicaricp        = "com.edulify"               %% "play-hikaricp"          % "1.5.0"
+  val javamail        = "javax.mail"                % "mail"                    % "1.5.0-b01"
+  val courier         = "me.lessis"                 %% "courier"                % "0.1.3"
 
   val play            = "org.webjars"               %% "webjars-play"           % "2.3.0"
   val playslick       = "com.typesafe.play"         %  "play-slick_2.10"        % "0.8.0"

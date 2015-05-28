@@ -96,8 +96,8 @@ object RefDAO {
     //logger.debug(k, process, business, title, desc, space_id)
     implicit session ⇒
       in match {
-        case "front" => RefProjector.in_front(k, process, business, title,desc)
-        case _ => RefProjector.in_nested(k, process, business, space_id.get, title,desc)
+        case "front" => RefProjector.projecting(k, process, business, title,desc, "front")
+        case _ => RefProjector.projecting(k, process, business, title,desc, "nested", space_id)
       }
   }
 

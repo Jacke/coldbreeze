@@ -4,7 +4,6 @@ import main.scala.simple_parts.process._
 import main.scala.utils.Space
 import main.scala.bprocesses._
 import main.scala.simple_parts.process.Units._
-import main.scala.bprocesses.{BPStationState, BPStationLogger}
 
 class BPStation(val bp: BProcess) {
   /**
@@ -251,6 +250,59 @@ class BPStation(val bp: BProcess) {
 
       }
     }
+  }
+  def applySwitcherForSpace(fn: String, target: String, switch_type: String, space: Space, selector:String = "") = {
+    target match {
+      case "step" => {
+        fn match {
+          case "inc" => {
+            println("absoluteStepInc()")
+            absoluteStepInc()
+          }
+          case "dec" => {
+            if (inspace || container_state.length > 0) {change_container_step(container_step.last - 1)}
+            if (!inspace) {update_step(step - 1)}
+          }
+          case "res" => {
+            if (inspace || container_state.length > 0) {change_container_step(0)}
+            if (!inspace) {update_step(0)}
+          }
+        }
+      }
+      case "process" => {
+        fn match {
+          case "paused" => {
+            bp.station.update_paused(true)
+          }
+          case "stoped" => {
+            bp.station.update_state(false)
+          }
+          case "resumed" => {
+            bp.station.update_paused(false)
+          }
+        }
+      }
+      case "space" => {
+        fn match {
+          /*case "inn" => {
+            // in
+            val space:Option[Space] = getSpace(el)
+            bp.marker.moveToSpaceByIndx(space.get.index, space.get.id)//.moveToSpace
+            //println("bp.marker.moveToSpace")
+            bp.marker.moveToContainer
+            //bp.marker.runContainer(getSpace(this).get, 0)//bp.station.contStepVal)
+            //println(bp.station.represent)
+            absoluteStepInc()
+          }*/
+          case "outn" => {
+            moveUpFront
+            absoluteStepInc()
+          }
+        }
+
+      }
+    }
+
   }
 
   /**

@@ -13,15 +13,74 @@ import main.scala.simple_parts.process.Units._
  *** © Stanislav iamjacke@gmail.com 2014-2015
  ***/
 
-trait StateLigher {
+trait StateLigher extends SpaceStateLigher {
 	val bp: BProcess
 	def decision(switchers: List[UnitSwitcher], el: ProcElems)
+  def decisionForSpace(switchers: List[UnitSwitcher], space: Space):Unit
+
+  def lightSpace(space: Space, state: String, rate: Int = 100, reason: String = "flow"):Unit = {
+    space.session_states.find(_.title == state) match {
+      case Some(state) => {
+        state.on = true
+        state.on_rate = rate
+        /**
+         * Existed switcher for Some(state) scope.
+         *****
+         * Some(state) scope is scope for launching of common states (initiate, invoke, finish)
+         *****
+         */
+        val existed_switchers = state.switchers.toList.map(_.id)
+        /**
+         * Find switcher override from all states of element
+         * We have common state with switcher e.g. pause
+         * We find same override group switcher e.g. next and we dont execute pause, we execute next switcher, because it's overriden
+         *
+         * !existed_switchers.contains(sw.id) check for switcher, that doesnt exist in Some(state) scope.
+         *
+         *****
+         * Some(state) scope is scope for launching of common states (initiate, invoke, finish)
+         *****
+         */
+        val override_group = space.session_states
+          .filter(_.on == true)
+          .map(_.switchers.toList)
+          .flatten
+          .find(sw => sw.override_group != 0 && Some(sw.state_ref) != state.origin_state && !existed_switchers.contains(sw.id)) match {
+          case Some(overriding) => overriding.state_ref
+          case _ => 0
+        }
+        /**
+         * Ovveride group is state id that may used for overriding
+         */
+        val on_state:Option[BPSessionState] = space.session_states.find { st =>
+          st.on == true && st.title != state.title && (override_group != 0 && Some(override_group) == st.origin_state)
+        }
+
+
+        /**
+         * If we find ovveride group we ovveride it in value `on_state`
+         * If dont, we run common state as allways
+         */
+        NInvoker.toApplogger("Override switcher is")
+        NInvoker.toApplogger(on_state)
+        NInvoker.toApplogger("//END")
+
+        on_state match {
+          case Some(x) => decisionForSpace(switchers = x.switchers.toList, space)
+          case _ => decisionForSpace(switchers = state.switchers.toList, space)
+        }
+        makeSessionStateLog(state.id.get, state.on, state.on_rate, reason)
+      }
+      case _ =>
+
+    }
+  }
 
 	def lightElem(elem: ProcElems, state: String, rate: Int = 100, reason: String = "flow"):Unit = {
 		elem.session_states.find(_.title == state) match {
 			case Some(state) => {
 				state.on = true
-				state.on_rate = 100
+				state.on_rate = rate
 
         /**
          * Existed switcher for Some(state) scope.
@@ -124,4 +183,8 @@ trait StateLigher {
 		bp.station.station_logger.sessionStateLog(result)
 	}
 	
+}
+
+trait SpaceStateLigher {
+
 }

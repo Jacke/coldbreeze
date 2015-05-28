@@ -1,21 +1,39 @@
-package main.scala.bprocesses
-
-import com.typesafe.scalalogging.Logger
-import main.scala.simple_parts.process._
-import main.scala.utils.Space
-import org.slf4j.LoggerFactory
-import main.scala.bprocesses._
-import main.scala.simple_parts.process.Units._
-/**
- * *
- * ** Grand invoking algorithm
- * ** © Stanislav @stanthoughts 2014-2015
- * *
- */
-
-trait BottomLine extends StateLigher {
-
-  val bp: BProcess
+package main.scala.bprocesses
+
+
+
+import com.typesafe.scalalogging.Logger
+
+import main.scala.simple_parts.process._
+
+import main.scala.utils.Space
+
+import org.slf4j.LoggerFactory
+
+import main.scala.bprocesses._
+
+import main.scala.simple_parts.process.Units._
+
+/**
+
+ * *
+
+ * ** Grand invoking algorithm
+
+ * ** © Stanislav @stanthoughts 2014-2015
+
+ * *
+
+ */
+
+
+
+trait BottomLine extends StateLigher {
+
+
+
+  val bp: BProcess
+
   def toLogger(bp: BProcess, result: BPLoggerResult)
   def toStation(bp: BProcess): BPStation
   def toLoggerBefore(bp: BProcess, result: BPLoggerResult)
@@ -36,11 +54,16 @@ trait BottomLine extends StateLigher {
 *
 **/
 
-  def collectSwitchers(el: ProcElems) = {
-    val switchers: List[UnitSwitcher] = el.session_states.filter(state => state.on == true).map(st => st.switchers).flatten.toList
-    val switchers_priorities: List[Int] = switchers.map(_.priority)
-    switchers
-  }
+  def collectSwitchers(el: ProcElems) = {
+
+    val switchers: List[UnitSwitcher] = el.session_states.filter(state => state.on == true).map(st => st.switchers).flatten.toList
+
+    val switchers_priorities: List[Int] = switchers.map(_.priority)
+
+    switchers
+
+  }
+
   def collectReactions(el: ProcElems) = {
   	val reactions: List[UnitReaction] = el.reactions.toList
   	val auto_started_creations = reactions.filter(reaction => reaction.autostart == true)
@@ -59,6 +82,7 @@ trait BottomLine extends StateLigher {
 
 
 /**
+*
 * Common bottom line
 * for element
 **/
@@ -105,7 +129,53 @@ def commonBottomLine(elem: ProcElems) = {
   }
   // Sygnal step inc elem invoked
 }
+def commonSpaceBottomLine(space: Space) = {
+  /*
+  toLoggerBefore(bp, BPLoggerResult(
 
+    elem,
+    composite = bp.copyCV(elem.values),
+    order     = elem.order,
+    space     = None,
+    station   = toStation(bp),
+    invoked   = true,
+    expanded  = false,
+    container = false)
+  )
+*/
+
+  NInvoker.toApplogger("Switchers:")
+  space.session_states.foreach { state =>
+    NInvoker.toApplogger(state.title + " " + state.switchers.length.toString)
+    state.switchers.foreach(sw => NInvoker.toApplogger(sw.toString))
+  }
+  NInvoker.toApplogger("**** SPACE RUN" + space.toString + " ****")
+
+  toStationLogger("prepareinvoking")
+  lightSpace(space = space, state = "lap")
+
+/*
+  lightElem(elem = elem, state = "invoked")
+  toStationLogger("invoked")
+  NInvoker.toApplogger(elem.getClass)
+  toLogger(bp, BPLoggerResult(
+    elem,
+    composite = bp.copyCV(elem.values),
+    order     = elem.order,
+    space     = None,
+    station   = toStation(bp),
+    invoked   = true,
+    expanded  = false,
+    container = false))
+  if (!bp.station.paused) {
+    lightElem(elem = elem, state = "finished")
+
+    // \|/ DEPRECATED WITH : lightElem(elem = elem, state = "invoked")
+    //toStation(bp).update_step(station.step + 1)
+  }
+  // Sygnal step inc elem invoked
+*/
+}
 
 
 
@@ -117,7 +187,8 @@ def commonBottomLine(elem: ProcElems) = {
 * Desicion making about marker movement
 *
 **/
-  def decision(switchers: List[UnitSwitcher], el: ProcElems) = {
+  def decision(switchers: List[UnitSwitcher], el: ProcElems) = {
+
 
     switchers.foreach { switcher =>
  		applySwitcher(switcher, el)
@@ -155,7 +226,19 @@ def commonBottomLine(elem: ProcElems) = {
 
         bp.station.applySwitcher(switcher.fn, switcher.target, switcher.switch_type, el)
     }
-    println(bp.nimarker)
-    println(bp.station)
-  }
+    println(bp.nimarker)
+
+    println(bp.station)
+
+  }
+  def decisionForSpace(switchers: List[UnitSwitcher], space: Space):Unit = {
+    switchers.foreach { switcher =>
+      applySwitcher(switcher, space)
+    }
+
+    def applySwitcher(switcher: UnitSwitcher, space: Space): Unit = {
+      bp.station.applySwitcherForSpace(switcher.fn, switcher.target, switcher.switch_type, space)
+    }
+  }
+
 }

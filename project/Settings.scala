@@ -98,7 +98,7 @@ object Settings {
   
   import spray.revolver.RevolverPlugin.Revolver._
   lazy val revolverSettings = Revolver.settings ++ seq(reJRebelJar := "~/.jrebel/jrebel.jar")
-//  lazy val revolverSettings = Revolver.settings ++ Revolver.enableDebugging(port = 9999, suspend = true) ++ seq(reJRebelJar := "~/.jrebel/jrebel.jar")
+  //lazy val revolverSettings = Revolver.settings ++ Revolver.enableDebugging(port = 9999, suspend = true) ++ seq(reJRebelJar := "~/.jrebel/jrebel.jar")
   //lazy val formatSettings = Twirl.settings
   //SbtScalariform.scalariformSettings ++ Seq(
   //  Twirl.settings,

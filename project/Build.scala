@@ -48,6 +48,8 @@ object Build extends Build {
       libraryDependencies ++=
         List(
           scalarx,
+          javamail,
+          courier,
           async, 
           amonite, 
           reflect, 

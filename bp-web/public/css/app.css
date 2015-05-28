@@ -229,7 +229,19 @@ border-left: 2px solid #4dbd74;
     border-bottom-left-radius: 7px;
     color: #f2f4f6;
 }
+.new-space-elem-form .templateButton {
+    margin: 0 auto;
+    padding-bottom: 10px;
+}
 
+.templateButton .ref {
+    margin-bottom: 4px;
+}
+
+.new-space-elem-form a.btn.btn-small.btn-primary.create-space-elem {
+    margin: 0 auto;
+    width: 100%;
+}
 .space-element .info {
 border-left: 2px solid #95a5a6;
 margin-top: -3px;
