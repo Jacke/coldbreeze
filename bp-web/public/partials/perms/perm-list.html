@@ -1,6 +1,5 @@
 <div class="container">
 <h3 class="primary">{{ 'PERMISSIONS' | translate }}:</h3>
-<!--<div ng-include src="'assets/partials/tree.html'"></div>-->
 
 
 <div class="new">
@@ -22,8 +21,6 @@
         
           <button ng-click="addPerm()">Add another one permission</button>
           -->
-          
-           <div class="params">
           <div class="param">
               <div ng-repeat="bpelem in bpelems | filter:filterPerms" class="controls inputRequests">
                    <div class="request">
@@ -58,3 +55,5 @@
 
 </div>
 </div>
+
+</div><!--container-->

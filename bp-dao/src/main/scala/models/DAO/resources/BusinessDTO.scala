@@ -49,7 +49,7 @@ object BusinessDAO {
   }
 
 
-  def get(k: Int) = database withSession {
+  def get(k: Int):Option[BusinessDTO] = database withSession {
     implicit session ⇒
       val q3 = for { s ← businesses if s.id === k } yield s
 

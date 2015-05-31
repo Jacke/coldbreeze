@@ -31,50 +31,12 @@ $scope.isManager();
   $scope.bpelems.$promise.then(function(data) {
     $scope.spaces.$promise.then(function(data2) {
       $scope.spaceelems.$promise.then(function(data3) {
-        $scope.builder();
+        //$scope.builder();
 
   });
   });
   });
 
-  $scope.trees = undefined;
-
-$scope.builder = function () {
-
-  var isIsEnd = function (spElems) {
-    _.forEach(spElems, function(val) {
-       val.nodes = _.filter(spacesCopy, function(space){ return space.brick_front == val.id || space.brick_nested == val.id; });
-    });
-    _.forEach(spElems, function(tree) {
-         _.forEach(tree.nodes, function(space) {
-             space.space_elem = _.filter(spaceelemsCopy, function(spelem){ return spelem.space_owned == space.id; });
-             isIsEnd(space.space_elem);
-        });
-    });
-  };
-  console.log("build");
-  var bpelemsCopy = angular.copy($scope.bpelems);
-  var spacesCopy = angular.copy($scope.spaces);
-  var spaceelemsCopy = angular.copy($scope.spaceelems);
-  $scope.trees = _.forEach(bpelemsCopy, function(val) {
-       val.nodes = _.sortBy(_.filter(spacesCopy, function(space){ return space.brick_front == val.id || space.brick_nested == val.id; }), function(em){ return em.order; });
-  });
-  _.forEach($scope.trees, function(tree) {
-
-    var spaceFetch = function () {
-      _.forEach(tree.nodes, function(space) {
-         space.space_elem = _.sortBy(_.filter(spaceelemsCopy, function(spelem){ return spelem.space_owned == space.id; }), function(em){ return em.order; });
-         isIsEnd(space.space_elem);
-      });
-    };
-
-    spaceFetch();
-    spaceFetch();
-    spaceFetch();
-    spaceFetch();
-    spaceFetch();
-  });
-}
 
   $scope.bpelems.$promise.then(function(data) {
     $scope.spaceelems.$promise.then(function(data3) {

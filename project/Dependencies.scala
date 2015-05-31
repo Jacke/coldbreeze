@@ -12,6 +12,8 @@ object Dependencies {
     "p11k" at "http://pk11-scratch.googlecode.com/svn/trunk",
     "Atlassian Releases" at "https://maven.atlassian.com/public/",
     "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases",
+    "bintray-naftoligug-maven" at "http://dl.bintray.com/naftoligug/maven",
+
     "softprops-maven" at "http://dl.bintray.com/content/softprops/maven",
      Resolver.url( "Reflect GitHub Repository", url( "http://taig.github.io/Reflect/release/" ) )( Resolver.ivyStylePatterns ),
      Resolver.url("heroku-sbt-plugin-releases", url("http://dl.bintray.com/heroku/sbt-plugins/"))(Resolver.ivyStylePatterns),
@@ -32,6 +34,7 @@ object Dependencies {
   val scalaz          = "org.scalaz"                %% "scalaz-core"            % "7.0.6"
   val slick           = "com.typesafe.slick"        %  "slick_2.11"             % "2.1.0"
   val slickpg         = "com.github.tminglei"       %  "slick-pg_2.11"          % "0.6.3"
+  val slick_migrate   = "io.github.nafg"            %% "slick-migration-api"    % "0.1.1"
   val slickpgcore     = "com.github.tminglei"       %  "slick-pg_core_2.11"     % "0.6.3"
   val slickpgplay     = "com.github.tminglei"       %% "slick-pg_play-json"     % "0.6.3"
   val slf4j           = "org.slf4j"                 %  "slf4j-nop"              % "1.7.3"

@@ -75,7 +75,7 @@
                     'placeholder -> ""
                 )
             }
-
+         @CSRF.formField
             @helper.inputText(
                 signUpForm("firstName"),
                 '_label -> Messages("securesocial.signup.firstName"),
@@ -114,7 +114,7 @@
     </p>
   </form>
 
-  <p class="loginText"@Messages("custom.haveAccount") <a class="switchView" tabindex="14" href="/login">@Messages("custom.signIn")</a>.</p>
+  <p class="loginText">@Messages("custom.haveAccount") <a class="switchView" tabindex="14" href="/login">@Messages("custom.signIn")</a>.</p>
 
   <p class="loginText smaller">@Messages("custom.byClicking") <a tabindex="15" href="#">@Messages("footer.terms")</a> @Messages("custom.and") <a tabindex="15" href="https://www.iubenda.com/privacy-policy/">@Messages("footer.privacy")</a>.</p>
 

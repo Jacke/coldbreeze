@@ -61,8 +61,8 @@ case class SpaceElementDTO(id: Option[Int],
                         space_role:Option[String],
                         order:Int,
                         comps: Option[List[CompositeValues]],
-created_at:Option[org.joda.time.DateTime] = None,
-updated_at:Option[org.joda.time.DateTime] = None) {
+created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
   
   def cast(process: BProcess, space_dto: BPSpaceDTO):Option[ProcElems] = {
     this match {
