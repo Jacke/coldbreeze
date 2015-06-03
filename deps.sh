@@ -16,3 +16,5 @@ sudo apt-get install sbt
 wget http://downloads.typesafe.com/scala/$VERSION/scala-$VERSION.deb
 sudo dpkg -i scala-$VERSION.deb
 rm scala-$VERSION.deb
+sudo apt-get install openjdk-8-jre
+sudo apt-get install docker.io
