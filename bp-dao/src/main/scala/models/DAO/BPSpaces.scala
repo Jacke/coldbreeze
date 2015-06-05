@@ -38,8 +38,8 @@ case class BPSpaceDTO(id: Option[Int],
                       brick_front:Option[Int]=None,
                       brick_nested:Option[Int]=None, 
                       nestingLevel: Int = 1,
-created_at:Option[org.joda.time.DateTime] = None,
-updated_at:Option[org.joda.time.DateTime] = None) {
+created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
   
 import main.scala.utils._
 import main.scala.bprocesses._

@@ -48,7 +48,6 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
 
         val managerParams = makeManagerParams(email, isManager)
 
-        val business_id = EmployeesBusinessDAO.getByUID(email).get._2
 
         val walkthrought:Boolean = managerParams match {
             case  Some(param) => param.business.walkthrough
@@ -91,8 +90,11 @@ private def dashActs(uid: String) = {
 private def makeManagerParams(email: String, isManager: Boolean): Option[managerParams] = {
   isManager match {
     case true => {
-      val biz = BusinessDAO.get(EmployeesBusinessDAO.getByUID(email).get._2).get
-      Some(managerParams(biz))
+      EmployeesBusinessDAO.getBusinessByUID(email) match {
+        case Some(business) => Some(managerParams(business))
+        case _ => None
+      }
+      
     }
     case _ => None
   }

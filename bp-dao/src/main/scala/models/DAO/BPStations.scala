@@ -73,10 +73,11 @@ inspace: Boolean,
 incontainer: Boolean,
 inexpands: Boolean,
 paused: Boolean,
-note: Option[String] = Some(""),
+note: Option[String] = None,
 canceled: Boolean = false,
 created_at:Option[org.joda.time.DateTime] = None,
-updated_at:Option[org.joda.time.DateTime] = None, session: Int = 1, front: Boolean = true) // TODO: Avoid default value
+updated_at:Option[org.joda.time.DateTime] = None, session: Int = 1, front: Boolean = true) // Front par for parallels 
+                                                                                           //  TODO: Avoid default value
 
 
 object BPStationDAO {
@@ -102,7 +103,11 @@ object BPStationDAO {
         station.inspace,
         station.incontainer,
         station.inexpands,
-        station.paused, session = session_id)
+        station.paused, 
+        note = None,
+        created_at = Some(org.joda.time.DateTime.now()),
+        updated_at = Some(org.joda.time.DateTime.now()),
+        session = session_id)
   }
   //def to_origin_station(station: BPStationDTO1):BPStation = {
 

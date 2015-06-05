@@ -6,23 +6,111 @@
 
 
 <div class="active-switcher">
+<label for="switch-1" class="onlyActiveLabel">Running</label>
 <input type="checkbox" class="switch" id="switch-1" data-ng-model="onlyActive"/>
 </div>
-  
+ 
+ 
+
+<div class="cd-filter">
+      <form class="ng-pristine ng-valid">
+        <!--<div class="cd-filter-block">
+          <h4>Search</h4>
+          
+          <div class="cd-filter-content">
+            <input type="search" placeholder="Try color-1...">
+          </div> 
+        </div> -->
+
+        <div class="cd-filter-block">
+          <h4>Date filtering</h4>
+
+          <ul class="cd-filter-content cd-filters list">
+            <li>
+                <input date-range-picker class="form-control date-picker" type="text" placeholder="Date range" ng-model="date" />
+                <!--<input class="filter" data-filter=".check1" type="checkbox" id="checkbox1">-->
+            </li>
+<!--
+            <li>
+              <input class="filter" data-filter=".check2" type="checkbox" id="checkbox2">
+              <label class="checkbox-label" for="checkbox2">Option 2</label>
+            </li>
+
+            <li>
+              <input class="filter" data-filter=".check3" type="checkbox" id="checkbox3">
+              <label class="checkbox-label" for="checkbox3">Option 3</label>
+            </li>-->
+          </ul> <!-- cd-filter-content -->
+        </div> <!-- cd-filter-block -->
+
+
+  <!--   <div class="cd-filter-block">
+          <h4>Select</h4>
+          
+          <div class="cd-filter-content">
+            <div class="cd-select cd-filters">
+              <select class="filter" name="selectThis" id="selectThis">
+                <option value="">Choose an option</option>
+                <option value=".option1">Option 1</option>
+                <option value=".option2">Option 2</option>
+                <option value=".option3">Option 3</option>
+                <option value=".option4">Option 4</option>
+              </select>
+            </div>           
+            </div> 
+        </div> 
+-->
+        <div class="cd-filter-block">
+          <h4>Filtering by attributes</h4>
+
+          <ul class="cd-filter-content cd-filters list">
+            <li>
+              <input type="checkbox" name="canceled" value="true" data-ng-model="onlyCanceled"/>
+              <label class="radio-label" for="radio1">Canceled</label>
+            </li>
+
+            <li>
+              <input type="checkbox" name="finished" value="true" data-ng-model="onlyFinished"/>
+              <label class="radio-label" for="radio2">Finished</label>
+            </li>
+
+            <li>
+              <input type="checkbox" name="listed" value="true" data-ng-model="onlyListed"/>
+              <label class="radio-label" for="radio3">Listed</label>
+            </li>
+          </ul> <!-- cd-filter-content -->
+        </div> <!-- cd-filter-block -->
+      </form>
+
+      <a href="#0" class="cd-close">Close</a>
+</div>
+
+
 <div class="station-filters">
+    <a href="#0" class="cd-filter-trigger">Filters</a>
+<!--
   <ul>
     <li><input date-range-picker class="form-control date-picker" type="text" placeholder="Date range" ng-model="date" /></li>
-    <li><label><input type="checkbox" name="canceled" value="true" data-ng-model="onlyCanceled"/>{{ 'CANCELED' | translate }}</label>
-    </li>
-    <li><label><input type="checkbox" name="finished" value="true" data-ng-model="onlyFinished"/>{{ 'FINISHED' | translate }}</label>
-    </li>
+    <li><label><input type="checkbox" name="canceled" value="true" data-ng-model="onlyCanceled"/>{{ 'CANCELED' | translate }}</label></li>
+    <li><label><input type="checkbox" name="finished" value="true" data-ng-model="onlyFinished"/>{{ 'FINISHED' | translate }}</label></li>
     <li><label><input type="checkbox" name="listed" value="true" data-ng-model="onlyListed"/>Listed</label>
-    </li>
-  </ul>
+  </ul>-->
 </div>  
 
   
   
+<script>
+$('.cd-filter-trigger').click(function(event) {
+  event.preventDefault()
+  $('.cd-filter-trigger').toggleClass('filter-is-visible')
+  $('.cd-filter').toggleClass('filter-is-visible')
+})
+$('.cd-close').click(function(event) {
+  event.preventDefault()
+  $('.cd-filter-trigger').toggleClass('filter-is-visible')
+  $('.cd-filter').toggleClass('filter-is-visible')
+})
+</script>
 <script>
 document.addEventListener('touchmove', function(e){}, false);
 var _switch   = document.getElementById("switch-1"),

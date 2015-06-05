@@ -66,8 +66,8 @@ case class UndefElement(id: Option[Int],
                         space_own:Option[Int],
                         order:Int,
                         comps: Option[List[CompositeValues]],
-created_at:Option[org.joda.time.DateTime] = None,
-updated_at:Option[org.joda.time.DateTime] = None) {
+created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
   
   
 

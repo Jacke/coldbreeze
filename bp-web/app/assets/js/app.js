@@ -164,6 +164,7 @@ var minorityApp =
       'angular-underscore',
       'ui.bootstrap',
       'ui.select',
+      'ng-slide-down',
 //      'ui.sortable',
       'ngDialog',
       'angularMoment',
@@ -233,7 +234,17 @@ minorityApp.config(['$locationProvider','$routeProvider', '$httpProvider', funct
                  controller: 'BProcessListCtrl',
                  resolve: { Auth: ['$http', '$q', '$window', '$rootScope', function($http, $q, $window, $rootScope) {
 //                    var deffered = $q.defer();
-//                    var token = $window.sessionStorage.getItem('token'); 
+              var token = $window.sessionStorage.getItem('token'); 
+              var biz_id = $window.localStorage.getItem('business');
+              if (biz_id == undefined || biz_id == "-1") {
+                 $rootScope.whoami = $http.post(jsRoutes.controllers.Application.whoami().absoluteURL(document.ssl_enabled), { 
+                  headers:  {'X-Auth-Token': token, 'Access_Name': 'user'}}).then(function (profile) {
+                    $window.sessionStorage.setItem("business", profile.business);
+                    $window.sessionStorage.setItem("employee", profile.employee);
+                    $window.sessionStorage.setItem("manager", profile.manager);
+                  })
+
+              }
  //                   $rootScope.whoami = $http.post('https://min.ority.us/whoami', {headers:  {'X-Auth-Token': token, 'Access_Name': 'user'}})
   //                    .then(function (profile) {
    //                    console.log("profile " + profile);

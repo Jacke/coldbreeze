@@ -69,34 +69,42 @@ class BusinessProcessController(override implicit val env: RuntimeEnvironment[De
   implicit val RefResultedReads = Json.reads[models.DAO.reflect.RefResulted]
   implicit val RefResultedWrites = Json.format[models.DAO.reflect.RefResulted]
 
-implicit val BPSessionStateReads = Json.reads[BPSessionState]
-implicit val BPSessionStateWrites = Json.format[BPSessionState]
-implicit val BPStateReads = Json.reads[BPState]
-implicit val BPStateWrites = Json.format[BPState]
-implicit val UnitSwitcherReads = Json.reads[UnitSwitcher]
-implicit val UnitSwitcherWrites = Json.format[UnitSwitcher]
-implicit val UnitReactionReads = Json.reads[UnitReaction]
-implicit val UnitReactionWrites = Json.format[UnitReaction]
-implicit val UnitReactionStateOutReads = Json.reads[UnitReactionStateOut]
-implicit val UnitReactionStateOutWrites = Json.format[UnitReactionStateOut]
-implicit val ReactionCollectionReads = Json.reads[ReactionCollection]
-implicit val ReactionCollectionWrites = Json.format[ReactionCollection]
-implicit val ElementTopologyReads = Json.reads[ElementTopology]
-implicit val ElementTopologyWrites = Json.format[ElementTopology]
+  implicit val BPSessionStateReads = Json.reads[BPSessionState]
+  implicit val BPSessionStateWrites = Json.format[BPSessionState]
+  implicit val BPStateReads = Json.reads[BPState]
+  implicit val BPStateWrites = Json.format[BPState]
+  implicit val UnitSwitcherReads = Json.reads[UnitSwitcher]
+  implicit val UnitSwitcherWrites = Json.format[UnitSwitcher]
+  implicit val UnitReactionReads = Json.reads[UnitReaction]
+  implicit val UnitReactionWrites = Json.format[UnitReaction]
+  implicit val UnitReactionStateOutReads = Json.reads[UnitReactionStateOut]
+  implicit val UnitReactionStateOutWrites = Json.format[UnitReactionStateOut]
+  implicit val ReactionCollectionReads = Json.reads[ReactionCollection]
+  implicit val ReactionCollectionWrites = Json.format[ReactionCollection]
+  implicit val ElementTopologyReads = Json.reads[ElementTopology]
+  implicit val ElementTopologyWrites = Json.format[ElementTopology]
 
   def bprocess = SecuredAction { implicit request =>
     val bprocess = BPDAO.getAll // TODO: Not safe
     val user_services = BusinessServiceDAO.getByMaster(request.user.main.email.getOrElse("")).map(_.id)
     // TODO: Add for actor, if they assigned to process
-    
-    if (request.user.isEmployee) { 
+    val user = request.user
+
+    /**
+     * Simple employee
+     * Restricted by Act Permission
+     */
+    if (user.isEmployee && !user.isManager) { 
+       println(request.user.isEmployee)
        // Employee assigned process
        val acts = ActPermissionDAO.getByUID(request.user.main.email.get)
        val bpIds = ActPermissionDAO.getByUIDprocIDS(request.user.main.email.get)
        val procOut = bprocess.filter(bp => bpIds.contains(bp.id.get)) 
        Ok(Json.toJson( procOut ))
     } else { 
-      // Primary manager processes
+    /**
+     * // Primary manager processes
+     */  
       val procOut = bprocess.filter(bp => user_services.contains(Some(bp.service))) 
       Ok(Json.toJson( procOut ))
     }
@@ -148,11 +156,11 @@ def create_bprocess = SecuredAction(BodyParsers.parse.json) { request =>
     },
     bprocess => { 
       BPDAO.pull_object(bprocess) match {
-        case id:Int => { 
+        case -1 => BadRequest(Json.obj("status" -> "Cannot create process"))
+        case _@id:Int => { 
           AutoTracer.defaultStatesForProcess(process_id = id)
           Ok(Json.obj("status" ->"OK", "message" -> ("Bprocess '"+bprocess.id+"' saved.") ))  
         }
-        case -1 => BadRequest(Json.obj("status" -> "Cannot create process"))
       }
       
     }

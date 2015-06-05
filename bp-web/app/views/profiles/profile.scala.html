@@ -79,6 +79,59 @@
 <div class="tableMinListWrap dashboard-sessions"><div class="panelLike organisationsGridLike">
 
 <div class="teamSettings">
+
+
+<div class="roww state-overview">
+                    <div class="col-lg-3 col-sm-6">
+                        <section class="panel purple">
+                            <div class="symbol">
+                                <i class="fa fa-send"></i>
+                            </div>
+                            <div class="value white">
+                                <h1 class="timer" data-from="0" data-to="320" data-speed="1000">320</h1>
+                                <p>New Order</p>
+                            </div>
+                        </section>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <section class="panel ">
+                            <div class="symbol purple-color">
+                                <i class="fa fa-tags"></i>
+                            </div>
+                            <div class="value gray">
+                                <h1 class="purple-color timer" data-from="0" data-to="123" data-speed="1000">123</h1>
+                                <p>Item Sold</p>
+                            </div>
+                        </section>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <section class="panel green">
+                            <div class="symbol ">
+                                <i class="fa fa-cloud-upload"></i>
+                            </div>
+                            <div class="value white">
+                                <h1 class="timer" data-from="0" data-to="432" data-speed="1000">432</h1>
+                                <p>Item Upload</p>
+                            </div>
+                        </section>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <section class="panel">
+                            <div class="symbol green-color">
+                                <i class="fa fa-bullseye"></i>
+                            </div>
+                            <div class="value gray">
+                                <h1 class="green-color timer" data-from="0" data-to="2345" data-speed="3000">2345</h1>
+                                <p>Unique Visit</p>
+                            </div>
+                        </section>
+                    </div>
+</div>
+
+
+
+
+
 <div class="grids">
 <!--
   @if(walkthrought) {
@@ -98,6 +151,10 @@
   
   }
  -->
+
+
+
+ <!-- AFTER PLAN REFACTOR
   <div class="page-header profile_header col-md-8">
 	<h2>
 		<a href="https://gravatar.com" data-toggle="tooltip" title="" data-original-title="Change your avatar"><img src="@gravatar(user.main.avatarUrl)" alt="@user.main.firstName.getOrElse("")" width="40px" height="40px"/></a> @Messages("profile.welcome")(LangDet.getLang(user) ) @user.main.firstName.getOrElse("")
@@ -119,6 +176,7 @@
  		Some shit from futurama
  	</div>
 </div>
+-->
 
 <div class="dashboard_sessions col-md-8">
 @active_sessions(sessions)
@@ -129,7 +187,7 @@
 @services(user, currentPage) 
 </div>
 
-
+@profile_footer()
 
 
 

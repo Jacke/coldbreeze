@@ -25,25 +25,28 @@
 }
   @if(user.isManager) {
     <div class="teamSettingsCheckbox">
-    <h3 class="teamSettingsHeading">@Messages("page.services")(LangDet.getLang(user) )</h3>
-    <p class="teamSettingsAbout">@Messages("page.servicesDesc")(LangDet.getLang(user) )</p>
-    </div>  
-  <div class="teamChangeBox teamPaddedBox">
+      <header class="panel-heading head-border">@Messages("page.services")(LangDet.getLang(user) )</header>
+      <p class="teamSettingsAbout">@Messages("page.servicesDesc")(LangDet.getLang(user) )</p>
+    </div> 
+
+  
+
+  <div class="teamChangeBox teamPaddedBox servicePaddedTable">
       @Option(currentPage.items).filterNot(_.isEmpty).map { entities =>
         <table class="zebra-striped">
             <thead>
-                <tr>
+                <!--<tr>
                     @header_table(1, Messages("page.title")(LangDet.getLang(user) ) )
                     @header_table(2, "")
                     @header_table(3, "")
-                </tr>
+                </tr>-->
             </thead>
             <tbody>
                 @entities.map {
                  case (entity) => {
                         <tr>
                             <td>
-<a href="@routes.Application.app()#/bprocesses?service=@entity.id">@entity.title</a></td>
+                                <a href="@routes.Application.app()#/bprocesses?service=@entity.id">@entity.title</a></td>
                             <td>
                                 <a href="@routes.BusinessServiceController.update(entity.id.get)">@Messages("page.rename")(LangDet.getLang(user) )</a>
 
@@ -60,8 +63,12 @@
         </table>
     }
 
+  </div>
   <!-- <h2 class="teamBoxHeading">@Messages("page.managerBoard")(LangDet.getLang(user) ) </h2> -->
-    <div class="teamSettingsCheckbox serviceForm">
+  <div class="showServiceForm">
+    <span class="moicon moicon-plus"></span>
+  </div>
+  <div class="teamSettingsCheckbox serviceForm" style="display:none;">
     <div id="actions">
       <!--<a class="btn success" id="add" href="@routes.BusinessServiceController.create()">Add a service</a>-->
         @form(routes.BusinessServiceController.create_new()) {
@@ -70,11 +77,16 @@
         </fieldset>
 
         <div class="actions">
-          <input type="submit" value="Create service" class="btn btn-primary"> 
+          <input type="submit" value="Add" class="btn btn-primary"> 
         </div>
         }
     </div>
+  </div>
 
-  </div>
-  </div>
   }
+<script>
+$('.showServiceForm span.moicon.moicon-plus').first().click(function(event) {
+  event.preventDefault();
+  $('.serviceForm').toggle();  
+})
+</script>

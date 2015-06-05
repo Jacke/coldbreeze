@@ -24,7 +24,7 @@
     <form action="@env.routes.handleStartSignUpUrl"
           class="loginInputs"
           autocomplete="off" method="post"
-    >
+    > @CSRF.formField
         <fieldset>
             @helper.inputText(
             startForm("email"),

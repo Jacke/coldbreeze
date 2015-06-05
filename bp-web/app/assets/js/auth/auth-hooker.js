@@ -104,9 +104,9 @@ $(function domReadyLoginFlow () {
       $requireds.get(0).focus();
       return false;
     }
-    e.find('button[type="submit"],input[type="submit"]').versionedtr('disabled', 'disabled').text(function updateTextOfSubmit(ind, text) {
-      return text + '...';
-    });
+    //e.find('button[type="submit"],input[type="submit"]').versionedtr('disabled', 'disabled').text(function updateTextOfSubmit(ind, text) {
+    //  return text + '...';
+    //});
     e.off();
     setTimeout(function submitTheForm () {
       e.trigger('submit');

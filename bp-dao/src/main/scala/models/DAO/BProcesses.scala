@@ -35,7 +35,11 @@ class BProcesses(tag: Tag) extends Table[BProcessDTO](tag, "bprocesses") {
 /*
   Case class
  */
-case class BProcessDTO(var id: Option[Int], title: String, service: Int, business: Int ,created_at:Option[org.joda.time.DateTime] = None, updated_at:Option[org.joda.time.DateTime] = None, version: Long = 1L, state_machine_type: String = "base")
+case class BProcessDTO(var id: Option[Int], title: String, 
+                       service: Int, business: Int , 
+                       created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+                       updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now), 
+                       version: Long = 1L, state_machine_type: String = "base")
 
 /*
   DataConversion

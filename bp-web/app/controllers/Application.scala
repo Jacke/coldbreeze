@@ -45,6 +45,7 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
             routes.javascript.GroupController.assign_user,
             routes.javascript.GroupController.unassign_user,
             routes.javascript.Application.index,
+            routes.javascript.Application.whoami,
             routes.javascript.ProfileController.profile,
             routes.javascript.ProcessSessionController.update_note
 

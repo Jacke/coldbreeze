@@ -82,6 +82,7 @@ object Build extends Build {
           async, 
           akkaSlf4j, 
           slick, 
+          slick_migrate,
           play,
           jodatime,
           jwtCore,
