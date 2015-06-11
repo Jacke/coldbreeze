@@ -71,7 +71,8 @@ plan.company=Company
 
 settings.country=Country
 settings.selectCountry=Select a country
-settings.businessName=Business name
+settings.businessName=Company name
+settings.companyName=Company nickname
 settings.phone=Phone
 settings.website=Website
 settings.city=City

@@ -66,7 +66,7 @@ SessionStateLogDAO.ddl_create
 
     BillDAO.ddl_create
     ProcHistoryDAO.ddl_create
-    ProcCommitDAO.ddl_create
+    //ProcCommitDAO.ddl_create
 
     ObserverDAO.ddl_create
     ClientObserversDAO.ddl_create
@@ -131,7 +131,7 @@ SessionStateLogDAO.ddl_drop
     AccountPlanDAO.ddl_drop
     AccountLoggerDAO.ddl_drop
     BillDAO.ddl_drop
-    ProcCommitDAO.ddl_drop
+    //ProcCommitDAO.ddl_drop
     ProcHistoryDAO.ddl_drop
     ObserverDAO.ddl_drop
     ClientObserversDAO.ddl_drop

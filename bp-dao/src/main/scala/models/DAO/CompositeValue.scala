@@ -6,17 +6,17 @@ import java.text.SimpleDateFormat
 import slick.driver.PostgresDriver
 import com.github.tminglei.slickpg._
 
-import scala.slick.jdbc.{StaticQuery => Q}
+import slick.jdbc.{StaticQuery => Q}
 
-import scala.slick.driver.PostgresDriver.simple._
+import slick.driver.PostgresDriver.simple._
 
-import scala.slick.model.ForeignKeyAction
+import slick.model.ForeignKeyAction
 import models.DAO.resources.BusinessDTO._
 import models.DAO.conversion.DatabaseCred
 
 object CVDAO {
   import scala.util.Try
-  import scala.slick.driver.PostgresDriver.simple._
+  import slick.driver.PostgresDriver.simple._
   import DatabaseCred.database
 def createShit: Unit = {
     database withSession { implicit session: Session =>

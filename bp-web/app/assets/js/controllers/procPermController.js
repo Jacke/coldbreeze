@@ -20,6 +20,18 @@ $scope.isManagerVal = $scope.isManager();
 $scope.isManager();
 
 
+
+
+  $scope.createReactPerm = function (perm) {
+    // TODO: Perm for reaction
+  }
+
+
+
+
+
+
+
   $scope.bpelems = BPElemsFactory.query({ BPid: $scope.BPid });
   $scope.spaces =  BPSpacesFactory.query({ BPid: $scope.BPid });
   $scope.spaceelems = BPSpaceElemsFactory.query({ BPid: $scope.BPid });
@@ -44,23 +56,44 @@ $scope.isManager();
       $scope.spaceElemHash = _.object(_.map($scope.spaceelems, function(x){return [x.id, x]}));
    });
   });
-  $scope.credFetch = function (email) {
-    var res = _.find($scope.creds, function(cr){ return cr.userId == email});
+  $scope.credFetch = function (obj) {
+    if (obj.uid != undefined) { // it's employee
+
+    var res = _.find($scope.creds, function(cr){ return cr.userId == obj.uid});
     if (res != undefined) {
-      return email + " " + res.fullName;
+      return res.fullName + " " + obj.uid;
     } else if (res == undefined) {
-      return email + "  Anonymous";
+      return "Anonymous " + obj.uid;
+    }
+    } else { // it's group
+      //var res = _.find($scope.groups, function(gr) { return gr.id == obj.id });
+      //if (res != undefined) {
+        return "Group " + obj.title;
+      //}
     }
   };
 
-
+  $scope.loadPerm = function () {
   ProcPermissionsFactory.query({ BPid: $scope.BPid }).$promise.then(function(qu){
-      console.log(qu);
       $scope.perms = qu.elemperms;
+
       $scope.accounts = qu.accounts;
       $scope.emps = qu.employees;
+      $scope.employee_groups = qu.employee_groups;
+      _.forEach($scope.employee_groups, function(gr){ return gr.group = true; });
+      $scope.groups = qu.employee_groups;
+      $scope.employees_groups = _.union($scope.emps,$scope.employee_groups);
+      _.forEach($scope.perms, function(perm) {
+        if (perm.group != undefined) {
+          perm.title = _.find($scope.groups, function(group) {return group.id == perm.group}).title;
+        }
+      })
   });
+  }
+  $scope.loadPerm()
+
   $scope.newperms = [];
+
 
   $scope.addPerm = function () {
       if(typeof $scope.perms === 'undefined') {
@@ -88,19 +121,28 @@ $scope.isManager();
   $scope.delPerm = function (perm) {
     PermissionFactory.delete({id: perm.id}).$promise.then(function(data) {
        $scope.perms = ProcPermissionsFactory.query({ BPid: $scope.BPid });
+       $scope.loadPerm();
     });
   }
+  $scope.removePerm = function (perm) {
+    $scope.delPerm(perm);
+  }
   $scope.createPerm = function (perm, elem, where) {
-    console.log(perm);
     if (elem != undefined) {
       if (where == "front") {
         perm.front_elem_id = elem.id;
       } else {
       perm.space_elem_id = elem.id;
-      }; 
+      };
+      if (perm.group == true) {
+        perm.group = perm.id;
+      } 
       perm.bprocess = $scope.BPid;
     PermissionsFactory.create(perm).$promise.then(function(data) {
-       $scope.perms = ProcPermissionsFactory.query({ BPid: $scope.BPid });
+       $scope.perms = ProcPermissionsFactory.query({ BPid: $scope.BPid }).$promise.then(function(d) {
+        $scope.loadPerm();
+       });
+       
     });
 
       
@@ -118,8 +160,7 @@ $scope.isManager();
 
 
         BPRequestFactory.scheme({ BPid: $scope.BPid, station_id: target.id }).$promise.then(function(data) {
-        console.log("magic happens here");
-        console.log(data);
+
 
                       //target.proc_elems = [];
                      //target.space_elems = [];
@@ -132,10 +173,64 @@ $scope.isManager();
       });
   };
 
+  $scope.addProcessPerm = function(empgroup, role) {
+
+    /*
+      "id" -> optional(number),
+      "uid" -> optional(text),
+      "group" -> optional(number),
+      "process" -> number,
+      "front_elem_id" -> optional(number),
+      "space_elem_id" -> optional(number),
+      "reaction" -> optional(number),
+      "role" -> text
+    */
+    if (empgroup.uid != undefined) { // account detected
+        empgroup.role = role;
+        empgroup.process = $scope.BPid;
+        empgroup.id = null;
+    PermissionsFactory.create(empgroup).$promise.then(function(data) {
+       $scope.perms = ProcPermissionsFactory.query({ BPid: $scope.BPid });
+       $scope.loadPerm();
+    });
+    }
+    else { // group detected
+        empgroup.role = role;
+        empgroup.process = $scope.BPid;
+        empgroup.group = empgroup.id;
+        empgroup.id = null;
+     PermissionsFactory.create(empgroup).$promise.then(function(data) {
+       $scope.perms = ProcPermissionsFactory.query({ BPid: $scope.BPid });
+       $scope.loadPerm();
+    });
+    }
+
+  }
+  $scope.delProcessPerm = function(perm) {
+    $scope.delPerm(perm);
+    $scope.loadPerm();
+  }
+
+  $scope.symbol = function(title) {
+    if (title != undefined) {
+      return (title[1] + title[2]).toUpperCase()
+    } else {
+      return ""
+    }
+  }
 
   $scope.filterPerms = function(elem) {
     return (elem.type_title == "confirm");
   };
+  $scope.filterProcessPermEdit = function(perm) {
+    return (perm.role == 'edit');
+  } 
+  $scope.filterProcessPermAll  = function(perm) {
+    return (perm.role == 'all');
+  } 
+  $scope.filterProcessPermView = function(perm) { 
+    return (perm.role == 'view');
+  }
 
 
 }]);

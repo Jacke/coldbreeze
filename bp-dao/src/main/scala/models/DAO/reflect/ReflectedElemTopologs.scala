@@ -3,7 +3,7 @@ package models.DAO.reflect
 import models.DAO.driver.MyPostgresDriver.simple._
 import com.github.nscala_time.time.Imports._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
-import scala.slick.model.ForeignKeyAction
+import slick.model.ForeignKeyAction
 import models.DAO.conversion.DatabaseCred
     
 class ReflectElemTopologs(tag: Tag) extends Table[RefElemTopology](tag, "reflected_elem_topologs") {

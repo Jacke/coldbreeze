@@ -6,7 +6,7 @@ import main.scala.simple_parts.process.ProcElems
 import models.DAO.driver.MyPostgresDriver.simple._
 import com.github.nscala_time.time.Imports._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
-import scala.slick.model.ForeignKeyAction
+import slick.model.ForeignKeyAction
 
 import models.DAO.ProcElemDAO._
 import models.DAO.BPDAO._
@@ -26,7 +26,6 @@ class BPLoggers(tag: Tag) extends Table[BPLoggerDTO](tag, "bploggers") {
   def expanded  = column[Boolean]("expanded")
   def container = column[Boolean]("container")
   def date      = column[org.joda.time.DateTime]("date")
-  def comps     = column[Option[List[CompositeValues]]]("comps", O.DBType("compositevalues[]"))
   def step      = column[Int]("step")
 
   def * = (id.?,
@@ -40,7 +39,6 @@ class BPLoggers(tag: Tag) extends Table[BPLoggerDTO](tag, "bploggers") {
            expanded,
            container,
            date,
-           comps,
            step
           ) <> (BPLoggerDTO.tupled, BPLoggerDTO.unapply)
 
@@ -63,7 +61,6 @@ invoked: Boolean,
 expanded: Boolean,
 container: Boolean,
 date: org.joda.time.DateTime,
-comps: Option[List[CompositeValues]],
 step: Int = 0
 )
 
@@ -143,7 +140,6 @@ object BPLoggerDAO {
             lgr.expanded, // expanded
             lgr.container, // container
             lgr.date, // date
-            pull_cv(lgr.composite),
             lgr.step) // comps
 
 
@@ -187,7 +183,7 @@ object BPLoggerDAO {
           expanded  = false,
           container = lgr.container,
           date      = lgr.date,
-          composite = Implicits.fetch_cv(lgr.comps),
+          composite = None,
           step      = lgr.step
         )
     }

@@ -36,6 +36,7 @@ import helpers._
 import decorators._
 import main.scala.simple_parts.process.Units._  
 import main.scala.bprocesses._
+import builders._
   
 class InteractionController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
   
@@ -49,8 +50,8 @@ class InteractionController(override implicit val env: RuntimeEnvironment[DemoUs
   implicit val StationNoteWrites = Json.format[StationNoteMsg]
   implicit val AroundAttrReads = Json.reads[AroundAttr]
   implicit val AroundAttrWrites = Json.format[AroundAttr]
-  implicit val ElemAroundReads = Json.reads[models.DAO.ElemAround]
-  implicit val ElemAroundWrites = Json.format[models.DAO.ElemAround]
+  implicit val ElemAroundReads = Json.reads[ElemAround]
+  implicit val ElemAroundWrites = Json.format[ElemAround]
   implicit val ListAroundReads = Json.reads[ListAround]
   implicit val ListAroundWrites = Json.format[ListAround]
   implicit val sessionReads = Json.reads[BPSession]

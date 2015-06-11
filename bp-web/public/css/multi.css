@@ -2057,7 +2057,8 @@ form .flatRadioLike .flatRadio:checked + .flatRadioLabel:before {
 }
 
 .teamSettings {
-padding: 13px 42px;
+    overflow: hidden;
+    padding: 13px 42px;
     -webkit-border-radius: 5px;
     border-radius: 5px;
     background-color: #fff;

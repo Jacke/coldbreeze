@@ -44,8 +44,7 @@ case class ElementTopology(topo_id: Int, element_id: Int, element_title: String,
 
 class BusinessProcessController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
 
-  implicit val CompositeVReads = Json.reads[CompositeValues]
-  implicit val CompositeVWrites = Json.format[CompositeValues]
+
   implicit val stationReads = Json.reads[BPStationDTO]
   implicit val stationWrites = Json.format[BPStationDTO]
 
@@ -159,6 +158,7 @@ def create_bprocess = SecuredAction(BodyParsers.parse.json) { request =>
         case -1 => BadRequest(Json.obj("status" -> "Cannot create process"))
         case _@id:Int => { 
           AutoTracer.defaultStatesForProcess(process_id = id)
+          utilities.NewUserRoutine.defaultPermsForAnalytics(process_id = id, business = bprocess.business)
           Ok(Json.obj("status" ->"OK", "message" -> ("Bprocess '"+bprocess.id+"' saved.") ))  
         }
       }
@@ -168,61 +168,51 @@ def create_bprocess = SecuredAction(BodyParsers.parse.json) { request =>
 }
   def update_bprocess(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
     val bpResult = request.body.validate[BProcessDTO]
-  bpResult.fold(
-    errors => {
-      BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
-    },
-    bprocess => { 
-      BPDAO.update(id, bprocess)
-      Ok(Json.obj("status" ->"OK", "message" -> ("Bprocess '"+bprocess.title+"' saved.") ))  
-    }
-  )
-
+      bpResult.fold(
+        errors => {
+          BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
+        },
+        bprocess => { 
+          BPDAO.update(id, bprocess)
+          Ok(Json.obj("status" ->"OK", "message" -> ("Bprocess '"+bprocess.title+"' saved.") ))  
+        }
+      )
   }
+
   def delete_bprocess(id: Int) = SecuredAction { implicit request => 
     Ok(Json.toJson(BPDAO.delete(id)))
   }
 
 
-/* Index */
-def frontElems(id: Int) = SecuredAction { implicit request =>
+  /* Index */
+  def frontElems(id: Int) = SecuredAction { implicit request =>
 
-  Ok(Json.toJson(ProcElemDAO.findByBPId(id)))
-}
-def show_elem_length(id: Int):Int = { 
-  ProcElemDAO.findLengthByBPId(id)
-}
-def bpElemLength() = SecuredAction { implicit request =>
-  val bps = BPDAO.getAll // TODO: Weak perm
-  val elms = ProcElemDAO.getAll
-  val spelms = SpaceElemDAO.getAll
-  def all_length(id: Int):Int = elms.filter(_.bprocess == id).length + spelms.filter(_.bprocess == id).length
-  Ok(Json.toJson(
-    Map(bps.map(bp => (bp.id.get.toString -> all_length(bp.id.get))) map {s => (s._1, s._2)} : _*)//show_elem_length(bp.id.get))) map {s => (s._1, s._2)} : _*)
-    ))
-}
-def spaces(id: Int) = SecuredAction { implicit request =>
-  Ok(Json.toJson(BPSpaceDAO.findByBPId(id)))
-}
-def spaceElems(id: Int) = SecuredAction { implicit request =>
-  Ok(Json.toJson(SpaceElemDAO.findByBPId(id)))
-}
+    Ok(Json.toJson(ProcElemDAO.findByBPId(id)))
+  }
+  def show_elem_length(id: Int):Int = { 
+    ProcElemDAO.findLengthByBPId(id)
+  }
+  def bpElemLength() = SecuredAction { implicit request =>
+    val bps = BPDAO.getAll // TODO: Weak perm
+    val elms = ProcElemDAO.getAll
+    val spelms = SpaceElemDAO.getAll
+    def all_length(id: Int):Int = elms.filter(_.bprocess == id).length + spelms.filter(_.bprocess == id).length
+    Ok(Json.toJson(
+      Map(bps.map(bp => (bp.id.get.toString -> all_length(bp.id.get))) map {s => (s._1, s._2)} : _*)//show_elem_length(bp.id.get))) map {s => (s._1, s._2)} : _*)
+      ))
+  }
+  def spaces(id: Int) = SecuredAction { implicit request =>
+    Ok(Json.toJson(BPSpaceDAO.findByBPId(id)))
+  }
+  def spaceElems(id: Int) = SecuredAction { implicit request =>
+    Ok(Json.toJson(SpaceElemDAO.findByBPId(id)))
+  }
 
 /**
  * Forms
  */
  /*
  */
-
-implicit val carFormat = new Formatter[CompositeValues] {
-  def bind(key: String, data: Map[String, String]):Either[Seq[FormError], CompositeValues] = 
-    data.get(key)
-      // make sure the method returns an option of CompositeValues
-      .flatMap(generateCV _)
-      .toRight(Seq(FormError(key, "error.carNotFound", Nil)))
-
-  def unbind(key: String, value: CompositeValues) = Map(key -> value.toString)
-}
 
 def generateCV(a: String):Some[CompositeValues] = {
   Some(CompositeValues())
@@ -240,7 +230,6 @@ val UndefElementForm = Form(
       "type_title" -> nonEmptyText,
       "space_own" -> optional(number),
       "order" -> number,
-      "comps" -> optional(list(of[CompositeValues])),
       "created_at" -> optional(jodaDate),
       "updated_at" -> optional(jodaDate)
       )(UndefElement.apply)(UndefElement.unapply))
@@ -293,7 +282,6 @@ val SpaceElementForm = Form(
       "space_owned" -> number,
       "space_role" -> optional(text),
       "order" -> number,
-      "comps" -> optional(list(of[CompositeValues])),
       "created_at" -> optional(jodaDate),
       "updated_at" -> optional(jodaDate))(SpaceElementDTO.apply)(SpaceElementDTO.unapply))
 

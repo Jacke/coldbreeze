@@ -10,7 +10,7 @@ import models.DAO.BProcessDTO
  */
 
 object DatabaseCred {
-  import scala.slick.driver.PostgresDriver.simple._
+  import slick.driver.PostgresDriver.simple._
   var database = Database.forURL("jdbc:postgresql://localhost/minority1", driver = "org.postgresql.Driver", user = "postgres", password = "12344321")
   database.createSession().conn.getMetaData().getURL()
 

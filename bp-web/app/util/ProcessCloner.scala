@@ -37,8 +37,7 @@ object ProcessCloner {
                                               proc_element.b_type,
                                               proc_element.type_title,
                                               proc_element.space_own,
-                                              proc_element.order,
-                                              proc_element.comps)), 
+                                              proc_element.order)), 
                       new_proc_elems_ids) 
         }
         var new_space_elems_ids = scala.collection.mutable.Map.empty[Int, Int]
@@ -55,8 +54,7 @@ object ProcessCloner {
                                             space_element.space_own,
                                             space_element.space_owned,
                                             space_element.space_role,
-                                            space_element.order,
-                                            space_element.comps)),
+                                            space_element.order)),
                       new_space_elems_ids)
 
         }

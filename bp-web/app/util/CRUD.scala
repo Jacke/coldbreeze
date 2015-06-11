@@ -12,7 +12,7 @@ import play.api.db.DB
 import play.api.Play.current
 
 // Use H2Driver to connect to an H2 database
-//import scala.slick.driver.H2Driver.simple._
+//import slick.driver.H2Driver.simple._
 
 import scala.language.dynamics
 import shapeless._

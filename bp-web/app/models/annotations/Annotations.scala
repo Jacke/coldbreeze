@@ -3,9 +3,9 @@ package models.DAO
 
 
 import models.DAO.driver.MyPostgresDriver1.simple._
-import scala.slick.model.ForeignKeyAction
+import slick.model.ForeignKeyAction
 import models.DAO.conversion.{DatabaseCred, Implicits}  
-import scala.slick.model.ForeignKeyAction
+import slick.model.ForeignKeyAction
 
 
 class Annotations(tag: Tag) extends Table[AnnotationDTO](tag, "annotations"){

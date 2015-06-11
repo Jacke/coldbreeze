@@ -5,7 +5,7 @@ import com.github.nscala_time.time.Imports._
 import models.DAO.driver.MyPostgresDriver1.simple._
 import com.github.tminglei.slickpg.composite._
 import models.DAO.conversion.{DatabaseCred, Implicits}
-import scala.slick.model.ForeignKeyAction
+import slick.model.ForeignKeyAction
 import org.joda.time.DateTime
 
 class Observers(tag: Tag) extends Table[ObserverDTO](tag, "observers") {

@@ -1,27 +1,58 @@
 package models.DAO.resources
 
-import scala.slick.driver.PostgresDriver.simple._
+import slick.driver.PostgresDriver.simple._
 import models.DAO.conversion.DatabaseCred
 import models.DAO._
 
-class ActPermissions(tag: Tag) extends Table[ActPermission](tag, "act_permissions") {
+object PermissionRole {
+  val roles:List[String] = List("view",
+                                "edit",
+                                "interact", // TODO: currently not used.
+                                "all")
+}
+
+class ActPermissions(tag: Tag) extends Table[ActPermission](tag, "process_permissions") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
-  def uid = column[String]("uid")
-  def bprocess = column[Int]("bprocess")
+  def uid = column[Option[String]]("uid")
+  def group = column[Option[Int]]("group_id")
+
+  // Process permissions
+  def process = column[Int]("bprocess")
+  def role = column[String]("role")
+  /***
+   *  Role:
+   *  1. View 
+   *  2. Edit
+   *  3. All 
+   *  4. Interact 
+   */  
+
+  // Elements permissions
   def front_elem_id = column[Option[Int]]("front_elem_id")
   def space_elem_id = column[Option[Int]]("space_elem_id")
+  def reaction      = column[Option[Int]]("reaction_id")
 
 
-
+  def procFK  = foreignKey("process_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
   def fElemFK = foreignKey("fElemPermFK", front_elem_id, models.DAO.ProcElemDAO.proc_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
   def spElemFK = foreignKey("spElemPermFK", space_elem_id, models.DAO.SpaceElemDAO.space_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def groupFK = foreignKey("groupFK", group, models.DAO.resources.GroupsDAO.groups)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def reactFK = foreignKey("reactionFK", reaction, models.DAO.ReactionDAO.reactions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
-  def * = (id.?, uid, bprocess, front_elem_id, space_elem_id) <> (ActPermission.tupled, ActPermission.unapply)
+  def * = (id.?, uid, group, process, front_elem_id, space_elem_id, reaction, role) <> (ActPermission.tupled, ActPermission.unapply)
 
   //def eb = EmployeesBusinessDAO.employees_businesses.filter(_.employee_id === id).flatMap(_.businessFK)
 }
 
-case class ActPermission(var id: Option[Int], uid: String, bprocess: Int,front_elem_id:Option[Int], space_elem_id:Option[Int])
+case class ActPermission(var id: Option[Int], 
+                         uid: Option[String], 
+                         group:Option[Int], 
+                         process: Int,
+                         front_elem_id:Option[Int], 
+                         space_elem_id:Option[Int],
+                         reaction: Option[Int],
+                         role: String = "interact"
+)
 case class ResAct(bprocess_id: Int, bprocess_title: String, elem_title: String)
 
 
@@ -29,12 +60,28 @@ object ActPermissionDAO {
   import scala.util.Try
   import DatabaseCred.database
 
- val act_permissions = TableQuery[ActPermissions]
+   val act_permissions = TableQuery[ActPermissions]
 
  def pull_object(s: ActPermission) = database withSession {
     implicit session ⇒
-
-      act_permissions returning act_permissions.map(_.id) += s
+      def create(s: ActPermission) = {
+        if (PermissionRole.roles.contains(s.role))
+          act_permissions returning act_permissions.map(_.id) += s
+        else 
+          -1
+      }
+      s.uid match {
+        case Some(uid) => create(s)
+        case _ => {
+          s.group match {
+            case Some(account_group) => {
+              val group_id = AccountGroupDAO.get(account_group).get.group_id
+              create(s.copy(group = Some(group_id)))
+            } 
+            case _ => -1
+          }
+        }
+      }
   }
   def get(k: Int) = database withSession {
     implicit session ⇒
@@ -48,11 +95,11 @@ object ActPermissionDAO {
   }
   def getByProcessesIDS(proc_ids: List[Int]) = database withSession {
      implicit session =>
-    val q3 = for { s ← act_permissions if s.bprocess inSetBind proc_ids } yield s
+    val q3 = for { s ← act_permissions if s.process inSetBind proc_ids } yield s
       q3.list  
   }
 
-  def getByUIDprocIDS(uid: String) = { 
+  def getByUIDprocIDS(uid: String):List[Int] = {
     val z = {
     database withSession {
     implicit session =>
@@ -60,15 +107,19 @@ object ActPermissionDAO {
       q3.list
   }
   }
-  val u = { z.map{ perm =>
+  val u = {
+    z.map { perm =>
+      /*
     if (perm.front_elem_id.isDefined) {
+
       models.DAO.ProcElemDAO.findById(perm.front_elem_id.get).get.bprocess.asInstanceOf[Int]
     } else if (perm.space_elem_id.isDefined) {
       models.DAO.SpaceElemDAO.findById(perm.space_elem_id.get).get.bprocess.asInstanceOf[Int]
     }
+    } */
     }
   }
-  u.asInstanceOf[List[Int]]
+  z.map(_.process)
   }
   
 
@@ -114,17 +165,17 @@ def getByUIDelemTitles(uid: String) = {
   u
 }
   def getActsByUID(email: String) = {
-    val bprocess = BPDAO.getAll
+    val processes = BPDAO.getAll
     val bpIds = ActPermissionDAO.getByUIDprocIDS(email)
     val active_stations = BPStationDAO.findActiveByBPIds(bpIds)
 
     // Active stations
-    // Bprocesses on dat
+    // processes on dat
     // Current element and next
     val acts: List[Option[ResAct]] = { 
       active_stations.map { station =>  
-        bprocess.find(bp => bp.id.get == station.process) match {
-          case Some(bprocess) => Some(ResAct(station.process, bprocess.title, "Обрезка")) 
+        processes.find(bp => bp.id.get == station.process) match {
+          case Some(process) => Some(ResAct(station.process, process.title, "Обрезка")) 
           case _ => None
         }
       

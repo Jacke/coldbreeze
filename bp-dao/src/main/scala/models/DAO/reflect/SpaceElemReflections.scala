@@ -2,7 +2,7 @@ package models.DAO.reflect
 
 
 import models.DAO.driver.MyPostgresDriver.simple._
-import scala.slick.model.ForeignKeyAction
+import slick.model.ForeignKeyAction
 import com.github.nscala_time.time.Imports._
 import models.DAO.BPDAO._
 import models.DAO.resources.BusinessDTO._

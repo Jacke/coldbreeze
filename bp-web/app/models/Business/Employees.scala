@@ -2,7 +2,7 @@ package models.DAO.resources
 
 import play.api.db.DB
 
-import scala.slick.driver.PostgresDriver.simple._
+import slick.driver.PostgresDriver.simple._
 import models.DAO.conversion.DatabaseCred
 
 class Employees(tag: Tag) extends Table[EmployeeDTO](tag, "employees") {

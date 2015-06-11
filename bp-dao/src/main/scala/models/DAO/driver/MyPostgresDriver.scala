@@ -10,8 +10,8 @@ import com.github.tminglei.slickpg.array.PgArrayJdbcTypes
 
 import models.DAO._
 
-import scala.slick.driver.PostgresDriver._
-import scala.slick.driver.PostgresDriver.simple._
+import slick.driver.PostgresDriver._
+import slick.driver.PostgresDriver.simple._
 
 trait WithMyDriver {
   val driver: MyPostgresDriver
@@ -28,8 +28,8 @@ trait MyCompositeSupport extends PgCommonJdbcTypes
       //utils.TypeConverters.register(mkCompositeConvToString[CompositeValues])
 
 
-      implicit val compositeTypeMapper = createCompositeJdbcType[CompositeValues]("compositevalues")
-      implicit val compositeArrayTypeMapper = createCompositeListJdbcType[CompositeValues]("compositevalues")
+      //implicit val compositeTypeMapper = createCompositeJdbcType[CompositeValues]("compositevalues")
+      //implicit val compositeArrayTypeMapper = createCompositeListJdbcType[CompositeValues]("compositevalues")
       
 
       //implicit val compositevaluesTypeMapper = new GenericJdbcType[CompositeValues]("compositevalues",

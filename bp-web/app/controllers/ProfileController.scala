@@ -67,6 +67,23 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
       }
   }
 
+  def profile_cart(profile_id: String) = SecuredAction { implicit request =>
+    val optAccount = AccountsDAO.findByNickname(profile_id)
+    val optBusiness = models.DAO.resources.BusinessDAO.findByNickname(profile_id)
+
+    optAccount match {
+      case Some(account) => {
+        Ok(account.userId)
+      }
+      case _ => {
+        optBusiness match {
+          case Some(business) => Ok(business.title.toString)
+          case _ => NotFound(views.html.custom.msg404("", request))
+        }
+      }
+    }
+
+  }
 
 
 /*

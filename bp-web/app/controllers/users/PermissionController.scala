@@ -9,8 +9,12 @@ import play.api.libs.json._
 import play.api.cache._
 import play.api.data._
 import play.api.data.Forms._
+import play.api.libs.json._
+import play.api.libs.functional.syntax._
+import play.api.data.validation._
 
 import views._
+import utilities._
 import models.User
 import models.Page
 import models.DAO.resources._
@@ -26,7 +30,7 @@ import models.AccountDAO
 class PermissionController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
 
 
-case class ActPermissionJSON(elemperms: List[ActPermission], employees: List[EmployeeDTO], accounts: List[AccountDAO])
+case class ActPermissionJSON(elemperms: List[ActPermission], employees: List[EmployeeDTO], employee_groups:List[GroupDTO], accounts: List[AccountDAO])
 val Home = Redirect(routes.BusinessController.index())
 
 
@@ -35,8 +39,22 @@ val Home = Redirect(routes.BusinessController.index())
   implicit val EmployeeDTOWrites = Json.format[EmployeeDTO]
   implicit val AccountDAOReads = Json.reads[AccountDAO]
   implicit val AccountDAOWrites = Json.format[AccountDAO]
-  implicit val PermiReads = Json.reads[ActPermission]
+  implicit val GroupDTOReads = Json.reads[GroupDTO]
+  implicit val GroupDTOWrites = Json.format[GroupDTO]
+  //implicit val PermiReads = Json.reads[ActPermission]
   implicit val PermiWrites = Json.format[ActPermission]
+
+  val permValidate = Reads.StringReads.filter(ValidationError("Not allowed role."))(PermissionRole.roles.contains(_))
+implicit val PermiReads: Reads[ActPermission] = (
+    (JsPath \ "id").read[Option[Int]] and
+    (JsPath \ "uid").read[Option[String]] and
+    (JsPath \ "group").read[Option[Int]] and
+    (JsPath \ "process").read[Int] and
+    (JsPath \ "front_elem_id").read[Option[Int]] and
+    (JsPath \ "space_elem_id").read[Option[Int]] and
+    (JsPath \ "reaction").read[Option[Int]] and
+    (JsPath \ "username").read[String](permValidate)
+)(ActPermission.apply _)
 
   implicit val ActPermissionJSONReads = Json.reads[ActPermissionJSON]
   implicit val ActPermissionJSONWrites = Json.format[ActPermissionJSON]
@@ -45,11 +63,24 @@ val Home = Redirect(routes.BusinessController.index())
 val elemPermForm = Form(
     mapping(
       "id" -> optional(number),
-      "uid" -> nonEmptyText,
-      "bprocess" -> number,
+      "uid" -> optional(text),
+      "group" -> optional(number),
+      "process" -> number,
       "front_elem_id" -> optional(number),
-      "space_elem_id" -> optional(number))(ActPermission.apply)(ActPermission.unapply))
+      "space_elem_id" -> optional(number),
+      "reaction" -> optional(number),
+      "role" -> text)(ActPermission.apply)(ActPermission.unapply))
  
+/*
+(var id: Option[Int], 
+                         uid: Option[String], 
+                         group:Option[Int], 
+                         process: Int,
+                         front_elem_id:Option[Int], 
+                         space_elem_id:Option[Int],
+                         reaction: Option[Int])
+                         role: String = "interact",
+                          */
  def index() = SecuredAction { implicit request =>
       val user_services = BusinessServiceDAO.getByMaster(request.user.main.email.getOrElse("")).map(_.id)
       var proc_ids:List[Int] = BPDAO.getByServices(user_services.flatten).map(_.id).flatten
@@ -66,71 +97,70 @@ val elemPermForm = Form(
 
 
       val employees = EmployeeDAO.getAllByMaster(request.user.main.email.get)
+      val employee_groups = AccountGroupDAO.getByAccounts(employees.map(_.master_acc)).distinct
+
       val accounts = models.AccountsDAO.findAllByEmails(employees.map(emp => emp.uid)).map(ac => ac.copy(password = "", hasher = ""))
 
-      Ok(Json.toJson(ActPermissionJSON(elemperms, employees, accounts)))
+      Ok(Json.toJson(ActPermissionJSON(elemperms, employees, employee_groups, accounts)))
       /*Ok(views.html.permissions.element.index(
-        Page(elemperms, 1, 1, elemperms.length), 1, "%")(Some(request.user.main)))*/
-    
+        Page(elemperms, 1, 1, elemperms.length), 1, "%")(Some(request.user.main)))*/ 
   }
+
   def proc_index(BPid: Int) = SecuredAction { implicit request =>
     val elemperms = ActPermissionDAO.getAll
     val elms = ProcElemDAO.findByBPId(BPid).map(_.id)
     val spelms = SpaceElemDAO.findByBPId(BPid).map(_.id)
     
     val employees = EmployeeDAO.getAllByMaster(request.user.main.email.get)
-    val accounts = models.AccountsDAO.findAllByEmails(employees.map(emp => emp.uid)).map(ac => ac.copy(password = "", hasher = ""))
+    val employee_groups = AccountGroupDAO.getByAccounts(employees.map(_.master_acc)).distinct
+    val accounts = models.AccountsDAO.findAllByEmails(employees.map(emp => emp.uid)).map(ac => AccountCredHiding.hide(ac))
 
     Ok(Json.toJson(
       ActPermissionJSON(
-        elemperms.filter(perm => elms.contains(perm.front_elem_id) || spelms.contains(perm.space_elem_id) ),
+        elemperms.filter(perm => perm.process == BPid ),
         employees,
+        employee_groups,
         accounts
         )))
   }
+
   def create() = SecuredAction { implicit request =>
         Ok("x")//views.html.permissions.element.elemperm_form(elemPermForm)(Some(request.user.main)))    
   }
-  def create_new() = SecuredAction { implicit request =>
-    elemPermForm.bindFromRequest.fold(
-      formWithErrors => BadRequest(Json.toJson(Map("success" -> formWithErrors.toString))),
-      entity => {
 
-          val biz_id = ActPermissionDAO.pull_object(entity)
-          /*val emp_id = EmployeeDAO.getByUID(request.user.main.userId) 
-          emp_id match {
-            case Some(employee) => EmployeesBusinessDAO.pull(employee_id = employee.id.get, business_id = biz_id)
-            case _ =>
-          }*/
-          
-          Ok(Json.toJson(Map("success" -> entity.uid)))
-          //Home.flashing("success" -> s"Entity ${entity.uid} has been created")
-        
-      })
-  }
-  def update(id: Int) = SecuredAction { implicit request =>
-      val perm = ActPermissionDAO.get(id)
-      perm match {
-        case Some(x) =>
-        val prm = ActPermission(x.id, x.uid, x.bprocess, x.front_elem_id, x.space_elem_id)
-         Ok("Updated") 
-        case None => Ok("not found")
-      }
-
-      
-    
-  }
-  def update_make(id: Int) = SecuredAction { implicit request =>
-      /*elemPermForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.permissions.element.elemperm_edit_form(id, formWithErrors)(Some(request.user.main))),
-        entity => {
-          ActPermissionDAO.update(id,entity) match {
-            case 0 => Ok(Json.toJson(Map("failure" -> s"${entity.uid}")))
-            case _ => Ok(Json.toJson(Map("success" -> s"${entity.uid}")))
+  def create_new() = SecuredAction(BodyParsers.parse.json) { request =>
+    val permResult = request.body.validate[ActPermission]
+      permResult.fold(
+      errors => {
+        BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
+      },
+      perm => { 
+        ActPermissionDAO.pull_object(perm) match {
+          case -1 => BadRequest(Json.obj("status" -> "Cannot create permission"))
+          case _@id:Int => { 
+            Ok(Json.obj("status" ->"OK", "message" -> ("Perm '"+perm.id+"' saved.") ))  
           }
-        })*/ Ok("updated")
-    
+        }
+        
+      }
+    )
   }
+ 
+
+  def update(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+    val permResult = request.body.validate[ActPermission]
+      permResult.fold(
+        errors => {
+          BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
+        },
+        perm => { 
+          ActPermissionDAO.update(id, perm)
+          Ok(Json.obj("status" ->"OK", "message" -> ("Perm '"+perm.id+"' updated.") ))  
+        }
+      )
+  }
+
+
   def destroy(id: Int) = SecuredAction { implicit request =>
     
       ActPermissionDAO.delete(id) match {

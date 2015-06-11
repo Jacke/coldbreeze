@@ -6,13 +6,14 @@ import main.scala.simple_parts.process.ProcElems
 import models.DAO.driver.MyPostgresDriver.simple._
 import com.github.nscala_time.time.Imports._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
-import scala.slick.model.ForeignKeyAction
+import slick.model.ForeignKeyAction
 
 import models.DAO.ProcElemDAO._
 import models.DAO.BPDAO._
 import models.DAO.BPStationDAO._
 import models.DAO.conversion.DatabaseCred
-  
+
+import builders._
 import main.scala.bprocesses.BPSession  
   
 class BPSessions(tag: Tag) extends Table[BPSession](tag, "bpsessions") {
@@ -28,10 +29,6 @@ class BPSessions(tag: Tag) extends Table[BPSession](tag, "bpsessions") {
   def bpFK = foreignKey("bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 }
 
-
-case class AroundAttr(id: Int, title: String = "")
-case class ElemAround(prev: Option[AroundAttr] = None, now: Option[AroundAttr] = None, next: Option[AroundAttr] = None )  
-case class ListAround(id: Int, around: ElemAround)
 
 case class SessionStatus(var percent: Int = 0, 
                          process:BProcessDTO, 
@@ -73,7 +70,7 @@ object BPSessionDAO {
           case _ => element_quantity.toDouble
         }
         val percent = (step / element_quantity.toDouble * 100).toInt
-        SessionStatus(percent, p, ses, station, Some(ElemAround.detect(p.id.get, station.get.id.get))) 
+        SessionStatus(percent, p, ses, station, None)//Some(AroundProcessElementsBuilder.detect(p.id.get, station.get.id.get)))
       })
     }
   }
@@ -95,7 +92,7 @@ object BPSessionDAO {
         val percent = (step / element_quantity.toDouble * 100).toInt
 
       Some(SessionContainer(process, 
-        List(SessionStatus(percent, process, ses, station, Some(ElemAround.detect(ses.process, station.get.id.get)))) 
+        List(SessionStatus(percent, process, ses, station, Some(AroundProcessElementsBuilder.detect(ses.process, station.get.id.get)))) 
       ))
 
       }
@@ -121,7 +118,7 @@ object BPSessionDAO {
           case _ => element_quantity.toDouble
         }
         val percent = (step / element_quantity.toDouble * 100).toInt
-        SessionStatus(percent, p, ses, station, Some(ElemAround.detect(p.id.get, station.get.id.get))) 
+        SessionStatus(percent, p, ses, station, None)//Some(AroundProcessElementsBuilder.detect(p.id.get, station.get.id.get)))
       })
     }
   }
@@ -158,7 +155,7 @@ object BPSessionDAO {
             case _ => element_quantity.toDouble
           }
           val percent = (step / element_quantity.toDouble * 100).toInt
-          SessionStatus(percent, process, ses, station, Some(ElemAround.detect(process_id, station.get.id.get))) 
+          SessionStatus(percent, process, ses, station, Some(AroundProcessElementsBuilder.detect(process_id, station.get.id.get))) 
           })
         )
       }
@@ -217,48 +214,3 @@ object BPSessionDAO {
 
 
 
-
-/**
-* Arround element builder
-**/
-object ElemAround {
-  def detect(process_id: Int, station_id: Int):ElemAround = {
-   val station = BPStationDAO.findActiveByBPIds(List(process_id)).headOption
-     
-     station match {
-    case None => ElemAround()
-    case Some(st) => buildTree(st, process_id)
-   }
-  }
-  
-  def buildTree(st: BPStationDTO, process_id:Int):ElemAround = {
-    val proc = service.RunnerWrapper.initFrom(st.id.get, process_id, List.empty[InputParamProc])
-      
-    var pre:Option[AroundAttr] = None
-    var nex:Option[AroundAttr] = None
-    var now:Option[AroundAttr] = None
-    if (proc.variety.length >= st.step && st.step != 1 && st.step >= 2) {
-      pre = Option(AroundAttr(proc.variety(st.step-2).id, proc.variety(st.step-2).title))
-    } 
-    
-    if (proc.variety.length > st.step && st.step != proc.variety.length) {
-      nex = Option(AroundAttr(proc.variety(st.step).id, proc.variety(st.step).title))
-    } 
-    if (st.step > 0) {
-      now = Option(AroundAttr(proc.variety(st.step-1).id, proc.variety(st.step-1).title))
-    }
-
-    ElemAround(now = now, prev = pre, next = nex)
-    // TODO: Nested around
-  }
-  // Return: Option[Map[Station_id, ElemAround]]
-  def detectForProcess(process_id: Int):List[ListAround] = {
-   val stations = BPStationDAO.findActiveByBPIds(List(process_id))
-      
-     if (stations.length > 0) {
-        stations.map(station => ListAround(station.id.get, buildTree(station, process_id)))
-     } else {
-       val list:List[ListAround] = List();list;
-     }
-  }
-}

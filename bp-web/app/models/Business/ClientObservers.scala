@@ -1,6 +1,6 @@
 package models.DAO.resources
 
-import scala.slick.driver.PostgresDriver.simple._
+import slick.driver.PostgresDriver.simple._
 import models.DAO.conversion.DatabaseCred
 
 class ClientObservers(tag: Tag) extends Table[ClientObserverDTO](tag, "client_observers") {

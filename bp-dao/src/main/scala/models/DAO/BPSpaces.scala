@@ -5,7 +5,7 @@ import models.DAO.driver.MyPostgresDriver1.simple._
 
 import com.github.nscala_time.time.Imports._
 import models.DAO.conversion.DatabaseCred
-import scala.slick.model.ForeignKeyAction
+import slick.model.ForeignKeyAction
 import main.scala.simple_parts.process.Units._
 import main.scala.bprocesses.refs.UnitRefs._  
 

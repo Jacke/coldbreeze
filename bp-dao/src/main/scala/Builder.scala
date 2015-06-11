@@ -13,6 +13,7 @@ import main.scala.simple_parts.process.control._
 import main.scala.simple_parts.process.data._
 import main.scala.utils._
 import main.scala.resources.scopes._
+import builders._
 
 import main.scala.bprocesses.links._
 import main.scala.utils.Space
@@ -420,7 +421,7 @@ def runFrom(station_id:Int, bpID:Int, params: List[InputParamProc], session_id: 
   val logger_results = logger_db.map(log =>
     BPLoggerResult(
       process.findObjectById(log.element, log.space_elem).get,
-      composite=fetch_cv(log.comps),
+      composite=None,
       order = log.order,
       space = log.space,
       station = process.station,
@@ -602,7 +603,7 @@ def runFrom(station_id:Int, bpID:Int, params: List[InputParamProc], session_id: 
   val logger_results = logger_db.map(log =>
     BPLoggerResult(
       process.findObjectById(log.element, log.space_elem).get,
-      composite=fetch_cv(log.comps),
+      composite=None,
       order = log.order,
       space = log.space,
       station = process.station,
@@ -916,7 +917,7 @@ def runFrom(station_id:Int, bpID:Int, params: List[InputParamProc], session_id: 
   val logger_results = logger_db.map(log =>
     BPLoggerResult(
       process.findObjectById(log.element, log.space_elem).get,
-      composite=fetch_cv(log.comps),
+      composite=None,
       order = log.order,
       space = log.space,
       station = process.station,
@@ -1017,7 +1018,7 @@ def runFrom(station_id:Int, bpID:Int, params: List[InputParamProc], session_id: 
   val logger_results = logger_db.map(log =>
     BPLoggerResult(
       process.findObjectById(log.element, log.space_elem).get,
-      composite=fetch_cv(log.comps),
+      composite=None,
       order = log.order,
       space = log.space,
       station = process.station,

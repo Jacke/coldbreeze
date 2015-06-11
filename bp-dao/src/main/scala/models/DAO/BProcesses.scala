@@ -4,9 +4,9 @@ package models.DAO
 import models.DAO.driver.MyPostgresDriver1.simple._
 import com.github.nscala_time.time.Imports._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
-import scala.slick.model.ForeignKeyAction
+import slick.model.ForeignKeyAction
   
-import scala.slick.model.ForeignKeyAction
+import slick.model.ForeignKeyAction
 import models.DAO.resources.BusinessDTO._
 import models.DAO.conversion.DatabaseCred
 

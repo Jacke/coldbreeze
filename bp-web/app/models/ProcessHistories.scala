@@ -1,11 +1,16 @@
 package models.DAO
 
-import models.DAO.driver.MyPostgresDriver1.simple._
-import com.github.tminglei.slickpg.composite._
+//import models.DAO.driver.MyPostgresDriver1.simple._
+//import com.github.tminglei.slickpg.composite._
 import models.DAO.conversion.{DatabaseCred, Implicits}
-import scala.slick.model.ForeignKeyAction
 import org.joda.time.DateTime
+import com.github.tototoshi.slick.PostgresJodaSupport._
 
+
+import slick.driver.PostgresDriver.api._
+import scala.concurrent.Future
+
+//  import slick.model.ForeignKeyAction
 class ProcessHistories(tag: Tag) extends Table[ProcessHistoryDTO](tag, "process_histories") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def master_acc = column[String]("master_acc")
@@ -21,42 +26,6 @@ class ProcessHistories(tag: Tag) extends Table[ProcessHistoryDTO](tag, "process_
   def * = (id.?, master_acc, bprocess, action, date, what) <> (ProcessHistoryDTO.tupled, ProcessHistoryDTO.unapply)
 
 }
-/*
-  Process commits
- */
-class ProcessCommits(tag: Tag) extends Table[ProcessCommitDTO](tag, "process_commits") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
-  def title = column[String]("title")
-  def bprocess = column[Int]("process_id")
-  def created_at = column[DateTime]("created_at")
-
-  def bpFK = foreignKey("bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
-
-
-  def * = (id.?, title, bprocess, created_at) <> (ProcessCommitDTO.tupled, ProcessCommitDTO.unapply)
-
-}
-
-case class ProcessCommitDTO(var id: Option[Int], title: String = "", bprocess: Int, created_at: DateTime)
-
-object ProcCommitDAO {
-
-  import scala.util.Try
-  import DatabaseCred.database
-  val proc_commits = TableQuery[ProcessCommits]
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-        proc_commits.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-        proc_commits.ddl.drop
-    }
-  }
-}
 
 
 
@@ -71,13 +40,14 @@ object ProcHistoryDAO {
   import scala.util.Try
   import DatabaseCred.database
 
+
   case object ProcCreated
   case object ProcUpdated
   case object ProdDeleted
 
 
   val proc_histories = TableQuery[ProcessHistories]
- 
+ /*
   def make_history[A](userId: String, bprocess: Int, action: A) = {
   	pull_object( ProcessHistoryDTO(None, userId, bprocess, action.getClass.getName.split("\\$").last.toLowerCase, DateTime.now() ) )
   }
@@ -87,6 +57,13 @@ object ProcHistoryDAO {
     implicit session ⇒
       proc_histories returning proc_histories.map(_.id) += s
   }
+  */
+  def pull_async(s: ProcessHistoryDTO):Future[Int] = {
+    try database.run(proc_histories += s)
+    finally database.close
+  }
+/*
+
   def get(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← proc_histories if s.id === k } yield s 
@@ -122,18 +99,60 @@ object ProcHistoryDAO {
       val q3 = for { s ← proc_histories } yield s 
       q3.list.sortBy(_.id)
 
-  }
+  }*/
 
   def ddl_create = {
     database withSession {
       implicit session =>
-      proc_histories.ddl.create
+      proc_histories.schema.create
     }
   }
   def ddl_drop = {
     database withSession {
       implicit session =>
-        proc_histories.ddl.drop
+        proc_histories.schema.drop
     }
   }
 }
+
+
+/*
+  Process commits
+
+class ProcessCommits(tag: Tag) extends Table[ProcessCommitDTO](tag, "process_commits") {
+  import slick.model.ForeignKeyAction
+
+  def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
+  def title = column[String]("title")
+  def bprocess = column[Int]("process_id")
+  def created_at = column[DateTime]("created_at")
+
+  def bpFK = foreignKey("bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+
+
+  def * = (id.?, title, bprocess, created_at) <> (ProcessCommitDTO.tupled, ProcessCommitDTO.unapply)
+
+}
+
+case class ProcessCommitDTO(var id: Option[Int], title: String = "", bprocess: Int, created_at: DateTime)
+
+object ProcCommitDAO {
+
+  import scala.util.Try
+  import DatabaseCred.database
+  val proc_commits = TableQuery[ProcessCommits]
+  def ddl_create = {
+    database withSession {
+      implicit session =>
+        proc_commits.schema.create
+    }
+  }
+  def ddl_drop = {
+    database withSession {
+      implicit session =>
+        proc_commits.schema.drop
+    }
+  }
+}
+
+*/

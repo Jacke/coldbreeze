@@ -2,7 +2,7 @@ package models.DAO
 
 
 import models.DAO.driver.MyPostgresDriver1.simple._
-import scala.slick.model.ForeignKeyAction
+import slick.model.ForeignKeyAction
 import models.DAO.BPDAO._
 import models.DAO.resources.BusinessDTO._
 import com.github.tminglei.slickpg.composite._

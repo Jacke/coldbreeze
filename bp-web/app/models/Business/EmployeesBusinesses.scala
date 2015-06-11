@@ -1,8 +1,8 @@
 package models.DAO.resources
 
 
-import scala.slick.driver.PostgresDriver.simple._
-import scala.slick.model.ForeignKeyAction
+import slick.driver.PostgresDriver.simple._
+import slick.model.ForeignKeyAction
 import models.DAO.resources.BusinessDTO._
 import models.DAO.resources.EmployeeDAO._
 import models.DAO.conversion.DatabaseCred

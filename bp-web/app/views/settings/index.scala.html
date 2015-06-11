@@ -76,6 +76,7 @@
 
 @inputText(serviceForm("firstName"), '_label -> "First name", 'class -> "form-control")
 @inputText(serviceForm("lastName"), '_label -> "Last name", 'class -> "form-control")
+@inputText(serviceForm("nickname"), '_label -> "Nickname", 'class -> "form-control")
 @select(field = serviceForm("lang").copy(value=serviceForm("lang").value.map {x=>Some(x)}.getOrElse(Some("en"))), options = Seq("en"->"English", "de" -> "Deutch", "sp" -> "Spanish", "ch" -> "Chinese", "ru"->"Русский"), 
   '_label -> "Language", 'class -> "form-control")
 
@@ -350,6 +351,7 @@ select(serviceForm("country"), options = Seq("US"->"USA", "UK" -> "United kingdo
 @form(routes.SettingController.update_biz_credentials()) {
 <fieldset>
    @inputText(bizForm("title"), '_label -> Messages("settings.businessName")(LangDet.getLang(user) ), 'class -> "form-control")   
+   @inputText(bizForm("nickname"), '_label -> Messages("settings.companyName")(LangDet.getLang(user) ), 'class -> "form-control")   
    @inputText(bizForm("phone"), '_label -> Messages("settings.phone")(LangDet.getLang(user) ), 'class -> "form-control")   
    @inputText(bizForm("website"), '_label -> Messages("settings.website")(LangDet.getLang(user) ), 'class -> "form-control")  
    @inputText(bizForm("country"), '_label -> Messages("settings.country")(LangDet.getLang(user) ), 'class -> "form-control")  

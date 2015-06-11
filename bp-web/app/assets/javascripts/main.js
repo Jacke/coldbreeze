@@ -1,0 +1,1 @@
+$(document).ready(function(){$("html").niceScroll({styler:"fb",cursorcolor:"#000", cursorwidth:"10px", scrollspeed: 100})});

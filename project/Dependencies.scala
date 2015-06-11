@@ -24,24 +24,26 @@ object Dependencies {
 
   val akkaVersion     = "2.3.2"
   val sprayVersion    = "1.3.1-20140423"
-
-
+  
   val heroku          = "com.heroku"                % "sbt-heroku"              % "0.1.4"
   val scalarx         = "com.lihaoyi"               %% "scalarx"                % "0.2.8"
   val async           = "org.scala-lang.modules"    %% "scala-async"            % "0.9.1"
   val shapeless       = "com.chuusai"               %% "shapeless"              % "1.2.4"
   val dispatch        = "net.databinder.dispatch"   %% "dispatch-core"          % "0.11.1"
   val scalaz          = "org.scalaz"                %% "scalaz-core"            % "7.0.6"
-  val slick           = "com.typesafe.slick"        %  "slick_2.11"             % "2.1.0"
-  val slickpg         = "com.github.tminglei"       %  "slick-pg_2.11"          % "0.6.3"
+  val slick           = "com.typesafe.slick"        %% "slick"                  % "3.0.0"
+  val slickpg         = "com.github.tminglei"       %% "slick-pg"               % "0.9.0"
   val slick_migrate   = "io.github.nafg"            %% "slick-migration-api"    % "0.1.1"
-  val slickpgcore     = "com.github.tminglei"       %  "slick-pg_core_2.11"     % "0.6.3"
-  val slickpgplay     = "com.github.tminglei"       %% "slick-pg_play-json"     % "0.6.3"
+  val slickpgcore     = "com.github.tminglei"       %  "slick-pg_core_2.11"     % "0.9.0"
+  //val slickpgplay     = "com.github.tminglei"       %% "slick-pg_play-json"     % "0.9.0"
   val slf4j           = "org.slf4j"                 %  "slf4j-nop"              % "1.7.3"
   val json4sNative    = "org.json4s"                %% "json4s-native"          % "3.2.10"
   val json4sJackson   = "org.json4s"                %% "json4s-jackson"         % "3.2.10"
+  val autoschema      = "org.coursera"              %% "autoschema"             % "0.1"
   val postgres        = "postgresql"                %   "postgresql"            % "9.1-901.jdbc4"
 //val mongodb         = "org.mongodb"               %% "casbah"                % "2.7.0-RC0"
+  val reactivemongo   = "org.reactivemongo"         %% "reactivemongo"          % "0.10.5.0.akka23"
+  val playreactmongo  = "org.reactivemongo"         %% "play2-reactivemongo"    % "0.10.5.0.akka23"
   val mechanize       = "com.gistlabs"              %  "mechanize"              % "0.11.0"
   val scaldi          = "org.scaldi"                %% "scaldi"                 % "0.4"
   val scaldiplay      = "org.scaldi"                %% "scaldi-play"            % "0.4.1"
@@ -53,10 +55,11 @@ object Dependencies {
   val play            = "org.webjars"               %% "webjars-play"           % "2.3.0"
   val playslick       = "com.typesafe.play"         %  "play-slick_2.10"        % "0.8.0"
   val playauth        = "jp.t2v"                    %% "play2-auth"             % "0.12.0"
-  val formtag         = "com.loicdescotte.coffeebean" % "html5tags_2.11"        % "1.2.1"
+  val formtag         = "com.loicdescotte.coffeebean"% "html5tags_2.11"         % "1.2.1"
   val playctrl        = "jp.t2v"                    %% "stackable-controller"   % "0.4.0"
-  val logentries      = "com.logentries"            % "logentries-appender"     % "1.1.21"
-  val syslog   	      = "com.papertrailapp"   	% "logback-syslog4j" % "1.0.0"
+  val paypal          = "com.paypal.sdk"            %  "rest-api-sdk"           % "1.2.3"
+  val logentries      = "com.logentries"            %  "logentries-appender"    % "1.1.21"
+  val syslog   	      = "com.papertrailapp"   	    %  "logback-syslog4j"       % "1.0.0"
   val compressor      = "com.mohiva"                %% "play-html-compressor"   % "0.3.1"
   val jsonvariants    = "org.julienrf"              %% "play-json-variants"     % "0.2"
   val playflyway      = "com.github.tototoshi"      %% "play-flyway"            % "1.1.0"
@@ -66,6 +69,7 @@ object Dependencies {
   val jquery          = "org.webjars"               %  "jquery"                 % "1.11.1"
   val bootstrap       = "org.webjars"               %  "bootstrap"              % "3.1.1-1"   exclude("org.webjars", "jquery")
   val securesocial    = "ws.securesocial"           %% "securesocial"           % "3.0-M3"
+  val deadbolt        = "be.objectify"              %% "deadbolt-scala"         % "2.3.3"
   val securesocialmas = "ws.securesocial"           %% "securesocial"           % "master-SNAPSHOT"
   val jwtCore         = "com.atlassian.jwt"         % "jwt-core"                % "1.2.4"
   val jwtApi          = "com.atlassian.jwt"         % "jwt-api"                 % "1.2.4"
@@ -84,19 +88,21 @@ object Dependencies {
   val rediscache      = "com.typesafe.play.plugins" %% "play-plugins-redis"     % "2.3.1"
   val ptest           = "com.typesafe.play"         %% "play-test"              % "2.3.7"
   val jdbc            = "com.typesafe.play"         %% "play-jdbc"              % "2.3.7"
+  val playjson        = "com.typesafe.play"         %% "play-json"              % "2.3.7"
+  val junit           = "com.novocode"              % "junit-interface"         % "0.10" % "test"
   val anorm           = "com.typesafe.play"         %% "anorm"                  % "2.3.7"
 
-  val jodatime        = "joda-time"                 % "joda-time"               % "2.4"
-  val jodaconvert     = "org.joda"                  % "joda-convert"            % "1.6"
-  val jodamapper      = "com.github.tototoshi"      %% "slick-joda-mapper"      % "1.2.0"
+  val jodatime        = "joda-time"                 % "joda-time"               % "2.7"
+  val jodaconvert     = "org.joda"                  % "joda-convert"            % "1.7"
+  val jodamapper      = "com.github.tototoshi"      %% "slick-joda-mapper"      % "2.0.0"
 
   val akkaActor       = "com.typesafe.akka"         %%  "akka-actor"            % akkaVersion
   val akkaSlf4j       = "com.typesafe.akka"         %%  "akka-slf4j"            % akkaVersion
   val akkaTestKit     = "com.typesafe.akka"         %%  "akka-testkit"          % akkaVersion
   val logback         = "ch.qos.logback"            %   "logback-classic"       % "1.0.13"
   val reflect         = "com.taig"                  %%  "reflect"               % "0.9.3-BETA"
-  val nscala          = "com.github.nscala-time"    %%  "nscala-time"           % "1.0.0"
-  val slickjoda       = "com.github.tminglei"       % "slick-pg_joda-time_2.11" % "0.6.1"
+  val nscala          = "com.github.nscala-time"    %%  "nscala-time"           % "2.0.0"
+  //val slickjoda       = "com.github.tminglei"       %%  "slick-pg_joda-time"    % "0.9.1"
   val hdrHistogram    = "org.hdrhistogram"          %   "HdrHistogram"          % "1.0.8"
   val sprayCan        = "io.spray"                  %%   "spray-can"            % sprayVersion
   val sprayRouting    = "io.spray"                  %%   "spray-routing"        % sprayVersion

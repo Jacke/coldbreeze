@@ -36,6 +36,7 @@ import models.DAO.conversion._
 import ProcHistoryDAO._
 import helpers._
 import decorators._
+import builders._
 
 case class StationNoteMsg(msg: String)
 
@@ -113,7 +114,7 @@ def halt_session(id: Int, session_id: Int) = SecuredAction { implicit request =>
   }
 }
 def stations_elems_around(id: Int, station_id: Int) = SecuredAction { implicit request =>
-  Ok(Json.toJson(helpers.ElemAroundBuilder.detect(id, station_id)))
+  Ok(Json.toJson(AroundProcessElementsBuilder.detect(id, station_id)))
   
 }
 def logs_index(id: Int) = SecuredAction { implicit request => 

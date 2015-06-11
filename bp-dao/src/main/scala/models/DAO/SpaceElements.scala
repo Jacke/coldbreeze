@@ -3,7 +3,7 @@ package models.DAO
 import main.scala.bprocesses.BProcess
 import main.scala.simple_parts.process.{Block, ProcElems}
 import models.DAO.driver.MyPostgresDriver.simple._
-import scala.slick.model.ForeignKeyAction
+import slick.model.ForeignKeyAction
 import models.DAO.conversion.{DatabaseCred, Implicits}
 import com.github.nscala_time.time.Imports._
   
@@ -27,7 +27,7 @@ class SpaceElements(tag: Tag) extends Table[SpaceElementDTO](tag, "space_element
   def space_role = column[Option[String]]("space_role")
 
   def order = column[Int]("order")
-  def comps = column[Option[List[CompositeValues]]]("comps", O.DBType("compositevalues[]"))
+  //def comps = column[Option[List[CompositeValues]]]("comps", O.DBType("compositevalues[]"))
     
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
@@ -35,7 +35,7 @@ class SpaceElements(tag: Tag) extends Table[SpaceElementDTO](tag, "space_element
   def * = (id.?, title, desc,  business,
            bprocess,   b_type, type_title,
            space_own,  space_owned,
-           space_role, order, comps,
+           space_role, order,
            created_at, updated_at) <> (SpaceElementDTO.tupled, SpaceElementDTO.unapply)
 
   def businessFK = foreignKey("business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
@@ -60,7 +60,6 @@ case class SpaceElementDTO(id: Option[Int],
                         space_owned: Int,
                         space_role:Option[String],
                         order:Int,
-                        comps: Option[List[CompositeValues]],
 created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
 updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
   
@@ -68,7 +67,7 @@ updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
     this match {
       case x if (x.b_type == "block" && x.type_title == "test block") => {
         Option(
-          new Block(id.get,title,desc,Implicits.fetch_cv(comps),process,b_type,type_title,order)
+          new Block(id.get,title,desc,None,process,b_type,type_title,order)
         )
       }
       case constant if (constant.b_type == "block" && constant.type_title == "constant") => {
@@ -96,7 +95,7 @@ updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
         space_parent = process.spaces.find(_.id == Some(space_owned)),
         space_role = Some("container")))
       case _ => Option(
-          new Block(id.get,title,desc,Implicits.fetch_cv(comps),process,b_type,type_title,order)
+          new Block(id.get,title,desc,None,process,b_type,type_title,order)
         )
     }
 
@@ -108,7 +107,7 @@ updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
         println("space_parent REFACTOR!!!!!!!" + space_own)
         // TODO REFACTOR space_parent in brick
         Option(
-          new ContainerBrick(id.get, title, desc,None, process, b_type, type_title, order, 
+          new ContainerBrick(id.get, title, desc, None, process, b_type, type_title, order, 
             None, space_role.getOrElse("container"), space_own) // Default space role is Container
           //new Block(id.get,title,desc,Implicits.fetch_cv(comps),process,b_type,type_title,order, space_parent = Some(space), space_role)
         )
@@ -166,9 +165,9 @@ None,
                         space_owned,
                         space_role = Some("container"),
                         el.order,
-el.created_at,
-el.updated_at 
-)
+                        el.created_at,
+                        el.updated_at 
+                        )
   }
   def conv2(el: main.scala.bprocesses.refs.UnitRefs.UnitSpaceElementRef, business: Int, process: Int, space_own:Option[Int], space_owned: Int): SpaceElementDTO = {
     SpaceElementDTO(
@@ -183,10 +182,9 @@ None,
                         space_owned,
                         space_role = Some("container"),
                         el.order,
-                        comps = None,
-el.created_at,
-el.updated_at 
-)
+                        el.created_at,
+                        el.updated_at 
+                        )
   }
 }
 

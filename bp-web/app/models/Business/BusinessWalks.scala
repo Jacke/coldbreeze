@@ -1,8 +1,8 @@
 package models.DAO.resources
 
-import scala.slick.driver.PostgresDriver.simple._
+import slick.driver.PostgresDriver.simple._
 import models.DAO.conversion.DatabaseCred
-import scala.slick.model.ForeignKeyAction
+import slick.model.ForeignKeyAction
 
 class BusinessWalks(tag: Tag) extends Table[BusinessWalkDTO](tag, "business_walks") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)

@@ -11,6 +11,19 @@ POST        /authenticate/credentials        @controllers.CredentialsAuthControl
 POST        /signUp                          @controllers.SignUpController.signUp
 
 
+GET     /article                    @controllers.Articles.index
+GET     /articles/new               @controllers.Articles.showCreationForm
+POST    /articles/new               @controllers.Articles.create
+GET     /articles/:id               @controllers.Articles.showEditForm(id)
+POST    /articles/:id               @controllers.Articles.edit(id)
+DELETE  /articles/:id               @controllers.Articles.delete(id)
+POST    /articles/:id/attachments   @controllers.Articles.saveAttachment(id)
+GET     /attachments/:id            @controllers.Articles.getAttachment(id)
+DELETE  /attachments/:id            @controllers.Articles.removeAttachment(id)
+
+
+
+
 #GET        /up/:idx   controllers.Application.moveUp(idx)
 #GET        /down/:idx controllers.Application.moveDown(idx) 
 

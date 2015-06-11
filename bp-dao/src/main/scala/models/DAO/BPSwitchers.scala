@@ -5,7 +5,7 @@ import main.scala.simple_parts.process.ProcElems
 import models.DAO.driver.MyPostgresDriver.simple._
 import com.github.nscala_time.time.Imports._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
-import scala.slick.model.ForeignKeyAction
+import slick.model.ForeignKeyAction
 
 import models.DAO.ProcElemDAO._
 import models.DAO.BPDAO._

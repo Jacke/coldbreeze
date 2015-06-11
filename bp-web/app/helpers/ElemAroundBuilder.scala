@@ -1,3 +1,4 @@
+/*
 package helpers
   
 import models.DAO._
@@ -14,7 +15,7 @@ object ElemAroundBuilder {
   }
   
   def buildTree(st: BPStationDTO, process_id:Int):ElemAround = {
-    val proc = service.RunnerWrapper.initFrom(st.id.get, process_id, List.empty[InputParamProc])
+    val proc = service.Build.initFrom(st.id.get, process_id, List.empty[InputParamProc])
       
     var pre:Option[AroundAttr] = None
     var nex:Option[AroundAttr] = None
@@ -45,3 +46,4 @@ object ElemAroundBuilder {
      }
   }
 }
+*/

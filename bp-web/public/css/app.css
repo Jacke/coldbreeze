@@ -21,6 +21,230 @@ body.themeGrad div#container.container-global {
   background: rgba(255, 255, 255, 0.93);
   min-height: 100%;
 }
+
+ul.perm-menu li {
+  display: inline-block;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+ul.perm-menu {
+  margin-left: 0px;
+  padding-left: 0px;
+  margin: 0 auto;
+  width: 180px;
+  margin-top: 15px;
+}
+.permissions-table {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.permissions-table .permissions-column:first-child {
+  border-left-color: transparent;
+}
+.permissions-table .permissions-column {
+  vertical-align: top;
+  padding: 0 5px;
+  border-left: 1px solid rgba(255, 255, 255, 0);
+  background-clip: padding-box;
+  transition: all 200ms ease;
+}
+.permissions-table th, .permissions-table td {
+  padding: 0;
+  margin: 0;
+}
+.permissions-table table th {
+  text-align: center;
+}
+.permissions-table th, .permissions-table td {
+  padding: 0;
+  margin: 0;
+}
+.permissions-table th {
+  font-weight: normal;
+  color: #c1c4cd;
+}
+.permissions-table table th h6 {
+  margin: 20px 0;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: #a5aab6;
+}
+.has-edit-permission .permissions-table table tbody tr:first-child {
+  padding: 0;
+}
+.has-edit-permission .permissions-table table .item td {
+  cursor: pointer;
+  border-bottom-color: rgba(0, 0, 0, 0.07);
+}
+.permissions-table table .item td, .permissions-table table .item-owner td {
+  padding: 6px 0;
+}
+.permissions-table table td > ul {
+  display: table;
+  table-layout: fixed;
+  list-style: none;
+  width: 100%;
+}
+.permissions-table table .item-icon {
+  width: 38px;
+}
+.permissions-table table .item-icon i {
+  font-size: 13px;
+  display: block;
+  margin: 0 auto;
+  width: 26px;
+  height: 26px;
+  line-height: 24px;
+  border: 1px solid #c1c4cd;
+  color: #c1c4cd;
+  border-radius: 50%;
+  text-align: center;
+  font-style: normal;
+}
+.permissions-table table td > ul > li {
+  display: table-cell;
+  vertical-align: middle;
+}
+.permissions-table table .item-name {
+  transition: color 100ms ease;
+}
+.permissions-table table .item-name .name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  line-height: 15px;
+}
+.has-edit-permission .permissions-table table .item .item-handle {
+  display: table-cell;
+}
+.permissions-table table .item-handle {
+  width: 19px;
+  cursor: move;
+  text-align: center;
+  padding-top: 3px;
+}
+.has-edit-permission .permissions-table table .item td {
+  cursor: pointer;
+  border-bottom-color: rgba(0, 0, 0, 0.07);
+}
+.has-edit-permission .permissions-table table .new-item {
+  visibility: visible;
+  margin: 0;
+}
+.permissions-table table .new-item td {
+  padding: 0;
+  border: 0;
+  margin-bottom: 10px;
+  overflow: visible;
+  text-align: center;
+  text-align: right;
+}
+.permissions-table table .add-item-form {
+  display: block;
+}
+.permissions-table table .field-search {
+  display: block;
+  text-align: left;
+  margin-bottom: 8px;
+}
+.permissions-table table .field-search {
+  display: block;
+  text-align: left;
+  margin-bottom: 8px;
+}
+.permissions-table table .add-item {
+  line-height: 31px;
+  display: block;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: color 100ms ease;
+}
+.permissions-table table .add-item i {
+  font-size: 16px;
+  vertical-align: text-bottom;
+  display: none;
+}
+.permissions-table table td {
+  position: relative;
+  display: block;
+  border: 1px solid rgba(255, 255, 255, 0);
+  border-bottom-color: rgba(0, 0, 0, 0.07);
+  background-color: rgba(255, 255, 255, 0);
+  font-size: 12px;
+}
+
+
+.permissions-table table th h6 {
+  margin: 10px 0;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-align: center;
+  line-height: 1;
+  text-transform: uppercase;
+  color: #a5aab6;
+}
+.permissions-table table .new-item.focus .add-item-form {
+  display: inline;
+}
+.permissions-table table .add-item {
+  line-height: 31px;
+  display: block;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: color 100ms ease;
+}
+.permissions-table table .add-item i {
+  font-size: 16px;
+  vertical-align: text-bottom;
+  display: none;
+}
+
+.permissions-table .button, button {
+  -webkit-appearance: none;
+  font-size: 14px;
+  line-height: 1.42857143;
+  height: auto;
+  text-align: center;
+  cursor: pointer;
+  padding: 0;
+  outline: 0;
+  border: 0;
+  color: #0a97ff;
+  border-radius: 0;
+  background: none;
+  display: inline-block;
+  -webkit-user-select: none;
+  box-sizing: border-box;
+}
+.permissions-table .button {
+  line-height: 31px;
+  height: 32px;
+  padding: 0 11px;
+  background: #0a97ff;
+  color: #ffffff;
+  border: 1px solid transparent;
+  border-radius: 3px;
+}
+.permissions-table .button-small {
+  font-size: 12px;
+  line-height: 23px;
+  height: 24px;
+  padding: 0 9px;
+}
+table.permissions-table {
+    margin-top: 25px;
+}
+
+
 .dashboard_sessions .teamChangeBox.teamPaddedBox {
   padding-left: 0px;
   margin-right: -15px;
@@ -1328,10 +1552,32 @@ color: #fff;  font-family: 'Lato', Calibri, Arial, sans-serif;  font-size: 1em; 
 }
 
 .inputRequests .request {
-    padding-top: 6px;
-    padding-bottom: 7px;
+  padding-top: 6px;
+  padding-bottom: 15px;
+}
+.request a.btn.btn-big.btn-success {
+    display: inline-block;
 }
 
+.request select.forUID {
+    width: 78%;
+    margin-right: 15px;
+}
+.permissions-column .add-item-form select.forUID {
+    width: 100%;
+}
+.item-handle span.icon.icon-remove {
+    margin-left: -3px;
+    color: rgb(176, 176, 176);
+}
+
+.item-handle:hover span.icon.icon-remove {
+    color: gray;
+}
+
+li.item-handle {
+    cursor: pointer !important;
+}
 form {
     text-shadow: none;
 }

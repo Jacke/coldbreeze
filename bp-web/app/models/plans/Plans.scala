@@ -1,7 +1,7 @@
 package models.DAO.resources
 
 import slick.driver.PostgresDriver.simple._
-import scala.slick.model.ForeignKeyAction
+import slick.model.ForeignKeyAction
 //import models.DAO.driver.MyPostgresDriver.simple._
 import models.DAO.conversion.DatabaseCred
 

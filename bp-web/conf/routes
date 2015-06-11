@@ -51,10 +51,8 @@ POST        /business/update/:id                                @controllers.Bus
 # Elem perms
 GET         /bprocess/:BPid/elemperms                           @controllers.PermissionController.proc_index(BPid: Int)
 GET         /elemperms                                          @controllers.PermissionController.index()
-GET         /elemperm/create                                    @controllers.PermissionController.create()
 POST        /elemperms                                          @controllers.PermissionController.create_new()
-GET         /elemperm/update/:id                                @controllers.PermissionController.update(id: Int)
-POST        /elemperm/:id                                       @controllers.PermissionController.update_make(id: Int)
+PUT         /elemperm/:id                                       @controllers.PermissionController.update(id: Int)
 DELETE      /elemperm/:id                                       @controllers.PermissionController.destroy(id: Int)
 
 # Services
@@ -300,3 +298,7 @@ GET         /jsroutes.js                                        @controllers.App
 GET         /assets/*file                                        controllers.Assets.versioned(path="/public", file: Asset)
 # Map the JS resource paths
 #GET         /assets/*file                                        controllers.Assets.versioned(path="/public", file)
+
+
+
+GET         /:profile_id										@controllers.ProfileController.profile_cart(profile_id: String)

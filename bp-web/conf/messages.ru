@@ -70,6 +70,7 @@ plan.company=Company
 
 settings.country=Country
 settings.selectCountry=Select a country
+settings.companyName=Company nickname
 settings.businessName=Business name
 settings.phone=Phone
 settings.website=Website

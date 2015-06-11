@@ -2,11 +2,11 @@ package models.DAO
 
 
 import models.DAO.driver.MyPostgresDriver.simple._
-import scala.slick.model.ForeignKeyAction
+import slick.model.ForeignKeyAction
 import com.github.nscala_time.time.Imports._
 import models.DAO.BPDAO._
 import models.DAO.resources.BusinessDTO._
-import com.github.tminglei.slickpg.composite._
+//import com.github.tminglei.slickpg.composite._
 import models.DAO.conversion.{DatabaseCred, Implicits}
 import main.scala.simple_parts.process.Units._
 
@@ -21,7 +21,7 @@ import main.scala.simple_parts.process.data.{Confirm, Constant}
                               b_int: Option[Int] = None,
                               a_bool: Option[Boolean] = None,
                               b_bool: Option[Boolean] = None
-                           ) extends Struct
+                           )// extends Struct
 
 class ProcElements(tag: Tag) extends Table[UndefElement](tag, "proc_elements") {
 
@@ -36,12 +36,12 @@ class ProcElements(tag: Tag) extends Table[UndefElement](tag, "proc_elements") {
   def space_own = column[Option[Int]]("space_id")
 
   def order = column[Int]("order")
-  def comps = column[Option[List[CompositeValues]]]("comps", O.DBType("compositevalues[]"))
+  //def comps = column[Option[List[CompositeValues]]]("comps", O.DBType("compositevalues[]"))
     
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
     
-  def * = (id.?, title, desc, business, bprocess, b_type, type_title, space_own, order, comps,
+  def * = (id.?, title, desc, business, bprocess, b_type, type_title, space_own, order,
            created_at, updated_at) <> (UndefElement.tupled, UndefElement.unapply)
 
   def businessFK = foreignKey("business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
@@ -65,7 +65,7 @@ case class UndefElement(id: Option[Int],
                         type_title:String,
                         space_own:Option[Int],
                         order:Int,
-                        comps: Option[List[CompositeValues]],
+                        
 created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
 updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
   
@@ -116,9 +116,8 @@ object ProcElemDCO {
                         el.type_title,
                         el.space_own,
                         el.order,
-                        Some(List()),
-el.created_at,
-el.updated_at)
+                        el.created_at,
+                        el.updated_at)
   }
   def conv_nested(el: UnitElement, space_own:Option[Int], space_owned:Int): SpaceElementDTO = {
     SpaceElementDTO(None,
@@ -132,9 +131,8 @@ el.updated_at)
                         space_owned,
                         space_role = None, // TODO: May change sometime
                         el.order,
-                        Some(List()),
-el.created_at,
-el.updated_at)
+                        el.created_at,
+                        el.updated_at)
   }
   
 }

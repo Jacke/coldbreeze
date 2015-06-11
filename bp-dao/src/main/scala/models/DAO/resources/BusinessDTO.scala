@@ -5,7 +5,7 @@ import models.DAO.conversion.DatabaseCred
 
 import com.github.nscala_time.time.Imports._
 
-case class BizFormDTO(title: String, phone: Option[String] = None, website: Option[String] = None, country: String, city: String, address: Option[String])
+case class BizFormDTO(title: String, phone: Option[String] = None, website: Option[String] = None, country: String, city: String, address: Option[String], nickname: Option[String] = None)
 
 class Businesses(tag: Tag) extends Table[BusinessDTO](tag, "businesses") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
@@ -15,6 +15,7 @@ class Businesses(tag: Tag) extends Table[BusinessDTO](tag, "businesses") {
   def country = column[String]("country")
   def city = column[String]("city")
   def address = column[Option[String]]("address")
+  def nickname = column[Option[String]]("nickname")
 
   def walkthrough = column[Boolean]("walkthrough")
     
@@ -22,7 +23,7 @@ class Businesses(tag: Tag) extends Table[BusinessDTO](tag, "businesses") {
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
 
 
-  def * = (id.?, title, phone, website, country, city, address, walkthrough,
+  def * = (id.?, title, phone, website, country, city, address, nickname, walkthrough,
            created_at, updated_at) <> (BusinessDTO.tupled, BusinessDTO.unapply)
 
 }
@@ -30,9 +31,19 @@ class Businesses(tag: Tag) extends Table[BusinessDTO](tag, "businesses") {
 /*
   Case class
  */
-case class BusinessDTO(var id: Option[Int], title: String, phone: Option[String] = None, website: Option[String] = None, country: String, city: String, address: Option[String], walkthrough: Boolean = false,
-created_at:Option[org.joda.time.DateTime] = None,
-updated_at:Option[org.joda.time.DateTime] = None)
+
+case class BusinessDTO(var id: Option[Int], 
+  title: String, 
+  phone: Option[String] = None, 
+  website: Option[String] = None, 
+  country: String, 
+  city: String, 
+  address: Option[String], 
+  nickname: Option[String] = None,
+  walkthrough: Boolean = false,
+  created_at:Option[org.joda.time.DateTime] = None,
+  updated_at:Option[org.joda.time.DateTime] = None)
+
 
 object BusinessDAO {
   import scala.util.Try
@@ -48,11 +59,16 @@ object BusinessDAO {
       businesses returning businesses.map(_.id) += s
   }
 
+  def findByNickname(nickname: String) = database withSession {
+    implicit session =>
+    val q3 = for { s ← businesses if s.nickname === nickname } yield s
+    q3.list.headOption 
+
+  }
 
   def get(k: Int):Option[BusinessDTO] = database withSession {
     implicit session ⇒
       val q3 = for { s ← businesses if s.id === k } yield s
-
       q3.list.headOption 
   }
   /**
@@ -72,7 +88,7 @@ object BusinessDAO {
       val result = q3.list.headOption
       result match {
         case Some(origin) => {
-         val toUpdate = origin.copy(title = cred.title, phone = cred.phone, website = cred.website, country = cred.country, city = cred.city, address = cred.address)
+         val toUpdate = origin.copy(title = cred.title, phone = cred.phone, website = cred.website, country = cred.country, city = cred.city, address = cred.address, nickname = cred.nickname)
            businesses.filter(_.id === id).update(toUpdate)
            true
         }

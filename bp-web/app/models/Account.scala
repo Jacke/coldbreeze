@@ -12,9 +12,9 @@ import securesocial.core.services.{UserService, SaveMode}
 //import models.DAO.driver.MyPostgresDriver.simple._
 import com.github.nscala_time.time.Imports._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
-import scala.slick.model.ForeignKeyAction
+import slick.model.ForeignKeyAction
 
-import scala.slick.driver.PostgresDriver.simple._
+import slick.driver.PostgresDriver.simple._
 import com.github.tototoshi.slick.PostgresJodaSupport._
 import service.DemoUser
 
@@ -85,6 +85,7 @@ class Accounts(tag: Tag) extends Table[AccountDAO](tag, "accounts") {
 
 
   def lang = column[String]("lang")
+  def nickname = column[Option[String]]("nickname")
 
   def country = column[Option[String]]("country")
   def phone = column[Option[String]]("phone")
@@ -100,7 +101,7 @@ class Accounts(tag: Tag) extends Table[AccountDAO](tag, "accounts") {
     token, secret,
     accessToken, tokenType, expiresIn, refreshToken,
     hasher, password, salt,
-    lang, country, phone) <> (AccountDAO.tupled, AccountDAO.unapply)
+    lang, country, phone, nickname) <> (AccountDAO.tupled, AccountDAO.unapply)
 }
 
 case class AccountDAO(providerId: String,
@@ -119,7 +120,8 @@ hasher:String, password:String, salt:Option[String],
 
 lang: String = "en",
 country: Option[String] = None,
-phone: Option[String] = None
+phone: Option[String] = None,
+nickname: Option[String] = None
 
                        ) {
   import AccImplicits._
@@ -257,7 +259,7 @@ class Tokens(tag: Tag) extends Table[MailToken](tag, "tokens") {
 object TokensDAO {
 
   import scala.util.Try
-  import scala.slick.driver.PostgresDriver.simple._
+  import slick.driver.PostgresDriver.simple._
   import DatabaseCred.database
 
   val tokens = TableQuery[Tokens]
@@ -302,7 +304,7 @@ object TokensDAO {
 object AccountsDAO {
 
   import scala.util.Try
-  import scala.slick.driver.PostgresDriver.simple._
+  import slick.driver.PostgresDriver.simple._
   import DatabaseCred.database
 
 
@@ -332,6 +334,16 @@ object AccountsDAO {
         case Some(account) => account.lang
         case _ => "en"
       }
+  }
+  def getAccount(email: String):Option[AccountDAO] = database withSession {
+    implicit session ⇒
+      val q3 = for { a ← accounts if a.userId === email } yield a
+      q3.list.headOption
+  }
+  def findByNickname(nickname: String):Option[AccountDAO] = database withSession {
+    implicit session =>
+      val q3 = for { a ← accounts if a.nickname === nickname } yield a
+      q3.list.headOption
   }
   def updateLang(email: String, lang: String) = database withSession {
     implicit session ⇒
@@ -373,7 +385,13 @@ import controllers.Credentials
       val result = q3.list.headOption
       result match {
         case Some(origin) => {
-         val toUpdate = origin.copy(firstName = cred.firstName, lastName = cred.lastName, fullName = cred.fullName, lang = cred.lang, country = cred.country, phone = cred.phone)
+         val toUpdate = origin.copy(firstName = cred.firstName, 
+                                    lastName = cred.lastName, 
+                                    fullName = cred.fullName, 
+                                    lang = cred.lang, 
+                                    country = cred.country, 
+                                    phone = cred.phone, 
+                                    nickname = cred.nickname)
            accounts.filter(_.email === email).update(toUpdate)
            true
         }
@@ -383,8 +401,16 @@ import controllers.Credentials
   }
   def fetchCredentials(email: String) = database withSession {
     implicit session =>
-    findByEmailAndProvider(email, "userpass") match {
-      case Some(user) => Some(Credentials(user.firstName, user.lastName, user.fullName, getLang(user.email.get)))
+    (findByEmailAndProvider(email, "userpass"), getAccount(email)) match {
+      case (Some(user), Some(account)) => { 
+        Some(Credentials(user.firstName, 
+          user.lastName, 
+          user.fullName, 
+          account.lang, 
+          country  = account.country, 
+          phone    = account.phone, 
+          nickname = account.nickname))
+      }
       case _ => None
     }
   }

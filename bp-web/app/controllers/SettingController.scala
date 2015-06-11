@@ -31,7 +31,13 @@ import play.api.Play.current
 import models.DAO.resources.web.BizFormDTO
 
 
-case class Credentials(firstName:  Option[String], lastName:  Option[String], fullName: Option[String], lang: String = "en", country: Option[String] = None, phone: Option[String] = None) {
+case class Credentials(firstName:  Option[String], 
+  lastName: Option[String], 
+  fullName: Option[String], 
+  lang: String = "en", 
+  country: Option[String] = None, 
+  phone: Option[String] = None,
+  nickname: Option[String] = None) {
   def getFullName: Option[String] = {
     (firstName, lastName) match {
       case (Some(first), Some(last)) => Some(first + " " + last)
@@ -54,7 +60,8 @@ class SettingController(override implicit val env: RuntimeEnvironment[DemoUser])
     "fullName" -> optional(text),
     "lang" -> text,
     "country" -> optional(text),
-    "phone" -> optional(text))(Credentials.apply)(Credentials.unapply)) 
+    "phone" -> optional(text),
+    "nickname" -> optional(text))(Credentials.apply)(Credentials.unapply)) 
 
   val bizForm = Form(
     mapping(
@@ -63,7 +70,8 @@ class SettingController(override implicit val env: RuntimeEnvironment[DemoUser])
       "website" -> optional(text),
       "country" -> text,
       "city" -> text,
-      "address" -> optional(text)
+      "address" -> optional(text),
+      "nickname" -> optional(text)
     )(BizFormDTO.apply)(BizFormDTO.unapply))
 
 
@@ -75,7 +83,7 @@ class SettingController(override implicit val env: RuntimeEnvironment[DemoUser])
   val plans = List()
  	val cred = models.AccountsDAO.fetchCredentials(request.user.main.email.get)
   val biz0 = fetchBiz(request.user.main.userId)
-  val biz = BizFormDTO(biz0.title, biz0.phone, biz0.website, biz0.country, biz0.city, biz0.address)
+  val biz = BizFormDTO(biz0.title, biz0.phone, biz0.website, biz0.country, biz0.city, biz0.address, biz0.nickname)
   var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
 
  	Ok(views.html.settings.index(credForm.fill(cred.get), bizForm.fill(biz), request.user, isManager))
@@ -92,7 +100,8 @@ class SettingController(override implicit val env: RuntimeEnvironment[DemoUser])
             request.user.main.email.get, entity.copy(fullName = entity.getFullName, 
                                                      lang = entity.lang, 
                                                      country = entity.country, 
-                                                     phone = entity.phone)) match {
+                                                     phone = entity.phone,
+                                                     nickname = entity.nickname)) match {
             case false => "failure" -> s"Could not update entity ${entity}"
             case _ => "success" -> s"Entity ${entity} has been updated"
           })

@@ -1,6 +1,6 @@
 package models.DAO.resources
 
-//import scala.slick.driver.PostgresDriver.simple._
+//import slick.driver.PostgresDriver.simple._
 import models.DAO.conversion.DatabaseCred
 import models.DAO.driver.MyPostgresDriver.simple._
 
@@ -10,13 +10,13 @@ class Groups(tag: Tag) extends Table[GroupDTO](tag, "groups") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
     
   def title = column[String]("title")
-  def business_id = column[Int]("business_id")
+  def business = column[Int]("business_id")
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")
 
-  def businessFK = foreignKey("business_fk", business_id, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def businessFK = foreignKey("business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 
-  def * = (id.?, title, business_id,  created_at, updated_at) <> (GroupDTO.tupled, GroupDTO.unapply)
+  def * = (id.?, title, business,  created_at, updated_at) <> (GroupDTO.tupled, GroupDTO.unapply)
 }
 class AccountGroup(tag: Tag) extends Table[AccoutGroupDTO](tag, "account_group") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
@@ -83,6 +83,16 @@ object AccountGroupDAO {
       val q3 = for { s ← account_group if (s.account_id === account_id) && (s.group_id === group_id) } yield s 
       q3.list.headOption
   }
+  def getByAccount(account_id: String) = database withSession {
+    implicit session ⇒
+      val q3 = for { s ← account_group if s.account_id === account_id } yield s 
+      q3.list
+  }
+  def getByAccounts(account_ids: List[String]) = database withSession {
+    implicit session ⇒
+      val q3 = for { s ← account_group if s.account_id inSetBind account_ids } yield s 
+      GroupsDAO.gets(q3.list.map(_.group_id))
+  }
   def update(id: Int, group: AccoutGroupDTO) = database withSession { implicit session ⇒
     val walkToUpdate: AccoutGroupDTO = group.copy(Option(id))
     account_group.filter(_.id === id).update(walkToUpdate)
@@ -106,7 +116,7 @@ object AccountGroupDAO {
 
 case class GroupDTO(var id: Option[Int],
                   title: String,
-                  business_id: Int,
+                  business: Int,
                   created_at: Option[org.joda.time.DateTime],
                   updated_at: Option[org.joda.time.DateTime])
 object GroupsDAO {
@@ -126,14 +136,24 @@ object GroupsDAO {
       val q3 = for { s ← groups if s.id === k } yield s 
       q3.list.headOption
   }
+  def gets(ids: List[Int]) = database withSession {
+    implicit session ⇒
+      val q3 = for { s ← groups if s.id inSetBind ids } yield s 
+      q3.list
+  }
+  def getsByBusiness(business: Int) = database withSession {
+    implicit session =>
+      val q3 = for { s ← groups if s.business === business } yield s 
+      q3.list 
+  }
   def getByBusiness(bid: Int) = database withSession {
     implicit session =>
-     val q3 = for { s ← groups if s.business_id === bid } yield s 
+     val q3 = for { s ← groups if s.business === bid } yield s 
       q3.list.headOption
   }
   def getAllByBusiness(bid: Int) = database withSession {
     implicit session =>
-     val q3 = for { s ← groups if s.business_id === bid } yield s 
+     val q3 = for { s ← groups if s.business === bid } yield s 
       q3.list
   }
   def update(id: Int, group: GroupDTO) = database withSession { implicit session ⇒

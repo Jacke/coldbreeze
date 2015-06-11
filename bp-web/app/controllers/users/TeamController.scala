@@ -38,7 +38,7 @@ class GroupController(override implicit val env: RuntimeEnvironment[DemoUser]) e
     mapping(
       "id" -> optional(number),
       "title" -> nonEmptyText,
-      "business_id" -> number,
+      "business" -> number,
       "created_at" -> optional(jodaDate),
       "created_at" -> optional(jodaDate))(GroupDTO.apply)(GroupDTO.unapply))
 
@@ -65,7 +65,7 @@ class GroupController(override implicit val env: RuntimeEnvironment[DemoUser]) e
     true_business match {
     case Some(x) =>  request.body.validate[GroupDTO].map{
         case entity => { 
-          val idd = GroupsDAO.pull_object(GroupDTO(None, entity.title, business_id = x._2, Some(now),Some(now)))
+          val idd = GroupsDAO.pull_object(GroupDTO(None, entity.title, business = x._2, Some(now),Some(now)))
           Ok(Json.toJson(Map("success" -> Json.toJson(entity), "id" -> Json.toJson(idd))))
         }
       }.recoverTotal{
