@@ -61,10 +61,8 @@ object RefProjector extends FrontElemProjection
         // TOPOLOGY MAKING
         val topos = ReflectElemTopologDAO.findByRef(k)
         def onTopo(id: Int, scope: String):Option[Int] = {
-          if (sc == scope && scope == "front")  { Some(id) } else 
-          if (sc == scope && scope == "nested") { Some(id) } else {
-            None
-          }
+          if (sc == scope && scope == "front")  { Some(id) } 
+          else if (sc == scope && scope == "nested") { Some(id) } else { None }
         }
 
         val topoElem = idToRefId.map(idd =>
