@@ -65,7 +65,7 @@ object RefProjector extends FrontElemProjection
  	  println(scope == "front")
  	  println(scope) 
           if (sc == scope && scope == "front")  { Some(id) } 
-          if (sc == scope && scope == "nested") { Some(id) } else { None }
+          else if (sc == scope && scope == "nested") { Some(id) } else { None }
         }
 
         val topoElem = idToRefId.map(idd =>
