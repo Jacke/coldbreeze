@@ -288,12 +288,20 @@ def initiate2(bpID: Int,
     process.session_states ++= session_states.filter(state => state.process_state == true)
 
 
+    def topoIdFetch(topo: Option[ElemTopology]):Option[Int] = {
+      topo match {
+       case Some(topo) => topo.id
+       case _ => None
+      }
+    }
+
+
     process.variety.foreach { element =>
       element.states ++= states.filter(state => state.front_elem_id == Some(element.id)) 
       element.session_states ++=  session_states.filter(state => state.front_elem_id == Some(element.id)) 
       element.reactions ++= reactions.filter { react =>
-        val pred_elem = topologs.find(topo => topo.front_elem_id == Some(element.id)).get.id
-        Some(react.element) == pred_elem
+        val pred_elem = topologs.find(topo => topo.front_elem_id == Some(element.id))
+        Some(react.element) == topoIdFetch(pred_elem)
       }
     }
     process.spacesElements.foreach { element => 

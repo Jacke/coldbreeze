@@ -60,14 +60,18 @@ object RefProjector extends FrontElemProjection
 
         // TOPOLOGY MAKING
         val topos = ReflectElemTopologDAO.findByRef(k)
-        def onTopo(id: Int, scope: String):Option[Int] = { 
-          if (sc == scope && scope == "front")  { Some(id)} else { None }
-          if (sc == scope && scope == "nested") { Some(id)} else { None }
+        def onTopo(id: Int, scope: String):Option[Int] = {
+          println(sc == scope)
+ 	  println(scope == "front")
+ 	  println(scope) 
+          if (sc == scope && scope == "front")  { Some(id) } 
+          if (sc == scope && scope == "nested") { Some(id) } else { None }
         }
+
         val topoElem = idToRefId.map(idd =>
             topos.find(t => t.front_elem_id == Some(idd._1)).get.id.get -> makeTopolog(process,
               front_elem_id = onTopo(idd._2, "front"),
-              space_elem_id=onTopo(idd._2, "nested"))
+              space_elem_id=  onTopo(idd._2, "nested"))
           )
         val topoSpaceElem = conv_sp_elems.map(idd =>
           topos.find(t => t.space_elem_id == Some(idd._1)).get.id.get -> makeTopolog(process,
@@ -99,6 +103,7 @@ object RefProjector extends FrontElemProjection
     }
   }
   private def makeTopolog(process: Int, front_elem_id: Option[Int], space_elem_id: Option[Int]):Int = {
+    println(front_elem_id)
     ElemTopologDAO.pull_object(ElemTopology(
       id = None,
       process = process,
