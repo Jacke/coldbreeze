@@ -17,19 +17,19 @@ import main.scala.bprocesses.refs.UnitRefs.{UnitReactionRef, UnitReactionStateOu
 import main.scala.simple_parts.process.Units._  
 
 class ReactionRefs(tag: Tag) extends Table[UnitReaction](tag, "reactions") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc) 
-  def bprocess = column[Int]("bprocess_id")
-  def autostart = column[Boolean]("autostart")
-  def element = column[Int]("element_id")
-  def from_state = column[Option[Int]]("state_ref_id")
-  def title = column[String]("title")  
+  def id          = column[Int]("id", O.PrimaryKey, O.AutoInc) 
+  def bprocess    = column[Int]("bprocess_id")
+  def autostart   = column[Boolean]("autostart")
+  def element     = column[Int]("element_id")
+  def from_state  = column[Option[Int]]("state_ref_id")
+  def title       = column[String]("title")  
     
-  def created_at = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
+  def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
+  def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")  
 
-  def elementFK = foreignKey("element_fk", element, models.DAO.ElemTopologDAO.elem_topologs)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def bpFK = foreignKey("bprocess_fk", bprocess, bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def state_FK = foreignKey("state_fk", from_state, models.DAO.BPStateDAO.bpstates)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def elementFK   = foreignKey("element_fk", element, models.DAO.ElemTopologDAO.elem_topologs)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK        = foreignKey("bprocess_fk", bprocess, bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def state_FK    = foreignKey("state_fk", from_state, models.DAO.BPStateDAO.bpstates)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?, 
            bprocess, 

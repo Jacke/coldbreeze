@@ -10,30 +10,30 @@ import models.DAO.conversion.{DatabaseCred, Implicits}
 
 
 class BPStations(tag: Tag) extends Table[BPStationDTO](tag, "bpstations") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
-  def process = column[Int]("process_id")
+  def id            = column[Int]("id", O.PrimaryKey, O.AutoInc)
+  def process       = column[Int]("process_id")
 
-  def state = column[Boolean]("state")
-  def step = column[Int]("step")
-  def space = column[Int]("space")
-  def container_step = column[List[Int]]("container_step")
-  def expand_step = column[List[Int]]("expand_step")
-  def spaces_ids = column[List[Int]]("spaces_ids")
-  def started = column[Boolean]("started")
-  def finished = column[Boolean]("finished")
-  def inspace = column[Boolean]("inspace")
-  def incontainer = column[Boolean]("incontainer")
-  def inexpands = column[Boolean]("inexpands")
-  def paused = column[Boolean]("paused")
+  def state         = column[Boolean]("state")
+  def step          = column[Int]("step")
+  def space         = column[Int]("space")
+  def container_step= column[List[Int]]("container_step")
+  def expand_step   = column[List[Int]]("expand_step")
+  def spaces_ids    = column[List[Int]]("spaces_ids")
+  def started       = column[Boolean]("started")
+  def finished      = column[Boolean]("finished")
+  def inspace       = column[Boolean]("inspace")
+  def incontainer   = column[Boolean]("incontainer")
+  def inexpands     = column[Boolean]("inexpands")
+  def paused        = column[Boolean]("paused")
 
-  def note = column[Option[String]]("note")
-  def canceled = column[Boolean]("canceled", O.Default(false))
+  def note          = column[Option[String]]("note")
+  def canceled      = column[Boolean]("canceled", O.Default(false))
 
-  def created_at = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
-  def session = column[Int]("session_id")
-  def front = column[Boolean]("front")
-  def sesFK = foreignKey("session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def created_at    = column[Option[org.joda.time.DateTime]]("created_at")
+  def updated_at    = column[Option[org.joda.time.DateTime]]("updated_at")  
+  def session       = column[Int]("session_id")
+  def front         = column[Boolean]("front")
+  def sesFK         = foreignKey("session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?,
     process,

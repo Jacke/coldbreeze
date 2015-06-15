@@ -9,12 +9,11 @@ import models.DAO.conversion.DatabaseCred
 
 case class AdminAccountDTO(id: Option[Int], account_id: String, sudo: Boolean = false)
 class AdminAccounts(tag: Tag) extends Table[AdminAccountDTO](tag, "admin_accounts") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
-
-  def account_id = column[String]("account_id")
-  def sudo = column[Boolean]("sudo")
+  def id          = column[Int]("id", O.PrimaryKey, O.AutoInc)
+  def account_id  = column[String]("account_id")
+  def sudo        = column[Boolean]("sudo")
   
-  def maccFK = foreignKey("macc_fk", account_id, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
+  def maccFK      = foreignKey("macc_fk", account_id, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?, account_id, sudo) <> (AdminAccountDTO.tupled, AdminAccountDTO.unapply)
 

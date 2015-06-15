@@ -16,33 +16,33 @@ import main.scala.bprocesses.refs.{BPStateRef}
 import main.scala.bprocesses.refs._
 import main.scala.bprocesses._ 
 class StateRefs(tag: Tag) extends Table[BPStateRef](tag, "state_refs") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc) 
-  def reflection = column[Int]("reflection_id")
-  def title = column[String]("title")
-  def neutral = column[String]("neutral")
+  def id          = column[Int]("id", O.PrimaryKey, O.AutoInc) 
+  def reflection  = column[Int]("reflection_id")
+  def title       = column[String]("title")
+  def neutral     = column[String]("neutral")
   def process_state = column[Boolean]("process_state", O.Default(false))
-  def on = column[Boolean]("on", O.Default(false)) 
-  def on_rate = column[Int]("on_rate", O.Default(0))   
+  def on          = column[Boolean]("on", O.Default(false)) 
+  def on_rate     = column[Int]("on_rate", O.Default(0))   
     
   def space_id      = column[Option[Int]]("ref_space_id")  
   def front_elem_id = column[Option[Int]]("ref_front_elem_id")
   def space_elem_id = column[Option[Int]]("ref_space_elem_id")
     
  
-  def middle = column[String]("middle", O.Default(""))
-  def middleable = column[Boolean]("middleable", O.Default(false))   
-  def oposite = column[String]("oposite", O.Default(""))
-  def opositable = column[Boolean]("opositable", O.Default(false))   
+  def middle      = column[String]("middle", O.Default(""))
+  def middleable  = column[Boolean]("middleable", O.Default(false))   
+  def oposite     = column[String]("oposite", O.Default(""))
+  def opositable  = column[Boolean]("opositable", O.Default(false))   
 
-  def created_at = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
+  def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
+  def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")  
 
-  def reflectFK = foreignKey("reflect_fk", reflection, models.DAO.reflect.RefDAO.refs)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def ref_procelemFK = foreignKey("ref_procelem_fk", front_elem_id, ProcElemReflectionDAO.proc_element_reflections)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def reflectFK   = foreignKey("reflect_fk", reflection, models.DAO.reflect.RefDAO.refs)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def ref_procelemFK  = foreignKey("ref_procelem_fk", front_elem_id, ProcElemReflectionDAO.proc_element_reflections)(_.id, onDelete = ForeignKeyAction.Cascade)
   def ref_spaceelemFK = foreignKey("ref_spaceelem_fk", space_elem_id, SpaceElementReflectionDAO.space_element_reflections)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def spaceFK = foreignKey("ref_space_fk", space_elem_id, SpaceReflectionDAO.space_refs)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def spaceFK         = foreignKey("ref_space_fk", space_elem_id, SpaceReflectionDAO.space_refs)(_.id, onDelete = ForeignKeyAction.Cascade)
 
-  def lang = column[String]("lang", O.Default("en"))  
+  def lang        = column[String]("lang", O.Default("en"))  
 /*
 
 var id:Option[Int], 

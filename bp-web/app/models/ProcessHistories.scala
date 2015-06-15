@@ -12,15 +12,15 @@ import scala.concurrent.Future
 
 //  import slick.model.ForeignKeyAction
 class ProcessHistories(tag: Tag) extends Table[ProcessHistoryDTO](tag, "process_histories") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
+  def id       = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def master_acc = column[String]("master_acc")
   def bprocess = column[Int]("process_id")
-  def date = column[DateTime]("date")
-  def action = column[String]("action")
-  def what = column[Option[String]]("what")
+  def date     = column[DateTime]("date")
+  def action   = column[String]("action")
+  def what     = column[Option[String]]("what")
 
-  def bpFK = foreignKey("bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def accFK = foreignKey("macc_fk", master_acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
+  def bpFK     = foreignKey("bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def accFK    = foreignKey("macc_fk", master_acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
 
 
   def * = (id.?, master_acc, bprocess, action, date, what) <> (ProcessHistoryDTO.tupled, ProcessHistoryDTO.unapply)

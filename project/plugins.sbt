@@ -10,6 +10,8 @@ resolvers += "Maven Central" at "http://repo1.maven.org/maven2"
 
 resolvers += "MVN" at "http://repo.typesafe.com/typesafe/releases/"
 
+resolvers += "sonatype-snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
+
 resolvers += Resolver.url("GitHub repository", url("http://shaggyyeti.github.io/releases"))(Resolver.ivyStylePatterns)
 
 
@@ -90,3 +92,4 @@ addSbtPlugin("com.untyped" % "sbt-js"       % "0.8-M3")
 
 addSbtPlugin("com.untyped" % "sbt-sass"     % "0.8-M3")
 
+addSbtPlugin("com.github.sbtliquibase" % "sbt-liquibase" % "0.1.0-SNAPSHOT")

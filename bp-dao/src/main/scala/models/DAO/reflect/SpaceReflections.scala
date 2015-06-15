@@ -14,22 +14,22 @@ import main.scala.bprocesses.refs.UnitRefs._
 
 class SpaceReflections(tag: Tag) extends Table[UnitSpaceRef](tag, "space_refs") {
 
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc) // This is the primary key column
-  def reflection = column[Int]("reflection_id")
-  def index = column[Int]("index")
-  def container  = column[Boolean]("container")
-  def subbrick = column[Boolean]("subbrick")
+  def id          = column[Int]("id", O.PrimaryKey, O.AutoInc) // This is the primary key column
+  def reflection  = column[Int]("reflection_id")
+  def index       = column[Int]("index")
+  def container   = column[Boolean]("container")
+  def subbrick    = column[Boolean]("subbrick")
   def brick_front = column[Option[Int]]("brick_front")
-  def brick_nested = column[Option[Int]]("brick_nested")
+  def brick_nested= column[Option[Int]]("brick_nested")
     
-  def nestingLevel = column[Int]("nestingLevel")
+  def nestingLevel= column[Int]("nestingLevel")
   
     
-  def created_at = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
+  def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
+  def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")  
     
     
-  def reflectFK = foreignKey("reflect_fk", reflection, models.DAO.reflect.RefDAO.refs)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def reflectFK   = foreignKey("reflect_fk", reflection, models.DAO.reflect.RefDAO.refs)(_.id, onDelete = ForeignKeyAction.Cascade)
 
     
   def * = (id.?, 

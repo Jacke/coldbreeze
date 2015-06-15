@@ -6,7 +6,7 @@
 GET         /webjars/*file                                      controllers.WebJarAssets.at(file)
 
 # Home page
-GET         /                                                   @controllers.ProfileController.profile()
+GET         /                                                   @controllers.ProfileController.dashboard()
 
 GET     /auth/authenticate/:provider     @controllers.CustomProviderController.authenticate(provider)
 POST    /auth/authenticate/:provider     @controllers.CustomProviderController.authenticateByPost(provider)
@@ -301,4 +301,4 @@ GET         /assets/*file                                        controllers.Ass
 
 
 
-GET         /:profile_id										@controllers.ProfileController.profile_cart(profile_id: String)
+GET         /:profile_id										@controllers.ProfileController.profile(profile_id: String)

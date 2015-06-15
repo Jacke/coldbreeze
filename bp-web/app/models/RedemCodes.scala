@@ -7,9 +7,9 @@ import slick.model.ForeignKeyAction
 import org.joda.time.DateTime
 
 class RedemCodes(tag: Tag) extends Table[RedemCodeDTO](tag, "process_histories") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
-  def code = column[String]("code")
-  def force = column[Int]("force")
+  def id         = column[Int]("id", O.PrimaryKey, O.AutoInc)
+  def code       = column[String]("code")
+  def force      = column[Int]("force")
   def created_at = column[DateTime]("created_at")
 
 

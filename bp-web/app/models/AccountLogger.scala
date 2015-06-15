@@ -8,7 +8,7 @@ class AccountLoggers(tag: Tag) extends Table[AccountLogger](tag, "account_logger
   def id              = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def ip              = column[String]("ip")
   def user_agent      = column[String]("user_agent")
-  def email            = column[Option[String]]("email")
+  def email           = column[Option[String]]("email")
   def date            = column[org.joda.time.DateTime]("date")
 
   def * = (id.?, ip, user_agent, email, date) <> (AccountLogger.tupled, AccountLogger.unapply)

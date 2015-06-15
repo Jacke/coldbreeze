@@ -59,36 +59,36 @@ class Accounts(tag: Tag) extends Table[AccountDAO](tag, "accounts") {
   import AccImplicits._
 
 
-  def uid = column[Int]("id", O.PrimaryKey, O.AutoInc)
-  def providerId = column[String]("providerId")
-  def userId = column[String]("userId", O.PrimaryKey)
-  def firstName = column[Option[String]]("firstName")
-  def lastName = column[Option[String]]("lastName")
-  def fullName = column[Option[String]]("fullName")
-  def email = column[Option[String]]("email")
-  def avatarUrl = column[Option[String]]("avatarUrl")
-  def authMethod = column[String]("authMethod")
+  def uid         = column[Int]("id", O.PrimaryKey, O.AutoInc)
+  def providerId  = column[String]("providerId")
+  def userId      = column[String]("userId", O.PrimaryKey)
+  def firstName   = column[Option[String]]("firstName")
+  def lastName    = column[Option[String]]("lastName")
+  def fullName    = column[Option[String]]("fullName")
+  def email       = column[Option[String]]("email")
+  def avatarUrl   = column[Option[String]]("avatarUrl")
+  def authMethod  = column[String]("authMethod")
   // oAuth 1
-  def token = column[Option[String]]("token")
-  def secret = column[Option[String]]("secret")
+  def token       = column[Option[String]]("token")
+  def secret      = column[Option[String]]("secret")
 
   // oAuth 2
   def accessToken = column[Option[String]]("accessToken")
-  def tokenType = column[Option[String]]("tokenType")
-  def expiresIn = column[Option[Int]]("expiresIn")
-  def refreshToken = column[Option[String]]("refreshToken")
+  def tokenType   = column[Option[String]]("tokenType")
+  def expiresIn   = column[Option[Int]]("expiresIn")
+  def refreshToken= column[Option[String]]("refreshToken")
 
   // password info
-  def hasher = column[String]("hasher")
-  def password = column[String]("password")
-  def salt = column[Option[String]]("salt")
+  def hasher      = column[String]("hasher")
+  def password    = column[String]("password")
+  def salt        = column[Option[String]]("salt")
 
 
-  def lang = column[String]("lang")
-  def nickname = column[Option[String]]("nickname")
+  def lang        = column[String]("lang")
+  def nickname    = column[Option[String]]("nickname")
 
-  def country = column[Option[String]]("country")
-  def phone = column[Option[String]]("phone")
+  def country     = column[Option[String]]("country")
+  def phone       = column[Option[String]]("phone")
 
   def * = (providerId,
            userId,
@@ -118,10 +118,10 @@ accessToken:Option[String], tokenType:Option[String], expiresIn:Option[Int], ref
 
 hasher:String, password:String, salt:Option[String],
 
-lang: String = "en",
+lang: String            = "en",
 country: Option[String] = None,
-phone: Option[String] = None,
-nickname: Option[String] = None
+phone: Option[String]   = None,
+nickname: Option[String]= None
 
                        ) {
   import AccImplicits._
@@ -244,12 +244,12 @@ case class UserAccount(main: Account, identities: List[Account])
 
 
 class Tokens(tag: Tag) extends Table[MailToken](tag, "tokens") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
-  def uuid = column[String]("uuid")
-  def email = column[String]("email")
-  def creationTime = column[org.joda.time.DateTime]("creationTime")
-  def expirationTime = column[org.joda.time.DateTime]("expirationTime")
-  def isSignUp = column[Boolean]("isSignUp")
+  def id            = column[Int]("id", O.PrimaryKey, O.AutoInc)
+  def uuid          = column[String]("uuid")
+  def email         = column[String]("email")
+  def creationTime  = column[org.joda.time.DateTime]("creationTime")
+  def expirationTime= column[org.joda.time.DateTime]("expirationTime")
+  def isSignUp      = column[Boolean]("isSignUp")
 
   def * = (uuid, email, creationTime, expirationTime, isSignUp) <> (MailToken.tupled, MailToken.unapply)
 
@@ -316,6 +316,20 @@ object AccountsDAO {
         (accounts.ddl ++ TokensDAO.tokens.ddl).create
     }
   }
+  def updateEmail(email: String, newEmail: String): Boolean = database withSession {
+    implicit session =>
+    val q3 = for { a ← accounts if a.userId === email } yield a
+      q3.list.headOption match {
+        case Some(account) => {
+          accounts.filter(_.email === email).update(account.copy(userId = newEmail, email = Some(newEmail))) match {
+                case -1 => false
+                case _ => true
+          }
+        } 
+        case _ => false
+      }
+  }
+  
 
   def getRolesAndLang(email: String): Option[Tuple3[Boolean, Boolean, String]] ={
     val manager = AccountPlanDAO.getByMasterAcc(email).isDefined

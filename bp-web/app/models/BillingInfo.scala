@@ -7,12 +7,12 @@ import slick.model.ForeignKeyAction
 import org.joda.time.DateTime
 
 class BillingInfos(tag: Tag) extends Table[BillingInfoDTO](tag, "billing_infos") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
-  def business = column[Int]("business_id") 
+  def id        = column[Int]("id", O.PrimaryKey, O.AutoInc)
+  def business  = column[Int]("business_id") 
   def firstName = column[String]("firstname")
-  def lastName = column[String]("lastname")
-  def address = column[String]("address")
-  def zipcode = column[String]("zipcode")
+  def lastName  = column[String]("lastname")
+  def address   = column[String]("address")
+  def zipcode   = column[String]("zipcode")
    
   def created_at = column[org.joda.time.DateTime]("created_at")
   def updated_at = column[org.joda.time.DateTime]("updated_at")

@@ -19,12 +19,12 @@ import main.scala.bprocesses.refs.UnitRefs._
 import com.typesafe.scalalogging._
 
 class Refs(tag: Tag) extends Table[Ref](tag, "refs") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc) 
-  def title = column[String]("title", O.PrimaryKey)
-  def host = column[String]("host")
-  def desc = column[Option[String]]("desc")
-  def category = column[String]("category", O.Default("Base"))
-  def hidden = column[Boolean]("hidden", O.Default(false))
+  def id      = column[Int]("id", O.PrimaryKey, O.AutoInc) 
+  def title   = column[String]("title", O.PrimaryKey)
+  def host    = column[String]("host")
+  def desc    = column[Option[String]]("desc")
+  def category= column[String]("category", O.Default("Base"))
+  def hidden  = column[Boolean]("hidden", O.Default(false))
 
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  

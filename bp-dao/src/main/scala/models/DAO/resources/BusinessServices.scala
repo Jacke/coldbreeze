@@ -6,10 +6,10 @@ import slick.model.ForeignKeyAction
 import models.DAO.conversion.DatabaseCred
 
 class BusinessServices(tag: Tag) extends Table[BusinessServiceDTO](tag, "business_services") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
-  def title = column[String]("title")
+  def id          = column[Int]("id", O.PrimaryKey, O.AutoInc)
+  def title       = column[String]("title")
   def business_id = column[Int]("business_id")
-  def master_acc = column[String]("master_acc")
+  def master_acc  = column[String]("master_acc")
    
   //def accFK = foreignKey("macc_fk", master_acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
   def business = foreignKey("buss_fk", business_id, models.DAO.resources.BusinessDAO.businesses)(_.id)

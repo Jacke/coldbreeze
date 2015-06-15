@@ -7,15 +7,14 @@ import models.DAO.driver.MyPostgresDriver.simple._
 import com.github.nscala_time.time.Imports._
 
 class Walks(tag: Tag) extends Table[WalkDTO](tag, "walks") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
+  def id          = column[Int]("id", O.PrimaryKey, O.AutoInc)
+  def title       = column[String]("title")
+  def predicate   = column[String]("predicate")
     
-  def title = column[String]("title")
-  def predicate = column[String]("predicate")
-    
-  def finished = column[Boolean]("finished")
-  def started = column[Boolean]("started")
+  def finished    = column[Boolean]("finished")
+  def started     = column[Boolean]("started")
   def finished_at = column[org.joda.time.DateTime]("finished_at")
-  def started_at = column[org.joda.time.DateTime]("started_at")
+  def started_at  = column[org.joda.time.DateTime]("started_at")
 
 
   def * = (id.?, title, predicate, finished, started, finished_at, started_at) <> (WalkDTO.tupled, WalkDTO.unapply)

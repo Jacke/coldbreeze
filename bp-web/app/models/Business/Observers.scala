@@ -9,7 +9,7 @@ import slick.model.ForeignKeyAction
 import org.joda.time.DateTime
 
 class Observers(tag: Tag) extends Table[ObserverDTO](tag, "observers") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
+  def id         = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def station_id = column[Int]("station_id")
   def bprocess   = column[Int]("bprocess_id")   
   def hash_code  = column[Option[String]]("hash_code")
@@ -17,7 +17,7 @@ class Observers(tag: Tag) extends Table[ObserverDTO](tag, "observers") {
   def created_at = column[Option[DateTime]]("created_at")
 
   def stationFK = foreignKey("st_fk", station_id, models.DAO.BPStationDAO.bpstations)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def bpFK = foreignKey("bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK      = foreignKey("bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?, station_id, bprocess, hash_code, fullName, created_at) <> (ObserverDTO.tupled, ObserverDTO.unapply)
 }

@@ -8,14 +8,14 @@ import com.github.nscala_time.time.Imports._
 case class BizFormDTO(title: String, phone: Option[String] = None, website: Option[String] = None, country: String, city: String, address: Option[String], nickname: Option[String] = None)
 
 class Businesses(tag: Tag) extends Table[BusinessDTO](tag, "businesses") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
-  def title = column[String]("title")
-  def phone = column[Option[String]]("phone")
+  def id      = column[Int]("id", O.PrimaryKey, O.AutoInc)
+  def title   = column[String]("title")
+  def phone   = column[Option[String]]("phone")
   def website = column[Option[String]]("website")
   def country = column[String]("country")
-  def city = column[String]("city")
+  def city    = column[String]("city")
   def address = column[Option[String]]("address")
-  def nickname = column[Option[String]]("nickname", O.Default(None))
+  def nickname= column[Option[String]]("nickname", O.Default(None))
 
   def walkthrough = column[Boolean]("walkthrough")
     

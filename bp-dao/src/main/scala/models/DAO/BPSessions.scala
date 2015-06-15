@@ -17,11 +17,11 @@ import builders._
 import main.scala.bprocesses.BPSession  
   
 class BPSessions(tag: Tag) extends Table[BPSession](tag, "bpsessions") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc) 
-  def process = column[Int]("process_id")
+  def id            = column[Int]("id", O.PrimaryKey, O.AutoInc) 
+  def process       = column[Int]("process_id")
     
-  def created_at = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
+  def created_at    = column[Option[org.joda.time.DateTime]]("created_at")
+  def updated_at    = column[Option[org.joda.time.DateTime]]("updated_at")  
   def active_listed = column[Boolean]("active_listed", O.Default(false)) 
 
   def * = (id.?, process, created_at, updated_at, active_listed) <> (BPSession.tupled, BPSession.unapply)

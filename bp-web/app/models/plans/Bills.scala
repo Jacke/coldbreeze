@@ -7,11 +7,11 @@ import slick.model.ForeignKeyAction
 import org.joda.time.DateTime
 
 class Bills(tag: Tag) extends Table[BillDTO](tag, "bills") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
-  def title = column[String]("title")
-  def master_acc = column[String]("master_acc")
-  def assigned = column[DateTime]("assigned")
-  def approved = column[Boolean]("approved")
+  def id          = column[Int]("id", O.PrimaryKey, O.AutoInc)
+  def title       = column[String]("title")
+  def master_acc  = column[String]("master_acc")
+  def assigned    = column[DateTime]("assigned")
+  def approved    = column[Boolean]("approved")
 
   def accFK = foreignKey("macc_fk", master_acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
 

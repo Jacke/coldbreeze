@@ -14,22 +14,22 @@ import main.scala.bprocesses._
 import main.scala.bprocesses.{BPState, BPSessionState} 
 
 class SessionStateLogs(tag: Tag) extends Table[SessionStateLog](tag, "session_state_logs") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc) 
-  def session = column[Int]("session_id")
-  def state_id = column[Int]("state_id")
+  def id        = column[Int]("id", O.PrimaryKey, O.AutoInc) 
+  def session   = column[Int]("session_id")
+  def state_id  = column[Int]("state_id")
 
-  def on = column[Boolean]("on", O.Default(false))  
-  def on_rate = column[Int]("on_rate", O.Default(0))  
+  def on        = column[Boolean]("on", O.Default(false))  
+  def on_rate   = column[Int]("on_rate", O.Default(0))  
 
-  def reason = column[String]("reason")  
-  def created_at = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
+  def reason    = column[String]("reason")  
+  def created_at= column[Option[org.joda.time.DateTime]]("created_at")
+  def updated_at= column[Option[org.joda.time.DateTime]]("updated_at")  
 
-  def lang = column[String]("lang", O.Default("en"))  
+  def lang      = column[String]("lang", O.Default("en"))  
   def * = (id.?, session, state_id, on, on_rate,reason,
            created_at, updated_at) <> (SessionStateLog.tupled, SessionStateLog.unapply)
-  def sesFK = foreignKey("session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def stateFK = foreignKey("state_fk", state_id, BPSessionStateDAO.sessionstates)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def sesFK     = foreignKey("session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def stateFK   = foreignKey("state_fk", state_id, BPSessionStateDAO.sessionstates)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 } 
 object SessionStateLogDAO {

@@ -24,9 +24,9 @@ case class planInfo(title: String, expire_at: org.joda.time.DateTime)
 
 class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
 
-  val Home = Redirect(routes.ProfileController.profile())
+  val Home = Redirect(routes.ProfileController.dashboard())
   
-  def profile = SecuredAction { implicit request =>
+  def dashboard = SecuredAction { implicit request =>
 
       // TODO: service.getByBusiness that manager participated
       val services = BusinessServiceDAO.getByMaster(request.user.main.email.get)
@@ -62,12 +62,12 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
 
         val sessions:List[SessionContainer] = BPSessionDAO.findListedByBusiness(business)//BPSessionDAO.findByBusiness(business_id).map(ses => SessionDecorator(ses._1, ses._2)).toList
 
-        Ok(views.html.profiles.profile(request.user, managerParams, makeEmployeeParams(email, isEmployee), plan, walkthrought, sessions ) (
+        Ok(views.html.profiles.dashboard(request.user, managerParams, makeEmployeeParams(email, isEmployee), plan, walkthrought, sessions ) (
             Page(services, 1, 1, services.length), 1, "%", businesses))
       }
   }
 
-  def profile_cart(profile_id: String) = SecuredAction { implicit request =>
+  def profile(profile_id: String) = SecuredAction { implicit request =>
     val optAccount = AccountsDAO.findByNickname(profile_id)
     val optBusiness = models.DAO.resources.BusinessDAO.findByNickname(profile_id)
 

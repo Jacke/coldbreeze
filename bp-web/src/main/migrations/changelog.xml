@@ -1,0 +1,1207 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.3.xsd">
+    <changeSet author="stan (generated)" id="1434047594022-1">
+        <createTable catalogName="minority1" schemaName="public" tableName="account_group">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="account_group_pkey"/>
+            </column>
+            <column name="account_id" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="group_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-2">
+        <createTable catalogName="minority1" schemaName="public" tableName="account_loggers">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="account_loggers_pkey"/>
+            </column>
+            <column name="ip" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_agent" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(254)"/>
+            <column name="date" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-3">
+        <createTable catalogName="minority1" schemaName="public" tableName="account_plans">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="account_plans_pkey"/>
+            </column>
+            <column name="business_id" type="INT4"/>
+            <column name="master_acc" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="plan_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expired_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-4">
+        <createTable catalogName="minority1" schemaName="public" tableName="accounts">
+            <column name="providerId" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="userId" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="firstName" type="VARCHAR(254)"/>
+            <column name="lastName" type="VARCHAR(254)"/>
+            <column name="fullName" type="VARCHAR(254)"/>
+            <column name="email" type="VARCHAR(254)"/>
+            <column name="avatarUrl" type="VARCHAR(254)"/>
+            <column name="authMethod" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="token" type="VARCHAR(254)"/>
+            <column name="secret" type="VARCHAR(254)"/>
+            <column name="accessToken" type="VARCHAR(254)"/>
+            <column name="tokenType" type="VARCHAR(254)"/>
+            <column name="expiresIn" type="INT4"/>
+            <column name="refreshToken" type="VARCHAR(254)"/>
+            <column name="hasher" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="salt" type="VARCHAR(254)"/>
+            <column name="lang" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country" type="VARCHAR(254)"/>
+            <column name="phone" type="VARCHAR(254)"/>
+            <column name="nickname" type="VARCHAR(254)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-5">
+        <createTable catalogName="minority1" schemaName="public" tableName="billing_infos">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="billing_infos_pkey"/>
+            </column>
+            <column name="business_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="firstname" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="lastname" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="zipcode" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-6">
+        <createTable catalogName="minority1" schemaName="public" tableName="bills">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="bills_pkey"/>
+            </column>
+            <column name="title" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="master_acc" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="assigned" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="approved" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-7">
+        <createTable catalogName="minority1" schemaName="public" tableName="bploggers">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="bploggers_pkey"/>
+            </column>
+            <column name="process_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="proc_element_id" type="INT4"/>
+            <column name="space_element_id" type="INT4"/>
+            <column name="order" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="space_id" type="INT4"/>
+            <column name="station_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="invoked" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expanded" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="container" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="step" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-8">
+        <createTable catalogName="minority1" schemaName="public" tableName="bprocesses">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="bprocesses_pkey"/>
+            </column>
+            <column name="title" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="service_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column defaultValueNumeric="1" name="version" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="'base'::character varying" name="state_machine_type" type="VARCHAR(40)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-9">
+        <createTable catalogName="minority1" schemaName="public" tableName="bpsessions">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="bpsessions_pkey"/>
+            </column>
+            <column name="process_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column defaultValueBoolean="false" name="active_listed" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-10">
+        <createTable catalogName="minority1" schemaName="public" tableName="bpspaces">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="bpspaces_pkey"/>
+            </column>
+            <column name="process_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="index" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="container" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="subbrick" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="brick_front_id" type="INT4"/>
+            <column name="brick_nested_id" type="INT4"/>
+            <column name="nesting_level" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-11">
+        <createTable catalogName="minority1" schemaName="public" tableName="bpstaterefs">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="bpstaterefs_pkey"/>
+            </column>
+            <column name="bprocess_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="switch_type" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="2" name="priority" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="state_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="session_state" type="INT4"/>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-12">
+        <createTable catalogName="minority1" schemaName="public" tableName="bpstates">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="bpstates_pkey"/>
+            </column>
+            <column name="process_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="neutral" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="is_process_state" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="front_elem_id" type="INT4"/>
+            <column name="space_elem_id" type="INT4"/>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column defaultValue="'en'::character varying" name="lang" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="space_id" type="INT4"/>
+            <column defaultValueBoolean="false" name="on" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="on_rate" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="''::character varying" name="middle" type="VARCHAR(254)"/>
+            <column defaultValueBoolean="false" name="middleable" type="BOOL"/>
+            <column defaultValue="''::character varying" name="oposite" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="opositable" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-13">
+        <createTable catalogName="minority1" schemaName="public" tableName="bpstation_loggers">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="bpstation_loggers_pkey"/>
+            </column>
+            <column name="station_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="process_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sygnal" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="state" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="step" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="space" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="container_step" type="_INT4(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expand_step" type="_INT4(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="spaces_ids" type="_INT4(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="started" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="finished" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="inspace" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="incontainer" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="inexpands" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="paused" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-14">
+        <createTable catalogName="minority1" schemaName="public" tableName="bpstations">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="bpstations_pkey"/>
+            </column>
+            <column name="process_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="state" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="step" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="space" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="container_step" type="_INT4(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expand_step" type="_INT4(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="spaces_ids" type="_INT4(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="started" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="finished" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="inspace" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="incontainer" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="inexpands" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="paused" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="note" type="VARCHAR(254)"/>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column defaultValueBoolean="false" name="canceled" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="session_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="front" type="BOOL"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-15">
+        <createTable catalogName="minority1" schemaName="public" tableName="bpswitchers">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="bpswitchers_pkey"/>
+            </column>
+            <column name="bprocess_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="switch_type" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="2" name="priority" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="state_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="session_state" type="INT4"/>
+            <column name="fn" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="target" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column defaultValueNumeric="0" name="override_group" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-16">
+        <createTable catalogName="minority1" schemaName="public" tableName="business_services">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="business_services_pkey"/>
+            </column>
+            <column name="title" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="master_acc" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-17">
+        <createTable catalogName="minority1" schemaName="public" tableName="businesses">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="businesses_pkey"/>
+            </column>
+            <column name="title" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone" type="VARCHAR(254)"/>
+            <column name="website" type="VARCHAR(254)"/>
+            <column name="country" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="city" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address" type="VARCHAR(254)"/>
+            <column name="walkthrough" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="nickname" type="VARCHAR(254)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-18">
+        <createTable catalogName="minority1" schemaName="public" tableName="client_observers">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="client_observers_pkey"/>
+            </column>
+            <column name="uid" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-19">
+        <createTable catalogName="minority1" schemaName="public" tableName="elem_topologs">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="elem_topologs_pkey"/>
+            </column>
+            <column name="process_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="front_elem_id" type="INT4"/>
+            <column name="space_elem_id" type="INT4"/>
+            <column name="hash" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="space_id" type="INT4"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-20">
+        <createTable catalogName="minority1" schemaName="public" tableName="employees">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="employees_pkey"/>
+            </column>
+            <column name="uid" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="master_acc" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="position" type="VARCHAR(254)"/>
+            <column name="manager" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-21">
+        <createTable catalogName="minority1" schemaName="public" tableName="employees_businesses">
+            <column name="employee_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-22">
+        <createTable catalogName="minority1" schemaName="public" tableName="groups">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="groups_pkey"/>
+            </column>
+            <column name="title" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-23">
+        <createTable catalogName="minority1" schemaName="public" tableName="input_loggers">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="input_loggers_pkey"/>
+            </column>
+            <column name="uid" type="VARCHAR(254)"/>
+            <column name="action" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="arguments" type="_TEXT(2147483647)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reaction_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column autoIncrement="true" name="input" type="SERIAL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="session_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column autoIncrement="true" name="input_id" type="SERIAL"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-24">
+        <createTable catalogName="minority1" schemaName="public" tableName="observers">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="observers_pkey"/>
+            </column>
+            <column name="station_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="bprocess_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="hash_code" type="VARCHAR(254)"/>
+            <column name="fullName" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-25">
+        <createTable catalogName="minority1" schemaName="public" tableName="plans">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="plans_pkey"/>
+            </column>
+            <column name="title" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price" type="numeric(21, 2)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-26">
+        <createTable catalogName="minority1" schemaName="public" tableName="proc_element_reflections">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="proc_element_reflections_pkey"/>
+            </column>
+            <column name="reflection_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="desc" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="b_type" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type_title" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ref_space_id" type="INT4"/>
+            <column name="order" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-27">
+        <createTable catalogName="minority1" schemaName="public" tableName="proc_elements">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="proc_elements_pkey"/>
+            </column>
+            <column name="title" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="desc" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="bprocess_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="b_type" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type_title" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="space_id" type="INT4"/>
+            <column name="order" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-28">
+        <createTable catalogName="minority1" schemaName="public" tableName="process_histories">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="process_histories_pkey"/>
+            </column>
+            <column name="master_acc" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="process_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="action" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="what" type="VARCHAR(254)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-29">
+        <createTable catalogName="minority1" schemaName="public" tableName="process_permissions">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="process_permissions_pkey"/>
+            </column>
+            <column name="uid" type="VARCHAR(254)"/>
+            <column name="group_id" type="INT4"/>
+            <column name="bprocess" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="front_elem_id" type="INT4"/>
+            <column name="space_elem_id" type="INT4"/>
+            <column name="reaction_id" type="INT4"/>
+            <column name="role" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-30">
+        <createTable catalogName="minority1" schemaName="public" tableName="reaction_refs">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="reaction_refs_pkey"/>
+            </column>
+            <column name="reflection_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="autostart" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="element_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="state_ref_id" type="INT4"/>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-31">
+        <createTable catalogName="minority1" schemaName="public" tableName="reaction_state_out_refs">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="reaction_state_out_refs_pkey"/>
+            </column>
+            <column name="reaction_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="state_ref" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="on" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="on_rate" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-32">
+        <createTable catalogName="minority1" schemaName="public" tableName="reaction_state_outs">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="reaction_state_outs_pkey"/>
+            </column>
+            <column name="reaction_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="state_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="on" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="on_rate" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-33">
+        <createTable catalogName="minority1" schemaName="public" tableName="reactions">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="reactions_pkey"/>
+            </column>
+            <column name="bprocess_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="autostart" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="element_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="state_ref_id" type="INT4"/>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-34">
+        <createTable catalogName="minority1" schemaName="public" tableName="reflected_elem_topologs">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="reflected_elem_topologs_pkey"/>
+            </column>
+            <column name="reflection_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="front_elem_id" type="INT4"/>
+            <column name="space_elem_id" type="INT4"/>
+            <column name="hash" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="space_id" type="INT4"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-35">
+        <createTable catalogName="minority1" schemaName="public" tableName="refs">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="refs_pkey"/>
+            </column>
+            <column name="title" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="host" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="desc" type="VARCHAR(254)"/>
+            <column defaultValue="'Common'::character varying" name="category" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="hidden" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-36">
+        <createTable catalogName="minority1" schemaName="public" tableName="session_state_logs">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="session_state_logs_pkey"/>
+            </column>
+            <column name="session_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="on" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="on_rate" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="reason" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="state_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-37">
+        <createTable catalogName="minority1" schemaName="public" tableName="sessionstates">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="sessionstates_pkey"/>
+            </column>
+            <column name="process_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="session_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="neutral" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="is_process_state" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="front_elem_id" type="INT4"/>
+            <column name="space_elem_id" type="INT4"/>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column defaultValue="'en'::character varying" name="lang" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="space_id" type="INT4"/>
+            <column defaultValueBoolean="false" name="on" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="on_rate" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="origin_state_id" type="INT4"/>
+            <column defaultValue="''::character varying" name="middle" type="VARCHAR(253)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="middleable" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="''::character varying" name="oposite" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="opositable" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-38">
+        <createTable catalogName="minority1" schemaName="public" tableName="space_element_reflections">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="space_element_reflections_pkey"/>
+            </column>
+            <column name="reflection_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="desc" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="b_type" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type_title" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ref_space_id" type="INT4"/>
+            <column name="ref_space_owned_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="space_role" type="VARCHAR(254)"/>
+            <column name="order" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-39">
+        <createTable catalogName="minority1" schemaName="public" tableName="space_elements">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="space_elements_pkey"/>
+            </column>
+            <column name="title" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="desc" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="business_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="bprocess_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="b_type" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type_title" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="own_space_id" type="INT4"/>
+            <column name="owned_space_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="space_role" type="VARCHAR(254)"/>
+            <column name="order" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-40">
+        <createTable catalogName="minority1" schemaName="public" tableName="space_refs">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="space_refs_pkey"/>
+            </column>
+            <column name="reflection_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="index" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="container" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subbrick" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column name="brick_front" type="INT4"/>
+            <column name="brick_nested" type="INT4"/>
+            <column name="nestingLevel" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-41">
+        <createTable catalogName="minority1" schemaName="public" tableName="state_refs">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="state_refs_pkey"/>
+            </column>
+            <column name="reflection_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="neutral" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="process_state" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="on" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="on_rate" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ref_front_elem_id" type="INT4"/>
+            <column name="ref_space_elem_id" type="INT4"/>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column defaultValue="'en'::character varying" name="lang" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ref_space_id" type="INT4"/>
+            <column defaultValue="''::character varying" name="middle" type="VARCHAR(254)"/>
+            <column defaultValueBoolean="false" name="middleable" type="BOOL"/>
+            <column defaultValue="''::character varying" name="oposite" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="opositable" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-42">
+        <createTable catalogName="minority1" schemaName="public" tableName="switcher_refs">
+            <column autoIncrement="true" name="id" type="SERIAL">
+                <constraints primaryKey="true" primaryKeyName="switcher_refs_pkey"/>
+            </column>
+            <column name="reflection_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="switch_type" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="2" name="priority" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="state_ref_id" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fn" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="target" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="updated_at" type="TIMESTAMP WITH TIME ZONE"/>
+            <column defaultValueNumeric="0" name="override_group" type="INT4">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-43">
+        <createTable catalogName="minority1" schemaName="public" tableName="tokens">
+            <column name="uuid" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(254)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creationTime" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expirationTime" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="isSignUp" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-44">
+        <addPrimaryKey catalogName="minority1" columnNames="userId" constraintName="accounts_pkey" schemaName="public" tableName="accounts"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-45">
+        <addUniqueConstraint catalogName="minority1" columnNames="title" constraintName="title" deferrable="false" disabled="false" initiallyDeferred="false" schemaName="public" tableName="refs"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-46">
+        <addForeignKeyConstraint baseColumnNames="account_id" baseTableCatalogName="minority1" baseTableName="account_group" baseTableSchemaName="public" constraintName="acc_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="userId" referencedTableCatalogName="minority1" referencedTableName="accounts" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-47">
+        <addForeignKeyConstraint baseColumnNames="station_id" baseTableCatalogName="minority1" baseTableName="bploggers" baseTableSchemaName="public" constraintName="b_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="bpstations" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-48">
+        <addForeignKeyConstraint baseColumnNames="business_id" baseTableCatalogName="minority1" baseTableName="billing_infos" baseTableSchemaName="public" constraintName="bizz_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="businesses" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-49">
+        <addForeignKeyConstraint baseColumnNames="process_id" baseTableCatalogName="minority1" baseTableName="bploggers" baseTableSchemaName="public" constraintName="bprocess_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="bprocesses" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-50">
+        <addForeignKeyConstraint baseColumnNames="owned_space_id" baseTableCatalogName="minority1" baseTableName="space_elements" baseTableSchemaName="public" constraintName="bpspace_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="bpspaces" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-51">
+        <addForeignKeyConstraint baseColumnNames="business_id" baseTableCatalogName="minority1" baseTableName="bprocesses" baseTableSchemaName="public" constraintName="business_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="businesses" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-52">
+        <addForeignKeyConstraint baseColumnNames="business_id" baseTableCatalogName="minority1" baseTableName="business_services" baseTableSchemaName="public" constraintName="buss_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="businesses" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-53">
+        <addForeignKeyConstraint baseColumnNames="element_id" baseTableCatalogName="minority1" baseTableName="reaction_refs" baseTableSchemaName="public" constraintName="element_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="reflected_elem_topologs" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-54">
+        <addForeignKeyConstraint baseColumnNames="employee_id" baseTableCatalogName="minority1" baseTableName="employees_businesses" baseTableSchemaName="public" constraintName="employee_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="employees" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-55">
+        <addForeignKeyConstraint baseColumnNames="front_elem_id" baseTableCatalogName="minority1" baseTableName="process_permissions" baseTableSchemaName="public" constraintName="fElemPermFK" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="proc_elements" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-56">
+        <addForeignKeyConstraint baseColumnNames="group_id" baseTableCatalogName="minority1" baseTableName="process_permissions" baseTableSchemaName="public" constraintName="groupFK" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="groups" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-57">
+        <addForeignKeyConstraint baseColumnNames="group_id" baseTableCatalogName="minority1" baseTableName="account_group" baseTableSchemaName="public" constraintName="group_FK" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="groups" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-58">
+        <addForeignKeyConstraint baseColumnNames="master_acc" baseTableCatalogName="minority1" baseTableName="employees" baseTableSchemaName="public" constraintName="macc_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="userId" referencedTableCatalogName="minority1" referencedTableName="accounts" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-59">
+        <addForeignKeyConstraint baseColumnNames="plan_id" baseTableCatalogName="minority1" baseTableName="account_plans" baseTableSchemaName="public" constraintName="plan_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="plans" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-60">
+        <addForeignKeyConstraint baseColumnNames="proc_element_id" baseTableCatalogName="minority1" baseTableName="bploggers" baseTableSchemaName="public" constraintName="procelem_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="proc_elements" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-61">
+        <addForeignKeyConstraint baseColumnNames="bprocess" baseTableCatalogName="minority1" baseTableName="process_permissions" baseTableSchemaName="public" constraintName="process_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="bprocesses" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-62">
+        <addForeignKeyConstraint baseColumnNames="reaction_id" baseTableCatalogName="minority1" baseTableName="process_permissions" baseTableSchemaName="public" constraintName="reactionFK" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="reactions" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-63">
+        <addForeignKeyConstraint baseColumnNames="reaction_id" baseTableCatalogName="minority1" baseTableName="reaction_state_outs" baseTableSchemaName="public" constraintName="reaction_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="reactions" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-64">
+        <addForeignKeyConstraint baseColumnNames="reaction_id" baseTableCatalogName="minority1" baseTableName="reaction_state_out_refs" baseTableSchemaName="public" constraintName="reaction_ref_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="reaction_refs" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-65">
+        <addForeignKeyConstraint baseColumnNames="front_elem_id" baseTableCatalogName="minority1" baseTableName="reflected_elem_topologs" baseTableSchemaName="public" constraintName="ref_procelem_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="proc_element_reflections" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-66">
+        <addForeignKeyConstraint baseColumnNames="space_id" baseTableCatalogName="minority1" baseTableName="reflected_elem_topologs" baseTableSchemaName="public" constraintName="ref_space_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="space_refs" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-67">
+        <addForeignKeyConstraint baseColumnNames="space_elem_id" baseTableCatalogName="minority1" baseTableName="reflected_elem_topologs" baseTableSchemaName="public" constraintName="ref_spaceelem_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="space_element_reflections" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-68">
+        <addForeignKeyConstraint baseColumnNames="reflection_id" baseTableCatalogName="minority1" baseTableName="space_element_reflections" baseTableSchemaName="public" constraintName="reflect_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="refs" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-69">
+        <addForeignKeyConstraint baseColumnNames="service_id" baseTableCatalogName="minority1" baseTableName="bprocesses" baseTableSchemaName="public" constraintName="service_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="business_services" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-70">
+        <addForeignKeyConstraint baseColumnNames="session_id" baseTableCatalogName="minority1" baseTableName="input_loggers" baseTableSchemaName="public" constraintName="sessionFK" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="bpsessions" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-71">
+        <addForeignKeyConstraint baseColumnNames="session_id" baseTableCatalogName="minority1" baseTableName="bpstations" baseTableSchemaName="public" constraintName="session_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="bpsessions" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-72">
+        <addForeignKeyConstraint baseColumnNames="session_state" baseTableCatalogName="minority1" baseTableName="bpstaterefs" baseTableSchemaName="public" constraintName="session_state_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="sessionstates" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-73">
+        <addForeignKeyConstraint baseColumnNames="space_elem_id" baseTableCatalogName="minority1" baseTableName="process_permissions" baseTableSchemaName="public" constraintName="spElemPermFK" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="space_elements" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-74">
+        <addForeignKeyConstraint baseColumnNames="space_id" baseTableCatalogName="minority1" baseTableName="bploggers" baseTableSchemaName="public" constraintName="sp_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="bpspaces" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-75">
+        <addForeignKeyConstraint baseColumnNames="space_id" baseTableCatalogName="minority1" baseTableName="elem_topologs" baseTableSchemaName="public" constraintName="space_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="bpspaces" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-76">
+        <addForeignKeyConstraint baseColumnNames="space_element_id" baseTableCatalogName="minority1" baseTableName="bploggers" baseTableSchemaName="public" constraintName="spaceelem_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="space_elements" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-77">
+        <addForeignKeyConstraint baseColumnNames="station_id" baseTableCatalogName="minority1" baseTableName="observers" baseTableSchemaName="public" constraintName="st_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="bpstations" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-78">
+        <addForeignKeyConstraint baseColumnNames="state_ref_id" baseTableCatalogName="minority1" baseTableName="reaction_refs" baseTableSchemaName="public" constraintName="state_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="state_refs" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-79">
+        <addForeignKeyConstraint baseColumnNames="state_ref_id" baseTableCatalogName="minority1" baseTableName="switcher_refs" baseTableSchemaName="public" constraintName="state_ref_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="state_refs" referencedTableSchemaName="public"/>
+    </changeSet>
+    <changeSet author="stan (generated)" id="1434047594022-80">
+        <addForeignKeyConstraint baseColumnNames="state_id" baseTableCatalogName="minority1" baseTableName="bpstaterefs" baseTableSchemaName="public" constraintName="statefk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="bpstates" referencedTableSchemaName="public"/>
+    </changeSet>
+</databaseChangeLog>

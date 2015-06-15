@@ -15,21 +15,21 @@ import models.DAO._
 
 class ProcElementReflections(tag: Tag) extends Table[UnitElementRef](tag, "proc_element_reflections") {
 
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc) // This is the primary key column
-  def reflection = column[Int]("reflection_id")
-  def title = column[String]("title")
-  def desc  = column[String]("desc")
-  def b_type = column[String]("b_type")
-  def type_title = column[String]("type_title")
+  def id          = column[Int]("id", O.PrimaryKey, O.AutoInc) // This is the primary key column
+  def reflection  = column[Int]("reflection_id")
+  def title       = column[String]("title")
+  def desc        = column[String]("desc")
+  def b_type      = column[String]("b_type")
+  def type_title  = column[String]("type_title")
 
-  def space_own = column[Option[Int]]("ref_space_id")
+  def space_own   = column[Option[Int]]("ref_space_id")
 
-  def order = column[Int]("order")
+  def order       = column[Int]("order")
     
-  def created_at = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
+  def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
+  def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")  
   
-  def reflectFK = foreignKey("reflect_fk", reflection, models.DAO.reflect.RefDAO.refs)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def reflectFK   = foreignKey("reflect_fk", reflection, models.DAO.reflect.RefDAO.refs)(_.id, onDelete = ForeignKeyAction.Cascade)
   
   /*
 id: Option[Int],

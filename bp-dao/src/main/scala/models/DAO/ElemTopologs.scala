@@ -15,9 +15,9 @@ import models.DAO.conversion.DatabaseCred
 import main.scala.simple_parts.process.Units._
     
 class ElemTopologs(tag: Tag) extends Table[ElemTopology](tag, "elem_topologs") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc) 
-  def process = column[Int]("process_id")
-  def hash = column[String]("hash")
+  def id            = column[Int]("id", O.PrimaryKey, O.AutoInc) 
+  def process       = column[Int]("process_id")
+  def hash          = column[String]("hash")
 
   def front_elem_id = column[Option[Int]]("front_elem_id")
   def space_elem_id = column[Option[Int]]("space_elem_id")
@@ -32,10 +32,10 @@ class ElemTopologs(tag: Tag) extends Table[ElemTopology](tag, "elem_topologs") {
           hash,
            created_at, updated_at, space_id) <> (ElemTopology.tupled, ElemTopology.unapply)
 
-  def bpFK = foreignKey("bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def procelemFK = foreignKey("procelem_fk", front_elem_id, proc_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK        = foreignKey("bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def procelemFK  = foreignKey("procelem_fk", front_elem_id, proc_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
   def spaceelemFK = foreignKey("spaceelem_fk", space_elem_id, SpaceElemDAO.space_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def spaceFK = foreignKey("bpspace_fk", space_id, models.DAO.BPSpaceDAO.bpspaces)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def spaceFK     = foreignKey("bpspace_fk", space_id, models.DAO.BPSpaceDAO.bpspaces)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }
 

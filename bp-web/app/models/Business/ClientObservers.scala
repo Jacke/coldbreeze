@@ -4,7 +4,7 @@ import slick.driver.PostgresDriver.simple._
 import models.DAO.conversion.DatabaseCred
 
 class ClientObservers(tag: Tag) extends Table[ClientObserverDTO](tag, "client_observers") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
+  def id  = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def uid = column[String]("uid")
 
 

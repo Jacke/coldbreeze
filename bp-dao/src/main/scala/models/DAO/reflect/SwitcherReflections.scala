@@ -16,13 +16,13 @@ import main.scala.simple_parts.process.Units._
 import main.scala.bprocesses.refs.UnitRefs.{UnitSwitcherRef}
   
 class SwitcherRefs(tag: Tag) extends Table[UnitSwitcherRef](tag, "switcher_refs") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc) 
-  def reflection = column[Int]("reflection_id")
+  def id          = column[Int]("id", O.PrimaryKey, O.AutoInc) 
+  def reflection  = column[Int]("reflection_id")
   def switch_type = column[String]("switch_type")
-  def priority = column[Int]("priority", O.Default(2))
-  def state_ref = column[Int]("state_ref_id")
-  def fn = column[String]("fn")
-  def target = column[String]("target")  
+  def priority    = column[Int]("priority", O.Default(2))
+  def state_ref   = column[Int]("state_ref_id")
+  def fn          = column[String]("fn")
+  def target      = column[String]("target")  
   def override_group = column[Int]("override_group", O.Default(0))
     
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")

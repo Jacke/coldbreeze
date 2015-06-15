@@ -7,9 +7,9 @@ import slick.model.ForeignKeyAction
 import models.DAO.conversion.DatabaseCred
     
 class ReflectElemTopologs(tag: Tag) extends Table[RefElemTopology](tag, "reflected_elem_topologs") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc) 
-  def reflection = column[Int]("reflection_id")
-  def hash = column[String]("hash")
+  def id          = column[Int]("id", O.PrimaryKey, O.AutoInc) 
+  def reflection  = column[Int]("reflection_id")
+  def hash        = column[String]("hash")
 
   def front_elem_id = column[Option[Int]]("front_elem_id")
   def space_elem_id = column[Option[Int]]("space_elem_id")
@@ -25,11 +25,11 @@ class ReflectElemTopologs(tag: Tag) extends Table[RefElemTopology](tag, "reflect
           hash,
            created_at, updated_at,space_id) <> (RefElemTopology.tupled, RefElemTopology.unapply)
 
-  def reflectFK = foreignKey("reflect_fk", reflection, models.DAO.reflect.RefDAO.refs)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def reflectFK      = foreignKey("reflect_fk", reflection, models.DAO.reflect.RefDAO.refs)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def ref_procelemFK = foreignKey("ref_procelem_fk", front_elem_id, ProcElemReflectionDAO.proc_element_reflections)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def ref_spaceelemFK = foreignKey("ref_spaceelem_fk", space_elem_id, SpaceElementReflectionDAO.space_element_reflections)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def spaceFK = foreignKey("ref_space_fk", space_id, SpaceReflectionDAO.space_refs)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def ref_spaceelemFK= foreignKey("ref_spaceelem_fk", space_elem_id, SpaceElementReflectionDAO.space_element_reflections)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def spaceFK        = foreignKey("ref_space_fk", space_id, SpaceReflectionDAO.space_refs)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }
 case class RefElemTopology(id: Option[Int], 

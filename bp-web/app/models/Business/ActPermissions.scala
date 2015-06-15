@@ -12,13 +12,13 @@ object PermissionRole {
 }
 
 class ActPermissions(tag: Tag) extends Table[ActPermission](tag, "process_permissions") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
-  def uid = column[Option[String]]("uid")
+  def id    = column[Int]("id", O.PrimaryKey, O.AutoInc)
+  def uid   = column[Option[String]]("uid")
   def group = column[Option[Int]]("group_id")
 
   // Process permissions
   def process = column[Int]("bprocess")
-  def role = column[String]("role")
+  def role    = column[String]("role")
   /***
    *  Role:
    *  1. View 
@@ -32,10 +32,10 @@ class ActPermissions(tag: Tag) extends Table[ActPermission](tag, "process_permis
   def space_elem_id = column[Option[Int]]("space_elem_id")
   def reaction      = column[Option[Int]]("reaction_id")
 
-
+  def maccFK  = foreignKey("acc_fk", uid, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade, onUpdate = ForeignKeyAction.Cascade)
   def procFK  = foreignKey("process_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
   def fElemFK = foreignKey("fElemPermFK", front_elem_id, models.DAO.ProcElemDAO.proc_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def spElemFK = foreignKey("spElemPermFK", space_elem_id, models.DAO.SpaceElemDAO.space_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def spElemFK= foreignKey("spElemPermFK", space_elem_id, models.DAO.SpaceElemDAO.space_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
   def groupFK = foreignKey("groupFK", group, models.DAO.resources.GroupsDAO.groups)(_.id, onDelete = ForeignKeyAction.Cascade)
   def reactFK = foreignKey("reactionFK", reaction, models.DAO.ReactionDAO.reactions)(_.id, onDelete = ForeignKeyAction.Cascade)
 

@@ -6,16 +6,16 @@ import slick.driver.PostgresDriver.simple._
 import models.DAO.conversion.DatabaseCred
 
 class Employees(tag: Tag) extends Table[EmployeeDTO](tag, "employees") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
-  def uid = column[String]("uid")
-  def master_acc = column[String]("master_acc")
-  def position = column[Option[String]]("position")
-  def manager = column[Boolean]("manager")
+  def id          = column[Int]("id", O.PrimaryKey, O.AutoInc)
+  def uid         = column[String]("uid")
+  def master_acc  = column[String]("master_acc")
+  def position    = column[Option[String]]("position")
+  def manager     = column[Boolean]("manager")
 
   // TODO: CHECK AND FIX BELOW
   //def accFK = foreignKey("acc_fk", uid, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
-  def maccFK = foreignKey("macc_fk", master_acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
-  def eb = EmployeesBusinessDAO.employees_businesses.filter(_.employee_id === id).flatMap(_.businessFK)
+  def maccFK      = foreignKey("macc_fk", master_acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade, onUpdate = ForeignKeyAction.Cascade)
+  def eb          = EmployeesBusinessDAO.employees_businesses.filter(_.employee_id === id).flatMap(_.businessFK)
 
   def * = (id.?, uid, master_acc, position, manager) <> (EmployeeDTO.tupled, EmployeeDTO.unapply)
 

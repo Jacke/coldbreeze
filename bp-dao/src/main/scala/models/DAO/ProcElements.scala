@@ -25,27 +25,27 @@ import main.scala.simple_parts.process.data.{Confirm, Constant}
 
 class ProcElements(tag: Tag) extends Table[UndefElement](tag, "proc_elements") {
 
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc) // This is the primary key column
-  def title = column[String]("title")
-  def desc  = column[String]("desc")
-  def business = column[Int]("business_id")
-  def bprocess = column[Int]("bprocess_id")
-  def b_type = column[String]("b_type")
-  def type_title = column[String]("type_title")
+  def id        = column[Int]("id", O.PrimaryKey, O.AutoInc) // This is the primary key column
+  def title     = column[String]("title")
+  def desc      = column[String]("desc")
+  def business  = column[Int]("business_id")
+  def bprocess  = column[Int]("bprocess_id")
+  def b_type    = column[String]("b_type")
+  def type_title= column[String]("type_title")
 
   def space_own = column[Option[Int]]("space_id")
 
-  def order = column[Int]("order")
+  def order     = column[Int]("order")
   //def comps = column[Option[List[CompositeValues]]]("comps", O.DBType("compositevalues[]"))
     
-  def created_at = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
+  def created_at= column[Option[org.joda.time.DateTime]]("created_at")
+  def updated_at= column[Option[org.joda.time.DateTime]]("updated_at")  
     
   def * = (id.?, title, desc, business, bprocess, b_type, type_title, space_own, order,
            created_at, updated_at) <> (UndefElement.tupled, UndefElement.unapply)
 
   def businessFK = foreignKey("business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def bpFK = foreignKey("bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK       = foreignKey("bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 
 }

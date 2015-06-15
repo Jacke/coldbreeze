@@ -1,0 +1,188 @@
+@import decorators._
+@import models.DAO._
+@()
+<div class="roww">
+                <div class="col-md-6">
+                    <section class="panel">
+                        <header class="panel-heading head-border">
+                            notification
+                            <span class="tools pull-right">
+                                <a class="fa fa-repeat box-refresh" href="javascript:;"></a>
+                            </span>
+                        </header>
+                        <div class="noti-information notification-menu">
+                            <!--notification info start-->
+                            <div class="notification-list mail-list not-list">
+                                <a href="javascript:;" class="single-mail">
+                                        <span class="icon bg-primary">
+                                            <i class="fa fa-envelope-o"></i>
+                                        </span>
+                                    <span class="purple-color">John Doe</span> send you a mail
+                                    <p>
+                                        <small>Just Now</small>
+                                    </p>
+                                        <span class="read tooltips" data-original-title="Mark as Unread" data-toggle="tooltip" data-placement="left">
+                                            <i class="fa fa-circle-o"></i>
+                                        </span>
+                                </a>
+                                <a href="javascript:;" class="single-mail">
+                                        <span class="icon bg-success">
+                                            <i class="fa fa-comments-o"></i>
+                                        </span>
+                                    <span class="red-color">Jim Doe</span> mentioned you a post
+                                    <p>
+                                        <small>30 Mins Ago</small>
+                                    </p>
+                                        <span class="read tooltips" data-original-title="Mark as Unread" data-toggle="tooltip" data-placement="left">
+                                            <i class="fa fa-circle-o"></i>
+                                        </span>
+                                </a>
+                                <a href="javascript:;" class="single-mail">
+                                        <span class="icon bg-warning">
+                                            <i class="fa fa-warning"></i>
+                                        </span> Application Error
+                                    <p>
+                                        <small> 2 Days Ago</small>
+                                    </p>
+                                        <span class="read tooltips" data-original-title="Mark as Unread" data-toggle="tooltip" data-placement="left">
+                                            <i class="fa fa-circle-o"></i>
+                                        </span>
+                                </a>
+                                <a href="javascript:;" class="single-mail">
+                                        <span class="icon bg-dark">
+                                           <i class="fa fa-database"></i>
+                                        </span>
+                                    <strong>Database Overloaded 24%</strong>
+                                    <p>
+                                        <small>1 Week Ago</small>
+                                    </p>
+                                        <span class="un-read tooltips" data-original-title="Mark as Read" data-toggle="tooltip" data-placement="left">
+                                            <i class="fa fa-circle"></i>
+                                        </span>
+                                </a>
+                                <a href="javascript:;" class="single-mail">
+                                        <span class="icon bg-danger">
+                                            <i class="fa fa-warning"></i>
+                                        </span>
+                                    <strong>Server Failed Notification</strong>
+
+                                    <p>
+                                        <small>10 Days Ago</small>
+                                    </p>
+                                        <span class="un-read tooltips" data-original-title="Mark as Read" data-toggle="tooltip" data-placement="left">
+                                            <i class="fa fa-circle"></i>
+                                        </span>
+                                </a>
+
+                                <a href="javascript:;" class="single-mail text-center">
+                                    View All Notification
+                                </a>
+
+                            </div>
+                            <!--notification info end-->
+                        </div>
+                    </section>
+                </div>
+                <div class="col-md-6">
+                    <section class="panel post-wrap pro-box team-member">
+                        <aside class="bg-primary v-align">
+                            <div class="panel-body text-center">
+                                <div class="team-member-wrap">
+                                    <div class="team-member-info">
+                                        <div class="action-set">
+                                            <a href="javascript:;" class="tooltips" data-original-title="Profile Info" data-toggle="tooltip" data-placement="top">
+                                                <i class="fa fa-reorder"></i>
+                                            </a>
+                                        </div>
+                                        <div class="team-title">
+                                            <a href="javascript:;" class="m-name">
+                                                Alison Jones
+                                            </a>
+                                            <span class="sub-title"> Project Manager</span>
+                                        </div>
+
+                                        <div class="call-info">
+                                            <a href="javascript:;">
+                                                <i class="fa fa-envelope-o"></i>
+                                            </a>
+                                            <img src="img/img2.jpg" alt="">
+                                            <a href="javascript:;">
+                                                <i class="fa fa-phone"></i>
+                                            </a>
+                                        </div>
+                                        <div class="status">
+                                            <h5>Status</h5>
+                                            <span>Busy in a meeting with HK Group CEO</span>
+
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                        </aside>
+                        <aside>
+                            <header class="panel-heading head-border">
+                                team member
+                                <span class="action-tools pull-right">
+                                    <a class="fa fa-reorder" href="javascript:;"></a>
+                                </span>
+                            </header>
+                            <div class="post-info">
+                                <ul class="team-list cycle-pager external" id="no-template-pager">
+                                    <li>
+                                        <a href="javascript:;">
+                                            <span class="thumb-small">
+                                                <img class="circle" src="img/img2.jpg" alt="">
+                                                <i class="online dot"></i>
+                                            </span>
+                                            <span class="name">Alison Jones</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">
+                                            <span class="thumb-small">
+                                                <img class="circle" src="img/img1.jpg" alt="">
+                                                <i class="away dot"></i>
+                                            </span>
+                                            <span class="name">Joliana Devis</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">
+                                            <span class="thumb-small">
+                                                <img class="circle" src="img/img3.jpg" alt="">
+                                                <i class="busy dot"></i>
+                                            </span>
+                                            <span class="name">David Alexzender</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">
+                                            <span class="thumb-small">
+                                                <img class="circle" src="img/img4.jpg" alt="">
+                                                <i class="offline dot"></i>
+                                            </span>
+                                            <span class="name">Emma Rose</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:;">
+                                            <span class="thumb-small">
+                                                <img class="circle" src="img/img1.jpg" alt="">
+                                                <i class="online dot"></i>
+                                            </span>
+                                            <span class="name">Jacqueline Jones</span>
+                                        </a>
+                                    </li>
+
+                                </ul>
+                                <div class="add-more-member">
+                                    <a href="javascript:;" class=" ">View All Member</a>
+                                    <a href="javascript:;" class="add-btn pull-right">
+                                        +
+                                    </a>
+                                </div>
+                            </div>
+                        </aside>
+                    </section>
+                </div>
+</div>

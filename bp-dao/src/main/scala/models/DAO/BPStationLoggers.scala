@@ -10,24 +10,24 @@ import models.DAO.conversion.{DatabaseCred, Implicits}
 import main.scala.bprocesses._
 
 class BPStationLoggers(tag: Tag) extends Table[BPStationLoggerDTO](tag, "bpstation_loggers") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
+  def id      = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def station = column[Int]("station_id")
   def process = column[Int]("process_id")
-  def sygnal = column[String]("sygnal")
-  def date = column[org.joda.time.DateTime]("date")
+  def sygnal  = column[String]("sygnal")
+  def date    = column[org.joda.time.DateTime]("date")
 
-  def state = column[Boolean]("state")
-  def step = column[Int]("step")
-  def space = column[Int]("space")
+  def state   = column[Boolean]("state")
+  def step    = column[Int]("step")
+  def space   = column[Int]("space")
   def container_step = column[List[Int]]("container_step")
-  def expand_step = column[List[Int]]("expand_step")
-  def spaces_ids = column[List[Int]]("spaces_ids")
-  def started = column[Boolean]("started")
-  def finished = column[Boolean]("finished")
-  def inspace = column[Boolean]("inspace")
-  def incontainer = column[Boolean]("incontainer")
-  def inexpands = column[Boolean]("inexpands")
-  def paused = column[Boolean]("paused")
+  def expand_step    = column[List[Int]]("expand_step")
+  def spaces_ids     = column[List[Int]]("spaces_ids")
+  def started        = column[Boolean]("started")
+  def finished       = column[Boolean]("finished")
+  def inspace        = column[Boolean]("inspace")
+  def incontainer    = column[Boolean]("incontainer")
+  def inexpands      = column[Boolean]("inexpands")
+  def paused         = column[Boolean]("paused")
 
 
   def * = (id.?,

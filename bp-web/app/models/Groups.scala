@@ -7,26 +7,26 @@ import models.DAO.driver.MyPostgresDriver.simple._
 import com.github.nscala_time.time.Imports._
 
 class Groups(tag: Tag) extends Table[GroupDTO](tag, "groups") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
+  def id          = column[Int]("id", O.PrimaryKey, O.AutoInc)
     
-  def title = column[String]("title")
-  def business = column[Int]("business_id")
-  def created_at = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")
+  def title       = column[String]("title")
+  def business    = column[Int]("business_id")
+  def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
+  def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")
 
-  def businessFK = foreignKey("business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def businessFK  = foreignKey("business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?, title, business,  created_at, updated_at) <> (GroupDTO.tupled, GroupDTO.unapply)
 }
 class AccountGroup(tag: Tag) extends Table[AccoutGroupDTO](tag, "account_group") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
+  def id         = column[Int]("id", O.PrimaryKey, O.AutoInc)
     
   def account_id = column[String]("account_id")
   def group_id   = column[Int]("group_id")
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")
 
-  def accFK = foreignKey("acc_fk", account_id, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
+  def accFK    = foreignKey("acc_fk", account_id, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade, onUpdate = ForeignKeyAction.Cascade)
   def group_FK = foreignKey("group_FK", group_id, models.DAO.resources.GroupsDAO.groups)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?, account_id, group_id, created_at, updated_at) <> (AccoutGroupDTO.tupled, AccoutGroupDTO.unapply)

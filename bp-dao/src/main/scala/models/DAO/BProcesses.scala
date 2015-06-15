@@ -14,21 +14,21 @@ import models.DAO.conversion.DatabaseCred
  * BProcess Scheme
  */
 class BProcesses(tag: Tag) extends Table[BProcessDTO](tag, "bprocesses") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc) 
-  def title = column[String]("title")
-  def service = column[Int]("service_id")
-  def business = column[Int]("business_id")
+  def id          = column[Int]("id", O.PrimaryKey, O.AutoInc) 
+  def title       = column[String]("title")
+  def service     = column[Int]("service_id")
+  def business    = column[Int]("business_id")
     
-  def created_at = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
+  def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
+  def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")  
 
-  def version = column[Long]("version", O.Default(1L))
+  def version     = column[Long]("version", O.Default(1L))
   def state_machine_type = column[String]("state_machine_type", O.Default("base"))
   // Every table needs a * projection with the same type as the table's type parameter
   def * = (id.?, title, service, business ,created_at, updated_at, version, state_machine_type) <> (BProcessDTO.tupled, BProcessDTO.unapply)
   
-  def businessFK = foreignKey("business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def serviceFK = foreignKey("service_fk", service, models.DAO.resources.BusinessServiceDAO.business_services)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def businessFK  = foreignKey("business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def serviceFK   = foreignKey("service_fk", service, models.DAO.resources.BusinessServiceDAO.business_services)(_.id, onDelete = ForeignKeyAction.Cascade)
 }
 
 

@@ -5,7 +5,7 @@ import models.DAO.conversion.DatabaseCred
 import slick.model.ForeignKeyAction
 
 class BusinessWalks(tag: Tag) extends Table[BusinessWalkDTO](tag, "business_walks") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
+  def id          = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def business_id = column[Int]("business_id")
     
     

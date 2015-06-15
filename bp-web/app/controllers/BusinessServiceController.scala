@@ -38,7 +38,7 @@ class BusinessServiceController(override implicit val env: RuntimeEnvironment[De
 
 
 
- val Home = Redirect(routes.ProfileController.profile())
+ val Home = Redirect(routes.ProfileController.dashboard())
 
    val serviceForm = Form(
     mapping(

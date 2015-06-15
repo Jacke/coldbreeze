@@ -16,19 +16,19 @@ import main.scala.simple_parts.process.Units._
 import main.scala.bprocesses.refs.UnitRefs.{UnitReactionRef, UnitReactionStateOutRef}
   
 class ReactionRefs(tag: Tag) extends Table[UnitReactionRef](tag, "reaction_refs") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc) 
-  def reflection = column[Int]("reflection_id")
-  def autostart = column[Boolean]("autostart")
-  def element = column[Int]("element_id")
-  def from_state = column[Option[Int]]("state_ref_id")
-  def title = column[String]("title")  
+  def id          = column[Int]("id", O.PrimaryKey, O.AutoInc) 
+  def reflection  = column[Int]("reflection_id")
+  def autostart   = column[Boolean]("autostart")
+  def element     = column[Int]("element_id")
+  def from_state  = column[Option[Int]]("state_ref_id")
+  def title       = column[String]("title")  
     
-  def created_at = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
+  def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
+  def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")  
 
-  def elementFK = foreignKey("element_fk", element, models.DAO.reflect.ReflectElemTopologDAO.reflected_elem_topologs)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def reflectFK = foreignKey("reflect_fk", reflection, models.DAO.reflect.RefDAO.refs)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def stateFK = foreignKey("state_fk", from_state, models.DAO.reflect.BPStateRefDAO.state_refs)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def elementFK   = foreignKey("element_fk", element, models.DAO.reflect.ReflectElemTopologDAO.reflected_elem_topologs)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def reflectFK   = foreignKey("reflect_fk", reflection, models.DAO.reflect.RefDAO.refs)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def stateFK     = foreignKey("state_fk", from_state, models.DAO.reflect.BPStateRefDAO.state_refs)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?, 
            reflection, 
@@ -101,15 +101,15 @@ object ReactionRefDAO {
 
 
 class ReactionStateOutRefs(tag: Tag) extends Table[UnitReactionStateOutRef](tag, "reaction_state_out_refs") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc) 
-  def reaction = column[Int]("reaction_id")
-  def state_ref = column[Int]("state_ref")
-  def on = column[Boolean]("on")
-  def on_rate = column[Int]("on_rate")
+  def id          = column[Int]("id", O.PrimaryKey, O.AutoInc) 
+  def reaction    = column[Int]("reaction_id")
+  def state_ref   = column[Int]("state_ref")
+  def on          = column[Boolean]("on")
+  def on_rate     = column[Int]("on_rate")
 
     
-  def created_at = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
+  def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
+  def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")  
 
 
   def * = (id.?,

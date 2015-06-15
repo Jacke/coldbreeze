@@ -6,7 +6,7 @@ import slick.model.ForeignKeyAction
 import models.DAO.conversion.DatabaseCred
 
 class Plans(tag: Tag) extends Table[PlanDTO](tag, "plans") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
+  def id    = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def title = column[String]("title")
   def price = column[BigDecimal]("price")
 

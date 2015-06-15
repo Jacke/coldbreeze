@@ -14,23 +14,23 @@ import main.scala.utils.Space
 import main.scala.simple_parts.process.Units._
 
 class SpaceElements(tag: Tag) extends Table[SpaceElementDTO](tag, "space_elements") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc) // This is the primary key column
-  def title = column[String]("title")
-  def desc  = column[String]("desc")
-  def business = column[Int]("business_id")
-  def bprocess = column[Int]("bprocess_id")
-  def b_type = column[String]("b_type")
-  def type_title = column[String]("type_title")
+  def id        = column[Int]("id", O.PrimaryKey, O.AutoInc) // This is the primary key column
+  def title     = column[String]("title")
+  def desc      = column[String]("desc")
+  def business  = column[Int]("business_id")
+  def bprocess  = column[Int]("bprocess_id")
+  def b_type    = column[String]("b_type")
+  def type_title= column[String]("type_title")
 
   def space_own = column[Option[Int]]("own_space_id")
   def space_owned = column[Int]("owned_space_id")
-  def space_role = column[Option[String]]("space_role")
+  def space_role= column[Option[String]]("space_role")
 
-  def order = column[Int]("order")
+  def order     = column[Int]("order")
   //def comps = column[Option[List[CompositeValues]]]("comps", O.DBType("compositevalues[]"))
     
-  def created_at = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
+  def created_at= column[Option[org.joda.time.DateTime]]("created_at")
+  def updated_at= column[Option[org.joda.time.DateTime]]("updated_at")  
     
   def * = (id.?, title, desc,  business,
            bprocess,   b_type, type_title,
@@ -39,9 +39,8 @@ class SpaceElements(tag: Tag) extends Table[SpaceElementDTO](tag, "space_element
            created_at, updated_at) <> (SpaceElementDTO.tupled, SpaceElementDTO.unapply)
 
   def businessFK = foreignKey("business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def bpFK = foreignKey("bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def spaceFK = foreignKey("bpspace_fk", space_owned, models.DAO.BPSpaceDAO.bpspaces)(_.id, onDelete = ForeignKeyAction.Cascade)
-  // TODO: Space FK
+  def bpFK       = foreignKey("bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def spaceFK    = foreignKey("bpspace_fk", space_owned, models.DAO.BPSpaceDAO.bpspaces)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }
 
