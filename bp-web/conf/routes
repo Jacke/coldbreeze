@@ -42,6 +42,12 @@ GET         /only-twitter                                       @controllers.App
 GET         /auth/login                                         @controllers.CustomLoginController.login
 POST        /auth/logout                                        @controllers.CustomLoginController.logout
 
+# API
+
+GET         /v1													@controllers.APIController.v1
+
+
+
 # Businesses
 GET         /businesses                                         @controllers.BusinessController.index()
 GET         /business/create                                    @controllers.BusinessController.create()
@@ -63,18 +69,18 @@ GET         /service/update/:id                                 @controllers.Bus
 POST        /service/update/:id                                 @controllers.BusinessServiceController.update_make(id: Int)
 POST        /service/:id/destroy                                @controllers.BusinessServiceController.destroy(id: Int)
 # Employees
-GET         /actors                                             @controllers.users.EmployeeController.actors()
-GET         /employees                                          @controllers.users.EmployeeController.index()
-GET         /employees/:group_id                                @controllers.users.EmployeeController.index_group(group_id: Int)
-GET         /employee/create                                    @controllers.users.EmployeeController.create()
-POST        /employee/create                                    @controllers.users.EmployeeController.create_new()
-GET         /employee/update/:id                                @controllers.users.EmployeeController.update(id: Int)
+GET         /actors                                           @controllers.users.EmployeeController.actors()
+GET         /peoples                                          @controllers.users.EmployeeController.index()
+GET         /peoples/:group_id                                @controllers.users.EmployeeController.index_group(group_id: Int)
+GET         /people/create                                    @controllers.users.EmployeeController.create()
+POST        /people/create                                    @controllers.users.EmployeeController.create_new()
+GET         /people/update/:id                                @controllers.users.EmployeeController.update(id: Int)
 
-GET         /employee/:employee_id/assign/:business_id          @controllers.users.EmployeeController.assign_business(employee_id: Int, business_id: Int)
-GET         /employee/:employee_id/unassign/:business_id        @controllers.users.EmployeeController.unassign_business(employee_id: Int, business_id: Int)
+GET         /people/:employee_id/assign/:business_id          @controllers.users.EmployeeController.assign_business(employee_id: Int, business_id: Int)
+GET         /people/:employee_id/unassign/:business_id        @controllers.users.EmployeeController.unassign_business(employee_id: Int, business_id: Int)
 
-POST        /employee/update/:id                                @controllers.users.EmployeeController.update_make(id: Int)
-POST        /employee/:id/destroy                               @controllers.users.EmployeeController.destroy(id: Int)
+POST        /people/update/:id                                @controllers.users.EmployeeController.update_make(id: Int)
+POST        /people/:id/destroy                               @controllers.users.EmployeeController.destroy(id: Int)
 # Clients
 ##GET         /clients                                            @controllers.users.ClientController.index()
 ##GET         /client/create                                      @controllers.users.ClientController.create()

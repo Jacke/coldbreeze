@@ -8,8 +8,9 @@
 @import controllers.BusinessServiceForms._
 @import decorators._
 @import models.DAO._
+@import controllers.DashboardTopBar
 
-@(user: DemoUser, mngParams: Option[managerParams], empParams: Option[employeeParams], plan: Option[planInfo], walkthrought: Boolean, sessions: List[SessionContainer] )(currentPage: Page[BusinessServiceDTO], currentOrderBy: Int, currentFilter: String, businesses: List[BusinessDTO])(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment[service.DemoUser])
+@(user: DemoUser, mngParams: Option[managerParams], empParams: Option[employeeParams], plan: Option[planInfo], walkthrought: Boolean, sessions: List[SessionContainer], dashboardTopBar: DashboardTopBar )(currentPage: Page[BusinessServiceDTO], currentOrderBy: Int, currentFilter: String, businesses: List[BusinessDTO])(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment[service.DemoUser])
 
 @import securesocial.core.IdentityProvider
 
@@ -85,10 +86,10 @@
                     <div class="col-lg-3 col-sm-6">
                         <section class="panel purple">
                             <div class="symbol">
-                                <i class="fa fa-send"></i>
+                                <i class="minicon-bell minicon"></i>
                             </div>
                             <div class="value white">
-                                <h1 class="timer" data-from="0" data-to="320" data-speed="1000">320</h1>
+                                <h1 class="timer" data-from="0" data-to="320" data-speed="1000">@dashboardTopBar.newSession</h1>
                                 <p>New Session</p>
                             </div>
                         </section>
@@ -96,10 +97,10 @@
                     <div class="col-lg-3 col-sm-6">
                         <section class="panel ">
                             <div class="symbol purple-color">
-                                <i class="fa fa-tags"></i>
+                                <i class="moicon moicon-tab"></i>
                             </div>
                             <div class="value gray">
-                                <h1 class="purple-color timer" data-from="0" data-to="123" data-speed="1000">123</h1>
+                                <h1 class="purple-color timer" data-from="0" data-to="123" data-speed="1000">@dashboardTopBar.interaction</h1>
                                 <p>Interaction</p>
                             </div>
                         </section>
@@ -107,10 +108,10 @@
                     <div class="col-lg-3 col-sm-6">
                         <section class="panel green">
                             <div class="symbol ">
-                                <i class="fa fa-cloud-upload"></i>
+                                <i class="moicon minicon-completed"></i>
                             </div>
                             <div class="value white">
-                                <h1 class="timer" data-from="0" data-to="432" data-speed="1000">432</h1>
+                                <h1 class="timer" data-from="0" data-to="432" data-speed="1000">@dashboardTopBar.completedSession</h1>
                                 <p>Completed Session</p>
                             </div>
                         </section>
@@ -118,10 +119,10 @@
                     <div class="col-lg-3 col-sm-6">
                         <section class="panel">
                             <div class="symbol green-color">
-                                <i class="fa fa-bullseye"></i>
+                                <i class="moicon moicon-list"></i>
                             </div>
                             <div class="value gray">
-                                <h1 class="green-color timer" data-from="0" data-to="2345" data-speed="3000">2345</h1>
+                                <h1 class="green-color timer" data-from="0" data-to="2345" data-speed="3000">@dashboardTopBar.process</h1>
                                 <p>Process</p>
                             </div>
                         </section>

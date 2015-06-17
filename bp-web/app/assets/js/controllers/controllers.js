@@ -89,7 +89,7 @@ minorityControllers.controller('ProfileController', ['$rootScope', '$scope', '$h
         console.log(token);//$http.defaults.headers.common['X-Auth-Token'] = token;
         //$http.defaults.headers.common['Access_Name'] = 'user';
 
-        $http.post(jsRoutes.controllers.ProfileController.profile().absoluteURL(document.ssl_enabled) + 'whoami', {headers:  {'X-Auth-Token': token, 'Access_Name': 'user'}})
+        $http.post(jsRoutes.controllers.ProfileController.dashboard().absoluteURL(document.ssl_enabled) + 'whoami', {headers:  {'X-Auth-Token': token, 'Access_Name': 'user'}})
           .success(function (profile) {
               // Stores the token until the user closes the browser window.
               console.log(profile);
@@ -118,7 +118,7 @@ minorityControllers.controller('UserInfoCtrl', function ($rootScope, $translate,
         $http.defaults.headers.common['X-Auth-Token'] = token;
         $http.defaults.headers.common['Access_Name'] = 'user';
 
-        $http.post(jsRoutes.controllers.ProfileController.profile().absoluteURL(document.ssl_enabled) + 'whoami', {headers:  {'X-Auth-Token': token, 'Access_Name': 'user'}})
+        $http.post(jsRoutes.controllers.ProfileController.dashboard().absoluteURL(document.ssl_enabled) + 'whoami', {headers:  {'X-Auth-Token': token, 'Access_Name': 'user'}})
           .success(function (profile) {
               // Stores the token until the user closes the browser window.
               console.log(profile);

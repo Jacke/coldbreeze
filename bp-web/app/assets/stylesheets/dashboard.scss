@@ -268,8 +268,7 @@
  		padding-top: 0px;
 		a.selected {
 			background: white;
-			color: black;
-			padding: 4px 2px;
+			color: white;
 		}
 
  		@include e(state_outs) {
@@ -279,7 +278,14 @@
  	}
  }
 
+li.reaction_list__reaction__state_outs {
+    margin-right: 30px;
+}
 
+.reaction_list__reaction ul {
+    padding-left: 0px;
+    margin-top: 20px;
+}
 
 
 
@@ -355,6 +361,16 @@
     text-align: center;
 
 }
+.symbol i {
+  color: white;
+}
+.symbol.green-color i {
+    color: rgb(83, 209, 146);
+}
+
+.symbol.purple-color i {
+    color: rgb(169, 121, 209);
+}
 
 .state-overview .value  {
     float: right;
@@ -372,7 +388,13 @@
 }
 
 .state-overview .symbol i {
-    font-size: 25px;
+    display: inline-block;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  line-height: 10px;
+  font-size: 25px;
+  font-style: normal;
+
 }
 
 .state-overview .symbol {

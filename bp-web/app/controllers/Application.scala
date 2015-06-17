@@ -46,8 +46,10 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
             routes.javascript.GroupController.unassign_user,
             routes.javascript.Application.index,
             routes.javascript.Application.whoami,
+            routes.javascript.ProfileController.dashboard,
             routes.javascript.ProfileController.profile,
-            routes.javascript.ProcessSessionController.update_note
+            routes.javascript.ProcessSessionController.update_note,
+            routes.javascript.APIController.v1
 
           // TODO Add your routes here
         )

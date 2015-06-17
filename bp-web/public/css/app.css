@@ -548,31 +548,32 @@ padding-top: 3px;
 padding-top: 11px;
 font-size: 12px;
 }
+
 .state.yell {
-  color: yellow;
+  color: #f1c40f;
   background: none;
 }
 .state.green {
-  color: green;
+  color: #27ae60;
   background: none;
 }
 .state.red {
-  color: red;
+  color: #c0392b;
   background: none;
 }
 
 
 .proc-element .right-bar.green {
-    background: green;
-color: white;
+    background: #27ae60;
+    color: white;
 }
 .proc-element .right-bar.yell {
-    background: yellow;
+    background: #f1c40f;
     color: white;
 }
 
 .proc-element .right-bar.red {
-    background: red;
+    background: #c0392b;
     color: white;
 }
 
@@ -1144,7 +1145,7 @@ top: 95px;
 padding: 0 10px;
 width: 100%;
 left: 0;
-color: gray;
+color: #bdc3c7;
 }
 .widget header {
 display: block;
@@ -1572,7 +1573,7 @@ color: #fff;  font-family: 'Lato', Calibri, Arial, sans-serif;  font-size: 1em; 
 }
 
 .item-handle:hover span.icon.icon-remove {
-    color: gray;
+    color: #bdc3c7;
 }
 
 li.item-handle {
@@ -2383,7 +2384,7 @@ background-color: rgba(0, 0, 0, 0.36);
 a.allStation {
     margin: 0 auto;
     display: block;
-    color: gray;
+    color: #bdc3c7;
     text-decoration: underline;
     font-size: 14px;
 }
@@ -2629,7 +2630,7 @@ table {
 }
 table thead,
 table tfoot {
-  background: whitesmoke;
+  background: #bdc3c7;
 }
 table thead tr th,
 table thead tr td,
@@ -3204,7 +3205,7 @@ ul.elem-control.elem-tabs li {
     display: inline-block;
     margin-right: 20px;
     padding-top: 15px;
-    color: red;
+    color: #c0392b;
 }
 ul.elem-control.elem-tabs li a {
 
@@ -3409,11 +3410,11 @@ display: inline-block;
 
 
 .state-row .state.true {
-  color: green;
+  color: #27ae60;
 }
 
 .state-row .state.false {
-  color: red;
+  color: #c0392b;
 }
 
 

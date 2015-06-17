@@ -169,6 +169,7 @@ class CustomProviderController(implicit override val env: RuntimeEnvironment[Dem
   }
   private def handleAuth(provider: String, redirectTo: Option[String]) = UserAwareAction.async { implicit request =>
     import scala.concurrent.ExecutionContext.Implicits.global
+    println("handle auth")
     val authenticationFlow = request.user.isEmpty
     val modifiedSession = overrideOriginalUrl(request.session, redirectTo)
 
@@ -179,8 +180,10 @@ class CustomProviderController(implicit override val env: RuntimeEnvironment[Dem
 
     env.providers.get(provider).map {
       _.authenticate().flatMap {
-        case denied: AuthenticationResult.AccessDenied =>
+        case denied: AuthenticationResult.AccessDenied => {
+          logger.error("access denied")
           Future.successful(Redirect(env.routes.loginPageUrl).flashing("error" -> Messages("securesocial.login.accessDenied")))
+        }
         case failed: AuthenticationResult.Failed =>
           logger.error(s"[securesocial] authentication failed, reason: ${failed.error}")
           throw new AuthenticationException()
@@ -229,7 +232,7 @@ class CustomProviderController(implicit override val env: RuntimeEnvironment[Dem
           }
       } recover {
         case e =>
-          logger.error("Unable to log user in. An exception was thrown", e)
+          logger.error("Unable to log user in. Please try again later. Now we solving this error. ", e)
           Redirect(env.routes.loginPageUrl).flashing("error" -> Messages("securesocial.login.errorLoggingIn"))
       }
     } getOrElse {

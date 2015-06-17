@@ -20,6 +20,7 @@ import decorators._
 
 case class employeeParams(perms: List[ActPermission], bps: List[BProcessDTO], elems_titles:Map[Int, String], res_acts: List[ResAct])
 case class managerParams(business: BusinessDTO)
+case class DashboardTopBar(newSession: Int = 0, interaction: Int = 0, completedSession: Int = 0, process: Int = 0)
 case class planInfo(title: String, expire_at: org.joda.time.DateTime)
 
 class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
@@ -62,7 +63,15 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
 
         val sessions:List[SessionContainer] = BPSessionDAO.findListedByBusiness(business)//BPSessionDAO.findByBusiness(business_id).map(ses => SessionDecorator(ses._1, ses._2)).toList
 
-        Ok(views.html.profiles.dashboard(request.user, managerParams, makeEmployeeParams(email, isEmployee), plan, walkthrought, sessions ) (
+        val dashboardTopBar: DashboardTopBar = DashboardTopBar()
+
+        Ok(views.html.profiles.dashboard(request.user, 
+          managerParams, 
+          makeEmployeeParams(email, isEmployee), 
+          plan, 
+          walkthrought, 
+          sessions,
+          dashboardTopBar ) (
             Page(services, 1, 1, services.length), 1, "%", businesses))
       }
   }
@@ -73,11 +82,11 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
 
     optAccount match {
       case Some(account) => {
-        Ok(account.userId)
+        Ok(views.html.profiles.profile(account = Some(account), business = None)(request.user))
       }
       case _ => {
         optBusiness match {
-          case Some(business) => Ok(business.title.toString)
+          case Some(business) => Ok(views.html.profiles.profile(account = None, business = Some(business))(request.user))
           case _ => NotFound(views.html.custom.msg404("", request))
         }
       }

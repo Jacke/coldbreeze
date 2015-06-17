@@ -18,7 +18,7 @@ minorityAppServices.factory(
   }]);
 
 
-var baseUrl = jsRoutes.controllers.ProfileController.profile().absoluteURL(document.ssl_enabled);
+var baseUrl = jsRoutes.controllers.ProfileController.dashboard().absoluteURL(document.ssl_enabled);
 //'http://localhost\\:9000';
 
 minorityAppServices.factory('AuthInterceptor', ['$window', '$q', function ($window, $q) {

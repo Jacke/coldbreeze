@@ -2,7 +2,7 @@
 $(function domReadyLoginFlow () {
   
   var whoamiCreds = function (data) {
-    $.ajax({url: jsRoutes.controllers.ProfileController.profile().absoluteURL(document.ssl_enabled) + "whoami", type: 'post', headers: {
+    $.ajax({url: jsRoutes.controllers.ProfileController.dashboard().absoluteURL(document.ssl_enabled) + "whoami", type: 'post', headers: {
       "Access_Name": "User", "X-Auth-Token": data.token
     }}).done(function(who) {
     localStorage.setItem("manager", who.manager);
@@ -19,7 +19,7 @@ $(function domReadyLoginFlow () {
   var pswd = $('.form-horizontal #password').val();
   $('.messageBoxWrap').remove();
   $('.form-horizontal button').toggleClass('loading');
-    $.post(jsRoutes.controllers.ProfileController.profile().absoluteURL(document.ssl_enabled) + "auth/api/authenticate/userpass", { username: name , password: pswd })
+    $.post(jsRoutes.controllers.ProfileController.dashboard().absoluteURL(document.ssl_enabled) + "auth/api/authenticate/userpass", { username: name , password: pswd })
   .done(function( data ) {
   localStorage.setItem("token", data.token);
   sessionStorage.setItem("token", data.token);

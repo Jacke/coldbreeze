@@ -8,21 +8,27 @@
 </div>
 
 <div class="stations input-stations" style="clear: both;">
-  <h3>Interact</h3>
-
   <ul class="reaction_list">
     <li class="reaction_list__reaction" ng-repeat="reaction in interactions.reactions">
-        <a ng-click="reactionSelect(reaction)" ng-class="selectedClass(reaction)">Reaction {{ capitalizeFirstLetter(reaction.reaction.title) }} for {{ reaction.reaction.elem.element_title }}</a>
+        <a ng-click="reactionSelect(reaction)" ng-class="selectedClass(reaction)"><h3>{{ reaction.reaction.elem.element_title }} : {{ capitalizeFirstLetter(reaction.reaction.title) }}</h3></a>
 
-        <span class="reaction_list__reaction__state_outs" ng-repeat="state_out in reaction.outs">
-        {{ stateOutAct(state_out) }} {{ state_out.state.title }} 
-        </span>
+        <ul class="reaction_list__reaction_in_group">
+          <!-- ins -->
+        </ul>
+        
+        <ul class="reaction_list__reaction_out_group">
+          <li class="reaction_list__reaction__state_outs" ng-repeat="state_out in reaction.outs">
+          {{ stateOutAct(state_out) }} {{ state_out.state.title }} 
+          </li>
+        </ul>
+        <a ng-click="reactionSelect(reaction)" ng-class="selectedClass(reaction)" class="triangle-reaction"><div class="triangle triangle-3"></div></a>
+        
     </li>
   </ul>
 
 
   <a ng-click="runFrom($parent.session.session.id)" class="btn btn-big btn-success">{{ 'RUN_FROM' | translate }}</a>
-  <a ng-click="haltSession($parent.session.session.id)" class="btn btn-big btn-danger" ng-show="isManagerVal">{{ 'TURN_DOWN' | translate }}</a>
+  <!--<a ng-click="haltSession($parent.session.session.id)" class="btn btn-big btn-danger" ng-show="isManagerVal">{{ 'TURN_DOWN' | translate }}</a>-->
 
 </div>
 <!--

@@ -38,7 +38,24 @@ $http.get('/bprocess/'+proc_id+'/station/'+station_id+'/around')
       });
 }
 
-
+$scope.cancelSession = function (session) {
+    $http({
+      url: '/bprocess/' + session.process.id + '/station/' + session.station.id + '/halt',
+      method: "POST",
+      data: {  }
+      })
+      .then(function(response) {
+        // success
+        $scope.bprocesses = BProcessesFactory.query();
+            $scope.bprocesses.$promise.then(function (processes) {
+                _.forEach(processes, function(proc) { TreeBuilder.buildFetch(proc, function(success){}); });
+            });
+      },
+      function(response) { // optional
+        // failed
+      }
+      );
+}
 
 
 
@@ -228,7 +245,7 @@ $scope.emptyElemCheck = function(col) {
   $scope.stations.$promise.then(function(data) {
     $scope.stations = _.forEach(data, function(d) { d.inlineLaunchShow = false; return d });
   });
-  $scope.bpElemLength = $http.get(jsRoutes.controllers.ProfileController.profile().absoluteURL(document.ssl_enabled) + 'bprocess/elems_length')
+  $scope.bpElemLength = $http.get(jsRoutes.controllers.ProfileController.dashboard().absoluteURL(document.ssl_enabled) + 'bprocess/elems_length')
           .success(function (data) {
               // Stores the token until the user closes the browser window.
               $scope.bpElemLength = data;

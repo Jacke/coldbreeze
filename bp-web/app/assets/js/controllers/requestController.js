@@ -244,7 +244,11 @@ $scope.reactionSelect = function (reaction) {
   }
 
 $scope.capitalizeFirstLetter = function (string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+    if (string != undefined) { 
+      return string.charAt(0).toUpperCase() + string.slice(1)
+    } else {
+      return ""
+    }
 }
 
 

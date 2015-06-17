@@ -1100,7 +1100,7 @@
         <addUniqueConstraint catalogName="minority1" columnNames="title" constraintName="title" deferrable="false" disabled="false" initiallyDeferred="false" schemaName="public" tableName="refs"/>
     </changeSet>
     <changeSet author="stan (generated)" id="1434047594022-46">
-        <addForeignKeyConstraint baseColumnNames="account_id" baseTableCatalogName="minority1" baseTableName="account_group" baseTableSchemaName="public" constraintName="acc_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="userId" referencedTableCatalogName="minority1" referencedTableName="accounts" referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="account_id" baseTableCatalogName="minority1" baseTableName="account_group" baseTableSchemaName="public" constraintName="acc_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="userId" referencedTableCatalogName="minority1" referencedTableName="accounts" referencedTableSchemaName="public"/>
     </changeSet>
     <changeSet author="stan (generated)" id="1434047594022-47">
         <addForeignKeyConstraint baseColumnNames="station_id" baseTableCatalogName="minority1" baseTableName="bploggers" baseTableSchemaName="public" constraintName="b_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="bpstations" referencedTableSchemaName="public"/>
@@ -1136,7 +1136,7 @@
         <addForeignKeyConstraint baseColumnNames="group_id" baseTableCatalogName="minority1" baseTableName="account_group" baseTableSchemaName="public" constraintName="group_FK" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="groups" referencedTableSchemaName="public"/>
     </changeSet>
     <changeSet author="stan (generated)" id="1434047594022-58">
-        <addForeignKeyConstraint baseColumnNames="master_acc" baseTableCatalogName="minority1" baseTableName="employees" baseTableSchemaName="public" constraintName="macc_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="userId" referencedTableCatalogName="minority1" referencedTableName="accounts" referencedTableSchemaName="public"/>
+        <addForeignKeyConstraint baseColumnNames="master_acc" baseTableCatalogName="minority1" baseTableName="employees" baseTableSchemaName="public" constraintName="macc_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="userId" referencedTableCatalogName="minority1" referencedTableName="accounts" referencedTableSchemaName="public"/>
     </changeSet>
     <changeSet author="stan (generated)" id="1434047594022-59">
         <addForeignKeyConstraint baseColumnNames="plan_id" baseTableCatalogName="minority1" baseTableName="account_plans" baseTableSchemaName="public" constraintName="plan_fk" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableCatalogName="minority1" referencedTableName="plans" referencedTableSchemaName="public"/>

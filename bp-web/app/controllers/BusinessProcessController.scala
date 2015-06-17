@@ -421,7 +421,7 @@ def deleteSpaceElem(bpID: Int, spelem_id: Int) = SecuredAction { implicit reques
 
 def element_topos(id: Int) = SecuredAction { implicit request => 
   val topologs_dto = ElemTopologDAO.findByBP(id)
-
+  println("topos:" + topologs_dto.length)
   val topologs:List[ElementTopology] = topologs_dto.filter(topo => topo.front_elem_id.isDefined).map { topolog =>
       val element = ProcElemDAO.findById(topolog.front_elem_id.get).get
       ElementTopology(topo_id = topolog.id.get, element_id = element.id.get, element_title = element.title, space_element = false)
