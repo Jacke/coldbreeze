@@ -40,7 +40,7 @@ $http.get('/bprocess/'+proc_id+'/station/'+station_id+'/around')
 
 $scope.cancelSession = function (session) {
     $http({
-      url: '/bprocess/' + session.process.id + '/station/' + session.station.id + '/halt',
+      url: '/bprocess/' + session.process.id + '/session/' + session.session.id + '/halt',
       method: "POST",
       data: {  }
       })

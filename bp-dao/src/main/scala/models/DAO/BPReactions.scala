@@ -72,10 +72,6 @@ object ReactionDAO {
        val reactions:List[UnitReaction] = findByBP(id)
        val state_outs = ReactionStateOutDAO.findByReactions(reactions.flatMap(_.id))
 
-       println("session_states " + session_states.length )
-       println("reactions " + reactions.length )
-       println("state_outs " + state_outs.length )
-
        val unapplied_reactions = reactions.filter { reaction =>
           val state_out = state_outs.filter(out => Some(out.reaction) == reaction.id)
           val session_state = session_states.find(state => state_out.map(_.state_ref).contains(state.origin_state.getOrElse(0)))//reaction.from_state == state.origin_state)
