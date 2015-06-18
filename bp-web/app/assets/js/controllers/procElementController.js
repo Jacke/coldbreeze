@@ -158,9 +158,9 @@ $scope.reloadResourcesForSession = function(session) {
     _.forEach(z.states, function(st){ return st.switches = _.filter($scope.switches, function(sw) { return sw.state_ref == st.origin_state }) });
     
     ///*if (z.b_type == "brick") {
-      z.spaces = _.filter(data.unitspace, function(s){ return s.brick_front == z.id;});
+      z.spaces = _.filter($scope.spaces, function(s){ return s.brick_front == z.id;});
         _.forEach(z.spaces, function(sp) { 
-              sp.spelems = _.filter(data.unitspaceelement, function(spelem){ 
+              sp.spelems = _.filter($scope.spaceelems, function(spelem){ 
                return spelem.ref_space_owned == sp.id; 
            }) 
         }); 
@@ -181,6 +181,7 @@ $scope.reloadResourcesForSession = function(session) {
  
  });
 }
+
 $scope.loadResources = function() {
   BPElemsFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(data) {
   BPSpacesFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(data2) {

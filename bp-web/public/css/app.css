@@ -268,6 +268,48 @@ table.permissions-table {
   color: #ffffff;
 }
 
+
+/* on-neutral */
+.state-thumbnail.on-neutral .neutral {display: inline;}
+.state-thumbnail.on-neutral .middleable {display: none;} 
+.state-thumbnail.on-neutral .oposite {display: none;}
+.state-thumbnail.on-neutral .ended {display: none;} 
+.state-thumbnail.on-neutral:hover .middleable {display: inline;}
+.state-thumbnail.on-neutral:hover .oposite {display: inline;}
+.state-thumbnail.on-neutral:hover .ended {display: inline;} 
+
+
+/* on-middleable*/
+.state-thumbnail.on-middleable .middleable {display: inline;}
+.state-thumbnail.on-middleable .neutral {display: none;}
+.state-thumbnail.on-middleable .oposite {display: none;}
+.state-thumbnail.on-middleable .ended {display: none;}
+.state-thumbnail.on-middleable:hover .neutral {display: inline;}
+.state-thumbnail.on-middleable:hover .oposite {display: inline;}
+.state-thumbnail.on-middleable:hover .ended {display: inline;}
+
+/* on-oposite */
+.state-thumbnail.on-oposite .oposite {display: inline;}
+.state-thumbnail.on-oposite .neutral {display: none;}
+.state-thumbnail.on-oposite .ended {display: none;}
+.state-thumbnail.on-oposite .middleable {display: none;}
+/* on-ended */
+.state-thumbnail.on-oposite:hover .neutral {display: inline;}
+.state-thumbnail.on-oposite:hover .ended {display: inline;}
+.state-thumbnail.on-oposite:hover .middleable {display: inline;}
+
+
+.state-thumbnail.on-ended .ended {display: inline;}
+.state-thumbnail.on-ended .oposite {display: none;}
+.state-thumbnail.on-ended .middleable {display: none;}
+.state-thumbnail.on-ended .neutral {display: none;}
+.state-thumbnail.on-ended:hover .oposite {display: inline;}
+.state-thumbnail.on-ended:hover .middleable {display: inline;}
+.state-thumbnail.on-ended:hover .neutral {display: inline;}
+
+
+
+
 /*
  
  Reflects

@@ -42,6 +42,7 @@
 <ul class="process-control" ng-show="isManagerVal">
  <!--<li><a href="" role="tab" class="createMin change ajaxLink cacheable" data-toggle="tab" ng:click="editProcess()"> {{ 'EDIT' | translate }} </a></li>-->
 <!-- <li><a class="allStation" href="/a#/bprocess/{{ bp.id }}/stations">{{ 'STATIONS' | translate }}</a></li> -->
+ <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="edit()">{{ 'EDIT' | translate }} </a></li>
  <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="perm()">{{ 'PEOPLE' | translate }} </a></li>
  <li><a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" ng-click="modalShare()">{{ 'SHARE' | translate }}</a></li>
 </ul>
@@ -198,7 +199,8 @@
                   <div class="middleable">{{ state.middle }}</div>
                   <div class="oposite">{{ state.oposite }}</div>
                   <div class="ended">{{ state.title }}</div>
-                  {{ stateDecoration(state) }} {{ switcherDecoration(switcher) }}
+                  <!-- {{ stateDecoration(state) }} {{ switcherDecoration(switcher) }} 
+                  -->
                 </div>
             </div>
             </div>      
