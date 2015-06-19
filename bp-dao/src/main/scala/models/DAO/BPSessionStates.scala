@@ -47,13 +47,13 @@ class BPSessionStates(tag: Tag) extends Table[BPSessionState](tag, "sessionstate
                                           space_id,
                                           origin_state,
            created_at, updated_at, lang, middle, middleable, oposite, opositable) <> (BPSessionState.tupled, BPSessionState.unapply)
-  def sesFK       = foreignKey("session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def procelemFK  = foreignKey("procelem_fk", front_elem_id, proc_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def spaceelemFK = foreignKey("spaceelem_fk", space_elem_id, SpaceElemDAO.space_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def spaceFK     = foreignKey("space_fk", space_id, BPSpaceDAO.bpspaces)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def stateFK     = foreignKey("state_fk", origin_state, BPStateDAO.bpstates)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def sesFK       = foreignKey("s_st_session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def procelemFK  = foreignKey("s_st_procelem_fk", front_elem_id, proc_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def spaceelemFK = foreignKey("s_st_spaceelem_fk", space_elem_id, SpaceElemDAO.space_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def spaceFK     = foreignKey("s_st_space_fk", space_id, BPSpaceDAO.bpspaces)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def stateFK     = foreignKey("s_st_state_fk", origin_state, BPStateDAO.bpstates)(_.id, onDelete = ForeignKeyAction.Cascade)
 
-  def bpFK        = foreignKey("bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK        = foreignKey("s_st_bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
  
 }
 

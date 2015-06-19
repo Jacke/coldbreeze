@@ -37,10 +37,10 @@ class StateRefs(tag: Tag) extends Table[BPStateRef](tag, "state_refs") {
   def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")  
 
-  def reflectFK   = foreignKey("reflect_fk", reflection, models.DAO.reflect.RefDAO.refs)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def ref_procelemFK  = foreignKey("ref_procelem_fk", front_elem_id, ProcElemReflectionDAO.proc_element_reflections)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def ref_spaceelemFK = foreignKey("ref_spaceelem_fk", space_elem_id, SpaceElementReflectionDAO.space_element_reflections)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def spaceFK         = foreignKey("ref_space_fk", space_elem_id, SpaceReflectionDAO.space_refs)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def reflectFK       = foreignKey("st_ref_reflect_fk", reflection, models.DAO.reflect.RefDAO.refs)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def ref_procelemFK  = foreignKey("st_ref_ref_procelem_fk", front_elem_id, ProcElemReflectionDAO.proc_element_reflections)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def ref_spaceelemFK = foreignKey("st_ref_ref_spaceelem_fk", space_elem_id, SpaceElementReflectionDAO.space_element_reflections)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def spaceFK         = foreignKey("st_ref_ref_space_fk", space_elem_id, SpaceReflectionDAO.space_refs)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def lang        = column[String]("lang", O.Default("en"))  
 /*

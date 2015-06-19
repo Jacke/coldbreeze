@@ -13,7 +13,7 @@ class AdminAccounts(tag: Tag) extends Table[AdminAccountDTO](tag, "admin_account
   def account_id  = column[String]("account_id")
   def sudo        = column[Boolean]("sudo")
   
-  def maccFK      = foreignKey("macc_fk", account_id, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
+  def maccFK      = foreignKey("ad_acc_macc_fk", account_id, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?, account_id, sudo) <> (AdminAccountDTO.tupled, AdminAccountDTO.unapply)
 

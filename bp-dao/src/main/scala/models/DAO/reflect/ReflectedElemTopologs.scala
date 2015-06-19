@@ -25,11 +25,10 @@ class ReflectElemTopologs(tag: Tag) extends Table[RefElemTopology](tag, "reflect
           hash,
            created_at, updated_at,space_id) <> (RefElemTopology.tupled, RefElemTopology.unapply)
 
-  def reflectFK      = foreignKey("reflect_fk", reflection, models.DAO.reflect.RefDAO.refs)(_.id, onDelete = ForeignKeyAction.Cascade)
-
-  def ref_procelemFK = foreignKey("ref_procelem_fk", front_elem_id, ProcElemReflectionDAO.proc_element_reflections)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def ref_spaceelemFK= foreignKey("ref_spaceelem_fk", space_elem_id, SpaceElementReflectionDAO.space_element_reflections)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def spaceFK        = foreignKey("ref_space_fk", space_id, SpaceReflectionDAO.space_refs)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def reflectFK      = foreignKey("ref_topo_reflect_fk", reflection, models.DAO.reflect.RefDAO.refs)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def ref_procelemFK = foreignKey("ref_topo_procelem_fk", front_elem_id, ProcElemReflectionDAO.proc_element_reflections)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def ref_spaceelemFK= foreignKey("ref_topo_spaceelem_fk", space_elem_id, SpaceElementReflectionDAO.space_element_reflections)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def spaceFK        = foreignKey("ref_topo_space_fk", space_id, SpaceReflectionDAO.space_refs)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }
 case class RefElemTopology(id: Option[Int], 

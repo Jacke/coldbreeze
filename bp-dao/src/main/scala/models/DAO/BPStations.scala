@@ -33,7 +33,7 @@ class BPStations(tag: Tag) extends Table[BPStationDTO](tag, "bpstations") {
   def updated_at    = column[Option[org.joda.time.DateTime]]("updated_at")  
   def session       = column[Int]("session_id")
   def front         = column[Boolean]("front")
-  def sesFK         = foreignKey("session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def sesFK         = foreignKey("station_session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?,
     process,

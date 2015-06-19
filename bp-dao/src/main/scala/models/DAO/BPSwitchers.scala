@@ -39,8 +39,8 @@ target,
 override_group,
 created_at, updated_at) <> (UnitSwitcher.tupled, UnitSwitcher.unapply)
 
-def stateFK             = foreignKey("statefk", state, models.DAO.BPStateDAO.bpstates)(_.id, onDelete = ForeignKeyAction.Cascade)
-def session_state_refFK = foreignKey("session_state_fk", session_state, BPSessionStateDAO.sessionstates)(_.id, onDelete = ForeignKeyAction.Cascade)
+def stateFK             = foreignKey("sw_statefk", state, models.DAO.BPStateDAO.bpstates)(_.id, onDelete = ForeignKeyAction.Cascade)
+def session_state_refFK = foreignKey("sw_session_state_fk", session_state, BPSessionStateDAO.sessionstates)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }
 

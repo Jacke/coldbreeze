@@ -13,7 +13,7 @@ class Bills(tag: Tag) extends Table[BillDTO](tag, "bills") {
   def assigned    = column[DateTime]("assigned")
   def approved    = column[Boolean]("approved")
 
-  def accFK = foreignKey("macc_fk", master_acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
+  def accFK = foreignKey("bill_macc_fk", master_acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
 
 
   def * = (id.?, title, master_acc, assigned, approved) <> (BillDTO.tupled, BillDTO.unapply)

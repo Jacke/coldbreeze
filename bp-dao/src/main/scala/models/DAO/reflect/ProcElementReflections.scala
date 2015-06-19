@@ -29,7 +29,7 @@ class ProcElementReflections(tag: Tag) extends Table[UnitElementRef](tag, "proc_
   def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")  
   
-  def reflectFK   = foreignKey("reflect_fk", reflection, models.DAO.reflect.RefDAO.refs)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def reflectFK   = foreignKey("pr_elem_ref_reflect_fk", reflection, models.DAO.reflect.RefDAO.refs)(_.id, onDelete = ForeignKeyAction.Cascade)
   
   /*
 id: Option[Int],

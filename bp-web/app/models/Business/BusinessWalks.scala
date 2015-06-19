@@ -10,7 +10,7 @@ class BusinessWalks(tag: Tag) extends Table[BusinessWalkDTO](tag, "business_walk
     
     
 
-  def businesswalkFK = foreignKey("businesswalk_fk", business_id, models.DAO.resources.web.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def businesswalkFK = foreignKey("bwalk_business_fk", business_id, models.DAO.resources.web.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?, business_id) <> (BusinessWalkDTO.tupled, BusinessWalkDTO.unapply)
 

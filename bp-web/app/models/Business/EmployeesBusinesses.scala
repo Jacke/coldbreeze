@@ -11,8 +11,8 @@ class EmployeesBusinesses(tag: Tag) extends Table[(Int, Int)](tag, "employees_bu
   def employee_id = column[Int]("employee_id")
   def business_id = column[Int]("business_id")
   
-  def employeeFK = foreignKey("employee_fk", employee_id, models.DAO.resources.EmployeeDAO.employees)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def businessFK = foreignKey("business_fk", business_id, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def employeeFK = foreignKey("emp_biz_employee_fk", employee_id, models.DAO.resources.EmployeeDAO.employees)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def businessFK = foreignKey("emp_biz_business_fk", business_id, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (employee_id, business_id) //<> (Supplier.tupled, Supplier.unapply)
 

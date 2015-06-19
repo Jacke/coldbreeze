@@ -184,6 +184,15 @@ $scope.unlisted = function (session) {
       );
 }
 
+$scope.showInlineLaunch = function (session) {
+  if (session.inlineLaunchShow) {
+    session.inlineLaunchShow = false;
+  } else {
+    session.inlineLaunchShow = true;
+  }
+  return session;
+}
+
 
 $scope.haltStation = function (stationId) {
   var bpId = $route.current.params.BPid ;
@@ -253,7 +262,7 @@ $scope.loadSession = function () {
 $scope.sessions = BPSessionsFactory.query({ BPid: $route.current.params.BPid });
 $scope.sessions.$promise.then(function (data2) {
     $scope.sessions = data2;
-    _.forEach(data2.sessions, function(session) { return session.session.station = session.station });
+    _.forEach(data2.sessions, function(session) { session.station.inlineLaunchShow = false ;return session.session.station = session.station });
     $scope.bprocess = data2.process;
     TreeBuilder.buildFetch(data2.process, function(success){});
     //_.forEach(data2, function(d){ return TreeBuilder.buildFetch(d.process, function(success){}); });

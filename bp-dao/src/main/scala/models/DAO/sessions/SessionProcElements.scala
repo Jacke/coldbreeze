@@ -1,22 +1,23 @@
-package models.DAO
 
+package models.DAO.sessions
 import models.DAO.driver.MyPostgresDriver.simple._
 import slick.model.ForeignKeyAction
 import com.github.nscala_time.time.Imports._
 import models.DAO.BPDAO._
 import models.DAO.resources.BusinessDTO._
-//import com.github.tminglei.slickpg.composite._
 import models.DAO.conversion.{DatabaseCred, Implicits}
 import main.scala.simple_parts.process.Units._
+
 import main.scala.simple_parts.process.data.{Confirm, Constant}
 
-class ProcElements(tag: Tag) extends Table[UndefElement](tag, "proc_elements") {
+class SessionProcElements(tag: Tag) extends Table[SessionUndefElement](tag, "session_proc_elements") {
 
   def id        = column[Int]("id", O.PrimaryKey, O.AutoInc) // This is the primary key column
   def title     = column[String]("title")
   def desc      = column[String]("desc")
   def business  = column[Int]("business_id")
   def bprocess  = column[Int]("bprocess_id")
+  def session   = column[Int]("session_id")
   def b_type    = column[String]("b_type")
   def type_title= column[String]("type_title")
 
@@ -28,32 +29,27 @@ class ProcElements(tag: Tag) extends Table[UndefElement](tag, "proc_elements") {
   def created_at= column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at= column[Option[org.joda.time.DateTime]]("updated_at")  
     
-  def * = (id.?, title, desc, business, bprocess, b_type, type_title, space_own, order,
-           created_at, updated_at) <> (UndefElement.tupled, UndefElement.unapply)
+  def * = (id.?, title, desc, business, bprocess, session, b_type, type_title, space_own, order,
+           created_at, updated_at) <> (SessionUndefElement.tupled, SessionUndefElement.unapply)
 
-  def businessFK = foreignKey("pr_elem_business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def bpFK       = foreignKey("pr_elem_bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def businessFK = foreignKey("s_proc_el_business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK       = foreignKey("s_proc_el_bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def sessionFK  = foreignKey("s_proc_el_session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
+
 }
 
- case class CompositeValues(
-                              a_string: Option[String] = None,
-                              b_string: Option[String] = None,
-                              a_int: Option[Int] = None,
-                              b_int: Option[Int] = None,
-                              a_bool: Option[Boolean] = None,
-                              b_bool: Option[Boolean] = None
-                           )// extends Struct
 import main.scala.simple_parts.process._
 import main.scala.bprocesses._
 
 /*
   Case class
  */
-case class UndefElement(id: Option[Int],
+case class SessionUndefElement(id: Option[Int],
                         title:String,
                         desc:String,
                         business:Int,
                         bprocess:Int,
+                        session: Int,
                         b_type:String,
                         type_title:String,
                         space_own:Option[Int],
@@ -62,7 +58,7 @@ case class UndefElement(id: Option[Int],
 created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
 updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
   
-  
+  /*
 
   def cast(process: BProcess):Option[ProcElems] = { 
 // TODO: to space casting 
@@ -93,67 +89,28 @@ updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
     }
   
   }
-}
-
-/*
-  DataConversion
- */
-object ProcElemDCO {
-  def conv(el: UnitElement): UndefElement = {
-    UndefElement(None,
-                        el.title,
-                        el.desc,
-                        el.business,
-                        el.bprocess,
-                        el.b_type,
-                        el.type_title,
-                        el.space_own,
-                        el.order,
-                        el.created_at,
-                        el.updated_at)
-  }
-  def conv_nested(el: UnitElement, space_own:Option[Int], space_owned:Int): SpaceElementDTO = {
-    SpaceElementDTO(None,
-                        el.title,
-                        el.desc,
-                        el.business,
-                        el.bprocess,
-                        el.b_type,
-                        el.type_title,
-                        space_own,
-                        space_owned,
-                        space_role = None, // TODO: May change sometime
-                        el.order,
-                        el.created_at,
-                        el.updated_at)
-  }
-  
+*/
 }
 
 
-case class KeeprDAO(eltype:String, elname:String, desc:String)
-
-/**
- * Actions
- */
-object ProcElemDAO {
+object SessionProcElementDAO {
   import DatabaseCred.database
   import models.DAO.BPDAO.bprocesses
 
 
-  val proc_elements = TableQuery[ProcElements]
+  val session_proc_elements = TableQuery[SessionProcElements]
   /**
    * Find a specific entity by id.
    */
   def findByBPId(id: Int) = {
     database withSession { implicit session =>
-     val q3 = for { el ← proc_elements if el.bprocess === id } yield el
+     val q3 = for { el ← session_proc_elements if el.bprocess === id } yield el
       q3.list 
     }
   }
   def lastOrderOfBP(id: Int):Int = {
     database withSession { implicit session =>
-       val q3 = for { el ← proc_elements if el.bprocess === id } yield el
+       val q3 = for { el ← session_proc_elements if el.bprocess === id } yield el
        val xs = q3.list.map(_.order)
       if (xs.isEmpty) 1
       else xs.max + 1
@@ -161,31 +118,31 @@ object ProcElemDAO {
   }
   def findLengthByBPId(id: Int):Int = {
     database withSession { implicit session => 
-       val q3 = for { el ← proc_elements if el.bprocess === id } yield el
+       val q3 = for { el ← session_proc_elements if el.bprocess === id } yield el
       Query(q3.length).first
     }
   }
-  def findById(id: Int):Option[UndefElement] = {
+  def findById(id: Int):Option[SessionUndefElement] = {
     database withSession { implicit session =>
-     val q3 = for { el ← proc_elements if el.id === id } yield el 
+     val q3 = for { el ← session_proc_elements if el.id === id } yield el 
       q3.list.headOption
     }
   }
   def findByBPanOrder(id: Int, order: Int) = {
     database withSession { implicit session =>
-     val q3 = for { el ← proc_elements if el.bprocess === id; if el.order === order } yield el
+     val q3 = for { el ← session_proc_elements if el.bprocess === id; if el.order === order } yield el
       q3.list.headOption 
     }
   }
-  def pull_object(s: UndefElement) = database withSession {
+  def pull_object(s: SessionUndefElement) = database withSession {
     implicit session ⇒
-      proc_elements returning proc_elements.map(_.id) += s
+      session_proc_elements returning session_proc_elements.map(_.id) += s
   }
-  def update(id: Int, entity: UndefElement):Boolean = {
+  def update(id: Int, entity: SessionUndefElement):Boolean = {
     database withSession { implicit session =>
       findById(id) match {
       case Some(e) => {
-        proc_elements.filter(_.id === id).update(entity)
+        session_proc_elements.filter(_.id === id).update(entity)
         true
       }
       case None => false
@@ -194,14 +151,14 @@ object ProcElemDAO {
   }
   def getAll = database withSession {
     implicit session ⇒ 
-      val q3 = for { s ← proc_elements } yield s
+      val q3 = for { s ← session_proc_elements } yield s
       q3.list.sortBy(_.id)
   }
   def delete(id: Int) = { 
     database withSession { implicit session ⇒
 
     val elem = findById(id)
-    val res = proc_elements.filter(_.id === id).delete
+    val res = session_proc_elements.filter(_.id === id).delete
     elem match {
        case Some(el) => renewOrder(el.bprocess, el.order)
        case _ =>
@@ -215,9 +172,9 @@ object ProcElemDAO {
       findById(element_id) match {
         case Some(e) => { 
           if (e.order > 1 && e.order != minimum.head.order) {
-            proc_elements.filter(_.id === element_id).update(e.copy(order = e.order - 1))
+            session_proc_elements.filter(_.id === element_id).update(e.copy(order = e.order - 1))
             val ch = findById(minimum.find(_.order == (e.order - 1)).get.id.get).get
-            proc_elements.filter(_.id === minimum.find(_.order == (e.order - 1)).get.id.get).update(ch.copy(order = ch.order + 1))
+            session_proc_elements.filter(_.id === minimum.find(_.order == (e.order - 1)).get.id.get).update(ch.copy(order = ch.order + 1))
           }
           true 
         }
@@ -231,9 +188,9 @@ object ProcElemDAO {
       findById(element_id) match {
         case Some(e) => { 
           if (e.order < maximum.last.order && e.order != maximum.last.order) {
-            proc_elements.filter(_.id === element_id).update(e.copy(order = e.order + 1))
+            session_proc_elements.filter(_.id === element_id).update(e.copy(order = e.order + 1))
             val ch = findById(maximum.find(_.order == (e.order + 1)).get.id.get).get
-            proc_elements.filter(_.id === maximum.find(_.order == (e.order + 1)).get.id.get).update(ch.copy(order = ch.order - 1))
+            session_proc_elements.filter(_.id === maximum.find(_.order == (e.order + 1)).get.id.get).update(ch.copy(order = ch.order - 1))
           }
           true 
         }
@@ -254,7 +211,7 @@ object ProcElemDAO {
 */
   def renewOrder(bprocess: Int, order_num: Int) = {
     database withSession { implicit session ⇒
-      val q3 = for { el ← proc_elements if el.bprocess === bprocess && el.order > order_num } yield el
+      val q3 = for { el ← session_proc_elements if el.bprocess === bprocess && el.order > order_num } yield el
       val ordered = q3.list.zipWithIndex.map(el => el._1.copy(order = (el._2 + 1) + (order_num - 1)))
       ordered.foreach { el => 
          update(el.id.get, el)
@@ -263,7 +220,7 @@ object ProcElemDAO {
     
 /*
 
-    proc_elements.filter(_.bprocess === bprocess && _.order > order_num)
+    session_proc_elements.filter(_.bprocess === bprocess && _.order > order_num)
      .map(x => x.order)
      .update(_ + 1)
 
@@ -274,13 +231,13 @@ object ProcElemDAO {
   def ddl_create = {
     database withSession {
       implicit session =>
-      proc_elements.ddl.create
+      session_proc_elements.ddl.create
     }
   }
   def ddl_drop = {
     database withSession {
       implicit session =>
-        proc_elements.ddl.drop
+        session_proc_elements.ddl.drop
     }
   }
   /**
@@ -289,7 +246,7 @@ object ProcElemDAO {
   //def delete(id: Int):Boolean =
   //  database withSession { implicit session =>
   //  findById(id) match {
-  //    case Some(entity) => { proc_elements.filter(_.id === id).delete; true }
+  //    case Some(entity) => { session_proc_elements.filter(_.id === id).delete; true }
   //    case None => false
   //  }
   //  }
@@ -300,7 +257,7 @@ object ProcElemDAO {
   //def update(id: Int, entity: (Option[Int], String, String, Int, Int, String, String, Int)):Boolean = {
   //  database withSession { implicit session =>
   //    findById(id) match {
-  //    case Some(e) => { proc_elements.filter(_.id === id).update(entity); true }
+  //    case Some(e) => { session_proc_elements.filter(_.id === id).update(entity); true }
   //    case None => false
   //    }
   //  }

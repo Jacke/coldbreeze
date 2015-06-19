@@ -14,9 +14,9 @@ class AccountPlans(tag: Tag) extends Table[AccountPlanDTO](tag, "account_plans")
   def plan        = column[Int]("plan_id") 
   def expired_at  = column[DateTime]("expired_at")
 
-  def planFK      = foreignKey("plan_fk", plan, models.DAO.resources.PlanDAO.plans)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def accFK       = foreignKey("macc_fk", master_acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
-  def business    = foreignKey("buss_fk", business_id, models.DAO.resources.BusinessDAO.businesses)(_.id)
+  def planFK      = foreignKey("acc_plan_plan_fk", plan, models.DAO.resources.PlanDAO.plans)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def accFK       = foreignKey("acc_plan_macc_fk", master_acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
+  def business    = foreignKey("acc_plan_buss_fk", business_id, models.DAO.resources.BusinessDAO.businesses)(_.id)
 
   def planJoin    = models.DAO.resources.PlanDAO.plans.filter(_.id === plan)
 

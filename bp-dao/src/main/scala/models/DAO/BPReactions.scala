@@ -27,9 +27,9 @@ class ReactionRefs(tag: Tag) extends Table[UnitReaction](tag, "reactions") {
   def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")  
 
-  def elementFK   = foreignKey("element_fk", element, models.DAO.ElemTopologDAO.elem_topologs)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def bpFK        = foreignKey("bprocess_fk", bprocess, bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def state_FK    = foreignKey("state_fk", from_state, models.DAO.BPStateDAO.bpstates)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def elementFK   = foreignKey("react_element_fk", element, models.DAO.ElemTopologDAO.elem_topologs)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK        = foreignKey("react_bprocess_fk", bprocess, bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def state_FK    = foreignKey("react_state_fk", from_state, models.DAO.BPStateDAO.bpstates)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?, 
            bprocess, 
@@ -147,8 +147,8 @@ class ReactionStateOuts(tag: Tag) extends Table[UnitReactionStateOut](tag, "reac
     on_rate,
     created_at, updated_at) <> (UnitReactionStateOut.tupled, UnitReactionStateOut.unapply)
 
-  def reaction_FK = foreignKey("reaction_fk", reaction, models.DAO.ReactionDAO.reactions)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def state_FK = foreignKey("state_fk", state, models.DAO.BPStateDAO.bpstates)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def reaction_FK = foreignKey("react_out_reaction_fk", reaction, models.DAO.ReactionDAO.reactions)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def state_FK    = foreignKey("react_out_state_fk", state, models.DAO.BPStateDAO.bpstates)(_.id, onDelete = ForeignKeyAction.Cascade)
 //def session_state_refFK = foreignKey("session_state_ref_fk", session_state_ref, SpaceElementReflectionDAO.space_element_reflections)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }

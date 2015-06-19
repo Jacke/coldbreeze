@@ -20,7 +20,7 @@ import com.typesafe.scalalogging._
 
 class Refs(tag: Tag) extends Table[Ref](tag, "refs") {
   def id      = column[Int]("id", O.PrimaryKey, O.AutoInc) 
-  def title   = column[String]("title", O.PrimaryKey)
+  def title   = column[String]("title")
   def host    = column[String]("host")
   def desc    = column[Option[String]]("desc")
   def category= column[String]("category", O.Default("Base"))

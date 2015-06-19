@@ -118,6 +118,40 @@
 		margin-top: 15px;
 	}
 }
+  @include b(session_controls) {
+  display: block;
+  margin-top: 30px;
+  float: right;
+  width: 122px;
+  height: 44px;
+
+    span.pin_session {
+  font-size: 20px;
+  display: inline-block;
+  width: 22px;
+  color: #ababab;
+  margin-right: 20px;
+}
+     span.pin_session.pinned {
+        color: black;
+     }
+}
+
+.stations.input-stations {
+    background-color: rgb(61, 63, 85);
+    margin-left: 0px;
+    padding-left: 20px;
+    padding-top: 1px;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+}
+
+.stations .inline-launch .container {
+    padding-left: 0px;
+    margin-top: 0px;
+}
+
+
 
 @include b(dashboard_sessions) {
 	@include b(session_header) {
@@ -128,6 +162,8 @@
 			}
 		}
 	}
+
+
     @include e(element){
         font-size: 14px;
     };
@@ -187,7 +223,7 @@
 
 .session-process .session__header {
     display: inline-block;
-    width: 40%;
+    width: 35%;
 }
 
 .session-process .progress {

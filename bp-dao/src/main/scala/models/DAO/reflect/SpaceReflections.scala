@@ -29,7 +29,7 @@ class SpaceReflections(tag: Tag) extends Table[UnitSpaceRef](tag, "space_refs") 
   def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")  
     
     
-  def reflectFK   = foreignKey("reflect_fk", reflection, models.DAO.reflect.RefDAO.refs)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def reflectFK   = foreignKey("sp_ref_reflect_fk", reflection, models.DAO.reflect.RefDAO.refs)(_.id, onDelete = ForeignKeyAction.Cascade)
 
     
   def * = (id.?, 

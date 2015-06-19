@@ -32,10 +32,10 @@ class ElemTopologs(tag: Tag) extends Table[ElemTopology](tag, "elem_topologs") {
           hash,
            created_at, updated_at, space_id) <> (ElemTopology.tupled, ElemTopology.unapply)
 
-  def bpFK        = foreignKey("bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def procelemFK  = foreignKey("procelem_fk", front_elem_id, proc_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def spaceelemFK = foreignKey("spaceelem_fk", space_elem_id, SpaceElemDAO.space_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def spaceFK     = foreignKey("bpspace_fk", space_id, models.DAO.BPSpaceDAO.bpspaces)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK        = foreignKey("topo_bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def procelemFK  = foreignKey("topo_procelem_fk", front_elem_id, proc_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def spaceelemFK = foreignKey("topo_spaceelem_fk", space_elem_id, SpaceElemDAO.space_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def spaceFK     = foreignKey("topo_bpspace_fk", space_id, models.DAO.BPSpaceDAO.bpspaces)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }
 

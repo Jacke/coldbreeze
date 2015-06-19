@@ -19,8 +19,8 @@ class ProcessHistories(tag: Tag) extends Table[ProcessHistoryDTO](tag, "process_
   def action   = column[String]("action")
   def what     = column[Option[String]]("what")
 
-  def bpFK     = foreignKey("bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def accFK    = foreignKey("macc_fk", master_acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
+  def bpFK     = foreignKey("pr_hist_bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def accFK    = foreignKey("pr_hist_macc_fk", master_acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
 
 
   def * = (id.?, master_acc, bprocess, action, date, what) <> (ProcessHistoryDTO.tupled, ProcessHistoryDTO.unapply)

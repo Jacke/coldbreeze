@@ -13,8 +13,8 @@ class ClientsBusinesses(tag: Tag) extends Table[(Int, Int)](tag, "clients_busine
   def client_id   = column[Int]("client_id")
   def business_id = column[Int]("business_id")
   
-  def clientFK   = foreignKey("client_fk", client_id, clients)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def businessFK = foreignKey("business_fk", business_id, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def clientFK   = foreignKey("cl_biz_client_fk", client_id, clients)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def businessFK = foreignKey("cl_biz_business_fk", business_id, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (client_id, business_id) 
 

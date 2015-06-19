@@ -1,5 +1,4 @@
-package models.DAO
-
+package models.DAO.sessions
 import main.scala.bprocesses.BProcess
 import main.scala.simple_parts.process.{Block, ProcElems}
 import models.DAO.driver.MyPostgresDriver.simple._
@@ -13,12 +12,13 @@ import main.scala.simple_parts.process.ContainerBrick
 import main.scala.utils.Space
 import main.scala.simple_parts.process.Units._
 
-class SpaceElements(tag: Tag) extends Table[SpaceElementDTO](tag, "space_elements") {
+class SessionSpaceElements(tag: Tag) extends Table[SessionSpaceElementDTO](tag, "session_space_elements") {
   def id        = column[Int]("id", O.PrimaryKey, O.AutoInc) // This is the primary key column
   def title     = column[String]("title")
   def desc      = column[String]("desc")
   def business  = column[Int]("business_id")
   def bprocess  = column[Int]("bprocess_id")
+  def session   = column[Int]("session_id")
   def b_type    = column[String]("b_type")
   def type_title= column[String]("type_title")
 
@@ -33,14 +33,15 @@ class SpaceElements(tag: Tag) extends Table[SpaceElementDTO](tag, "space_element
   def updated_at= column[Option[org.joda.time.DateTime]]("updated_at")  
     
   def * = (id.?, title, desc,  business,
-           bprocess,   b_type, type_title,
+           bprocess, session,  b_type, type_title,
            space_own,  space_owned,
            space_role, order,
-           created_at, updated_at) <> (SpaceElementDTO.tupled, SpaceElementDTO.unapply)
+           created_at, updated_at) <> (SessionSpaceElementDTO.tupled, SessionSpaceElementDTO.unapply)
 
-  def businessFK = foreignKey("sp_elem_business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def bpFK       = foreignKey("sp_elem_bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def spaceFK    = foreignKey("sp_elem_bpspace_fk", space_owned, models.DAO.BPSpaceDAO.bpspaces)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def businessFK = foreignKey("s_sp_el_business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK       = foreignKey("s_sp_el_bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def spaceFK    = foreignKey("s_sp_el_session_space_fk", space_owned, models.DAO.sessions.SessionSpaceDAO.session_spaces)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def sessionFK  = foreignKey("s_sp_el_session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }
 
@@ -48,11 +49,12 @@ class SpaceElements(tag: Tag) extends Table[SpaceElementDTO](tag, "space_element
   Case class
  */
 
-case class SpaceElementDTO(id: Option[Int],
+case class SessionSpaceElementDTO(id: Option[Int],
                         title:String,
                         desc:String,
                         business:Int,
                         bprocess:Int,
+                        session: Int,
                         b_type:String,
                         type_title:String,
                         space_own:Option[Int],
@@ -61,6 +63,7 @@ case class SpaceElementDTO(id: Option[Int],
                         order:Int,
 created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
 updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
+	/*
   
   def cast(process: BProcess, space_dto: BPSpaceDTO):Option[ProcElems] = {
     this match {
@@ -143,60 +146,15 @@ updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
     }
 
   }
+*/
 }
 
-
-/*
-  DataConversion
- */
-object SpaceElemDCO {
-
-  def conv(el: main.scala.bprocesses.refs.UnitRefs.UnitSpaceElementRef, business: Int, process: Int, space_own:Option[Int], space_owned: Int): UnitSpaceElement = {
-    UnitSpaceElement(
-None,
-                        el.title,
-                        el.desc,
-                        business,
-                        process,
-                        el.b_type,
-                        el.type_title,
-                        space_own,
-                        space_owned,
-                        space_role = Some("container"),
-                        el.order,
-                        el.created_at,
-                        el.updated_at 
-                        )
-  }
-  def conv2(el: main.scala.bprocesses.refs.UnitRefs.UnitSpaceElementRef, business: Int, process: Int, space_own:Option[Int], space_owned: Int): SpaceElementDTO = {
-    SpaceElementDTO(
-None,
-                        el.title,
-                        el.desc,
-                        business,
-                        process,
-                        el.b_type,
-                        el.type_title,
-                        space_own,
-                        space_owned,
-                        space_role = Some("container"),
-                        el.order,
-                        el.created_at,
-                        el.updated_at 
-                        )
-  }
-}
-
-
-/**
- * Actions
- */
-object SpaceElemDAO {
+object SessionSpaceElemDAO {
   import DatabaseCred.database
   import models.DAO.BPDAO.bprocesses
 
 
-  val space_elements = TableQuery[SpaceElements]
+  val space_elements = TableQuery[SessionSpaceElements]
   /**
    * Find a specific entity by id.
    */
@@ -220,7 +178,7 @@ object SpaceElemDAO {
      q3.list
     }
   }
-  def findById(id: Int):Option[SpaceElementDTO] = {
+  def findById(id: Int):Option[SessionSpaceElementDTO] = {
     database withSession { implicit session =>
       val q3 = for { el ← space_elements if el.id === id } yield el
       q3.list.headOption
@@ -239,7 +197,7 @@ object SpaceElemDAO {
       q3.list.headOption
     }
   }
-  def pull_object(s: SpaceElementDTO) = database withSession {
+  def pull_object(s: SessionSpaceElementDTO) = database withSession {
     implicit session ⇒
       space_elements returning space_elements.map(_.id) += s
   }
@@ -255,7 +213,7 @@ object SpaceElemDAO {
         space_elements.ddl.drop
     }
   }
-  def update(id: Int, entity: SpaceElementDTO):Boolean = {
+  def update(id: Int, entity: SessionSpaceElementDTO):Boolean = {
     database withSession { implicit session =>
       findById(id) match {
         case Some(e) => { space_elements.filter(_.id === id).update(entity); true }

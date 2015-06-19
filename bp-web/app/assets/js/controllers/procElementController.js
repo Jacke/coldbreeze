@@ -1138,32 +1138,47 @@ $scope.stateActiveClass = function(state) {
                   //<div class="middleable">{{ state.middle }}</div>
                   //<div class="oposite">{{ state.oposite }}</div>
                   //<div class="ended">{{ state.title }}</div>
-  var prefx = "on-";
-
-  if (state) {
-    return prefx + "neutral";
+/*
+  if (state != undefined) {
+  if (state.on) {
+    if (state.on_rate < 100) { return "yell";}
+    if (state.on_rate == 100) {return "green";}
   }
-  return prefx + "middleable";
-  return prefx + "oposite";
-  return prefx + "ended";
+  if (!state.on && $scope.inSession) {return "red";}
+  if (!state.on && !$scope.inSession) {return "";}
+  }
+*/
+  var prefx = "on-";
+  if (state != undefined) {
+      if (!state.on && state.on_rate == 0) {
+        return prefx + "neutral";
+      }
+      if (state.on) {
+        if (state.on_rate < 100) {
+          return prefx + "middleable";
+        }
+        if (state.on_rate == 100) {
+          return prefx + "ended";
+        }
 
+      }
+      if (!state.on) {
+        if (state.on_rate < 0) {
+           return prefx + "oposite";
+        }
+      }
+
+
+  }
 }
 $scope.stateClass = function(state) {
   if (state != undefined) {
   if (state.on) {
-    if (state.on_rate < 100) {
-      return "yell";
-    }
-    if (state.on_rate == 100) {
-      return "green";
-    }
+    if (state.on_rate < 100) { return "yell";}
+    if (state.on_rate == 100) {return "green";}
   }
-  if (!state.on && $scope.inSession) {
-    return "red";
-  }
-  if (!state.on && !$scope.inSession) {
-    return "";
-  }
+  if (!state.on && $scope.inSession) {return "red";}
+  if (!state.on && !$scope.inSession) {return "";}
   }
 }
 

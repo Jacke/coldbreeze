@@ -14,7 +14,7 @@ class Groups(tag: Tag) extends Table[GroupDTO](tag, "groups") {
   def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")
 
-  def businessFK  = foreignKey("business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def businessFK  = foreignKey("group_business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?, title, business,  created_at, updated_at) <> (GroupDTO.tupled, GroupDTO.unapply)
 }
@@ -26,8 +26,8 @@ class AccountGroup(tag: Tag) extends Table[AccoutGroupDTO](tag, "account_group")
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")
 
-  def accFK    = foreignKey("acc_fk", account_id, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade, onUpdate = ForeignKeyAction.Cascade)
-  def group_FK = foreignKey("group_FK", group_id, models.DAO.resources.GroupsDAO.groups)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def accFK    = foreignKey("acc_group_acc_fk", account_id, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade, onUpdate = ForeignKeyAction.Cascade)
+  def group_FK = foreignKey("acc_group_group_FK", group_id, models.DAO.resources.GroupsDAO.groups)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?, account_id, group_id, created_at, updated_at) <> (AccoutGroupDTO.tupled, AccoutGroupDTO.unapply)
 }

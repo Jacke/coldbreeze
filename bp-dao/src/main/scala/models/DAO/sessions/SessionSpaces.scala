@@ -1,17 +1,15 @@
-package models.DAO
-
-//import slick.driver.PostgresDriver.simple._
+package models.DAO.sessions
 import models.DAO.driver.MyPostgresDriver1.simple._
-
 import com.github.nscala_time.time.Imports._
 import models.DAO.conversion.DatabaseCred
 import slick.model.ForeignKeyAction
 import main.scala.simple_parts.process.Units._
 import main.scala.bprocesses.refs.UnitRefs._  
 
-class BPSpaces(tag: Tag) extends Table[BPSpaceDTO](tag, "bpspaces") {
+class SessionSpaces(tag: Tag) extends Table[SessionSpaceDTO](tag, "session_spaces") {
   def id        = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def bprocess  = column[Int]("process_id")
+  def session   = column[Int]("session_id")
   def index     = column[Int]("index")
   def container = column[Boolean]("container", O.Default(false))
   def subbrick  = column[Boolean]("subbrick",  O.Default(false))
@@ -25,13 +23,15 @@ class BPSpaces(tag: Tag) extends Table[BPSpaceDTO](tag, "bpspaces") {
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
 
 
-  def * = (id.?, bprocess, index, container, subbrick, brick_front, brick_nested, nestingLevel,
-           created_at, updated_at) <> (BPSpaceDTO.tupled, BPSpaceDTO.unapply)
-  def bpFK = foreignKey("sp_bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def * = (id.?, bprocess, session, index, container, subbrick, brick_front, brick_nested, nestingLevel,
+           created_at, updated_at) <> (SessionSpaceDTO.tupled, SessionSpaceDTO.unapply)
+  def bpFK       = foreignKey("s_sp_bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def sessionFK  = foreignKey("s_sp_session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }
-case class BPSpaceDTO(id: Option[Int], 
+case class SessionSpaceDTO(id: Option[Int], 
                       bprocess: Int, 
+                      session: Int,
                       index:Int, 
                       container:Boolean, 
                       subbrick:Boolean, 
@@ -43,7 +43,7 @@ updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
   
 import main.scala.utils._
 import main.scala.bprocesses._
-
+/*
   // @example method, did not fully implemented. primary implementation in Builder object.
   def cast_nested(bprocess: BProcess, space_elems: List[SpaceElementDTO]):Option[Space] = { 
     val brick = bprocess.findNestedBricks().find(brick => brick.space_parent_id == id)
@@ -81,7 +81,9 @@ import main.scala.bprocesses._
     }
   
   }
+*/
 }
+/*
 object SpaceDCO {
   def conv(el: UnitSpaceRef, business: Int, process: Int, index: Int, brick_front: Int): BPSpaceDTO = {
     BPSpaceDTO(
@@ -98,19 +100,20 @@ el.updated_at
 )
   }
 }
+*/
 
-object BPSpaceDAO {
+object SessionSpaceDAO {
   import models.DAO.conversion.DatabaseCred._
-  val bpspaces = TableQuery[BPSpaces]
+  val session_spaces = TableQuery[SessionSpaces]
 
-  def pull_object(s: BPSpaceDTO) = database withSession {
+  def pull_object(s: SessionSpaceDTO) = database withSession {
     implicit session ⇒
-      bpspaces returning bpspaces.map(_.id) += s
+      session_spaces returning session_spaces.map(_.id) += s
   }
 
   def lastIndexOfSpace(id: Int) = database withSession {
     implicit session =>
-      val q3 = for { s ← bpspaces if s.id === id } yield s
+      val q3 = for { s ← session_spaces if s.id === id } yield s
       val xs = q3.list.map(_.index)
 
       if (xs.isEmpty) 1
@@ -118,22 +121,22 @@ object BPSpaceDAO {
   }
   def get(k: Int) = database withSession {
     implicit session ⇒
-      val q3 = for { s ← bpspaces if s.id === k } yield s
+      val q3 = for { s ← session_spaces if s.id === k } yield s
       q3.list.headOption //.map(Supplier.tupled(_))
   }
   def getAllByFront(k: Int) = database withSession {
     implicit session ⇒
-      val q3 = for { s ← bpspaces if s.brick_front === k } yield s
+      val q3 = for { s ← session_spaces if s.brick_front === k } yield s
       q3.list //.map(Supplier.tupled(_))
   }
   def getAllByNested(k: Int) = database withSession {
     implicit session ⇒
-      val q3 = for { s ← bpspaces if s.brick_nested === k } yield s
+      val q3 = for { s ← session_spaces if s.brick_nested === k } yield s
       q3.list //.map(Supplier.tupled(_))
   }
   def findByBPId(id: Int) = {
     database withSession { implicit session =>
-     val q3 = for { sp ← bpspaces if sp.bprocess === id } yield sp// <> (UndefElement.tupled, UndefElement.unapply _)
+     val q3 = for { sp ← session_spaces if sp.bprocess === id } yield sp// <> (UndefElement.tupled, UndefElement.unapply _)
       q3.list 
     }
   }
@@ -150,9 +153,9 @@ object BPSpaceDAO {
    * @param id
    * @param bpspace
    */
-  def update(id: Int, bpspace: BPSpaceDTO) = database withSession { implicit session ⇒
-    val spToUpdate: BPSpaceDTO = bpspace.copy(Option(id))
-    bpspaces.filter(_.id === id).update(spToUpdate)
+  def update(id: Int, bpspace: SessionSpaceDTO) = database withSession { implicit session ⇒
+    val spToUpdate: SessionSpaceDTO = bpspace.copy(Option(id))
+    session_spaces.filter(_.id === id).update(spToUpdate)
   }
   /**
    * Delete a bpspace
@@ -162,7 +165,7 @@ object BPSpaceDAO {
    database withSession { implicit session ⇒
 
     val sp = get(id)
-    val res = bpspaces.filter(_.id === id).delete
+    val res = session_spaces.filter(_.id === id).delete
     sp match {
        case Some(space) => renewIndex(space.bprocess, space.index)
        case _ =>
@@ -172,38 +175,28 @@ object BPSpaceDAO {
   
   }
   /**
-   * Count all bpspaces
+   * Count all session_spaces
    */
   def count: Int = database withSession { implicit session ⇒
-    Query(bpspaces.length).first
+    Query(session_spaces.length).first
   }
 
   def ddl_create = {
     database withSession {
       implicit session =>
-      bpspaces.ddl.create
+      session_spaces.ddl.create
     }
   }
   def ddl_drop = {
     database withSession {
       implicit session =>
-        bpspaces.ddl.drop
+        session_spaces.ddl.drop
     }
   }
-/*
-(1,Some(16))
-(3,Some(17))
-(4,Some(18))
-(6,Some(19))
-.renewIndex(bprocess, 5)
-(1,Some(16))
-(3,Some(17))
-(4,Some(18))
-(5,Some(19))
-*/
+
   def renewIndex(bprocess: Int, index_num: Int) = {
     database withSession { implicit session ⇒
-      val q3 = for { sp ← bpspaces if sp.bprocess === bprocess && sp.index > index_num } yield sp
+      val q3 = for { sp ← session_spaces if sp.bprocess === bprocess && sp.index > index_num } yield sp
       val ordered = q3.list.zipWithIndex.map(sp => sp._1.copy(index = (sp._2 + 1) + (index_num - 1)))
       //val ordered = q3.list.zipWithIndex.map(sp => sp._1.copy(index = sp._2+index_num))
       ordered.foreach { sp => 
@@ -214,7 +207,7 @@ object BPSpaceDAO {
 
   def getAll = database withSession {
     implicit session ⇒ // TODO: s.service === 1 CHANGE DAT
-      val q3 = for { s ← bpspaces } yield s
+      val q3 = for { s ← session_spaces } yield s
       q3.list.sortBy(_.id)
     //suppliers foreach {
     //  case (id, title, address, city, state, zip) ⇒

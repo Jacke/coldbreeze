@@ -14,9 +14,9 @@ class InputLoggers(tag: Tag) extends Table[InputLogger](tag, "input_loggers") {
   def date            = column[org.joda.time.DateTime]("date")
   def session         = column[Int]("session_id")
 
-  def maccFK          = foreignKey("macc_fk", uid, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade, onUpdate = ForeignKeyAction.Cascade)
-  def fReactionFK     = foreignKey("fReactionFK", reaction, models.DAO.ReactionDAO.reactions)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def sessionFK       = foreignKey("sessionFK", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def maccFK          = foreignKey("in_log_macc_fk", uid, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade, onUpdate = ForeignKeyAction.Cascade)
+  def fReactionFK     = foreignKey("in_log_fReactionFK", reaction, models.DAO.ReactionDAO.reactions)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def sessionFK       = foreignKey("in_log_sessionFK", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?, uid, action, arguments, reaction, input.?, date, session) <> (InputLogger.tupled, InputLogger.unapply)
 

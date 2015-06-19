@@ -24,9 +24,9 @@ class BPSessions(tag: Tag) extends Table[BPSession](tag, "bpsessions") {
   def updated_at    = column[Option[org.joda.time.DateTime]]("updated_at")  
   def active_listed = column[Boolean]("active_listed", O.Default(false)) 
 
-  def * = (id.?, process, created_at, updated_at, active_listed) <> (BPSession.tupled, BPSession.unapply)
+  def *    = (id.?, process, created_at, updated_at, active_listed) <> (BPSession.tupled, BPSession.unapply)
   
-  def bpFK = foreignKey("bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK = foreignKey("sess_bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 }
 
 

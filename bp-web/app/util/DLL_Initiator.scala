@@ -4,6 +4,7 @@ import models.administration._
 import models.DAO._
 import models.DAO.resources._
 import models.DAO.reflect._
+import models.DAO.sessions._
 
 object DLL_Initiator {
   def initiate:Boolean = {
@@ -28,18 +29,18 @@ object DLL_Initiator {
       
     // 23.03.15  
     RefDAO.ddl_create
-ProcElemReflectionDAO.ddl_create
-SpaceReflectionDAO.ddl_create
-SpaceElementReflectionDAO.ddl_create      
-BPStateRefDAO.ddl_create
-SwitcherRefDAO.ddl_create
-ReflectElemTopologDAO.ddl_create
-ReactionRefDAO.ddl_create
-ReactionStateOutRefDAO.ddl_create
-ReactionDAO.ddl_create
-ReactionStateOutDAO.ddl_create
+    ProcElemReflectionDAO.ddl_create
+    SpaceReflectionDAO.ddl_create
+    SpaceElementReflectionDAO.ddl_create      
+    BPStateRefDAO.ddl_create
+    SwitcherRefDAO.ddl_create
+    ReflectElemTopologDAO.ddl_create
+    ReactionRefDAO.ddl_create
+    ReactionStateOutRefDAO.ddl_create
+    ReactionDAO.ddl_create
+    ReactionStateOutDAO.ddl_create
 
-SessionStateLogDAO.ddl_create
+    SessionStateLogDAO.ddl_create
 
     // Resources
     TokensDAO.ddl_create
@@ -84,6 +85,9 @@ SessionStateLogDAO.ddl_create
     AnnotationRangeDAO.ddl_create
 
 
+    SessionProcElementDAO.ddl_create
+    SessionSpaceDAO.ddl_create
+    SessionSpaceElemDAO.ddl_create
 
     true
   }
@@ -124,7 +128,6 @@ SessionStateLogDAO.ddl_drop
     AccountsDAO.ddl_drop
     EmployeeDAO.ddl_drop
     EmployeesBusinessDAO.ddl_drop
-    ActPermissionDAO.ddl_drop
     InputLoggerDAO.ddl_drop
     PlanDAO.ddl_drop
     AdminAccountsDAO.ddl_drop
@@ -142,10 +145,15 @@ SessionStateLogDAO.ddl_drop
     GroupsDAO.ddl_drop
     AccountGroupDAO.ddl_drop
     BusinessWalksDAO.ddl_drop
+    ActPermissionDAO.ddl_drop
 
     AnnotationDAO.ddl_drop
     UserAnnotationDAO.ddl_drop
     AnnotationRangeDAO.ddl_drop
+
+    SessionProcElementDAO.ddl_drop
+    SessionSpaceDAO.ddl_drop
+    SessionSpaceElemDAO.ddl_drop
 
     true
   }

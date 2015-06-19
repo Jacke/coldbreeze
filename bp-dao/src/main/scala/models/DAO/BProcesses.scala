@@ -27,8 +27,8 @@ class BProcesses(tag: Tag) extends Table[BProcessDTO](tag, "bprocesses") {
   // Every table needs a * projection with the same type as the table's type parameter
   def * = (id.?, title, service, business ,created_at, updated_at, version, state_machine_type) <> (BProcessDTO.tupled, BProcessDTO.unapply)
   
-  def businessFK  = foreignKey("business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def serviceFK   = foreignKey("service_fk", service, models.DAO.resources.BusinessServiceDAO.business_services)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def businessFK  = foreignKey("proc_business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def serviceFK   = foreignKey("proc_service_fk", service, models.DAO.resources.BusinessServiceDAO.business_services)(_.id, onDelete = ForeignKeyAction.Cascade)
 }
 
 

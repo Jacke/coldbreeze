@@ -2145,9 +2145,14 @@ form.form-edit-spaceelem.container_brick {
     margin-left: 9px;
     font-size: 12px;
 }
+
 .process-info h3 {
     display: inline;
     margin-right: 15px;
+}
+.process-info h3.reset-session {
+  cursor: pointer;
+  text-decoration: underline;
 }
 .process-info {
 padding-bottom: 15px;

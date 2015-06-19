@@ -41,11 +41,13 @@ $scope.processes.$promise.then(function(data) {
 
 });
 */
+
 $scope.loadSessions = function () { 
+
 
 $scope.sessions = SessionsFactory.query();
 $scope.sessions.$promise.then(function (data2) {
-    _.forEach(data2.sessions, function(session) { return session.session.station = session.station });
+    _.forEach(data2.sessions, function(session) { session.station.inlineLaunchShow = false ;return session.session.station = session.station });
     _.forEach(data2, function(d){ return TreeBuilder.buildFetch(d.process, function(success){}); });
 });
 
@@ -54,7 +56,14 @@ $scope.sessions.$promise.then(function (data2) {
 $scope.loadSessions();
 
 
-
+$scope.showInlineLaunch = function (session) {
+  if (session.inlineLaunchShow) {
+    session.inlineLaunchShow = false;
+  } else {
+    session.inlineLaunchShow = true;
+  }
+  return session;
+}
 
 
 $scope.isManager = function () {
@@ -125,7 +134,8 @@ $scope.unlisted = function (session) {
       })
       .then(function(response) {
         // success
-        $scope.stationsRefresh();
+        $scope.loadSession(); 
+        //$scope.stationsRefresh(); // Not for session controller
         $scope.loadSessions();
         //$scope.invoke_res = [response];
       },
@@ -143,7 +153,8 @@ $scope.unlisted = function (session) {
       })
       .then(function(response) {
         // success
-        $scope.stationsRefresh();
+        $scope.loadSession();
+        //$scope.stationsRefresh(); // not for session controller
         //$scope.invoke_res = [response];
       },
       function(response) { // optional

@@ -16,7 +16,7 @@ class BillingInfos(tag: Tag) extends Table[BillingInfoDTO](tag, "billing_infos")
    
   def created_at = column[org.joda.time.DateTime]("created_at")
   def updated_at = column[org.joda.time.DateTime]("updated_at")
-  def bizzFK = foreignKey("bizz_fk", business,models.DAO.resources.web.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bizzFK = foreignKey("bill_info_biz_fk", business,models.DAO.resources.web.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?, business, firstName, lastName, address, zipcode, created_at, updated_at) <> (BillingInfoDTO.tupled, BillingInfoDTO.unapply)
 

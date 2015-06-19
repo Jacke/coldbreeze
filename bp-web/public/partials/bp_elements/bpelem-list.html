@@ -38,7 +38,8 @@
 </div>
 
 <div class="process-info header-frame">
-<h3><edit-in-place value="bp.title"></edit-in-place></h3>
+<h3 ng-hide="inSession"><edit-in-place value="bp.title"></edit-in-place></h3>
+<h3 ng-click="resetSession()" class="reset-session" ng-show="inSession">{{ bp.title }}</h3>
 <ul class="process-control" ng-show="isManagerVal">
  <!--<li><a href="" role="tab" class="createMin change ajaxLink cacheable" data-toggle="tab" ng:click="editProcess()"> {{ 'EDIT' | translate }} </a></li>-->
 <!-- <li><a class="allStation" href="/a#/bprocess/{{ bp.id }}/stations">{{ 'STATIONS' | translate }}</a></li> -->

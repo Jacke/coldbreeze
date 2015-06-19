@@ -12,7 +12,7 @@ class BusinessServices(tag: Tag) extends Table[BusinessServiceDTO](tag, "busines
   def master_acc  = column[String]("master_acc")
    
   //def accFK = foreignKey("macc_fk", master_acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
-  def business = foreignKey("buss_fk", business_id, models.DAO.resources.BusinessDAO.businesses)(_.id)
+  def business = foreignKey("biz_serv_buss_fk", business_id, models.DAO.resources.BusinessDAO.businesses)(_.id)
 
   def * = (id.?, title, business_id, master_acc) <> (BusinessServiceDTO.tupled, BusinessServiceDTO.unapply)
 

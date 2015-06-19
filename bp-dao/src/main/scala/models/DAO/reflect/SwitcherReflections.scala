@@ -28,7 +28,7 @@ class SwitcherRefs(tag: Tag) extends Table[UnitSwitcherRef](tag, "switcher_refs"
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
 
-  def reflectFK = foreignKey("reflect_fk", reflection, models.DAO.reflect.RefDAO.refs)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def reflectFK = foreignKey("sw_ref_reflect_fk", reflection, models.DAO.reflect.RefDAO.refs)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?, 
 reflection, 

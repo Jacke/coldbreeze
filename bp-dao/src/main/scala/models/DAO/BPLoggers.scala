@@ -42,11 +42,11 @@ class BPLoggers(tag: Tag) extends Table[BPLoggerDTO](tag, "bploggers") {
            step
           ) <> (BPLoggerDTO.tupled, BPLoggerDTO.unapply)
 
-def bpFK = foreignKey("bprocess_fk", bprocess, bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
-def procelemFK = foreignKey("procelem_fk", element, proc_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
-def spaceelemFK = foreignKey("spaceelem_fk", space_elem, SpaceElemDAO.space_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
-def stationFK = foreignKey("b_fk", station, bpstations)(_.id, onDelete = ForeignKeyAction.Cascade)
-def spaceFK = foreignKey("sp_fk", space, models.DAO.BPSpaceDAO.bpspaces)(_.id, onDelete = ForeignKeyAction.Cascade)
+def bpFK       = foreignKey("lg_bprocess_fk", bprocess, bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+def procelemFK = foreignKey("lg_procelem_fk", element, proc_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
+def spaceelemFK= foreignKey("lg_spaceelem_fk", space_elem, SpaceElemDAO.space_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
+def stationFK  = foreignKey("lg_b_fk", station, bpstations)(_.id, onDelete = ForeignKeyAction.Cascade)
+def spaceFK    = foreignKey("lg_sp_fk", space, models.DAO.BPSpaceDAO.bpspaces)(_.id, onDelete = ForeignKeyAction.Cascade)
 }
 
 case class BPLoggerDTO(

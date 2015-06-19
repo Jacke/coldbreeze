@@ -145,7 +145,11 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
    <div class="progress-bar" role="progressbar" aria-valuenow="{{session.percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{session.percent}}%;">
     <span>{{session.percent}}%</span>
    </div>
-</div>              
+</div>  
+<div class="session_controls">
+  <span class="pin_session moicon moicon-pushpin" ng-click="pin(session)" tooltip="Pin on toolbar" ng-class="isPinned()"></span>
+  <span class="pin_session moicon moicon-pushpin" ng-click="haltStation(session.station.id)" ng-show="isManagerVal" tooltip="{{ 'TURN_DOWN' | translate }}"></span>
+</div>            
               
            <!--<p>
             {{ stationByProcess(station.id).id }}
@@ -166,17 +170,19 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
   <div class="station-settings">
   <div class="note">
     <input type="text" class="station-note" ng-model="station.note">
-    <a ng-click="updateNote(station)" ng-show="isManagerVal">Update note</a> 
+    <a ng-click="updateNote(session.station)" ng-show="isManagerVal">Update note</a> 
   </div>
 
 </div>
   
 </div>
+
+
 </div>
 
 
-<div ng-if="station.paused == true && station.finished == false">
-<a ng-click="haltStation(station.id)" class="btn btn-danger btn-big" ng-show="isManagerVal">{{ 'TURN_DOWN' | translate }}</a>
+<div ng-if="session.station.paused == true && session.station.finished == false">
+<div ng-include src="'assets/partials/launchesBar.html'" class="launches-bar"></div>
 </div>
 
           
