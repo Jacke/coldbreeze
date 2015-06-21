@@ -98,7 +98,9 @@ def all_sessions() = SecuredAction { implicit request =>
 def makeUnlisted(id: Int) = SecuredAction { implicit request =>
   Ok(Json.toJson(BPSessionDAO.makeUnlisted(id)))
 }
-
+def makeListed(id: Int) = SecuredAction { implicit request =>
+  Ok(Json.toJson(BPSessionDAO.makeListed(id)))
+}
 
 // /bprocess/:id/station/:station_id  
 def show_station(id: Int, station_id: Int) = SecuredAction { implicit request =>

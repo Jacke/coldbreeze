@@ -134,6 +134,16 @@ object BPSessionDAO {
       case _ => -1
     }
   }
+  def makeListed(id: Int) = database withSession {
+    implicit session =>
+    get(id) match {
+      case Some(session) => {
+        update(id, session.copy(active_listed = true))
+        id
+      }
+      case _ => -1
+    }
+  }
 
   def findByProcess(pid: Int):Option[SessionContainer] = database withSession {
     implicit session =>

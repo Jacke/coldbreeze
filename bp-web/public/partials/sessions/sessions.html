@@ -156,8 +156,7 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
    </div>
 </div>              
 <div class="session_controls">
-  <span class="pin_session moicon moicon-pushpin" ng-click="pin(session)" tooltip="Pin on toolbar" ng-class="isPinned()"></span>
-  <span class="pin_session moicon moicon-pushpin" ng-click="haltStation(session.station.id)" ng-show="isManagerVal" tooltip="{{ 'TURN_DOWN' | translate }}"></span>
+  <span class="pin_session moicon moicon-pushpin" ng-click="pin(session)" tooltip="Pin on toolbar" ng-class="isPinned(session)"></span>
 </div>     
               
            <!--<p>

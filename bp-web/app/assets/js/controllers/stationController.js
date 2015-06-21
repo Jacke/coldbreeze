@@ -165,10 +165,9 @@ $scope.highlightActive = function (station, elem) {
              '1';
          }
   }
-
-$scope.unlisted = function (session) {
+$scope.listed = function (session) {
   $http({
-      url: '/station/' + session.id + '/unlisted/',
+      url: '/session/' + session.session.id + '/listed',
       method: "POST",
       data: {  }
       })
@@ -176,12 +175,47 @@ $scope.unlisted = function (session) {
         // success
         $scope.loadSession();
         $scope.stationsRefresh();
+        $route.reload();
         //$scope.invoke_res = [response];
       },
       function(response) { // optional
         // failed
       }
       );
+} 
+$scope.unlisted = function (session) {
+  $http({
+      url: '/session/' + session.session.id + '/unlisted',
+      method: "POST",
+      data: {  }
+      })
+      .then(function(response) {
+        // success
+        $scope.loadSession();
+        $scope.stationsRefresh();
+        $route.reload();
+        //$scope.invoke_res = [response];
+      },
+      function(response) { // optional
+        // failed
+      }
+      );
+}
+
+$scope.pin = function (session) {
+  if (session.session.active_listed == true) {
+    $scope.unlisted(session)
+  }
+  else {
+    $scope.listed(session)
+  }
+}
+$scope.isPinned = function (session) {
+if (session.session.active_listed == true) {
+      return "pinned";
+  } else {
+      return "";
+  }
 }
 
 $scope.showInlineLaunch = function (session) {
