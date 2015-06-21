@@ -131,7 +131,7 @@
     </div>
     <div class="info">
       <div class="type">{{ type_short[bpelem.type_title] }}
-         <ul class="type-tabs" ng-init="bpelem.hovered=false" role="tablist" ng-mouseover="bpelem.hovered == true ? bpelem.hovered=false : bpelem.hovered=true" ng-show="(isManagerVal && !inSession && selected == 2) || (bpelem.hovered == true)">
+         <ul class="type-tabs" ng-init="bpelem.hovered=false" role="tablist" ng-mouseover="bpelem.hovered == true ? bpelem.hovered=false : bpelem.hovered=true" ng-show="(isManagerVal && !inSession && selected == 2) || (bpelem.hovered == true && inSession)">
            <li><a role="tab" data-toggle="tab" ng:init="selected=1" ng:click="selected == 1 ? selected=2 : selected=1">
            <span class="glyphicon glyphicon-edit"></span></a></li>
            <li><a ng-click="deleteElem(bpelem)"><span class="glyphicon glyphicon-remove"></span></a></li>
@@ -167,11 +167,11 @@
             <div class="state">
               <div class="switcher" ng-repeat="switcher in bpelem.states | limitTo: 1">
               <div class="state-thumbnail" ng-class="stateActiveClass(masterState(bpelem))">
-              <span class="switcher-icon" ng-class="switcher.switch_type"></span>
                   <div class="neutral">{{ masterState(bpelem).neutral }}</div>
                   <div class="middleable">{{ masterState(bpelem).middle }}</div>
                   <div class="oposite">{{ masterState(bpelem).oposite }}</div>
                   <div class="ended">{{ masterState(bpelem).title }}</div>
+              <span class="switcher-icon" ng-class="switcher.switch_type"></span>
               </div>
             </div>
             </div>
@@ -185,7 +185,7 @@
       <div class="expanded-element" ng:show="exp == active">
             <div class="reactions">
               <div class="reaction" ng-repeat="reaction in bpelem.reactions">
-                <span class="reaction-icon moicon moicon-sphere"></span>
+                <span class="reaction-icon minicon minicon-gear-fill-right"></span>
                 <div class="reaction-title">{{ capitalizeFirstLetter(reaction.reaction.title) }}</div>
                   <span class="reaction_list__reaction__state_outs" ng-repeat="state_out in reaction.reaction_state_outs">
                   {{ stateOutAct(state_out) }} {{ stateByStateRef(state_out.state_ref) }} 
@@ -195,11 +195,11 @@
             <div class="state" ng-class="stateClass(state)" ng-repeat="state in bpelem.states">
               <div class="switcher" ng-repeat="switcher in state.switches">
                 <div class="state-thumbnail" ng-class="stateActiveClass(state)">
-                  <span class="switcher-icon" ng-class="switcher.switch_type"></span>
                   <div class="neutral">{{ state.neutral }}</div>
                   <div class="middleable">{{ state.middle }}</div>
                   <div class="oposite">{{ state.oposite }}</div>
                   <div class="ended">{{ state.title }}</div>
+                  <span class="switcher-icon" ng-class="switcher.switch_type"></span>
                   <!-- {{ stateDecoration(state) }} {{ switcherDecoration(switcher) }} 
                   -->
                 </div>

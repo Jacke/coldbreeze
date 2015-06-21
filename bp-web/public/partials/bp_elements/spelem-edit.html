@@ -1,13 +1,13 @@
 <form novalidate="novalidate" class="form-horizontal form-edit-spaceelem" ng-class="spaceelem.type_title">
 <div class="control-group form-group">
-  <label class="control-label col-sm-1" for="inputTitle">{{ 'TITLE' | translate }}:</label>
+  <label class="control-label col-sm-2" for="inputTitle">{{ 'TITLE' | translate }}:</label>
   <div class="controls col-xs-4">
     <input type="text" class="form-control" id="inputTitle" ng-model="spaceelem.title"/>
   </div>
 </div>
 <div class="control-group form-group">
-  <label class="control-label col-sm-1" for="inputBusinessId">{{ 'DESC' | translate }}:</label>
-  <div class="controls">
+  <label class="control-label col-sm-2" for="inputBusinessId">{{ 'DESC' | translate }}:</label>
+  <div class="controls col-xs-4">
     <textarea type="text" id="inputBusinessId" class="form-control" ng-model="spaceelem.desc"/>
   </div>
 </div>
@@ -19,7 +19,7 @@
     <input type="hidden" id="inputBusinessId" ng-model="spaceelem.space_own"/>
 
 <div class="control-group form-group">
-  <div class="controls col-xs-4">
+  <div class="controls col-s-4">
 
     <a ng-click="updateSpaceElem(spaceelem)" class="btn btn-small btn-primary">{{ 'UPDATE' | translate }}</a>
     <a ng-click="deleteSpaceElem(spaceelem)" class="btn btn-small btn-danger">{{ 'DELETE' | translate }}</a>

@@ -392,6 +392,31 @@ padding-top: 11px;
 display: inline;
 text-shadow: none;
 }
+.right-bar .reactions {
+  display: block;
+  border-bottom: gray solid 1px;
+  padding: 9px 4px;
+  margin-bottom: 10px;
+}
+span.reaction-icon.minicon.minicon-gear-fill-right {
+    font-size: 15px;      font-weight: 500;      color: black;
+}
+.space-element .right-bar .state-thumbnail {
+  display: block;
+}
+.space-element .right-bar .reactions {
+  display: block;
+}
+
+.space-element .expanded-element {
+  margin-left: -26px;
+  width: 117%;
+  padding-right: 6px;
+  padding-left: 13px;
+}
+.expanded-element .state-thumbnail {
+    display: block;
+}
 .proc-element .elem-expander {
     background: #c8d2d7;
     width: 45px;
@@ -402,6 +427,11 @@ text-shadow: none;
     padding-top: 1.7%;
     padding-left: 2.9%;
     cursor: pointer;
+}
+.proc-element-spaces .space-element .right-bar .elem-expander {
+  display: block;
+  padding-left: 6.5%;
+  padding-top: 3.5%;
 }
 .proc-element .right-bar.exp-active {
     background: #3bc0c3;
@@ -414,12 +444,12 @@ text-shadow: none;
 .expanded-element {
   display: block !important;
   padding-top: 16px;
-  background: #f6f7f8;
+  background: white;
   color: black;
   margin-top: 11px;
-  margin-left: -24px;
+  margin-left: -18px;
   margin-bottom: -11px;
-  margin-right: -12px;
+  margin-right: -11px;
   padding-left: 13px;
   padding-bottom: 29px;
   border-radius: 0px 0px 6px 5px;
@@ -806,7 +836,7 @@ padding-left: 30%;
   display: inline-block;
   position: absolute;
   top: 20%;
-  right: 1%;
+  right: 4%;
 }
 
 
@@ -3176,7 +3206,7 @@ ul.process-control {
 background: white;
 padding-bottom: 15px;
 padding: 4px 15px 5px;
-border-bottom: gray solid 1px;
+border-bottom: #7f8c8d solid 1px;
 padding-top: 15px;
 border-left: rgb(223, 223, 223) solid 1px;
 border-right: rgb(223, 223, 223) solid 1px;

@@ -148,14 +148,20 @@ $scope.spaceelems = BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid
 
 $scope.reloadResourcesForSession = function(session) {
    $scope.states = BPSessionStatesFactory.query({ BPid: $route.current.params.BPid, id: session.id });
+   $scope.switches = SwitchesFactory.query({ BPid: $route.current.params.BPid });
+
    $scope.states.$promise.then(function (states) {
+      $scope.switches.$promise.then(function(switches) {
+        $scope.switches = switches;
 
     _.forEach($scope.bpelems, function(z) {
     z.states = _.filter(states, function(d){ return d.front_elem_id == z.id;});
-    z.topo_id = _.find($scope.element_topologs, function(d){ return d.front_elem_id == z.id;});
+    z.topo_id = _.find($scope.element_topologs, function(d){ return d.element_id == z.id && d.space_element == false;});
     z.reactions = _.filter($scope.reactions, function(sw) { return z.topo_id != undefined && sw.reaction.element == z.topo_id.topo_id }); 
 
-    _.forEach(z.states, function(st){ return st.switches = _.filter($scope.switches, function(sw) { return sw.state_ref == st.origin_state }) });
+    _.forEach(z.states, function(st){ return st.switches = _.filter($scope.switches, function(sw) { 
+          return sw.state_ref == st.origin_state }) 
+    });
     
     ///*if (z.b_type == "brick") {
       z.spaces = _.filter($scope.spaces, function(s){ return s.brick_front == z.id;});
@@ -168,7 +174,7 @@ $scope.reloadResourcesForSession = function(session) {
 
   });
   _.forEach($scope.spaceelems, function(z) {
-    z.topo_id = _.find($scope.element_topologs, function(d){ return d.space_elem_id == z.id;});
+    z.topo_id = _.find($scope.element_topologs, function(d){ return d.element_id == z.id && d.space_element == true;});
     z.reactions = _.filter($scope.reactions, function(sw) { return z.topo_id != undefined && sw.reaction.element == z.topo_id.topo_id }); 
     z.states = _.filter(states, function(d){ return d.space_elem_id == z.id;});
     _.forEach(z.states, function(st){ return st.switches = _.filter($scope.switches, function(sw) { return sw.state_ref == st.id }) });
@@ -178,7 +184,7 @@ $scope.reloadResourcesForSession = function(session) {
     _.forEach(z.states, function(st){ return st.switches = _.filter($scope.switches, function(sw) { return sw.state_ref == st.id }) });
   });
 
- 
+ });
  });
 }
 
@@ -235,8 +241,6 @@ $scope.loadResources = function() {
   });
   });
 };
-$scope.loadResources();
-
 
   $scope.mySpaceElems = function(space_elems, space_id) {
      var res = _.filter(space_elems, function(elem){ return elem.space_owned == space_id });
@@ -306,7 +310,7 @@ $scope.loadResources();
   $scope.bpelems.$promise.then(function(data) {
     $scope.spaces.$promise.then(function(data2) {
       $scope.spaceelems.$promise.then(function(data3) {
-        $scope.builder();
+        //$scope.builder();
 
         $scope.frontSpaces = _.object(_.uniq(_.map($scope.spaces, function(v) {
           return [v.brick_front,
@@ -553,9 +557,16 @@ $scope.loadResources();
      
 
     BPElemFactory.update(obj).$promise.then(function(data) {
-      $scope.reloadResources();
+      $timeout(function(){
+        $scope.reloadResources();
+        $scope.loadResources();
+        $timeout(function () {
+          // 0 ms delay to reload the page.
+       $route.reload();
+      }, 0);
       //$scope.reloadTree($scope.trees);
       });
+    })
   }
   $scope.createNewElem = function () {
      
@@ -832,8 +843,14 @@ setTimeout(function() {
          });
 
       };
-      $scope.loadResources();
-      //$scope.reloadTree($scope.trees);
+      $timeout(function(){
+        $scope.reloadResources();
+        $scope.loadResources();
+        $timeout(function () {
+          // 0 ms delay to reload the page.
+       $route.reload();
+      }, 0);     
+    });
     });
   };
 
@@ -942,8 +959,14 @@ $scope.createSpaceElemFromSpace = function (obj) {
 
   });
               $scope.cneedit = false;
-              $scope.reloadResources();
-              //$scope.reloadTree($scope.trees);
+      $timeout(function(){
+        $scope.reloadResources();
+        $scope.loadResources();
+        $timeout(function () {
+          // 0 ms delay to reload the page.
+       $route.reload();
+      }, 0);
+      })              //$scope.reloadTree($scope.trees);
 };
 $scope.createSpaceElem = function (obj) {
      
@@ -1004,24 +1027,46 @@ $scope.createSpaceElem = function (obj) {
                         comps: [ { "a_string" : null} ] }});
         });
 
+
+              $timeout(function(){
+                $scope.reloadResources();
+                $scope.loadResources();
+                $timeout(function () {
+                  // 0 ms delay to reload the page.
+                $route.reload();
+              }, 120);
+              });  
         
     });
-                 $scope.cneedit = false;
-                 $scope.reloadResources();
-                 //$scope.reloadTree($scope.trees);
+              $scope.cneedit = false;
+               
+              //$scope.reloadTree($scope.trees);
 };
 
 $scope.updateSpaceElem = function (obj) {
      
     BPSpaceElemFactory.update(obj).$promise.then(function(data) {
-      $scope.reloadResources();
-      //$scope.reloadTree($scope.trees);
+      $timeout(function(){
+        $scope.reloadResources();
+        $scope.loadResources();
+        $timeout(function () {
+          // 0 ms delay to reload the page.
+       $route.reload();
+      }, 0);
+    });
     });
 };
 $scope.deleteSpaceElem = function (obj) {
     BPSpaceElemFactory.delete({ id: obj.id, BPid: $route.current.params.BPid }).$promise.then(function(data) {
-      $scope.reloadResources();
+      $timeout(function(){
+        $scope.reloadResources();
+        $scope.loadResources();
+        $timeout(function () {
+          // 0 ms delay to reload the page.
+       $route.reload();
+      }, 0);
     });
+    })
     //$scope.reloadTree($scope.trees);
 };
 
@@ -1205,6 +1250,11 @@ BPSessionsFactory.query({ BPid: $scope.BPid }).$promise.then(function(data){
       if (ses) {
         $scope.changeSession(ses);
       }
+   } else {
+      /***
+       *  Load entry point
+       ***/
+      $scope.loadResources();
    }
   });    
     
@@ -1242,6 +1292,9 @@ $scope.changeSession = function(session) {
  }
   $scope.reloadResourcesForSession(session.session);
 }
+/***
+ * Default app state 
+ ***/
 $scope.inSession = false;
 
 
