@@ -1,6 +1,20 @@
 
 $(function domReadyLoginFlow () {
   
+  var getUrlParameter = function(sParam)
+{
+    var sPageURL = window.location.search.substring(1);
+    var sURLVariables = sPageURL.split('&');
+    for (var i = 0; i < sURLVariables.length; i++) 
+    {
+        var sParameterName = sURLVariables[i].split('=');
+        if (sParameterName[0] == sParam) 
+        {
+            return sParameterName[1];
+        }
+    }
+}
+
   var whoamiCreds = function (data) {
     $.ajax({url: jsRoutes.controllers.ProfileController.dashboard().absoluteURL(document.ssl_enabled) + "whoami", type: 'post', headers: {
       "Access_Name": "User", "X-Auth-Token": data.token
@@ -38,7 +52,13 @@ $(function domReadyLoginFlow () {
   });
 
 
+  if (getUrlParameter('demo') != undefined && getUrlParameter('demo') == "ycombinator") {
 
+    $('input#username').val('testing@minorityapp.com');
+    $('input#password').val('12344321');
+    $('button#l_submit').text('PRESS TO ENTER');
+
+  }
   
   $('.loginView a.switchView').on('click', function clickViewSwitch(e) {
     var nextPage;

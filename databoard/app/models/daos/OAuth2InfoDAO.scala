@@ -10,8 +10,6 @@ import scala.concurrent.Future
 
 /**
  * The DAO to store the OAuth2 information.
- *
- * Note: Not thread safe, demo only.
  */
 class OAuth2InfoDAO extends DelegableAuthInfoDAO[OAuth2Info] {
 
@@ -20,7 +18,7 @@ class OAuth2InfoDAO extends DelegableAuthInfoDAO[OAuth2Info] {
    *
    * @param loginInfo The login info for which the auth info should be saved.
    * @param authInfo The OAuth2 info to save.
-   * @return The saved OAuth2 info or None if the OAuth2 info couldn't be saved.
+   * @return The saved OAuth2 info.
    */
   def save(loginInfo: LoginInfo, authInfo: OAuth2Info): Future[OAuth2Info] = {
     data += (loginInfo -> authInfo)

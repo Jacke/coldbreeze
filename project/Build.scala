@@ -54,6 +54,7 @@ object Build extends Build {
           async, 
           amonite, 
           reflect, 
+          wcs,
           akkaActor, 
           scaldiakka, 
           dispatch, 
@@ -87,8 +88,10 @@ object Build extends Build {
           slick_migrate,
           play,
           playjson,
+          jacksonbson,
           junit,
           jodatime,
+          jshemavalid,
           jwtCore,
           jwtApi,
           slickpg,
@@ -228,6 +231,11 @@ object Build extends Build {
           slick, 
           reactivemongo,
           playreactmongo,
+          jshemavalid,
+          jacksonbson,
+          wcs,
+          simplereacmongo,
+          reactivemongoext,
           play, 
           requirejs,
           underscore,
@@ -237,11 +245,13 @@ object Build extends Build {
           playauth,
           guice,
           silhouette,
- //         silhouettetest,
+ //       silhouettetest,
           jsonvariants, 
           playflyway, 
           playctrl, 
           cache, 
+          scaldiplay,
+          salat,
           filter, 
           jdbc, 
           anorm, 
@@ -256,7 +266,7 @@ object Build extends Build {
           hdrHistogram))
         //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
         //test(scalatest, akkaTestKit, sprayTestkit))
-    .dependsOn(bpCore, bpDao)
+    //.dependsOn(bpCore, bpDao)
 
 
 

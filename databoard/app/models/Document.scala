@@ -20,7 +20,6 @@ trait DocElems {
 }
 
   object DocumentResults {
-    import main.scala.simple_parts.process._
     import akka.actor._
     import play.api.libs.json._
     import play.api.mvc.WebSocket.FrameFormatter
@@ -30,8 +29,6 @@ trait DocElems {
     implicit val CardFormat = Json.format[Card]
     implicit val CardrameFormatter = FrameFormatter.jsonFrame[Card]
 
-    implicit val CompositeFormat = Json.format[CompositeValues]
-    implicit val CompositeFrameFormatter = FrameFormatter.jsonFrame[CompositeValues]
 
     implicit val DataBlockFormat = Json.format[DataBlock]
     implicit val DataBlockFrameFormatter = FrameFormatter.jsonFrame[DataBlock]

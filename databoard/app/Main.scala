@@ -2,9 +2,14 @@ import java.io.File
 import play.api.{Play, DefaultApplication, Mode}
 import play.core.ApplicationProvider
 import scala.util.{Try, Properties}
-
+import scalawebsocket._
 /**
   */
+
+object WebSocketControll {
+  WebSocket().open("ws://localhost:8080/entry").onTextMessage(msg => println(msg))
+}
+
 object DevNettyServer extends App {
   new NettyServer(Mode.Dev)
 }

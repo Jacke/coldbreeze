@@ -1,5 +1,3 @@
 package models
 
-import main.scala.simple_parts.process._
-
-case class DataBlock(cv: CompositeValues = CompositeValues()) extends DocElems 
+case class DataBlock(cv: List[String] = List()) extends DocElems 

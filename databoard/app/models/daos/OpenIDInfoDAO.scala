@@ -7,6 +7,7 @@ import models.daos.OpenIDInfoDAO._
 
 import scala.collection.mutable
 import scala.concurrent.Future
+import com.mohiva.play.silhouette.api._
 
 /**
  * The DAO to store the OpenID information.

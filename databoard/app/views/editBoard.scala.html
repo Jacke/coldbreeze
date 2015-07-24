@@ -1,0 +1,40 @@
+@(id: Option[String], form: Form[models.Board], files: Option[List[(String, reactivemongo.api.gridfs.ReadFile[reactivemongo.bson.BSONValue])]])
+@import helper.twitterBootstrap._
+
+@main("Edit board") {
+  <div class="row">
+  <div class="span8">
+  <h2>
+    @if(!id.isDefined) {
+      Add
+    } else {
+      Edit
+    } an board</h2>
+  @helper.form(action = (if(!id.isDefined) routes.BoardController.create else routes.BoardController.edit(id.get)), 'class -> "form-horizontal") {
+    @helper.inputText(form("title"))
+    @helper.inputText(form("publisher"))
+    @helper.textarea(form("content"))
+    <div class="form-actions">
+      <input class="btn btn-primary" type="submit">
+    </div>
+  }
+  </div>
+  <div class="span4">
+  <h2>Attachments</h2>
+  @if(id.isDefined) {
+    @if(files.isDefined) {
+    <ul>
+      @files.get.map { file =>
+      <!--<li><a href="routes.BoardController.getAttachment(file._1)">@file._2.filename</a> - <a target="_blank" href="routes.BoardController.getAttachment(file._1)?inline=true">inline</a> - <a class="delete" href="routes.BoardController.removeAttachment(file._1)">delete</a></li>-->
+      }
+    </ul>
+    }
+    <!-- helper.form(action = routes.BoardController.saveAttachment(id.get), 'enctype -> "multipart/form-data") {
+      <input type="file" name="picture">
+      <div>
+        <input type="submit" class="btn">
+      </div>
+    }-->
+  }
+  </div>
+}

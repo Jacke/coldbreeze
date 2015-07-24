@@ -15,12 +15,20 @@ import play.api.mvc.Results.Redirect
 import play.api.mvc.WithFilters
 import com.google.inject.Guice
 import com.mohiva.play.silhouette.api.{ Logger, SecuredSettings }
+import play.api.GlobalSettings
+import utils.di.SilhouetteModule
+
 import controllers.routes
 import play.api.GlobalSettings
 import play.api.i18n.{ Lang, Messages }
 import play.api.mvc.Results._
 import play.api.mvc.{ RequestHeader, Result }
-import utils.di.SilhouetteModule
+import play.api.i18n.{Messages, Lang}
+import play.api.mvc.Results._
+import play.api.GlobalSettings
+import play.api.mvc.{Result, RequestHeader}
+import scala.concurrent.Future
+import controllers.routes
 
 import scala.concurrent.Future
 
@@ -106,5 +114,21 @@ trait Global extends GlobalSettings with SecuredSettings with Logger {
    */
   override def onNotAuthorized(request: RequestHeader, lang: Lang): Option[Future[Result]] = {
     Some(Future.successful(Redirect(routes.ApplicationController.signIn).flashing("error" -> Messages("access.denied"))))
+  }
+}
+
+import com.novus.salat.{TypeHintFrequency, StringTypeHintStrategy, Context}
+import play.api.Play
+import play.api.Play.current
+
+object mongoContext {
+  implicit val context = {
+    val context = new Context {
+      val name = "global"
+      override val typeHintStrategy = StringTypeHintStrategy(when = TypeHintFrequency.WhenNecessary, typeHint = "_t")
+    }
+    context.registerGlobalKeyOverride(remapThis = "id", toThisInstead = "_id")
+    context.registerClassLoader(Play.classloader)
+    context
   }
 }
