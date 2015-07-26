@@ -149,23 +149,25 @@ var minorityApp =
   angular.module(
     'minorityApp',
     [
-  
       'minorityApp.services',
       'minorityApp.TreeBuilderService',
       'minorityApp.controllers',
       'ngRoute',
       'ngResource',
+      'jcs-autoValidate',
       'chieffancypants.loadingBar',
       'ngCookies',
       'angularLocalStorage',
       'classy',
       'ngAngularError',
       'toaster',
+      'toastr',
+      'ngWebSocket',
       'angular-underscore',
       'ui.bootstrap',
       'ui.select',
       'ng-slide-down',
-//      'ui.sortable',
+      //'ui.sortable',
       'ngDialog',
       'angularMoment',
       'daterangepicker',
@@ -179,6 +181,29 @@ minorityApp.filter('slice', function() {
     return arr.slice(arr.length-start, end);
   };
 });
+minorityApp.factory('NotificationBroadcaster', ['$websocket', '$window', 'toastr', function($websocket, $window, toastr) {
+      // Open a WebSocket connection
+      var baseUrl = $window.location.host;
+      var dataStream = $websocket('ws://' + baseUrl + '/notify');
+      var collection = [];
+      dataStream.onMessage(function(message) {
+        console.log(message);
+        toastr.success(message.type, message.msg);
+        collection.push(JSON.parse(message.data));
+      });
+      dataStream.onClose(function(message) {
+        dataStream = $websocket('ws://' + baseUrl + '/notify');
+      });
+      var methods = {
+        collection: collection,
+        get: function() {
+          dataStream.send(JSON.stringify({ action: 'get' }));
+        }
+      };
+
+      return methods;
+}]);
+
 minorityApp.config(['$translateProvider', function ($translateProvider) {
   // add translation tables
   $translateProvider.translations('en', translationsEN);
@@ -232,13 +257,14 @@ minorityApp.config(['$locationProvider','$routeProvider', '$httpProvider', funct
 /*I*/$routeProvider.when('/bprocesses', {
                  templateUrl: '/assets/partials/bprocesses/bp-list.html', 
                  controller: 'BProcessListCtrl',
-                 resolve: { Auth: ['$http', '$q', '$window', '$rootScope', function($http, $q, $window, $rootScope) {
+                 resolve: { Auth: ['$http', '$q', '$window', '$rootScope', 'NotificationBroadcaster', function($http, $q, $window, $rootScope, NotificationBroadcaster) {
 //                    var deffered = $q.defer();
-              var token = $window.sessionStorage.getItem('token'); 
-              var biz_id = $window.localStorage.getItem('business');
-              if (biz_id == undefined || biz_id == "-1") {
-                 $rootScope.whoami = $http.post(jsRoutes.controllers.Application.whoami().absoluteURL(document.ssl_enabled), { 
-                  headers:  {'X-Auth-Token': token, 'Access_Name': 'user'}}).then(function (profile) {
+                  var token = $window.sessionStorage.getItem('token'); 
+                  var biz_id = $window.localStorage.getItem('business');
+                  $rootScope.notify = NotificationBroadcaster;
+                  if (biz_id == undefined || biz_id == "-1") {
+                   $rootScope.whoami = $http.post(jsRoutes.controllers.Application.whoami().absoluteURL(document.ssl_enabled), { 
+                    headers:  {'X-Auth-Token': token, 'Access_Name': 'user'}}).then(function (profile) {
                     $window.sessionStorage.setItem("business", profile.business);
                     $window.sessionStorage.setItem("employee", profile.employee);
                     $window.sessionStorage.setItem("manager", profile.manager);

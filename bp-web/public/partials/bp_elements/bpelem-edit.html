@@ -1,8 +1,8 @@
-<form novalidate="novalidate" class="form-horizontal form-edit-bpelem" ng-class="bpelem.type_title">
+<form novalidate="novalidate" ng-submit="updateElem(bpelem);" class="form-horizontal form-edit-bpelem" ng-class="bpelem.type_title">
   <div class="control-group form-group">
     <label class="control-label col-sm-1" class="form-control" for="inputTitle">Title:</label>
     <div class="controls col-xs-4">
-      <input type="text" id="inputTitle" ng-model="bpelem.title"/>
+      <input type="text" id="inputTitle" ng-model="bpelem.title" required/>
     </div>
   </div>
   <div class="control-group form-group">
@@ -21,8 +21,8 @@
 
   <div class="control-group form-group">
     <div class="controls col-xs-4">
-      <a ng-click="updateElem(bpelem)" class="btn btn-small btn-primary">Update</a>
-      <a ng-click="deleteElem(bpelem)" class="btn btn-small btn-primary btn-danger">Delete</a>
+      <button type="submit" class="btn btn-small btn-primary">Update</button>
+      <button ng-click="deleteElem(bpelem)" class="btn btn-small btn-primary btn-danger">Delete</button>
     </div>
   </div>
 </form>

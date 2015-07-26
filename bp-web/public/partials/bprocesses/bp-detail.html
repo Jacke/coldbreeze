@@ -1,26 +1,28 @@
 <div class="container">
   <h1>{{ 'PROCESS' | translate }} {{ process.title }}</h1>
 
-  <form novalidate="novalidate" class="form-horizontal">
+  <form novalidate="novalidate" ng-submit="updateBP();" class="form-horizontal">
     <div class="control-group form-group">
-      <label class="col-sm-1 control-label" for="inputTitle">{{ 'TITLE' | translate }}:</label>
-
-      <div class="controls col-xs-4">
-        <input type="text" class="form-control" id="inputTitle" ng-model="process.title"/>
+      <label class="control-label col-sm-2" for="inputTitle">{{ 'TITLE' | translate }}</label>
+      <div class="controls">
+       <div class="col-xs-7">
+              <input type="text" id="inputTitle" class="form-control" ng-model="process.title" placeholder="Great process" ng-minlength="3" ng-maxlength="10" required/>
+       </div>
       </div>
-    </div>
-<input type="hidden" id="inputBusinessId" ng-init="process.business=1" required/>
-
+    </div>    
+    <input type="hidden" id="inputBusinessId" ng-init="process.business=1" required/>
     <div class="control-group form-group">
-      <label class="control-label col-sm-1" for="inputBusinessId">{{ 'SERVICE' | translate }}:</label>
-      <div class="controls col-xs-4">
-        <select ng-model="process.service" class="form-control" ng-options="service.id as service.title for service in procServices" required></select><br>
+      <label class="control-label col-sm-2" for="inputBusinessId">{{ 'SERVICE' | translate }}</label>
+      <div class="controls">
+        <div class="col-xs-7">
+          <select class="form-control" ng-model="process.service" ng-options="service.id as service.title for service in procServices" required></select><br>
+        </div>
       </div>
     </div>
     <div class="control-group form-group">
       <div class="controls">
-        <a ng-click="closeThisDialog()" class="btn btn-small">{{ 'CANCEL' | translate }}</a>
-        <a ng-click="updateBP()" class="btn btn-small btn-primary">{{ 'UPDATE' | translate }}</a>
+        <button ng-click="closeThisDialog()" class="btn btn-small">{{ 'CANCEL' | translate }}</button>
+        <button type="submit" class="btn btn-small btn-primary">{{ 'UPDATE' | translate }}</button>
       </div>
     </div>
   </form>

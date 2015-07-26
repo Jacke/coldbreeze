@@ -1,4 +1,5 @@
-# angular-websocket
+# angular-websocket  [![Join the chat at https://gitter.im/gdi2290/angular-websocket](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/gdi2290/angular-websocket?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![gdi2290/angular-websocket API Documentation](https://www.omniref.com/github/gdi2290/angular-websocket.png)](https://www.omniref.com/github/gdi2290/angular-websocket)
+
 [![Travis](https://img.shields.io/travis/gdi2290/angular-websocket.svg?style=flat)](https://travis-ci.org/gdi2290/angular-websocket)
 [![Bower](https://img.shields.io/bower/v/angular-websocket.svg?style=flat)](https://github.com/gdi2290/angular-websocket)
 [![npm](https://img.shields.io/npm/v/angular-websocket.svg?style=flat)](https://www.npmjs.com/package/angular-websocket)
@@ -17,13 +18,13 @@ You can download angular-websocket by:
 * (prefered) Using bower and running `bower install angular-websocket --save`
 * Using npm and running `npm install angular-websocket --save`
 * Downloading it manually by clicking [here to download development unminified version](https://raw.github.com/gdi2290/angular-websocket/master/angular-websocket.js)
-* CDN for development `https://rawgit.com/gdi2290/angular-websocket/v1.0.8/angular-websocket.js`
-* CDN for production `https://cdn.rawgit.com/gdi2290/angular-websocket/v1.0.8/angular-websocket.min.js`
+* CDN for development `https://rawgit.com/gdi2290/angular-websocket/v1.0.9/angular-websocket.js`
+* CDN for production `https://cdn.rawgit.com/gdi2290/angular-websocket/v1.0.9/angular-websocket.min.js`
 
 ## Usage
 
 ```html
-  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.8/angular.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
   <script src="bower_components/angular-websocket/angular-websocket.js"></script>
   <section ng-controller="SomeController">
     <ul>
@@ -56,8 +57,7 @@ You can download angular-websocket by:
 
       return methods;
     })
-    .controller('SomeController', function (MyData) {
-
+    .controller('SomeController', function ($scope, MyData) {
       $scope.MyData = MyData;
     });
   </script>
@@ -108,7 +108,23 @@ then        | resolve:Function, reject:Function | Resolves when message has been
 
 ### Service: `$websocketBackend` (in module `ngWebSocketMock`)
 
-Similar to [`httpBackend`](https://ng-click.com/$httpBackend) mock in AngularJS's `ngMock` module
+Similar to [`httpBackend`](https://ng-click.com/$httpBackend) mock in
+AngularJS's `ngMock` module. You can use `ngWebSocketMock` to mock a websocket
+server in order to test your applications:
+
+```javascript
+    var $websocketBackend;
+
+    beforeEach(angular.mock.module('ngWebSocket', 'ngWebSocketMock');
+
+    beforeEach(inject(function (_$websocketBackend_) {
+      $websocketBackend = _$websocketBackend_;
+
+      $websocketBackend.mock();
+      $websocketBackend.expectConnect('ws://localhost:8080/api');
+      $websocketBackend.expectSend({data: JSON.stringify({test: true})});
+    }));
+```
 
 ### Methods
 
@@ -141,11 +157,13 @@ $ bower install
 
 ### Manual Tests
 
-In the project root directory open `index.html` in the example folder
+In the project root directory open `index.html` in the example folder or browserify example
 
 ### Distribute
 `$ npm run dist` Builds files with uglifyjs
 
+### Support
+You can contact me either by: [submitting](https://github.com/gdi2290/angular-websocket/issues/new) an issue, [tweeting me](https://twitter.com/share?url=''&text=@gdi2290+I+need+help+with+…) on twitter [@gdi2290](https://twitter.com/gdi2290), or chat me on [gitter](https://gitter.im/gdi2290/angular-websocket?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## TODO
  * Allow JSON if object is sent
@@ -162,4 +180,3 @@ In the project root directory open `index.html` in the example folder
 
 ## License
 [MIT](https://github.com/gdi2290/angular-websocket/blob/master/LICENSE)
-

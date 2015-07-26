@@ -22,14 +22,8 @@
   <a href="" role="tab" class="createMin ajaxLink cacheable" data-toggle="tab" ng:click="tree=0"><span class="glyphicon glyphicon-chevron-up"></span> {{ 'TREE' | translate }}</a>
 </div>
 -->
-
-
 <div class="tableMinListFilter filterLayer">
-
-
 </div>
-
-
 </div>
 
 <div class="active-station-alert alert alert-info" ng:show="hasActiveStation">
@@ -43,7 +37,7 @@
 <ul class="process-control" ng-show="isManagerVal">
  <!--<li><a href="" role="tab" class="createMin change ajaxLink cacheable" data-toggle="tab" ng:click="editProcess()"> {{ 'EDIT' | translate }} </a></li>-->
 <!-- <li><a class="allStation" href="/a#/bprocess/{{ bp.id }}/stations">{{ 'STATIONS' | translate }}</a></li> -->
- <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="edit()">{{ 'EDIT' | translate }} </a></li>
+ <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="editProcess()">{{ 'EDIT' | translate }} </a></li>
  <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="perm()">{{ 'PEOPLE' | translate }} </a></li>
  <li><a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" ng-click="modalShare()">{{ 'SHARE' | translate }}</a></li>
 </ul>
@@ -79,12 +73,13 @@
 </div> -->
 
 <div class="tab-pane active" id="edit" ng:show="newselected == 1 && !inSession">
- <form novalidate="novalidate" class="form-horizontal form-new-bpelem" ng-class="newBpelem.type_title">
+
+ <form novalidate="novalidate" ng-submit="createNewElem();" class="form-horizontal form-new-bpelem" ng-class="newBpelem.type_title">
     <div class="col-xs-3 element-form-fields">
     <div class="control-group form-group">
       <div class="controls col-xs-8">
         <label class="control-label col-sm-1" for="inputTitle">{{ 'TITLE' | translate }}</label>
-        <input type="text" id="inputTitle" class="form-control" ng-model="newBpelem.title"/>
+        <input type="text" id="inputTitle" class="form-control" ng-model="newBpelem.title" required/>
       </div>
     </div>
     <div class="control-group form-group">
@@ -94,7 +89,7 @@
       </div>
     </div>
     </div>
-    <select name="category" id="categorySelect" ng-model="newBpelem.refCategoryFilter" ng-init="newBpelem.refCategoryFilter = refCategories[0]" ng-options="option for option in refCategories"></select>
+    <select name="category" id="categorySelect" ng-model="newBpelem.refCategoryFilter" ng-init="newBpelem.refCategoryFilter = refCategories[0]" ng-options="option for option in refCategories" required></select>
     <div class="templateButton col-xs-8 clearfix">
       <div class="ref" ng-repeat="ref in refs | filter: {ref: {category: newBpelem.refCategoryFilter}} ">
         <a ng-click="refElem(ref, newBpelem)" ng-class="isSelected(ref, newBpelem)" class="btn btn-small btn-primary container_brick">{{ ref.ref.title }}</a>
@@ -113,10 +108,9 @@
     <input type="hidden" id="input_space_own" ng-model="newBpelem.space_own"/>
     <input type="hidden" id="input_order" ng-model="newBpelem.order" value="{{ orderFrontGen(newBpelem) }}"/>
     <input type="hidden" id="input_ref" ng-model="newBpelem.ref"/>
-
     <div class="control-group form-submit form-group" style="clear:both;" ng-show="isManagerVal">
       <div class="controls">
-        <a ng-click="createNewElem()" class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</a>
+        <button type="submit" class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</button>
       </div>
     </div>
   </form>

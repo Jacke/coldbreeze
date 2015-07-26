@@ -19,11 +19,11 @@ Space: {{ space.index }} —
 </div>
 
 <div ng:show="space.cneedit">
- <form novalidate="novalidate" class="form-horizontal form-new-spaceelem" ng-class="space.newSpaceelem.type_title">
+ <form novalidate="novalidate" ng-submit="createSpaceElemFromSpace(space.newSpaceelem);flushEditForm(space.newSpaceelem, space);cneedit=!cneedit" class="form-horizontal form-new-spaceelem" ng-class="space.newSpaceelem.type_title">
      <div class="control-group form-group">
        <label class="control-label col-sm-1" for="inputTitle">{{ 'TITLE' | translate }}:</label>
        <div class="controls col-xs-4">
-         <input type="text" class="form-control" id="inputTitle" ng-model="space.newSpaceelem.title"/>
+         <input type="text" class="form-control" id="inputTitle" ng-model="space.newSpaceelem.title" required/>
        </div>
      </div>
      <div class="control-group form-group">
@@ -47,7 +47,7 @@ Space: {{ space.index }} —
                 <a ng-click="refElem(ref, space.newSpaceelem)" class="btn btn-small btn-primary container_brick">{{ ref.ref.title }} <span tooltip="{{ 'CONTDESC' | translate }}" tooltip-placement="bottom" class="glyphicon glyphicon-info-sign"></span></a>
               </div>
           </div>
-         <a ng-click="createSpaceElemFromSpace(space.newSpaceelem);flushEditForm(space.newSpaceelem, space);cneedit=!cneedit" class="btn btn-small btn-primary">{{ 'NEW' | translate }}</a>
+         <button type="submit" class="btn btn-small btn-primary">{{ 'NEW' | translate }}</button>
        </div>
      </div>
    </form>

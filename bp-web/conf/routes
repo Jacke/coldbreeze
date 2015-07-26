@@ -35,7 +35,8 @@ POST     /signup/:token             @controllers.CustomRegistrationController.ha
 #GET     /not-authorized             securesocial.controllers.ProviderController.notAuthorized
 
 
-GET         /notify/									        @controllers.NotificationController.socket
+GET         /notify										        @controllers.NotificationController.socket
+GET         /notify_test/:msg                                   @controllers.NotificationController.notify_test(msg: String)
 GET         /only-twitter                                       @controllers.Application.onlyTwitter
 
 # Custom
