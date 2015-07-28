@@ -178,6 +178,23 @@ if (session.session.active_listed == true) {
       return "";
   }
 }
+$scope.cancelSession = function (session) {
+    $http({
+      url: '/bprocess/' + session.process.id + '/session/' + session.session.id + '/halt',
+      method: "POST",
+      data: {  }
+      })
+      .then(function(response) {
+        // success
+        $location.path('/a#/sessions/');
+
+      },
+      function(response) { // optional
+        // failed
+      }
+      );
+}
+
 $scope.haltStation = function (stationId) {
   var bpId = $route.current.params.BPid ;
     $http({

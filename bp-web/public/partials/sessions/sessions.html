@@ -151,6 +151,15 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
              <a ng-click="unlisted(session.session)" ng-show="session.session.onlyListed">Unlisted</a>
         </div>      
 <div class="progress">
+    <div class="progress-lines">
+      <div class="line-container">
+          <span class="line"></span>
+          <span class="line"></span>
+          <span class="line"></span>
+          <span class="line"></span>
+          <span class="line"></span>
+      </div>
+    </div>    
    <div class="progress-bar" role="progressbar" aria-valuenow="{{session.percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{session.percent}}%;">
     <span>{{session.percent}}%</span>
    </div>
@@ -188,7 +197,7 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 
 
 
-<div ng-if="session.station.paused == true && session.station.finished == false">
+<div class="session-launches-bar" ng-if="session.station.paused == true && session.station.finished == false">
 <div ng-include src="'assets/partials/launchesBar.html'" class="launches-bar"></div>
 </div>
 

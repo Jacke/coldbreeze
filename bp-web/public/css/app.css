@@ -2213,10 +2213,56 @@ a.addElemTab {
 }
 
 
+.progress-lines span.line {
+    -webkit-box-flex: 1;      -webkit-flex: 1;      -ms-flex: 1;      flex: 1;
+    display: inline-flex;
+    width: 5px !important;
+    height: 19px;
+    background-color: black;
+    /* position: absolute; */
+    margin: 1px 30px 0px 0px;
+    flex-wrap: wrap;
+    border-radius: 3px;
+}
 
+.progress-lines {
+    position: absolute;
+    width: 507px;
+}
+
+.progress-lines .line-container {
+    width: 100%;
+    /* display: block; */
+    display: -webkit-box;      display: -webkit-flex;      display: -ms-flexbox;      display: flex;      -webkit-flex-wrap: wrap;      -ms-flex-wrap: wrap;      flex-wrap: wrap;      list-style: none;      margin: 0;      padding: 0;
+}
+
+.progress-lines span.line:last-child {
+    margin-right: 0px;
+}
+
+.progress-lines span.line:first-child {
+    margin-left: 0px;
+}
 
 .allStations {
     padding: 2px 30px;
+}
+.session-launches-bar {
+    margin-top: 10px;
+    margin-left: -2%;
+    margin-right: -2.5%;
+}
+.session-launches-bar {
+    margin-top: 10px;
+    margin-left: -2%;
+    margin-right: -2.5%;
+    margin-bottom: -25px;
+}
+.stations a {
+    text-shadow: none;
+}
+.stations a:hover, a:focus {
+    text-shadow: none;
 }
 .allStations .stations {
     background: white;

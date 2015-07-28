@@ -22,7 +22,9 @@
           </li>
         </ul>
         <a ng-click="reactionSelect(reaction)" ng-class="selectedClass(reaction)" class="triangle-reaction"><div class="triangle triangle-3"></div></a>
-        
+        <div class="launch-attachments" ng-show="reaction.selected">
+            <a href="#">Attach</a>
+        </div>
     </li>
   </ul>
 
