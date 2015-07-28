@@ -32,23 +32,15 @@ class NotificationController(override implicit val env: RuntimeEnvironment[DemoU
   // auth.get.identityId.userId
 
     def socket = WebSocket.tryAcceptWithActor[JsValue, JsValue] { request => //[SumActor.Sum, SumActor.SumResult] { request =>
-      println(request)
-      println(SecureSocial.currentUser(request, env, env.executionContext).value)
       implicit val req: RequestHeader = request
       val user:Future[Option[service.DemoUser]] = env.authenticatorService.fromRequest.map {
          case Some(authenticator) if authenticator.isValid => { 
-           println("good")
-           println(authenticator.user)
-           println(authenticator.user)
-
            Some(authenticator.user)
        }
       case _ => { 
-        println("none")
         None
       }
     }
-
       //val cleanCred = SecureSocial.currentUser[DemoUser](request, env, env.executionContext).value
       var cred:Option[service.DemoUser] = Await.result(user, Duration(5000, MILLISECONDS))
 
@@ -77,11 +69,10 @@ class NotificationController(override implicit val env: RuntimeEnvironment[DemoU
 
 object SumActor {
   val system = ActorSystem("hello-world")
- 
+
   var actors:List[Props] = List()
 
   def props(out: ActorRef, user: Option[DemoUser]) = {
-    println(user)
     val props = Props(new SumActor(out, user))
     val actor_prop = system.actorOf(props)
     //actors = actors ++ List(prop)

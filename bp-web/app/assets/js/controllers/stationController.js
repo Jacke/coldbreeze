@@ -227,7 +227,21 @@ $scope.showInlineLaunch = function (session) {
   return session;
 }
 
-
+$scope.cancelSession = function (session) {
+    $http({
+      url: '/bprocess/' + session.process.id + '/session/' + session.session.id + '/halt',
+      method: "POST",
+      data: {  }
+      })
+      .then(function(response) {
+        // success
+        $location.path('/a#/bprocess/' + session.process.id + '/stations');
+      },
+      function(response) { // optional
+        // failed
+      }
+      );
+}
 $scope.haltStation = function (stationId) {
   var bpId = $route.current.params.BPid ;
     $http({

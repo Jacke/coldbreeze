@@ -46,10 +46,14 @@ $scope.cancelSession = function (session) {
       })
       .then(function(response) {
         // success
+/*
         $scope.bprocesses = BProcessesFactory.query();
             $scope.bprocesses.$promise.then(function (processes) {
                 _.forEach(processes, function(proc) { TreeBuilder.buildFetch(proc, function(success){}); });
-            });
+            });*/
+
+        $location.path('/a#/bprocess/' + session.process.id);
+    
       },
       function(response) { // optional
         // failed
