@@ -184,14 +184,14 @@ minorityApp.filter('slice', function() {
 minorityApp.factory('NotificationBroadcaster', ['$websocket', '$window', 'toastr', function($websocket, $window, toastr) {
       // Open a WebSocket connection
       var baseUrl = $window.location.host;
-      if (ssl_enabled) {
+      if (document.ssl_enabled) {
 	var ws_type = "wss://";
       } else { var ws_type = "ws://" }
       var dataStream = $websocket(ws_type + baseUrl + '/notify');
       var collection = [];
       dataStream.onMessage(function(message) {
         console.log(message);
-        toastr.success(message.type, message.msg);
+        toastr.success(message.type, message.data);
         collection.push(JSON.parse(message.data));
       });
       dataStream.onClose(function(message) {
