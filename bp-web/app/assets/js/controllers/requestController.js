@@ -204,6 +204,7 @@ $scope.reactionSelect = function (reaction) {
   };
 
 
+  $scope.runFromDisabled = false;
 
 
   $scope.runFrom = function (session_id) {
@@ -236,11 +237,13 @@ $scope.reactionSelect = function (reaction) {
           $scope.delParam(reaction);
         } else {
         $scope.reaction_params.push({reaction_id: reaction.reaction.id });
+        if ($scope.reaction_params.length != 0) { $scope.runFromDisabled = false; }
         }
       
   }
   $scope.delParam = function (reaction) {
     $scope.reaction_params = _.reject($scope.reaction_params, function(el) { return el.reaction_id === reaction.reaction.id; });
+    if ($scope.reaction_params.length == 0) { $scope.runFromDisabled = true; }
   }
 
 $scope.capitalizeFirstLetter = function (string) {

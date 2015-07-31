@@ -142,7 +142,8 @@
     margin-left: 0px;
     padding-left: 20px;
     padding-top: 1px;
-    padding-bottom: 0px;
+        padding-bottom: 50px;
+    position: relative;
     margin-bottom: 0px;
 }
 
@@ -227,22 +228,22 @@
 }
 
 .session-process .progress {
-    width: 50%;
+    width: 45%;
     display: inline-block;
     margin-bottom: -8px;
+    position: relative;
 }
 
 .session-process .station-markers {
     width: 110%;
 }
 
-.session-process .stations {
-padding-bottom: 25px;
-    margin-bottom: 35px;
-}
+
 
 .session-process .session__header a {
-    font-size: 14px;
+        font-size: 22px;
+    font-weight: 100;
+    font-family: 'Open Sans';
 }
 
 
