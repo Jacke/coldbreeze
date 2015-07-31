@@ -147,6 +147,7 @@ $scope.selectedClass = function (reaction) {
 $scope.reactionSelect = function (reaction) {
     if (reaction.selected == true) {
       reaction.selected = false;
+      $scope.addParam(reaction);
     } else {
       reaction.selected = true;
     
@@ -204,8 +205,20 @@ $scope.reactionSelect = function (reaction) {
   };
 
 
-  $scope.runFromDisabled = false;
+  $scope.runFromDisabled = true;
 
+
+  $scope.currentReactionFlag = true;
+  $scope.currentReactionFilter = function (data) {
+      if ($scope.currentReactionFlag && $scope.interactions.reactions[0] == data) {
+        return data;
+      } 
+      if ($scope.currentReactionFlag && $scope.interactions.reactions[0] != data) {
+        return false;
+      } else {
+        return data;
+      }
+  }
 
   $scope.runFrom = function (session_id) {
     //var front_params = _.filter(station.proc_elems,  function(obj) { return obj.param != undefined });
@@ -233,17 +246,17 @@ $scope.reactionSelect = function (reaction) {
   $scope.reaction_params = []
   $scope.addParam = function (reaction) {
 
-        if (_.find($scope.reaction_params, function(re) { return re.reaction_id == reaction.reaction.id })) {
+        if (_.find($scope.reaction_params, function(re) { return re.reaction_id == reaction.reaction.id }) != undefined) {
           $scope.delParam(reaction);
         } else {
         $scope.reaction_params.push({reaction_id: reaction.reaction.id });
-        if ($scope.reaction_params.length != 0) { $scope.runFromDisabled = false; }
+        if ($scope.reaction_params.length != 0) { console.log("$scope.runFromDisabled = false;"); $scope.runFromDisabled = false; }
         }
       
   }
   $scope.delParam = function (reaction) {
     $scope.reaction_params = _.reject($scope.reaction_params, function(el) { return el.reaction_id === reaction.reaction.id; });
-    if ($scope.reaction_params.length == 0) { $scope.runFromDisabled = true; }
+    if ($scope.reaction_params.length == 0) { console.log("$scope.runFromDisabled = true;"); $scope.runFromDisabled = true; }
   }
 
 $scope.capitalizeFirstLetter = function (string) {
