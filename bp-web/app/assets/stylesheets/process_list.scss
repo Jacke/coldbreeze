@@ -18,6 +18,26 @@ a.redButton {
 .process-thumb:active p.tableMinListGithub a.redButton {
     background: #c0392b;
 }
+button.redButton {
+  height: 37px;
+  width: 38px;
+  display: block;
+  background: #e74c3c;
+  position: absolute;
+  border-radius: 35px;
+  border: #e74c3c;
+}
+.process-thumb p.tableMinListGithub {
+  left: 2px;
+  top: 10px;
+}
+.process-thumb:active p.tableMinListGithub {
+    opacity: 1;
+}
+
+.process-thumb:active p.tableMinListGithub button.redButton {
+    background: #c0392b;
+}
 .process_content {
   top: -26px;
   position: relative;    
@@ -165,7 +185,7 @@ ul.type-tabs li a:hover {
 }
 
 .stations .progress .progress-bar span {
-  width: 45%;
+    width: 100%;
 }
 .session-process .process_content {
   background: white;
@@ -186,3 +206,14 @@ span.number.true.finished {
 }
 @import 'session_filters';
 
+
+
+@media (max-width: 1200px) {
+
+.process-thumb {
+    right: 1%;
+}
+.process-status .tableMinListControls {
+    margin-right: 9%;
+}
+}

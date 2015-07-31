@@ -488,11 +488,17 @@ border-left: 2px solid #4dbd74;
     font-size: 15px;
 }
 
+li.reaction_list__reaction {
+    border-bottom: solid 1px #36384D;      
+    padding-bottom: 18px;
+    padding-top: 15px;
+}
+
 .proc-element-spaces .proc-space {
     margin-left: 20px;
     display: inline-block;
     width: 30%;
-  float: left;
+    float: left;
 }
 
 .proc-element-spaces {
@@ -509,7 +515,6 @@ border-left: 2px solid #4dbd74;
     padding-top: 0px;
     margin-top: -10px;
 }
-
 
 .space-element {
     background: white;
@@ -1692,6 +1697,16 @@ form {
 .process-tree {
     background: white;
 }
+.progress-lines .elem-card {
+  background: pink;
+  border-radius: 3px;
+}
+.progress-lines .elem-card.confirm {
+    background: #e67e22;
+}
+.progress-lines .elem-card.container_brick {
+    background: #27ae60;
+}
 .process-tree .elem-card {
   background: pink;
   border-radius: 3px;
@@ -1720,6 +1735,12 @@ form {
 .elem-card.active {
   padding-right: 11px;
     display: inline;
+    -webkit-animation: glowIt 2s infinite;
+-moz-animation: glowIt 2s infinite;
+-o-animation: glowIt 2s infinite;
+animation: glowIt 2s infinite;
+}
+.progress-lines .elem-card.active {
     -webkit-animation: glowIt 2s infinite;
 -moz-animation: glowIt 2s infinite;
 -o-animation: glowIt 2s infinite;
@@ -2023,8 +2044,7 @@ border-radius: 6px;
 
 .process-thumb {
   position: absolute;
-  /*right: 165px;*/
-  right: 70px;
+  right: 2%;
   top: 5px;
   width: 44px;
   height: 41px;
@@ -2033,6 +2053,24 @@ border-radius: 6px;
   padding-left: 25px;
   cursor: pointer;
 }
+.input-stations .process-thumb {
+    right: 19%;
+    top: 87%;
+    padding-left: 2px;
+    padding-top: 1px;
+    padding-right: 0px;
+}
+
+.input-stations .process-thumb a.redButton {
+    background-color: #73B1D4;
+}
+.input-stations .process-thumb button.redButton {
+    background-color: #73B1D4;
+}
+button[disabled=disabled].redButton, button:disabled.redButton {
+background-color: gray !important;
+}
+
 
 .allSessionsList h2, .allStationssList h2 {
     display: inline-block;
@@ -2076,7 +2114,7 @@ h2.tableMinListName {
 
 .process-status li.tableMinListItem {
     height: auto;  
-    width: 1068px;
+width: 100%;
     overflow: hidden;
 }
 .process-status .tableMinListControls a:hover {
@@ -2227,9 +2265,9 @@ a.addElemTab {
 
 .progress-lines {
     position: absolute;
-    width: 507px;
+    width: 100%;
+    display: block;
 }
-
 .progress-lines .line-container {
     width: 100%;
     /* display: block; */
@@ -2266,8 +2304,9 @@ a.addElemTab {
 }
 .allStations .stations {
     background: white;
-    margin: 3px 14px 20px 4px;
-    padding: 10px 25px 0px 22px;
+    margin: 10px 15px 15px 0px;
+    padding: 15px 25px 15px 30px;
+    border-radius: 4px;
 }
 .allStations h1 {
     margin-left: 25px;

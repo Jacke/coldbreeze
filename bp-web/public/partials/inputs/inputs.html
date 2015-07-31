@@ -23,15 +23,16 @@
         </ul>
         <a ng-click="reactionSelect(reaction)" ng-class="selectedClass(reaction)" class="triangle-reaction"><div class="triangle triangle-3"></div></a>
         <div class="launch-attachments" ng-show="reaction.selected">
-            <a href="#">Attach</a>
+            <a href="#" tooltip-placement="bottom" tooltip="Not supporting right now.">Attach</a>
         </div>
     </li>
   </ul>
-
-
-  <a ng-click="runFrom($parent.session.session.id)" class="btn btn-big btn-success">{{ 'RUN_FROM' | translate }}</a>
+  <div class="process-thumb">
+          <p class="tableMinListGithub">
+            <button class="redButton ng-scope" ng-init="runFromDisabled=true;" ng-disabled="runFromDisabled" ng-click="runFrom($parent.session.session.id)" tooltip-placement="bottom" tooltip="{{ 'RUN_FROM' | translate }}"></button>
+          </p>
+  </div>
   <!--<a ng-click="haltSession($parent.session.session.id)" class="btn btn-big btn-danger" ng-show="isManagerVal">{{ 'TURN_DOWN' | translate }}</a>-->
-
 </div>
 <!--
 <div class="stations input-stations" style="clear: both;">

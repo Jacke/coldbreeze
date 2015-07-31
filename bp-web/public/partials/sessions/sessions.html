@@ -144,21 +144,15 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 
               <span class="number {{ session.station.state }}" ng-class="bubbleClass(session)" tooltip="{{bubbleTooltip(session)}}">{{ $index + 1 }}</span>
               
-              <a href="/a#/bprocess/{{ entity.process.id }}/elements?session={{ session.session.id }}">Session # {{ $index }} — {{session.station.note }}</a>
+              <a href="/a#/bprocess/{{ entity.process.id }}/elements?session={{ session.session.id }}">Session # {{ $index }}  {{session.station.note }}</a>
 
 <abbr class="session__header__created_at" title="{{ session.session.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a'}}" am-time-ago="session.session.created_at"></abbr>
               
              <a ng-click="unlisted(session.session)" ng-show="session.session.onlyListed">Unlisted</a>
         </div>      
 <div class="progress">
-    <div class="progress-lines">
-      <div class="line-container">
-          <span class="line"></span>
-          <span class="line"></span>
-          <span class="line"></span>
-          <span class="line"></span>
-          <span class="line"></span>
-      </div>
+    <div class="progress-lines" ng-init="bprocess=entity.process">
+                <div ng-include src="'assets/partials/treeLiner.html'"></div>
     </div>    
    <div class="progress-bar" role="progressbar" aria-valuenow="{{session.percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{session.percent}}%;">
     <span>{{session.percent}}%</span>
