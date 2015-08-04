@@ -36,8 +36,6 @@ object EmployeesBusinessDAO {
   def getByBusiness(k: Int) = database withSession {
     implicit session =>
       val q3 = for { s ← employees_businesses if s.business_id === k } yield s 
-      println(q3.selectStatement)
-      println(q3.list)
       q3.list 
   }
   def isEmployable(business_id: Int, email: String) = database withSession {
@@ -57,11 +55,7 @@ object EmployeesBusinessDAO {
         case _ => None
       }
 
-      println("EMPLOYEE BUSINESS")
-      println(emp)
       val q3 = for { s ← employees_businesses if s.employee_id === emp.getOrElse(0) } yield s 
-      println(q3.selectStatement)
-      println(q3.list)
       q3.list.headOption
   }
   def getBusinessByUID(email: String):Option[BusinessDTO] = database withSession {

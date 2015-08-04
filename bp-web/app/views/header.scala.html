@@ -62,13 +62,11 @@
     </li>-->
     <li class="minMenuItem">
       <a id="teamMinsLink" class="vIcoIn menuEntityLink" href="@routes.Application.app()">
-        <span class="uicon-svg12"></span>
-        @Messages("nav.processes")(LangDet.getLang(user) )  </a>
+        <span class="uicon-svg12"></span>@Messages("nav.processes")(LangDet.getLang(user) )  </a>
     </li>
     <li class="minMenuItem">
       <a id="teamMinsLink" class="vIcoIn menuEntityLink" href="/a#/sessions">
-        <span class="uicon-svg14"></span>
-        Sessions</a>
+        <span class="uicon-svg14"></span>Launches</a>
     </li> 
     <!--
     <li class="minMenuItem">
@@ -79,14 +77,12 @@
     @if(user.isManager) {
     <li class="minMenuItem">
       <a id="teamMembersLink" class="vIcoIn menuEntityLink" href="@users.routes.EmployeeController.index()">
-        <span class="uicon-svg98"></span>
-        @Messages("nav.people")(LangDet.getLang(user) )  </a>
+        <span class="uicon-svg98"></span>@Messages("nav.people")(LangDet.getLang(user) )  </a>
     </li>
     } 
     <li class="minMenuItem">
       <a id="teamSettingsLink" class="vIcoIn menuEntityLink" href="@routes.SettingController.index()">
-        <span class="uicon-svg2222"></span>
-        @Messages("nav.settings")(LangDet.getLang(user) )  </a>
+        <span class="uicon-svg2222"></span>@Messages("nav.settings")(LangDet.getLang(user) )  </a>
     </li>
   </ul>
 </nav>

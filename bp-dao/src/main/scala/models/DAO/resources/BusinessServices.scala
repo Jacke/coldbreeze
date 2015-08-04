@@ -39,7 +39,6 @@ object BusinessServiceDAO {
 
   def pull(id: Option[Int] = None, title: String, business_id: Int, master_acc:String) = Try(database withSession {
     implicit session ⇒
-
       business_services += BusinessServiceDTO(id, title, business_id, master_acc)
   }).isSuccess
 
@@ -79,7 +78,6 @@ object BusinessServiceDAO {
    * @param id
    */
   def delete(id: Int) = database withSession { implicit session ⇒
-
     business_services.filter(_.id === id).delete
   }
   /**
@@ -88,7 +86,6 @@ object BusinessServiceDAO {
   def count: Int = database withSession { implicit session ⇒
     Query(business_services.length).first
   }
-
 
 
   def getAll = database withSession {

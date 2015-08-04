@@ -101,7 +101,6 @@ object BusinessDAO {
    * @param id
    */
   def delete(id: Int) = database withSession { implicit session ⇒
-
     businesses.filter(_.id === id).delete
   }
   /**

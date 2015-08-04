@@ -369,7 +369,6 @@ table.permissions-table {
 
 .proc-element .info {
 padding: 0px 11px 3px 25px;
-border-left: 2px solid #95a5a6;
 margin-top: -3px;
 }
 .proc-element .element-header {
@@ -457,6 +456,49 @@ span.reaction-icon.minicon.minicon-gear-fill-right {
 .proc-element .right-bar b {
     color: white;
 }
+
+
+/*
+ Minimal layout
+*/
+.proc-element.minimal .info {
+    padding: 0px 5px 3px 0px;
+}
+
+.proc-element.minimal .element-header {
+    padding-top: 0px;
+}
+
+.proc-element.minimal .element-header .info h6.desc {
+        padding-bottom: 0px;
+        margin-bottom: 9px;
+}
+
+.proc-element.minimal .element-header .info .type {
+    border-radius: 0px;
+    height: 65px;
+        border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+.proc-element.minimal .element-header .info .type:hover {
+    border-radius: 0px;
+            border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+.proc-element.minimal .right-bar {
+    display: none;
+}
+
+.proc-element.minimal {
+    margin-bottom: -5px;
+}
+.proc-element.minimal .element-header .info .type:hover ul.type-tabs {
+     border-radius: 0px;
+         border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+     height: 65px;
+}
+
 
 
 .proc-element.invoking .info { 
@@ -2072,6 +2114,82 @@ background-color: gray !important;
 }
 
 
+.session-bar-annotation {
+    position: absolute;
+    top: 15px;
+    left: 17%;
+}
+
+
+
+
+
+
+/********
+ * Circle progress
+ *******/
+.progress-button {
+    position: relative;
+    display: inline-block;
+    text-align: center;
+    margin: 10px;
+}
+.progress-button button {
+    display: block;
+    margin: 0 auto;
+    padding: 0;
+    width: 250px;
+    height: 70px;
+    border: 2px solid #1ECD97;
+    border-radius: 40px;
+    background: transparent;
+    color: #1ECD97;
+    letter-spacing: 1px;
+    font-size: 18px;
+    font-family: 'Montserrat', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-transition: background-color 0.3s, color 0.3s, width 0.3s, border-width 0.3s, border-color 0.3s;
+    transition: background-color 0.3s, color 0.3s, width 0.3s, border-width 0.3s, border-color 0.3s;
+}
+.loading.progress-button button {
+    width: 70px;
+    border-width: 5px;
+    border-color: #ddd;
+    background-color: transparent;
+    color: #fff;
+}
+.loading.progress-button span, .success.progress-button span, .error.progress-button span {
+    opacity: 0;
+}
+.progress-button svg {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+    pointer-events: none;
+}
+.loading.progress-button svg.progress-circle path, .success.progress-button svg.checkmark path, .error.progress-button svg.cross path {
+    opacity: 1;
+    -webkit-transition: stroke-dashoffset 0.3s;
+    transition: stroke-dashoffset 0.3s;
+}
+.progress-button svg.progress-circle path {
+    stroke: #1ECD97;
+    stroke-width: 5;
+}
+.progress-button svg path {
+    opacity: 0;
+    fill: none;
+}
+
+
+
+
+
+
+
+
 .allSessionsList h2, .allStationssList h2 {
     display: inline-block;
     float: left;
@@ -2101,13 +2219,14 @@ background-color: gray !important;
 
 
 .header-frame {
-background: #f5f6fa;
-margin-left: 12px;
-padding: 15px 19px;
-border: #ebecf0 1px solid;
-margin-right: -15px;
-    
+    background: white;
+    margin-left: 12px;
+    padding: 15px 19px;
+    border: rgba(235, 236, 240, 0.52) 1px solid;
+    margin-right: -15px;
 }
+
+
 h2.tableMinListName {
     clear: both;
 }
@@ -3299,6 +3418,7 @@ ul.process-control {
     padding-left: 0px;
     padding-top: 10px;
     display: inline-block;
+    float: right;
 }
 
 .card-pipe {

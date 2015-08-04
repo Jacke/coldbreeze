@@ -195,8 +195,15 @@ minorityApp.factory('NotificationBroadcaster', ['$websocket', '$window', 'toastr
           var dataStream = $websocket(ws_type + baseUrl + '/notify');
           dataStream.onMessage(function(message) {
             console.log(message);
-            toastr.success(message.type, JSON.parse(message.data).msg);
-            collection.push(JSON.parse(message.data));
+            var object = JSON.parse(message.data);
+            if (object.type == "message") {
+            toastr.success(message.type, object.msg);
+            }
+            if (object.type == "popup") {
+              console.log(object);
+              console.log("popup");
+            }
+            collection.push(object);
           });
           dataStream.onClose(function(message) {
             socketLoad();

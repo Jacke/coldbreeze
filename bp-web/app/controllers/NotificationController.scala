@@ -28,6 +28,9 @@ class NotificationController(override implicit val env: RuntimeEnvironment[DemoU
     implicit val sumResultFormat = Json.format[SumActor.SumResult]
     implicit val sumResultFrameFormatter = FrameFormatter.jsonFrame[SumActor.SumResult]
 
+    implicit val PopupRequestFormat = Json.format[PopupRequest]
+    implicit val PopupRequestFrameFormatter = FrameFormatter.jsonFrame[PopupRequest]
+
   // val auth = UserService.find(authenticator.get.identityId)
   // auth.get.identityId.userId
 
@@ -52,6 +55,9 @@ class NotificationController(override implicit val env: RuntimeEnvironment[DemoU
         case None => Future.successful(Left(Forbidden))
       }
     }
+
+
+
     def notify_test(msg: String) = SecuredAction { implicit request =>
           val system = SumActor.system
           /* SumActor.actors.foreach { actor => 
@@ -63,6 +69,25 @@ class NotificationController(override implicit val env: RuntimeEnvironment[DemoU
           BoardActor() ! Message(request.user.main.userId, msg )
           Ok("sended")    
     }
+    def popup_test(target: String) = Action { request =>
+request.body.asJson.map { json =>
+          val placeResult = json.validate[PopupRequest]
+          placeResult.fold(
+            errors => {
+              println(JsError.toFlatJson(errors))
+              //BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
+            },
+            place => { 
+              println(place)
+              //Ok(Json.obj("status" ->"OK", "message" -> ("Place '"+place.name+"' saved.") ))  
+            }
+          )
+          }    
+          BoardActor() ! StatusCheck
+          BoardActor() ! PopupMessage( target )
+          Ok("sended")    
+    }
+
 }
 
 
@@ -172,6 +197,9 @@ class UserActor(uid: String, board: ActorRef, out: ActorRef) extends Actor with 
       println("msg")
       println(js)
       out ! js
+    case PopupMessage(target) =>
+      val js = Json.obj("type" -> "popup", "target" -> target)
+      out ! js
     case js: JsValue =>
       (js \ "msg").validate[String] map { Utility.escape(_) } foreach { board ! Message(uid, _ ) }
     case other =>
@@ -201,6 +229,8 @@ class BoardActor extends Actor with ActorLogging {
   def receive = LoggingReceive {
     case m: Message =>
       users foreach { _ ! m }
+    case pm: PopupMessage =>
+      users foreach { _ ! pm } 
     case Subscribe =>
       users += sender
       context watch sender
@@ -220,3 +250,5 @@ object BoardActor {
 }
 
 case class Message(uuid: String, s: String)
+case class PopupMessage(target: String)
+case class PopupRequest(target: String)
