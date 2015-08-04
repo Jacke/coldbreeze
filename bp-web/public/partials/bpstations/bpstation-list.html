@@ -133,6 +133,10 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 <div class="stations" ng-repeat="session in sessions.sessions | limitTo: 10 | filter: isOnlyActive | filter: { session: onlyListed }" style="clear: both;">
 
         <div class="session__header">
+              <div class="progress-button loading">
+                <button><span>Submit</span></button>
+                <svg class="progress-circle" width="70" height="70"><path d="m35,2.5c17.955803,0 32.5,14.544199 32.5,32.5c0,17.955803 -14.544197,32.5 -32.5,32.5c-17.955803,0 -32.5,-14.544197 -32.5,-32.5c0,-17.955801 14.544197,-32.5 32.5,-32.5z" style="stroke-dasharray: 94.243713px; stroke-dashoffset: 182.243713px;"></path></svg>
+              </div>            
               <span class="number {{ session.station.state }}" ng-class="bubbleClass(session)" tooltip="{{bubbleTooltip(session)}}">{{ $index + 1 }}</span>
               <a href="/a#/bprocess/{{ sessions.process.id }}/elements?session={{ session.session.id }}">Session # {{ $index }}  {{session.station.note }}</a>
 

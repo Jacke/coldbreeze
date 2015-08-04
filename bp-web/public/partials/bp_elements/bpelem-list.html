@@ -2,78 +2,35 @@
 <div class="traverse-marker"></div>
 
 <div class="tab-content">
-
 <!-- 
 <div class="tab-pane active" id="edit" ng:show="tree == 1 && bpelems.length > 0" ng:init="tree=1">
   <div ng-include src="'partials/tree.html'"></div>
 </div>
 -->
+</div>
 
-
-</div>
-<div class="tab-content">
-
-<!--
-<div class="tableMinListWrap">
-<div ng:hide="tree == 1">
-  <a href="" role="tab" class="createMin ajaxLink cacheable"  data-toggle="tab" ng:click="tree=1"><span class="glyphicon glyphicon-chevron-down"></span> {{ 'TREE' | translate }}</a>
-</div>
-<div ng:show="tree == 1">
-  <a href="" role="tab" class="createMin ajaxLink cacheable" data-toggle="tab" ng:click="tree=0"><span class="glyphicon glyphicon-chevron-up"></span> {{ 'TREE' | translate }}</a>
-</div>
--->
-<div class="tableMinListFilter filterLayer">
-</div>
-</div>
 
 <div class="active-station-alert alert alert-info" ng:show="hasActiveStation">
   {{ 'RUNNED' | translate }} <strong>{{ 'WILL_BE_SHUTDOWN' | translate }}</strong>
 {{ 'CREATE_OR_COPY' | translate }} <a ng:click="copyProcess()">{{ 'COPY' | translate }}</a> {{ 'CREATE_OR_COPY2' | translate }}
 </div>
 
-<div class="process-info header-frame">
+<div class="process-info header-frame" ng-init="newelemformselected=0">
 <h3 ng-hide="inSession"><edit-in-place value="bp.title"></edit-in-place></h3>
 <h3 ng-click="resetSession()" class="reset-session" ng-show="inSession">{{ bp.title }}</h3>
 <ul class="process-control" ng-show="isManagerVal">
  <!--<li><a href="" role="tab" class="createMin change ajaxLink cacheable" data-toggle="tab" ng:click="editProcess()"> {{ 'EDIT' | translate }} </a></li>-->
 <!-- <li><a class="allStation" href="/a#/bprocess/{{ bp.id }}/stations">{{ 'STATIONS' | translate }}</a></li> -->
+ <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="turnMinimal()">Minimalistic view</a></li>
  <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="editProcess()">{{ 'EDIT' | translate }} </a></li>
  <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="perm()">{{ 'PEOPLE' | translate }} </a></li>
  <li><a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" ng-click="modalShare()">{{ 'SHARE' | translate }}</a></li>
+ <li><a href="" class="addElemTab" ng:show="!inSession" ng:click="$parent.$parent.newelemformselected==1 ? $parent.$parent.newelemformselected=0 : $parent.$parent.newelemformselected=1 " tooltip-placement="bottom" tooltip="Create element"><span class="glyphicon glyphicon-plus"></span>  </a></li>
 </ul>
 
-</div>
-
-<div class="tab-content">
 
 
-<div class="span8 container tab-pane active" ng:show="viewstyle == 1" ng:init="viewstyle=1">
-
-
-  <ul class="nav nav-tabs elem-nav" role="tablist" ng-show="isManagerVal">
-    <!--<a href="" ng:click="openNewElem()">.</a> -->
-    <li><a href="" role="tab" class="addElemTab" data-toggle="tab" ng:show="!inSession" ng:click="newselected==1 ? newselected=0 : newselected=1 "><span class="glyphicon glyphicon-plus"></span>  </a></li>
-  </ul>
-
-
-
-
-<div class="tab-content">
-<!--
-<div class="elem-desc" ng:show="newselected != 1 && bpelems.length < 1 && isManagerVal">
-<div class="confirm-desc">
-<h3>{{ 'CONFIRM' | translate }} </h3>
-<p>{{ 'CONFDESCFULL' | translate }} </p>
-</div>
-<div class="container-desc">
-<h3>{{ 'CONTAINER' | translate }} </h3>
-<p>{{ 'CONTDESCFULL' | translate }} </p>
-</div>
-
-</div> -->
-
-<div class="tab-pane active" id="edit" ng:show="newselected == 1 && !inSession">
-
+<div ng:show="$parent.newelemformselected == 1 && !inSession">
  <form novalidate="novalidate" ng-submit="createNewElem();" class="form-horizontal form-new-bpelem" ng-class="newBpelem.type_title">
     <div class="col-xs-3 element-form-fields">
     <div class="control-group form-group">
@@ -116,7 +73,14 @@
   </form>
 </div>
 
-</div><!-- tab-content -->
+</div>
+
+<div class="tab-content">
+
+
+<div class="span8 container tab-pane active" ng:show="viewstyle == 1" ng:init="viewstyle=1">
+
+
 
 <div class="elements" ng-repeat="bpelem in bpelems | orderBy:'order'">
 <div class="proc-element" ng-class="'elem-'+bpelem.id">
@@ -303,65 +267,8 @@
 
 
 
-  <ul class="nav nav-tabs" role="tablist">
-    <!--<li><a href="" role="tab" data-toggle="tab" ng:click="newselected=2">New Space</a></li>-->
-  </ul>
-    <div class="tab-content">
-<div class="tab-pane active" id="edit" ng:show="newselected == 2">
-<form novalidate="novalidate" class="form-horizontal">
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">space.bprocess:</label>
-      <div class="controls">
-        <input type="number" id="inputBusinessId" ng-model="newSpace.bprocess" value="{{ BPid }}"/>
-        <input type="hidden" name="value" ng-model="newSpace.bprocess" value="{{ BPid }}">
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">space.index:</label>
-      <div class="controls">
-      <input type="number" id="inputBusinessId" ng-model="newSpace.index" value="{{ indexSpaceGen(newSpace) }}"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">space.container:</label>
-      <div class="controls">
-        <input type="checkbox" id="inputBusinessId" ng-model="newSpace.container" value="false"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">space.subbrick:</label>
-      <div class="controls">
-        <input type="checkbox" id="inputBusinessId" ng-model="newSpace.subbrick" value="false"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">space.brick_front:</label>
-      <div class="controls">
-        <input type="number" id="inputBusinessId" ng-model="newSpace.brick_front"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">space.brick_nested:</label>
 
-      <div class="controls">
-        <input type="number" id="inputBusinessId" ng-model="newSpace.brick_nested"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <label class="control-label" for="inputBusinessId">space.nestingLevel:</label>
-      <div class="controls">
-        <input type="number" id="inputBusinessId" ng-model="newSpace.nestingLevel"/>
-      </div>
-    </div>
-    <div class="control-group">
-      <div class="controls">
-        {{ newSpace }}
-        <a ng-click="createNewSpace()" class="btn btn-small btn-primary">Create</a>
-        <a ng:click="newselected=0" class="btn btn-small btn-primary">Cancel</a>
-      </div>
-    </div>
-  </form>
-</div></div>
+
 
 
 
@@ -489,7 +396,7 @@
 </div>
   
   
-<div class="session-info" ng-show="inSession" ng-click="session_bar == 'hiding' ? session_bar='shown' : session_bar='hiding'">
+<div class="session-info" ng-show="inSession">
         <div class="progress">
           <div class="progress-bar" role="progressbar" aria-valuenow="@{session.percent}" aria-valuemin="0" aria-valuemax="100" style="width: {{ session.percent}}%">
             <span>{{ session.percent}}%</span>
@@ -499,16 +406,20 @@
           Started <abbr class="session__header__created_at" title="{{ session.session.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="session.session.created_at"></abbr>
         </div>
         <div class="expand_sessions">
-          <a><span class="uicon-svg92"></span>Sessions</a>
+          <a ng-click="session_bar == 'hiding' ? session_bar='shown' : session_bar='hiding'"><span class="uicon-svg92"></span>Launches</a>
         </div>
 
 
 </div>
-<div id="proc-sessions" class="proc-sessions" ng-init="session_bar='hiding'"ng-class="session_bar" ng-click="session_bar == 'hiding' ? session_bar='shown' : session_bar='hiding'">
+
+<div id="proc-sessions" class="proc-sessions" ng-init="inSession ? session_bar='hiding' : session_bar='shown'" ng-class="session_bar">
+
+
     <div class="proc-session active" ng-click="resetSession()" data-desc="Model">
     </div> 
-<a href="a#/bprocess/{{session.process.id}}/elements?session={{session.session.id}}" ng-click="changeSession(session)" ng-repeat="session in sessions | limitTo: 5" class="current-proc-session-info session-link proc-session"  data-desc="Session #{{$index+1 }}">
+<a href="a#/bprocess/{{session.process.id}}/elements?session={{session.session.id}}" ng-click="changeSession(session)" ng-repeat="session in sessions | limitTo: 5" class="current-proc-session-info session-link proc-session"  data-desc="Launch #{{$index+1 }}">
 </a> 
+
 
 <div class="allSessions"><a href="/a#/bprocess/{{ BPid }}/stations">All</a></div>
 </div>

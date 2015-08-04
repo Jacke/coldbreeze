@@ -1261,14 +1261,25 @@ BPSessionsFactory.query({ BPid: $scope.BPid }).$promise.then(function(data){
 $scope.reactions =  ReactionsFactory.query({ BPid: $scope.BPid });
 $scope.element_topologs = ElementTopologsFactory.query({ BPid: $scope.BPid });
 
+$scope.minimalistic = false;
+$scope.turnMinimal = function() {
+  if ($scope.minimalistic == true) {
+    _.forEach($('.proc-element'), function(el) { $(el).removeClass('minimal')});
+    $scope.minimalistic = false;
+  } else {
+    _.forEach($('.proc-element'), function(el) { $(el).addClass('minimal')});
+    $scope.minimalistic = true;    
+  }
+}
+
 
 $scope.changeSession = function(session) {
 
  $scope.session = session;
  $location.search('session', $scope.session.session.id);
  $scope.inSession = true;
- $scope.station = _.find(session.stations, function(s) { return s.front == true })  
- $scope.session_bar = 'shown'; 
+ $scope.station = $scope.session.station;//_.find(session.station, function(s) { return s.front == true })  
+ $scope.session_bar = 'hiding'; 
 
  $scope.interactions = InteractionsFactory.query({session_id: $scope.session.session.id});
 
@@ -1277,12 +1288,14 @@ $scope.changeSession = function(session) {
  //.$promise.then(function(reaction_array) { 
 
  if ($scope.station != undefined && $scope.station.inspace == false) {
-   if ($scope.bpelems[$scope.station.step+1] !== undefined) {
-    var elem = $scope.bpelems[$scope.station.step+1].id
+   if ($scope.bpelems[$scope.station.step] !== undefined) {
+    var elem = $scope.bpelems[$scope.station.step].id
    } else {  // MAKE SAFE FOR LAST ELEMENT
     var elem = $scope.bpelems[$scope.station.step].id
    }
-   var top = $('.elem-'+elem).offset().top
+   var top = $('.elem-'+elem).offset().top;
+   console.log("top traverse marker" + top);
+
    $('.traverse-marker').css('top', top-35 + 'px')
  } 
  if ($scope.station != undefined && $scope.station.inspace == true) {
@@ -1302,6 +1315,8 @@ $scope.resetSession = function () {
   $scope.session = undefined;
   $location.search('session', null);
   $scope.inSession = false;
+ //$scope.session_bar = 'shown'; 
+
   $scope.station = undefined;
   $scope.loadResources();
   $scope.reloadResources();

@@ -21,7 +21,7 @@ POST    /auth/authenticate/:provider     @controllers.CustomProviderController.a
 #GET     /signup                     securesocial.controllers.Registration.startSignUp
 #POST    /signup                     securesocial.controllers.Registration.handleStartSignUp
 #GET     /signup/:token              securesocial.controllers.Registration.signUp(token)
-POST     /signup/:token             @controllers.CustomRegistrationController.handleSignUp(token)
+POST     /signup/:token              @controllers.CustomRegistrationController.handleSignUp(token)
 #GET     /reset                      securesocial.controllers.Registration.startResetPassword
 #POST    /reset                      securesocial.controllers.Registration.handleStartResetPassword
 #GET     /reset/:token               securesocial.controllers.Registration.resetPassword(token)
@@ -37,6 +37,7 @@ POST     /signup/:token             @controllers.CustomRegistrationController.ha
 
 GET         /notify										        @controllers.NotificationController.socket
 GET         /notify_test/:msg                                   @controllers.NotificationController.notify_test(msg: String)
+POST        /popup_test/:target                                 @controllers.NotificationController.popup_test(target: String) 
 GET         /only-twitter                                       @controllers.Application.onlyTwitter
 
 # Custom

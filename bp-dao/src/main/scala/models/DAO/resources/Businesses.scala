@@ -61,7 +61,6 @@ object BusinessDAO {
   def get(k: Int):Option[BusinessDTO] = database withSession {
     implicit session ⇒
       val q3 = for { s ← businesses if s.id === k } yield s
-
       q3.list.headOption 
   }
   /**
@@ -94,7 +93,6 @@ object BusinessDAO {
    * @param id
    */
   def delete(id: Int) = database withSession { implicit session ⇒
-
     businesses.filter(_.id === id).delete
   }
   /**
