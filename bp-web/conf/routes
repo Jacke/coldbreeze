@@ -7,6 +7,7 @@ GET         /webjars/*file                                      controllers.WebJ
 
 # Home page
 GET         /                                                   @controllers.ProfileController.dashboard()
+GET         /uptime                                             @controllers.Application.uptime()
 
 GET     /auth/authenticate/:provider     @controllers.CustomProviderController.authenticate(provider)
 POST    /auth/authenticate/:provider     @controllers.CustomProviderController.authenticateByPost(provider)

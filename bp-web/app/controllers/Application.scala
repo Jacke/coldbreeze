@@ -1,9 +1,9 @@
 package controllers
+import sys.process._
 
 import play.api._
 import play.api.mvc._
 import play.twirl.api.Html
-
 //{Action, Controller}
 import play.api.http.MimeTypes
 import play.api.libs.json._
@@ -90,9 +90,25 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
   }
 
 
+case class UptimeMessage(server: String, uptime: String)
 case class WhoAmIdentify(email: String, business: Int = 0, manager: Boolean, employee: Boolean, lang: String = "en", payed: Boolean = false, env: String = "prod")
   implicit val WhoAmIdentifyReads = Json.reads[WhoAmIdentify]
   implicit val WhoAmIdentifyWrites = Json.format[WhoAmIdentify]
+  implicit val UptimeMessageReads = Json.reads[UptimeMessage]
+  implicit val UptimeMessageWrites = Json.format[UptimeMessage]
+
+
+  def uptime() = Action { implicit request =>
+
+          val main_uptime = "uptime" !!
+          val a_uptime    = "ansible a.min.ority.us -a 'uptime'" !!
+
+         Ok(Json.toJson(List(
+			UptimeMessage("min.ority.us", main_uptime.split("\n")(0)),
+			UptimeMessage("a.min.ority.us", a_uptime.split("\n")(1))
+			)))
+  }
+
 
   def whoami = SecuredAction { implicit request =>
     val email = request.user.main.email.get
