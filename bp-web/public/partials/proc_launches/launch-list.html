@@ -146,7 +146,7 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
               <a ng-click="unlisted(session.session)" ng-show="session.session.onlyListed" tooltip="Unpin launch from bottom bar">Unlisted</a>
         </div>      
 <div class="progress">
-    <div class="progress-lines" ng-init="bprocess=entity.process">
+    <div class="progress-lines">
                 <div ng-include src="'assets/partials/treeLiner.html'"></div>
     </div>    
    <div class="progress-bar" role="progressbar" aria-valuenow="{{session.percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{session.percent}}%;">
