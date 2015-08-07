@@ -9,6 +9,7 @@ angular.module('myApp.directives', []).
       elm.text(version);
     };
   }]); */
+define(['angular', 'app'], function (angular, minorityApp) {
 
 minorityApp.directive('editInPlace', function () {
     return {
@@ -58,4 +59,8 @@ minorityApp.directive('editInPlace', function () {
             });
         }
     };
+});
+
+return minorityApp;
+
 });

@@ -1,3 +1,4 @@
+define(['angular', 'app', 'controllers'], function (angular, minorityApp, minorityControllers) {
 
 
 
@@ -372,8 +373,7 @@ $scope.loadResources = function() {
       spaceFetch();
     });
 }
-
-  $scope.options = {
+$scope.options = {
       accept: function(sourceNode, destNodes, destIndex) {
         var data = sourceNode.$modelValue;
         var destType = destNodes.$element.attr('data-type');
@@ -1233,6 +1233,14 @@ $scope.masterState = function(element) {
   } // TODO: Made master state
 }
 
+$scope.isSelected = function (session_id) {
+  if ($location.search().launch != undefined && $location.search().launch == session_id) {
+    return 'selected'
+  } else {
+    return
+  }
+}
+
 /***
  * Session observer
  **/   
@@ -1245,8 +1253,8 @@ BPSessionsFactory.query({ BPid: $scope.BPid }).$promise.then(function(data){
   _.forEach(data, function(d){ return d.stations = _.filter(stations, function(s){ return s.session == d.id }) });
   })
    // Change to session that signed in route params
-   if ($location.search().session != undefined) {
-    var ses  = _.find($scope.sessions, function(ses) { return ses.session.id == parseInt($location.search().session) });
+   if ($location.search().launch != undefined) {
+    var ses  = _.find($scope.sessions, function(ses) { return ses.session.id == parseInt($location.search().launch) });
       if (ses) {
         $scope.changeSession(ses);
       }
@@ -1276,7 +1284,7 @@ $scope.turnMinimal = function() {
 $scope.changeSession = function(session) {
 
  $scope.session = session;
- $location.search('session', $scope.session.session.id);
+ $location.search('launch', $scope.session.session.id);
  $scope.inSession = true;
  $scope.station = $scope.session.station;//_.find(session.station, function(s) { return s.front == true })  
  $scope.session_bar = 'hiding'; 
@@ -1304,6 +1312,10 @@ $scope.changeSession = function(session) {
 
  }
   $scope.reloadResourcesForSession(session.session);
+
+  $scope.builder();
+  $scope.bprocess = {}
+  $scope.bprocess.trees = $scope.trees;
 }
 /***
  * Default app state 
@@ -1351,7 +1363,7 @@ minorityControllers.controller('BPelementCreationCtrl', ['$scope', 'BPElemsFacto
 }]);
 
 
-
+});
 
 
 

@@ -6,6 +6,9 @@
     $templateCache.removeAll();
   });
 });*/
+define(['angular', 'app'], function (angular, minorityApp) {
+
+
 angular.module('minorityApp.controllers', []).
   controller('BProcessListCtrl', [function () {
 
@@ -160,9 +163,9 @@ minorityControllers.controller('UserInfoCtrl', function ($rootScope, $translate,
 
 
 
+return minorityControllers;
 
-
-
+});
 
 
 

@@ -1,0 +1,201 @@
+
+
+<div class="allStations allStationsList">
+<!--<h1>{{ 'SESSIONS' | translate }}</h1>-->
+
+
+
+<div class="active-switcher">
+<label for="switch-1" class="onlyActiveLabel">Running</label>
+<input type="checkbox" class="switch" id="switch-1" data-ng-model="onlyActive"/>
+</div>
+ 
+ 
+
+<div class="cd-filter">
+      <form class="ng-pristine ng-valid">
+        <!--<div class="cd-filter-block">
+          <h4>Search</h4>
+          
+          <div class="cd-filter-content">
+            <input type="search" placeholder="Try color-1...">
+          </div> 
+        </div> -->
+
+        <div class="cd-filter-block">
+          <h4>Date filtering</h4>
+
+          <ul class="cd-filter-content cd-filters list">
+            <li>
+                <input date-range-picker class="form-control date-picker" type="text" placeholder="Date range" ng-model="date" />
+                <!--<input class="filter" data-filter=".check1" type="checkbox" id="checkbox1">-->
+            </li>
+<!--
+            <li>
+              <input class="filter" data-filter=".check2" type="checkbox" id="checkbox2">
+              <label class="checkbox-label" for="checkbox2">Option 2</label>
+            </li>
+
+            <li>
+              <input class="filter" data-filter=".check3" type="checkbox" id="checkbox3">
+              <label class="checkbox-label" for="checkbox3">Option 3</label>
+            </li>-->
+          </ul> <!-- cd-filter-content -->
+        </div> <!-- cd-filter-block -->
+
+
+  <!--   <div class="cd-filter-block">
+          <h4>Select</h4>
+          
+          <div class="cd-filter-content">
+            <div class="cd-select cd-filters">
+              <select class="filter" name="selectThis" id="selectThis">
+                <option value="">Choose an option</option>
+                <option value=".option1">Option 1</option>
+                <option value=".option2">Option 2</option>
+                <option value=".option3">Option 3</option>
+                <option value=".option4">Option 4</option>
+              </select>
+            </div>           
+            </div> 
+        </div> 
+-->
+        <div class="cd-filter-block">
+          <h4>Filtering by attributes</h4>
+
+          <ul class="cd-filter-content cd-filters list">
+            <li>
+              <input type="checkbox" name="canceled" value="true" data-ng-model="onlyCanceled"/>
+              <label class="radio-label" for="radio1">Canceled</label>
+            </li>
+
+            <li>
+              <input type="checkbox" name="finished" value="true" data-ng-model="onlyFinished"/>
+              <label class="radio-label" for="radio2">Finished</label>
+            </li>
+
+            <li>
+              <input type="checkbox" name="listed" value="true" data-ng-model="onlyListed"/>
+              <label class="radio-label" for="radio3">Listed</label>
+            </li>
+          </ul> <!-- cd-filter-content -->
+        </div> <!-- cd-filter-block -->
+      </form>
+
+      <a href="#0" class="cd-close">Close</a>
+</div>
+
+
+<div class="station-filters">
+    <a href="#0" class="cd-filter-trigger">Filters</a>
+<!--
+  <ul>
+    <li><input date-range-picker class="form-control date-picker" type="text" placeholder="Date range" ng-model="date" /></li>
+    <li><label><input type="checkbox" name="canceled" value="true" data-ng-model="onlyCanceled"/>{{ 'CANCELED' | translate }}</label></li>
+    <li><label><input type="checkbox" name="finished" value="true" data-ng-model="onlyFinished"/>{{ 'FINISHED' | translate }}</label></li>
+    <li><label><input type="checkbox" name="listed" value="true" data-ng-model="onlyListed"/>Listed</label>
+  </ul>-->
+</div>  
+
+  
+  
+<script>
+$('.cd-filter-trigger').click(function(event) {
+  event.preventDefault()
+  $('.cd-filter-trigger').toggleClass('filter-is-visible')
+  $('.cd-filter').toggleClass('filter-is-visible')
+})
+$('.cd-close').click(function(event) {
+  event.preventDefault()
+  $('.cd-filter-trigger').toggleClass('filter-is-visible')
+  $('.cd-filter').toggleClass('filter-is-visible')
+})
+</script>
+<script>
+document.addEventListener('touchmove', function(e){}, false);
+var _switch   = document.getElementById("switch-1"),
+    switchHit = false,
+    hasTouch  = false;
+function toggleHit(){ if(!switchHit){ switchHit = true; _switch.classList.add("hit"  ); }}
+function setTouch() { if(!hasTouch) { hasTouch = true;  _switch.classList.add("touch"); }}
+_switch.onclick = toggleHit;
+_switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.click(); }
+</script>
+
+
+<div class="session-process">
+
+<h2><a href="/a#/bprocess/{{ sessions.process.id }}/elements">{{ sessions.process.title }}</a></h2>
+
+<!--
+<div class="process_content">
+          <div ng-include src="'assets/partials/treeThumb.html'"></div>
+</div>-->
+<div class="stations" ng-repeat="session in sessions.sessions | limitTo: 10 | filter: isOnlyActive | filter: { session: onlyListed }" style="clear: both;">
+
+        <div class="session__header">
+              <div class="progress-button loading" ng-class="bubbleClass(session)" tooltip="{{bubbleTooltip(session)}}">
+                <button><span>{{session.percent}}%</span></button>
+                <svg class="progress-circle" width="70" height="70"><path d="m35,2.5c17.955803,0 32.5,14.544199 32.5,32.5c0,17.955803 -14.544197,32.5 -32.5,32.5c-17.955803,0 -32.5,-14.544197 -32.5,-32.5c0,-17.955801 14.544197,-32.5 32.5,-32.5z" style="stroke-dasharray: {{ 208 + ((session.percent / 100) * 205) }}px;stroke-dashoffset: 210.243713px;"></path></svg>
+              </div>           
+              <a href="/a#/bprocess/{{ sessions.process.id }}/elements?launch={{ session.session.id }}">Session {{ $index }}  {{session.station.note }}</a>
+
+
+<abbr class="session__header__created_at" title="{{ session.session.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="session.session.created_at"></abbr>
+
+              <a ng-click="unlisted(session.session)" ng-show="session.session.onlyListed">Unlisted</a>
+        </div>      
+<div class="progress">
+    <div class="progress-lines" ng-init="bprocess=entity.process">
+                <div ng-include src="'assets/partials/treeLiner.html'"></div>
+    </div>    
+   <div class="progress-bar" role="progressbar" aria-valuenow="{{session.percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{session.percent}}%;">
+    <span>{{session.percent}}%</span>
+   </div>
+</div>  
+<div class="session_controls">
+  <span class="pin_session moicon moicon-pushpin" ng-click="pin(session)" tooltip="Pin on toolbar" ng-class="isPinned(session)"></span>
+</div>            
+              
+           <!--<p>
+            {{ stationByProcess(station.id).id }}
+            {{ stationByProcess(station.id).title }}
+          </p>-->
+
+<div class="row">
+<div class="col-xs-3 state-box-container">
+  <!--
+  <div class="station-markers">
+  <ul class="station-states">
+                      <li class="state started {{ session.station.started }}"> {{ 'STARTED' | translate }} </li>
+                      <li class="state paused {{ session.station.paused }}"> {{ 'PAUSED' | translate }} </li>
+                      <li class="state finished {{ session.station.finished }}"> {{ 'FINISHED' | translate }} </li>
+    <li class="state canceled {{ station.canceled }}"> {{ 'CANCELED' | translate }} </li>
+  </ul>
+  </div>-->
+  <div class="station-settings">
+  <div class="note">
+    <input type="text" class="station-note" ng-model="station.note">
+    <a ng-click="updateNote(session.station)" ng-show="isManagerVal">Update note</a> 
+  </div>
+
+</div>
+  
+</div>
+
+
+</div>
+
+
+<div class="session-launches-bar" ng-if="session.station.paused == true && session.station.finished == false">
+<div ng-include src="'assets/partials/launchesBar.html'" class="launches-bar"></div>
+</div>
+
+          
+</div>
+
+
+</div>
+</div>
+
+</div> <!-- session-process -->

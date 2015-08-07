@@ -395,7 +395,7 @@
   
 </div>
   
-  
+ <!-- 
 <div class="session-info" ng-show="inSession">
         <div class="progress">
           <div class="progress-bar" role="progressbar" aria-valuenow="@{session.percent}" aria-valuemin="0" aria-valuemax="100" style="width: {{ session.percent}}%">
@@ -408,20 +408,26 @@
         <div class="expand_sessions">
           <a ng-click="session_bar == 'hiding' ? session_bar='shown' : session_bar='hiding'"><span class="uicon-svg92"></span>Launches</a>
         </div>
+</div>-->
 
+<div id="proc-sessions" class="proc-sessions" ng-init="inSession ? session_bar='hiding' : session_bar='shown'">
 
-</div>
-
-<div id="proc-sessions" class="proc-sessions" ng-init="inSession ? session_bar='hiding' : session_bar='shown'" ng-class="session_bar">
-
+<div class="progress">
+    <div class="progress-lines">
+                <div ng-include src="'assets/partials/treeLiner.html'"></div>
+    </div>    
+   <div class="progress-bar" role="progressbar" aria-valuenow="{{session.percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{session.percent}}%;">
+    <span>{{session.percent}}%</span>
+   </div>
+</div> 
 
     <div class="proc-session active" ng-click="resetSession()" data-desc="Model">
     </div> 
-<a href="a#/bprocess/{{session.process.id}}/elements?session={{session.session.id}}" ng-click="changeSession(session)" ng-repeat="session in sessions | limitTo: 5" class="current-proc-session-info session-link proc-session"  data-desc="Launch #{{$index+1 }}">
+<a href="a#/bprocess/{{session.process.id}}/elements?launch={{session.session.id}}" ng-click="changeSession(session)" ng-repeat="session in sessions | limitTo: 5" class="current-proc-session-info session-link proc-session"  data-desc="Launch {{$index+1 }} - {{ session.percent}}%" ng-class="isSelected(session.session.id)">
 </a> 
 
 
-<div class="allSessions"><a href="/a#/bprocess/{{ BPid }}/stations">All</a></div>
+<div class="allSessions"><a href="/a#/bprocess/{{ BPid }}/launches">All</a></div>
 </div>
 </div>
 

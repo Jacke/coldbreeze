@@ -764,7 +764,7 @@ polygon#e1_polygon {
     vertical-align: middle;
 }
 .minorityMenu .minMenuItem span {
-  margin-right: 3px;
+    margin-right: 7px;
 }
 .minorityMenu .minMenuItem a {
     display: inline-block;

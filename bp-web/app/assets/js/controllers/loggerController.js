@@ -1,9 +1,10 @@
+define(['angular', 'app', 'controllers'], function (angular, minorityApp, minorityControllers) {
 
 /**
  * BP Log
  */
 // INDEX
-minorityControllers.controller('BPloggerListCtrl', ['$scope', 'BPLogsFactory','BPLogFactory', 'BPLogStationFactory', '$location', '$route',
+return minorityControllers.controller('BPloggerListCtrl', ['$scope', 'BPLogsFactory','BPLogFactory', 'BPLogStationFactory', '$location', '$route',
   function ($scope, BPLogsFactory, BPLogFactory, BPLogStationFactory, $location, $route) {
 
   /* callback for ng-click 'editUser': */
@@ -25,3 +26,5 @@ minorityControllers.controller('BPloggerListCtrl', ['$scope', 'BPLogsFactory','B
  
   $scope.bplogs = BPLogsFactory.query({ BPid: $route.current.params.BPid });
 }]);
+
+});

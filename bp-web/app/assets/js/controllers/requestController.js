@@ -1,3 +1,4 @@
+define(['angular', 'app', 'controllers'], function (angular, minorityApp, minorityControllers) {
 
 
 
@@ -358,4 +359,7 @@ $scope.stateOutAct = function (act) {
       }
     }
   }
+});
+
+
 });

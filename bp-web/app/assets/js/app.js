@@ -1,6 +1,10 @@
-
 'use strict';
 
+
+
+
+
+define(['angular'], function (angular) {
 
 var translationsEN = {
   PERMISSIONS: 'Permissions',
@@ -141,9 +145,6 @@ var translationsRU= {
   ADD_OBSERVER: 'Добавить наблюдателя',
   OPEN: 'Открыть'
 };
-
-
-
 
 var minorityApp =
   angular.module(
@@ -317,11 +318,11 @@ minorityApp.config(['$locationProvider','$routeProvider', '$httpProvider', funct
 /*U*/$routeProvider.when('/bprocess/:BPid/element/:id/edit', {templateUrl: '/assets/partials/bp_elements/bpelem-edit.html', controller: 'BPelementDetailCtrl'});
 
     // Stations
-/*A*/$routeProvider.when('/sessions', {templateUrl: '/assets/partials/sessions/sessions.html', controller: 'SessionsCtrl'});
-/*I*/$routeProvider.when('/bprocess/:BPid/stations', {templateUrl: '/assets/partials/bpstations/bpstation-list.html', controller: 'BPstationListCtrl'});
-/*C*/$routeProvider.when('/bprocess/:BPid/station/new', {templateUrl: '/assets/partials/bpstations/bpstation-new.html', controller: 'BPstationCreationCtrl'});
-/*R*/$routeProvider.when('/bprocess/:BPid/station/:id/show', {templateUrl: '/assets/partials/bpstations/bpstation-detail.html', controller: 'BPstationDetailCtrl'});
-/*U*/$routeProvider.when('/bprocess/:BPid/station/:id/edit', {templateUrl: '/assets/partials/bpstations/bpstation-edit.html', controller: 'BPstationDetailCtrl'});
+/*A*/$routeProvider.when('/launches', {templateUrl: '/assets/partials/launches/launches.html', controller: 'LaunchesCtrl'});
+/*I*/$routeProvider.when('/bprocess/:BPid/launches', {templateUrl: '/assets/partials/proc_launches/launch-list.html', controller: 'ProcLaunchesListCtrl'});
+/*C*/$routeProvider.when('/bprocess/:BPid/launch/new', {templateUrl: '/assets/partials/proc_launches/launch-new.html', controller: 'ProcLaunchesCreationCtrl'});
+/*R*/$routeProvider.when('/bprocess/:BPid/launch/:id/show', {templateUrl: '/assets/partials/proc_launches/launch-detail.html', controller: 'ProcLaunchesDetailCtrl'});
+/*U*/$routeProvider.when('/bprocess/:BPid/launch/:id/edit', {templateUrl: '/assets/partials/proc_launches/launch-edit.html', controller: 'ProcLaunchesDetailCtrl'});
 
    // Permissions
 /*I*/$routeProvider.when('/bprocess/:BPid/perms', {templateUrl: '/assets/partials/perms/perm-list.html', controller: 'BPPermListCtrl'});
@@ -363,6 +364,8 @@ minorityApp.config(['$locationProvider','$routeProvider', '$httpProvider', funct
     };
 }]);
 
+return minorityApp;
+});
 
 
 

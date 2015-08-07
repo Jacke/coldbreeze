@@ -49,30 +49,6 @@
       </form>
 </div>
 
-<script>
- $('.teamCreationForm button').on('click', function(event) {
-    event.preventDefault();
-    jsRoutes.controllers.GroupController.create_new().ajax({data: JSON.stringify({title: $('.teamCreationForm input').val(), business_id: 1}), dataType: "json", contentType: 'application/json',
-            xhrFields: {
-                withCredentials: !0
-            },
-            accepts: {
-                json: "application/json"
-            }}).done(function( data ) { console.log(data);
-              location.reload();
-            })
-});
-$('a.delete-group').on('click', function (event) {
-  event.preventDefault();
-  var id = $(this).attr('class').split(' ')[1].split('-')[1];
-
-  jsRoutes.controllers.GroupController.destroy(id).ajax().done(function( data ) { console.log(data);
-              location.reload();
-            });
-});
-
-
-</script>
 
 <div class="organisationsGridCards">
 
@@ -171,75 +147,7 @@ $('a.delete-group').on('click', function (event) {
 </div>
 
 </div></div>
-
   </div>    
 
-   
-<script>
-$('#addMembersForm').slideToggle();
-
-$('#addMembersForm button.posRight').on('click', function(event) {
-
-event.preventDefault();
-  var emails = $('textarea#newUsersForGroup').val().split(',');
-  var admin =  $('#teamAdminRole').prop("checked");
-if (emails.length > 0) {
-jsRoutes.controllers.users.EmployeeController.create_new().ajax({data: JSON.stringify({emails: emails, manager: admin}), dataType: "json", contentType: 'application/json',
-            xhrFields: {
-                withCredentials: !0
-            },
-            accepts: {
-                json: "application/json"
-            }}).done(function( data ) { console.log(data);
-location.reload();
-$('#addMembersForm').slideToggle();
-
-//$('.form-horizontal')[0].submit();
-}).fail(function( jqXHR, textStatus) {
-    //$('.loginFlowPage').prepend('<div class="messageBoxWrap"><p class="message">'+ JSON.parse(jqXHR.responseText).error +'</p></div>');
-  });
-
-} 
-});
-$('#addMembersForm .cancelButton').on('click', function(event) {
-event.preventDefault();
-$('#addMembersForm').slideToggle();
-});
-$('.addMembersLink').on('click', function(event) {
-event.preventDefault();
-$('#addMembersForm').slideToggle();
-})
-$('.dropdown-toggle').dropdown()
-
-$(document).ready(function(){
-$(".filterInput.tableMinListFilterInput").keyup(function(){
-
-    // Retrieve the input field text and reset the count to zero
-    var filter = $(this).val(), count = 0;
-    if(!filter){
-        $( "li.userCard" ).hide();
-        return;
-    }
-    var regex = new RegExp(filter, "i");
-    // Loop through the user list
-    $( "li.userCard" ).each(function(){
-
-        // If the list item does not contain the text phrase fade it out
-        if ($( ".block", this ).text().search(regex) < 0) {
-            $(this).hide();
-
-        // Show the list item if the phrase matches and increase the count by 1
-        } else {
-            $(this).show();
-            count++;
-        }
-    });
-    // Update the count
-    //var numberItems = count;
-    //$("#filter-count").text("Number of Comments = "+count);
-});
-});
-
-</script>
 
 }

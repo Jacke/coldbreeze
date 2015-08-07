@@ -1,6 +1,7 @@
+define(['angular', 'app', 'controllers'], function (angular, minorityApp, minorityControllers) {
 
 // For specific process
-minorityControllers.controller('BPstationListCtrl', ['TreeBuilder', 
+minorityControllers.controller('ProcLaunchesListCtrl', ['TreeBuilder', 
   '$http', 
   '$window', 
   '$translate',
@@ -370,4 +371,7 @@ $scope.loadSession();
       }
     }
   }
+});
+
+
 });

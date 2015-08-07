@@ -1,3 +1,4 @@
+define(['angular', 'app', 'controllers'], function (angular, minorityApp, minorityControllers) {
 
 
 /**
@@ -237,3 +238,4 @@ $scope.isManager();
 
 
 
+});
