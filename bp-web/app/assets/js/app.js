@@ -4,7 +4,7 @@
 
 
 
-define(['angular'], function (angular) {
+define(['angular', 'toastr'], function (angular, toastr) {
 
 var translationsEN = {
   PERMISSIONS: 'Permissions',

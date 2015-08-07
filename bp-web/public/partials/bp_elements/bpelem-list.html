@@ -25,7 +25,7 @@
  <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="editProcess()">{{ 'EDIT' | translate }} </a></li>
  <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="perm()">{{ 'PEOPLE' | translate }} </a></li>
  <li><a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" ng-click="modalShare()">{{ 'SHARE' | translate }}</a></li>
- <li><a href="" class="addElemTab" ng:show="!inSession" ng:click="$parent.$parent.newelemformselected==1 ? $parent.$parent.newelemformselected=0 : $parent.$parent.newelemformselected=1 " tooltip-placement="bottom" tooltip="Create element"><span class="glyphicon glyphicon-plus"></span>  </a></li>
+ <li><a href="" class="addElemTab" ng:show="!inSession" ng:click="$parent.$parent.newelemformselected==1 ? $parent.$parent.newelemformselected=0 : $parent.$parent.newelemformselected=1" tooltip-placement="bottom" tooltip="Create element"><span class="glyphicon glyphicon-plus"></span>  </a></li>
 </ul>
 
 
@@ -412,7 +412,7 @@
 
 <div id="proc-sessions" class="proc-sessions" ng-init="inSession ? session_bar='hiding' : session_bar='shown'">
 
-<div class="progress">
+<div class="progress" ng-show="inSession">
     <div class="progress-lines">
                 <div ng-include src="'assets/partials/treeLiner.html'"></div>
     </div>    
@@ -424,6 +424,7 @@
     <div class="proc-session active" ng-click="resetSession()" data-desc="Model">
     </div> 
 <a href="a#/bprocess/{{session.process.id}}/elements?launch={{session.session.id}}" ng-click="changeSession(session)" ng-repeat="session in sessions | limitTo: 5" class="current-proc-session-info session-link proc-session"  data-desc="Launch {{$index+1 }} - {{ session.percent}}%" ng-class="isSelected(session.session.id)">
+   <span class="unpin moicon moicon-pushpin" tooltip="Unpin" tooltip-placement="bottom" ng-click="unlisted(session.session)"></span>
 </a> 
 
 

@@ -149,7 +149,7 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 
 <abbr class="session__header__created_at" title="{{ session.session.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a'}}" am-time-ago="session.session.created_at"></abbr>
               
-             <a ng-click="unlisted(session.session)" ng-show="session.session.onlyListed">Unlisted</a>
+             <a ng-click="unlisted(session.session)" tooltip="Unpin launch from bottom bar" ng-show="session.session.onlyListed">Unlisted</a>
         </div>      
 <div class="progress">
     <div class="progress-lines" ng-init="bprocess=entity.process">
@@ -160,7 +160,7 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
    </div>
 </div>              
 <div class="session_controls">
-  <span class="pin_session moicon moicon-pushpin" ng-click="pin(session)" tooltip="Pin on toolbar" ng-class="isPinned(session)"></span>
+  <span class="pin_session moicon moicon-pushpin" ng-click="pin(session)" tooltip="Pin launch to bottom bar" ng-class="isPinned(session)"></span>
 </div>     
               
            <!--<p>

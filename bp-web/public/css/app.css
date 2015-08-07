@@ -841,7 +841,7 @@ a.current-proc-session-info.session-link.proc-session.selected {
 .proc-session:after {
   width: 150px;
   display: block;
-  transform: translate(-55px, 3px);
+  transform: translate(-58px, 3px);
   color: #818698;
   content: attr(data-desc);
   font-weight: 400;
@@ -858,7 +858,7 @@ a.current-proc-session-info.session-link.proc-session.selected {
 }
 
 .proc-session.active:before {
-  background: linear-gradient(to right, #58bb58 0%, #73b5e8 100%);
+  background: linear-gradient(to right, #85BFEC 0%, #73b5e8 100%);
 }
 
 .proc-session.active:after {
@@ -1759,7 +1759,10 @@ form {
     overflow: visible;
     width: 610px;
     height: 5px;
-    background-color: transparent;
+    background-color: white;
+    top: 0px;
+    left: 35%;
+    position: absolute;
 }
 
 .proc-sessions .progress .progress-lines {
@@ -1768,20 +1771,50 @@ form {
 
 .proc-sessions .progress .progress-bar {
     height: 4px;
+    background-image: none;
+    background-color: black !important;
 }
 
 .proc-sessions .progress .progress-bar span {
     width: auto;
     color: transparent;
     height: 3px;
-    text-indent: -999px;
+    text-indent: -9999px;
+}
+
+a.current-proc-session-info.session-link.proc-session:hover {
+    color: black;
+    text-decoration: none;
+    border-bottom: solid 1px transparent;
+}
+
+a.current-proc-session-info.session-link.proc-session:hover:after {
+    color: #424B69;
 }
 
 
+a.current-proc-session-info.session-link.proc-session {
+    position: relative;
+}
 
-
-
-
+a.current-proc-session-info.session-link.proc-session span.unpin {
+    position: absolute;
+    display: none;
+    height: 20px;
+    width: 22px;
+    background-color: white;
+    top: -6px;
+    right: -6px;
+    border-radius: 10px;
+    border: solid 1px #BFB9B9;
+    color: #353535;
+    font-size: 12px;
+    font-weight: 100;
+    line-height: 16px;
+}
+a.current-proc-session-info.session-link.proc-session:hover span.unpin {
+  display: block;
+}
 
 .process-tree .elem-card {
   background: pink;
@@ -2078,7 +2111,7 @@ a.confirmation-btn.btn.btn-small.confirmed {
   margin-right: 225px;
   display: inline-block;
   margin-left: 459px;
-  margin-top: -100px;
+  margin-top: -101px;
   position: absolute;
   top: 105px;
   right: 20px;
@@ -2291,6 +2324,7 @@ top: 20px;
 
 .tree-thumb.process-tree {
     width: 90px;
+    height: 30px;
     margin-left: 5px;
     padding-left: 0px;
     font-size: 10px;

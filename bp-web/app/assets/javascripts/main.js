@@ -6,6 +6,7 @@
   requirejs.config({
     // Packages = top-level folders; loads a contained file named 'main.js"
     baseUrl: '/assets/javascripts',
+    waitSeconds: 200,
     packages: ['common'],//, 'home', 'user', 'dashboard'],
     shim: {
       'jsRoutes': {
@@ -17,6 +18,10 @@
       'angular': {
         deps: ['jquery'],
         exports: 'angular'
+      },
+      'selectize': {
+        deps: ['jquery'],
+        exports: 'selectize'
       },
      'angularAMD': ['angular'],
 
@@ -157,7 +162,7 @@
 
 
 'app': {
-  deps: ['angular', 'toastr','toastr-tpl'],
+  deps: ['angular', 'toastr','toastr-tpl', 'toaster'],
   export: 'app'
 },
 'filters': {
@@ -173,7 +178,7 @@
   export: 'treebuilder'
 },
 'controllers': {
-  deps: ['angular', 'app', 'toastr','toastr-tpl'],
+  deps: ['angular', 'app', 'toastr','toastr-tpl', 'toaster'],
   export: 'controllers'
 },
 'procPermController': {
