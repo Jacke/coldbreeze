@@ -817,7 +817,9 @@ padding-left: 30%;
   line-height: 88px;
   cursor: pointer;
 }
-
+a.current-proc-session-info.session-link.proc-session.selected {
+    background-color: #8A91A3;
+}
 .proc-session:first-child {
   line-height: 102px;
 }
@@ -1749,6 +1751,38 @@ form {
 .progress-lines .elem-card.container_brick {
     background: #27ae60;
 }
+
+/**
+ Progress lines for process launches bottombar
+**/
+.proc-sessions .progress {
+    overflow: visible;
+    width: 610px;
+    height: 5px;
+    background-color: transparent;
+}
+
+.proc-sessions .progress .progress-lines {
+    width: 610px;
+}
+
+.proc-sessions .progress .progress-bar {
+    height: 4px;
+}
+
+.proc-sessions .progress .progress-bar span {
+    width: auto;
+    color: transparent;
+    height: 3px;
+    text-indent: -999px;
+}
+
+
+
+
+
+
+
 .process-tree .elem-card {
   background: pink;
   border-radius: 3px;
@@ -2430,12 +2464,37 @@ a.addElemTab {
 
 .stations .progress .progress-bar {
     z-index: 1;
-    opacity: 0.4;
+    opacity: 0.7;
 }
 
 .progress-lines span.line {
     z-index: 1;
 }
+
+
+
+
+
+.session-process .progress {
+    z-index: 400;      
+    background-color: rgba(0, 0, 0, 0.21);      height: 4px;      overflow: visible;      height: 4px;
+    background-color: white;
+}
+
+.progress-lines span.line {
+    height: 3px;
+    z-index: 100;
+    opacity: 0.9;
+}
+
+
+
+
+
+
+
+
+
 
 .allStations {
     padding: 2px 30px;
@@ -2488,7 +2547,9 @@ a.addElemTab {
     margin: 3px 14px 20px 4px;
     padding: 10px 25px 0px 22px;
 }
-
+.stations {
+    position: relative;
+}
 .station-filters label {
     margin-right: 10px;
     font-weight: weight;
@@ -2946,10 +3007,18 @@ height: auto;
 
 .number.false {
 background-color: #c0392b;
-
 }
 .number.true {
 background-color: #5fcf80;
+}
+.progress-button.loading.true svg.progress-circle path {
+    stroke: #5fcf80;
+}
+.progress-button.loading.paused svg.progress-circle path {
+    stroke: #f1c40f;
+}
+.progress-button.loading.false svg.progress-circle path {
+    background-color: #c0392b;
 }
 
 

@@ -134,19 +134,18 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 
 <h2><a href="/a#/bprocess/{{ entity.process.id }}/elements">{{ entity.process.title }}</a></h2>
 
+<!--
 <div class="process_content" ng-init="bprocess=entity.process">
           <div ng-include src="'assets/partials/treeThumb.html'"></div>
-</div>
+</div>-->
 <div class="stations" ng-repeat="session in entity.sessions | limitTo: 10 | filter:isOnlyActive" style="clear: both;">
 
         <div class="session__header">
-              <div class="progress-button loading">
-                <button><span>{{session.percent}}</span></button>
-                <svg class="progress-circle" width="70" height="70"><path d="m35,2.5c17.955803,0 32.5,14.544199 32.5,32.5c0,17.955803 -14.544197,32.5 -32.5,32.5c-17.955803,0 -32.5,-14.544197 -32.5,-32.5c0,-17.955801 14.544197,-32.5 32.5,-32.5z" style="stroke-dasharray: 245.243713px;stroke-dashoffset: 285.243713px;"></path></svg>
-              </div>
-              <span class="number {{ session.station.state }}" ng-class="bubbleClass(session)" tooltip="{{bubbleTooltip(session)}}">{{ $index + 1 }}</span>
-              
-              <a href="/a#/bprocess/{{ entity.process.id }}/elements?launch={{ session.session.id }}">Session # {{ $index }}  {{session.station.note }}</a>
+              <div class="progress-button loading" ng-class="bubbleClass(session)" tooltip="{{bubbleTooltip(session)}}">
+                <button><span>{{session.percent}}%</span></button>
+                <svg class="progress-circle" width="70" height="70"><path d="m35,2.5c17.955803,0 32.5,14.544199 32.5,32.5c0,17.955803 -14.544197,32.5 -32.5,32.5c-17.955803,0 -32.5,-14.544197 -32.5,-32.5c0,-17.955801 14.544197,-32.5 32.5,-32.5z" style="stroke-dasharray: {{ 208 + ((session.percent / 100) * 205) }}px;stroke-dashoffset: 210.243713px;"></path></svg>
+              </div>              
+              <a href="/a#/bprocess/{{ entity.process.id }}/elements?launch={{ session.session.id }}">Session {{ $index }}  {{session.station.note }}</a>
 
 <abbr class="session__header__created_at" title="{{ session.session.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a'}}" am-time-ago="session.session.created_at"></abbr>
               
