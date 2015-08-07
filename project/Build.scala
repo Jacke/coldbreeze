@@ -150,6 +150,8 @@ object Build extends Build {
           jquery,
           bootstrap, 
           angular,
+          angular,
+          angulartoastr,
           apamailer, 
           logentries, 
           playauth,

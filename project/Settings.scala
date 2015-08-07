@@ -30,7 +30,7 @@ object Settings {
     // digest = Adds hash to filename
     // gzip = Zips all assets, Asset controller serves them automatically when client accepts them
     pipelineStages := Seq(uglify, rjs, digest, gzip, cssCompress)
-    //pipelineStages in Assets := Seq(uglify)
+    pipelineStages in Assets := Seq(rjs)//uglify)
     //includeFilter in uglify := GlobFilter("*.js")
 
     CssCompress.suffix := ".min.css"
@@ -38,8 +38,7 @@ object Settings {
     // ~~~
     JsKeys.filenameSuffix in Compile := ".min"
     RjsKeys.paths += ("jsRoutes" -> ("/jsroutes" -> "empty:"))
-
-    //RjsKeys.mainModule := "main"
+    RjsKeys.mainModule := "main"
 
     // Asset hashing with sbt-digest (https://github.com/sbt/sbt-digest)
     // ~~~

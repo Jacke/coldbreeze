@@ -1,6 +1,7 @@
+define(['angular', 'app', 'controllers'], function (angular, minorityApp, minorityControllers) {
 
 // INDEX
-minorityControllers.controller('BProcessListCtrl', ['$scope','$window','$translate' ,'$rootScope','TreeBuilder', 'SessionsFactory' ,'ngDialog', '$http', '$routeParams', '$filter', 'BPElemsFactory','BPSpacesFactory', 'BPSpaceElemsFactory',  'BProcessesFactory','BProcessFactory', 'BPStationsFactory', 'BPServicesFactory', '$location',
+return minorityControllers.controller('BProcessListCtrl', ['$scope','$window','$translate' ,'$rootScope','TreeBuilder', 'SessionsFactory' ,'ngDialog', '$http', '$routeParams', '$filter', 'BPElemsFactory','BPSpacesFactory', 'BPSpaceElemsFactory',  'BProcessesFactory','BProcessFactory', 'BPStationsFactory', 'BPServicesFactory', '$location',
   function ($scope, $window, $translate, $rootScope,TreeBuilder, SessionsFactory, ngDialog, $http, $routeParams, $filter, BPElemsFactory, BPSpacesFactory, BPSpaceElemsFactory, BProcessesFactory, BProcessFactory, BPStationsFactory, BPServicesFactory, $location) {
 
 
@@ -613,3 +614,5 @@ minorityControllers.controller('BPEmbededCtrl', ['$rootScope', '$scope', '$q', '
 
 
 }]);
+
+});

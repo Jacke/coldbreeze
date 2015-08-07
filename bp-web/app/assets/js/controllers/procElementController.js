@@ -1,3 +1,4 @@
+define(['angular', 'app', 'controllers'], function (angular, minorityApp, minorityControllers) {
 
 
 
@@ -1276,7 +1277,7 @@ $scope.turnMinimal = function() {
 $scope.changeSession = function(session) {
 
  $scope.session = session;
- $location.search('session', $scope.session.session.id);
+ $location.search('launch', $scope.session.session.id);
  $scope.inSession = true;
  $scope.station = $scope.session.station;//_.find(session.station, function(s) { return s.front == true })  
  $scope.session_bar = 'hiding'; 
@@ -1351,7 +1352,7 @@ minorityControllers.controller('BPelementCreationCtrl', ['$scope', 'BPElemsFacto
 }]);
 
 
-
+});
 
 
 

@@ -72,11 +72,13 @@ object Dependencies {
   val compressor      = "com.mohiva"                %% "play-html-compressor"   % "0.3.1"
   val jsonvariants    = "org.julienrf"              %% "play-json-variants"     % "0.2"
   val playflyway      = "com.github.tototoshi"      %% "play-flyway"            % "1.1.0"
-  val angular         = "org.webjars"               %  "angularjs"              % "1.2.16-2"  exclude("org.webjars", "jquery")
-  val requirejs       = "org.webjars"               %  "requirejs"              % "2.1.11-1"
-  val underscore      = "org.webjars"               %  "underscorejs"           % "1.6.0-3"
-  val jquery          = "org.webjars"               %  "jquery"                 % "1.11.1"
+  val angular         = "org.webjars"               %  "angularjs"              % "1.3.0"  exclude("org.webjars", "jquery")
+  val requirejs       = "org.webjars"               %  "requirejs"              % "2.1.20"
+  val underscore      = "org.webjars"               %  "underscorejs"           % "1.8.3"
+  val jquery          = "org.webjars"               %  "jquery"                 % "2.1.4"
   val bootstrap       = "org.webjars"               %  "bootstrap"              % "3.1.1-1"   exclude("org.webjars", "jquery")
+  val angulartoastr   = "org.webjars"               %  "angular-toastr"          % "1.3.0"
+
   val securesocial    = "ws.securesocial"           %% "securesocial"           % "3.0-M3"
   val deadbolt        = "be.objectify"              %% "deadbolt-scala"         % "2.3.3"
   val securesocialmas = "ws.securesocial"           %% "securesocial"           % "master-SNAPSHOT"

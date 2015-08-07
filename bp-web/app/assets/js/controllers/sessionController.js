@@ -1,5 +1,7 @@
+define(['angular', 'app', 'controllers'], function (angular, minorityApp, minorityControllers) {
+
 // For all processes
-minorityControllers.controller('SessionsCtrl', ['$http', 
+minorityControllers.controller('LaunchesCtrl', ['$http', 
   '$window', 
   '$translate',
   '$scope', 
@@ -186,7 +188,7 @@ $scope.cancelSession = function (session) {
       })
       .then(function(response) {
         // success
-        $location.path('/a#/sessions/');
+        $location.path('/a#/launches/');
 
       },
       function(response) { // optional
@@ -251,7 +253,7 @@ $scope.date = {startDate: null, endDate: null};
 
 
 
-
+});
 
 
 

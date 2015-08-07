@@ -4,7 +4,7 @@
 	
   <div class="teamChangeBox teamPaddedBox">
     <div class="session_header__top_bar">
-	    <header class="panel-heading head-border">Active sessions</header>
+	    <header class="panel-heading head-border">Active launches</header>
     </div>
     <div class="session_list">
     	@sessions.map { session_cn => 
@@ -39,13 +39,3 @@
     </div>
     <a href="/a#/sessions" class="single-mail text-center">View All Sessions</a>
   </div>
-<script>
-var now = moment();
-$('time').each(function(i, e) {
-    var time = moment($(e).attr('datetime'));
-
-    if(now.diff(time, 'days') != 1) {
-        $(e).text('Started ' + time.from(now));
-    }
-});
-</script>

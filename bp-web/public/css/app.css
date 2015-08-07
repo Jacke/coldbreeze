@@ -254,10 +254,10 @@ table.permissions-table {
   color: #7FDBFF;
   text-decoration: none;
 }
-.uicon-svg12, .uicon-svg442, .uicon-svg2222, .uicon-svg542, .uicon-svg522, .uicon-svg142 {
-  color: white;font-size: 16px;
-  vertical-align: bottom;
-  margin-right: 4px;
+.uicon-svg12, .uicon-svg98, .uicon-svg372, .uicon-svg442, .uicon-svg2222, .uicon-svg542, .uicon-svg522, .uicon-svg142 {
+    font-size: 16px;
+    vertical-align: bottom;
+    margin-right: 4px;
 }
 .minMenuItem a:hover {
   color: #7FDBFF;
@@ -2377,7 +2377,7 @@ a.addElemTab {
     height: 19px;
     background-color: black;
     /* position: absolute; */
-    margin: 1px 30px 0px 0px;
+    margin: 1px 3px 0px 6px;
     flex-wrap: wrap;
     border-radius: 3px;
 }
@@ -2399,6 +2399,42 @@ a.addElemTab {
 
 .progress-lines span.line:first-child {
     margin-left: 0px;
+}
+.progress-lines {
+    z-index: 1;
+}
+
+.progress .progress-bar {
+    background-color: #FFFFFF !important;
+}
+
+.session-process .progress {
+    z-index: 400;
+    background-color: rgba(0, 0, 0, 0.21);
+    height: 4px;
+}
+
+.progress-lines span.line {
+    z-index: 2;
+}
+
+.progress-lines .line-container {
+    z-index: 2;
+}
+
+.session__header .progress-button.loading span {
+    opacity: 1;
+    color: black;
+    font-size: 100%;
+}
+
+.stations .progress .progress-bar {
+    z-index: 1;
+    opacity: 0.4;
+}
+
+.progress-lines span.line {
+    z-index: 1;
 }
 
 .allStations {

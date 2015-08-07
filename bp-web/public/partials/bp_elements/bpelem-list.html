@@ -417,11 +417,11 @@
 
     <div class="proc-session active" ng-click="resetSession()" data-desc="Model">
     </div> 
-<a href="a#/bprocess/{{session.process.id}}/elements?session={{session.session.id}}" ng-click="changeSession(session)" ng-repeat="session in sessions | limitTo: 5" class="current-proc-session-info session-link proc-session"  data-desc="Launch #{{$index+1 }}">
+<a href="a#/bprocess/{{session.process.id}}/elements?launch={{session.session.id}}" ng-click="changeSession(session)" ng-repeat="session in sessions | limitTo: 5" class="current-proc-session-info session-link proc-session"  data-desc="Launch #{{$index+1 }}">
 </a> 
 
 
-<div class="allSessions"><a href="/a#/bprocess/{{ BPid }}/stations">All</a></div>
+<div class="allSessions"><a href="/a#/bprocess/{{ BPid }}/launches">All</a></div>
 </div>
 </div>
 
