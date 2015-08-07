@@ -1325,7 +1325,7 @@ $scope.inSession = false;
 
 $scope.resetSession = function () {
   $scope.session = undefined;
-  $location.search('session', null);
+  $location.search('launch', null);
   $scope.inSession = false;
  //$scope.session_bar = 'shown'; 
 
@@ -1340,7 +1340,24 @@ $scope.resetSession = function () {
 
 
 
-
+$scope.unlisted = function (session) {
+  $http({
+      url: '/session/' + session.session.id + '/unlisted',
+      method: "POST",
+      data: {  }
+      })
+      .then(function(response) {
+        // success
+        //$scope.stationsRefresh(); // Not for session controller
+        //$scope.loadSessions();
+        $route.reload();
+        //$scope.invoke_res = [response];
+      },
+      function(response) { // optional
+        // failed
+      }
+      );
+} 
 
 
 
