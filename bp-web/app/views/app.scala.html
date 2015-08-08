@@ -9,13 +9,21 @@
   <!--<script type="text/javascript" src="bower_components/ui-sortable/src/sortable.js"></script>-->
   <!--<script src='@routes.Assets.versioned("js/ui-bootstrap-custom-0.10.0.js")'></script>-->
   <!--<script src='@routes.Assets.versioned("js/ui-bootstrap-custom-tpls-0.10.0.js")'></script>-->
-  <script>requirejs(['/assets/javascripts/common/main.js'], function (common) {console.log("required common app");});</script>
+  <link rel="stylesheet" href='@routes.Assets.versioned("css/picaso.css")'>
+  <link rel="stylesheet" href='@routes.Assets.versioned("bower_components/angular-ui-select/dist/select.min.css")'>
+  <link rel="stylesheet" href='@routes.Assets.versioned("bower_components/angular-ui-tree/dist/angular-ui-tree.min.css")'>
+  <link rel="stylesheet" href='@routes.Assets.versioned("bower_components/ngDialog/css/ngDialog.css")'>
+  <link rel="stylesheet" href='@routes.Assets.versioned("bower_components/ngDialog/css/ngDialog-theme-default.css")'>
+  <link rel="stylesheet" href='@routes.Assets.versioned("bower_components/ngDialog/css/ngDialog-theme-plain.css")'>
+  <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/process.css")'>
+  <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/process_list.css")">
   <link rel="stylesheet" href='http://foxandxss.github.io/angular-toastr/css/toastr.css'>
   <link rel="stylesheet" href='@routes.Assets.versioned("bower_components/pnotify/pnotify.core.css")'/>  
   <link rel="stylesheet" href='@routes.Assets.versioned("bower_components/angular-loading-bar/src/loading-bar.css")'/>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/angularjs-toaster/0.4.4/toaster.css" rel="stylesheet" />
   <link rel="stylesheet" href='@routes.Assets.versioned("bower_components/bootstrap-daterangepicker/daterangepicker-bs3.css")'/>
   <link rel="import" href='@routes.Assets.versioned("bower_components/polymer/polymer.html")'>
+  <script>requirejs(['/assets/javascripts/common/main.js'], function (common) {console.log("required common app");});</script>
   <!--<link rel="import" href="bower_components/core-ajax/core-ajax.html">
   <link rel="import" href="bower_components/core-component-page/core-component-page.html">
   <link rel="import" href="bower_components/core-localstorage/core-localstorage.html">-->
@@ -31,14 +39,6 @@
 
 @main(Messages("page.application"), user, scripts) {
 
-<link rel="stylesheet" href='@routes.Assets.versioned("css/picaso.css")'>
-<link rel="stylesheet" href='@routes.Assets.versioned("bower_components/angular-ui-select/dist/select.min.css")'>
-<link rel="stylesheet" href='@routes.Assets.versioned("bower_components/angular-ui-tree/dist/angular-ui-tree.min.css")'>
-<link rel="stylesheet" href='@routes.Assets.versioned("bower_components/ngDialog/css/ngDialog.css")'>
-<link rel="stylesheet" href='@routes.Assets.versioned("bower_components/ngDialog/css/ngDialog-theme-default.css")'>
-<link rel="stylesheet" href='@routes.Assets.versioned("bower_components/ngDialog/css/ngDialog-theme-plain.css")'>
-<link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/process.css")'>
-<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/process_list.css")">
 
 <style>
 .applicationFooter {

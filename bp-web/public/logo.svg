@@ -8,13 +8,41 @@
 </g>
 <g transform="matrix(1 0 0 1 -7.105427357601002e-15 -1.7763568394002505e-15)">
 	<g id="_x23_fafafaff">
-		<path id="svg_1" fill="#FFFFFF" d="M0,28.2h640v423.5H0V28.2 M88.4,196.3c-0.6,61.6-0.2,121.9-1.1,183.4l122.3-98.3l-72.3-69.7
-			c62.6,45,121.1,95.4,181.4,141.9c63.5-46.2,121.8-96.6,183.9-142c-21.5,25.3-72.6,71.9-72.6,71.9l123.5,94.8V194.4l-115.9-90.6
-			c-40.2,29.1-77,62.7-117.5,91.4c-40.5-28.7-77.2-62.4-117.6-91.4c-37.8,30.9-79.4,64-114,92L88.4,196.3z"/>
+		<path id="svg_1" d="M-0.4,28.7h640v423.5h-640V28.7 M88,196.4v181.2l122.9-99l-71.4-69.8l180.8,142.7l182.3-141.7l-71.4,70.8
+			l123.5,94.8V191.6l-116.2-91.2l-118.8,90.6l-116.2-90.1L88,196.4L88,196.4z"/>
 	</g>
 	<g id="_x23_77787c">
 	</g>
 </g>
-<polygon id="e1_polygon" points="87.3,379.7 87.3,195 202.3,103.8 318.4,193.9 437.2,103.3 553.4,194.4 553.4,378.3 429.9,283.5 
-	501.3,212.7 319,354.3 138.3,212.3 209.6,281.4 "/>
+<polygon id="e1_polygon" fill="#F0E68C" points="88,377.6 88,196.3 203.6,100.9 319.8,191.1 438.6,100.4 554.8,191.6 554.8,375.5 
+	431.3,280.7 502.7,209.8 320.3,351.5 139.6,208.8 210.9,278.6 "/>
 </svg>
+<!--
+	 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" class="svg-logo" pagealignment="none" x="0px" y="0px" width="100%" height="100%" viewBox="0 0 136 90" enable-background="new 0 0 136 90" xml:space="preserve" xmlns:svg="http://www.w3.org/2000/svg">
+ 	<defs id="svgEditorDefs">
+ 		<polygon id="svgEditorPolygonDefs" stroke="black" fill="khaki" style="vector-effect: non-scaling-stroke; stroke-width: 1px;"></polygon>
+ 	</defs>
+ 	<rect id="svgEditorBackground" x="0" y="0" width="136" height="90" style="fill: none; stroke: none;"></rect>
+ 	<defs></defs>
+ 	<style type="text/css"></style><style type="text/css"></style>
+      <defs>
+          <radialGradient id="smallGradient" fy="3.3%">
+            <stop offset="0%" stop-color="#f4c708"></stop>
+            <stop offset="100%" stop-color="#f7e69a"></stop>
+            <animate attributeName="fy" dur="700ms" from="90%" to="0%" repeatCount="indefinite"></animate>
+          </radialGradient>
+          <radialGradient id="largeGradient" fy="3.3%">
+            <stop offset="0%" stop-color="#ff8806"></stop>
+            <stop offset="100%" stop-color="#d9574a"></stop>
+            <animate attributeName="fy" dur="700ms" from="90%" to="0%" repeatCount="indefinite"></animate>
+          </radialGradient>
+      </defs>
+
+<g type="LAYER" name="workspace" id="workspace" locked="true"></g>
+<g transform="matrix(1 0 0 1 -7.105427357601002e-15 -1.7763568394002505e-15)">
+<g class="silo" id="#fafafaff">
+  <path id="svg_1" width="136" height="90" stroke-miterlimit="3" stroke="none" style="" transform="" d="M 0 0 L 136 0 L 136 90 L 0 90 L 0 0 M 18.79 35.71 C 18.6662 48.7995 18.5475 61.1478 18.35 74.22 C 27.36 68.05 35.74 60.99 44.15 54.05 C 39.59 48.6 34 44.16 29.16 38.98 C 42.46 48.54 54.9 59.25 67.7079 69.1407 C 81.2 59.33 93.59 48.62 106.79 38.97 C 102.22 44.35 96.59 48.69 91.89 53.96 C 100.37 60.79 108.79 67.73 117.63 74.1 C 117.69 61.21 117.81 48.31 117.58 35.42 C 109.32 29.04 101.25 22.43 92.97 16.07 C 84.42 22.25 76.61 29.4 68 35.5 C 59.39 29.4 51.59 22.25 43.02 16.08 C 34.98 22.65 26.1464 29.6834 18.785 35.6201 Z"></path>
+</g>
+<g id="#77787c"></g></g>
+<polygon id="e1_polygon" style="vector-effect: non-scaling-stroke;" points="18.4059 74.8339 18.738 35.4244 42.9815 16.0517 67.6679 35.203 92.9077 15.941 117.594 35.3137 117.594 74.3911 91.3579 54.2435 106.524 39.1882 67.7786 69.2989 29.3653 38.9668 44.5314 53.8007" fill="khaki"></polygon></svg>
+-->

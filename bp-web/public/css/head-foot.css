@@ -1430,8 +1430,15 @@ ul.minMenuList.minMenuTexts {
 .themeDark .menuEntityLink:hover * {
     color: #7FDBFF !important;
 }
-.themeDark .minorityMenu .minMenuItem a:hover {
+.themeDark .minorityMenu .minMenuItem a:hover, .themeDark .minorityMenu .minMenuItem a.active {
 color: #7FDBFF;
+}
+.themeDark .minorityMenu .minMenuItem a:hover:before, .themeDark .minorityMenu .minMenuItem a.active:before  {
+    border-top: 3px solid #7FDBFF;
+    display: block;
+    content: ' ';
+    padding-top: 28px;
+    margin-top: -31px;
 }
 
 .themeDark .minorityMenu .menuHelp.selected .switcherToggle {
