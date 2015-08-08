@@ -146,7 +146,11 @@
 					}
 
 					function updateTime(momentInstance) {
-						element.text(momentInstance.from(getNow(), withoutSuffix));
+						if ((getNow().unix() - momentInstance.unix()) > 1800) {
+						  element.text(momentInstance.format('MMMM Do YYYY, h:mm a'));
+					    } else {
+						  element.text(momentInstance.from(getNow(), withoutSuffix));
+					    }
 						if (!isBindOnce) {
 
 							var howOld = getNow().diff(momentInstance, 'minute');

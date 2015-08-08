@@ -46,7 +46,7 @@
                       <li class="state finished {{ station.finished }}"> {{ 'FINISHED' | translate }}  </li>
                     </ul>
         </div>-->
-        <a class="allStation" href="/a#/bprocess/{{ bprocess.id }}/stations">{{ 'STATIONS' | translate }} </a>
+        <a class="allStation" href="/a#/bprocess/{{ bprocess.id }}/launches">{{ 'STATIONS' | translate }} </a>
         <!--<div class="station-markers" ng:show="emptyCheck(stations, bprocess.id)">
               <a class="marker" ng-repeat="station in stations | filter: { finished: false, paused: true, process: bprocess.id }">
                 <span class="number small {{ station.state }}">{{ $index + 1 }}</span>

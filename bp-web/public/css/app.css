@@ -4074,6 +4074,9 @@ border:0;
 svg:not(:root) {
 overflow:hidden;
 }
+path#svg_1 {
+    fill: transparent;
+}
 
 figure {
 margin:0;

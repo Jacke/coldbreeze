@@ -443,7 +443,17 @@ $('.active form').card({
 })
 */
 
+var navActive = function () {
+  var path = decodeURIComponent(window.location.pathname.replace(/\/$/, ""))
+  $('.themeDark .minorityMenu .minMenuItem a').each(function () {
+        var href = $(this).attr('href');
+        if (path.substring(0, href.length) === href) {
+            $(this).addClass('active');
+        }
+    });
 
+}
+navActive();
 
 });
    
