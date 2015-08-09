@@ -447,13 +447,21 @@ var navActive = function () {
   var path = decodeURIComponent(window.location.pathname.replace(/\/$/, ""))
   $('.themeDark .minorityMenu .minMenuItem a').each(function () {
         var href = $(this).attr('href');
-        if (path.substring(0, href.length) === href) {
+        $(this).removeClass('active');
+        if (window.location.hash == '#/launches' && href == '/a#/launches') {
+          $(this).addClass('active');
+        } else {
+        if (path.substring(0, href.length) === href && window.location.hash != '#/launches') {
             $(this).addClass('active');
         }
+        }
     });
-
 }
 navActive();
+
+$(window).on('hashchange', function(e){
+    navActive();
+});
 
 });
    
