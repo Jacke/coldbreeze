@@ -406,7 +406,11 @@ h1.green-color.timer {
 .ref-desc.form-group {
     height: 165px;
 }
-
+.element-new-form input#inputTitle, .element-new-form textarea#inputBusinessId {
+    box-shadow: none;
+    border-radius: 4px;
+    
+}
 
 
 
