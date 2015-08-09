@@ -38,7 +38,7 @@
     <div class="form-group element-form-fields">
     <div class="control-group">
       <div class="controls col-xs-8">
-        <label class="control-label col-sm-1" for="inputTitle">{{ 'TITLE' | translate }}</label>
+        <label class="control-label col-sm-1" for="inputTitle">Element name</label>
         <input type="text" id="inputTitle" class="form-control" ng-model="newBpelem.title" required/>
       </div>
     </div>
@@ -86,7 +86,7 @@
     <input type="hidden" id="input_ref" ng-model="newBpelem.ref"/>
     <div class="control-group form-submit form-group" style="clear:both;" ng-show="isManagerVal">
       <div class="controls">
-        <button type="submit" class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</button>
+        <button type="submit" class="btn btn-small btTxt submit btn lg solid-green ng-binding">{{ 'CREATE' | translate }}</button>
       </div>
     </div>
   </form>
