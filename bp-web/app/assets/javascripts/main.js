@@ -30,9 +30,9 @@
        exports: 'angular-route'
       },
 
-      'angular-animate': {
+      'angularanimate': {
        deps: ['angular'],
-       exports: 'angular-animate'
+       exports: 'angularanimate'
       },
 
       'angular-websocket': {
@@ -263,8 +263,8 @@
       //'angular-cookies': ['../lib/angularjs/angular-cookies'],
       //'bootstrap': ['../lib/bootstrap/js/bootstrap'],
 
+  'angularanimate': ['../bower_components/angular-animate/angular-animate'],
   'angular': ['../bower_components/angular/angular'],
-  'angular-animate': ['https://code.angularjs.org/1.3.0/angular-animate.min'],
   'angular-websocket': ['../bower_components/angular-websocket/angular-websocket'],
   'toastr': ['../bower_components/angular-toastr/toastr'],
   'toastr-tpl': ['../bower_components/angular-toastr/toastr.tpl'],

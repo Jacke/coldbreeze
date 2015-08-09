@@ -73,6 +73,11 @@ object AccountGroupDAO {
       val q3 = for { s ← account_group if s.group_id === group_id } yield s 
       q3.list
   }
+  def getAllByGroupIDS(group_ids: List[Int]) = database withSession {
+    implicit session ⇒
+      val q3 = for { s ← account_group if s.group_id inSetBind group_ids } yield s 
+      q3.list
+  }  
   def get(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← account_group if s.id === k } yield s 

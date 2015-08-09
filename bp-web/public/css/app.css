@@ -364,9 +364,74 @@ h1.green-color.timer {
     margin-bottom: 10px;
 }
 .templateButton .ref {
-    display: inline-block;
     margin-right: 10px;
 }
+.templateButton .ref.selected a {
+    background-color: gray;
+}
+.ref-desc.form-group {
+    margin-top: 0px;
+    padding-top: 0px;
+}
+
+.ref-desc h6 {
+    font-size: 21px;
+    margin-top: 0px;
+    color: #8B8E98;
+    font-family: "AvenirNextCyr-Good", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+    margin-bottom: 14px;
+}
+
+.ref-desc p, .ref-desc ul, .ref-desc ul *, span.selectedRefType {
+    font-family: 'Open Sans', Helvetica, Arial;
+    font-weight: 400;
+}
+
+.ref-desc ul {
+    list-style: none;
+    margin-left: 0px;
+    padding-left: 4%;
+    margin-top: 12px;
+}
+
+.ref button {
+    width: 90%;
+    background-color: white;
+    color: #3A3A3A;
+    margin-bottom: 3px;
+    border: solid 1px #D4D5D6;
+    font-family: "Avenir Next W01", "AvenirNextCyr", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+}
+
+.ref-desc.form-group {
+    height: 165px;
+}
+
+
+
+
+
+
+
+
+
+span.moicon.expand-ref-select {
+    font-size: 12px;
+    display: inline-block;
+    font-weight: 100;
+    color: gray;
+    margin-left: 3px;
+    position: absolute;
+    top: 4px;
+    left: -2px;
+}
+button.expand-ref-select {
+ position: relative;
+ width: 19px;
+ display: inline-block;   
+ height: 14px;
+}
+
 
 .templateButton {
     width: 100%;
@@ -512,8 +577,7 @@ span.reaction-icon.minicon.minicon-gear-fill-right {
     border-bottom-left-radius: 4px;
 }
 .proc-element.minimal .element-header .info .type:hover {
-    border-radius: 0px;
-            border-top-left-radius: 4px;
+    border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
 }
 .proc-element.minimal .right-bar {
@@ -811,6 +875,13 @@ select#categorySelect {
     margin-top: 10px;
     margin-left: 15px;
 }
+.element-new-form select#categorySelect {
+    margin-bottom: 10px;
+    margin-top: 2px;
+    margin-left: 1px;
+    display: block;
+}
+
 .ref a.selected {
   background: gray;
 }
@@ -2449,7 +2520,7 @@ form.form-edit-spaceelem.container_brick {
 }
 .process-info.header-frame li:last-child a {
     border-right: none;
-    margin-left: 4px;
+    padding-left: 14px;
 }
 
 .process-info h3 {
@@ -2461,7 +2532,7 @@ form.form-edit-spaceelem.container_brick {
   text-decoration: underline;
 }
 .process-info {
-    padding: 15px 15px 18px 26px;
+    padding: 22px 15px 23px 26px;
     clear: both;
     margin: 18px 0px 5px 15px;
     border-radius: 5px;
@@ -3895,6 +3966,84 @@ display: inline-block;
   color: #c0392b;
 }
 
+.element-new-form {
+    width: 50%;
+    margin-top: 15px;
+    background-color: white;
+    padding: 14px 12px 0px 49px;
+    margin: 21px 0px 20px 15px;
+    border-radius: 5px;
+}
+.element-new-form h3 {
+    font-family: "Avenir Next W01", "AvenirNextCyr", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+    font-weight: 600;
+    margin-bottom: 20px;
+    margin-top: 12px;
+    text-align: left;
+}
+
+.btTxt.solid-green:hover {
+    background: #4f8c70;
+    border-color: #4f8c70;
+}
+
+.btTxt.solid-green {
+    background: #6bbe98;
+    border-color: #6bbe98;
+}
+.btTxt.lg {
+    padding: 14px 14px;
+    font-size: 14px;
+    width: 100%;
+    margin-left: -50px;
+    margin-top: 14px;
+    margin-bottom: -15px;
+    border-top-right-radius: 0px;
+    border-top-left-radius: 0px;
+    font-family: "Avenir Next W01", "AvenirNextCyr", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+}
+.btTxt:hover {
+    cursor: pointer;
+    background: #fff;
+    color: #6bbe98;
+}
+.btTxt {
+    font-size: 13px;
+    display: inline-block;
+    padding: 6px 10px;
+    border: 2px solid #fff;
+    border-radius: 4px;
+    text-align: center;
+    color: #fff;
+    line-height: 1em !important;
+    -webkit-transition: all 250ms ease;
+    -moz-transition: all 250ms ease;
+    transition: all 250ms ease;
+}
+
+.fadein,
+.fadeout {
+  -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  -moz-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  -o-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+}
+
+.fadein.ng-hide-remove,
+.fadeout.ng-hide-add.ng-hide-add-active {
+  opacity: 0;
+  display: block !important;
+}
+
+.fadeout.ng-hide-add,
+.fadein.ng-hide-remove.ng-hide-remove-active {
+  opacity: 1;
+  display: block !important;
+}
+
+
+
+
 
 .elements-list label {
   display: inline-block;
@@ -3907,6 +4056,14 @@ display: inline-block;
   text-align: left;
   padding-left: 2px;
   padding-bottom: 4px;
+}
+.elements-list form label.control-label, .elements-list form input {
+/*    font-family: "Avenir Next W01", "Avenir Next", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+*/
+    font-family: "AvenirNextCyr-Good", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+    font-size: 16px;      
+    line-height: 32px;
+    font-weight: 200;
 }
 .elements-list textarea.form-control {
     padding-top: 8px;

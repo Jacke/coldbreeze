@@ -98,6 +98,11 @@ object ActPermissionDAO {
     val q3 = for { s ← act_permissions if s.process inSetBind proc_ids } yield s
       q3.list  
   }
+  def getByProcessId(process_id: Int) = database withSession {
+    implicit session =>
+    val q3 = for { s ← act_permissions if s.process === process_id } yield s
+      q3.list  
+  }
 
   def getByUIDprocIDS(uid: String):List[Int] = {
     val z = {

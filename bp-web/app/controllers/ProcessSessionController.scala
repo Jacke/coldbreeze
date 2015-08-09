@@ -61,6 +61,8 @@ class ProcessSessionController(override implicit val env: RuntimeEnvironment[Dem
   implicit val sessionWrites = Json.format[BPSession]
   implicit val BProcessDTOReads = Json.reads[BProcessDTO]
   implicit val BProcessDTOWrites = Json.format[BProcessDTO]
+  implicit val SessionPeoplesReads = Json.reads[SessionPeoples]
+  implicit val SessionPeoplesFormat = Json.format[SessionPeoples]
   implicit val SessionStatusReads = Json.reads[SessionStatus]
   implicit val SessionStatusWrites = Json.format[SessionStatus]  
   implicit val SessionContainerReads = Json.reads[SessionContainer]
@@ -79,7 +81,12 @@ def all_stations() = SecuredAction { implicit request =>
 def process_all_session(pid: Int) = SecuredAction { implicit request =>
   val sess = BPSessionDAO.findByProcess(pid)  
   sess match { 
-    case Some(session) => Ok(Json.toJson(sess))
+    case Some(sessionContainer) => {
+        //val updatedStatuses:List[SessionStatus] = sessionContainer.sessions.map(status => InputLoggerDAO.launchPeopleFetcher(status)) 
+        //val updatedCN = updatedStatuses.map(status => sessionContainer.updateStatus(status))
+
+        Ok(Json.toJson(InputLoggerDAO.fetchPeople(sessionContainer))) //InputLoggerDAO.launchPeopleFetcher(cn))))
+   }
     case _ => Ok(Json.toJson(Map("status" -> 404)))
   }
 }
@@ -91,8 +98,13 @@ def all_sessions() = SecuredAction { implicit request =>
       case Some(biz) => biz._2
       case _ => -1
     }
-	val sess = BPSessionDAO.findByBusiness(business)
-  Ok(Json.toJson(sess))
+	      val sess_cns = BPSessionDAO.findByBusiness(business)
+       //val updated_cns:List[SessionContainer] = sess_cns.map { cn => 
+       //val updatedStatuses:List[SessionStatus] = cn.sessions.map(status => InputLoggerDAO.launchPeopleFetcher(status)) 
+       //val updatedCN = updatedStatuses.map(status => cn.updateStatus(status))
+        
+      
+      Ok(Json.toJson(sess_cns.map(cn => InputLoggerDAO.fetchPeople(cn))))
 }
 
 def makeUnlisted(id: Int) = SecuredAction { implicit request =>

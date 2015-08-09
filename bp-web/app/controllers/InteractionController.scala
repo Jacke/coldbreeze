@@ -58,6 +58,8 @@ class InteractionController(override implicit val env: RuntimeEnvironment[DemoUs
   implicit val sessionWrites = Json.format[BPSession]
   implicit val BProcessDTOReads = Json.reads[BProcessDTO]
   implicit val BProcessDTOWrites = Json.format[BProcessDTO]
+  implicit val SessionPeoplesReads = Json.reads[SessionPeoples]
+  implicit val SessionPeoplesFormat = Json.format[SessionPeoples]
   implicit val SessionStatusReads = Json.reads[SessionStatus]
   implicit val SessionStatusWrites = Json.format[SessionStatus]  
   implicit val SessionContainerReads = Json.reads[SessionContainer]

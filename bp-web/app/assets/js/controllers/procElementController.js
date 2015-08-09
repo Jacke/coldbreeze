@@ -32,8 +32,8 @@ minorityControllers.controller('BPelementListCtrl', ['$timeout','$window','$filt
 'ElementTopologsFactory',
 'InteractionsFactory',
 
-  '$location', '$route',
-  function ($timeout, $window, $filter, $rootScope, $scope, $q,$http, $routeParams, toaster, BPInLoggersSessionFactory, BProcessFactory, BPStationsFactory, BProcessesFactory, ngDialog, BPElemsFactory, BPElemFactory, BPSessionsFactory, BPStationsFactory, BPSpacesFactory, BPSpaceFactory, BPSpaceElemsFactory, BPSpaceElemFactory, BPStatesFactory, BPStateFactory, BPSessionStatesFactory, BPSessionStateFactory,RefsFactory, SwitchesFactory,SwitchFactory,ReactionsFactory,ReactionFactory,ElementTopologsFactory, InteractionsFactory, $location, $route) {
+  '$location', '$route', '$animate',
+  function ($timeout, $window, $filter, $rootScope, $scope, $q,$http, $routeParams, toaster, BPInLoggersSessionFactory, BProcessFactory, BPStationsFactory, BProcessesFactory, ngDialog, BPElemsFactory, BPElemFactory, BPSessionsFactory, BPStationsFactory, BPSpacesFactory, BPSpaceFactory, BPSpaceElemsFactory, BPSpaceElemFactory, BPStatesFactory, BPStateFactory, BPSessionStatesFactory, BPSessionStateFactory,RefsFactory, SwitchesFactory,SwitchFactory,ReactionsFactory,ReactionFactory,ElementTopologsFactory, InteractionsFactory, $location, $route, $animate) {
     
     
   $scope.route = jsRoutes.controllers.BusinessProcessController;
@@ -1108,8 +1108,17 @@ $scope.refElem = function (ref, elem) {
     elem.ref = ref.ref.id;
     elem.selectedRef = ref;
 }
+$scope.selectedRef = function(newBpelem) {
+  var finded_ref = _.find($scope.refs, function(ref) { return newBpelem.ref == ref.ref.id });
+  if (finded_ref != undefined) {
+    return finded_ref.title
+  } else {
+    return ''
+  }
+}
 $scope.isSelected = function(ref, newBpelem) {
-    if (newBpelem.ref == ref.ref.id) {
+    console.log("selected");
+    if (newBpelem.selectedRef.ref.id == ref.ref.id) {
       return 'selected'
     }
     else {
@@ -1269,17 +1278,12 @@ BPSessionsFactory.query({ BPid: $scope.BPid }).$promise.then(function(data){
 $scope.reactions =  ReactionsFactory.query({ BPid: $scope.BPid });
 $scope.element_topologs = ElementTopologsFactory.query({ BPid: $scope.BPid });
 
-$scope.minimalistic = false;
 $scope.turnMinimal = function() {
-  if ($scope.minimalistic == true) {
-    _.forEach($('.proc-element'), function(el) { $(el).removeClass('minimal')});
-    $scope.minimalistic = false;
-  } else {
-    _.forEach($('.proc-element'), function(el) { $(el).addClass('minimal')});
-    $scope.minimalistic = true;    
-  }
+    $('.proc-element').each(function () {
+        $(this).toggleClass('minimal');
+  })
 }
-
+$scope.turnMinimal();
 
 $scope.changeSession = function(session) {
 

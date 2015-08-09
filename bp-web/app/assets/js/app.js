@@ -4,7 +4,7 @@
 
 
 
-define(['angular', 'toastr'], function (angular, toastr) {
+define(['angular', 'toastr', 'angularanimate'], function (angular, toastr, angularanimate) {
 
 var translationsEN = {
   PERMISSIONS: 'Permissions',
@@ -162,6 +162,7 @@ var minorityApp =
       'classy',
       'ngAngularError',
       'toaster',
+      'ngAnimate',
       'toastr',
       'ngWebSocket',
       'angular-underscore',
@@ -312,7 +313,7 @@ minorityApp.config(['$locationProvider','$routeProvider', '$httpProvider', funct
     // Embed
 /*I*/$routeProvider.when('/bprocess/:BPid/embed', {templateUrl: '/assets/partials/bp_elements/embeded.html', controller: 'BPEmbededCtrl'});
     // Proc Elements
-/*I*/$routeProvider.when('/bprocess/:BPid/elements', {templateUrl: '/assets/partials/bp_elements/bpelem-list.html', controller: 'BPelementListCtrl', reloadOnSearch: false});
+/*I*/$routeProvider.when('/bprocess/:BPid/elements', {templateUrl: '/assets/partials/bp_elements/elements-list.html', controller: 'BPelementListCtrl', reloadOnSearch: false});
 /*C*/$routeProvider.when('/bprocess/:BPid/element/new', {templateUrl: '/assets/partials/bp_elements/bpelem-new.html', controller: 'BPelementCreationCtrl'});
 /*R*/$routeProvider.when('/bprocess/:BPid/element/:id/show', {templateUrl: '/assets/partials/bp_elements/bpelem-detail.html', controller: 'BPelementDetailCtrl'});
 /*U*/$routeProvider.when('/bprocess/:BPid/element/:id/edit', {templateUrl: '/assets/partials/bp_elements/bpelem-edit.html', controller: 'BPelementDetailCtrl'});
