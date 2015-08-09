@@ -1280,7 +1280,7 @@ $scope.element_topologs = ElementTopologsFactory.query({ BPid: $scope.BPid });
 
 $scope.turnMinimal = function() {
     $('.proc-element').each(function () {
-        $(this).toggleClass('minimal');
+        $(this).addClass('minimal');
   })
 }
 $scope.turnMinimal();
