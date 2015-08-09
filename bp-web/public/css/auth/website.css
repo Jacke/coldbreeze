@@ -799,12 +799,45 @@ body.website {
     left: 0;
     top: 0;
     height: 54px;
-    width: 174px;
+    width: 254px;
     -webkit-transition: width 0.5s linear;
     -moz-transition: width 0.5s linear;
     -o-transition: width 0.5s linear;
     -ms-transition: width 0.5s linear;
     transition: width 0.5s linear;
+}
+svg#header_logotype {
+    width: 136px;
+    height: 104px;
+    display: block;
+    background: white;
+    margin-left: -50px;
+    margin-top: -23px;
+    float: left;
+    display: inline-block;
+}
+
+#header_logotype polygon#e1_polygon {
+    fill: black;
+}
+
+g {}
+
+#header_logotype g#outerLayer {
+    fill: white;
+}
+
+.logo_title {
+    margin-top: -6px;      font-family: 'Manifold CF Demi Bold',sans-serif;      
+    font-size: 43px;      
+    line-height: 30px;
+    display: inline-block;
+    float: left;
+    font-family: TitilliumText,sans-serif;
+    margin-top: 17px;
+    color: black;
+    font-weight: 100;
+    margin-left: 10px;
 }
 
 #websiteHeader .headerLogotypeLink:hover {

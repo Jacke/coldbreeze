@@ -4,9 +4,9 @@
   /*.run(function ($rootScope, $templateCache) {
   $rootScope.$on('$viewContentLoaded', function () {
     $templateCache.removeAll();
-  });
+  });'angularanimate'], function (angular, toastr, angularanimate) {
 });*/
-define(['angular', 'app'], function (angular, minorityApp) {
+define(['angular', 'app', 'angularanimate'], function (angular, minorityApp, angularanimate) {
 
 
 angular.module('minorityApp.controllers', []).
@@ -75,7 +75,8 @@ angular.module(
     'angular-underscore',
     'ui.select',
     'ngDialog', 
-    'toaster'
+    'toaster',
+    'ngAnimate'
   ]
 );
 

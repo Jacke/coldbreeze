@@ -144,7 +144,12 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 <abbr class="session__header__created_at" title="{{ session.session.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="session.session.created_at"></abbr>
 
               <a ng-click="unlisted(session.session)" ng-show="session.session.onlyListed" tooltip="Unpin launch from bottom bar">Unlisted</a>
-        </div>      
+        </div>    
+<div class="session__header session__people">
+  <div class="launched-by">Launched by</div>
+  <div class="participators">Participators</div>                               
+</div>  
+        
 <div class="progress">
     <div class="progress-lines">
                 <div ng-include src="'assets/partials/treeLiner.html'"></div>

@@ -27,11 +27,11 @@
   <span class="dish-label vertical-center left">Started <abbr class="session__header__created_at" title="{{ $parent.session.session.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="$parent.session.session.created_at"></abbr></span>
 
   <div class="dish-delete right">
-    <button class="icon-trash" tooltip="Cancel" ng-click="$parent.cancelSession($parent.session)"></button>
   </div>
+    <button class="moicon moicon-cancel-circle" tooltip="Cancel" ng-click="$parent.cancelSession($parent.session)"></button>
 
   <div class="dish-operations-collapser right visible">
-    <button class="menu-hamburger" ng-click="showInlineLaunch($parent.session)">
+    <button class="moicon-eject moicon" ng-click="showInlineLaunch($parent.session)">
       <span></span><span></span><span></span>
     </button>
   </div>

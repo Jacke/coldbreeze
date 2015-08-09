@@ -12,6 +12,7 @@ import models.DAO.ProcElemDAO._
 import models.DAO.BPDAO._
 import models.DAO.BPStationDAO._
 import models.DAO.conversion.DatabaseCred
+import models.DAO._
 
 import builders._
 import main.scala.bprocesses.BPSession  
@@ -22,20 +23,23 @@ class BPSessions(tag: Tag) extends Table[BPSession](tag, "bpsessions") {
     
   def created_at    = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at    = column[Option[org.joda.time.DateTime]]("updated_at")  
-  def active_listed = column[Boolean]("active_listed", O.Default(false)) 
+  def active_listed = column[Boolean]("active_listed", O.Default(true)) 
 
   def *    = (id.?, process, created_at, updated_at, active_listed) <> (BPSession.tupled, BPSession.unapply)
   
   def bpFK = foreignKey("sess_bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 }
 
-
+case class SessionPeoples(launched_by: String, participators: List[String])
 case class SessionStatus(var percent: Int = 0, 
                          process:BProcessDTO, 
                          session: BPSession, 
                          station: Option[BPStationDTO], 
-                         around: Option[ElemAround] = None) 
-case class SessionContainer(process: BProcessDTO, sessions: List[SessionStatus])
+                         around: Option[ElemAround] = None,
+                         peoples: Option[SessionPeoples] = None) 
+case class SessionContainer(process: BProcessDTO, var sessions: List[SessionStatus]) {
+
+}
 import main.scala.utils.InputParamProc
 
 
@@ -84,6 +88,7 @@ object BPSessionDAO {
         val station = BPStationDAO.findBySession(ses.id.get)        
         val element_quantity = ProcElemDAO.findByBPId(ses.process).length
         val process = BPDAO.get(ses.process).get
+        val people = SessionPeoples("iamjacke@gmail.com", List("iamjacke@gmail.com", "tete@gga.ru"))
 
         val step = station match {
           case Some(station) => station.step.toDouble
@@ -92,7 +97,8 @@ object BPSessionDAO {
         val percent = (step / element_quantity.toDouble * 100).toInt
 
       Some(SessionContainer(process, 
-        List(SessionStatus(percent, process, ses, station, Some(AroundProcessElementsBuilder.detect(ses.process, station.get.id.get)))) 
+        List(SessionStatus(percent, process, ses, station, Some(AroundProcessElementsBuilder.detect(ses.process, station.get.id.get)),
+          Some(people))) 
       ))
 
       }
@@ -107,6 +113,7 @@ object BPSessionDAO {
     val ids = p.flatMap(_.id)
     val q3 = for { s <- bpsessions if (s.process inSetBind ids) && s.active_listed === true } yield s
     val sess = q3.list
+    val people = SessionPeoples("iamjacke@gmail.com", List("iamjacke@gmail.com", "tete@gga.ru"))
 
     p.map { p =>
       SessionContainer(p, 
@@ -118,7 +125,7 @@ object BPSessionDAO {
           case _ => element_quantity.toDouble
         }
         val percent = (step / element_quantity.toDouble * 100).toInt
-        SessionStatus(percent, p, ses, station, None)//Some(AroundProcessElementsBuilder.detect(p.id.get, station.get.id.get)))
+        SessionStatus(percent, p, ses, station, None, Some(people))//Some(AroundProcessElementsBuilder.detect(p.id.get, station.get.id.get)))
       })
     }
   }
@@ -153,6 +160,7 @@ object BPSessionDAO {
       val process_id = process.id.get
       val q3 = for { s <- bpsessions if s.process === process_id } yield s
       val sess = q3.list
+      val people = SessionPeoples("iamjacke@gmail.com", List("iamjacke@gmail.com", "tete@gga.ru"))
 
 
         Some(
@@ -165,7 +173,9 @@ object BPSessionDAO {
             case _ => element_quantity.toDouble
           }
           val percent = (step / element_quantity.toDouble * 100).toInt
-          SessionStatus(percent, process, ses, station, Some(AroundProcessElementsBuilder.detect(process_id, station.get.id.get))) 
+          SessionStatus(percent, process, ses, station, Some(AroundProcessElementsBuilder.detect(process_id, station.get.id.get)),
+            Some(people)
+            ) 
           })
         )
       }

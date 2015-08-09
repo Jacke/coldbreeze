@@ -3,6 +3,8 @@ package models.DAO
 import models.DAO.driver.MyPostgresDriver1.simple._
 import com.github.nscala_time.time.Imports._
 import models.DAO.conversion.DatabaseCred
+import models.DAO._
+import models.DAO.resources._
 
 class InputLoggers(tag: Tag) extends Table[InputLogger](tag, "input_loggers") {
   def id              = column[Int]("id", O.PrimaryKey, O.AutoInc)
@@ -105,8 +107,24 @@ object InputLoggerDAO {
     implicit session ⇒
       val q3 = for { s ← input_loggers } yield s 
       q3.list.sortBy(_.id)
-  
   }
+
+
+  def launchPeopleFetcher(sessionStatus: SessionStatus):SessionStatus = {
+    //val launchedBy = ???
+     val act_perms = ActPermissionDAO.getByProcessId(sessionStatus.process.id.get).filter(perm => perm.role == "interact" || perm.role == "all")
+     val participators = act_perms.map(_.uid).flatten ++ AccountGroupDAO.getAllByGroupIDS(act_perms.map(_.group).flatten).map(_.account_id)
+    getBySession(sessionStatus.session.id.get).headOption match {
+      case Some(firstInputLog) => {
+        sessionStatus.copy(peoples = Some(SessionPeoples(launched_by = firstInputLog.uid.getOrElse("not@found.com"), participators = participators)))
+      }
+      case _ => sessionStatus.copy(peoples = Some(SessionPeoples(launched_by = "not@found.com", participators = participators))) 
+    }
+  }
+  def fetchPeople(sessionContainer: SessionContainer):SessionContainer = {
+    sessionContainer.copy(sessions = sessionContainer.sessions.map(st => launchPeopleFetcher(st)))
+  }
+
 
   def ddl_create = {
     database withSession {
