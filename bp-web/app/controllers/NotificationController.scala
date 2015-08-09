@@ -18,6 +18,9 @@ import play.api.mvc.WebSocket.FrameFormatter
 import SumActor._
 import SumActor.Sum._
 
+import play.api.mvc._
+import securesocial.core._
+
 object Subscribe
 object StatusCheck
 
@@ -87,6 +90,81 @@ request.body.asJson.map { json =>
           BoardActor() ! PopupMessage( target )
           Ok("sended")    
     }
+
+
+
+
+
+
+import play.api.libs.concurrent.Execution.Implicits._
+
+case class Item(value: String = "test")
+class ItemRequest[A](val item: Item, request: SecuredRequest[A]) extends WrappedRequest[A](request) {
+  def username = request.user
+}
+def UserItemAction = new ActionRefiner[SecuredRequest, ItemRequest] {
+    def find() = {
+      val l = new Item()
+      println(l)
+      Some(l)
+      None
+    }
+    def refine[A](input: SecuredRequest[A]) = Future.successful {
+    // => user
+    // => manager
+    // => rights
+    find()
+      .map(new ItemRequest(_, input))
+      .toRight(NotFound(views.html.custom.msg404("", input)))
+  
+  }
+}
+
+def tagItem = (SecuredAction andThen UserItemAction) { request =>
+    //request.item.addTag(tag)
+    Ok("User " + request.username.toString + " tagged ")
+  }
+
+/*
+class UserRequest[A](val username: Option[String], request: Request[A]) extends WrappedRequest[A](request)
+object UserAction extends ActionBuilder[UserRequest] with ActionTransformer[Request, UserRequest] {
+  def transform[A](request: Request[A]) = Future.successful {
+    new UserRequest(request.session.get("username"), request)
+  }
+}
+*/
+
+/*
+def ItemAction(itemId: String) = new ActionRefiner[UserRequest, ItemRequest] {
+  def refine[A](input: UserRequest[A]) = Future.successful {
+    ItemDao.findById(itemId)
+      .map(new ItemRequest(_, input))
+      .toRight(NotFound)
+  }
+}
+*/
+/*
+object PermissionCheckAction extends ActionFilter[ItemRequest] {
+  def filter[A](input: ItemRequest[A]) = Future.successful {
+    if (!input.item.accessibleByUser(input.username))
+      Some(Forbidden)
+    else
+      None
+  }
+}
+def tagItem(itemId: String, tag: String) =
+  (UserAction andThen ItemAction(itemId) andThen PermissionCheckAction) { request =>
+    request.item.addTag(tag)
+    Ok("User " + request.username + " tagged " + request.item.id)
+  }
+*/
+
+
+
+
+
+
+
 
 }
 
@@ -252,3 +330,5 @@ object BoardActor {
 case class Message(uuid: String, s: String)
 case class PopupMessage(target: String)
 case class PopupRequest(target: String)
+
+

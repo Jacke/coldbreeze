@@ -39,6 +39,7 @@ POST     /signup/:token              @controllers.CustomRegistrationController.h
 GET         /notify										        @controllers.NotificationController.socket
 GET         /notify_test/:msg                                   @controllers.NotificationController.notify_test(msg: String)
 POST        /popup_test/:target                                 @controllers.NotificationController.popup_test(target: String) 
+GET         /notify/test_action                                 @controllers.NotificationController.tagItem
 GET         /only-twitter                                       @controllers.Application.onlyTwitter
 
 # Custom

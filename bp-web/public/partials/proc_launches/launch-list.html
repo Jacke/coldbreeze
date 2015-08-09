@@ -131,7 +131,7 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 <div class="process_content">
           <div ng-include src="'assets/partials/treeThumb.html'"></div>
 </div>-->
-<div class="stations" ng-repeat="session in sessions.sessions | limitTo: 10 | filter: isOnlyActive | filter: { session: onlyListed }" style="clear: both;">
+<div class="stations" ng-repeat="session in sessions.sessions | orderBy:'station.paused':true | limitTo: 10 | filter: isOnlyActive | filter: { session: onlyListed }" style="clear: both;">
 
         <div class="session__header">
               <div class="progress-button loading" ng-class="bubbleClass(session)" tooltip="{{bubbleTooltip(session)}}">
