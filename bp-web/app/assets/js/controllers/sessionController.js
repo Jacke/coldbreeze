@@ -7,6 +7,7 @@ minorityControllers.controller('LaunchesCtrl', ['$http',
   '$scope', 
   '$filter', 
   '$rootScope',
+  'ProcPermissionsFactory',
   'TreeBuilder',
   'BPStationsFactory', 
   'SessionsFactory',
@@ -18,7 +19,7 @@ minorityControllers.controller('LaunchesCtrl', ['$http',
   'BPElemsFactory',
   'BPSpacesFactory',
   'BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
-  function ($http, $window, $translate, $scope, $filter, $rootScope, TreeBuilder, BPStationsFactory, SessionsFactory, BProcessesFactory, BProcessFactory, ObserversFactory, ObserverFactory, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
+  function ($http, $window, $translate, $scope, $filter, $rootScope, ProcPermissionsFactory, TreeBuilder, BPStationsFactory, SessionsFactory, BProcessesFactory, BProcessFactory, ObserversFactory, ObserverFactory, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
 
 
 /*
@@ -49,13 +50,35 @@ $scope.loadSessions = function () {
 
 $scope.sessions = SessionsFactory.query();
 $scope.sessions.$promise.then(function (data2) {
-    _.forEach(data2.sessions, function(session) { session.station.inlineLaunchShow = false ;return session.session.station = session.station });
+    _.forEach(data2.sessions, function(session) { 
+      session.station.inlineLaunchShow = false;
+      $scope.loadPerm(session.process);
+      return session.session.station = session.station 
+    });
     _.forEach(data2, function(d){ return TreeBuilder.buildFetch(d.process, function(success){}); });
 });
 
 };
 
 $scope.loadSessions();
+
+  $scope.loadPerm = function (process) {
+  ProcPermissionsFactory.query({ BPid: process.id }).$promise.then(function(qu){
+      process.perms = qu.elemperms;
+
+      process.accounts = qu.accounts;
+      process.emps = qu.employees;
+      process.employee_groups = qu.employee_groups;
+      _.forEach(process.employee_groups, function(gr){ return gr.group = true; });
+      process.groups = qu.employee_groups;
+      process.employees_groups = _.union(process.emps,process.employee_groups);
+      _.forEach(process.perms, function(perm) {
+        if (perm.group != undefined) {
+          perm.title = _.find(process, function(group) {return group.id == perm.group}).title;
+        }
+      })
+  });
+}
 
 
 $scope.showInlineLaunch = function (session) {

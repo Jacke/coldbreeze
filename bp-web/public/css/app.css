@@ -381,12 +381,63 @@ h1.green-color.timer {
     font-family: "AvenirNextCyr-Good", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
     margin-bottom: 14px;
 }
+.element-new-form btn.btn-big.btn-success {
+    display: inline-block;
+}
 
+.element-new-form select#inputPerm {
+    display: inline-block;
+    width: 76%;
+    margin-right: 1%;
+}
+
+
+span.account-pic {
+    display: inline-block;
+    vertical-align: top;
+    -khtml-border-radius: 50%;
+    border-radius: 50%;
+    position: relative;
+    border: 1px solid #dadada;
+}
+
+span.account-pic img {
+    width: 40px;
+    height: 40px;
+    display: block;
+    -khtml-border-radius: 50%;
+    border-radius: 50%;
+    box-sizing: border-box;
+}
+.account-pic button.minicon.btn-delete {
+    position: absolute;
+    top: 1px;
+    color: black;
+    background: white;
+    right: -8px;
+    border-radius: 50px;
+    margin-top: -8px;
+    height: 23px;
+    width: 18px;
+}
+
+.minicon.btn-delete {
+    font-family: "Min Icons";
+}
+select#inputPerm {
+    margin-top: 18px;
+}
 .ref-desc p, .ref-desc ul, .ref-desc ul *, span.selectedRefType {
     font-family: 'Open Sans', Helvetica, Arial;
     font-weight: 400;
 }
-
+span.selectedRefType {
+    font-family: 'Open Sans', Helvetica, Arial;
+    font-weight: 400;
+    font-size: 15px;
+    display: inline-block;
+    margin-top: 5px;
+}
 .ref-desc ul {
     list-style: none;
     margin-left: 0px;
@@ -394,13 +445,13 @@ h1.green-color.timer {
     margin-top: 12px;
 }
 
-.ref button {
+.ref button, .ref a.btn {
     width: 90%;
     background-color: white;
     color: #3A3A3A;
     margin-bottom: 3px;
     border: solid 1px #D4D5D6;
-    font-family: "Avenir Next W01", "AvenirNextCyr", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+    font-family: "AvenirNextCyr-Good", "AvenirNextCyr", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
 }
 
 .ref-desc.form-group {
@@ -873,6 +924,10 @@ div#proc-sessions.hiding {
 }
 .elements-list .control-group.form-submit.form-group {
     margin-left: 15px;
+}
+.element-new-form .control-group.form-submit.form-group {
+    margin-left: 0px;
+    margin-right: -32px;
 }
 select#categorySelect {
     margin-bottom: 15px;
@@ -3971,7 +4026,7 @@ display: inline-block;
 }
 
 .element-new-form {
-    width: 50%;
+    width: 45%;
     margin-top: 15px;
     background-color: white;
     padding: 14px 12px 0px 49px;
@@ -3979,11 +4034,14 @@ display: inline-block;
     border-radius: 5px;
 }
 .element-new-form h3 {
-    font-family: "Avenir Next W01", "AvenirNextCyr", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
-    font-weight: 600;
-    margin-bottom: 20px;
+    font-family: "AvenirNextCyr-Good", "AvenirNextCyr", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+    font-weight: 300;
+    margin-bottom: 30px;
     margin-top: 12px;
     text-align: left;
+}
+.ref-select-container {
+    margin-left: -15px;
 }
 
 .btTxt.solid-green:hover {
@@ -4004,7 +4062,7 @@ display: inline-block;
     margin-bottom: -15px;
     border-top-right-radius: 0px;
     border-top-left-radius: 0px;
-    font-family: "Avenir Next W01", "AvenirNextCyr", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+    font-family: "AvenirNextCyr-Good", "AvenirNextCyr", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
 }
 .btTxt:hover {
     cursor: pointer;
@@ -4068,6 +4126,9 @@ display: inline-block;
     font-size: 16px;      
     line-height: 32px;
     font-weight: 200;
+    margin-top: 0px;
+    padding-top: 0px;
+    padding-bottom: 20px;
 }
 .elements-list textarea.form-control {
     padding-top: 8px;

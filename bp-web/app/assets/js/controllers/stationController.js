@@ -8,6 +8,7 @@ minorityControllers.controller('ProcLaunchesListCtrl', ['TreeBuilder',
   '$scope', 
   '$filter', 
   '$rootScope',
+  'ProcPermissionsFactory',
   'BProcessesFactory',
   'BPSessionsFactory',
   'ObserversFactory', 
@@ -21,7 +22,7 @@ minorityControllers.controller('ProcLaunchesListCtrl', ['TreeBuilder',
   'BPLogsFactory', 
   '$location', 
   '$route',
-  function (TreeBuilder, $http, $window, $translate, $scope, $filter, $rootScope,BProcessesFactory,BPSessionsFactory, ObserversFactory, ObserverFactory,BPInLoggersFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
+  function (TreeBuilder, $http, $window, $translate, $scope, $filter, $rootScope,ProcPermissionsFactory, BProcessesFactory,BPSessionsFactory, ObserversFactory, ObserverFactory,BPInLoggersFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
   $scope.bpId = $route.current.params.BPid;
   $scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
   $scope.spaces =  BPSpacesFactory.query({ BPid: $route.current.params.BPid });
@@ -36,6 +37,26 @@ $scope.isManager = function () {
     return $window.localStorage.manager == "true";
   }
 };
+
+
+  $scope.loadPerm = function () {
+  ProcPermissionsFactory.query({ BPid: $scope.bpId }).$promise.then(function(qu){
+      $scope.perms = qu.elemperms;
+
+      $scope.accounts = qu.accounts;
+      $scope.emps = qu.employees;
+      $scope.employee_groups = qu.employee_groups;
+      _.forEach($scope.employee_groups, function(gr){ return gr.group = true; });
+      $scope.groups = qu.employee_groups;
+      $scope.employees_groups = _.union($scope.emps,$scope.employee_groups);
+      _.forEach($scope.perms, function(perm) {
+        if (perm.group != undefined) {
+          perm.title = _.find($scope.groups, function(group) {return group.id == perm.group}).title;
+        }
+      })
+  });
+  }
+  $scope.loadPerm()
 
 $scope.isManagerVal = $scope.isManager();
 $scope.isManager();

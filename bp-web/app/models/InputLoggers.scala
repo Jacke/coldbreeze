@@ -113,12 +113,12 @@ object InputLoggerDAO {
   def launchPeopleFetcher(sessionStatus: SessionStatus):SessionStatus = {
     //val launchedBy = ???
      val act_perms = ActPermissionDAO.getByProcessId(sessionStatus.process.id.get).filter(perm => perm.role == "interact" || perm.role == "all")
-     val participators = act_perms.map(_.uid).flatten ++ AccountGroupDAO.getAllByGroupIDS(act_perms.map(_.group).flatten).map(_.account_id)
+     val participators = act_perms.map(_.uid).flatten ++ AccountGroupDAO.getAllByGroupIDS(act_perms.map(_.group).flatten).map(_.account_id).distinct // remove dublicates
     getBySession(sessionStatus.session.id.get).headOption match {
       case Some(firstInputLog) => {
-        sessionStatus.copy(peoples = Some(SessionPeoples(launched_by = firstInputLog.uid.getOrElse("not@found.com"), participators = participators)))
+        sessionStatus.copy(peoples = Some(SessionPeoples(launched_by = firstInputLog.uid.getOrElse("not@found.com"), participators = participators.toSet.toList)))
       }
-      case _ => sessionStatus.copy(peoples = Some(SessionPeoples(launched_by = "not@found.com", participators = participators))) 
+      case _ => sessionStatus.copy(peoples = Some(SessionPeoples(launched_by = "not@found.com", participators = participators.toSet.toList))) 
     }
   }
   def fetchPeople(sessionContainer: SessionContainer):SessionContainer = {

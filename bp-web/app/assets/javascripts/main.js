@@ -349,7 +349,7 @@ $('#sideTab a').click(function (e) {
 //
  $('.teamCreationForm button').on('click', function(event) {
     event.preventDefault();
-    jsRoutes.controllers.GroupController.create_new().ajax({data: JSON.stringify({title: $('.teamCreationForm input').val(), business_id: 1}), dataType: "json", contentType: 'application/json',
+    jsRoutes.controllers.GroupController.create_new().ajax({data: JSON.stringify({title: $('.teamCreationForm input').val(), business: -1}), dataType: "json", contentType: 'application/json',
             xhrFields: {
                 withCredentials: !0
             },
@@ -383,9 +383,8 @@ jsRoutes.controllers.users.EmployeeController.create_new().ajax({data: JSON.stri
             accepts: {
                 json: "application/json"
             }}).done(function( data ) { console.log(data);
-location.reload();
-$('#addMembersForm').slideToggle();
-
+            location.reload();
+            $('#addMembersForm').slideToggle();
 //$('.form-horizontal')[0].submit();
 }).fail(function( jqXHR, textStatus) {
     //$('.loginFlowPage').prepend('<div class="messageBoxWrap"><p class="message">'+ JSON.parse(jqXHR.responseText).error +'</p></div>');
@@ -394,14 +393,14 @@ $('#addMembersForm').slideToggle();
 } 
 });
 $('#addMembersForm .cancelButton').on('click', function(event) {
-event.preventDefault();
-$('#addMembersForm').slideToggle();
+    event.preventDefault();
+    $('#addMembersForm').slideToggle();
 });
 $('.addMembersLink').on('click', function(event) {
-event.preventDefault();
-$('#addMembersForm').slideToggle();
-})
-$('.dropdown-toggle').dropdown()
+    event.preventDefault();
+    $('#addMembersForm').slideToggle();
+});
+$('.dropdown-toggle').dropdown();
 
 $(document).ready(function(){
 $(".filterInput.tableMinListFilterInput").keyup(function(){
@@ -431,6 +430,97 @@ $(".filterInput.tableMinListFilterInput").keyup(function(){
     //$("#filter-count").text("Number of Comments = "+count);
 });
 });
+//
+// Teams
+// 
+
+$('#addMembersForm').slideToggle();
+
+$('#addMembersForm button.updateGroup').on('click', function(event) {
+
+event.preventDefault();
+var names_assign = [];
+var names_unassign = [];
+var promises = [];
+$('input.assignCheckbox:checked').each(function(thos) { names_assign.push($(this).attr('name')) });
+$('input.unassignCheckbox:checked').each(function(thos) { names_unassign.push($(this).attr('name')) });
+
+var uid = "";
+var group_id = location.pathname.split("/peoples/")[1];
+
+_.forEach(names_assign, function(uid) {
+var promise = jsRoutes.controllers.GroupController.assign_user(uid, group_id).ajax().done(function( data ) { console.log(data);
+
+    })
+promises.push(promise);
+promise.fail(function( jqXHR, textStatus) {
+        //$('.loginFlowPage').prepend('<div class="messageBoxWrap"><p class="message">'+ JSON.parse(jqXHR.responseText).error +'</p></div>');
+      });   
+});
+_.forEach(names_unassign, function(uid) {
+var promise = jsRoutes.controllers.GroupController.unassign_user(uid, group_id).ajax().done(function( data ) { console.log(data);
+    })
+    promises.push(promise);
+    promise.fail(function( jqXHR, textStatus) {
+        //$('.loginFlowPage').prepend('<div class="messageBoxWrap"><p class="message">'+ JSON.parse(jqXHR.responseText).error +'</p></div>');
+      });   
+});
+
+$('#addMembersForm').slideToggle();
+$.when.apply($, promises).done(function () {
+        location.reload();
+});
+
+});
+/*
+$('#addMembersForm .cancelButton').on('click', function(event) {
+event.preventDefault();
+$('#addMembersForm').slideToggle();
+});
+$('.addMembersForm').on('click', function(event) {
+event.preventDefault();
+$('#addMembersForm').slideToggle();
+})
+$('.addMembersLink').on('click', function(event) {
+event.preventDefault();
+$('#addMembersForm').slideToggle();
+})
+$('.dropdown-toggle').dropdown()
+*/
+
+
+$(document).ready(function(){
+$(".filterInput.tableMinListFilterInput").keyup(function(){
+
+    // Retrieve the input field text and reset the count to zero
+    var filter = $(this).val(), count = 0;
+    if(!filter){
+        $( "li.userCard" ).hide();
+        return;
+    }
+    var regex = new RegExp(filter, "i");
+    // Loop through the user list
+    $( "li.userCard" ).each(function(){
+
+        // If the list item does not contain the text phrase fade it out
+        if ($( ".block", this ).text().search(regex) < 0) {
+            $(this).hide();
+
+        // Show the list item if the phrase matches and increase the count by 1
+        } else {
+            $(this).show();
+            count++;
+        }
+    });
+    // Update the count
+    //var numberItems = count;
+    //$("#filter-count").text("Number of Comments = "+count);
+});
+});
+
+
+
+
 
 
 //

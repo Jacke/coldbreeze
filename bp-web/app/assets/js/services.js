@@ -372,6 +372,9 @@ minorityAppServices.factory('PermissionsFactory', ['$resource', function ($resou
 minorityAppServices.factory('ProcPermissionsFactory', ['$resource', function ($resource) {
     return $resource(baseUrl + 'bprocess/:BPid/elemperms', {}, {
         query: { method: 'GET', isArray: false },
+        peoples: { method: 'GET', isArray: false, url: 'api/v1/peoples'  }, // groups and employees only
+        perms: { method: 'GET', isArray: false, url: 'bprocess/:BPid/perms' }, // perms only
+
         create: { method: 'POST' }
     })
 }]);

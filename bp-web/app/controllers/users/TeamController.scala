@@ -61,16 +61,21 @@ class GroupController(override implicit val env: RuntimeEnvironment[DemoUser]) e
   def create_new() = SecuredAction(BodyParsers.parse.json) { implicit request =>
   	val now = org.joda.time.DateTime.now()
     val true_business = EmployeesBusinessDAO.getByUID(request.user.main.email.get)
-
+    println("true_business")
+    println(true_business)
+    println(request.body.validate[GroupDTO])
     true_business match {
-    case Some(x) =>  request.body.validate[GroupDTO].map{
+    case Some(x) => { request.body.validate[GroupDTO].map{
         case entity => { 
+              println("entity")
+              println(entity, x)
           val idd = GroupsDAO.pull_object(GroupDTO(None, entity.title, business = x._2, Some(now),Some(now)))
           Ok(Json.toJson(Map("success" -> Json.toJson(entity), "id" -> Json.toJson(idd))))
         }
       }.recoverTotal{
         e => BadRequest("Can't create group")
       }
+    }
     case _ => BadRequest("Can't create group")
     }
   }

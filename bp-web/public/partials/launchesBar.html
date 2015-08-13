@@ -27,8 +27,8 @@
   <span class="dish-label vertical-center left">Started <abbr class="session__header__created_at" title="{{ $parent.session.session.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="$parent.session.session.created_at"></abbr></span>
 
   <div class="dish-delete right">
-  </div>
     <button class="moicon moicon-cancel-circle" tooltip="Cancel" ng-click="$parent.cancelSession($parent.session)"></button>
+  </div>
 
   <div class="dish-operations-collapser right visible">
     <button class="moicon-eject moicon" ng-click="showInlineLaunch($parent.session)">

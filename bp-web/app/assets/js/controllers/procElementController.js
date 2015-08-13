@@ -9,7 +9,10 @@ define(['angular', 'app', 'controllers'], function (angular, minorityApp, minori
 // INDEX
 minorityControllers.controller('BPelementListCtrl', ['$timeout','$window','$filter', '$rootScope', '$scope', '$q', '$http', '$routeParams', 
   'toaster', 'BPInLoggersSessionFactory', 'BProcessFactory',
-  'BPStationsFactory', 
+  'BPStationsFactory',
+  'EmployeesFactory',
+  'ProcPermissionsFactory', 
+  'PermissionsFactory',
   'BProcessesFactory', 
   'ngDialog', 
   'BPElemsFactory',
@@ -33,7 +36,7 @@ minorityControllers.controller('BPelementListCtrl', ['$timeout','$window','$filt
 'InteractionsFactory',
 
   '$location', '$route', '$animate',
-  function ($timeout, $window, $filter, $rootScope, $scope, $q,$http, $routeParams, toaster, BPInLoggersSessionFactory, BProcessFactory, BPStationsFactory, BProcessesFactory, ngDialog, BPElemsFactory, BPElemFactory, BPSessionsFactory, BPStationsFactory, BPSpacesFactory, BPSpaceFactory, BPSpaceElemsFactory, BPSpaceElemFactory, BPStatesFactory, BPStateFactory, BPSessionStatesFactory, BPSessionStateFactory,RefsFactory, SwitchesFactory,SwitchFactory,ReactionsFactory,ReactionFactory,ElementTopologsFactory, InteractionsFactory, $location, $route, $animate) {
+  function ($timeout, $window, $filter, $rootScope, $scope, $q,$http, $routeParams, toaster, BPInLoggersSessionFactory, BProcessFactory, BPStationsFactory,EmployeesFactory, ProcPermissionsFactory, PermissionsFactory, BProcessesFactory, ngDialog, BPElemsFactory, BPElemFactory, BPSessionsFactory, BPStationsFactory, BPSpacesFactory, BPSpaceFactory, BPSpaceElemsFactory, BPSpaceElemFactory, BPStatesFactory, BPStateFactory, BPSessionStatesFactory, BPSessionStateFactory,RefsFactory, SwitchesFactory,SwitchFactory,ReactionsFactory,ReactionFactory,ElementTopologsFactory, InteractionsFactory, $location, $route, $animate) {
     
     
   $scope.route = jsRoutes.controllers.BusinessProcessController;
@@ -205,6 +208,17 @@ $scope.loadResources = function() {
     $scope.states = states;
     $scope.switches = switches;
     $scope.element_topologs = topo;
+
+    /* perms */
+    ProcPermissionsFactory.perms({ BPid: $scope.BPid }).$promise.then(function(q) {
+    _.forEach($scope.bpelems, function(z) {
+      z.perms = _.filter(q.elemperms, function(per) { return z.id == per.front_elem_id });
+    });
+    _.forEach($scope.spaceelems, function(z) {
+      z.perms = _.filter(q.elemperms, function(per) { return z.id == per.space_elem_id });
+    });
+    });
+    /*******************/
 
     _.forEach($scope.bpelems, function(z) {
     z.states = _.filter($scope.states, function(d){ return d.front_elem_id == z.id;});
@@ -574,6 +588,23 @@ $scope.options = {
 
     BPElemsFactory.create($scope.newBpelem).$promise.then(function(data) {
        
+    // Add perm
+    _.forEach($scope.newBpelem.perms, function(perm) {
+      if (perm.uid != undefined) {
+        perm.front_elem_id = data.success.proc_elems[0];
+      if (perm.group == true) {
+        perm.group = perm.id;
+      } 
+      perm.process = $scope.BPid;
+      perm.role = 'all';
+    PermissionsFactory.create(perm).$promise.then(function(data) {
+       $scope.perms = ProcPermissionsFactory.query({ BPid: $scope.BPid }).$promise.then(function(d) {
+        $scope.loadPerm();
+       });
+       
+    });
+    }
+    })   
        
     /* Element with spaces */
       if ($scope.newBpelem.type_title == "container_brick1") {
@@ -1277,6 +1308,75 @@ BPSessionsFactory.query({ BPid: $scope.BPid }).$promise.then(function(data){
     
 $scope.reactions =  ReactionsFactory.query({ BPid: $scope.BPid });
 $scope.element_topologs = ElementTopologsFactory.query({ BPid: $scope.BPid });
+
+$scope.loadPerm = function () {
+ProcPermissionsFactory.peoples().$promise.then(function(q) {
+    console.log('peoples');
+    console.log(q);
+  EmployeesFactory.query().$promise.then( function(data) {
+    $scope.employees = data.emps;
+    $scope.creds = data.creds;
+  });
+});  
+ProcPermissionsFactory.query({ BPid: $scope.BPid }).$promise.then(function(qu){
+    $scope.perms = qu.elemperms;
+
+    $scope.accounts = qu.accounts;
+    $scope.emps = qu.employees;
+    $scope.employee_groups = qu.employee_groups;
+    _.forEach($scope.employee_groups, function(gr){ return gr.group = true; });
+    $scope.groups = qu.employee_groups;
+    $scope.employees_groups = _.union($scope.emps,$scope.employee_groups);
+    _.forEach($scope.perms, function(perm) {
+      if (perm.group != undefined) {
+        perm.title = _.find($scope.groups, function(group) {return group.id == perm.group}).title;
+      }
+    })
+});
+}
+$scope.loadPerm();
+
+$scope.credFetch = function (obj) {
+  if (obj.uid != undefined) { // it's employee
+
+  var res = _.find($scope.creds, function(cr){ return cr.userId == obj.uid});
+  if (res != undefined) {
+    return res.fullName + " " + obj.uid;
+  } else if (res == undefined) {
+    return "Anonymous " + obj.uid;
+  }
+  } else { // it's group
+    //var res = _.find($scope.groups, function(gr) { return gr.id == obj.id });
+    //if (res != undefined) {
+      return "Group " + obj.title;
+    //}
+  }
+};
+$scope.accFetch = function (obj) {
+  if (obj.uid != undefined) { // it's employee
+
+  var res = _.find($scope.accounts, function(cr){ return cr.userId == obj.uid});
+  console.log(res);
+  if (res != undefined) {
+    return res;
+  } else if (res == undefined) {
+    return "Anonymous " + obj.uid;
+  }
+  } else { // it's group
+    var res = _.find($scope.groups, function(gr) { return gr.id == obj.id });
+    if (res != undefined) {
+      res.avatarUrl = '/assets/images/group.png'
+      return res;
+    } else { return }
+  }
+};
+$scope.createPermForForm = function (perm, perms, position) {
+  perms.push(perm);
+}
+$scope.delPermForForm = function (perm,perms) {
+  var ind = perms.indexOf(perm);
+  perms.splice(ind, 1);
+}
 
 $scope.turnMinimal = function() {
     $('.proc-element').each(function () {

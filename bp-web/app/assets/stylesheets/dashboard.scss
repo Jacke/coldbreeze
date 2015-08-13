@@ -122,10 +122,16 @@
   display: block;
   margin-top: 30px;
   float: right;
-  width: 122px;
+  width: 185px;
   height: 44px;
-
+  ul {
+    list-style: none;
+    li {
+        display: inline-block;
+    }
+  }
     span.pin_session {
+  
   font-size: 20px;
   display: inline-block;
   width: 22px;
