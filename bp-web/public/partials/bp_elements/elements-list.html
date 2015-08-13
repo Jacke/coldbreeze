@@ -38,7 +38,7 @@
     <div class="form-group element-form-fields">
     <div class="control-group">
       <div class="controls col-xs-8">
-        <label class="control-label col-sm-1" for="inputTitle">Element name</label>
+        <label class="control-label col-sm-1" for="inputTitle">Title</label>
         <input type="text" id="inputTitle" class="form-control" ng-model="newBpelem.title" required/>
       </div>
     </div>
@@ -101,7 +101,7 @@
 
 
 <div class="elements" ng-repeat="bpelem in bpelems | orderBy:'order'">
-<div class="proc-element" ng-class="'elem-'+bpelem.id">
+<div class="proc-element minimal" ng-class="'elem-'+bpelem.id">
     <div class="element-header">
     <div class="primary-states">
     </div>
@@ -310,7 +310,7 @@
 <div class="elements mocking">
   
   
-  <div class="proc-element">
+  <div class="proc-element minimal">
     <div class="element-header">
     <div class="primary-states">
     </div>
