@@ -60,6 +60,9 @@ GET         /business/update/:id                                @controllers.Bus
 POST        /business/update/:id                                @controllers.BusinessController.update_make(id: Int)
 # Elem perms
 GET         /bprocess/:BPid/elemperms                           @controllers.PermissionController.proc_index(BPid: Int)
+GET         /bprocess/:BPid/perms                               @controllers.PermissionController.permsOnly(BPid: Int)
+GET         /api/v1/peoples                                  	@controllers.PermissionController.peoplesOnly()
+
 GET         /elemperms                                          @controllers.PermissionController.index()
 POST        /elemperms                                          @controllers.PermissionController.create_new()
 PUT         /elemperm/:id                                       @controllers.PermissionController.update(id: Int)

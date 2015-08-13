@@ -35,32 +35,40 @@
     <div class="control-group">
       <h3>Create element</h3>
     </div>
-    <div class="form-group element-form-fields">
-    <div class="control-group">
-      <div class="controls col-xs-8">
+    <div class="form-group element-form-fields control-group clearfix">
+      <div class="controls col-xs-2">
         <label class="control-label col-sm-1" for="inputTitle">Title</label>
+      </div>
+      <div class="controls col-xs-6">      
         <input type="text" id="inputTitle" class="form-control" ng-model="newBpelem.title" required/>
       </div>
+
     </div>
-    <div class="control-group">
-      <div class="controls col-xs-8">
+    <div class="form-group element-form-fields control-group clearfix">
+      <div class="controls col-xs-2">
         <label class="control-label col-sm-1" for="inputBusinessId">{{ 'DESC' | translate }}</label>
+      </div>
+      <div class="controls col-xs-6">
         <textarea type="text" class="form-control" id="inputBusinessId" ng-model="newBpelem.desc"/>
       </div>
     </div>
-    </div>
-    <div class="form-group element-form-fields">
-    <div class="controls col-xs-8">
+
+    <div class="form-group element-form-fields control-group clearfix">
+
+    <div class="controls col-xs-2">
           <label class="control-label ng-binding" for="inputTitle">Type</label>
+    </div>
+      <div class="controls col-xs-6">
           <span class="selectedRefType">{{ newBpelem.selectedRef.ref.title }}</span>
             <button href="" ng-click="newBpelem.refSelectHidden=false;" ng-show="newBpelem.refSelectHidden == true;" class="expand-ref-select"><span class="moicon moicon-info expand-ref-select"></span></button>
-        </div>
+      </div>      
+    </div><!-- form-group element-form-fields -->
     </div>
-    <div class="ref-select-container fadein fadeout" ng-hide="newBpelem.refSelectHidden" ng-init="newBpelem.selectedRef != undefined ? newBpelem.refSelectHidden=false : refSelectHidden=true;">
+    <div class="ref-select-container fadein fadeout clearfix" ng-hide="newBpelem.refSelectHidden" ng-init="newBpelem.selectedRef != undefined ? newBpelem.refSelectHidden=false : refSelectHidden=true;">
   <select style="display:none;" name="category" id="categorySelect" ng-model="newBpelem.refCategoryFilter" ng-init="newBpelem.refCategoryFilter = refCategories[0]" ng-options="option for option in refCategories" required="" class="ng-valid ng-valid-required"><option value="0" selected="selected">Base</option></select>
     <div class="templateButton form-group col-xs-4 clearfix">
       <div class="ref" ng-repeat="ref in refs | filter: { ref: {category: newBpelem.refCategoryFilter}}" ng-class="{selected: newBpelem.selectedRef.ref.id == ref.ref.id }">
-        <button ng-mouseover="refElem(ref, newBpelem)" ng-click="newBpelem.refSelectHidden=true;" class="btn btn-small btn-primary container_brick" ng-class="isSelected(ref, newBpelem)">{{ ref.ref.title }}</button>
+        <a ng-mouseover="refElem(ref, newBpelem)" ng-click="newBpelem.refSelectHidden=true;" class="btn btn-small btn-primary container_brick" ng-class="isSelected(ref, newBpelem)">{{ ref.ref.title }}</a>
       </div>
     </div>
     <div class="ref-desc form-group col-xs-8">
@@ -72,9 +80,22 @@
     </div>   
     </div><!-- ref-select-container --> 
     <div class="control-group">
-      <div class="controls col-xs-8">
-        <label class="control-label col-sm-1" for="inputTitle">People</label>
-        
+      <div class="form-group element-form-fields">
+      <div class="form-group control-group clearfix">
+        <div class="controls col-xs-2">
+          <label class="control-label col-sm-1" for="inputPerm">People</label>
+        </div>
+        <div class="controls col-xs-6" ng-init="newBpelem.perms = [];">  
+          <div class="perms" ng-repeat="perm in newBpelem.perms" ng-init="perm.account = accFetch(perm)">
+          <span class="account-pic" tooltip="{{ perm.account.fullName }}">
+              <img ng-src="{{ perm.account.avatarUrl}}" alt="{{ perm.account.fullName }}">
+              <button ng-click="delPermForForm(perm,newBpelem.perms)" class="btn-delete minicon"></button>
+          </span>
+          </div>   
+          <select id="inputPerm" ng-model="newBpelem.perm" class="forUID" ng-options="employeegroup as credFetch(employeegroup) for employeegroup in employees_groups"></select>
+          <a ng-click="createPermForForm(newBpelem.perm, newBpelem.perms, 'front')" class="btn btn-big btn-success">{{ 'ADD' | translate }}</a>
+        </div>
+      </div>
       </div>
     </div>    
     <input type="hidden" name="value" ng-model="newBpelem.business" value="{{ business() }}">
@@ -101,7 +122,7 @@
 
 
 <div class="elements" ng-repeat="bpelem in bpelems | orderBy:'order'">
-<div class="proc-element minimal" ng-class="'elem-'+bpelem.id">
+<div class="proc-element" ng-class="'elem-'+bpelem.id">
     <div class="element-header">
     <div class="primary-states">
     </div>
@@ -117,6 +138,13 @@
       </div>
       <h4 class="title">{{ bpelem.title }}</h4>
       <h6 class="desc">{{ bpelem.desc }}</h6>
+      <div class="session__header session__people">
+         <div class="participators"> 
+         <ul>
+         <li ng-repeat="perm in bpelem.perms">{{ perm | json }}</li>
+         </ul>
+         </div>                             
+      </div>  
     </div>
     <!--<ul class="elem-control elem-tabs" role="tablist" ng-show="isManagerVal && !inSession">
       <li><a role="tab" data-toggle="tab" ng:init="selected=1" ng:click="selected == 1 ? selected=2 : selected=1"><span class="glyphicon glyphicon-edit"></span></a></li>
@@ -310,7 +338,7 @@
 <div class="elements mocking">
   
   
-  <div class="proc-element minimal">
+  <div class="proc-element">
     <div class="element-header">
     <div class="primary-states">
     </div>
@@ -480,3 +508,4 @@ $(document).ready( function() {
   });    
 });
 </script>
+

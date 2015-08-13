@@ -31,6 +31,9 @@ class PermissionController(override implicit val env: RuntimeEnvironment[DemoUse
 
 
 case class ActPermissionJSON(elemperms: List[ActPermission], employees: List[EmployeeDTO], employee_groups:List[GroupDTO], accounts: List[AccountDAO])
+case class PeopleJSON(employees: List[EmployeeDTO], employee_groups:List[GroupDTO], accounts: List[AccountDAO])
+case class ActPermissionOnlyJSON(elemperms: List[ActPermission])
+
 val Home = Redirect(routes.BusinessController.index())
 
 
@@ -58,7 +61,10 @@ implicit val PermiReads: Reads[ActPermission] = (
 
   implicit val ActPermissionJSONReads = Json.reads[ActPermissionJSON]
   implicit val ActPermissionJSONWrites = Json.format[ActPermissionJSON]
-
+  implicit val PeopleJSONReads = Json.reads[PeopleJSON]
+  implicit val PeopleJSONWrites = Json.format[PeopleJSON]
+  implicit val ActPermissionOnlyJSONJSONReads = Json.reads[ActPermissionOnlyJSON]
+  implicit val ActPermissionOnlyJSONJSONWrites = Json.format[ActPermissionOnlyJSON]
 // case class ActPermission(var id: Option[Int], uid: String, front_elem_id:Option[Int], space_elem_id:Option[Int])
 val elemPermForm = Form(
     mapping(
@@ -118,6 +124,32 @@ val elemPermForm = Form(
     Ok(Json.toJson(
       ActPermissionJSON(
         elemperms.filter(perm => perm.process == BPid ),
+        employees,
+        employee_groups,
+        accounts
+        )))
+  }
+  def permsOnly(BPid: Int) = SecuredAction { implicit request =>
+    val elemperms = ActPermissionDAO.getAll
+    //val elms = ProcElemDAO.findByBPId(BPid).map(_.id)
+    //val spelms = SpaceElemDAO.findByBPId(BPid).map(_.id)
+    //val employees = EmployeeDAO.getAllByMaster(request.user.main.email.get)
+    //val employee_groups = AccountGroupDAO.getByAccounts(employees.map(_.master_acc)).distinct
+    //val accounts = models.AccountsDAO.findAllByEmails(employees.map(emp => emp.uid)).map(ac => AccountCredHiding.hide(ac))
+    Ok(Json.toJson(
+      ActPermissionOnlyJSON(
+        elemperms.filter(perm => perm.process == BPid )
+        )))
+  }
+  def peoplesOnly = SecuredAction { implicit request =>
+    //val elemperms = ActPermissionDAO.getAll
+    //val elms = ProcElemDAO.findByBPId(BPid).map(_.id)
+    //val spelms = SpaceElemDAO.findByBPId(BPid).map(_.id)
+    val employees = EmployeeDAO.getAllByMaster(request.user.main.email.get)
+    val employee_groups = AccountGroupDAO.getByAccounts(employees.map(_.master_acc)).distinct
+    val accounts = models.AccountsDAO.findAllByEmails(employees.map(emp => emp.uid)).map(ac => AccountCredHiding.hide(ac))
+    Ok(Json.toJson(
+      PeopleJSON(
         employees,
         employee_groups,
         accounts

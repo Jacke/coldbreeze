@@ -152,8 +152,8 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
              <a ng-click="unlisted(session.session)" tooltip="Unpin launch from bottom bar" ng-show="session.session.onlyListed">Unlisted</a>
         </div>     
 <div class="session__header session__people">
-  <div class="launched-by">Launched by</div>
-  <div class="participators">Participators</div>                               
+  <div class="launched-by">Launched by <ul><li>{{ session.peoples.launched_by }}</li></ul></div>
+  <div class="participators">Participators <ul><li ng-repeat="partc in session.peoples.participators">{{ partc | json }}</li></ul></div>                               
 </div>  
          
 <div class="progress">
@@ -165,8 +165,12 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
    </div>
 </div>              
 <div class="session_controls">
-  <span class="pin_session moicon moicon-pushpin" ng-click="pin(session)" tooltip="Pin launch to bottom bar" ng-class="isPinned(session)"></span>
-</div>     
+  <ul>
+    <li><span class="moicon moicon-book" ng-click="history(session)" tooltip="History"></span></li>  
+    <li><span class="pin_session moicon moicon-pushpin" ng-click="pin(session)" tooltip="Pin launch to bottom bar" ng-class="isPinned(session)"></span></li>
+    <li><span class="moicon icon-remove-circle" ng-click="deleteSession(session)" tooltip="Delete"></span></li>
+  </ul>
+</div>      
               
            <!--<p>
             {{ stationByProcess(station.id).id }}
