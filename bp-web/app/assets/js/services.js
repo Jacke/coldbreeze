@@ -1,5 +1,7 @@
 'use strict';
 
+define(['angular', 'app', 'angularanimate', 'jsRoutes'], function (angular, minorityApp, angularanimate, jsRoutes) {
+
 /* Services */
 var minorityAppServices =
   angular.module(
@@ -508,3 +510,4 @@ minorityAppServices.factory('ObserverFactory', ['$resource', function ($resource
 // In this case it is a simple value service.
 //angular.module('minorityApp.services', []).
 //  value('version', '0.1');
+});

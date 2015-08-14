@@ -146,9 +146,15 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
               <a ng-click="unlisted(session.session)" ng-show="session.session.onlyListed" tooltip="Unpin launch from bottom bar">Unlisted</a>
         </div>    
 <div class="session__header session__people">
-  <div class="launched-by">Launched by <ul><li>{{ session.peoples.launched_by }}</li></ul></div>
-  <div class="participators">Participators <ul><li ng-repeat="partc in session.peoples.participators">{{ partc | json }}</li></ul></div>                               
-</div>  
+  <div class="launched-by" ng-show="session.peoples.launched_by != 'not@found.com'">Launched<ul><li>{{ session.peoples.launched_by }}</li></ul></div>
+  <div class="participators">
+          <div class="perms perm-list" ng-repeat="perm in session.peoples.participators | limitTo:6" ng-init="account = accFetchSessioned(perm)">
+            <span class="account-pic" tooltip="{{ account.tooltip }}">
+                <img ng-src="{{ account.avatarUrl}}" alt="{{ account.tooltip }}">
+            </span>
+          </div>       
+  </div>                               
+</div> 
 <div class="progress">
     <div class="progress-lines">
                 <div ng-include src="'assets/partials/treeLiner.html'"></div>
@@ -164,40 +170,10 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
     <li><span class="moicon icon-remove-circle" ng-click="deleteSession(session)" tooltip="Delete"></span></li>
   </ul>
 </div>            
-              
-           <!--<p>
-            {{ stationByProcess(station.id).id }}
-            {{ stationByProcess(station.id).title }}
-          </p>-->
 
-<div class="row">
-<div class="col-xs-3 state-box-container">
-  <!--
-  <div class="station-markers">
-  <ul class="station-states">
-                      <li class="state started {{ session.station.started }}"> {{ 'STARTED' | translate }} </li>
-                      <li class="state paused {{ session.station.paused }}"> {{ 'PAUSED' | translate }} </li>
-                      <li class="state finished {{ session.station.finished }}"> {{ 'FINISHED' | translate }} </li>
-    <li class="state canceled {{ station.canceled }}"> {{ 'CANCELED' | translate }} </li>
-  </ul>
-  </div>-->
-  <div class="station-settings">
-  <div class="note">
-    <input type="text" class="station-note" ng-model="station.note">
-    <a ng-click="updateNote(session.station)" ng-show="isManagerVal">Update note</a> 
-  </div>
-
-</div>
-  
-</div>
-
-
-</div>
-
-
-<div class="session-launches-bar" ng-if="session.station.paused == true && session.station.finished == false">
-<div ng-include src="'assets/partials/launchesBar.html'" class="launches-bar"></div>
-</div>
+<div class="session-launches-bar minimal" ng-if="session.station.paused == true && session.station.finished == false">
+    <div ng-include src="'assets/partials/launchesBar.html'" class="launches-bar"></div>
+</div>              
 
           
 </div>

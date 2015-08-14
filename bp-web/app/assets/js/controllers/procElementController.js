@@ -7,25 +7,25 @@ define(['angular', 'app', 'controllers'], function (angular, minorityApp, minori
  * BP Elements
  */
 // INDEX
-minorityControllers.controller('BPelementListCtrl', ['$timeout','$window','$filter', '$rootScope', '$scope', '$q', '$http', '$routeParams', 
+minorityControllers.controller('BPelementListCtrl', ['$timeout','$window','$filter', '$rootScope', '$scope', '$q', '$http', '$routeParams',
   'toaster', 'BPInLoggersSessionFactory', 'BProcessFactory',
   'BPStationsFactory',
   'EmployeesFactory',
-  'ProcPermissionsFactory', 
+  'ProcPermissionsFactory',
   'PermissionsFactory',
-  'BProcessesFactory', 
-  'ngDialog', 
+  'BProcessesFactory',
+  'ngDialog',
   'BPElemsFactory',
-  'BPElemFactory', 
+  'BPElemFactory',
   'BPSessionsFactory',
   'BPStationsFactory',
-  'BPSpacesFactory', 
-  'BPSpaceFactory', 
-  'BPSpaceElemsFactory', 
-  'BPSpaceElemFactory', 
+  'BPSpacesFactory',
+  'BPSpaceFactory',
+  'BPSpaceElemsFactory',
+  'BPSpaceElemFactory',
   'BPStatesFactory',
   'BPStateFactory',
-  'BPSessionStatesFactory', 
+  'BPSessionStatesFactory',
   'BPSessionStateFactory',
   'RefsFactory',
   'SwitchesFactory',
@@ -37,8 +37,8 @@ minorityControllers.controller('BPelementListCtrl', ['$timeout','$window','$filt
 
   '$location', '$route', '$animate',
   function ($timeout, $window, $filter, $rootScope, $scope, $q,$http, $routeParams, toaster, BPInLoggersSessionFactory, BProcessFactory, BPStationsFactory,EmployeesFactory, ProcPermissionsFactory, PermissionsFactory, BProcessesFactory, ngDialog, BPElemsFactory, BPElemFactory, BPSessionsFactory, BPStationsFactory, BPSpacesFactory, BPSpaceFactory, BPSpaceElemsFactory, BPSpaceElemFactory, BPStatesFactory, BPStateFactory, BPSessionStatesFactory, BPSessionStateFactory,RefsFactory, SwitchesFactory,SwitchFactory,ReactionsFactory,ReactionFactory,ElementTopologsFactory, InteractionsFactory, $location, $route, $animate) {
-    
-    
+
+
   $scope.route = jsRoutes.controllers.BusinessProcessController;
   $scope.businessSet = $rootScope.business;
 
@@ -46,8 +46,8 @@ minorityControllers.controller('BPelementListCtrl', ['$timeout','$window','$filt
 
   $scope.business = function () {
      return parseInt($window.localStorage.getItem('business'));
-      
-  }  
+
+  }
 
 $scope.isManager = function () {
   if ($scope.isManagerVal == undefined && $rootScope.manager != undefined) {
@@ -75,13 +75,13 @@ $scope.isManager();
 
   BProcessesFactory.query().$promise.then(function(data) {
 
-    
+
     BPStationsFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(stations) {
 
-    $scope.bp = _.find(data, function(proc) { return proc.id == $route.current.params.BPid});    
+    $scope.bp = _.find(data, function(proc) { return proc.id == $route.current.params.BPid});
     $scope.business = function () {
        return $scope.bp.business;
-    }  
+    }
 
     $scope.hasActiveStation = _.filter(stations, function(st) { return st.paused == true && st.process == $scope.bp.id }).length > 0;
 
@@ -97,10 +97,10 @@ $scope.spaces =  BPSpacesFactory.query({ BPid: $route.current.params.BPid });
 $scope.spaceelems = BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid });
        $scope.states = BPStatesFactory.query({ BPid: $route.current.params.BPid });
        $scope.switches = SwitchesFactory.query({ BPid: $route.current.params.BPid });
-       $scope.bpelems.$promise.then(function (bpelems) { 
-       $scope.spaces.$promise.then(function (spaces) { 
-       $scope.spaceelems.$promise.then(function (spaceelems) { 
-        $scope.switches.$promise.then(function (switches) {  
+       $scope.bpelems.$promise.then(function (bpelems) {
+       $scope.spaces.$promise.then(function (spaces) {
+       $scope.spaceelems.$promise.then(function (spaceelems) {
+        $scope.switches.$promise.then(function (switches) {
           $scope.states.$promise.then(function (states) {
             $scope.reactions.$promise.then(function (reactions) {
               $scope.element_topologs.$promise.then(function (topo) {
@@ -114,25 +114,37 @@ $scope.spaceelems = BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid
     $scope.reactions = reactions;
     $scope.element_topologs = topo;
 
+
+    /* perms */
+    ProcPermissionsFactory.perms({ BPid: $scope.BPid }).$promise.then(function(q) {
+    _.forEach($scope.bpelems, function(z) {
+      z.perms = _.filter(q.elemperms, function(per) { return z.id == per.front_elem_id });
+    });
+    _.forEach($scope.spaceelems, function(z) {
+      z.perms = _.filter(q.elemperms, function(per) { return z.id == per.space_elem_id });
+    });
+    });
+    /*******************/
+
     _.forEach($scope.bpelems, function(z) {
     z.states = _.filter($scope.states, function(d){ return d.front_elem_id == z.id;});
     z.topo_id = _.find($scope.element_topologs, function(d){ return d.element_id == z.id && d.space_element == false; });
-    z.reactions = _.filter($scope.reactions, function(sw) { return z.topo_id != undefined && sw.reaction.element == z.topo_id.topo_id }); 
+    z.reactions = _.filter($scope.reactions, function(sw) { return z.topo_id != undefined && sw.reaction.element == z.topo_id.topo_id });
 
     _.forEach(z.states, function(st){ return st.switches = _.filter($scope.switches, function(sw) { return sw.state_ref == st.id }) });
     ///*if (z.b_type == "brick") {
       z.spaces = _.filter($scope.spaces, function(s){ return s.brick_front == z.id;});
-        _.forEach(z.spaces, function(sp) { 
-              sp.spelems = _.filter($scope.spaceelems, function(spelem){ 
-               return spelem.ref_space_owned == sp.id; 
-           }) 
-        }); 
+        _.forEach(z.spaces, function(sp) {
+              sp.spelems = _.filter($scope.spaceelems, function(spelem){
+               return spelem.ref_space_owned == sp.id;
+           })
+        });
     //}*/
 
   });
   _.forEach($scope.spaceelems, function(z) {
     z.topo_id = _.find($scope.element_topologs, function(d){ return d.space_elem_id == z.id && d.space_element == true;});
-    z.reactions = _.filter($scope.reactions, function(sw) { return z.topo_id != undefined && sw.reaction.element == z.topo_id.topo_id }); 
+    z.reactions = _.filter($scope.reactions, function(sw) { return z.topo_id != undefined && sw.reaction.element == z.topo_id.topo_id });
     z.states = _.filter(states, function(d){ return d.space_elem_id == z.id;});
     _.forEach(z.states, function(st){ return st.switches = _.filter($scope.switches, function(sw) { return sw.state_ref == st.id }) });
   });
@@ -161,25 +173,26 @@ $scope.reloadResourcesForSession = function(session) {
     _.forEach($scope.bpelems, function(z) {
     z.states = _.filter(states, function(d){ return d.front_elem_id == z.id;});
     z.topo_id = _.find($scope.element_topologs, function(d){ return d.element_id == z.id && d.space_element == false;});
-    z.reactions = _.filter($scope.reactions, function(sw) { return z.topo_id != undefined && sw.reaction.element == z.topo_id.topo_id }); 
+    z.reactions = _.filter($scope.reactions, function(sw) { return z.topo_id != undefined && sw.reaction.element == z.topo_id.topo_id });
 
-    _.forEach(z.states, function(st){ return st.switches = _.filter($scope.switches, function(sw) { 
-          return sw.state_ref == st.origin_state }) 
+    _.forEach(z.states, function(st){ return st.switches = _.filter($scope.switches, function(sw) {
+          return sw.state_ref == st.origin_state })
     });
-    
+
     ///*if (z.b_type == "brick") {
       z.spaces = _.filter($scope.spaces, function(s){ return s.brick_front == z.id;});
-        _.forEach(z.spaces, function(sp) { 
-              sp.spelems = _.filter($scope.spaceelems, function(spelem){ 
-               return spelem.ref_space_owned == sp.id; 
-           }) 
-        }); 
+        _.forEach(z.spaces, function(sp) {
+              sp.spelems = _.filter($scope.spaceelems, function(spelem){
+               return spelem.ref_space_owned == sp.id;
+           })
+        });
     //}*/
 
   });
+
   _.forEach($scope.spaceelems, function(z) {
     z.topo_id = _.find($scope.element_topologs, function(d){ return d.element_id == z.id && d.space_element == true;});
-    z.reactions = _.filter($scope.reactions, function(sw) { return z.topo_id != undefined && sw.reaction.element == z.topo_id.topo_id }); 
+    z.reactions = _.filter($scope.reactions, function(sw) { return z.topo_id != undefined && sw.reaction.element == z.topo_id.topo_id });
     z.states = _.filter(states, function(d){ return d.space_elem_id == z.id;});
     _.forEach(z.states, function(st){ return st.switches = _.filter($scope.switches, function(sw) { return sw.state_ref == st.id }) });
   });
@@ -199,7 +212,7 @@ $scope.loadResources = function() {
   $scope.states.$promise.then(function (states) {
   $scope.switches.$promise.then(function (switches) {
     $scope.reactions.$promise.then(function (reactions) {
-    $scope.element_topologs.$promise.then(function (topo) {  
+    $scope.element_topologs.$promise.then(function (topo) {
 
     $scope.bpelems = data;
     $scope.spaces = data2;
@@ -223,24 +236,24 @@ $scope.loadResources = function() {
     _.forEach($scope.bpelems, function(z) {
     z.states = _.filter($scope.states, function(d){ return d.front_elem_id == z.id;});
     z.topo_id = _.find($scope.element_topologs, function(d){ return d.element_id == z.id && d.space_element == false;;});
-    z.reactions = _.filter($scope.reactions, function(sw) { return z.topo_id != undefined && sw.reaction.element == z.topo_id.topo_id }); 
+    z.reactions = _.filter($scope.reactions, function(sw) { return z.topo_id != undefined && sw.reaction.element == z.topo_id.topo_id });
 
     _.forEach(z.states, function(st){ return st.switches = _.filter($scope.switches, function(sw) { return sw.state_ref == st.id }) });
-    
+
 
     ///*if (z.b_type == "brick") {
       z.spaces = _.filter($scope.spaces, function(s){ return s.brick_front == z.id;});
-        _.forEach(z.spaces, function(sp) { 
-              sp.spelems = _.filter($scope.spaceelems, function(spelem){ 
-               return spelem.ref_space_owned == sp.id; 
-           }) 
-        }); 
+        _.forEach(z.spaces, function(sp) {
+              sp.spelems = _.filter($scope.spaceelems, function(spelem){
+               return spelem.ref_space_owned == sp.id;
+           })
+        });
     //}*/
 
   });
   _.forEach($scope.spaceelems, function(z) {
     z.topo_id = _.find($scope.element_topologs, function(d){ return d.element_id == z.id && d.space_element == true;});
-    z.reactions = _.filter($scope.reactions, function(sw) { return z.topo_id != undefined && sw.reaction.element == z.topo_id.topo_id }); 
+    z.reactions = _.filter($scope.reactions, function(sw) { return z.topo_id != undefined && sw.reaction.element == z.topo_id.topo_id });
     z.states = _.filter($scope.states, function(d){ return d.space_elem_id == z.id;});
     _.forEach(z.states, function(st){ return st.switches = _.filter($scope.switches, function(sw) { return sw.state_ref == st.id }) });
   });
@@ -281,7 +294,7 @@ $scope.loadResources = function() {
   $scope.updateElem(elem);
   var z = BPElemsFactory.query({ BPid: $route.current.params.BPid });
 }
-  /** 
+  /**
    * Modals window
    */
 
@@ -319,7 +332,7 @@ $scope.loadResources = function() {
   };
 
   /**
-   * TREE BUILDER 
+   * TREE BUILDER
    */
 
   $scope.bpelems.$promise.then(function(data) {
@@ -364,7 +377,7 @@ $scope.loadResources = function() {
           });
       });
     };
-     
+
     var bpelemsCopy = angular.copy($scope.bpelems);
     var spacesCopy = angular.copy($scope.spaces);
     var spaceelemsCopy = angular.copy($scope.spaceelems);
@@ -394,7 +407,7 @@ $scope.options = {
         return (data.type == destType); // only accept the same type
       },
       dropped: function(event) {
-         
+
         var sourceNode = event.source.nodeScope;
         var destNodes = event.dest.nodesScope;
         // update changes to server
@@ -499,8 +512,8 @@ $scope.options = {
   $scope.orderNestedGen = function (elem) {
     if (elem != undefined) {
       var elms = _.filter($scope.spaceelems, function(elms){ return elms.space_owned == elem.space_owned });
-      // 
-      // 
+      //
+      //
 
     if (_.last(elms) != undefined && _.last(elms).order != undefined) {
       elem.order = (_.max(_.map(elms, function(l){return l.order})) + 1);
@@ -537,7 +550,7 @@ $scope.options = {
       })
       .then(function(response) {
         // success
-         
+
         $scope.reloadResources();
         //$scope.reloadTree($scope.trees);
       },
@@ -555,7 +568,7 @@ $scope.options = {
       })
       .then(function(response) {
         // success
-         
+
       $scope.reloadResources();
         //$scope.reloadTree($scope.trees);
       },
@@ -568,7 +581,7 @@ $scope.options = {
 
 
   $scope.updateElem = function (obj) {
-     
+
 
     BPElemFactory.update(obj).$promise.then(function(data) {
       $timeout(function(){
@@ -583,29 +596,31 @@ $scope.options = {
     })
   }
   $scope.createNewElem = function () {
-     
+
 
 
     BPElemsFactory.create($scope.newBpelem).$promise.then(function(data) {
-       
+
+    angular.element('.element-new-form').hide();
     // Add perm
     _.forEach($scope.newBpelem.perms, function(perm) {
       if (perm.uid != undefined) {
         perm.front_elem_id = data.success.proc_elems[0];
       if (perm.group == true) {
         perm.group = perm.id;
-      } 
+      }
       perm.process = $scope.BPid;
       perm.role = 'all';
     PermissionsFactory.create(perm).$promise.then(function(data) {
        $scope.perms = ProcPermissionsFactory.query({ BPid: $scope.BPid }).$promise.then(function(d) {
         $scope.loadPerm();
        });
-       
+
     });
     }
-    })   
-       
+    });
+    // Perm added
+
     /* Element with spaces */
       if ($scope.newBpelem.type_title == "container_brick1") {
         var space = {
@@ -732,12 +747,12 @@ $scope.nested_travers = function(obj, spaces, space_elements) {
   spelems_init_idsLEFT = _.map(space_elems_initLEFT, function(sp){ return sp.id }); // init ids
   elems_ids = elems_ids.concat(spelems_init_idsLEFT);
 
-   
-   
-   
 
-   
-   
+
+
+
+
+
 
 
 
@@ -792,17 +807,17 @@ setTimeout(function() {
 }
 
   function filteringNested(obj){
-       
+
       var deferred = $q.defer();
       var pms = [];
 
       $scope.nested_travers(obj, $scope.spaces, $scope.spaceelems).then(function(IDS) {
         var spsIds = IDS[0];//_.filter($scope.spaces, function(space) {return space.brick_front == obj.id});
         var spElms = IDS[1];//_.filter($scope.spelem, function(elem) {return _.contain(spsIds, elem.space_own)});
-         
-         
-         
-         
+
+
+
+
 
         angular.forEach(spsIds, function(sid) {
           pms.push(BPSpaceFactory.delete({ id: sid, BPid: $route.current.params.BPid }).$promise);
@@ -818,7 +833,7 @@ setTimeout(function() {
 
       //var z = _.map(spsIds, function(sid) { BPSpaceFactory.delete({ id: sid.id, BPid: $route.current.params.BPid }) });
       //var zz = _.map(spElms, function(sid) { BPSpaceElemFactory.delete({ id: sid.id, BPid: $route.current.params.BPid })  });
-     
+
     //deferred.resolve(zz);
   return $q.all(pms);
 
@@ -827,20 +842,20 @@ setTimeout(function() {
   };
 
   function filteringNestedInNested(obj){
-           
+
 
       var deferred = $q.defer();
       var pms = [];
 
 
-      
+
      $scope.nested_travers(obj, $scope.spaces, $scope.spaceelems).then(function(IDS) { //$scope.nestedIterator([_.findDeep($scope.trees, {'id': obj.id})]);
         var spsIds = IDS[0]; //_.filter($scope.spaces, function(space) {return space.brick_nested == obj.id});
         var spElms = IDS[1]; //_.filter($scope.spelem, function(elem) {return _.contain(spsIds, elem.space_own)});
-         
-         
-         
-         
+
+
+
+
 
         angular.forEach(spsIds, function(sid) {
           pms.push(BPSpaceFactory.delete({ id: sid, BPid: $route.current.params.BPid }).$promise);
@@ -854,7 +869,7 @@ setTimeout(function() {
 
       //var z = _.map(spsIds, function(sid) { BPSpaceFactory.delete({ id: sid.id, BPid: $route.current.params.BPid }) });
       //var zz = _.map(spElms, function(sid) { BPSpaceElemFactory.delete({ id: sid.id, BPid: $route.current.params.BPid })  });
-     
+
     //deferred.resolve(zz);
   return $q.all(pms);
   //return deferred.promise;
@@ -867,8 +882,8 @@ setTimeout(function() {
       if (obj.type_title == "container_brick11") {
 
         filteringNested(obj).then(function(data) {
-             
-             
+
+
             $scope.spaces =  BPSpacesFactory.query({ BPid: $route.current.params.BPid });
             $scope.spaceelems =  BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid });
          });
@@ -880,7 +895,7 @@ setTimeout(function() {
         $timeout(function () {
           // 0 ms delay to reload the page.
        $route.reload();
-      }, 0);     
+      }, 0);
     });
     });
   };
@@ -888,7 +903,7 @@ setTimeout(function() {
 
   /* SPACES CUD */
   $scope.updateSpace = function (obj) {
-     
+
     BPSpaceFactory.update(obj).$promise.then(function(data) {
       $scope.reloadResources();
     });
@@ -918,7 +933,7 @@ setTimeout(function() {
       })
       .then(function(response) {
         // success
-         
+
         $scope.reloadResources();
         //$scope.reloadTree($scope.trees);
       },
@@ -935,7 +950,7 @@ setTimeout(function() {
       })
       .then(function(response) {
         // success
-         
+
       $scope.reloadResources();
         //$scope.reloadTree($scope.trees);
       },
@@ -947,10 +962,12 @@ setTimeout(function() {
 
 $scope.createSpaceElemFromSpace = function (obj) {
   BPSpaceElemsFactory.create(obj).$promise.then(function(elem_data) {
+    angular.element('.element-new-form').hide();
+
 /*
     if (obj.type_title == "container_brick") {
-       
-       
+
+
 
       var space = {
           "bprocess": parseInt($route.current.params.BPid),
@@ -1000,14 +1017,16 @@ $scope.createSpaceElemFromSpace = function (obj) {
       })              //$scope.reloadTree($scope.trees);
 };
 $scope.createSpaceElem = function (obj) {
-     
+
 
 
     BPSpaceElemsFactory.create(obj).$promise.then(function(elem_data) {
+      angular.element('.element-new-form').hide();
+
 /*
       if (obj.type_title == "container_brick") {
-         
-         
+
+
 
         var space = {
             "bprocess": parseInt($route.current.params.BPid),
@@ -1031,7 +1050,7 @@ $scope.createSpaceElem = function (obj) {
 
 
 
-               _.forEach(data, function(sp){ 
+               _.forEach(data, function(sp){
             sp.newSpaceelem = { desc:  "", bprocess: parseInt($route.current.params.BPid), business: $scope.business(), space_owned: sp.id, space_role: "container",  comps: [ { "a_string" : null} ] }});
 
 
@@ -1049,12 +1068,12 @@ $scope.createSpaceElem = function (obj) {
       }; */
         $scope.spaceelems =  BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid });
         $scope.spaces = BPSpacesFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(data) {
-                       _.forEach(data, function(sp){ sp.newSpaceelem = { desc:  "", 
-                        process: parseInt($route.current.params.BPid), 
-                        business: $scope.business(), 
-                        space_owned: sp.id, 
-                        space_role: "container", 
-                        space_id: sp.id, 
+                       _.forEach(data, function(sp){ sp.newSpaceelem = { desc:  "",
+                        process: parseInt($route.current.params.BPid),
+                        business: $scope.business(),
+                        space_owned: sp.id,
+                        space_role: "container",
+                        space_id: sp.id,
                         comps: [ { "a_string" : null} ] }});
         });
 
@@ -1066,16 +1085,16 @@ $scope.createSpaceElem = function (obj) {
                   // 0 ms delay to reload the page.
                 $route.reload();
               }, 120);
-              });  
-        
+              });
+
     });
               $scope.cneedit = false;
-               
+
               //$scope.reloadTree($scope.trees);
 };
 
 $scope.updateSpaceElem = function (obj) {
-     
+
     BPSpaceElemFactory.update(obj).$promise.then(function(data) {
       $timeout(function(){
         $scope.reloadResources();
@@ -1111,20 +1130,20 @@ $scope.frontSpace = function (elem_id) { // : spaceObj
   }
   $scope.BPid = parseInt($route.current.params.BPid);
 
-    
+
 /***
  * State
- 
+
 BPStatesFactory
 BPStateFactory
 
 BPSessionStatesFactory
-BPSessionStateFactory 
+BPSessionStateFactory
 **/
-    
+
 /***
  * Reflections
- */    
+ */
 
 
 $scope.refs = RefsFactory.query();
@@ -1134,7 +1153,7 @@ $scope.refs.$promise.then(function(data) {
   $scope.newBpelem.refCategoryFilter = $scope.refCategories[0];
 });
 
-    
+
 $scope.refElem = function (ref, elem) {
     elem.ref = ref.ref.id;
     elem.selectedRef = ref;
@@ -1178,7 +1197,7 @@ $scope.switcherDecorPromise = $rootScope.switcher_conf2.then(function(d) {
   if (d != undefined) {
     $scope.switcherDecor = d.switcher_desc;
   }
-}); 
+});
 $scope.switcherDecoration = function(switcher) {
   var teta;
   if (switcher != undefined) {
@@ -1189,10 +1208,10 @@ $scope.switcherDecoration = function(switcher) {
     } else {
     teta = $scope.switcherDecor[switcher.switch_type];
     }
-    if (teta != undefined) { 
+    if (teta != undefined) {
       return switcher.switch_type;
     } else {
-      return " — " + teta; 
+      return " — " + teta;
     }
   } else {
     return " ";
@@ -1269,7 +1288,7 @@ $scope.stateClass = function(state) {
 
 $scope.masterState = function(element) {
   if (element != undefined && element.states != undefined && element.states.length > 0) {
-    return element.states[0]; 
+    return element.states[0];
   } // TODO: Made master state
 }
 
@@ -1283,8 +1302,8 @@ $scope.isSelected = function (session_id) {
 
 /***
  * Session observer
- **/   
- 
+ **/
+
 BPSessionsFactory.query({ BPid: $scope.BPid }).$promise.then(function(data){
   $scope.sessions = data.sessions;
 
@@ -1304,8 +1323,8 @@ BPSessionsFactory.query({ BPid: $scope.BPid }).$promise.then(function(data){
        ***/
       $scope.loadResources();
    }
-  });    
-    
+  });
+
 $scope.reactions =  ReactionsFactory.query({ BPid: $scope.BPid });
 $scope.element_topologs = ElementTopologsFactory.query({ BPid: $scope.BPid });
 
@@ -1317,7 +1336,7 @@ ProcPermissionsFactory.peoples().$promise.then(function(q) {
     $scope.employees = data.emps;
     $scope.creds = data.creds;
   });
-});  
+});
 ProcPermissionsFactory.query({ BPid: $scope.BPid }).$promise.then(function(qu){
     $scope.perms = qu.elemperms;
 
@@ -1357,15 +1376,24 @@ $scope.accFetch = function (obj) {
 
   var res = _.find($scope.accounts, function(cr){ return cr.userId == obj.uid});
   console.log(res);
-  if (res != undefined) {
+  if (res != undefined) { // it's account
+                          // anonumous checking
+    res.fullName != undefined ? res.tooltip = res.fullName : res.tooltip = res.email;
+    if (res.avatarUrl == undefined || res.avatarUrl == "") {
+      res.avatarUrl = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iRWJlbmVfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSIxNnB4IiBoZWlnaHQ9IjE2cHgiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTYgMTYiIHhtbDpzcGFjZT0icHJlc2VydmUiPjx0aXRsZT5EZWZhdWx0IEF2YXRhcjwvdGl0bGU+PGRlc2M+RGVmYXVsdCBBdmF0YXIgZm9yIFdDRiAyLjA8L2Rlc2M+IDxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbLnN1cmZhY2UgeyBmaWxsOiAjZmZmOyB9LnNoYWRvdyB7IGZpbGw6ICNiYmI7IH1dXT48L3N0eWxlPjwvZGVmcz48cmVjdCB4PSIwIiBjbGFzcz0ic2hhZG93IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiLz48cGF0aCBjbGFzcz0ic3VyZmFjZSIgZD0iTTMuNTI4LDE2QzMuNzc2LDExLjQ5OSw1LjY4NCw4LDgsOHM0LjIyNCwzLjQ5OSw0LjQ3Myw3Ljk5OCIvPjxjaXJjbGUgY2xhc3M9InN1cmZhY2UiIGN4PSI4IiBjeT0iNiIgcj0iMy41Ii8+PC9zdmc+'
+    }     
     return res;
   } else if (res == undefined) {
+    if (res.avatarUrl == undefined || res.avatarUrl == "") {
+      res.avatarUrl = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iRWJlbmVfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSIxNnB4IiBoZWlnaHQ9IjE2cHgiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTYgMTYiIHhtbDpzcGFjZT0icHJlc2VydmUiPjx0aXRsZT5EZWZhdWx0IEF2YXRhcjwvdGl0bGU+PGRlc2M+RGVmYXVsdCBBdmF0YXIgZm9yIFdDRiAyLjA8L2Rlc2M+IDxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbLnN1cmZhY2UgeyBmaWxsOiAjZmZmOyB9LnNoYWRvdyB7IGZpbGw6ICNiYmI7IH1dXT48L3N0eWxlPjwvZGVmcz48cmVjdCB4PSIwIiBjbGFzcz0ic2hhZG93IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiLz48cGF0aCBjbGFzcz0ic3VyZmFjZSIgZD0iTTMuNTI4LDE2QzMuNzc2LDExLjQ5OSw1LjY4NCw4LDgsOHM0LjIyNCwzLjQ5OSw0LjQ3Myw3Ljk5OCIvPjxjaXJjbGUgY2xhc3M9InN1cmZhY2UiIGN4PSI4IiBjeT0iNiIgcj0iMy41Ii8+PC9zdmc+'
+    }     
     return "Anonymous " + obj.uid;
   }
   } else { // it's group
     var res = _.find($scope.groups, function(gr) { return gr.id == obj.id });
     if (res != undefined) {
       res.avatarUrl = '/assets/images/group.png'
+      res.tooltip = "Group " + res.title;
       return res;
     } else { return }
   }
@@ -1390,14 +1418,14 @@ $scope.changeSession = function(session) {
  $scope.session = session;
  $location.search('launch', $scope.session.session.id);
  $scope.inSession = true;
- $scope.station = $scope.session.station;//_.find(session.station, function(s) { return s.front == true })  
- $scope.session_bar = 'hiding'; 
+ $scope.station = $scope.session.station;//_.find(session.station, function(s) { return s.front == true })
+ $scope.session_bar = 'hiding';
 
  $scope.interactions = InteractionsFactory.query({session_id: $scope.session.session.id});
 
 
  $scope.input_logs = BPInLoggersSessionFactory.query({BPid: $route.current.params.BPid, station_id: $scope.session.id});
- //.$promise.then(function(reaction_array) { 
+ //.$promise.then(function(reaction_array) {
 
  if ($scope.station != undefined && $scope.station.inspace == false) {
    if ($scope.bpelems[$scope.station.step] !== undefined) {
@@ -1409,7 +1437,7 @@ $scope.changeSession = function(session) {
    console.log("top traverse marker" + top);
 
    $('.traverse-marker').css('top', top-35 + 'px')
- } 
+ }
  if ($scope.station != undefined && $scope.station.inspace == true) {
   var spelem = $scope.bpelems[$scope.station.step].id
   var top = $('.spelem-24').offset().top
@@ -1422,7 +1450,7 @@ $scope.changeSession = function(session) {
   $scope.bprocess.trees = $scope.trees;
 }
 /***
- * Default app state 
+ * Default app state
  ***/
 $scope.inSession = false;
 
@@ -1431,7 +1459,7 @@ $scope.resetSession = function () {
   $scope.session = undefined;
   $location.search('launch', null);
   $scope.inSession = false;
- //$scope.session_bar = 'shown'; 
+ //$scope.session_bar = 'shown';
 
   $scope.station = undefined;
   $scope.loadResources();
@@ -1461,7 +1489,7 @@ $scope.unlisted = function (session) {
         // failed
       }
       );
-} 
+}
 
 
 
@@ -1471,7 +1499,7 @@ $scope.unlisted = function (session) {
 
 
 }]);
-    
+
 
 
 
@@ -1485,19 +1513,3 @@ minorityControllers.controller('BPelementCreationCtrl', ['$scope', 'BPElemsFacto
 
 
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

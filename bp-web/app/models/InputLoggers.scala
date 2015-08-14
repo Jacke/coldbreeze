@@ -116,11 +116,15 @@ object InputLoggerDAO {
      val participators = act_perms.map(_.uid).flatten ++ AccountGroupDAO.getAllByGroupIDS(act_perms.map(_.group).flatten).map(_.account_id).distinct // remove dublicates
     getBySession(sessionStatus.session.id.get).headOption match {
       case Some(firstInputLog) => {
-        sessionStatus.copy(peoples = Some(SessionPeoples(launched_by = firstInputLog.uid.getOrElse("not@found.com"), participators = participators.toSet.toList)))
+        sessionStatus.copy(peoples = Some(SessionPeoples(
+                    launched_by = firstInputLog.uid.getOrElse("not@found.com"), participators = participators.toSet.toList)))
       }
       case _ => sessionStatus.copy(peoples = Some(SessionPeoples(launched_by = "not@found.com", participators = participators.toSet.toList))) 
     }
   }
+  /* Because in first bp-dao project no account models presented we make this polyfil
+     It's copy session container and add people and participator list of String
+  */
   def fetchPeople(sessionContainer: SessionContainer):SessionContainer = {
     sessionContainer.copy(sessions = sessionContainer.sessions.map(st => launchPeopleFetcher(st)))
   }
