@@ -1639,6 +1639,17 @@ body .panelLegacy .githubLogin a {
     padding-top: 25px;
 }
 
+
+.organisationsGridMenu span.minicon.minicon-remove {
+    display: block;
+    float: right;
+    font-size: 18px;
+    margin-right: 9px;
+}
+
+.organisationsGridMenu a.delete-group:hover span.minicon.minicon-remove {
+    color: white;
+}
 .teamSettingsWrap,.tableMinListWrap {
     padding: 25px 20px;
     margin: 0 auto;

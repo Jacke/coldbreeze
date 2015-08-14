@@ -31,6 +31,7 @@ class BPSessions(tag: Tag) extends Table[BPSession](tag, "bpsessions") {
 }
 
 case class SessionPeoples(launched_by: String, participators: List[String])
+
 case class SessionStatus(var percent: Int = 0, 
                          process:BProcessDTO, 
                          session: BPSession, 
@@ -88,7 +89,7 @@ object BPSessionDAO {
         val station = BPStationDAO.findBySession(ses.id.get)        
         val element_quantity = ProcElemDAO.findByBPId(ses.process).length
         val process = BPDAO.get(ses.process).get
-        val people = SessionPeoples("iamjacke@gmail.com", List("iamjacke@gmail.com", "tete@gga.ru"))
+        val people = SessionPeoples("not@found.com", List()) // placeholder for peoples
 
         val step = station match {
           case Some(station) => station.step.toDouble
@@ -113,7 +114,7 @@ object BPSessionDAO {
     val ids = p.flatMap(_.id)
     val q3 = for { s <- bpsessions if (s.process inSetBind ids) && s.active_listed === true } yield s
     val sess = q3.list
-    val people = SessionPeoples("iamjacke@gmail.com", List("iamjacke@gmail.com", "tete@gga.ru"))
+    val people = SessionPeoples("not@found.com", List()) // placeholder for peoples
 
     p.map { p =>
       SessionContainer(p, 

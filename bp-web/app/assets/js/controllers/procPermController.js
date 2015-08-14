@@ -73,7 +73,27 @@ $scope.isManager();
       //}
     }
   };
+$scope.accFetch = function (obj) {
+  if (obj.uid != undefined) { // it's employee
 
+  var res = _.find($scope.accounts, function(cr){ return cr.userId == obj.uid});
+  console.log(res);
+  if (res != undefined) { // it's account
+                          // anonumous checking
+    res.fullName != undefined ? res.tooltip = res.fullName : res.tooltip = res.email;
+    return res;
+  } else if (res == undefined) {
+    return "Anonymous " + obj.uid;
+  }
+  } else { // it's group
+    var res = _.find($scope.groups, function(gr) { return gr.id == obj.id });
+    if (res != undefined) {
+      res.avatarUrl = '/assets/images/group.png'
+      res.tooltip = "Group " + res.title;
+      return res;
+    } else { return }
+  }
+};
   $scope.loadPerm = function () {
   ProcPermissionsFactory.query({ BPid: $scope.BPid }).$promise.then(function(qu){
       $scope.perms = qu.elemperms;
@@ -135,10 +155,15 @@ $scope.isManager();
       } else {
       perm.space_elem_id = elem.id;
       };
-      if (perm.group == true) {
-        perm.group = perm.id;
+      if (perm.group == true || (perm.employeegroup != undefined && perm.employeegroup.group == true) ) {
+        perm.group = perm.employeegroup.id;
+
       } 
+      if (perm.role == undefined) {
+        perm.role = 'all';
+      }
       perm.bprocess = $scope.BPid;
+      perm.process = $scope.BPid;
     PermissionsFactory.create(perm).$promise.then(function(data) {
        $scope.perms = ProcPermissionsFactory.query({ BPid: $scope.BPid }).$promise.then(function(d) {
         $scope.loadPerm();

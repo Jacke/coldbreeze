@@ -60,27 +60,55 @@ $scope.sessions.$promise.then(function (data2) {
 
 };
 
+
 $scope.loadSessions();
 
-  $scope.loadPerm = function (process) {
-  ProcPermissionsFactory.query({ BPid: process.id }).$promise.then(function(qu){
-      process.perms = qu.elemperms;
+  $scope.loadPerm = function (bpId) {
+  ProcPermissionsFactory.query({ BPid: bpId }).$promise.then(function(qu){
+      $scope.perms = qu.elemperms;
 
-      process.accounts = qu.accounts;
-      process.emps = qu.employees;
-      process.employee_groups = qu.employee_groups;
-      _.forEach(process.employee_groups, function(gr){ return gr.group = true; });
-      process.groups = qu.employee_groups;
-      process.employees_groups = _.union(process.emps,process.employee_groups);
-      _.forEach(process.perms, function(perm) {
+      $scope.accounts = qu.accounts;
+      $scope.emps = qu.employees;
+      $scope.employee_groups = qu.employee_groups;
+      _.forEach($scope.employee_groups, function(gr){ return gr.group = true; });
+      $scope.groups = qu.employee_groups;
+      $scope.employees_groups = _.union($scope.emps,$scope.employee_groups);
+      _.forEach($scope.perms, function(perm) {
         if (perm.group != undefined) {
-          perm.title = _.find(process, function(group) {return group.id == perm.group}).title;
+          perm.title = _.find($scope.groups, function(group) {return group.id == perm.group}).title;
         }
       })
   });
-}
+  }
+  
 
+$scope.accFetchSessioned = function (obj) {
+  if (obj != undefined) { // it's employee
 
+  var res = _.find($scope.accounts, function(cr){ return cr.userId == obj});
+  console.log(res);
+  if (res != undefined) { // it's account
+                          // anonumous checking
+    res.fullName != undefined ? res.tooltip = res.fullName : res.tooltip = res.email;
+    if (res.avatarUrl == undefined || res.avatarUrl == "") {
+      res.avatarUrl = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iRWJlbmVfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSIxNnB4IiBoZWlnaHQ9IjE2cHgiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTYgMTYiIHhtbDpzcGFjZT0icHJlc2VydmUiPjx0aXRsZT5EZWZhdWx0IEF2YXRhcjwvdGl0bGU+PGRlc2M+RGVmYXVsdCBBdmF0YXIgZm9yIFdDRiAyLjA8L2Rlc2M+IDxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbLnN1cmZhY2UgeyBmaWxsOiAjZmZmOyB9LnNoYWRvdyB7IGZpbGw6ICNiYmI7IH1dXT48L3N0eWxlPjwvZGVmcz48cmVjdCB4PSIwIiBjbGFzcz0ic2hhZG93IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiLz48cGF0aCBjbGFzcz0ic3VyZmFjZSIgZD0iTTMuNTI4LDE2QzMuNzc2LDExLjQ5OSw1LjY4NCw4LDgsOHM0LjIyNCwzLjQ5OSw0LjQ3Myw3Ljk5OCIvPjxjaXJjbGUgY2xhc3M9InN1cmZhY2UiIGN4PSI4IiBjeT0iNiIgcj0iMy41Ii8+PC9zdmc+'
+    } 
+    return res;
+  } else if (res == undefined) {
+    if (res.avatarUrl == undefined || res.avatarUrl == "") {
+      res.avatarUrl = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iRWJlbmVfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSIxNnB4IiBoZWlnaHQ9IjE2cHgiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTYgMTYiIHhtbDpzcGFjZT0icHJlc2VydmUiPjx0aXRsZT5EZWZhdWx0IEF2YXRhcjwvdGl0bGU+PGRlc2M+RGVmYXVsdCBBdmF0YXIgZm9yIFdDRiAyLjA8L2Rlc2M+IDxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbLnN1cmZhY2UgeyBmaWxsOiAjZmZmOyB9LnNoYWRvdyB7IGZpbGw6ICNiYmI7IH1dXT48L3N0eWxlPjwvZGVmcz48cmVjdCB4PSIwIiBjbGFzcz0ic2hhZG93IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiLz48cGF0aCBjbGFzcz0ic3VyZmFjZSIgZD0iTTMuNTI4LDE2QzMuNzc2LDExLjQ5OSw1LjY4NCw4LDgsOHM0LjIyNCwzLjQ5OSw0LjQ3Myw3Ljk5OCIvPjxjaXJjbGUgY2xhc3M9InN1cmZhY2UiIGN4PSI4IiBjeT0iNiIgcj0iMy41Ii8+PC9zdmc+'
+    } 
+    return "Anonymous " + obj;
+  }
+  } else { // it's group
+    var res = _.find($scope.groups, function(gr) { return gr.id == obj.id });
+    if (res != undefined) {
+      res.avatarUrl = '/assets/images/group.png'
+      res.tooltip = "Group " + res.title;
+      return res;
+    } else { return }
+  }
+};
 $scope.showInlineLaunch = function (session) {
   if (session.inlineLaunchShow) {
     session.inlineLaunchShow = false;
@@ -142,7 +170,16 @@ $scope.highlightActive = function (station, elem) {
   }
 
   //$scope.logs = BPLogsFactory.query({  BPid: $route.current.params.BPid });
-  $scope.bprocesses = BProcessesFactory.query();
+
+BProcessesFactory.query().$promise.then(function (proc) {
+    if (proc.length > 0) {
+      console.log('loadPerm');
+      $scope.loadPerm(proc[0].id);
+    };
+    $scope.bprocesses = proc;
+}); // load polyfill for accounts
+
+
   $scope.stationByProcess = function (processId) {
         var found = $filter('filter')($scope.bprocesses, {id: processId}, true);
          if (found.length) {

@@ -79,8 +79,8 @@ class EmployeeController(override implicit val env: RuntimeEnvironment[DemoUser]
       val all_employees = EmployeeDAO.getAllByMaster(user.main.email.get)
       val grouped_employees = AccountGroupDAO.getAllByGroup(group_id).map(_.account_id)
 
-      val employees = all_employees.filter(emp => grouped_employees.contains(emp.master_acc))
-      val employees_ungrouped = all_employees.filter(emp => !grouped_employees.contains(emp.master_acc))
+      val employees = all_employees.filter(emp => grouped_employees.contains(emp.uid))
+      val employees_ungrouped = all_employees.filter(emp => !grouped_employees.contains(emp.uid))
 
       val accounts = models.AccountsDAO.findAllByEmails(all_employees.map(emp => emp.uid))
       println("Accounts: ")

@@ -35,9 +35,11 @@
                     <p>{{bpelem.title}}</p>
                      <select ng-model="bpelem.perm.employeegroup" class="forUID" ng-options="employeegroup as credFetch(employeegroup) for employeegroup in employees_groups" required></select>
                      <a ng-click="createPerm(bpelem.perm, bpelem, 'front')" class="btn btn-big btn-success">{{ 'ADD' | translate }}</a>
-              <div class="perms" ng-repeat="perm in perms | filter:byObjId(bpelem)">
-                <pre>{{ credFetch(perm.employeegroup)  }} {{ bpelem.title }}</pre>
-                <a ng-click="delPerm(perm)" class="btn btn-danger btn-big">{{ 'DELETE' | translate }}</a>
+              <div class="perms" ng-repeat="perm in perms | filter:byObjId(bpelem)"ng-init="perm.account = accFetch(perm)" >
+                    <span class="account-pic" tooltip="{{ perm.account.tooltip }}">
+                        <img ng-src="{{ perm.account.avatarUrl}}" alt="{{ perm.account.tooltip }}">
+                        <button ng-click="delPerm(perm,newBpelem.perms)" class="btn-delete minicon"></button>
+                    </span>
               </div>
                 </div>
               </div>
@@ -48,9 +50,11 @@
 
                      <a ng-click="createPerm(spaceelem.perm, spaceelem, 'space')" class="btn btn-big btn-success">{{ 'ADD' | translate }}</a>
                 </div>
-                <div class="perms" ng-repeat="perm in perms | filter:byObjId(spaceelem)">
-                <pre>{{ credFetch(perm.employeegroup) }} {{ spaceelem.title }}</pre>
-                <a ng-click="delPerm(perm)" class="btn btn-danger btn-big">{{ 'DELETE' | translate }}</a>
+                <div class="perms" ng-repeat="perm in perms | filter:byObjId(spaceelem)" ng-init="perm.account = accFetch(perm)">
+                    <span class="account-pic" tooltip="{{ perm.account.tooltip }}">
+                        <img ng-src="{{ perm.account.avatarUrl}}" alt="{{ perm.account.tooltip }}">
+                        <button ng-click="delPerm(perm)" class="btn-delete minicon"></button>
+                    </span>
                 </div>
               </div>
 

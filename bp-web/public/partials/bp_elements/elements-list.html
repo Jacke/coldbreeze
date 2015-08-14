@@ -86,11 +86,11 @@
           <label class="control-label col-sm-1" for="inputPerm">People</label>
         </div>
         <div class="controls col-xs-6" ng-init="newBpelem.perms = [];">  
-          <div class="perms" ng-repeat="perm in newBpelem.perms" ng-init="perm.account = accFetch(perm)">
-          <span class="account-pic" tooltip="{{ perm.account.fullName }}">
-              <img ng-src="{{ perm.account.avatarUrl}}" alt="{{ perm.account.fullName }}">
-              <button ng-click="delPermForForm(perm,newBpelem.perms)" class="btn-delete minicon"></button>
-          </span>
+          <div class="perms perm-list" ng-repeat="perm in newBpelem.perms" ng-init="perm.account = accFetch(perm)">
+            <span class="account-pic" tooltip="{{ perm.account.tooltip }}">
+                <img ng-src="{{ perm.account.avatarUrl}}" alt="{{ perm.account.tooltip }}">
+                <button ng-click="delPermForForm(perm,newBpelem.perms)" class="btn-delete minicon"></button>
+            </span>
           </div>   
           <select id="inputPerm" ng-model="newBpelem.perm" class="forUID" ng-options="employeegroup as credFetch(employeegroup) for employeegroup in employees_groups"></select>
           <a ng-click="createPermForForm(newBpelem.perm, newBpelem.perms, 'front')" class="btn btn-big btn-success">{{ 'ADD' | translate }}</a>
@@ -140,9 +140,12 @@
       <h6 class="desc">{{ bpelem.desc }}</h6>
       <div class="session__header session__people">
          <div class="participators"> 
-         <ul>
-         <li ng-repeat="perm in bpelem.perms">{{ perm | json }}</li>
-         </ul>
+          <ul class="perms perm-list" ng-repeat="perm in bpelem.perms | limitTo:6" ng-init="perm.account = accFetch(perm)">
+            <span class="account-pic" tooltip="{{ perm.account.tooltip }}">
+                <img ng-src="{{ perm.account.avatarUrl}}" alt="{{ perm.account.tooltip }}">
+                <button ng-click="delPermForForm(perm,newBpelem.perms)" class="btn-delete minicon"></button>
+            </span>
+          </ul>   
          </div>                             
       </div>  
     </div>

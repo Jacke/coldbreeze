@@ -31,3 +31,15 @@ gulp.task('serve', function () {
 
 // Creating the default gulp task
 gulp.task('default', ['less', 'watch', 'serve']);
+
+
+/*
+This setup assumes you already have sbt and NPM installed on your machine.
+
+*  Go to the root of the project
+*  Run npm install to grab some dependencies
+*  Open 2 shells
+*  Run sbt run in the first one and wait for it to finish. You should have a Play server running now.
+*  Run gulp in the second one, this will start a BrowserSync proxy on top of the Play server (run npm install -g gulp if you don't have gulp yet).
+*  Enjoy the result at http://localhost:9001
+*/

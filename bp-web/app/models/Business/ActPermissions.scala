@@ -62,22 +62,24 @@ object ActPermissionDAO {
 
    val act_permissions = TableQuery[ActPermissions]
 
- def pull_object(s: ActPermission) = database withSession {
+ def pull_object(perm: ActPermission) = database withSession {
     implicit session ⇒
-      def create(s: ActPermission) = {
-        if (PermissionRole.roles.contains(s.role))
-          act_permissions returning act_permissions.map(_.id) += s
+      def creation(perm: ActPermission) = {
+        if (PermissionRole.roles.contains(perm.role))
+          act_permissions returning act_permissions.map(_.id) += perm
         else 
           -1
       }
-      s.uid match {
-        case Some(uid) => create(s)
-        case _ => {
-          s.group match {
+      perm.uid match {
+        case Some(uid) => creation(perm)
+        case _ => { // create for group
+          perm.group match {
             case Some(account_group) => {
-              val group_id = AccountGroupDAO.get(account_group).get.group_id
-              create(s.copy(group = Some(group_id)))
-            } 
+              val group_id = GroupsDAO.get(account_group) match {
+                case Some(group) => { creation(perm.copy(group = Some(group.id.get))) }
+                case _ => { println("group not found" + account_group); -1 }                                      
+                } 
+            }
             case _ => -1
           }
         }

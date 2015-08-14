@@ -391,6 +391,35 @@ h1.green-color.timer {
     margin-right: 1%;
 }
 
+.perm-list .account-pic {
+    display: inline-block;
+    margin-right: 10px;
+}
+span.account-pic .btn-delete {
+    display: none;
+}
+span.account-pic:hover .btn-delete {
+    display: block;
+}
+
+.participators ul {
+    list-style: none;
+    margin-left: 0px;
+    padding-left: 0px;
+}
+.participators .perms.perm-list {
+    display: inline-block;
+    margin-top: 15%;
+}
+.launched-by ul {
+    margin-left: 0px;
+    padding-left: 0px;
+    list-style: none;
+}
+ul.perms.perm-list {
+    margin-left: 0px;
+    padding-left: 0px;
+}
 
 span.account-pic {
     display: inline-block;
@@ -424,6 +453,21 @@ span.account-pic img {
 .minicon.btn-delete {
     font-family: "Min Icons";
 }
+.elements-perm span.account-pic {
+    background-color: white;
+}
+
+.elements-perm button.btn-delete {
+    padding-top: 0px;
+}
+.elements-perm button.btn-delete:before {
+  
+margin-top: -3px;
+display: block;
+}
+
+
+
 select#inputPerm {
     margin-top: 18px;
 }
@@ -518,6 +562,26 @@ button.expand-ref-select {
     color: #f2f4f6;
 }
 
+.participators {
+    display: inline-block;
+}
+
+.session__header.session__people {
+    display: inline-block;
+    width: 215px;
+}
+.minimal .session__header.session__people {
+    display: inline-block;
+    width: 221px;
+    float: right;
+    margin-top: -54px;
+}
+.stations .session__header.session__people {
+    padding-top: 14px !important;
+    overflow: hidden;
+    margin-bottom: -19px;
+    margin-left: 5%;
+}
 .proc-element .info {
 padding: 0px 11px 3px 25px;
 margin-top: -3px;
@@ -922,6 +986,7 @@ div#proc-sessions.hiding {
     right: 17%;
     top: 43%;
 }
+
 .elements-list .control-group.form-submit.form-group {
     margin-left: 15px;
 }

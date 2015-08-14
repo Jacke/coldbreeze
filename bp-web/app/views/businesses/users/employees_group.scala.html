@@ -42,7 +42,11 @@
   <ul>
     <li data-attr="show" data-target=".tabsWrap" data-filter="all" class="filterGridItems changeData"><a href="/peoples">All</a> <span class="badgeLike">@currentPage.items.length</span></li>
     @groups.map { group =>
-      <li data-attr="show" data-target=".tabsWrap" data-filter="all" class="filterGridItems changeData"><a href="/peoples/@group.id">@group.title </a><!--<span class="badgeLike">@currentPage.items.length</span>--><a href="#" class="delete-group delete-@{group.id}"><span class="minicon minicon-remove"></span></a></li>
+      <li data-attr="show" data-target=".tabsWrap" data-filter="all" class="filterGridItems changeData">
+         <a href="/peoples/@group.id" class="group-link group-@{group.id.get}">@group.title </a>
+         <!--<span class="badgeLike">@currentPage.items.length</span>-->
+         <a href="#" class="delete-group delete-@{group.id}"><span class="minicon minicon-remove"></span></a>
+      </li>
     }
     <!--
     <li data-attr="show" data-target=".tabsWrap" data-filter="admin" class="filterGridItems changeData">Administrators <span class="badgeLike">3</span></li>
@@ -170,8 +174,12 @@
 </div></div>
 
   </div>    
-
+<style>a.group-link.active {
+    color: white;
+    border-bottom: dotted 1px #D0CDCD;
+}</style>
 <script>
+document.getElementsByClassName('group-link group-'+location.pathname.split('/')[2])[0].classList.add('active');
 /*
  $('.teamCreationForm button').on('click', function(event) {
     event.preventDefault();

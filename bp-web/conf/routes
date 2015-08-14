@@ -83,8 +83,8 @@ GET         /people/create                                    @controllers.users
 POST        /people/create                                    @controllers.users.EmployeeController.create_new()
 GET         /people/update/:id                                @controllers.users.EmployeeController.update(id: Int)
 
-GET         /people/:employee_id/assign/:business_id          @controllers.users.EmployeeController.assign_business(employee_id: Int, business_id: Int)
-GET         /people/:employee_id/unassign/:business_id        @controllers.users.EmployeeController.unassign_business(employee_id: Int, business_id: Int)
+POST        /people/:employee_id/assign/:business_id          @controllers.users.EmployeeController.assign_business(employee_id: Int, business_id: Int)
+POST        /people/:employee_id/unassign/:business_id        @controllers.users.EmployeeController.unassign_business(employee_id: Int, business_id: Int)
 
 POST        /people/update/:id                                @controllers.users.EmployeeController.update_make(id: Int)
 POST        /people/:id/destroy                               @controllers.users.EmployeeController.destroy(id: Int)
