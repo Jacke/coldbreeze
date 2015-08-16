@@ -1,11 +1,11 @@
- <form novalidate="novalidate" ng-submit="updateSpaceElem(spaceelem);" class="form-horizontal form-new-bpelem form-edit-bpelem form-edit-spaceelem">
+ <form novalidate="novalidate" ng-submit="updateElem(bpelem);" class="form-horizontal form-new-bpelem form-edit-bpelem">
     <div class="form-group element-form-fields">
     <div class="form-group element-form-fields control-group clearfix">
       <div class="controls col-xs-2">
         <label class="control-label col-sm-1" for="inputTitle">Title</label>
       </div>
       <div class="controls col-xs-6">      
-        <input type="text" id="inputTitle" class="form-control" ng-model="spaceelem.title" required/>
+        <input type="text" id="inputTitle" class="form-control" ng-model="bpelem.title" required/>
       </div>
 
     </div>
@@ -14,7 +14,7 @@
         <label class="control-label col-sm-1" for="inputEditElemDesc">{{ 'DESC' | translate }}</label>
       </div>
       <div class="controls col-xs-6">
-        <textarea type="text" class="form-control" id="inputEditElemDesc" ng-model="spaceelem.desc"/>
+        <textarea type="text" class="form-control" id="inputEditElemDesc" ng-model="bpelem.desc"/>
       </div>
     </div>
 
@@ -24,22 +24,23 @@
           <label class="control-label ng-binding" for="inputTitle">Type</label>
     </div>
       <div class="controls col-xs-6">
-          <span class="selectedRefType">{{ spaceelem.b_type }}</span>
+          <span class="selectedRefType">{{ bpelem.b_type }}</span>
       </div>      
     </div><!-- form-group element-form-fields -->
     </div>
 
 
-  <input type="hidden" name="value" ng-model="spaceelem.business" value="{{ business }}">
-  <input type="hidden" name="value" ng-model="spaceelem.process" value="{{ BPid }}">
-  <input type="hidden" id="inputBusinessId" ng-model="spaceelem.b_type"/>
-  <input type="hidden" id="inputBusinessId" ng-model="spaceelem.type_title"/>
-  <input type="hidden" id="inputBusinessId" ng-model="spaceelem.space_own"/>
+      <input type="hidden" name="value" ng-model="bpelem.business" value="{{ business }}">
+      <input type="hidden" name="value" ng-model="bpelem.process" value="{{ parseInt(BPid) }}">
+      <input type="hidden" id="inputBusinessId" ng-model="bpelem.b_type"/>
+      <input type="hidden" id="inputBusinessId" ng-model="bpelem.type_title"/>
+      <input type="hidden" id="inputBusinessId" ng-model="bpelem.order"/>
+      <input type="hidden" id="inputBusinessId" ng-model="bpelem.space_own"/>
 
     <div class="control-group form-submit form-group" style="clear:both;" ng-show="isManagerVal">
       <div class="controls">
         <button type="submit" class="btn btn-small btTxt submit btn lg solid-green ng-binding">Update</button>
-        <button ng-click="deleteSpaceElem(spaceelem)" class="btn btn-small btn btn-danger btTxt btn lg solid-green ng-binding">Delete</button>
+        <button ng-click="deleteElem(bpelem)" class="btn btn-small btn btn-danger btTxt btn lg solid-green ng-binding">Delete</button>
       </div>
     </div>
-</form>
+  </form>
