@@ -1407,9 +1407,12 @@ $scope.delPermForForm = function (perm,perms) {
 }
 
 $scope.turnMinimal = function() {
-    $('.proc-element').each(function () {
-        $(this).addClass('minimal');
-  })
+   angular.element(document).ready(function () {
+      $('.proc-element').each(function () {
+              $(this).addClass('minimal');
+        });
+    });
+    
 }
 $scope.turnMinimal();
 
