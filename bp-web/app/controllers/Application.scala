@@ -46,6 +46,9 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
             routes.javascript.GroupController.unassign_user,
             routes.javascript.Application.index,
             routes.javascript.Application.whoami,
+            routes.javascript.Application.proPage,
+            routes.javascript.Application.subscribePro,
+            routes.javascript.Application.subscribeEa,            
             routes.javascript.ProfileController.dashboard,
             routes.javascript.ProfileController.profile,
             routes.javascript.ProcessSessionController.update_note,
@@ -73,6 +76,19 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
       } else {
     Ok(views.html.app(request.user))
       }
+  }
+
+  def proPage() = SecuredAction { implicit request =>
+      Ok(views.html.pro(request.user))
+  }
+  def subscribePro() = SecuredAction(BodyParsers.parse.json) { implicit request =>
+      println(request.body)
+      Ok(views.html.pro(request.user))
+  }
+
+  def subscribeEa() = SecuredAction(BodyParsers.parse.json) { implicit request =>
+      println(request.body)
+      Ok(views.html.pro(request.user))
   }
 
   case class ConfigurationWrapper(switcher_options: List[String], 

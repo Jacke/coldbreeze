@@ -19,9 +19,16 @@
         deps: ['jquery'],
         exports: 'angular'
       },
+      'mobileDetect': {
+        exports: 'mobileDetect'
+      },
       'selectize': {
         deps: ['jquery'],
         exports: 'selectize'
+      },
+      'popupoverlay': {
+        deps: ['jquery'],
+        exports: 'popupoverlay'
       },
      'angularAMD': ['angular'],
 
@@ -39,6 +46,7 @@
        deps: ['angular'],
        exports: 'angular-websocket'
       },
+      
 
       'toastr': {
        deps: ['angular'],
@@ -173,6 +181,10 @@
   deps: ['angular', 'app'],
   export: 'services'
 },
+//'popupService': {
+//  deps: ['angular', 'app', 'services'],
+//  export: 'services'
+//},
 'treebuilder': {
   deps: ['angular', 'app'],
   export: 'treebuilder'
@@ -247,6 +259,7 @@
      'angularAMD': '../javascripts/angularAMD',
      'jsRoutes': ['/jsroutes'],
 	   'jquery':  ['../javascripts/jquery-2.1.3.min'],
+     'popupoverlay': ['../js/jquery.popupoverlay'],
 	   'drag-on':  ['../js/drag-on'],
 	   'jquery.nicescroll':  ['../bower_components/jquery.nicescroll/jquery.nicescroll'],
 	   'ssl':  ['../javascripts/ssl'],
@@ -256,6 +269,7 @@
 	   'underscore':  ['../bower_components/underscore/underscore'],
 	   'moment':  ['../bower_components/moment/moment'],
 	   'selectize':  ['../js/selectize'],
+     'mobileDetect': ['../js/mobile-detect'],
 
       //'jquery': ['../lib/jquery/jquery'],
       //'angular': ['../lib/angularjs/angular'],
@@ -294,6 +308,7 @@
   'app': ['../js/app'],
   'filters': ['../js/filters'],
   'services': ['../js/services'],
+ // 'popupService': ['../js/popupService'],
   'treebuilder': ['../js/treebuilder'],
   'controllers': ['../js/controllers/controllers'],
   'procPermController': ['../js/controllers/procPermController'],
@@ -314,10 +329,20 @@
   };
 
   // Load the app. This is kept minimal so it doesn't need much updating.
-require(['requirejs','jsRoutes','jquery','drag-on','jquery.nicescroll','ssl','header','tooltip','dropdown','underscore','moment','selectize'
+require(['requirejs','jsRoutes','jquery', 'mobileDetect','popupoverlay','drag-on','jquery.nicescroll','ssl','header','tooltip','dropdown','underscore','moment','selectize'
   ],//'jquery', 'bootstrap'],//, './app'],
-    function (requirejs,jsRoutes,$,dragOn,niceScroll,ssl,header,tooltip,dropdown,underscore,moment,selectize) {
+    function (requirejs,jsRoutes,$, mobileDetect,popupoverlay, dragOn,niceScroll,ssl,header,tooltip,dropdown,underscore,moment,selectize) {
     	$(document).ready(function(){
+        document.mobileDetect = new mobileDetect(window.navigator.userAgent);
+        document.isMobile = (document.mobileDetect.phone() != null) ? true : false;
+
+        if (document.isMobile) {
+          $('.overlay_mobile').toggleClass('visible_overlay');
+          $('.overlay_mobile a').on('click', function(event) {
+                $('.overlay_mobile').toggleClass('visible_overlay');
+          });
+        }
+
     		$("html").niceScroll({styler:"fb",cursorcolor:"#000", cursorwidth:"10px", scrollspeed: 100});
 var now = moment();
 $('time').each(function(i, e) {

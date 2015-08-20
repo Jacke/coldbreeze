@@ -63,7 +63,7 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
 
         val sessions:List[SessionContainer] = BPSessionDAO.findListedByBusiness(business)//BPSessionDAO.findByBusiness(business_id).map(ses => SessionDecorator(ses._1, ses._2)).toList
 
-        val dashboardTopBar: DashboardTopBar = DashboardTopBar()
+        val dashboardTopBar: DashboardTopBar = countDashboardTopBar(email)
 
         Ok(views.html.profiles.dashboard(request.user, 
           managerParams, 
@@ -75,6 +75,8 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
             Page(services, 1, 1, services.length), 1, "%", businesses))
       }
   }
+
+
 
   def profile(profile_id: String) = SecuredAction { implicit request =>
     val optAccount = AccountsDAO.findByNickname(profile_id)
@@ -113,6 +115,45 @@ private def profilePerms(uid: String) = {
 private def dashActs(uid: String) = {
   ActPermissionDAO.getByUID(uid)
 }
+private def countDashboardTopBar(uid: String): DashboardTopBar = {
+
+
+// find businesses
+ EmployeesBusinessDAO.getByUID(uid) match {
+  case Some(embiz) => { 
+   val biz_id = embiz._2
+    // find processes for each businesses
+    val processes = BPDAO.findByBusiness(biz_id)
+
+    // find sessions for processes
+    val sessions = BPStationDAO.findByIds(processes.map(_.id.get))
+    // find completed sessions
+    val competed = sessions.filter(_.finished)
+    // find not completed but not canceled sessions
+    val newSession = sessions.filter(s => s.started && !s.finished)
+    // find inputlogger for new sessions and their coun
+
+    val interaction = sessions.filter(s => s.started && s.paused)
+DashboardTopBar(
+                 newSession = newSession.length,
+                 interaction = interaction.length, 
+                 completedSession = competed.length, 
+                 process = processes.length)
+
+  }
+  case _ => {
+
+DashboardTopBar(
+                 newSession = 0,
+                 interaction = 0, 
+                 completedSession = 0, 
+                 process = 0)
+  }
+}
+
+
+}
+
 private def makeManagerParams(email: String, isManager: Boolean): Option[managerParams] = {
   isManager match {
     case true => {

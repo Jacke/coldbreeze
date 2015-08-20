@@ -63,7 +63,19 @@ $scope.sessions.$promise.then(function (data2) {
 
 $scope.loadSessions();
 
-  $scope.loadPerm = function (bpId) {
+$scope.history = function(session_id) {
+    ngDialog.open({
+        template: '/assets/partials/popup/launch-history.html',
+        //template: '/assets/partials/popup/first-process-finished.html',
+        //controller: 'LaunchesCtrl',
+        scope: $scope
+      });
+}
+$scope.deleteSession = function(session_id) {
+  SessionsFactory.delete({ session_id: session_id});
+}
+
+$scope.loadPerm = function (bpId) {
   ProcPermissionsFactory.query({ BPid: bpId }).$promise.then(function(qu){
       $scope.perms = qu.elemperms;
 

@@ -27,10 +27,30 @@
   <link rel="stylesheet" href="@routes.Assets.versioned("css/selectize.bootstrap3.css")"/>
   <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>-->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
+  <style>
+.overlay_mobile {
+    position: fixed;
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    z-index: 99999;
+    font-size: 52px;
+    text-align: center;
+    padding-top: 37px;
+    display: none;
+    padding: 10% 8% 16% 8%;
+}
+.visible_overlay.overlay_mobile {
+    display: block;
+}
+</style>
 
 </head>
 
 <body class="themeDark themeGrad website">
+<div class="overlay_mobile">Please use desktop or tablet for best app expirience.<a href="#">Skip</a>
+</div>
+
 
   <div id="container" class="container-global">
         @header(user)

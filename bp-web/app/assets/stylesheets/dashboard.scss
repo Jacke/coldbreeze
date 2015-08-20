@@ -165,7 +165,9 @@ font-size: 18px;
     margin-top: 0px;
 }
 
-
+.dashboard_sessions .progress-bar.progress-bar-success {
+    border: solid 1px #CBCCCE;
+}
 
 @include b(dashboard_sessions) {
 	@include b(session_header) {

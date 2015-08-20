@@ -13,7 +13,8 @@ object Dependencies {
     "Atlassian Releases" at "https://maven.atlassian.com/public/",
     "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases",
     "bintray-naftoligug-maven" at "http://dl.bintray.com/naftoligug/maven",
-
+    "Rhinofly Internal Release Repository" at "http://maven-repository.rhinofly.net:8081/artifactory/libs-release-local",
+  
     "softprops-maven" at "http://dl.bintray.com/content/softprops/maven",
      Resolver.url( "Reflect GitHub Repository", url( "http://taig.github.io/Reflect/release/" ) )( Resolver.ivyStylePatterns ),
      Resolver.url("heroku-sbt-plugin-releases", url("http://dl.bintray.com/heroku/sbt-plugins/"))(Resolver.ivyStylePatterns),
@@ -93,7 +94,8 @@ object Dependencies {
   val scalacheck      = "org.scalacheck"            %% "scalacheck"             % "1.11.1"
   val mockito         = "org.mockito"               % "mockito-all"             % "1.9.5"
   val mailer          = "com.typesafe"              % "play-plugins-mailer_2.10"% "2.2.0"
-  val apamailer       = "org.apache.commons"        % "commons-email"           % "1.3.1"
+  val mailerses       = "nl.rhinofly"               %% "play-mailer"            % "3.0.0"
+  val apamailer       = "org.apache.commons"        %  "commons-email"          % "1.3.1"
   val filter          = "com.typesafe.play"         %% "filters-helpers"        % "2.3.7"
   val cache           = "com.typesafe.play"         %% "play-cache"             % "2.3.7"
   val rediscache      = "com.typesafe.play.plugins" %% "play-plugins-redis"     % "2.3.1"

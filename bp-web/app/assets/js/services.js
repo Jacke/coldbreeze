@@ -164,8 +164,10 @@ minorityAppServices.factory('BPStationFactory', ['$resource', function ($resourc
 */
 minorityAppServices.factory('SessionsFactory', ['$resource', function ($resource) {
     return $resource(baseUrl + 'sessions/', {}, {
-        query: { method: 'GET', isArray: true }
+        query: { method: 'GET', isArray: true },
+        delete: { method: 'DELETE', isArray: false, url: 'session/:session_id' }
         //create: { method: 'POST' },
+        //        perms: { method: 'GET', isArray: false, url: 'bprocess/:BPid/perms' }, // perms only
 
     })
 }]);
@@ -510,4 +512,7 @@ minorityAppServices.factory('ObserverFactory', ['$resource', function ($resource
 // In this case it is a simple value service.
 //angular.module('minorityApp.services', []).
 //  value('version', '0.1');
+// 
+  return minorityAppServices; 
+   
 });

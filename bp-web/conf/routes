@@ -38,7 +38,7 @@ POST     /signup/:token              @controllers.CustomRegistrationController.h
 
 GET         /notify										        @controllers.NotificationController.socket
 GET         /notify_test/:msg                                   @controllers.NotificationController.notify_test(msg: String)
-POST        /popup_test/:target                                 @controllers.NotificationController.popup_test(target: String) 
+GET         /popup_test/:target                                 @controllers.NotificationController.popup_test(target: String) 
 GET         /notify/test_action                                 @controllers.NotificationController.tagItem
 GET         /only-twitter                                       @controllers.Application.onlyTwitter
 
@@ -166,6 +166,7 @@ GET         /bprocess/:id/station/:station_id/around @controllers.ProcessSession
 GET         /bprocess/:id/stations                   @controllers.ProcessSessionController.station_index(id: Int)
 GET         /bprocess/:id/station/:station_id        @controllers.ProcessSessionController.show_station(id: Int, station_id: Int)
 POST        /bprocess/:id/session/:session_id/halt   @controllers.ProcessSessionController.halt_session(id: Int, session_id: Int)
+DELETE      /session/:session_id                     @controllers.ProcessSessionController.delete_session(session_id: Int)
 POST        /bprocess/:id/station/:station_id/note   @controllers.ProcessSessionController.update_note(id: Int, station_id: Int)
 POST        /session/:id/listed                      @controllers.ProcessSessionController.makeListed(id: Int)
 POST        /session/:id/unlisted                    @controllers.ProcessSessionController.makeUnlisted(id: Int)
@@ -314,5 +315,7 @@ GET         /assets/*file                                       controllers.Asse
 #GET         /assets/*file                                      controllers.Assets.versioned(path="/public", file)
 
 
-
+GET         /pro                                                @controllers.Application.proPage()
+POST        /pro/subscribe                                      @controllers.Application.subscribePro()  
+POST        /ea/subscribe                                       @controllers.Application.subscribeEa()  
 GET         /:profile_id										@controllers.ProfileController.profile(profile_id: String)

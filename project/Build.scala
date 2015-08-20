@@ -173,6 +173,7 @@ object Build extends Build {
           anorm, 
           shapeless, 
           mailer, 
+          mailerses,
           scalatest, 
           reflect, 
           bcrypt, 

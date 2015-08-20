@@ -382,8 +382,10 @@ button.loading {
 }
 
 .loginView .loginText {
-    text-align: center;
     line-height: 1.5;
+}
+.loginView p.loginText {
+    text-align: left;
 }
 
 .loginView .loginText.smaller {
