@@ -127,6 +127,11 @@ def halt_session(id: Int, session_id: Int) = SecuredAction { implicit request =>
     case _ => Ok(Json.toJson(Map("failure" -> "not halted")))
   }
 }
+// DELETE /session/:session_id/  
+def delete_session(session_id: Int) = SecuredAction { implicit request =>
+  Ok(Json.toJson(BPSessionDAO.delete(session_id)))
+}
+
 def stations_elems_around(id: Int, station_id: Int) = SecuredAction { implicit request =>
   Ok(Json.toJson(AroundProcessElementsBuilder.detect(id, station_id)))
   

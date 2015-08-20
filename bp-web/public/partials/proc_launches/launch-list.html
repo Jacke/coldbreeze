@@ -167,7 +167,7 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
   <ul>
     <li><span class="moicon moicon-book" ng-click="history(session)" tooltip="History"></span></li>  
     <li><span class="pin_session moicon moicon-pushpin" ng-click="pin(session)" tooltip="Pin launch to bottom bar" ng-class="isPinned(session)"></span></li>
-    <li><span class="moicon icon-remove-circle" ng-click="deleteSession(session)" tooltip="Delete"></span></li>
+    <li><span class="moicon icon-remove-circle" ng-click="deleteSession(session.id)" tooltip="Delete"></span></li>
   </ul>
 </div>            
 

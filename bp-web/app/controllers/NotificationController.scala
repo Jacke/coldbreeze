@@ -17,6 +17,8 @@ import play.api.libs.json._
 import play.api.mvc.WebSocket.FrameFormatter
 import SumActor._
 import SumActor.Sum._
+import play.modules.mailer._
+import scala.util.{Try, Success, Failure}
 
 import play.api.mvc._
 import securesocial.core._
@@ -88,7 +90,33 @@ request.body.asJson.map { json =>
           }    
           BoardActor() ! StatusCheck
           BoardActor() ! PopupMessage( target )
+          
+val email = Email(
+    subject = "Test mail",
+    from = EmailAddress("Minority app", "a@minorityapp.com"),
+    text = "<b>text</b>",
+    htmlText = "htmlText").to("Erik Westra TO", "iamjacke@gmail.com")
+
+Mailer.sendEmail(email)
+val result:Try[Unit] = Mailer.sendEmail(email)
+
+result match {
+    case Success(_) => { println("success sended") }
+        //mail sent successfully
+    case Failure(SendEmailException(email, cause)) => 
+        //failed to send email, cause provides more information 
+    case Failure(SendEmailTransportCloseException(None, cause)) =>
+        //failed to close the connection, no email was sent
+    case Failure(SendEmailTransportCloseException(Some(Success(_)), cause)) =>
+        //failed to close the connection, the email was sent
+    case Failure(SendEmailTransportCloseException(Some(Failure(SendEmailException(email, cause1))), cause2)) =>
+        //failed to close the connection, the email was not sent
+  }
+
           Ok("sended")    
+
+
+
     }
 
 

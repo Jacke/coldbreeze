@@ -1878,6 +1878,32 @@ text-decoration: none;
 .input-stations li.state {
     padding: 2px 6px;
 }
+.input-stations input.switch:checked {
+    transition-delay: 0s, 0s;
+    box-shadow: inset 0 0 0 2.62857em #555B9C !important;
+    padding-left: 4.4em;
+}
+
+.input-stations .current-reaction-switcher label.radio-label {
+    font-size: 17px;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.input-stations .current-reaction-switcher {
+    margin-top: 14px;
+    float: right;
+    display: inline-block;
+    margin-bottom: 10px;    
+}
+
+.inline-launch .input-stations ul.reaction_list {
+    clear: both;
+}
+
+.inline-launch .container {
+    width: 100%;
+}
 .ngdialog .btn {
     margin-left: 5px;
     border: none;  padding: 0.6em 1.2em;  
@@ -2389,18 +2415,32 @@ border-radius: 6px;
   cursor: pointer;
 }
 .input-stations .process-thumb {
-    right: 19%;
-    top: 87%;
+    right: 4.5%;
+    bottom: 5%;
     padding-left: 2px;
     padding-top: 1px;
     padding-right: 0px;
+    top: initial;
+    width: 40px;
+    height: 40px;
 }
 
+.input-stations input.switch {
+    height: 3em;
+}
+
+.input-stations input.switch::before {
+    height: 2.7em;
+}
+
+.input-stations input.switch::after {
+    bottom: 0em;
+}
 .input-stations .process-thumb a.redButton {
     background-color: #73B1D4;
 }
 .input-stations .process-thumb button.redButton {
-    background-color: #73B1D4;
+    background-color: #49CC90;
 }
 button[disabled=disabled].redButton, button:disabled.redButton {
 background-color: gray !important;

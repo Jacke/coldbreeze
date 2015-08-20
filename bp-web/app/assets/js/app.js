@@ -183,7 +183,29 @@ minorityApp.filter('slice', function() {
     return arr.slice(arr.length-start, end);
   };
 });
-minorityApp.factory('NotificationBroadcaster', ['$websocket', '$window', 'toastr', function($websocket, $window, toastr) {
+
+minorityApp.factory(
+  'popupFactory', ['$resource', 'ngDialog',
+  function($resource, ngDialog) {
+
+    var methods = {
+        //collection: collection,
+        pop: function(object) {
+          console.log("popup");
+          console.log(object)//dataStream.send(JSON.stringify({ action: 'get' }));
+          ngDialog.open({
+                template: '/assets/partials/popup/first-process-launch.html',
+                //template: '/assets/partials/popup/first-process-finished.html',
+                controller: 'LaunchesCtrl'
+              });
+        }
+      };
+
+      return methods;
+
+  }]);
+
+minorityApp.factory('NotificationBroadcaster', ['$websocket', '$window', 'toastr', 'popupFactory', function($websocket, $window, toastr, popupFactory) {
       // Open a WebSocket connection
       var baseUrl = $window.location.host;
       if (document.ssl_enabled) {
@@ -202,8 +224,7 @@ minorityApp.factory('NotificationBroadcaster', ['$websocket', '$window', 'toastr
             toastr.success(message.type, object.msg);
             }
             if (object.type == "popup") {
-              console.log(object);
-              console.log("popup");
+              popupFactory.pop(object);
             }
             collection.push(object);
           });
@@ -224,6 +245,9 @@ minorityApp.factory('NotificationBroadcaster', ['$websocket', '$window', 'toastr
 
       return methods;
 }]);
+
+
+
 
 minorityApp.config(['$translateProvider', function ($translateProvider) {
   // add translation tables

@@ -11,6 +11,7 @@ minorityControllers.controller('ProcLaunchesListCtrl', ['TreeBuilder',
   'ProcPermissionsFactory',
   'BProcessesFactory',
   'BPSessionsFactory',
+  'SessionsFactory',
   'ObserversFactory', 
   'ObserverFactory', 
   'BPInLoggersFactory',
@@ -22,7 +23,7 @@ minorityControllers.controller('ProcLaunchesListCtrl', ['TreeBuilder',
   'BPLogsFactory', 
   '$location', 
   '$route',
-  function (TreeBuilder, $http, $window, $translate, $scope, $filter, $rootScope,ProcPermissionsFactory, BProcessesFactory,BPSessionsFactory, ObserversFactory, ObserverFactory,BPInLoggersFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
+  function (TreeBuilder, $http, $window, $translate, $scope, $filter, $rootScope,ProcPermissionsFactory, BProcessesFactory,BPSessionsFactory,SessionsFactory, ObserversFactory, ObserverFactory,BPInLoggersFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
   $scope.bpId = $route.current.params.BPid;
   $scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
   $scope.spaces =  BPSpacesFactory.query({ BPid: $route.current.params.BPid });
@@ -379,7 +380,17 @@ $scope.sessions.$promise.then(function (data2) {
 $scope.loadSession();
 
 
-
+$scope.deleteSession = function(session_id) {
+  SessionsFactory.delete({ session_id: session_id});
+}
+$scope.history = function(session_id) {
+    ngDialog.open({
+        template: '/assets/partials/popup/launch-history.html',
+        //template: '/assets/partials/popup/first-process-finished.html',
+        //controller: 'LaunchesCtrl',
+        scope: $scope
+      });
+}
 
   /*
   * Observers stuff

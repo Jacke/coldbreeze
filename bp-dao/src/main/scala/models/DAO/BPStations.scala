@@ -217,6 +217,14 @@ def update(id: Int, entity: BPStationDTO):Boolean = {
       q3.list.headOption //.map(Supplier.tupled(_))
     }
   }
+  def findByIds(ids: List[Int]):List[BPStationDTO] = {
+    database withSession {
+    implicit session =>
+      val q3 = for { s <- bpstations if s.id inSetBind ids } yield s// <> (BPStationDTO.tupled, BPStationDTO.unapply _)
+
+      q3.list //.map(Supplier.tupled(_))
+    }
+  }  
   def haltUpdate(id: Int):Boolean = {
     database withSession { implicit session =>
       findById(id) match {

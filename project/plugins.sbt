@@ -93,3 +93,6 @@ addSbtPlugin("com.untyped" % "sbt-js"       % "0.8-M3")
 addSbtPlugin("com.untyped" % "sbt-sass"     % "0.8-M3")
 
 addSbtPlugin("com.github.sbtliquibase" % "sbt-liquibase" % "0.1.0-SNAPSHOT")
+
+
+addSbtPlugin("fi.gekkio.sbtplugins" % "sbt-jrebel-plugin" % "0.10.0")
