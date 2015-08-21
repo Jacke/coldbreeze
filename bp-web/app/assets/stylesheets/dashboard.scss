@@ -248,7 +248,11 @@ font-size: 18px;
     margin-bottom: -8px;
     position: absolute;
     left: 0px;
-    top: 0px;
+    bottom: 8px;
+    opacity: 0.3;
+}
+.session-process .progress:hover {
+    opacity: 0.9;
 }
 
 .session-process .station-markers {

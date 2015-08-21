@@ -107,6 +107,10 @@
        deps: ['angular'],
        exports: 'ngDialog'
       },
+      'roundProgress': {
+        deps: ['angular'],
+        exports: 'roundProgress'
+      },
 
       'angular-ui-tree': {
        deps: ['angular'],
@@ -170,7 +174,7 @@
 
 
 'app': {
-  deps: ['angular', 'toastr','toastr-tpl', 'toaster'],
+  deps: ['angular', 'toastr','toastr-tpl', 'toaster', 'roundProgress'],
   export: 'app'
 },
 'filters': {
@@ -289,6 +293,7 @@
   'angular-cookies': ['../bower_components/angular-cookies/angular-cookies'],
   'select': ['../bower_components/angular-ui-select/dist/select'],
   'pnotifycore': ['../bower_components/pnotify/pnotify.core'],
+  'roundProgress': ['../bower_components/angular-svg-round-progressbar/src/roundProgress'],
   'angular-moment': ['../bower_components/angular-moment/angular-moment'],
   'livestamp': ['https://cdn.rawgit.com/mattbradley/livestampjs/1.1.2/livestamp.min'],
   'ngDialog': ['../bower_components/ngDialog/js/ngDialog'],

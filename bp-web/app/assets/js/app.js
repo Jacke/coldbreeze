@@ -4,7 +4,7 @@
 
 
 
-define(['angular', 'toastr', 'angularanimate'], function (angular, toastr, angularanimate) {
+define(['angular', 'toastr', 'angularanimate', 'roundProgress'], function (angular, toastr, angularanimate, roundProgress) {
 
 var translationsEN = {
   PERMISSIONS: 'Permissions',
@@ -159,6 +159,7 @@ var minorityApp =
       'chieffancypants.loadingBar',
       'ngCookies',
       'angularLocalStorage',
+      'angular-progress-arc',
       'classy',
       'ngAngularError',
       'toaster',
