@@ -212,15 +212,56 @@ font-size: 18px;
 
 }
 
-
-.active-sessions {
+.session-container {
     width: 100%;
 }
-
+.active-sessions {
+    width: 60%;
+    display: inline-block;
+    float: left;
+}
+.session_list__session .session-container .instant-input {
+    display: inline-block;
+    width: 25%;
+    float: left;
+    margin-left: 30px;
+    margin-top: 9px;
+    padding-bottom: 2px;
+    font-family: 'Open Sans', Helvetica, Sans-serif;
+    padding-left: 16px;
+    margin-bottom: 0px;
+    color: white;
+    background: rgba(44, 57, 95, 0.71);
+    border-bottom: solid 1px rgba(128, 128, 128, 0.15);
+    padding-top: 10px;
+    border-radius: 4px;
+}
+.session_list__session .instant-input .element-thumb {
+    font-size: 16px;
+    font-weight: 100;
+}
+.session_list__session .instant-input button.confirm-btn {
+    margin-left: 25px;
+    padding: 5px 12px;
+    background-color: rgba(76, 82, 100, 0.78);
+    color: white;
+    border-radius: 4px;
+    margin-bottom: 7px;
+    display: inline-block;
+    font-size: 12px;
+}
+.session_list__session .instant-input button.confirm-btn:hover {
+    background-color: rgba(40, 43, 53, 0.78);
+}
 .active-sessions .info {
     display: inline-block;
     width: 100%;
     font-size: 13px;
+}
+.session_list__session .active-sessions .info a {
+    font-weight: 500;
+    font-size: 11px;
+    font-family: 'Open Sans', Helvetica, Sans-serif;
 }
 .active-sessions .info {
   display: inline-block;
