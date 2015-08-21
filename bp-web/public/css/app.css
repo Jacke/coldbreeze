@@ -2472,7 +2472,7 @@ background-color: gray !important;
     margin: 0 auto;
     padding: 0;
     width: 250px;
-    height: 70px;
+    height: 50px;
     border: 2px solid #1ECD97;
     border-radius: 40px;
     background: transparent;
@@ -2485,7 +2485,7 @@ background-color: gray !important;
     transition: background-color 0.3s, color 0.3s, width 0.3s, border-width 0.3s, border-color 0.3s;
 }
 .loading.progress-button button {
-    width: 70px;
+    width: 50px;
     border-width: 5px;
     border-color: #ddd;
     background-color: transparent;
@@ -2736,7 +2736,7 @@ form.form-edit-spaceelem.container_brick {
     margin-left: 0px;
 }
 .progress-lines {
-    z-index: 1;
+    z-index: -1;
 }
 
 .progress .progress-bar {
@@ -2764,8 +2764,10 @@ form.form-edit-spaceelem.container_brick {
 }
 
 .stations .progress .progress-bar {
-    z-index: 1;
-    opacity: 0.7;
+    z-index: 99;
+    height: 2px;
+    border-top: dashed 1px white;
+    background: gray !important;
 }
 
 .progress-lines span.line {
@@ -2846,7 +2848,24 @@ form.form-edit-spaceelem.container_brick {
 .allStations .stations {
     background: white;
     margin: 3px 14px 20px 4px;
-    padding: 10px 25px 0px 22px;
+    padding: 0px 25px 7px 22px;
+}
+.round-progress-container {
+    width: 74px;
+    height: 75px;
+    display: inline-block;
+    float: left;
+    margin-top: -20px;
+    position: relative;
+}
+.round-progress-container span.round-percent {
+    position: absolute;
+    left: 21%;
+    top: 26%;
+    font-size: 20px;
+    display: block;
+    width: 38px;
+    text-align: center;
 }
 .stations {
     position: relative;
@@ -4370,6 +4389,7 @@ display:none;
 
 html {
 font-family:sans-serif;
+height: 100%;
 -ms-text-size-adjust:100%;
 -webkit-text-size-adjust:100%;
 }
