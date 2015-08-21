@@ -15,8 +15,9 @@
     		  </div>
           
             
-@session_cn.sessions.map { session =>
-<div class="active-sessions">
+                @session_cn.sessions.take(3).map { session =>
+                <div class="session-container">
+                <div class="active-sessions">
                                                 <div class="info">
                                                     <div class="desc pull-left"><a href="/a#/bprocess/@{session.process.id.getOrElse(0)}/elements?session=@session.session.id"> 
                                                     @session.station.get.note match {
@@ -31,6 +32,12 @@
                                                         <span class="sr-only">@{session.percent}% </span>
                                                     </div>
                                                 </div>
+</div>
+<div class="instant-input">
+    <span class="element-thumb">Element</span>
+    <button class="confirm-btn">Confirm</button>
+</div>
+
 </div>
 }
     	</div>
