@@ -6,6 +6,7 @@ minorityControllers.controller('LaunchesCtrl', ['$http',
   '$translate',
   '$scope', 
   '$filter', 
+  '$routeParams',
   '$rootScope',
   'ngDialog',
   'ProcPermissionsFactory',
@@ -20,10 +21,10 @@ minorityControllers.controller('LaunchesCtrl', ['$http',
   'BPElemsFactory',
   'BPSpacesFactory',
   'BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
-  function ($http, $window, $translate, $scope, $filter, $rootScope, ngDialog, ProcPermissionsFactory, TreeBuilder, BPStationsFactory, SessionsFactory, BProcessesFactory, BProcessFactory, ObserversFactory, ObserverFactory, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
+  function ($http, $window, $translate, $scope, $filter, $routeParams, $rootScope, ngDialog, ProcPermissionsFactory, TreeBuilder, BPStationsFactory, SessionsFactory, BProcessesFactory, BProcessFactory, ObserversFactory, ObserverFactory, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
 
 
-$scope.loadSessions = function () { 
+$scope.loadSessions = function (process_id) { 
 
 /*
 process: Object
@@ -67,7 +68,13 @@ SessionsFactory.query().$promise.then(function (data2) {
                   }
                 })
                 // polyfill ended
-                 $scope.sessions = data2;
+                 if (process_id != undefined) {
+                  console.log(process_id);
+                  $scope.sessions = _.filter(data2, function(dat) { return dat.process.id == process_id });
+                 } else { 
+                  $scope.sessions = data2;
+                 }
+
                  _.forEach(data2, function(d){ return TreeBuilder.buildFetch(d.process, function(success){}); });
             });
 
@@ -90,8 +97,12 @@ BProcessesFactory.query().$promise.then(function (proc) {
 
 };
 
+  if ($routeParams.process != undefined) {
+    $scope.loadSessions($routeParams.process);    
+  } else { // Load all process
+    $scope.loadSessions();    
+  }
 
-$scope.loadSessions();
 
 $scope.history = function(session_id) {
     ngDialog.open({

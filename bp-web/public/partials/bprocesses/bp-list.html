@@ -24,7 +24,7 @@
       <div class="tableMinListControls processListControls" ng-show="isManagerVal">
         <a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="perm(bprocess.id)"><span class="uicon-svg98"></span> {{ 'PEOPLE' | translate }} </a>
         <!--<a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" ng-click="modalShare(bprocess.id)"><span class="minicon-share"></span> {{ 'SHARE' | translate }}</a>-->
-        <a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" href="/a#/bprocess/{{ bprocess.id }}/launches"><span class="uicon-svg372"></span>{{ 'STATIONS' | translate }}</a>
+        <a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" href="/a#/launches?process={{ bprocess.id }}"><span class="uicon-svg372"></span>{{ 'STATIONS' | translate }}</a>
         <a class="tableMinControlsLink teamSettingsLink tableMinLinkDelete" ng-click="deleteBP(bprocess.id)"> <span class="minicon-trash"></span> {{ 'DELETE' | translate }} </a>
       </div>
       <div class="process-thumb" ng:show="emptyElemCheck(bprocess.trees)">
