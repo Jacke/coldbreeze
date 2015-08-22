@@ -2865,8 +2865,8 @@ form.form-edit-spaceelem.container_brick {
 }
 .allStations .stations {
     background: white;
-    margin: 3px 14px 20px 4px;
-    padding: 0px 25px 7px 22px;
+    margin: 3px 14px 0px 4px;
+    padding: 0px 25px 0px 21px;
 }
 .round-progress-container {
     width: 60px;
