@@ -131,8 +131,8 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 </script>
 
 
-<div class="empty-reponse" ng-show="isEmptyLaunches">You have no launches. Run <a href="/a">process</a> and come back here</div>
-<div class="session-process" ng-repeat="entity in sessions">
+<div class="empty-reponse" ng-hide="isEmptyLaunches">You have no launches. Run <a href="/a">process</a> and come back here</div>
+<div class="session-process" ng-repeat="entity in sessions" ng-hide="entity.sessions < 0 && sessions.length != 1">
 
 <h2><a href="/a#/bprocess/{{ entity.process.id }}/elements">{{ entity.process.title }}</a></h2>
 

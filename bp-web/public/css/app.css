@@ -2581,7 +2581,8 @@ background-color: gray !important;
     max-width: 100% !important;
 }
 .allStations .session-process {
-    padding-top: 28px;
+    padding-top: 3px;
+    clear: both;
 }
 
 
