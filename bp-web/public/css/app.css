@@ -409,7 +409,7 @@ span.account-pic:hover .btn-delete {
 }
 .participators .perms.perm-list {
     display: inline-block;
-    margin-top: 15%;
+    margin-top: 10px;
 }
 .launched-by ul {
     margin-left: 0px;
@@ -437,6 +437,10 @@ span.account-pic img {
     -khtml-border-radius: 50%;
     border-radius: 50%;
     box-sizing: border-box;
+}
+.stations span.account-pic img {
+    width: 33px;
+    height: 33px;
 }
 .account-pic button.minicon.btn-delete {
     position: absolute;
@@ -562,6 +566,10 @@ button.expand-ref-select {
     color: #f2f4f6;
 }
 
+.launched-by {
+    display: inline-block;
+    width: 63px;
+}
 .participators {
     display: inline-block;
 }
@@ -577,10 +585,10 @@ button.expand-ref-select {
     margin-top: -54px;
 }
 .stations .session__header.session__people {
-    padding-top: 14px !important;
+    padding-top: 0px !important;
     overflow: hidden;
-    margin-bottom: -19px;
-    margin-left: 5%;
+    width: 42%;
+    margin-left: 20px;
 }
 .proc-element .info {
 padding: 0px 11px 3px 25px;
@@ -2466,6 +2474,14 @@ background-color: gray !important;
     display: inline-block;
     text-align: center;
     margin: 10px;
+    margin-left: 0px;
+    float: left;
+}
+.session_title {
+    display: inline-block;
+    margin-top: 20px;
+    float: left;
+    width: 43%;
 }
 .progress-button button {
     display: block;
@@ -2523,9 +2539,11 @@ background-color: gray !important;
 
 
 
-.allSessionsList h2, .allStationssList h2 {
+.allSessionsList h2,  .allStationssList h2 {
     display: inline-block;
     float: left;
+    margin-bottom: 25px;
+    margin-left: 7px;
 }
 .allSessionsList .process_content, .allStationsList, .process_content {
   clear: both;
@@ -2760,7 +2778,7 @@ form.form-edit-spaceelem.container_brick {
 .session__header .progress-button.loading span {
     opacity: 1;
     color: black;
-    font-size: 100%;
+    font-size: 19px;
 }
 
 .stations .progress .progress-bar {
@@ -2851,11 +2869,10 @@ form.form-edit-spaceelem.container_brick {
     padding: 0px 25px 7px 22px;
 }
 .round-progress-container {
-    width: 74px;
-    height: 75px;
+    width: 60px;
+    height: 60px;
     display: inline-block;
     float: left;
-    margin-top: -20px;
     position: relative;
 }
 .round-progress-container span.round-percent {
@@ -8208,3 +8225,59 @@ Settings
   height: 0px;
 }
 
+
+
+
+
+
+/***
+Mobile Layout
+
+*****
+
+nav.minMenu.menuCell.menuEntity {
+    clear: both;
+    display: block;
+    position: fixed;
+    background-color: #4C5264;
+    width: 100%;
+    left: 0;
+    height: 100%;
+}
+
+header.fullSize {
+    min-width: 354px;
+}
+
+.fullSize .minorityMenu {
+    width: 49px;      
+    min-width: 428px;      
+    margin: 0;
+}
+
+.minorityMenu li.minMenuItem {
+    display: block;
+    clear: both;
+}
+
+ul.minMenuList.minMenuTexts {
+    margin: 0 auto;
+    width: 80%;
+    margin-top: 15%;
+}
+
+.themeDark .minorityMenu .minMenuItem a {
+    font-size: 37px;
+    color: white;
+}
+
+.minorityMenu .minMenuItem span {
+    font-size: 30px;
+}
+
+.minorityMenu li.minMenuItem * {
+    color: white;
+    margin-right: 22px;
+}
+
+*/
