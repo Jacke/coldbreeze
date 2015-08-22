@@ -117,22 +117,28 @@ $scope.deleteSession = function(session_id) {
       $scope.loadSessions();
   })
 };
+$scope.isEmptyLaunches = false;
 
-$scope.isEmptyLaunches = function() {
-  if ($scope.sessions.length > 0) {
+$scope.isEmptyLaunchesCheck = function() {
+  $rootScope.$on('cfpLoadingBar:completed', function(event, data){
+
+
+  if ($scope.sessions != undefined && $scope.sessions.length > 0) {
     var vals = _.map($scope.sessions, function(ses) {
         if (ses.sessions.length > 0) {
-          return true;
+          $scope.isEmptyLaunches = true;
         }
         else {
-          return false;
+          $scope.isEmptyLaunches = false;
         }
    });
-    return _.reduce(vals, function(v,z){ return v || z });
+    $scope.isEmptyLaunches = _.reduce(vals, function(v,z){ return v || z });
   } else {
-    return true;
+    $scope.isEmptyLaunches = false;
   }
+  });
 }
+$scope.isEmptyLaunchesCheck();
 
 $scope.loadPerm = function (bpId) {
   ProcPermissionsFactory.query({ BPid: bpId }).$promise.then(function(qu){
