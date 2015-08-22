@@ -4225,7 +4225,9 @@ display: inline-block;
   border-radius: 5px 10px 10px 5px;
 }
 
-
+[ng\:cloak], [ng-cloak], .ng-cloak {
+    display: none;
+}
 .state-row .state.true {
   color: #27ae60;
 }

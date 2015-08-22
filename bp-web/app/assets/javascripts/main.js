@@ -205,6 +205,10 @@
   deps: ['angular', 'app', 'controllers', 'toastr','toastr-tpl'],
   export: 'procController'
 },
+'procCreateController': {
+  deps: ['angular', 'app', 'controllers', 'toastr','toastr-tpl'],
+  export: 'procCreateController'
+},
 'requestController': {
   deps: ['angular', 'app', 'controllers', 'toastr','toastr-tpl'],
   export: 'requestController'
@@ -318,6 +322,7 @@
   'controllers': ['../js/controllers/controllers'],
   'procPermController': ['../js/controllers/procPermController'],
   'procController': ['../js/controllers/procController'],
+  'procCreateController': ['../js/controllers/processes/procCreateController'],
   'requestController': ['../js/controllers/requestController'],
   'loggerController': ['../js/controllers/loggerController'],
   'stationController': ['../js/controllers/stationController'],
