@@ -11,6 +11,8 @@
 <!--<h1>{{ 'ALL_SESSIONS' | translate }}</h1>-->
 
 
+<div class="empty-reponse" ng-show="entity.sessions.length < 1">You have no launches. Run <a href="/a">process</a> and come back here</div>
+
 
 <div class="active-switcher">
 <label for="switch-1" class="onlyActiveLabel">Running</label>
