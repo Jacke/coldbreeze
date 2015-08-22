@@ -494,11 +494,10 @@ li.reaction_list__reaction__state_outs {
     color: rgb(169, 121, 209);
 }
 
-.state-overview .value  {
-    float: right;
+.state-overview .value {
+    float: right !important;
     text-align: left;
 }
-
 .state-overview .value h1, .state-overview .value p {
   margin: 0;
   padding: 0;
