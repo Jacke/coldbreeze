@@ -118,6 +118,21 @@ $scope.deleteSession = function(session_id) {
   })
 };
 
+$scope.isEmptyLaunches = function() {
+  if ($scope.sessions.length > 0) {
+    var vals = _.map($scope.sessions, function(ses) {
+        if (ses.sessions.length > 0) {
+          return true;
+        }
+        else {
+          return false;
+        }
+   });
+    return _.reduce(vals, function(v,z){ return v || z });
+  } else {
+    return true;
+  }
+}
 
 $scope.loadPerm = function (bpId) {
   ProcPermissionsFactory.query({ BPid: bpId }).$promise.then(function(qu){
