@@ -11,7 +11,6 @@
 <!--<h1>{{ 'ALL_SESSIONS' | translate }}</h1>-->
 
 
-<div class="empty-reponse" ng-show="entity.sessions.length < 1">You have no launches. Run <a href="/a">process</a> and come back here</div>
 
 
 <div class="active-switcher">
@@ -132,7 +131,8 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 </script>
 
 
-<div class="session-process" ng-repeat="entity in sessions" ng-show="entity.sessions.length">
+<div class="session-process" ng-repeat="entity in sessions">
+<div class="empty-reponse" ng-hide="entity.sessions.length > 0">You have no launches. Run <a href="/a">process</a> and come back here</div>
 
 <h2><a href="/a#/bprocess/{{ entity.process.id }}/elements">{{ entity.process.title }}</a></h2>
 
