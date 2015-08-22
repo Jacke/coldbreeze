@@ -7,6 +7,7 @@ minorityControllers.controller('LaunchesCtrl', ['$http',
   '$scope', 
   '$filter', 
   '$rootScope',
+  'ngDialog',
   'ProcPermissionsFactory',
   'TreeBuilder',
   'BPStationsFactory', 
@@ -19,43 +20,72 @@ minorityControllers.controller('LaunchesCtrl', ['$http',
   'BPElemsFactory',
   'BPSpacesFactory',
   'BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
-  function ($http, $window, $translate, $scope, $filter, $rootScope, ProcPermissionsFactory, TreeBuilder, BPStationsFactory, SessionsFactory, BProcessesFactory, BProcessFactory, ObserversFactory, ObserverFactory, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
+  function ($http, $window, $translate, $scope, $filter, $rootScope, ngDialog, ProcPermissionsFactory, TreeBuilder, BPStationsFactory, SessionsFactory, BProcessesFactory, BProcessFactory, ObserversFactory, ObserverFactory, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
 
-
-/*
-$scope.processes.$promise.then(function(data) {
-  $scope.processes = data;
-  _.forEach($scope.processes, function(d) { d.sessions = []; return d.stations = BPStationsFactory.query({ BPid: d.id }); });
-  $scope.sessions.$promise.then(function (data2) {
-      _.forEach($scope.processes, function(d) { return d.sessions = _.filter(data2, function(dd) { return dd.process == d.id }) });
-
-      var stations = _.map($scope.processes, function(proc) { 
-              return proc.stations 
-            });
-
-      _.forEach(stations, function(stan) { 
-        stan.$promise.then(function(ds) {
-      _.forEach(data2, function(sess) { return sess.station = _.find(ds, function(st) { 
-      }) 
-      })
-      });
-
-      });
-
-});
-*/
 
 $scope.loadSessions = function () { 
 
-
-$scope.sessions = SessionsFactory.query();
-$scope.sessions.$promise.then(function (data2) {
+/*
+process: Object
+  business: 2
+  id: 3
+  service: 1
+  state_machine_type: "base"
+  title: "ttt"
+  version: 1
+  __proto__: Object
+sessions: Array[5]
+  0: Object
+  peoples: Object
+  percent: 0
+  process: Object
+  session: Object
+  station: Object
+  */
+SessionsFactory.query().$promise.then(function (data2) {
     _.forEach(data2.sessions, function(session) { 
       session.station.inlineLaunchShow = false;
       $scope.loadPerm(session.process);
       return session.session.station = session.station 
     });
-    _.forEach(data2, function(d){ return TreeBuilder.buildFetch(d.process, function(success){}); });
+
+
+  if (data2.length > 0) {
+    if (data2[0] != undefined) {
+           ProcPermissionsFactory.query({ BPid: data2[0].process.id }).$promise.then(function(qu){
+                $scope.perms = qu.elemperms;
+
+                $scope.accounts = qu.accounts;
+                $scope.emps = qu.employees;
+                $scope.employee_groups = qu.employee_groups;
+                _.forEach($scope.employee_groups, function(gr){ return gr.group = true; });
+                $scope.groups = qu.employee_groups;
+                $scope.employees_groups = _.union($scope.emps,$scope.employee_groups);
+                _.forEach($scope.perms, function(perm) {
+                  if (perm.group != undefined) {
+                    perm.title = _.find($scope.groups, function(group) {return group.id == perm.group}).title;
+                  }
+                })
+                // polyfill ended
+                 $scope.sessions = data2;
+                 _.forEach(data2, function(d){ return TreeBuilder.buildFetch(d.process, function(success){}); });
+            });
+
+    }
+  }    
+
+/*
+BProcessesFactory.query().$promise.then(function (proc) {
+    if (proc.length > 0) {
+      console.log('loadPerm');
+      $scope.loadPerm(proc[0].id);
+    };
+    $scope.bprocesses = proc;
+}); // load polyfill for accounts TODO: Change that!!!!!!
+  
+  */
+
+    
 });
 
 };
@@ -72,8 +102,11 @@ $scope.history = function(session_id) {
       });
 }
 $scope.deleteSession = function(session_id) {
-  SessionsFactory.delete({ session_id: session_id});
-}
+  SessionsFactory.delete({ session_id: session_id}).$promise.then(function (data2) {
+      $scope.loadSessions();
+  })
+};
+
 
 $scope.loadPerm = function (bpId) {
   ProcPermissionsFactory.query({ BPid: bpId }).$promise.then(function(qu){
@@ -92,20 +125,12 @@ $scope.loadPerm = function (bpId) {
       })
   });
 };
-BProcessesFactory.query().$promise.then(function (proc) {
-    if (proc.length > 0) {
-      console.log('loadPerm');
-      $scope.loadPerm(proc[0].id);
-    };
-    $scope.bprocesses = proc;
-}); // load polyfill for accounts TODO: Change that!!!!!!
-  
+
 
 $scope.accFetchSessioned = function (obj) {
   if (obj != undefined) { // it's employee
 
   var res = _.find($scope.accounts, function(cr){ return cr.userId == obj});
-  console.log(res);
   if (res != undefined) { // it's account
                           // anonumous checking
     res.fullName != undefined ? res.tooltip = res.fullName : res.tooltip = res.email;

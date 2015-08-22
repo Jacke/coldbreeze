@@ -158,6 +158,11 @@ $scope.stationsRefresh = function() {
       $scope.spaces.$promise.then(function(data2) {
       $scope.spaceelems.$promise.then(function(data3) {
       $scope.logs.$promise.then(function(loggg) {
+
+        if ($scope.accounts == undefined) { // TODO: Polyfill CHANGE THAT
+          $scope.loadPerm($route.current.params.BPid);
+        }
+
               _.forEach(data, function(station) { $scope.builder(station) });
     });
     });
@@ -209,13 +214,6 @@ $scope.highlightActive = function (station, elem) {
 
   $scope.logs = BPLogsFactory.query({  BPid: $route.current.params.BPid });
 
-BProcessesFactory.query().$promise.then(function (proc) {
-    if (proc.length > 0) {
-      console.log('loadPerm');
-      $scope.loadPerm(proc[0].id);
-    };
-    $scope.bprocesses = proc;
-}); // load polyfill for accounts
 
   $scope.stationByProcess = function (processId) {
         var found = $filter('filter')($scope.bprocesses, {id: processId}, true);
