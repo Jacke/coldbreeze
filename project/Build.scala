@@ -13,6 +13,7 @@ import com.untyped.sbtsass.Plugin._
 
 import com.typesafe.sbt.less.Import._ 
 import com.typesafe.sbt.uglify.Import._
+import com.typesafe.sbt.rjs.Import._
 import UglifyKeys._
 import com.github.sbtliquibase.SbtLiquibase
 import com.github.sbtliquibase.Import._
@@ -118,7 +119,10 @@ object Build extends Build {
     .enablePlugins(PlayScala)
     .enablePlugins(SbtWeb)
     .settings(basicSettings: _*)
-    //.settings(pipelineStages in Assets := Seq(uglify))
+    //.settings(pipelineStages in Assets := Seq(rjs))
+    //.settings(RjsKeys.baseUrl := "javascripts")
+    //.settings(RjsKeys.paths := Map.empty)
+    //.settings(RjsKeys.mainModule := "main")
     .settings((WebKeys.public in Assets) := (classDirectory in Compile).value / "public")
     //.settings(formatSettings: _*)(WebKeys.public in Assets) := (classDirectory in Compile).value / "public",
     .settings(revolverSettings: _*)

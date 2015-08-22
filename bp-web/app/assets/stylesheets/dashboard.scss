@@ -280,16 +280,17 @@ font-size: 18px;
 
 .session-process .session__header {
     display: inline-block;
-    width: 35%;
+    width: 75%;
+    margin-top: 10px;
 }
 
 .session-process .progress {
-    width: 100%;
+width: 100%;
     display: inline-block;
     margin-bottom: -8px;
     position: absolute;
     left: 0px;
-    bottom: 8px;
+    top: -2px;
     opacity: 0.3;
 }
 .session-process .progress:hover {

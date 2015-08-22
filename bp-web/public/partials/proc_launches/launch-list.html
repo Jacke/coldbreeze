@@ -137,34 +137,39 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
               <div class="progress-button loading" ng-class="bubbleClass(session)" tooltip="{{bubbleTooltip(session)}}">
         <div class="round-progress-container">
                <progress-arc stroke="#3080E8"
-    background="#eee"
-    size="70"
-    stroke-width="2"
-    complete="session.percent / 100">
-    </progress-arc><span class="round-percent">{{ session.percent }}</span></div>  
+                              background="#eee"
+                              size="60"
+                              stroke-width="2"
+                              complete="session.percent / 100">
+                              </progress-arc><span class="round-percent">{{ session.percent }}</span>
+        </div>  
+        </div>
+             <div class="session_title">
               <a href="/a#/bprocess/{{ sessions.process.id }}/elements?launch={{ session.session.id }}">Launch {{ $index }}  {{session.station.note }}</a>
+              <abbr class="session__header__created_at" title="{{ session.session.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="session.session.created_at"></abbr>
+             </div>
+        <div class="session__header session__people">
+          <div class="launched-by" ng-show="session.peoples.launched_by != 'not@found.com'" ng-init="account = accFetchSessioned(session.peoples.launched_by)">
+              <span class="account-pic" tooltip="{{ account.tooltip }}">
+                        <img ng-src="{{ account.avatarUrl}}" alt="{{ account.tooltip }}">
+              </span>
+          </div>
+          <div class="participators">
+                  <div class="perms perm-list" ng-repeat="perm in session.peoples.participators | limitTo:3" ng-init="account = accFetchSessioned(perm)">
+                    <span class="account-pic" tooltip="{{ account.tooltip }}">
+                        <img ng-src="{{ account.avatarUrl}}" alt="{{ account.tooltip }}">
+                    </span>
+                  </div>       
+          </div>                               
+        </div> 
+</div>  
 
-
-<abbr class="session__header__created_at" title="{{ session.session.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="session.session.created_at"></abbr>
-
-              <a ng-click="unlisted(session.session)" ng-show="session.session.onlyListed" tooltip="Unpin launch from bottom bar">Unlisted</a>
-        </div>    
-<div class="session__header session__people">
-  <div class="launched-by" ng-show="session.peoples.launched_by != 'not@found.com'">Launched<ul><li>{{ session.peoples.launched_by }}</li></ul></div>
-  <div class="participators">
-          <div class="perms perm-list" ng-repeat="perm in session.peoples.participators | limitTo:6" ng-init="account = accFetchSessioned(perm)">
-            <span class="account-pic" tooltip="{{ account.tooltip }}">
-                <img ng-src="{{ account.avatarUrl}}" alt="{{ account.tooltip }}">
-            </span>
-          </div>       
-  </div>                               
-</div> 
 <div class="progress">
     <div class="progress-lines">
                 <div ng-include src="'assets/partials/treeLiner.html'"></div>
     </div>    
    <div class="progress-bar" role="progressbar" aria-valuenow="{{session.percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{session.percent}}%;">
-    <span>{{session.percent}}%</span>
+    <!--<span>{{session.percent}}%</span>-->
    </div>
 </div>  
 <div class="session_controls">
