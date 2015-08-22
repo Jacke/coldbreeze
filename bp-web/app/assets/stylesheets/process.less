@@ -358,35 +358,41 @@ clear: left;
 }
 
 .triangle-3 {
-  width: 30px;
-  height: 40px;
-  border-left: solid 22px #FFFFFF;
-  border-bottom: solid 20px transparent;
-  border-top: solid 20px transparent;
+    width: 28px;
+    height: 27px;
+    background-color: #FFFFFF;
+      transition: all 1s ease-in-out;
+
+    border-radius: 7px;
 }
 .triangle {
-  display: inline-block;
-  margin: 0 5px;
-  vertical-align: middle;
+    display: inline-block;
+    margin: 0 5px;
+    vertical-align: middle;
 }
 .reaction_list__reaction a.triangle-reaction.selected {
     background-color: transparent;
     border: none;
 }
-
 .reaction_list__reaction a.triangle-reaction.selected .triangle-3 {
-    border-left: solid 22px rgb(73, 204, 144);
+    border: none;
+    background-color: #49cc90;
+}
+.reaction_list__reaction a.triangle-reaction.selected .triangle-3:hover {
+    background-color: #3BB37C;
 }
 
 a.triangle-reaction {
-    margin-right: 4%;
+    margin-right: 4.6%;
     float: right;
     margin-top: -5%;
 }
 a.triangle-reaction:hover {
     border: none;
 }
-
+li.reaction_list__reaction a {
+    color: #7FDBFF;
+}
 
 @media (min-width: 376px) {
 

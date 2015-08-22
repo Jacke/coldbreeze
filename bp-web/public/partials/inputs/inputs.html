@@ -17,7 +17,7 @@
 </div>
 
   <ul class="reaction_list">
-    <li class="reaction_list__reaction" ng-repeat="reaction in interactions.reactions | filter:currentReactionFilter">
+    <li class="reaction_list__reaction" ng-init="interactions.reactions.length > 0 ? reactionSelect(interactions.reactions[0]) : false" ng-repeat="reaction in interactions.reactions | filter:currentReactionFilter">
         <a ng-click="reactionSelect(reaction)" ng-class="selectedClass(reaction)"><h3>{{ reaction.reaction.elem.element_title }} : {{ capitalizeFirstLetter(reaction.reaction.title) }}</h3></a>
 
         <ul class="reaction_list__reaction_in_group">
