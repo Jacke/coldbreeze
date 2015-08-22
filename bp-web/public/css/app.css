@@ -832,12 +832,29 @@ text-shadow: none;
     color: white;
 }
 .space-element .info {
-padding: 0px 11px 3px 25px;
-border-left: 2px solid #95a5a6;
-margin-top: 10px;
-padding-top: 7px;
-padding-bottom: 1px;
+    padding: 0px 11px 3px 25px;
+    border-left: none;
+    margin-top: 10px;
+    padding-top: 7px;
+    padding-bottom: 1px;
 }
+
+form.form-horizontal.form-new-bpelem.form-edit-bpelem.form-edit-spaceelem .form-group.element-form-fields {
+    margin-left: 0px;
+}
+
+form.form-horizontal.form-new-bpelem.form-edit-bpelem.form-edit-spaceelem button.btn.btn-small.btTxt {
+    width: 20%;
+}
+form.form-horizontal.form-new-bpelem.form-edit-bpelem.form-new-spaceelem label.control-label, form.form-horizontal.form-new-bpelem.form-edit-bpelem.form-edit-spaceelem label.control-label {
+    font-size: 14px;
+}
+form.form-horizontal.form-new-bpelem.form-edit-bpelem.form-edit-spaceelem .controls.col-xs-6 {
+    width: 45%;
+    margin-left: 5px;
+}
+
+
 .space-element .right-bar {
     border-left: solid 2px #7f8c8d;
 }
@@ -2687,8 +2704,41 @@ form.form-edit-spaceelem.container_brick {
     background: #27ae60;
     color:white;
 }
+form.form-horizontal.element-new-form.form-new-bpelem.form-edit-bpelem.form-new-spaceelem {
+    width: 100%;
+    margin-left: 5px;
+    padding-left: 0px;
+}
 
+form.form-horizontal.element-new-form.form-new-bpelem.form-edit-bpelem.form-new-spaceelem .form-group.element-form-fields {
+    margin-left: 0px;
+    margin-bottom: 0px;
+}
+.form-new-spaceelem .ref-desc {
+    display: none;
+}
 
+.form-new-spaceelem .templateButton.form-group.col-xs-4.clearfix {
+    width: 100%;
+    margin-left: 25px;
+}
+.form-new-spaceelem.element-new-form select#inputPerm {
+    width: 52%;
+    margin-top: 8px;
+}
+
+form.form-horizontal.element-new-form.form-new-bpelem.form-edit-bpelem.form-new-spaceelem .btTxt.lg {
+    margin: 10px 14px 13px 70px !important;
+    width: 30%;
+    display: block;
+}
+form.form-horizontal.element-new-form.form-new-bpelem.form-edit-bpelem.form-new-spaceelem .form-submit {
+    margin-bottom: 0px;
+    padding-top: 0px;
+}
+.form-new-spaceelem .has-feedback .form-control {
+    padding-right: 0px;
+}
 
 
 .process-info.header-frame a {
@@ -2869,14 +2919,14 @@ form.form-edit-spaceelem.container_brick {
     padding: 0px 25px 0px 21px;
 }
 .empty-reponse {
-    width: 91%;
+    width: 90%;
     height: 151px;
     display: block;
     background: white;
     position: absolute;
-    top: 205px;
+    top: 110px;
     color: #B0B6C5;
-    padding: 78px 5px 5px 5px;
+    padding: 78px 6px 100px 7px;
     font-size: 22px;
     text-align: center;
 }
