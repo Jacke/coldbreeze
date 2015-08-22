@@ -2868,6 +2868,22 @@ form.form-edit-spaceelem.container_brick {
     margin: 3px 14px 0px 4px;
     padding: 0px 25px 0px 21px;
 }
+.empty-reponse {
+    width: 91%;
+    height: 151px;
+    display: block;
+    background: white;
+    position: absolute;
+    top: 205px;
+    color: #B0B6C5;
+    padding: 78px 5px 5px 5px;
+    font-size: 22px;
+    text-align: center;
+}
+.empty-reponse a {
+    color: #6D81B3;
+    text-decoration: underline;
+}
 .round-progress-container {
     width: 60px;
     height: 60px;
