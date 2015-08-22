@@ -227,7 +227,6 @@ font-size: 18px;
 .session_list__session .session-container .instant-input {
     display: inline-block;
     width: 25%;
-    max-width: 18%;
     float: left;
     margin-left: 30px;
     margin-top: 9px;
@@ -241,6 +240,7 @@ font-size: 18px;
     padding-top: 10px;
     border-radius: 4px;
 }
+
 .session_list__session .instant-input .element-thumb {
     font-size: 16px;
     font-weight: 100;
@@ -313,6 +313,23 @@ width: 100%;
     font-weight: 100;
     font-family: 'Open Sans';
 }
+
+
+
+
+@media (max-width: 1250px) {
+    .session_list__session .instant-input .element-thumb {
+        margin-left: 16px;
+    }
+    .session_list__session .instant-input button.confirm-btn {
+        margin-left: 14px;
+        margin-top: 4px;
+    }
+    .session_list__session .session-container .instant-input {
+        width: 20%;
+    }
+}
+
 
 
 .progress.progress-sm {

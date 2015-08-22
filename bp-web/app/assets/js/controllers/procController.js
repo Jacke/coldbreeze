@@ -211,7 +211,6 @@ $scope.emptyElemCheck = function(col) {
     $location.search('service', null);
            $scope.service_id = null;
           $location.path('/bprocesses');
-
   }
   /* callback for ng-click 'createBP': */
   $scope.createNewBP = function () {
