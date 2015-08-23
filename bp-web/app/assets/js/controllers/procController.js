@@ -189,6 +189,23 @@ $scope.filterForActiveLaunch = function(ses) {
       return false;
     }
 }
+$scope.isEmptyProcesses = false;
+$scope.isEmptyProcessesCheck = function() {
+  //$rootScope.$on('cfpLoadingBar:completed', function(event, data){
+
+
+  if ($scope.bprocesses != undefined && $scope.bprocesses.length > 0) {
+    $scope.isEmptyProcesses = false;
+  } else {
+    $scope.isEmptyProcesses = true;
+  }
+  //});
+}
+
+//$scope.isEmptyLaunchesCheck();
+$rootScope.$on('cfpLoadingBar:completed', function(event, data){
+      $scope.isEmptyProcessesCheck();
+});
 
   $scope.perm = function(proc_id) {
     $scope.BPid = proc_id;

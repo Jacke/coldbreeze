@@ -118,9 +118,9 @@ $scope.deleteSession = function(session_id) {
   })
 };
 $scope.isEmptyLaunches = false;
-
+$scope.sessions = [];
 $scope.isEmptyLaunchesCheck = function() {
-  $rootScope.$on('cfpLoadingBar:completed', function(event, data){
+  //$rootScope.$on('cfpLoadingBar:completed', function(event, data){
 
 
   if ($scope.sessions != undefined && $scope.sessions.length > 0) {
@@ -134,11 +134,16 @@ $scope.isEmptyLaunchesCheck = function() {
    });
     $scope.isEmptyLaunches = _.reduce(vals, function(v,z){ return v || z });
   } else {
-    $scope.isEmptyLaunches = false;
+    $scope.isEmptyLaunches = true;
   }
-  });
+  //});
 }
-$scope.isEmptyLaunchesCheck();
+
+//$scope.isEmptyLaunchesCheck();
+$rootScope.$on('cfpLoadingBar:completed', function(event, data){
+      $scope.isEmptyLaunchesCheck();
+});
+
 
 $scope.loadPerm = function (bpId) {
   ProcPermissionsFactory.query({ BPid: bpId }).$promise.then(function(qu){

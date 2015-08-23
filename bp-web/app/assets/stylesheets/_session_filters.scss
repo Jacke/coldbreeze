@@ -138,19 +138,19 @@ xcustom form elements
   margin-bottom: 1.6em;
 }
 .cd-filter-block h4 {
-  /* filter block title */
-  position: relative;
-  margin-bottom: .2em;
-  padding: 10px 0 10px 20px;
-  color: #9a9a9a;
-  text-transform: uppercase;
-  font-weight: 700;
-  font-size: 1.3rem;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  cursor: pointer;
+    position: relative;
+    margin-bottom: .2em;
+    padding: 10px 0 10px 20px;
+    color: #9a9a9a;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 12px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: pointer;
+    line-height: 18px;
 }
 .no-touch .cd-filter-block h4:hover {
   color: #41307c;
@@ -254,16 +254,16 @@ xcustom form elements
 .cd-filter-block .list li:last-of-type {
   margin-bottom: 0;
 }
-.cd-filter-block input[type=radio],
-.cd-filter-block input[type=checkbox] {
-  /* hide original check and radio buttons */
-  position: absolute;
-  left: 0;
-  top: 0;
-  margin: 0;
-  padding: 0;
-  opacity: 0;
-  z-index: 2;
+.cd-filter-block input[type=radio], .cd-filter-block input[type=checkbox] {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
+    z-index: 2;
+    height: 21px;
+    width: 17px;
 }
 .cd-filter-block .checkbox-label,
 .cd-filter-block .radio-label {
