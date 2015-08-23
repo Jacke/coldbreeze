@@ -151,7 +151,7 @@ def UserItemAction = new ActionRefiner[SecuredRequest, ItemRequest] {
 def tagItem = (SecuredAction andThen UserItemAction) { request =>
     //request.item.addTag(tag)
     Ok("User " + request.username.toString + " tagged ")
-  }
+}
 
 /*
 class UserRequest[A](val username: Option[String], request: Request[A]) extends WrappedRequest[A](request)
