@@ -52,6 +52,7 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
             routes.javascript.ProfileController.dashboard,
             routes.javascript.ProfileController.profile,
             routes.javascript.ProcessSessionController.update_note,
+            routes.javascript.ProcessInputController.invokeFrom,
             routes.javascript.APIController.v1
 
           // TODO Add your routes here

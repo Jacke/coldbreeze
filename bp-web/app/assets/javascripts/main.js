@@ -365,6 +365,32 @@ $('time').each(function(i, e) {
 $(function () {
     $('#dashTab a:last').tab('show');
   })
+
+
+
+// Utils for fast input on dashboard
+if ($('.dashboard_sessions').length > 0) {
+  $('.instant-input button').on('click', function(ev){ 
+    ev.preventDefault; 
+    $(this).parent().addClass('loading');
+    var data = $( this ).data();
+    jsRoutes.controllers.ProcessInputController.invokeFrom(data.sessionId, data.processId).ajax({
+      dataType: 'json',contentType: 'application/json',data: JSON.stringify( [{ "reaction_id": data.reactionId }] )
+    }).done(function() {
+        console.log( "success" );
+        window.location.href = "a#/launches";
+      })
+      .fail(function() {
+        $(this).parent().remove('loading');
+        $(this).parent().text('Error');
+        console.log( "error" );
+      })
+    console.log($( this ).data())
+  });
+}
+
+
+
 });
 $('.showServiceForm span.moicon.moicon-plus').first().click(function(event) {
   event.preventDefault();

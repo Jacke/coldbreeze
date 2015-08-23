@@ -36,9 +36,11 @@
     </li>
   </ul>
   <div class="process-thumb">
+  <button type="submit" class="btn btn-small btTxt submit btn lg solid-green ng-binding" ng-disabled="runFromDisabled" ng-click="runFrom($parent.session.session.id)" tooltip-placement="top" tooltip="Resume execution">Resume</button>
+<!--
           <p class="tableMinListGithub">
             <button class="redButton ng-scope" ng-disabled="runFromDisabled" ng-click="runFrom($parent.session.session.id)" tooltip-placement="top" tooltip="{{ 'RUN_FROM' | translate }}"></button>
-          </p>
+          </p>-->
   </div>
   <!--<a ng-click="haltSession($parent.session.session.id)" class="btn btn-big btn-danger" ng-show="isManagerVal">{{ 'TURN_DOWN' | translate }}</a>-->
 </div>

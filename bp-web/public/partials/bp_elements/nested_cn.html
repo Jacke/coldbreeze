@@ -76,7 +76,7 @@ Space: {{ space.index }} —
     </div>
       <div class="controls col-xs-6">
           <span class="selectedRefType">{{ space.newSpaceelem.selectedRef.ref.title }}</span>
-            <button href="" ng-click="space.newSpaceelem.refSelectHidden=false;" ng-show="space.newSpaceelem.refSelectHidden == true;" class="expand-ref-select"><span class="moicon moicon-info expand-ref-select"></span></button>
+            <a ng-click="space.newSpaceelem.refSelectHidden=false;" ng-show="space.newSpaceelem.refSelectHidden == true;" class="expand-ref-select"><span class="moicon moicon-info expand-ref-select"></span></a>
       </div>      
     </div><!-- form-group element-form-fields -->
     </div>
@@ -105,7 +105,7 @@ Space: {{ space.index }} —
           <div class="perms perm-list" ng-repeat="perm in space.newSpaceelem.perms" ng-init="perm.account = accFetch(perm)">
             <span class="account-pic" tooltip="{{ perm.account.tooltip }}">
                 <img ng-src="{{ perm.account.avatarUrl}}" alt="{{ perm.account.tooltip }}">
-                <button ng-click="delPermForForm(perm,space.newSpaceelem.perms)" class="btn-delete minicon"></button>
+                <a ng-click="delPermForForm(perm,space.newSpaceelem.perms)" class="btn-delete minicon"></a>
             </span>
           </div>   
           <select id="inputPerm" ng-model="space.newSpaceelem.perm" class="forUID" ng-options="employeegroup as credFetch(employeegroup) for employeegroup in employees_groups"></select>

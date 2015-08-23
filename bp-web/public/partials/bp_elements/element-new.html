@@ -28,7 +28,7 @@
     </div>
       <div class="controls col-xs-6">
           <span class="selectedRefType">{{ newBpelem.selectedRef.ref.title }}</span>
-            <button href="" ng-click="newBpelem.refSelectHidden=false;" ng-show="newBpelem.refSelectHidden == true;" class="expand-ref-select"><span class="moicon moicon-info expand-ref-select"></span></button>
+            <a ng-click="newBpelem.refSelectHidden=false;" ng-show="newBpelem.refSelectHidden == true;" class="expand-ref-select"><span class="moicon moicon-info expand-ref-select"></span></a>
       </div>      
     </div><!-- form-group element-form-fields -->
     </div>
@@ -57,7 +57,7 @@
           <div class="perms perm-list" ng-repeat="perm in newBpelem.perms" ng-init="perm.account = accFetch(perm)">
             <span class="account-pic" tooltip="{{ perm.account.tooltip }}">
                 <img ng-src="{{ perm.account.avatarUrl}}" alt="{{ perm.account.tooltip }}">
-                <button ng-click="delPermForForm(perm,newBpelem.perms)" class="btn-delete minicon"></button>
+                <a ng-click="delPermForForm(perm,newBpelem.perms)" class="btn-delete minicon"></a>
             </span>
           </div>   
           <select id="inputPerm" ng-model="newBpelem.perm" class="forUID" ng-options="employeegroup as credFetch(employeegroup) for employeegroup in employees_groups"></select>

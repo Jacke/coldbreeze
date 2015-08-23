@@ -16,6 +16,11 @@ import main.scala.simple_parts.process.Units._
 import main.scala.bprocesses.refs.UnitRefs.{UnitReactionRef, UnitReactionStateOutRef}
 import main.scala.simple_parts.process.Units._  
 
+case class CurrentReactionContainer(reaction: UnitReaction, 
+                                    title: String, 
+                                    front: Option[UndefElement] = None, 
+                                    nested: Option[SpaceElementDTO] = None,
+                                    session_id: Int)
 class ReactionRefs(tag: Tag) extends Table[UnitReaction](tag, "reactions") {
   def id          = column[Int]("id", O.PrimaryKey, O.AutoInc) 
   def bprocess    = column[Int]("bprocess_id")
@@ -90,6 +95,44 @@ object ReactionDAO {
        }
 
        unapplied_reactions
+                   
+    } 
+  }
+  def findCurrentUnappliedContainer(id: Int, session_id: Int):Option[CurrentReactionContainer] = {
+     database withSession { implicit session =>
+       val session_states = BPSessionStateDAO.findByBPAndSession(id, session_id)
+       val reactions:List[UnitReaction] = findByBP(id)
+       val state_outs = ReactionStateOutDAO.findByReactions(reactions.flatMap(_.id))
+
+       val unapplied_reactions = reactions.filter { reaction =>
+          val state_out = state_outs.filter(out => Some(out.reaction) == reaction.id)
+          val session_state = session_states.find(state => state_out.map(_.state_ref).contains(state.origin_state.getOrElse(0)))//reaction.from_state == state.origin_state)
+          session_state match {
+            case Some(state) => {
+              state_out.map { out =>
+                state.on != out.on
+                state.on_rate != out.on_rate
+              }.reduce(_||_) // OR for multiple state outs
+            }
+            case _ => { 
+              false
+            }
+          }
+
+       }
+
+       /**
+        * Iterate over reactions for geting first current reaction
+        */
+       unapplied_reactions.headOption match {
+        case Some(reaction) => {
+            models.DAO.ElemTopologDAO.getIdentityById(reaction.element) match {
+              case Some(identity) => Some(CurrentReactionContainer(reaction, identity.title, identity.front, identity.nested, session_id ))
+              case _ => None
+            }          
+        }
+        case _ => None
+       }
                    
     } 
   }

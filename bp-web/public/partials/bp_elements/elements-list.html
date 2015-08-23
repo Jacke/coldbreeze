@@ -21,8 +21,7 @@
 <ul class="process-control" ng-show="isManagerVal">
  <!--<li><a href="" role="tab" class="createMin change ajaxLink cacheable" data-toggle="tab" ng:click="editProcess()"> {{ 'EDIT' | translate }} </a></li>-->
 <!-- <li><a class="allStation" href="/a#/bprocess/{{ bp.id }}/stations">{{ 'STATIONS' | translate }}</a></li> -->
- <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="turnMinimal()" style="color: #F7F7F7">.</a></li>
- <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="editProcess()">{{ 'EDIT' | translate }} </a></li>
+ <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="editProcess()">{{ 'EDIT' | translate }}</a></li>
  <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="perm()">{{ 'PEOPLE' | translate }} </a></li>
  <!--<li><a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" ng-click="modalShare()">{{ 'SHARE' | translate }}</a></li>-->
  <li><a href="" class="addElemTab" ng:show="!inSession" ng:click="$parent.$parent.newelemformselected==1 ? $parent.$parent.newelemformselected=0 : $parent.$parent.newelemformselected=1" tooltip-placement="bottom" tooltip="Create element"><span class="glyphicon glyphicon-plus"></span></a></li>
@@ -47,7 +46,7 @@
     <div class="primary-states">
     </div>
     <div class="info">
-      <div class="type">{{ type_short[bpelem.type_title] }}
+      <div class="type" ng-class="bpelem.type_title">{{ type_short[bpelem.type_title] }}
          <ul class="type-tabs" ng-init="bpelem.hovered=false" role="tablist" ng-mouseover="bpelem.hovered == true ? bpelem.hovered=false : bpelem.hovered=true" ng-show="(isManagerVal && !inSession && selected == 2) || (bpelem.hovered == true && inSession)">
            <li><a role="tab" data-toggle="tab" ng:init="selected=1" ng:click="selected == 1 ? selected=2 : selected=1">
            <span class="glyphicon glyphicon-edit"></span></a></li>

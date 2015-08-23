@@ -13,6 +13,10 @@ import models.DAO.BPDAO._
 import models.DAO.BPStationDAO._
 import models.DAO.conversion.DatabaseCred
 import main.scala.simple_parts.process.Units._
+
+case class EitherTypeElement(front: Option[UndefElement] = None, 
+                                    nested: Option[SpaceElementDTO] = None,
+                                    title: String = "")
     
 class ElemTopologs(tag: Tag) extends Table[ElemTopology](tag, "elem_topologs") {
   def id            = column[Int]("id", O.PrimaryKey, O.AutoInc) 
@@ -64,6 +68,27 @@ object ElemTopologDAO {
     q3.list
   }
 
+  def getIdentityById(k: Int):Option[EitherTypeElement] = {
+    get(k) match {
+      case Some(topo) => {
+        if (topo.front_elem_id.isDefined) {
+          val front_el = ProcElemDAO.findById(topo.front_elem_id.get).get
+          Some(EitherTypeElement(front = Some(front_el), 
+                                 nested = None,
+                                 title = front_el.title))
+        } else if (topo.space_elem_id.isDefined) {
+          val nested_el = SpaceElemDAO.findById(topo.space_elem_id.get).get
+          Some(EitherTypeElement(front = None, 
+                                 nested = Some(nested_el),
+                                 title = nested_el.title))
+        } else {
+          None
+        }
+
+      }
+      case _ => None
+    }
+  }
 
   def get(k: Int):Option[ElemTopology] = database withSession {
     implicit session ⇒
