@@ -53,10 +53,10 @@
        exports: 'toastr'
       },
 //
-      'toastr-tpl': {
-      deps: ['angular'],
-      exports: 'toastr-tpl'
-      },
+//      'toastr-tpl': {
+//      deps: ['angular'],
+//      exports: 'toastr-tpl'
+//      },
 
       'angular-pageslide-directive': {
        deps: ['angular'],
@@ -174,7 +174,7 @@
 
 
 'app': {
-  deps: ['angular', 'toastr','toastr-tpl', 'toaster', 'roundProgress'],
+  deps: ['angular', 'toastr', 'toaster', 'roundProgress'],
   export: 'app'
 },
 'filters': {
@@ -194,47 +194,47 @@
   export: 'treebuilder'
 },
 'controllers': {
-  deps: ['angular', 'app', 'toastr','toastr-tpl', 'toaster'],
+  deps: ['angular', 'app', 'toastr', 'toaster'],
   export: 'controllers'
 },
 'procPermController': {
-  deps: ['angular', 'app', 'controllers', 'toastr','toastr-tpl'],
+  deps: ['angular', 'app', 'controllers', 'toastr'],
   export: 'procPermController'
 },
 'procController': {
-  deps: ['angular', 'app', 'controllers', 'toastr','toastr-tpl'],
+  deps: ['angular', 'app', 'controllers', 'toastr'],
   export: 'procController'
 },
 'procCreateController': {
-  deps: ['angular', 'app', 'controllers', 'toastr','toastr-tpl'],
+  deps: ['angular', 'app', 'controllers', 'toastr'],
   export: 'procCreateController'
 },
 'requestController': {
-  deps: ['angular', 'app', 'controllers', 'toastr','toastr-tpl'],
+  deps: ['angular', 'app', 'controllers', 'toastr'],
   export: 'requestController'
 },
 'loggerController': {
-  deps: ['angular', 'app', 'controllers', 'toastr','toastr-tpl'],
+  deps: ['angular', 'app', 'controllers', 'toastr'],
   export: 'loggerController'
 },
 'stationController': {
-  deps: ['angular', 'app', 'controllers', 'toastr','toastr-tpl'],
+  deps: ['angular', 'app', 'controllers', 'toastr'],
   export: 'stationController'
 },
 'procElementController': {
-  deps: ['angular', 'app', 'controllers', 'toastr','toastr-tpl'],
+  deps: ['angular', 'app', 'controllers', 'toastr'],
   export: 'procElementController'
 },
 'reflectionController': {
-  deps: ['angular', 'app', 'controllers', 'toastr','toastr-tpl'],
+  deps: ['angular', 'app', 'controllers', 'toastr'],
   export: 'reflectionController'
 },
 'sessionController': {
-  deps: ['angular', 'app', 'controllers', 'toastr','toastr-tpl'],
+  deps: ['angular', 'app', 'controllers', 'toastr'],
   export: 'sessionController'
 },
 'directives': {
-  deps: ['angular', 'app', 'controllers', 'toastr','toastr-tpl'],
+  deps: ['angular', 'app', 'controllers', 'toastr'],
   export: 'directives'
 },
 'classie': {
@@ -289,7 +289,7 @@
   'angular': ['../bower_components/angular/angular'],
   'angular-websocket': ['../bower_components/angular-websocket/angular-websocket'],
   'toastr': ['../bower_components/angular-toastr/toastr'],
-  'toastr-tpl': ['../bower_components/angular-toastr/toastr.tpl'],
+  //'toastr-tpl': ['../bower_components/angular-toastr/toastr.tpl'],
   'angular-pageslide-directive': ['../bower_components/angular-pageslide-directive/src/angular-pageslide-directive'],
   'jcs-auto-validate': ['../bower_components/angular-auto-validate/dist/jcs-auto-validate.min'],
   'angular-classy': ['../bower_components/angular-classy/angular-classy.min'],
