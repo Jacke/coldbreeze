@@ -63,6 +63,16 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
 
         val sessions:List[SessionContainer] = BPSessionDAO.findListedByBusiness(business)//BPSessionDAO.findByBusiness(business_id).map(ses => SessionDecorator(ses._1, ses._2)).toList
 
+        val currentReactions:List[CurrentReactionContainer] = sessions.map(cn => cn.sessions.map(session_status => 
+            ReactionDAO.findCurrentUnappliedContainer(cn.process.id.get, session_status.session.id.get)).flatten
+          ).flatten
+        println(s""""
+          Test
+
+ 
+
+           ${currentReactions.head}
+          """)
         val dashboardTopBar: DashboardTopBar = countDashboardTopBar(email)
 
         Ok(views.html.profiles.dashboard(request.user, 
@@ -71,7 +81,7 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
           plan, 
           walkthrought, 
           sessions,
-          dashboardTopBar ) (
+          dashboardTopBar, currentReactions ) (
             Page(services, 1, 1, services.length), 1, "%", businesses))
       }
   }
@@ -124,7 +134,6 @@ private def countDashboardTopBar(uid: String): DashboardTopBar = {
    val biz_id = embiz._2
     // find processes for each businesses
     val processes = BPDAO.findByBusiness(biz_id)
-
     // find sessions for processes
     val sessions = BPStationDAO.findByIds(processes.map(_.id.get))
     // find completed sessions
@@ -132,25 +141,21 @@ private def countDashboardTopBar(uid: String): DashboardTopBar = {
     // find not completed but not canceled sessions
     val newSession = sessions.filter(s => s.started && !s.finished)
     // find inputlogger for new sessions and their coun
-
     val interaction = sessions.filter(s => s.started && s.paused)
-DashboardTopBar(
-                 newSession = newSession.length,
-                 interaction = interaction.length, 
-                 completedSession = competed.length, 
-                 process = processes.length)
-
+      DashboardTopBar(
+                       newSession = newSession.length,
+                       interaction = interaction.length, 
+                       completedSession = competed.length, 
+                       process = processes.length)
   }
   case _ => {
-
-DashboardTopBar(
-                 newSession = 0,
-                 interaction = 0, 
-                 completedSession = 0, 
-                 process = 0)
+      DashboardTopBar(
+                       newSession = 0,
+                       interaction = 0, 
+                       completedSession = 0, 
+                       process = 0)
   }
 }
-
 
 }
 

@@ -77,6 +77,7 @@ class InteractionController(override implicit val env: RuntimeEnvironment[DemoUs
 
  case class ReactionContainer(session_state: Option[BPSessionState], reaction: UnitReaction, outs: List[UnitReactionStateOut])
 
+
   implicit val ReactionContainerReads = Json.reads[ReactionContainer]
   implicit val ReactionContainerWrites = Json.format[ReactionContainer]
   implicit val InteractionContainerReads = Json.reads[InteractionContainer]

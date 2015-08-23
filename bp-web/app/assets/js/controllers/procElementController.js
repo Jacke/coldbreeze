@@ -1175,6 +1175,13 @@ $scope.isSelected = function(ref, newBpelem) {
       return 'unselected'
     }
 }
+$scope.nestedContainerRestriction = function(ref_elem) {
+  if (ref_elem.ref.title != 'Container') {
+    return ref_elem;
+  } else {
+    return false;
+  }
+}
 
 $scope.stateDecoration = function(state) {
   if (state.on) {

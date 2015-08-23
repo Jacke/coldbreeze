@@ -10,7 +10,7 @@
 @import models.DAO._
 @import controllers.DashboardTopBar
 
-@(user: DemoUser, mngParams: Option[managerParams], empParams: Option[employeeParams], plan: Option[planInfo], walkthrought: Boolean, sessions: List[SessionContainer], dashboardTopBar: DashboardTopBar )(currentPage: Page[BusinessServiceDTO], currentOrderBy: Int, currentFilter: String, businesses: List[BusinessDTO])(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment[service.DemoUser])
+@(user: DemoUser, mngParams: Option[managerParams], empParams: Option[employeeParams], plan: Option[planInfo], walkthrought: Boolean, sessions: List[SessionContainer], dashboardTopBar: DashboardTopBar, currentReaction: List[CurrentReactionContainer] )(currentPage: Page[BusinessServiceDTO], currentOrderBy: Int, currentFilter: String, businesses: List[BusinessDTO])(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment[service.DemoUser])
 
 @import securesocial.core.IdentityProvider
 
@@ -180,7 +180,7 @@
 -->
 
 <div class="dashboard_sessions col-md-8">
-@active_sessions(sessions)
+@active_sessions(sessions, currentReaction)
 </div>
 
 

@@ -55,14 +55,14 @@
     </div>
       <div class="controls col-xs-6">
           <span class="selectedRefType">{{ space.newSpaceelem.selectedRef.ref.title }}</span>
-            <button href="" ng-click="space.newSpaceelem.refSelectHidden=false;" ng-show="space.newSpaceelem.refSelectHidden == true;" class="expand-ref-select"><span class="moicon moicon-info expand-ref-select"></span></button>
+            <a ng-click="space.newSpaceelem.refSelectHidden=false;" ng-show="space.newSpaceelem.refSelectHidden == true;" class="expand-ref-select"><span class="moicon moicon-info expand-ref-select"></span></a>
       </div>      
     </div><!-- form-group element-form-fields -->
     </div>
     <div class="ref-select-container fadein fadeout clearfix" ng-hide="space.newSpaceelem.refSelectHidden" ng-init="space.newSpaceelem.selectedRef != undefined ? space.newSpaceelem.refSelectHidden=false : refSelectHidden=true;">
   <select style="display:none;" name="category" id="categorySelect" ng-model="space.newSpaceelem.refCategoryFilter" ng-init="space.newSpaceelem.refCategoryFilter = 'Base'" ng-options="option for option in refCategories" required="" class="ng-valid ng-valid-required"><option value="0" selected="selected">Base</option></select>
     <div class="templateButton form-group col-xs-4 clearfix">
-      <div class="ref" ng-repeat="ref in refs | filter: ref.ref.title != 'Container' | filter: { ref: {category: space.newSpaceelem.refCategoryFilter}}" ng-class="{selected: space.newSpaceelem.selectedRef.ref.id == ref.ref.id }">
+      <div class="ref" ng-repeat="ref in refs | filter: nestedContainerRestriction | filter: { ref: {category: space.newSpaceelem.refCategoryFilter}}" ng-class="{selected: space.newSpaceelem.selectedRef.ref.id == ref.ref.id }">
         <a ng-mouseover="refElem(ref, space.newSpaceelem)" ng-click="space.newSpaceelem.refSelectHidden=true;" class="btn btn-small btn-primary container_brick" ng-class="isSelected(ref, space.newSpaceelem)">{{ ref.ref.title }}</a>
       </div>
     </div>
@@ -117,7 +117,7 @@
                     <div class="primary-states">
                     </div>
                     <div class="info">
-                      <div class="type">{{ type_short[spaceelem.type_title] }}
+                      <div class="type" ng-class="spaceelem.type_title">{{ type_short[spaceelem.type_title] }}
 
 <ul class="type-tabs" ng-init="spaceelem.hovered=false" role="tablist" ng-mouseover="spaceelem.hovered == true ? bpelspaceelemem.hovered=false : spaceelem.hovered=true" ng-show="(isManagerVal && !inSession && selected == 2) || (spaceelem.hovered == true && inSession)">
            <li><a role="tab" data-toggle="tab" ng:init="selected=1" ng:click="selected == 1 ? selected=2 : selected=1">

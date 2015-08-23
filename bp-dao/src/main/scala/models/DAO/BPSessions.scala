@@ -37,7 +37,8 @@ case class SessionStatus(var percent: Int = 0,
                          session: BPSession, 
                          station: Option[BPStationDTO], 
                          around: Option[ElemAround] = None,
-                         peoples: Option[SessionPeoples] = None) 
+                         peoples: Option[SessionPeoples] = None)
+//,                         interactions: List[Interaction] = List()) 
 case class SessionContainer(process: BProcessDTO, var sessions: List[SessionStatus]) {
 
 }

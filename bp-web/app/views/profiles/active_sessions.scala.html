@@ -1,6 +1,6 @@
 @import decorators._
 @import models.DAO._
-@(sessions: List[SessionContainer])
+@(sessions: List[SessionContainer], currentReactionCN: List[CurrentReactionContainer])
 	
   <div class="teamChangeBox teamPaddedBox">
     <div class="session_header__top_bar">
@@ -33,10 +33,13 @@
                                                     </div>
                                                 </div>
 </div>
+
+@currentReactionCN.filter(cn => Some(cn.session_id) == session.session.id).map { currentReaction =>
 <div class="instant-input">
-    <span class="element-thumb">Element</span>
-    <button class="confirm-btn">Confirm</button>
+    <span class="element-thumb">@currentReaction.title</span>
+    <button class="confirm-btn reaction_id @{currentReaction.reaction.id.get}" data-session-id="@session.session.id" data-process-id="@session.process.id" data-reaction-id="@currentReaction.reaction.id.get">@currentReaction.reaction.title</button>
 </div>
+}
 
 
 </div>

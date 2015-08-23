@@ -214,6 +214,7 @@ font-size: 18px;
 
 .session-container {
     width: 100%;
+    clear: both;
 }
 .active-sessions {
     width: 60%;
@@ -242,8 +243,10 @@ font-size: 18px;
 }
 
 .session_list__session .instant-input .element-thumb {
-    font-size: 16px;
+    font-size: 13px;
     font-weight: 100;
+    display: inline-block;
+    width: 37%;
 }
 .session_list__session .instant-input button.confirm-btn {
     margin-left: 25px;
@@ -263,6 +266,27 @@ font-size: 18px;
     width: 100%;
     font-size: 13px;
 }
+.session_list__session .session-container .instant-input.loading {     
+ opacity: 1;    
+   -webkit-animation: instant-input-ani 074s linear 0.7s infinite alternate;    
+     animation: instant-input-ani 0.7s linear 0.7s infinite alternate;
+}
+
+
+@-webkit-keyframes instant-input-ani
+{
+ 0%   { color: #A0A0A0;opacity: 0.6;}
+ 50%  { color: whitesmoke;opacity: 0.7;}
+ 100% { color: white;opacity: 0.8;}
+}
+
+@keyframes instant-input-ani
+{
+ 0%   { color: #A0A0A0;opacity: 0.6;}
+ 50%  { color: whitesmoke;opacity: 0.7;}
+ 100% { color: whiteopacity; opacity: 0.8;}
+}
+
 .session_list__session .active-sessions .info a {
     font-weight: 500;
     font-size: 11px;
