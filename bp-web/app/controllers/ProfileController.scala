@@ -66,13 +66,7 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
         val currentReactions:List[CurrentReactionContainer] = sessions.map(cn => cn.sessions.map(session_status => 
             ReactionDAO.findCurrentUnappliedContainer(cn.process.id.get, session_status.session.id.get)).flatten
           ).flatten
-        println(s""""
-          Test
-
- 
-
-           ${currentReactions.head}
-          """)
+  
         val dashboardTopBar: DashboardTopBar = countDashboardTopBar(email)
 
         Ok(views.html.profiles.dashboard(request.user, 

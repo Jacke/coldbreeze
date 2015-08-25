@@ -32,26 +32,26 @@
     <div class="form-group element-form-fields">
     <div class="form-group element-form-fields control-group clearfix">
       <div class="controls col-xs-2">
-        <label class="control-label col-sm-1" for="inputTitle">Title</label>
+        <label class="control-label col-sm-1" for="inputNewSpaceElemTitle">Title</label>
       </div>
       <div class="controls col-xs-6">      
-        <input type="text" id="inputTitle" class="form-control" ng-model="space.newSpaceelem.title" required/>
+        <input type="text" id="inputNewSpaceElemTitle" class="form-control" ng-model="space.newSpaceelem.title" required/>
       </div>
 
     </div>
     <div class="form-group element-form-fields control-group clearfix">
       <div class="controls col-xs-2">
-        <label class="control-label col-sm-1" for="inputBusinessId">{{ 'DESC' | translate }}</label>
+        <label class="control-label col-sm-1" for="inputNewSpaceElemDesc">{{ 'DESC' | translate }}</label>
       </div>
       <div class="controls col-xs-6">
-        <textarea type="text" class="form-control" id="inputBusinessId" ng-model="space.newSpaceelem.desc"/>
+        <textarea type="text" class="form-control" id="inputNewSpaceElemDesc" ng-model="space.newSpaceelem.desc"/>
       </div>
     </div>
 
     <div class="form-group element-form-fields control-group clearfix">
 
     <div class="controls col-xs-2">
-          <label class="control-label ng-binding" for="inputTitle">Type</label>
+          <label class="control-label ng-binding" for="inputNewSpaceElemType">Type</label>
     </div>
       <div class="controls col-xs-6">
           <span class="selectedRefType">{{ space.newSpaceelem.selectedRef.ref.title }}</span>
@@ -59,7 +59,7 @@
       </div>      
     </div><!-- form-group element-form-fields -->
     </div>
-    <div class="ref-select-container fadein fadeout clearfix" ng-hide="space.newSpaceelem.refSelectHidden" ng-init="space.newSpaceelem.selectedRef != undefined ? space.newSpaceelem.refSelectHidden=false : refSelectHidden=true;">
+    <div class="ref-select-container clearfix" ng-hide="space.newSpaceelem.refSelectHidden" ng-init="space.newSpaceelem.selectedRef != undefined ? space.newSpaceelem.refSelectHidden=false : refSelectHidden=true;">
   <select style="display:none;" name="category" id="categorySelect" ng-model="space.newSpaceelem.refCategoryFilter" ng-init="space.newSpaceelem.refCategoryFilter = 'Base'" ng-options="option for option in refCategories" required="" class="ng-valid ng-valid-required"><option value="0" selected="selected">Base</option></select>
     <div class="templateButton form-group col-xs-4 clearfix">
       <div class="ref" ng-repeat="ref in refs | filter: nestedContainerRestriction | filter: { ref: {category: space.newSpaceelem.refCategoryFilter}}" ng-class="{selected: space.newSpaceelem.selectedRef.ref.id == ref.ref.id }">
@@ -78,7 +78,7 @@
       <div class="form-group element-form-fields">
       <div class="form-group control-group clearfix">
         <div class="controls col-xs-2">
-          <label class="control-label col-sm-1" for="inputPerm">People</label>
+          <label class="control-label col-sm-1" for="inputNewSpaceelemPerm">People</label>
         </div>
         <div class="controls col-xs-6" ng-init="space.newSpaceelem.perms = [];">  
           <div class="perms perm-list" ng-repeat="perm in space.newSpaceelem.perms" ng-init="perm.account = accFetch(perm)">
@@ -95,11 +95,11 @@
     </div>    
 <input type="hidden" name="value" ng-model="space.newSpaceelem.business" ng-init="business" >
 <input type="hidden" name="value" ng-model="space.newSpaceelem.process" ng-init="parseInt(BPid)">
-<input type="hidden" id="inputBusinessId" ng-model="space.newSpaceelem.b_type"/>
-<input type="hidden" id="inputBusinessId" ng-model="space.newSpaceelem.type_title"/>
-<input type="hidden" id="inputBusinessId" ng-model="space.newSpaceelem.space_owned" ng-init="space.newSpaceelem.space_owned=space.id" value="{{ space.id }}"/>
-<input type="hidden" id="inputBusinessId" ng-model="space.newSpaceelem.space_role" ng-init="space.newSpaceelem.space_role" value="container"/>
-<input type="hidden" id="inputBusinessId" ng-model="space.newSpaceelem.order" value="{{ orderNestedGen(space.newSpaceelem) }}"/>
+<input type="hidden" id="newSpaceelem_b_type" ng-model="space.newSpaceelem.b_type"/>
+<input type="hidden" id="newSpaceelem_type_title" ng-model="space.newSpaceelem.type_title"/>
+<input type="hidden" id="newSpaceelem_space_owned" ng-model="space.newSpaceelem.space_owned" ng-init="space.newSpaceelem.space_owned=space.id" value="{{ space.id }}"/>
+<input type="hidden" id="newSpaceelem_space_role" ng-model="space.newSpaceelem.space_role" ng-init="space.newSpaceelem.space_role" value="container"/>
+<input type="hidden" id="newSpaceelem_order" ng-model="space.newSpaceelem.order" value="{{ orderNestedGen(space.newSpaceelem) }}"/>
     <div class="control-group form-submit form-group" style="clear:both;" ng-show="isManagerVal">
       <div class="controls">
         <button type="submit" class="btn btn-small btTxt submit btn lg solid-green ng-binding">{{ 'CREATE' | translate }}</button>
