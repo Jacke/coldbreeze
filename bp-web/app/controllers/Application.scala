@@ -31,7 +31,7 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
    * Uses browser caching; set duration (in seconds) according to your release cycle.
    * @param varName The name of the global variable, defaults to `jsRoutes`
    */
-  def jsRoutes(varName: String = "jsRoutes") = Cached(_ => "jsRoutes", duration = 86400) {
+  def jsRoutes(varName: String = "jsRoutes") = //Cached(_ => "jsRoutes", duration = 86400) {
     Action { implicit request =>
       Ok(
         Routes.javascriptRouter(varName)(
@@ -58,7 +58,7 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
           // TODO Add your routes here
         )
       ).as("text/javascript")
-    }
+//    }
   }
 
   def index() = Action { implicit request =>
