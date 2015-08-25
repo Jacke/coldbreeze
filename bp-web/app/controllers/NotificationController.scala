@@ -134,8 +134,7 @@ def UserItemAction = new ActionRefiner[SecuredRequest, ItemRequest] {
     def find() = {
       val l = new Item()
       println(l)
-      Some(l)
-      None
+      Some(l)      
     }
     def refine[A](input: SecuredRequest[A]) = Future.successful {
     // => user

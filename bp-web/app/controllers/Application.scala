@@ -58,7 +58,7 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
           // TODO Add your routes here
         )
       ).as("text/javascript")
-//    }
+    //}
   }
 
   def index() = Action { implicit request =>
