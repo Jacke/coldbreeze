@@ -138,7 +138,7 @@ updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
         space_role = Some("container")
         ))
       case _ => Option(
-          new Block(id.get,title,desc,None,process,b_type,type_title,order, space_parent = Some(space))
+          new Block(id.get,title,desc,None,process,b_type,type_title,order, space_parent = Some(space), space_id = Some(space))
         )
     }
 

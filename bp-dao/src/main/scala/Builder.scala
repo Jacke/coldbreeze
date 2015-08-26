@@ -832,11 +832,19 @@ def runFrom(station_id:Int, bpID:Int, params: List[InputParamProc], session_id: 
         makeNestedSpaces(process, test_space, process.findNestedBricks(), space_elems)
       }
     }
-
-    if (validateElements(target, test_space, space_elems) && run_proc)
+    /***
+      Before debug
+    ***/
+     Build.toApplogger("Before Debug")
+     Build.toApplogger(process.station.represent, "debug")
+    if (validateElements(target, test_space, space_elems) && run_proc) {
       NInvoker.run_proc(process)
-    else
+      Build.toApplogger("After Debug")
+      Build.toApplogger(process.station.represent, "debug")
+    }
+    else {
       println("Error")
+    }
     process
   }
 
