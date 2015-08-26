@@ -136,12 +136,14 @@ BProcessesFactory.query().$promise.then(function (proc) {
 
 };
 
+$scope.reloadSession = function() {
   if ($routeParams.process != undefined) {
     $scope.loadSessions($routeParams.process);    
   } else { // Load all process
     $scope.loadSessions();    
   }
-
+}
+$scope.reloadSession();
 
 $scope.history = function(session_id) {
     ngDialog.open({
@@ -153,7 +155,7 @@ $scope.history = function(session_id) {
 }
 $scope.deleteSession = function(session_id) {
   SessionsFactory.delete({ session_id: session_id}).$promise.then(function (data2) {
-      $scope.loadSessions();
+      $scope.reloadSession();
   })
 };
 
@@ -284,7 +286,7 @@ $scope.unlisted = function (session) {
       .then(function(response) {
         // success
         //$scope.stationsRefresh(); // Not for session controller
-        $scope.loadSessions();
+        $scope.reloadSession();
         $route.reload();
         //$scope.invoke_res = [response];
       },
@@ -302,7 +304,7 @@ $scope.listed = function (session) {
       .then(function(response) {
         // success
         //$scope.stationsRefresh(); // Not for session controller
-        $scope.loadSessions();
+        $scope.reloadSession();
         $route.reload();
         //$scope.invoke_res = [response];
       },
@@ -353,7 +355,7 @@ $scope.haltStation = function (stationId) {
       })
       .then(function(response) {
         // success
-        $scope.loadSession();
+        $scope.reloadSession();
         //$scope.stationsRefresh(); // not for session controller
         //$scope.invoke_res = [response];
       },
