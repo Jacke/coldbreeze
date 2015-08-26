@@ -1,7 +1,7 @@
 define(['angular', 'app', 'controllers'], function (angular, minorityApp, minorityControllers) {
 
 // For all processes
-minorityControllers.controller('LaunchesCtrl', ['$http', 
+minorityControllers.controller('LaunchesCtrl', ['$timeout','$http', 
   '$window', 
   '$translate',
   '$scope', 
@@ -21,7 +21,7 @@ minorityControllers.controller('LaunchesCtrl', ['$http',
   'BPElemsFactory',
   'BPSpacesFactory',
   'BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
-  function ($http, $window, $translate, $scope, $filter, $routeParams, $rootScope, ngDialog, ProcPermissionsFactory, TreeBuilder, BPStationsFactory, SessionsFactory, BProcessesFactory, BProcessFactory, ObserversFactory, ObserverFactory, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
+  function ($timeout, $http, $window, $translate, $scope, $filter, $routeParams, $rootScope, ngDialog, ProcPermissionsFactory, TreeBuilder, BPStationsFactory, SessionsFactory, BProcessesFactory, BProcessFactory, ObserversFactory, ObserverFactory, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
 
 
 $scope.loadSessions = function (process_id) { 
@@ -43,14 +43,57 @@ sessions: Array[5]
   session: Object
   station: Object
   */
+$scope.isEmptyLaunches = false;
+$scope.sessions = [];
+$scope.isEmptyLaunchesCheck = function() {
+  //$rootScope.$on('cfpLoadingBar:completed', function(event, data){
+    console.log("$scope.isEmptyLaunchesStart")
+  console.log($scope.isEmptyLaunches);
+ $scope.isEmptyLaunches = false;
+ console.log(($scope.sessions));
+ var AllSessions = _.flatten(_.map($scope.sessions, function(ses) { return ses.sessions }));
+ console.log(AllSessions);
+
+  if ($scope.sessions != undefined && AllSessions.length > 0) {
+    var vals = _.map($scope.sessions, function(ses) {
+        if (ses.sessions.length > 0) {
+          $scope.isEmptyLaunches = true;
+        }
+        else {
+          $scope.isEmptyLaunches = false;
+        }
+   });
+    var logicSum = _.reduce(vals, function(v,z){ return v || z });
+    if (logicSum != undefined) {
+    $scope.isEmptyLaunches = logicSum;
+    } else { $scope.isEmptyLaunches = false; }
+  } else {
+    //if ($scope.sessions != undefined && $scope.sessions.length == 0) {
+    //  $scope.isEmptyLaunches = true;
+    //} else { 
+      $scope.isEmptyLaunches = true//; }
+  }
+  console.log("$scope.isEmptyLaunches")
+  console.log($scope.isEmptyLaunches)
+  //});
+}
+
+//$scope.isEmptyLaunchesCheck();
+$scope.lastChecked = false;
+//$rootScope.$on('cfpLoadingBar:completed', function(event, data){
+//       if ($scope.lastChecked) {
+//        $scope.isEmptyLaunchesCheck();
+//      }
+//});
+
+
 SessionsFactory.query().$promise.then(function (data2) {
     _.forEach(data2.sessions, function(session) { 
       session.station.inlineLaunchShow = false;
       $scope.loadPerm(session.process);
       return session.session.station = session.station 
     });
-
-
+//  if (data2.sessions == undefined || data2.sessions.length == 0) { $scope.isEmptyLaunchesCheck();$scope.lastChecked = true; }
   if (data2.length > 0) {
     if (data2[0] != undefined) {
            ProcPermissionsFactory.query({ BPid: data2[0].process.id }).$promise.then(function(qu){
@@ -74,13 +117,12 @@ SessionsFactory.query().$promise.then(function (data2) {
                  } else { 
                   $scope.sessions = data2;
                  }
-
+                  $scope.lastChecked = true;
                  _.forEach(data2, function(d){ return TreeBuilder.buildFetch(d.process, function(success){}); });
+                $scope.isEmptyLaunchesCheck();
             });
-
-    }
-  }    
-
+    } //else { $scope.lastChecked = true; console.log("else");$scope.isEmptyLaunchesCheck() } 
+  } else { $scope.lastChecked = true ;$scope.isEmptyLaunches = true; }    
 /*
 BProcessesFactory.query().$promise.then(function (proc) {
     if (proc.length > 0) {
@@ -89,10 +131,7 @@ BProcessesFactory.query().$promise.then(function (proc) {
     };
     $scope.bprocesses = proc;
 }); // load polyfill for accounts TODO: Change that!!!!!!
-  
   */
-
-    
 });
 
 };
@@ -117,32 +156,6 @@ $scope.deleteSession = function(session_id) {
       $scope.loadSessions();
   })
 };
-$scope.isEmptyLaunches = false;
-$scope.sessions = [];
-$scope.isEmptyLaunchesCheck = function() {
-  //$rootScope.$on('cfpLoadingBar:completed', function(event, data){
-
-
-  if ($scope.sessions != undefined && $scope.sessions.length > 0) {
-    var vals = _.map($scope.sessions, function(ses) {
-        if (ses.sessions.length > 0) {
-          $scope.isEmptyLaunches = true;
-        }
-        else {
-          $scope.isEmptyLaunches = false;
-        }
-   });
-    $scope.isEmptyLaunches = _.reduce(vals, function(v,z){ return v || z });
-  } else {
-    $scope.isEmptyLaunches = true;
-  }
-  //});
-}
-
-//$scope.isEmptyLaunchesCheck();
-$rootScope.$on('cfpLoadingBar:completed', function(event, data){
-      $scope.isEmptyLaunchesCheck();
-});
 
 
 $scope.loadPerm = function (bpId) {
