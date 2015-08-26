@@ -60,6 +60,11 @@ object Dependencies {
   val hicaricp        = "com.edulify"               %% "play-hikaricp"          % "1.5.0"
   val javamail        = "javax.mail"                % "mail"                    % "1.5.0-b01"
   val courier         = "me.lessis"                 %% "courier"                % "0.1.3"
+  val scalamandrill   = "com.github.dzsessona"      % "scamandrill_2.11"       % "1.1.0"
+  val javamandrill    = "com.mandrillapp.wrapper.lutung" % "lutung"             % "0.0.5"
+  val javamandrill2   = "com.cribbstechnologies.clients" % "mandrillClient"     % "1.1"
+  //val scalamandril2   = "org.globalmoney"           % "play-mandrill"           % "0.1.1-SNAPSHOT" 
+  val mailchimp       = "com.ecwid" % "ecwid-mailchimp" % "2.0.1.0"
 
   val play            = "org.webjars"               %% "webjars-play"           % "2.3.0"
   val play4           = "org.webjars"               %% "webjars-play"           % "2.4.0"
