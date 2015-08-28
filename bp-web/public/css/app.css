@@ -280,7 +280,10 @@ h1.green-color.timer {
   margin-right: -15px;
   margin-left: -15px;
 }
-
+.tableMinListWrap.dashboard-sessions {
+    min-height: 675px;
+    height: 100%;
+}
 
 .uicon-svg12:hover, .uicon-svg442:hover, .uicon-svg2222:hover, .uicon-svg542:hover, .uicon-svg522:hover, .uicon-svg142:hover {
   color: #7FDBFF;
