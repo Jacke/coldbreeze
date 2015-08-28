@@ -121,24 +121,15 @@ class BusinessProcessController(override implicit val env: RuntimeEnvironment[De
   }
 
 
-
-
-  private def haltActiveStations(bpId: Int) = {
-    BPDAO.get(bpId) match {
-      case Some(bprocess) => {
-       BPStationDAO.haltByBPId(bpId)
-       }
-      case _ => false
-    }
-  }
-
-  def embed() = {
-    ???
-  }
-
   def show_bprocess(id: Int) = SecuredAction { implicit request =>
+    val business:Int = request.user.businessFirst
     BPDAO.get(id) match {
-      case Some(bprocess) => Ok(Json.toJson(bprocess))
+      case Some(bprocess) => { 
+        if (procIsOwnedByBiz(request.user.businessFirst, id)) {
+         Ok(Json.toJson(bprocess)) } else {
+          Forbidden(Json.obj("status" -> "Access denied"))
+        }
+      }
       case _ => BadRequest(Json.obj("status" -> "Not found"))
     }
   }
@@ -147,6 +138,7 @@ class BusinessProcessController(override implicit val env: RuntimeEnvironment[De
 
 def create_bprocess = SecuredAction(BodyParsers.parse.json) { request =>
   val bpResult = request.body.validate[BProcessDTO]
+  val business:Int = request.user.businessFirst
     Logger.debug(s"trying create process with $bpResult")
     bpResult.fold(
     errors => {
@@ -154,7 +146,7 @@ def create_bprocess = SecuredAction(BodyParsers.parse.json) { request =>
       BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
     },
     bprocess => { 
-      BPDAO.pull_object(bprocess) match {
+      BPDAO.pull_object(bprocess.copy(business = business)) match {
         case -1 => BadRequest(Json.obj("status" -> "Cannot create process"))
         case _@id:Int => { 
           AutoTracer.defaultStatesForProcess(process_id = id)
@@ -168,29 +160,59 @@ def create_bprocess = SecuredAction(BodyParsers.parse.json) { request =>
 }
   def update_bprocess(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
     val bpResult = request.body.validate[BProcessDTO]
+    val business:Int = request.user.businessFirst
       bpResult.fold(
         errors => {
           BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
         },
         bprocess => { 
-          BPDAO.update(id, bprocess)
-          Ok(Json.obj("status" ->"OK", "message" -> ("Bprocess '"+bprocess.title+"' saved.") ))  
+          if (procIsOwnedByBiz(request.user.businessFirst, id)) {
+              BPDAO.update(id, bprocess.copy(business = business))
+              Ok(Json.obj("status" ->"OK", "message" -> ("Bprocess '"+bprocess.title+"' saved.") ))  
+            } else  {
+              Forbidden(Json.obj("status" -> "Access denied"))
+            }          
         }
       )
   }
 
   def delete_bprocess(id: Int) = SecuredAction { implicit request => 
-    Ok(Json.toJson(BPDAO.delete(id)))
+     val business:Int = request.user.businessFirst
+     BPDAO.get(id) match {
+      case Some(bprocess) => { 
+        if (procIsOwnedByBiz(request.user.businessFirst, id)) {
+           Ok(Json.toJson(BPDAO.delete(id))) } else {
+           Forbidden(Json.obj("status" -> "Access denied"))
+        }
+      }
+      case _ => BadRequest(Json.obj("status" -> "Not found"))
+    }
   }
 
+  private def procIsOwnedByBiz(business: Int, id: Int):Boolean = {
+    BPDAO.get(id) match {
+      case Some(bprocess) => { 
+        if (bprocess.business == business) {
+          true 
+        }
+        else {
+          false
+        }
+      }
+      case _ => false
+    }
+  }
 
   /* Index */
   def frontElems(id: Int) = SecuredAction { implicit request =>
-
-    Ok(Json.toJson(ProcElemDAO.findByBPId(id)))
+    println("test")
+    println(procIsOwnedByBiz(request.user.businessFirst, id))
+    if (procIsOwnedByBiz(request.user.businessFirst, id)) {
+        Ok(Json.toJson(ProcElemDAO.findByBPId(id)))
+    } else { Forbidden(Json.obj("status" -> "Access denied")) }
   }
   def show_elem_length(id: Int):Int = { 
-    ProcElemDAO.findLengthByBPId(id)
+        ProcElemDAO.findLengthByBPId(id)
   }
   def bpElemLength() = SecuredAction { implicit request =>
     val bps = BPDAO.getAll // TODO: Weak perm
@@ -202,10 +224,14 @@ def create_bprocess = SecuredAction(BodyParsers.parse.json) { request =>
       ))
   }
   def spaces(id: Int) = SecuredAction { implicit request =>
-    Ok(Json.toJson(BPSpaceDAO.findByBPId(id)))
+        if (procIsOwnedByBiz(request.user.businessFirst, id)) {
+            Ok(Json.toJson(BPSpaceDAO.findByBPId(id)))
+    } else { Forbidden(Json.obj("status" -> "Access denied")) }
   }
   def spaceElems(id: Int) = SecuredAction { implicit request =>
-    Ok(Json.toJson(SpaceElemDAO.findByBPId(id)))
+    if (procIsOwnedByBiz(request.user.businessFirst, id)) {
+          Ok(Json.toJson(SpaceElemDAO.findByBPId(id)))
+    } else { Forbidden(Json.obj("status" -> "Access denied")) }
   }
 
 /**
@@ -213,7 +239,6 @@ def create_bprocess = SecuredAction(BodyParsers.parse.json) { request =>
  */
  /*
  */
-
 def generateCV(a: String):Some[CompositeValues] = {
   Some(CompositeValues())
 }
@@ -290,8 +315,8 @@ val SpaceElementForm = Form(
 
 def createFrontElem() = SecuredAction(BodyParsers.parse.json) { implicit request =>
 
-  request.body.validate[RefElemContainer].map{ 
-    case entity => haltActiveStations(entity.process); RefDAO.retrive(entity.ref, entity.process, entity.business, in = "front", entity.title, entity.desc, space_id = None) match {//ProcElemDAO.pull_object(entity) match {
+request.body.validate[RefElemContainer].map{ 
+  case entity => haltActiveStations(entity.process);RefDAO.retrive(entity.ref, entity.process, entity.business, in = "front", entity.title, entity.desc, space_id = None) match {//ProcElemDAO.pull_object(entity) match {
             case None =>  Ok(Json.toJson(Map("failure" ->  s"Could not create front element ${entity.title}")))
             case id =>  { 
               Ok(Json.toJson(Map("success" ->  Json.toJson(id))))
@@ -505,7 +530,18 @@ import ProcHistoryDAO._
 private def action(what: String) = {
   ???
 }
+private def haltActiveStations(bpId: Int) = {
+    BPDAO.get(bpId) match {
+      case Some(bprocess) => {
+       BPStationDAO.haltByBPId(bpId)
+       }
+      case _ => false
+    }
+  }
 
+  def embed() = {
+    ???
+  }
 
 private def deleteOwnedSpace(elem_id:Option[Int],spelem_id:Option[Int]) {
   if (elem_id.isDefined) {
