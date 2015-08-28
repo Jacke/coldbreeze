@@ -48,6 +48,7 @@
 .serviceForm input#title.form-control {
     width: 96%;
     height: 35px;
+    color: black;
 }
 
 .serviceForm dd {
@@ -59,8 +60,8 @@
 }
 
 .serviceForm fieldset {
-  display: inline-block;
-  width: 83%;
+    display: inline-block;
+    width: 79%;
 }
 
 .serviceForm dt {

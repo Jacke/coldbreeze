@@ -317,7 +317,7 @@ minorityApp.config(['$locationProvider','$routeProvider', '$httpProvider', funct
                   var token = $window.sessionStorage.getItem('token'); 
                   var biz_id = $window.localStorage.getItem('business');
                   $rootScope.notify = NotificationBroadcaster;
-                  if (biz_id == undefined || biz_id == "-1") {
+                  //if (biz_id == undefined || biz_id == "-1") {
                    $rootScope.whoami = $http.post(jsRoutes.controllers.Application.whoami().absoluteURL(document.ssl_enabled), { 
                     headers:  {'X-Auth-Token': token, 'Access_Name': 'user'}}).then(function (profile) {
                     $window.sessionStorage.setItem("business", profile.business);
@@ -325,7 +325,7 @@ minorityApp.config(['$locationProvider','$routeProvider', '$httpProvider', funct
                     $window.sessionStorage.setItem("manager", profile.manager);
                   })
 
-              }
+                  //}
  //                   $rootScope.whoami = $http.post('https://min.ority.us/whoami', {headers:  {'X-Auth-Token': token, 'Access_Name': 'user'}})
   //                    .then(function (profile) {
    //                    console.log("profile " + profile);
