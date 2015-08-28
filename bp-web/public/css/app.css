@@ -7780,8 +7780,7 @@ perspective effects (not including the modals and the overlay).
 
 
 
-
-/* demo info page */
+/*
 .overlay-container {
   color: #F0F1F0;
   font-size: 20px;
@@ -7796,7 +7795,6 @@ perspective effects (not including the modals and the overlay).
 }
 
 
-/* demo login form */
 .login {
   background: #1BBA9A;
   width: 400px;
@@ -7816,7 +7814,6 @@ perspective effects (not including the modals and the overlay).
   color: #F0F1F0;
 }
 
-/* footer */
 .info {
   margin-top: 10em;
   color: #AFAFAF;
@@ -7831,9 +7828,6 @@ perspective effects (not including the modals and the overlay).
 
 
 
-
-
-/*
 .main {
   text-align: center;
 }
