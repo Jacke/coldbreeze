@@ -256,7 +256,11 @@
 'tooltip': {
     deps: ['jquery'],
   export: 'dropdown'
-}
+},
+'tether': { deps: [], export: 'tether' },
+'offline': { deps: [], export: 'offline' },
+'offlineSimulator': { deps: ['offline'], export: 'offlineSimulator' },
+'shepherd': { deps: ['tether'], export: 'shepherd' }
 
 
 
@@ -331,7 +335,12 @@
   'sessionController': ['../js/controllers/sessionController'],
   'directives': ['../js/directives'],
   'classie': ['../js/classie'],
-  'cssParser': ['../js/cssParser']
+  'cssParser': ['../js/cssParser'],
+  'tether': ['../bower_components/tether/dist/js/tether'],
+  'shepherd': ['../bower_components/tether-shepherd/dist/js/shepherd'],
+  'tour': ['../javascripts/tour'],
+  'offline': ['../bower_components/offline/offline'],
+  'offlineSimulator': ['../bower_components/offlinejs-simulate-ui/offline-simulate-ui.min']
   }});
 
   requirejs.onError = function (err) {
@@ -339,12 +348,32 @@
   };
 
   // Load the app. This is kept minimal so it doesn't need much updating.
-require(['requirejs','jsRoutes','jquery', 'mobileDetect','popupoverlay','drag-on','jquery.nicescroll','ssl','header','tooltip','dropdown','underscore','moment','selectize'
+require(['requirejs','jsRoutes','jquery', 'mobileDetect','popupoverlay','drag-on','jquery.nicescroll','ssl','offline','offlineSimulator','header','tooltip','dropdown','underscore','moment','selectize', 'tether', 'shepherd','tour',
   ],//'jquery', 'bootstrap'],//, './app'],
-    function (requirejs,jsRoutes,$, mobileDetect,popupoverlay, dragOn,niceScroll,ssl,header,tooltip,dropdown,underscore,moment,selectize) {
-    	$(document).ready(function(){
+    function (requirejs,jsRoutes,$,mobileDetect,popupoverlay,dragOn,niceScroll,ssl,offline,offlineSimulator,header,tooltip,dropdown,underscore,moment,selectize,tether,shepherd,tour) {
+        document.tour = tour;
+      $(document).ready(function(){
         document.mobileDetect = new mobileDetect(window.navigator.userAgent);
         document.isMobile = (document.mobileDetect.phone() != null) ? true : false;
+        $('.offline-simulate-ui').toggle();
+
+        // Tours
+        var dashBoardTour = function() {
+          if (location.pathname == "/") {
+            document.tour.dashboardTour.start()
+          }
+        }
+        if (localStorage.dashBoardTour == undefined) {
+          localStorage.setItem("dashBoardTour", true);
+          dashBoardTour();
+          localStorage.setItem("dashBoardTour", false);
+        } else {
+          if (localStorage.dashBoardTour == "true") {
+            dashBoardTour();
+            localStorage.setItem("dashBoardTour", false);
+          }
+        }
+
 
         if (document.isMobile) {
           $('.overlay_mobile').toggleClass('visible_overlay');

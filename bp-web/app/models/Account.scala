@@ -51,6 +51,15 @@ object AccImplicits {
 /**
  * BProcess Scheme
  */
+ case class AccountInfos(tag: Tag) extends Table[AccountInfo](tag, "account_infos") {
+  def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
+  def uid = column[String]("uid")
+  def created_at = column[org.joda.time.DateTime]("created_at")
+
+  def * = (id.?, uid, created_at) <> (AccountInfo.tupled, AccountInfo.unapply)
+  def accInfoFK  = foreignKey("accInfo_fk", uid, AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
+
+ }
 class Accounts(tag: Tag) extends Table[AccountDAO](tag, "accounts") {
   implicit def string2AuthenticationMethod = MappedColumnType.base[AuthenticationMethod, String](
     authenticationMethod => authenticationMethod.method,
@@ -235,7 +244,7 @@ case class Account(
 }
 
 case class UserAccount(main: Account, identities: List[Account])
-
+case class AccountInfo(id: Option[Int], uid: String, created_at: org.joda.time.DateTime = org.joda.time.DateTime.now())
 
 
 
@@ -309,11 +318,24 @@ object AccountsDAO {
 
 
   val accounts = TableQuery[Accounts]
+  val account_infos = TableQuery[AccountInfos]
 
   def ddl {
     database withSession {
       implicit session ⇒
         (accounts.ddl ++ TokensDAO.tokens.ddl).create
+    }
+  }
+  def infos_ddl {
+    database withSession {
+       implicit session ⇒
+       account_infos.ddl.create
+    }
+  }
+  def getAllInfos: List[AccountInfo] = { database withSession {
+    implicit session =>
+      val q3 = for { s ← account_infos } yield s
+      q3.list.sortBy(_.id)
     }
   }
   def updateEmail(email: String, newEmail: String): Boolean = database withSession {
@@ -353,6 +375,11 @@ object AccountsDAO {
     implicit session ⇒
       val q3 = for { a ← accounts if a.userId === email } yield a
       q3.list.headOption
+  }
+  def getAccountInfo(email: String): Option[AccountInfo] = database withSession {
+    implicit session =>
+    val q3 = for { a ← account_infos if a.uid === email } yield a
+    q3.list.headOption
   }
   def findByNickname(nickname: String):Option[AccountDAO] = database withSession {
     implicit session =>
@@ -433,6 +460,7 @@ import controllers.Credentials
     implicit session ⇒
       val acc = Account.tupled(BasicProfile.unapply(user).get)
       accounts += acc.toDTO
+      account_infos += AccountInfo(None, acc.toDTO.userId, org.joda.time.DateTime.now())
       val accTupled = BasicProfile.tupled(Account.unapply(acc).get)
       DemoUser(accTupled, List(accTupled))
   }

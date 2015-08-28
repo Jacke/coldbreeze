@@ -27,6 +27,10 @@ GroupsDAO}
 import models.DAO.resources.ClientBusinessDAO
 import models.DAO.resources.web._
 import models.AccountDAO
+
+  import play.api.libs.json._
+    import play.api.libs.functional.syntax._
+
 /**
  * Created by Sobolev on 22.07.2014.
  */
@@ -34,10 +38,12 @@ case class ActorCont(emps: List[EmployeeDTO], creds:List[AccountDAO])
 
 class EmployeeController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
   import play.api.Play.current
-
+  import models.AccImplicits._
    val Home = Redirect(routes.EmployeeController.index())
 
    case class UIDS(emails: List[String], manager: Boolean)
+
+
   implicit val UIDSReads = Json.reads[UIDS]
   implicit val UIDSWrites = Json.format[UIDS]
   implicit val InputParamReads = Json.reads[EmployeeDTO]

@@ -215,7 +215,8 @@ minorityApp.factory('NotificationBroadcaster', ['$websocket', '$window', 'toastr
 
 
       var collection = [];
-      var socketLoad = function () {
+      var isError = false;
+      var socketLoad = function (isError) {
 
           var dataStream = $websocket(ws_type + baseUrl + '/notify');
           dataStream.onMessage(function(message) {
@@ -230,9 +231,17 @@ minorityApp.factory('NotificationBroadcaster', ['$websocket', '$window', 'toastr
             collection.push(object);
           });
           dataStream.onClose(function(message) {
-            socketLoad();
+            if (isError != true) {
+              socketLoad();
+            }
           });
+          dataStream.onerror = function(message) {
+            console.log("ws error");
+            isError = true;
+            console.log(message);//socketLoad();
+          };
           return dataStream;
+        
       }
       var dataStream = socketLoad();
 

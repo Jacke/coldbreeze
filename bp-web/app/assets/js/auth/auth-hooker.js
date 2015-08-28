@@ -60,7 +60,7 @@ $(function domReadyLoginFlow () {
 
   }
   
-  $('.loginView a.switchView').on('click', function clickViewSwitch(e) {
+  $('.loginView a.switchView2').on('click', function clickViewSwitch(e) {
     var nextPage;
     e.preventDefault();
     e = $(this).closest('.loginPage');

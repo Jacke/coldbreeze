@@ -45,6 +45,7 @@ object DLL_Initiator {
     // Resources
     TokensDAO.ddl_create
     AccountsDAO.ddl_create
+    AccountsDAO.infos_ddl
 
     EmployeeDAO.ddl_create
     EmployeesBusinessDAO.ddl_create
