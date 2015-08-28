@@ -223,6 +223,12 @@ case class DemoUser(main: BasicProfile,
     //else
      // false
   }
+  def businessFirst: Int = {
+     models.DAO.resources.EmployeesBusinessDAO.getByUID(main.userId) match {
+        case Some(tup) => tup._2
+        case _ => -1
+     }
+  }
   def isEmployee:Boolean = {
     if (permissions.isDefined)
       permissions.get._2

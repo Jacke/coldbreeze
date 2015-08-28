@@ -80,7 +80,8 @@ $scope.isManager();
 
     $scope.bp = _.find(data, function(proc) { return proc.id == $route.current.params.BPid});
     $scope.business = function () {
-       return $scope.bp.business;
+      if($scope.bp != undefined) {       return $scope.bp.business;
+      } else { return 0 }
     }
 
     $scope.hasActiveStation = _.filter(stations, function(st) { return st.paused == true && st.process == $scope.bp.id }).length > 0;

@@ -146,7 +146,7 @@ case class WhoAmIdentify(email: String, business: Int = 0, manager: Boolean, emp
 
     val env_mode = play.api.Play.current.mode
 
-    Ok(Json.toJson(WhoAmIdentify(request.user.main.userId, business, isManager, isEmployee, lang, payed = current_plan.expired_at.isAfter( org.joda.time.DateTime.now()), env_mode.toString() )))
+    Ok(Json.toJson(WhoAmIdentify(request.user.main.userId, request.user.businessFirst, isManager, isEmployee, lang, payed = current_plan.expired_at.isAfter( org.joda.time.DateTime.now()), env_mode.toString() )))
   }
 
   // a sample action using an authorization implementation
