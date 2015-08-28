@@ -265,6 +265,7 @@ font-size: 18px;
     display: inline-block;
     width: 100%;
     font-size: 13px;
+    margin-top: 0;
 }
 .session_list__session .session-container .instant-input.loading {     
  opacity: 1;    
@@ -501,6 +502,10 @@ li.reaction_list__reaction__state_outs {
 /*---------------------
     state overview
 -----------------------*/
+.roww.state-overview {
+    display: inline-block;
+    width: 100%;
+}
 
 .state-overview .symbol, .state-overview .value {
     display: inline-block;

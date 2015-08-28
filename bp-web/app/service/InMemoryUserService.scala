@@ -187,10 +187,19 @@ class InMemoryUserService extends UserService[DemoUser] {
 }
 
 // a simple User class that can have multiple identities
-case class DemoUser(main: BasicProfile, identities: List[BasicProfile], var permissions: Option[Tuple3[Boolean, Boolean, String]] = None, var lang: Option[Lang] = None) {
+case class DemoUser(main: BasicProfile, 
+  identities: List[BasicProfile], 
+  var permissions: Option[Tuple3[Boolean, Boolean, String]] = None, 
+  var lang: Option[Lang] = None, 
+  var created_at: Option[org.joda.time.DateTime] = None) {
+
   permissions = AccountsDAO.getRolesAndLang(main.userId)
 
-
+  AccountsDAO.getAccountInfo(main.userId) match {
+    case Some(acc_info) => created_at = Some(acc_info.created_at)
+    case _ => created_at = Some(org.joda.time.DateTime.now())
+  }
+   
   lang = Some(country(AccountsDAO.getRolesAndLang(main.userId).get._3))
 
   def country(lang: String):Lang = {
@@ -208,10 +217,11 @@ case class DemoUser(main: BasicProfile, identities: List[BasicProfile], var perm
       permissions = AccountsDAO.getRolesAndLang(main.userId)
   }
   def isManager:Boolean = {
-    if (permissions.isDefined)
-      permissions.get._1
-    else
-      false
+    //if (permissions.isDefined)
+    //  permissions.get._1
+    AccountsDAO.getRolesAndLang(main.userId).get._1
+    //else
+     // false
   }
   def isEmployee:Boolean = {
     if (permissions.isDefined)

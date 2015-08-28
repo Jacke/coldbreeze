@@ -37,36 +37,29 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
 
       var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(email).get
 
-      // Initiate env for new user
       if (!request.user.isEmployee && !arePlanExist(email)) {
-
-        utilities.NewUserRoutine.initiate_env(email)
-        Home
-        
+                                                            // Initiate env for new user
+        utilities.NewUserRoutine.initiate_env(email)        // run routine
+        //request.user.renewPermissions()                     // renew permission
+        var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(email).get
+        println("redirect")
+        Home                                                // redirect to dashboard
       } else {
-
         val plan = planFetch(email, isManager)
-
         val managerParams = makeManagerParams(email, isManager)
-
-
         val walkthrought:Boolean = managerParams match {
             case  Some(param) => param.business.walkthrough
             case _ => false
         }
-
         val business_request:Option[Tuple2[Int, Int]] = models.DAO.resources.EmployeesBusinessDAO.getByUID(email) 
         val business = business_request match {
           case Some(biz) => biz._2
           case _ => -1
-        }        
-
+        }       
         val sessions:List[SessionContainer] = BPSessionDAO.findListedByBusiness(business)//BPSessionDAO.findByBusiness(business_id).map(ses => SessionDecorator(ses._1, ses._2)).toList
-
         val currentReactions:List[CurrentReactionContainer] = sessions.map(cn => cn.sessions.map(session_status => 
             ReactionDAO.findCurrentUnappliedContainer(cn.process.id.get, session_status.session.id.get)).flatten
           ).flatten
-  
         val dashboardTopBar: DashboardTopBar = countDashboardTopBar(email)
 
         Ok(views.html.profiles.dashboard(request.user, 
