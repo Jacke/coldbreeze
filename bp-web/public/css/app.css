@@ -7833,11 +7833,10 @@ perspective effects (not including the modals and the overlay).
 
 
 
-
+/*
 .main {
   text-align: center;
 }
-/* demo info page */
 .more-info {
   color: #F0F1F0;
   font-size: 20px;
@@ -7847,7 +7846,6 @@ perspective effects (not including the modals and the overlay).
 .more-info h2 {
   text-align: center;
 }
-/* demo login form */
 .login {
   background: #1BBA9A;
   width: 400px;
@@ -7865,6 +7863,9 @@ perspective effects (not including the modals and the overlay).
 .close-x:hover {
   color: #F0F1F0;
 }
+*/
+
+
 
 
 .search-process-input {
