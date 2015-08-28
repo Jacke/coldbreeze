@@ -280,11 +280,11 @@ h1.green-color.timer {
   margin-right: -15px;
   margin-left: -15px;
 }
-
-.website .applicationFooter {
-    bottom: 0;
-    position: absolute;
+.tableMinListWrap.dashboard-sessions {
+    min-height: 675px;
+    height: 100%;
 }
+
 .uicon-svg12:hover, .uicon-svg442:hover, .uicon-svg2222:hover, .uicon-svg542:hover, .uicon-svg522:hover, .uicon-svg142:hover {
   color: #7FDBFF;
   text-decoration: none;
@@ -8336,9 +8336,36 @@ text-align: center;
 /*
 Settings
 */
-
 #personal form {
-    margin-left: 170px;
+    margin-left: 0px;
+    color: black;
+}
+#personal form * {
+    color: black;
+}
+
+#personal form dl {
+    margin-bottom: 0px;
+}
+
+#business form {
+    margin-left: 0px;
+}
+
+#business form * {
+    color: black;
+}
+
+.setting-container div#business {
+    width: 32%;
+}
+
+#business form dl {
+    margin-bottom: 0px;
+}
+
+#business form input.btn.btn-primary {
+    color: white;
 }
 
 #personal form .actions {
@@ -8346,21 +8373,21 @@ Settings
     padding-bottom: 25px;
 }
 
-#business form {
-    margin-left: 170px;
-}
-
 #business form .actions {
     padding-top: 10px;
     padding-bottom: 25px;
 }
 
+.setting-container input {
+    font-size: 14px !important;
+}
 
-
-
+#personal form input.btn.btn-primary {
+    color: white;
+}
 #password .flatButtonLine {
     padding-top: 25px;
-    margin-left: 170px;
+    margin-left: 10px;
     margin-bottom: 25px;
 }
 
