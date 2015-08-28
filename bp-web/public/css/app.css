@@ -459,7 +459,9 @@ span.account-pic img {
     height: 23px;
     width: 18px;
 }
-
+.account-pic a.minicon.btn-delete:hover {
+    text-decoration: none;
+}
 .minicon.btn-delete {
     font-family: "Min Icons";
 }
