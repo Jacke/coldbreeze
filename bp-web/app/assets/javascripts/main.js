@@ -355,7 +355,7 @@ require(['requirejs','jsRoutes','jquery', 'mobileDetect','popupoverlay','drag-on
       $(document).ready(function(){
         document.mobileDetect = new mobileDetect(window.navigator.userAgent);
         document.isMobile = (document.mobileDetect.phone() != null) ? true : false;
-        $('.offline-simulate-ui').toggle();
+       
 
         // Tours
         var dashBoardTour = function() {
