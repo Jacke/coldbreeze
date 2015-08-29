@@ -171,9 +171,14 @@ $scope.loadPerm = function (bpId) {
       $scope.groups = qu.employee_groups;
       $scope.employees_groups = _.union($scope.emps,$scope.employee_groups);
       _.forEach($scope.perms, function(perm) {
-        if (perm.group != undefined) {
-          perm.title = _.find($scope.groups, function(group) {return group.id == perm.group}).title;
+      if (perm.group != undefined) {
+        var group = _.find($scope.groups, function(group) {return group.id == perm.group});
+        if (group != undefined) {
+          perm.title = group.title;
+        } else {
+          perm.title = "";
         }
+      }
       })
   });
 };

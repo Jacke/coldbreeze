@@ -1356,7 +1356,12 @@ ProcPermissionsFactory.query({ BPid: $scope.BPid }).$promise.then(function(qu){
     $scope.employees_groups = _.union($scope.emps,$scope.employee_groups);
     _.forEach($scope.perms, function(perm) {
       if (perm.group != undefined) {
-        perm.title = _.find($scope.groups, function(group) {return group.id == perm.group}).title;
+        var group = _.find($scope.groups, function(group) {return group.id == perm.group});
+        if (group != undefined) {
+          perm.title = group.title;
+        } else {
+          perm.title = "";
+        }
       }
     })
 });
