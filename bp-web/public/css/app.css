@@ -3197,7 +3197,10 @@ label.onlyActiveLabel {
   background-color: #e1eef3;
   border-top-color: #d6e1e5;
 }
-
+.container.service-edit {
+    min-height: 675px;
+    height: 100%;
+}
 .service-helper {
     margin-top: 0px;
     padding-left: 11px;

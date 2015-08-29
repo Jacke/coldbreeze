@@ -320,18 +320,22 @@ minorityApp.config(['$locationProvider','$routeProvider', '$httpProvider', funct
                   //if (biz_id == undefined || biz_id == "-1") {
                    $rootScope.whoami = $http.post(jsRoutes.controllers.Application.whoami().absoluteURL(document.ssl_enabled), { 
                     headers:  {'X-Auth-Token': token, 'Access_Name': 'user'}}).then(function (profile) {
-                    $window.sessionStorage.setItem("business", profile.business);
-                    $window.sessionStorage.setItem("employee", profile.employee);
-                    $window.sessionStorage.setItem("manager", profile.manager);
+                        $window.sessionStorage.setItem("business", profile.data.business);
+                        $window.localStorage.setItem("business", profile.data.business);
+                        $rootScope.business = profile.data.business;
+                        console.log(profile.data);
+                        console.log($rootScope.business)
+                        $window.sessionStorage.setItem("employee", profile.data.employee);
+                        $window.sessionStorage.setItem("manager", profile.data.manager);
                   })
-
                   //}
+                  
  //                   $rootScope.whoami = $http.post('https://min.ority.us/whoami', {headers:  {'X-Auth-Token': token, 'Access_Name': 'user'}})
   //                    .then(function (profile) {
    //                    console.log("profile " + profile);
      //                  $window.sessionStorage.setItem('manager', profile.manager);
                 $rootScope.manager = $window.localStorage.getItem('manager') == "true";
-                $rootScope.business = parseInt($window.localStorage.getItem('business'));
+                //$rootScope.business = parseInt($window.sessionStorage.getItem('business'));
          //              $window.localStorage.setItem('business', profile.business);
                $rootScope.employee = $window.localStorage.getItem('employee') == "true";
            //            deffered.resolve(profile);
