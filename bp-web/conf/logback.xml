@@ -3,7 +3,7 @@
 <!--
   <appender name="LE"
     class="com.logentries.logback.LogentriesAppender">
-	<Debug>False</Debug>
+  <Debug>False</Debug>
     <Token>9f1d3824-14a2-4b2c-a6b2-90ff57a853a3</Token>
     <Ssl>False</Ssl>
     <facility>USER</facility>
@@ -60,7 +60,7 @@
     <appender-ref ref="SYSLOG-TLS" />
     <appender-ref ref="STDOUT" />
   </root>
-
+<!--
 <root level="ERROR">
     <appender-ref ref="SYSLOG-TLS" />
     <appender-ref ref="STDOUT" />
@@ -69,7 +69,7 @@
     <appender-ref ref="SYSLOG-TLS" />
     <appender-ref ref="STDOUT" />
   </root>
-
+-->
 
   
 </configuration>
