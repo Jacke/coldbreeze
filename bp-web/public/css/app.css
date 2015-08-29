@@ -3,7 +3,9 @@ Elements mocking */
 .mocking.elements {
   display: none;
 }
-
+.offline-simulate-ui {
+  display: none;
+}
 body.themeGrad {
   vertical-align: baseline;
   background-repeat: no-repeat !important;

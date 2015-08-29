@@ -11,22 +11,40 @@
       <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
     </layout>
   </appender> -->
+<appender name="SYSLOG-TLS" class="com.papertrailapp.logback.Syslog4jAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <pattern>%-5level %logger{35}: %m%n%xEx</pattern>
+    </layout>
 
-     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%-5relative %-5level %logger{35} - %msg%n</pattern>
-        </encoder>
-    </appender>
+    <syslogConfig class="org.productivity.java.syslog4j.impl.net.tcp.ssl.SSLTCPNetSyslogConfig">
+      <!-- remote system to log to -->
+      <host>logs2.papertrailapp.com</host>
+      <!-- remote port to log to -->
+      <port>20313</port>
+      <!-- program name to log as -->
+      <ident>minorityapp</ident>
+      <!-- max log message length in bytes -->
+      <maxMessageLength>128000</maxMessageLength>
+    </syslogConfig>
+  </appender>
+ <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+        <pattern>%-5relative %-5level %logger{35} - %msg%n</pattern>
+    </encoder>
+</appender>
 
   <root level="DEBUG">
     <appender-ref ref="STDOUT" />
+    <appender-ref ref="SYSLOG-TLS" />   
   </root>
 
 <root level="ERROR">
     <appender-ref ref="STDOUT" />
+    <appender-ref ref="SYSLOG-TLS" />   
   </root>
 <root level="INFO">
     <appender-ref ref="STDOUT" />
+    <appender-ref ref="SYSLOG-TLS" />   
   </root>
 
 
