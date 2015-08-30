@@ -99,7 +99,7 @@ case class AccessLog() extends Filter {
       s"domain=${request.domain} query-string=${request.rawQueryString} " +
       s"referrer=${request.headers.get("referer").getOrElse("N/A")} " +
       s"user-agent=[${request.headers.get("user-agent").getOrElse("N/A")}]"
-    play.Logger.of("accesslog").info(msg)
+    // UNCOMMENT THIS play.Logger.of("accesslog").info(msg)
     //play.Logger.info(msg)
     f(request)
   }

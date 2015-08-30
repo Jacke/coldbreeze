@@ -1,14 +1,62 @@
 package security
 
+import models.User
+import service.DemoUser
+import securesocial.core._
+import models.DAO.BProcessDTO
+import models.DAO.BPDAO
+import models.DAO._
+import models.DAO.resources._
+import models.DAO.CompositeValues
+import play.api.Play.current
+
+import main.scala.bprocesses._
+import main.scala.simple_parts.process.Units._
+import models.DAO.reflect._
+import models.DAO.conversion._
+import ProcHistoryDAO._
+import helpers._
+import decorators._
+import builders._
+
 /* Base */
-object BaseResources {
+object BRes {
     // CONSTANTS
     // Processes
     // * CRUD
     
     // Front elements, space, space elements
     // * CRUD
-    
+def procIsOwnedByBiz(business: Int, id: Int):Boolean = {
+    BPDAO.get(id) match {
+      case Some(bprocess) => { 
+        if (bprocess.business == business) {
+          true 
+        }
+        else {
+          false
+        }
+      }
+      case _ => false
+    }
+}
+def stationSecured(station_id: Int, email: String, business_id: Int):Boolean = {
+  BPStationDAO.findById(station_id) match {
+    case Some(station) => {
+      procIsOwnedByBiz(station.process, business_id)
+    }
+    case _ => false
+  }
+}
+def sessionSecured(session_id: Int, email: String, business_id: Int): Boolean = {
+  BPSessionDAO.get(session_id) match {
+    case Some(session) => {
+      procIsOwnedByBiz(session.process, business_id)
+    }
+    case _ => false
+  }
+}
+
 }
 
 object ACLResources {

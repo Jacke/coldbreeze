@@ -20,16 +20,13 @@ import models.Page
 import models.User
 import service.DemoUser
 import securesocial.core._
-import models.DAO.resources.{AccoutGroupDTO,
-AccountGroupDAO,
-GroupDTO,
-GroupsDAO}
+import models.DAO.resources.{AccoutGroupDTO,AccountGroupDAO,GroupDTO,GroupsDAO}
 import models.DAO.resources.ClientBusinessDAO
 import models.DAO.resources.web._
 import models.AccountDAO
 
-  import play.api.libs.json._
-    import play.api.libs.functional.syntax._
+import play.api.libs.json._
+import play.api.libs.functional.syntax._
 
 /**
  * Created by Sobolev on 22.07.2014.

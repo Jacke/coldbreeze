@@ -84,31 +84,36 @@ class InteractionController(override implicit val env: RuntimeEnvironment[DemoUs
   implicit val InteractionContainerWrites = Json.format[InteractionContainer]
 
 
- def fetchInteraction(session_id: Int) = SecuredAction { implicit request => 
+def fetchInteraction(session_id: Int) = SecuredAction { implicit request => 
+  if (security.BRes.sessionSecured(session_id, request.user.main.userId, request.user.businessFirst)) {
+
+
    val result = models.DAO.BPSessionDAO.findById(id = session_id)
   
    result match {
 
-	case Some(session) => {   
-		val process:BProcessDTO = session.process
-	    val reactions:List[UnitReaction] = ReactionDAO.findUnapplied(process.id.get, session_id)
-      Logger.debug("Reactions")
-      Logger.debug(s"reaction length $reactions.length")
+  	case Some(session) => {   
+  		val process:BProcessDTO = session.process
+  	    val reactions:List[UnitReaction] = ReactionDAO.findUnapplied(process.id.get, session_id)
+        Logger.debug("Reactions")
+        Logger.debug(s"reaction length $reactions.length")
 
-      val reaction_outs:List[UnitReactionStateOut] = ReactionStateOutDAO.findByReactions(reactions.map(_.id.get))
-     
-	    val session_states: List[BPSessionState] = BPSessionStateDAO.findByOriginIds(reaction_outs.map(_.state_ref))
-      Logger.debug("Session state")
-      Logger.debug(s"session_states length $session_states.length")
-        val reaction_container = reactions.map(reaction => 
-        	ReactionContainer(session_state = session_states.find(state => Some(reaction.from_state) == state.origin_state),
-        					  reaction, reaction_outs.filter(out => Some(out.reaction) == reaction.id))
-        )
+        val reaction_outs:List[UnitReactionStateOut] = ReactionStateOutDAO.findByReactions(reactions.map(_.id.get))
+       
+  	    val session_states: List[BPSessionState] = BPSessionStateDAO.findByOriginIds(reaction_outs.map(_.state_ref))
+        Logger.debug("Session state")
+        Logger.debug(s"session_states length $session_states.length")
+          val reaction_container = reactions.map(reaction => 
+          	ReactionContainer(session_state = session_states.find(state => Some(reaction.from_state) == state.origin_state),
+          					  reaction, reaction_outs.filter(out => Some(out.reaction) == reaction.id))
+          )
 
-	   Ok(Json.toJson(InteractionContainer(result,reaction_container, session_states)))
-	}
-	case _ => BadRequest(Json.toJson(Map("error" -> "Session not found")))
+  	   Ok(Json.toJson(InteractionContainer(result,reaction_container, session_states)))
+  	}
+  	case _ => BadRequest(Json.toJson(Map("error" -> "Session not found")))
   }
-} 
-  
+} else { Forbidden(Json.obj("status" -> "Access denied")) }    
+}
+
+
 }

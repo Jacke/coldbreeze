@@ -38,8 +38,9 @@ POST     /signup/:token              @controllers.CustomRegistrationController.h
 
 GET         /notify										        @controllers.NotificationController.socket
 GET         /notify_test/:msg                                   @controllers.NotificationController.notify_test(msg: String)
-GET         /popup_test/:target                                 @controllers.NotificationController.popup_test(target: String) 
+GET         /popup/:emails_hash/:target                    @controllers.NotificationController.popup(emails_hash: String, target: String) 
 GET         /notify2/test_action                                @controllers.NotificationController.tagItem
+GET         /invite/:emails_hash/:invite_link       @controllers.NotificationController.sendInvite(emails_hash: String, invite_link: String)
 GET         /only-twitter                                       @controllers.Application.onlyTwitter
 
 # Custom

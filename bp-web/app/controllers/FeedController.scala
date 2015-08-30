@@ -29,14 +29,8 @@ import models.DAO.CompositeValues
 import play.api.Play.current
 
 class FeedController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
- 
  def index() = SecuredAction { implicit request =>
  	val feeds = List()
- 	
  	Ok(views.html.feeds.index(request.user))
  }
-
-
-
-
 }
