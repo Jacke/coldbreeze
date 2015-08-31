@@ -32,14 +32,12 @@ class NotificationController(override implicit val env: RuntimeEnvironment[DemoU
     implicit val sumFrameFormatter = FrameFormatter.jsonFrame[SumActor.Sum]
     implicit val sumResultFormat = Json.format[SumActor.SumResult]
     implicit val sumResultFrameFormatter = FrameFormatter.jsonFrame[SumActor.SumResult]
-
     implicit val PopupRequestFormat = Json.format[PopupRequest]
     implicit val PopupRequestFrameFormatter = FrameFormatter.jsonFrame[PopupRequest]
-
   // val auth = UserService.find(authenticator.get.identityId)
   // auth.get.identityId.userId
 
-    def socket = WebSocket.tryAcceptWithActor[JsValue, JsValue] { request => //[SumActor.Sum, SumActor.SumResult] { request =>
+def socket = WebSocket.tryAcceptWithActor[JsValue, JsValue] { request => //[SumActor.Sum, SumActor.SumResult] { request =>
       implicit val req: RequestHeader = request
       val user:Future[Option[service.DemoUser]] = env.authenticatorService.fromRequest.map {
          case Some(authenticator) if authenticator.isValid => { 
@@ -49,21 +47,20 @@ class NotificationController(override implicit val env: RuntimeEnvironment[DemoU
         None
       }
     }
-      //val cleanCred = SecureSocial.currentUser[DemoUser](request, env, env.executionContext).value
-      var cred:Option[service.DemoUser] = Await.result(user, Duration(5000, MILLISECONDS))
-
-      cred match {
-        case Some(userid) => { 
-          //Future.successful(Right(SumActor.props(_, Some(userid))))
-          Future.successful(Right(UserActor.props(userid.main.userId)))
-        }
-        case None => Future.successful(Left(Forbidden))
+    //val cleanCred = SecureSocial.currentUser[DemoUser](request, env, env.executionContext).value
+    var cred:Option[service.DemoUser] = Await.result(user, Duration(5000, MILLISECONDS))
+    cred match {
+      case Some(userid) => { 
+        //Future.successful(Right(SumActor.props(_, Some(userid))))
+        Future.successful(Right(UserActor.props(userid.main.userId)))
       }
+      case None => Future.successful(Left(Forbidden))
     }
+}
 
 
 
-    def notify_test(msg: String) = SecuredAction { implicit request =>
+def notify_test(msg: String) = SecuredAction { implicit request =>
           val system = SumActor.system
           /* SumActor.actors.foreach { actor => 
             val actor = system.actorOf(Props[SumActor])
@@ -74,8 +71,8 @@ class NotificationController(override implicit val env: RuntimeEnvironment[DemoU
           BoardActor() ! Message(request.user.main.userId, msg )
           Ok("sended")    
     }
-    def popup_test(target: String) = Action { request =>
-request.body.asJson.map { json =>
+def popup(emails_hash: String, target: String) = Action { request =>
+          request.body.asJson.map { json =>
           val placeResult = json.validate[PopupRequest]
           placeResult.fold(
             errors => {
@@ -88,41 +85,47 @@ request.body.asJson.map { json =>
             }
           )
           }    
+         val emails = emails_hash.split(",").toList
+
+         emails.foreach { email => 
           BoardActor() ! StatusCheck
-          BoardActor() ! PopupMessage( target )
-          
-val email = Email(
-    subject = "Test mail",
-    from = EmailAddress("Minority app", "a@minorityapp.com"),
-    text = "<b>text</b>",
-    htmlText = "htmlText").to("Erik Westra TO", "iamjacke@gmail.com")
+          BoardActor() ! PopupMessage( target, email )
+          }
 
-Mailer.sendEmail(email)
-val result:Try[Unit] = Mailer.sendEmail(email)
+    /*
+    val email = Email(
+        subject = "Test mail",
+        from = EmailAddress("Minority app", "a@minorityapp.com"),
+        text = "<b>text</b>",
+        htmlText = "htmlText").to("Erik Westra TO", "iamjacke@gmail.com")
 
-result match {
-    case Success(_) => { println("success sended") }
-        //mail sent successfully
-    case Failure(SendEmailException(email, cause)) => 
-        //failed to send email, cause provides more information 
-    case Failure(SendEmailTransportCloseException(None, cause)) =>
-        //failed to close the connection, no email was sent
-    case Failure(SendEmailTransportCloseException(Some(Success(_)), cause)) =>
-        //failed to close the connection, the email was sent
-    case Failure(SendEmailTransportCloseException(Some(Failure(SendEmailException(email, cause1))), cause2)) =>
-        //failed to close the connection, the email was not sent
-  }
+    Mailer.sendEmail(email)
+    val result:Try[Unit] = Mailer.sendEmail(email)
 
-          Ok("sended")    
-
-
-
-    }
-
+    result match {
+        case Success(_) => { println("success sended") }
+            //mail sent successfully
+        case Failure(SendEmailException(email, cause)) => 
+            //failed to send email, cause provides more information 
+        case Failure(SendEmailTransportCloseException(None, cause)) =>
+            //failed to close the connection, no email was sent
+        case Failure(SendEmailTransportCloseException(Some(Success(_)), cause)) =>
+            //failed to close the connection, the email was sent
+        case Failure(SendEmailTransportCloseException(Some(Failure(SendEmailException(email, cause1))), cause2)) =>
+            //failed to close the connection, the email was not sent
+      }
+    */
+  Ok("sended")    
+}
 
 
-
-
+def sendInvite(emails_hash: String, invite_link: String) = SecuredAction { implicit request =>
+  val emails = emails_hash.split(",").toList
+  mailers.Mailer.sendInvite(subject = "Your invitation",
+             emails = emails, 
+             invite_link)
+  Ok("sended to" + emails_hash)
+}
 
 import play.api.libs.concurrent.Execution.Implicits._
 
@@ -245,17 +248,13 @@ object SumActor {
  * An actor that sums sequences of numbers
  */
 class SumActor(out: ActorRef, user: Option[DemoUser]) extends Actor {
-
   import SumActor._
-
-
   override def postStop() = {
     println("close")
     println(out)
     println
     //out.close()
   }
-
   def receive = {
     case Sum(values) => {
       out ! SumResult(values.fold(0)(_ + _ + 100), color = SumResult.color_rand, user.get.main.email)
@@ -302,9 +301,9 @@ class UserActor(uid: String, board: ActorRef, out: ActorRef) extends Actor with 
       println("msg")
       println(js)
       out ! js
-    case PopupMessage(target) =>
+    case PopupMessage(target, email) =>
       val js = Json.obj("type" -> "popup", "target" -> target)
-      out ! js
+      if (uid == email) { out ! js }
     case js: JsValue =>
       (js \ "msg").validate[String] map { Utility.escape(_) } foreach { board ! Message(uid, _ ) }
     case other =>
@@ -313,7 +312,10 @@ class UserActor(uid: String, board: ActorRef, out: ActorRef) extends Actor with 
 }
 
 object UserActor {
-  def props(uid: String)(out: ActorRef) = Props(new UserActor(uid, BoardActor(), out))
+  def props(uid: String)(out: ActorRef) = { 
+     play.api.Logger.info("notify conected: " + uid)
+    Props(new UserActor(uid, BoardActor(), out))
+  }
 }
 
 
@@ -339,9 +341,7 @@ class BoardActor extends Actor with ActorLogging {
     case Subscribe =>
       users += sender
       context watch sender
-    case StatusCheck => {
-      println(users.size)
-    }
+    case StatusCheck => println(users.size)
     case Terminated(user) => {
       println(user + " are terminated")
       users -= user
@@ -355,7 +355,7 @@ object BoardActor {
 }
 
 case class Message(uuid: String, s: String)
-case class PopupMessage(target: String)
+case class PopupMessage(target: String, email: String = "")
 case class PopupRequest(target: String)
 
 

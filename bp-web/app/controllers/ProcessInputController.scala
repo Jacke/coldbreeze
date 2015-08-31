@@ -57,26 +57,30 @@ class ProcessInputController(override implicit val env: RuntimeEnvironment[DemoU
   implicit val inLoggerWrites = Json.format[InputLogger]
 
   def invoke(bpID: Int)  = SecuredAction { implicit request =>
-    val userId = request.user.main.userId
-    val lang:String = models.AccountsDAO.getRolesAndLang(userId).get._3
+    if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, bpID)) {
+      val userId = request.user.main.userId
+      val lang:String = models.AccountsDAO.getRolesAndLang(userId).get._3
 
-    service.Build.run(bpID, Some(lang)) match {
-      case Some(process) => Ok(Json.toJson(Map("success" -> "station_id", "session" -> process.session_id.toString)))
-      case _ => Ok(Json.toJson(Map("error" -> "Error output")))
-    }
+      service.Build.run(bpID, Some(lang)) match {
+        case Some(process) => Ok(Json.toJson(Map("success" -> "station_id", "session" -> process.session_id.toString)))
+        case _ => Ok(Json.toJson(Map("error" -> "Error output")))
+      }
+    } else { Forbidden(Json.obj("status" -> "Access denied")) }  
   }
   def invokeFrom(session_id: Int, bpID: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
-    val pmsResult = request.body.validate[List[ReactionActivator]] 
+    if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, bpID)) {
 
-/*
-case class InputLogger(var id: Option[Int], 
-  uid:Option[String]=None, 
-  action:String, 
-  arguments:List[String], 
-  front_elem_id:Option[Int], 
-  space_elem_id:Option[Int], 
-  date: org.joda.time.DateTime,
-  station: Int)*/
+      val pmsResult = request.body.validate[List[ReactionActivator]] 
+
+    /*
+    case class InputLogger(var id: Option[Int], 
+      uid:Option[String]=None, 
+      action:String, 
+      arguments:List[String], 
+      front_elem_id:Option[Int], 
+      space_elem_id:Option[Int], 
+      date: org.joda.time.DateTime,
+      station: Int)*/
      // TODO: Input logger for reaction
     val input_logs = pmsResult.map{
                               case entity => entity.map { pm =>
@@ -109,16 +113,21 @@ case class InputLogger(var id: Option[Int],
       case Some(process) => Ok(Json.toJson(Map("success" -> process.session_id)))
       case _ => Ok(Json.toJson(Map("error" -> "Error output")))
     }
-  }
 
-  def inputLogs(BPid: Int) = Action { implicit request =>
+  } else { Forbidden(Json.obj("status" -> "Access denied")) }
+}
+
+def inputLogs(BPid: Int) = Action { implicit request =>
     Ok(Json.toJson(InputLoggerDAO.getByBP(BPid)))
-  } 
-  def inputLogsBySession(BPid: Int, session_id:Int) = Action { implicit request =>
+} 
+def inputLogsBySession(BPid: Int, session_id:Int) = Action { implicit request =>
     Ok(Json.toJson(InputLoggerDAO.getBySession(session_id)))
-  } 
+} 
 
-  def schemes(BPid: Int, station_id: Int) = SecuredAction { implicit request =>
+def schemes(BPid: Int, station_id: Int) = SecuredAction { implicit request =>
+    if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, BPid)) {
+
+
     val logs = BPLoggerDAO.findByStation(station_id)
     val elem_logs_ids = logs.diff(List(logs.last)).filter(log => log.element.isDefined).map(_.element)
     val space_logs_ids = logs.diff(List(logs.last)).filter(log => log.space_elem.isDefined).map(_.space_elem)
@@ -147,23 +156,23 @@ case class InputLogger(var id: Option[Int],
     else {
       BadRequest(Json.toJson(Map("error" -> "Forbidden")))
     }
-    
-  }
-
-  def isActor(email:String, actors: List[EmployeeDTO]):Boolean = {
-    actors.map(_.master_acc).contains(email)
-  }
-  def isAdmin(email:String, admins: List[String]):Boolean = {
-    admins.contains(email)
-  }
-  /**
-   * Halt
-   */
+} else { Forbidden(Json.obj("status" -> "Access denied")) }  
 }
 
-  case class InputParams(f_elem:Option[Int] = None,  
-                         sp_elem:Option[Int] = None,
-                         param:String, 
-                         arguments:Option[List[String]] = None)
+def isActor(email:String, actors: List[EmployeeDTO]):Boolean = {
+    actors.map(_.master_acc).contains(email)
+}
+def isAdmin(email:String, admins: List[String]):Boolean = {
+    admins.contains(email)
+}
+/**
+* Halt
+*/
+}
+
+case class InputParams(f_elem:Option[Int] = None,  
+                       sp_elem:Option[Int] = None,
+                       param:String, 
+                       arguments:Option[List[String]] = None)
 
 

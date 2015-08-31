@@ -34,12 +34,9 @@ object BusinessServiceForms {
 }
 
 class BusinessServiceController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
-  import play.api.Play.current
+   import play.api.Play.current
 
-
-
- val Home = Redirect(routes.ProfileController.dashboard())
-
+   val Home = Redirect(routes.ProfileController.dashboard())
    val serviceForm = Form(
     mapping(
       "id" -> optional(number),
@@ -83,6 +80,8 @@ class BusinessServiceController(override implicit val env: RuntimeEnvironment[De
       })
   }
   def update(id: Int) = SecuredAction { implicit request =>
+     if (serviceOwned(id, request.user.businessFirst)) {
+
       val services = BusinessServiceDAO.get(id)
       services match {
         case Some(service) =>
@@ -90,11 +89,12 @@ class BusinessServiceController(override implicit val env: RuntimeEnvironment[De
          Ok(views.html.businesses.service_edit_form(id, serviceForm.fill(srvc), request.user))
         case None => Ok("not found")
       }
-
-
-
-  }
+ } else {
+      Home
+ }  
+}
   def update_make(id: Int) = SecuredAction { implicit request =>
+     if (serviceOwned(id, request.user.businessFirst)) {
       val service = BusinessServiceDAO.get(id).get
 
       serviceForm.bindFromRequest.fold(
@@ -105,14 +105,29 @@ class BusinessServiceController(override implicit val env: RuntimeEnvironment[De
             case _ => "success" -> s"Entity ${entity.title} has been updated"
           })
         })
-
+    } else {
+      Home
+    }  
   }
   def destroy(id: Int) = SecuredAction { implicit request =>
+    if (serviceOwned(id, request.user.businessFirst)) {
       Home.flashing(BusinessServiceDAO.delete(id) match {
         case 0 => "failure" -> "Entity has Not been deleted"
         case x => "success" -> s"Entity has been deleted (deleted $x row(s))"
       })
+    } else {
+      Home
+    }
 
+  }
+
+  private def serviceOwned(id: Int, business_id: Int):Boolean = {
+      BusinessServiceDAO.get(id) match {
+        case Some(ser) => {
+          ser.business_id == business_id
+        }
+        case _ => false
+      }
   }
 
 }

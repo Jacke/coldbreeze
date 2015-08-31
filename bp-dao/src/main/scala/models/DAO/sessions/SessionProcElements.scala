@@ -54,9 +54,8 @@ case class SessionUndefElement(id: Option[Int],
                         type_title:String,
                         space_own:Option[Int],
                         order:Int,
-                        
-created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
-updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
+                        created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+                        updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
   
   /*
 

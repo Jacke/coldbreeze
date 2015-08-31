@@ -32,15 +32,19 @@ object Mailer {
 		api.templates.render("Minority", jl,jl)
 
 	}
-    def testSend(subject: String, body: String = "") = {
+  /*
+  def testSend(subject: String, body: String = "") = {
         if (body == "") {
         	send(subject, getTemplate(), List(), "")
         } else {
     	    send(subject, body, List(), "")
         }  
-    }
+  }
+  */
 
-	def send(subject: String = "test", body: String = "<h1>Hi pal!</h1><br />Really, I'm just saying hi!", emails: List[String] = List(), invite_link: String) = {
+	def sendInvite(subject: String = "test",
+           emails: List[String] = List(), 
+           invite_link: String) = {
 	  ping
       emails.foreach { email =>
       val msg = new MandrillMessage()

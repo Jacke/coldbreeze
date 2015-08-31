@@ -14,7 +14,7 @@ import models.DAO.conversion.DatabaseCred
   
 import main.scala.simple_parts.process.Units._
   
-class BPSwitchers(tag: Tag) extends Table[UnitSwitcher](tag, "bpswitchers") {
+class SessionSwitchers(tag: Tag) extends Table[SessionUnitSwitcher](tag, "session_switchers") {
   def id             = column[Int]("id", O.PrimaryKey, O.AutoInc) 
   def process        = column[Int]("bprocess_id")
   def switch_type    = column[String]("switch_type")
@@ -37,7 +37,7 @@ class BPSwitchers(tag: Tag) extends Table[UnitSwitcher](tag, "bpswitchers") {
           fn,
           target,          
           override_group,
-          created_at, updated_at) <> (UnitSwitcher.tupled, UnitSwitcher.unapply)
+          created_at, updated_at) <> (SessionUnitSwitcher.tupled, SessionUnitSwitcher.unapply)
 
 def stateFK             = foreignKey("sw_statefk", state, models.DAO.BPStateDAO.bpstates)(_.id, onDelete = ForeignKeyAction.Cascade)
 def session_state_refFK = foreignKey("sw_session_state_fk", session_state, BPSessionStateDAO.sessionstates)(_.id, onDelete = ForeignKeyAction.Cascade)
@@ -45,7 +45,7 @@ def session_state_refFK = foreignKey("sw_session_state_fk", session_state, BPSes
 }
 
 
-object SwitcherDAO {
+object SessionSwitcherDAO {
   /**
    * Actions
    */
@@ -56,51 +56,51 @@ object SwitcherDAO {
 
 
 
-  val switchers = TableQuery[BPSwitchers]
+  val session_switchers = TableQuery[SessionSwitchers]
 
-  def pull_object(s: UnitSwitcher) = database withSession {
+  def pull_object(s: SessionUnitSwitcher) = database withSession {
     implicit session ⇒
-      switchers returning switchers.map(_.id) += s
+      session_switchers returning session_switchers.map(_.id) += s
   }
-  def get(k: Int):Option[UnitSwitcher] = database withSession {
+  def get(k: Int):Option[SessionUnitSwitcher] = database withSession {
     implicit session ⇒
-      val q3 = for { s ← switchers if s.id === k } yield s
+      val q3 = for { s ← session_switchers if s.id === k } yield s
       q3.list.headOption 
   }
   def findByBPId(id: Int) = {
     database withSession { implicit session =>
-     val q3 = for { st ← switchers if st.process === id } yield st// <> (BPStationDTO.tupled, BPStationDTO.unapply _)
+     val q3 = for { st ← session_switchers if st.process === id } yield st// <> (BPStationDTO.tupled, BPStationDTO.unapply _)
 
       q3.list
     }
   }
-  def update(id: Int, switcher: UnitSwitcher) = database withSession { implicit session ⇒
-    val switcherToUpdate: UnitSwitcher = switcher.copy(Option(id))
-    switchers.filter(_.id === id).update(switcherToUpdate)
+  def update(id: Int, switcher: SessionUnitSwitcher) = database withSession { implicit session ⇒
+    val switcherToUpdate: SessionUnitSwitcher = switcher.copy(Option(id))
+    session_switchers.filter(_.id === id).update(switcherToUpdate)
   }
   def delete(id: Int) = database withSession { implicit session ⇒
-    switchers.filter(_.id === id).delete
+    session_switchers.filter(_.id === id).delete
   }
   def count: Int = database withSession { implicit session ⇒
-    Query(switchers.length).first
+    Query(session_switchers.length).first
   }
 
   def ddl_create = {
     database withSession {
       implicit session =>
-      switchers.ddl.create
+      session_switchers.ddl.create
     }
   }
   def ddl_drop = {
     database withSession {
       implicit session =>
-       switchers.ddl.drop
+       session_switchers.ddl.drop
     }
   }
 
   def getAll = database withSession {
     implicit session ⇒
-      val q3 = for { s ← switchers } yield s
+      val q3 = for { s ← session_switchers } yield s
       q3.list.sortBy(_.id)
   }
 }

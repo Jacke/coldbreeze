@@ -61,8 +61,8 @@ case class SessionSpaceElementDTO(id: Option[Int],
                         space_owned: Int,
                         space_role:Option[String],
                         order:Int,
-created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
-updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
+                        created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+                        updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
 	/*
   
   def cast(process: BProcess, space_dto: BPSpaceDTO):Option[ProcElems] = {

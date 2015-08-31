@@ -20,16 +20,13 @@ import models.Page
 import models.User
 import service.DemoUser
 import securesocial.core._
-import models.DAO.resources.{AccoutGroupDTO,
-AccountGroupDAO,
-GroupDTO,
-GroupsDAO}
+import models.DAO.resources.{AccoutGroupDTO,AccountGroupDAO,GroupDTO,GroupsDAO}
 import models.DAO.resources.ClientBusinessDAO
 import models.DAO.resources.web._
 import models.AccountDAO
 
-  import play.api.libs.json._
-    import play.api.libs.functional.syntax._
+import play.api.libs.json._
+import play.api.libs.functional.syntax._
 
 /**
  * Created by Sobolev on 22.07.2014.
@@ -37,13 +34,11 @@ import models.AccountDAO
 case class ActorCont(emps: List[EmployeeDTO], creds:List[AccountDAO])
 
 class EmployeeController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
-  import play.api.Play.current
-  import models.AccImplicits._
-   val Home = Redirect(routes.EmployeeController.index())
+   import play.api.Play.current
+   import models.AccImplicits._
+  val Home = Redirect(routes.EmployeeController.index())
 
-   case class UIDS(emails: List[String], manager: Boolean)
-
-
+  case class UIDS(emails: List[String], manager: Boolean)
   implicit val UIDSReads = Json.reads[UIDS]
   implicit val UIDSWrites = Json.format[UIDS]
   implicit val InputParamReads = Json.reads[EmployeeDTO]
@@ -106,27 +101,25 @@ class EmployeeController(override implicit val env: RuntimeEnvironment[DemoUser]
       }
       Ok(views.html.businesses.users.employees_group(
         Page(employees, 1, 1, employees.length), accounts, 1, "%", assign, assigned, groups, employees_ungrouped)(user))
-
   }
 
-
-  def actors() = SecuredAction { implicit request =>
+def actors() = SecuredAction { implicit request =>
      val user = request.user.main
      val employees:List[EmployeeDTO] = EmployeeDAO.getAllByMaster(user.email.get)
      val creds:List[AccountDAO] =  models.AccountsDAO.findAllByEmails(employees.map(_.master_acc))
-
       Ok(Json.toJson(ActorCont(employees, creds)))
-  }
-  def create() = SecuredAction { implicit request =>
+}
+def create() = SecuredAction { implicit request =>
         Ok(views.html.businesses.users.employee_form(employeeForm, request.user))
-  }
-  def create_new() = SecuredAction(BodyParsers.parse.json) { implicit request =>
-
+}
+def create_new() = SecuredAction(BodyParsers.parse.json) { implicit request =>
+  if (isEmployeeOwned(request.user.main.userId, request.user.businessFirst)) {
     request.body.validate[UIDS].map{
       case entity => { entity.emails.map {
             e => EmployeeDTO(None, e, request.user.main.email.get, None, entity.manager)
       }.map{ emp =>
-        EmployeeDAO.pull_object_for(emp, request.user.main.email.get)
+        val employee_id = EmployeeDAO.pull_object_for(emp, request.user.main.email.get)
+        EmployeesBusinessDAO.pull(employee_id = employee_id, business_id = request.user.businessFirst)
         controllers.CustomRegistration.handleStartSignUp(emp.uid, request.host)
       }
       Ok(Json.toJson(Map("success" -> Json.toJson(entity))))
@@ -134,19 +127,19 @@ class EmployeeController(override implicit val env: RuntimeEnvironment[DemoUser]
     }.recoverTotal{
       e => BadRequest(Json.toJson(Map("xx" -> 1)))
     }
-  }
-  def update(id: Int) = SecuredAction { implicit request =>
+  } else { Home }      
+}
+def update(id: Int) = SecuredAction { implicit request =>
       val employee = EmployeeDAO.get(id)
       employee match {
         case Some(employee) =>
          Ok(views.html.businesses.users.employee_edit_form(id, employeeForm.fill(employee), request.user))
         case None => Ok("not found")
       }
+}
+def update_make(id: Int) = SecuredAction { implicit request =>
+    if (isEmployeeOwned(request.user.main.userId, request.user.businessFirst)) {
 
-
-
-  }
-  def update_make(id: Int) = SecuredAction { implicit request =>
       employeeForm.bindFromRequest.fold(
         formWithErrors => BadRequest(views.html.businesses.users.employee_edit_form(id, formWithErrors, request.user)),
         entity => {
@@ -155,19 +148,21 @@ class EmployeeController(override implicit val env: RuntimeEnvironment[DemoUser]
             case _ => "success" -> s"Entity ${entity.uid} has been updated"
           })
         })
-
-  }
-  def assign_business(employee_id: Int, business_id: Int) = SecuredAction { implicit request =>
-      val business = BusinessDAO.get(business_id)
-      business match {
-        case Some(business) =>
-          EmployeesBusinessDAO.pull(employee_id = employee_id, business_id = business_id)
-          Home.flashing("success" -> s"Employee $employee_id was assigned")
-        case None => Home.flashing("failure" -> s"Business with $business_id not found")
-      }
-
-  }
-  def unassign_business(employee_id: Int, business_id: Int) = SecuredAction { implicit request =>
+    } else { Home }            
+}
+def assign_business(employee_id: Int, business_id: Int) = SecuredAction { implicit request =>
+      if (isEmployeeOwned(request.user.main.userId, request.user.businessFirst)) {
+        val business = BusinessDAO.get(business_id)
+        business match {
+          case Some(business) =>
+            EmployeesBusinessDAO.pull(employee_id = employee_id, business_id = business_id)
+            Home.flashing("success" -> s"Employee $employee_id was assigned")
+          case None => Home.flashing("failure" -> s"Business with $business_id not found")
+        }
+      } else { Home }            
+}
+def unassign_business(employee_id: Int, business_id: Int) = SecuredAction { implicit request =>
+      if (isEmployeeOwned(request.user.main.userId, request.user.businessFirst)) {
       val business = BusinessDAO.get(business_id)
       business match {
         case Some(business) =>
@@ -175,15 +170,26 @@ class EmployeeController(override implicit val env: RuntimeEnvironment[DemoUser]
           Home.flashing("success" -> s"Employee $employee_id was assigned")
         case None => Home.flashing("failure" -> s"Business with $business_id not found")
       }
-
-  }
-  def destroy(id: Int) = SecuredAction { implicit request =>
-
+    } else { Home }      
+}
+def destroy(id: Int) = SecuredAction { implicit request =>
+    if (isEmployeeOwned(request.user.main.userId, request.user.businessFirst)) {
       Home.flashing(EmployeeDAO.delete(id) match {
         case 0 => "failure" -> "Entity has Not been deleted"
         case x => "success" -> s"Entity has been deleted (deleted $x row(s))"
       })
-
+    } else { Home }
+}
+private def isEmployeeOwned(uid: String, business_id: Int):Boolean = { 
+  EmployeesBusinessDAO.getByUID(uid) match {
+    case Some(emp_biz) => {
+        EmployeeDAO.getByUID(uid) match {
+        case Some(emp) => (emp.manager == true && emp_biz._2 == business_id)
+        case _ => false
+        }
+    }
+    case _ => false
   }
+}
 
 }

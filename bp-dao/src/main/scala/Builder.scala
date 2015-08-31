@@ -49,24 +49,24 @@ object Build {
   
   val appLogger = Logger(LoggerFactory.getLogger("build"))
 
-  def toApplogger(msg: Any, log_type: String = "info") = {
+def toApplogger(msg: Any, log_type: String = "info") = {
     log_type match {
       case "debug" => appLogger.info(msg.toString)
       case "info" => appLogger.info(msg.toString)
       case "error" => appLogger.info(msg.toString)
     }
-  }
+}
   
-  def saveSession(bprocess: BProcess, bprocess_dto: BProcessDTO, lang: Option[String] = Some("en")) = {
+def saveSession(bprocess: BProcess, bprocess_dto: BProcessDTO, lang: Option[String] = Some("en")) = {
     val session = BPSession(
-  None, 
-  bprocess_dto.id.get,
-  Some(org.joda.time.DateTime.now()),
-  Some(org.joda.time.DateTime.now())
-  )
-      BPSessionDAO.pull_object(session)
+                            None, 
+                            bprocess_dto.id.get,
+                            Some(org.joda.time.DateTime.now()),
+                            Some(org.joda.time.DateTime.now())
+                            )
+    BPSessionDAO.pull_object(session)
   }
-  def saveSessionStates(bprocess: BProcess, bprocess_dto: BProcessDTO, session_id: Int, pulling: Boolean = false) = {
+def saveSessionStates(bprocess: BProcess, bprocess_dto: BProcessDTO, session_id: Int, pulling: Boolean = false) = {
     val origin_states = BPStateDAO.findByBP(bprocess_dto.id.get)
       val session_states = origin_states.map(state => 
         BPSessionState(
@@ -90,14 +90,13 @@ object Build {
           oposite = state.oposite,
           opositable = state.opositable))
 
-      var ids:List[Int] = List()
-      if (pulling) {
+    var ids:List[Int] = List()
+    if (pulling) {
         var ids:List[Int] = session_states.map(session_state => BPSessionStateDAO.pull_new_object(session_state)).filter(id => id != -1)
-      }
-
-      SessionStatesContainer(session_states, ids)
-  }
-  def saveOrUpdateSessionStates(bprocess: BProcess, bprocess_dto: BProcessDTO, session_id: Int, pulling: Boolean = false) = {
+    }
+    SessionStatesContainer(session_states, ids)
+}
+def saveOrUpdateSessionStates(bprocess: BProcess, bprocess_dto: BProcessDTO, session_id: Int, pulling: Boolean = false) = {
     val origin_states = BPStateDAO.findByBP(bprocess_dto.id.get)
     val session_states_old = BPSessionStateDAO.findByOriginIds(origin_states.map(_.id.get))
     val session_states:List[BPSessionState] = (bprocess.allElements.map(_.session_states.toList)).flatten ++ bprocess.session_states.toList
@@ -105,14 +104,11 @@ object Build {
     val deltas = session_states.filter { state =>
       session_states_old.find(old_state => old_state.id == state.id && 
       (old_state.on_rate != state.on_rate || old_state.on != state.on)).isDefined // TODO: 4-Dimension checking
-      
     }
-
-
-      var ids:List[Int] = List()
-      if (pulling) {
-        var ids:List[Int] = deltas.map(session_state => BPSessionStateDAO.update(session_state.id.get, session_state))
-      }
+    var ids:List[Int] = List()
+    if (pulling) {
+      var ids:List[Int] = deltas.map(session_state => BPSessionStateDAO.update(session_state.id.get, session_state))
+    }
 
       SessionStatesContainer(session_states, ids)
   }
@@ -259,7 +255,6 @@ def initiate2(bpID: Int,
     if (with_pulling) {
     //} else {
       session_states = Build.saveSessionStates(processRunned, bpDTO, session_id, pulling = true).session_states
-     
       val obj = BPSessionStateDAO.findByBPAndSession(bpID, session_id)
       session_states = SessionStatesContainer(obj, obj.map(o => o.id.getOrElse(0))).session_states
     }
