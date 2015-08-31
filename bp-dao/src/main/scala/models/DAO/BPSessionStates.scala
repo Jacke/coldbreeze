@@ -69,7 +69,6 @@ object BPSessionStateDAO {
     implicit session ⇒
       sessionstates returning sessionstates.map(_.id) += s
   }
-
   /**
    * Filter session state with existed entity, for avoiding possible override
    * @param s BPSessionState
@@ -82,7 +81,6 @@ object BPSessionStateDAO {
         case _ => sessionstates returning sessionstates.map(_.id) += s
       }
   }
-
   def findByBP(id: Int):List[BPSessionState] = database withSession {
     implicit session =>
     val q3 = for { s <- sessionstates if s.process === id } yield s
@@ -113,13 +111,11 @@ object BPSessionStateDAO {
     val q3 = for { s ← sessionstates if s.origin_state === id } yield s
       q3.list.headOption
   }
-
   def get(k: Int):Option[BPSessionState] = database withSession {
     implicit session ⇒
       val q3 = for { s ← sessionstates if s.id === k } yield s
       q3.list.headOption 
   }
-
   def update(id: Int, bpsession: BPSessionState) = database withSession { implicit session ⇒
     val bpToUpdate: BPSessionState = bpsession.copy(Option(id))
     sessionstates.filter(_.id === id).update(bpToUpdate)
@@ -130,7 +126,6 @@ object BPSessionStateDAO {
   def count: Int = database withSession { implicit session ⇒
     Query(sessionstates.length).first
   }
-
   def ddl_create = {
     database withSession {
       implicit session =>

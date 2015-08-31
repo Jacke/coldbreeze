@@ -25,23 +25,21 @@ case class EmployeeDTO(var id: Option[Int], uid: String, master_acc:String, posi
 
 
 object EmployeeDAO {
-  import scala.util.Try
-  import DatabaseCred.database
-
+ import scala.util.Try
+ import DatabaseCred.database
  val employees = TableQuery[Employees]
-  //val db = DB.getDataSource()
 
  def pull_object(s: EmployeeDTO) = database withSession {
     implicit session ⇒
       
-      employees returning employees.map(_.id) += s//(value = (None, s.uid))//(EmployeeDTO.unapply(s).get._2, EmployeeDTO.unapply(s).get._3)
+      employees returning employees.map(_.id) += s
   }
-def pull_object_for(s: EmployeeDTO, email: String) = database withSession {
+def pull_object_for(s: EmployeeDTO, email: String):Int = database withSession {
   implicit session ⇒
-
     if (!getAllByMaster(email).map(_.uid).contains(s.uid)) {
-
-      employees returning employees.map(_.id) += s //(value = (None, s.uid))//(EmployeeDTO.unapply(s).get._2, EmployeeDTO.unapply(s).get._3)
+      employees returning employees.map(_.id) += s
+    } else {
+      -1
     }
  }
   def get(k: Int) = database withSession {
@@ -93,14 +91,9 @@ def pull_object_for(s: EmployeeDTO, email: String) = database withSession {
 
   def getAll = database withSession {
     implicit session ⇒
-      val q3 = for { s ← employees } yield s //<> (EmployeeDTO.tupled, EmployeeDTO.unapply _)
+      val q3 = for { s ← employees } yield s
       q3.list.sortBy(_.id)
-    //suppliers foreach {
-    //  case (id, uid, address, city, state, zip) ⇒
-    //    Supplier(id, uid, address, city, state, zip)
-    //}
   }
-
   def ddl_create = {
     database withSession {
       implicit session =>

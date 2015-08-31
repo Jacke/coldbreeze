@@ -38,8 +38,8 @@ case class SessionSpaceDTO(id: Option[Int],
                       brick_front:Option[Int]=None,
                       brick_nested:Option[Int]=None, 
                       nestingLevel: Int = 1,
-created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
-updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
+                      created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+                      updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
   
 import main.scala.utils._
 import main.scala.bprocesses._
@@ -82,12 +82,14 @@ import main.scala.bprocesses._
   
   }
 */
+
 }
+
 /*
 object SpaceDCO {
   def conv(el: UnitSpaceRef, business: Int, process: Int, index: Int, brick_front: Int): BPSpaceDTO = {
     BPSpaceDTO(
-None,
+                      None,
                       process, 
                       index, 
                       container = true, 
@@ -95,9 +97,8 @@ None,
                       brick_front = Some(brick_front),
                       brick_nested=None, 
                       nestingLevel = 1,
-el.created_at,
-el.updated_at 
-)
+                      el.created_at,
+                      el.updated_at)
   }
 }
 */
