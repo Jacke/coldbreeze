@@ -72,11 +72,11 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
       val user = request.user.main.userId
       val current_plan = AccountPlanDAO.getByMasterAcc(user).get
       applicationLogger.info(s"Plan expired_at: ${current_plan.expired_at}")
-      if (current_plan.expired_at.isBefore( org.joda.time.DateTime.now() ) ) {
-        Redirect(routes.PlanController.index)
-      } else {
-    Ok(views.html.app(request.user))
-      }
+      //if (current_plan.expired_at.isBefore( org.joda.time.DateTime.now() ) ) {
+      //  Redirect(routes.PlanController.index)
+      //} else {
+          Ok(views.html.app(request.user))
+      //}
   }
 
   def proPage() = SecuredAction { implicit request =>

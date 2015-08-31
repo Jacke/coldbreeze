@@ -50,7 +50,7 @@ object EmployeesBusinessDAO {
   }
   def getByUID(email: String):Option[Tuple2[Int, Int]] = database withSession {
     implicit session =>
-      val emp = EmployeeDAO.getByUID(email) match {
+      val emp = EmployeeDAO.getByEmployeeUID(email) match {
         case Some(x) => x.id
         case _ => None
       }

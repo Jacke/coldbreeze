@@ -53,7 +53,13 @@ def pull_object_for(s: EmployeeDTO, email: String):Int = database withSession {
       q3.list
   }
  
-
+  def getByEmployeeUID(uid: String) = database withSession {
+    implicit session =>
+    val q3 = for { s ← employees if s.uid === uid } yield s// <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)
+      println(q3.selectStatement)
+      println(q3.list)
+      q3.list.headOption
+  }
   def getByUID(uid: String) = database withSession {
     implicit session =>
     val q3 = for { s ← employees if s.uid === uid && s.master_acc === uid } yield s// <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)

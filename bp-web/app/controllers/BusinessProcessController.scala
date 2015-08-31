@@ -85,7 +85,7 @@ class BusinessProcessController(override implicit val env: RuntimeEnvironment[De
 
   def bprocess = SecuredAction { implicit request =>
     val bprocess = BPDAO.getAll // TODO: Not safe
-    val user_services = BusinessServiceDAO.getByMaster(request.user.main.email.getOrElse("")).map(_.id)
+    val user_services = BusinessServiceDAO.getByMaster(request.user.masterFirst).map(_.id)
     // TODO: Add for actor, if they assigned to process
     val user = request.user
 
