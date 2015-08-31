@@ -27,8 +27,8 @@ object BRes {
     
     // Front elements, space, space elements
     // * CRUD
-def procIsOwnedByBiz(business: Int, id: Int):Boolean = {
-    BPDAO.get(id) match {
+def procIsOwnedByBiz(business: Int, process_id: Int):Boolean = {
+    BPDAO.get(process_id) match {
       case Some(bprocess) => { 
         if (bprocess.business == business) {
           true 
@@ -51,7 +51,7 @@ def stationSecured(station_id: Int, email: String, business_id: Int):Boolean = {
 def sessionSecured(session_id: Int, email: String, business_id: Int): Boolean = {
   BPSessionDAO.get(session_id) match {
     case Some(session) => {
-      procIsOwnedByBiz(session.process, business_id)
+      procIsOwnedByBiz(process_id = session.process, business = business_id)
     }
     case _ => false
   }
