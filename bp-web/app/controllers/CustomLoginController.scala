@@ -94,6 +94,7 @@ object CustomRegistration {
               //mail.sendHtml(views.html.mailer.ActorAdd.render(token.email, host).body)
               // SEND WELCOME
               //Mailer.sendAlreadyRegisteredEmail(user)
+              play.Logger.of("accesslog").info(s"employment registration for $email with token $token")
             }
             case None => {
               val token = createToken(email, isSignUp = true)
@@ -105,8 +106,7 @@ object CustomRegistration {
               mail.setFrom("app@minorityapp.com")
               //views.html.mailBody.render(user).body();
               //mail.sendHtml(views.html.mailer.ActorAdd.render(token._1, host).body)
-
-
+              play.Logger.of("accesslog").info(s"employment registration for $email with token $token")
               //Mailer.sendAlreadyRegisteredEmail(user)
           }
 
