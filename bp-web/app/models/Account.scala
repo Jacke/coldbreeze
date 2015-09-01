@@ -355,7 +355,7 @@ object AccountsDAO {
 
   def getRolesAndLang(email: String): Option[Tuple3[Boolean, Boolean, String]] ={
     val manager = AccountPlanDAO.getByMasterAcc(email).isDefined
-    val employee = models.DAO.resources.EmployeeDAO.getByUID(email) match {
+    val employee = models.DAO.resources.EmployeeDAO.getByEmployeeUID(email) match {
       case Some(emp) => true
       case _ => false
     }

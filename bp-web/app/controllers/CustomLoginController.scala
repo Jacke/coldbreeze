@@ -66,6 +66,8 @@ import securesocial.controllers.Registration
 import com.typesafe.plugin._
 import controllers._
 import play.api.i18n.Lang
+import scala.concurrent._
+import ExecutionContext.Implicits.global
 
 object CustomRegistration {
 
@@ -94,7 +96,15 @@ object CustomRegistration {
               //mail.sendHtml(views.html.mailer.ActorAdd.render(token.email, host).body)
               // SEND WELCOME
               //Mailer.sendAlreadyRegisteredEmail(user)
-              play.Logger.of("accesslog").info(s"employment registration for $email with token $token")
+              play.Logger.info(s"employment registration for $email with token $token")
+              play.Logger.info(s".... INVITE LINK ...")
+              play.Logger.info(s"/auth/signup/$token")
+              play.Logger.info(s".... INVITE LINK ...")
+              Future {
+                mailers.Mailer.sendInvite(subject = "Invitation as employee",
+                emails = List(email), 
+                invite_link = token.uuid)              
+              }
             }
             case None => {
               val token = createToken(email, isSignUp = true)
@@ -106,7 +116,15 @@ object CustomRegistration {
               mail.setFrom("app@minorityapp.com")
               //views.html.mailBody.render(user).body();
               //mail.sendHtml(views.html.mailer.ActorAdd.render(token._1, host).body)
-              play.Logger.of("accesslog").info(s"employment registration for $email with token $token")
+              play.Logger.info(s"employment arleady defined registration for $email !!!!!")
+              play.Logger.info(s".... PLEASE STANBY ...")
+              //play.Logger.info(s"/auth/signup/$token")
+              play.Logger.info(s".... PLEASE STANBY ...")
+              //Future {
+              //    mailers.Mailer.sendInvite(subject = "Invitation as employee",
+              //    emails = List(email), 
+              //    invite_link = token._2.uuid) 
+              //}
               //Mailer.sendAlreadyRegisteredEmail(user)
           }
 

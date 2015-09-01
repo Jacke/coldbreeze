@@ -69,9 +69,10 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
 
   def app() = SecuredAction { implicit request =>
     // Expired plan checking
-      val user = request.user.main.userId
-      val current_plan = AccountPlanDAO.getByMasterAcc(user).get
-      applicationLogger.info(s"Plan expired_at: ${current_plan.expired_at}")
+      AccountPlanDAO.getByMasterAcc(request.user.masterFirst) match {
+        case Some(current_plan) => applicationLogger.info(s"Plan expired_at: ${current_plan.expired_at}")
+        case _ =>
+      }
       //if (current_plan.expired_at.isBefore( org.joda.time.DateTime.now() ) ) {
       //  Redirect(routes.PlanController.index)
       //} else {

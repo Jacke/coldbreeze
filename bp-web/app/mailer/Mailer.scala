@@ -45,7 +45,7 @@ object Mailer {
 	def sendInvite(subject: String = "test",
            emails: List[String] = List(), 
            invite_link: String) = {
-	  ping
+	    ping
       emails.foreach { email =>
       val msg = new MandrillMessage()
       msg.setSubject(subject)
