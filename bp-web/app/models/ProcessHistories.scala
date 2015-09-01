@@ -14,16 +14,17 @@ import com.github.tminglei.slickpg.composite._
 class ProcessHistories(tag: Tag) extends Table[ProcessHistoryDTO](tag, "process_histories") {
   def id       = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def acc      = column[String]("master_acc")
-  def process  = column[Int]("process_id")
-  def date     = column[org.joda.time.DateTime]("date")
+  def process  = column[Option[Int]]("process_id")
   def action   = column[String]("action")
   def what     = column[Option[String]]("what")
+  def what_id  = column[Option[Int]]("what_id")
+  def date     = column[org.joda.time.DateTime]("date")
 
-  def bpFK     = foreignKey("pr_hist_bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK     = foreignKey("pr_hist_bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id)
   def accFK    = foreignKey("pr_hist_macc_fk", acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
 
 
-  def * = (id.?, acc, process, action, date, what) <> (ProcessHistoryDTO.tupled, ProcessHistoryDTO.unapply)
+  def * = (id.?, acc, action, process, what, what_id, date) <> (ProcessHistoryDTO.tupled, ProcessHistoryDTO.unapply)
 
 }
 
@@ -33,17 +34,40 @@ class ProcessHistories(tag: Tag) extends Table[ProcessHistoryDTO](tag, "process_
 /*
   Process Histories
  */
-case class ProcessHistoryDTO(var id: Option[Int], acc: String, process: Int, action: String, date: DateTime, what: Option[String] = None) {
+case class ProcessHistoryDTO(var id: Option[Int], 
+  acc: String, 
+  action: String,
+  process: Option[Int], 
+  what: Option[String] = None,
+  what_id: Option[Int] = None,
+  date: DateTime) {
+   
 }
 object ProcHisCom {
-  def apply(id: Option[Int], acc: String, process: Int, action: String, date: DateTime, what: Option[String] = None):ProcessHistoryDTO = {
-    new ProcessHistoryDTO(id, acc, process, action, date, what)
+  def apply(id: Option[Int], 
+    acc: String, 
+    action: String, 
+    process: Option[Int], 
+    what: Option[String] = None, 
+    what_id: Option[Int] = None, 
+    date: DateTime = org.joda.time.DateTime.now()):ProcessHistoryDTO = {
+    new ProcessHistoryDTO(id, acc, action, process, what, what_id, date)
   }
+  def processCreated = "process_created"
+  def processUpdated = "process_updated"
+  def processDeleted = "process_deleted"
   def elementCreated = "elem_created"
   def elementRenamed = "element_renamed"
   def elementDeleted = "element_deleted"
   def elementMovedUp = "element_up"
   def elementDown    = "element_down"
+  def spaceElementCreated      = "space_elem_created"
+  def spaceElementRenamed      = "space_element_renamed"
+  def spaceElementDeleted      = "space_element_deleted"
+  def spaceElementMovedUp      = "space_element_up"
+  def spaceElementMovedDown    = "element_down"  
+  def permCreated              = "perm_created"
+  def permDeleted              = "perm_deleted"
 }
 
 object ProcHistoryDAO {

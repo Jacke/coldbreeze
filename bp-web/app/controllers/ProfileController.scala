@@ -37,9 +37,9 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
 
       var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(email).get
 
-      if (!request.user.isEmployee && !arePlanExist(email)) {
-                                                            // Initiate env for new user
-        utilities.NewUserRoutine.initiate_env(email)        // run routine
+      if (!isEmployee) {// && !arePlanExist(email)) {
+                                                              // Initiate env for new user
+        utilities.NewUserRoutine.initiate_env(email)          // run routine
         //request.user.renewPermissions()                     // renew permission
         var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(email).get
         println("redirect")

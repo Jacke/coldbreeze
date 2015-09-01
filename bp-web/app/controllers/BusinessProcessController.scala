@@ -155,6 +155,10 @@ def create_bprocess = SecuredAction(BodyParsers.parse.json) { request =>
         case _@id:Int => { 
           AutoTracer.defaultStatesForProcess(process_id = id)
           utilities.NewUserRoutine.defaultPermsForAnalytics(process_id = id, business = bprocess.business)
+
+          action(request.user.main.userId, process = Some(id), 
+                 action = ProcHisCom.processCreated, what = Some(ProcHisCom.processCreated), what_id = Some(id))
+
           Ok(Json.obj("status" ->"OK", "message" -> ("Bprocess '"+bprocess.id+"' saved.") ))  
         }
       }
@@ -172,6 +176,10 @@ def update_bprocess(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit 
         bprocess => { 
           if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, id)) {
               BPDAO.update(id, bprocess.copy(business = business))
+              
+              action(request.user.main.userId, process = Some(id), 
+                 action = ProcHisCom.processUpdated, what = Some(ProcHisCom.processUpdated), what_id = Some(id)) 
+
               Ok(Json.obj("status" ->"OK", "message" -> ("Bprocess '"+bprocess.title+"' saved.") ))  
             } else {
               Forbidden(Json.obj("status" -> "Access denied"))
@@ -185,7 +193,10 @@ def delete_bprocess(id: Int) = SecuredAction { implicit request =>
      BPDAO.get(id) match {
       case Some(bprocess) => { 
         if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, id)) {
-           Ok(Json.toJson(BPDAO.delete(id))) } else {
+           action(request.user.main.userId, process = Some(id), 
+             action = ProcHisCom.processDeleted, what = Some(ProcHisCom.processDeleted), what_id = Some(id))            
+           Ok(Json.toJson(BPDAO.delete(id))) 
+           } else {
            Forbidden(Json.obj("status" -> "Access denied"))
         }
       }
@@ -195,8 +206,6 @@ def delete_bprocess(id: Int) = SecuredAction { implicit request =>
 
 /* Index */
 def frontElems(id: Int) = SecuredAction { implicit request =>
-    println("test")
-    println(security.BRes.procIsOwnedByBiz(request.user.businessFirst, id))
     if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, id)) {
         Ok(Json.toJson(ProcElemDAO.findByBPId(id)))
     } else { Forbidden(Json.obj("status" -> "Access denied")) }
@@ -304,10 +313,20 @@ def createFrontElem() = SecuredAction(BodyParsers.parse.json) { implicit request
 request.body.validate[RefElemContainer].map{ 
   case entity => {
          if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, entity.process)) {
-            haltActiveStations(entity.process);RefDAO.retrive(entity.ref, entity.process, entity.business, in = "front", entity.title, entity.desc, space_id = None) match {//ProcElemDAO.pull_object(entity) match {
+            haltActiveStations(entity.process)
+            RefDAO.retrive(entity.ref, entity.process, entity.business, in = "front", entity.title, entity.desc, space_id = None) match {//ProcElemDAO.pull_object(entity) match {
             case None =>  Ok(Json.toJson(Map("failure" ->  s"Could not create front element ${entity.title}")))
-            case id =>  { 
-              Ok(Json.toJson(Map("success" ->  Json.toJson(id))))
+            case ref_resulted =>  { 
+              val element_result = ref_resulted
+              val elem_id = element_result match {
+                case Some(res) => res.proc_elems.headOption 
+                case _ => None
+              }
+              action(request.user.main.userId, process = Some(entity.process), 
+                action = ProcHisCom.elementCreated, 
+                what = Some(entity.title), 
+                what_id = elem_id)                 
+              Ok(Json.toJson(Map("success" ->  Json.toJson(ref_resulted))))
             }
           }
         } else { Forbidden(Json.obj("status" -> "Access denied")) }
@@ -353,7 +372,18 @@ def createSpaceElem() = SecuredAction(BodyParsers.parse.json) { implicit request
                 entity.desc, 
                 entity.space_id) match { //SpaceElemDAO.pull_object(entity) match {
                     case None =>  Ok(Json.toJson(Map("failure" ->  s"Could not create space element ${entity.title}")))
-                    case id =>  Ok(Json.toJson(Map("success" ->  Json.toJson(id))))
+                    case ref_resulted =>   { 
+                      val element_result = ref_resulted
+                      val elem_id = element_result match {
+                        case Some(res) => res.space_elems.headOption
+                        case _ => None
+                      }                      
+                      action(request.user.main.userId, process = Some(entity.process), 
+                        action = ProcHisCom.spaceElementCreated, 
+                        what = Some(entity.title), 
+                        what_id = elem_id)                        
+                      Ok(Json.toJson(Map("success" ->  Json.toJson(ref_resulted))))
+                    }
                   }
           } else { Forbidden(Json.obj("status" -> "Access denied")) }
       }
@@ -370,8 +400,12 @@ def updateFrontElem(bpId: Int, elem_id: Int) = SecuredAction(BodyParsers.parse.j
     case entity => { 
           if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, entity.bprocess)) {
               ProcElemDAO.update(elem_id,entity) match {
-                case false =>  Ok(Json.toJson(Map("failure" ->  s"Could not update front element ${entity.title}")))
-                case _ =>  Ok(Json.toJson(entity.id))
+                case -1   =>  Ok(Json.toJson(Map("failure" ->  s"Could not update front element ${entity.title}")))
+                case _@id => {
+                 action(request.user.main.userId, process = Some(entity.bprocess), 
+                  action = ProcHisCom.elementRenamed, what = Some(entity.title), what_id = Some(id))                                          
+                 Ok(Json.toJson(entity.id))
+                }
               }          
           } else { Forbidden(Json.obj("status" -> "Access denied")) }
     }
@@ -401,7 +435,12 @@ def updateSpaceElem(id: Int, spelem_id: Int) = SecuredAction(BodyParsers.parse.j
         if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, entity.bprocess)) {
              SpaceElemDAO.update(spelem_id,entity) match {
                 case false =>  Ok(Json.toJson(Map("failure" ->  s"Could not update space element ${entity.title}")))
-                case _ =>  Ok(Json.toJson(entity.id))
+                case _ => {
+                 action(request.user.main.userId, process = Some(entity.bprocess), 
+                  action = ProcHisCom.spaceElementRenamed, what = Some(entity.title), what_id = Some(id))                                          
+
+                 Ok(Json.toJson(entity.id))
+                }
              }
         } else { Forbidden(Json.obj("status" -> "Access denied")) }
     }
@@ -413,6 +452,9 @@ def updateSpaceElem(id: Int, spelem_id: Int) = SecuredAction(BodyParsers.parse.j
 def moveUpFrontElem(bpId: Int, elem_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, bpId)) {
           ProcElemDAO.moveUp(bpId, elem_id)
+          action(request.user.main.userId, process = Some(bpId), 
+           action = ProcHisCom.elementMovedUp, what = Some(ProcHisCom.elementMovedUp), what_id = Some(elem_id))                                          
+
           Ok(Json.toJson("moved"))
     } else { Forbidden(Json.obj("status" -> "Access denied")) }
 
@@ -420,18 +462,29 @@ def moveUpFrontElem(bpId: Int, elem_id: Int) = SecuredAction(BodyParsers.parse.j
 def moveDownFrontElem(bpId: Int, elem_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, bpId)) {
       ProcElemDAO.moveDown(bpId, elem_id)
+      action(request.user.main.userId, process = Some(bpId), 
+        action = ProcHisCom.elementDown, what = Some(ProcHisCom.elementDown), what_id = Some(elem_id))                                          
+
       Ok(Json.toJson("moved"))
     } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
 def moveUpSpaceElem(id: Int, spelem_id: Int, space_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
-    if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, id)) {
+    val process_id = id
+    if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, process_id)) {
       SpaceElemDAO.moveUp(id, spelem_id, space_id)
+      action(request.user.main.userId, process = Some(process_id), 
+        action = ProcHisCom.spaceElementMovedUp, what = Some(ProcHisCom.spaceElementMovedUp), what_id = Some(spelem_id))                                          
+
       Ok(Json.toJson("moved"))
     } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
 def moveDownSpaceElem(id: Int, spelem_id: Int, space_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
-    if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, id)) {
+    val process_id = id
+    if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, process_id)) {
       SpaceElemDAO.moveDown(id, spelem_id, space_id)
+      action(request.user.main.userId, process = Some(process_id), 
+        action = ProcHisCom.spaceElementMovedDown, what = Some(ProcHisCom.spaceElementMovedDown), what_id = Some(spelem_id))                                          
+
       Ok(Json.toJson("moved"))
     } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
@@ -443,10 +496,17 @@ def moveDownSpaceElem(id: Int, spelem_id: Int, space_id: Int) = SecuredAction(Bo
 /* Delete */
 def deleteFrontElem(bpID: Int, elem_id: Int) = SecuredAction { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, bpID)) {
-
+      val elem = ProcElemDAO.findById(elem_id).get
+      
       haltActiveStations(bpID);ProcElemDAO.delete(elem_id) match {
             case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
-            case x =>  deleteOwnedSpace(elem_id = Some(elem_id), spelem_id = None);Ok(Json.toJson(Map("success" -> s"Entity has been deleted (deleted $x row(s))")))
+            case x =>  { 
+              deleteOwnedSpace(elem_id = Some(elem_id), spelem_id = None);
+              action(request.user.main.userId, process = Some(bpID), 
+                action = ProcHisCom.elementDeleted, what = Some(elem.title), what_id = Some(elem_id))                                          
+
+              Ok(Json.toJson(Map("success" -> s"Entity has been deleted (deleted $x row(s))")))
+            }
           }
      } else { Forbidden(Json.obj("status" -> "Access denied")) } 
 }
@@ -461,10 +521,17 @@ def deleteSpace(bpID: Int, space_id: Int) = SecuredAction { implicit request =>
 }
 def deleteSpaceElem(bpID: Int, spelem_id: Int) = SecuredAction { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, bpID)) {
-
-    haltActiveStations(bpID);SpaceElemDAO.delete(spelem_id) match {
+      val spelem = SpaceElemDAO.findById(spelem_id).get
+      haltActiveStations(bpID)
+      SpaceElemDAO.delete(spelem_id) match {
         case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
-        case x =>  deleteOwnedSpace(elem_id = None, spelem_id = Some(spelem_id));Ok(Json.toJson(Map("success" -> s"Entity has been deleted (deleted $x row(s))")))
+        case x =>  { 
+          deleteOwnedSpace(elem_id = None, spelem_id = Some(spelem_id))
+          action(request.user.main.userId, process = Some(bpID), 
+            action = ProcHisCom.spaceElementDeleted, what = Some(spelem.title), what_id = Some(spelem_id))                                          
+
+          Ok(Json.toJson(Map("success" -> s"Entity has been deleted (deleted $x row(s))")))
+        }
       }
     } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
@@ -575,10 +642,9 @@ import ProcHistoryDAO._
 // action: String, 
 // date: DateTime, 
 // what: Option[String] = None)
-private def action(acc: String, process: Int, action: String, what: Option[String]=None) = {
+private def action(acc: String, process: Option[Int], action: String, what: Option[String]=None, what_id: Option[Int]=None) = {
   ProcHistoryDAO.pull_object(ProcessHistoryDTO(
-    None, acc, process, action, org.joda.time.DateTime.now(), what
-    ))
+    None, acc, action, process, what, what_id, org.joda.time.DateTime.now() ))
 }
 private def haltActiveStations(BPid: Int) = {
     BPDAO.get(BPid) match {

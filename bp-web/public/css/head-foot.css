@@ -538,6 +538,7 @@ svg.svg-logo {
 }
 .minorityLogo:hover polygon#e1_polygon {
   fill: #7FDBFF;
+  transition: all .7s ease-in-out;
 }
 polygon#e1_polygon {
   fill: white;
@@ -1421,6 +1422,7 @@ ul.minMenuList.minMenuTexts {
 
 .themeDark .minorityMenu .minMenuItem a {
     color: #959cad;
+    transition: all .3s ease-in-out;
 }
 
 .themeDark .minorityMenu .minMenuItem a.selected {
@@ -1431,16 +1433,26 @@ ul.minMenuList.minMenuTexts {
     color: #7FDBFF !important;
 }
 .themeDark .minorityMenu .minMenuItem a:hover, .themeDark .minorityMenu .minMenuItem a.active {
-color: #7FDBFF;
+    color: #7FDBFF;
+    transition: all .5s ease-in-out;
 }
-.themeDark .minorityMenu .minMenuItem a:hover:before, .themeDark .minorityMenu .minMenuItem a.active:before  {
+
+.themeDark .minorityMenu .minMenuItem a:before, .themeDark .minorityMenu .minMenuItem a.active:before {
+    border-top: 3px solid transparent;
+    display: block;
+    content: ' ';
+    padding-top: 28px;
+    margin-top: -31px;
+    transition: all .3s ease-in-out;
+}
+.themeDark .minorityMenu .minMenuItem a:hover:before, .themeDark .minorityMenu .minMenuItem a.active:before {
     border-top: 3px solid #7FDBFF;
     display: block;
     content: ' ';
     padding-top: 28px;
     margin-top: -31px;
+    transition: all .3s ease-in-out;
 }
-
 .themeDark .minorityMenu .menuHelp.selected .switcherToggle {
     background: none;
 }
@@ -1511,7 +1523,9 @@ color: #7FDBFF;
 .themeDark .minorityMenu .secondaryNav {
     color: #ddd;
 }
-
+.secondaryNav.switcherWrap.menuCell {
+    font-family: 'Proxima Nova','Helvetica',sans-serif;
+}
 .themeDark .minorityMenu .secondaryNav .secondaryNavLayer {
     background-color: #575e70;
 }

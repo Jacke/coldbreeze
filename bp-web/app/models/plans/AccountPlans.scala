@@ -39,12 +39,12 @@ object AccountPlanDAO {
     implicit session ⇒
       account_plans returning account_plans.map(_.id) += s
   }
-  def get(k: Int) = database withSession {
+  def get(k: Int):Option[AccountPlanDTO] = database withSession {
     implicit session ⇒
       val q3 = for { s ← account_plans if s.id === k } yield s 
       q3.list.headOption
   }
-  def getByMasterAcc(email: String) = database withSession {
+  def getByMasterAcc(email: String):Option[AccountPlanDTO] = database withSession {
   	implicit session =>
   	val q3 = for { s ← account_plans if s.master_acc === email } yield s 
       q3.list.headOption

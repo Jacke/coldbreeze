@@ -181,14 +181,13 @@ object ProcElemDAO {
     implicit session ⇒
       proc_elements returning proc_elements.map(_.id) += s
   }
-  def update(id: Int, entity: UndefElement):Boolean = {
+  def update(id: Int, entity: UndefElement):Int = {
     database withSession { implicit session =>
       findById(id) match {
       case Some(e) => {
         proc_elements.filter(_.id === id).update(entity)
-        true
       }
-      case None => false
+      case None => -1
       }
     }
   }

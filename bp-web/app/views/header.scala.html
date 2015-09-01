@@ -70,7 +70,7 @@
         <span class="uicon-svg14"></span>
         Refs</a>
     </li> -->
-    @if(user.isManager) {
+    @if(user.isManager && user.main.userId == user.masterFirst) {
     <li class="minMenuItem">
       <a id="teamMembersLink" class="vIcoIn menuEntityLink" href="@users.routes.EmployeeController.index()">
         <span class="uicon-svg98"></span>@Messages("nav.people")(LangDet.getLang(user) )  </a>

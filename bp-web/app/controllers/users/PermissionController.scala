@@ -170,6 +170,9 @@ val elemPermForm = Form(
         ActPermissionDAO.pull_object(perm) match {
           case -1 => BadRequest(Json.obj("status" -> "Cannot create permission"))
           case _@id:Int => { 
+          action(request.user.main.userId, process = Some(perm.process), 
+            action = ProcHisCom.permCreated, what = Some(ProcHisCom.permCreated), what_id = perm.id)                                          
+
             Ok(Json.obj("status" ->"OK", "message" -> ("Perm '"+perm.id+"' saved.") ))  
           }
         }
@@ -179,7 +182,7 @@ val elemPermForm = Form(
   }
  
 
-  def update(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def update(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
     val permResult = request.body.validate[ActPermission]
       permResult.fold(
         errors => {
@@ -190,16 +193,30 @@ val elemPermForm = Form(
           Ok(Json.obj("status" ->"OK", "message" -> ("Perm '"+perm.id+"' updated.") ))  
         }
       )
-  }
+}
 
 
-  def destroy(id: Int) = SecuredAction { implicit request =>
-    
-      ActPermissionDAO.delete(id) match {
-        case 0 => Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
-        case x => Ok(Json.toJson(Map("success" -> s"Entity has been deleted (deleted $x row(s))")))
+def destroy(id: Int) = SecuredAction { implicit request =>
+    ActPermissionDAO.get(id) match {
+      case Some(permission) => {
+
+        ActPermissionDAO.delete(id) match {
+          case 0 => Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
+          case x => { 
+            action(request.user.main.userId, process = Some(permission.process), 
+              action = ProcHisCom.permDeleted, what = Some(ProcHisCom.permDeleted), what_id = permission.id)                                                    
+            Ok(Json.toJson(Map("success" -> s"Entity has been deleted (deleted $x row(s))")))
+          }
+        }    
       }
-    
-  }
+      case _ => { Forbidden(Json.obj("status" -> "Access denied")) }
+    }           
+}
+
+private def action(acc: String, process: Option[Int], action: String, what: Option[String]=None, what_id: Option[Int]=None) = {
+  ProcHistoryDAO.pull_object(ProcessHistoryDTO(
+    None, acc, action, process, what, what_id, org.joda.time.DateTime.now() ))
+}
+
 
 }

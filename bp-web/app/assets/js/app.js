@@ -194,12 +194,21 @@ minorityApp.factory(
         pop: function(object) {
           console.log("popup");
           console.log(object)//dataStream.send(JSON.stringify({ action: 'get' }));
+          if (object.target == "first-launch") {
           ngDialog.open({
                 template: '/assets/partials/popup/first-process-launch.html',
                 //template: '/assets/partials/popup/first-process-finished.html',
                 controller: 'LaunchesCtrl'
               });
-        }
+          }
+          if (object.target == "first-finished")
+              ngDialog.open({
+                    template: '/assets/partials/popup/first-process-finished.html',
+                    //template: '/assets/partials/popup/first-process-finished.html',
+                    controller: 'LaunchesCtrl'
+                  });            
+          }
+
       };
 
       return methods;
@@ -210,7 +219,7 @@ minorityApp.factory('NotificationBroadcaster', ['$websocket', '$window', 'toastr
       // Open a WebSocket connection
       var baseUrl = $window.location.host;
       if (document.ssl_enabled) {
-	var ws_type = "wss://";
+	       var ws_type = "wss://";
       } else { var ws_type = "ws://" }
 
 
