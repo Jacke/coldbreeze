@@ -89,10 +89,12 @@ $scope.lastChecked = false;
 
 SessionsFactory.query().$promise.then(function (data2) {
     _.forEach(data2.sessions, function(session) { 
+      session.logs = BPLogsFactory.query({  BPid: session.process.id });
       session.station.inlineLaunchShow = false;
       $scope.loadPerm(session.process);
       return session.session.station = session.station 
     });
+    _.forEach(data2, function(d){ return d.logs = BPLogsFactory.query({  BPid: d.process.id }); })
 //  if (data2.sessions == undefined || data2.sessions.length == 0) { $scope.isEmptyLaunchesCheck();$scope.lastChecked = true; }
   if (data2.length > 0) {
     if (data2[0] != undefined) {
@@ -118,6 +120,7 @@ SessionsFactory.query().$promise.then(function (data2) {
                 // polyfill ended
                  if (process_id != undefined) {
                   console.log(process_id);
+
                   $scope.sessions = _.filter(data2, function(dat) { return dat.process.id == process_id });
                  } else { 
                   $scope.sessions = data2;
@@ -139,7 +142,7 @@ BProcessesFactory.query().$promise.then(function (proc) {
   */
 });
 
-};
+}; // </ load session
 
 $scope.reloadSession = function() {
   if ($routeParams.process != undefined) {

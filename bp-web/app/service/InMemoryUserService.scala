@@ -228,7 +228,7 @@ case class DemoUser(main: BasicProfile,
         case Some(tup) => tup._2
         case _ => -1
      }
-     play.Logger.info("First business for "+ main.userId + " are: " + firstBusinessId)
+     play.Logger.debug("First business for "+ main.userId + " are: " + firstBusinessId)
      firstBusinessId
   }
   def masterFirst: String = {
@@ -236,7 +236,7 @@ case class DemoUser(main: BasicProfile,
         case Some(tup) => tup.master_acc
         case _ => ""
      }
-     play.Logger.info("First master acc for "+ main.userId + " are: " + masterFirstId)
+     play.Logger.debug("First master acc for "+ main.userId + " are: " + masterFirstId)
      masterFirstId
   }
   def isEmployee:Boolean = {

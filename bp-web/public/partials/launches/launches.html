@@ -14,8 +14,8 @@
 
 
 <div class="active-switcher">
-<label for="switch-1" class="onlyActiveLabel">Running</label>
-<input type="checkbox" class="switch" id="switch-1" data-ng-model="onlyActive"/>
+  <input type="checkbox" class="switch" id="switch-1" data-ng-model="onlyActive"/>
+  <label for="switch-1" class="onlyActiveLabel">Active</label>
 </div>
  
 
@@ -155,7 +155,7 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
         </div>  
         </div>
              <div class="session_title">
-              <a href="/a#/bprocess/{{ sessions.process.id }}/elements?launch={{ session.session.id }}">Launch {{ $index }}  
+              <a href="/a#/bprocess/{{ session.process.id }}/elements?launch={{ session.session.id }}">Launch {{ $index }}  
               <!- {{session.station.note }} --></a>
               <abbr class="session__header__created_at" title="{{ session.session.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="session.session.created_at"></abbr>
              </div>

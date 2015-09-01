@@ -612,10 +612,13 @@ $scope.options = {
       }
       perm.process = $scope.BPid;
       perm.role = 'all';
-    PermissionsFactory.create(perm).$promise.then(function(data) {
+      
+      PermissionsFactory.create(perm).$promise.then(function(data) {
+              $scope.newselected = 0;
        $scope.perms = ProcPermissionsFactory.query({ BPid: $scope.BPid }).$promise.then(function(d) {
         $scope.loadPerm();
-       });
+      
+      });
 
     });
     }

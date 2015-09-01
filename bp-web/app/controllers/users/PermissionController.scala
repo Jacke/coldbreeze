@@ -88,7 +88,7 @@ val elemPermForm = Form(
                          role: String = "interact",
                           */
  def index() = SecuredAction { implicit request =>
-      val user_services = BusinessServiceDAO.getByMaster(request.user.main.email.getOrElse("")).map(_.id)
+      val user_services = BusinessServiceDAO.getByMaster(request.user.masterFirst).map(_.id)
       var proc_ids:List[Int] = BPDAO.getByServices(user_services.flatten).map(_.id).flatten
       if (request.user.isEmployee) { 
        // Employee assigned process
@@ -102,7 +102,7 @@ val elemPermForm = Form(
 
 
 
-      val employees = EmployeeDAO.getAllByMaster(request.user.main.email.get)
+      val employees = EmployeeDAO.getAllByMaster(request.user.masterFirst)
       val employee_groups = AccountGroupDAO.getByAccounts(employees.map(_.master_acc)).distinct
 
       val accounts = models.AccountsDAO.findAllByEmails(employees.map(emp => emp.uid)).map(ac => ac.copy(password = "", hasher = ""))
@@ -117,7 +117,7 @@ val elemPermForm = Form(
     val elms = ProcElemDAO.findByBPId(BPid).map(_.id)
     val spelms = SpaceElemDAO.findByBPId(BPid).map(_.id)
     
-    val employees = EmployeeDAO.getAllByMaster(request.user.main.email.get)
+    val employees = EmployeeDAO.getAllByMaster(request.user.masterFirst)
     val employee_groups = AccountGroupDAO.getByAccounts(employees.map(_.master_acc)).distinct
     val accounts = models.AccountsDAO.findAllByEmails(employees.map(emp => emp.uid)).map(ac => AccountCredHiding.hide(ac))
 
@@ -145,7 +145,7 @@ val elemPermForm = Form(
     //val elemperms = ActPermissionDAO.getAll
     //val elms = ProcElemDAO.findByBPId(BPid).map(_.id)
     //val spelms = SpaceElemDAO.findByBPId(BPid).map(_.id)
-    val employees = EmployeeDAO.getAllByMaster(request.user.main.email.get)
+    val employees = EmployeeDAO.getAllByMaster(request.user.masterFirst)
     val employee_groups = AccountGroupDAO.getByAccounts(employees.map(_.master_acc)).distinct
     val accounts = models.AccountsDAO.findAllByEmails(employees.map(emp => emp.uid)).map(ac => AccountCredHiding.hide(ac))
     Ok(Json.toJson(

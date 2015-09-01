@@ -569,8 +569,16 @@ def delete_reaction(id: Int) = SecuredAction { implicit request =>
  */
 import ProcHistoryDAO._
 
-private def action(what: String) = {
-  ???
+// ProcessHistoryDTO(var id: Option[Int], 
+// acc: String, 
+// process: Int, 
+// action: String, 
+// date: DateTime, 
+// what: Option[String] = None)
+private def action(acc: String, process: Int, action: String, what: Option[String]=None) = {
+  ProcHistoryDAO.pull_object(ProcessHistoryDTO(
+    None, acc, process, action, org.joda.time.DateTime.now(), what
+    ))
 }
 private def haltActiveStations(BPid: Int) = {
     BPDAO.get(BPid) match {
