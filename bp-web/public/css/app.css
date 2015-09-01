@@ -4286,8 +4286,73 @@ margin-top: 50px;
 
 
 
+.first-launch-window .first-launch-img {
+    position: absolute;
+    width: 105.2%;
+    z-index: 1;
+    height: 100%;
+    margin-left: -16px;
+    margin-top: -15px;
+}
+
+.first-launch-window {
+    position: relative;
+}
+
+.first-launch-window .first-launch-desc {
+    position: absolute;
+    z-index: 1;
+    color: white;
+    width: 100%;
+}
+
+.first-launch-window .first-launch-desc h3 {
+    text-align: center;
+    font-size: 60px;
+    width: 100%;
+    font-weight: 700;
+    opacity: 1;
+    font-family: "AvenirNextCyr-Good", "AvenirNextCyr", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+
+    display: block;
+}
 
 
+.first-finished-window .first-finished-img {
+    position: absolute;
+    width: 105.2%;
+    z-index: 1;
+    height: auto;
+    margin-left: -16px;
+    margin-top: -15px;
+    overflow: hidden;
+}
+
+.first-finished-window {
+    position: relative;
+    height: 49%;
+}
+
+.first-finished-window .first-finished-desc {
+    position: absolute;
+    z-index: 1;
+    color: white;
+    width: 100%;
+}
+
+.first-finished-window .first-finished-desc h3 {
+    text-align: center;
+    font-size: 40px;
+    width: 100%;
+    display: block;
+    font-family: "AvenirNextCyr-Good", "AvenirNextCyr", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+}
+
+.first-finished-img svg#Layer_1 {
+    overflow: hidden;
+    margin-bottom: -16px;
+    display: block;
+}
 
 
 
