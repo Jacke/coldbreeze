@@ -89,10 +89,12 @@ $scope.lastChecked = false;
 
 SessionsFactory.query().$promise.then(function (data2) {
     _.forEach(data2.sessions, function(session) { 
+      session.logs = BPLogsFactory.query({  BPid: session.process.id });
       session.station.inlineLaunchShow = false;
       $scope.loadPerm(session.process);
       return session.session.station = session.station 
     });
+    _.forEach(data2, function(d){ return d.logs = BPLogsFactory.query({  BPid: d.process.id }); })
 //  if (data2.sessions == undefined || data2.sessions.length == 0) { $scope.isEmptyLaunchesCheck();$scope.lastChecked = true; }
   if (data2.length > 0) {
     if (data2[0] != undefined) {
@@ -106,13 +108,19 @@ SessionsFactory.query().$promise.then(function (data2) {
                 $scope.groups = qu.employee_groups;
                 $scope.employees_groups = _.union($scope.emps,$scope.employee_groups);
                 _.forEach($scope.perms, function(perm) {
-                  if (perm.group != undefined) {
-                    perm.title = _.find($scope.groups, function(group) {return group.id == perm.group}).title;
-                  }
+                    if (perm.group != undefined) {
+                      var group = _.find($scope.groups, function(group) {return group.id == perm.group});
+                      if (group != undefined) {
+                        perm.title = group.title;
+                      } else {
+                        perm.title = "";
+                      }
+                    }
                 })
                 // polyfill ended
                  if (process_id != undefined) {
                   console.log(process_id);
+
                   $scope.sessions = _.filter(data2, function(dat) { return dat.process.id == process_id });
                  } else { 
                   $scope.sessions = data2;
@@ -134,7 +142,7 @@ BProcessesFactory.query().$promise.then(function (proc) {
   */
 });
 
-};
+}; // </ load session
 
 $scope.reloadSession = function() {
   if ($routeParams.process != undefined) {

@@ -339,8 +339,13 @@ width: 100%;
     font-weight: 100;
     font-family: 'Open Sans';
 }
-
-
+.session-process abbr.session__header__created_at {
+    margin-left: 5px;
+    display: inline-block;
+}
+.session-process .stations .session__header {
+    padding-bottom: 10px;
+}
 
 
 @media (max-width: 1250px) {

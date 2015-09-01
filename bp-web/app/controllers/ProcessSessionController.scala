@@ -39,7 +39,7 @@ import decorators._
 import builders._
 
 case class StationNoteMsg(msg: String)
-
+case class LogsContainer(session_loggers: List[BPLoggerDTO], process_histories: List[ProcessHistoryDTO], stations: List[BPStationDTO])
 class ProcessSessionController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
   
 
@@ -47,10 +47,14 @@ class ProcessSessionController(override implicit val env: RuntimeEnvironment[Dem
   implicit val CompositeVWrites = Json.format[CompositeValues]
   implicit val logReads = Json.reads[BPLoggerDTO]
   implicit val logWrites = Json.format[BPLoggerDTO]
+  implicit val ProcessHistoryDTOreads = Json.reads[ProcessHistoryDTO]
+  implicit val ProcessHistoryDTOformat = Json.format[ProcessHistoryDTO]
   implicit val stationReads = Json.reads[BPStationDTO]
   implicit val stationWrites = Json.format[BPStationDTO]
   implicit val StationNoteReads = Json.reads[StationNoteMsg]
   implicit val StationNoteWrites = Json.format[StationNoteMsg]
+  implicit val LogsContainerreads = Json.reads[LogsContainer]
+  implicit val LogsContainerformat = Json.format[LogsContainer]
   implicit val AroundAttrReads = Json.reads[AroundAttr]
   implicit val AroundAttrWrites = Json.format[AroundAttr]
   implicit val ElemAroundReads = Json.reads[ElemAround]
@@ -162,9 +166,20 @@ def stations_elems_around(id: Int, station_id: Int) = SecuredAction { implicit r
       Ok(Json.toJson(AroundProcessElementsBuilder.detect(id, station_id)))
   } else { Forbidden(Json.obj("status" -> "Not found")) }
 }
+
+
+
+
+/**
+ * Fetch all sessions logs for process
+ */
 def logs_index(id: Int) = SecuredAction { implicit request => 
   if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, id)) {
-      Ok(Json.toJson(BPLoggerDAO.findByBPId(id)))
+      val processHistories = ProcHistoryDAO.getByProcess(id)
+      val session_loggers = BPLoggerDAO.findByBPId(id)
+      val stations = BPStationDAO.findByBPId(id)
+
+      Ok(Json.toJson(LogsContainer(session_loggers, processHistories, stations)))
   } else { Forbidden(Json.obj("status" -> "Not found")) }
 }
 
@@ -174,7 +189,6 @@ def logs_index(id: Int) = SecuredAction { implicit request =>
   
 /**
  * Update station note
- *
  */
 def update_note(id: Int, station_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
   val perm = true // TODO: Make permission !!!

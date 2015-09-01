@@ -30,7 +30,7 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
   def dashboard = SecuredAction { implicit request =>
 
       // TODO: service.getByBusiness that manager participated
-      val services = BusinessServiceDAO.getByMaster(request.user.main.email.get)
+      val services = BusinessServiceDAO.getByMaster(request.user.masterFirst)
       val businesses = BusinessDAO.getAll
       
       val email = request.user.main.email.get

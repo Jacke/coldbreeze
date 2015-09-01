@@ -91,7 +91,7 @@ object CustomRegistration {
               mail.setFrom("app@minorityapp.com")
               //views.html.mailBody.render(user).body();
               val token = securesocial.core.providers.MailToken("XXXX",email, DateTime.now, DateTime.now.plusMinutes(60),false)
-              mail.sendHtml(views.html.mailer.ActorAdd.render(token.email, host).body)
+              //mail.sendHtml(views.html.mailer.ActorAdd.render(token.email, host).body)
               // SEND WELCOME
               //Mailer.sendAlreadyRegisteredEmail(user)
             }
@@ -104,7 +104,7 @@ object CustomRegistration {
               mail.setCc(email)
               mail.setFrom("app@minorityapp.com")
               //views.html.mailBody.render(user).body();
-              mail.sendHtml(views.html.mailer.ActorAdd.render(token._1, host).body)
+              //mail.sendHtml(views.html.mailer.ActorAdd.render(token._1, host).body)
 
 
               //Mailer.sendAlreadyRegisteredEmail(user)

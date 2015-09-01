@@ -4,26 +4,26 @@ package models.DAO
 //import com.github.tminglei.slickpg.composite._
 import models.DAO.conversion.{DatabaseCred, Implicits}
 import org.joda.time.DateTime
-import com.github.tototoshi.slick.PostgresJodaSupport._
-
-
-import slick.driver.PostgresDriver.api._
+//import slick.driver.PostgresDriver.api._
 import scala.concurrent.Future
+import models.DAO.driver.MyPostgresDriver1.simple._
+import com.github.tminglei.slickpg.composite._
+//import com.github.tototoshi.slick.PostgresJodaSupport._
 
 //  import slick.model.ForeignKeyAction
 class ProcessHistories(tag: Tag) extends Table[ProcessHistoryDTO](tag, "process_histories") {
   def id       = column[Int]("id", O.PrimaryKey, O.AutoInc)
-  def master_acc = column[String]("master_acc")
-  def bprocess = column[Int]("process_id")
-  def date     = column[DateTime]("date")
+  def acc      = column[String]("master_acc")
+  def process  = column[Int]("process_id")
+  def date     = column[org.joda.time.DateTime]("date")
   def action   = column[String]("action")
   def what     = column[Option[String]]("what")
 
-  def bpFK     = foreignKey("pr_hist_bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def accFK    = foreignKey("pr_hist_macc_fk", master_acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
+  def bpFK     = foreignKey("pr_hist_bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def accFK    = foreignKey("pr_hist_macc_fk", acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
 
 
-  def * = (id.?, master_acc, bprocess, action, date, what) <> (ProcessHistoryDTO.tupled, ProcessHistoryDTO.unapply)
+  def * = (id.?, acc, process, action, date, what) <> (ProcessHistoryDTO.tupled, ProcessHistoryDTO.unapply)
 
 }
 
@@ -33,8 +33,18 @@ class ProcessHistories(tag: Tag) extends Table[ProcessHistoryDTO](tag, "process_
 /*
   Process Histories
  */
-case class ProcessHistoryDTO(var id: Option[Int], master_acc: String, bprocess: Int, action: String, date: DateTime, what: Option[String] = None)
-
+case class ProcessHistoryDTO(var id: Option[Int], acc: String, process: Int, action: String, date: DateTime, what: Option[String] = None) {
+}
+object ProcHisCom {
+  def apply(id: Option[Int], acc: String, process: Int, action: String, date: DateTime, what: Option[String] = None):ProcessHistoryDTO = {
+    new ProcessHistoryDTO(id, acc, process, action, date, what)
+  }
+  def elementCreated = "elem_created"
+  def elementRenamed = "element_renamed"
+  def elementDeleted = "element_deleted"
+  def elementMovedUp = "element_up"
+  def elementDown    = "element_down"
+}
 
 object ProcHistoryDAO {
   import scala.util.Try
@@ -53,17 +63,22 @@ object ProcHistoryDAO {
   }
 
 
+
+  */
+  //def pull_async(s: ProcessHistoryDTO):Future[Int] = {
+  //  try database.run(proc_histories += s)
+  //  finally database.close
+  //}
   def pull_object(s: ProcessHistoryDTO) = database withSession {
     implicit session ⇒
       proc_histories returning proc_histories.map(_.id) += s
   }
-  */
-  def pull_async(s: ProcessHistoryDTO):Future[Int] = {
-    try database.run(proc_histories += s)
-    finally database.close
+  def getByProcess(proc_id: Int):List[models.DAO.ProcessHistoryDTO] = database withSession {
+    implicit session ⇒
+      val q3 = for { s ← proc_histories if s.process === proc_id } yield s 
+      q3.list//.headOption
   }
-/*
-
+  /*
   def get(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← proc_histories if s.id === k } yield s 

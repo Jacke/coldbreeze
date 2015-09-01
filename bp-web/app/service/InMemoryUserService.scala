@@ -224,10 +224,20 @@ case class DemoUser(main: BasicProfile,
      // false
   }
   def businessFirst: Int = {
-     models.DAO.resources.EmployeesBusinessDAO.getByUID(main.userId) match {
+     val firstBusinessId = models.DAO.resources.EmployeesBusinessDAO.getByUID(main.userId) match {
         case Some(tup) => tup._2
         case _ => -1
      }
+     play.Logger.debug("First business for "+ main.userId + " are: " + firstBusinessId)
+     firstBusinessId
+  }
+  def masterFirst: String = {
+    val masterFirstId = models.DAO.resources.EmployeeDAO.getByEmployeeUID(main.userId) match {
+        case Some(tup) => tup.master_acc
+        case _ => ""
+     }
+     play.Logger.debug("First master acc for "+ main.userId + " are: " + masterFirstId)
+     masterFirstId
   }
   def isEmployee:Boolean = {
     if (permissions.isDefined)
