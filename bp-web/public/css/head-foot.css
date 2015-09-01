@@ -538,6 +538,7 @@ svg.svg-logo {
 }
 .minorityLogo:hover polygon#e1_polygon {
   fill: #7FDBFF;
+  transition: all .7s ease-in-out;
 }
 polygon#e1_polygon {
   fill: white;
