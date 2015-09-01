@@ -6203,7 +6203,16 @@ order:1;
 */
 
 
+/*
+   Pro pages
+  */
 
+.pro-layout {
+    background-color: white;
+    margin-top: 50px;
+    padding: 30px 30px 30px 50px;
+    font-family: "AvenirNextCyr-Good", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+}
 
 
 
