@@ -5,7 +5,7 @@
   // -- RequireJS config --
   requirejs.config({
     // Packages = top-level folders; loads a contained file named 'main.js"
-    baseUrl: '/assets/javascripts',
+    // baseUrl: '/assets/javascripts',
     waitSeconds: 200,
     packages: ['common'],//, 'home', 'user', 'dashboard'],
     shim: {

@@ -28,12 +28,14 @@ object StatusCheck
 
 
 class NotificationController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
-    implicit val sumFormat = Json.format[SumActor.Sum]
-    implicit val sumFrameFormatter = FrameFormatter.jsonFrame[SumActor.Sum]
-    implicit val sumResultFormat = Json.format[SumActor.SumResult]
-    implicit val sumResultFrameFormatter = FrameFormatter.jsonFrame[SumActor.SumResult]
-    implicit val PopupRequestFormat = Json.format[PopupRequest]
-    implicit val PopupRequestFrameFormatter = FrameFormatter.jsonFrame[PopupRequest]
+    implicit val sumFormat                    = Json.format[SumActor.Sum]
+    implicit val sumFrameFormatter            = FrameFormatter.jsonFrame[SumActor.Sum]
+    implicit val sumResultFormat              = Json.format[SumActor.SumResult]
+    implicit val sumResultFrameFormatter      = FrameFormatter.jsonFrame[SumActor.SumResult]
+    implicit val HistMessageFormat            = Json.format[HistMessage]
+    implicit val HistMessageFrameFormatter    = FrameFormatter.jsonFrame[HistMessage]
+    implicit val PopupRequestFormat           = Json.format[PopupRequest]
+    implicit val PopupRequestFrameFormatter   = FrameFormatter.jsonFrame[PopupRequest]
   // val auth = UserService.find(authenticator.get.identityId)
   // auth.get.identityId.userId
 
@@ -304,6 +306,12 @@ class UserActor(uid: String, board: ActorRef, out: ActorRef) extends Actor with 
     case PopupMessage(target, email) =>
       val js = Json.obj("type" -> "popup", "target" -> target)
       if (uid == email) { out ! js }
+
+    case HistMessage(email, target, targetEmails) => {
+      val js = Json.obj("type" -> "updates", "target" -> target)
+      play.api.Logger.info(s"Process history update + $target")
+      if (targetEmails.contains(email)) { out ! js }
+    }
     case js: JsValue =>
       (js \ "msg").validate[String] map { Utility.escape(_) } foreach { board ! Message(uid, _ ) }
     case other =>
@@ -315,6 +323,15 @@ object UserActor {
   def props(uid: String)(out: ActorRef) = { 
      play.api.Logger.info("notify conected: " + uid)
     Props(new UserActor(uid, BoardActor(), out))
+  }
+  def updateNotifiy(target: String, email: String) = {
+    val targetEmails:List[String] = EmployeesBusinessDAO.getByUID(email) match {
+      case Some(origin_biz) => { EmployeesBusinessDAO.getByBusiness(origin_biz._2).map(emp_biz => 
+                                    EmployeeDAO.get(emp_biz._1)).flatten.map(emp => emp.uid)
+                               }
+      case _ => List()
+    }
+    BoardActor() ! HistMessage(email, target, targetEmails )
   }
 }
 
@@ -338,6 +355,8 @@ class BoardActor extends Actor with ActorLogging {
       users foreach { _ ! m }
     case pm: PopupMessage =>
       users foreach { _ ! pm } 
+    case hm: HistMessage =>
+      users foreach { _ ! hm }
     case Subscribe =>
       users += sender
       context watch sender
@@ -354,8 +373,8 @@ object BoardActor {
   def apply() = board
 }
 
+case class HistMessage(email: String, target: String, targetEmails: List[String])
 case class Message(uuid: String, s: String)
 case class PopupMessage(target: String, email: String = "")
 case class PopupRequest(target: String)
-
 

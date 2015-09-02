@@ -1,7 +1,7 @@
 define(['angular', 'app', 'controllers'], function (angular, minorityApp, minorityControllers) {
 
 // For all processes
-minorityControllers.controller('LaunchesCtrl', ['$timeout','$http', 
+minorityControllers.controller('LaunchesCtrl', ['$controller','$timeout','$http', 
   '$window', 
   '$translate',
   '$scope', 
@@ -21,7 +21,7 @@ minorityControllers.controller('LaunchesCtrl', ['$timeout','$http',
   'BPElemsFactory',
   'BPSpacesFactory',
   'BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
-  function ($timeout, $http, $window, $translate, $scope, $filter, $routeParams, $rootScope, ngDialog, ProcPermissionsFactory, TreeBuilder, BPStationsFactory, SessionsFactory, BProcessesFactory, BProcessFactory, ObserversFactory, ObserverFactory, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
+  function ($controller, $timeout, $http, $window, $translate, $scope, $filter, $routeParams, $rootScope, ngDialog, ProcPermissionsFactory, TreeBuilder, BPStationsFactory, SessionsFactory, BProcessesFactory, BProcessFactory, ObserversFactory, ObserverFactory, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
 
 
 $scope.loadSessions = function (process_id) { 
@@ -89,12 +89,12 @@ $scope.lastChecked = false;
 
 SessionsFactory.query().$promise.then(function (data2) {
     _.forEach(data2.sessions, function(session) { 
-      session.logs = BPLogsFactory.query({  BPid: session.process.id });
       session.station.inlineLaunchShow = false;
       $scope.loadPerm(session.process);
-      return session.session.station = session.station 
+//      return session.session.station = session.station 
+      return session.process.logs = BPLogsFactory.query({  BPid: session.process.id });
     });
-    _.forEach(data2, function(d){ return d.logs = BPLogsFactory.query({  BPid: d.process.id }); })
+    _.forEach(data2, function(d){ return d.process.logs = BPLogsFactory.query({  BPid: d.process.id }); })
 //  if (data2.sessions == undefined || data2.sessions.length == 0) { $scope.isEmptyLaunchesCheck();$scope.lastChecked = true; }
   if (data2.length > 0) {
     if (data2[0] != undefined) {
@@ -119,9 +119,11 @@ SessionsFactory.query().$promise.then(function (data2) {
                 })
                 // polyfill ended
                  if (process_id != undefined) {
-                  console.log(process_id);
+                    console.log(process_id);
+                    $scope.sessions = _.filter(data2, function(dat) { 
+                      return dat.process.id == process_id 
 
-                  $scope.sessions = _.filter(data2, function(dat) { return dat.process.id == process_id });
+                    });
                  } else { 
                   $scope.sessions = data2;
                  }
@@ -152,13 +154,19 @@ $scope.reloadSession = function() {
   }
 }
 $scope.reloadSession();
+$scope.history_session_id = [];
+$scope.history_entity = [];
 
-$scope.history = function(session_id) {
+$scope.history = function(session_id, entity) {
+    $scope.history_session_id = session_id;
+    $scope.history_entity = entity;
     ngDialog.open({
         template: '/assets/partials/popup/launch-history.html',
         //template: '/assets/partials/popup/first-process-finished.html',
-        //controller: 'LaunchesCtrl',
+        controller: 'HistoriesCtrl',
         scope: $scope
+    
+      
       });
 }
 $scope.deleteSession = function(session_id) {
@@ -412,6 +420,40 @@ $scope.date = {startDate: null, endDate: null};
 
 }])
 
+
+minorityControllers.controller('HistoriesCtrl', ['$timeout','$http', 
+  '$window', 
+  '$translate',
+  '$scope', 
+  '$filter', 
+  '$routeParams',
+  '$rootScope',
+  'ngDialog',
+  'ProcPermissionsFactory',
+  'TreeBuilder',
+  'BPStationsFactory', 
+  'SessionsFactory',
+  'BProcessesFactory',
+  'BProcessFactory', 
+  'ObserversFactory', 
+  'ObserverFactory', 
+  'BProcessesFactory', 
+  'BPElemsFactory',
+  'BPSpacesFactory',
+  'BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
+  function ($timeout, $http, $window, $translate, $scope, $filter, $routeParams, $rootScope, ngDialog, ProcPermissionsFactory, TreeBuilder, BPStationsFactory, SessionsFactory, BProcessesFactory, BProcessFactory, ObserversFactory, ObserverFactory, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
+
+    console.log($scope);
+    $scope.currentSession = $scope.history_session_id;
+    $scope.currentEntity = $scope.history_entity;
+
+    //if (ngDialogData != undefined) {
+    //  $scope.data = ngDialogData.session_id;
+    //}
+    console.log($scope.history_session_id)
+
+
+}]);
 
 
 

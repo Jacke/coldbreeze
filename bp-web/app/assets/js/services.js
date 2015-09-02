@@ -417,7 +417,7 @@ minorityAppServices.factory('InteractionsFactory', ['$resource', function ($reso
 */
 minorityAppServices.factory('BPLogsFactory', ['$resource', function ($resource) {
     return $resource(baseUrl + 'bprocess/:BPid/logs', {}, {
-        query: { method: 'GET', isArray: true },
+        query: { method: 'GET', isArray: false },
         create: { method: 'POST' }
     })
 }]);
