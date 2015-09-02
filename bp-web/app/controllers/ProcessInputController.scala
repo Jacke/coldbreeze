@@ -30,6 +30,8 @@ import securesocial.core._
 import models.DAO._
 import models.DAO.resources._
 import main.scala.utils.{InputParamProc, ReactionActivator}
+import scala.concurrent._
+import ExecutionContext.Implicits.global
 /**
  * Created by Sobolev on 22.07.2014.
  */
@@ -62,7 +64,10 @@ class ProcessInputController(override implicit val env: RuntimeEnvironment[DemoU
       val lang:String = models.AccountsDAO.getRolesAndLang(userId).get._3
 
       service.Build.run(bpID, Some(lang)) match {
-        case Some(process) => Ok(Json.toJson(Map("success" -> "station_id", "session" -> process.session_id.toString)))
+        case Some(process) => { 
+          action(request.user.main.userId, process = Some(bpID), ProcHisCom.processLaunched, None, None)
+          Ok(Json.toJson(Map("success" -> "station_id", "session" -> process.session_id.toString)))
+        }
         case _ => Ok(Json.toJson(Map("error" -> "Error output")))
       }
     } else { Forbidden(Json.obj("status" -> "Access denied")) }  
@@ -110,7 +115,10 @@ class ProcessInputController(override implicit val env: RuntimeEnvironment[DemoU
         }*/
 
     service.Build.newRunFrom(session_id = session_id,bpID = bpID, params = pmsResult.get) match {
-      case Some(process) => Ok(Json.toJson(Map("success" -> process.session_id)))
+      case Some(process) => {
+       action(request.user.main.userId, process = Some(bpID), ProcHisCom.processResumed, None, None)
+       Ok(Json.toJson(Map("success" -> process.session_id)))
+      }
       case _ => Ok(Json.toJson(Map("error" -> "Error output")))
     }
 
@@ -165,6 +173,13 @@ def isActor(email:String, actors: List[EmployeeDTO]):Boolean = {
 def isAdmin(email:String, admins: List[String]):Boolean = {
     admins.contains(email)
 }
+private def action(acc: String, process: Option[Int], action: String, what: Option[String]=None, what_id: Option[Int]=None):Future[Int] = {
+  Future {
+      ProcHistoryDAO.pull_object(ProcessHistoryDTO(
+        None, acc, action, process, what, what_id, org.joda.time.DateTime.now() ))
+    }
+}
+
 /**
 * Halt
 */
