@@ -9,7 +9,8 @@ import scala.concurrent.Future
 import models.DAO.driver.MyPostgresDriver1.simple._
 import com.github.tminglei.slickpg.composite._
 //import com.github.tototoshi.slick.PostgresJodaSupport._
-
+import scala.concurrent._
+import ExecutionContext.Implicits.global
 //  import slick.model.ForeignKeyAction
 class ProcessHistories(tag: Tag) extends Table[ProcessHistoryDTO](tag, "process_histories") {
   def id       = column[Int]("id", O.PrimaryKey, O.AutoInc)
@@ -97,6 +98,9 @@ object ProcHistoryDAO {
   //}
   def pull_object(s: ProcessHistoryDTO) = database withSession {
     implicit session ⇒
+      Future {
+        controllers.UserActor.updateNotifiy(s.action, s.acc)
+      }
       proc_histories returning proc_histories.map(_.id) += s
   }
   def getByProcess(proc_id: Int):List[models.DAO.ProcessHistoryDTO] = database withSession {
