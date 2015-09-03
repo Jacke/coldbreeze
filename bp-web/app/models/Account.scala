@@ -55,8 +55,10 @@ object AccImplicits {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def uid = column[String]("uid")
   def created_at = column[org.joda.time.DateTime]("created_at")
+  def ea = column[Boolean]("early_access", O.Default(false))
+  def pro = column[Boolean]("pro_features", O.Default(false))
 
-  def * = (id.?, uid, created_at) <> (AccountInfo.tupled, AccountInfo.unapply)
+  def * = (id.?, uid, created_at, ea, pro) <> (AccountInfo.tupled, AccountInfo.unapply)
   def accInfoFK  = foreignKey("accInfo_fk", uid, AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
 
  }
@@ -244,7 +246,10 @@ case class Account(
 }
 
 case class UserAccount(main: Account, identities: List[Account])
-case class AccountInfo(id: Option[Int], uid: String, created_at: org.joda.time.DateTime = org.joda.time.DateTime.now())
+case class AccountInfo(id: Option[Int], uid: String, 
+                        created_at: org.joda.time.DateTime = org.joda.time.DateTime.now(), 
+                        ea: Boolean = false, 
+                        pro: Boolean = false)
 
 
 
@@ -331,6 +336,30 @@ object AccountsDAO {
        implicit session ⇒
        account_infos.ddl.create
     }
+  }
+  def subscribeToPro(account_id: String):Boolean = { database withSession {
+     implicit session =>
+      getAccountInfo(account_id) match {
+        case Some(acc_info) => {
+            val accInfoToUpdate: AccountInfo = acc_info.copy(pro = true)
+            account_infos.filter(_.id === acc_info.id.get).update(accInfoToUpdate)
+            true
+        }
+        case _ => false
+      }
+    } 
+  }
+  def subscribeToEA(account_id: String):Boolean  = { database withSession {
+     implicit session =>
+      getAccountInfo(account_id) match {
+        case Some(acc_info) => {
+            val accInfoToUpdate: AccountInfo = acc_info.copy(ea = true)
+            account_infos.filter(_.id === acc_info.id.get).update(accInfoToUpdate)
+            true
+        }
+        case _ => false
+      }
+    } 
   }
   def getAllInfos: List[AccountInfo] = { database withSession {
     implicit session =>

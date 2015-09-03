@@ -80,11 +80,17 @@
       <a id="teamSettingsLink" class="vIcoIn menuEntityLink" href="@routes.SettingController.index()">
         <span class="uicon-svg2222"></span>@Messages("nav.settings")(LangDet.getLang(user) )  </a>
     </li>
+    <li class="minMenuItem">
+      <a id="teamSettingsLink" class="vIcoIn menuEntityLink" href="@routes.Application.proPage()">
+        <span class="moicon moicon-rocket"></span>@Messages("nav.pro")(LangDet.getLang(user) )  </a>
+    </li>    
   </ul>
 </nav>
 
   <div class="menuCell menuHelp switcherWrap">
-    <span class="helpLinks switcherToggle hint vIcoIn" data-hint="Help"><span class="uicon-svg482"><span class="visuallyhidden">@Messages("page.help")</span></span></span>
+    <span class="helpLinks switcherToggle hint vIcoIn" data-hint="Help">
+      <span class="uicon-svg482"><span class="visuallyhidden">@Messages("page.help")</span></span>
+    </span>
     <span class="helpPopup switcherLayer">
       <a class="hideableHelpLink vIcoIn" target="_blank" href="minorityapp.com/contacts"><span class="helpText"><span class="vIco vStackOverflow vDimmedState"></span>@Messages("page.helpByPhone")</span></a>
       <a class="hideableHelpLink vIcoIn" target="_blank" href="http://minorityapp.com/help/"><span class="helpText"><span class="vIco vBook vDimmedState"></span> Instructions</span></a>

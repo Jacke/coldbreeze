@@ -3,7 +3,7 @@
 @import service.DemoUser
 @import helper._
 
-@(user: DemoUser)
+@(user: DemoUser, ea: Boolean, pro: Boolean)
 
 
 @main(Messages("page.application"), user) {
@@ -27,7 +27,7 @@
                     </div>
                     <div class="intro-content">
                         <h5>Elements full access</h5>
-                        <p>Easily customise Sedna to suit your start up, portfolio or product. Take advantage of the layered Sketch file and bring your product to life.</p>
+                        <p>Easily customise Element to suit your business needs, information systems or customers. Take advantage of the extensive States for each element and bring your ideas to life.</p>
                     </div>
                 </div>
                 <div class="col-md-4 intro-feature">
@@ -36,7 +36,7 @@
                     </div>
                     <div class="intro-content">
                         <h5>Decriptive path/flow</h5>
-                        <p>Designed with modern trends and techniques in mind, Sedna will help your product stand out in an already saturated market.</p>
+                        <p>You can create entier custom flow, and keep track it's path. From first to last, or skip some elements beetween process.</p>
                     </div>
                 </div>
                 <div class="col-md-4 intro-feature">
@@ -45,7 +45,7 @@
                     </div>
                     <div class="intro-content last">
                         <h5>Data integration</h5>
-                        <p>Built using the latest web technologies like html5, css3, and jQuery, rest assured Sedna will look smashing on every device under the sun.</p>
+                        <p>Each data that you have can be easily accessible. Event-based or business rules goes to the past.</p>
                     </div>
                 </div>
 </div>
@@ -56,7 +56,7 @@
                     </div>
                     <div class="intro-content last">
                         <h5>In-permise deployment</h5>
-                        <p>Built using the latest web technologies like html5, css3, and jQuery, rest assured Sedna will look smashing on every device under the sun.</p>
+                        <p>Get brand new datacenter, or arleady have some servers? You can easily deploy Minority to them, make secure conection and get first class support from us.</p>
                     </div>
                 </div>
                 <div class="col-md-6 intro-feature">
@@ -65,7 +65,7 @@
                     </div>
                     <div class="intro-content last">
                         <h5>Enterprise grade integration</h5>
-                        <p>Built using the latest web technologies like html5, css3, and jQuery, rest assured Sedna will look smashing on every device under the sun.</p>
+                        <p>Have ERP, CRM and other abbrevation-based products? We support them too. Major and minor vendors, easily to switch beetwen and stay on top.</p>
                     </div>
                 </div>
 </div>
@@ -83,9 +83,29 @@
                     <p>Minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
                 </div>
 </div>       -->
-
+<section class="hero-strip section-padding">
+        <div class="container">
+            <div class="col-md-12 text-center">
+                <h2>
+                Do you satisfied by this <span class="sketch">posibilities <i class="version">?</i></span>
+                </h2>
+                <p>Subscribe for a pro account. Now it's totally free.</p>
+                @if(pro == true) {
+                	<a href="#" class="btn btn-ghost btn-accent btn-large pro-activated">Pro access activated</a>
+                } 
+                @if(pro == false) {
+                	<a href="#" class="btn btn-ghost btn-accent btn-large pro-submit">Require pro access</a>
+                }
+                <div class="logo-placeholder floating-logo">
+                  <!-- <img src="img/sketch-logo.png" alt="Sketch Logo"> -->
+                </div>
+            </div>
+        </div>
+    </section>   
 
 </div>
+
+
 <div class="ea-section">
 
 <div class="pro-section-header">
@@ -101,7 +121,7 @@
                     </div>
                     <div class="intro-content">
                         <h5>New elements</h5>
-                        <p>Easily customise Sedna to suit your start up, portfolio or product. Take advantage of the layered Sketch file and bring your product to life.</p>
+                        <p>We goes any spec and strongly standarts to trash. So now you don't need to memorize new stuff, take expensive training course. All that you need is brand new customer-desired elements.</p>
                     </div>
                 </div>
                 <div class="col-md-4 intro-feature">
@@ -110,7 +130,7 @@
                     </div>
                     <div class="intro-content">
                         <h5>New Features</h5>
-                        <p>Designed with modern trends and techniques in mind, Sedna will help your product stand out in an already saturated market.</p>
+                        <p>Every business has its own special strategy. Our goal adaptive to needs and solve our customers problem in special way too. With simple outside and strong, effective way inside.</p>
                     </div>
                 </div>
                 <div class="col-md-4 intro-feature">
@@ -119,7 +139,7 @@
                     </div>
                     <div class="intro-content last">
                         <h5>Your features</h5>
-                        <p>Built using the latest web technologies like html5, css3, and jQuery, rest assured Sedna will look smashing on every device under the sun.</p>
+                        <p>Every week we set feature request to imporove everyday customer expirience. So get really hot delivery.</p>
                     </div>
                 </div>
             </div>
@@ -127,16 +147,22 @@
         <div class="container">
             <div class="col-md-12 text-center">
                 <h2>
-                Customise Sedna with the included <span class="sketch">Sketch <i class="version">3</i></span> file
+                Subscribe to <span class="sketch">Early access <i class="version">subscription</i></span>
                 </h2>
-                <p>Change/swap/edit every aspect of Sedna before you hit development with the included Sketch file.</p>
-                <a href="#" class="btn btn-ghost btn-accent btn-large">Require early access</a>
-                <div class="logo-placeholder floating-logo"><img src="img/sketch-logo.png" alt="Sketch Logo"></div>
+                <p>Forever free, forever fresh.</p>
+                @if(ea == true) {
+                	<a href="#" class="btn btn-ghost btn-accent btn-large ea-submited">Early access activated</a>
+                } 
+                @if(ea == false) {
+                	<a href="#" class="btn btn-ghost btn-accent btn-large ea-submit">Require early access</a>
+                }
+                <div class="logo-placeholder floating-logo">		
+                		<!-- <img src="img/sketch-logo.png" alt="Sketch Logo"> -->
+                </div>
             </div>
         </div>
     </section>       
 </div>
 </div>
 <link href='@routes.Assets.versioned("fonts/avenirnextcyr/stylesheet.css")' rel='stylesheet' type='text/css'>
-
-} 
+}
