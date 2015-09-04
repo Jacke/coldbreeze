@@ -81,16 +81,40 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
   }
 
   def proPage() = SecuredAction { implicit request =>
-      Ok(views.html.pro(request.user))
+      AccountsDAO.getAccountInfo(request.user.main.userId) match {
+        case Some(infos) => {
+                val eaSubmited  = infos.ea
+                val proSubmited = infos.pro
+                Ok(views.html.pro(request.user, eaSubmited, proSubmited))
+        }
+        case _ => Ok(views.html.pro(request.user, false,false))
+      }
+
   }
   def subscribePro() = SecuredAction(BodyParsers.parse.json) { implicit request =>
       println(request.body)
-      Ok(views.html.pro(request.user))
+      AccountsDAO.subscribeToPro(request.user.main.userId)
+      AccountsDAO.getAccountInfo(request.user.main.userId) match {
+        case Some(infos) => {
+                val eaSubmited  = infos.ea
+                val proSubmited = infos.pro
+                Ok(s"{status: 'ok', ea_submited: $eaSubmited, pro_submited: $proSubmited}")
+        }
+        case _ => Ok("{status: 'not found'}")
+      }
   }
 
   def subscribeEa() = SecuredAction(BodyParsers.parse.json) { implicit request =>
       println(request.body)
-      Ok(views.html.pro(request.user))
+      AccountsDAO.subscribeToEA(request.user.main.userId)
+      AccountsDAO.getAccountInfo(request.user.main.userId) match {
+        case Some(infos) => {
+                val eaSubmited  = infos.ea
+                val proSubmited = infos.pro
+                Ok(s"{status: 'ok', ea_submited: $eaSubmited, pro_submited: $proSubmited}")
+        }
+        case _ => Ok("{status: 'not found'}")
+      }
   }
 
   case class ConfigurationWrapper(switcher_options: List[String], 

@@ -609,7 +609,36 @@ $(".filterInput.tableMinListFilterInput").keyup(function(){
 });
 
 
+//
+//
+// Pro layout
+//
+//
+if ($('.pro-layout').length > 0) {
+$('.pro-submit').on('click', function(event) {
+  //POST /pro/subscribe
+  event.preventDefault();
+  console.log(event);
 
+  jsRoutes.controllers.Application.subscribePro().ajax({data: JSON.stringify({}),dataType: "json", contentType: "application/json"}).done(function(data) {
+      console.log(data);
+      document.location.pathname = "/pro";      
+});
+
+});
+
+
+$('.ea-submit').on('click', function(event) {
+  console.log(event);
+  event.preventDefault();
+  jsRoutes.controllers.Application.subscribeEa().ajax({data: JSON.stringify({}),dataType: "json", contentType: "application/json"}).done(function(data) {
+      console.log(data);
+      document.location.pathname = "/pro";
+  });
+
+});
+
+}
 
 
 
