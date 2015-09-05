@@ -6254,6 +6254,13 @@ order:1;
     margin-top: 227px;
     margin-bottom: 409px;
 }
+a#teamSettingsLink.proLink {
+    color: rgb(173, 162, 123);
+}
+
+a#teamSettingsLink.proLink:hover {
+    color: white;
+}
 
 
 .pro-layout .leftcol {

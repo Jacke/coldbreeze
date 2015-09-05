@@ -134,12 +134,12 @@ object CustomRegistration {
   private def createToken(email: String, isSignUp: Boolean): (String, MailToken) = {
     val uuid:String = UUID.randomUUID().toString
     val now = DateTime.now
-
+    play.Logger.info(s".... TOKEN CREATED ...")
 //case class MailToken(uuid: String, email: String, creationTime: DateTime, expirationTime: DateTime, isSignUp: Boolean)
     val token = MailToken(
       uuid, email,
       now,
-      now.plusMinutes(60),
+      now.plusDays(60),
       isSignUp = isSignUp)
     TokensDAO.saveToken(token)
     (uuid, token)

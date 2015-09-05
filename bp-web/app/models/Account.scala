@@ -1,74 +1,24 @@
 package models
-
-
 import models.DAO.resources.{EmployeesBusinessDAO, AccountPlanDAO}
 import models.DAO.resources.BusinessDTO._
 import models.DAO.conversion.DatabaseCred
-
 import securesocial.core.providers._
 import securesocial.core._
 import securesocial.core.services.{UserService, SaveMode}
-
 //import models.DAO.driver.MyPostgresDriver.simple._
 import com.github.nscala_time.time.Imports._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
 import slick.model.ForeignKeyAction
-
 import slick.driver.PostgresDriver.simple._
 import com.github.tototoshi.slick.PostgresJodaSupport._
 import service.DemoUser
 
-object AccImplicits {
-  implicit def tuple2OAuth1Info(tuple: (Option[String], Option[String])): Option[OAuth1Info] = tuple match {
-    case (Some(token), Some(secret)) => Some(OAuth1Info(token, secret))
-    case _ => None
-  }
 
-  implicit def tuple2OAuth2Info(tuple: (Option[String], Option[String], Option[Int], Option[String])): Option[OAuth2Info] = tuple match {
-    case (Some(token), tokenType, expiresIn, refreshToken) => Some(OAuth2Info(token, tokenType, expiresIn, refreshToken))
-    case _ => None
-  }
-  implicit def typlePassInfo(tuple: (String, String, Option[String])):Option[PasswordInfo] = { tuple match {
-    case (hasher, password, Some(salt)) => Some(PasswordInfo(hasher, password, Some(salt)))
-    case (hasher, password, None) => Some(PasswordInfo(hasher, password, None))
-    case _ =>  None
-  }}
-
-
-  implicit def ob2OAuth1Info(a: Option[String], b: Option[String]): Option[OAuth1Info] = {
-    tuple2OAuth1Info(tuple = (a, b))
-  }
-
-  implicit def ob2OAuth2Info(a: Option[String], b: Option[String], c: Option[Int], d: Option[String]): Option[OAuth2Info] = {
-    tuple2OAuth2Info(tuple = (a, b, c, d))
-  }
-
-  implicit def obPassInfo(a: String, b: String, c: Option[String]):Option[PasswordInfo] = {
-    typlePassInfo(tuple = (a, b, c))
-  }
-}
-
-/**
- * BProcess Scheme
- */
- case class AccountInfos(tag: Tag) extends Table[AccountInfo](tag, "account_infos") {
-  def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
-  def uid = column[String]("uid")
-  def created_at = column[org.joda.time.DateTime]("created_at")
-  def ea = column[Boolean]("early_access", O.Default(false))
-  def pro = column[Boolean]("pro_features", O.Default(false))
-
-  def * = (id.?, uid, created_at, ea, pro) <> (AccountInfo.tupled, AccountInfo.unapply)
-  def accInfoFK  = foreignKey("accInfo_fk", uid, AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
-
- }
 class Accounts(tag: Tag) extends Table[AccountDAO](tag, "accounts") {
   implicit def string2AuthenticationMethod = MappedColumnType.base[AuthenticationMethod, String](
     authenticationMethod => authenticationMethod.method,
     string => AuthenticationMethod(string))
-
   import AccImplicits._
-
 
   def uid         = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def providerId  = column[String]("providerId")
@@ -251,69 +201,6 @@ case class AccountInfo(id: Option[Int], uid: String,
                         ea: Boolean = false, 
                         pro: Boolean = false)
 
-
-
-
-
-
-
-class Tokens(tag: Tag) extends Table[MailToken](tag, "tokens") {
-  def id            = column[Int]("id", O.PrimaryKey, O.AutoInc)
-  def uuid          = column[String]("uuid")
-  def email         = column[String]("email")
-  def creationTime  = column[org.joda.time.DateTime]("creationTime")
-  def expirationTime= column[org.joda.time.DateTime]("expirationTime")
-  def isSignUp      = column[Boolean]("isSignUp")
-
-  def * = (uuid, email, creationTime, expirationTime, isSignUp) <> (MailToken.tupled, MailToken.unapply)
-
-}
-
-
-object TokensDAO {
-
-  import scala.util.Try
-  import slick.driver.PostgresDriver.simple._
-  import DatabaseCred.database
-
-  val tokens = TableQuery[Tokens]
-
-  def saveToken(token: MailToken): MailToken = database withSession {
-    implicit session ⇒
-      tokens += token
-      token
-  }
-
-  def findToken(token: String): Option[MailToken] = { database withSession {
-    implicit session ⇒
-      val q3 = for { a ← tokens if a.uuid === token } yield a
-      q3.list.headOption
-  }
-
-  }
-  def deleteToken(uuid: String): Option[MailToken] = database withSession {
-    implicit session ⇒
-      val tok = findToken(uuid)
-      tok match {
-        case Some(token) =>
-          tokens.filter(_.uuid === token.uuid).delete
-          Some(token)
-        case None => None
-      }
-  }
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      tokens.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-        tokens.ddl.drop
-    }
-  }
-}
 
 object AccountsDAO {
 

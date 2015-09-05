@@ -123,7 +123,7 @@ def popup(emails_hash: String, target: String) = Action { request =>
 
 def sendInvite(emails_hash: String, invite_link: String) = SecuredAction { implicit request =>
   val emails = emails_hash.split(",").toList
-  mailers.Mailer.sendInvite(subject = "Your invitation",
+  mailers.Mailer.sendInvite(subject = "Minority Platform Invite",
              emails = emails, 
              invite_link)
   Ok("sended to" + emails_hash)
