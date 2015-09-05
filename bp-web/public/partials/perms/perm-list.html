@@ -31,30 +31,29 @@
           -->
           <div class="param">
               <div ng-repeat="bpelem in bpelems | filter:filterPerms" class="controls inputRequests">
-                   <div class="request">
-                    <p>{{bpelem.title}}</p>
-                     <select ng-model="bpelem.perm.employeegroup" class="forUID" ng-options="employeegroup as credFetch(employeegroup) for employeegroup in employees_groups" required></select>
-                     <a ng-click="createPerm(bpelem.perm, bpelem, 'front')" class="btn btn-big btn-success">{{ 'ADD' | translate }}</a>
+                    <h4>{{bpelem.title}}</h4>
               <div class="perms" ng-repeat="perm in perms | filter:byObjId(bpelem)"ng-init="perm.account = accFetch(perm)" >
                     <span class="account-pic" tooltip="{{ perm.account.tooltip }}">
                         <img ng-src="{{ perm.account.avatarUrl}}" alt="{{ perm.account.tooltip }}">
                         <a ng-click="delPerm(perm,newBpelem.perms)" class="btn-delete minicon"></a>
                     </span>
               </div>
+                   <div class="request">
+                     <select ng-model="bpelem.perm.employeegroup" class="forUID" ng-options="employeegroup as credFetch(employeegroup) for employeegroup in employees_groups" required></select>
+                     <a ng-click="createPerm(bpelem.perm, bpelem, 'front')" class="btn btn-big btn-success">{{ 'ADD' | translate }}</a>
                 </div>
               </div>
               <div ng-repeat="spaceelem in spaceelems | filter:filterPerms" class="controls inputRequests">
-                   <div class="request">
-                    <p>{{spaceelem.title}}</p>
-                     <select ng-model="spaceelem.perm.employeegroup" class="forUID" ng-options="employeegroup as credFetch(employeegroup) for employeegroup in employees_groups" required></select>
-
-                     <a ng-click="createPerm(spaceelem.perm, spaceelem, 'space')" class="btn btn-big btn-success">{{ 'ADD' | translate }}</a>
-                </div>
+                    <h4>{{spaceelem.title}}</h4>
                 <div class="perms" ng-repeat="perm in perms | filter:byObjId(spaceelem)" ng-init="perm.account = accFetch(perm)">
                     <span class="account-pic" tooltip="{{ perm.account.tooltip }}">
                         <img ng-src="{{ perm.account.avatarUrl}}" alt="{{ perm.account.tooltip }}">
                         <a ng-click="delPerm(perm)" class="btn-delete minicon"></a>
                     </span>
+                </div>
+                <div class="request">
+                     <select ng-model="spaceelem.perm.employeegroup" class="forUID" ng-options="employeegroup as credFetch(employeegroup) for employeegroup in employees_groups" required></select>
+                     <a ng-click="createPerm(spaceelem.perm, spaceelem, 'space')" class="btn btn-big btn-success">{{ 'ADD' | translate }}</a>
                 </div>
               </div>
 
