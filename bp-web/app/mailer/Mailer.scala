@@ -29,7 +29,7 @@ object Mailer {
                                                         "company" -> "Empire InCloud"
                                                         )
 		val jl: java.util.Map[String,String] = vars
-		api.templates.render("Minority", jl,jl)
+		api.templates.render("Minority", jl, jl)
 
 	}
   /*
@@ -42,16 +42,18 @@ object Mailer {
   }
   */
 
-	def sendInvite(subject: String = "test",
+	def sendInvite(subject: String = "Minority Platform Invite",
            emails: List[String] = List(), 
            invite_link: String) = {
 	    ping
+      val link:String = s"https://min.ority.us/auth/signup/$invite_link"
       emails.foreach { email =>
       val msg = new MandrillMessage()
       msg.setSubject(subject)
-      msg.setHtml(getTemplate(invite_link))
+      msg.setHtml(getTemplate(link))
       msg.setAutoText(true)
       msg.setFromEmail("a@minorityapp.com")
+      msg.setFromName("Minority Platform")
       msg.setTo(makeRecipients(Map(email -> "Minority Subscriber")))
       msg.setPreserveRecipients(true)
       /*
@@ -133,8 +135,9 @@ object Mailer {
 ("gerald.c.hensel@gmail.com","Minority Subscriber", "91ec624e-15bc-413d-afb5-86a70dd89d0d"),
 ("thomaslloyd22@gmail.com","Minority Subscriber", "3f5ddbe1-3c29-4ae4-8d2e-228495eb8905"),
 ("johanssons.davids@gmail.com","Minority Subscriber", "fb57d8d6-413c-473a-83b0-df0fcfc95204"),
-
-
+//
+//
+//
 ("scott@clearlogic.co.uk","Minority Subscriber", "01b25a47-07b3-4187-9d77-8e547ea43c23"),
 ("kunal@oxyzeninfolab.com","Minority Subscriber", "d4483342-74f2-4c2b-a465-78b3451a00fa"),
 ("xirofog@landmail.co","Minority Subscriber"),

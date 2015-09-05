@@ -1,12 +1,9 @@
 package service
-
 import models.DAO._
 import main.scala.utils._
 import main.scala.bprocesses._
 import main.scala.resources.scopes._
 import com.github.nscala_time.time.Imports._
-
-
 import main.scala.bprocesses._
 import main.scala.simple_parts.process.{CompositeValues, Brick, ProcElems, ContainerBrick}
 import main.scala.simple_parts.process.control._
@@ -14,50 +11,88 @@ import main.scala.simple_parts.process.data._
 import main.scala.utils._
 import main.scala.resources.scopes._
 import builders._
-
 import main.scala.bprocesses.links._
 import main.scala.utils.Space
 import main.scala.utils.{InputParamProc, ReactionActivator}
 import models.DAO.conversion.Implicits.fetch_cv
-
 import main.scala.bprocesses._
 import main.scala.simple_parts.process.Units._
-
-
 
 object TestRunning extends App {
   val process = Build.run(46)
   NInvoker.toApplogger("Launched " + process.get.session_id + " session")
-
   val process2 = Build.newRunFrom(bpID = 46, session_id = process.get.session_id, params = List(
     ReactionActivator(reaction_id = 1),
     ReactionActivator(reaction_id = 2)
   ))
-
   process2
 }
-
 case class SessionStatesContainer(session_states: List[BPSessionState], session_states_ids: List[Int])
-
 import com.typesafe.scalalogging.Logger
-
 import org.slf4j.LoggerFactory
 
-
-  
 object Build {
-  
   val appLogger = Logger(LoggerFactory.getLogger("build"))
+  def toApplogger(msg: Any, log_type: String = "info") = {
+      log_type match {
+        case "debug" => appLogger.info(msg.toString)
+        case "info" => appLogger.info(msg.toString)
+        case "error" => appLogger.info(msg.toString)
+      }
+  }
 
-def toApplogger(msg: Any, log_type: String = "info") = {
-    log_type match {
-      case "debug" => appLogger.info(msg.toString)
-      case "info" => appLogger.info(msg.toString)
-      case "error" => appLogger.info(msg.toString)
+  /**
+  * Initial launch
+  * @bpID id of process
+  * @lang optional language
+  **/
+  def run(bpID: Int, lang: Option[String] = Some("en") ):Option[BProcess] = {
+    //presenceValidate
+    val bpDTO = BPDAO.get(bpID).get
+    val processRunned1 = initiate(bpID, false, bpDTO, session_id = None)
+   
+     processRunned1.allElements.foreach { element =>
+          //println()
+          toApplogger("Title " + element.title + " " + element.id)
+          toApplogger("states: " + element.states.length + ". switchers: " +element.states.map(st => st.switchers.length).length)
+          //println()
+          toApplogger("session_states: " + element.session_states.length)
+          element.session_states.foreach {
+            state =>
+            //println()
+            toApplogger("Title :   " + state.title)
+            toApplogger("Status:   " + state.on)
+          }
+          toApplogger("reactions: " + element.reactions.length)
+          //println()
+   }
+    toApplogger("Process #" + processRunned1.id + " session states: ")
+    processRunned1.session_states.foreach {
+      state => 
+      //println()
+      toApplogger("Title :   " + state.title)
+      toApplogger("Status:   " + state.on)
+
     }
-}
+    toApplogger("elements length" + processRunned1.allElements.length)
+    Some(processRunned1)
+
+  }
+  /**
+  * Run from launch
+  * @bpID bpID of process
+  * @session_id id of session
+  * @params params for reaction
+  **/
+  def newRunFrom(bpID:Int, session_id: Int, params: List[ReactionActivator]):Option[BProcess]  = {
+      val bpDTO = BPDAO.get(bpID).get
+      val process = initiate(bpID, false, bpDTO, session_id = Some(session_id), params = params)
+      Some(process)
+  }
+
   
-def saveSession(bprocess: BProcess, bprocess_dto: BProcessDTO, lang: Option[String] = Some("en")) = {
+    
+  def saveSession(bprocess: BProcess, bprocess_dto: BProcessDTO, lang: Option[String] = Some("en")) = {
     val session = BPSession(
                             None, 
                             bprocess_dto.id.get,
@@ -129,47 +164,6 @@ def saveOrUpdateSessionStates(bprocess: BProcess, bprocess_dto: BProcessDTO, ses
     val station_loggers = bprocess.station.station_logger.logs.map(s => BPStationLoggeDAO.from_origin_station(process_id, station_id, s))
     station_loggers.foreach(s => BPStationLoggeDAO.pull_object(s))
   }
-
-
-  /**
-  * Initial launch
-  * @bpID id of process
-  * @lang optional language
-  **/
-  def run(bpID: Int, lang: Option[String] = Some("en") ):Option[BProcess] = {
-    //presenceValidate
-    val bpDTO = BPDAO.get(bpID).get
-    val processRunned1 = initiate(bpID, false, bpDTO, session_id = None)
-   
-     processRunned1.allElements.foreach { element =>
-          //println()
-          toApplogger("Title " + element.title + " " + element.id)
-          toApplogger("states: " + element.states.length + ". switchers: " +element.states.map(st => st.switchers.length).length)
-          //println()
-          toApplogger("session_states: " + element.session_states.length)
-          element.session_states.foreach {
-            state =>
-            //println()
-            toApplogger("Title :   " + state.title)
-            toApplogger("Status:   " + state.on)
-          }
-          toApplogger("reactions: " + element.reactions.length)
-          //println()
-   }
-    toApplogger("Process #" + processRunned1.id + " session states: ")
-    processRunned1.session_states.foreach {
-      state => 
-      //println()
-      toApplogger("Title :   " + state.title)
-      toApplogger("Status:   " + state.on)
-
-    }
-    toApplogger("elements length" + processRunned1.allElements.length)
-    Some(processRunned1)
-
-  }
-
-
 
   /** ***
     * Core launch
@@ -354,11 +348,7 @@ def initiate2(bpID: Int,
 
 
 
-def newRunFrom(bpID:Int, session_id: Int, params: List[ReactionActivator]):Option[BProcess]  = {
-    val bpDTO = BPDAO.get(bpID).get
-    val process = initiate(bpID, false, bpDTO, session_id = Some(session_id), params = params)
-    Some(process)
-}
+
 
   
 def runFrom(station_id:Int, bpID:Int, params: List[InputParamProc], session_id: Int):Option[Int]  = {
@@ -640,6 +630,38 @@ def runFrom(station_id:Int, bpID:Int, params: List[InputParamProc], session_id: 
   
   
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
