@@ -79,6 +79,8 @@ $scope.isManager();
     BPStationsFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(stations) {
 
     $scope.bp = _.find(data, function(proc) { return proc.id == $route.current.params.BPid});
+    $scope.bp.newelemformselected = 0;
+
     $scope.business = function () {
       if($scope.bp != undefined) {       return $scope.bp.business;
       } else { return 0 }
@@ -640,7 +642,7 @@ $scope.options = {
       console.log("lighted");
       $scope.newBpelem = { desc: "", process: parseInt($route.current.params.BPid), business: $scope.business() };
       $scope.trees = undefined;
-      $scope.newelemformselected = 0;
+      $scope.bp.newelemformselected = 0;
       //$scope.reloadTree($scope.trees);
       $timeout(function(){
         $scope.reloadResources();
@@ -651,7 +653,7 @@ $scope.options = {
       }, 0);
 
       }, 2000);
-      $scope.newelemformselected = 0;
+      $scope.bp.newelemformselected = 0;
 
 
     });

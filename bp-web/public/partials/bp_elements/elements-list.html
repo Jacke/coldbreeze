@@ -15,7 +15,7 @@
 {{ 'CREATE_OR_COPY' | translate }} <a ng:click="copyProcess()">{{ 'COPY' | translate }}</a> {{ 'CREATE_OR_COPY2' | translate }}
 </div>
 
-<div class="process-info header-frame" ng-init="newelemformselected=0">
+<div class="process-info header-frame">
 <h3 ng-hide="inSession"><edit-in-place value="bp.title"></edit-in-place></h3>
 <h3 ng-click="resetSession()" class="reset-session" ng-show="inSession">{{ bp.title }}</h3>
 <ul class="process-control" ng-show="isManagerVal">
@@ -24,11 +24,11 @@
  <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="editProcess()">{{ 'EDIT' | translate }}</a></li>
  <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="perm()">{{ 'PEOPLE' | translate }} </a></li>
  <!--<li><a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" ng-click="modalShare()">{{ 'SHARE' | translate }}</a></li>-->
- <li><a href="" class="addElemTab" ng:show="!inSession" ng:click="$parent.$parent.newelemformselected==1 ? $parent.$parent.newelemformselected=0 : $parent.$parent.newelemformselected=1" ng-class="$parent.$parent.newelemformselected==1 ? 'selected' : ''" tooltip-placement="bottom" tooltip="Create element"><span class="glyphicon glyphicon-plus"></span></a></li>
+ <li><a href="" class="addElemTab" ng:show="!inSession" ng:click="bp.newelemformselected==1 ? bp.newelemformselected=0 : bp.newelemformselected=1" ng-class="bp.newelemformselected==1 ? 'selected' : ''" tooltip-placement="bottom" tooltip="Create element"><span class="glyphicon glyphicon-plus"></span></a></li>
 </ul>
 </div>
 
-<div ng:show="$parent.newelemformselected == 1 && !inSession" class="element-new-form fadein fadeout">
+<div ng:show="bp.newelemformselected == 1 && !inSession" class="element-new-form fadein fadeout">
         <div ng-include src="'assets/partials/bp_elements/element-new.html'"></div>
 </div>
 </div>
