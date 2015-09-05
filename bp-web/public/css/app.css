@@ -178,19 +178,22 @@ ul.perm-menu {
   display: block;
   border: 1px solid rgba(255, 255, 255, 0);
   border-bottom-color: rgba(0, 0, 0, 0.07);
-  background-color: rgba(255, 255, 255, 0);
   font-size: 12px;
 }
 
 
 .permissions-table table th h6 {
-  margin: 10px 0;
-  font-size: 11px;
-  letter-spacing: 0.15em;
-  text-align: center;
-  line-height: 1;
-  text-transform: uppercase;
-  color: #a5aab6;
+    margin: 10px 0;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-align: center;
+    padding: 4px 10px;
+    line-height: 1;
+    text-transform: uppercase;
+    color: white;
+}
+.permissions-table .permissions-column thead {
+    background: #B1B1B1;
 }
 .permissions-table table .new-item.focus .add-item-form {
   display: inline;
@@ -583,7 +586,10 @@ a.expand-ref-select {
     border-bottom-left-radius: 7px;
     color: #f2f4f6;
 }
-
+.elements .proc-element .session__header.session__people .participators {
+    float: right;
+    margin-right: 2%;
+}
 .launched-by {
     display: inline-block;
     width: 63px;
@@ -2648,7 +2654,10 @@ background-color: gray !important;
     border: rgba(235, 236, 240, 0.52) 1px solid;
     margin-right: -15px;
 }
-
+.header-frame a.addElemTab.selected {
+    background-color: #6B6B6B;
+    color: white;
+}
 
 h2.tableMinListName {
     clear: both;

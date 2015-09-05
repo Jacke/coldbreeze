@@ -614,8 +614,7 @@ $scope.options = {
       perm.role = 'all';
       
       PermissionsFactory.create(perm).$promise.then(function(data) {
-              $scope.newselected = 0;
-       $scope.perms = ProcPermissionsFactory.query({ BPid: $scope.BPid }).$promise.then(function(d) {
+        $scope.perms = ProcPermissionsFactory.query({ BPid: $scope.BPid }).$promise.then(function(d) {
         $scope.loadPerm();
       
       });
@@ -641,7 +640,7 @@ $scope.options = {
       console.log("lighted");
       $scope.newBpelem = { desc: "", process: parseInt($route.current.params.BPid), business: $scope.business() };
       $scope.trees = undefined;
-      $scope.newselected = 0;
+      $scope.newelemformselected = 0;
       //$scope.reloadTree($scope.trees);
       $timeout(function(){
         $scope.reloadResources();
@@ -652,6 +651,7 @@ $scope.options = {
       }, 0);
 
       }, 2000);
+      $scope.newelemformselected = 0;
 
 
     });
