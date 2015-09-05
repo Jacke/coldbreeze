@@ -205,6 +205,10 @@
   deps: ['angular', 'app', 'controllers', 'toastr'],
   export: 'procController'
 },
+'procDetailController': {
+  deps: ['angular', 'app', 'controllers', 'toastr'],
+  export: 'procDetailController'
+},
 'procCreateController': {
   deps: ['angular', 'app', 'controllers', 'toastr'],
   export: 'procCreateController'
@@ -327,6 +331,7 @@
   'procPermController': ['../js/controllers/procPermController'],
   'procController': ['../js/controllers/procController'],
   'procCreateController': ['../js/controllers/processes/procCreateController'],
+  'procDetailController': ['../js/controllers/processes/procDetailController'],
   'requestController': ['../js/controllers/requestController'],
   'loggerController': ['../js/controllers/loggerController'],
   'stationController': ['../js/controllers/stationController'],
