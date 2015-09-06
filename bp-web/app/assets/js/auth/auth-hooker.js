@@ -141,4 +141,13 @@ $(function domReadyLoginFlow () {
       }
     }).trigger('change');
   }
+
+
+  $('a.to_nav').on('click', function(event) {
+  event.preventDefault();
+  console.log(event);
+  $('#navigation').toggleClass('expanded');
+});
+
+  
 });

@@ -169,6 +169,15 @@ $scope.history = function(session_id, entity) {
       
       });
 }
+$scope.processHistory = function(entity) {
+    $scope.history_entity = entity;
+    ngDialog.open({
+        template: '/assets/partials/popup/launch-history.html',
+        //template: '/assets/partials/popup/first-process-finished.html',
+        controller: 'HistoriesCtrl',
+        scope: $scope
+      });
+}
 $scope.deleteSession = function(session_id) {
   SessionsFactory.delete({ session_id: session_id}).$promise.then(function (data2) {
       $scope.reloadSession();
