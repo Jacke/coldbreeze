@@ -1234,7 +1234,13 @@ body .panelLegacy .githubLogin a {
     box-shadow: 0 0 1px 1px #4e5364;
     font-size: 14px;
 }
-
+#addMembersForm input#newUsersForGroup.flatInput.flatTextarea {
+    height: 0em;
+    min-height: 2.5em;
+    width: 15%;
+    display: inline-block;
+    margin-right: 15px;
+} 
 #container .organisationsGridCards .addPeople .flatCheckbox input:after {
     background-color: #44495a;
     border-color: #4e5364;
@@ -1569,7 +1575,7 @@ body .panelLegacy .githubLogin a {
 }
 
 .organisationsGridMenu {
-    padding-top: 35px;
+    padding-top: 10px;
     text-shadow: none;
     background-color: #2b2f3e;
     position: absolute;
@@ -2536,7 +2542,7 @@ form .flatTextarea {
 
 form .flatCheckbox {
     display: inline-block;
-    float: left;
+    /* float: left; */
     padding: 4px 0 0 0;
     height: 20px;
     line-height: 20px;
@@ -2553,6 +2559,11 @@ form .flatCheckbox label {
 
 form .flatCheckbox input {
     overflow: hidden;
+}
+form .inputEmployee .flatCheckbox input#teamAdminRole {
+    width: 21px;
+    height: 12px;
+    margin-right: -8px;
 }
 
 form .flatCheckbox input:after {
@@ -2602,7 +2613,7 @@ form .flatCheckbox input:checked:after {
 .addPeople #addMembersForm {
     position: relative;
     overflow: hidden;
-    height: 193px;
+    height: auto;
     border-bottom: 1px solid #d7dae3;
     -webkit-transition-property: all;
     -moz-transition-property: all;

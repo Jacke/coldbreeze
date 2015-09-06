@@ -42,7 +42,7 @@ object Mailer {
   }
   */
 
-	def sendInvite(subject: String = "Minority Platform Invite",
+	def sendInvite(subject: String = "Minority App Invite",
            emails: List[String] = List(), 
            invite_link: String) = {
 	    ping
@@ -53,7 +53,7 @@ object Mailer {
       msg.setHtml(getTemplate(link))
       msg.setAutoText(true)
       msg.setFromEmail("a@minorityapp.com")
-      msg.setFromName("Minority Platform")
+      msg.setFromName("Minority App")
       msg.setTo(makeRecipients(Map(email -> "Minority Subscriber")))
       msg.setPreserveRecipients(true)
       /*

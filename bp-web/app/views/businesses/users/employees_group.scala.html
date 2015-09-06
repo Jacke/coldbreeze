@@ -40,7 +40,7 @@
 <div class="organisationsGridMenu">
   <h2 class="organisationsGridHeadline">@Messages("businesses.members")</h2>
   <ul>
-    <li data-attr="show" data-target=".tabsWrap" data-filter="all" class="filterGridItems changeData"><a href="/peoples">All</a> <span class="badgeLike">@currentPage.items.length</span></li>
+    <li data-attr="show" data-target=".tabsWrap" data-filter="all" class="filterGridItems changeData"><a href="/peoples" class="group-title">All</a> <span class="badgeLike">@currentPage.items.length</span></li>
     @groups.map { group =>
       <li data-attr="show" data-target=".tabsWrap" data-filter="all" class="filterGridItems changeData">
          <a href="/peoples/@group.id" class="group-link group-@{group.id.get}">@group.title </a>

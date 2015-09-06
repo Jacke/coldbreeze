@@ -33,7 +33,11 @@
     <li data-attr="show" data-target=".tabsWrap" data-filter="all" class="filterGridItems changeData active">All <span class="badgeLike">@currentPage.items.length</span></li>
     
     @groups.map { group =>
-      <li data-attr="show" data-target=".tabsWrap" data-filter="all" class="filterGridItems changeData active"><a href="/peoples/@group.id">@group.title </a><!--<span class="badgeLike">@currentPage.items.length</span>--><a href="#" class="delete-group delete-@{group.id}"><span class="minicon minicon-remove"></span></a></li>
+      <li data-attr="show" data-target=".tabsWrap" data-filter="all" class="filterGridItems changeData active">
+        <a href="/peoples/@group.id" class="group-title">@group.title </a>
+        <!--<span class="badgeLike">@currentPage.items.length</span>-->
+        <a href="#" class="delete-group delete-@{group.id}"><span class="minicon minicon-remove"></span></a>
+      </li>
     }
     <!--
     <li data-attr="show" data-target=".tabsWrap" data-filter="admin" class="filterGridItems changeData">Administrators <span class="badgeLike">3</span></li>
@@ -56,15 +60,31 @@
     <div class="infoMessage"></div>
     <div id="addMembersForm">
       <form class="addAllowedUser addUsersToGroup" data-where="ul.profilesList">
-        <textarea class="flatTextarea" id="newUsersForGroup" required="required" name="emails" placeholder="E-mail address(es) comma separated" cols="50" rows="3"></textarea>
+        <textarea class="flatTextarea" id="newUsersForGroup" required="required" name="emails" placeholder="Email address(es) comma separated" cols="50" rows="3"></textarea>
+
+        <div class="inputEmployee">
+          <input class="flatTextarea flatInput" id="newUsersForGroup" required="required" name="emails" placeholder="Email" cols="50" rows="3">
+          <span class="flatCheckbox"><input id="teamAdminRole" type="checkbox" name="admin">&nbsp;<label for="teamAdminRole">Manager&nbsp;</label></span>
+        </div>
+        <div class="inputEmployee">
+          <input class="flatTextarea flatInput" id="newUsersForGroup" required="required" name="emails" placeholder="Email" cols="50" rows="3">
+          <span class="flatCheckbox"><input id="teamAdminRole" type="checkbox" name="admin">&nbsp;<label for="teamAdminRole">Manager&nbsp;</label></span>
+        </div>
+        <div class="inputEmployee">
+          <input class="flatTextarea flatInput" id="newUsersForGroup" required="required" name="emails" placeholder="Email" cols="50" rows="3">
+          <span class="flatCheckbox"><input id="teamAdminRole" type="checkbox" name="admin">&nbsp;<label for="teamAdminRole">Manager&nbsp;</label></span>
+        </div>        
+
+
         <div class="grids">
           <div class="g1of2">
-            <span class="flatCheckbox"><input id="teamAdminRole" type="checkbox" name="admin">&nbsp;<label for="teamAdminRole">Administrator&nbsp;Role</label></span>
           </div>
+
           <div class="g1of2">
             <button type="submit" class="button small blue flatButton posRight"><i></i><span>@Messages("custom.send")</span></button>
             <a class="cancelButton dark button small flatButton"><i></i><span>@Messages("custom.cancel")</span></a>
           </div>
+
         </div>
         <div class="clr"></div>
       </form>
