@@ -63,7 +63,7 @@ class ProcessInputController(override implicit val env: RuntimeEnvironment[DemoU
       val userId = request.user.main.userId
       val lang:String = models.AccountsDAO.getRolesAndLang(userId).get._3
 
-      service.Build.run(bpID, Some(lang)) match {
+      service.Build.run(bpID, Some(lang), invoke = true) match {
         case Some(process) => { 
           action(request.user.main.userId, process = Some(bpID), ProcHisCom.processLaunched, None, None)
           Ok(Json.toJson(Map("success" -> "station_id", "session" -> process.session_id.toString)))
@@ -114,7 +114,7 @@ class ProcessInputController(override implicit val env: RuntimeEnvironment[DemoU
           }
         }*/
 
-    service.Build.newRunFrom(session_id = session_id,bpID = bpID, params = pmsResult.get) match {
+    service.Build.newRunFrom(session_id = session_id,bpID = bpID, params = pmsResult.get, invoke = true) match {
       case Some(process) => {
        action(request.user.main.userId, process = Some(bpID), ProcHisCom.processResumed, None, None)
        Ok(Json.toJson(Map("success" -> process.session_id)))

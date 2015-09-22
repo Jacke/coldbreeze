@@ -2874,6 +2874,61 @@ form.form-horizontal.element-new-form.form-new-bpelem.form-edit-bpelem.form-new-
 .progress .progress-bar {
     background-color: #FFFFFF !important;
 }
+.session-process .session-process-header {
+    width: 100%;
+    padding-bottom: 100px;
+}
+.session-process .session-process-header .session_controls {
+    width: 9%;
+}
+.session-process .session_controls ul li {
+    border: solid 1px #DCDCDC;
+    border-radius: 24px;
+    width: 44px;
+    height: 43px;
+    padding: 11px 10px 5px 13px;
+    margin: 0px 2px 5px 5px;
+}
+
+.session-process .session_controls span.pin_session {
+    width: auto;
+    font-size: 16px;
+}
+.session-process .session_controls span.moicon.moicon-book {
+    font-size: 15px !important;
+    margin-left: 1px;
+}
+.session-process .session_controls ul li.pinned span {
+    color: #4C4C4C;
+}
+.session-process .session_controls ul li.pinned {
+    background-color: #DEDEDE;
+}
+
+.session-process .session_controls ul {
+    margin-left: 0px;
+    padding-left: 0px;
+}
+.session-process .session_controls span.moicon.icon-trash {
+    width: 16px;
+    font-size: 17px;
+}
+.session-process .session-process-header .session_controls ul li {
+    border: none;
+    border-radius: 2px;
+    padding-left: 28px;
+    padding-right: 48px;
+    border: solid 1px #DCDCDC;
+    background-color: #D7DCEF;
+    color: #64749C;
+}
+.session-process .session_controls ul li:hover {
+    background-color: #B7B7B7;
+    color: #757575;
+    border: solid 1px #D0D0D0;
+    transition: all .3s ease-in-out;
+}
+
 
 .session-process .progress {
     z-index: 400;
@@ -2923,10 +2978,42 @@ form.form-horizontal.element-new-form.form-new-bpelem.form-edit-bpelem.form-new-
     z-index: 100;
     opacity: 0.9;
 }
+.history-layout ul.history-list li * {
+    display: inline-block;
+    margin: 10px 33px auto;
+    height: 100%;
+    float: left;
+    overflow: hidden;
+}
 
+.history-layout ul.history-list {
+    margin-left: 0px;
+    padding-left: 0px;
+    list-style: none;
+    background: whitesmoke;
+    padding: 4px 4px 11px;
+    border-radius: 2px;
+}
 
+.history-layout ul.history-list li .history-status {
+    width: 36px;
+    height: 36px;
+    margin-right: 13px;
+    margin-left: 11px;
+    background-color: greenyellow;
+    border-radius: 48px;
+}
 
+.history-layout .history-list li {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+}
 
+.history-layout ul.history-title {
+    margin-left: 0px;
+}
 
 
 
@@ -6210,76 +6297,6 @@ order:1;
 }
 }
 */
-
-
-/*
-   Pro pages
-  */
-
-.pro-layout {
-    background-color: white;
-    margin-top: 50px;
-    padding: 30px 30px 30px 50px;
-    font-family: "AvenirNextCyr-Good", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
-    max-width: 1280px;
-}
-.pro-section h1 {
-    text-align: center;
-}
-.pro-section h4 {
-    text-align: center;
-}
-
-.pro-section-header span.uicon-svg852 {
-    font-size: 117px;
-    text-align: center;
-    color: #484848;
-    font-weight: 100;
-}
-.pro-section-header span.uicon-svg492 {
-    font-size: 117px;
-    text-align: center;
-    color: #484848;
-    font-weight: 100;
-}
-.pro-section-header {
-    text-align: center;
-}
-.pro-layout .ea-section {
-    margin-top: 50px;
-}
-
-.row-fluid.first-row {
-    display: block;
-    margin-bottom: 185px;
-    margin-top: 42px;
-}
-.pro-layout .intro-content h5 {
-    font-size: 20px;
-    text-align: center;
-    font-weight: 500;
-}
-.row-fluid.second-row {
-    margin-top: 227px;
-    margin-bottom: 409px;
-}
-a#teamSettingsLink.proLink {
-    color: rgb(173, 162, 123);
-}
-
-a#teamSettingsLink.proLink:hover {
-    color: white;
-}
-
-
-.pro-layout .leftcol {
-    padding-right: 100px;
-    border-right: solid 1px #E6E9EA;
-}
-.pro-layout .rightcol {
-    padding-left: 100px;
-}
-
 
 
 

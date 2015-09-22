@@ -2580,6 +2580,17 @@ g {}
         transition: all 0.3s ease;
     }
 
+.website #navigation.expanded {
+    top: 0;
+    left: 0;
+    right: 0;
+    opacity: 1;
+    -ms-filter: none;
+    filter: none;
+    display: block;
+    overflow: visible;
+}
+
     .website #navigation .websiteNav {
         margin: 0 auto;
         margin-top: 94px;
@@ -2720,9 +2731,9 @@ g {}
         min-height: 0;
     }
 
-    .website #websiteHeader .headerLogotypeLink {
-        width: 174px
-    }
+.website #websiteHeader .headerLogotypeLink {
+    width: 272px;
+}
 
     .website #websiteHeader a.to_nav {
         display: block
@@ -2746,11 +2757,6 @@ g {}
         margin-top: -20px;
         font-size: 38px
     }
-
-    .website .sharingAnAPI h1 {
-        font-size: 38px
-    }
-
     .website .semiTransparentBg {
         display: none
     }
@@ -3095,9 +3101,10 @@ g {}
         box-sizing: border-box
     }
 
-    .website #navigation .websiteNav {
-        margin-top: 94px
-    }
+.website #navigation .websiteNav {
+    margin-top: 94px;
+    padding-bottom: 100%;
+}
 
     .website #navigation .backToTop {
         margin-right: 15px
@@ -3138,6 +3145,15 @@ g {}
 
     .website .tweetScrollPlace {
         min-height: 250px
+    }
+    svg#header_logotype {
+        margin-left: 0px;
+        width: 95px;
+        height: 94px;
+    }
+    .logo_title {
+        margin-left: 0px;
+        margin-top: 10px;
     }
 }
 

@@ -43,13 +43,19 @@ GET         /notify2/test_action                    @controllers.NotificationCon
 GET         /invite/:emails_hash/:invite_link       @controllers.NotificationController.sendInvite(emails_hash: String, invite_link: String)
 GET         /only-twitter                           @controllers.Application.onlyTwitter
 
+
+
 # Custom
 GET         /auth/login                                         @controllers.CustomLoginController.login
 POST        /auth/logout                                        @controllers.CustomLoginController.logout
 
+
+
+
 # API
 
 GET         /v1													@controllers.APIController.v1
+
 
 
 
@@ -195,7 +201,41 @@ GET 			/bprocess/:BPid/reactions		  @controllers.BusinessProcessController.react
 PUT 			/bprocess/reaction/:id 			  @controllers.BusinessProcessController.update_reaction(id: Int)
 DELETE 			/bprocess/reaction/:id            @controllers.BusinessProcessController.delete_reaction(id: Int)
 
+################
+# Launches
+####
+GET     /launch/:launch_id/initial_state		    @controllers.LaunchElementsControllers.state_index(launch_id: Int)
+GET    	/launch/:launch_id/element_topos			@controllers.LaunchElementsControllers.element_topos(launch_id: Int)
+GET    	/launch/:launch_id/elements 				@controllers.LaunchElementsControllers.frontElems(launch_id: Int)
+GET    	/launch/:launch_id/spaces  				   	@controllers.LaunchElementsControllers.spaces(launch_id: Int)
+GET  	/launch/:launch_id/space_elems  			@controllers.LaunchElementsControllers.spaceElems(launch_id: Int)
+GET     /launch/:launch_id/switchers 				@controllers.LaunchElementsControllers.switches_index(launch_id: Int)
 
+#POST   	launch/:launch_id/elements 					# @controllers.LaunchElementsControllers
+#GET    	launch/:launch_id/element/:id 				# @controllers.LaunchElementsControllers
+#PUT    	launch/:launch_id/element/:id 				# @controllers.LaunchElementsControllers
+#DELETE 	launch/:launch_id/element/:id 				# @controllers.LaunchElementsControllers
+
+#POST   	launch/:launch_id/spaces 					# @controllers.LaunchElementsControllers
+#GET    	launch/:launch_id/space/:id  				# @controllers.LaunchElementsControllers
+#PUT    	launch/:launch_id/space/:id  				# @controllers.LaunchElementsControllers
+#DELETE 	launch/:launch_id/space/:id  				# @controllers.LaunchElementsControllers
+
+#POST 	launch/:launch_id/space_elems 				# @controllers.LaunchElementsControllers
+#GET  	launch/:launch_id/space_elem/:id 			# @controllers.LaunchElementsControllers
+#PUT  	launch/:launch_id/space_elem/:id 			# @controllers.LaunchElementsControllers
+#GET  	launch/:launch_id/space_elem/:id 			# @controllers.LaunchElementsControllers
+
+#POST    launch/:launch_id/switchers 				# @controllers.LaunchElementsControllers
+#GET     launch/:launch_id/switcher/:id 				# @controllers.LaunchElementsControllers
+#PUT     launch/:launch_id/switcher/:id 				# @controllers.LaunchElementsControllers
+#DELETE  launch/:launch_id/switcher/:id 				# @controllers.LaunchElementsControllers
+
+#GET     launch/:launch_id/reactions 				# @controllers.LaunchElementsControllers
+#POST    launch/:launch_id/reactions 				# @controllers.LaunchElementsControllers
+#GET     launch/:launch_id/reaction/:id 				# @controllers.LaunchElementsControllers
+#PUT     launch/:launch_id/reaction/:id 				# @controllers.LaunchElementsControllers
+#DELETE  launch/:launch_id/reaction/:id 				# @controllers.LaunchElementsControllers
 
 
 

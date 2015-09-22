@@ -135,7 +135,14 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 
 <div class="session-process" ng-repeat="entity in sessions" ng-hide="entity.sessions < 1">
 
-<h2><a href="/a#/bprocess/{{ entity.process.id }}/elements">{{ entity.process.title }}</a></h2>
+<div class="session-process-header"><h2><a href="/a#/bprocess/{{ entity.process.id }}/elements">{{ entity.process.title }}</a></h2>
+<div class="session_controls">
+  <ul>
+    <li class="process-history-btn" tooltip="Process History" ng-click="processHistory(entity)"><span class="moicon moicon-book"></span></li>  
+  </ul>
+</div>   
+
+</div>
 
 <!--
 <div class="process_content" ng-init="bprocess=entity.process">
@@ -178,8 +185,9 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 
 
          
+
 <div class="progress">
-    <div class="progress-lines" ng-init="bprocess=entity.process">
+    <div class="progress-lines" ng-init="tree=session.session">
                 <div ng-include src="'assets/partials/treeLiner.html'"></div>
     </div>    
    <div class="progress-bar" role="progressbar" aria-valuenow="{{session.percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{session.percent}}%;">
@@ -189,9 +197,9 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 
 <div class="session_controls">
   <ul>
-    <li><span class="moicon moicon-book" ng-click="history(session, entity)" tooltip="History"></span></li>  
-    <li><span class="pin_session moicon moicon-pushpin" ng-click="pin(session)" tooltip="Pin launch to bottom bar" ng-class="isPinned(session)"></span></li>
-    <li><span class="moicon icon-remove-circle" ng-click="deleteSession(session.session.id)" tooltip="Delete"></span></li>
+    <li tooltip="History" ng-click="history(session, entity)"><span class="moicon moicon-book"></span></li>  
+    <li ng-class="isPinned(session)" tooltip="Pin launch to bottom bar" ng-click="pin(session)"><span class="pin_session moicon moicon-pushpin"></span></li>
+    <li tooltip="Delete" ng-click="deleteSession(session.session.id)"><span class="moicon icon-trash"></span></li>
   </ul>
 </div>      
 <div class="session-launches-bar minimal" ng-if="session.station.paused == true && session.station.finished == false">

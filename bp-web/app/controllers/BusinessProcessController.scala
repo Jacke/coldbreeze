@@ -40,7 +40,7 @@ case class RefElemContainer(title: String, desc: String = "", business: Int, pro
 
 case class ReactionCollection(reaction: UnitReaction,
 reaction_state_outs: List[UnitReactionStateOut])
-case class ElementTopology(topo_id: Int, element_id: Int, element_title: String, space_element: Boolean = false)
+case class ElementTopologyWrapper(topo_id: Int, element_id: Int, element_title: String, space_element: Boolean = false)
 
 class BusinessProcessController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
 
@@ -67,7 +67,8 @@ class BusinessProcessController(override implicit val env: RuntimeEnvironment[De
   implicit val RefElemContainerWrites = Json.format[RefElemContainer]
   implicit val RefResultedReads = Json.reads[models.DAO.reflect.RefResulted]
   implicit val RefResultedWrites = Json.format[models.DAO.reflect.RefResulted]
-
+  implicit val SessionElementsReads = Json.reads[SessionElements]
+  implicit val SessionElementsFormat = Json.format[SessionElements]
   implicit val BPSessionStateReads = Json.reads[BPSessionState]
   implicit val BPSessionStateWrites = Json.format[BPSessionState]
   implicit val BPStateReads = Json.reads[BPState]
@@ -80,8 +81,11 @@ class BusinessProcessController(override implicit val env: RuntimeEnvironment[De
   implicit val UnitReactionStateOutWrites = Json.format[UnitReactionStateOut]
   implicit val ReactionCollectionReads = Json.reads[ReactionCollection]
   implicit val ReactionCollectionWrites = Json.format[ReactionCollection]
-  implicit val ElementTopologyReads = Json.reads[ElementTopology]
-  implicit val ElementTopologyWrites = Json.format[ElementTopology]
+  implicit val ElementTopologyReads = Json.reads[ElemTopology]
+  implicit val ElementTopologyWrites = Json.format[ElemTopology]
+  implicit val ElementTopologyWrapperReads = Json.reads[ElementTopologyWrapper]
+  implicit val ElementTopologyWrapperWrites = Json.format[ElementTopologyWrapper]
+
 
   def bprocess = SecuredAction { implicit request =>
     val bprocess = BPDAO.getAll // TODO: Not safe
@@ -545,12 +549,12 @@ def element_topos(id: Int) = SecuredAction { implicit request =>
   if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, id)) {
       val topologs_dto = ElemTopologDAO.findByBP(id)
       Logger.debug(s"topos quantity are $topologs_dto.length")
-      val topologs:List[ElementTopology] = topologs_dto.filter(topo => topo.front_elem_id.isDefined).map { topolog =>
+      val topologs:List[ElementTopologyWrapper] = topologs_dto.filter(topo => topo.front_elem_id.isDefined).map { topolog =>
           val element = ProcElemDAO.findById(topolog.front_elem_id.get).get
-          ElementTopology(topo_id = topolog.id.get, element_id = element.id.get, element_title = element.title, space_element = false)
+          ElementTopologyWrapper(topo_id = topolog.id.get, element_id = element.id.get, element_title = element.title, space_element = false)
         } ++ topologs_dto.filter(topo => topo.space_elem_id.isDefined).map { topolog => 
           val element = SpaceElemDAO.findById(topolog.space_elem_id.get).get
-          ElementTopology(topo_id = topolog.id.get, element_id = element.id.get, element_title = element.title, space_element = true)
+          ElementTopologyWrapper(topo_id = topolog.id.get, element_id = element.id.get, element_title = element.title, space_element = true)
         }      
       Ok(Json.toJson(topologs))
   } else { Forbidden(Json.obj("status" -> "Access denied")) }

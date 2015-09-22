@@ -72,8 +72,9 @@ class EmployeeController(override implicit val env: RuntimeEnvironment[DemoUser]
         case Some(biz) => groups = GroupsDAO.getAllByBusiness(biz._2)
         case _ => groups = List()
       }
+      val aval = 5
       Ok(views.html.businesses.users.employees(
-        Page(employees, 1, 1, employees.length), accounts, 1, "%", assign, assigned, groups)(user))
+        Page(employees, 1, 1, employees.length), accounts, 1, "%", assign, assigned, groups, aval)(user))
   }
   def index_group(group_id: Int) = SecuredAction { implicit request =>
       val user = request.user

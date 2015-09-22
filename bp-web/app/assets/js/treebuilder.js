@@ -7,7 +7,8 @@ var treeBuilderService = angular.module('minorityApp.TreeBuilderService', ['mino
     })
 
 // 4. define a module component
-treeBuilderService.factory('TreeBuilder', ['BPElemsFactory','BPSpacesFactory', 'BPSpaceElemsFactory', function(BPElemsFactory,BPSpacesFactory, BPSpaceElemsFactory) {
+treeBuilderService.factory('TreeBuilder', ['LaunchElemsFactory', 'LaunchSpacesFactory', 'LaunchSpaceElemsFactory', 'LaunchElementTopologsFactory', 'BPElemsFactory','BPSpacesFactory', 'BPSpaceElemsFactory', 
+  function(LaunchElemsFactory, LaunchSpacesFactory, LaunchSpaceElemsFactory, LaunchElementTopologsFactory, BPElemsFactory,BPSpacesFactory, BPSpaceElemsFactory) {
 
 
 var builder = function (bp, data, data2,data3) {
@@ -51,6 +52,42 @@ var builder = function (bp, data, data2,data3) {
 }
 
 
+var launchBuilderFetch = function (bp, launch, onSuccess) {
+  console.log('launchBuilderFetch launched');
+  var bpelems, spaces, spaceelems;
+    bpelems = LaunchElemsFactory.query({ launch_id: launch.id });
+    spaces =  LaunchSpacesFactory.query({ launch_id: launch.id });
+    spaceelems = LaunchSpaceElemsFactory.query({ launch_id: launch.id });
+
+  /**
+   * TREE BUILDER 
+   */
+
+  bpelems.$promise.then(function(data) {
+    spaces.$promise.then(function(data2) {
+      spaceelems.$promise.then(function(data3) {
+          builder(launch, data, data2, data3);
+
+        launch.frontSpaces = _.object(_.uniq(_.map(spaces, function(v) {
+          return [v.brick_front,
+                   _.filter(spaces, function(n){
+                      return n.brick_front == v.brick_front;
+                    })
+                  ]})));
+        launch.nestedSpaces = _.object(_.uniq(_.map(spaces, function(v) {
+          return [v.brick_nested,
+                   _.filter(spaces, function(n){
+                      return n.brick_nested == v.brick_nested;
+                    })
+                  ]})));
+
+          if (onSuccess != undefined) {
+            onSuccess();
+          }
+  });
+  });
+  });
+};
 
 var builderFetch = function (bp, onSuccess) {
   var bpelems, spaces, spaceelems;
@@ -94,6 +131,13 @@ var builderFetch = function (bp, onSuccess) {
 
  return { buildFetch: function(data,onSuccess) {
  	builderFetch(data, onSuccess);
+ }, launchBuildFetch: function(proc,session,onSuccess) {
+    console.log('launchBuildFetch');
+    console.log(proc);
+    console.log(session);
+    if (session != undefined) {
+      return launchBuilderFetch(proc,session, onSuccess);
+    } else { return null; }
  }
 
 }

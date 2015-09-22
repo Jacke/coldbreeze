@@ -119,7 +119,7 @@
                     <div class="info">
                       <div class="type" ng-class="spaceelem.type_title">{{ type_short[spaceelem.type_title] }}
 
-<ul class="type-tabs" ng-init="spaceelem.hovered=false" role="tablist" ng-mouseover="spaceelem.hovered == true ? bpelspaceelemem.hovered=false : spaceelem.hovered=true" ng-show="(isManagerVal && !inSession && selected == 2) || (spaceelem.hovered == true && inSession)">
+<ul class="type-tabs" ng-init="spaceelem.hovered=false" role="tablist" ng-mouseover="spaceelem.hovered == true ? bpelspaceelemem.hovered=false : spaceelem.hovered=true" ng-show="(isManagerVal && !inSession && selected == 2) || (spaceelem.hovered == true && !inSession)">
            <li><a role="tab" data-toggle="tab" ng:init="selected=1" ng:click="selected == 1 ? selected=2 : selected=1">
            <span class="glyphicon glyphicon-edit"></span></a></li>
            <li><a ng-click="deleteSpaceElem(spaceelem)"><span class="glyphicon glyphicon-remove"></span></a></li>

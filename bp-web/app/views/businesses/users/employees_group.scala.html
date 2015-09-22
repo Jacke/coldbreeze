@@ -40,10 +40,10 @@
 <div class="organisationsGridMenu">
   <h2 class="organisationsGridHeadline">@Messages("businesses.members")</h2>
   <ul>
-    <li data-attr="show" data-target=".tabsWrap" data-filter="all" class="filterGridItems changeData"><a href="/peoples">All</a> <span class="badgeLike">@currentPage.items.length</span></li>
+    <li data-attr="show" data-target=".tabsWrap" data-filter="all" class="filterGridItems changeData"><a href="/peoples" class="group-title">All</a> <span class="badgeLike">@currentPage.items.length</span></li>
     @groups.map { group =>
       <li data-attr="show" data-target=".tabsWrap" data-filter="all" class="filterGridItems changeData">
-         <a href="/peoples/@group.id" class="group-link group-@{group.id.get}">@group.title </a>
+         <a href="/peoples/@group.id" class="group-link group-@{group.id.get} group-title">@group.title </a>
          <!--<span class="badgeLike">@currentPage.items.length</span>-->
          <a href="#" class="delete-group delete-@{group.id}"><span class="minicon minicon-remove"></span></a>
       </li>
@@ -71,7 +71,7 @@
     <div id="addMembersForm" class="addUsersToGroupForm">
       <form class="addAllowedUser addUsersToGroup" data-where="ul.profilesList">
         <div class="ungrouped">
-        <span class="addToTeam">Add to Group:</span>
+        <span class="addToTeam groupFormTitle">Add to Group</span>
         @all_employees.map { employee =>
            <div class="account-checkbox"> 
            <span class="flatCheckbox employee-@employee.id"><input id="@employee.uid" class="assignCheckbox" type="checkbox" name="@employee.uid">&nbsp;<label for="@employee.uid">@name(accounts, employee)&nbsp;@employee.uid</label></span>
@@ -79,7 +79,7 @@
         }
         </div>
         <div class="grouped">
-        <span class="DeleteFromGroup">Delete from group:</span>
+        <span class="DeleteFromGroup groupFormTitle">Delete from group</span>
         @currentPage.items.map { employee =>
           <div class="account-checkbox"> 
           <span class="flatCheckbox employee-@employee.id"><input id="@employee.uid" class="unassignCheckbox" type="checkbox" name="@employee.uid">&nbsp;<label for="@employee.uid">@name(accounts, employee)&nbsp;@employee.uid</label></span>

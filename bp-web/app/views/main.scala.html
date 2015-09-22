@@ -23,6 +23,7 @@
   <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800' rel='stylesheet' type='text/css'>
   <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("favicon.png")">
   <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/dashboard.css")">
+  <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main-layout.css")">
   <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.versioned("css/bootstrap.css")">
   <link rel="stylesheet" href="@routes.Assets.versioned("css/selectize.css")"/>
   <link rel="stylesheet" href="@routes.Assets.versioned("css/selectize.bootstrap3.css")"/>
@@ -48,11 +49,14 @@
     display: block;
 }
 </style>
-
+<script type="text/javascript">
+  window.heap=window.heap||[],heap.load=function(e,t){window.heap.appid=e,window.heap.config=t=t||{};var n=t.forceSSL||"https:"===document.location.protocol,a=document.createElement("script");a.type="text/javascript",a.async=!0,a.src=(n?"https:":"http:")+"//cdn.heapanalytics.com/js/heap-"+e+".js";var o=document.getElementsByTagName("script")[0];o.parentNode.insertBefore(a,o);for(var r=function(e){return function(){heap.push([e].concat(Array.prototype.slice.call(arguments,0)))}},p=["clearEventProperties","identify","setEventProperties","track","unsetEventProperty"],c=0;c<p.length;c++)heap[p[c]]=r(p[c])};
+  heap.load("2224245585");
+</script>
 </head>
 
 <body class="themeDark themeGrad website">
-<div class="overlay_mobile">Please use desktop or tablet for best app expirience.<a href="#">Skip</a>
+<div class="overlay_mobile">Please use desktop or tablet for best app experience.<a href="#">Skip</a>
 </div>
 
 

@@ -20,6 +20,7 @@ class SessionTopologs(tag: Tag) extends Table[SessionElemTopology](tag, "session
   def id            = column[Int]("id", O.PrimaryKey, O.AutoInc) 
   def process       = column[Int]("process_id")
   def hash          = column[String]("hash")
+  def session   = column[Int]("session_id")
 
   def front_elem_id = column[Option[Int]]("front_elem_id")
   def space_elem_id = column[Option[Int]]("space_elem_id")
@@ -28,7 +29,7 @@ class SessionTopologs(tag: Tag) extends Table[SessionElemTopology](tag, "session
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
 
-  def * = (id.?, process, 
+  def * = (id.?, process, session,
           front_elem_id,
           space_elem_id,
           hash,
@@ -38,6 +39,7 @@ class SessionTopologs(tag: Tag) extends Table[SessionElemTopology](tag, "session
   def procelemFK  = foreignKey("topo_procelem_fk", front_elem_id, models.DAO.sessions.SessionProcElementDAO.session_proc_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
   def spaceelemFK = foreignKey("topo_spaceelem_fk", space_elem_id, models.DAO.sessions.SessionSpaceElemDAO.space_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
   def spaceFK     = foreignKey("topo_bpspace_fk", space_id, models.DAO.sessions.SessionSpaceDAO.session_spaces)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def sessionFK   = foreignKey("topo_s_sp_session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }
 
@@ -65,7 +67,11 @@ object SessionElemTopologDAO {
     val q3 = for { s <- session_elem_topologs if s.process === id } yield s
     q3.list
   }
-
+  def findBySession(id: Int):List[SessionElemTopology] = database withSession {
+    implicit session =>
+    val q3 = for { s <- session_elem_topologs if s.session === id } yield s
+    q3.list
+  }
   def getIdentityById(k: Int):Option[EitherTypeElement] = {
     get(k) match {
       case Some(topo) => {

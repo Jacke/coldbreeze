@@ -3,10 +3,11 @@ define(['angular', 'app', 'controllers'], function (angular, minorityApp, minori
 
 
 
-minorityControllers.controller('BPRequestCtrl', ['ElementTopologsFactory', 'InteractionsFactory', '$scope', '$window','$routeParams','$route', '$rootScope','$filter','BPLogsFactory', 'BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory', 'BProcessFactory', 'BPStationsFactory', 'BPRequestFactory',  '$location', '$http',
-function (ElementTopologsFactory, InteractionsFactory, $scope, $window,$routeParams,$route, $rootScope,$filter,BPLogsFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BProcessFactory, BPStationsFactory, BPRequestFactory,  $location, $http) {
+minorityControllers.controller('BPRequestCtrl', ['LaunchElementTopologsFactory','LaunchElemsFactory','LaunchSpacesFactory','LaunchSpaceElemsFactory','ElementTopologsFactory', 'InteractionsFactory', '$scope', '$window','$routeParams','$route', '$rootScope','$filter','BPLogsFactory', 'BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory', 'BProcessFactory', 'BPStationsFactory', 'BPRequestFactory',  '$location', '$http',
+function (LaunchElementTopologsFactory, LaunchElemsFactory,LaunchSpacesFactory,LaunchSpaceElemsFactory, ElementTopologsFactory, InteractionsFactory, $scope, $window,$routeParams,$route, $rootScope,$filter,BPLogsFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BProcessFactory, BPStationsFactory, BPRequestFactory,  $location, $http) {
 
 $scope.bpId = $scope.session.process.id;
+$scope.session_id = $scope.session.session.id;
 
 $scope.isManager = function () {
   if ($scope.isManagerVal == undefined && $rootScope.manager != undefined) {
@@ -21,9 +22,10 @@ $scope.isManagerVal = $scope.isManager();
 $scope.isManager();
 
 
-  $scope.bpelems = BPElemsFactory.query({ BPid: $scope.bpId }); 
-  $scope.spaces =  BPSpacesFactory.query({ BPid: $scope.bpId });
-  $scope.spaceelems = BPSpaceElemsFactory.query({ BPid: $scope.bpId });
+
+  $scope.bpelems = LaunchElemsFactory.query({ launch_id: $scope.session_id }); 
+  $scope.spaces =  LaunchSpacesFactory.query({ launch_id: $scope.session_id });
+  $scope.spaceelems = LaunchSpaceElemsFactory.query({ launch_id: $scope.session_id });
   /* callback for ng-click 'editUser': */
   $scope.bpelems.$promise.then(function(data) {
     $scope.spaces.$promise.then(function(data2) {
@@ -121,7 +123,7 @@ $scope.builder = function (station) {
 
 
    $scope.interactions = InteractionsFactory.query({session_id: $scope.session.session.id});
-   $scope.element_topologs = ElementTopologsFactory.query({ BPid: $scope.bpId });
+   $scope.element_topologs = LaunchElementTopologsFactory.query({ launch_id: $scope.session_id });
 
    $scope.interactions.$promise.then(function (data) {
     $scope.element_topologs.$promise.then(function (data2) {
