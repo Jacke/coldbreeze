@@ -2919,13 +2919,13 @@ form.form-horizontal.element-new-form.form-new-bpelem.form-edit-bpelem.form-new-
     padding-left: 28px;
     padding-right: 48px;
     border: solid 1px #DCDCDC;
-    /* background-color: whitesmoke; */
-    color: #4C5264;
+    background-color: #D7DCEF;
+    color: #64749C;
 }
 .session-process .session_controls ul li:hover {
-    background-color: #778899;
-    color: white;
-    border: solid 1px gray;
+    background-color: #B7B7B7;
+    color: #757575;
+    border: solid 1px #D0D0D0;
     transition: all .3s ease-in-out;
 }
 

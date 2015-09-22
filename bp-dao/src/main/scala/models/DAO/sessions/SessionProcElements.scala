@@ -107,6 +107,18 @@ object SessionProcElementDAO {
       q3.list 
     }
   }
+  def findByBPSessionId(id: Int, session_id: Int) = {
+    database withSession { implicit session =>
+     val q3 = for { el ← session_proc_elements if el.bprocess === id && el.session === session_id } yield el
+      q3.list 
+    }
+  }  
+  def findBySession(session_id: Int) = {
+    database withSession { implicit session =>
+     val q3 = for { el ← session_proc_elements if el.session === session_id } yield el
+      q3.list 
+    }
+  }
   def lastOrderOfBP(id: Int):Int = {
     database withSession { implicit session =>
        val q3 = for { el ← session_proc_elements if el.bprocess === id } yield el

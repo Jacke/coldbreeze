@@ -26,8 +26,8 @@ class SessionStateLogs(tag: Tag) extends Table[SessionStateLog](tag, "session_st
   def updated_at= column[Option[org.joda.time.DateTime]]("updated_at")  
 
   def lang      = column[String]("lang", O.Default("en"))  
-  def * = (id.?, session, state_id, on, on_rate,reason,
-           created_at, updated_at) <> (SessionStateLog.tupled, SessionStateLog.unapply)
+  def *         = (id.?, session, state_id, on, on_rate,reason,
+                   created_at, updated_at) <> (SessionStateLog.tupled, SessionStateLog.unapply)
   def sesFK     = foreignKey("s_state_log_session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
   def stateFK   = foreignKey("s_state_log_state_fk", state_id, BPSessionStateDAO.sessionstates)(_.id, onDelete = ForeignKeyAction.Cascade)
 

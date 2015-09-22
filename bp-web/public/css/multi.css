@@ -1236,11 +1236,56 @@ body .panelLegacy .githubLogin a {
 }
 #addMembersForm input#newUsersForGroup.flatInput.flatTextarea {
     height: 0em;
-    min-height: 2.5em;
-    width: 15%;
+    min-height: 33px;
+    width: 158px;
     display: inline-block;
     margin-right: 15px;
-} 
+}
+span.groupFormTitle {
+    font-size: 15px;
+    font-family: 'Open Sans';
+    color: #CCCCCC;
+    font-weight: 700;
+}
+.inputsEmployee .inputEmployee span.flatCheckbox {
+    float: right;
+    margin-top: 8px;
+}
+.inputsEmployee .inputEmployee {
+    display: inline-block;
+    margin-right: 40px;
+}
+
+.inputsEmployee {
+    height: 185px;
+    width: 700px;
+}
+
+.addUsersToGroup .userLimit {
+    width: 120px;
+    display: block;
+    font-size: 17px;
+    font-family: 'Open Sans';
+    font-weight: 700;
+    color: #7994EB;
+    margin-top: 8px;
+}
+
+.organisationsGridMenu a.group-title {
+    color: #7994EB;
+}
+
+.organisationsGridMenu a.group-title:hover {
+    color: #4E63A7;
+    text-decoration: none;
+}
+
+.teamCreation button.button.small.blue:hover {
+    text-decoration: none;
+    border-bottom: none;
+    text-shadow: none;
+    background-color: #1F9862;
+}
 #container .organisationsGridCards .addPeople .flatCheckbox input:after {
     background-color: #44495a;
     border-color: #4e5364;
@@ -1624,7 +1669,6 @@ body .panelLegacy .githubLogin a {
     border-color: transparent;
     color: #fff;
 }
-
 .organisationsGridMenu .badgeLike {
     float: right;
     margin-top: -1px;
@@ -1637,7 +1681,7 @@ body .panelLegacy .githubLogin a {
     line-height: 12px;
     font-weight: bold;
     border: 1px solid #6b6f81;
-    margin-right: .5em;
+    margin-right: -2px;
     display: inline-block;
 }
 
@@ -1649,10 +1693,22 @@ body .panelLegacy .githubLogin a {
 .organisationsGridMenu span.minicon.minicon-remove {
     display: block;
     float: right;
-    font-size: 18px;
-    margin-right: 9px;
+    font-size: 17px;
+    margin-right: -4px;
+    background-color: #3E435A;
+    border-radius: 11px;
+    padding: 1.2px 5px;
+    opacity: 0.3;
 }
-
+.organisationsGridMenu span.minicon.minicon-remove:hover {
+    opacity: 1;
+    transition: all .5s ease-in-out;
+}
+.addUsersToGroup .grids {
+    clear: both;
+    overflow: hidden;
+    margin-top: 30px;
+}
 .organisationsGridMenu a.delete-group:hover span.minicon.minicon-remove {
     color: white;
 }

@@ -39,7 +39,8 @@ import main.scala.bprocesses._
 import builders._
   
 class InteractionController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
-  
+  implicit val SessionElementsReads = Json.reads[SessionElements]
+  implicit val SessionElementsFormat = Json.format[SessionElements]
   implicit val CompositeVReads = Json.reads[CompositeValues]
   implicit val CompositeVWrites = Json.format[CompositeValues]
   implicit val logReads = Json.reads[BPLoggerDTO]
@@ -71,15 +72,31 @@ class InteractionController(override implicit val env: RuntimeEnvironment[DemoUs
   implicit val BPSessionStateReads = Json.reads[BPSessionState]
   implicit val BPSessionStateWrites = Json.format[BPSessionState]
 
+
+ case class SessionReactionContainer(session_state: Option[BPSessionState], 
+                                     reaction: SessionUnitReaction, 
+                                     outs: List[SessionUnitReactionStateOut])
+ case class ReactionContainer(session_state: Option[BPSessionState], reaction: UnitReaction, outs: List[UnitReactionStateOut])
+ 
+
+ case class SessionInteractionContainer(session_container:Option[SessionContainer],
+                                 reactions: List[SessionReactionContainer], 
+                                 outs_identity: List[BPSessionState])
  case class InteractionContainer(session_container:Option[SessionContainer],
- 	                               reactions: List[ReactionContainer], 
+                                 reactions: List[ReactionContainer], 
                                  outs_identity: List[BPSessionState])
 
- case class ReactionContainer(session_state: Option[BPSessionState], reaction: UnitReaction, outs: List[UnitReactionStateOut])
+implicit val SessionUnitReactionStateOutReads = Json.reads[SessionUnitReactionStateOut]
+implicit val SessionUnitReactionStateOutWrites = Json.format[SessionUnitReactionStateOut]
 
-
+implicit val SessionUnitReactionReads = Json.reads[SessionUnitReaction]
+implicit val SessionUnitReactionWrites = Json.format[SessionUnitReaction]
   implicit val ReactionContainerReads = Json.reads[ReactionContainer]
   implicit val ReactionContainerWrites = Json.format[ReactionContainer]
+  implicit val SessionReactionContainerReads = Json.reads[SessionReactionContainer]
+  implicit val SessionReactionContainerWrites = Json.format[SessionReactionContainer]
+  implicit val SessionInteractionContainerReads = Json.reads[SessionInteractionContainer]
+  implicit val SessionInteractionContainerWrites = Json.format[SessionInteractionContainer]
   implicit val InteractionContainerReads = Json.reads[InteractionContainer]
   implicit val InteractionContainerWrites = Json.format[InteractionContainer]
 
@@ -94,21 +111,21 @@ def fetchInteraction(session_id: Int) = SecuredAction { implicit request =>
 
   	case Some(session) => {   
   		val process:BProcessDTO = session.process
-  	    val reactions:List[UnitReaction] = ReactionDAO.findUnapplied(process.id.get, session_id)
-        Logger.debug("Reactions")
-        Logger.debug(s"reaction length $reactions.length")
+  	  val reactions:List[SessionUnitReaction] = SessionReactionDAO.findUnapplied(process.id.get, session_id)
+      Logger.debug("Session Reactions")
+      Logger.debug(s"reaction length ${reactions.length}")
 
-        val reaction_outs:List[UnitReactionStateOut] = ReactionStateOutDAO.findByReactions(reactions.map(_.id.get))
+      val reaction_outs:List[SessionUnitReactionStateOut] = SessionReactionStateOutDAO.findByReactions(reactions.map(_.id.get))
        
-  	    val session_states: List[BPSessionState] = BPSessionStateDAO.findByOriginIds(reaction_outs.map(_.state_ref))
+  	  val session_states: List[BPSessionState] = BPSessionStateDAO.findByOriginIds(reaction_outs.map(_.state_ref))
         Logger.debug("Session state")
-        Logger.debug(s"session_states length $session_states.length")
+        Logger.debug(s"session_states length ${session_states.length}")
           val reaction_container = reactions.map(reaction => 
-          	ReactionContainer(session_state = session_states.find(state => Some(reaction.from_state) == state.origin_state),
+          	SessionReactionContainer(session_state = session_states.find(state => Some(reaction.from_state) == state.origin_state),
           					  reaction, reaction_outs.filter(out => Some(out.reaction) == reaction.id))
           )
 
-  	   Ok(Json.toJson(InteractionContainer(result,reaction_container, session_states)))
+  	   Ok(Json.toJson(SessionInteractionContainer(result,reaction_container, session_states)))
   	}
   	case _ => BadRequest(Json.toJson(Map("error" -> "Session not found")))
   }

@@ -29,7 +29,7 @@ object Mailer {
                                                         "company" -> "Empire InCloud"
                                                         )
 		val jl: java.util.Map[String,String] = vars
-		api.templates.render("Minority", jl, jl)
+		api.templates.render("Beautiful2", jl, jl)
 
 	}
   /*
@@ -135,6 +135,9 @@ object Mailer {
 ("gerald.c.hensel@gmail.com","Minority Subscriber", "91ec624e-15bc-413d-afb5-86a70dd89d0d"),
 ("thomaslloyd22@gmail.com","Minority Subscriber", "3f5ddbe1-3c29-4ae4-8d2e-228495eb8905"),
 ("johanssons.davids@gmail.com","Minority Subscriber", "fb57d8d6-413c-473a-83b0-df0fcfc95204"),
+("rsababady@pro.onet.pl","Minority Subscriber"),
+("aroberts025@gmail.com","Minority Subscriber"),
+
 //
 //
 //
@@ -166,7 +169,6 @@ object Mailer {
 ("bal@jhat.com","Minority Subscriber"),
 ("esbaptista@gmail.com","Minority Subscriber"),
 ("furiostyles@outlook.com","Minority Subscriber"),
-("rsababady@pro.onet.pl","Minority Subscriber"),
 ("marc@afriendofmine.nl","Minority Subscriber"),
 ("Michaelsaia522@gmail.com","Minority Subscriber"),
 ("joshhardman@me.com","Minority Subscriber"),
@@ -215,7 +217,6 @@ object Mailer {
 ("vedarthk@vedarthz.in","Minority Subscriber"),
 ("juices.woo@gmail.com","Minority Subscriber"),
 ("rickghome@gmail.com","Minority Subscriber"),
-("aroberts025@gmail.com","Minority Subscriber"),
 ("avitelyas@gmail.com","Minority Subscriber"))
 
   }

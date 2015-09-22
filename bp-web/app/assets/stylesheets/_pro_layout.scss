@@ -70,9 +70,10 @@ a#teamSettingsLink.proLink:hover {
 a#teamSettingsLink.proLink:hover span {
     color: #FBE289 !important;
 }
-.proLinkItem a#teamSettingsLink:before {
-    border-color: #E2CC7D;
+.proLinkItem a#teamSettingsLink.active:before, .proLinkItem a:hover:before {
+    border-color: #E2CC7D
 }
+
 
 .pro-layout .leftcol {
     padding-right: 100px;

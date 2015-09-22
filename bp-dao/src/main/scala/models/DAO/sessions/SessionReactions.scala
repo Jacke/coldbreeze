@@ -24,6 +24,8 @@ case class CurrentSessionReactionContainer(reaction: SessionUnitReaction,
 class SessionReactionRefs(tag: Tag) extends Table[SessionUnitReaction](tag, "session_reactions") {
   def id          = column[Int]("id", O.PrimaryKey, O.AutoInc) 
   def bprocess    = column[Int]("bprocess_id")
+  def session   = column[Int]("session_id")
+
   def autostart   = column[Boolean]("autostart")
   def element     = column[Int]("element_id")
   def from_state  = column[Option[Int]]("state_ref_id")
@@ -32,12 +34,14 @@ class SessionReactionRefs(tag: Tag) extends Table[SessionUnitReaction](tag, "ses
   def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")  
 
-  def elementFK   = foreignKey("react_element_fk", element, models.DAO.ElemTopologDAO.elem_topologs)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def bpFK        = foreignKey("react_bprocess_fk", bprocess, bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def state_FK    = foreignKey("react_state_fk", from_state, models.DAO.BPStateDAO.bpstates)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def elementFK   = foreignKey("ses_react_element_fk", element, SessionElemTopologDAO.session_elem_topologs)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK        = foreignKey("ses_react_bprocess_fk", bprocess, bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def state_FK    = foreignKey("ses_react_state_fk", from_state, models.DAO.SessionInitialStateDAO.session_initial_states)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def sessionFK  = foreignKey("react_topo_s_sp_session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?, 
            bprocess, 
+           session,
            autostart, 
            element,
            from_state,
@@ -67,6 +71,12 @@ object SessionReactionDAO {
        q3.list                   
     } 
   }
+  def findBySession(id: Int):List[SessionUnitReaction] = {
+     database withSession { implicit session =>
+       val q3 = for { s ← session_reactions if s.session === id } yield s
+       q3.list                   
+    } 
+  }  
   /**
    * Find session_reactions that are not executed in specific session(they may have executed, 
    * but state out cant be equeal to session state)
@@ -75,7 +85,7 @@ object SessionReactionDAO {
      database withSession { implicit session =>
        val session_states = BPSessionStateDAO.findByBPAndSession(id, session_id)
        val session_reactions:List[SessionUnitReaction] = findByBP(id)
-       val state_outs = ReactionStateOutDAO.findByReactions(session_reactions.flatMap(_.id))
+       val state_outs = SessionReactionStateOutDAO.findByReactions(session_reactions.flatMap(_.id))
 
        val unapplied_reactions = session_reactions.filter { reaction =>
           val state_out = state_outs.filter(out => Some(out.reaction) == reaction.id)
@@ -102,7 +112,7 @@ object SessionReactionDAO {
      database withSession { implicit session =>
        val session_states = BPSessionStateDAO.findByBPAndSession(id, session_id)
        val session_reactions:List[SessionUnitReaction] = findByBP(id)
-       val state_outs = ReactionStateOutDAO.findByReactions(session_reactions.flatMap(_.id))
+       val state_outs = SessionReactionStateOutDAO.findByReactions(session_reactions.flatMap(_.id))
 
        val unapplied_reactions = session_reactions.filter { reaction =>
           val state_out = state_outs.filter(out => Some(out.reaction) == reaction.id)
@@ -177,7 +187,7 @@ object SessionReactionDAO {
 class SessionReactionStateOuts(tag: Tag) extends Table[SessionUnitReactionStateOut](tag, "session_reaction_state_outs") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc) 
   def reaction = column[Int]("reaction_id")
-  def state = column[Int]("state_id")
+  def state = column[Int]("session_state_id")
   def on = column[Boolean]("on")
   def on_rate = column[Int]("on_rate")
 
@@ -193,8 +203,8 @@ class SessionReactionStateOuts(tag: Tag) extends Table[SessionUnitReactionStateO
     on_rate,
     created_at, updated_at) <> (SessionUnitReactionStateOut.tupled, SessionUnitReactionStateOut.unapply)
 
-  def reaction_FK = foreignKey("react_out_reaction_fk", reaction, models.DAO.SessionReactionDAO.session_reactions)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def state_FK    = foreignKey("react_out_state_fk", state, models.DAO.BPStateDAO.bpstates)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def reaction_FK = foreignKey("ses_react_out_reaction_fk", reaction, models.DAO.SessionReactionDAO.session_reactions)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def state_FK    = foreignKey("ses_react_out_state_fk", state, models.DAO.SessionInitialStateDAO.session_initial_states)(_.id, onDelete = ForeignKeyAction.Cascade)
 //def session_state_refFK = foreignKey("session_state_ref_fk", session_state_ref, SpaceElementReflectionDAO.space_element_reflections)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }

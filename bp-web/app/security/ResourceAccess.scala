@@ -40,6 +40,20 @@ def procIsOwnedByBiz(business: Int, process_id: Int):Boolean = {
       case _ => false
     }
 }
+def launchIsOwnedByBiz(business: Int, launch_id: Int):Boolean = {
+    val launch = BPSessionDAO.get(launch_id).get
+    BPDAO.get(launch.process) match {
+      case Some(bprocess) => { 
+        if (bprocess.business == business) {
+          true 
+        }
+        else {
+          false
+        }
+      }
+      case _ => false
+    }
+}
 def stationSecured(station_id: Int, email: String, business_id: Int):Boolean = {
   BPStationDAO.findById(station_id) match {
     case Some(station) => {

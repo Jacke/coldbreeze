@@ -1,0 +1,21 @@
+<div class="history-layout">
+<h3>Launch history</h3>
+
+<p>{{ historyMode }} {{ currentSession.session.id }}</p>
+
+<ul class="history-list">
+
+	<li ng-repeat="history in currentEntity.process.logs.session_loggers">
+	    <pre>{{ history | json }}</pre>
+
+		<div class="history-status"></div>
+		<div class="history-info">
+			<div class="history-title">Title</div>
+			<div class="history-desc">Desc</div>			
+		</div>
+		<div class="history-datetime">01.01.01</div>
+	</li>
+</ul>
+
+
+</div>

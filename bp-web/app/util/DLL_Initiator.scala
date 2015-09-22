@@ -21,9 +21,20 @@ object DLL_Initiator {
     SpaceElemDAO.ddl_create
     ElemTopologDAO.ddl_create
 
-    BPLoggerDAO.ddl_create
     BPStateDAO.ddl_create
     BPSessionStateDAO.ddl_create
+    // Session elements
+    SessionProcElementDAO.ddl_create
+    SessionSpaceDAO.ddl_create
+    SessionSpaceElemDAO.ddl_create
+    SessionElemTopologDAO.ddl_create
+    SessionInitialStateDAO.ddl_create
+    SessionSwitcherDAO.ddl_create
+    SessionReactionDAO.ddl_create
+    SessionReactionStateOutDAO.ddl_create
+
+
+    BPLoggerDAO.ddl_create
     BPStationLoggeDAO.ddl_create
     SwitcherDAO.ddl_create
       
@@ -41,6 +52,7 @@ object DLL_Initiator {
     ReactionStateOutDAO.ddl_create
 
     SessionStateLogDAO.ddl_create
+
 
     // Resources
     TokensDAO.ddl_create
@@ -103,8 +115,20 @@ object DLL_Initiator {
     ProcElemDAO.ddl_drop
     SpaceElemDAO.ddl_drop
     ElemTopologDAO.ddl_drop
-    BPLoggerDAO.ddl_drop
     BPStateDAO.ddl_drop
+    
+
+    SessionReactionStateOutDAO.ddl_drop
+    SessionReactionDAO.ddl_drop
+    SessionSwitcherDAO.ddl_drop
+    SessionElemTopologDAO.ddl_drop
+
+    SessionProcElementDAO.ddl_drop
+    SessionSpaceDAO.ddl_drop
+    SessionSpaceElemDAO.ddl_drop
+    BPLoggerDAO.ddl_drop
+
+    SessionInitialStateDAO.ddl_drop
     BPSessionStateDAO.ddl_drop
     BPStationLoggeDAO.ddl_drop
     SwitcherDAO.ddl_drop

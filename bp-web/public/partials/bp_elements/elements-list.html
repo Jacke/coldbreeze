@@ -10,7 +10,7 @@
 </div>
 
 
-<div class="active-station-alert alert alert-info" ng:show="hasActiveStation">
+<div class="active-station-alert alert alert-info" style="display:none;">
   {{ 'RUNNED' | translate }} <strong>{{ 'WILL_BE_SHUTDOWN' | translate }}</strong>
 {{ 'CREATE_OR_COPY' | translate }} <a ng:click="copyProcess()">{{ 'COPY' | translate }}</a> {{ 'CREATE_OR_COPY2' | translate }}
 </div>
@@ -47,7 +47,7 @@
     </div>
     <div class="info">
       <div class="type" ng-class="bpelem.type_title">{{ type_short[bpelem.type_title] }}
-         <ul class="type-tabs" ng-init="bpelem.hovered=false" role="tablist" ng-mouseover="bpelem.hovered == true ? bpelem.hovered=false : bpelem.hovered=true" ng-show="(isManagerVal && !inSession && selected == 2) || (bpelem.hovered == true && inSession)">
+         <ul class="type-tabs" ng-init="bpelem.hovered=false" role="tablist" ng-mouseover="bpelem.hovered == true ? bpelem.hovered=false : bpelem.hovered=true" ng-show="(isManagerVal && !inSession && selected == 2) || (bpelem.hovered == true && !inSession)">
            <li><a role="tab" data-toggle="tab" ng:init="selected=1" ng:click="selected == 1 ? selected=2 : selected=1">
            <span class="glyphicon glyphicon-edit"></span></a></li>
            <li><a ng-click="deleteElem(bpelem)"><span class="glyphicon glyphicon-remove"></span></a></li>

@@ -123,17 +123,22 @@ object SessionSpaceDAO {
   def get(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← session_spaces if s.id === k } yield s
-      q3.list.headOption //.map(Supplier.tupled(_))
+      q3.list.headOption 
   }
+  def findBySession(k: Int) = database withSession {
+    implicit session ⇒
+      val q3 = for { s ← session_spaces if s.session === k } yield s
+      q3.list
+  }  
   def getAllByFront(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← session_spaces if s.brick_front === k } yield s
-      q3.list //.map(Supplier.tupled(_))
+      q3.list 
   }
   def getAllByNested(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← session_spaces if s.brick_nested === k } yield s
-      q3.list //.map(Supplier.tupled(_))
+      q3.list 
   }
   def findByBPId(id: Int) = {
     database withSession { implicit session =>
@@ -141,6 +146,12 @@ object SessionSpaceDAO {
       q3.list 
     }
   }
+  def findByBPSessionId(id: Int, session_id: Int) = {
+    database withSession { implicit session =>
+     val q3 = for { sp ← session_spaces if sp.bprocess === id && sp.session === session_id } yield sp// <> (UndefElement.tupled, UndefElement.unapply _)
+      q3.list 
+    }
+  }  
   def deleteOwnedSpace(elem_id:Option[Int],spelem_id:Option[Int]) {
   if (elem_id.isDefined) {
       getAllByFront(elem_id.get).map(_.id.get).foreach{ id => delete(id) }

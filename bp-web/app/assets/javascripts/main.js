@@ -185,6 +185,10 @@
   deps: ['angular', 'app'],
   export: 'services'
 },
+'launches': {
+  deps: ['angular', 'app'],
+  export: 'launches'
+},
 //'popupService': {
 //  deps: ['angular', 'app', 'services'],
 //  export: 'services'
@@ -271,81 +275,82 @@
       //'bootstrap': ['jquery']
     },
     paths: {
-     'requirejs': ['../lib/requirejs/require'],
+     'requirejs': '../lib/requirejs/require',
      'angularAMD': '../javascripts/angularAMD',
-     'jsRoutes': ['/jsroutes'],
-	   'jquery':  ['../javascripts/jquery-2.1.3.min'],
-     'popupoverlay': ['../js/jquery.popupoverlay'],
-	   'drag-on':  ['../js/drag-on'],
-	   'jquery.nicescroll':  ['../bower_components/jquery.nicescroll/jquery.nicescroll'],
-	   'ssl':  ['../javascripts/ssl'],
-	   'header':  ['../javascripts/header'],
-	   'tooltip':  ['../bower_components/bootstrap/js/tooltip'],
-	   'dropdown':  ['../bower_components/bootstrap/js/dropdown'],
-	   'underscore':  ['../bower_components/underscore/underscore'],
-	   'moment':  ['../bower_components/moment/moment'],
-	   'selectize':  ['../js/selectize'],
-     'mobileDetect': ['../js/mobile-detect'],
+     'jsRoutes': '/jsroutes',
+     'jquery':  '../javascripts/jquery-2.1.3.min',
+     'popupoverlay': '../js/jquery.popupoverlay',
+     'drag-on':  '../js/drag-on',
+     'jquery.nicescroll':  '../bower_components/jquery.nicescroll/jquery.nicescroll',
+     'ssl':  '../javascripts/ssl',
+     'header':  '../javascripts/header',
+     'tooltip':  '../bower_components/bootstrap/js/tooltip',
+     'dropdown':  '../bower_components/bootstrap/js/dropdown',
+     'underscore':  '../bower_components/underscore/underscore',
+     'moment':  '../bower_components/moment/moment',
+     'selectize':  '../js/selectize',
+     'mobileDetect': '../js/mobile-detect',
 
-      //'jquery': ['../lib/jquery/jquery'],
-      //'angular': ['../lib/angularjs/angular'],
-      //'angular-route': ['../lib/angularjs/angular-route'],
-      //'angular-cookies': ['../lib/angularjs/angular-cookies'],
-      //'bootstrap': ['../lib/bootstrap/js/bootstrap'],
+      //'jquery': '../lib/jquery/jquery',
+      //'angular': '../lib/angularjs/angular',
+      //'angular-route': '../lib/angularjs/angular-route',
+      //'angular-cookies': '../lib/angularjs/angular-cookies',
+      //'bootstrap': '../lib/bootstrap/js/bootstrap',
 
-  'angularanimate': ['../bower_components/angular-animate/angular-animate'],
-  'angular': ['../bower_components/angular/angular'],
-  'angular-websocket': ['../bower_components/angular-websocket/angular-websocket'],
-  'toastr': ['../bower_components/angular-toastr/toastr'],
-  //'toastr-tpl': ['../bower_components/angular-toastr/toastr.tpl'],
-  'angular-pageslide-directive': ['../bower_components/angular-pageslide-directive/src/angular-pageslide-directive'],
-  'jcs-auto-validate': ['../bower_components/angular-auto-validate/dist/jcs-auto-validate.min'],
-  'angular-classy': ['../bower_components/angular-classy/angular-classy.min'],
-  'angular-resource': ['../bower_components/angular-resource/angular-resource'],
-  'angular-cookies': ['../bower_components/angular-cookies/angular-cookies'],
-  'select': ['../bower_components/angular-ui-select/dist/select'],
-  'pnotifycore': ['../bower_components/pnotify/pnotify.core'],
-  'roundProgress': ['../bower_components/angular-svg-round-progressbar/src/roundProgress'],
-  'angular-moment': ['../bower_components/angular-moment/angular-moment'],
-  'livestamp': ['https://cdn.rawgit.com/mattbradley/livestampjs/1.1.2/livestamp.min'],
-  'ngDialog': ['../bower_components/ngDialog/js/ngDialog'],
-  'angular-ui-tree': ['../bower_components/angular-ui-tree/dist/angular-ui-tree'],
-  'angular-underscore': ['../bower_components/angularjs-toaster/angularunderscore'],
-  'loading-bar': ['../bower_components/angular-loading-bar/src/loading-bar'],
-  'ng-slide-down': ['../bower_components/ng-slide-down/dist/ng-slide-down'],
-  'ui-bootstrap': ['../bower_components/angular-bootstrap/ui-bootstrap'],
-  'ui-bootstrap-tpls': ['../bower_components/angular-bootstrap/ui-bootstrap-tpls'],
-  'toaster': ['../bower_components/angularjs-toaster/toaster'],
-  'angularLocalStorage': ['../bower_components/angularLocalStorage/src/angularLocalStorage'],
-  'angular-awesome-error': ['../bower_components/angular-errors-directive/angular-awesome-error'],
-  'angular-translate': ['../js/angular-translate'],
-  'daterangepicker': ['../bower_components/bootstrap-daterangepicker/daterangepicker'],
-  'angular-daterangepicker': ['../bower_components/angular-daterangepicker/js/angular-daterangepicker'],
+  'angularanimate': '../bower_components/angular-animate/angular-animate',
+  'angular': '../bower_components/angular/angular',
+  'angular-websocket': '../bower_components/angular-websocket/angular-websocket',
+  'toastr': '../bower_components/angular-toastr/toastr',
+  //'toastr-tpl': '../bower_components/angular-toastr/toastr.tpl',
+  'angular-pageslide-directive': '../bower_components/angular-pageslide-directive/src/angular-pageslide-directive',
+  'jcs-auto-validate': '../bower_components/angular-auto-validate/dist/jcs-auto-validate.min',
+  'angular-classy': '../bower_components/angular-classy/angular-classy.min',
+  'angular-resource': '../bower_components/angular-resource/angular-resource',
+  'angular-cookies': '../bower_components/angular-cookies/angular-cookies',
+  'select': '../bower_components/angular-ui-select/dist/select',
+  'pnotifycore': '../bower_components/pnotify/pnotify.core',
+  'roundProgress': '../bower_components/angular-svg-round-progressbar/src/roundProgress',
+  'angular-moment': '../bower_components/angular-moment/angular-moment',
+  'livestamp': 'https://cdn.rawgit.com/mattbradley/livestampjs/1.1.2/livestamp.min',
+  'ngDialog': '../bower_components/ngDialog/js/ngDialog',
+  'angular-ui-tree': '../bower_components/angular-ui-tree/dist/angular-ui-tree',
+  'angular-underscore': '../bower_components/angularjs-toaster/angularunderscore',
+  'loading-bar': '../bower_components/angular-loading-bar/src/loading-bar',
+  'ng-slide-down': '../bower_components/ng-slide-down/dist/ng-slide-down',
+  'ui-bootstrap': '../bower_components/angular-bootstrap/ui-bootstrap',
+  'ui-bootstrap-tpls': '../bower_components/angular-bootstrap/ui-bootstrap-tpls',
+  'toaster': '../bower_components/angularjs-toaster/toaster',
+  'angularLocalStorage': '../bower_components/angularLocalStorage/src/angularLocalStorage',
+  'angular-awesome-error': '../bower_components/angular-errors-directive/angular-awesome-error',
+  'angular-translate': '../js/angular-translate',
+  'daterangepicker': '../bower_components/bootstrap-daterangepicker/daterangepicker',
+  'angular-daterangepicker': '../bower_components/angular-daterangepicker/js/angular-daterangepicker',
 
-  'app': ['../js/app'],
-  'filters': ['../js/filters'],
-  'services': ['../js/services'],
- // 'popupService': ['../js/popupService'],
-  'treebuilder': ['../js/treebuilder'],
-  'controllers': ['../js/controllers/controllers'],
-  'procPermController': ['../js/controllers/procPermController'],
-  'procController': ['../js/controllers/procController'],
-  'procCreateController': ['../js/controllers/processes/procCreateController'],
-  'procDetailController': ['../js/controllers/processes/procDetailController'],
-  'requestController': ['../js/controllers/requestController'],
-  'loggerController': ['../js/controllers/loggerController'],
-  'stationController': ['../js/controllers/stationController'],
-  'procElementController': ['../js/controllers/procElementController'],
-  'reflectionController': ['../js/controllers/reflectionController'],
-  'sessionController': ['../js/controllers/sessionController'],
-  'directives': ['../js/directives'],
-  'classie': ['../js/classie'],
-  'cssParser': ['../js/cssParser'],
-  'tether': ['../bower_components/tether/dist/js/tether'],
-  'shepherd': ['../bower_components/tether-shepherd/dist/js/shepherd'],
-  'tour': ['../javascripts/tour'],
-  'offline': ['../bower_components/offline/offline'],
-  'offlineSimulator': ['../bower_components/offlinejs-simulate-ui/offline-simulate-ui.min']
+  'app': '../js/app',
+  'filters': '../js/filters',
+  'services': '../js/services',
+  'launches': '../js/services/launches',
+ // 'popupService': '../js/popupService',
+  'treebuilder': '../js/treebuilder',
+  'controllers': '../js/controllers/controllers',
+  'procPermController': '../js/controllers/procPermController',
+  'procController': '../js/controllers/procController',
+  'procCreateController': '../js/controllers/processes/procCreateController',
+  'procDetailController': '../js/controllers/processes/procDetailController',
+  'requestController': '../js/controllers/requestController',
+  'loggerController': '../js/controllers/loggerController',
+  'stationController': '../js/controllers/stationController',
+  'procElementController': '../js/controllers/procElementController',
+  'reflectionController': '../js/controllers/reflectionController',
+  'sessionController': '../js/controllers/sessionController',
+  'directives': '../js/directives',
+  'classie': '../js/classie',
+  'cssParser': '../js/cssParser',
+  'tether': '../bower_components/tether/dist/js/tether',
+  'shepherd': '../bower_components/tether-shepherd/dist/js/shepherd',
+  'tour': '../javascripts/tour',
+  'offline': '../bower_components/offline/offline',
+  'offlineSimulator': '../bower_components/offlinejs-simulate-ui/offline-simulate-ui.min'
   }});
 
   requirejs.onError = function (err) {
@@ -382,8 +387,11 @@ require(['requirejs','jsRoutes','jquery', 'mobileDetect','popupoverlay','drag-on
 
         if (document.isMobile) {
           $('.overlay_mobile').toggleClass('visible_overlay');
+          $('#container').hide();
           $('.overlay_mobile a').on('click', function(event) {
                 $('.overlay_mobile').toggleClass('visible_overlay');
+                $('#container').show();
+
           });
         }
 
@@ -471,7 +479,10 @@ event.preventDefault();
   var emails = $('textarea#newUsersForGroup').val().split(',');
   var admin =  $('#teamAdminRole').prop("checked");
 if (emails.length > 0) {
-jsRoutes.controllers.users.EmployeeController.create_new().ajax({data: JSON.stringify({emails: emails, manager: admin}), dataType: "json", contentType: 'application/json',
+
+/*
+jsRoutes.controllers.users.EmployeeController.create_new().ajax({
+        data: JSON.stringify({emails: emails, manager: admin}), dataType: "json", contentType: 'application/json',
             xhrFields: {
                 withCredentials: !0
             },
@@ -484,6 +495,69 @@ jsRoutes.controllers.users.EmployeeController.create_new().ajax({data: JSON.stri
 }).fail(function( jqXHR, textStatus) {
     //$('.loginFlowPage').prepend('<div class="messageBoxWrap"><p class="message">'+ JSON.parse(jqXHR.responseText).error +'</p></div>');
   });
+*/
+var data = $('.inputEmployee').map(function(c){return [$(this).find('.flatInput').val(), $(this).find('.flatCheckbox input').is(':checked') ] })
+var n = 2;
+var lists = _.groupBy(data, function(element, index){
+  return Math.floor(index/n);
+});
+lists = _.filter(_.toArray(lists), function(arr){ return arr[0] != "" });
+var admin = _.filter(lists, function(arr) { return arr[1] == true });
+var employee = _.filter(lists, function(arr) { return arr[1] == false });
+
+console.log("admin");
+console.log(admin);
+console.log("employee");
+console.log(employee);
+
+/** 
+ * Submiting
+ */
+
+if (admin.length > 0) {
+jsRoutes.controllers.users.EmployeeController.create_new().ajax({
+        data: JSON.stringify({emails: admin, manager: true}), dataType: "json", contentType: 'application/json',
+            xhrFields: {
+                withCredentials: !0
+            },
+            accepts: {
+                json: "application/json"
+            }}).done(function( data ) { console.log(data);
+            reload("admin");
+            $('#addMembersForm').slideToggle();
+//$('.form-horizontal')[0].submit();
+}).fail(function( jqXHR, textStatus) {
+    //$('.loginFlowPage').prepend('<div class="messageBoxWrap"><p class="message">'+ JSON.parse(jqXHR.responseText).error +'</p></div>');
+  });
+} else { admin_status = true; }
+if (employee.length > 0) {
+jsRoutes.controllers.users.EmployeeController.create_new().ajax({
+        data: JSON.stringify({emails: employee, manager: false}), dataType: "json", contentType: 'application/json',
+            xhrFields: {
+                withCredentials: !0
+            },
+            accepts: {
+                json: "application/json"
+            }}).done(function( data ) { console.log(data);
+            reload("employee");
+            $('#addMembersForm').slideToggle();
+//$('.form-horizontal')[0].submit();
+}).fail(function( jqXHR, textStatus) {
+    //$('.loginFlowPage').prepend('<div class="messageBoxWrap"><p class="message">'+ JSON.parse(jqXHR.responseText).error +'</p></div>');
+  });
+}
+
+var reload = function(obj) {
+  if (obj == "admin" && employee.length == 0) {
+    location.reload();
+  }
+  if (obj == "employee" && admin.length == 0) {
+    location.reload();
+  }
+  if (obj == "employee" && admin.length > 0) {
+    location.reload();
+  }
+}
 
 } 
 });

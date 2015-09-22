@@ -16,3 +16,5 @@ wget http://downloads.typesafe.com/scala/$VERSION/scala-$VERSION.deb
 sudo dpkg -i scala-$VERSION.deb
 rm scala-$VERSION.deb
 sudo apt-get install docker.io
+
+sudo apt-get install ruby-compass

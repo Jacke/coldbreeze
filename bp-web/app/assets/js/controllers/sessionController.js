@@ -128,7 +128,11 @@ SessionsFactory.query().$promise.then(function (data2) {
                   $scope.sessions = data2;
                  }
                   $scope.lastChecked = true;
-                 _.forEach(data2, function(d){ return TreeBuilder.buildFetch(d.process, function(success){}); });
+                 _.forEach(data2, function(d){  // entity
+                  _.forEach(d.sessions, function(s) { // read session from entity
+                    return TreeBuilder.launchBuildFetch(d.process, s.session, function(success){});
+                  }) 
+                });
                 $scope.isEmptyLaunchesCheck();
             });
     } //else { $scope.lastChecked = true; console.log("else");$scope.isEmptyLaunchesCheck() } 
@@ -158,10 +162,11 @@ $scope.history_session_id = [];
 $scope.history_entity = [];
 
 $scope.history = function(session_id, entity) {
+    $scope.historyMode = "launch";
     $scope.history_session_id = session_id;
     $scope.history_entity = entity;
     ngDialog.open({
-        template: '/assets/partials/popup/launch-history.html',
+        template: '/assets/partials/histories/launch-history.html',
         //template: '/assets/partials/popup/first-process-finished.html',
         controller: 'HistoriesCtrl',
         scope: $scope
@@ -170,9 +175,11 @@ $scope.history = function(session_id, entity) {
       });
 }
 $scope.processHistory = function(entity) {
+    $scope.historyMode = "process";
+    $scope.history_session_id = undefined;    
     $scope.history_entity = entity;
     ngDialog.open({
-        template: '/assets/partials/popup/launch-history.html',
+        template: '/assets/partials/histories/process-history.html',
         //template: '/assets/partials/popup/first-process-finished.html',
         controller: 'HistoriesCtrl',
         scope: $scope

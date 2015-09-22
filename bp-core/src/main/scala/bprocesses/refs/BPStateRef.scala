@@ -14,14 +14,14 @@ case class BPStateRef(
   on_rate: Int = 0,
   front_elem_id:Option[Int],
   space_elem_id:Option[Int],
-  space_id: Option[Int],
+  space_id:     Option[Int],
   created_at:   Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now), 
   updated_at:   Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now), 
   lang:         String = "en",
-  middle: String = "",
-  middleable: Boolean = false,
-  oposite: String = "",
-  opositable: Boolean = false) {
+  middle:       String = "",
+  middleable:   Boolean = false,
+  oposite:      String = "",
+  opositable:   Boolean = false) {
   
      /**
       * Opposition of state
@@ -50,9 +50,9 @@ case class BPStateRef(
   updated_at, 
   lang,
   middle,
-middleable,
-oposite,
-opositable)
+  middleable,
+  oposite,
+  opositable)
     
     }
 
@@ -74,9 +74,10 @@ opositable)
   updated_at, 
   lang,
   middle,
-middleable,
-oposite,
-opositable)
+  middleable,
+  oposite,
+  opositable,
+  None)
   
   }
   

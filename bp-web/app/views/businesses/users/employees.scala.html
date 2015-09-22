@@ -5,7 +5,7 @@
 @import models.AccountDAO
 @import models.DAO.resources.GroupDTO
 @import helper._
-@(currentPage: Page[EmployeeDTO], accounts: List[AccountDAO], currentOrderBy: Int, currentFilter: String, businesses: List[BusinessDTO], assignedBiz: List[BusinessDTO], groups: List[GroupDTO])(user: DemoUser)
+@(currentPage: Page[EmployeeDTO], accounts: List[AccountDAO], currentOrderBy: Int, currentFilter: String, businesses: List[BusinessDTO], assignedBiz: List[BusinessDTO], groups: List[GroupDTO], aval: Int = 0)(user: DemoUser)
 
 @****************************************
 * Helper generating navigation links *
@@ -60,27 +60,35 @@
     <div class="infoMessage"></div>
     <div id="addMembersForm">
       <form class="addAllowedUser addUsersToGroup" data-where="ul.profilesList">
-        <textarea class="flatTextarea" id="newUsersForGroup" required="required" name="emails" placeholder="Email address(es) comma separated" cols="50" rows="3"></textarea>
+        <!--<textarea class="flatTextarea" id="newUsersForGroup" required="required" name="emails" placeholder="Email address(es) comma separated" cols="50" rows="3"></textarea>-->
 
+        <div class="inputsEmployee">
+        @for(in <- (1 to aval).toList) {
+        <div class="inputEmployee">
+          <input class="flatTextarea flatInput" id="newUsersForGroup" required="required" name="email" placeholder="Email" cols="50" rows="3">
+          <span class="flatCheckbox"><input id="teamAdminRole@in" type="checkbox" name="admin">&nbsp;<label for="teamAdminRole@in">Manager&nbsp;</label></span>
+        </div>
+        }
+        
+        <!--    
         <div class="inputEmployee">
           <input class="flatTextarea flatInput" id="newUsersForGroup" required="required" name="emails" placeholder="Email" cols="50" rows="3">
-          <span class="flatCheckbox"><input id="teamAdminRole" type="checkbox" name="admin">&nbsp;<label for="teamAdminRole">Manager&nbsp;</label></span>
+          <span class="flatCheckbox"><input id="teamAdminRole2" type="checkbox" name="admin">&nbsp;<label for="teamAdminRole2">Manager&nbsp;</label></span>
         </div>
         <div class="inputEmployee">
           <input class="flatTextarea flatInput" id="newUsersForGroup" required="required" name="emails" placeholder="Email" cols="50" rows="3">
-          <span class="flatCheckbox"><input id="teamAdminRole" type="checkbox" name="admin">&nbsp;<label for="teamAdminRole">Manager&nbsp;</label></span>
+          <span class="flatCheckbox"><input id="teamAdminRole3" type="checkbox" name="admin">&nbsp;<label for="teamAdminRole3">Manager&nbsp;</label></span>
+        </div>   --> 
+
         </div>
-        <div class="inputEmployee">
-          <input class="flatTextarea flatInput" id="newUsersForGroup" required="required" name="emails" placeholder="Email" cols="50" rows="3">
-          <span class="flatCheckbox"><input id="teamAdminRole" type="checkbox" name="admin">&nbsp;<label for="teamAdminRole">Manager&nbsp;</label></span>
-        </div>        
 
 
         <div class="grids">
-          <div class="g1of2">
+          <div class="g1of6">
+             <div class="userLimit">Slots left @{aval} of 5</div>
           </div>
 
-          <div class="g1of2">
+          <div class="g1of4">
             <button type="submit" class="button small blue flatButton posRight"><i></i><span>@Messages("custom.send")</span></button>
             <a class="cancelButton dark button small flatButton"><i></i><span>@Messages("custom.cancel")</span></a>
           </div>

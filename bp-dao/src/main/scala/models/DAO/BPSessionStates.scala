@@ -35,10 +35,48 @@ class BPSessionStates(tag: Tag) extends Table[BPSessionState](tag, "sessionstate
   def middle        = column[String]("middle", O.Default(""))
   def middleable    = column[Boolean]("middleable", O.Default(false))
   def oposite       = column[String]("oposite", O.Default(""))
-  def opositable    = column[Boolean]("opositable", O.Default(false))   
+  def opositable    = column[Boolean]("opositable", O.Default(false))  
 
+  def s_front_elem_id = column[Option[Int]]("session_front_elem_id")
+  def s_space_id      = column[Option[Int]]("session_space_id")     
+  def s_space_elem_id = column[Option[Int]]("session_space_elem_id")
 
   def lang          = column[String]("lang", O.Default("en"))  
+
+   def session_elements = (s_front_elem_id,s_space_id,s_space_elem_id).<>[Option[SessionElements], (Option[Int], Option[Int], Option[Int])]({
+     case (Some(lt), Some(ln), Some(fn)) => Some(SessionElements(Some(lt), Some(ln), Some(fn)))
+     case (Some(lt), Some(ln), None) => Some(SessionElements(Some(lt), Some(ln), None))
+     case (Some(lt), None, Some(fn)) => Some(SessionElements(Some(lt), None, Some(fn)))
+     case (None, Some(ln), Some(fn)) => Some(SessionElements(None, Some(ln), Some(fn)))
+     case (None, None, Some(fn)) =>     Some(SessionElements(None, None, Some(fn)))
+     case (Some(lt), None, None) =>     Some(SessionElements(Some(lt), None, None))
+     case (None, Some(ln), None) =>     Some(SessionElements(None, Some(ln), None))
+     case (None, None, None) =>     Some(SessionElements(None, None, None))
+
+     case _ => None
+   }, { (t: Option[SessionElements]) => { 
+            t map(o => (o.s_front_elem_id, o.s_space_id, o.s_space_elem_id)) 
+         }
+    })
+
+/*
+ def session_elements = (s_front_elem_id,s_space_id,s_space_elem_id).<>[Option[SessionElements], (Option[Int], Option[Int], Option[Int])](
+    { mappedRecord =>
+      mappedRecord match {
+        case (Some(s_front_elem_id), Some(s_space_id), Some(s_space_elem_id)) => { 
+          Some(SessionElements(s_front_elem_id, s_space_id, s_space_elem_id))
+        }
+        case _ => None
+      }
+    },
+    { result =>
+      result match {
+        case rec: Option[SessionElements] => Some(rec.map(_.s_front_elem_id), rec.map(_.s_space_id), rec.map(_.s_space_elem_id))
+      }
+    })
+*/
+
+
   def * = (id.?, process, session, title, neutral,
                                           process_state,
                                           on, on_rate,
@@ -46,12 +84,16 @@ class BPSessionStates(tag: Tag) extends Table[BPSessionState](tag, "sessionstate
                                           space_elem_id,
                                           space_id,
                                           origin_state,
-           created_at, updated_at, lang, middle, middleable, oposite, opositable) <> (BPSessionState.tupled, BPSessionState.unapply)
+           created_at, updated_at, lang, middle, middleable, oposite, opositable,
+            session_elements) <> (BPSessionState.tupled, BPSessionState.unapply)
   def sesFK       = foreignKey("s_st_session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def procelemFK  = foreignKey("s_st_procelem_fk", front_elem_id, proc_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def spaceelemFK = foreignKey("s_st_spaceelem_fk", space_elem_id, SpaceElemDAO.space_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def spaceFK     = foreignKey("s_st_space_fk", space_id, BPSpaceDAO.bpspaces)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def stateFK     = foreignKey("s_st_state_fk", origin_state, BPStateDAO.bpstates)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def procelemFK  = foreignKey("s_st_procelem_fk", front_elem_id, proc_elements)(_.id)
+  def spaceelemFK = foreignKey("s_st_spaceelem_fk", space_elem_id, SpaceElemDAO.space_elements)(_.id)
+  def spaceFK     = foreignKey("s_st_space_fk", space_id, BPSpaceDAO.bpspaces)(_.id)
+  def sesPElemFK  = foreignKey("sesPElemFK", s_front_elem_id, models.DAO.sessions.SessionProcElementDAO.session_proc_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def sesSpaceFK  = foreignKey("sesSpaceFK", s_space_id, models.DAO.sessions.SessionSpaceDAO.session_spaces)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def sesSpElemFK = foreignKey("sesSpElemFK",s_space_elem_id, models.DAO.sessions.SessionSpaceElemDAO.space_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def stateFK     = foreignKey("s_st_state_fk", origin_state, SessionInitialStateDAO.session_initial_states)(_.id)
 
   def bpFK        = foreignKey("s_st_bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
  
@@ -76,6 +118,7 @@ object BPSessionStateDAO {
    */
   def pull_new_object(s: BPSessionState):Int = database withSession {
     implicit session ⇒
+     println(s)
       findByOriginAndSession(s.origin_state, s.session) match {
         case Some(session_state) => -1
         case _ => sessionstates returning sessionstates.map(_.id) += s
@@ -86,10 +129,19 @@ object BPSessionStateDAO {
     val q3 = for { s <- sessionstates if s.process === id } yield s
     q3.list
   }
+  def findBySession(id: Int):List[BPSessionState] = database withSession {
+    implicit session =>
+    val q3 = for { s <- sessionstates if s.session === id } yield s
+    q3.list
+  }  
   def findByOriginAndSession(origin_state_id: Option[Int], session_id: Int):Option[BPSessionState] = database withSession {
     implicit session =>
+      if (origin_state_id.isDefined) {
       val q3 = for { s <- sessionstates if s.origin_state === origin_state_id && s.session === session_id } yield s
       q3.list.headOption
+      } else {
+        None
+      }
   }
   def findByBPAndSession(id: Int, session_id: Int):List[BPSessionState] = database withSession {
     implicit session =>

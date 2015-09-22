@@ -130,14 +130,18 @@ object BPStationDAO {
     implicit session ⇒
       bpstations returning bpstations.map(_.id) += s.copy(note = Some(noteFunction(lang.get)) )  
   }
-  def saveOrUpdate(s: BPStationDTO, lang: Option[String] = Some("en")):Int = database withSession {
+  def saveOrUpdate(s: BPStationDTO, lang: Option[String] = Some("en"), run_proc: Boolean = true):Int = database withSession {
     implicit session ⇒
       findBySession(s.session) match {
-        case Some(sess) => { 
-          if (update(sess.id.get, s.copy(id = sess.id)))
+        case Some(sess) => {
+          if (run_proc == false) {
             sess.id.get
-          else 
-            -1
+          } else {
+            if (update(sess.id.get, s.copy(id = sess.id)))
+              sess.id.get
+            else
+              -1
+          }
         }
         case _ =>  pull_object(s)
       }

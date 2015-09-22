@@ -30,13 +30,19 @@ minorityControllers.controller('BPelementListCtrl', ['$timeout','$window','$filt
   'RefsFactory',
   'SwitchesFactory',
 'SwitchFactory',
+  'LaunchSwitchersFactory',
+'LaunchElemsFactory',
+'LaunchSpacesFactory',
+'LaunchSpaceElemsFactory',
+'LaunchElementTopologsFactory',
+'LaunchReactionsFactory',
 'ReactionsFactory',
 'ReactionFactory',
 'ElementTopologsFactory',
 'InteractionsFactory',
 
   '$location', '$route', '$animate',
-  function ($timeout, $window, $filter, $rootScope, $scope, $q,$http, $routeParams, toaster, BPInLoggersSessionFactory, BProcessFactory, BPStationsFactory,EmployeesFactory, ProcPermissionsFactory, PermissionsFactory, BProcessesFactory, ngDialog, BPElemsFactory, BPElemFactory, BPSessionsFactory, BPStationsFactory, BPSpacesFactory, BPSpaceFactory, BPSpaceElemsFactory, BPSpaceElemFactory, BPStatesFactory, BPStateFactory, BPSessionStatesFactory, BPSessionStateFactory,RefsFactory, SwitchesFactory,SwitchFactory,ReactionsFactory,ReactionFactory,ElementTopologsFactory, InteractionsFactory, $location, $route, $animate) {
+  function ($timeout, $window, $filter, $rootScope, $scope, $q,$http, $routeParams, toaster, BPInLoggersSessionFactory, BProcessFactory, BPStationsFactory,EmployeesFactory, ProcPermissionsFactory, PermissionsFactory, BProcessesFactory, ngDialog, BPElemsFactory, BPElemFactory, BPSessionsFactory, BPStationsFactory, BPSpacesFactory, BPSpaceFactory, BPSpaceElemsFactory, BPSpaceElemFactory, BPStatesFactory, BPStateFactory, BPSessionStatesFactory, BPSessionStateFactory,RefsFactory, SwitchesFactory,SwitchFactory,  LaunchSwitchersFactory, LaunchElemsFactory,LaunchSpacesFactory,LaunchSpaceElemsFactory,LaunchElementTopologsFactory, LaunchReactionsFactory,ReactionsFactory,ReactionFactory,ElementTopologsFactory, InteractionsFactory, $location, $route, $animate) {
 
 
   $scope.route = jsRoutes.controllers.BusinessProcessController;
@@ -167,7 +173,14 @@ $scope.spaceelems = BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid
 
 $scope.reloadResourcesForSession = function(session) {
    $scope.states = BPSessionStatesFactory.query({ BPid: $route.current.params.BPid, id: session.id });
-   $scope.switches = SwitchesFactory.query({ BPid: $route.current.params.BPid });
+   $scope.switches = LaunchSwitchersFactory.query({ launch_id: session.id });
+
+   $scope.bpelems = LaunchElemsFactory.query({ launch_id: session.id });
+   $scope.spaces = LaunchSpacesFactory.query({ launch_id: session.id });
+   $scope.spaceelems = LaunchSpaceElemsFactory.query({ launch_id: session.id });
+
+   $scope.element_topologs = LaunchElementTopologsFactory.query({ launch_id: session.id });
+   $scope.reactions = LaunchReactionsFactory.query({ launch_id: session.id });
 
    $scope.states.$promise.then(function (states) {
       $scope.switches.$promise.then(function(switches) {
@@ -206,6 +219,7 @@ $scope.reloadResourcesForSession = function(session) {
 
  });
  });
+
 }
 
 $scope.loadResources = function() {

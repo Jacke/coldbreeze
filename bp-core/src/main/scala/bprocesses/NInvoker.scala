@@ -1,6 +1,7 @@
 package main.scala.bprocesses
 
 import com.typesafe.scalalogging.Logger
+//import com.typesafe.scalalogging.slf4j.Logger
 import main.scala.simple_parts.process._
 import main.scala.utils.Space
 import org.slf4j.LoggerFactory
@@ -156,7 +157,7 @@ trait NIMoves extends StateLigher {
   /**
    * Infinite loop recovering
    */
-  def maxLoop:Int = scala.math.pow(bp.allElements.length,bp.allElements.length).toInt
+  def maxLoop:Int = scala.math.pow(bp.allElements.length+1,bp.allElements.length+1).toInt
   var loop_num:Int  = 0 
   def loopNumAdd() = loop_num = loop_num + 1
   def isInfiniteLoop:Boolean = loop_num > maxLoop 
