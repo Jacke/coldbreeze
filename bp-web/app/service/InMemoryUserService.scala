@@ -149,9 +149,11 @@ class InMemoryUserService extends UserService[DemoUser] {
     }
   }
 
-//  def deleteTokens(): Future {
-//    tokens = Map()
-//  }
+  def deleteTokens(): Future[List[MailToken]] = {
+    Future.successful {
+      TokensDAO.deleteTokens()
+    }
+  }
 
   def deleteExpiredTokens() {
     tokens = tokens.filter(!_._2.isExpired)

@@ -37,7 +37,7 @@ object ExperimentalSessionBuilder {
 
 
 	// session elements
-	def fromOriginEl(el: UndefElement, session: Int):SessionUndefElement = {
+	def fromOriginEl(el: UndefElement, session: Int, burnMap: scala.collection.mutable.Map[Int, Int]):SessionUndefElement = {
       val obj = SessionUndefElement(
       					el.id,
                         el.title,
@@ -47,16 +47,20 @@ object ExperimentalSessionBuilder {
                         session,
                         el.b_type,
                         el.type_title,
-                        el.space_own,
+                        None,//el.space_own, // spaceMap.get(el.space_own.getOrElse(0)),
                         el.order,
                         el.created_at,
                         el.updated_at
 
       )
-	  obj.copy(id = Some(SessionProcElementDAO.pull_object(obj)))
+	  val copied = obj.copy(id = Some(SessionProcElementDAO.pull_object(obj)))
+	  ExperimentalAfterBurning.burnElemSpace(obj, el.space_own, burnMap)
+	  copied
     }
 	// session spaces
-	def fromOriginSp(p: BPSpaceDTO, session: Int):SessionSpaceDTO = {
+	def fromOriginSp(p: BPSpaceDTO, session: Int, 
+					 elemMap: scala.collection.mutable.Map[Int, Int] = scala.collection.mutable.Map().empty,
+					 spaceElsMap: scala.collection.mutable.Map[Int, Int] = scala.collection.mutable.Map().empty):SessionSpaceDTO = {
       val obj = SessionSpaceDTO(
 					  p.id, 
                       p.bprocess,    
@@ -64,8 +68,8 @@ object ExperimentalSessionBuilder {
                       p.index,   
                       p.container,   
                       p.subbrick,   
-                      p.brick_front,
-                      p.brick_nested, 
+                      elemMap.get(p.brick_front.getOrElse(0)),
+                      spaceElsMap.get(p.brick_nested.getOrElse(0)), 
                       p.nestingLevel,
                       p.created_at,
                       p.updated_at      	
@@ -73,7 +77,8 @@ object ExperimentalSessionBuilder {
 	  obj.copy(id = Some(SessionSpaceDAO.pull_object(obj)))
     }
 	// session space elements
-	def fromOriginSpElem(p: SpaceElementDTO, session: Int):SessionSpaceElementDTO = {
+	def fromOriginSpElem(p: SpaceElementDTO, session: Int,
+				spaceMap: scala.collection.mutable.Map[Int, Int]):SessionSpaceElementDTO = {
       val obj = SessionSpaceElementDTO(
 						p.id,
                         p.title,
@@ -83,8 +88,8 @@ object ExperimentalSessionBuilder {
                         session,
                         p.b_type,
                         p.type_title,
-                        p.space_own,
-                        p.space_owned,
+                        spaceMap.get(p.space_own.getOrElse(0)),
+                        spaceMap.get(p.space_owned).getOrElse(0),
                         p.space_role,
                         p.order,
                         p.created_at,

@@ -20,7 +20,7 @@ class SessionTopologs(tag: Tag) extends Table[SessionElemTopology](tag, "session
   def id            = column[Int]("id", O.PrimaryKey, O.AutoInc) 
   def process       = column[Int]("process_id")
   def hash          = column[String]("hash")
-  def session   = column[Int]("session_id")
+  def session       = column[Int]("session_id")
 
   def front_elem_id = column[Option[Int]]("front_elem_id")
   def space_elem_id = column[Option[Int]]("space_elem_id")

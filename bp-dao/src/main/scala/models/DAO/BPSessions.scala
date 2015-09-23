@@ -13,7 +13,7 @@ import models.DAO.BPDAO._
 import models.DAO.BPStationDAO._
 import models.DAO.conversion.DatabaseCred
 import models.DAO._
-
+import models.DAO.sessions._
 import builders._
 import main.scala.bprocesses.BPSession  
   
@@ -70,7 +70,7 @@ object BPSessionDAO {
       SessionContainer(p, 
       sess.filter(ses => ses.process == p.id.get).map { ses => 
         val station = BPStationDAO.findBySession(ses.id.get)        
-        val element_quantity = ProcElemDAO.findByBPId(p.id.get).length
+        val element_quantity = SessionProcElementDAO.findBySession(ses.id.get).length + SessionSpaceElemDAO.findFlatBySession(ses.id.get).length
         val step = station match {
           case Some(station) => station.step.toDouble
           case _ => element_quantity.toDouble
@@ -88,7 +88,7 @@ object BPSessionDAO {
     sess match {
       case Some(ses) => {
         val station = BPStationDAO.findBySession(ses.id.get)        
-        val element_quantity = ProcElemDAO.findByBPId(ses.process).length
+        val element_quantity = SessionProcElementDAO.findBySession(ses.id.get).length + SessionSpaceElemDAO.findFlatBySession(ses.id.get).length
         val process = BPDAO.get(ses.process).get
         val people = SessionPeoples("not@found.com", List()) // placeholder for peoples
 
@@ -121,7 +121,7 @@ object BPSessionDAO {
       SessionContainer(p, 
       sess.filter(ses => ses.process == p.id.get).map { ses => 
         val station = BPStationDAO.findBySession(ses.id.get)        
-        val element_quantity = ProcElemDAO.findByBPId(p.id.get).length
+        val element_quantity = SessionProcElementDAO.findBySession(ses.id.get).length + SessionSpaceElemDAO.findFlatBySession(ses.id.get).length
         val step = station match {
           case Some(station) => station.step.toDouble
           case _ => element_quantity.toDouble
@@ -169,7 +169,7 @@ object BPSessionDAO {
           SessionContainer(process, 
           sess.filter(ses => ses.process == process_id).map { ses => 
           val station = BPStationDAO.findBySession(ses.id.get)        
-          val element_quantity = ProcElemDAO.findByBPId(process_id).length
+          val element_quantity = SessionProcElementDAO.findBySession(ses.id.get).length + SessionSpaceElemDAO.findFlatBySession(ses.id.get).length
           val step = station match {
             case Some(station) => station.step.toDouble
             case _ => element_quantity.toDouble

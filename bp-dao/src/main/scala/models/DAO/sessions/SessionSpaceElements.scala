@@ -175,7 +175,11 @@ object SessionSpaceElemDAO {
       val q3 = for { el ← space_elements if el.session === session_id } yield el
       q3.list
     }
-  }    
+  }  
+  def findFlatBySession(session_id: Int) = {
+    val sp_ids = SessionSpaceDAO.findBySession(session_id).filter(space => space.brick_front.isDefined).map(sp => sp.id.get)
+    sp_ids.map(id => findBySpace(id))
+  }        
   def lastOrderOfBP(id: Int, space_id: Int):Int = {
     database withSession { implicit session =>
        val q3 = for { el ← space_elements if el.bprocess === id && el.space_owned === space_id } yield el

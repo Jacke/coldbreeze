@@ -113,6 +113,14 @@ def saveSessionStates(bprocess: BProcess,
                       spaceElsMap: scala.collection.mutable.Map[Int,Int] = scala.collection.mutable.Map().empty,
                       initialStateMap: scala.collection.mutable.Map[Int,Int] = scala.collection.mutable.Map().empty) = {
     val origin_states = BPStateDAO.findByBP(bprocess_dto.id.get)
+    play.api.Logger.debug("saveSessionStates")
+        play.api.Logger.debug("elemMap")
+    elemMap.foreach { el => play.api.Logger.debug(s"${el._1}, ${el._2}") }
+        play.api.Logger.debug("spaceMap")
+    spaceMap.foreach { el => play.api.Logger.debug(s"${el._1}, ${el._2}") }
+        play.api.Logger.debug("spaceElsMap")    
+    spaceElsMap.foreach { el => play.api.Logger.debug(s"${el._1}, ${el._2}") }
+
       val session_states = origin_states.map(state => 
         BPSessionState(
           None, 
@@ -124,8 +132,8 @@ def saveSessionStates(bprocess: BProcess,
           state.on,
           state.on_rate,
           elemMap.get(state.front_elem_id.getOrElse(0)),
-          spaceElsMap.get(state.space_id.getOrElse(0)),
-          spaceMap.get(state.space_elem_id.getOrElse(0)),
+          spaceElsMap.get(state.space_elem_id.getOrElse(0)),
+          spaceMap.get(state.space_id.getOrElse(0)),
           origin_state = initialStateMap.get(state.id.getOrElse(0)),
           created_at = Some(org.joda.time.DateTime.now()),
           updated_at = Some(org.joda.time.DateTime.now()), 
@@ -135,8 +143,8 @@ def saveSessionStates(bprocess: BProcess,
           oposite = state.oposite,
           opositable = state.opositable,
           session_elements = Some(SessionElements(elemMap.get(state.front_elem_id.getOrElse(0)),
-                                                              spaceMap.get(state.space_elem_id.getOrElse(0)),
-                                                              spaceElsMap.get(state.space_id.getOrElse(0))))))
+                                                              spaceMap.get(state.space_id.getOrElse(0)),
+                                                              spaceElsMap.get(state.space_elem_id.getOrElse(0))))))
 
     var ids:List[Int] = List()
     if (pulling) {
@@ -231,6 +239,9 @@ def initiate2(bpID: Int,
     var spaceMap:scala.collection.mutable.Map[Int, Int]   = scala.collection.mutable.Map().empty
     var spaceElsMap:scala.collection.mutable.Map[Int,Int] = scala.collection.mutable.Map().empty
 
+    var burnElemMap:scala.collection.mutable.Map[Int,Int]    = scala.collection.mutable.Map().empty
+    var burnSpaceMap:scala.collection.mutable.Map[Int,Int]   = scala.collection.mutable.Map().empty
+    var burnSpaceElMap:scala.collection.mutable.Map[Int,Int] = scala.collection.mutable.Map().empty
 
     // Generate sessions
     session_id_val match {
@@ -243,18 +254,22 @@ def initiate2(bpID: Int,
       }
       case _ => { // launch from empty session
         session_id = saveSession(processRunned, bpDTO, lang)
+        // FRONT ELEM NOT FOR BRICKS
         sessionEls = target.map { el =>
-          val obj = ExperimentalSessionBuilder.fromOriginEl(el, session_id)
+          val obj = ExperimentalSessionBuilder.fromOriginEl(el, session_id, burnElemMap)
           elemMap += el.id.get -> obj.id.get
           obj
-        }
-        sessionSpaces = test_space.map { sp =>
-          val obj = ExperimentalSessionBuilder.fromOriginSp(sp, session_id)
+        }     
+        sessionSpaces = test_space.map { sp =>//.filter(sp => sp.brick_nested.isDefined).map { sp =>
+          val obj = ExperimentalSessionBuilder.fromOriginSp(sp, session_id, elemMap, spaceElsMap)
           spaceMap += sp.id.get -> obj.id.get
           obj
-        }
-        sessionSpaceEls = space_elems.map { spel =>
-          val obj = ExperimentalSessionBuilder.fromOriginSpElem(spel, session_id)
+        }        
+        ExperimentalAfterBurning.makeBurn(spaceMap, burnElemMap)
+
+
+        sessionSpaceEls = space_elems.map { spel =>//.filter(n => n.space_own.isDefined).map { spel =>
+          val obj = ExperimentalSessionBuilder.fromOriginSpElem(spel, session_id, spaceMap)
           spaceElsMap += spel.id.get -> obj.id.get
           obj
         }

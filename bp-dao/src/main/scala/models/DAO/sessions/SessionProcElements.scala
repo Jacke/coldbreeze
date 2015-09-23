@@ -160,6 +160,17 @@ object SessionProcElementDAO {
       }
     }
   }
+  def updateSpaceOwn(id: Int, space_own:Int):Boolean = {
+    database withSession { implicit session =>
+      findById(id) match {
+      case Some(e) => {
+        session_proc_elements.filter(_.id === id).update(e.copy(space_own = Some(space_own)))
+        true
+      }
+      case None => false
+      }
+    }
+  }  
   def getAll = database withSession {
     implicit session ⇒ 
       val q3 = for { s ← session_proc_elements } yield s

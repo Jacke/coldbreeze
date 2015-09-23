@@ -30,6 +30,25 @@ class CustomLoginController(implicit override val env: RuntimeEnvironment[DemoUs
     super.logout
   }
 }
+class CustomPasswordReset(implicit override val env: RuntimeEnvironment[DemoUser]) extends BasePasswordReset[DemoUser] {
+  override def startResetPassword = {
+    Logger.debug("startResetPassword")    
+    super.startResetPassword
+  }
+  override def handleStartResetPassword = {
+    Logger.debug("startResetPassword")    
+    super.handleStartResetPassword
+  }
+  override def resetPassword(token: String) = {
+    Logger.debug("startResetPassword")    
+    super.resetPassword(token)
+  }
+  override def handleResetPassword(token: String) = {
+    Logger.debug("startResetPassword")    
+    super.handleResetPassword(token)
+  }
+}
+
 
 object BaseRegistrationMsgs {
   val UserNameAlreadyTaken = "securesocial.signup.userNameAlreadyTaken"
@@ -263,6 +282,48 @@ class CustomProviderController(implicit override val env: RuntimeEnvironment[Dem
 
 class CustomRegistrationController(implicit override val env: RuntimeEnvironment[DemoUser]) extends BaseRegistration[DemoUser] {
   import BaseRegistrationMsgs._
+  import play.filters.csrf._
+
+    override def handleStartSignUp = CSRFCheck {
+    Action.async {
+      implicit request =>
+        startForm.bindFromRequest.fold(
+          errors => {
+            Future.successful(BadRequest(env.viewTemplates.getStartSignUpPage(errors)))
+          },
+          e => {
+            val email = e.toLowerCase
+            // check if there is already an account for this email address
+            env.userService.findByEmailAndProvider(email, UsernamePasswordProvider.UsernamePassword).map {
+              maybeUser =>
+                maybeUser match {
+                  case Some(user) =>
+                    // user signed up already, send an email offering to login/recover password
+                    env.mailer.sendAlreadyRegisteredEmail(user)
+                  case None => {
+                    TokensDAO.findTokenByEmail(email) match {
+
+                      case Some(token) => mailers.Mailer.sendInvite(subject = "Minority Platform Invite",emails = List(email), token.uuid)
+                                          play.api.Logger.debug("Token sended")
+                                          play.api.Logger.debug(token.uuid)
+                      case None => { 
+                        createToken(email, isSignUp = true).flatMap { token =>
+                          mailers.Mailer.sendInvite(subject = "Minority Platform Invite", emails = List(email), token.uuid)
+                          play.api.Logger.debug("Token created")
+                          play.api.Logger.debug(token.uuid)
+                        env.userService.saveToken(token)
+                        }
+                      }
+
+                    }
+                  }
+                }
+                handleStartResult().flashing(Success -> Messages(ThankYouCheckEmail), Email -> email)
+            }
+          }
+        )
+    }
+  }
 
   override def handleSignUp(token: String) = Action.async {
     implicit request =>
@@ -304,6 +365,8 @@ class CustomRegistrationController(implicit override val env: RuntimeEnvironment
                 AccountsDAO.updateLang(toSave.email.get, request.acceptLanguages.head.language)
 
                 if (UsernamePasswordProvider.sendWelcomeEmail)
+                  play.api.Logger.debug("sendWelcomeEmail to")
+                  play.api.Logger.debug(newUser.userId)
                   env.mailer.sendWelcomeEmail(newUser)
                 val eventSession = Events.fire(new SignUpEvent(saved)).getOrElse(request.session)
                 if (UsernamePasswordProvider.signupSkipLogin) {
@@ -324,6 +387,8 @@ class CustomRegistrationController(implicit override val env: RuntimeEnvironment
       })
   }
 }
+
+
 
 class CustomRoutesService extends RoutesService.Default {
   override def loginPageUrl(implicit req: RequestHeader): String = controllers.routes.CustomLoginController.login().absoluteURL(IdentityProvider.sslEnabled)

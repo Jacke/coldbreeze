@@ -24,14 +24,14 @@ object DLL_Initiator {
     BPStateDAO.ddl_create
     BPSessionStateDAO.ddl_create
     // Session elements
-    SessionProcElementDAO.ddl_create
-    SessionSpaceDAO.ddl_create
-    SessionSpaceElemDAO.ddl_create
-    SessionElemTopologDAO.ddl_create
-    SessionInitialStateDAO.ddl_create
-    SessionSwitcherDAO.ddl_create
-    SessionReactionDAO.ddl_create
-    SessionReactionStateOutDAO.ddl_create
+        SessionProcElementDAO.ddl_create
+        SessionSpaceDAO.ddl_create
+        SessionSpaceElemDAO.ddl_create
+        SessionElemTopologDAO.ddl_create
+        SessionInitialStateDAO.ddl_create
+        SessionSwitcherDAO.ddl_create
+        SessionReactionDAO.ddl_create
+        SessionReactionStateOutDAO.ddl_create
 
 
     BPLoggerDAO.ddl_create

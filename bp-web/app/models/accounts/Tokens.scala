@@ -47,13 +47,16 @@ object TokensDAO {
       token
   }
 
-  def findToken(token: String): Option[MailToken] = { database withSession {
+  def findToken(token: String): Option[MailToken] = database withSession {
     implicit session ⇒
       val q3 = for { a ← tokens if a.uuid === token } yield a
       q3.list.headOption
   }
-
-  }
+  def findTokenByEmail(email: String): Option[MailToken] = database withSession {
+    implicit session ⇒
+      val q3 = for { a ← tokens if a.email === email } yield a
+      q3.list.headOption
+  }  
   def deleteToken(uuid: String): Option[MailToken] = database withSession {
     implicit session ⇒
       val tok = findToken(uuid)
@@ -63,6 +66,12 @@ object TokensDAO {
           Some(token)
         case None => None
       }
+  }
+  def deleteTokens() = database withSession {
+    implicit session ⇒
+    val q3 = for { s ← tokens } yield s
+    q3.list.map(token => deleteToken(token.uuid)).flatten
+
   }
   def ddl_create = {
     database withSession {
