@@ -89,7 +89,11 @@ object InputLoggerDAO {
     val q3 = for { s <- input_loggers if s.session === session_id } yield s
     q3.list
   }
-  
+  def getBySessions(ids: List[Int]) = database withSession {
+    implicit session =>
+    val q3 = for { s <- input_loggers if s.session inSetBind ids } yield s
+    q3.list
+  }  
 
   def update(id: Int, obj: InputLogger) = database withSession { implicit session ⇒
     val toUpdate: InputLogger = obj.copy(Option(id))

@@ -57,8 +57,8 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
           case _ => -1
         }       
         val sessions:List[SessionContainer] = BPSessionDAO.findListedByBusiness(business)//BPSessionDAO.findByBusiness(business_id).map(ses => SessionDecorator(ses._1, ses._2)).toList
-        val currentReactions:List[CurrentReactionContainer] = sessions.map(cn => cn.sessions.map(session_status => 
-            ReactionDAO.findCurrentUnappliedContainer(cn.process.id.get, session_status.session.id.get)).flatten
+        val currentReactions:List[CurrentSessionReactionContainer] = sessions.map(cn => cn.sessions.map(session_status => 
+            SessionReactionDAO.findCurrentUnappliedContainer(cn.process.id.get, session_status.session.id.get)).flatten
           ).flatten
         val dashboardTopBar: DashboardTopBar = countDashboardTopBar(email)
 

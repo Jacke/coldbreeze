@@ -8,13 +8,14 @@ import com.github.nscala_time.time.Imports._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
 import slick.model.ForeignKeyAction
 
-import models.DAO.ProcElemDAO._
-import models.DAO.BPDAO._
-import models.DAO.BPStationDAO._
+import models.DAO._
+import models.DAO.sessions._
 import models.DAO.conversion.DatabaseCred
 import main.scala.simple_parts.process.Units._
 
-
+case class SessionEitherTypeElement(front: Option[SessionUndefElement] = None, 
+                                    nested: Option[SessionSpaceElementDTO] = None,
+                                    title: String = "")
     
 class SessionTopologs(tag: Tag) extends Table[SessionElemTopology](tag, "session_elem_topologs") {
   def id            = column[Int]("id", O.PrimaryKey, O.AutoInc) 
@@ -72,17 +73,17 @@ object SessionElemTopologDAO {
     val q3 = for { s <- session_elem_topologs if s.session === id } yield s
     q3.list
   }
-  def getIdentityById(k: Int):Option[EitherTypeElement] = {
+  def getIdentityById(k: Int):Option[SessionEitherTypeElement] = {
     get(k) match {
       case Some(topo) => {
         if (topo.front_elem_id.isDefined) {
-          val front_el = ProcElemDAO.findById(topo.front_elem_id.get).get
-          Some(EitherTypeElement(front = Some(front_el), 
+          val front_el = SessionProcElementDAO.findById(topo.front_elem_id.get).get
+          Some(SessionEitherTypeElement(front = Some(front_el), 
                                  nested = None,
                                  title = front_el.title))
         } else if (topo.space_elem_id.isDefined) {
-          val nested_el = SpaceElemDAO.findById(topo.space_elem_id.get).get
-          Some(EitherTypeElement(front = None, 
+          val nested_el = SessionSpaceElemDAO.findById(topo.space_elem_id.get).get
+          Some(SessionEitherTypeElement(front = None, 
                                  nested = Some(nested_el),
                                  title = nested_el.title))
         } else {

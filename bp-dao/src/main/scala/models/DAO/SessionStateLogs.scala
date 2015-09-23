@@ -43,7 +43,17 @@ def getBySession(id: Int):Option[SessionStateLog] = database withSession {
     implicit session =>
     val q3 = for { s <- session_state_logs if s.session === id } yield s
     q3.list.headOption
-  }
+}
+def getAllBySession(id: Int):List[SessionStateLog] = database withSession {
+    implicit session =>
+    val q3 = for { s <- session_state_logs if s.session === id } yield s
+    q3.list
+}
+def getAllBySessions(ids: List[Int]):List[SessionStateLog] = database withSession {
+    implicit session =>
+    val q3 = for { s <- session_state_logs if s.session inSetBind ids } yield s
+    q3.list
+}
  def ddl_create = {
     database withSession {
       implicit session =>

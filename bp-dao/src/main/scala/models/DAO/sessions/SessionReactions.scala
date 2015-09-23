@@ -12,14 +12,14 @@ import models.DAO.BPDAO._
 import models.DAO.BPStationDAO._
 import models.DAO.conversion.DatabaseCred
 import main.scala.simple_parts.process.Units._  
-  
+import models.DAO.sessions._
 import main.scala.bprocesses.refs.UnitRefs.{UnitReactionRef, UnitReactionStateOutRef}
 import main.scala.simple_parts.process.Units._  
 
 case class CurrentSessionReactionContainer(reaction: SessionUnitReaction, 
                                     title: String, 
-                                    front: Option[UndefElement] = None, 
-                                    nested: Option[SpaceElementDTO] = None,
+                                    front: Option[SessionUndefElement] = None, 
+                                    nested: Option[SessionSpaceElementDTO] = None,
                                     session_id: Int)
 class SessionReactionRefs(tag: Tag) extends Table[SessionUnitReaction](tag, "session_reactions") {
   def id          = column[Int]("id", O.PrimaryKey, O.AutoInc) 
@@ -84,7 +84,7 @@ object SessionReactionDAO {
   def findUnapplied(id: Int, session_id: Int):List[SessionUnitReaction] = {
      database withSession { implicit session =>
        val session_states = BPSessionStateDAO.findByBPAndSession(id, session_id)
-       val session_reactions:List[SessionUnitReaction] = findByBP(id)
+       val session_reactions:List[SessionUnitReaction] = findBySession(session_id)
        val state_outs = SessionReactionStateOutDAO.findByReactions(session_reactions.flatMap(_.id))
 
        val unapplied_reactions = session_reactions.filter { reaction =>

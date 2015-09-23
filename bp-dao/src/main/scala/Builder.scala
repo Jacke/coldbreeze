@@ -28,8 +28,8 @@ object TestBuilder extends App {
   //  ReactionActivator(reaction_id = 1),
   //  ReactionActivator(reaction_id = 2)
   //))
-
 }
+
 case class SessionStatesContainer(session_states: List[BPSessionState], session_states_ids: List[Int])
 import com.typesafe.scalalogging.Logger
 import org.slf4j.LoggerFactory
@@ -154,12 +154,19 @@ def saveSessionStates(bprocess: BProcess,
 }
 def saveOrUpdateSessionStates(bprocess: BProcess, bprocess_dto: BProcessDTO, session_id: Int, pulling: Boolean = false) = {
     val origin_states = BPStateDAO.findByBP(bprocess_dto.id.get)
-    val session_states_old = BPSessionStateDAO.findByOriginIds(origin_states.map(_.id.get))
+    val session_states_initial = SessionInitialStateDAO.findBySession(session_id).map(in => ExperimentalSessionBuilder.fromInitialState(in))     
+    //BPSessionStateDAO.findByOriginIds(origin_states.map(_.id.get))
     val session_states:List[BPSessionState] = (bprocess.allElements.map(_.session_states.toList)).flatten ++ bprocess.session_states.toList
 
+    toApplogger("session states FOR UPDATE: ")
+    session_states.foreach { state =>
+        toApplogger(s"session state ${state.id} ${state.title} ${state.on}-${state.on_rate} ")
+    }
+
+
     val deltas = session_states.filter { state =>
-      session_states_old.find(old_state => old_state.id == state.id && 
-      (old_state.on_rate != state.on_rate || old_state.on != state.on)).isDefined // TODO: 4-Dimension checking
+      session_states_initial.find(initialState => initialState.id == state.origin_state && 
+      (initialState.on_rate != state.on_rate || initialState.on != state.on)).isDefined // TODO: 4-Dimension checking
     }
     var ids:List[Int] = List()
     if (pulling) {

@@ -39,9 +39,17 @@ import decorators._
 import builders._
 
 case class StationNoteMsg(msg: String)
-case class LogsContainer(session_loggers: List[BPLoggerDTO], process_histories: List[ProcessHistoryDTO], stations: List[BPStationDTO])
+case class LogsContainer(session_loggers: List[BPLoggerDTO], 
+                         process_histories: List[ProcessHistoryDTO], 
+                         stations: List[BPStationDTO],
+                         input_logs: List[InputLogger] = List.empty,
+                         state_logs: List[SessionStateLog] = List.empty)
 class ProcessSessionController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
   
+implicit val InputLoggerReads = Json.reads[InputLogger]
+implicit val InputLoggerWrites = Json.format[InputLogger]
+implicit val SessionStateLogReads  = Json.reads[SessionStateLog]
+implicit val SessionStateLogWrites  = Json.format[SessionStateLog]
 
   implicit val CompositeVReads = Json.reads[CompositeValues]
   implicit val CompositeVWrites = Json.format[CompositeValues]
@@ -178,8 +186,11 @@ def logs_index(id: Int) = SecuredAction { implicit request =>
       val processHistories = ProcHistoryDAO.getByProcess(id)
       val session_loggers = BPLoggerDAO.findByBPId(id)
       val stations = BPStationDAO.findByBPId(id)
+      val session_ids = stations.map(st => st.session)
+      val input_logs = InputLoggerDAO.getBySessions(session_ids)
+      val session_log = SessionStateLogDAO.getAllBySessions(session_ids)
 
-      Ok(Json.toJson(LogsContainer(session_loggers, processHistories, stations)))
+      Ok(Json.toJson(LogsContainer(session_loggers, processHistories, stations,input_logs,session_log)))
   } else { Forbidden(Json.obj("status" -> "Not found")) }
 }
 
