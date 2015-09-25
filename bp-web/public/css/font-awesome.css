@@ -2387,6 +2387,10 @@ ul.icons li [class*=" icon-"] {
 .icon-line_3:before {
   content: "\e622";
 }
+.uicon-svg62222:before {
+  content: "\e622";
+}
+
 .uicon-svg192:before {
   content: "\e623";
 }
