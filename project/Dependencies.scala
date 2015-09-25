@@ -66,6 +66,8 @@ object Dependencies {
   //val scalamandril2   = "org.globalmoney"           % "play-mandrill"           % "0.1.1-SNAPSHOT" 
   val mailchimp       = "com.ecwid" % "ecwid-mailchimp" % "2.0.1.0"
 
+  val selenium        = "org.seleniumhq.selenium"   % "selenium-java"           % "2.35.0" % "test"
+  val selenide        = "com.codeborne"             % "selenide"                % "2.23"
   val play            = "org.webjars"               %% "webjars-play"           % "2.3.0"
   val play4           = "org.webjars"               %% "webjars-play"           % "2.4.0"
   val playslick       = "com.typesafe.play"         %  "play-slick_2.10"        % "0.8.0"

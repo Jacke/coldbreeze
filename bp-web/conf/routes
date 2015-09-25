@@ -216,6 +216,7 @@ GET    	/launch/:launch_id/elements 				@controllers.LaunchElementsControllers.f
 GET    	/launch/:launch_id/spaces  				   	@controllers.LaunchElementsControllers.spaces(launch_id: Int)
 GET  	/launch/:launch_id/space_elems  			@controllers.LaunchElementsControllers.spaceElems(launch_id: Int)
 GET     /launch/:launch_id/switchers 				@controllers.LaunchElementsControllers.switches_index(launch_id: Int)
+GET     /launch/:launch_id/reactions 				@controllers.LaunchElementsControllers.reactions_index(launch_id: Int)
 
 #POST   	launch/:launch_id/elements 					# @controllers.LaunchElementsControllers
 #GET    	launch/:launch_id/element/:id 				# @controllers.LaunchElementsControllers
@@ -237,13 +238,19 @@ GET     /launch/:launch_id/switchers 				@controllers.LaunchElementsControllers.
 #PUT     launch/:launch_id/switcher/:id 				# @controllers.LaunchElementsControllers
 #DELETE  launch/:launch_id/switcher/:id 				# @controllers.LaunchElementsControllers
 
-#GET     launch/:launch_id/reactions 				# @controllers.LaunchElementsControllers
 #POST    launch/:launch_id/reactions 				# @controllers.LaunchElementsControllers
 #GET     launch/:launch_id/reaction/:id 				# @controllers.LaunchElementsControllers
 #PUT     launch/:launch_id/reaction/:id 				# @controllers.LaunchElementsControllers
 #DELETE  launch/:launch_id/reaction/:id 				# @controllers.LaunchElementsControllers
 
 
+################
+# Data
+###
+GET      /data 								@controllers.DataController.index()
+POST     /data/resources					@controllers.DataController.create_resources()
+PUT      /data/resource/:id					@controllers.DataController.update_resources(id: Int)
+DELETE   /data/resource/:id					@controllers.DataController.delete_resources(id: Int)
 
 
 ################

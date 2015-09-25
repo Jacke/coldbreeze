@@ -21,7 +21,8 @@ object NewUserRoutine {
         if (isEmpty && !isArleadyDefined) {
       		val emp_id = EmployeeDAO.pull_object(EmployeeDTO(None, email, email, None, true))
           val biz_id = BusinessDAO.pull_object(BusinessDTO(None, "Your Company", country = "", city = "", 
-              												 address = None, walkthrough = true))
+                                       address = None, walkthrough = true))
+           defaultService(email, biz_id, isMaster)
           EmployeesBusinessDAO.pull(emp_id, biz_id)
           /**
            * Create default analytics group
@@ -74,7 +75,17 @@ object NewUserRoutine {
 
       }
     }
-
+    private def defaultService(uid: String, biz_id: Int, isMaster: Boolean):Int = {
+      //isMaster match {
+      //  case true => {
+            // TODO: Add translation
+            BusinessServiceDAO.pull_object(
+                BusinessServiceDTO(id = None, title = "Common", business_id = biz_id, master_acc = uid)
+              )
+      //  }
+      //  case _ => -1
+      //}
+    }
 
   def defaultPermsForAnalytics(process_id: Int, business: Int) = {
       val analyticGroup = GroupsDAO.getsByBusiness(business).find(_.title == "Analytics") 

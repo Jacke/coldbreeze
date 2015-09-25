@@ -335,6 +335,7 @@
   'controllers': '../js/controllers/controllers',
   'procPermController': '../js/controllers/procPermController',
   'procController': '../js/controllers/procController',
+  'historyController': '../js/controllers/historyController',
   'procCreateController': '../js/controllers/processes/procCreateController',
   'procDetailController': '../js/controllers/processes/procDetailController',
   'requestController': '../js/controllers/requestController',

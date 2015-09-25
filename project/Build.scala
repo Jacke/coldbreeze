@@ -150,6 +150,8 @@ object Build extends Build {
           slick, 
           play, 
           requirejs,
+          selenium,
+          selenide,
           underscore,
           jquery,
           bootstrap, 

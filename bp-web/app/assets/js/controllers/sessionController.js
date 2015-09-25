@@ -170,8 +170,6 @@ $scope.history = function(session_id, entity) {
         //template: '/assets/partials/popup/first-process-finished.html',
         controller: 'HistoriesCtrl',
         scope: $scope
-    
-      
       });
 }
 $scope.processHistory = function(entity) {
@@ -431,51 +429,8 @@ $scope.isOnlyListed = function(session) {
 
 $scope.date = {startDate: null, endDate: null};
 
-
-
-
-}])
-
-
-minorityControllers.controller('HistoriesCtrl', ['$timeout','$http', 
-  '$window', 
-  '$translate',
-  '$scope', 
-  '$filter', 
-  '$routeParams',
-  '$rootScope',
-  'ngDialog',
-  'ProcPermissionsFactory',
-  'TreeBuilder',
-  'BPStationsFactory', 
-  'SessionsFactory',
-  'BProcessesFactory',
-  'BProcessFactory', 
-  'ObserversFactory', 
-  'ObserverFactory', 
-  'BProcessesFactory', 
-  'BPElemsFactory',
-  'BPSpacesFactory',
-  'BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
-  function ($timeout, $http, $window, $translate, $scope, $filter, $routeParams, $rootScope, ngDialog, ProcPermissionsFactory, TreeBuilder, BPStationsFactory, SessionsFactory, BProcessesFactory, BProcessFactory, ObserversFactory, ObserverFactory, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
-
-    console.log($scope);
-    $scope.currentSession = $scope.history_session_id;
-    $scope.currentEntity = $scope.history_entity;
-
-    //if (ngDialogData != undefined) {
-    //  $scope.data = ngDialogData.session_id;
-    //}
-    console.log($scope.history_session_id)
-
-
 }]);
-
-
-
 });
-
-
 
 
 

@@ -17,7 +17,7 @@
       <label class="control-label col-sm-2" for="inputBusinessId">{{ 'SERVICE' | translate }}</label>
       <div class="controls">
         <div class="col-xs-7">
-          <select class="form-control" ng-init="bprocess.service=parseInt($routeParams.service)" ng-model="bprocess.service" ng-options="service.id as service.title for service in procServices" required></select><br>
+          <select class="form-control" ng-model="bprocess.service" ng-options="service.id as service.title for service in procServices" required></select><br>
         </div>
       </div>
     </div>

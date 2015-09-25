@@ -619,7 +619,6 @@ def reactions_index(BPid: Int) = SecuredAction { implicit request =>
     Ok(Json.toJson(ReactionDAO.findByBP(BPid).map(react => ReactionCollection(react, ReactionStateOutDAO
     findByReaction(react.id.get)))))
   } else { Forbidden(Json.obj("status" -> "Access denied")) }
-
 }
 def update_reaction(id: Int) = SecuredAction { implicit request => 
   Ok(Json.toJson("Ok"))

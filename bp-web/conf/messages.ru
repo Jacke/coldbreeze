@@ -40,6 +40,7 @@ page.helpByPhone=Help by Phone
 page.help=Help
 page.walkthrought=Walkthrough
 page.settings=Settings
+page.data=Data
 
 page.manageTeam=Manage team
 page.members=Members

@@ -38,8 +38,11 @@ import cloner.util._
 import ProcHistoryDAO._
 
 case class SessionElementTopologyWrapper(topo_id: Int, element_id: Int, element_title: String, space_element: Boolean = false)
+case class SessionReactionCollection(reaction: SessionUnitReaction, reaction_state_outs: List[SessionUnitReactionStateOut])
 
 class LaunchElementsControllers(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
+
+
 
 implicit val SessionElemTopologyReads = Json.reads[SessionElemTopology]
 implicit val SessionElemTopologyWrites = Json.format[SessionElemTopology]
@@ -63,6 +66,8 @@ implicit val SessionUnitSwitcherReads = Json.reads[SessionUnitSwitcher]
 implicit val SessionUnitSwitcherWrites = Json.format[SessionUnitSwitcher]
 implicit val SessionElementTopologyWrapperReads = Json.reads[SessionElementTopologyWrapper] 
 implicit val SessionElementTopologyWrapperWrites = Json.format[SessionElementTopologyWrapper] 
+implicit val SessionReactionCollectionReads = Json.reads[SessionReactionCollection]
+implicit val SessionReactionCollectionWrites = Json.format[SessionReactionCollection]
 
 /* Index */
 def frontElems(launch_id: Int) = SecuredAction { implicit request =>
@@ -137,7 +142,12 @@ def switches_index(launch_id: Int) = SecuredAction { implicit request =>
   } else { Forbidden(Json.obj("status" -> "Access denied")) }
 
 }
-
+def reactions_index(launch_id: Int) = SecuredAction { implicit request => 
+  if (security.BRes.launchIsOwnedByBiz(request.user.businessFirst, launch_id)) {
+    Ok(Json.toJson(SessionReactionDAO.findBySession(launch_id).map(react => SessionReactionCollection(react, 
+    	SessionReactionStateOutDAO.findByReaction(react.id.get)))))
+  } else { Forbidden(Json.obj("status" -> "Access denied")) }
+}
 
 
 

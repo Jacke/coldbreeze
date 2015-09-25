@@ -1533,7 +1533,17 @@ ul.minMenuList.minMenuTexts {
 .themeDark .minorityMenu .secondaryNav .secondaryNavItem {
     border-top-color: #676d81;
 }
+.secondaryNav .secondaryNavItem span {
+    margin-right: 13px;
+}
 
+.secondaryNav .secondaryNavItem .changelogLink span {
+    margin-right: 19px;
+}
+
+.secondaryNavItem a {
+    font-size: 22px;
+}
 .themeDark .minorityMenu .secondaryNav .secondaryNavItem a {
     color: #fff;
 }

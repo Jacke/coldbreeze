@@ -77,13 +77,10 @@
     </li>
     } 
     <li class="minMenuItem">
-      <a id="teamSettingsLink" class="vIcoIn menuEntityLink" href="@routes.SettingController.index()">
-        <span class="uicon-svg2222"></span>@Messages("nav.settings")(LangDet.getLang(user) )  </a>
+      <a id="teamSettingsLink" class="vIcoIn menuEntityLink" href="@routes.DataController.index()">
+        <span class="uicon-svg2222"></span>@Messages("page.data")(LangDet.getLang(user) )</a>
     </li>
-    <li class="minMenuItem proLinkItem">
-      <a id="teamSettingsLink" class="vIcoIn menuEntityLink proLink" href="@routes.Application.proPage()">
-        <span class="moicon moicon-rocket"></span>@Messages("nav.pro")(LangDet.getLang(user) )  </a>
-    </li>    
+
   </ul>
 </nav>
 
@@ -128,11 +125,21 @@
                           </a></li>-->
 
                   @if(user.isManager) {
-                    <!--<li class="secondaryNavItem"><a class="changelogLink vIcoIn" href="@routes.PlanController.index()"><i class="uicon-svg142"></i>
+                    <!--<li class="secondaryNavItem">
+                    <a class="changelogLink vIcoIn" href="@routes.PlanController.index()"><i class="uicon-svg142"></i>
                     @Messages("page.plans") </a></li>-->
                   }
 
+          <li class="secondaryNavItem">
+            <a class="changelogLink vIcoIn" href="@routes.Application.proPage()">
+              <span class="moicon moicon-rocket"></span>@Messages("nav.pro")(LangDet.getLang(user) )  </a>
+          </li>
+          <li class="secondaryNavItem">
+            <a class="changelogLink vIcoIn" href="@routes.SettingController.index()">
+              <span class="uicon-svg2222"></span>@Messages("nav.settings")(LangDet.getLang(user) )  </a>
+          </li>
           <li class="secondaryNavItem"><form class="logoutForm" action="@routes.CustomLoginController.logout()" method="POST"><button class="logoutBtn vIcoIn" type="submit"><span class="uicon-svg522 vLogout vDimmedState"></span> @Messages("page.signout") </button></form></li>
+
         </ul>
       </nav>
     </div>

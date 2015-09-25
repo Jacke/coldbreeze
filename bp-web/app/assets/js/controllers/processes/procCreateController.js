@@ -5,11 +5,20 @@ define(['angular', 'app', 'angularanimate', 'controllers'], function (angular, m
 minorityControllers.controller('BPCreationCtrl', ['$window', '$rootScope','$scope', '$http','$routeParams', 'TreeBuilder', 'BProcessesFactory', 'BPServicesFactory', '$location',
   function ($window, $rootScope, $scope, $http,$routeParams,  TreeBuilder, BProcessesFactory, BPServicesFactory, $location) {
 
+
+    BPServicesFactory.query().$promise.then(function(d) {
+      $scope.procServices = d;
+
     if ($routeParams.service != undefined) {
       $scope.bprocess = { service: parseInt($routeParams.service) };
-    }
-
-    $scope.procServices = BPServicesFactory.query();
+      $scope.bprocess.service=parseInt($routeParams.service);
+    } else {
+    
+      if (d.length != 0 && $routeParams.service == undefined) {
+        $scope.bprocess = { service: service=d[0].id };
+      }
+      }
+    })
     
     if ($window.sessionStorage.getItem('business') != undefined) {
       $scope.business = parseInt($window.sessionStorage.getItem('business'));
