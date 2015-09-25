@@ -20,11 +20,7 @@
                 <div class="active-sessions">
                                                 <div class="info">
                                                     <div class="desc pull-left"><a href="/a#/bprocess/@{session.process.id.getOrElse(0)}/elements?session=@session.session.id"> 
-                                                    @session.station.get.note match {
-                                                        case Some(note) => { @{"—" + note} }
-                                                        case _ => {  }
-                                                    }
-                                                    <time class="updated" itemprop="dateModified" datetime="@session.station.get.created_at"></time></a></div>
+                                                    <time class="updated" itemprop="dateModified" datetime="session.station.get.created_at"></time></a></div>
                                                     <div class="percent pull-right">@{session.percent}%</div>
                                                 </div>
                                                 <div class="progress progress-sm">
@@ -37,7 +33,7 @@
 @currentReactionCN.filter(cn => Some(cn.session_id) == session.session.id).map { currentReaction =>
 <div class="instant-input">
     <span class="element-thumb">@currentReaction.title</span>
-    <button class="confirm-btn reaction_id @{currentReaction.reaction.id.get}" data-session-id="@session.session.id" data-process-id="@session.process.id" data-reaction-id="@currentReaction.reaction.id.get">@currentReaction.reaction.title</button>
+    <button class="confirm-btn reaction_id @{currentReaction.reaction.id.getOrElse(0)}" data-session-id="@session.session.id" data-process-id="@session.process.id" data-reaction-id="@currentReaction.reaction.id.getOrElse(0)">@currentReaction.reaction.title</button>
 </div>
 }
 
