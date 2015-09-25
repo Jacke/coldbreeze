@@ -20,7 +20,18 @@
                 <div class="active-sessions">
                                                 <div class="info">
                                                     <div class="desc pull-left"><a href="/a#/bprocess/@{session.process.id.getOrElse(0)}/elements?session=@session.session.id"> 
-                                                    <time class="updated" itemprop="dateModified" datetime="session.station.get.created_at"></time></a></div>
+                                                    @session.station match {
+                                                      case Some(station) => {
+                                                            @station.note match {
+                                                                case Some(note) => { @{"—" + note} }
+                                                                case _ => {  }
+                                                            }
+                                                            <time class="updated" itemprop="dateModified" datetime="@station.created_at"></time></a></div>
+                                                      }
+                                                      case _ => {
+                                                            <time class="updated" itemprop="dateModified" datetime="station.created_at"></time></a></div>
+                                                      }
+                                                    }
                                                     <div class="percent pull-right">@{session.percent}%</div>
                                                 </div>
                                                 <div class="progress progress-sm">
@@ -46,3 +57,4 @@
     </div>
     <a href="/a#/launches" class="single-mail text-center">View All Sessions</a>
   </div>
+
