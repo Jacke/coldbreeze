@@ -6,69 +6,72 @@ import models.DAO.conversion.{DatabaseCred, Implicits}
 import slick.model.ForeignKeyAction
 
 
-class Resources(tag: Tag) extends Table[ResourceDTO](tag, "resources"){
+class ElementResources(tag: Tag) extends Table[ElementResourceDTO](tag, "element_resources"){
   def id         = column[Int]("id", O.PrimaryKey, O.AutoInc)
-  def title      = column[String]("title")
+  def element    = column[Int]("element_id")
+  def resource   = column[Int]("resource_id")
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
     
 
-  def * = (id.?, title,
+  def * = (id.?, element, resource,
+       
            created_at,
-           updated_at) <> (ResourceDTO.tupled, ResourceDTO.unapply)  
+           updated_at) <> (ElementResourceDTO.tupled, ElementResourceDTO.unapply)  
     
 }
-case class ResourceDTO(  
+case class ElementResourceDTO(  
   var id: Option[Int],
-  title: String,
+  element: Int,
+  resource: Int,
   created_at: Option[org.joda.time.DateTime],
   updated_at: Option[org.joda.time.DateTime] )
   
-object ResourceDAO {
+object ElementResourceDAO {
   import scala.util.Try
   import DatabaseCred.database
 
-  val resources = TableQuery[Resources]
+  val element_resources = TableQuery[ElementResources]
     
     
-  def pull_object(s: ResourceDTO) = database withSession {
+  def pull_object(s: ElementResourceDTO) = database withSession {
     implicit session ⇒
-      resources returning resources.map(_.id) += s
+      element_resources returning element_resources.map(_.id) += s
   }
   def get(k: Int) = database withSession {
     implicit session ⇒
-      val q3 = for { s ← resources if s.id === k } yield s 
+      val q3 = for { s ← element_resources if s.id === k } yield s 
       println(q3.selectStatement)
       println(q3.list)
       q3.list.headOption
   }
-  def update(id: Int, annotation: ResourceDTO) = database withSession { implicit session ⇒
-    val resourcesUpdate: ResourceDTO = annotation.copy(Option(id))
-    resources.filter(_.id === id).update(resourcesUpdate)
+  def update(id: Int, annotation: ElementResourceDTO) = database withSession { implicit session ⇒
+    val element_resourcesUpdate: ElementResourceDTO = annotation.copy(Option(id))
+    element_resources.filter(_.id === id).update(element_resourcesUpdate)
   } 
 
 
   def delete(id: Int) = database withSession { implicit session ⇒
-    resources.filter(_.id === id).delete
+    element_resources.filter(_.id === id).delete
   }
   def count: Int = database withSession { implicit session ⇒
-    Query(resources.length).first
+    Query(element_resources.length).first
   }
   def getAll = database withSession {
     implicit session ⇒
-      val q3 = for { s ← resources } yield s 
+      val q3 = for { s ← element_resources } yield s 
       q3.list.sortBy(_.id)
   }
   def ddl_create = {
     database withSession {
       implicit session =>
-      resources.ddl.create
+      element_resources.ddl.create
     }
   }
   def ddl_drop = {
     database withSession {
       implicit session =>
-        resources.ddl.drop
+        element_resources.ddl.drop
     }
   }  
       
