@@ -26,13 +26,13 @@ $(function domReadyLoginFlow () {
   });
   }
 
-  $('.form-horizontal button').on('click', function(event) {
+  $('.form-horizontal .loginButton').on('click', function(event) {
 
   event.preventDefault();
   var name = $('.form-horizontal #username').val();
   var pswd = $('.form-horizontal #password').val();
   $('.messageBoxWrap').remove();
-  $('.form-horizontal button').toggleClass('loading');
+  $('.form-horizontal .loginButton').toggleClass('loading');
     $.post(jsRoutes.controllers.ProfileController.dashboard().absoluteURL(document.ssl_enabled) + "auth/api/authenticate/userpass", { username: name , password: pswd })
   .done(function( data ) {
   localStorage.setItem("token", data.token);
@@ -45,7 +45,7 @@ $(function domReadyLoginFlow () {
 
 
   }).fail(function( jqXHR, textStatus) {
-      $('.form-horizontal button').toggleClass('loading');
+      $('.form-horizontal .loginButton').toggleClass('loading');
       $('.loginFlowPage').prepend('<div class="messageBoxWrap"><p class="message">'+ JSON.parse(jqXHR.responseText).error +'</p></div>');
     });
 

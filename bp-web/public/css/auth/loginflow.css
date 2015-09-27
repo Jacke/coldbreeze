@@ -252,7 +252,7 @@ button.loading {
     font-size: 150%
 }
 
-.loginView .btnBasic,.loginView .signWithService,.loginView .loginButton {
+.loginView .btnBasic,.loginView .signWithService,.loginView .loginButton, .loginView .resetButton {
     display: inline-block;
     -webkit-border-radius: 4px;
     border-radius: 4px;
@@ -322,12 +322,12 @@ button.loading {
     padding: .5em 0 .7em
 }
 
-.loginView .loginText,.loginView .loginForm,.loginView .loginButton,.loginView .textField {
+.loginView .loginText,.loginView .loginForm,.loginView .loginButton,.loginView .textField, .loginView .resetButton {
     display: block;
     margin: 1em 0 0 0
 }
 
-.loginView .textField,.loginView .loginButton {
+.loginView .textField,.loginView .loginButton, .loginView .resetButton {
     margin: 0;
     width: 100%;
     padding: .9em .9em .7em;
@@ -338,14 +338,14 @@ button.loading {
     font-weight: normal
 }
 
-.loginView .loginButton {
+.loginView .loginButton, .loginView .resetButton {
     border: none;
     text-transform: uppercase;
     line-height: 100%;
     padding: 1.2em 0 1em
 }
 
-.loginView a.loginButton,.loginView a.loginButton:hover {
+.loginView a.loginButton,.loginView a.loginButton:hover, .loginView a.resetButton,.loginView a.resetButton:hover {
     font-weight: normal;
     color: #fff;
 }
@@ -549,3 +549,4 @@ button.loading {
         background-position: -32px -50px
     }
 }
+

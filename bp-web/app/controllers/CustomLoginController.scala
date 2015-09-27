@@ -36,15 +36,15 @@ class CustomPasswordReset(implicit override val env: RuntimeEnvironment[DemoUser
     super.startResetPassword
   }
   override def handleStartResetPassword = {
-    Logger.debug("startResetPassword")    
+    Logger.debug("handleStartResetPassword")    
     super.handleStartResetPassword
   }
   override def resetPassword(token: String) = {
-    Logger.debug("startResetPassword")    
+    Logger.debug(s"resetPassword $token")    
     super.resetPassword(token)
   }
   override def handleResetPassword(token: String) = {
-    Logger.debug("startResetPassword")    
+    Logger.debug(s"handleRestPassword $token")    
     super.handleResetPassword(token)
   }
 }
