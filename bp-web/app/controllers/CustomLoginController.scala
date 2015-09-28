@@ -17,6 +17,7 @@ import securesocial.core.authenticator.CookieAuthenticator
 import securesocial.core.providers.UsernamePasswordProvider
 import securesocial.core.providers.utils._
 import securesocial.core.services.SaveMode
+import play.filters.csrf._
 import models._
 import scala.concurrent.{Await, ExecutionContext, Future}
 
@@ -39,16 +40,51 @@ class CustomPasswordReset(implicit override val env: RuntimeEnvironment[DemoUser
     Logger.debug("handleStartResetPassword")    
     super.handleStartResetPassword
   }
-  override def resetPassword(token: String) = {
-    Logger.debug(s"resetPassword $token")    
-    super.resetPassword(token)
+// GET     /auth/reset/:mailToken
+  override def resetPassword(token: String) =  CSRFAddToken {
+     Logger.debug(s"GET resetPassowrd $token")
+    Action.async {
+      implicit request =>
+        executeForToken(token, false, {
+          t =>
+            Future.successful(Ok(env.viewTemplates.getResetPasswordPage(changePasswordForm, token)))
+        })
+    }
   }
-  override def handleResetPassword(token: String) = {
-    Logger.debug(s"handleRestPassword $token")    
-    super.handleResetPassword(token)
-  }
-}
 
+
+
+// POST    /auth/reset/:mailToken
+  override def handleResetPassword(token: String) = CSRFCheck {
+    Action.async { implicit request =>
+      import scala.concurrent.ExecutionContext.Implicits.global
+      executeForToken(token, false, {
+        t =>
+          changePasswordForm.bindFromRequest.fold(errors =>
+            Future.successful(BadRequest(env.viewTemplates.getResetPasswordPage(errors, token))),
+            p =>
+              env.userService.findByEmailAndProvider(t.email, UsernamePasswordProvider.UsernamePassword).flatMap {
+                case Some(profile) =>
+                  val hashed = env.currentHasher.hash(p._1)
+                  for (
+                    updated <- env.userService.save(profile.copy(passwordInfo = Some(hashed)), SaveMode.PasswordChange);
+                    deleted <- env.userService.deleteToken(token)
+                  ) yield {
+                    env.mailer.sendPasswordChangedNotice(profile)
+                    val eventSession = Events.fire(new PasswordResetEvent(updated)).getOrElse(request.session)
+                    confirmationResult().withSession(eventSession).flashing(Success -> Messages(PasswordUpdated))
+                  }
+                case _ =>
+                  Logger.error("[securesocial] could not find user with email %s during password reset".format(t.email))
+                  Future.successful(confirmationResult().flashing(Error -> Messages(ErrorUpdatingPassword)))
+              }
+          )
+      })
+    }
+  }
+
+
+}
 
 object BaseRegistrationMsgs {
   val UserNameAlreadyTaken = "securesocial.signup.userNameAlreadyTaken"

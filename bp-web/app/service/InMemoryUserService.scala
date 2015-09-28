@@ -22,7 +22,7 @@ import securesocial.core._
 import securesocial.core.providers.{UsernamePasswordProvider, MailToken}
 import scala.concurrent.Future
 import securesocial.core.services.{UserService, SaveMode}
-
+import scala.concurrent.ExecutionContext.Implicits.global
 import models.AccountsDAO
 import models.TokensDAO
 
@@ -81,11 +81,16 @@ class InMemoryUserService extends UserService[DemoUser] {
     mode match {
       case SaveMode.SignUp =>
         val newUser = DemoUser(user, List(user))
-
         AccountsDAO.save(user)
-        
         users = users + ((user.providerId, user.userId) -> newUser)
-      case SaveMode.LoggedIn =>
+      case SaveMode.LoggedIn => 
+      case SaveMode.PasswordChange =>
+        findByEmailAndProvider(user.email.getOrElse(""), user.providerId).map { entry => AccountsDAO.updateProfilePassword(user, entry) }
+//.getOrElse(
+          // this should not happen as the profile will be there
+  //        throw new Exception("missing profile)")
+    //    )
+
 
     }
     // first see if there is a user with this BasicProfile already.

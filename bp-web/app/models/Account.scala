@@ -267,8 +267,25 @@ object AccountsDAO {
         case _ => false
       }
   }
-  
+  def updateProfilePassword(user: BasicProfile, entry: Option[securesocial.core.BasicProfile]) = {
+	database withSession {
+    implicit session =>
+    val q3 = for { a ← accounts if a.userId === user.userId } yield a
+      q3.list.headOption match {
+        case Some(account) => {
+          val newPassword = user.passwordInfo match { case Some(info) => info.password; case _ => "" }
 
+          accounts.filter(_.email === user.email.getOrElse("")).update(account.copy(password = newPassword)) match {
+                case -1 => false
+                case _ => true
+          }
+        }
+        case _ => false
+      }
+  }
+
+
+  }
   def getRolesAndLang(email: String): Option[Tuple3[Boolean, Boolean, String]] ={
     val manager = AccountPlanDAO.getByMasterAcc(email).isDefined
     val employee = models.DAO.resources.EmployeeDAO.getByEmployeeUID(email) match {
