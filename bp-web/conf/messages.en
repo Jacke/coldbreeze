@@ -139,3 +139,28 @@ footer.company=Company
 footer.rights=All rights reserved
 footer.terms=Terms
 footer.privacy=Privacy
+
+
+
+# Not authorized page
+securesocial.notAuthorized.title=Not Authorized
+securesocial.notAuthorized.message=You are not authorized to access that page
+
+#
+securesocial.loginRequired=You need to log in to access that page.
+
+# Mails
+#
+mails.sendAlreadyRegisteredEmail.subject=Sign up instructions | Minority
+mails.sendSignUpEmail.subject=Sign up instructions | Minority
+mails.welcomeEmail.subject=Welcome to Minority 
+mails.passwordResetEmail.subject=Password reset instructions | Minority
+mails.unknownEmail.subject=Password reset request | Minority
+mails.passwordResetOk.subject=Password change confirmation | Minority
+
+#
+# Link accounts
+#
+securesocial.link.accessDenied=Your account was not linked because you denied access to it
+securesocial.link.error=There was an error while trying to link your account. Please try again.
+
