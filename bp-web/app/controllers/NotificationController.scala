@@ -23,9 +23,6 @@ import scala.util.{Try, Success, Failure}
 import play.api.mvc._
 import securesocial.core._
 
-object Subscribe
-object StatusCheck
-
 
 class NotificationController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
     implicit val sumFormat                    = Json.format[SumActor.Sum]
@@ -59,20 +56,6 @@ def socket = WebSocket.tryAcceptWithActor[JsValue, JsValue] { request => //[SumA
       case None => Future.successful(Left(Forbidden))
     }
 }
-
-
-
-def notify_test(msg: String) = SecuredAction { implicit request =>
-          val system = SumActor.system
-          /* SumActor.actors.foreach { actor => 
-            val actor = system.actorOf(Props[SumActor])
-            actor ! Msg(msg)
-          }
-          */
-          BoardActor() ! StatusCheck
-          BoardActor() ! Message(request.user.main.userId, msg )
-          Ok("sended")    
-    }
 def popup(emails_hash: String, target: String) = Action { request =>
           request.body.asJson.map { json =>
           val placeResult = json.validate[PopupRequest]
@@ -120,15 +103,17 @@ def popup(emails_hash: String, target: String) = Action { request =>
   Ok("sended")    
 }
 
-
-def sendInvite(emails_hash: String, invite_link: String) = SecuredAction { implicit request =>
-  val emails = emails_hash.split(",").toList
-  mailers.Mailer.sendInvite(subject = "Minority Platform Invite",
-             emails = emails, 
-             invite_link)
-  Ok("sended to" + emails_hash)
-}
-
+def notify_test(msg: String) = SecuredAction { implicit request =>
+          val system = SumActor.system
+          /* SumActor.actors.foreach { actor => 
+            val actor = system.actorOf(Props[SumActor])
+            actor ! Msg(msg)
+          }
+          */
+          BoardActor() ! StatusCheck
+          BoardActor() ! Message(request.user.main.userId, msg )
+          Ok("sended")    
+    }
 import play.api.libs.concurrent.Execution.Implicits._
 
 case class Item(value: String = "test")

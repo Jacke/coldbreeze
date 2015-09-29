@@ -1,6 +1,35 @@
 @(title: String = "", throwable: Option[Throwable])(implicit lang: Lang)
 
 @main("Bad request") {
- Internal error, please try again later.
+<style>
+	.loginFlowPage .error {
+    text-align: center;
+    font-size: 35px;
+    color: #6B6B6B;
+    line-height: 128px;
+    font-family: 'Open Sans';
+    font-weight: 800;
+}
 
+.loginFlowPage .error img {
+    clear: both;
+    display: block;
+    margin: 0 auto;
+    border: solid 1px #C3C3C3;
+    box-shadow: 11px 0px 12px #DADADA;
+}
+.loginFlowPage .error small {
+    font-size: 9px;
+    color: #DDE0E8;
+}
+.loginFlowPage .error small::selection {
+    background-color: black;
+    color: white;
+}
+
+</style>
+ <div class="error">
+ Internal error, please try again later. <img src="https://psv4.vk.me/c610131/u2318349/docs/a214526f583b/Nit_Zhizn.gif?extra=5bxpxyzAh-JdX52Dd7bWkUbtL5cy4x4FH_KKhlnNKxtYcgfGN_tRA7MNNtp1s9EjnCmIy1NmAnoik7cnbs-wgly-x6Qhu9wP">
+   <small> @throwable.getOrElse(" ")</small>
+  </div>
 }

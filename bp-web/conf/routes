@@ -7,6 +7,7 @@ GET         /webjars/*file                                      controllers.WebJ
 
 # Home page
 GET         /                                                   @controllers.ProfileController.dashboard()
+GET         /dashboard  										@controllers.ProfileController.dashboardScreen()
 GET         /uptime                                             @controllers.Application.uptime()
 
 GET     /auth/authenticate/:provider     @controllers.CustomProviderController.authenticate(provider)
@@ -46,7 +47,7 @@ GET         /notify								    @controllers.NotificationController.socket
 GET         /notify_test/:msg                       @controllers.NotificationController.notify_test(msg: String)
 GET         /popup/:emails_hash/:target             @controllers.NotificationController.popup(emails_hash: String, target: String) 
 GET         /notify2/test_action                    @controllers.NotificationController.tagItem
-GET         /invite/:emails_hash/:invite_link       @controllers.NotificationController.sendInvite(emails_hash: String, invite_link: String)
+GET         /invite/:emails_hash/:invite_link       @controllers.SubscribtionController.sendInvite(emails_hash: String, invite_link: String)
 GET         /only-twitter                           @controllers.Application.onlyTwitter
 
 

@@ -17,6 +17,10 @@ import controllers.users._
 import models.DAO.resources._
 import models.DAO._
 import decorators._
+import scala.concurrent._
+import scala.concurrent.duration._
+import scala.util.Success
+import scala.util.Failure
 
 case class employeeParams(perms: List[ActPermission], bps: List[BProcessDTO], elems_titles:Map[Int, String], res_acts: List[ResAct])
 case class managerParams(business: BusinessDTO)
@@ -26,8 +30,34 @@ case class planInfo(title: String, expire_at: org.joda.time.DateTime)
 class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
 
   val Home = Redirect(routes.ProfileController.dashboard())
-  
-  def dashboard = SecuredAction { implicit request =>
+  val DashScreen = Redirect(routes.ProfileController.dashboardScreen())
+  //val Login = Redirect(routes.securesocial.controllers.LoginPage.login)
+  /************
+   * Root entry point
+   ************/
+  def dashboard = Action { implicit request =>
+    implicit val req: RequestHeader = request
+      val user:Future[Option[service.DemoUser]] = env.authenticatorService.fromRequest.map {
+         case Some(authenticator) if authenticator.isValid => { 
+           Some(authenticator.user)
+       }
+      case _ => { 
+        None
+      }       
+    }
+
+var cred:Option[service.DemoUser] = Await.result(user, Duration(5000, MILLISECONDS))
+
+                  cred match {
+                      case Some(u) => DashScreen
+                      case _ => Redirect("/auth/login") //Login.flashing("success" -> s"Entity  has been created")
+      
+    
+    
+  }
+  }
+
+  def dashboardScreen = SecuredAction { implicit request =>
 
       // TODO: service.getByBusiness that manager participated
       val services = BusinessServiceDAO.getByMaster(request.user.masterFirst)
