@@ -10,10 +10,11 @@ import slick.model.ForeignKeyAction
 class LaunchElementSlats(tag: Tag) extends Table[LaunchElementSlatDTO](tag, "launch_element_slats"){
   def id         = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def element    = column[Int]("launched_element_id")
-  def slat       = column[Int]("slat_id")
+  def slat       = column[String]("slat_id")
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
     
+  def elementFK  = foreignKey("launchel_fk", element, models.DAO.SessionElemTopologDAO.session_elem_topologs)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?, element, slat,       
            created_at,
@@ -23,9 +24,9 @@ class LaunchElementSlats(tag: Tag) extends Table[LaunchElementSlatDTO](tag, "lau
 case class LaunchElementSlatDTO(  
   var id: Option[Int],
   element: Int,
-  slat: Int,
-  created_at: Option[org.joda.time.DateTime],
-  updated_at: Option[org.joda.time.DateTime] )
+  slat: String,
+  created_at: Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+  updated_at: Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now) )
   
 object LaunchElementSlatDAO {
   import scala.util.Try

@@ -60,9 +60,9 @@ object Global extends WithFilters(new GzipFilter(shouldGzip =
     //} 
    
     // 500 - internal server error
-    //override def onError(request: RequestHeader, throwable: Throwable) = {
-    //  InternalServerError(views.html.errors.onError(throwable))
-    //}
+    override def onError(request: RequestHeader, throwable: Throwable) = {
+      Future.successful(InternalServerError(views.html.custom.msg400("", Some(throwable)))) //views.html.errors.onError(throwable))
+    }
    
     // 404 - page not found error
     override def onHandlerNotFound(request: RequestHeader) = {

@@ -9,11 +9,14 @@ import slick.model.ForeignKeyAction
 class Resources(tag: Tag) extends Table[ResourceDTO](tag, "resources"){
   def id         = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def title      = column[String]("title")
+  def business   = column[Int]("business_id")
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
     
+  def businessFK  = foreignKey("res_business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 
-  def * = (id.?, title,
+
+  def * = (id.?, title,business,
            created_at,
            updated_at) <> (ResourceDTO.tupled, ResourceDTO.unapply)  
     
@@ -21,8 +24,9 @@ class Resources(tag: Tag) extends Table[ResourceDTO](tag, "resources"){
 case class ResourceDTO(  
   var id: Option[Int],
   title: String,
-  created_at: Option[org.joda.time.DateTime],
-  updated_at: Option[org.joda.time.DateTime] )
+  business:Int,
+  created_at: Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+  updated_at: Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now) )
   
 object ResourceDAO {
   import scala.util.Try

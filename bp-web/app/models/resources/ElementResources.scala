@@ -10,11 +10,14 @@ class ElementResources(tag: Tag) extends Table[ElementResourceDTO](tag, "element
   def id         = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def element    = column[Int]("element_id")
   def resource   = column[Int]("resource_id")
+  def entities   = column[String]("entities", O.Default(""))
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
     
+  def elementFK  = foreignKey("el_res_fk", element, models.DAO.ElemTopologDAO.elem_topologs)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def resFK      = foreignKey("res_fk", resource, models.DAO.ResourceDAO.resources)(_.id, onDelete = ForeignKeyAction.Cascade)
 
-  def * = (id.?, element, resource,
+  def * = (id.?, element, resource,entities,
        
            created_at,
            updated_at) <> (ElementResourceDTO.tupled, ElementResourceDTO.unapply)  
@@ -24,8 +27,13 @@ case class ElementResourceDTO(
   var id: Option[Int],
   element: Int,
   resource: Int,
-  created_at: Option[org.joda.time.DateTime],
-  updated_at: Option[org.joda.time.DateTime] )
+  entities: String = "",
+  created_at: Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+  updated_at: Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now) ) {
+	def fetchEntities:List[String] = {
+		entities.split(",").toList
+	}
+}
   
 object ElementResourceDAO {
   import scala.util.Try

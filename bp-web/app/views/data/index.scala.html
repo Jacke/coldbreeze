@@ -6,7 +6,7 @@
 @import service.DemoUser
 
 @import helper._
-@(user:DemoUser, isManager: Boolean = false)(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment[service.DemoUser])
+@(user:DemoUser, isManager: Boolean = false, resourceForm: Form[models.DAO.ResourceDTO])(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment[service.DemoUser])
 
 @import securesocial.core.IdentityProvider
 
@@ -25,15 +25,18 @@
 
 <div class="app-container">
 <div class="container app"> 
-<div id="main" class="container">
+<div id="main" class="container resources-list">
 
 <div class="tableMinListWrap">
-  <a class="createMin ajaxLink cacheable" ng-click="createNewBP()" ng-show="isManagerVal"><span class="plusSign vIco vPlusSquare vShineState"></span> New Resource</a>
+  @form(routes.DataController.create_resources()) {
 
-  <div class="tableMinListFilter search-process-input filterLayer">
+  <a class="createMin ajaxLink cacheable resource-add-btn"><span class="plusSign vIco vPlusSquare vShineState"></span>Create Resource</a>
+  <div class="tableMinListFilter search-process-input add-resource-field filterLayer">
     <span class="magnifyGlass vIco vLoupe vLight2State"></span>
-    <input type="text" size="41" data-toggle-class="hidden" class="filterInput tableMinListFilterInput" placeholder="Search">
+    @inputText(resourceForm("title"), 'placeholder -> "Name", 'class -> "filterInput tableMinListFilterInput")
+    <!-- <input type="text" size="71" data-toggle-class="hidden" class="filterInput tableMinListFilterInput" placeholder="Name"> -->
   </div>
+}
 
 <div class="panelLike organisationsGridLike">
   <ul ul id="tablemin" class="tableMinList processList">
@@ -41,14 +44,14 @@
     <div class="process-status">
     <li class="tableMinListItem">
       <h2 class="tableMinListName">
-        <a class="tableMinName vIcoIn" href="/a#/bprocess/{{ bprocess.id }}/elements">Resource</a>
+        <a class="tableMinName vIcoIn" href="#">Resource</a>
         <span class="tableMinVanity">Desc</span>
       </h2>
       <div class="tableMinListControls processListControls" ng-show="isManagerVal">
-        <a class="tableMinControlsLink ajaxLink tableMinLinkPeople"><span class="uicon-svg98"></span> {{ 'PEOPLE' | translate }} </a>
-        <!--<a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" ng-click="modalShare(bprocess.id)"><span class="minicon-share"></span> {{ 'SHARE' | translate }}</a>-->
-        <a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" href="/a#/launches?process={{ bprocess.id }}"><span class="uicon-svg372"></span>{{ 'STATIONS' | translate }}</a>
-        <a class="tableMinControlsLink teamSettingsLink tableMinLinkDelete"> <span class="minicon-trash"></span> {{ 'DELETE' | translate }} </a>
+        <a class="tableMinControlsLink ajaxLink tableMinLinkPeople"><span class="uicon-svg98"></span>Boards</a>
+        <!--<a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" ng-click="modalShare(bprocess.id)"><span class="minicon-share"></span> {{ 'SHARE' | translate }}</a>
+        <a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" href="/a#/launches?process={{ bprocess.id }}"><span class="uicon-svg372"></span>{{ 'STATIONS' | translate }}</a>-->
+        <a class="tableMinControlsLink teamSettingsLink tableMinLinkDelete"> <span class="minicon-trash"></span>Delete</a>
       </div>
     </li>
     </div>
