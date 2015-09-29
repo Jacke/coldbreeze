@@ -79,7 +79,10 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
           Ok(views.html.app(request.user))
       //}
   }
-
+  def error_test() = Action { implicit request =>
+    val test_error = 1 / 0
+    Ok(Json.toJson(test_error))
+  }
   def proPage() = SecuredAction { implicit request =>
       AccountsDAO.getAccountInfo(request.user.main.userId) match {
         case Some(infos) => {
