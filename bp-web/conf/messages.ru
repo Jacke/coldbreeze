@@ -138,3 +138,30 @@ footer.company=Company
 footer.rights=All rights reserved
 footer.terms=Terms
 footer.privacy=Privacy
+
+
+# Password change
+securesocial.passwordChange.title=Изменение пароля
+securesocial.passwordChange.currentPassword=Текущий пароль
+securesocial.passwordChange.newPassword1=Новый пароль
+securesocial.passwordChange.newPassword2=Новый пароль (повторите)
+securesocial.passwordChange.changeButton=Изменить
+securesocial.passwordChange.invalidPassword=Неверный пароль
+securesocial.passwordChange.ok=Ваш пароль был успешно изменен
+securesocial.passwordChange.okButton=Ok
+
+# Not authorized page
+securesocial.notAuthorized.title=Требуется авторизация
+securesocial.notAuthorized.message=Вы должны быть авторизированы, чтобы иметь доступ к странице 
+
+#
+securesocial.loginRequired=Вы должны войти, чтобы получить доступ к странице.
+
+# Mails
+#
+mails.sendAlreadyRegisteredEmail.subject=Инструкции по регистрации | Minority
+mails.sendSignUpEmail.subject=Инструкции по регистрации | Minority
+mails.welcomeEmail.subject=Добро пожаловать | Minority
+mails.passwordResetEmail.subject=Инструкции по сбросу пароля | Minority
+mails.unknownEmail.subject=Запрос сброса пароля | Minority
+mails.passwordResetOk.subject=Подтверждение изменения пароля | Minority

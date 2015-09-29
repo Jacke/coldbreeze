@@ -12,8 +12,8 @@ GET         /uptime                                             @controllers.App
 
 GET     /auth/authenticate/:provider     @controllers.CustomProviderController.authenticate(provider)
 POST    /auth/authenticate/:provider     @controllers.CustomProviderController.authenticateByPost(provider)
-GET     /auth/reset        				 @controllers.CustomPasswordReset.startResetPassword
-POST    /auth/reset        				 @controllers.CustomPasswordReset.handleStartResetPassword
+GET     /auth/reset        		 @controllers.CustomPasswordReset.startResetPassword
+POST    /auth/reset        		 @controllers.CustomPasswordReset.handleStartResetPassword
 GET     /auth/reset/:mailToken        	 @controllers.CustomPasswordReset.resetPassword(mailToken)
 POST    /auth/reset/:mailToken        	 @controllers.CustomPasswordReset.handleResetPassword(mailToken)
 POST    /auth/signup                     @controllers.CustomRegistrationController.handleStartSignUp
