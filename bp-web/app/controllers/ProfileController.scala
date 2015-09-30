@@ -45,16 +45,12 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
         None
       }       
     }
-
-var cred:Option[service.DemoUser] = Await.result(user, Duration(5000, MILLISECONDS))
-
-                  cred match {
-                      case Some(u) => DashScreen
-                      case _ => Redirect("/auth/login") //Login.flashing("success" -> s"Entity  has been created")
-      
-    
-    
-  }
+      var cred:Option[service.DemoUser] = Await.result(user, Duration(5000, MILLISECONDS))
+      cred match {
+          case Some(u) => DashScreen
+          case _ => Redirect("/auth/login") 
+          //Login.flashing("success" -> s"Entity  has been created")
+      }
   }
 
   def dashboardScreen = SecuredAction { implicit request =>
@@ -151,14 +147,14 @@ private def countDashboardTopBar(uid: String): DashboardTopBar = {
    val biz_id = embiz._2
     // find processes for each businesses
     val processes = BPDAO.findByBusiness(biz_id)
-    // find sessions for processes
-    val sessions = BPStationDAO.findByIds(processes.map(_.id.get))
-    // find completed sessions
-    val competed = sessions.filter(_.finished)
-    // find not completed but not canceled sessions
-    val newSession = sessions.filter(s => s.started && !s.finished)
-    // find inputlogger for new sessions and their coun
-    val interaction = sessions.filter(s => s.started && s.paused)
+    // find stations for processes
+    val stations = BPStationDAO.findByBPIds(processes.map(_.id.get))
+    // find completed stations
+    val competed = stations.filter(_.finished)
+    // find not completed but not canceled stations
+    val newSession = stations.filter(s => s.started && !s.finished)
+    // find inputlogger for new stations and their coun
+    val interaction = stations.filter(s => s.started && s.paused)
       DashboardTopBar(
                        newSession = newSession.length,
                        interaction = interaction.length, 

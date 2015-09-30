@@ -99,6 +99,7 @@ app.config(function ($urlRouterProvider, $stateProvider, $httpProvider, $authPro
   $authProvider.storage = 'localStorage';
 
   // Facebook
+  /*
   $authProvider.facebook({
     clientId: '1503078423241610',
     url: '/authenticate/facebook',
@@ -109,12 +110,14 @@ app.config(function ($urlRouterProvider, $stateProvider, $httpProvider, $authPro
     type: '2.0',
     popupOptions: { width: 481, height: 269 }
   });
-
+*/
   // Google
   $authProvider.google({
-    clientId: '526391676642-nbnoavs078shhti3ruk8jhl4nenv0g04.apps.googleusercontent.com',
+    clientId: '629371862094-a5bphklkds0jl49fcsrk60e16c5j9vr3.apps.googleusercontent.com',
     url: '/authenticate/google',
     scope: ['profile', 'email'],
+    redirectUri: 'http://127.0.0.1:9000',
+
     scopePrefix: 'openid',
     scopeDelimiter: ' ',
     requiredUrlParams: ['scope'],
@@ -125,19 +128,19 @@ app.config(function ($urlRouterProvider, $stateProvider, $httpProvider, $authPro
   });
 
   // VK
-  $authProvider.oauth2({
-    clientId: '4782746',
-    url: '/authenticate/vk',
-    authorizationEndpoint: 'http://oauth.vk.com/authorize',
-    redirectUri: window.location.origin || window.location.protocol + '//' + window.location.host,
-    name: 'vk',
-    scope: 'email',
-    scopeDelimiter: ' ',
-    requiredUrlParams: ['display', 'scope'],
-    display: 'popup',
-    popupOptions: { width: 495, height: 400 }
-  });
-
+  //$authProvider.oauth2({
+  //  clientId: '4782746',
+  //  url: '/authenticate/vk',
+  //  authorizationEndpoint: 'http://oauth.vk.com/authorize',
+  //  redirectUri: window.location.origin || window.location.protocol + '//' + window.location.host,
+  //  name: 'vk',
+   // scope: 'email',
+  //  scopeDelimiter: ' ',
+  //  requiredUrlParams: ['display', 'scope'],
+  //  display: 'popup',
+  //  popupOptions: { width: 495, height: 400 }
+  //});
+/*
   // Twitter
   $authProvider.twitter({
     url: '/authenticate/twitter',
@@ -151,4 +154,5 @@ app.config(function ($urlRouterProvider, $stateProvider, $httpProvider, $authPro
     name: 'xing',
     popupOptions: { width: 495, height: 500 }
   });
+*/
 });

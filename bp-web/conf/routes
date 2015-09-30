@@ -48,6 +48,8 @@ GET         /notify_test/:msg                       @controllers.NotificationCon
 GET         /popup/:emails_hash/:target             @controllers.NotificationController.popup(emails_hash: String, target: String) 
 GET         /notify2/test_action                    @controllers.NotificationController.tagItem
 GET         /invite/:emails_hash/:invite_link       @controllers.SubscribtionController.sendInvite(emails_hash: String, invite_link: String)
+GET         /subscribers                            @controllers.SubscribtionController.fetchSubscribers()
+GET         /subscribers/new                        @controllers.SubscribtionController.newSubscribers()
 GET         /only-twitter                           @controllers.Application.onlyTwitter
 
 

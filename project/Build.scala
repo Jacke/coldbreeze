@@ -62,7 +62,6 @@ object Build extends Build {
           scalaz, 
           scalazstream,
           mechanize,nscala, 
-          play, 
           scalatest, 
           scalaLog, 
           logback, 
@@ -88,8 +87,6 @@ object Build extends Build {
           paypal,
           slick, 
           slick_migrate,
-          play,
-          playjson,
           jacksonbson,
           junit,
           jodatime,
@@ -218,7 +215,7 @@ object Build extends Build {
     }
   ): _*))
 */
-
+/*
   lazy val reactivedocs = Project("databoard", file("databoard"))
     .enablePlugins(PlayScala)
     .enablePlugins(SbtWeb)
@@ -241,51 +238,50 @@ object Build extends Build {
     .settings(
       libraryDependencies ++=
         List(
-          async, 
-          akkaActor, 
-          akkaSlf4j, 
-          slick, 
-          reactivemongo,
-          playreactmongo,
-          jshemavalid,
-          jacksonbson,
-          wcs,
-          simplereacmongo,
-          reactivemongoext,
+          // async, 
+          // akkaActor, 
+          // akkaSlf4j, 
+          // reactivemongo,
+          // playreactmongo,
+          // jshemavalid,
+          // jacksonbson,
+          // wcs,
+          // simplereacmongo,
+          // reactivemongoext,
           play4, 
-          requirejs,
-          underscore,
-          jquery,
+          // requirejs,
+          // underscore,
+          // jquery,
           bootstrap, 
-          angular,      
-          playauth,
+          // angular,      
+          // playauth,
           guice,
           ficus,
           bootstrapplay,
           silhouette,
           silhouettetest,
-          jsonvariants, 
-          playflyway, 
-          playctrl, 
-          cache, 
-          scaldiplay,
-          salat,
-          filter, 
-          jdbc, 
-          anorm, 
-          shapeless, 
-          mailer, 
-          scalatest, 
-          reflect, 
-          bcrypt, 
-          postgres, 
-          logbackClassic, 
-          scalaLog, 
+          // jsonvariants, 
+          // playflyway, 
+          // playctrl, 
+          // cache, 
+          // scaldiplay,
+          // salat,
+          // filter, 
+          // jdbc, 
+          // anorm, 
+          // shapeless, 
+          // mailer, 
+          // scalatest, 
+          // reflect, 
+          // bcrypt, 
+          // postgres, 
+          // logbackClassic, 
+          // scalaLog, 
           hdrHistogram))
         //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
         //test(scalatest, akkaTestKit, sprayTestkit))
     //.dependsOn(bpCore, bpDao)
-
+*/
 
 
   val noPublishing = Seq(publish := (), publishLocal := ())

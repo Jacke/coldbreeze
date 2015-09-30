@@ -309,6 +309,11 @@ object AccountsDAO {
       val q3 = for { a ← accounts if a.userId === email } yield a
       q3.list.headOption
   }
+  def getAccounts(emails: List[String]):List[AccountDAO] = database withSession {
+    implicit session ⇒
+      val q3 = for { a ← accounts if a.userId inSetBind emails } yield a
+      q3.list
+  }  
   def getAccountInfo(email: String): Option[AccountInfo] = database withSession {
     implicit session =>
     val q3 = for { a ← account_infos if a.uid === email } yield a

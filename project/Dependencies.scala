@@ -54,7 +54,7 @@ object Dependencies {
   val salat           = "com.novus"                 %% "salat"                  % "1.9.8"
   val jshemavalid     = "com.github.fge"            %  "json-schema-validator"  % "2.2.6"
   val jacksonbson     = "de.undercouch"             %  "bson4jackson"           % "2.5.0"
-  val wcs             = "eu.piotrbuda"              % "scalawebsocket_2.11"     % "0.1.1"
+  val wcs             = "eu.piotrbuda"              % "scalawebsocket_2.10"     % "0.1.1"
 
 
   val scaldiakka      = "org.scaldi"                %% "scaldi-akka"            % "0.4"
@@ -101,7 +101,7 @@ object Dependencies {
   val bcrypt          = "com.github.t3hnar"         % "scala-bcrypt_2.11"       % "2.4"
   val scalacheck      = "org.scalacheck"            %% "scalacheck"             % "1.11.1"
   val mockito         = "org.mockito"               % "mockito-all"             % "1.9.5"
-  val mailer          = "com.typesafe"              % "play-plugins-mailer_2.11"% "2.2.0"
+  val mailer          = "com.typesafe"              % "play-plugins-mailer_2.10"% "2.2.0"
   val mailerses       = "nl.rhinofly"               %% "play-mailer"            % "3.0.0"
   val apamailer       = "org.apache.commons"        %  "commons-email"          % "1.3.1"
   val filter          = "com.typesafe.play"         %% "filters-helpers"        % "2.3.7"

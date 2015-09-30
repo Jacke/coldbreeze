@@ -17,6 +17,8 @@ import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.ws.{ WSResponse, WS }
 import com.ning.http.client.Realm.AuthScheme
 import play.api.libs.ws._
+import scala.concurrent._
+import scala.concurrent.duration._
 object Mailer {
     def api:MandrillApi = new MandrillApi("lzbqtT4PxFu4hSMzkdfh0w")
     def users = api.users()
@@ -118,10 +120,11 @@ object Mailer {
   private def getStringConfigValue(key: String): Option[String] = None//Play.current.configuration.getString(key)
 
 
-  def fetchMembers() = {
+  def fetchMembers():List[String] = {
   	val result = WS.url("https://us5.api.mailchimp.com/3.0/lists/6cb531884f/members?count=88").withAuth("apiKey", "e78fe34c7835335c66b52e6c2b7c05aa-us5", WSAuthScheme.BASIC).get()
-    val response = result.value.get.get.json
+    val response = Await.result(result, Duration(6000, MILLISECONDS)).json
     val emails:List[String] = (response \\ "email_address").toList.map(_.toString)
+    emails
   }
   def subscribers() = { List(
 ("test3@minorityapp.com", "Minority Subscriber","dba1ebf7-2306-403a-98b7-10d20623550a"),    
