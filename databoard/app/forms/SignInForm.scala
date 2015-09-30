@@ -1,33 +1,33 @@
 package forms
 
-import com.mohiva.play.silhouette.api.util.Credentials
-import play.api.libs.json.Json
 import play.api.data.Form
 import play.api.data.Forms._
+
 /**
  * The form which handles the submission of the credentials.
  */
 object SignInForm {
- val form = Form(
-    mapping(
-      "identifier" -> email,
-      "password" -> nonEmptyText
-    )(Credentials.apply)(Credentials.unapply)
-  )
-  case class Data(
-    email: String,
-    password: String)
 
   /**
-   * The companion object.
+   * A play framework form.
    */
-  object Data {
+  val form = Form(
+    mapping(
+      "email" -> email,
+      "password" -> nonEmptyText,
+      "rememberMe" -> boolean
+    )(Data.apply)(Data.unapply)
+  )
 
-    /**
-     * Converts the [Date] object to Json and vice versa.
-     */
-    implicit val jsonFormat = Json.format[Data]
-  }
-
-
+  /**
+   * The form data.
+   *
+   * @param email The email of the user.
+   * @param password The password of the user.
+   * @param rememberMe Indicates if the user should stay logged in on the next visit.
+   */
+  case class Data(
+    email: String,
+    password: String,
+    rememberMe: Boolean)
 }

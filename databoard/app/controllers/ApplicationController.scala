@@ -3,64 +3,57 @@ package controllers
 import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
-import com.mohiva.play.silhouette.impl.authenticators.SessionAuthenticator
-import forms._
+import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import models.User
-import play.api.libs.json._
+import play.api.i18n.MessagesApi
+import play.api.libs.json.Json
+
 import scala.concurrent.Future
 
 /**
  * The basic application controller.
  *
+ * @param messagesApi The Play messages API.
  * @param env The Silhouette environment.
+ * @param socialProviderRegistry The social provider registry.
  */
-class ApplicationController @Inject() (implicit val env: Environment[User, SessionAuthenticator])
-  extends Silhouette[User, SessionAuthenticator] {
+class ApplicationController @Inject() (
+  val messagesApi: MessagesApi,
+  val env: Environment[User, JWTAuthenticator],
+  socialProviderRegistry: SocialProviderRegistry)
+  extends Silhouette[User, JWTAuthenticator] {
 
   /**
-   * Handles the index action.
+   * Returns the user.
    *
    * @return The result to display.
    */
-  def index  = SecuredAction.async { implicit request =>
-    Future.successful(Ok(views.html.home(request.identity)))
-  }
-  def whoami = SecuredAction.async { implicit request =>
-    Future.successful(Ok(Json.toJson("request.identity.loginInfo.token")))
-  }
-  /**
-   * Handles the Sign In action.
-   *
-   * @return The result to display.
-   */
-  def signIn = UserAwareAction.async { implicit request =>
-    request.identity match {
-      case Some(user) => Future.successful(Redirect(routes.ApplicationController.index()))
-      case None => Future.successful(Ok(views.html.signIn(SignInForm.form)))
-    }
+  def user = SecuredAction.async { implicit request =>
+    Future.successful(Ok(Json.toJson(request.identity)))
   }
 
   /**
-   * Handles the Sign Up action.
-   *
-   * @return The result to display.
-   */
-  def signUp = UserAwareAction.async { implicit request =>
-    request.identity match {
-      case Some(user) => Future.successful(Redirect(routes.ApplicationController.index()))
-      case None => Future.successful(Ok(views.html.signUp(SignUpForm.form)))
-    }
-  }
-
-  /**
-   * Handles the Sign Out action.
-   *
-   * @return The result to display.
+   * Manages the sign out action.
    */
   def signOut = SecuredAction.async { implicit request =>
-    val result = Future.successful(Redirect(routes.ApplicationController.index()))
-    env.eventBus.publish(LogoutEvent(request.identity, request, request2lang))
+    env.eventBus.publish(LogoutEvent(request.identity, request, request2Messages))
+    env.authenticatorService.discard(request.authenticator, Ok)
+  }
 
-    request.authenticator.discard(result)
+  /**
+   * Provides the desired template.
+   *
+   * @param template The template to provide.
+   * @return The template.
+   */
+  def view(template: String) = UserAwareAction { implicit request =>
+    template match {
+      case "home" => Ok(views.html.home())
+      case "signUp" => Ok(views.html.signUp())
+      case "signIn" => Ok(views.html.signIn(socialProviderRegistry))
+      case "navigation" => Ok(views.html.navigation())
+      case _ => NotFound
+    }
   }
 }

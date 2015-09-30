@@ -1,45 +1,42 @@
-@(signInForm: Form[com.mohiva.play.silhouette.api.util.Credentials])(implicit env: com.mohiva.play.silhouette.api.Environment[User, _], request: RequestHeader)
+@(socialProviders: com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry)(implicit request: RequestHeader, messages: Messages)
 
-@import com.mohiva.play.silhouette.impl.providers._
-@import views.html.bootstrap._
-@import play.api.Play
-@import play.api.Play.current
+@import forms.SignInForm.form
+@import b3.inline.fieldConstructor
 
-@main("Silhouette - Sign In") {
-    @request.flash.get("error").map { msg =>
-        <div class="col-md-6 col-md-offset-3 alert alert-danger alert-error">
-            <a href="#" class="close" data-dismiss="alert">&times;</a>
-            <strong>Error!</strong> @msg
+<fieldset class="col-md-6 col-md-offset-3" ng-controller="SignInCtrl">
+    <legend>@Messages("sign.in.credentials")</legend>
+    <form name="form" id="sign-in-form" ng-submit="submit()" ng-model-options="{ updateOn: 'submit blur' }" autocomplete="off">
+
+        @b3.email(form("email"), '_hiddenLabel -> Messages("email"), 'placeholder -> Messages("email"), 'class -> "form-control input-lg", 'required -> "", Symbol("ng-model") -> "email")
+        <div class="help-block text-danger" ng-if="form.email.$dirty" ng-messages="form.email.$error">
+            <div ng-message="required">@Messages("error.required")</div>
+            <div ng-message="email">@Messages("error.email")</div>
         </div>
-    }
-    <fieldset class="col-md-6 col-md-offset-3">
-        <legend>Sign in with your credentials</legend>
-        @helper.form(action = routes.CredentialsAuthController.authenticate()) {
-            @text(signInForm("identifier"), "Email", icon = "at")
-            @password(signInForm("password"), "Password", icon = "key")
-            <div class="form-group">
+
+        @b3.password(form("password"), '_hiddenLabel -> Messages("password"), 'placeholder -> Messages("password"), 'class -> "form-control input-lg", 'required -> "", Symbol("ng-model") -> "password")
+        <div class="help-block text-danger" ng-if="form.password.$dirty" ng-messages="form.password.$error">
+            <div ng-message="required">@Messages("error.required")</div>
+        </div>
+
+        @b3.checkbox(form("rememberMe"), '_text -> Messages("remember.me"), 'checked -> true, Symbol("ng-model") -> "rememberMe", Symbol("ng-init") -> "rememberMe=true")
+
+        <div class="form-group">
+            <button ng-disabled="form.$invalid" id="submit" type="submit" value="submit" class="btn btn-lg btn-primary btn-block">@Messages("sign.in")</button>
+        </div>
+
+        <div>
+            <p class="not-a-member">@Messages("not.a.member") <a ui-sref="signUp">@Messages("sign.up.now")</a></p>
+        </div>
+
+        @if(socialProviders.providers.nonEmpty) {
+            <div class="social-providers">
+                <p>@Messages("or.use.social")</p>
                 <div>
-                    <button id="submit" type="submit" value="submit" class="btn btn-lg btn-primary btn-block">Submit</button>
+                @for(p <- socialProviders.providers) {
+                    <a ng-click="authenticate('@p.id')" class="provider @p.id" title="@Messages(p.id)"><img src="@routes.Assets.at(s"images/providers/${p.id}.png")" width="64px" height="64px" alt="@Messages(p.id)"></a>
+                }
                 </div>
             </div>
         }
-
-        <div>
-            <p class="not-a-member">Not a member? <a href="@routes.ApplicationController.signUp">Sign up now</a></p>
-        </div>
-
-        @defining(env.providers.values.filter(_.isInstanceOf[SocialProvider])) { providers =>
-            @if(!providers.isEmpty) {
-                <div class="social-providers">
-                    <p>Or use your existing account on one of the following services to sign in:</p>
-                    <div>
-                    @for(p <- providers if p.id != "clef") {
-                        <a href="@routes.SocialAuthController.authenticate(p.id)" class="provider @p.id"><img src="@routes.Assets.at(s"images/providers/${p.id}.png")" style="width:64px;height:64px;"></a>
-                    }
-                    </div>
-                    <script type="text/javascript" src="https://clef.io/v3/clef.js" class="clef-button" data-app-id="@Play.configuration.getString("silhouette.clef.clientID").getOrElse("")" data-color="blue" data-style="flat" data-redirect-url="@Play.configuration.getString("silhouette.clef.redirectURL").getOrElse("")" data-type="login"></script>
-                </div>
-            }
-        }
-    </fieldset>
-}
+    </form>
+</fieldset>

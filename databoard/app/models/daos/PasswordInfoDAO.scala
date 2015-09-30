@@ -4,149 +4,83 @@ import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.api.util.PasswordInfo
 import com.mohiva.play.silhouette.impl.daos.DelegableAuthInfoDAO
 import models.daos.PasswordInfoDAO._
+import play.api.libs.concurrent.Execution.Implicits._
 
 import scala.collection.mutable
 import scala.concurrent.Future
-
-import play.api.Play.current
-import play.modules.reactivemongo._
-import play.modules.reactivemongo.json.collection.JSONCollection
-import models._
-import play.api.libs.json._
-import scala.concurrent.ExecutionContext.Implicits.global
-
-import reactivemongo.bson._
-import reactivemongo.api.collections.default._
-import reactivemongo.bson.BSONDocument._
-import reactivemongo.bson.Macros
-
 
 /**
  * The DAO to store the password information.
  */
 class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
 
-
-  def db = ReactiveMongoPlugin.db
-  def collection: JSONCollection = db.collection[JSONCollection]("PasswordInfo")
+  /**
+   * Finds the auth info which is linked with the specified login info.
+   *
+   * @param loginInfo The linked login info.
+   * @return The retrieved auth info or None if no auth info could be retrieved for the given login info.
+   */
+  def find(loginInfo: LoginInfo): Future[Option[PasswordInfo]] = {
+    Future.successful(data.get(loginInfo))
+  }
 
   /**
-   * Saves the password info.
+   * Adds new auth info for the given login info.
    *
-   * @param loginInfo The login info for which the auth info should be saved.
-   * @param authInfo The password info to save.
-   * @return The saved password info.
+   * @param loginInfo The login info for which the auth info should be added.
+   * @param authInfo The auth info to add.
+   * @return The added auth info.
    */
-  def save(loginInfo: LoginInfo, authInfo: PasswordInfo): Future[PasswordInfo] = {
-
-    val json = Json.obj(
-      "loginInfo" -> Json.obj(
-        "providerID" -> loginInfo.providerID,
-        "providerKey" -> loginInfo.providerKey
-      ),
-      "authInfo" -> Json.obj(
-        "hasher" -> authInfo.hasher,
-        "password" -> authInfo.password,
-        "salt" -> authInfo.salt
-      )
-    )
-
-    collection.insert(json)
+  def add(loginInfo: LoginInfo, authInfo: PasswordInfo): Future[PasswordInfo] = {
     data += (loginInfo -> authInfo)
     Future.successful(authInfo)
   }
 
   /**
-   * Finds the password info which is linked with the specified login info.
+   * Updates the auth info for the given login info.
    *
-   * @param loginInfo The linked login info.
-   * @return The retrieved password info or None if no password info could be retrieved for the given login info.
+   * @param loginInfo The login info for which the auth info should be updated.
+   * @param authInfo The auth info to update.
+   * @return The updated auth info.
    */
-  def find(loginInfo: LoginInfo) = {
-
-    implicit val userFormat = Macros.handler[PasswordInfo]
-    val collection = db[BSONCollection]("PasswordInfo")
-
-    val query = BSONDocument( 
-      "loginInfo" -> BSONDocument(
-        "loginInfo" -> loginInfo.providerID,
-        "loginInfo" -> loginInfo.providerKey
-      )
-    )
-
-    val passwordInfo: Future[Option[PasswordInfo]] = collection.find( query ).one[PasswordInfo]
-
-     implicit val PasswordInfoFormat = Macros.handler[com.mohiva.play.silhouette.api.util.PasswordInfo]
-
-    passwordInfo.flatMap {
-      case None => 
-        Future.successful(Option.empty[PasswordInfo])
-      case Some(fullDoc) => 
-        Future(Some(fullDoc))//.one[BSONString]("authInfo").get))
-    }
-
-    //Future.successful(data.get(loginInfo))
-
+  def update(loginInfo: LoginInfo, authInfo: PasswordInfo): Future[PasswordInfo] = {
+    data += (loginInfo -> authInfo)
+    Future.successful(authInfo)
   }
 
+  /**
+   * Saves the auth info for the given login info.
+   *
+   * This method either adds the auth info if it doesn't exists or it updates the auth info
+   * if it already exists.
+   *
+   * @param loginInfo The login info for which the auth info should be saved.
+   * @param authInfo The auth info to save.
+   * @return The saved auth info.
+   */
+  def save(loginInfo: LoginInfo, authInfo: PasswordInfo): Future[PasswordInfo] = {
+    find(loginInfo).flatMap {
+      case Some(_) => update(loginInfo, authInfo)
+      case None => add(loginInfo, authInfo)
+    }
+  }
 
+  /**
+   * Removes the auth info for the given login info.
+   *
+   * @param loginInfo The login info for which the auth info should be removed.
+   * @return A future to wait for the process to be completed.
+   */
+  def remove(loginInfo: LoginInfo): Future[Unit] = {
+    data -= loginInfo
+    Future.successful(())
+  }
 }
 
 /**
  * The companion object.
  */
 object PasswordInfoDAO {
-
-  /**
-   * The data store for the password info.
-   */
-  var data: mutable.HashMap[LoginInfo, PasswordInfo] = mutable.HashMap()
-
-
-}
-
-
-
-import com.mohiva.play.silhouette.api.LoginInfo
-import com.mohiva.play.silhouette.api.util.PasswordInfo
-import com.mohiva.play.silhouette.impl.daos.DelegableAuthInfoDAO
-import scala.collection.mutable
-import scala.concurrent.Future
-import PasswordInfoDAO._
-
-/**
- * The DAO to store the password information.
- */
-class PasswordInfoDAO2 extends DelegableAuthInfoDAO[PasswordInfo] {
-
-  /**
-   * Saves the password info.
-   *
-   * @param loginInfo The login info for which the auth info should be saved.
-   * @param authInfo The password info to save.
-   * @return The saved password info or None if the password info couldn't be saved.
-   */
-  def save(loginInfo: LoginInfo, authInfo: PasswordInfo): Future[PasswordInfo] = {
-    data += (loginInfo -> authInfo)
-    Future.successful(authInfo)
-  }
-
-  /**
-   * Finds the password info which is linked with the specified login info.
-   *
-   * @param loginInfo The linked login info.
-   * @return The retrieved password info or None if no password info could be retrieved for the given login info.
-   */
-  def find(loginInfo: LoginInfo): Future[Option[PasswordInfo]] = {
-   play.Logger.debug(s"data: ${data}")
-    Future.successful(data.get(loginInfo))
-  }
-}
-
-/**
- * The companion object.
- */
-object PasswordInfoDAO2 {
 
   /**
    * The data store for the password info.

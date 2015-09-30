@@ -8,6 +8,8 @@ resolvers += "Kamon Releases" at "http://repo.kamon.io"
 
 resolvers += "Maven Central" at "http://repo1.maven.org/maven2"
 
+resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
+
 resolvers += "MVN" at "http://repo.typesafe.com/typesafe/releases/"
 
 resolvers += "sonatype-snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/"
@@ -36,7 +38,6 @@ addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "0.6.0")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-atmos" % "0.3.2")
 
-addSbtPlugin("com.typesafe.sbt" % "sbt-scalariform" % "1.2.1")
 
 addSbtPlugin("io.spray" % "sbt-revolver" % "0.7.1")
 
@@ -96,3 +97,8 @@ addSbtPlugin("com.github.sbtliquibase" % "sbt-liquibase" % "0.1.0-SNAPSHOT")
 
 
 addSbtPlugin("fi.gekkio.sbtplugins" % "sbt-jrebel-plugin" % "0.10.0")
+
+
+//addSbtPlugin("com.tuplejump" % "sbt-yeoman" % "0.8.1")
+
+addSbtPlugin("com.typesafe.sbt" % "sbt-scalariform" % "1.3.0")

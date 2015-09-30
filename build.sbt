@@ -2,7 +2,7 @@
 
 //version := "0.1"
 
-//scalaVersion := "2.10.2"
+scalaVersion := "2.11.0"
 
 
 //libraryDependencies ++= Dependencies.bp_core

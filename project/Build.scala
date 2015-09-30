@@ -60,6 +60,7 @@ object Build extends Build {
           scaldiakka, 
           dispatch, 
           scalaz, 
+          scalazstream,
           mechanize,nscala, 
           play, 
           scalatest, 
@@ -217,6 +218,7 @@ object Build extends Build {
     }
   ): _*))
 */
+
   lazy val reactivedocs = Project("databoard", file("databoard"))
     .enablePlugins(PlayScala)
     .enablePlugins(SbtWeb)
@@ -250,7 +252,7 @@ object Build extends Build {
           wcs,
           simplereacmongo,
           reactivemongoext,
-          play, 
+          play4, 
           requirejs,
           underscore,
           jquery,
@@ -258,8 +260,10 @@ object Build extends Build {
           angular,      
           playauth,
           guice,
+          ficus,
+          bootstrapplay,
           silhouette,
- //       silhouettetest,
+          silhouettetest,
           jsonvariants, 
           playflyway, 
           playctrl, 
@@ -281,7 +285,6 @@ object Build extends Build {
         //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
         //test(scalatest, akkaTestKit, sprayTestkit))
     //.dependsOn(bpCore, bpDao)
-
 
 
 
