@@ -6,16 +6,21 @@ minorityControllers.controller('BPCreationCtrl', ['$window', '$rootScope','$scop
   function ($window, $rootScope, $scope, $http,$routeParams,  TreeBuilder, BProcessesFactory, BPServicesFactory, $location) {
 
 
+    $scope.bprocess = {version: 1, state_machine_type: 'base'};
+    
+    console.log($scope.bprocess.business);
+    console.log($window.sessionStorage.getItem('business'));
+  
     BPServicesFactory.query().$promise.then(function(d) {
       $scope.procServices = d;
 
     if ($routeParams.service != undefined) {
-      $scope.bprocess = { service: parseInt($routeParams.service) };
+      $scope.bprocess.service = parseInt($routeParams.service) ;
       $scope.bprocess.service=parseInt($routeParams.service);
     } else {
     
       if (d.length != 0 && $routeParams.service == undefined) {
-        $scope.bprocess = { service: service=d[0].id };
+        $scope.bprocess.service = d[0].id;
       }
       }
     })
