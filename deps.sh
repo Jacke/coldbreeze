@@ -18,3 +18,4 @@ rm scala-$VERSION.deb
 sudo apt-get install docker.io
 
 sudo apt-get install ruby-compass
+sudo apt-get install mongodb
