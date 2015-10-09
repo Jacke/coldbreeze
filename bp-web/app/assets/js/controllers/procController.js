@@ -183,7 +183,8 @@ $scope.emptyElemCheck = function(col) {
     });
   };
 $scope.filterForActiveLaunch = function(ses) {
-    if (ses.station.finished == false && ses.station.paused == true && ses.station.state == true) {
+    
+   if (ses.station != undefined && ses.station.finished == false && ses.station.paused == true && ses.station.state == true) {
       return ses;
     } else {
       return false;

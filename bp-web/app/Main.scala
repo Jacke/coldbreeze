@@ -1,4 +1,6 @@
 import java.io.File
+import java.io._
+
 import play.api.{Play, DefaultApplication, Mode}
 import play.core.ApplicationProvider
 import scala.util.{Try, Properties}
@@ -35,6 +37,24 @@ class NettyServer(mode: Mode.Value) {
 
 class StaticApplication(applicationPath: File, mode: Mode.Value) extends ApplicationProvider 
 {
+   java.lang.management.ManagementFactory.getRuntimeMXBean.getName.split('@').headOption.map { pid =>
+      val pidFile = Option(System.getProperty("pidfile.path")).map(new File(_)).getOrElse(new File(applicationPath.getAbsolutePath, "RUNNING_PID"))
+      println("Play server process ID is " + pid)
+    if (pidFile.getAbsolutePath != "/dev/null") {
+        if (pidFile.exists) {
+          println("This application is already running (Or delete " + pidFile.getAbsolutePath + " file).")
+          System.exit(-1)
+        }
+
+        new FileOutputStream(pidFile).write(pid.getBytes)
+        Runtime.getRuntime.addShutdownHook(new Thread {
+          override def run {
+            pidFile.delete()
+          }
+        })
+      }
+    }
+
   val application = new DefaultApplication(applicationPath, this.getClass.getClassLoader, 
 None, mode)
   Play.start(application)
