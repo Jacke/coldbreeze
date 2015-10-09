@@ -719,8 +719,41 @@ $('.ea-submit').on('click', function(event) {
 });
 
 }
+//
+// Databoard
+//
 
+        var scntDiv = $('#p_scents');
+        if (scntDiv != undefined) {
+        var i = $('div.meta_fields').size() + 1;
+        var name = $('#addScnt').data('name');
 
+        $('#addScnt').on('click', function() {
+                $('<div class="meta_fields"><label for="p_scnts"><input type="text" id="p_scnt" size="20" name="'+name + '[' + i +'].key" value="" placeholder="Key" /></label><input type="text" id="p_scnt" size="20" name="'+name + '[' + i +'].value" value="" placeholder="Value" /></label><a href="#" id="remScnt">Remove</a></div>').appendTo(scntDiv);
+                i++;
+                return false;
+        });
+        
+        $('#remScnt').on('click', function() { 
+                if( i > 2 ) {
+                        $(this).parents('p').remove();
+                        i--;
+                }
+                return false;
+        });
+        $('.removeMeta').on('click', function(ev) { 
+            ev.preventDefault;
+                if( i > 2 ) {
+                        $(this).parents('div.meta_fields').remove();
+                        i--;
+                }
+                return false;
+        });
+
+        //        $('#addScnt').data('name')
+        }
+
+        
 
 //
 // Plans

@@ -82,6 +82,12 @@ minorityAppServices.factory('LaunchInitialStateFactory', ['$resource', function 
     })
 }]);
 
+minorityAppServices.factory('DataCostCollection', ['$resource', function ($resource) {
+    return $resource(baseUrl + 'data/cost/collection/', {}, {
+        query: { method: 'GET', isArray: true }
+    })
+}]);
+
 
 
 });

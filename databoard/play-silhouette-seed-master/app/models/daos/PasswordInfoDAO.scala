@@ -3,16 +3,30 @@ package models.daos
 import com.mohiva.play.silhouette.api.LoginInfo
 import com.mohiva.play.silhouette.api.util.PasswordInfo
 import com.mohiva.play.silhouette.impl.daos.DelegableAuthInfoDAO
-import models.daos.PasswordInfoDAO._
 import play.api.libs.concurrent.Execution.Implicits._
 
 import scala.collection.mutable
 import scala.concurrent.Future
 
+import javax.inject.Inject
+import play.api.libs.json._
+import scala.concurrent.ExecutionContext.Implicits.global
+
+import reactivemongo.api._
+
+import play.modules.reactivemongo.json._
+import play.modules.reactivemongo.json.collection._
+case class PersistentPasswordInfo(loginInfo: LoginInfo, authInfo: PasswordInfo)
+
 /**
  * The DAO to store the password information.
  */
-class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
+class PasswordInfoDAO @Inject() (db : DB) extends DelegableAuthInfoDAO[PasswordInfo] {
+
+  implicit val passwordInfoFormat = Json.format[PasswordInfo]
+  implicit val persistentPasswordInfoFormat = Json.format[PersistentPasswordInfo]
+
+  def collection: JSONCollection = db.collection[JSONCollection]("password")
 
   /**
    * Finds the auth info which is linked with the specified login info.
@@ -20,8 +34,19 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
    * @param loginInfo The linked login info.
    * @return The retrieved auth info or None if no auth info could be retrieved for the given login info.
    */
-  def find(loginInfo: LoginInfo): Future[Option[PasswordInfo]] = {
-    Future.successful(data.get(loginInfo))
+  def find(loginInfo: LoginInfo) = {
+    
+    val passwordInfo: Future[Option[PersistentPasswordInfo]] = collection
+      .find(Json.obj( "loginInfo" -> loginInfo ))
+      .one[PersistentPasswordInfo]
+    
+    passwordInfo.flatMap {
+      case None => 
+        Future.successful(Option.empty[PasswordInfo])
+      case Some(persistentPasswordInfo) => 
+        Future(Some(persistentPasswordInfo.authInfo))
+    }
+
   }
 
   /**
@@ -32,7 +57,7 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
    * @return The added auth info.
    */
   def add(loginInfo: LoginInfo, authInfo: PasswordInfo): Future[PasswordInfo] = {
-    data += (loginInfo -> authInfo)
+    collection.insert(PersistentPasswordInfo(loginInfo, authInfo))
     Future.successful(authInfo)
   }
 
@@ -44,7 +69,6 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
    * @return The updated auth info.
    */
   def update(loginInfo: LoginInfo, authInfo: PasswordInfo): Future[PasswordInfo] = {
-    data += (loginInfo -> authInfo)
     Future.successful(authInfo)
   }
 
@@ -72,18 +96,6 @@ class PasswordInfoDAO extends DelegableAuthInfoDAO[PasswordInfo] {
    * @return A future to wait for the process to be completed.
    */
   def remove(loginInfo: LoginInfo): Future[Unit] = {
-    data -= loginInfo
     Future.successful(())
   }
-}
-
-/**
- * The companion object.
- */
-object PasswordInfoDAO {
-
-  /**
-   * The data store for the password info.
-   */
-  var data: mutable.HashMap[LoginInfo, PasswordInfo] = mutable.HashMap()
 }

@@ -4,9 +4,11 @@
 @import models.DAO.resources.BusinessServiceDTO
 @import models.DAO.resources.BusinessDTO
 @import service.DemoUser
+@import controllers._
+@import minority.utils._
 
 @import helper._
-@(user:DemoUser, isManager: Boolean = false, resourceForm: Form[models.DAO.ResourceDTO])(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment[service.DemoUser])
+@(user:DemoUser, isManager: Boolean = false, resourceForms: ResourceFormContainer, resContainer: List[ResourceContainer])(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment[service.DemoUser])
 
 @import securesocial.core.IdentityProvider
 
@@ -25,40 +27,82 @@
 
 <div class="app-container">
 <div class="container app"> 
-<div id="main" class="container resources-list">
+<div id="main" class="container dataTables resources-list">
 
-<div class="tableMinListWrap">
-  @form(routes.DataController.create_resources()) {
+<div class="tableMinListWrap dataTablesTable">
+  @form(routes.DataController.create_resource()) {
 
-  <a class="createMin ajaxLink cacheable resource-add-btn"><span class="plusSign vIco vPlusSquare vShineState"></span>Create Resource</a>
+  <button type="submit" id="createResourceBtn" class="createMin ajaxLink cacheable resource-add-btn"><span class="plusSign vIco vPlusSquare vShineState"></span>Create Resource</button>
   <div class="tableMinListFilter search-process-input add-resource-field filterLayer">
-    <span class="magnifyGlass vIco vLoupe vLight2State"></span>
+    <!-- <span class="magnifyGlass vIco vLoupe vLight2State"></span>-->
     <input type="text" id="title" name="title" value="" placeholder="Name" class="filterInput tableMinListFilterInput">
     <!-- <input type="text" size="71" data-toggle-class="hidden" class="filterInput tableMinListFilterInput" placeholder="Name"> -->
   </div>
 }
 
-<div class="panelLike organisationsGridLike">
-  <ul ul id="tablemin" class="tableMinList processList">
-  <div class="process">
+<div class="panelLike organisationsGridLike redDataGrid">
+  <ul ul id="tablemin" class="tableMinList processList resourceList">
+  @resContainer.map { cn =>
+  <div class="resource" id="resource-@{cn.resource.id.getOrElse(0)}">
     <div class="process-status">
     <li class="tableMinListItem">
       <h2 class="tableMinListName">
-        <a class="tableMinName vIcoIn" href="#">Resource</a>
-        <span class="tableMinVanity">Desc</span>
+        <a class="tableMinName vIcoIn" href="#">@cn.resource.title</a>
       </h2>
+        @cn.board_cn.map { bcn =>
+        <div class="boards">
+           @bcn.boards.filter(board => board.meta.find(m => m.key == "resource_id" && m.value == cn.resource.id.get.toString).isDefined).map { board =>
+          <div class="board">
+            <h4>@board.title</h4>
+            <span class="boardContent">@board.content</span>
+            <div class="entities" style="">
+              <a href="@routes.DataController.create_entity_form(cn.resource.id.getOrElse(0), board.getId)" class="btn success btn-success" id="entityCreateBtn">Create Entity</a>
+
+                @bcn.entities.filter(e => e.boardId.toString == board.getId).map { entity =>
+              <div class="boardEntity">
+                  <a href="@routes.DataController.update_entity_form(entity.getId)">@entity.title - @entity.etype @entity.default</a>                
+                 @helper.form(routes.DataController.delete_entity(entity.getId)) {
+                      <input type="submit" value="Delete Entity" class="btn danger">
+                  }
+                  <!-- @@entity.meta.map { meta =>  -->
+                  <!--   <b>@@meta.key - @@meta.value</b> -->
+                  <!-- } -->
+                  <div class="slats">
+                      <a href="@routes.DataController.create_slat_form(entity.getId)" class="btn success btn-success">Create Instance</a>
+                    @bcn.slats.filter(s => s.entityId.toString == entity.getId).map { slat =>
+                      <div class="entitySlat">
+                          <a href="@routes.DataController.update_slat_form(entity.getId, slat.getId)">
+                            @slat.title
+                            @slat.sval
+                          </a>      
+                         @helper.form(routes.DataController.delete_slat(slat.getId)) {
+                              <input type="submit" value="Delete Instance" class="btn danger">
+                          }                      
+                        
+                      </div>
+                    }
+                  </div>
+              </div>
+                }
+            </div>
+          </div>
+        }
+      </div>
+        }
       <div class="tableMinListControls processListControls" ng-show="isManagerVal">
         <a class="tableMinControlsLink ajaxLink tableMinLinkPeople"><span class="uicon-svg98"></span>Boards</a>
         <!--<a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" ng-click="modalShare(bprocess.id)"><span class="minicon-share"></span> {{ 'SHARE' | translate }}</a>
         <a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" href="/a#/launches?process={{ bprocess.id }}"><span class="uicon-svg372"></span>{{ 'STATIONS' | translate }}</a>-->
-        <a class="tableMinControlsLink teamSettingsLink tableMinLinkDelete"> <span class="minicon-trash"></span>Delete</a>
+        @form(routes.DataController.delete_resource(cn.resource.id.getOrElse(0)), 'class -> "topRight") {
+          <button type="submit" class="tableMinControlsLink teamSettingsLink tableMinLinkDelete" href="@cn.resource.id.getOrElse(0)"> <span class="minicon-trash"></span>Delete</button>
+        }
       </div>
     </li>
     </div>
-    <div class="stations">
-      <div ng-include src="'assets/partials/launchesBar.html'" class="launches-bar" ng-repeat="session in bprocess.sessions[0].sessions | filter: filterForActiveLaunch"></div>
-    </div>
   </div>
+
+  }
+
   </ul>
 </div>
 </div>

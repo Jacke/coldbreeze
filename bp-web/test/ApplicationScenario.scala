@@ -14,7 +14,7 @@ class ApplicationScenario  extends PlaySpecification {
 
   //DatabaseCred.switchTo("test")
 
-  def app = FakeApplication( withGlobal=Some(global(env)))
+  def app = FakeApplication( withGlobal=Some(global(env1)))
 
   var userEmail:Option[String] = None 
   var userBusiness:Option[Int] = None
@@ -66,7 +66,7 @@ class ApplicationScenario  extends PlaySpecification {
 
 
   /** This is application specific and can not be put into test-kit **/
-  val env=new AlwaysValidIdentityProvider.RuntimeEnvironment[DemoUser] {
+  var env1=new AlwaysValidIdentityProvider.RuntimeEnvironment[DemoUser] {
     override lazy val routes = new CustomRoutesService()
     override lazy val userService: InMemoryUserService = new InMemoryUserService()
     override lazy val eventListeners = List(new MyEventListener())

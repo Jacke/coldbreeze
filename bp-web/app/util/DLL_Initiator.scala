@@ -102,6 +102,10 @@ object DLL_Initiator {
     SessionSpaceDAO.ddl_create
     SessionSpaceElemDAO.ddl_create
 
+    ResourceDAO.ddl_create
+    ElementResourceDAO.ddl_create
+    SessionElementResourceDAO.ddl_create
+
     true
   }
   def drop:Boolean = {
@@ -179,6 +183,10 @@ SessionStateLogDAO.ddl_drop
     SessionProcElementDAO.ddl_drop
     SessionSpaceDAO.ddl_drop
     SessionSpaceElemDAO.ddl_drop
+
+    ElementResourceDAO.ddl_drop
+    SessionElementResourceDAO.ddl_drop
+    ResourceDAO.ddl_drop
 
     true
   }

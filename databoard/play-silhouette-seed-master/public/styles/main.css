@@ -92,3 +92,27 @@ a {
 .btn-lg {
     font-size: 18px;
 }
+
+
+
+
+
+
+
+
+
+
+.board {
+    margin-bottom: 29px;
+    border-bottom: solid 1px gray;
+    padding-bottom: 19px;
+    margin-top: 20px;
+    margin-left: -36px;
+}
+.meta_fields dl {
+    display: inline-block;
+}
+
+.meta_fields dl label {
+    display: none;
+}

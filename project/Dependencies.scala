@@ -31,7 +31,7 @@ object Dependencies {
   val async           = "org.scala-lang.modules"    %% "scala-async"            % "0.9.1"
   val shapeless       = "com.chuusai"               %% "shapeless"              % "1.2.4"
   val dispatch        = "net.databinder.dispatch"   %% "dispatch-core"          % "0.11.1"
-  val scalaz          = "org.scalaz"                %% "scalaz-core"            % "7.0.6"
+  val scalaz          = "org.scalaz"                %% "scalaz-core"            % "7.1.0"
   val scalazstream    = "org.scalaz.stream" %% "scalaz-stream" % "0.7.2a"
   val slick           = "com.typesafe.slick"        %% "slick"                  % "3.0.0"
   val slickpg         = "com.github.tminglei"       %% "slick-pg"               % "0.9.0"
@@ -67,8 +67,11 @@ object Dependencies {
   //val scalamandril2   = "org.globalmoney"           % "play-mandrill"           % "0.1.1-SNAPSHOT" 
   val mailchimp       = "com.ecwid" % "ecwid-mailchimp" % "2.0.1.0"
 
-  val selenium        = "org.seleniumhq.selenium"   % "selenium-java"           % "2.35.0" % "test"
+  val selenium        = "org.seleniumhq.selenium"   % "selenium-java"           % "2.35.0" //% "test"
   val selenide        = "com.codeborne"             % "selenide"                % "2.23"
+  val fluentlenium    = "org.fluentlenium"          % "fluentlenium-core"       % "0.10.3" //% "test"
+  val fluentleniumasj = "org.fluentlenium"          % "fluentlenium-assertj"    % "0.10.3" //% "test" 
+  
   val play            = "org.webjars"               %% "webjars-play"           % "2.3.0"
   val play4           = "org.webjars"               %% "webjars-play"           % "2.4.0"
   val playslick       = "com.typesafe.play"         %  "play-slick_2.11"        % "0.8.0"
@@ -134,7 +137,12 @@ object Dependencies {
   val guice           = "net.codingwell"            %% "scala-guice"            % "4.0.0"
   val ficus           = "net.ceedubs" %% "ficus" % "1.1.2"
   val bootstrapplay   = "com.adrianhurt" %% "play-bootstrap3" % "0.4.4-P24"
-  val scalatest       = "org.specs2"                %%  "specs2" % "2.3.12"     % "test"
+  val scalatest0      =  "org.scalatest"        %%   "scalatest"         % "2.2.1"       
+  val scalatest       =  "org.specs2"           %%   "specs2-core"       % "2.3.13-scalaz-7.1.0-RC1" % "test"
+  val scalatest2      =  "org.specs2"           %%   "specs2-junit"      % "2.3.13-scalaz-7.1.0-RC1" % "test"
+  val scalatest3       = "org.specs2"           %%   "specs2-mock"       % "2.3.13-scalaz-7.1.0-RC1" % "test"
+
+
   val scalaLog        = "com.typesafe.scala-logging"%%  "scala-logging"         % "3.1.0"
   val snakeYaml       = "org.yaml"                  %   "snakeyaml"             % "1.13"
   val logbackClassic  = "ch.qos.logback"            % "logback-classic"         % "1.0.13"

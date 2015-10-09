@@ -1,7 +1,9 @@
 package controllers
 
 import javax.inject.Inject
-
+import play.api.Play.current
+import play.api.mvc._
+import play.api.mvc.Controller
 import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
@@ -30,8 +32,12 @@ class ApplicationController @Inject() (
    * @return The result to display.
    */
   def index = SecuredAction.async { implicit request =>
-    models.daos.UserDAOImpl.users.foreach(u => println(u))
+    //models.daos.UserDAOImpl.users.foreach(u => println(u))
     Future.successful(Ok(views.html.home(request.identity)))
+  }
+
+  def ping = Action { implicit request =>
+      Ok("{'status': 'ok'}")
   }
 
   /**

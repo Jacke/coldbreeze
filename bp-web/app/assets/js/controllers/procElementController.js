@@ -30,7 +30,8 @@ minorityControllers.controller('BPelementListCtrl', ['$timeout','$window','$filt
   'RefsFactory',
   'SwitchesFactory',
 'SwitchFactory',
-  'LaunchSwitchersFactory',
+'DataCostCollection',
+'LaunchSwitchersFactory',
 'LaunchElemsFactory',
 'LaunchSpacesFactory',
 'LaunchSpaceElemsFactory',
@@ -42,7 +43,7 @@ minorityControllers.controller('BPelementListCtrl', ['$timeout','$window','$filt
 'InteractionsFactory',
 
   '$location', '$route', '$animate',
-  function ($timeout, $window, $filter, $rootScope, $scope, $q,$http, $routeParams, toaster, BPInLoggersSessionFactory, BProcessFactory, BPStationsFactory,EmployeesFactory, ProcPermissionsFactory, PermissionsFactory, BProcessesFactory, ngDialog, BPElemsFactory, BPElemFactory, BPSessionsFactory, BPStationsFactory, BPSpacesFactory, BPSpaceFactory, BPSpaceElemsFactory, BPSpaceElemFactory, BPStatesFactory, BPStateFactory, BPSessionStatesFactory, BPSessionStateFactory,RefsFactory, SwitchesFactory,SwitchFactory,  LaunchSwitchersFactory, LaunchElemsFactory,LaunchSpacesFactory,LaunchSpaceElemsFactory,LaunchElementTopologsFactory, LaunchReactionsFactory,ReactionsFactory,ReactionFactory,ElementTopologsFactory, InteractionsFactory, $location, $route, $animate) {
+  function ($timeout, $window, $filter, $rootScope, $scope, $q,$http, $routeParams, toaster, BPInLoggersSessionFactory, BProcessFactory, BPStationsFactory,EmployeesFactory, ProcPermissionsFactory, PermissionsFactory, BProcessesFactory, ngDialog, BPElemsFactory, BPElemFactory, BPSessionsFactory, BPStationsFactory, BPSpacesFactory, BPSpaceFactory, BPSpaceElemsFactory, BPSpaceElemFactory, BPStatesFactory, BPStateFactory, BPSessionStatesFactory, BPSessionStateFactory,RefsFactory, SwitchesFactory,SwitchFactory,DataCostCollection,  LaunchSwitchersFactory, LaunchElemsFactory,LaunchSpacesFactory,LaunchSpaceElemsFactory,LaunchElementTopologsFactory, LaunchReactionsFactory,ReactionsFactory,ReactionFactory,ElementTopologsFactory, InteractionsFactory, $location, $route, $animate) {
 
 
   $scope.route = jsRoutes.controllers.BusinessProcessController;
@@ -54,6 +55,34 @@ minorityControllers.controller('BPelementListCtrl', ['$timeout','$window','$filt
      return parseInt($window.localStorage.getItem('business'));
 
   }
+  /************************************************************************
+   ** Cost module
+ ***************************************  */
+  // Fetch resource and entities for that resource
+  DataCostCollection.query().$promise.then(function(res) {
+    $scope.resources = res;
+    _.forEach($scope.resources, function(r){ r.entities.unshift({title: "All", id:"*"}) });
+  });
+  // /data/cost/assign/:resource_id
+  $scope.pushAsssignedResEl = function() {
+
+    $http.post(jsRoutes.controllers.BusinessProcessController, data).success(function(success) {
+        $location.path('/bprocesses');
+    }).error(function (error) {
+      toaster.pop('error', "Operation fail", "Please try something else");
+    });
+
+
+  }
+  // /data/cost/up_assign/:resource_id
+  $scope.updateAsssignedResEl = function() {
+    
+  }
+  // /data/cost/del_assign/:resource_id
+  $scope.deleteAsssignedResEl = function() {
+    
+  }
+
 
 $scope.isManager = function () {
   if ($scope.isManagerVal == undefined && $rootScope.manager != undefined) {
@@ -1436,6 +1465,13 @@ $scope.createPermForForm = function (perm, perms, position) {
 $scope.delPermForForm = function (perm,perms) {
   var ind = perms.indexOf(perm);
   perms.splice(ind, 1);
+}
+$scope.createElementResource = function(cost, costs) {
+    costs.push(cost);
+}
+$scope.delElementResource = function(cost, costs) {
+  var ind = costs.indexOf(cost);
+  costs.splice(ind, 1);
 }
 
 $scope.turnMinimal = function() {

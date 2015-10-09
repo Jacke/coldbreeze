@@ -105,7 +105,9 @@ object BPSpaceDAO {
 
   def pull_object(s: BPSpaceDTO) = database withSession {
     implicit session ⇒
-      bpspaces returning bpspaces.map(_.id) += s
+      val id = bpspaces returning bpspaces.map(_.id) += s
+      models.utils.IdAfterBurner.elSpaceOwn(s.copy(id = Some(id)))
+      id
   }
 
   def lastIndexOfSpace(id: Int) = database withSession {

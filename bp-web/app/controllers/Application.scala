@@ -53,7 +53,10 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
             routes.javascript.ProfileController.profile,
             routes.javascript.ProcessSessionController.update_note,
             routes.javascript.ProcessInputController.invokeFrom,
-            routes.javascript.APIController.v1
+            routes.javascript.APIController.v1,
+            routes.javascript.CostFillController.assign_element,
+            routes.javascript.CostFillController.update_assigned_element,
+            routes.javascript.CostFillController.delete_assigned_element
 
           // TODO Add your routes here
         )

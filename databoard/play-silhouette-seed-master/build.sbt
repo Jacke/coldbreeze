@@ -10,6 +10,9 @@ resolvers := ("Atlassian Releases" at "https://maven.atlassian.com/public/") +: 
 
 resolvers += "scalaz-bintray" at "https://dl.bintray.com/scalaz/releases"
 
+resolvers += Resolver.bintrayRepo("hmrc", "releases")
+
+
 resolvers += Resolver.sonatypeRepo("snapshots")
 
 libraryDependencies ++= Seq(
@@ -19,7 +22,9 @@ libraryDependencies ++= Seq(
   "net.ceedubs" %% "ficus" % "1.1.2",
   "com.adrianhurt" %% "play-bootstrap3" % "0.4.4-P24",
   "com.mohiva" %% "play-silhouette-testkit" % "3.0.0" % "test",
-  "org.reactivemongo" %% "play2-reactivemongo" % "0.11.5.play24",
+  "org.reactivemongo" %% "play2-reactivemongo" % "0.11.7.play24",
+  "org.reactivemongo" %% "reactivemongo" % "0.11.5",
+  "uk.gov.hmrc" %% "reactivemongo-json" % "2.2.0",
   specs2 % Test,
   cache,
   filters

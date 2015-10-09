@@ -102,3 +102,6 @@ addSbtPlugin("fi.gekkio.sbtplugins" % "sbt-jrebel-plugin" % "0.10.0")
 //addSbtPlugin("com.tuplejump" % "sbt-yeoman" % "0.8.1")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-scalariform" % "1.3.0")
+
+
+libraryDependencies += "com.novocode" % "junit-interface" % "0.11" % "test"

@@ -1,0 +1,52 @@
+@(boards: List[models.Board], entities: List[Entity], slats: List[Slat], activeSort: String, user: Option[models.User] = None)(implicit messages: Messages)
+
+@main("Boards", user) {
+  <div class="row">
+    <div class="span12">
+      <h2>Available boards for @user.map { user => 
+          @user.email.getOrElse("")
+      }
+      </h2>
+      <div>
+        <a href="@routes.BoardController.showCreationForm" class="btn success btn-success">Create</a>
+      </div>      
+      @if(boards.isEmpty) {
+        <p>No boards available yet.</p>
+      } else {
+      <ul>
+      @boards.map { board =>
+        <div class="board">
+        <a href="@routes.BoardController.showEditForm(board.getId)">@board.title</a> 
+        <em>by @board.publisher</em> (last modified : @board.updateDate.map(u => org.joda.time.format.DateTimeFormat.forPattern("MMM dd, yyyy").print(u)).orElse(Some("n/a")))
+        @helper.form(routes.BoardController.delete(board.getId)) {
+            <input type="submit" value="Delete" class="btn danger">
+        }
+        <a href="@routes.EntityController.showCreationForm(board.getId)" class="btn success btn-success">Create Entity</a>
+        <ul>
+          @entities.filter(e => e.boardId.toString == board.getId).map { entity =>
+          <li>
+          <a href="@routes.EntityController.showEditForm(board.getId, entity.getId)">@entity.title - @entity.etype @entity.default</a>                
+             @helper.form(routes.EntityController.delete(entity.getId)) {
+                  <input type="submit" value="Delete Entity" class="btn danger">
+              }
+          </li>
+            <a href="@routes.SlatController.showCreationForm(board.getId, entity.getId)" 
+            class="btn success btn-success">Create Instance</a>
+            <ul>
+              @slats.filter(s => s.boardId.toString == board.getId).map { slat =>
+              <li><a href="@routes.SlatController.showEditForm(board.getId, entity.getId, slat.getId)">@slat.title — @slat.sval</a> 
+                  @helper.form(routes.SlatController.delete(slat.getId)) {
+                    <input type="submit" value="Delete Instance" class="btn danger">
+                  }
+              </li>
+              }
+            </ul>
+          }
+        </ul>
+        </div>
+      }
+      </ul>
+      }
+    </div>
+  </div>
+}

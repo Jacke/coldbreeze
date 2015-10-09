@@ -4,7 +4,7 @@
   <div class="row">
     <div class="span12">
       <h2>Available boards</h2>
-      <div id="sort">
+      <<!--div id="sort">
         <span>Sort by:</span>
         <ul class="nav nav-pills">
           <li @if(activeSort == "title"){class="active"}><a href="@routes.BoardController.index?sort=title">title</a></li>
@@ -17,13 +17,17 @@
           <li @if(activeSort == "-updateDate"){class="active"}><a href="@routes.BoardController.index?sort=-updateDate">-update</a></li>
           <li @if(activeSort == "none"){class="active"}><a href="@routes.BoardController.index">none</a></li>
         </ul>
-      </div>
+      </div>-->
       @if(boards.isEmpty) {
         <p>No boards available yet.</p>
       } else {
       <ul>
       @boards.map { board =>
-        <li><a href="@routes.BoardController.showEditForm(board.id.get.stringify)">@board.title</a> <em>by @board.publisher</em> (last modified : @board.updateDate.map(u => org.joda.time.format.DateTimeFormat.forPattern("MMM dd, yyyy").print(u)).orElse(Some("n/a"))) - <a href="@routes.BoardController.delete(board.id.get.stringify)" class="delete">delete</a></li>
+        <li><a href="@routes.BoardController.showEditForm(board.id.get.stringify)">@board.title</a> <em>by @board.publisher</em> (last modified : @board.updateDate.map(u => org.joda.time.format.DateTimeFormat.forPattern("MMM dd, yyyy").print(u)).orElse(Some("n/a"))) - 
+        @form(routes.BoardController.delete(board.id.get.stringify), 'class -> "topRight") {
+            <input type="submit" value="Delete" class="btn danger">
+        }
+        </li>
       }
       </ul>
       }

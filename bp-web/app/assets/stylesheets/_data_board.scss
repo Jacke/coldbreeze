@@ -1,0 +1,113 @@
+.boards {
+    clear: both;
+}
+.boards .board span.boardContent {
+    font-size: 12px;
+}
+
+.boards .board h4 {
+    font-size: 18px;
+    margin-bottom: 0px;
+}
+
+.boards .board {
+    border-bottom: solid 1px #CCC3C3;
+    padding-bottom: 9px;
+    margin-bottom: 14px;
+    padding-top: 5px;
+    margin-top: 9px;
+}
+.boards .board span.boardContent {
+    font-size: 12px;
+}
+
+.boards .board h4 {
+    font-size: 18px;
+    margin-bottom: 0px;
+}
+
+.boards .board {
+    border-bottom: solid 1px #CCC3C3;
+    padding-bottom: 9px;
+    margin-bottom: 14px;
+    padding-top: 5px;
+    margin-top: 9px;
+}
+
+button.tableMinControlsLink.teamSettingsLink.tableMinLinkDelete {
+    float: left;
+    display: inline-block;
+    padding-left: 10px;
+}
+
+a.tableMinControlsLink.ajaxLink.tableMinLinkPeople {
+    display: inline-block;
+}
+
+.resource .tableMinListControls.processListControls {
+    width: 179px;
+    margin-left: 0px;
+    margin-right: 22px;
+}
+ul#tablemin.resourceList {
+    background-color: transparent;
+}
+
+
+.resourceList .resource {
+    margin-bottom: 27px;
+    background-color: white;
+    border-radius: 4px;
+    padding-top: 53px;
+    padding-bottom: 18px;
+}
+
+.boards .entities .boardEntity {
+    display: inline-block;
+}
+
+.boards .entities a.btn.success.btn-success {
+    display: block;
+    width: 13%;
+    color: white;    
+    float: right;
+}
+
+.boards .entities {
+    margin-bottom: 25px;
+    margin-top: 14px;
+}
+
+.boards .boardEntity form {
+    margin-bottom: 10px;
+}
+
+.boards .entities .slats {
+    clear: both;
+    display: block;
+	background-color: #F7EFEF;
+    padding: 18px 18px;
+}
+
+.boards .slats a.btn.success.btn-success {
+    display: block;
+    clear: both;
+    width: 140px !important;
+    float: none;
+    color: white;
+}
+
+.container.form-container {
+    background-color: white;
+    padding: 9px 54px;
+    padding-bottom: 23px;
+}
+
+.dataTablesTable .add-resource-field {
+    width: 459px;
+    margin-right: 29px;
+    display: block;
+}
+#entityCreateBtn {
+	margin-top: -60px;
+}

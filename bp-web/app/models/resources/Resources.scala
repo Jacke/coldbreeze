@@ -42,9 +42,12 @@ object ResourceDAO {
   def get(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← resources if s.id === k } yield s 
-      println(q3.selectStatement)
-      println(q3.list)
       q3.list.headOption
+  }
+  def findByBusinessId(id: Int) = database withSession {
+    implicit session ⇒
+      val q3 = for { s ← resources if s.business === id } yield s 
+      q3.list
   }
   def update(id: Int, annotation: ResourceDTO) = database withSession { implicit session ⇒
     val resourcesUpdate: ResourceDTO = annotation.copy(Option(id))

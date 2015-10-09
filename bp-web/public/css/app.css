@@ -4234,6 +4234,18 @@ font-weight:400;
     box-sizing: initial;
 }
 
+.input-resource-block span, .input-entity-block span {
+    width: 71px;
+    display: inline-block;
+    margin-bottom: 10px;
+    font-size: 12px;
+    color: #7D7D8E;
+    font-family: "AvenirNextCyr-Good", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+}
+
+select#inputEntity, select#inputResource {
+    width: 122px;
+}
 
 .app.container {
 padding-bottom: 225px;

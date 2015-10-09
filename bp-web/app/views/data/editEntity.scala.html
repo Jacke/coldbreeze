@@ -1,0 +1,24 @@
+@import service.DemoUser
+@(id: Option[String], form: Form[minority.utils.Entity], user: DemoUser, boardId: Option[String], resourceId: Option[Int]=None)
+@entityTitle = {
+   @id match {
+     case Some(id) => { "Edit an entity" }
+     case _ => { "Add an entity"  }
+   }
+}
+@dataForm(entityTitle.toString.replace("\"", ""), user) {
+  <div class="row">
+  <div class="span8">
+
+  @helper.form(if(!id.isDefined) routes.DataController.create_entity(boardId.get) else routes.DataController.update_entity(id.get)) {
+    @helper.inputText(form("title"))    
+    @helper.textarea(form("description"))
+    @helper.select(form("etype"), Seq("number"->"Number", "text"->"Text", "boolean" -> "Boolean"))      
+    @helper.inputText(form("default"))
+    <div class="form-actions">
+      <input class="btn btn-primary" type="submit">
+    </div>
+  }
+  </div>
+
+}
