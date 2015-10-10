@@ -33,6 +33,8 @@ minority2.sql
 *.crt
 *.keystore
 
+bp-web/RUNNING_PID
+
 # sbt specific
 .cache/
 .history/
