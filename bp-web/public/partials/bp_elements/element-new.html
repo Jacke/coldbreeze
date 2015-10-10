@@ -32,7 +32,7 @@
       </div>      
     </div><!-- form-group element-form-fields -->
     </div>
-    <div class="ref-select-container fadein fadeout clearfix" ng-hide="newBpelem.refSelectHidden" ng-init="newBpelem.selectedRef != undefined ? newBpelem.refSelectHidden=false : refSelectHidden=true;">
+    <div class="ref-select-container fadein clearfix" ng-hide="newBpelem.refSelectHidden" ng-init="newBpelem.selectedRef != undefined ? newBpelem.refSelectHidden=false : refSelectHidden=true;">
   <select style="display:none;" name="category" id="categorySelect" ng-model="newBpelem.refCategoryFilter" ng-init="newBpelem.refCategoryFilter = refCategories[0]" ng-options="option for option in refCategories" required="" class="ng-valid ng-valid-required"><option value="0" selected="selected">Base</option></select>
     <div class="templateButton form-group col-xs-4 clearfix">
       <div class="ref" ng-repeat="ref in refs | filter: { ref: {category: newBpelem.refCategoryFilter}}" ng-class="{selected: newBpelem.selectedRef.ref.id == ref.ref.id }">

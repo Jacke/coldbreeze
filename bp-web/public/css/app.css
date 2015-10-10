@@ -624,6 +624,10 @@ position: relative;
 }
 .element-header .info h6.desc {
     padding-bottom: 8px;
+    height: 13px;
+}
+.proc-element.minimal .space-element .element-header .info h6.desc {
+    height: 20px;
 }
 .proc-element .info h4.title {
 padding-top: 11px;
@@ -717,8 +721,9 @@ span.reaction-icon.minicon.minicon-gear-fill-right {
 }
 
 .proc-element.minimal .element-header .info h6.desc {
-        padding-bottom: 0px;
-        margin-bottom: 9px;
+    padding-bottom: 0px;
+    margin-bottom: 9px;
+    height: 13px;
 }
 
 .proc-element.minimal .element-header .info .type {
