@@ -75,7 +75,7 @@ object BPSessionDAO {
           case Some(station) => station.step.toDouble
           case _ => element_quantity.toDouble
         }
-        val percent = (step / element_quantity.toDouble * 100).toInt    
+        val percent = percentDecorator(step, element_quantity)
         SessionStatus(percent, p, ses, station, None)//Some(AroundProcessElementsBuilder.detect(p.id.get, station.get.id.get)))
       })
     }
@@ -96,7 +96,7 @@ object BPSessionDAO {
           case Some(station) => station.step.toDouble
           case _ => element_quantity.toDouble
         }
-        val percent = (step / element_quantity.toDouble * 100).toInt
+        val percent = percentDecorator(step, element_quantity)
 
       Some(SessionContainer(process, 
         List(SessionStatus(percent, process, ses, station, Some(AroundProcessElementsBuilder.detect(ses.process, station.get.id.get)),
@@ -126,7 +126,7 @@ object BPSessionDAO {
           case Some(station) => station.step.toDouble
           case _ => element_quantity.toDouble
         }
-        val percent = (step / element_quantity.toDouble * 100).toInt
+        val percent = percentDecorator(step, element_quantity)
         SessionStatus(percent, p, ses, station, None, Some(people))//Some(AroundProcessElementsBuilder.detect(p.id.get, station.get.id.get)))
       })
     }
@@ -171,10 +171,10 @@ object BPSessionDAO {
           val station = BPStationDAO.findBySession(ses.id.get)        
           val element_quantity = SessionProcElementDAO.findBySession(ses.id.get).length //+ SessionSpaceElemDAO.findFlatBySession(ses.id.get).length
           val step = station match {
-            case Some(station) => station.step.toDouble
+            case Some(station) => (station.step - 1).toDouble
             case _ => element_quantity.toDouble
           }
-          val percent = (step / element_quantity.toDouble * 100).toInt
+          val percent = percentDecorator(step, element_quantity)
           SessionStatus(percent, process, ses, station, Some(AroundProcessElementsBuilder.detect(process_id, station.get.id.get)),
             Some(people)
             ) 
@@ -231,6 +231,14 @@ object BPSessionDAO {
     implicit session ⇒
       val q3 = for { s ← bpsessions } yield s
       q3.list.sortBy(_.id)
+  }
+
+  private def percentDecorator(step: Double, element_quantity:Int):Int = {
+    if (step == 1 && element_quantity == 1) {
+        0
+    } else {
+      (step / element_quantity.toDouble * 100).toInt  
+    }  
   }
 }
 

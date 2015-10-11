@@ -1,6 +1,6 @@
-package controlles
+package controlles.launches
 import scala.collection.mutable.ListBuffer
-object LaunchBuffer {
+object LaunchStack {
 	var launchesIds:ListBuffer[Int] = ListBuffer()
 
 	def push(launchId: Int):Boolean = {

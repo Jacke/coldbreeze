@@ -31,6 +31,8 @@ class NotificationController(override implicit val env: RuntimeEnvironment[DemoU
     implicit val sumResultFrameFormatter      = FrameFormatter.jsonFrame[SumActor.SumResult]
     implicit val HistMessageFormat            = Json.format[HistMessage]
     implicit val HistMessageFrameFormatter    = FrameFormatter.jsonFrame[HistMessage]
+    implicit val LaunchEventFormat            = Json.format[LaunchEvent]
+    implicit val LaunchEventFrameFormatter    = FrameFormatter.jsonFrame[LaunchEvent]    
     implicit val PopupRequestFormat           = Json.format[PopupRequest]
     implicit val PopupRequestFrameFormatter   = FrameFormatter.jsonFrame[PopupRequest]
   // val auth = UserService.find(authenticator.get.identityId)
@@ -297,6 +299,11 @@ class UserActor(uid: String, board: ActorRef, out: ActorRef) extends Actor with 
       play.api.Logger.info(s"Process history update + $target")
       if (targetEmails.contains(email)) { out ! js }
     }
+    case LaunchEvent(email, target, targetEmails) => {
+      val js = Json.obj("type" -> "updates", "target" -> target)
+      play.api.Logger.info(s"Process history update + $target")
+      if (targetEmails.contains(email)) { out ! js }
+    }
     case js: JsValue =>
       (js \ "msg").validate[String] map { Utility.escape(_) } foreach { board ! Message(uid, _ ) }
     case other =>
@@ -317,6 +324,7 @@ object UserActor {
       case _ => List()
     }
     BoardActor() ! HistMessage(email, target, targetEmails )
+    BoardActor() ! LaunchEvent(email, target, targetEmails )
   }
 }
 
@@ -342,6 +350,8 @@ class BoardActor extends Actor with ActorLogging {
       users foreach { _ ! pm } 
     case hm: HistMessage =>
       users foreach { _ ! hm }
+    case launchEv: LaunchEvent =>
+      users foreach { _ ! launchEv }
     case Subscribe =>
       users += sender
       context watch sender
@@ -359,6 +369,7 @@ object BoardActor {
 }
 
 case class HistMessage(email: String, target: String, targetEmails: List[String])
+case class LaunchEvent(email: String, target: String, targetEmails: List[String])
 case class Message(uuid: String, s: String)
 case class PopupMessage(target: String, email: String = "")
 case class PopupRequest(target: String)

@@ -100,9 +100,8 @@ class ProcessInputController(override implicit val env: RuntimeEnvironment[DemoU
                                 }
       }
    
+    if (controlles.launches.LaunchStack.push(launchId = session_id)) {
     InputLoggerDAO.pull_for_input(input_logs.get)
-        
-
         // case class InputParamProc(felem: Option[Int], selem: Option[Int], param: String, args: List[String])
        /*
         val genparams = pmsResult.map{ 
@@ -110,17 +109,18 @@ class ProcessInputController(override implicit val env: RuntimeEnvironment[DemoU
                entity.map { t =>
                 InputParamProc(t.f_elem, t.sp_elem, t.param, t.arguments.getOrElse(List.empty[String]))
                 } 
-             
           }
-        }*/
-
+        }*/        
     service.Build.newRunFrom(session_id = session_id,bpID = bpID, params = pmsResult.get, invoke = true) match {
       case Some(process) => {
        action(request.user.main.userId, process = Some(bpID), ProcHisCom.processResumed, None, None)
        Ok(Json.toJson(Map("success" -> process.session_id)))
       }
-      case _ => Ok(Json.toJson(Map("error" -> "Error output")))
+      case _ => BadRequest(Json.toJson(Map("error" -> "Error output")))
     }
+   } else { // already launching
+      BadRequest(Json.toJson(Map("error" -> "Already launching")))
+   }
 
   } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
