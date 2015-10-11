@@ -40,8 +40,8 @@ class StaticApplication(applicationPath: File, mode: Mode.Value) extends Applica
    java.lang.management.ManagementFactory.getRuntimeMXBean.getName.split('@').headOption.map { pid =>
       val pidFile = Option(System.getProperty("pidfile.path")).map(new File(_)).getOrElse(new File(applicationPath.getAbsolutePath, "RUNNING_PID"))
       println("Play server process ID is " + pid)
-    if (pidFile.getAbsolutePath != "/dev/null") {
-        if (pidFile.exists) {
+      if (pidFile.getAbsolutePath != "/dev/null") {
+        if (pidFile.exists && mode == Mode.Prod) {
           println("This application is already running (Or delete " + pidFile.getAbsolutePath + " file).")
           System.exit(-1)
         }

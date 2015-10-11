@@ -423,10 +423,10 @@ val reaction_state_out:List[UnitReactionStateOut] = sessionReactOuts.map(el =>
     toApplogger("states found: " + states.length)
     toApplogger("session_states found: " + session_states.length)    
     states.foreach { state =>
-      toApplogger(state.front_elem_id.toString)
+      // toApplogger(state.front_elem_id.toString)
     }
     session_states.foreach { state =>
-      toApplogger(state.front_elem_id.toString)
+      // toApplogger(state.front_elem_id.toString)
     }
     reactions.foreach { react => react.reaction_state_outs ++= reaction_state_out.filter(sout => sout.reaction == react.id.get) }
     states.foreach { state => state.switchers ++= switches.filter(sw => sw.state_ref == state.id.get) }

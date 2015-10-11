@@ -83,31 +83,31 @@ implicit val SessionStateLogWrites  = Json.format[SessionStateLog]
 
 
 def station_index(id: Int) = SecuredAction { implicit request => 
-if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, id)) {  
+  if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, id)) {  
 
-   val result = models.DAO.BPStationDAO.findByBPId(id) //BPStationDAO.findByBPId(id)
-   Ok(Json.toJson(result))
+     val result = models.DAO.BPStationDAO.findByBPId(id) //BPStationDAO.findByBPId(id)
+     Ok(Json.toJson(result))
 
-} else { Forbidden(Json.obj("status" -> "Not found")) }   
+  } else { Forbidden(Json.obj("status" -> "Not found")) }   
 }
 def all_stations() = SecuredAction { implicit request =>
   Ok(Json.toJson(BPStationDAO.getAll))
 }
 
 def process_all_session(pid: Int) = SecuredAction { implicit request =>
-if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, pid)) {
+    if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, pid)) {
 
-  val sess = BPSessionDAO.findByProcess(pid)  
-  sess match { 
-    case Some(sessionContainer) => {
-        //val updatedStatuses:List[SessionStatus] = sessionContainer.sessions.map(status => InputLoggerDAO.launchPeopleFetcher(status)) 
-        //val updatedCN = updatedStatuses.map(status => sessionContainer.updateStatus(status))
+      val sess = BPSessionDAO.findByProcess(pid)  
+      sess match { 
+        case Some(sessionContainer) => {
+            //val updatedStatuses:List[SessionStatus] = sessionContainer.sessions.map(status => InputLoggerDAO.launchPeopleFetcher(status)) 
+            //val updatedCN = updatedStatuses.map(status => sessionContainer.updateStatus(status))
 
-        Ok(Json.toJson(InputLoggerDAO.fetchPeople(sessionContainer))) //InputLoggerDAO.launchPeopleFetcher(cn))))
-   }
-    case _ => Ok(Json.toJson(Map("status" -> 404)))
-  }
-} else { Forbidden(Json.obj("status" -> "Not found")) }
+            Ok(Json.toJson(InputLoggerDAO.fetchPeople(sessionContainer))) //InputLoggerDAO.launchPeopleFetcher(cn))))
+       }
+        case _ => Ok(Json.toJson(Map("status" -> 404)))
+      }
+    } else { Forbidden(Json.obj("status" -> "Not found")) }
 }
 
 def all_sessions() = SecuredAction { implicit request =>
