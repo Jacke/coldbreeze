@@ -75,12 +75,7 @@ object BPSessionDAO {
           case Some(station) => station.step.toDouble
           case _ => element_quantity.toDouble
         }
-        val percent = (step / element_quantity.toDouble * 100).toInt
-          println()
-          println(s"percent of ${ses.id}")
-          println(step)
-          println(element_quantity)
-          println()        
+        val percent = (step / element_quantity.toDouble * 100).toInt    
         SessionStatus(percent, p, ses, station, None)//Some(AroundProcessElementsBuilder.detect(p.id.get, station.get.id.get)))
       })
     }
@@ -180,13 +175,6 @@ object BPSessionDAO {
             case _ => element_quantity.toDouble
           }
           val percent = (step / element_quantity.toDouble * 100).toInt
-          println()
-          println("percent")
-          println(step)
-          println(element_quantity)
-          println()
-
-
           SessionStatus(percent, process, ses, station, Some(AroundProcessElementsBuilder.detect(process_id, station.get.id.get)),
             Some(people)
             ) 
