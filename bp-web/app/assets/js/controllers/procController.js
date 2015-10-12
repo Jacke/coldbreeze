@@ -1,8 +1,8 @@
 define(['angular', 'app', 'controllers'], function (angular, minorityApp, minorityControllers) {
 
 // INDEX
-return minorityControllers.controller('BProcessListCtrl', ['$scope','$window','$translate' ,'$rootScope','TreeBuilder', 'SessionsFactory' ,'ngDialog', '$http', '$routeParams', '$filter', 'BPElemsFactory','BPSpacesFactory', 'BPSpaceElemsFactory',  'BProcessesFactory','BProcessFactory', 'BPStationsFactory', 'BPServicesFactory', '$location',
-  function ($scope, $window, $translate, $rootScope,TreeBuilder, SessionsFactory, ngDialog, $http, $routeParams, $filter, BPElemsFactory, BPSpacesFactory, BPSpaceElemsFactory, BProcessesFactory, BProcessFactory, BPStationsFactory, BPServicesFactory, $location) {
+return minorityControllers.controller('BProcessListCtrl', ['$rootScope','$scope','$window','$translate' ,'$rootScope','TreeBuilder', 'NotificationBroadcaster','SessionsFactory' ,'ngDialog', '$http', '$routeParams', '$filter', 'BPElemsFactory','BPSpacesFactory', 'BPSpaceElemsFactory',  'BProcessesFactory','BProcessFactory', 'BPStationsFactory', 'BPServicesFactory', '$location',
+  function ($rootScope,$scope, $window, $translate, $rootScope,TreeBuilder, NotificationBroadcaster,SessionsFactory, ngDialog, $http, $routeParams, $filter, BPElemsFactory, BPSpacesFactory, BPSpaceElemsFactory, BProcessesFactory, BProcessFactory, BPStationsFactory, BPServicesFactory, $location) {
 
 
  $scope.changeLanguage = function () {
@@ -321,12 +321,10 @@ $scope.capitalizeFirstLetter = function (string) {
 
 
 
-/**
-*
-* Services
-*
-**/
-
+/*******
+ * Services
+ *******/
+$scope.reloadSessions = function() {
 $scope.sessions = SessionsFactory.query();
 $scope.sessions.$promise.then(function (data2) {
     _.forEach(data2.sessions, function(session) { return session.session.station = session.station })
@@ -336,6 +334,17 @@ $scope.sessions.$promise.then(function (data2) {
         });
       })  
 });
+};
+$scope.reloadSessions();
+// Session lock by notification
+// NotificationBroadcaster
+$scope.$on('launchLocker', function(event, args) {
+    console.log(event);
+    console.log(args);
+    $scope.reloadSessions();
+    // do what you want to do
+});
+
 
 
     //BPInLoggersStationFactory.query({BPid: $route.current.params.BPid, session_id: stationId});

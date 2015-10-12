@@ -300,7 +300,7 @@ class UserActor(uid: String, board: ActorRef, out: ActorRef) extends Actor with 
       if (targetEmails.contains(email)) { out ! js }
     }
     case LaunchLock(email, target, launchId, targetEmails) => {
-      val js = Json.obj("type" -> "updates", "target" -> target)
+      val js = Json.obj("type" -> "launchLocker", "state" -> target, "launchId" -> launchId)
       play.api.Logger.info(s"Process history update + $target")
       if (targetEmails.contains(email)) { out ! js }
     }

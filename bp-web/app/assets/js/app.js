@@ -216,7 +216,7 @@ minorityApp.factory(
 
   }]);
 
-minorityApp.factory('NotificationBroadcaster', ['$websocket', '$window', 'toastr', 'popupFactory', function($websocket, $window, toastr, popupFactory) {
+minorityApp.factory('NotificationBroadcaster', ['$rootScope','$websocket', '$window', 'toastr', 'popupFactory', function($rootScope,$websocket, $window, toastr, popupFactory) {
       // Open a WebSocket connection
       var baseUrl = $window.location.host;
       if (document.ssl_enabled) {
@@ -233,7 +233,11 @@ minorityApp.factory('NotificationBroadcaster', ['$websocket', '$window', 'toastr
             console.log(message);
             var object = JSON.parse(message.data);
             if (object.type == "message") {
-            toastr.success(message.type, object.msg);
+                toastr.success(message.type, object.msg);
+            }
+            // laucnh locker
+            if (object.type == "launchLocker") {
+               $rootScope.$broadcast('launchLocker', {launchId: object.launchId, lockState: object.state }); 
             }
             if (object.type == "popup") {
               popupFactory.pop(object);
