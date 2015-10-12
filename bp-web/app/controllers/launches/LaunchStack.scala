@@ -1,5 +1,6 @@
 package controlles.launches
 import scala.collection.mutable.ListBuffer
+
 object LaunchStack {
 	var launchesIds:ListBuffer[Int] = ListBuffer()
 

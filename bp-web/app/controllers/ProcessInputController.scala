@@ -75,6 +75,8 @@ class ProcessInputController(override implicit val env: RuntimeEnvironment[DemoU
   def invokeFrom(session_id: Int, bpID: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, bpID)) {
 
+
+
       val pmsResult = request.body.validate[List[ReactionActivator]] 
 
     /*
@@ -101,6 +103,8 @@ class ProcessInputController(override implicit val env: RuntimeEnvironment[DemoU
       }
    
     if (controlles.launches.LaunchStack.push(launchId = session_id)) {
+       controllers.UserActor.updateLaunchLock(target="lock", email=request.user.main.userId, isLock=true, launchId=session_id)
+
     InputLoggerDAO.pull_for_input(input_logs.get)
         // case class InputParamProc(felem: Option[Int], selem: Option[Int], param: String, args: List[String])
        /*
@@ -114,6 +118,9 @@ class ProcessInputController(override implicit val env: RuntimeEnvironment[DemoU
     service.Build.newRunFrom(session_id = session_id,bpID = bpID, params = pmsResult.get, invoke = true) match {
       case Some(process) => {
        action(request.user.main.userId, process = Some(bpID), ProcHisCom.processResumed, None, None)
+       controlles.launches.LaunchStack.pop(launchId = session_id)
+       controllers.UserActor.updateLaunchLock(target="lock", email=request.user.main.userId, isLock=true, launchId=session_id)
+       
        Ok(Json.toJson(Map("success" -> process.session_id)))
       }
       case _ => BadRequest(Json.toJson(Map("error" -> "Error output")))

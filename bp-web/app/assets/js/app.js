@@ -4,7 +4,7 @@
 
 
 
-define(['angular', 'toastr', 'angularanimate', 'roundProgress'], function (angular, toastr, angularanimate, roundProgress) {
+define(['angular', 'toaster','toastr', 'angularanimate', 'roundProgress'], function (angular, toaster, toastr, angularanimate, roundProgress) {
 
 var translationsEN = {
   PERMISSIONS: 'Permissions',
@@ -161,6 +161,7 @@ var minorityApp =
       'angularLocalStorage',
       'angular-progress-arc',
       'classy',
+      'jlareau.pnotify',
       'ngAngularError',
       'toaster',
       'ngAnimate',

@@ -4,6 +4,7 @@
 
 define(['angularAMD', 'angular',
 	'app',
+'pnotify',
 'angular-animate',
 'angular-websocket',
 'toastr',
@@ -14,7 +15,10 @@ define(['angularAMD', 'angular',
 'angular-resource',
 'angular-cookies',
 'select',
-'pnotifycore',
+'pnotifyconfirm',
+'pnotifybuttons',
+'angularpnotify',
+
 'roundProgress',
 'angular-moment',
 'livestamp',
@@ -50,7 +54,7 @@ define(['angularAMD', 'angular',
 'directives',
 'classie',
 'cssParser'],
-    function(angularAMD, angular, app) {
+    function(angularAMD, angular, app, pnotify) {
   'use strict';
   console.log(angular);
   console.log(app);

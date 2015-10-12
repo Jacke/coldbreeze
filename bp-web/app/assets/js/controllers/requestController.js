@@ -3,8 +3,8 @@ define(['angular', 'app', 'controllers'], function (angular, minorityApp, minori
 
 
 
-minorityControllers.controller('BPRequestCtrl', ['LaunchElementTopologsFactory','LaunchElemsFactory','LaunchSpacesFactory','LaunchSpaceElemsFactory','ElementTopologsFactory', 'InteractionsFactory', '$scope', '$window','$routeParams','$route', '$rootScope','$filter','BPLogsFactory', 'BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory', 'BProcessFactory', 'BPStationsFactory', 'BPRequestFactory',  '$location', '$http',
-function (LaunchElementTopologsFactory, LaunchElemsFactory,LaunchSpacesFactory,LaunchSpaceElemsFactory, ElementTopologsFactory, InteractionsFactory, $scope, $window,$routeParams,$route, $rootScope,$filter,BPLogsFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BProcessFactory, BPStationsFactory, BPRequestFactory,  $location, $http) {
+minorityControllers.controller('BPRequestCtrl', ['notificationService', 'LaunchElementTopologsFactory','LaunchElemsFactory','LaunchSpacesFactory','LaunchSpaceElemsFactory','ElementTopologsFactory', 'InteractionsFactory', '$scope', '$window','$routeParams','$route', '$rootScope','$filter','BPLogsFactory', 'BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory', 'BProcessFactory', 'BPStationsFactory', 'BPRequestFactory',  '$location', '$http',
+function (notificationService, LaunchElementTopologsFactory, LaunchElemsFactory,LaunchSpacesFactory,LaunchSpaceElemsFactory, ElementTopologsFactory, InteractionsFactory, $scope, $window,$routeParams,$route, $rootScope,$filter,BPLogsFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BProcessFactory, BPStationsFactory, BPRequestFactory,  $location, $http) {
 
 $scope.bpId = $scope.session.process.id;
 $scope.session_id = $scope.session.session.id;
@@ -240,8 +240,10 @@ $scope.reactionSelect = function (reaction) {
         //$scope.closeThisDialog();
         $location.path('/a#/bprocess/' + $scope.bpId + 'elements?session=' + parseInt(response.data.session));
       },
-      function(response) { // optional
-        // failed
+      function(fail) { // optional
+        // fail
+        console.log(fail);
+        notificationService.error(fail.data.error);
       }
       );
   };

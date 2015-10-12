@@ -88,10 +88,26 @@
        exports: 'select'
       },
 
-      'pnotifycore': {
+      'pnotify': {
        deps: ['angular'],
-       exports: 'pnotifycore'
+       exports: 'pnotify'
       },
+
+      'pnotifyconfirm': {
+        deps: ['pnotify','jquery'],
+        exports: 'pnotifyconfirm'
+      },
+      'pnotifybuttons': {
+        deps: ['pnotify', 'jquery'],
+        exports: 'pnotifybuttons'
+      },
+      'angularpnotify': {
+        deps: ['angular','pnotify','jquery'],
+        exports: 'angularpnotify'
+      },
+
+
+
 
       'angular-moment': {
        deps: ['moment', 'angular'],
@@ -218,7 +234,7 @@
   export: 'procCreateController'
 },
 'requestController': {
-  deps: ['angular', 'app', 'controllers', 'toastr'],
+  deps: ['angular', 'app', 'controllers', 'toaster'],
   export: 'requestController'
 },
 'loggerController': {
@@ -308,7 +324,11 @@
   'angular-resource': '../bower_components/angular-resource/angular-resource',
   'angular-cookies': '../bower_components/angular-cookies/angular-cookies',
   'select': '../bower_components/angular-ui-select/dist/select',
-  'pnotifycore': '../bower_components/pnotify/pnotify.core',
+  'pnotify': '../bower_components/pnotify/pnotify.core',
+  'pnotifyconfirm':'../bower_components/pnotify/pnotify.confirm',
+  'pnotifybuttons':'../bower_components/pnotify/pnotify.buttons',
+  'angularpnotify':'../bower_components/angular-pnotify/src/angular-pnotify',
+
   'roundProgress': '../bower_components/angular-svg-round-progressbar/src/roundProgress',
   'angular-moment': '../bower_components/angular-moment/angular-moment',
   'livestamp': 'https://cdn.rawgit.com/mattbradley/livestampjs/1.1.2/livestamp.min',
@@ -359,9 +379,9 @@
   };
 
   // Load the app. This is kept minimal so it doesn't need much updating.
-require(['requirejs','jsRoutes','jquery', 'mobileDetect','popupoverlay','drag-on','jquery.nicescroll','ssl','offline','offlineSimulator','header','tooltip','dropdown','underscore','moment','selectize', 'tether', 'shepherd','tour',
+require(['requirejs','jsRoutes','jquery', 'pnofiy','mobileDetect','popupoverlay','drag-on','jquery.nicescroll','ssl','offline','offlineSimulator','header','tooltip','dropdown','underscore','moment','selectize', 'tether', 'shepherd','tour',
   ],//'jquery', 'bootstrap'],//, './app'],
-    function (requirejs,jsRoutes,$,mobileDetect,popupoverlay,dragOn,niceScroll,ssl,offline,offlineSimulator,header,tooltip,dropdown,underscore,moment,selectize,tether,shepherd,tour) {
+    function (requirejs,jsRoutes,$,pnofiy,mobileDetect,popupoverlay,dragOn,niceScroll,ssl,offline,offlineSimulator,header,tooltip,dropdown,underscore,moment,selectize,tether,shepherd,tour) {
         document.tour = tour;
       $(document).ready(function(){
         document.mobileDetect = new mobileDetect(window.navigator.userAgent);

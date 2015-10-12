@@ -31,8 +31,8 @@ class NotificationController(override implicit val env: RuntimeEnvironment[DemoU
     implicit val sumResultFrameFormatter      = FrameFormatter.jsonFrame[SumActor.SumResult]
     implicit val HistMessageFormat            = Json.format[HistMessage]
     implicit val HistMessageFrameFormatter    = FrameFormatter.jsonFrame[HistMessage]
-    implicit val LaunchEventFormat            = Json.format[LaunchEvent]
-    implicit val LaunchEventFrameFormatter    = FrameFormatter.jsonFrame[LaunchEvent]    
+    implicit val LaunchLockFormat            = Json.format[LaunchLock]
+    implicit val LaunchLockFrameFormatter    = FrameFormatter.jsonFrame[LaunchLock]    
     implicit val PopupRequestFormat           = Json.format[PopupRequest]
     implicit val PopupRequestFrameFormatter   = FrameFormatter.jsonFrame[PopupRequest]
   // val auth = UserService.find(authenticator.get.identityId)
@@ -299,7 +299,7 @@ class UserActor(uid: String, board: ActorRef, out: ActorRef) extends Actor with 
       play.api.Logger.info(s"Process history update + $target")
       if (targetEmails.contains(email)) { out ! js }
     }
-    case LaunchEvent(email, target, targetEmails) => {
+    case LaunchLock(email, target, launchId, targetEmails) => {
       val js = Json.obj("type" -> "updates", "target" -> target)
       play.api.Logger.info(s"Process history update + $target")
       if (targetEmails.contains(email)) { out ! js }
@@ -324,8 +324,22 @@ object UserActor {
       case _ => List()
     }
     BoardActor() ! HistMessage(email, target, targetEmails )
-    BoardActor() ! LaunchEvent(email, target, targetEmails )
   }
+  def updateLaunchLock(target: String, email: String, isLock:Boolean=false, launchId:Int=0) = {
+    val targetEmails:List[String] = EmployeesBusinessDAO.getByUID(email) match {
+      case Some(origin_biz) => { EmployeesBusinessDAO.getByBusiness(origin_biz._2).map(emp_biz => 
+                                    EmployeeDAO.get(emp_biz._1)).flatten.map(emp => emp.uid)
+                               }
+      case _ => List()
+    }
+    var lockDef = "unlock"
+    if (isLock) {
+        lockDef = "lock"
+    } else {
+      lockDef = "unlock"
+    }
+    BoardActor() ! LaunchLock(email, lockDef, launchId, targetEmails )
+   }
 }
 
 
@@ -350,7 +364,7 @@ class BoardActor extends Actor with ActorLogging {
       users foreach { _ ! pm } 
     case hm: HistMessage =>
       users foreach { _ ! hm }
-    case launchEv: LaunchEvent =>
+    case launchEv: LaunchLock =>
       users foreach { _ ! launchEv }
     case Subscribe =>
       users += sender
@@ -369,7 +383,7 @@ object BoardActor {
 }
 
 case class HistMessage(email: String, target: String, targetEmails: List[String])
-case class LaunchEvent(email: String, target: String, targetEmails: List[String])
+case class LaunchLock(email: String, target: String, launchId:Int, targetEmails: List[String])
 case class Message(uuid: String, s: String)
 case class PopupMessage(target: String, email: String = "")
 case class PopupRequest(target: String)
