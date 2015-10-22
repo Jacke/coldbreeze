@@ -88,6 +88,17 @@ minorityAppServices.factory('DataCostCollection', ['$resource', function ($resou
     })
 }]);
 
+minorityAppServices.factory('DataCostAssign', ['$resource', function ($resource) {
+    return $resource(baseUrl + 'data/cost/assigns/:BPid', {}, {
+        query: { method: 'GET', isArray: true }
+    })
+}]);
+minorityAppServices.factory('DataCostLaunchAssign', ['$resource', function ($resource) {
+    return $resource(baseUrl + 'data/cost/launch_assigns/:launchId', {}, {
+        query: { method: 'GET', isArray: true }
+    })
+}]);
+
 
 
 });

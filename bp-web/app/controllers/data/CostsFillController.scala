@@ -68,6 +68,11 @@ class CostFillController(override implicit val env: RuntimeEnvironment[DemoUser]
   implicit val ResourceElementSelectorReaders = Json.reads[ResourceElementSelector]
   implicit val ResourceElementSelectorFormat = Json.format[ResourceElementSelector]
 
+implicit val ElementResourceDTOFormat = Json.format[ElementResourceDTO]
+implicit val ElementResourceDTOReaders = Json.reads[ElementResourceDTO]
+implicit val SessionElementResourceDTOFormat = Json.format[SessionElementResourceDTO]
+implicit val SessionElementResourceDTOReaders = Json.reads[SessionElementResourceDTO]
+
 
 /****
  * Resource elements
@@ -84,27 +89,43 @@ def assignResourceCollection = SecuredAction.async { implicit request =>
 // GET	 /data/cost/assigns/:process_id
 def assigns(process_id: Int) = SecuredAction { implicit request => 
 	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
-    Ok(Json.toJson(Map("message" -> "ok")))
+	val assigns = ElementResourceDAO.getByProcess(process_id)
+    Ok(Json.toJson(assigns))
 }
 // GET	 /data/cost/launch_assigns/:launch_id
 def launch_assigns(launch_id: Int) = SecuredAction { implicit request => 
 	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
-    Ok(Json.toJson(Map("message" -> "ok")))
+	val assigns = SessionElementResourceDAO.getBySession(launch_id)
+    Ok(Json.toJson(assigns))
 }
 //POST	 /data/cost/assign/:resource_id		@controllers.CostFillController.assign_element(resource_id: Int)
 def assign_element(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request => 
 	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
-    val selected = request.body.validate[ResourceElementSelector]
+    val selected = request.body.validate[List[ResourceElementSelector]]
     selected.fold(
     errors => {
        Logger.error(s"error with $selected")
       BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
     },
-    resElSelect => { 
-    	println(resElSelect)
+    resElSelects => { 
+    	println(resElSelects)
+    	resElSelects.foreach { resElSelect =>
+	    	val elem_topology = ElemTopologDAO.get(resElSelect.elementId)
+	    	elem_topology match {
+	    		case Some(topo) => {
+			    	ElementResourceDAO.pull_object(ElementResourceDTO(None, element_id = topo.id.get,
+			  														  process_id       = topo.process,
+			  														  resource_id      = resElSelect.resourceId,
+			  														  entities = resElSelect.entityId)) 
+			    	//Ok(Json.toJson(Map("message" -> "ok")))
+
+	    		}
+	    		case _ => //BadRequest(Json.obj("status" ->"KO", "message" -> "not found"))
+	    	}
+    	}
+    	Ok(Json.toJson(Map("message" -> "ok")))
     }
   )
-    Ok(Json.toJson(Map("message" -> "ok")))
 }
 //POST	 /data/cost/up_assign/:resource_id	@controllers.CostFillController.update_assigned_element(resource_id: Int)
 def update_assigned_element(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request => 
@@ -124,6 +145,7 @@ def update_assigned_element(id: Int) = SecuredAction(BodyParsers.parse.json) { i
 //POST	 /data/cost/del_assign/:resource_id @controllers.CostFillController.delete_assigned_element(resource_id: Int)
 def delete_assigned_element(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request => 
 	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
+    /*
     val selected = request.body.validate[ResourceElementSelector]
     selected.fold(
     errors => {
@@ -132,9 +154,15 @@ def delete_assigned_element(id: Int) = SecuredAction(BodyParsers.parse.json) { i
     },
     resElSelect => { 
     	println(resElSelect)
+    	ElementResourceDAO.delete(id) match {
+    		case _ => Ok(Json.toJson(Map("message" -> "ok")))
+    	}
     }
-  )
-    Ok(Json.toJson(Map("message" -> "ok")))
+  )*/
+  ElementResourceDAO.delete(id) match {
+  	case _ => Ok(Json.toJson(Map("message" -> "ok")))
+  }
+
 }
 
 

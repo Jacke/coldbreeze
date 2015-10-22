@@ -247,6 +247,11 @@ GET     /launch/:launch_id/reactions 				@controllers.LaunchElementsControllers.
 #PUT     launch/:launch_id/reaction/:id 				# @controllers.LaunchElementsControllers
 #DELETE  launch/:launch_id/reaction/:id 				# @controllers.LaunchElementsControllers
 
+################
+# Cards
+###
+GET      /cards                             @controllers.CardController.index()
+
 
 ################
 # Data

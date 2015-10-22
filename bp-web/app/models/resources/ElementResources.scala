@@ -8,35 +8,42 @@ import slick.model.ForeignKeyAction
 class ElementResources(tag: Tag) extends Table[ElementResourceDTO](tag, "element_resources"){
   def id         = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def element    = column[Int]("element_id")
+  def process    = column[Int]("process_id")  
   def resource   = column[Int]("resource_id")
   def entities   = column[String]("entities", O.Default(""))
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
   def elementFK  = foreignKey("el_res_fk", element, models.DAO.ElemTopologDAO.elem_topologs)(_.id, onDelete = ForeignKeyAction.Cascade)
   def resFK      = foreignKey("res_fk", resource, models.DAO.ResourceDAO.resources)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK       = foreignKey("el_res_sp_bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 
-  def * = (id.?, element, resource,entities,
+  def * = (id.?, element, process, resource,entities,
            created_at,
            updated_at) <> (ElementResourceDTO.tupled, ElementResourceDTO.unapply)  
 }
 class SessionElementResources(tag: Tag) extends Table[SessionElementResourceDTO](tag, "session_element_resources"){
   def id         = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def element    = column[Int]("session_element_id")
+  def process    = column[Int]("process_id")
+  def session    = column[Int]("session_id")
   def resource   = column[Int]("resource_id")
   def entities   = column[String]("entities", O.Default(""))
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
   def sesElementFK  = foreignKey("ses_el_res_fk", element, models.DAO.SessionElemTopologDAO.session_elem_topologs)(_.id, onDelete = ForeignKeyAction.Cascade)
   def resFK      = foreignKey("ses_res_fk", resource, models.DAO.ResourceDAO.resources)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK       = foreignKey("s_res_sp_bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def sessionFK  = foreignKey("s_res_s_sp_session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
-  def * = (id.?, element, resource,entities,
+  def * = (id.?, element, process, session, resource,entities,
            created_at,
            updated_at) <> (SessionElementResourceDTO.tupled, SessionElementResourceDTO.unapply)  
 }
 case class ElementResourceDTO(  
   var id: Option[Int],
-  element: Int,
-  resource: Int,
+  element_id: Int,
+  process_id:Int,
+  resource_id: Int,
   entities: String = "",
   created_at: Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
   updated_at: Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now) ) {
@@ -46,8 +53,10 @@ case class ElementResourceDTO(
 }
 case class SessionElementResourceDTO(  
   var id: Option[Int],
-  element: Int,
-  resource: Int,
+  element_id: Int,
+  process_id:Int,
+  session_id:Int,
+  resource_id: Int,
   entities: String = "",
   created_at: Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
   updated_at: Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now) ) {
@@ -66,6 +75,11 @@ object ElementResourceDAO {
       val q3 = for { s ← element_resources if s.id === k } yield s 
       q3.list.headOption
   }
+  def getByProcess(k: Int) = database withSession {
+    implicit session ⇒
+      val q3 = for { s ← element_resources if s.process === k } yield s 
+      q3.list
+  }   
   def update(id: Int, annotation: ElementResourceDTO) = database withSession { implicit session ⇒
     val element_resourcesUpdate: ElementResourceDTO = annotation.copy(Option(id))
     element_resources.filter(_.id === id).update(element_resourcesUpdate)
@@ -105,6 +119,16 @@ object SessionElementResourceDAO {
       val q3 = for { s ← session_element_resources if s.id === k } yield s 
       q3.list.headOption
   }
+  def getByProcess(k: Int) = database withSession {
+    implicit session ⇒
+      val q3 = for { s ← session_element_resources if s.process === k } yield s 
+      q3.list
+  }    
+  def getBySession(k: Int) = database withSession {
+    implicit session ⇒
+      val q3 = for { s ← session_element_resources if s.session === k } yield s 
+      q3.list
+  }   
   def update(id: Int, annotation: SessionElementResourceDTO) = database withSession { implicit session ⇒
     val element_resourcesUpdate: SessionElementResourceDTO = annotation.copy(Option(id))
     session_element_resources.filter(_.id === id).update(element_resourcesUpdate)

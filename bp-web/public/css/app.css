@@ -902,7 +902,14 @@ border-left: 2px solid #4dbd74;
     border-left: solid 2px #238345;
 }
 
+.costs.cost-list .resource-block {
+    display: inline-block;
+    margin-right: 23px;
+}
 
+.costs.cost-list {
+    width: 210px;
+}
 
 
 
@@ -1080,19 +1087,19 @@ select#categorySelect {
     padding-top: 15px;
 }
 #proc-sessions {
-  transition: all 0.2s cubic-bezier(0, 0, 0, 1.4);
-width: 100%;
-margin: 50px auto;
-position: fixed;
-left: 0;
-bottom: -50px;
-background-color: #e6e6e6;
-font-family: 'Open Sans', sans-serif;
-padding-left: 73px;
-padding-top: 21px;
-padding-bottom: 9px;
-border-radius: 6px 6px 0px 0px;
-padding-left: 30%;
+    transition: all 0.2s cubic-bezier(0, 0, 0, 1.4);
+    width: 100%;
+    margin: 50px auto;
+    position: fixed;
+    left: 0;
+    bottom: -50px;
+    background-color: #e6e6e6;
+    font-family: 'Open Sans', sans-serif;
+    padding-left: 73px;
+    padding-top: 21px;
+    padding-bottom: 9px;
+    border-radius: 6px 6px 0px 0px;
+    /*padding-left: 30%;*/
 }
 
 

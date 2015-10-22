@@ -1,5 +1,5 @@
 <div class="nested-space-elems">
-  <div class="space-blocks" ng-repeat="spaceelem in spaceelems | filter:{space_owned: space.id} | orderBy:'order'" style="padding: 2px 10px;">
+  <div class="space-blocks" ng-attr-id="'spaceElem'+spaceelem.id" ng-repeat="spaceelem in spaceelems | filter:{space_owned: space.id} | orderBy:'order'" style="padding: 2px 10px;">
 
 
 

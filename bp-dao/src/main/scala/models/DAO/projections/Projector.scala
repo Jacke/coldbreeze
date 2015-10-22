@@ -92,7 +92,9 @@ object RefProjector extends FrontElemProjection
           states = stateIdToRefId.values.toList,
           switches = switcherIdToRefId.values.toList,
           reactions = reactionsIdToRefId.values.toList,
-          reaction_state_outs = reaction_state_outIdToRefId.values.toList
+          reaction_state_outs = reaction_state_outIdToRefId.values.toList,
+          topoElem = topoElem.values.toList,
+          topoSpaceElem = topoSpaceElem.values.toList
         ))
       }
 
@@ -100,7 +102,7 @@ object RefProjector extends FrontElemProjection
     }
   }
   private def makeTopolog(process: Int, front_elem_id: Option[Int], space_elem_id: Option[Int]):Int = {
-    println(front_elem_id)
+    //println(front_elem_id)
     ElemTopologDAO.pull_object(ElemTopology(
       id = None,
       process = process,

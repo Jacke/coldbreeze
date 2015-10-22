@@ -29,6 +29,39 @@
     </div><!-- form-group element-form-fields -->
     </div>
 
+<!-- Cost module-->
+    <div class="control-group cost-control-group" ng-init="bpelem.newCosts=[];">
+      <div class="form-group element-form-fields">
+      <div class="form-group control-group clearfix">
+        <div class="controls col-xs-2">
+          <label class="control-label col-sm-1" for="inputPerm">Cost</label>
+        </div>
+        <div class="controls col-xs-6">  
+          <div class="costs cost-list" ng-repeat="cost in bpelem.costs">
+            <span class="resource-block" tooltip="{{ cost.resource.title }}">
+                {{ cost.resource.resource.title }} — {{ entityDecorator(cost.entities, cost.resource) }}
+                <a ng-click="delElementResource(cost, bpelem.costs, true)" class="btn-delete minicon"></a>
+            </span>
+          </div>   
+          <div class="costs cost-list" ng-repeat="cost in bpelem.newCosts">
+            <span class="resource-block" tooltip="{{ cost.resource.title }}">
+                {{ cost.resource.resource.title }} — {{ entityDecorator(cost.entities, cost.resource) }}
+                <a ng-click="delElementResource(cost, bpelem.newCosts, false)" class="btn-delete minicon"></a>
+            </span>
+          </div>            
+          <div class="input-resource-block">
+              <span class="input-resource-block-title">Resouce</span>
+              <select id="inputResource" ng-init="bpelem.newCost = {};" ng-model="bpelem.newCost.resource" ng-init="bpelem.newCost.resource=resources[0];bpelem.newCost.entity=bpelem.newCost.resource.entities[0]" ng-change="bpelem.newCost.entity=bpelem.newCost.resource.entities[0]" class="forResource" ng-options="res_cn as res_cn.resource.title for res_cn in resources"></select>
+          </div>
+          <div class="input-entity-block">
+               <span class="input-entity-block-title">Entity</span>
+              <select id="inputEntity" ng-model="bpelem.newCost.entities" class="forResource" ng-options="entity.id as entity.title for entity in bpelem.newCost.resource.entities"></select>      
+          </div>    
+          <a ng-click="createElementResource(bpelem.newCost, bpelem.newCosts)" class="btn btn-big btn-success">{{ 'ADD' | translate }}</a>
+        </div>
+      </div>
+      </div>
+    </div> <!--/ cost module-->
 
       <input type="hidden" name="value" ng-model="bpelem.business" value="{{ business }}">
       <input type="hidden" name="value" ng-model="bpelem.process" value="{{ parseInt(BPid) }}">

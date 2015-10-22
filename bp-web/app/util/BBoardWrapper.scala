@@ -174,17 +174,18 @@ class BBoardWrapper(connection: BBoardWrapperConnection) {
 /*-------------------------------------------
  * Create
  --------------------------------------------*/  
-  def addBoardForResource(board: Board) = {
+  def addBoardForResource(board: Board):Future[String] = {
   	 val data = Json.toJson(board)
   	 val holder = Try(
               WS.url(s"http://${connection.host}:${connection.port}/api/v1/boards/create").post(data).map { response =>
         val res = response.json
         println(res)
-        res
+        res.toString
         }.recover{ case _ => "" })
         .getOrElse(Future.successful("false"))
+     holder   
   }
-  def addEntityByResource(resource_id: Int, entity: Entity) = {
+  def addEntityByResource(resource_id: Int, entity: Entity):Future[String] = {
      val data = Json.toJson(entity)
      val boardId: String = entity.boardId.toString
      println("UPDATE ENTITY")
@@ -194,11 +195,12 @@ class BBoardWrapper(connection: BBoardWrapperConnection) {
       WS.url(s"http://${connection.host}:${connection.port}/api/v1/board/${boardId}/entities/create").post(data).map { response =>
         val res = response.json
         println(res)
-        res
+        res.toString
         }.recover{ case e => {println("error");println( );println();println();println(e); "false" }})
         .getOrElse(Future.successful("false"))
+      holder  
   }
-  def addSlatByEntity(entity_id: String, slat: Slat) = {
+  def addSlatByEntity(entity_id: String, slat: Slat):Future[String] = {
      val data = Json.toJson(slat)
      // find entity, find board id of that entity
      val board_id: String = ""
@@ -206,14 +208,15 @@ class BBoardWrapper(connection: BBoardWrapperConnection) {
       WS.url(s"http://${connection.host}:${connection.port}/api/v1/entity/${entity_id}/slats/create").post(data).map { response =>
         val res = response.json
         println(res)
-        res
+        res.toString
         }.recover{ case e => {println("error");println( );println();println();println(e); "false" }})
         .getOrElse(Future.successful("false"))
+      holder  
   }
 /*-------------------------------------------
  * Remove
  --------------------------------------------*/  
-  def updateEntity(entity_id: String, entity: Entity) = {
+  def updateEntity(entity_id: String, entity: Entity):Future[String] = {
      val data = Json.toJson(entity)
      println("UPDATE ENTITY")
      println(s"entity_id: $entity_id entity: ${entity.toString} ")
@@ -223,11 +226,12 @@ class BBoardWrapper(connection: BBoardWrapperConnection) {
       WS.url(s"http://${connection.host}:${connection.port}/api/v1/b/${entity_id}/entity/${entity_id}/edit").post(data).map { response =>
         val res = response.json
         println(res)
-        res
+        res.toString
         }.recover{ case e => {println("error");println( );println();println();println(e); "false" }})
         .getOrElse(Future.successful("false"))
+      holder  
   }
-  def updateSlatByEntity(entity_id: String, slat_id: String, slat: Slat) = {
+  def updateSlatByEntity(entity_id: String, slat_id: String, slat: Slat):Future[String] = {
      val data = Json.toJson(slat)
      println("UPDATE ENTITY")
      println(s"entity_id: $entity_id slat_id: ${slat_id} entity: ${slat.toString} ")
@@ -235,38 +239,41 @@ class BBoardWrapper(connection: BBoardWrapperConnection) {
 
      val board_id: String = ""
      val holder = Try(
-  WS.url(s"http://${connection.host}:${connection.port}/api/v1/ent/${entity_id}/slat/${slat_id}/edit").post(data).map { response =>
+     WS.url(s"http://${connection.host}:${connection.port}/api/v1/ent/${entity_id}/slat/${slat_id}/edit").post(data)
+      .map { response =>
         val res = response.json
         println(res)
-        res
+        res.toString
         }.recover{ case e => {println("error");println( );println();println();println(e); "false" }})
         .getOrElse(Future.successful("false"))
+      holder  
   }
 
 /*-------------------------------------------
  * Remove
  --------------------------------------------*/
-  def removeEntityByBoard(board_id: String, entity_id: String) = {
+  def removeEntityByBoard(board_id: String, entity_id: String):Future[String] = {
      val board_id: String = ""
      val holder = Try(
       WS.url(s"http://${connection.host}:${connection.port}/api/v1/entity/${entity_id}/remove").post(Map("key" -> Seq("value"))).map { response =>
         val res = response.json
         println(res)
-        res
+        res.toString
         }.recover{ case _ => "" })
         .getOrElse(Future.successful("false"))
-
+     holder
   }
-  def removeSlatById(slat_id: String) = {
+  def removeSlatById(slat_id: String):Future[String] = {
      println("REMOVE SLAT")
      println(s"slat_id: $slat_id ")    
      val holder = Try(
       WS.url(s"http://${connection.host}:${connection.port}/api/v1/slat/${slat_id}/remove").post(Map("key" -> Seq("value"))).map { response =>
         val res = response
         println(res)
-        res
+        res.toString
         }.recover{ case e => {println("error");println( );println();println();println(e); "false" }})
         .getOrElse(Future.successful("false"))
+     holder
   }
 
 

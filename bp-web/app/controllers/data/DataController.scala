@@ -41,6 +41,8 @@ import models.DAO.resources.web.BizFormDTO
 import minority.utils._
 import play.api.data.format.Formats._
 import scala.util.{Success, Failure}
+import scala.concurrent._
+import scala.concurrent.duration._
 
 case class ResourceContainer(resource: ResourceDTO, board_cn: List[BoardContainer])
 case class ResourceFormContainer(
@@ -187,7 +189,7 @@ class DataController(override implicit val env: RuntimeEnvironment[DemoUser]) ex
  
 
  val Home = Redirect(routes.DataController.index())
- val waitSeconds = 20000
+ val waitSeconds = 100000
  def testResourceContainerList(res: ResourceDTO = ResourceDTO(None, "test", 0, None, None),
                                boardCN:BoardContainer = BoardContainer(boards = List(), 
                                                                        entities = List(), 
@@ -235,10 +237,12 @@ def create_resource() = SecuredAction { implicit request =>
       entity => {
           println(entity)
           val resource_id = ResourceDAO.pull_object(entity.copy(business = business))
-          createDefaultBoardsForRes(entity.copy(business = business, id = Some(resource_id)))
+          val future = createDefaultBoardsForRes(entity.copy(business = business, id = Some(resource_id)))
+          Await.result(future, Duration(waitSeconds, MILLISECONDS)) match {
+            case _ => Home
+          }
                   
       })
-    Home
 }
 
 def update_resource(id: Int) = SecuredAction { implicit request => 
@@ -290,12 +294,14 @@ def create_entity(boardId: String) = SecuredAction { implicit request =>
         Home
         },
       entity => {
-          minority.utils.BBoardWrapper().addEntityByResource(resource_id = 0, 
-                                                             entity.copy(boardId = UUID.fromString(boardId))) match {
-          case _ => Home
-        }
+          val future = minority.utils.BBoardWrapper()
+                .addEntityByResource(resource_id = 0, 
+                                     entity.copy(boardId = UUID.fromString(boardId))) 
+
+          Await.result(future, Duration(waitSeconds, MILLISECONDS)) match {
+            case _ => Home
+          }                
       })
-    Home
 }
 def update_entity_form(id: String) = SecuredAction { implicit request => 
     var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
@@ -322,8 +328,9 @@ def update_entity(id: String) = SecuredAction { implicit request =>
 }
 def delete_entity(id: String) = SecuredAction { implicit request => 
   	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
-    minority.utils.BBoardWrapper().removeEntityByBoard("", entity_id = id) 
-    Home  
+    Await.result(minority.utils.BBoardWrapper().removeEntityByBoard("", entity_id = id), Duration(waitSeconds, MILLISECONDS)) match {
+      case _ => Home
+    } 
 }
 /**
  * Slats
@@ -351,7 +358,6 @@ def create_slat(eid: String) = SecuredAction { implicit request =>
           case _ => Home
         }
       })
-    Home
 }
 def update_slat_form(eid: String, id: String) = SecuredAction { implicit request => 
     var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
@@ -359,7 +365,6 @@ def update_slat_form(eid: String, id: String) = SecuredAction { implicit request
     Await.result(entity, Duration(waitSeconds, MILLISECONDS)) match {
       case Some(sl) =>   Ok(views.html.data.editSlat(eid, eid, Some(id), ResourceFormContainer().slatForm.fill(sl), request.user ))
       case _ =>   Ok(views.html.data.editSlat(eid, eid, Some(id), ResourceFormContainer().slatForm, request.user ))
-
     }
 }
 def update_slat(eid: String, id: String) = SecuredAction { implicit request => 
@@ -380,12 +385,12 @@ def update_slat(eid: String, id: String) = SecuredAction { implicit request =>
           case _ => Home
         }
       })
-  Home
 }
 def delete_slat(id: String) = SecuredAction { implicit request => 
     var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
-    minority.utils.BBoardWrapper().removeSlatById(id)
-    Home
+    Await.result(minority.utils.BBoardWrapper().removeSlatById(id), Duration(waitSeconds, MILLISECONDS)) match {
+      case _ => Home
+    }
 }
 
 
@@ -411,7 +416,7 @@ def boardTest() = Action.async { implicit request =>
 
 
 
-private def createDefaultBoardsForRes(res: ResourceDTO) = {
+private def createDefaultBoardsForRes(res: ResourceDTO):Future[String] = {
     // Cost board
     val board = Board(id = Some(UUID.randomUUID()),
                         title = "Cost board",

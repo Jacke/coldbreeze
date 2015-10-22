@@ -118,7 +118,6 @@ object BPSessionStateDAO {
    */
   def pull_new_object(s: BPSessionState):Int = database withSession {
     implicit session ⇒
-     println(s)
       findByOriginAndSession(s.origin_state, s.session) match {
         case Some(session_state) => -1
         case _ => sessionstates returning sessionstates.map(_.id) += s

@@ -49,10 +49,11 @@ object Build {
   * @bpID id of process
   * @lang optional language
   **/
-  def run(bpID: Int, lang: Option[String] = Some("en"), invoke: Boolean ):Option[BProcess] = {
+  def run(bpID: Int, lang: Option[String] = Some("en"), invoke: Boolean, 
+  pipes: List[LaunchMapPipe => ExecutedLaunchCVPipes]=List.empty ):Option[BProcess] = {
     //presenceValidate
     val bpDTO = BPDAO.get(bpID).get
-    val processRunned1 = initiate(bpID, invoke, bpDTO, session_id = None)
+    val processRunned1 = initiate(bpID, invoke, bpDTO, session_id = None, pipes = pipes)
    
      processRunned1.allElements.foreach { element =>
           //println()
@@ -203,14 +204,16 @@ def initiate(bpID: Int,
              bpDTO: BProcessDTO, 
              lang: Option[String] = Some("en"), 
              session_id: Option[Int],
-             params: List[ReactionActivator] = List() ):BProcess = {
+             params: List[ReactionActivator] = List(), 
+             pipes: List[LaunchMapPipe => ExecutedLaunchCVPipes]=List() ):BProcess = {
     ElementRegistrator.apply
     // caster
     //val process_dto = BPDAO.get(bpID).get
     val target = ProcElemDAO.findByBPId(bpID)
 
     val process = new BProcess(new Managment, id = bpDTO.id)
-    initiate2(bpID, run_proc, process, bpDTO,target, Some("en"), with_pulling = true, session_id_val = session_id, params = params)
+    initiate2(bpID, run_proc, process, bpDTO,target, Some("en"), with_pulling = true, session_id_val = session_id, 
+      params = params, pipes = pipes)
     process
   }
 
@@ -223,7 +226,8 @@ def initiate2(bpID: Int,
   lang: Option[String] = Some("en"),
   with_pulling: Boolean = false,
   session_id_val: Option[Int],
-  params: List[ReactionActivator] = List()
+  params: List[ReactionActivator] = List(),
+  pipes: List[LaunchMapPipe => ExecutedLaunchCVPipes]=List()
   ):BProcess = 
   
 {
@@ -327,7 +331,7 @@ def initiate2(bpID: Int,
     var session_states:List[BPSessionState] = List()
 
 
-    var initialStates:  List[SessionInitialState] = List()
+    var initialStates:    List[SessionInitialState]         = List()
     var sessionTopologs:  List[SessionElemTopology]         = List()
     var sessionSwitchers: List[SessionUnitSwitcher]         = List()
     var sessionReactions: List[SessionUnitReaction]         = List()
@@ -406,19 +410,19 @@ def initiate2(bpID: Int,
 
 
 
-val topologs                                      = sessionTopologs.map(el => 
-            ExperimentalSessionBuilder.fromSessionTopo(el))
-val switches:List[UnitSwitcher]                   = sessionSwitchers.map(el => 
-            ExperimentalSessionBuilder.fromSessionSwitcher(el))
-val reactions:List[UnitReaction]                  = sessionReactions.map(el => 
-            ExperimentalSessionBuilder.fromSessionReaction(el))
-val reaction_state_out:List[UnitReactionStateOut] = sessionReactOuts.map(el => 
-            ExperimentalSessionBuilder.fromSessionReactionStateOut(el))
+  val topologs                                      = sessionTopologs.map(el => 
+              ExperimentalSessionBuilder.fromSessionTopo(el))
+  val switches:List[UnitSwitcher]                   = sessionSwitchers.map(el => 
+              ExperimentalSessionBuilder.fromSessionSwitcher(el))
+  val reactions:List[UnitReaction]                  = sessionReactions.map(el => 
+              ExperimentalSessionBuilder.fromSessionReaction(el))
+  val reaction_state_out:List[UnitReactionStateOut] = sessionReactOuts.map(el => 
+              ExperimentalSessionBuilder.fromSessionReactionStateOut(el))
 //val topologs = ElemTopologDAO.findByBP(bpID)
 //val switches:List[UnitSwitcher] = SwitcherDAO.findByBPId(bpID)
 //val reactions:List[UnitReaction] = ReactionDAO.findByBP(bpID)
 //val reaction_state_out:List[UnitReactionStateOut] = ReactionStateOutDAO.findByReactions(reactions.map(react => react.id.get))
-  process.topology = topologs
+    process.topology = topologs
 
     toApplogger("states found: " + states.length)
     toApplogger("session_states found: " + session_states.length)    
@@ -479,6 +483,27 @@ val reaction_state_out:List[UnitReactionStateOut] = sessionReactOuts.map(el =>
 
   /************************************************************************************************/
   /*************************** BEFORE LAUNCH ******************************************************/
+
+
+
+    val launchPipe = LaunchMapPipe(
+    launchId = session_id,
+    elementPipe =     ElementPipe(
+                                  elemMap,
+                                  spaceMap,
+                                  spaceElsMap),
+    burnElementPipe =     BurnElementPipe(
+                                   burnElemMap,
+                                   burnSpaceMap,
+                                   burnSpaceElMap), 
+    aditElementPipe =     AditElementPipe(
+                                    initialStateMap,
+                                    TopologsMap,
+                                    SwitchersMap,
+                                    ReactionsMap,
+                                    ReactOutsMap)
+    )  
+    val executedPipes:List[ExecutedLaunchCVPipes] = pipes.map(pipe => pipe(launchPipe))
   /************************************************************************************************/
   /************************************************************************************************/
 

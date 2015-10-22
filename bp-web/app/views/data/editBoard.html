@@ -11,14 +11,14 @@
       Edit
     } an board</h2>
   @helper.form(if(!id.isDefined) routes.BoardController.create else routes.BoardController.edit(id.get)) {
-    @helper.inputText(form("title"))    
-    @helper.textarea(form("content"))
+    @helper.inputText(form("title"), 'class -> "form-control", '_label -> "Title")    
+    @helper.textarea(form("content"), 'class -> "form-control", '_label -> "Content")
     <div id="p_scents">
     <a href="#" id="addScnt" data-name="meta">Add Meta</a>
     @helper.repeat(form("meta"), min = 1) { metaField =>
         <div class="meta_fields">
-        @helper.inputText(form(metaField.name.toString + ".key"))
-        @helper.inputText(form(metaField.name.toString + ".value"))
+        @helper.inputText(form(metaField.name.toString + ".key"), 'class -> "form-control")
+        @helper.inputText(form(metaField.name.toString + ".value"), 'class -> "form-control")
         <a href="#" class="removeMeta">Remove</a>
         </div>
         

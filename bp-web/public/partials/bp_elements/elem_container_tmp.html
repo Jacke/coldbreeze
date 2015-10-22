@@ -1,7 +1,7 @@
 
      <!-- FOR CONTAINER TEMPLATE -->
       <div class="tab-pane active" id="edit" ng:show="bpelem.type_title == 'container_brick'">
-          <div class="front-spaces" ng-repeat="space in frontSpaces[bpelem.id]">
+          <div class="front-spaces" ng-attr-id="'spaceProjection'+space.id" ng-repeat="space in frontSpaces[bpelem.id]">
 
         <div class="space-subbricks">
           <div class="space-subbrick">
@@ -28,7 +28,7 @@
 
 
 
- <form novalidate="novalidate" ng-submit="createSpaceElem(space.newSpaceelem);flushEditForm(space.newSpaceelem, space);cneedit=!cneedit" class="form-horizontal form-horizontal form-new-bpelem form-edit-bpelem element-new-form form-new-spaceelem">
+ <form novalidate="novalidate" ng-submit="createSpaceElem(space.newSpaceelem, space);cneedit=!cneedit;flushEditForm(space.newSpaceelem, space)" class="form-horizontal form-horizontal form-new-bpelem form-edit-bpelem element-new-form form-new-spaceelem">
     <div class="form-group element-form-fields">
     <div class="form-group element-form-fields control-group clearfix">
       <div class="controls col-xs-2">
@@ -93,6 +93,36 @@
       </div>
       </div>
     </div>    
+
+
+<!-- Cost module
+    <div class="control-group cost-control-group">
+      <div class="form-group element-form-fields">
+      <div class="form-group control-group clearfix">
+        <div class="controls col-xs-2">
+          <label class="control-label col-sm-1" for="inputPerm">Cost</label>
+        </div>
+        <div class="controls col-xs-6">  
+          <div class="costs cost-list" ng-repeat="cost in space.newSpaceelem.costs">
+            <span class="resource-block" tooltip="{{ cost.resource.title }}">
+                {{ cost.resource.resource.title }} — {{ entityDecorator(cost.entities, cost.resource) }}
+                <a ng-click="delElementResource(cost, spaceelem.costs)" class="btn-delete minicon"></a>
+            </span>
+          </div>   
+          <div class="input-resource-block">
+               <span class="input-resource-block-title">Resouce</span>
+              <select id="inputResource" ng-init="space.newSpaceelem.cost = {};" ng-model="space.newSpaceelem.cost.resource" ng-init="newBpelem.cost.resource=resources[0];newBpelem.cost.entity=newBpelem.cost.resource.entities[0]" ng-change="newBpelem.cost.entity=newBpelem.cost.resource.entities[0]" class="forResource" ng-options="res_cn as res_cn.resource.title for res_cn in resources"></select>
+          </div>
+          <div class="input-entity-block">
+               <span class="input-entity-block-title">Entity</span>
+              <select id="inputEntity" ng-model="space.newSpaceelem.cost.entity" class="forResource" ng-options="entity.id as entity.title for entity in newBpelem.cost.resource.entities"></select>      
+          </div>    
+          <a ng-click="createElementResource(space.newSpaceelem.cost, space.newSpaceelem.costs)" class="btn btn-big btn-success">{{ 'ADD' | translate }}</a>
+        </div>
+      </div>
+      </div>
+    </div> / cost module-->    
+
 <input type="hidden" name="value" ng-model="space.newSpaceelem.business" ng-init="business" >
 <input type="hidden" name="value" ng-model="space.newSpaceelem.process" ng-init="parseInt(BPid)">
 <input type="hidden" id="newSpaceelem_b_type" ng-model="space.newSpaceelem.b_type"/>
@@ -111,8 +141,8 @@
 
 
 
-              <div class="front-space-elems space-elements">
-                <div class="space-blocks space-element" ng-repeat="spaceelem in spaceelems | filter:{space_owned: space.id} | orderBy:'order'">
+        <div class="front-space-elems space-elements">
+           <div class="space-blocks space-element" ng-attr-id="'spaceElem'+spaceelem.id" ng-repeat="spaceelem in spaceelems | filter:{space_owned: space.id} | orderBy:'order'">
                   <div class="element-header">
                     <div class="primary-states">
                     </div>

@@ -1,52 +1,58 @@
- <form novalidate="novalidate" ng-init="" ng-submit="createNewElem();" class="form-horizontal form-new-bpelem" ng-class="newBpelem.type_title">
+ <form novalidate="novalidate" ng-init="" ng-submit="fastCreateNewElem(newBpelem, $parent.bprocess);" class="form-horizontal form-fast-element-create">
     <div class="form-group element-form-fields">
     <div class="control-group">
-      <h3>Create element</h3>
+      <h3>Add element in {{ $parent.bprocess.title }} process</h3>
+    </div>
+    <div class="head-fields">
+    <div class="form-group element-form-fields control-group clearfix">
+      <div class="controls col-xs-2">
+        <label class="control-label col-sm-1" for="fastElemTitle">Title</label>
+      </div>
+      <div class="controls col-xs-4">      
+        <input type="text" id="fastElemTitle" class="form-control" ng-model="newBpelem.title" required/>
+      </div>
+
     </div>
     <div class="form-group element-form-fields control-group clearfix">
       <div class="controls col-xs-2">
-        <label class="control-label col-sm-1" for="inputTitle">Title</label>
+        <label class="control-label col-sm-1" for="fastElemDesc">{{ 'DESC' | translate }}</label>
       </div>
-      <div class="controls col-xs-6">      
-        <input type="text" id="inputTitle" class="form-control" ng-model="newBpelem.title" required/>
-      </div>
-
-    </div>
-    <div class="form-group element-form-fields control-group clearfix">
-      <div class="controls col-xs-2">
-        <label class="control-label col-sm-1" for="inputBusinessId">{{ 'DESC' | translate }}</label>
-      </div>
-      <div class="controls col-xs-6">
-        <textarea type="text" class="form-control" id="inputBusinessId" ng-model="newBpelem.desc"/>
+      <div class="controls col-xs-4">
+        <textarea type="text" class="form-control" id="fastElemDesc" ng-model="newBpelem.desc"/>
       </div>
     </div>
 
     <div class="form-group element-form-fields control-group clearfix">
-
     <div class="controls col-xs-2">
-          <label class="control-label ng-binding" for="inputTitle">Type</label>
+          <label class="control-label ng-binding type-label" for="inputElType">Type</label>
     </div>
-      <div class="controls col-xs-6">
+      <div class="controls col-xs-2">
           <span class="selectedRefType">{{ newBpelem.selectedRef.ref.title }}</span>
             <a ng-click="newBpelem.refSelectHidden=false;" ng-show="newBpelem.refSelectHidden == true;" class="expand-ref-select"><span class="moicon moicon-info expand-ref-select"></span></a>
       </div>      
     </div><!-- form-group element-form-fields -->
     </div>
-    <div class="ref-select-container fadein clearfix" ng-hide="newBpelem.refSelectHidden" ng-init="newBpelem.selectedRef != undefined ? newBpelem.refSelectHidden=false : refSelectHidden=true;">
+    <div class="ref-select-container clearfix" ng-hide="newBpelem.refSelectHidden" ng-init="newBpelem.selectedRef != undefined ? newBpelem.refSelectHidden=false : refSelectHidden=true;">
   <select style="display:none;" name="category" id="categorySelect" ng-model="newBpelem.refCategoryFilter" ng-init="newBpelem.refCategoryFilter = refCategories[0]" ng-options="option for option in refCategories" required="" class="ng-valid ng-valid-required"><option value="0" selected="selected">Base</option></select>
-    <div class="templateButton form-group col-xs-4 clearfix">
-      <div class="ref" ng-repeat="ref in refs | filter: { ref: {category: newBpelem.refCategoryFilter}}" ng-class="{selected: newBpelem.selectedRef.ref.id == ref.ref.id }">
-        <a ng-mouseover="refElem(ref, newBpelem)" ng-click="newBpelem.refSelectHidden=true;" class="btn btn-small btn-primary container_brick" ng-class="isSelected(ref, newBpelem)">{{ ref.ref.title }}</a>
+    <div class="templateButton form-group clearfix">
+      <div class="ref col-xs-5" ng-repeat="ref in $parent.$parent.refs" ng-class="{selected: newBpelem.selectedRef.ref.id == ref.ref.id }">
+        <a ng-mouseover="$parent.$parent.refElem(ref, newBpelem)" ng-click="newBpelem.refSelectHidden=true;" class="btn btn-small btn-primary container_brick" ng-class="isSelected(ref, newBpelem)">{{ ref.ref.title }}</a>
       </div>
     </div>
+    <!--
     <div class="ref-desc form-group col-xs-8">
       <h6>{{ newBpelem.selectedRef.ref.title }}</h6>
       <p>{{ newBpelem.selectedRef.ref.desc }}</p>
       <ul>
         <li ng-repeat="state in newBpelem.selectedRef.bpstate"><span>State: {{state.title}}</span></li>
       </ul>
-    </div>   
-    </div><!-- ref-select-container --> 
+    </div>   -->
+    </div>    
+    </div>
+
+
+<!-- ref-select-container --> 
+    <!--
     <div class="control-group people-control-group">
       <div class="form-group element-form-fields">
       <div class="form-group control-group clearfix">
@@ -91,10 +97,10 @@
         </div>
       </div>
       </div>
-    </div> 
+    </div> -->
 
-    <input type="hidden" name="value" ng-model="newBpelem.business" value="{{ business() }}">
-    <input type="hidden" name="value" ng-model="newBpelem.process" value="{{ BPid }}">
+    <input type="hidden" name="value" ng-model="newBpelem.business" value="{{ $parent.$parent.bprocess.business }}">
+    <input type="hidden" name="value" ng-model="newBpelem.process" value="{{ $parent.$parent.bprocess.id }}">
     <input type="hidden" id="input_b_type" ng-model="newBpelem.b_type"/>
     <input type="hidden" id="input_type_title" ng-model="newBpelem.type_title"/>
     <input type="hidden" id="input_space_own" ng-model="newBpelem.space_own"/>

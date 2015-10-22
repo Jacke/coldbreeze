@@ -7,9 +7,36 @@ a.redButton {
   border-radius: 35px;
   border: #e74c3c;
 }
+a.fastElFormButton {
+    height: 25px;
+    width: 22px;
+    display: block;
+    background: greenyellow;
+    position: absolute;
+    border-radius: 3px;
+    border: #7CBB1C;
+    top: 7px;
+    right: 0px;
+    color: rgba(51,51,51,0.56);
+    padding: 0px 8px;
+    font-size: 17px;
+}
+
+.fastElCreateBtn {
+    z-index: 1;
+    visibility: visible;
+    display: block;
+    width: 17px;
+    height: 31px;
+    margin-left: 20px;
+}
 .process-thumb p.tableMinListGithub {
   left: 2px;
   top: 10px;
+}
+.process-thumb a.fastElFormButton {
+    right: -29px !important;
+    padding: 1px 4px;
 }
 .process-thumb:active p.tableMinListGithub {
     opacity: 1;
@@ -205,6 +232,96 @@ span.number.true.finished {
   margin-top: 28px;
 }
 @import 'session_filters';
+
+
+
+/****
+ Fast element creation
+*/
+.form-fast-element-create h3 {
+    font-family: "AvenirNextCyr-Good", "AvenirNextCyr", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+    font-weight: 300;
+    margin-bottom: 30px;
+    margin-top: 12px;
+    text-align: left;
+}
+
+li.tableMinListItem.fastElementForm {
+    padding-top: 0px;
+}
+
+.fastElementForm label.control-label.col-sm-1 {
+    font-family: "AvenirNextCyr-Good", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 32px;
+    font-weight: 200;
+    margin-top: 0px;
+    padding-top: 0px;
+    padding-bottom: 20px;
+}
+
+.form-fast-element-create input#inputTitle {
+    display: block;
+    width: 100%;
+    height: 32px;
+    padding: 0px 12px;
+    font-size: 14px;
+    line-height: 1.42857;
+    color: #3F3F44;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #CBCBD2;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,0.075);
+    -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+
+label.control-label {
+    font-family: "AvenirNextCyr-Good", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 32px;
+    font-weight: 200;
+    margin-top: 0px;
+    padding-top: 0px;
+    padding-bottom: 20px;
+}
+.form-fast-element-create .head-fields {
+    display: inline-block;
+    float: left;
+    width: 55%;
+}
+
+.form-fast-element-create .ref-select-container {
+    display: inline-block;
+    width: 49%;
+}
+.form-fast-element-create label.control-label.type-label {
+    margin-left: 16px;
+    margin-top: -8px;
+}
+
+.cardTablesTable .cardBoardHeader {
+    margin-top: 60px;
+    background: #C9D6DC;
+    padding: 6px 0px 10px 9px;
+}
+
+.cardTablesTable .cardBoardHeader h1 {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 20px;
+    color: #365A6B;
+    font-family: 'Open Sans', Helvetica;
+    font-weight: 600;
+}
+
+
+
+
+
 
 
 

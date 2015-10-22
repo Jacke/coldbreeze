@@ -26,6 +26,7 @@ import play.api.data.FormError
 import views._
 import models.User
 import service.DemoUser
+import service._
 import securesocial.core._
 import models.DAO._
 import models.DAO.resources._
@@ -62,8 +63,10 @@ class ProcessInputController(override implicit val env: RuntimeEnvironment[DemoU
     if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, bpID)) {
       val userId = request.user.main.userId
       val lang:String = models.AccountsDAO.getRolesAndLang(userId).get._3
-
-      service.Build.run(bpID, Some(lang), invoke = true) match {
+      val costs = ElementResourceDAO.getByProcess(bpID)
+      val costPipeFn = pipes.ElementResourceBuilderPipe.apply(costs)
+      val pipesList:List[LaunchMapPipe => ExecutedLaunchCVPipes] = List(costPipeFn)
+      service.Build.run(bpID, Some(lang), invoke = true, pipesList) match {
         case Some(process) => { 
           action(request.user.main.userId, process = Some(bpID), ProcHisCom.processLaunched, None, None)
           Ok(Json.toJson(Map("success" -> "station_id", "session" -> process.session_id.toString)))
@@ -72,6 +75,7 @@ class ProcessInputController(override implicit val env: RuntimeEnvironment[DemoU
       }
     } else { Forbidden(Json.obj("status" -> "Access denied")) }  
   }
+
   def invokeFrom(session_id: Int, bpID: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, bpID)) {
 
@@ -120,7 +124,7 @@ class ProcessInputController(override implicit val env: RuntimeEnvironment[DemoU
        action(request.user.main.userId, process = Some(bpID), ProcHisCom.processResumed, None, None)
        controlles.launches.LaunchStack.pop(launchId = session_id)
        controllers.UserActor.updateLaunchLock(target="lock", email=request.user.main.userId, isLock=true, launchId=session_id)
-       
+
        Ok(Json.toJson(Map("success" -> process.session_id)))
       }
       case _ => BadRequest(Json.toJson(Map("error" -> "Error output")))

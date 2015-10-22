@@ -15,7 +15,7 @@
   <ul ul id="tablemin" class="tableMinList processList">
   <div class="process" ng-repeat="bprocess in bprocesses | filter:search">
     <div class="process-status">
-    <li class="tableMinListItem">
+    <li class="tableMinListItem frontProcessInfo" ng-init="bprocess.fastElForm=false" ng-hide="bprocess.fastElForm">
       <h2 class="tableMinListName">
         <a class="tableMinName vIcoIn" href="/a#/bprocess/{{ bprocess.id }}/elements">{{ bprocess.title }}</a>
         <span class="tableMinVanity">{{ filterService(bprocess.service) }}</span>
@@ -32,9 +32,21 @@
       <div class="process-thumb" ng:show="emptyElemCheck(bprocess.trees)">
         <p class="tableMinListGithub">
           <a class="redButton" ng-click="run(bprocess)" tooltip-placement="bottom" tooltip="Launch"></a>
+          <div class="fastElCreateBtn">
+            <a class="fastElFormButton" ng-click="switchFastElementForm(bprocess)" tooltip-placement="left" tooltip="Add element">+</a>
+          </div> 
         </p>
       </div>
     </li>
+    <!-- Fast element form -->
+    <li class="tableMinListItem fastElementForm nga-fast nga-stagger-fast nga-squash-right" ng-show="bprocess.fastElForm">
+      <div ng-include src="'assets/partials/bprocesses/fastElementCreation.html'"></div>
+
+          <div class="fastElCreateBtn">
+            <a class="fastElFormButton" ng-click="switchFastElementForm(bprocess)" tooltip-placement="left" tooltip="Close form">-</a>
+          </div>   
+    </li>
+    <!-- Fast element form /-->
     </div>
     <div class="stations"> <!-- ng:show="emptyCheck(process.stations, bprocess.id)">    | filter: { station.paused: true } | slice:2:2 -->
       <div ng-include src="'assets/partials/launchesBar.html'" class="launches-bar" ng-repeat="session in bprocess.sessions[0].sessions | filter: filterForActiveLaunch"></div>

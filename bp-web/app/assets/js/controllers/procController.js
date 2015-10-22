@@ -1,8 +1,8 @@
 define(['angular', 'app', 'controllers'], function (angular, minorityApp, minorityControllers) {
 
 // INDEX
-return minorityControllers.controller('BProcessListCtrl', ['$rootScope','$scope','$window','$translate' ,'$rootScope','TreeBuilder', 'NotificationBroadcaster','SessionsFactory' ,'ngDialog', '$http', '$routeParams', '$filter', 'BPElemsFactory','BPSpacesFactory', 'BPSpaceElemsFactory',  'BProcessesFactory','BProcessFactory', 'BPStationsFactory', 'BPServicesFactory', '$location',
-  function ($rootScope,$scope, $window, $translate, $rootScope,TreeBuilder, NotificationBroadcaster,SessionsFactory, ngDialog, $http, $routeParams, $filter, BPElemsFactory, BPSpacesFactory, BPSpaceElemsFactory, BProcessesFactory, BProcessFactory, BPStationsFactory, BPServicesFactory, $location) {
+return minorityControllers.controller('BProcessListCtrl', ['$rootScope','$scope','$window','$translate' ,'$rootScope','BPElemsFactory','RefsFactory','TreeBuilder', 'NotificationBroadcaster','SessionsFactory' ,'ngDialog', '$http', '$routeParams', '$filter', 'BPElemsFactory','BPSpacesFactory', 'BPSpaceElemsFactory',  'BProcessesFactory','BProcessFactory', 'BPStationsFactory', 'BPServicesFactory', '$location',
+  function ($rootScope,$scope, $window, $translate, $rootScope,BPElemsFactory, RefsFactory, TreeBuilder, NotificationBroadcaster,SessionsFactory, ngDialog, $http, $routeParams, $filter, BPElemsFactory, BPSpacesFactory, BPSpaceElemsFactory, BProcessesFactory, BProcessFactory, BPStationsFactory, BPServicesFactory, $location) {
 
 
  $scope.changeLanguage = function () {
@@ -376,6 +376,46 @@ $scope.run = function (process) {
       }
       );
   }
+
+  /***
+   * Fast element creation
+   */
+$scope.fastCreateNewElem = function(elem,process) {
+  console.log(elem);
+  $scope.createNewElem(elem);
+}
+$scope.refs = [];
+$scope.switchFastElementForm = function(process) {
+  if ($scope.refs.length == 0) {
+     $scope.refs = RefsFactory.query();
+  }
+  process.fastElForm == true ? process.fastElForm=false : process.fastElForm=true;
+}
+$scope.refElem = function (ref, elem) {
+    elem.ref = ref.ref.id;
+    elem.selectedRef = ref;
+}
+  $scope.createNewElem = function (elem,process) {
+    BPElemsFactory.create(elem).$promise.then(function(data) {
+      //$scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
+      console.log("lighted");
+      $scope.newBpelem = { desc: "", process: process.id, business: process.business };
+      //$scope.reloadTree($scope.trees);
+      $scope.switchFastElementForm(process);
+
+    });
+
+  };
+
+
+
+
+
+
+
+
+
+
 
 }]);
 

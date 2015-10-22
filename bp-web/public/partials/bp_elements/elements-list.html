@@ -41,7 +41,7 @@
 
 
 <div class="elements" ng-repeat="bpelem in bpelems | orderBy:'order'">
-<div class="proc-element minimal" ng-class="'elem-'+bpelem.id">
+<div class="proc-element minimal" ng-attr-id="'frontElem'+bpelem.id" ng-class="'elem-'+bpelem.id">
     <div class="element-header">
     <div class="primary-states">
     </div>

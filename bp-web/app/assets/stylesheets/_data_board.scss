@@ -1,3 +1,7 @@
+.resources-list .resource li.tableMinListItem {
+    border: none;
+    padding-bottom: 0px;
+}
 .boards {
     clear: both;
 }
@@ -11,7 +15,7 @@
 }
 
 .boards .board {
-    border-bottom: solid 1px #CCC3C3;
+    border-bottom: none;
     padding-bottom: 9px;
     margin-bottom: 14px;
     padding-top: 5px;
@@ -110,4 +114,18 @@ ul#tablemin.resourceList {
 }
 #entityCreateBtn {
 	margin-top: -60px;
+}
+
+.resources-list .tableMinListFilter.search-process-input.add-resource-field.filterLayer {
+    float: left;
+    margin-left: 30px;
+}
+
+.resources-list button#createResourceBtn {
+    float: right;
+    margin-right: 31px;
+}
+
+.resources-list .boardEntity form {
+    display: inline-block;
 }

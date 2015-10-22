@@ -27,6 +27,35 @@
           <span class="selectedRefType">{{ spaceelem.b_type }}</span>
       </div>      
     </div><!-- form-group element-form-fields -->
+
+<!-- Cost module
+    <div class="control-group cost-control-group">
+      <div class="form-group element-form-fields">
+      <div class="form-group control-group clearfix">
+        <div class="controls col-xs-2">
+          <label class="control-label col-sm-1" for="inputPerm">Cost</label>
+        </div>
+        <div class="controls col-xs-6">  
+          <div class="costs cost-list" ng-repeat="cost in spaceelem.costs">
+            <span class="resource-block" tooltip="{{ cost.resource.title }}">
+                {{ cost.resource.resource.title }} — {{ entityDecorator(cost.entities, cost.resource) }}
+                <a ng-click="delElementResource(cost, spaceelem.costs, true)" class="btn-delete minicon"></a>
+            </span>
+          </div>   
+          <div class="input-resource-block">
+               <span class="input-resource-block-title">Resource</span>
+              <select id="inputResource" ng-init="spaceelem.cost = {};" ng-model="spaceelem.cost.resource" ng-init="newBpelem.cost.resource=resources[0];newBpelem.cost.entity=newBpelem.cost.resource.entities[0]" ng-change="newBpelem.cost.entity=newBpelem.cost.resource.entities[0]" class="forResource" ng-options="res_cn as res_cn.resource.title for res_cn in resources"></select>
+          </div>
+          <div class="input-entity-block">
+               <span class="input-entity-block-title">Entity</span>
+              <select id="inputEntity" ng-model="spaceelem.cost.entity" class="forResource" ng-options="entity.id as entity.title for entity in newBpelem.cost.resource.entities"></select>      
+          </div>    
+          <a ng-click="createElementResource(spaceelem.cost, spaceelem.costs)" class="btn btn-big btn-success">{{ 'ADD' | translate }}</a>
+        </div>
+      </div>
+      </div>
+    </div> / cost module-->
+
     </div>
 
 

@@ -53,7 +53,9 @@ created_at:Option[org.joda.time.DateTime] = None, updated_at:Option[org.joda.tim
     states: List[Int], 
     switches: List[Int], 
     reactions: List[Int], 
-    reaction_state_outs: List[Int])
+    reaction_state_outs: List[Int],
+    topoElem:List[Int]=List.empty,
+    topoSpaceElem:List[Int]=List.empty)
 
   
 object RefDAO {
