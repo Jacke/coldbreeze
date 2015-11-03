@@ -58,6 +58,11 @@ POST    /slat/remove                              controllers.SlatController.del
 
 ###############################################  API  ###################################################################
 GET     /api/v1/board/:id/slats                           controllers.SlatController.index(id)
+POST    /api/v1/entities/slats                            controllers.SlatController.APIFindByEntities()
+
+POST    /api/v1/slat/:slat_id/fill                        controllers.SlatController.APIfill(slat_id: String)
+POST    /api/v1/slat/:slat_id/refill                      controllers.SlatController.APIrefill(slat_id: String)
+
 POST    /api/v1/entity/:entity_id/slats/create            controllers.SlatController.APIcreate(entity_id)
 POST    /api/v1/ent/:entity_id/slat/:slat_id/edit         controllers.SlatController.APIedit(entity_id, slat_id)
 POST    /api/v1/slat/:id/remove                           controllers.SlatController.APIdelete(id)

@@ -238,7 +238,11 @@ $scope.spaceelems = BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid
 
 
       /* cost */
-
+  var fetchObj = function(objects) {
+    if (objects != undefined) {
+      return _.forEach(objects, function(obj) { return obj.obj })
+    } else { return undefined }
+  };
   // Fetch resource and entities for that resource
   DataCostCollection.query().$promise.then(function(res) {
       $scope.resources = res;
@@ -247,14 +251,14 @@ $scope.spaceelems = BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid
     DataCostAssign.query( { BPid: $route.current.params.BPid } ).$promise.then(function(cost) {
       $scope.processCosts = cost;
 
-      _.forEach($scope.bpelems, function(z)    { return z.costs = _.filter($scope.processCosts, function(cost) {
-          cost.resource = _.find($scope.resources, function(res){return res.resource == cost.resource_id });
-          return $scope.topoIdChecker(z.topo_id) == cost.element_id;
-      });  });
-      _.forEach($scope.spaceelems, function(z) { return z.costs = _.filter($scope.processCosts, function(cost) {
-          cost.resource = _.find($scope.resources, function(res){return res.resource == cost.resource_id });
-          return $scope.topoIdChecker(z.topo_id) == cost.element_id;
-      });  });
+      _.forEach($scope.bpelems, function(z)    { z.costs = _.filter($scope.processCosts, function(cost) {
+          cost.resource = _.find($scope.resources, function(res){return res.resource == cost.obj.resource_id });
+          return $scope.topoIdChecker(z.topo_id) == cost.obj.element_id;
+      });  return fetchObj(z.costs); });
+      _.forEach($scope.spaceelems, function(z) { z.costs = _.filter($scope.processCosts, function(cost) {
+          cost.resource = _.find($scope.resources, function(res){return res.resource == cost.obj.resource_id });
+          return $scope.topoIdChecker(z.topo_id) == cost.obj.element_id;
+      });  return fetchObj(z.costs); });
 
     });   });   
     /********************/
@@ -388,7 +392,11 @@ $scope.loadResources = function() {
 
   
       /* cost */
-
+  var fetchObj = function(objects) {
+    if (objects != undefined) {
+      return _.forEach(objects, function(obj) { return obj.obj })
+    } else { return undefined }
+  };
   // Fetch resource and entities for that resource
   DataCostCollection.query().$promise.then(function(res) {
       $scope.resources = res;
@@ -397,14 +405,14 @@ $scope.loadResources = function() {
     DataCostAssign.query( { BPid: $route.current.params.BPid } ).$promise.then(function(cost) {
       $scope.processCosts = cost;
 
-      _.forEach($scope.bpelems, function(z)    { return z.costs = _.filter($scope.processCosts, function(cost) {
-          cost.resource = _.find($scope.resources, function(res){return res.resource.id == cost.resource_id });
-          return $scope.topoIdChecker(z.topo_id) == cost.element_id;
-      });  });
-      _.forEach($scope.spaceelems, function(z) { return z.costs = _.filter($scope.processCosts, function(cost) {
-          cost.resource = _.find($scope.resources, function(res){return res.resource.id == cost.resource_id });
-          return $scope.topoIdChecker(z.topo_id) == cost.element_id;
-      });  });
+      _.forEach($scope.bpelems, function(z)    { z.costs = _.filter($scope.processCosts, function(cost) {
+          cost.resource = _.find($scope.resources, function(res){return res.resource.id == cost.obj.resource_id });
+          return $scope.topoIdChecker(z.topo_id) == cost.obj.element_id;
+      });  return fetchObj(z.costs) });
+      _.forEach($scope.spaceelems, function(z) { z.costs = _.filter($scope.processCosts, function(cost) {
+          cost.resource = _.find($scope.resources, function(res){return res.resource.id == cost.obj.resource_id });
+          return $scope.topoIdChecker(z.topo_id) == cost.obj.element_id;
+      });  return fetchObj(z.costs) });
 
     });   });   
     /********************/

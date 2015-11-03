@@ -41,12 +41,14 @@ import play.api.i18n.MessagesApi
 
 //class BoardController @Inject() (implicit val env: Environment[User, SessionAuthenticator])
 //  extends Silhouette[User, SessionAuthenticator] with MongoController {
-
 class SlatController @Inject() (val reactiveMongoApi: ReactiveMongoApi,val messagesApi: MessagesApi,
   val env: Environment[User, CookieAuthenticator],
   socialProviderRegistry: SocialProviderRegistry)
   extends Controller with Silhouette[User, CookieAuthenticator] with MongoController with ReactiveMongoComponents {
 
+
+    implicit val SlatSelectorFormat = Json.format[SlatSelector]
+    implicit val SlatSelectorReader = Json.reads[SlatSelector]
 
   // get the collection 'boards'
   def slatCollection: JSONCollection = db.collection[JSONCollection]("slats")
@@ -147,6 +149,27 @@ class SlatController @Inject() (val reactiveMongoApi: ReactiveMongoApi,val messa
 def APIindex(id: String) = Action { implicit request =>
   Ok("ok")
 }
+def APIFindByEntities() = Action.async(parse.json) { implicit request =>
+  request.body.validate[SlatSelector].map { selector =>
+    val uids:List[UUID] = selector.entities_ids.map(id => UUID.fromString(id))
+    
+    val query = BSONDocument(
+      "query" -> BSONDocument())
+    // the cursor of documents
+    val cursor = slatCollection.find(Json.obj("query" -> BSONDocument("id" -> BSONDocument("$in" -> uids.map(u => u.toString)) ))).cursor[Slat](readPreference = ReadPreference.primary)
+    val cursor3 = slatCollection.find(Json.obj("query" -> BSONDocument())).cursor[Slat](readPreference = ReadPreference.primary)
+    
+    //val user = Some(request.identity)
+    cursor.collect[List]().map { slats =>
+             Ok(Json.toJson(slats))
+    }
+  }.recoverTotal {
+      case error =>
+        Future.successful(Ok(Json.obj("message" -> "invalid.data")))
+    }
+}
+
+
 // POST
 def APIdelete(id: String) = Action { implicit request =>
       println(s"slat delete request for id: $id")
@@ -155,7 +178,7 @@ def APIdelete(id: String) = Action { implicit request =>
 }
 
 def APIcreate(entity_id: String) = Action.async(parse.json) { implicit request =>
-request.body.validate[Slat].map { slat =>
+   request.body.validate[Slat].map { slat =>
 
     val futureEntity = entityCollection.find(BSONDocument("id" -> entity_id)).one[Entity]
     for {    
@@ -197,6 +220,52 @@ request.body.validate[Slat].map { slat =>
             "sval" -> BSONString(slat.sval),
             "meta" -> BSONString(slat.meta),
             "publisher" -> BSONString(slat.publisher)))
+        // ok, let's do the update
+        slatCollection.update(BSONDocument("id" -> slat_id), modifier).map { _ =>
+          Ok(Json.obj("message" -> "ok"))
+        } 
+    }.recoverTotal {
+      case error => {
+        println("error")
+        println(error)
+        Future.successful(Ok(Json.obj("message" -> "invalid.data")))
+      }
+    }
+}
+// /api/v1/slat/:slat_id/fill
+def APIfill(slat_id: String) = Action.async(parse.json) { implicit request =>
+request.body.validate[String].map { sval =>
+        // create a modifier document, ie a document that contains the update operations to run onto the documents matching the query
+        // create a modifier document, ie a document that contains the update operations to run onto the documents matching the query
+        val date = new DateTime().getMillis
+        println(date)
+        val modifier = BSONDocument(
+          // this modifier will set the fields 'updateDate', 'title', 'content', and 'publisher'
+          "$set" -> BSONDocument(
+            "sval" -> BSONString(sval)))
+        // ok, let's do the update
+        slatCollection.update(BSONDocument("id" -> slat_id), modifier).map { _ =>
+          Ok(Json.obj("message" -> "ok"))
+        } 
+    }.recoverTotal {
+      case error => {
+        println("error")
+        println(error)
+        Future.successful(Ok(Json.obj("message" -> "invalid.data")))
+      }
+    }
+}
+// /api/v1/slat/:slat_id/refill
+def APIrefill(slat_id: String) = Action.async(parse.json) { implicit request =>
+request.body.validate[String].map { sval =>
+        // create a modifier document, ie a document that contains the update operations to run onto the documents matching the query
+        // create a modifier document, ie a document that contains the update operations to run onto the documents matching the query
+        val date = new DateTime().getMillis
+        println(date)
+        val modifier = BSONDocument(
+          // this modifier will set the fields 'updateDate', 'title', 'content', and 'publisher'
+          "$set" -> BSONDocument(
+            "sval" -> BSONString(sval)))
         // ok, let's do the update
         slatCollection.update(BSONDocument("id" -> slat_id), modifier).map { _ =>
           Ok(Json.obj("message" -> "ok"))

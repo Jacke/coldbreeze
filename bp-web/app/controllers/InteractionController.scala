@@ -37,7 +37,11 @@ import decorators._
 import main.scala.simple_parts.process.Units._  
 import main.scala.bprocesses._
 import builders._
-  
+import minority.utils._
+import scala.util.{Success, Failure}
+import scala.concurrent._
+import scala.concurrent.duration._
+
 class InteractionController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
   implicit val SessionElementsReads = Json.reads[SessionElements]
   implicit val SessionElementsFormat = Json.format[SessionElements]
@@ -71,26 +75,39 @@ class InteractionController(override implicit val env: RuntimeEnvironment[DemoUs
   implicit val UnitReactionStateOutWrites = Json.format[UnitReactionStateOut]
   implicit val BPSessionStateReads = Json.reads[BPSessionState]
   implicit val BPSessionStateWrites = Json.format[BPSessionState]
+  implicit val EntityFormat = Json.format[Entity]
+  implicit val EntityReaders = Json.reads[Entity]
+  implicit val ResourceDTOReaders = Json.reads[ResourceDTO]
+  implicit val ResourceDTOFormat = Json.format[ResourceDTO]
 
+ case class CostContainer(elementId: Int,
+                          entity: List[Entity], 
+                          resource: ResourceDTO)
 
  case class SessionReactionContainer(session_state: Option[BPSessionState], 
                                      reaction: SessionUnitReaction, 
-                                     outs: List[SessionUnitReactionStateOut])
- case class ReactionContainer(session_state: Option[BPSessionState], reaction: UnitReaction, outs: List[UnitReactionStateOut])
- 
+                                     outs: List[SessionUnitReactionStateOut],
+                                     costs: List[CostContainer] = List())
+ case class ReactionContainer(session_state: Option[BPSessionState], 
+                              reaction: UnitReaction, 
+                              outs: List[UnitReactionStateOut])
 
  case class SessionInteractionContainer(session_container:Option[SessionContainer],
-                                 reactions: List[SessionReactionContainer], 
-                                 outs_identity: List[BPSessionState])
+                                        reactions: List[SessionReactionContainer], 
+                                        outs_identity: List[BPSessionState],
+                                        costs: List[CostContainer] = List())
  case class InteractionContainer(session_container:Option[SessionContainer],
                                  reactions: List[ReactionContainer], 
                                  outs_identity: List[BPSessionState])
 
-implicit val SessionUnitReactionStateOutReads = Json.reads[SessionUnitReactionStateOut]
-implicit val SessionUnitReactionStateOutWrites = Json.format[SessionUnitReactionStateOut]
 
-implicit val SessionUnitReactionReads = Json.reads[SessionUnitReaction]
-implicit val SessionUnitReactionWrites = Json.format[SessionUnitReaction]
+implicit val CostContainerReads = Json.reads[CostContainer]
+implicit val CostContainerWrites = Json.format[CostContainer]
+
+  implicit val SessionUnitReactionStateOutReads = Json.reads[SessionUnitReactionStateOut]
+  implicit val SessionUnitReactionStateOutWrites = Json.format[SessionUnitReactionStateOut]
+  implicit val SessionUnitReactionReads = Json.reads[SessionUnitReaction]
+  implicit val SessionUnitReactionWrites = Json.format[SessionUnitReaction]
   implicit val ReactionContainerReads = Json.reads[ReactionContainer]
   implicit val ReactionContainerWrites = Json.format[ReactionContainer]
   implicit val SessionReactionContainerReads = Json.reads[SessionReactionContainer]
@@ -100,14 +117,21 @@ implicit val SessionUnitReactionWrites = Json.format[SessionUnitReaction]
   implicit val InteractionContainerReads = Json.reads[InteractionContainer]
   implicit val InteractionContainerWrites = Json.format[InteractionContainer]
 
+ val waitSeconds = 100000
+ val wrapper = minority.utils.BBoardWrapper.apply()
 
+/** Fetch interaction action, used in input bar for making request directly to launch
+  * 
+  * @param  session_id id of launch
+  * @return return either SessionInteractionContainer with session, reaction containers, and session states.
+  */
 def fetchInteraction(session_id: Int) = SecuredAction { implicit request => 
   if (security.BRes.sessionSecured(session_id, request.user.main.userId, request.user.businessFirst)) {
 
 
-   val result = models.DAO.BPSessionDAO.findById(id = session_id)
+   val session = models.DAO.BPSessionDAO.findById(id = session_id)
   
-   result match {
+   session match {
 
   	case Some(session) => {   
   		val process:BProcessDTO = session.process
@@ -116,20 +140,115 @@ def fetchInteraction(session_id: Int) = SecuredAction { implicit request =>
       Logger.debug(s"reaction length ${reactions.length}")
 
       val reaction_outs:List[SessionUnitReactionStateOut] = SessionReactionStateOutDAO.findByReactions(reactions.map(_.id.get))
-       
+      
+      val costs:List[CostContainer] = reactions.map(reaction => findCost(sessionElemTopoId = reaction.element)).flatten
   	  val session_states: List[BPSessionState] = BPSessionStateDAO.findByOriginIds(reaction_outs.map(_.state_ref))
-        Logger.debug("Session state")
-        Logger.debug(s"session_states length ${session_states.length}")
-          val reaction_container = reactions.map(reaction => 
-          	SessionReactionContainer(session_state = session_states.find(state => Some(reaction.from_state) == state.origin_state),
-          					  reaction, reaction_outs.filter(out => Some(out.reaction) == reaction.id))
-          )
 
-  	   Ok(Json.toJson(SessionInteractionContainer(result,reaction_container, session_states)))
+      Logger.debug("Session state")
+      Logger.debug(s"session_states length ${session_states.length}")
+        val reaction_container = reactions.map(reaction => 
+        	SessionReactionContainer(session_state = session_states.find(state => Some(reaction.from_state) == state.origin_state),
+        					  reaction, 
+                    reaction_outs.filter(out => Some(out.reaction) == reaction.id),
+                    costs)
+        )
+
+  	   Ok(Json.toJson(SessionInteractionContainer(Some(session), reaction_container, session_states)))
   	}
   	case _ => BadRequest(Json.toJson(Map("error" -> "Session not found")))
   }
 } else { Forbidden(Json.obj("status" -> "Access denied")) }    
+}
+
+
+def fillSlat(slat_id: String) = SecuredAction.async(BodyParsers.parse.json) { request => 
+    val sval = request.body.validate[String]
+    sval.fold(
+    errors => {
+       Logger.error(s"error with $sval")
+       Future.successful(BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors))))
+    },
+    sval => { 
+      println(sval)
+      wrapper.fillSlat(slat_id, sval).map { _ =>
+        Ok(Json.toJson("ok"))
+      }
+    }
+  )  
+  Future.successful(Ok("ok"))
+}
+def refillSlat(slat_id: String) = SecuredAction.async(BodyParsers.parse.json) { request => 
+    val sval = request.body.validate[String]
+    sval.fold(
+    errors => {
+       Logger.error(s"error with $sval")
+       Future.successful(BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors))))
+    },
+    sval => { 
+      println(sval)
+      wrapper.refillSlat(slat_id, sval).map { _ =>
+        Ok(Json.toJson("ok"))
+      }
+    }
+  )
+  Future.successful(Ok("ok"))
+}
+
+/** Retrive cost through container by session topology id
+  * 
+  * @param  sessionElemTopoId session element topology id
+  * @return List of cost containers that content topo elementId, list of entities 
+  *         and resource dto.
+  */
+private def findCost(sessionElemTopoId: Int):List[CostContainer] = {
+  /* CostContainer(elementId: Int,
+                          entity: List[Entity], 
+                          resource: ResourceDTO)  */
+
+  val elementResources:List[SessionElementResourceDTO] = SessionElementResourceDAO.getAllByElement(sessionElemTopoId)
+  val enitiesIds = elementResources.map(_.entities)
+  val wildCard = enitiesIds.find(id => id == "*").isDefined
+  def retriveResource(resourcesId:Int) = {
+    ResourceDAO.get(resourcesId).get
+  }
+  def retriveEntity(resourcesId:Int, entityId: String, wildcard: Boolean = false):List[Entity] = {
+    val resource = retriveResource(resourcesId)
+    val entities: List[Entity] = wildcard match {
+      case false => {
+          val ft = wrapper.getEntityByResource(resource)
+          Await.result(ft, Duration(waitSeconds, MILLISECONDS)) match {
+            case x => { 
+              println("entity finded by id: ")
+              println(x.head.entities)
+              println(entityId)
+
+               x.head.entities.filter { entity => 
+                println(entity.id); entityId == entity.id.get.toString 
+              }
+            }
+          }        
+      }
+      case _ => {
+          val ft = wrapper.getEntityByResource(resource)
+          Await.result(ft, Duration(waitSeconds, MILLISECONDS)) match {
+            case x => { 
+              println("entity finded by wildcard: ")
+              println(x)
+              x.head.entities
+            }
+          }                
+      }
+    }
+    entities
+  }
+
+  elementResources.map { cost =>
+  val wildcard = cost.entities == "*"
+  CostContainer(cost.element_id, 
+                retriveEntity(cost.resource_id, cost.entities, wildcard),
+                retriveResource(cost.resource_id)
+                )
+  }
 }
 
 

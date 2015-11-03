@@ -352,7 +352,7 @@ width: 100%;
 @media (max-width: 1250px) {
     .session_list__session .instant-input .element-thumb {
     /* margin-left: 16px; */
-        }
+    }
 .session_list__session .instant-input button.confirm-btn {
     /* margin-left: 14px; */
     /* margin-top: 4px; */
@@ -1085,8 +1085,25 @@ a.add-btn {
   color: #2b2b2c;
 }
 
+/****
+   Cost input
+ */
+.launches-bar .costs h2.costTitle {
+    font-size: 18px;
+}
 
+.launches-bar .costs .inputCost {
+    width: 155px;
+}
 
+.launches-bar .costs .inputCostBlankValue {
+    margin-top: 11px;
+}
+
+.launches-bar .costs .inputCostBlankValue input {
+    display: inline-block;
+    width: 63%;
+}
 
 
 

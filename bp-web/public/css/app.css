@@ -570,7 +570,7 @@ a.expand-ref-select {
 }
 
 .proc-element {
-    background: white;
+    /* background: white; */
     margin-bottom: 20px;
     width: 50%;
     border-radius: 7px;
@@ -718,6 +718,8 @@ span.reaction-icon.minicon.minicon-gear-fill-right {
 
 .proc-element.minimal .element-header {
     padding-top: 0px;
+    margin-top: -10px;
+    background: white;
 }
 
 .proc-element.minimal .element-header .info h6.desc {
@@ -742,11 +744,75 @@ span.reaction-icon.minicon.minicon-gear-fill-right {
 
 .proc-element.minimal {
     margin-bottom: -5px;
+    display: inline-block;
+    float: left;
 }
+.elements .dataPipe {
+    display: inline-block;
+    float: left;
+    margin-left: 22px;
+    background: white;
+    padding: 16px 23px 18px 23px;
+    border-radius: 6px;
+    margin-top: 1px;
+}
+.dataPipe .pipe .pipeHeader {
+    font-family: "AvenirNextCyr-Good", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 17px;
+    font-weight: 200;
+    margin-top: 0px;
+    padding-top: 0px;
+    padding-bottom: 9px;
+}
+.pipeContent .pipeContentTitle {
+    font-size: 14px;
+    display: inline-block;
+    margin-right: 17px;
+    margin-bottom: 2px;
+    margin-left: 11px;
+    position: relative;
+}
+.pipeContent .pipeContentTitle:before {
+    width: 6px;
+    height: 6px;
+    content: " ";
+    background: #4C5264;
+    display: inline-block;
+    padding-top: 0px;
+    border-radius: 21px;
+    margin-right: 5px;
+    position: absolute;
+    left: -10px;
+    top: 7px;
+}
+
+
+.pipeContent .pipeContentValue {
+    font-size: 13px;
+    text-align: center;
+}
+
+.pipeContent {
+    display: block;
+    width: 100%;
+}
+
+.dataPipe .pipe {
+    width: 122px;
+}
+.pipeContentBlankValue input {
+    height: 29px;
+    margin-top: 6px;
+    width: 62px;
+    display: inline-block;
+    margin-right: 5px;
+}
+
 .proc-element.minimal .element-header .info .type:hover ul.type-tabs {
      border-radius: 0px;
-         border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
+     border-top-left-radius: 4px;
+     border-bottom-left-radius: 4px;
      height: 65px;
 }
 

@@ -131,8 +131,6 @@ object BPSessionDAO {
       })
     }
   }
-  
-
   def makeUnlisted(id: Int) = database withSession {
     implicit session =>
     get(id) match {
@@ -171,7 +169,7 @@ object BPSessionDAO {
           val station = BPStationDAO.findBySession(ses.id.get)        
           val element_quantity = SessionProcElementDAO.findBySession(ses.id.get).length //+ SessionSpaceElemDAO.findFlatBySession(ses.id.get).length
           val step = station match {
-            case Some(station) => (station.step - 1).toDouble
+            case Some(station) => station.step.toDouble
             case _ => element_quantity.toDouble
           }
           val percent = percentDecorator(step, element_quantity)

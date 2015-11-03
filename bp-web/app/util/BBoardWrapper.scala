@@ -25,6 +25,7 @@ import models.DAO.resources._
 case class BBoardWrapperConnection(host: String = "localhost", port: String = "9001")
 case class BoardContainer(boards: List[Board], entities:List[Entity], slats:List[Slat])
 case class ResourceEntitySelector(resource: ResourceDTO, entities: List[Entity])
+case class SlatSelector(entities_ids: List[String])
 
 
 class BBoardWrapper(connection: BBoardWrapperConnection) {
@@ -45,7 +46,8 @@ class BBoardWrapper(connection: BBoardWrapperConnection) {
   implicit val BoardContainerFormat = Json.format[BoardContainer]
   implicit val ResourceEntitySelectorFormat = Json.format[ResourceEntitySelector]
   implicit val ResourceEntitySelectorReaders = Json.reads[ResourceEntitySelector]
-
+  implicit val SlatSelectorFormat = Json.format[SlatSelector]
+  implicit val SlatSelectorReaders = Json.reads[SlatSelector]
 
   def ping():Future[Boolean] = {
     Try(WS.url(s"http://${connection.host}:${connection.port}/api/v1/ping").get().map(response =>
@@ -121,6 +123,52 @@ class BBoardWrapper(connection: BBoardWrapperConnection) {
         .getOrElse(Future.successful(empty))
      holder   
   }
+  def getEntityByResource(resource: ResourceDTO):Future[List[ResourceEntitySelector]] = {
+    val resource_ids = List()//resources.map(_.id.get)
+    val empty = List.empty[ResourceEntitySelector]
+     val holder = Try(WS.url(s"http://${connection.host}:${connection.port}/api/v1/board").get().map { response =>
+        val ponse = response.json.as[BoardContainer]
+        // ResourceEntitySelector(resource: ResourceDTO, entities: List[Entity])
+        println(response.json)
+          val resource_id = resource.id.get
+          val board_ids:List[String] = ponse.boards//.map(cn => cn.boards)
+                          .filter(board => isOnBoardByResource(board, resource_id))
+                          .map(b => b.id.get.toString)
+          //println("boards_ids")
+          //board_ids.foreach(println)                          
+
+          val entities:List[Entity] = ponse.entities.filter(entity => board_ids.contains(entity.boardId.toString))
+          List(ResourceEntitySelector(resource, entities = entities))
+        
+     }.recover{ case c => {
+      println(c)
+      empty 
+      }
+      })
+        .getOrElse(Future.successful(empty))
+     holder   
+  }  
+  def getEntityByResourceId(resource_id: Int):Future[List[Entity]] = {
+    val empty = List.empty[Entity]
+     val holder = Try(WS.url(s"http://${connection.host}:${connection.port}/api/v1/board").get().map { response =>
+        val ponse = response.json.as[BoardContainer]
+        // ResourceEntitySelector(resource: ResourceDTO, entities: List[Entity])
+        println(response.json)
+          val board_ids:List[String] = ponse.boards//.map(cn => cn.boards)
+                          .filter(board => isOnBoardByResource(board, resource_id))
+                          .map(b => b.id.get.toString)
+          //println("boards_ids")
+          //board_ids.foreach(println)                          
+          val entities:List[Entity] = ponse.entities.filter(entity => board_ids.contains(entity.boardId.toString))
+          entities
+     }.recover{ case c => {
+      println(c)
+      empty 
+      }
+      })
+        .getOrElse(Future.successful(empty))
+     holder   
+  }  
 
   def getEntitiesByBoard(board_id: String, resource_id: Int = 0, biz: String = "") = {
     val empty:BoardContainer = BoardContainer(boards = List(),entities = List(), slats = List())
@@ -171,6 +219,22 @@ class BBoardWrapper(connection: BBoardWrapperConnection) {
         .getOrElse(Future.successful(empty))
      holder   
   }  
+  // GET     /api/v1/entities/slats
+  def getSlatByEntitiesIds(entities_ids: List[String]):Future[List[Slat]] = {
+    val empty:List[Slat] = List() 
+    val data = Json.toJson(SlatSelector(entities_ids))
+     val holder = Try(WS.url(s"http://${connection.host}:${connection.port}/api/v1/entities/slats").post(data).map { response =>
+        val res = response.json.as[List[Slat]]
+        println(response.json)
+        res
+     }.recover{ case c => {
+      println(c)
+      empty 
+      }
+      })
+        .getOrElse(Future.successful(empty))
+     holder   
+  }    
 /*-------------------------------------------
  * Create
  --------------------------------------------*/  
@@ -248,7 +312,36 @@ class BBoardWrapper(connection: BBoardWrapperConnection) {
         .getOrElse(Future.successful("false"))
       holder  
   }
-
+  // /api/v1/slat/:slat_id/fill
+  def fillSlat(slat_id: String, sval: String):Future[String] = {
+     val data = Json.toJson(sval)
+     println("FILL SLAT")
+     println(data)
+     val holder = Try(
+     WS.url(s"http://${connection.host}:${connection.port}/api/v1/slat/${slat_id}/fill").post(data)
+      .map { response =>
+        val res = response.json
+        println(res)
+        res.toString
+        }.recover{ case e => {println("error");println( );println();println();println(e); "false" }})
+        .getOrElse(Future.successful("false"))
+      holder  
+  }  
+  // /api/v1/slat/:slat_id/refill
+  def refillSlat(slat_id: String, sval: String):Future[String] = {
+     val data = Json.toJson(sval)
+     println("REFILL SLAT")
+     println(data)
+     val holder = Try(
+     WS.url(s"http://${connection.host}:${connection.port}/api/v1/slat/${slat_id}/refill").post(data)
+      .map { response =>
+        val res = response.json
+        println(res)
+        res.toString
+        }.recover{ case e => {println("error");println( );println();println();println(e); "false" }})
+        .getOrElse(Future.successful("false"))
+      holder  
+  }
 /*-------------------------------------------
  * Remove
  --------------------------------------------*/

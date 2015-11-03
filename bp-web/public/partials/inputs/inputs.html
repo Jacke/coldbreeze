@@ -33,6 +33,16 @@
         <!--<div class="launch-attachments" ng-show="reaction.selected">
             <a href="#" tooltip-placement="bottom" tooltip="Not supporting right now.">Attach</a>
         </div>-->
+        <div class="costs" ng-show="reaction.costs.length > 0">
+            <h2 class="costTitle">Costs</h2>
+            <div class="inputCost" ng-repeat="cost in reaction.costs">
+              <div class="inputCostTitle">{{ cost.resource.title }} {{ cost.entity[0].title }}</div>
+              <div class="inputCostBlankValue">
+                    <input type="text" id="inputContentBlankValue" class="form-control" required="">
+                    <a class="btn btn-small btn-success">Fill</a>
+              </div>
+            </div>  
+        </div>
     </li>
   </ul>
   <div class="process-thumb">

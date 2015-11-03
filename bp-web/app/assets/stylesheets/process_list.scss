@@ -8,17 +8,17 @@ a.redButton {
   border: #e74c3c;
 }
 a.fastElFormButton {
-    height: 25px;
-    width: 22px;
+    height: 26px;
+    width: 16px;
     display: block;
     background: greenyellow;
     position: absolute;
     border-radius: 3px;
     border: #7CBB1C;
-    top: 7px;
+    top: 13px;
     right: 0px;
     color: rgba(51,51,51,0.56);
-    padding: 0px 8px;
+    padding: 0px 4px;
     font-size: 17px;
 }
 
@@ -199,6 +199,7 @@ ul.type-tabs li a:hover {
 .proc-element .form-horizontal {
     padding-bottom: 1px;
     margin-bottom: 0px;
+    background: white;
 }
 
 
@@ -328,9 +329,27 @@ label.control-label {
 @media (max-width: 1200px) {
 
 .process-thumb {
-    right: 1%;
+    right: 3%;
 }
 .process-status .tableMinListControls {
     margin-right: 9%;
+}
+}
+@media (max-width: 985px) {
+.processList .process_content {
+    display: none !important;
+}
+}
+
+@media (min-width: 768px) {
+li.tableMinListItem.fastElementForm .templateButton .ref {
+    padding-left: 0px;
+    padding-right: 0px;
+}
+.form-fast-element-create .form-group.element-form-fields.control-group label {
+    margin-left: -15px;
+}
+.form-fast-element-create .form-group.element-form-fields.control-group label.type-label {
+    margin-left: 0px;
 }
 }

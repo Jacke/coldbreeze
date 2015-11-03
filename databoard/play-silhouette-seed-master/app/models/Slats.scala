@@ -19,6 +19,7 @@ import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
 import reactivemongo.bson._
 import java.util.UUID
+case class SlatSelector(entities_ids: List[String])
 
 case class Slat(
   id: Option[UUID] = Some(UUID.randomUUID()),

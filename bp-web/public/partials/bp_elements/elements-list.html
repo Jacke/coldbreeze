@@ -183,6 +183,24 @@
 </div>
         </div>
   </div>  
+    <div class="dataPipe" ng-repeat="cost in bpelem.costs" ng-show="bpelem.costs.length > 0">
+      <div class="pipe">
+        <div class="pipeHeader"> {{ cost.resource.resource.title }}</div>
+        <div class="pipeContent">
+          <div class="pipeContentTitle">{{ entityDecorator(cost.entities, cost.resource) }}</div>
+          <div class="pipeContentValue">
+              1
+          </div>
+        </div>
+        <div class="pipeContent">
+          <div class="pipeContentTitle">Quantity</div>
+          <div class="pipeContentBlankValue">
+                <input type="text" id="inputContentBlankValue" class="form-control" required="">
+                <a class="btn btn-big btn-success">Fill</a>
+        </div>
+        </div>      
+      </div>
+    </div>
 </div>
   
  <!-- 

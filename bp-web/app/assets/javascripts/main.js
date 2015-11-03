@@ -315,6 +315,8 @@
 
   'angularanimate': '../bower_components/angular-animate/angular-animate',
   'angular': '../bower_components/angular/angular',
+  'react': '../bower_components/react/react',
+
   'angular-websocket': '../bower_components/angular-websocket/angular-websocket',
   'toastr': '../bower_components/angular-toastr/toastr',
   //'toastr-tpl': '../bower_components/angular-toastr/toastr.tpl',
@@ -379,9 +381,9 @@
   };
 
   // Load the app. This is kept minimal so it doesn't need much updating.
-require(['requirejs','jsRoutes','jquery', 'pnofiy','mobileDetect','popupoverlay','drag-on','jquery.nicescroll','ssl','offline','offlineSimulator','header','tooltip','dropdown','underscore','moment','selectize', 'tether', 'shepherd','tour',
+require(['requirejs','jsRoutes','jquery', 'react','pnofiy','mobileDetect','popupoverlay','drag-on','jquery.nicescroll','ssl','offline','offlineSimulator','header','tooltip','dropdown','underscore','moment','selectize', 'tether', 'shepherd','tour',
   ],//'jquery', 'bootstrap'],//, './app'],
-    function (requirejs,jsRoutes,$,pnofiy,mobileDetect,popupoverlay,dragOn,niceScroll,ssl,offline,offlineSimulator,header,tooltip,dropdown,underscore,moment,selectize,tether,shepherd,tour) {
+    function (requirejs,jsRoutes,$,react, pnofiy,mobileDetect,popupoverlay,dragOn,niceScroll,ssl,offline,offlineSimulator,header,tooltip,dropdown,underscore,moment,selectize,tether,shepherd,tour) {
         document.tour = tour;
       $(document).ready(function(){
         document.mobileDetect = new mobileDetect(window.navigator.userAgent);

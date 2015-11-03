@@ -4,6 +4,19 @@ import models.DAO.driver.MyPostgresDriver1.simple._
 import slick.model.ForeignKeyAction
 import models.DAO.conversion.{DatabaseCred, Implicits}  
 import slick.model.ForeignKeyAction
+import minority.utils._
+
+/*
+ Try implement this shit, for nested objects, like slats and entities
+object Foo {
+  def fromRow(id: Int, myInt: Int, myString: String): Foo = Foo(id, Bar(myInt, myString))
+  def toRow(f: Foo) = Some((f.id, f.myBar.myInt, f.myBar.myString))
+}
+
+Then in your table schema:
+
+def * = id ~ myInt ~ myString <> (Foo.fromRow _, Foo.toRow _)
+*/
 
 class ElementResources(tag: Tag) extends Table[ElementResourceDTO](tag, "element_resources"){
   def id         = column[Int]("id", O.PrimaryKey, O.AutoInc)
@@ -46,7 +59,8 @@ case class ElementResourceDTO(
   resource_id: Int,
   entities: String = "",
   created_at: Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
-  updated_at: Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now) ) {
+  updated_at: Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
+) {
 	def fetchEntities:List[String] = {
 		entities.split(",").toList
 	}
@@ -59,7 +73,7 @@ case class SessionElementResourceDTO(
   resource_id: Int,
   entities: String = "",
   created_at: Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
-  updated_at: Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now) ) {
+  updated_at: Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
   def fetchEntities:List[String] = {
     entities.split(",").toList
   }
@@ -80,6 +94,11 @@ object ElementResourceDAO {
       val q3 = for { s ← element_resources if s.process === k } yield s 
       q3.list
   }   
+  def getAllByElement(k: Int):List[ElementResourceDTO] = database withSession {
+    implicit session ⇒
+      val q3 = for { s ← element_resources if s.element === k } yield s 
+      q3.list
+  }     
   def update(id: Int, annotation: ElementResourceDTO) = database withSession { implicit session ⇒
     val element_resourcesUpdate: ElementResourceDTO = annotation.copy(Option(id))
     element_resources.filter(_.id === id).update(element_resourcesUpdate)
@@ -123,7 +142,12 @@ object SessionElementResourceDAO {
     implicit session ⇒
       val q3 = for { s ← session_element_resources if s.process === k } yield s 
       q3.list
-  }    
+  }   
+  def getAllByElement(k: Int):List[SessionElementResourceDTO] = database withSession {
+    implicit session ⇒
+      val q3 = for { s ← session_element_resources if s.element === k } yield s 
+      q3.list
+  }       
   def getBySession(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← session_element_resources if s.session === k } yield s 

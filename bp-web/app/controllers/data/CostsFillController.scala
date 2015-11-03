@@ -45,7 +45,8 @@ import scala.util.{Success, Failure}
 // case class ResourceEntitySelector(resource: ResourceDTO, entities: List[Entity])
 // by default accepted resource work for all entities
 case class ResourceElementSelector(elementId: Int, resourceId: Int, entityId: String = "*")
-
+case class ElementResourceContainer(obj: ElementResourceDTO, entities: List[Entity])
+case class SessionElementResourceContainer(obj: SessionElementResourceDTO, entities: List[Entity], slats: List[Slat]) 
 
 class CostFillController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
   import play.api.libs.json.Json
@@ -74,6 +75,11 @@ implicit val SessionElementResourceDTOFormat = Json.format[SessionElementResourc
 implicit val SessionElementResourceDTOReaders = Json.reads[SessionElementResourceDTO]
 
 
+implicit val ElementResourceContainerFormat = Json.format[ElementResourceContainer]
+implicit val ElementResourceContainerReaders = Json.reads[ElementResourceContainer]
+implicit val SessionElementResourceContainerFormat = Json.format[SessionElementResourceContainer]
+implicit val SessionElementResourceContainerReaders = Json.reads[SessionElementResourceContainer]
+
 /****
  * Resource elements
  */
@@ -89,15 +95,23 @@ def assignResourceCollection = SecuredAction.async { implicit request =>
 // GET	 /data/cost/assigns/:process_id
 def assigns(process_id: Int) = SecuredAction { implicit request => 
 	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
-	val assigns = ElementResourceDAO.getByProcess(process_id)
+	val assigns = ElementResourceDAO.getByProcess(process_id).map { obj => 
+      ElementResourceContainer(obj, findEntitiesElRes(List(obj)) )
+    }
     Ok(Json.toJson(assigns))
 }
 // GET	 /data/cost/launch_assigns/:launch_id
 def launch_assigns(launch_id: Int) = SecuredAction { implicit request => 
 	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
-	val assigns = SessionElementResourceDAO.getBySession(launch_id)
-    Ok(Json.toJson(assigns))
+  val assigns = SessionElementResourceDAO.getBySession(launch_id)
+  val launch_assigns_cn = assigns.map { obj => 
+      val entities:List[Entity] = findEntitiesFromLaunch(launch_id,List(obj))
+      val entities_ids = entities.map(o => idGetter(o.id))
+      SessionElementResourceContainer(obj, entities, findSlats(entities_ids) )
+    }
+    Ok(Json.toJson(launch_assigns_cn))
 }
+
 //POST	 /data/cost/assign/:resource_id		@controllers.CostFillController.assign_element(resource_id: Int)
 def assign_element(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request => 
 	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
@@ -162,11 +176,33 @@ def delete_assigned_element(id: Int) = SecuredAction(BodyParsers.parse.json) { i
   ElementResourceDAO.delete(id) match {
   	case _ => Ok(Json.toJson(Map("message" -> "ok")))
   }
-
 }
 
+val wrapper = minority.utils.BBoardWrapper.apply()
+val waitSeconds = 100000
+private def idGetter(id:Option[UUID]):String = {
+  id match {
+    case Some(id) => id.toString
+    case _ => ""
+  }
+}
 
-
+private def findEntitiesElRes(costs:List[ElementResourceDTO]):List[Entity] = {
+  val resource_ids = costs.map(_.resource_id)
+  val entities_ft = resource_ids.map(resource_id => wrapper.getEntityByResourceId(resource_id))
+  val entities = entities_ft.map(ft => Await.result(ft, Duration(waitSeconds, MILLISECONDS)))
+  entities.flatten
+}
+private def findEntitiesFromLaunch(launch_id:Int,costs: List[SessionElementResourceDTO]):List[Entity] = {
+  val resource_ids = costs.map(_.resource_id)
+  val entities_ft = resource_ids.map(resource_id => wrapper.getEntityByResourceId(resource_id))
+  val entities = entities_ft.map(ft => Await.result(ft, Duration(waitSeconds, MILLISECONDS)))
+  entities.flatten
+}
+private def findSlats(entities_ids: List[String]):List[Slat] = {
+  val ft = wrapper.getSlatByEntitiesIds(entities_ids)
+  Await.result(ft, Duration(waitSeconds, MILLISECONDS))
+}
 
 
 }
