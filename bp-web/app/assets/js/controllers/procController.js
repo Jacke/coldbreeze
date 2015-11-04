@@ -382,7 +382,7 @@ $scope.run = function (process) {
    */
 $scope.fastCreateNewElem = function(elem,process) {
   console.log(elem);
-  $scope.createNewElem(elem);
+  $scope.createNewElem(elem, process);
 }
 $scope.refs = [];
 $scope.switchFastElementForm = function(process) {
@@ -395,17 +395,17 @@ $scope.refElem = function (ref, elem) {
     elem.ref = ref.ref.id;
     elem.selectedRef = ref;
 }
-  $scope.createNewElem = function (elem,process) {
+$scope.createNewElem = function (elem,process) {
     BPElemsFactory.create(elem).$promise.then(function(data) {
       //$scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
       console.log("lighted");
-      $scope.newBpelem = { desc: "", process: process.id, business: process.business };
+      process.newBpelem = { title: "", desc: "", process: process.id, business: process.business };
       //$scope.reloadTree($scope.trees);
       $scope.switchFastElementForm(process);
 
     });
 
-  };
+};
 
 
 
