@@ -388,7 +388,7 @@ require(['requirejs','jsRoutes','jquery', 'react','pnofiy','mobileDetect','popup
       $(document).ready(function(){
         document.mobileDetect = new mobileDetect(window.navigator.userAgent);
         document.isMobile = (document.mobileDetect.phone() != null) ? true : false;
-       
+        document.react = react;
 
         // Tours
         var dashBoardTour = function() {
@@ -494,7 +494,7 @@ $('a.delete-group').on('click', function (event) {
             });
 });
 
-$('#addMembersForm').slideToggle();
+//$('#addMembersForm').slideToggle();
 
 $('#addMembersForm button.posRight').on('click', function(event) {
 
