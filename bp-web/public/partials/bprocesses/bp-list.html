@@ -16,6 +16,9 @@
   <div class="process" ng-repeat="bprocess in bprocesses | filter:search">
     <div class="process-status">
     <li class="tableMinListItem frontProcessInfo" ng-init="bprocess.fastElForm=false" ng-hide="bprocess.fastElForm">
+      <div class="fastElCreateBtn">
+        <a class="fastElFormButton" ng-click="switchFastElementForm(bprocess)" tooltip-placement="left" tooltip="Add element">+</a>
+      </div> 
       <h2 class="tableMinListName">
         <a class="tableMinName vIcoIn" href="/a#/bprocess/{{ bprocess.id }}/elements">{{ bprocess.title }}</a>
         <span class="tableMinVanity">{{ filterService(bprocess.service) }}</span>
@@ -34,14 +37,10 @@
           <a class="redButton" ng-click="run(bprocess)" tooltip-placement="bottom" tooltip="Launch"></a>
         </p>
       </div>
-      <div class="fastElCreateBtn">
-        <a class="fastElFormButton" ng-click="switchFastElementForm(bprocess)" tooltip-placement="left" tooltip="Add element">+</a>
-      </div> 
     </li>
     <!-- Fast element form -->
     <li class="tableMinListItem fastElementForm nga-fast nga-stagger-fast nga-squash-right" ng-show="bprocess.fastElForm">
       <div ng-include src="'assets/partials/bprocesses/fastElementCreation.html'"></div>
-
           <div class="fastElCreateBtn">
             <a class="fastElFormButton" ng-click="switchFastElementForm(bprocess)" tooltip-placement="left" tooltip="Close form">-</a>
           </div>   
