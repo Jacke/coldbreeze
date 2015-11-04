@@ -307,6 +307,30 @@ $scope.reloadResourcesForSession = function(session) {
 
   });
 
+    // Fetch resource and entities for that resource
+  DataCostCollection.query().$promise.then(function(res) {
+      $scope.resources = res;
+      _.forEach($scope.resources, function(r){ r.entities.unshift({title: "All", id:"*"}) });
+
+    DataCostLaunchAssign.query( { BPid: $route.current.params.BPid, launch_id: session.id } ).$promise.then(function(cost) {
+      $scope.processCosts = cost;
+
+      _.forEach($scope.bpelems, function(z)    { z.costs = _.filter($scope.processCosts, function(cost) {
+          cost.resource = _.find($scope.resources, function(res){return res.resource.id == cost.obj.resource_id });
+          return $scope.topoIdChecker(z.topo_id) == cost.obj.element_id;
+      });  return fetchObj(z.costs) });
+      _.forEach($scope.spaceelems, function(z) { z.costs = _.filter($scope.processCosts, function(cost) {
+          cost.resource = _.find($scope.resources, function(res){return res.resource.id == cost.obj.resource_id });
+          return $scope.topoIdChecker(z.topo_id) == cost.obj.element_id;
+      });  return fetchObj(z.costs) });
+
+    });   });   
+    /********************/
+      
+
+
+      
+
   _.forEach($scope.spaceelems, function(z) {
     z.topo_id = _.find($scope.element_topologs, function(d){ return d.element_id == z.id && d.space_element == true;});
     z.reactions = _.filter($scope.reactions, function(sw) { return z.topo_id != undefined && sw.reaction.element == z.topo_id.topo_id });
