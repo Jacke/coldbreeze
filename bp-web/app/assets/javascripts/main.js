@@ -626,7 +626,7 @@ $(".filterInput.tableMinListFilterInput").keyup(function(){
 // Teams
 // 
 
-$('#addMembersForm').slideToggle();
+//$('#addMembersForm').slideToggle();
 
 $('#addMembersForm button.updateGroup').on('click', function(event) {
 
