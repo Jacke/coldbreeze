@@ -28,6 +28,7 @@ case class Entity(
   publisher: String,
   etype: String,
   default: String = "",
+  meta: List[MetaVal] = List.empty,  
   creationDate: Option[DateTime] = None,
   updateDate: Option[DateTime] = None) {
   	
@@ -42,6 +43,8 @@ object Entity {
   import play.api.libs.json.Json
   import play.modules.reactivemongo.json.BSONFormats._
 
+  implicit val MetaValFormat = Json.format[MetaVal]
+  implicit val MetaValReader = Json.reads[MetaVal]
 
   implicit val jsonBoardFormat = Json.format[Entity]
   implicit object EntityBSONReader extends BSONDocumentReader[Entity] {
@@ -54,6 +57,8 @@ object Entity {
         doc.getAs[String]("publisher").get,
         doc.getAs[String]("etype").get,
         doc.getAs[String]("default").get,
+        List.empty[MetaVal],//doc.getAs[List[MetaVal]]("meta").get,        
+
         doc.getAs[BSONDateTime]("creationDate").map(dt => new DateTime(dt.value)),
         doc.getAs[BSONDateTime]("updateDate").map(dt => new DateTime(dt.value)))
 
@@ -72,6 +77,7 @@ object Entity {
         "publisher" -> board.publisher,
         "etype" -> board.etype,
         "default" -> board.default,
+        "meta" -> BSONArray.empty,        
         "creationDate" -> board.creationDate.map(date => BSONDateTime(date.getMillis)),
         "updateDate" -> board.updateDate.map(date => BSONDateTime(date.getMillis)))
   }
@@ -94,8 +100,13 @@ object Entity {
       "publisher" -> default(nonEmptyText, ""),
       "etype" -> nonEmptyText,
       "default" -> default(text, ""),
+      "meta" -> list(
+      mapping(
+        "key" -> nonEmptyText,
+        "value" -> nonEmptyText
+      )(MetaVal.apply)(MetaVal.unapply)),      
       "creationDate" -> optional(of[Long]),
-      "updateDate" -> optional(of[Long])) { (id, title, boardId, description, publisher, etype, default, creationDate, updateDate) =>
+      "updateDate" -> optional(of[Long])) { (id, title, boardId, description, publisher, etype, default, meta, creationDate, updateDate) =>
         Entity(
           None,
           title,
@@ -104,6 +115,7 @@ object Entity {
           publisher,
           etype,
           default,
+          meta,
           creationDate.map(new DateTime(_)),
           updateDate.map(new DateTime(_)))
       } { board =>
@@ -115,6 +127,7 @@ object Entity {
             board.publisher,
             board.etype,
             board.default,
+            board.meta,            
             board.creationDate.map(_.getMillis),
             board.updateDate.map(_.getMillis)))
       })

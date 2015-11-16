@@ -35,13 +35,29 @@
         </div>-->
         <div class="costs" ng-show="reaction.costs.length > 0">
             <h2 class="costTitle">Costs</h2>
+
             <div class="inputCost" ng-repeat="cost in reaction.costs">
-              <div class="inputCostTitle">{{ cost.resource.title }} {{ cost.entity[0].title }}</div>
+        <div class="pipeContent" ng-repeat="entity in cost.entities">
+          <div class="pipeContentTitle">{{ entity.title }}</div>
+          <div class="pipeContentValue" ng-repeat="slat in slatFilter(entity, cost.slats)">
+              <a ng-click="slat.refill=true;" ng-hide="slat.refill"><span>{{ slat.sval }}</span></a>
+              <div class="pipeContentValueRefill" ng-init="slat.refill=false" ng-show="slat.refill">
+                <input type="text" id="inputContentBlankValue" class="form-control" ng-model="slat.sval" required="">
+                <a class="btn btn-small btn-success" ng-click="reFillValue(cost, entity, slat)">ReFill</a>
+                <a class="btn btn-small" ng-click="slat.refill=false;">x</a>                
+              </div>
+          </div>          
+          <div class="pipeContentBlankValue" ng-show="slatFilter(entity, cost.slats).length < 1">
+                <input type="text" id="inputContentBlankValue" class="form-control" ng-init="entity.newModelValue=defaultValueParser(entity.default)" ng-model="entity.newModelValue" required="">
+                <a class="btn btn-small btn-success" ng-click="fillValue(cost, entity, entity.newModelValue)">Fill</a>
+        </div>
+        </div>               
+              <!--<div class="inputCostTitle">{{ cost.resource.title }} {{ cost.entity[0].title }}</div>
               <div class="inputCostBlankValue">
                     <input type="text" id="inputContentBlankValue" class="form-control" required="">
                     <a class="btn btn-small btn-success">Fill</a>
               </div>
-            </div>  
+            </div>-->  
         </div>
     </li>
   </ul>

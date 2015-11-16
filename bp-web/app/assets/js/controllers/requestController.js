@@ -208,6 +208,79 @@ $scope.reactionSelect = function (reaction) {
   };
 
 
+$scope.entityDecorator = function(entities, resource) {
+  if (entities == "*") {
+    return "*"
+  } else {
+    if (entities != "*") {
+      var c = _.find(resource.entities, function(ent){return ent.id == entities});
+      if (c != undefined) {
+        return c.title
+      } else { return "" }
+      
+    } else {
+      return "";
+    }
+  
+  }
+}
+/* Slat
+  title: String,
+  boardId: UUID,
+  entityId: UUID,  
+  sval: String,
+  publisher: String,
+  meta: String,
+*/
+$scope.slatFilter = function(entity, slats) {
+  return _.filter(slats, function(slat){return slat.entityId == entity.id });
+}
+$scope.defaultValueParser = function(entity, value) {
+  if (entity.etype == "number") {
+    return parseInt(value);
+  } else {
+    return value;
+  }
+}
+$scope.fillValue = function(cost, entity, value) {
+  console.log(cost);
+  // entityId: String, launchId: Int, resourceId: Int
+  var resourceId = cost.resource.resource.id;
+  var launchId = $scope.session.session.id;
+  var entityId = entity.id;
+  var boardId = entity.boardId;
+
+  var req = {title: entity.title, boardId: boardId, entityId: entityId, meta: '', sval: value, publisher: ''};
+  $http.post(jsRoutes.controllers.DataController.fill_slat(entityId, launchId, resourceId).absoluteURL(document.ssl_enabled),  
+                    req).then(function (data) {
+                      console.log(data);
+  });
+
+}
+$scope.reFillValue = function(cost, entity, slat) {
+  console.log(cost);
+  // entityId: String, launchId: Int, resourceId: Int
+  var resourceId = cost.resource.resource.id;
+  var launchId = $scope.session.session.id;
+  var entityId = entity.id;
+  var boardId = entity.boardId;
+
+  var req = {title: entity.title, boardId: boardId, entityId: entityId, meta: '', sval: slat.sval, publisher: ''};
+  $http.post(jsRoutes.controllers.DataController.refill_slat(entityId, launchId, resourceId, slat.id).absoluteURL(document.ssl_enabled),  
+                    req).then(function (data) {
+                      console.log(data);
+  });
+}
+/**************
+ * ////END Cost module
+ *****************/////////////////////////////////////////////////////*/
+
+
+
+
+
+
+
   $scope.runFromDisabled = true;
 
 

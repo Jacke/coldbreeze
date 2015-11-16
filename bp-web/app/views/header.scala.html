@@ -124,11 +124,11 @@
                                 Back to My Account
                           </a></li>-->
 
-                  @if(user.isManager) {
-                    <!--<li class="secondaryNavItem">
-                    <a class="changelogLink vIcoIn" href="@routes.PlanController.index()"><i class="uicon-svg142"></i>
-                    @Messages("page.plans") </a></li>-->
-                  }
+          @if(user.isManager) {
+            <li class="secondaryNavItem">
+            <a class="changelogLink vIcoIn" href="@routes.PlanController.index()"><i class="uicon-svg142"></i>
+            @Messages("page.plans") </a></li>
+          }
 
           <li class="secondaryNavItem">
             <a class="changelogLink vIcoIn" href="@routes.Application.proPage()">

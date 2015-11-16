@@ -5,7 +5,7 @@
 @import models.DAO.resources.BusinessDTO
 @import models.DAO.resources._
 
-@(user: DemoUser, plans: List[PlanDTO], bills: List[BillDTO], payForm: Form[PayInfo], billing_info: Form[models.DAO.BillingInfoDTO])(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment[service.DemoUser])
+@(user: DemoUser, plans: List[PlanDTO], bills: List[BillDTO], payForm: Form[PayInfo], billing_info: Form[models.DAO.BillingInfoDTO], limitForm: Form[LimitFormObject], current_plan: AccountPlanDTO)(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment[service.DemoUser])
 
 @import securesocial.core.IdentityProvider
 
@@ -21,7 +21,40 @@
 
 @main(Messages("page.plans")(LangDet.getLang(user) ), user) {
 <link rel="stylesheet" href="/assets/css/plan.css">
+<style>
 
+button.button-default.button-confirm.limit-button {
+    display: block !important;
+    width: 120px !important;
+    height: 37px !important;
+    clear: both !important;
+    overflow: hidden;
+    position: relative !important;
+    background: #6B8D4B !important;
+    margin: 0 auto !important;
+}
+
+.plans_collection-item.secondary_item.limit-form dd.info {
+    display: none;
+}
+li.ember-view.plans_collection-item.secondary_item.limit-form {
+    width: 175px;
+    margin: 20px 33%;
+    clear: both;
+    display: block;
+    overflow: hidden;
+}
+
+li.ember-view.plans_collection-item.secondary_item.limit-form input#limit {
+    width: 32%;
+    float: right;
+    display: inline-block;
+    margin-bottom: 10px;
+    margin-right: 51px;
+    margin-top: 7px;
+}
+
+</style>
 
 <div id="ember2864" class="ember-view settings-inner"><h1 class="settings-title">Billing Overview</h1>
 
@@ -29,17 +62,14 @@
 <div class="settings-insert">
   <div class="settings-insert-inner clearfix">
     <div class="settings-insert-column settings-insert-column-left">
-      <p>Your current Plan : <script id="metamorph-80-start" type="text/x-placeholder"></script>Freemium<script id="metamorph-80-end" type="text/x-placeholder"></script></p>
-      <p>Active since : <script id="metamorph-81-start" type="text/x-placeholder"></script>n/a<script id="metamorph-81-end" type="text/x-placeholder"></script></p>
-      <p>Next billing : <script id="metamorph-82-start" type="text/x-placeholder"></script>n/a<script id="metamorph-82-end" type="text/x-placeholder"></script></p>
+      <p>Your current Plan : @current_plan.planObj.get.title </p>
+      <!-- <p>Active since : n/a</p> -->
+      <p>Next billing : @current_plan.expired_at</p>
     </div>
     <div class="settings-insert-column settings-insert-column-right">
       <p>Current Monthly Payment :
-        <script id="metamorph-83-start" type="text/x-placeholder"></script>
-          <strong>$0</strong>
-        <script id="metamorph-83-end" type="text/x-placeholder"></script>
+          <strong>$@current_plan.planObj.get.price</strong>
      </p>
-      <script id="metamorph-84-start" type="text/x-placeholder"></script><script id="metamorph-84-end" type="text/x-placeholder"></script>
     </div>
   </div>
 </div>
@@ -47,20 +77,88 @@
 <h3 class="settings-insert-title">Change your Plan</h3>
 <div class="settings-insert settings-plans" style="text-align: center;">
   <div class="settings-insert-inner">
-    <ul id="ember2878" class="ember-view plans_collection clearfix"><li id="ember3011" class="ember-view plans_collection-item"><h3 class="plans_collection-item-header"><script id="metamorph-148-start" type="text/x-placeholder"></script>Growth<script id="metamorph-148-end" type="text/x-placeholder"></script></h3>
+    <ul id="ember2878" class="ember-view plans_collection clearfix">
+
+        @plans.map { plan =>
+
+@if(plan.title == "Trial" && current_plan.planObj.get.title == "Trial") {
+
+    <li id="ember3011" class="ember-view plans_collection-item"><h3 class="plans_collection-item-header"><script id="metamorph-148-start" type="text/x-placeholder"></script>@plan.title</h3>
 
 <div class="plans_collection-item-content">
-  <div><script id="metamorph-149-start" type="text/x-placeholder"></script>Up to 500 Invoices, Bills &amp; Financial operations every month.<script id="metamorph-149-end" type="text/x-placeholder"></script></div>
+  <div>@plan.description.getOrElse("") &amp;</div>
+</div>
+<div class="plans_collection-item-footer">
+@if(current_plan.planObj.get.title == plan.title) {
+  @form(routes.PlanController.switch(plan.id.get), 'class -> "topRight") {
+  <button class="button-default button-confirm button-activated">Active</button>
+}
+}
+@if(current_plan.planObj.get.title != plan.title && plan.title != "Trial") {
+@form(routes.PlanController.switch(plan.id.get), 'class -> "topRight") {
+  <button class="button-default button-confirm" type="submit">Switch</button>
+}
+}
+
 </div>
 
-<div class="plans_collection-item-price">
-  $<script id="metamorph-150-start" type="text/x-placeholder"></script>99<script id="metamorph-150-end" type="text/x-placeholder"></script> <i>/ month</i>
+</li>  
+}      
+
+
+@if(plan.title != "Trial" && current_plan.planObj.get.title != "Trial") {
+
+    <li id="ember3011" class="ember-view plans_collection-item"><h3 class="plans_collection-item-header"><script id="metamorph-148-start" type="text/x-placeholder"></script>@plan.title</h3>
+
+<div class="plans_collection-item-content">
+  <div>@plan.description.getOrElse("") &amp;</div>
 </div>
+
+@if(plan.title != "Trial") {
+<div class="plans_collection-item-price">
+  $ @plan.price<i> / month</i>
+</div>
+}
 
 <div class="plans_collection-item-footer">
-  <button class="button-default button-confirm" data-ember-action="3021" data-bindattr-3022="3022"><script id="metamorph-151-start" type="text/x-placeholder"></script>Subscribe<script id="metamorph-151-end" type="text/x-placeholder"></script></button>
+@if(current_plan.planObj.get.title == plan.title) {
+  @form(routes.PlanController.switch(plan.id.get), 'class -> "topRight") {
+  <button class="button-default button-confirm">Active</button>
+}
+}
+@if(current_plan.planObj.get.title != plan.title && plan.title != "Trial") {
+@form(routes.PlanController.switch(plan.id.get), 'class -> "topRight") {
+  <button class="button-default button-confirm" type="submit">Switch</button>
+}
+
+
 </div>
-</li><li id="ember3012" class="ember-view plans_collection-item"><h3 class="plans_collection-item-header"><script id="metamorph-152-start" type="text/x-placeholder"></script>Pro<script id="metamorph-152-end" type="text/x-placeholder"></script></h3>
+</li>  
+}     
+}
+
+
+}
+
+<li  class="ember-view plans_collection-item secondary_item limit-form">
+@form(routes.PlanController.switchLimit(current_plan.planObj.get.id.getOrElse(0))) {
+                   <!--
+                    @inputText(billing_info("id"), 'class -> "form-control", 'hidden -> "hidden")
+                    @inputText(billing_info("business"), 'placeholder -> "business", '_label -> "business", 'class -> "form-control", 'hidden -> "hidden") -->
+                    @inputText(limitForm("limit"), '_label -> "Participator limit", 'class -> "form-control")
+      <button class="button-default button-confirm limit-button" type="submit">Change</button>
+      
+}
+</li>
+
+
+<!--
+<li  class="ember-view plans_collection-item secondary_item"><script id="metamorph-160-start" type="text/x-placeholder"></script>
+    <button data-ember-action="3029" data-bindattr-3030="3030"></button>
+    or Subscribe to Startup plan with Up to 200 transactions for $49 / month
+</li>
+
+<li id="ember3012" class="ember-view plans_collection-item"><h3 class="plans_collection-item-header"><script id="metamorph-152-start" type="text/x-placeholder"></script>Pro<script id="metamorph-152-end" type="text/x-placeholder"></script></h3>
 
 <div class="plans_collection-item-content">
   <div><script id="metamorph-153-start" type="text/x-placeholder"></script>Up to 1,500 Invoices, Bills &amp; Financial operations every month.<script id="metamorph-153-end" type="text/x-placeholder"></script></div>
@@ -86,39 +184,86 @@
 <div class="plans_collection-item-footer">
   <button class="button-default button-confirm" data-ember-action="3025" data-bindattr-3026="3026"><script id="metamorph-159-start" type="text/x-placeholder"></script>Subscribe<script id="metamorph-159-end" type="text/x-placeholder"></script></button>
 </div>
-</li><li id="ember3020" class="ember-view plans_collection-item secondary_item"><script id="metamorph-160-start" type="text/x-placeholder"></script>
-  <script id="metamorph-161-start" type="text/x-placeholder"></script>
-    <button data-ember-action="3029" data-bindattr-3030="3030"></button>
-    or <script id="metamorph-162-start" type="text/x-placeholder"></script>Subscribe<script id="metamorph-162-end" type="text/x-placeholder"></script> to <script id="metamorph-163-start" type="text/x-placeholder"></script>Startup<script id="metamorph-163-end" type="text/x-placeholder"></script> plan with <script id="metamorph-164-start" type="text/x-placeholder"></script>Up to 200 transactions<script id="metamorph-164-end" type="text/x-placeholder"></script> for $<script id="metamorph-165-start" type="text/x-placeholder"></script>49<script id="metamorph-165-end" type="text/x-placeholder"></script> / month
-  <script id="metamorph-161-end" type="text/x-placeholder"></script>
+</li>-->
 
-<script id="metamorph-160-end" type="text/x-placeholder"></script>
-</li></ul>
-
-    <script id="metamorph-85-start" type="text/x-placeholder"></script>
+</ul>
+<!--
       <p>
-        <a data-ember-action="2881" class="cancel-subscription">Cancel my subscription</a>
-      </p>
-    <script id="metamorph-85-end" type="text/x-placeholder"></script>
+        <a class="cancel-subscription">Cancel my subscription</a>
+      </p> -->
   </div>
 </div>
+
+
+<h3 class="settings-insert-title">Billing History</h3>
+<div class="settings-insert settings-billing_history">
+  <div class="settings-insert-inner">
+      <div class="centering">
+        @if(bills.length < 1) {
+          No receipt yet.
+        }
+        @bills.map { bill =>
+          <li>
+            @bill.title
+            @Messages("page.assigned")(LangDet.getLang(user) ): @bill.assigned
+            @Messages("page.approved")(LangDet.getLang(user) ): @bill.approved
+            Expired: @bill.expired
+            Ammount: @bill.sum
+            @if(!bill.approved) {
+              @helper.form(routes.PlanController.delete_bill(bill.id.getOrElse(-1))) {
+                   <button type="submit" class="btn danger"><span class="moicon icon-trash"></span></button>
+              }            
+            }
+
+<!--
+            @form(routes.PlanController.checkout(bill.id.get), 'class -> "topRight") {
+                    @inputText(payForm("numner"), 'placeholder -> "Card number", '_label -> "numner", 'class -> "form-control")
+                    @inputText(payForm("card_type"), 'placeholder -> "", '_label -> "card_type", 'class -> "form-control")
+                    @inputText(payForm("expiry"), 'placeholder -> "MM/YY", '_label -> "exp_month", 'class -> "form-control")
+                    @inputText(payForm("expiry"), 'placeholder -> "MM/YY", '_label -> "exp_year", 'class -> "form-control")
+                    @inputText(payForm("name"), 'placeholder -> "Full name", '_label -> "fullName", 'class -> "form-control")
+
+                    <input type="submit" value="Pay" class="btn danger">
+                  }
+                  </a>
+           <a href="/pay">Pay</a>
+-->
+        <div class="card-wrapper"></div>
+        <div class="form-container active">
+            <form action="@routes.PlanController.checkout(bill.id.get)" method="POST" class="card-form">
+                <input placeholder="@Messages("page.cardNumber")(LangDet.getLang(user) )" type="text" name="number">
+                <input type="text" name="@Messages("page.first-name")(LangDet.getLang(user) )"/>
+                <input type="text" name="@Messages("page.last-name")(LangDet.getLang(user) )"/>                
+                <input placeholder="MM/YY" type="text" name="expiry">
+                <input placeholder="CVC" type="text" name="cvc">
+                <input type="submit" value="@Messages("page.pay")(LangDet.getLang(user) )" class="btn danger">
+            </form>
+        </div>
+      </li>
+}
+
+      </div>
+  </div>
+</div>
+
 
 
 <h3 class="settings-insert-title">Your Billing Information</h3>
 <div class="settings-insert settings-insert-form">
   <div class="settings-insert-inner">
 @form(routes.PlanController.update_billinginfos(), 'class -> "topRight") {
+                   <!--
                     @inputText(billing_info("id"), 'class -> "form-control", 'hidden -> "hidden")
-                    @inputText(billing_info("business"), 'placeholder -> "business", '_label -> "business", 'class -> "form-control", 'hidden -> "hidden")
+                    @inputText(billing_info("business"), 'placeholder -> "business", '_label -> "business", 'class -> "form-control", 'hidden -> "hidden") -->
                     @inputText(billing_info("firstName"), 'placeholder -> "First name", '_label -> "First name", 'class -> "form-control")
                     @inputText(billing_info("lastName"), 'placeholder -> "Last name", '_label -> "Last name", 'class -> "form-control")
                     @inputText(billing_info("zipcode"), 'placeholder -> "Zipcode", '_label -> "Zipcode", 'class -> "form-control")
                     @inputText(billing_info("address"), 'placeholder -> "Address", '_label -> "Address", 'class -> "form-control")
 
-                    <input type="submit" value="Update" class="btn ">
-                  }
+                    <button type="submit" value="Update" class="button-default button-confirm">Update</button>
+}
 
-    <form id="ember2983" class="ember-view clearfix " novalidate="novalidate">
+    <form id="ember2983" class="ember-view clearfix " novalidate="novalidate" style="display: none;">
       <div>
         <p>
           <input id="ember2984" class="ember-view ember-text-field settings-insert-form-firstname-input" placeholder="Firstname" type="text">
@@ -140,106 +285,9 @@
       
     </form>
 
-    <footer>
-      <button class="button-default button-confirm" type="submit" data-ember-action="2990">
-        Update
-      </button>
-    </footer>
   </div>
 </div>
 
-<h3 class="settings-insert-title">Billing History</h3>
-<div class="settings-insert settings-billing_history">
-  <div class="settings-insert-inner">
-    <script id="metamorph-146-start" type="text/x-placeholder"></script>
-      <div class="centering">
-        No receipt yet.
-      </div>
-    <script id="metamorph-146-end" type="text/x-placeholder"></script>
-    <script id="metamorph-147-start" type="text/x-placeholder"></script><script id="metamorph-147-end" type="text/x-placeholder"></script>
-  </div>
-</div>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div class="tableMinListWrap"><div class="panelLike organisationsGridLike">
-
-<div class="teamSettings">
-<div class="grids">
-  <div class="page-header">
-      <h2>@Messages("page.plans")(LangDet.getLang(user) )</h2>
-      <ul>
-        @plans.map { plan =>
-      	<li>@plan.title — @plan.price $ 
-                <a role="menuitem" tabindex="-1" href="#">@form(routes.PlanController.switch(plan.id.get), 'class -> "topRight") {
-                                  <input type="submit" value="Switch" class="btn danger">
-                                }
-                </a>
-
-
-        </li>
-        }
-      </ul>
-
-
-      <h2>@Messages("page.bills")(LangDet.getLang(user) )</h2>
-      <ul>
-        @bills.map { bill =>
-          <li>
-            @bill.title
-            @Messages("page.assigned")(LangDet.getLang(user) ): @bill.assigned
-            @Messages("page.approved")(LangDet.getLang(user) ): @bill.approved
-           <a role="menuitem" tabindex="-1" href="#">
-<!--
-            @form(routes.PlanController.checkout(bill.id.get), 'class -> "topRight") {
-                    @inputText(payForm("numner"), 'placeholder -> "Card number", '_label -> "numner", 'class -> "form-control")
-                    @inputText(payForm("card_type"), 'placeholder -> "", '_label -> "card_type", 'class -> "form-control")
-                    @inputText(payForm("expiry"), 'placeholder -> "MM/YY", '_label -> "exp_month", 'class -> "form-control")
-                    @inputText(payForm("expiry"), 'placeholder -> "MM/YY", '_label -> "exp_year", 'class -> "form-control")
-                    @inputText(payForm("name"), 'placeholder -> "Full name", '_label -> "fullName", 'class -> "form-control")
-
-                    <input type="submit" value="Pay" class="btn danger">
-                  }
-                  </a>
-           <a href="/pay">Pay</a>
--->
-
-
-        <div class="card-wrapper"></div>
-
-        <div class="form-container active">
-            <form action="@routes.PlanController.checkout(bill.id.get)" method="POST" class="card-form">
-                <input placeholder="@Messages("page.cardNumber")(LangDet.getLang(user) )" type="text" name="number">
-                <input type="text" name="@Messages("page.first-name")(LangDet.getLang(user) )"/>
-                <input type="text" name="@Messages("page.last-name")(LangDet.getLang(user) )"/>                
-                <input placeholder="MM/YY" type="text" name="expiry">
-                <input placeholder="CVC" type="text" name="cvc">
-                <input type="submit" value="@Messages("page.pay")(LangDet.getLang(user) )" class="btn danger">
-
-            </form>
-        </div>
-
-
-          </li>
-        }
-      </ul>
-  </div>
-
-
-
 
 </div>
 
@@ -247,8 +295,6 @@
 
 
 
-</div> 
-</div>
-</div>
+
 </div>
 }

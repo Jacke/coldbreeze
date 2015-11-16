@@ -417,9 +417,10 @@ case class Entity(
   publisher: String,
   etype: String,
   default: String = "",
+  meta: List[MetaVal] = List.empty,  
   creationDate: Option[DateTime] = None,
   updateDate: Option[DateTime] = None) {
-  	
+    
   def getId:String = id match {
     case Some(uuid) => uuid.toString
     case _ => ""
@@ -433,7 +434,7 @@ case class Slat(
   entityId: UUID,  
   sval: String,
   publisher: String,
-  meta: String,
+  meta: List[MetaVal] = List.empty,  
   creationDate: Option[DateTime] = None,
   updateDate: Option[DateTime] = None) {
   

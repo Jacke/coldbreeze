@@ -56,7 +56,10 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
             routes.javascript.APIController.v1,
             routes.javascript.CostFillController.assign_element,
             routes.javascript.CostFillController.update_assigned_element,
-            routes.javascript.CostFillController.delete_assigned_element
+            routes.javascript.CostFillController.delete_assigned_element,
+            routes.javascript.DataController.refill_slat,
+            routes.javascript.DataController.fill_slat,
+            routes.javascript.DataController.api_create_resource
 
           // TODO Add your routes here
         )

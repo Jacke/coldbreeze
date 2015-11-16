@@ -107,7 +107,7 @@ def launch_assigns(launch_id: Int) = SecuredAction { implicit request =>
   val launch_assigns_cn = assigns.map { obj => 
       val entities:List[Entity] = findEntitiesFromLaunch(launch_id,List(obj))
       val entities_ids = entities.map(o => idGetter(o.id))
-      SessionElementResourceContainer(obj, entities, findSlats(entities_ids) )
+      SessionElementResourceContainer(obj, entities, findSlats(entities_ids, launch_id) )
     }
     Ok(Json.toJson(launch_assigns_cn))
 }
@@ -199,10 +199,17 @@ private def findEntitiesFromLaunch(launch_id:Int,costs: List[SessionElementResou
   val entities = entities_ft.map(ft => Await.result(ft, Duration(waitSeconds, MILLISECONDS)))
   entities.flatten
 }
-private def findSlats(entities_ids: List[String]):List[Slat] = {
+private def findSlats(entities_ids: List[String], launchId: Int):List[Slat] = {
+  println("find Slats")
+  entities_ids.foreach(println)
   val ft = wrapper.getSlatByEntitiesIds(entities_ids)
-  Await.result(ft, Duration(waitSeconds, MILLISECONDS))
+  val result = Await.result(ft, Duration(waitSeconds, MILLISECONDS))
+    result.filter(slat => detectMetaLaunch(slat.meta) == launchId)
 }
+private def detectMetaLaunch(meta: List[minority.utils.MetaVal]) = meta.find(m => m.key == "launchId") match {
+    case Some(meta) => meta.value.toInt
+    case _ => -1
+  }
 
 
 }

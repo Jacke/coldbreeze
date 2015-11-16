@@ -251,6 +251,14 @@ $rootScope.$on('cfpLoadingBar:completed', function(event, data){
       $scope.bprocesses.$promise.then(function(data){
         $scope.service_id = $routeParams.service;
         $scope.bprocesses = _.filter(data, function(proc){ return proc.service == $routeParams.service });
+        // url param for opening fast elem create form
+        if ($location.search().fast_proc != undefined) {
+        var proc  = _.find($scope.bprocesses, function(proc) { return proc.id == parseInt($location.search().fast_proc) });
+          if (proc) {
+            $scope.switchFastElementForm(proc);
+          }
+        }
+
       });
 
   } else {
@@ -391,6 +399,8 @@ $scope.switchFastElementForm = function(process) {
   }
   process.fastElForm == true ? process.fastElForm=false : process.fastElForm=true;
 }
+
+
 $scope.refElem = function (ref, elem) {
     elem.ref = ref.ref.id;
     elem.selectedRef = ref;

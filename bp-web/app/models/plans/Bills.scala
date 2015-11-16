@@ -12,18 +12,24 @@ class Bills(tag: Tag) extends Table[BillDTO](tag, "bills") {
   def master_acc  = column[String]("master_acc")
   def assigned    = column[DateTime]("assigned")
   def approved    = column[Boolean]("approved")
+  def expired     = column[DateTime]("expired")
+  def sum         = column[BigDecimal]("sum")
 
   def accFK = foreignKey("bill_macc_fk", master_acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
-
-
-  def * = (id.?, title, master_acc, assigned, approved) <> (BillDTO.tupled, BillDTO.unapply)
+  def * = (id.?, title, master_acc, assigned, approved, expired, sum) <> (BillDTO.tupled, BillDTO.unapply)
 
 }
 
 /*
   Case class
  */
-case class BillDTO(var id: Option[Int], title: String, master_acc: String, assigned: DateTime = DateTime.now(), approved: Boolean = false)
+case class BillDTO(var id: Option[Int], 
+  title: String, 
+  master_acc: String, 
+  assigned: DateTime = DateTime.now(), 
+  approved: Boolean = false,
+  expired: DateTime = DateTime.now(),
+  sum: BigDecimal = BigDecimal("0.0"))
 
 object BillDAO {
   import scala.util.Try

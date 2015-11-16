@@ -25,8 +25,8 @@ class BillingInfos(tag: Tag) extends Table[BillingInfoDTO](tag, "billing_infos")
 /*
   Case class
  */
-case class BillingInfoDTO(var id: Option[Int], 
-business:Int, 
+case class BillingInfoDTO(var id: Option[Int] = None, 
+business:Int=0, 
 firstName:String, 
 lastName:String, 
 address:String, 

@@ -123,9 +123,71 @@ $scope.entityDecorator = function(entities, resource) {
   
   }
 }
+/* Slat
+  title: String,
+  boardId: UUID,
+  entityId: UUID,  
+  sval: String,
+  publisher: String,
+  meta: String,
+*/
+$scope.slatFilter = function(entity, slats) {
+  return _.filter(slats, function(slat){return slat.entityId == entity.id });
+}
+$scope.defaultValueParser = function(entity, value) {
+  if (entity.etype == "number") {
+    return parseInt(value);
+  } else {
+    return value;
+  }
+}
+$scope.fillValue = function(cost, entity, value) {
+  console.log(cost);
+  // entityId: String, launchId: Int, resourceId: Int
+  var resourceId = cost.resource.resource.id;
+  var launchId = $scope.session.session.id;
+  var entityId = entity.id;
+  var boardId = entity.boardId;
+
+  var req = {title: entity.title, boardId: boardId, entityId: entityId, meta: '', sval: value, publisher: ''};
+  $http.post(jsRoutes.controllers.DataController.fill_slat(entityId, launchId, resourceId).absoluteURL(document.ssl_enabled),  
+                    req).then(function (data) {
+                      console.log(data);
+  });
+
+}
+$scope.reFillValue = function(cost, entity, slat) {
+  console.log(cost);
+  // entityId: String, launchId: Int, resourceId: Int
+  var resourceId = cost.resource.resource.id;
+  var launchId = $scope.session.session.id;
+  var entityId = entity.id;
+  var boardId = entity.boardId;
+
+  var req = {title: entity.title, boardId: boardId, entityId: entityId, meta: '', sval: slat.sval, publisher: ''};
+  $http.post(jsRoutes.controllers.DataController.refill_slat(entityId, launchId, resourceId, slat.id).absoluteURL(document.ssl_enabled),  
+                    req).then(function (data) {
+                      console.log(data);
+  });
+}
 /**************
- * //// Cost module
- *****************/
+ * ////END Cost module
+ *****************/////////////////////////////////////////////////////*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 $scope.isManager = function () {
@@ -286,6 +348,8 @@ $scope.reloadResourcesForSession = function(session) {
    $scope.states.$promise.then(function (states) {
       $scope.switches.$promise.then(function(switches) {
         $scope.switches = switches;
+        $scope.element_topologs.$promise.then(function(topos) {
+            $scope.element_topologs = topos;
 
     _.forEach($scope.bpelems, function(z) {
     z.states = _.filter(states, function(d){ return d.front_elem_id == z.id;});
@@ -309,11 +373,19 @@ $scope.reloadResourcesForSession = function(session) {
 
     // Fetch resource and entities for that resource
   DataCostCollection.query().$promise.then(function(res) {
+
       $scope.resources = res;
       _.forEach($scope.resources, function(r){ r.entities.unshift({title: "All", id:"*"}) });
 
-    DataCostLaunchAssign.query( { BPid: $route.current.params.BPid, launch_id: session.id } ).$promise.then(function(cost) {
+    DataCostLaunchAssign.query( { launchId: session.id } ).$promise.then(function(cost) {
       $scope.processCosts = cost;
+
+      /* cost */
+      var fetchObj = function(objects) {
+      if (objects != undefined) {
+      return _.forEach(objects, function(obj) { return obj.obj })
+      } else { return undefined }
+      };
 
       _.forEach($scope.bpelems, function(z)    { z.costs = _.filter($scope.processCosts, function(cost) {
           cost.resource = _.find($scope.resources, function(res){return res.resource.id == cost.obj.resource_id });
@@ -329,7 +401,7 @@ $scope.reloadResourcesForSession = function(session) {
       
 
 
-      
+
 
   _.forEach($scope.spaceelems, function(z) {
     z.topo_id = _.find($scope.element_topologs, function(d){ return d.element_id == z.id && d.space_element == true;});
@@ -342,6 +414,7 @@ $scope.reloadResourcesForSession = function(session) {
     _.forEach(z.states, function(st){ return st.switches = _.filter($scope.switches, function(sw) { return sw.state_ref == st.id }) });
   });
 
+  });
  });
  });
 

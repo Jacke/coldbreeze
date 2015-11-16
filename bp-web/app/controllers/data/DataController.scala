@@ -45,6 +45,8 @@ import scala.concurrent._
 import scala.concurrent.duration._
 
 case class ResourceContainer(resource: ResourceDTO, board_cn: List[BoardContainer])
+case class ResourceAttributeContainer(resource: ResourceDTO, attribute: Entity)
+
 case class ResourceFormContainer(
                                   resourceAddForm: Form[models.DAO.ResourceDTO] = ResourceForms.resourceForm, 
                                   boardForm: Form[Board] = ResourceForms.boardForm,
@@ -118,8 +120,13 @@ object ResourceForms {
       "publisher" -> default(nonEmptyText, ""),
       "etype" -> nonEmptyText,
       "default" -> default(text, ""),
+      "meta" -> list(
+      mapping(
+        "key" -> nonEmptyText,
+        "value" -> nonEmptyText
+      )(MetaVal.apply)(MetaVal.unapply)),        
       "creationDate" -> optional(of[Long]),
-      "updateDate" -> optional(of[Long])) { (id, title, boardId, description, publisher, etype, default, creationDate, updateDate) =>
+      "updateDate" -> optional(of[Long])) { (id, title, boardId, description, publisher, etype, default, meta, creationDate, updateDate) =>
         Entity(
           None,
           title,
@@ -128,19 +135,21 @@ object ResourceForms {
           publisher,
           etype,
           default,
+          meta,
           creationDate.map(new DateTime(_)),
           updateDate.map(new DateTime(_)))
-      } { board =>
+      } { entity =>
         Some(
           (None,
-            board.title,
-            board.boardId.toString,
-            board.description,
-            board.publisher,
-            board.etype,
-            board.default,
-            board.creationDate.map(_.getMillis),
-            board.updateDate.map(_.getMillis)))
+            entity.title,
+            entity.boardId.toString,
+            entity.description,
+            entity.publisher,
+            entity.etype,
+            entity.default,
+            entity.meta,
+            entity.creationDate.map(_.getMillis),
+            entity.updateDate.map(_.getMillis)))
       })
   val slatForm = Form(
     mapping(
@@ -153,7 +162,11 @@ object ResourceForms {
       "entityId" -> default(nonEmptyText, ""),      
       "sval" -> nonEmptyText,
       "publisher" -> default(nonEmptyText, ""),
-      "meta" -> default(nonEmptyText, ""),
+      "meta" -> list(
+      mapping(
+        "key" -> nonEmptyText,
+        "value" -> nonEmptyText
+      )(MetaVal.apply)(MetaVal.unapply)),
       "creationDate" -> optional(of[Long]),
       "updateDate" -> optional(of[Long])) { (id, title, boardId, entityId, sval, publisher, meta, creationDate, updateDate) =>
         Slat(
@@ -187,6 +200,16 @@ object ResourceForms {
 }
 class DataController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
  
+  implicit val MetaValFormat = Json.format[MetaVal]
+  implicit val MetaValReader = Json.reads[MetaVal] 
+  implicit val SlatFormat = Json.format[Slat]
+  implicit val SlatReaders = Json.reads[Slat]
+  implicit val EntityFormat = Json.format[Entity]
+  implicit val EntityReaders = Json.reads[Entity]
+  implicit val ResourceDTOReaders = Json.reads[ResourceDTO]
+  implicit val ResourceDTOFormat = Json.format[ResourceDTO]
+  implicit val ResourceAttributeContainerFormat = Json.format[ResourceAttributeContainer]
+  implicit val ResourceAttributeContainerReaders = Json.reads[ResourceAttributeContainer]
 
  val Home = Redirect(routes.DataController.index())
  val waitSeconds = 100000
@@ -213,7 +236,9 @@ class DataController(override implicit val env: RuntimeEnvironment[DemoUser]) ex
      for {
         actual_boards_cn <- boards_cn
      } yield Ok(views.html.data.index(request.user, isManager, ResourceFormContainer(), resources.map(r => 
-                testResourceContainerList(r, actual_boards_cn)).flatten))     
+                testResourceContainerList(r, actual_boards_cn)).flatten,
+                ResourceFormContainer().entityForm
+                ))     
 
 
  }
@@ -232,7 +257,7 @@ def create_resource() = SecuredAction { implicit request =>
     ResourceForms.resourceForm.bindFromRequest.fold(
       formWithErrors => { 
         println(formWithErrors)
-        BadRequest(views.html.data.index(request.user, isManager, ResourceFormContainer(), testResourceContainerList() ))
+        BadRequest(views.html.data.index(request.user, isManager, ResourceFormContainer(), testResourceContainerList(),ResourceFormContainer().entityForm ))
         },
       entity => {
           println(entity)
@@ -244,6 +269,53 @@ def create_resource() = SecuredAction { implicit request =>
                   
       })
 }
+def api_create_resource() = SecuredAction(BodyParsers.parse.json) { implicit request => 
+    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
+    val business_request:Option[Tuple2[Int, Int]] = models.DAO.resources.EmployeesBusinessDAO.getByUID(request.user.main.email.get) 
+    val business = business_request match {
+      case Some(biz) => biz._2
+      case _ => -1
+    }        
+    val selected = request.body.validate[ResourceAttributeContainer]
+        selected.fold(
+        errors => {
+           Logger.error(s"error with $selected")
+          BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
+        },
+        entity => { 
+          println(entity)
+          val resource_id = ResourceDAO.pull_object(entity.resource.copy(business = business))
+          val future = createDefaultBoardsForRes(entity.resource.copy(business = business, id = Some(resource_id)))
+          // attribute
+          println(entity.attribute)
+          // val boardId
+          /*
+
+          */
+          Await.result(future, Duration(waitSeconds, MILLISECONDS)) match {
+            case message => { 
+               val parsedMessage = Json.parse(message)
+               val boardId = parsedMessage \ "message"
+               if (boardId.toString.length > 10) { // valid id
+
+                val future = minority.utils.BBoardWrapper()
+                      .addEntityByResource(resource_id = resource_id, 
+                                           entity.attribute.copy(boardId = UUID.fromString(boardId.toString))) 
+
+                Await.result(future, Duration(waitSeconds, MILLISECONDS)) match {
+                  case _ => Home
+                }                
+
+               } else {
+                  Ok(message)
+               }
+            }
+          }
+
+        }
+      )
+}
+
 
 def update_resource(id: Int) = SecuredAction { implicit request => 
 	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
@@ -393,6 +465,51 @@ def delete_slat(id: String) = SecuredAction { implicit request =>
     }
 }
 
+
+
+
+
+def fill_slat(entityId: String, launchId: Int, resourceId: Int) = SecuredAction(BodyParsers.parse.json) { implicit request => 
+    val selected = request.body.validate[Slat]
+    selected.fold(
+    errors => {
+       Logger.error(s"error with $selected")
+      BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
+    },
+    slat => { 
+    val metaString = List(MetaVal("launchId", s"$launchId"), MetaVal("resourceId", s"$resourceId"))
+    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
+          minority.utils.BBoardWrapper().addSlatByEntity(entity_id = entityId, 
+             slat.copy(title = slat.title.replaceAll("[ \f\t\\v]+$",""), entityId = UUID.fromString(entityId),
+              meta = metaString)) match {
+          case _ => Ok("created")
+        }
+      
+    })
+
+}
+def refill_slat(entityId: String, launchId: Int, resourceId: Int, slatId: String) = SecuredAction(BodyParsers.parse.json) { implicit request => 
+    val selected = request.body.validate[Slat]
+    selected.fold(
+    errors => {
+       Logger.error(s"error with $selected")
+      BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
+    },
+    slat => { 
+    val metaString = List(MetaVal("launchId", s"$launchId"), MetaVal("resourceId", s"$resourceId"))
+    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
+          // updateSlatByEntity(entity_id: String, slat_id: String, slat: Slat)
+          minority.utils.BBoardWrapper().updateSlatByEntity(entity_id = entityId, 
+            slat_id = slatId,
+             slat.copy(title = slat.title.replaceAll("[ \f\t\\v]+$",""), 
+                       entityId = UUID.fromString(entityId),
+                       meta = metaString, sval = slat.sval)) match {
+          case _ => Ok("created")
+        }
+      
+    })
+
+}
 
 /**
  * Board test

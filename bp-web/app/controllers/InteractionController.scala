@@ -17,6 +17,8 @@ import play.api.data.format.Formats
 import play.api.data.format.Formatter
 import play.api.data.FormError
 import play.api.Logger
+import play.api.libs.json._
+
 
 import views._
 import models.User
@@ -75,14 +77,20 @@ class InteractionController(override implicit val env: RuntimeEnvironment[DemoUs
   implicit val UnitReactionStateOutWrites = Json.format[UnitReactionStateOut]
   implicit val BPSessionStateReads = Json.reads[BPSessionState]
   implicit val BPSessionStateWrites = Json.format[BPSessionState]
+
+  implicit val MetaValFormat = Json.format[MetaVal]
+  implicit val MetaValReader = Json.reads[MetaVal]
   implicit val EntityFormat = Json.format[Entity]
   implicit val EntityReaders = Json.reads[Entity]
+  implicit val SlatFormat = Json.format[Slat]
+  implicit val SlatReaders = Json.reads[Slat]  
   implicit val ResourceDTOReaders = Json.reads[ResourceDTO]
   implicit val ResourceDTOFormat = Json.format[ResourceDTO]
 
  case class CostContainer(elementId: Int,
-                          entity: List[Entity], 
-                          resource: ResourceDTO)
+                          entities: List[Entity], 
+                          resource: ResourceDTO,
+                          slats: List[Slat] = List())
 
  case class SessionReactionContainer(session_state: Option[BPSessionState], 
                                      reaction: SessionUnitReaction, 
@@ -141,7 +149,7 @@ def fetchInteraction(session_id: Int) = SecuredAction { implicit request =>
 
       val reaction_outs:List[SessionUnitReactionStateOut] = SessionReactionStateOutDAO.findByReactions(reactions.map(_.id.get))
       
-      val costs:List[CostContainer] = reactions.map(reaction => findCost(sessionElemTopoId = reaction.element)).flatten
+      val costs:List[CostContainer] = reactions.map(reaction => findCost(sessionElemTopoId = reaction.element, launchId=session_id)).flatten
   	  val session_states: List[BPSessionState] = BPSessionStateDAO.findByOriginIds(reaction_outs.map(_.state_ref))
 
       Logger.debug("Session state")
@@ -200,7 +208,7 @@ def refillSlat(slat_id: String) = SecuredAction.async(BodyParsers.parse.json) { 
   * @return List of cost containers that content topo elementId, list of entities 
   *         and resource dto.
   */
-private def findCost(sessionElemTopoId: Int):List[CostContainer] = {
+private def findCost(sessionElemTopoId: Int, launchId: Int):List[CostContainer] = {
   /* CostContainer(elementId: Int,
                           entity: List[Entity], 
                           resource: ResourceDTO)  */
@@ -241,12 +249,25 @@ private def findCost(sessionElemTopoId: Int):List[CostContainer] = {
     }
     entities
   }
+  def retriveSlat(entitiesIds: List[String]):List[Slat] = {
+    val ft = wrapper.getSlatByEntitiesIds(entitiesIds)
+    val result = Await.result(ft, Duration(waitSeconds, MILLISECONDS))
+    result.filter(slat => detectMetaLaunch(slat.meta) == launchId)
+    }
+  def detectMetaLaunch(meta: List[minority.utils.MetaVal]) = meta.find(m => m.key == "launchId") match {
+    case Some(meta) => meta.value.toInt
+    case _ => -1
+  }
+ 
 
   elementResources.map { cost =>
   val wildcard = cost.entities == "*"
+  val entities = retriveEntity(cost.resource_id, cost.entities, wildcard)
+
   CostContainer(cost.element_id, 
-                retriveEntity(cost.resource_id, cost.entities, wildcard),
-                retriveResource(cost.resource_id)
+                entities, 
+                retriveResource(cost.resource_id),
+                retriveSlat(entities.map(e => e.id.get.toString))
                 )
   }
 }

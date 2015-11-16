@@ -266,9 +266,11 @@ def APIindex = Action.async { implicit request =>
         slats <- slatCollectionCursor.collect[List]()
      } yield Ok(Json.toJson(BoardContainer(boards, entities, slats)))
 }
+
 def APIcreate = Action.async(parse.json) { implicit request =>
+    val id = UUID.randomUUID()
     request.body.validate[Board].map { board =>
-        collection.insert(board.copy(id = Some(UUID.randomUUID()),
+        collection.insert(board.copy(id = Some(id),
                                                publisher = "", //user.email.getOrElse(""),
                                                creationDate = Some(new DateTime()), 
                                                updateDate = Some(new DateTime())))
@@ -276,7 +278,7 @@ def APIcreate = Action.async(parse.json) { implicit request =>
     //.recoverTotal { error =>
     //    Future(Ok(Json.obj("message" -> "failed")))
     //}
-    Future(Ok(Json.obj("message" -> "ok")))
+    Future(Ok(Json.obj("message" -> id.toString)))
 }
 def APIdelete(id:String) = Action { implicit request =>
   collection.remove(BSONDocument("id" -> id))

@@ -190,15 +190,16 @@ def APIindex(id:String) = Action.async { implicit request =>
     }
 }
 def APIcreate(id:String) = Action.async(parse.json) { implicit request =>
+val newId = UUID.randomUUID()
 request.body.validate[Entity].map { entity =>
         
         println(entity)
-        entityCollection.insert(entity.copy(id = Some(UUID.randomUUID()),
+        entityCollection.insert(entity.copy(id = Some(newId),
                             boardId = UUID.fromString(id),
                                                publisher = "",//user.email.getOrElse(""),
                                                creationDate = Some(new DateTime()), 
                                                updateDate = Some(new DateTime()))).map(_ =>
-         Ok(Json.obj("message" -> "ok")))
+         Ok(Json.obj("message" -> id.toString)))
                       
     }.recoverTotal {
       case error =>
@@ -211,6 +212,10 @@ request.body.validate[Entity].map { entity =>
         // create a modifier document, ie a document that contains the update operations to run onto the documents matching the query
         val date = new DateTime().getMillis
         println(date)
+        var metas = BSONArray.empty
+        entity.meta.foreach { meta =>
+          metas = metas ++ BSONDocument("key" -> meta.key, "value" -> meta.value) 
+        }           
         val modifier = BSONDocument(
           // this modifier will set the fields 'updateDate', 'title', 'content', and 'publisher'
           "$set" -> BSONDocument(
@@ -218,6 +223,7 @@ request.body.validate[Entity].map { entity =>
             "title" -> BSONString(entity.title),
             "description" -> BSONString(entity.description),
             "etype" -> BSONString(entity.etype),
+            "meta" -> metas,
             "default" -> BSONString(entity.default)))
         // ok, let's do the update
         entityCollection.update(BSONDocument("id" -> entity_id), modifier).map { _ =>

@@ -774,7 +774,50 @@ $('.ea-submit').on('click', function(event) {
 
         //        $('#addScnt').data('name')
         }
+// Databoard
+// 
+// case class ResourceAttributeContainer(resource: ResourceDTO, attribute: Entity)
+/*
+Entity
+  title: String,
+  boardId: UUID,
+  description: String,
+  publisher: String,
+  etype: String,
+  default: String = "",
+ResourceDTO
+  title
+  business
+*/
+if ($('#createResourceBtn').length > 0) {
+  $('#createResourceBtn')[0].on('click', function(ev){ 
+    ev.preventDefault; 
+    var resource = { title: $('#resourceTitle').val(), business: 0 };
+    
 
+    var attribute = {
+    title: $('#newInlineAttrTitleField').val(), 
+    boardId: 'ce6ffac0-df91-4ec6-a1dd-3fa7f7833589', // Random UUID, doesnt make sense, will regenerated
+    description: $('#newInlineAttrDescField').val(), 
+    publisher: '', 
+    etype: $('#newInlineAttrEtypeField').val(), 
+    default: $('#newInlineAttrDefaultField').val()
+    };
+
+    jsRoutes.controllers.DataController.api_create_resource.ajax({
+      dataType: 'json',contentType: 'application/json',data: JSON.stringify( { "resource": resource, 
+        "attribute": attribute } )
+    }).done(function() {
+        document.location.reload();
+        console.log( "success" );
+      })
+      .fail(function() {
+        document.location.reload();
+        console.log( "error" );
+      })
+    console.log($( this ).data())
+  });
+}
         
 
 //
@@ -800,6 +843,9 @@ var navActive = function () {
         }
         }
     });
+  if (window.location.pathname.split('/')[1] == "data") {
+    $('body').addClass('dataPage');
+  }
 }
 navActive();
 

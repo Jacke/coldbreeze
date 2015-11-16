@@ -28,7 +28,7 @@ case class Slat(
   entityId: UUID,  
   sval: String,
   publisher: String,
-  meta: String,
+  meta: List[MetaVal] = List.empty,  
   creationDate: Option[DateTime] = None,
   updateDate: Option[DateTime] = None) {
   
@@ -42,6 +42,9 @@ case class Slat(
 object Slat {
   import play.api.libs.json.Json
   import play.modules.reactivemongo.json.BSONFormats._
+  
+  implicit val MetaValFormat = Json.format[MetaVal]
+  implicit val MetaValReader = Json.reads[MetaVal]
 
   def UUIDgen(v: String):UUID = {
     v match {
@@ -60,7 +63,7 @@ object Slat {
  		    UUID.fromString(doc.getAs[String]("entityId").get),       
         doc.getAs[String]("sval").get,
         doc.getAs[String]("publisher").get,
-        doc.getAs[String]("meta").get,
+        List.empty[MetaVal],//doc.getAs[List[MetaVal]]("meta").get,        
         doc.getAs[BSONDateTime]("creationDate").map(dt => new DateTime(dt.value)),
         doc.getAs[BSONDateTime]("updateDate").map(dt => new DateTime(dt.value)))
 
@@ -76,7 +79,7 @@ object Slat {
         "entityId" -> board.entityId.toString, 
         "sval" -> board.sval,
         "publisher" -> board.publisher,
-        "meta" -> board.meta,
+        "meta" -> BSONArray.empty,
         "creationDate" -> board.creationDate.map(date => BSONDateTime(date.getMillis)),
         "updateDate" -> board.updateDate.map(date => BSONDateTime(date.getMillis)))
   }
@@ -91,7 +94,12 @@ object Slat {
       "entityId" -> default(nonEmptyText, ""),      
       "sval" -> nonEmptyText,
       "publisher" -> default(nonEmptyText, ""),
-      "meta" -> default(nonEmptyText, ""),
+      "meta" -> list(
+      mapping(
+        "key" -> nonEmptyText,
+        "value" -> nonEmptyText
+      )(MetaVal.apply)(MetaVal.unapply)),
+      
       "creationDate" -> optional(of[Long]),
       "updateDate" -> optional(of[Long])) { (id, title, boardId, entityId, sval, publisher, meta, creationDate, updateDate) =>
         Slat(

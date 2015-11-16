@@ -49,6 +49,8 @@ class SlatController @Inject() (val reactiveMongoApi: ReactiveMongoApi,val messa
 
     implicit val SlatSelectorFormat = Json.format[SlatSelector]
     implicit val SlatSelectorReader = Json.reads[SlatSelector]
+      implicit val MetaValReader = Json.reads[MetaVal]
+ implicit val MetaValFormat = Json.format[MetaVal]
 
   // get the collection 'boards'
   def slatCollection: JSONCollection = db.collection[JSONCollection]("slats")
@@ -119,18 +121,22 @@ class SlatController @Inject() (val reactiveMongoApi: ReactiveMongoApi,val messa
   def edit(id: String, entity_id:String, slat_id: String) = Action.async { implicit request =>
     Slat.form.bindFromRequest.fold(
       errors => Future.successful(Ok(views.html.editSlat(id, entity_id, Some(slat_id), errors, None))),
-      board => {
+      slat => {
         // create a modifier document, ie a document that contains the update operations to run onto the documents matching the query
         val date = new DateTime().getMillis
         println(date)
+        var metas = BSONArray.empty
+        slat.meta.foreach { meta =>
+          metas = metas ++ BSONDocument("key" -> meta.key, "value" -> meta.value) 
+        }        
         val modifier = BSONDocument(
           // this modifier will set the fields 'updateDate', 'title', 'content', and 'publisher'
           "$set" -> BSONDocument(
             "updateDate" -> BSONLong(date),
-            "title" -> BSONString(board.title),
-            "sval" -> BSONString(board.sval),
-            "meta" -> BSONString(board.meta),
-            "publisher" -> BSONString(board.publisher)))
+            "title" -> BSONString(slat.title),
+            "sval" -> BSONString(slat.sval),
+            "meta" -> metas,
+            "publisher" -> BSONString(slat.publisher)))
         // ok, let's do the update
         slatCollection.update(BSONDocument("id" -> id), modifier).map { _ =>
           Redirect(routes.BoardController.index)
@@ -149,14 +155,23 @@ class SlatController @Inject() (val reactiveMongoApi: ReactiveMongoApi,val messa
 def APIindex(id: String) = Action { implicit request =>
   Ok("ok")
 }
+// # /api/v1/entities/slats
 def APIFindByEntities() = Action.async(parse.json) { implicit request =>
   request.body.validate[SlatSelector].map { selector =>
+    println("try find slats")
+    selector.entities_ids.foreach { id => 
+      println("id: ")
+      println(id)
+    }
     val uids:List[UUID] = selector.entities_ids.map(id => UUID.fromString(id))
+    uids.foreach(println)
+    uids.map(u => u.toString).foreach(println)
     
     val query = BSONDocument(
       "query" -> BSONDocument())
     // the cursor of documents
-    val cursor = slatCollection.find(Json.obj("query" -> BSONDocument("id" -> BSONDocument("$in" -> uids.map(u => u.toString)) ))).cursor[Slat](readPreference = ReadPreference.primary)
+    val cursor = slatCollection.find(Json.obj("query" -> BSONDocument("entityId" -> BSONDocument("$in" -> 
+      uids.map(u => u.toString)) ))).cursor[Slat](readPreference = ReadPreference.primary)
     val cursor3 = slatCollection.find(Json.obj("query" -> BSONDocument())).cursor[Slat](readPreference = ReadPreference.primary)
     
     //val user = Some(request.identity)
@@ -181,29 +196,25 @@ def APIcreate(entity_id: String) = Action.async(parse.json) { implicit request =
    request.body.validate[Slat].map { slat =>
 
     val futureEntity = entityCollection.find(BSONDocument("id" -> entity_id)).one[Entity]
+    val id = UUID.randomUUID()
     for {    
       maybeEntity <- futureEntity
       result <- maybeEntity.map { entity =>
-          slatCollection.insert(slat.copy(id = Some(UUID.randomUUID()),
+          slatCollection.insert(slat.copy(id = Some(id),
                                boardId = entity.boardId, 
                                entityId = UUID.fromString(entity_id),         
                                                  publisher = "",//user.email.getOrElse(""),
                                                  creationDate = Some(new DateTime()), 
                                                  updateDate = Some(new DateTime()))).map(_ =>
-          Ok(Json.obj("message" -> "ok")) )
-
-
+          Ok(Json.obj("message" -> id.toString)) )
       }.getOrElse(Future(Ok(Json.obj("message" -> "failed"))))
     } yield result
-
-
-
-
     }.recoverTotal {
       case error =>
         Future.successful(Ok(Json.obj("message" -> "invalid.data")))
     }
-   Future(Ok(Json.obj("message" -> "ok"))) 
+
+   //Future(Ok(Json.obj("message" -> "ok"))) 
 }
 // /api/v1/ent/:entity_id/slat/:slat_id/edit
 def APIedit(entity_id: String, slat_id: String) = Action.async(parse.json) { implicit request =>
@@ -212,13 +223,19 @@ request.body.validate[Slat].map { slat =>
         // create a modifier document, ie a document that contains the update operations to run onto the documents matching the query
         val date = new DateTime().getMillis
         println(date)
+        
+        var metas = BSONArray.empty
+        slat.meta.foreach { meta =>
+          metas = metas ++ BSONDocument("key" -> meta.key, "value" -> meta.value) 
+        } 
+            
         val modifier = BSONDocument(
           // this modifier will set the fields 'updateDate', 'title', 'content', and 'publisher'
           "$set" -> BSONDocument(
             "updateDate" -> BSONLong(date),
             "title" -> BSONString(slat.title),
             "sval" -> BSONString(slat.sval),
-            "meta" -> BSONString(slat.meta),
+            "meta" -> metas,
             "publisher" -> BSONString(slat.publisher)))
         // ok, let's do the update
         slatCollection.update(BSONDocument("id" -> slat_id), modifier).map { _ =>

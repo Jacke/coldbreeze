@@ -23,6 +23,10 @@ body.themeGrad div#container.container-global {
   background: rgba(255, 255, 255, 0.93);
   min-height: 100%;
 }
+body.themeDark.themeGrad.dataPage {
+    background: linear-gradient(to bottom, rgb(77, 191, 101) 0%, rgb(84, 214, 111) 54%, rgb(82, 195, 106) 94%, rgb(77, 191, 101) 100%);
+    background-color: rgb(77, 191, 101);
+}
 
 ul.perm-menu li {
   display: inline-block;
@@ -298,6 +302,9 @@ h1.green-color.timer {
     font-size: 16px;
     vertical-align: bottom;
     margin-right: 4px;
+}
+i.uicon-svg142 {
+    margin-right: 14px;
 }
 .minMenuItem a:hover {
   color: #7FDBFF;
@@ -2180,9 +2187,11 @@ form {
 
 .proc-sessions .progress .progress-bar span {
     width: auto;
-    color: transparent;
+    color: #E6E6E6;
     height: 3px;
     text-indent: -9999px;
+    box-shadow: none;
+    text-shadow: none;
 }
 
 a.current-proc-session-info.session-link.proc-session:hover {
@@ -2688,7 +2697,39 @@ background-color: gray !important;
 }
 
 
+.allStations .stations.minimal-stations {
+    padding: 0px 10px 0px 3px;
+}
 
+.allStations .stations.minimal-stations .session__header {
+    padding-bottom: 0px;
+}
+
+.allStations .stations.minimal-stations progress-arc {
+    display: none;
+}
+
+.allStations .stations.minimal-stations .round-progress-container {
+    width: 45px;
+    height: 29px;
+}
+
+.allStations .stations.minimal-stations .session_title {
+    margin-top: 4px;
+}
+
+.allStations .stations.minimal-stations .progress-button {
+    margin-top: 0px;
+}
+
+.allStations .stations.minimal-stations .session__header.session__people {
+    margin-top: 2px;
+    margin-bottom: 8px;
+}
+
+.allStations .stations.minimal-stations .session_controls {
+    margin-top: 8px;
+}
 
 
 

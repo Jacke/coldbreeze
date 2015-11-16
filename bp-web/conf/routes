@@ -129,6 +129,8 @@ GET        /plans                                               @controllers.Pla
 POST       /plan/switch/:plan_id                                @controllers.PlanController.switch(plan_id: Int)
 POST       /plan/checkout/:bill_id                              @controllers.PlanController.checkout(bill_id: Int)
 POST       /plan/billinginfo                                    @controllers.PlanController.update_billinginfos()
+POST       /plan/switch_limit/:plan_id                          @controllers.PlanController.switchLimit(plan_id: Int)
+POST       /plan/bill/:billId/delete                            @controllers.PlanController.delete_bill(billId: Int)
 
 # Settings
 GET        /settings                                            @controllers.SettingController.index()
@@ -258,6 +260,7 @@ GET      /cards                             @controllers.CardController.index()
 ###
 GET      /data 								@controllers.DataController.index()
 POST     /data/resources					@controllers.DataController.create_resource()
+POST     /api/v1/data/resources             @controllers.DataController.api_create_resource() 
 PUT      /data/resource/:id					@controllers.DataController.update_resource(id: Int)
 POST     /data/resource/:id/delete     		@controllers.DataController.delete_resource(id: Int)
 GET      /data/test                         @controllers.DataController.boardTest()
@@ -281,6 +284,10 @@ POST	 /data/ent/:eid/slat/create	    @controllers.DataController.create_slat(eid
 GET      /data/ent/:eid/slat/:id/edit	@controllers.DataController.update_slat_form(eid: String, id: String)
 POST     /data/ent/:eid/slat/:id/update	@controllers.DataController.update_slat(eid: String, id: String)
 POST     /data/slat/:id/delete        	@controllers.DataController.delete_slat(id: String)
+#### FILL
+POST     /data/fill/ent/:entityId/:launchId/:resourceId  @controllers.DataController.fill_slat(entityId: String, launchId: Int, resourceId: Int) 
+POST     /data/refill/ent/:entityId/:launchId/:resourceId/:slatId  @controllers.DataController.refill_slat(entityId: String, launchId: Int, resourceId: Int, slatId: String) 
+
 
 ################
 # Reflections

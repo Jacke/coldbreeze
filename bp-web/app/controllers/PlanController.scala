@@ -44,16 +44,17 @@ import play.api.data.Forms._
 import scala.util.{Success, Failure}
 
 case class PayInfo(number: String, exp_month: String, exp_year: String, firstname: String, lastname: String)
-
+case class LimitFormObject(limit: Int)
 
 class PlanController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
  
- val SomeRedirectUrls = Some(RedirectUrls(Some("http://localhost:9000/your_redirect_url/"), Some("http://localhost:9000/your_cancel_url/")))
+ val SomeRedirectUrls = Some(RedirectUrls(Some("http://localhost:9000/your_redirect_url/"), 
+                                          Some("http://localhost:9000/your_cancel_url/")))
 
- /**
-  * Index action
-  */
-  val PayForm = Form(
+/**
+* Index action
+*/
+val PayForm = Form(
     mapping(
       "numner" -> nonEmptyText,
       "exp_month" -> nonEmptyText,
@@ -63,9 +64,7 @@ class PlanController(override implicit val env: RuntimeEnvironment[DemoUser]) ex
         )(PayInfo.apply)(PayInfo.unapply))
 
 //  BillingInfoDTO(var id: Option[Int], business:Int, firstName:String, lastName:String, address:String, zipcode:String, created_at: DateTime, updated_at: DateTime) 
-
-
- val BillingInfoForm = Form(mapping(
+val BillingInfoForm = Form(mapping(
   "id" -> optional(number), 
   "business" -> number,
   "firstName" -> nonEmptyText,
@@ -75,38 +74,48 @@ class PlanController(override implicit val env: RuntimeEnvironment[DemoUser]) ex
   "created_at" -> default(jodaDate, org.joda.time.DateTime.now()),
   "updated_at" -> default(jodaDate, org.joda.time.DateTime.now()) 
 )(models.DAO.BillingInfoDTO.apply)(models.DAO.BillingInfoDTO.unapply))
+val LimitForm = Form(mapping(
+    "limit" -> number
+  )(LimitFormObject.apply)(LimitFormObject.unapply))
 
- def index() = SecuredAction { implicit request =>
+
+/*****
+ *  Main plan page
+ */
+
+def index() = SecuredAction { implicit request =>
   val user = request.user.main.userId
  	val plans = PlanDAO.getAll
  	val bills = BillDAO.getAllByMasterAcc(user)
+  val current_plan = AccountPlanDAO.getByMasterAcc(user).get
+  val limit_form = LimitForm.fill(LimitFormObject(current_plan.limit))
+
         val billing_info = BillingInfosDAO.getByBusiness(EmployeesBusinessDAO.getByUID(user).get._2)
         val billing_info_form = billing_info match {
          case Some(info) => BillingInfoForm.fill(info)
          case _ => BillingInfoForm
         }
- 	Ok(views.html.plans.index(request.user, plans, bills, PayForm, billing_info_form))
+ 	Ok(views.html.plans.index(request.user, plans, bills, PayForm, billing_info_form, limit_form, current_plan))
  }
 
 
 
 def update_billinginfos() = SecuredAction { implicit request =>
-
   //TODO: Business checking
-BillingInfoForm.bindFromRequest.fold(
-      formWithErrors => Redirect(routes.PlanController.index),
-      entity => {
-        
-          BillingInfosDAO.push(entity)
+  BillingInfoForm.bindFromRequest.fold(
+        formWithErrors => Redirect(routes.PlanController.index),
+        entity => {
+          
+            BillingInfosDAO.push(entity)
 
-      })
-    Redirect(routes.PlanController.index)    
+        })
+      Redirect(routes.PlanController.index)    
 }
 
  /**
   * Switch method
   */
- def switch(plan_id: Int) = SecuredAction { implicit request =>
+def switch(plan_id: Int) = SecuredAction { implicit request =>
   val user = request.user.main.userId
   val plans = PlanDAO.getAll
   val bills = BillDAO.getAllByMasterAcc(user)
@@ -117,20 +126,86 @@ BillingInfoForm.bindFromRequest.fold(
   desired_plan match {
     case Some(plan) => {
       AccountPlanDAO.update(current_plan.id.get, current_plan.copy(plan = plan_id) )
-      BillDAO.pull_object(BillDTO(None, "Bill #1", user, DateTime.now))
+      val bill_id = BillDAO.pull_object(BillDTO(None, s"Bill ${DateTime.now}", user, DateTime.now().plusMonths(1)))
+          AccountPlanHistoryDAO.pull_object(AccountPlanHistoryDTO(None, 
+                                                                  account_plan = current_plan.id.get,
+                                                                  limit_diff = -1,
+                                                                  plan_diff = plan_id,
+                                                                  byBill = bill_id))
  	    Redirect(routes.PlanController.index)
   }
   case _ => BadRequest("Plan not found")
   }
+}
 
- }
+def delete_bill(billId: Int) = SecuredAction { implicit request => 
+    val user = request.user.main.userId
 
+    val bills = BillDAO.getAllByMasterAcc(user)
+    bills.find(bill => bill.id.get == billId && !bill.approved) match {
+      case Some(bill) => {
+        BillDAO.delete(billId)
+        Redirect(routes.PlanController.index)
+      }
+      case _ => Redirect(routes.PlanController.index)
+    }
+}
+
+/**
+ * Switch limit
+ */
+def switchLimit(plan_id: Int) = SecuredAction { implicit request =>
+  val user = request.user.main.userId
+  val plans = PlanDAO.getAll
+  val bills = BillDAO.getAllByMasterAcc(user)
+  var limit = -1
+  LimitForm.bindFromRequest.fold(
+        formWithErrors => Redirect(routes.PlanController.index),
+        entity => {
+          
+          var limit = entity.limit
+          
+        })
+
+
+  val current_plan = AccountPlanDAO.getByMasterAcc(user).get
+  val desired_plan = PlanDAO.get(plan_id)
+  val current_limit = current_plan.limit
+  val limit_dif = limit - current_limit
+
+  
+  limit_dif match {
+    case x if x < 1 => {
+        Redirect(routes.PlanController.index)
+    }
+    case _ => {
+      desired_plan match {
+        case Some(plan) => {
+          val ammount = limit_dif * 5
+          val bill_id = BillDAO.pull_object(BillDTO(None, s"Bill for increase user slots ${DateTime.now}", 
+            user, DateTime.now, false, DateTime.now().plusMonths(1), BigDecimal(ammount))
+            )
+          AccountPlanDAO.update(current_plan.id.get, current_plan.copy(limit = current_plan.limit + limit ) )
+          AccountPlanHistoryDAO.pull_object(AccountPlanHistoryDTO(None, 
+                                                                  account_plan = current_plan.id.get,
+                                                                  limit_diff = limit_dif,
+                                                                  plan_diff = -1,
+                                                                  byBill = bill_id))
+          Redirect(routes.PlanController.index)
+      }
+      case _ => BadRequest("Plan not found")
+      }      
+    } 
+  }
+
+
+
+} 
 
 /**
  * Checkout action
  */
- def checkout(bill_id: Int) = SecuredAction { implicit request =>
-
+def checkout(bill_id: Int) = SecuredAction { implicit request =>
   val user = request.user.main.userId
   val plans = PlanDAO.getAll
   val bill = BillDAO.get(bill_id).get
@@ -141,43 +216,44 @@ BillingInfoForm.bindFromRequest.fold(
          case Some(info) => BillingInfoForm.fill(info)
          case _ => BillingInfoForm
         }
-
-
   val plan_dao = PlanDAO.get(current_plan.plan).get
   val plan_price:BigDecimal = plan_dao.price
 
-
-PayForm.bindFromRequest.fold(
-      formWithErrors => BadRequest(views.html.plans.index(request.user, plans, bills, PayForm, billing_info_form)),
+  val bill_his = AccountPlanHistoryDAO.getByBill(bill_id)
+  
+  val forPlan = true
+  val forLimit = false
+  PayForm.bindFromRequest.fold(
+      formWithErrors =>     Redirect(routes.PlanController.index),
       entity => {
          println(entity)
 
 
+             BillDAO.update(bill.id.get, bill.copy( approved = true) )
+             if (bill_his.get.limit_diff == -1) {
+               AccountPlanDAO.update(current_plan.id.get, current_plan.copy(expired_at = DateTime.now().plusMonths(1) ))
+             }
+             if (bill_his.get.plan_diff == -1) {
+                // limit bill changes
+             }
+/*
   CheckoutUtil.checkout_proceed(Item(plan_dao.title, plan_dao.title, plan_price, "USD"), 
-CreditCard( 
+  CreditCard( 
     None, None, entity.number, CardType.fetchType(entity.number), entity.exp_month, entity.exp_year, first_name = entity.firstname, last_name = entity.lastname
       )).onComplete {
 
           case Success(x) => {
              println(x.state)
              BillDAO.update(bill.id.get, bill.copy( approved = true) )
-             AccountPlanDAO.update(current_plan.id.get, current_plan.copy(expired_at = DateTime.now().plusDays(30) ))
+             AccountPlanDAO.update(current_plan.id.get, current_plan.copy(expired_at = DateTime.now().plusMonths(1) ))
           }
           case Failure(t) => { 
             println(t)
           }
         }
-
-
-
-      })
-
-
-
-
-
-     	
-  Ok(views.html.plans.index(request.user, plans, bills, PayForm, billing_info_form))
+*/      })
+      
+   Redirect(routes.PlanController.index)    
 }
 
 
