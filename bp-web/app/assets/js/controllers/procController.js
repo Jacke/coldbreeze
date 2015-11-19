@@ -244,20 +244,17 @@ $rootScope.$on('cfpLoadingBar:completed', function(event, data){
       scope: $scope
     });
   };
+
+
+
   $scope.services = BPServicesFactory.query();
+
 
   if ($routeParams.service != undefined) {
       $scope.bprocesses = BProcessesFactory.query();
       $scope.bprocesses.$promise.then(function(data){
         $scope.service_id = $routeParams.service;
         $scope.bprocesses = _.filter(data, function(proc){ return proc.service == $routeParams.service });
-        // url param for opening fast elem create form
-        if ($location.search().fast_proc != undefined) {
-        var proc  = _.find($scope.bprocesses, function(proc) { return proc.id == parseInt($location.search().fast_proc) });
-          if (proc) {
-            $scope.switchFastElementForm(proc);
-          }
-        }
 
       });
 
@@ -267,6 +264,17 @@ $rootScope.$on('cfpLoadingBar:completed', function(event, data){
   
   // Init thumb
   $scope.bprocesses.$promise.then(function (processes) {
+
+        // url param for opening fast elem create form
+        if ($window.location.hash.split('fast_proc=')[1] != undefined) {
+          console.log(window.location.hash.split('fast_proc=')[1])
+          var proc  = _.find($scope.bprocesses, function(proc) { return proc.id == parseInt($window.location.hash.split('fast_proc=')[1]) });
+          //if (proc != undefined) {
+            console.log(proc);
+            $scope.switchFastElementForm(proc);
+          //}
+        }
+
     _.forEach(processes, function(proc) { TreeBuilder.buildFetch(proc, function(success){
         $('.process_content .tree-thumb.process-tree').dragOn();
     }); });
@@ -274,7 +282,11 @@ $rootScope.$on('cfpLoadingBar:completed', function(event, data){
   });
 
 
-
+  // New form 
+  if ($window.location.hash.split("?")[1] == "new") {
+    console.log("new form");
+    $scope.createNewBP();
+  }
 
   $scope.stations = BPStationsFactory.query();
 
@@ -397,7 +409,12 @@ $scope.switchFastElementForm = function(process) {
   if ($scope.refs.length == 0) {
      $scope.refs = RefsFactory.query();
   }
+  console.log('switchFastElementForm')
   process.fastElForm == true ? process.fastElForm=false : process.fastElForm=true;
+  if (process.fastElForm == undefined) {
+    process.fastElForm = true;
+  }
+  console.log(process.fastElForm);
 }
 
 

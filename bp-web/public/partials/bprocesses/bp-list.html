@@ -15,7 +15,7 @@
   <ul ul id="tablemin" class="tableMinList processList">
   <div class="process" ng-repeat="bprocess in bprocesses | filter:search">
     <div class="process-status">
-    <li class="tableMinListItem frontProcessInfo" ng-init="bprocess.fastElForm=false" ng-hide="bprocess.fastElForm">
+    <li class="tableMinListItem frontProcessInfo" ng-hide="bprocess.fastElForm">
       <div class="fastElCreateBtn">
         <a class="fastElFormButton" ng-click="switchFastElementForm(bprocess)" tooltip-placement="left" tooltip="Add element">+</a>
       </div> 

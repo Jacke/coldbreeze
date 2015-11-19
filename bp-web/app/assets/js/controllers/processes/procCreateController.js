@@ -40,11 +40,15 @@ minorityControllers.controller('BPCreationCtrl', ['$window', '$rootScope','$scop
       BProcessesFactory.create($scope.bprocess).$promise.then(function(data) {
           $scope.bprocesses = BProcessesFactory.query();
           $routeParams.service = undefined;
+          console.log(data);
+
           $scope.closeThisDialog();
-          $scope.$parent.bprocesses = BProcessesFactory.query();
-          $scope.$parent.bprocesses.$promise.then(function (processes) {
-              _.forEach(processes, function(proc) { TreeBuilder.buildFetch(proc, function(success){}); })
-          });
+          var newProcId = data.message;
+          $location.path('/bprocesses?fast_proc='+newProcId);
+          //$scope.$parent.bprocesses = BProcessesFactory.query();
+          //$scope.$parent.bprocesses.$promise.then(function (processes) {
+          //    _.forEach(processes, function(proc) { TreeBuilder.buildFetch(proc, function(success){}); })
+          //});
            //$location.path('/bprocesses');
     });
     }

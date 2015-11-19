@@ -163,7 +163,7 @@ def create_bprocess = SecuredAction(BodyParsers.parse.json) { request =>
           action(request.user.main.userId, process = Some(id), 
                  action = ProcHisCom.processCreated, what = Some(ProcHisCom.processCreated), what_id = Some(id))
 
-          Ok(Json.obj("status" ->"OK", "message" -> ("Bprocess '"+bprocess.id+"' saved.") ))  
+          Ok(Json.obj("status" ->"OK", "message" -> id ))  
         }
       }
       

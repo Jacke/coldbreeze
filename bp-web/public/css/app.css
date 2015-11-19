@@ -3336,7 +3336,20 @@ label.onlyActiveLabel {
 .panel-default > .panel-footer + .panel-collapse .panel-body {
   border-bottom-color: #d6e1e5;
 }
+.state-overview .add-button-panel {
+    width: 9%;
+    margin-top: 30px;
+    display: inline-block;
+    float: right;
+    font-family: "Min Icons";
+    color: gray;
+}
 
+.state-overview .add-button-panel:hover {
+    color: black;
+}
+
+.add-button-panel.minicon {}
 
 .panel-primary {
   border-color: rgba(2, 186, 242, 0.2);

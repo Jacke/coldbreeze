@@ -13,6 +13,7 @@ slick-pg/
 project/target
 .DS_Store
 .sass-cache/
+.sass-cache/*
 async-socket/
 scala-oauth2-provider/
 play-oauth/
