@@ -495,12 +495,12 @@ $('a.delete-group').on('click', function (event) {
 });
 
 //$('#addMembersForm').slideToggle();
+var map = Array.prototype.map;
 
 $('#addMembersForm button.posRight').on('click', function(event) {
 
 event.preventDefault();
-  var emails = $('textarea#newUsersForGroup').val().split(',');
-  var admin =  $('#teamAdminRole').prop("checked");
+  var emails = map.call(document.querySelectorAll('.inputEmployee input#newUsersForGroup'), function( l ){ return l.value }).filter(function(o){return o != "" })
 if (emails.length > 0) {
 
 /*
@@ -519,14 +519,17 @@ jsRoutes.controllers.users.EmployeeController.create_new().ajax({
     //$('.loginFlowPage').prepend('<div class="messageBoxWrap"><p class="message">'+ JSON.parse(jqXHR.responseText).error +'</p></div>');
   });
 */
+//var map = Array.prototype.map;
+// map.call(document.querySelectorAll('.inputEmployee input#newUsersForGroup'), function( l ){ return l.value }) 
+
 var data = $('.inputEmployee').map(function(c){return [$(this).find('.flatInput').val(), $(this).find('.flatCheckbox input').is(':checked') ] })
 var n = 2;
 var lists = _.groupBy(data, function(element, index){
   return Math.floor(index/n);
 });
 lists = _.filter(_.toArray(lists), function(arr){ return arr[0] != "" });
-var admin = _.filter(lists, function(arr) { return arr[1] == true });
-var employee = _.filter(lists, function(arr) { return arr[1] == false });
+var admin = _.filter(lists, function(arr) { return arr[1] == true })._.map(function(el){return el[0] })
+var employee = _.filter(lists, function(arr) { return arr[1] == false })._.map(function(el){return el[0] })
 
 console.log("admin");
 console.log(admin);
@@ -536,7 +539,7 @@ console.log(employee);
 /** 
  * Submiting
  */
-
+var admin_status = false;
 if (admin.length > 0) {
 jsRoutes.controllers.users.EmployeeController.create_new().ajax({
         data: JSON.stringify({emails: admin, manager: true}), dataType: "json", contentType: 'application/json',

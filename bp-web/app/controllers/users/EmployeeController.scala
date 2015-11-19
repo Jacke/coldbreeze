@@ -27,7 +27,6 @@ import models.AccountDAO
 
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
-
 /**
  * Created by Sobolev on 22.07.2014.
  */
@@ -72,7 +71,9 @@ class EmployeeController(override implicit val env: RuntimeEnvironment[DemoUser]
         case Some(biz) => groups = GroupsDAO.getAllByBusiness(biz._2)
         case _ => groups = List()
       }
-      val aval = 5
+      val current_plan = models.DAO.resources.AccountPlanDAO.getByMasterAcc(user.main.email.get).get
+      val aval = (current_plan.limit + 1) - employees.length
+      // current employee limit + main manager MINUS all employee length for that master
       Ok(views.html.businesses.users.employees(
         Page(employees, 1, 1, employees.length), accounts, 1, "%", assign, assigned, groups, aval)(user))
   }

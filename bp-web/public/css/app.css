@@ -2700,6 +2700,10 @@ background-color: gray !important;
 .allStations .stations.minimal-stations {
     padding: 0px 10px 0px 3px;
 }
+.stations.minimal-stations .session-launches-bar .automations_connected {
+    margin-left: 18px;
+    margin-right: 16px;
+}
 
 .allStations .stations.minimal-stations .session__header {
     padding-bottom: 0px;

@@ -85,12 +85,15 @@
               @helper.select(entityForm("etype").copy(value=Some(entity.etype)), Seq("number"->"Number", "text"->"Text", "boolean" -> "Boolean"), 'class -> "form-control", '_label -> "Type")      
               @helper.inputText(entityForm("default").copy(value=Some(entity.default)),   'class -> "form-control", '_label -> "Default value")
               <div class="form-actions">
-                <button class="btn btn-primary" type="submit">Save</button>
+                <button class="" type="submit"><span class="moicon icon-pencil"></span></button>
               </div>
             }
+            <div class="inlineEntityFormDelete">
             @helper.form(routes.DataController.delete_entity(entity.getId)) {
                  <button type="submit" class="btn danger deleteEntity"><span class="moicon icon-trash"></span></button>
             }
+            </div>
+            
             </div>
 
 
