@@ -65,10 +65,13 @@
 }
 
 #loading-bar-spinner {
-  position: fixed;
-  z-index: 10002;
-  top: 0px;
-  left: 0px;
+    position: fixed;
+    z-index: 10002;
+    top: 0px;
+    left: 0px;
+background: rgb(76, 82, 100);
+    padding-bottom: 17px;
+    padding-right: 5px;
 }
 img.node-shield {
     width: 71px;

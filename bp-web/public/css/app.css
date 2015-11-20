@@ -2736,7 +2736,23 @@ background-color: gray !important;
 }
 
 
+.stations.minimal-stations .session__buttonInput {
+    display: inline-block;
+    float: left;
+    padding: 15px 16px 21px 16px;
+    background: #45475D;
+    color: white;
+    margin-left: -3px;
+    margin-top: 2px;
+    font-size: 15px;
+}
 
+.session__buttonInput .moicon-eject:before {
+    color: white;
+    opacity: 1;
+    -webkit-animation: cc 074s linear 0.7s infinite alternate;
+    animation: cc 0.7s linear 0.7s infinite alternate;
+}
 
 
 .allSessionsList h2,  .allStationssList h2 {

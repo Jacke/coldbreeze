@@ -423,6 +423,10 @@ $scope.haltStation = function (stationId) {
       return session;
     }
   }
+
+  $scope.isSessionsOnlyActive = function(sessions) {
+    return _.filter(sessions, function(session){ return $scope.isOnlyActive(session) }).length < 1;
+  }  
 $scope.isOnlyListed = function(session) {
   return session;
 }

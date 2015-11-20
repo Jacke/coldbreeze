@@ -14,7 +14,7 @@
 
 
 <div class="active-switcher">
-  <input type="checkbox" class="switch" id="switch-1" data-ng-model="onlyActive"/>
+  <input type="checkbox" class="switch" id="switch-1" ng-init="onlyActive=true;" data-ng-model="onlyActive"/>
   <label for="switch-1" class="onlyActiveLabel">Active</label>
 </div>
  
@@ -133,7 +133,7 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 
 <div class="empty-reponse" ng-show="isEmptyLaunches" ng-cloak>You have no launches. Run <a href="/a">process</a> and come back here</div>
 
-<div class="session-process" ng-repeat="entity in sessions" ng-hide="entity.sessions < 1">
+<div class="session-process" ng-repeat="entity in sessions" ng-hide="isSessionsOnlyActive(entity.sessions)">
 
 <div class="session-process-header"><h2><a href="/a#/bprocess/{{ entity.process.id }}/elements">{{ entity.process.title }}</a></h2>
 <div class="session_controls">
@@ -149,6 +149,11 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
           <div ng-include src="'assets/partials/treeThumb.html'"></div>
 </div>-->
 <div class="stations minimal-stations" ng-repeat="session in entity.sessions | orderBy:'station.paused':true | limitTo: 10 | filter:isOnlyActive" style="clear: both;">
+
+<div class="session__buttonInput" ng-if="session.station.paused == true && session.station.finished == false">
+<button class="moicon-eject moicon" ng-click="showInlineLaunch(session)">
+<span></span><span></span><span></span>
+</button></div>
 
         <div class="session__header">
               <div class="progress-button loading" ng-class="bubbleClass(session)" tooltip="{{bubbleTooltip(session)}}">
