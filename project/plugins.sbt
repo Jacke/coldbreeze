@@ -29,9 +29,9 @@ resolvers += Resolver.url("heroku-sbt-plugin-releases",
 
 resolvers += Resolver.url("untyped", url("http://ivy.untyped.com"))(Resolver.ivyStylePatterns)
 
-resolvers += "Linter Repository" at "https://hairyfotr.github.io/linteRepo/releases"
+//resolvers += "Linter Repository" at "https://hairyfotr.github.io/linteRepo/releases"
 
-addCompilerPlugin("com.foursquare.lint" %% "linter" % "0.1.9")
+//addCompilerPlugin("com.foursquare.lint" %% "linter" % "0.1.9")
 
 addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "0.6.0")
 
