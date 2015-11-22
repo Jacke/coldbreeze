@@ -389,6 +389,8 @@ require(['requirejs','jsRoutes','jquery', 'react','pnofiy','mobileDetect','popup
         document.mobileDetect = new mobileDetect(window.navigator.userAgent);
         document.isMobile = (document.mobileDetect.phone() != null) ? true : false;
         document.react = react;
+        $('[data-toggle="tooltip"]').tooltip();
+
 
         // Tours
         var dashBoardTour = function() {
@@ -821,7 +823,7 @@ if ($('#createResourceBtn').length > 0) {
     console.log($( this ).data())
   });
 }
-        
+      
 
 //
 // Plans

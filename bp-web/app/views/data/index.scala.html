@@ -47,7 +47,6 @@
 </div>
 </div>
 
-
 @if(resContainer.length < 1) {
   <div class="dataEmptyPlaceholder">
         <span class="uicon-svg62222"></span>
@@ -71,29 +70,29 @@
             <h4>@board.title</h4>
             <span class="boardContent">@board.content</span>
             <div class="entities" style="">
-              <a href="@routes.DataController.create_entity_form(cn.resource.id.getOrElse(0), board.getId)" class="btn success btn-success createEntity" id="entityCreateBtn">Create Attribute</a>
+              <!--<a href="@routes.DataController.create_entity_form(cn.resource.id.getOrElse(0), board.getId)" class="btn success btn-success createEntity" id="entityCreateBtn">Create Attribute</a>-->
 
                 @bcn.entities.filter(e => e.boardId.toString == board.getId).map { entity =>
               <div class="boardEntity">
-                  <a href="@routes.DataController.update_entity_form(entity.getId)">@entity.title - @entity.etype @entity.default</a>   
+                  <h4>@entity.title - @entity.etype @entity.default</h4>   
 
                 <!-- entity form -->
                 <div class="inlineEntityForm">
-            @helper.form(routes.DataController.update_entity(entity.getId)) {
+            @helper.form(routes.DataController.update_entity(entity.getId), 'class -> "updateEntityForm") {
               @helper.inputText(entityForm("title").copy(value=Some(entity.title)),   'class -> "form-control", '_label -> "Title")    
               @helper.textarea(entityForm("description").copy(value=Some(entity.description)),   'class -> "form-control", '_label -> "Description")
               @helper.select(entityForm("etype").copy(value=Some(entity.etype)), Seq("number"->"Number", "text"->"Text", "boolean" -> "Boolean"), 'class -> "form-control", '_label -> "Type")      
               @helper.inputText(entityForm("default").copy(value=Some(entity.default)),   'class -> "form-control", '_label -> "Default value")
               <div class="form-actions">
-                <button class="" type="submit"><span class="moicon icon-pencil"></span></button>
+                <button class="" type="submit" data-toggle="tooltip" data-placement="right" title="Update attribute"><span class="moicon icon-pencil"></span></button>
               </div>
             }
             <div class="inlineEntityFormDelete">
             @helper.form(routes.DataController.delete_entity(entity.getId)) {
-                 <button type="submit" class="btn danger deleteEntity"><span class="moicon icon-trash"></span></button>
+                 <button type="submit" class="btn danger deleteEntity" data-toggle="tooltip" data-placement="right" title="Delete attribute"><span class="moicon icon-trash"></span></button>
             }
             </div>
-            
+
             </div>
 
 
@@ -119,13 +118,13 @@
                 }
                 <!-- new entity form -->
                 <div class="inlineEntityForm">
-            @helper.form(routes.DataController.create_entity(board.getId)) {
+            @helper.form(routes.DataController.create_entity(board.getId), 'class -> "inlineEntityFormNewForm") {
               @helper.inputText(entityForm("title"), 'class -> "form-control", '_label -> "Title")    
               @helper.textarea(entityForm("description"), 'class -> "form-control", '_label -> "Description")
               @helper.select(entityForm("etype"), Seq("number"->"Number", "text"->"Text", "boolean" -> "Boolean"), 'class -> "form-control", '_label -> "Type")      
               @helper.inputText(entityForm("default"), 'class -> "form-control", '_label -> "Default value")
               <div class="form-actions">
-                <button class="btn btn-primary" type="submit">Add</button>
+                <button class="btn" type="submit" data-toggle="tooltip" data-placement="right" title="Create attribute"><span class="moicon icon-plus"></span></button>
               </div>
             }
             </div>
@@ -141,7 +140,7 @@
         <!--<a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" ng-click="modalShare(bprocess.id)"><span class="minicon-share"></span> {{ 'SHARE' | translate }}</a>
         <a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" href="/a#/launches?process={{ bprocess.id }}"><span class="uicon-svg372"></span>{{ 'STATIONS' | translate }}</a>-->
         @form(routes.DataController.delete_resource(cn.resource.id.getOrElse(0)), 'class -> "topRight") {
-          <button type="submit" class="tableMinControlsLink teamSettingsLink tableMinLinkDelete" href="@cn.resource.id.getOrElse(0)"> <span class="minicon-trash"></span>Delete</button>
+          <button type="submit" class="tableMinControlsLink teamSettingsLink tableMinLinkDelete" href="@cn.resource.id.getOrElse(0)"> <span class="minicon-trash"></span></button>
         }
       </div>
     </li>
