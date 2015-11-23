@@ -409,3 +409,8 @@ GET         /pro                                                @controllers.App
 POST        /pro/subscribe                                      @controllers.Application.subscribePro()  
 POST        /ea/subscribe                                       @controllers.Application.subscribeEa()  
 GET         /:profile_id										@controllers.ProfileController.profile(profile_id: String)
+
+
+GET     /ui         com.github.mmizutani.playgulp.Gulp.index
+
+->      /ui/        gulp.Routes

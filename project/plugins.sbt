@@ -53,6 +53,10 @@ addSbtPlugin("com.typesafe.sbteclipse" % "sbteclipse-plugin" % "2.4.0")
 
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.0")
 
+// gulp required new version of play
+
+//addSbtPlugin("com.github.mmizutani" % "sbt-play-gulp" % "0.0.6")
+
 //addSbtPlugin("io.spray" % "sbt-twirl" % "0.7.0")
 
 addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "0.4.0")
@@ -64,6 +68,8 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-less" % "1.0.0")
 addSbtPlugin("com.typesafe.sbt" % "sbt-rjs" % "1.0.7")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-digest" % "1.0.0")
+
+addSbtPlugin("io.teamscala.sbt" % "sbt-babel" % "1.0.2")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-gzip" % "1.0.0")
 

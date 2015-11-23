@@ -4,8 +4,8 @@ machine:
     SBT_OPTS: "-Xms512M -Xmx1536M -Xss1M -XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=256M"
 dependencies:
   pre:
-    - wget -q https://dl.bintray.com/sbt/debian/sbt-0.13.8.deb
-    - sudo dpkg -i sbt-0.13.8.deb
+    - wget -q https://dl.bintray.com/sbt/debian/sbt-0.13.9.deb
+    - sudo dpkg -i sbt-0.13.9.deb
   cache_directories:
     - "~/.ivy2"
     - "~/.sbt"

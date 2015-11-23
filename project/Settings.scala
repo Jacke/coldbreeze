@@ -13,6 +13,8 @@ import net.ground5hark.sbt.css.Import._
 import com.typesafe.sbt.uglify.Import._
 import com.untyped.sbtjs.Plugin._
 import com.untyped.sbtsass.Plugin._
+import com.typesafe.sbt.jse.JsEngineImport._
+import io.teamscala.sbt.babel.Import._
 import UglifyKeys._
 
 //import twirl.sbt.TwirlPlugin._
@@ -37,6 +39,13 @@ object Settings {
     // RequireJS with sbt-rjs (https://github.com/sbt/sbt-rjs#sbt-rjs)
     // ~~~
     JsKeys.filenameSuffix in Compile := ".min"
+    JsEngineKeys.engineType := JsEngineKeys.EngineType.Node
+    BabelKeys.options := WebJs.JS.Object(
+      "stage" -> 2,
+      "comments" -> false,
+      "modules" -> "common"
+    )
+
     RjsKeys.paths += ("jsRoutes" -> ("/jsroutes" -> "empty:"))
     RjsKeys.mainModule := "main"
 
@@ -96,6 +105,7 @@ object Settings {
     scalacOptions in Test ++= Seq("-Yrangepos")
   
   
+  lazy val compilerSettings = Seq(addCompilerPlugin("org.scalamacros" %% "paradise" % "2.0.0" cross CrossVersion.full))
   import spray.revolver.RevolverPlugin.Revolver._
   lazy val revolverSettings = Revolver.settings //++ seq(reJRebelJar := "C:/.jrebel/jrebel.jar")
   //lazy val revolverSettings = Revolver.settings ++ Revolver.enableDebugging(port = 9999, suspend = true) ++ seq(reJRebelJar := "~/.jrebel/jrebel.jar")

@@ -1,0 +1,86 @@
+.session_list__session .active-sessions .info a {
+	font-weight: 500;
+	font-size: 11px;
+	font-family: 'Open Sans', Helvetica, Sans-serif;
+}
+.active-sessions .info {
+	display: inline-block;
+	width: 100%;
+	font-size: 13px;
+}
+.progress-sm {
+	height: 8px !important;
+	margin-bottom: 10px !important;
+}
+.session_list__session__process {
+	margin-bottom: 10px;
+	font-size: 20px;
+	font-weight: 300;
+	color: #474748;
+	font-family: 'Source Sans Pro', sans-serif;
+}
+.session-process .session__header {
+	display: inline-block;
+	width: 75%;
+	margin-top: 10px;
+}
+.session-process .progress {
+	width: 100%;
+	display: inline-block;
+	margin-bottom: -8px;
+	position: absolute;
+	left: 0px;
+	top: -2px;
+	opacity: 0.3;
+	min-height: 4px;
+}
+.session-process .progress:hover {
+	opacity: 0.9;
+}
+.session-process .station-markers {
+	width: 110%;
+}
+.session-process .session__header a {
+	font-size: 22px;
+	font-weight: 100;
+	font-family: 'Open Sans';
+}
+.session-process abbr.session__header__created_at {
+	margin-left: 5px;
+	display: inline-block;
+}
+.session-process .stations .session__header {
+	padding-bottom: 10px;
+}
+@media (max-width:1250px) {
+	.session_list__session .instant-input .element-thumb {
+
+		/* margin-left: 16px; */
+	}
+	.session_list__session .instant-input button.confirm-btn {
+
+		/* margin-left: 14px; */
+
+		/* margin-top: 4px; */
+		margin: 0 auto 6px;
+		width: 89px;
+		display: block;
+	}
+	.session_list__session .session-container .instant-input {
+		width: 20%;
+	}
+}
+.progress.progress-sm {
+	height: 8px;
+	margin-bottom: 10px;
+}
+.session_list__session__process {
+	margin-bottom: 10px;
+	font-size: 20px;
+	font-weight: 300;
+	color: #474748;
+	font-family: 'Source Sans Pro', sans-serif;
+}
+.stations.minimal-stations .session-launches-bar {
+	margin-bottom: 0px;
+}

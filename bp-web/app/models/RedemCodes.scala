@@ -6,7 +6,7 @@ import models.DAO.conversion.{DatabaseCred, Implicits}
 import slick.model.ForeignKeyAction
 import org.joda.time.DateTime
 
-class RedemCodes(tag: Tag) extends Table[RedemCodeDTO](tag, "process_histories") {
+class RedemCodes(tag: Tag) extends Table[RedemCodeDTO](tag, "redem_codes") {
   def id         = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def code       = column[String]("code")
   def force      = column[Int]("force")

@@ -12,7 +12,7 @@ import controllers.plugin._
 import scaldi.play.ScaldiSupport
 import controllers.Default
 import play.api.Logger
-import play.api.mvc.{SimpleResult, RequestHeader, Filter, Result}
+import play.api.mvc.{RequestHeader, Filter, Result}
 import scala.concurrent._
 import play.api._
 import play.api.mvc._
@@ -94,7 +94,7 @@ object Global extends WithFilters(new GzipFilter(shouldGzip =
 
 case class AccessLog() extends Filter {
 
-  def apply(f: (RequestHeader) => Future[SimpleResult])(request: RequestHeader): Future[SimpleResult] = {
+  def apply(f: (RequestHeader) => Future[Result])(request: RequestHeader): Future[Result] = {
     val msg = s"method=${request.method} uri=${request.uri} remote-address=${request.remoteAddress} " +
       s"domain=${request.domain} query-string=${request.rawQueryString} " +
       s"referrer=${request.headers.get("referer").getOrElse("N/A")} " +

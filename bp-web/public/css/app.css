@@ -2699,6 +2699,11 @@ background-color: gray !important;
 
 .allStations .stations.minimal-stations {
     padding: 0px 10px 0px 3px;
+    margin-bottom: 8px;
+}
+
+.stations.minimal-stations .session-launches-bar {
+    margin-bottom: 0px;
 }
 .stations.minimal-stations .session-launches-bar .automations_connected {
     margin-left: 18px;

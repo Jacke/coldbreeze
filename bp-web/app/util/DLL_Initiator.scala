@@ -22,16 +22,16 @@ object DLL_Initiator {
     ElemTopologDAO.ddl_create
 
     BPStateDAO.ddl_create
-    BPSessionStateDAO.ddl_create
     // Session elements
-        SessionProcElementDAO.ddl_create
-        SessionSpaceDAO.ddl_create
-        SessionSpaceElemDAO.ddl_create
-        SessionElemTopologDAO.ddl_create
-        SessionInitialStateDAO.ddl_create
-        SessionSwitcherDAO.ddl_create
-        SessionReactionDAO.ddl_create
-        SessionReactionStateOutDAO.ddl_create
+    SessionProcElementDAO.ddl_create
+    SessionSpaceDAO.ddl_create
+    SessionSpaceElemDAO.ddl_create
+    SessionInitialStateDAO.ddl_create
+    BPSessionStateDAO.ddl_create
+    SessionElemTopologDAO.ddl_create
+    SessionSwitcherDAO.ddl_create
+    SessionReactionDAO.ddl_create
+    SessionReactionStateOutDAO.ddl_create
 
 
     BPLoggerDAO.ddl_create
@@ -61,7 +61,6 @@ object DLL_Initiator {
 
     EmployeeDAO.ddl_create
     EmployeesBusinessDAO.ddl_create
-    ActPermissionDAO.ddl_create
     InputLoggerDAO.ddl_create
 
 
@@ -90,6 +89,8 @@ object DLL_Initiator {
       
     WalksDAO.ddl_create
     GroupsDAO.ddl_create
+    ActPermissionDAO.ddl_create
+
     AccountGroupDAO.ddl_create
     BusinessWalksDAO.ddl_create
 
@@ -98,9 +99,9 @@ object DLL_Initiator {
     AnnotationRangeDAO.ddl_create
 
 
-    SessionProcElementDAO.ddl_create
-    SessionSpaceDAO.ddl_create
-    SessionSpaceElemDAO.ddl_create
+//    SessionProcElementDAO.ddl_create
+//    SessionSpaceDAO.ddl_create
+//    SessionSpaceElemDAO.ddl_create
 
     ResourceDAO.ddl_create
     ElementResourceDAO.ddl_create

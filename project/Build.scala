@@ -3,10 +3,14 @@ import Keys._
 import com.typesafe.sbt.web.Import._
 import com.typesafe.sbt.web._
 
+// 2.3.4
 import play.PlayScala
 import play.Play.autoImport._
-import sass.Import._
+// 2.4.3
+//import play.sbt.PlayScala
+//import play.sbt.Play.autoImport._
 import PlayKeys._
+import sass.Import._
 
 import com.untyped.sbtjs.Plugin._
 import com.untyped.sbtsass.Plugin._
@@ -39,6 +43,7 @@ object Build extends Build {
     //.settings(formatSettings: _*)
     .settings(noPublishing: _*)
     .settings(revolverSettings: _*)
+    .settings(compilerSettings: _*)
 
 
   lazy val bpCore = Project("bp-core", file("bp-core"))
@@ -66,7 +71,7 @@ object Build extends Build {
           scalaLog, 
           logback, 
           syslog,  
-	  scaldi,
+	        scaldi,
           sprayClient, 
           hdrHistogram))
 
