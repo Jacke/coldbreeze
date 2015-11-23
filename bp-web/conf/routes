@@ -411,6 +411,5 @@ POST        /ea/subscribe                                       @controllers.App
 GET         /:profile_id										@controllers.ProfileController.profile(profile_id: String)
 
 
-GET     /ui         com.github.mmizutani.playgulp.Gulp.index
-
-->      /ui/        gulp.Routes
+#GET     /ui         com.github.mmizutani.playgulp.Gulp.index
+#->      /ui/        gulp.Routes
