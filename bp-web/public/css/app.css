@@ -2731,9 +2731,9 @@ background-color: gray !important;
     margin-top: 0px;
 }
 
-.allStations .stations.minimal-stations .session__header.session__people {
-    margin-top: 2px;
-    margin-bottom: 8px;
+.allStations .stations.minimal-stations .session_controls {
+    margin-top: 8px;
+    margin-right: 41px;
 }
 
 .allStations .stations.minimal-stations .session_controls {
@@ -2743,13 +2743,15 @@ background-color: gray !important;
 
 .stations.minimal-stations .session__buttonInput {
     display: inline-block;
-    float: left;
+    right: 10px;
+    position: absolute;
     padding: 15px 16px 21px 16px;
     background: #45475D;
     color: white;
-    margin-left: -3px;
+    margin-left: -4px;
     margin-top: 2px;
     font-size: 15px;
+    margin-right: -9px;
 }
 
 .session__buttonInput .moicon-eject:before {

@@ -40,10 +40,10 @@ object CardType extends Enumeration with EnumFormat {
   val AmericanExpress = Value("amex")
   val Discover = Value("discover")
 
-val visa = """^4[0-9]{12}(?:[0-9]{3})?$""".r
-val mastercard = """^5[1-5][0-9]{14}$""".r
-val americanexpress = """^3[47][0-9]{13}$""".r
-val discover = """^6(?:011|5[0-9]{2})[0-9]{12}$""".r
+  val visa = """^4[0-9]{12}(?:[0-9]{3})?$""".r
+  val mastercard = """^5[1-5][0-9]{14}$""".r
+  val americanexpress = """^3[47][0-9]{13}$""".r
+  val discover = """^6(?:011|5[0-9]{2})[0-9]{12}$""".r
 
   def fetchType(number: String) = {
 

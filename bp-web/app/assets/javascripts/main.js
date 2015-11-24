@@ -421,19 +421,32 @@ require(['requirejs','jsRoutes','jquery', 'react','pnofiy','mobileDetect','popup
         }
 
     		$("html").niceScroll({styler:"fb",cursorcolor:"#000", cursorwidth:"10px", scrollspeed: 100});
-var now = moment();
-$('time').each(function(i, e) {
-    var time = moment($(e).attr('datetime'));
+        
+        var now = moment();
+        $('time').each(function(i, e) {
+            var time = moment($(e).attr('datetime'));
 
-    if(now.diff(time, 'days') != 1) {
-        $(e).text('Started ' + time.from(now));
-    }
-});
-$(function () {
-    $('#dashTab a:last').tab('show');
-  })
+            if(now.diff(time, 'days') != 1) {
+                $(e).text('Started ' + time.from(now));
+            }
+        });
+        $(function () {
+            $('#dashTab a:last').tab('show');
+        })
+        $('.date-span').each(function(i, e) {
+            var time = moment($(e).data('date')).format('MMMM Do YYYY, h:mm:ss a');
+            $(e).text(time);
+        });
+$('a.bill-field.bill-pay-btn').click(function(e) {
+e.preventDefault();
+$(this).parent().children('.bill-form').toggle();
+$(this).toggleClass('highlighted');
+})
 
-
+$('.settings-insert-title').click(function(e) {
+  $(this).parent().children('.settings-insert').toggle();
+  $(this).toggleClass('highlighted');
+})
 
 // Utils for fast input on dashboard
 if ($('.dashboard_sessions').length > 0) {

@@ -126,6 +126,8 @@ PUT         /configuration/ 									@controllers.Application.configuration()
 
 # Plans
 GET        /plans                                               @controllers.PlanController.index()
+GET        /plans/redirect_url									@controllers.PlanController.redirect_url()
+GET        /plans/cancel_url									@controllers.PlanController.cancel_url()
 POST       /plan/switch/:plan_id                                @controllers.PlanController.switch(plan_id: Int)
 POST       /plan/checkout/:bill_id                              @controllers.PlanController.checkout(bill_id: Int)
 POST       /plan/billinginfo                                    @controllers.PlanController.update_billinginfos()

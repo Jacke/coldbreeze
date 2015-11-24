@@ -19,7 +19,6 @@ class BillingInfos(tag: Tag) extends Table[BillingInfoDTO](tag, "billing_infos")
   def bizzFK = foreignKey("bill_info_biz_fk", business,models.DAO.resources.web.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?, business, firstName, lastName, address, zipcode, created_at, updated_at) <> (BillingInfoDTO.tupled, BillingInfoDTO.unapply)
-
 }
 
 /*

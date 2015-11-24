@@ -15,10 +15,7 @@ case class Item(
                  quantity: String,
                  name: String, price: BigDecimal, currency: String, sku: Option[String] = None
                  )
-
-
 object Item {
   implicit val wbd = infra.paypal.Implicits.writesBigDecimal
-
   implicit val format = Json.format[Item]
 }

@@ -383,8 +383,15 @@ html,#application,#applicationContent{width:100%;height:auto}#application,#appli
     font-size: 18px
 }
 .settings-insert-title {
-font-size: 14px;
-padding: 10px;
+    font-size: 17px;
+    padding: 10px;
+    cursor: pointer;
+    color: #6EA3B9;
+    margin-bottom: -12px;
+    margin-top: 12px;
+}
+.settings-insert-title.highlighted {
+    color: black;
 }
 .settings-insert {
 margin-top: 20px;
@@ -437,7 +444,7 @@ margin-left: 30px;
     font-size: 14px;
     background: #45475e;
     padding: 15px;
-    color: #C7C7C7;
+    color: white;
     text-shadow: none;
     font-family: 'Open Sans';
     font-weight: 700;

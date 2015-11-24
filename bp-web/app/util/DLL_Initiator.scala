@@ -86,6 +86,7 @@ object DLL_Initiator {
 
     RedemCodesDAO.ddl_create
     BillingInfosDAO.ddl_create
+    BillingInfoCardsDAO.ddl_create
       
     WalksDAO.ddl_create
     GroupsDAO.ddl_create
@@ -170,6 +171,8 @@ SessionStateLogDAO.ddl_drop
     ClientObserversDAO.ddl_drop
     RedemCodesDAO.ddl_drop
     BillingInfosDAO.ddl_drop
+    BillingInfoCardsDAO.ddl_create
+    
       
     WalksDAO.ddl_drop
     GroupsDAO.ddl_drop
