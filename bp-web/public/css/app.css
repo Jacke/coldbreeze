@@ -6,6 +6,9 @@ Elements mocking */
 .offline-simulate-ui {
   display: none;
 }
+.themeDark a {
+    color: #607D8B;
+}
 body.themeGrad {
   vertical-align: baseline;
   background-repeat: no-repeat !important;
@@ -2030,10 +2033,9 @@ text-decoration: none;
     padding-left: 2.4em;
 }
 .allStations input.switch::before {
-    height: 4.2em;
-    width: 4.2em;
+    height: 2.2em;
+    width: 2.2em;
 }
-
 .allStations input.switch {
     width: 9em;
     margin-left: 0px;
@@ -3028,7 +3030,7 @@ form.form-horizontal.element-new-form.form-new-bpelem.form-edit-bpelem.form-new-
     width: 9%;
 }
 .session-process .session_controls ul li {
-    border: solid 1px #DCDCDC;
+    /* border: solid 1px #DCDCDC; */
     border-radius: 24px;
     width: 44px;
     height: 43px;
@@ -3064,14 +3066,13 @@ form.form-horizontal.element-new-form.form-new-bpelem.form-edit-bpelem.form-new-
     border-radius: 2px;
     padding-left: 28px;
     padding-right: 48px;
-    border: solid 1px #DCDCDC;
-    background-color: #D7DCEF;
+    /* border: solid 1px #DCDCDC; */
+    /* background-color: #D7DCEF; */
     color: #64749C;
 }
 .session-process .session_controls ul li:hover {
     background-color: #B7B7B7;
     color: #757575;
-    border: solid 1px #D0D0D0;
     transition: all .3s ease-in-out;
 }
 
@@ -4700,10 +4701,11 @@ input.switch {
     transition: box-shadow .3s ease-in-out, padding .25s ease-in-out;
     transition-delay: .1s, 0s;
 }
+
 input.switch:checked {
-  transition-delay: 0s, 0s;
-  box-shadow: inset 0 0 0 2.62857em #00c169 !important;
-  padding-left: 4.4em;
+    transition-delay: 0s, 0s;
+    box-shadow: inset 0 0 0 2.62857em #00c169 !important;
+    padding-left: 4.4em;
 }
 input.switch.hit {
   animation: slide-off .35s ease both;
@@ -4727,7 +4729,7 @@ input.switch::before {
     display: inline-block;
     height: 2.2em;
     width: 2.2em;
-    margin: 0.2em 0 0 0.2em;
+    margin: 0.2em 0 0 -0.8em;
     background-color: #fff;
     border-radius: 2.1em;
     box-shadow: 0 0.2em 0.4em 0 rgba(0, 0, 0, 0.2), 0 0 0.1em 0.1em rgba(0, 0, 0, 0.1);

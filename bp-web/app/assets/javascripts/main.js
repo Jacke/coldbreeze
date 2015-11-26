@@ -810,6 +810,7 @@ ResourceDTO
 if ($('#createResourceBtn').length > 0) {
   $('#createResourceBtn')[0].on('click', function(ev){ 
     ev.preventDefault; 
+    $('#createResourceBtn').hide();
     var resource = { title: $('#resourceTitle').val(), business: 0 };
     
 

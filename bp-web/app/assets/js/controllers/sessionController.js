@@ -408,6 +408,8 @@ $scope.haltStation = function (stationId) {
   $scope.onlyListed = false;
 
   $scope.isOnlyActive = function(session) {
+    if (session.station != undefined) {
+
     if ($scope.onlyActive && !$scope.onlyPaused && !$scope.onlyFinished) {
       return session.station.paused == true && session.station.state != false; 
     }
@@ -420,6 +422,9 @@ $scope.haltStation = function (stationId) {
     
     
     else {
+      return session;
+    }
+    } else {
       return session;
     }
   }
