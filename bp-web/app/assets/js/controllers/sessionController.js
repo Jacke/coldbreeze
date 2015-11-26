@@ -283,6 +283,8 @@ $scope.bubbleTooltip = function(session) {
 
 };
 $scope.bubbleClass = function(session) {
+    if (session.station != undefined) {
+
   if (session.station.finished) {
     return  "finished";
   } else if (session.station.paused) {
@@ -290,6 +292,7 @@ $scope.bubbleClass = function(session) {
   } else if (session.station.started) { 
      return "started";
   }
+  } else { return ""; }
 };
 
 $scope.highlightActive = function (station, elem) {
