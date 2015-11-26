@@ -149,7 +149,8 @@ def fetchInteraction(session_id: Int) = SecuredAction { implicit request =>
 
       val reaction_outs:List[SessionUnitReactionStateOut] = SessionReactionStateOutDAO.findByReactions(reactions.map(_.id.get))
       
-      val costs:List[CostContainer] = reactions.map(reaction => findCost(sessionElemTopoId = reaction.element, launchId=session_id)).flatten
+      val costs:List[CostContainer] = reactions.map(reaction => findCost(sessionElemTopoId = reaction.element, 
+                                                                         launchId=session_id)).flatten
   	  val session_states: List[BPSessionState] = BPSessionStateDAO.findByOriginIds(reaction_outs.map(_.state_ref))
 
       Logger.debug("Session state")
@@ -227,12 +228,15 @@ private def findCost(sessionElemTopoId: Int, launchId: Int):List[CostContainer] 
           Await.result(ft, Duration(waitSeconds, MILLISECONDS)) match {
             case x => { 
               println("entity finded by id: ")
-              println(x.head.entities)
+              x.headOption.map(x => println(x.entities))
               println(entityId)
 
-               x.head.entities.filter { entity => 
-                println(entity.id); entityId == entity.id.get.toString 
-              }
+               x.headOption match {
+                  case Some(xx) => xx.entities.filter { entity => 
+                                                    println(entity.id); entityId == entity.id.get.toString 
+                                                }
+                  case _ => List.empty[Entity]                                                 
+               }
             }
           }        
       }
@@ -242,7 +246,10 @@ private def findCost(sessionElemTopoId: Int, launchId: Int):List[CostContainer] 
             case x => { 
               println("entity finded by wildcard: ")
               println(x)
-              x.head.entities
+              x.headOption match {
+                case Some(xx) => xx.entities
+                case _ => List.empty[Entity]   
+              }
             }
           }                
       }
