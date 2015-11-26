@@ -2037,9 +2037,10 @@ text-decoration: none;
     width: 2.2em;
 }
 .allStations input.switch {
-    width: 9em;
+    width: 6em;
     margin-left: 0px;
     margin-right: 22px;
+    height: 2.6em;
 }
 .input-stations .current-reaction-switcher label.radio-label {
     font-size: 13px;
