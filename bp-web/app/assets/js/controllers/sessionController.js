@@ -433,7 +433,7 @@ $scope.haltStation = function (stationId) {
       return session;
     }
     } else {
-      return session;
+      return false;
     }
   }
 
