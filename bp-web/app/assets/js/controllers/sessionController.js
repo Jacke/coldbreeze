@@ -267,12 +267,17 @@ $scope.isManager();
 
 
 $scope.bubbleTooltip = function(session) {
+  if (session.station != undefined) {
+
   if (session.station.finished) {
     return  "Finished";
   } else if (session.station.paused) {
      return "Paused";
   } else if (session.station.started) { 
      return "Started";
+  }
+  } else {
+    return ""; 
   }
  
 
