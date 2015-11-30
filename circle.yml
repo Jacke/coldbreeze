@@ -9,6 +9,9 @@ dependencies:
     - sudo npm install -g babel-core
     - sudo npm link babel-core
     - gem install compass
+    - psql -c "CREATE DATABASE minority1;"
+    - psql minority1 < minority1.sql
+    - psql -c "ALTER USER postgres WITH password '12344321';"    
   cache_directories:
     - "~/.ivy2"
     - "~/.sbt"
@@ -17,8 +20,6 @@ dependencies:
     - x11vnc -forever -nopw:
         background: true    
     - git clone https://github.com/kanaka/noVNC.git && cd noVNC/utils && ./launch.sh --vnc localhost:5900
-    - psql postgres -c "CREATE DATABASE minority1;"
-    - psql postgres -c "ALTER USER postgres WITH password '12344321';"
 test:
   override:
     - sbt bp-core/test:compile # use PHPunit for testing
