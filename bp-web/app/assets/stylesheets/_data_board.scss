@@ -46,6 +46,11 @@ a.tableMinControlsLink.ajaxLink.tableMinLinkPeople {
     width: 39px;
     margin-left: 0px;
     margin-right: 22px;
+    border: none;
+}
+.resource button.tableMinControlsLink.teamSettingsLink.tableMinLinkDelete {
+    border: none;
+    box-shadow: none;
 }
 ul#tablemin.resourceList {
     background-color: transparent;

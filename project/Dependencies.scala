@@ -67,7 +67,7 @@ object Dependencies {
   //val scalamandril2   = "org.globalmoney"           % "play-mandrill"           % "0.1.1-SNAPSHOT" 
   val mailchimp       = "com.ecwid" % "ecwid-mailchimp" % "2.0.1.0"
 
-  val selenium        = "org.seleniumhq.selenium"   % "selenium-java"           % "2.35.0" //% "test"
+  val selenium        = "org.seleniumhq.selenium"   % "selenium-java"           % "2.44.0" //% "test"
   val selenide        = "com.codeborne"             % "selenide"                % "2.23"
   val fluentlenium    = "org.fluentlenium"          % "fluentlenium-core"       % "0.10.3" //% "test"
   val fluentleniumasj = "org.fluentlenium"          % "fluentlenium-assertj"    % "0.10.3" //% "test" 
@@ -138,6 +138,7 @@ object Dependencies {
   val ficus           = "net.ceedubs" %% "ficus" % "1.1.2"
   val bootstrapplay   = "com.adrianhurt" %% "play-bootstrap3" % "0.4.4-P24"
   val scalatest0      =  "org.scalatest"        %%   "scalatest"         % "2.2.1"       
+  val playsctest      =  "org.scalatestplus"    %% "play"                % "1.2.0" 
   val scalatest       =  "org.specs2"           %%   "specs2-core"       % "2.3.13-scalaz-7.1.0-RC1" % "test"
   val scalatest2      =  "org.specs2"           %%   "specs2-junit"      % "2.3.13-scalaz-7.1.0-RC1" % "test"
   val scalatest3       = "org.specs2"           %%   "specs2-mock"       % "2.3.13-scalaz-7.1.0-RC1" % "test"

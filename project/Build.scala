@@ -151,6 +151,7 @@ object Build extends Build {
           akkaActor, 
           akkaSlf4j, 
           slick, 
+          playsctest,
           play, 
           requirejs,
           selenium,

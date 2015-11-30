@@ -43,6 +43,8 @@
               @helper.textarea(entityForm("description"), 'class -> "form-control", 'id -> "newInlineAttrDescField", '_label -> "Description")
               @helper.select(entityForm("etype"), Seq("number"->"Number", "text"->"Text", "boolean" -> "Boolean"), 'class -> "form-control", 'id -> "newInlineAttrEtypeField",'_label -> "Type")      
               @helper.inputText(entityForm("default"), 'class -> "form-control", 'id -> "newInlineAttrDefaultField", '_label -> "Default value")
+              @helper.inputText(entityForm("meta"), 'class -> "form-control", 'id -> "newInlineAttrDefaultField", '_label -> "Meta info")
+              <input type="hidden" name="newInlineAttrMetaField" name="@entityForm("meta").name" value='""' >
   }
 </div>
 </div>
@@ -83,6 +85,9 @@
               @helper.textarea(entityForm("description").copy(value=Some(entity.description)),   'class -> "form-control", '_label -> "Description")
               @helper.select(entityForm("etype").copy(value=Some(entity.etype)), Seq("number"->"Number", "text"->"Text", "boolean" -> "Boolean"), 'class -> "form-control", '_label -> "Type")      
               @helper.inputText(entityForm("default").copy(value=Some(entity.default)),   'class -> "form-control", '_label -> "Default value")
+              <input type="hidden" name="inlineEntityFormMetaField" name="@entityForm("meta").name" value='@entity.meta' >
+
+
               <div class="form-actions">
                 <button class="" type="submit" data-toggle="tooltip" data-placement="right" title="Update attribute"><span class="moicon icon-pencil"></span></button>
               </div>
@@ -123,6 +128,8 @@
               @helper.textarea(entityForm("description"), 'class -> "form-control", '_label -> "Description")
               @helper.select(entityForm("etype"), Seq("number"->"Number", "text"->"Text", "boolean" -> "Boolean"), 'class -> "form-control", '_label -> "Type")      
               @helper.inputText(entityForm("default"), 'class -> "form-control", '_label -> "Default value")
+              <input type="hidden" name="newInlineEntityForm" name="@entityForm("meta").name" value='""' >
+
               <div class="form-actions">
                 <button class="btn" type="submit" data-toggle="tooltip" data-placement="right" title="Create attribute"><span class="moicon icon-plus"></span></button>
               </div>

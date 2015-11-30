@@ -3368,10 +3368,15 @@ label.onlyActiveLabel {
 .state-overview .add-button-panel {
     width: 9%;
     margin-top: 30px;
-    display: inline-block;
-    float: right;
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    font-size: 17px;
     font-family: "Min Icons";
-    color: gray;
+    color: #4D5A6E;
+}
+.panel {
+    position: relative;
 }
 
 .state-overview .add-button-panel:hover {

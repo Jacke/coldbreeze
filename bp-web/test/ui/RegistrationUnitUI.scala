@@ -8,9 +8,9 @@ import play.api.cache._
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import play.api.Logger
-import org.specs2.mutable._
-import play.api.test._
-import play.api.test.Helpers._
+//import org.specs2.mutable._
+//import play.api.test._
+//import play.api.test.Helpers._
 import org.fluentlenium.core.filter.FilterConstructor._
 import org.openqa.selenium.htmlunit
 import play.api.mvc.Action._
@@ -18,7 +18,7 @@ import play.api.mvc.Result._
 import controllers.CustomRoutesService
 //import scala.concurrent.ExecutionContext.Implicits._
 import play.api.GlobalSettings
-import play.api.test.{FakeRequest, WithApplication, FakeApplication, PlaySpecification}
+//import play.api.test._
 import play.libs._
 import controllers.CustomRoutesService
 import play.api.GlobalSettings
@@ -38,23 +38,117 @@ import htmlunit._
 import org.junit.Test
 import play.test.TestBrowser
 import play.libs.F.Callback
-import play.test.Helpers.FIREFOX
+//import play.test.Helpers.FIREFOX
+import play.test.Helpers._
 import play.test.Helpers.inMemoryDatabase
 import play.test.Helpers.fakeApplication
 import play.test.Helpers.testServer
 import play.test.Helpers.running
 import org.fest.assertions.Assertions.assertThat
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.scalatest._
+import play.api.test._
+import play.api.test.Helpers._
+import org.scalatestplus.play._
+
+import org.scalatest._
+import org.scalatest.concurrent._
+import org.scalatestplus.play._
+
+import play.api.mvc._
+import play.api.test._
+import play.api.test.Helpers._
+import play.api.libs.ws._
+import play.api._
+import org.scalatestplus.play._
+import play.api.mvc.Result._
+
+import org.scalatest._
+import play.api.test._
+import play.api.test.Helpers._
+import org.scalatestplus.play._
 /*
  test-only us.ority.min.tests.RegistrationUnitUISpec
 */ 
-class RegistrationUnitUISpec extends PlaySpecification with Firefox {
+class RegistrationUnitUISpec extends PlaySpec with OneServerPerSuite with OneBrowserPerSuite with Eventually with ChromeFactory  {
 
-val fakeApplicationWithBrowser = FakeApplication( withGlobal=Some(global(env1)))
+//val fakeApplicationWithBrowser = play.api.test.FakeApplication( withGlobal=Some(global(env1)) )
+//val fakeApp = play.api.test.FakeApplication( withGlobal=Some(global(env1)),  )
+implicit override lazy val app: FakeApplication =
+    FakeApplication(
+      //withGlobal= Some(global(env1)),
+      withRoutes = {
+        //case ("GET", "/") => Action(Results.Ok("ok"))
+        case ("GET", "/testing") => {
+          Action(
+            Results.Ok(
+              "<html>" +
+                "<head><title>Test Page</title></head>" +
+                "<body>" +
+                "<input type='button' name='b' value='Click Me' onclick='document.title=\"scalatest\"' />" +
+                "</body>" +
+                "</html>"
+            ).as("text/html")
+          )
+        }
+      }
 
+    )
+
+"test server logic" in {
+    val myPublicAddress =  s"localhost:$port"
+    val testPaymentGatewayURL = s"http://$myPublicAddress"
+    // The test payment gateway requires a callback to this server before it returns a result...
+    val callbackURL = s"http://$myPublicAddress/callback"
+    // await is from play.api.test.FutureAwaits
+    val response = await(WS.url(testPaymentGatewayURL).withQueryString("callbackURL" -> callbackURL).get())
+
+    response.status mustBe (OK)
+  }
+ "The OneBrowserPerTest trait" must {
+    "provide a web driver" in {
+      go to (s"http://localhost:$port/testing")
+      pageTitle mustBe "Test Page"
+      click on find(name("b")).value
+      eventually { pageTitle mustBe "scalatest" }
+      go to (s"http://localhost:$port/")
+
+      pageTitle mustBe "Minority — Login"
+      eventually { pageTitle mustBe "Minority — Login" }
+            val email = "iamjacke@gmail.com"
+            val password = "12344321"
+            val confirm_password = "12344321"
+            emailField("username").value = email
+            pwdField("password").value = password
+            //browser.$("#confirm_password").text(confirm_password)
+            //browser.$("#submit").click()
+            click on id("l_submit")
+            Thread.sleep(50000)
+            assertThat(pageTitle).contains("Minority — Login")
+    }
+  }  
+
+/*
+val CHROME = new ChromeDriver
+
+"run in a browser" in new WithBrowser(webDriver = CHROME, app = testApp ) {
+  browser.goTo("http://localhost:9000")
+
+  // Check the page
+  browser.$("#title").getTexts().get(0) mustEqual "Minority — Login"
+
+  browser.$("a").click()
+
+  browser.url mustEqual "/login"
+  browser.$("#title").getTexts().get(0) mustEqual "Hello Coco"
+}
+*/
+/*
   "Application" should {
     "work from within a browser" in {
 		"provide a web driver" in {
-		    go to (s"https://min.ority.us")
+		    go to (s"http://localhost:9000")
 		    pageTitle == "Minority — Login"
 		    //click on find(name("b")).value
 		    //eventually { pageTitle mustBe "scalatest" }
@@ -73,7 +167,7 @@ val fakeApplicationWithBrowser = FakeApplication( withGlobal=Some(global(env1)))
 //[error]   (x$1: com.codeborne.selenide.Condition*)com.codeborne.selenide.SelenideElement
 //[error]  cannot be applied to (RegistrationUnitUISpec.this.MutableSpecText)
 //[error]   $("#username").shouldHave(text("Hello, Johny!"));
-	      open("https://min.ority.us/")
+	      open("http://localhost:9000")
 	      println($("#username").text())
    		  $("#username").text() == ""//.shouldHave(text("Hello, Johny!"));
 		}
@@ -90,6 +184,8 @@ val fakeApplicationWithBrowser = FakeApplication( withGlobal=Some(global(env1)))
 */      
     }
   }
+*/
+
 
   /** This is application specific and can not be put into test-kit **/
   import java.lang.reflect.Constructor

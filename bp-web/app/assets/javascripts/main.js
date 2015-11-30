@@ -808,8 +808,8 @@ ResourceDTO
   business
 */
 if ($('#createResourceBtn').length > 0) {
-  $('#createResourceBtn')[0].on('click', function(ev){ 
-    ev.preventDefault; 
+  $('#createResourceBtn').click(function(ev){ 
+    ev.preventDefault(); 
     $('#createResourceBtn').hide();
     var resource = { title: $('#resourceTitle').val(), business: 0 };
     
@@ -823,7 +823,7 @@ if ($('#createResourceBtn').length > 0) {
     default: $('#newInlineAttrDefaultField').val()
     };
 
-    jsRoutes.controllers.DataController.api_create_resource.ajax({
+    jsRoutes.controllers.DataController.api_create_resource().ajax({
       dataType: 'json',contentType: 'application/json',data: JSON.stringify( { "resource": resource, 
         "attribute": attribute } )
     }).done(function() {
