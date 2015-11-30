@@ -17,9 +17,9 @@ dependencies:
     - "~/.sbt"
   post:
     - sudo apt-get install -y x11vnc
-    - x11vnc -forever -nopw:
-        background: true    
-    - git clone https://github.com/kanaka/noVNC.git && cd noVNC/utils && ./launch.sh --vnc localhost:5900
+    - x11vnc -forever -nopw -rfbport 5901 -bg
+    - xterm &
+    #- git clone https://github.com/kanaka/noVNC.git && cd noVNC/utils && ./launch.sh --vnc localhost:5900
 test:
   override:
     - sbt bp-core/test:compile # use PHPunit for testing
