@@ -808,6 +808,15 @@ ResourceDTO
   business
 */
 if ($('#createResourceBtn').length > 0) {
+
+$(".tableMinListFilter.search-process-input.add-resource-field.filterLayer #resourceTitle").focusin(function() {
+  $( ".inlineEntityForm" ).slideDown();
+});
+$(".tableMinListFilter.search-process-input.add-resource-field.filterLayer #resourceTitle").focusout(function() {
+  $( ".inlineEntityForm" ).hide();
+});
+
+
   $('#createResourceBtn').click(function(ev){ 
     ev.preventDefault(); 
     $('#createResourceBtn').hide();
