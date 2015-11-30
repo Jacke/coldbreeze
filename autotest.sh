@@ -32,9 +32,9 @@ CALL_DESC=`curl -X GET -H "Accept: application/json" "https://circleci.com/api/v
    echo $CALL_DESC
    NEW_IP=`echo $IP | sed "s/\"//g"`
    echo "\n"
-   echo "ssh -p ${PORT} ubuntu@${NEW_IP} -L 5901:localhost:5901"
-   echo "vnc4server -geometry 1280x1024 -depth 24"
-   `../noVNC/utils/launch.sh --listen 8080 --vnc localhost:5901`
+   `ssh -p ${PORT} ubuntu@${NEW_IP} -L 5901:localhost:5901`
+   #echo "vnc4server -geometry 1280x1024 -depth 24"
+   #`../noVNC/utils/launch.sh --listen 8080 --vnc localhost:5901`
   else 
   sleep 200
   fi
