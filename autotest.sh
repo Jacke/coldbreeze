@@ -32,10 +32,10 @@ CALL_DESC=`curl -X GET -H "Accept: application/json" "https://circleci.com/api/v
    echo $CALL_DESC
    NEW_IP=`echo $IP | sed "s/\"//g"`
    echo " "
-   echo "ssh -p ${PORT} ubuntu@${NEW_IP} -L 5901:localhost:5901 &"
-   echo "vnc4server -geometry 1280x1024 -depth 24"
+   echo "ssh -o \"StrictHostKeyChecking no\" -f -p ${PORT} ubuntu@${NEW_IP} -L 5901:localhost:5901 xterm"
+   #echo "vnc4server -geometry 1280x1024 -depth 24"
    `../noVNC/utils/launch.sh --listen 8080 --vnc localhost:5901`
-   echo "GO TO http://bority1.cloudapp.net:8080/vnc.html?host=bority1.cloudapp.net?port=8080"
+   echo "GO TO http://bority1.cloudapp.net:8080/vnc_auto.html?host=bority1.cloudapp.net&port=8080"
   else 
   sleep 10
   fi
