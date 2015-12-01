@@ -164,8 +164,8 @@ li.bill {
         @plans.map { plan =>
 
 @if((plan.title == "Trial" && current_plan.planObj.get.title == "Trial") || (plan.title == "Free" && current_plan.planObj.get.title == "Free")) {
-
-    <li id="ember3011" class="ember-view plans_collection-item"><h3 class="plans_collection-item-header"><script id="metamorph-148-start" type="text/x-placeholder"></script>@plan.title</h3>
+    <li id="ember3011" class="ember-view plans_collection-item">
+      <h3 class="plans_collection-item-header">@plan.title</h3>
 
 <div class="plans_collection-item-content">
   <div>@plan.description.getOrElse("")</div>
@@ -181,16 +181,17 @@ li.bill {
   <button class="button-default button-confirm" type="submit">Switch</button>
 }
 }
-
 </div>
-
 </li>  
 }      
 
 
-@if((plan.title != "Trial" && current_plan.planObj.get.title != "Trial") || (plan.title != "Free" && current_plan.planObj.get.title != "Free")) {
 
-    <li id="ember3011" class="ember-view plans_collection-item"><h3 class="plans_collection-item-header"><script id="metamorph-148-start" type="text/x-placeholder"></script>@plan.title</h3>
+
+
+@if(plan.title != "Trial" && plan.title != "Free") {
+
+<li id="ember3011" class="ember-view plans_collection-item"><h3 class="plans_collection-item-header">@plan.title</h3>
 
 <div class="plans_collection-item-content">
   <div>@plan.description.getOrElse("")</div>
