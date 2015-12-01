@@ -11,15 +11,23 @@ class Plans(tag: Tag) extends Table[PlanDTO](tag, "plans") {
   def price = column[BigDecimal]("price")
   def description = column[Option[String]]("description")
   def slot_included = column[Int]("slot_included", O.Default(5))
+  def order = column[Int]("order", O.Default(1))
+  def hidden = column[Boolean]("hidden", O.Default(false))
 
-  def * = (id.?, title, price, description,slot_included) <> (PlanDTO.tupled, PlanDTO.unapply)
+  def * = (id.?, title, price, description, slot_included, order, hidden) <> (PlanDTO.tupled, PlanDTO.unapply)
 
 }
 
 /*
   Case class
  */
-case class PlanDTO(var id: Option[Int], title: String, price: BigDecimal, description:Option[String] = None, slotIncluded: Int=5)
+case class PlanDTO(var id: Option[Int], 
+                    title: String, 
+                    price: BigDecimal, 
+                    description:Option[String] = None, 
+                    slotIncluded: Int=5,
+                    order: Int = 1,
+                    hidden: Boolean = false)
 
 object PlanDAO {
   import scala.util.Try

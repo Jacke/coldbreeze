@@ -68,10 +68,14 @@ import org.scalatest._
 import play.api.test._
 import play.api.test.Helpers._
 import org.scalatestplus.play._
+import org.scalatest.Matchers._
 /*
  test-only us.ority.min.tests.RegistrationUnitUISpec
 */ 
 class RegistrationUnitUISpec extends PlaySpec with OneServerPerSuite with OneBrowserPerSuite with Eventually with ChromeFactory  {
+
+
+val testLogger = com.typesafe.scalalogging.Logger(org.slf4j.LoggerFactory.getLogger("test"))
 
 //val fakeApplicationWithBrowser = play.api.test.FakeApplication( withGlobal=Some(global(env1)) )
 //val fakeApp = play.api.test.FakeApplication( withGlobal=Some(global(env1)),  )
@@ -114,20 +118,44 @@ implicit override lazy val app: FakeApplication =
       eventually { pageTitle mustBe "scalatest" }
       go to (s"http://localhost:$port/")
 
-      pageTitle mustBe "Minority — Login"
-      eventually { pageTitle mustBe "Minority — Login" }
-            val email = "iamjacke@gmail.com"
-            val password = "12344321"
-            val confirm_password = "12344321"
-            emailField("username").value = email
-            pwdField("password").value = password
-            //browser.$("#confirm_password").text(confirm_password)
-            //browser.$("#submit").click()
-            click on id("l_submit")
-            Thread.sleep(50000)
-            assertThat(pageTitle).contains("Minority — Login")
+      eventually { assertThat(pageTitle).contains("Login") }
+      val email = "iamjacke@gmail.com"
+      val password = "12344321"
+      val confirm_password = "12344321"
+      emailField("username").value = email
+      pwdField("password").value = password
+      //browser.$("#confirm_password").text(confirm_password)
+      //browser.$("#submit").click()
+      click on id("l_submit")
+      Thread.sleep(50000)
+      assertThat(pageTitle).contains("Profile")
+      // Check auth token
+      val authToken = executeScript("return localStorage.token;")
+      
+      
+      testLogger.info(s"token: $authToken") 
+      authToken should not be ("")
     }
   }  
+
+ "Base Core Component" must {
+    "provide list of business services" in {
+      go to (s"http://localhost:$port/")
+      eventually { assertThat(pageTitle).contains("Profile") }
+      val eles: IndexedSeq[Element] = findAll(className("business-service-entity")).toIndexedSeq
+      eles.length should not be 0  
+      //for (e <- eles)
+       // e should be ('displayed)
+      Thread.sleep(500)
+      // Create service 
+      val showElForm:Element = find(id("showServiceFormBtn")).get
+      click on showElForm
+      textField(newServiceFormField).value = "Test service"
+      click on find(id("addNewServiceFormBtn")).get
+
+
+    }
+  }    
 
 /*
 val CHROME = new ChromeDriver

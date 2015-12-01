@@ -93,7 +93,7 @@ def cancel_url() = SecuredAction { implicit request =>
 
 def index() = SecuredAction { implicit request =>
   val user = request.user.main.userId
- 	val plans = PlanDAO.getAll
+ 	val plans = PlanDAO.getAll.sortBy(_.order).filter(p => !p.hidden)
  	val bills = BillDAO.getAllByMasterAcc(user)
   val current_plan = AccountPlanDAO.getByMasterAcc(user).get
   val limit_form = LimitForm.fill(LimitFormObject(current_plan.limit))
@@ -124,7 +124,7 @@ def update_billinginfos() = SecuredAction { implicit request =>
   */
 def switch(plan_id: Int) = SecuredAction { implicit request =>
   val user = request.user.main.userId
-  val plans = PlanDAO.getAll
+  val plans = PlanDAO.getAll.sortBy(_.order).filter(p => !p.hidden)
   val bills = BillDAO.getAllByMasterAcc(user)
 
   val current_plan = AccountPlanDAO.getByMasterAcc(user).get
@@ -166,7 +166,7 @@ def delete_bill(billId: Int) = SecuredAction { implicit request =>
  */
 def switchLimit(plan_id: Int) = SecuredAction { implicit request =>
   val user = request.user.main.userId
-  val plans = PlanDAO.getAll
+  val plans = PlanDAO.getAll.sortBy(_.order).filter(p => !p.hidden)
   val bills = BillDAO.getAllByMasterAcc(user)
   var limit = -1
   LimitForm.bindFromRequest.fold(
@@ -220,7 +220,7 @@ def status() = SecuredAction { implicit request =>
  */
 def checkout(bill_id: Int) = SecuredAction { implicit request =>
   val user = request.user.main.userId
-  val plans = PlanDAO.getAll
+  val plans = PlanDAO.getAll.sortBy(_.order).filter(p => !p.hidden)
   val bill = BillDAO.get(bill_id).get
   val bills = BillDAO.getAllByMasterAcc(user)
   val current_plan = AccountPlanDAO.getByMasterAcc(user).get

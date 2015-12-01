@@ -144,7 +144,7 @@ li.bill {
     <div class="settings-insert-column settings-insert-column-left">
       <p>Your current Plan : @current_plan.planObj.get.title </p>
       <!-- <p>Active since : n/a</p> -->
-      <p>Next billing : @current_plan.expired_at</p>
+      <p>Next billing : <span class="date-span" data-date="@current_plan.expired_at"></span></p>
     </div>
     <div class="settings-insert-column settings-insert-column-right">
       <p>Current Monthly Payment :
@@ -163,12 +163,12 @@ li.bill {
 
         @plans.map { plan =>
 
-@if(plan.title == "Trial" && current_plan.planObj.get.title == "Trial") {
+@if((plan.title == "Trial" && current_plan.planObj.get.title == "Trial") || (plan.title == "Free" && current_plan.planObj.get.title == "Free")) {
 
     <li id="ember3011" class="ember-view plans_collection-item"><h3 class="plans_collection-item-header"><script id="metamorph-148-start" type="text/x-placeholder"></script>@plan.title</h3>
 
 <div class="plans_collection-item-content">
-  <div>@plan.description.getOrElse("") &amp;</div>
+  <div>@plan.description.getOrElse("")</div>
 </div>
 <div class="plans_collection-item-footer">
 @if(current_plan.planObj.get.title == plan.title) {
@@ -188,12 +188,12 @@ li.bill {
 }      
 
 
-@if(plan.title != "Trial" && current_plan.planObj.get.title != "Trial") {
+@if((plan.title != "Trial" && current_plan.planObj.get.title != "Trial") || (plan.title != "Free" && current_plan.planObj.get.title != "Free")) {
 
     <li id="ember3011" class="ember-view plans_collection-item"><h3 class="plans_collection-item-header"><script id="metamorph-148-start" type="text/x-placeholder"></script>@plan.title</h3>
 
 <div class="plans_collection-item-content">
-  <div>@plan.description.getOrElse("") &amp;</div>
+  <div>@plan.description.getOrElse("")</div>
 </div>
 
 @if(plan.title != "Trial") {
@@ -222,6 +222,7 @@ li.bill {
 
 }
 
+@if(current_plan.planObj.get.title != "Free") {
 <li  class="ember-view plans_collection-item secondary_item limit-form">
 @form(routes.PlanController.switchLimit(current_plan.planObj.get.id.getOrElse(0))) {
                    <!--
@@ -232,6 +233,7 @@ li.bill {
       
 }
 </li>
+}
 
 
 <!--
