@@ -27,11 +27,13 @@
 
 <div class="newResourceForm">
 <div class="newResourceFormContainer">
-@form(routes.DataController.create_resource()) {
-  <button type="submit" id="createResourceBtn" class="createMin ajaxLink cacheable resource-add-btn">Create Resource</button>
+@form(routes.DataController.create_resource(), 'id -> "createResourceFormObject", 'class -> "createResourceForm") {
+   <h3>Create resource</h3>
+  <button type="submit" id="createResourceBtn" class="createMin ajaxLink cacheable resource-add-btn offed">Create</button>
   <div class="tableMinListFilter search-process-input add-resource-field filterLayer">
     <!-- <span class="magnifyGlass vIco vLoupe vLight2State"></span>-->
-    <input type="text" id="resourceTitle" name="title" value="" placeholder="Resource Name" class="filterInput tableMinListFilterInput">
+    <label for="resourceTitle">Resource name</label>
+    <input type="text" id="resourceTitle" name="title" value="" class="filterInput tableMinListFilterInput">
     <!-- <input type="text" size="71" data-toggle-class="hidden" class="filterInput tableMinListFilterInput" placeholder="Name"> -->
   </div>
 }

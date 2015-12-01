@@ -809,11 +809,30 @@ ResourceDTO
 */
 if ($('#createResourceBtn').length > 0) {
 
+$('#resourceTitle').change(function() {
+  if ($( this ).val() != "") {
+  $(".resources-list button#createResourceBtn").removeClass('offed');
+} else {   
+  $(".resources-list button#createResourceBtn").addClass('offed');
+}
+});
+$('.newResourceForm').on('input', function() {
+  if ($( this ).val() != "") {
+  $(".resources-list button#createResourceBtn").addClass('offed');
+} else {   $(".resources-list button#createResourceBtn").removeClass('offed');
+}
+});
+
+
 $(".tableMinListFilter.search-process-input.add-resource-field.filterLayer #resourceTitle").focusin(function() {
   $( ".inlineEntityForm" ).slideDown();
 });
 $(".tableMinListFilter.search-process-input.add-resource-field.filterLayer #resourceTitle").focusout(function() {
+  if ($('#resourceTitle').val() != "") {
+
+  } else {
   $( ".inlineEntityForm" ).hide();
+  }
 });
 
 

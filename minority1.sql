@@ -11,7 +11,7 @@ Target Server Type    : PGSQL
 Target Server Version : 90305
 File Encoding         : 65001
 
-Date: 2015-11-30 09:14:16
+Date: 2015-12-02 03:31:45
 */
 
 
@@ -47,9 +47,9 @@ CREATE SEQUENCE "public"."account_loggers_id_seq"
  INCREMENT 1
  MINVALUE 1
  MAXVALUE 9223372036854775807
- START 303
+ START 319
  CACHE 1;
-SELECT setval('"public"."account_loggers_id_seq"', 303, true);
+SELECT setval('"public"."account_loggers_id_seq"', 319, true);
 
 -- ----------------------------
 -- Sequence structure for account_plan_history_id_seq
@@ -1140,6 +1140,22 @@ INSERT INTO "public"."account_loggers" VALUES ('300', '0:0:0:0:0:0:0:1', 'Mozill
 INSERT INTO "public"."account_loggers" VALUES ('301', '0:0:0:0:0:0:0:1', 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36', 'iamjacke@gmail.com', '2015-11-30 05:53:01.868+06');
 INSERT INTO "public"."account_loggers" VALUES ('302', '192.168.1.102', 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36', null, '2015-11-30 06:06:33.129+06');
 INSERT INTO "public"."account_loggers" VALUES ('303', '192.168.1.102', 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36', 'iamjacke@gmail.com', '2015-11-30 06:06:34.488+06');
+INSERT INTO "public"."account_loggers" VALUES ('304', '192.168.1.102', 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36', null, '2015-12-01 06:25:26.759+06');
+INSERT INTO "public"."account_loggers" VALUES ('305', '192.168.1.102', 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36', 'iamjacke@gmail.com', '2015-12-01 06:25:28.227+06');
+INSERT INTO "public"."account_loggers" VALUES ('306', '0:0:0:0:0:0:0:1', 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36', null, '2015-12-01 06:39:23.749+06');
+INSERT INTO "public"."account_loggers" VALUES ('307', '0:0:0:0:0:0:0:1', 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36', 'iamjacke@gmail.com', '2015-12-01 06:39:25.238+06');
+INSERT INTO "public"."account_loggers" VALUES ('308', '0:0:0:0:0:0:0:1', 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36', null, '2015-12-01 06:48:17.907+06');
+INSERT INTO "public"."account_loggers" VALUES ('309', '0:0:0:0:0:0:0:1', 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36', 'iamjacke@gmail.com', '2015-12-01 06:48:18.858+06');
+INSERT INTO "public"."account_loggers" VALUES ('310', '0:0:0:0:0:0:0:1', 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36', null, '2015-12-01 06:57:12.248+06');
+INSERT INTO "public"."account_loggers" VALUES ('311', '0:0:0:0:0:0:0:1', 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36', 'iamjacke@gmail.com', '2015-12-01 06:57:13.582+06');
+INSERT INTO "public"."account_loggers" VALUES ('312', '0:0:0:0:0:0:0:1', 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36', null, '2015-12-01 14:30:23.903+06');
+INSERT INTO "public"."account_loggers" VALUES ('313', '0:0:0:0:0:0:0:1', 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36', 'iamjacke@gmail.com', '2015-12-01 14:30:25.898+06');
+INSERT INTO "public"."account_loggers" VALUES ('314', '0:0:0:0:0:0:0:1', 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36', null, '2015-12-01 14:36:13.995+06');
+INSERT INTO "public"."account_loggers" VALUES ('315', '0:0:0:0:0:0:0:1', 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36', 'iamjacke@gmail.com', '2015-12-01 14:36:16.098+06');
+INSERT INTO "public"."account_loggers" VALUES ('316', '0:0:0:0:0:0:0:1', 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36', null, '2015-12-01 14:40:14.055+06');
+INSERT INTO "public"."account_loggers" VALUES ('317', '0:0:0:0:0:0:0:1', 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36', 'iamjacke@gmail.com', '2015-12-01 14:40:15.9+06');
+INSERT INTO "public"."account_loggers" VALUES ('318', '0:0:0:0:0:0:0:1', 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36', null, '2015-12-01 14:42:51.046+06');
+INSERT INTO "public"."account_loggers" VALUES ('319', '0:0:0:0:0:0:0:1', 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36', 'iamjacke@gmail.com', '2015-12-01 14:42:52.263+06');
 
 -- ----------------------------
 -- Table structure for account_plan_history
@@ -4308,7 +4324,9 @@ CREATE TABLE "public"."plans" (
 "title" varchar COLLATE "default" NOT NULL,
 "price" numeric(21,2) NOT NULL,
 "description" varchar COLLATE "default",
-"slot_included" int4 DEFAULT 5 NOT NULL
+"slot_included" int4 DEFAULT 5 NOT NULL,
+"order" int4 DEFAULT 1 NOT NULL,
+"hidden" bool DEFAULT false NOT NULL
 )
 WITH (OIDS=FALSE)
 
@@ -4317,9 +4335,10 @@ WITH (OIDS=FALSE)
 -- ----------------------------
 -- Records of plans
 -- ----------------------------
-INSERT INTO "public"."plans" VALUES ('1', 'Trial', '0.00', 'Trial plan for 14 days', '5');
-INSERT INTO "public"."plans" VALUES ('2', 'Base', '49.99', 'Up to 5 collaborators, and 100 process launch ', '5');
-INSERT INTO "public"."plans" VALUES ('3', 'Medium', '149.99', 'Up to 15 collaborators, and 300 process launch ', '15');
+INSERT INTO "public"."plans" VALUES ('1', 'Trial', '0.00', 'Trial plan for 14 days', '5', '0', 'f');
+INSERT INTO "public"."plans" VALUES ('2', 'Base', '49.99', 'Up to 5 collaborators, and 100 process launch ', '5', '2', 'f');
+INSERT INTO "public"."plans" VALUES ('3', 'Medium', '149.99', 'Up to 15 collaborators, and 300 process launch ', '15', '3', 't');
+INSERT INTO "public"."plans" VALUES ('4', 'Free', '0.00', 'Free plan', '0', '1', 'f');
 
 -- ----------------------------
 -- Table structure for proc_element_reflections

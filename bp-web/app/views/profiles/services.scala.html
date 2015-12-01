@@ -44,9 +44,9 @@
             <tbody>
                 @entities.map {
                  case (entity) => {
-                        <tr>
+                        <tr class="business-service-entity">
                             <td>
-                                <a href="@routes.Application.app()#/bprocesses?service=@entity.id">@entity.title</a></td>
+                                <a href="@routes.Application.app()#/bprocesses?service=@entity.id" class="business-service-title">@entity.title</a></td>
                             <td>
                                 <a href="@routes.BusinessServiceController.update(entity.id.get)">@Messages("page.rename")(LangDet.getLang(user) )</a>
 
@@ -66,18 +66,18 @@
   </div>
   <!-- <h2 class="teamBoxHeading">@Messages("page.managerBoard")(LangDet.getLang(user) ) </h2> -->
   <div class="showServiceForm">
-    <span class="moicon moicon-plus"></span>
+    <span class="moicon moicon-plus" id="showServiceFormBtn"></span>
   </div>
   <div class="teamSettingsCheckbox serviceForm" style="display:none;">
     <div id="actions">
       <!--<a class="btn success" id="add" href="@routes.BusinessServiceController.create()">Add a service</a>-->
         @form(routes.BusinessServiceController.create_new()) {
         <fieldset>
-        @text(serviceForm("title"), '_label -> Messages("page.title")(LangDet.getLang(user) ), 'class -> "form-control", 'placeholder -> Messages("page.title")(LangDet.getLang(user) ))
+        @text(serviceForm("title"), '_label -> Messages("page.title")(LangDet.getLang(user) ), 'id -> "newServiceFormField",'class -> "form-control", 'placeholder -> Messages("page.title")(LangDet.getLang(user) ))
         </fieldset>
 
         <div class="actions">
-          <input type="submit" value="Add" class="btn btn-primary"> 
+          <input type="submit" value="Add" id="addNewServiceFormBtn" class="btn btn-primary"> 
         </div>
         }
     </div>

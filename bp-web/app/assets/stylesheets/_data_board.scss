@@ -112,6 +112,10 @@ ul#tablemin.resourceList {
 .resources-list button#createResourceBtn {
     float: right;
     margin-right: 31px;
+    padding-left: 16px;
+}
+.resources-list button#createResourceBtn.offed {
+    display: none;
 }
 .resources-list .boardEntity form {
     display: inline-block;
@@ -178,22 +182,37 @@ ul#tablemin.resourceList {
 }
 .resources-list .newResourceForm .inlineEntityForm {
     clear: both;
-    margin-left: 32px;
+    margin-left: 31px;
     display: block;
+    margin-top: 108px;
 }
 .resources-list .newResourceForm {
     background: white;
-    padding-bottom: 86px;
+    padding-bottom: 55px;
     padding-top: 31px;
     padding-left: 6px;
     margin-left: 29px;
     margin-right: 27px;
     border-radius: 4px;
 }
+.createResourceForm h3 {
+    margin-left: 28px;
+    margin-top: 0px;
+    margin-bottom: 25px;
+    font-size: 20px;
+    font-family: 'museo';
+    font-weight: 500;
+}
+
+.createResourceForm label {
+    font-weight: 100;
+}
 .resources-list .newResourceForm .tableMinListFilter .tableMinListFilterInput {
-    border-bottom: solid gray 1px;
+    border-bottom: solid #515C74 1px;
     height: 19px;
-    padding-left: 14px;
+    padding-left: 6px;
+    padding-bottom: 2px;
+    
 }
 .resources-list .newResourceForm .newResourceFormContainer {
     margin-bottom: 72px;
