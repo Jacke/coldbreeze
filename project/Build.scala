@@ -21,10 +21,16 @@ import com.typesafe.sbt.rjs.Import._
 import UglifyKeys._
 import com.github.sbtliquibase.SbtLiquibase
 import com.github.sbtliquibase.Import._
+import spray.revolver.RevolverPlugin.Revolver._
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
+import scala.concurrent.{Await, Future}
+import scala.language.postfixOps
 
 object Build extends Build {
   import Settings._
   import Dependencies._
+import scala.sys.process._
 
   mainClass := Some("main.scala.BPServiceApp")
 
@@ -32,6 +38,48 @@ object Build extends Build {
     ivyScala := ivyScala.value map { _.copy(overrideScalaVersion = true) }
   )
 
+
+  val hello = InputKey[Unit]("routeGenerator", "Prints 'Hello World'")
+  val testJsTask = TaskKey[Int]("testJs", "Run javascript tests.")    
+  //val test2Task = TaskKey[Int]("test2taskAct", "Run javascript tests.")    
+
+
+  val helloTask = hello := {
+     //val a = (compile in bpWeb).value
+     ////val b = (compile in bpWeb).value
+     reStart.parsed.value
+        testJs.taskValue
+        Thread.sleep(6000)
+        println(url("http://127.0.0.1:9000/jsroutes.js") #> file("bp-web/app/assets/javascripts/testroute.js") !)
+        reStop.taskValue
+     println('a')
+     //()
+  }
+  def testJs = (streams) map { (s) => {
+    s.log.info("Executing router downloading")
+    Thread.sleep(6000)    
+    url("http://127.0.0.1:9000/jsroutes.js") #> file("jsroutes.js") !
+    // Your implementation
+  }
+  }
+  //test2Task:= {
+  //      "curl http://192.168.1.102/jsroutes.js > jsroutes.js" !
+  //}
+/*
+lazy val setEnvironmentTask = inputKey[Unit]("Sets environment variable")
+lazy val runIntegrationTest = inputKey[Unit]("Runs everything")
+lazy val integrationTest = taskKey[Unit]("Runs integration test")
+lazy val setEnvTask: Def.Initialize[InputTask[Unit]] = Def.inputTask{
+  val env = spaceDelimited("<arg>").parsed.head
+  System.setProperty("checkEnv", env)
+}
+setEnvironmentTask <<= setEnvTask 
+runIntegrationTest := setEnvironmentTask.parsed.flatMap{ _ =>
+  integrationTest.taskValue
+}.value
+integrationTest := {
+  println("integration test")
+}*/
 
 
   initialCommands in console := "ammonite.repl.Repl.main(null)"
@@ -44,7 +92,35 @@ object Build extends Build {
     .settings(noPublishing: _*)
     .settings(revolverSettings: _*)
     .settings(compilerSettings: _*)
+    //.settings((helloTask in Test) <<= (test in Test) dependsOn (testJsTask))
 
+  lazy val bbSDK = Project("bbSDK", file("bb-sdk"))
+    .settings(basicSettings: _*)
+    .settings(revolverSettings: _*)
+    .settings(
+      libraryDependencies ++=
+        List(
+          scalarx,
+          courier,
+          async, 
+          amonite, 
+          reflect, 
+          wcs,
+          akkaActor, 
+          scaldiakka, 
+          dispatch, 
+          scalaz, 
+          webserviceclient,
+          scalazstream,
+          mechanize,nscala, 
+          scalatest, 
+          scalaLog, 
+          logback, 
+          syslog,  
+          scaldi,
+          sprayClient,
+          play4, 
+          hdrHistogram))
 
   lazy val bpCore = Project("bp-core", file("bp-core"))
     .settings(basicSettings: _*)
@@ -144,6 +220,9 @@ object Build extends Build {
     .settings(excludeFilter in(Assets, LessKeys.less) := "_*.less")
     .settings(mainClass in Compile := Some("ProdNettyServer"))
     .settings(mainClass in (Compile, run) := Some("DevNettyServer"))
+    .settings(helloTask)
+    .settings(testJsTask <<= testJs)
+    //.settings(test2Task)
     .settings(
       libraryDependencies ++=
         List(
@@ -192,9 +271,9 @@ object Build extends Build {
           mailer, 
           mailerses,
           scalatest0,
-scalatest,
-scalatest2,
-scalatest3,
+          scalatest,
+          scalatest2,
+          scalatest3,
           reflect, 
           bcrypt, 
           postgres, 

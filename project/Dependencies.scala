@@ -141,9 +141,11 @@ object Dependencies {
   val playsctest      =  "org.scalatestplus"    %% "play"                % "1.2.0" 
   val scalatest       =  "org.specs2"           %%   "specs2-core"       % "2.3.13-scalaz-7.1.0-RC1" % "test"
   val scalatest2      =  "org.specs2"           %%   "specs2-junit"      % "2.3.13-scalaz-7.1.0-RC1" % "test"
-  val scalatest3       = "org.specs2"           %%   "specs2-mock"       % "2.3.13-scalaz-7.1.0-RC1" % "test"
+  val scalatest3      = "org.specs2"            %%   "specs2-mock"       % "2.3.13-scalaz-7.1.0-RC1" % "test"
 
+  val webserviceclient =   "com.typesafe.play"      %% "play-ws"         % "2.4.0"
 
+ 
   val scalaLog        = "com.typesafe.scala-logging"%%  "scala-logging"         % "3.1.0"
   val snakeYaml       = "org.yaml"                  %   "snakeyaml"             % "1.13"
   val logbackClassic  = "ch.qos.logback"            % "logback-classic"         % "1.0.13"

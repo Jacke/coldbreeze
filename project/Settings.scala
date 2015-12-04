@@ -68,7 +68,7 @@ object Settings {
   lazy val basicSettings = seq(
     organization  := "net.empireinc",
     scalaVersion  := "2.11.0",
-    version       := "1.0.3",
+    version       := "1.0.6",
     resolvers    ++= Dependencies.resolutionRepos,
     //org.scalastyle.sbt.ScalastylePlugin.Settings,
     //resolvers    ++= Seq("snapshots", "releases").map(Resolver.sonatypeRepo),

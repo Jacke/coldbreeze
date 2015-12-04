@@ -2486,6 +2486,65 @@ form .flatRadioLike .flatRadio:checked + .flatRadioLabel:before {
 .overlay .panel.peoplePanel,.manageWholeTeam.peoplePanel {
     text-shadow: none;
 }
+.upmenu.manageWholeTeam .organisationsGridCards {
+    top: 125px;
+}
+
+.upmenu.manageWholeTeam.peoplePanel {
+        top: 125px;
+}
+
+.peopleUpMenu {
+    background: #54617A;
+    margin-top: -1px;
+    height: 45px;
+    text-align: center;
+    color: white;
+}
+.peopleUpMenu ul li.active a {
+    color: #8DC3F1;
+}
+.peopleUpMenu ul li a:hover {
+    text-decoration: none;
+    color: #00A2FF;
+}
+.teamInfo {
+    min-height: 593px;
+    display: block;
+    background: white;
+    width: 69%;
+    margin: 0 auto;
+    padding: 15px 15px 15px 34px;
+    text-align: center;
+}
+.teamInfo .users-added {
+    margin-top: 162px;
+    text-align: left;
+    width: 25%;
+    margin: 0 auto;
+    margin-top: 69px;
+    list-style: square;
+}
+.entityBlock {
+    margin-top: 10px;
+    margin-bottom: 12px;
+    /* border-left: 1px gray groove; */
+    padding-left: 13px;
+    list-style: square;
+}
+.peopleUpMenu ul li {
+    display: inline-block;
+    margin-right: 42px;
+    margin-top: 10px;
+    font-size: 15px;
+}
+
+.peopleUpMenu ul li a {
+    color: white;
+    text-shadow: none;
+}
+
+
 
 .overlay .panel.peoplePanel .userCard.listItem .userName,.manageWholeTeam.peoplePanel .userCard.listItem .userName {
     font-size: 90%;

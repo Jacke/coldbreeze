@@ -23,6 +23,15 @@
 
 
 @main(Messages("businesses.members"), user) {
+
+<div class="peopleUpMenu">
+<ul>
+  <li class="active"><a href="/peoples">People</a></li>
+  <li><a href="/peoples/team">Team</a></li>
+</ul>
+</div>
+
+
 <div class="manageWholeTeam peoplePanel">
 
 <div class="panelLike organisationsGrid">
@@ -48,7 +57,7 @@
 </div>
 <div class="teamCreation">
       <form class="teamCreationForm">
-         <input type="text" placeholder="Team">
+         <input type="text" placeholder="Group">
          <button type="submit" class="button small blue">Create</button>
       </form>
 </div>
