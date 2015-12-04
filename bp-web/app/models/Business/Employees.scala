@@ -52,7 +52,15 @@ def pull_object_for(s: EmployeeDTO, email: String):Int = database withSession {
       val q3 = for { s <- employees if s.master_acc === email } yield s
       q3.list
   }
- 
+  def getMasterByAccount(email: String) = database withSession {
+    implicit session =>
+      getByUID(email) match {
+      case Some(acc) => {
+        models.AccountsDAO.getAccount(acc.master_acc)
+      }
+      case _ => None
+    }
+  }
   def getByEmployeeUID(uid: String) = database withSession {
     implicit session =>
     val q3 = for { s ← employees if s.uid === uid } yield s// <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)

@@ -1,5 +1,7 @@
 # Minority platform
 
+[![Circle CI](https://circleci.com/gh/Jacke/coldbreeze/tree/master.svg?style=svg)](https://circleci.com/gh/Jacke/coldbreeze/tree/master)
+
 Minority platform is a cloud-enabled, language-agnostic platform for workflow managment.
 
   - Actions

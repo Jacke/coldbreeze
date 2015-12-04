@@ -77,6 +77,25 @@ class EmployeeController(override implicit val env: RuntimeEnvironment[DemoUser]
       Ok(views.html.businesses.users.employees(
         Page(employees, 1, 1, employees.length), accounts, 1, "%", assign, assigned, groups, aval)(user))
   }
+ def team() = SecuredAction { implicit request =>
+      val user = request.user
+      val employees = EmployeeDAO.getAllByMaster(user.main.email.get)
+      val accounts = models.AccountsDAO.findAllByEmails(employees.map(emp => emp.uid))
+      val businesses = BusinessDAO.getAll
+      val ebs = EmployeesBusinessDAO.getAll
+      val assign = businesses.filter(b => !(ebs.map(eb => eb._2).contains(b.id.get)))
+      val assigned = businesses.filter(b => ebs.map(eb => eb._2).contains(b.id.get))
+      
+      val master = EmployeeDAO.getMasterByAccount(user.main.email.get).get
+      val true_business = EmployeesBusinessDAO.getByUID(request.user.main.email.get)
+      val team = businesses.find(biz => biz.id == true_business)
+
+      val current_plan = models.DAO.resources.AccountPlanDAO.getByMasterAcc(user.main.email.get).get
+      val aval = (current_plan.limit + 1) - employees.length
+      // current employee limit + main manager MINUS all employee length for that master
+      Ok(views.html.businesses.users.team(
+        Page(employees, 1, 1, employees.length), accounts, 1, "%", assign, assigned, master, team, aval)(user))
+  }  
   def index_group(group_id: Int) = SecuredAction { implicit request =>
       val user = request.user
       val all_employees = EmployeeDAO.getAllByMaster(user.main.email.get)

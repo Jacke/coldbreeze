@@ -94,6 +94,7 @@ POST        /service/:id/destroy                                @controllers.Bus
 # Employees
 GET         /actors                                           @controllers.users.EmployeeController.actors()
 GET         /peoples                                          @controllers.users.EmployeeController.index()
+GET         /peoples/team                                     @controllers.users.EmployeeController.team()
 GET         /peoples/:group_id                                @controllers.users.EmployeeController.index_group(group_id: Int)
 GET         /people/create                                    @controllers.users.EmployeeController.create()
 POST        /people/create                                    @controllers.users.EmployeeController.create_new()

@@ -488,6 +488,8 @@ $('#sideTab a').click(function (e) {
 //
 // Peoples
 //
+$('.manageWholeTeam').toggleClass('upmenu');
+
  $('.teamCreationForm button').on('click', function(event) {
     event.preventDefault();
     jsRoutes.controllers.GroupController.create_new().ajax({data: JSON.stringify({title: $('.teamCreationForm input').val(), business: -1}), dataType: "json", contentType: 'application/json',
