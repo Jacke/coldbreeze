@@ -34,9 +34,9 @@
 <div class="teamInfo">
   <div class="teamInfoBlock">
     <h4>Team @team.map { team => team.title } </h4>
-    <h4>Master account: @master.userId master.firstName master.lastName )</h4>
+    <h4>Master account: @master.userId @master.firstName @master.lastName )</h4>
 </div>
-  <div class="slotLimit">Slots left 2 of 5</div>
+  <div class="slotLimit">Slots left @{aval} of 5</div>
 
 <div class="users-added">
 @Option(currentPage.items).filterNot(_.isEmpty).map { entities =>
