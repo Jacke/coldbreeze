@@ -50,9 +50,9 @@
          <ul class="type-tabs" ng-init="bpelem.hovered=false" role="tablist" ng-mouseover="bpelem.hovered == true ? bpelem.hovered=false : bpelem.hovered=true" ng-show="(isManagerVal && !inSession && selected == 2) || (bpelem.hovered == true && !inSession)">
            <li><a role="tab" data-toggle="tab" ng:init="selected=1" ng:click="selected == 1 ? selected=2 : selected=1">
            <span class="glyphicon glyphicon-edit"></span></a></li>
-           <li><a ng-click="deleteElem(bpelem)"><span class="glyphicon glyphicon-remove"></span></a></li>
-           <li><a ng:click="moveUpElem(bpelem)"><span class="glyphicon glyphicon-arrow-up"></span></a></li>
-           <li><a ng:click="moveDownElem(bpelem)"><span class="glyphicon glyphicon-arrow-down"></span></a></li>
+           <li><a id="frontElementDeleteButton" ng-click="deleteElem(bpelem)"><span class="glyphicon glyphicon-remove"></span></a></li>
+           <li><a id="frontElementUpButton" ng:click="moveUpElem(bpelem)"><span class="glyphicon glyphicon-arrow-up"></span></a></li>
+           <li><a id="frontElementDownButton" ng:click="moveDownElem(bpelem)"><span class="glyphicon glyphicon-arrow-down"></span></a></li>
          </ul>
       </div>
       <h4 class="title">{{ bpelem.title }}</h4>
