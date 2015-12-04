@@ -2499,10 +2499,13 @@ form .flatRadioLike .flatRadio:checked + .flatRadioLabel:before {
     margin-top: -1px;
     height: 45px;
     text-align: center;
-    color: white;
 }
 .peopleUpMenu ul li.active a {
     color: #8DC3F1;
+}
+.peopleUpMenu ul li a {
+    color: white;
+    text-shadow: none;
 }
 .peopleUpMenu ul li a:hover {
     text-decoration: none;

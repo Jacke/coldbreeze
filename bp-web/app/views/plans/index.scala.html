@@ -142,13 +142,13 @@ li.bill {
 <div class="settings-insert">
   <div class="settings-insert-inner clearfix">
     <div class="settings-insert-column settings-insert-column-left">
-      <p>Your current Plan : @current_plan.planObj.get.title </p>
+      <p>Your current Plan : <span class="currentPlanTitle">@current_plan.planObj.get.title</span> </p>
       <!-- <p>Active since : n/a</p> -->
       <p>Next billing : <span class="date-span" data-date="@current_plan.expired_at"></span></p>
     </div>
     <div class="settings-insert-column settings-insert-column-right">
       <p>Current Monthly Payment :
-          <strong>$@current_plan.planObj.get.price</strong>
+          <strong class="currentMonthlyPayment">$@current_plan.planObj.get.price</strong>
      </p>
     </div>
   </div>

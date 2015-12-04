@@ -133,7 +133,7 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 
 <div class="session-process" ng-repeat="entity in sessions" ng-hide="isSessionsOnlyActive(entity.sessions)">
 
-<div class="session-process-header"><h2><a href="/a#/bprocess/{{ entity.process.id }}/elements">{{ entity.process.title }}</a></h2>
+<div class="session-process-header"><h2><a id="launchProcessTitle" href="/a#/bprocess/{{ entity.process.id }}/elements">{{ entity.process.title }}</a></h2>
 <div class="session_controls">
   <ul>
     <li class="process-history-btn" tooltip="Process History" ng-click="processHistory(entity)"><span class="moicon moicon-book"></span></li>  

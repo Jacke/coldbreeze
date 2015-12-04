@@ -1,4 +1,4 @@
- <form novalidate="novalidate" ng-init="" ng-submit="createNewElem();" class="form-horizontal form-new-bpelem" ng-class="newBpelem.type_title">
+ <form novalidate="novalidate" ng-init="" ng-submit="createNewElem();" class="form-horizontal form-new-bpelem" ng-class="newBpelem.type_title" id="newFrontElementForm">
     <div class="form-group element-form-fields">
     <div class="control-group">
       <h3>Create element</h3>
@@ -8,7 +8,7 @@
         <label class="control-label col-sm-1" for="inputTitle">Title</label>
       </div>
       <div class="controls col-xs-6">      
-        <input type="text" id="inputTitle" class="form-control" ng-model="newBpelem.title" required/>
+        <input type="text" id="inputTitle" class="form-control newFrontElemFormTitleField" ng-model="newBpelem.title" required/>
       </div>
 
     </div>
@@ -17,7 +17,7 @@
         <label class="control-label col-sm-1" for="inputBusinessId">{{ 'DESC' | translate }}</label>
       </div>
       <div class="controls col-xs-6">
-        <textarea type="text" class="form-control" id="inputBusinessId" ng-model="newBpelem.desc"/>
+        <textarea type="text" class="form-control newFrontElemFormDescField" id="inputBusinessId" ng-model="newBpelem.desc"/>
       </div>
     </div>
 
@@ -36,7 +36,7 @@
   <select style="display:none;" name="category" id="categorySelect" ng-model="newBpelem.refCategoryFilter" ng-init="newBpelem.refCategoryFilter = refCategories[0]" ng-options="option for option in refCategories" required="" class="ng-valid ng-valid-required"><option value="0" selected="selected">Base</option></select>
     <div class="templateButton form-group col-xs-4 clearfix">
       <div class="ref" ng-repeat="ref in refs | filter: { ref: {category: newBpelem.refCategoryFilter}}" ng-class="{selected: newBpelem.selectedRef.ref.id == ref.ref.id }">
-        <a ng-mouseover="refElem(ref, newBpelem)" ng-click="newBpelem.refSelectHidden=true;" class="btn btn-small btn-primary container_brick" ng-class="isSelected(ref, newBpelem)">{{ ref.ref.title }}</a>
+        <a ng-mouseover="refElem(ref, newBpelem)" ng-click="newBpelem.refSelectHidden=true;" class="btn btn-small btn-primary container_brick newFrontElemFormTypeButton" ng-class="isSelected(ref, newBpelem)">{{ ref.ref.title }}</a>
       </div>
     </div>
     <div class="ref-desc form-group col-xs-8">
@@ -102,7 +102,7 @@
     <input type="hidden" id="input_ref" ng-model="newBpelem.ref"/>
     <div class="control-group form-submit form-group" style="clear:both;" ng-show="isManagerVal">
       <div class="controls">
-        <button type="submit" class="btn btn-small btTxt submit btn lg solid-green ng-binding">{{ 'CREATE' | translate }}</button>
+        <button type="submit" id="createFrontElementFormButton" class="btn btn-small btTxt submit btn lg solid-green ng-binding">{{ 'CREATE' | translate }}</button>
       </div>
     </div>
   </form>

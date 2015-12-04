@@ -15,16 +15,16 @@
     <input type="hidden" id="inputBusinessId" ng-model="bprocess.state_machine_type" ng-init="bprocess.state_machine_type='base'" placeholder="State machine type" required/>
     <input type="hidden" id="inputBusinessId" ng-model="bprocess.version" ng-init="bprocess.version=1" placeholder="State machine type" required/>
     <div class="control-group form-group">
-      <label class="control-label col-sm-2" for="inputBusinessId">{{ 'SERVICE' | translate }}</label>
+      <label class="control-label col-sm-2" for="newProcessServiceSelect">{{ 'SERVICE' | translate }}</label>
       <div class="controls">
         <div class="col-xs-7">
-          <select class="form-control" ng-model="bprocess.service" ng-options="service.id as service.title for service in procServices" required></select><br>
+          <select class="form-control" id="newProcessServiceSelect" ng-model="bprocess.service" ng-options="service.id as service.title for service in procServices" required></select><br>
         </div>
       </div>
     </div>
     <div class="control-group">
       <div class="controls">
-        <button type="submit" class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</button>
+        <button type="submit" id="newProcessCreateBtn" class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</button>
       </div>
     </div>
   </form>
