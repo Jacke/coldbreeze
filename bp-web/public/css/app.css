@@ -3037,7 +3037,7 @@ form.form-horizontal.element-new-form.form-new-bpelem.form-edit-bpelem.form-new-
     margin-left: -32px;
 }
 .session__header.session__people {
-    margin-top: -7px;
+    margin-top: -7px !important;
 }
 .session-process .session-process-header .session_controls {
     width: 9%;
