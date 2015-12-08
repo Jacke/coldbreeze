@@ -25,7 +25,8 @@ trait BPLoggerUtil {
   val space: Option[Int]
   def log_step_inc(bp: BProcess, el: ProcElems):Int =
       if (this.space.isDefined && el.space_id.isDefined) {
-          val elemLogs = bp.logger.logs.filter(log => log.space.isDefined && log.space == Some(el.space_id.get.index)).sortBy(_.step)
+          val elemLogs = bp.logger.logs.filter(log => log.space.isDefined && 
+            log.space == Some(el.space_id.get.index)).sortBy(_.step)
 
         if (elemLogs.length < 1)
           1

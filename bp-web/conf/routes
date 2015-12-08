@@ -3,7 +3,7 @@
 # ~~~~
 
 # Enable webjar based resources to be returned
-GET         /webjars/*file                                      controllers.WebJarAssets.at(file)
+#GET         /webjars/*file                                      controllers.WebJarAssets.at(file)
 
 # Home page
 GET         /                                                   @controllers.ProfileController.dashboard()

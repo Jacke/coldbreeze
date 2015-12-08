@@ -11,19 +11,28 @@ import models.DAO.BProcessDTO
 
 object DatabaseCred {
   import slick.driver.PostgresDriver.simple._
-  var database = Database.forURL("jdbc:postgresql://localhost/minority1", driver = "org.postgresql.Driver", user = "postgres", password = "12344321")
+  def dbConfig = slick.backend.DatabaseConfig.forConfig[slick.driver.JdbcProfile]("minoritydbF")//[slick.driver.PostgresDriver]("minoritydb") 
+  def databaseF = dbConfig.db
+  var database = Database.forConfig("minoritydb")
+
+  /*Database.forURL("jdbc:postgresql://localhost/minority_bug", 
+    driver = "org.postgresql.Driver", 
+    user = "postgres", 
+    password = "12344321")
   database.createSession().conn.getMetaData().getURL()
+   */
+   //database = Database.forConfig("minoritydb")
 
   def switchTo(db_type: String) = {
     db_type match {
-    case "test" => database = Database.forURL("jdbc:postgresql://ec2-54-163-239-102.compute-1.amazonaws.com/der7jd9tjv79ah?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory", 
+    case "test" => /* database = Database.forURL("jdbc:postgresql://ec2-54-163-239-102.compute-1.amazonaws.com/der7jd9tjv79ah?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory", 
                                                driver = "org.postgresql.Driver", 
                                                user = "sfskpatnkbtyuz", 
-                                               password = "pfp6ghCjfD-kVJRchibq_KDWN5")
-    case "prod" => database = Database.forURL("jdbc:postgresql://localhost/minority1", 
+                                               password = "pfp6ghCjfD-kVJRchibq_KDWN5") */
+    case "prod" => /* database = Database.forURL("jdbc:postgresql://localhost/minority_bug", 
                                                driver = "org.postgresql.Driver", 
                                                user = "postgres", 
-                                               password = "12344321")
+                                               password = "12344321") */
     }
   }
 

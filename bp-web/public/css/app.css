@@ -986,7 +986,13 @@ border-left: 2px solid #4dbd74;
 .costs.cost-list {
     width: 210px;
 }
+.people-control-group .form-group.element-form-fields {
+    margin-bottom: -10px;
+}
 
+.people-control-group .form-group.element-form-fields .control-group {
+    margin-bottom: 0px;
+}
 
 
 

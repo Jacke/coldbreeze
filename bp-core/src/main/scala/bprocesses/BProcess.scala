@@ -33,6 +33,7 @@ class BProcess(scope: Scope, val id: Option[Int] = None, var assigned_session_id
   val nimarker = new NIMarker(this)
   val errors = new ProcessBottomLine(this)
 
+  var collisionCounter:Int = 0
   // Session id retriving 
   // TODO: Make that id constant while process creating
   var session_id = -1

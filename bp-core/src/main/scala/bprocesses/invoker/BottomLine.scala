@@ -37,8 +37,8 @@ trait BottomLine extends StateLigher {
   def toLogger(bp: BProcess, result: BPLoggerResult)
   def toStation(bp: BProcess): BPStation
   def toLoggerBefore(bp: BProcess, result: BPLoggerResult)
-  def toStationLogger(sygnal: String): Array[BPStationLoggerResult] 
-
+  def toStationLogger(sygnal: String): Array[BPStationLoggerResult]
+  def haltProcess(state: String, rate:Int = 0, reason: String = "flow")
 
   def bottomLineOperate(el: ProcElems) = {
     val reactions = collectReactions(el)
@@ -86,7 +86,10 @@ trait BottomLine extends StateLigher {
 * Common bottom line
 * for element
 **/
-def commonBottomLine(elem: ProcElems) = {
+def commonBottomLine(elem: ProcElems) = { // Collision fixes
+  if (elem.states.length < 1) {
+    elem.bprocess.station.update_state(false)
+  } else {
  toLoggerBefore(bp, BPLoggerResult(
         elem,
         composite = bp.copyCV(elem.values),
@@ -128,6 +131,7 @@ def commonBottomLine(elem: ProcElems) = {
     //toStation(bp).update_step(station.step + 1)
   }
   // Sygnal step inc elem invoked
+  }
 }
 def commonSpaceBottomLine(space: Space) = {
   /*
