@@ -105,52 +105,13 @@
     margin-top: 15px;
   }
 }
-@include b(session_controls) {
-  display: block;
-  margin-top: 30px;
-  float: right;
-  width: 185px;
-  height: 44px;
 
-  ul {
-    list-style: none;
-
-    li {
-      display: inline-block;
-      font-size: 16px;
-      color: #8B8E98;
-      height: 29px;
-      width: 33px;
-      padding: 4px 6px;
-    }
-  }
-  span.pin_session {
-    font-size: 18px;
-    display: inline-block;
-    width: 15px;
-    color: #ababab;
-  }
-  span.pin_session.pinned {
-    color: black;
-  }
-}
 .session_controls .icon-remove-circle:before {
   content: "\f05c";
   font-size: 19px;
 }
-.stations.input-stations {
-  background-color: rgb(61, 63, 85);
-  margin-left: 0px;
-  padding-left: 20px;
-  padding-top: 1px;
-  padding-bottom: 50px;
-  position: relative;
-  margin-bottom: 0px;
-}
-.stations .inline-launch .container {
-  padding-left: 0px;
-  margin-top: 0px;
-}
+@import 'launches'
+;
 .dashboard_sessions .progress-bar.progress-bar-success {
   border: solid 1px #CBCCCE;
 }

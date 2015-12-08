@@ -1,3 +1,5 @@
+@import 'bem';
+
 .session_list__session .active-sessions .info a {
 	font-weight: 500;
 	font-size: 11px;
@@ -83,4 +85,53 @@
 }
 .stations.minimal-stations .session-launches-bar {
 	margin-bottom: 0px;
+}
+
+
+.stations.input-stations {
+  background-color: rgb(61, 63, 85);
+  margin-left: 0px;
+  padding-left: 20px;
+  padding-top: 1px;
+  padding-bottom: 50px;
+  position: relative;
+  margin-bottom: 0px;
+}
+.stations .inline-launch .container {
+    padding-left: 11px;
+    margin-top: 0px;
+    padding-right: 0px;
+    padding-bottom: 14px;
+    padding-top: 8px;
+}
+
+
+@include b(session_controls) {
+  display: block;
+  margin-top: 20px;
+  float: right;
+  width: 185px;
+  height: 44px;
+
+  ul {
+    list-style: none;
+
+    li {
+      display: inline-block;
+      font-size: 16px;
+      color: #8B8E98;
+      height: 29px;
+      width: 33px;
+      padding: 4px 6px;
+    }
+  }
+  span.pin_session {
+    font-size: 18px;
+    display: inline-block;
+    width: 15px;
+    color: #ababab;
+  }
+  span.pin_session.pinned {
+    color: black;
+  }
 }

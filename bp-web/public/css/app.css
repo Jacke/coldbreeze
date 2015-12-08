@@ -2715,7 +2715,7 @@ background-color: gray !important;
     margin-bottom: 0px;
 }
 .stations.minimal-stations .session-launches-bar .automations_connected {
-    margin-left: 18px;
+    margin-left: -13px;
     margin-right: 16px;
 }
 
@@ -2754,13 +2754,14 @@ background-color: gray !important;
     display: inline-block;
     left: -27px;
     position: absolute;
-    padding: 16px 8px 20px 8px;
+    padding: 19px 8px 20px 8px;
     background: #45475D;
     color: white;
     margin-left: -4px;
     margin-top: 2px;
     font-size: 15px;
     margin-right: -9px;
+    top: -3px;
 }
 
 .session__buttonInput .moicon-eject:before {
@@ -3031,7 +3032,9 @@ form.form-horizontal.element-new-form.form-new-bpelem.form-edit-bpelem.form-new-
 }
 .session-process .session-process-header {
     width: 100%;
-    padding-bottom: 100px;
+    padding-bottom: 68px;
+    margin-top: 13px;
+    margin-left: -32px;
 }
 .session-process .session-process-header .session_controls {
     width: 9%;
@@ -3718,6 +3721,7 @@ input.switch:active:checked::before, input.switch.touch:hover:checked::before {
 .launches-bar input.switch::before {
     height: 1.6em;
     width: 2em;
+    margin-left: 2px;
 }
 .number {
 background-color: #5fcf80;
