@@ -37,6 +37,8 @@ import ProcHistoryDAO._
 import helpers._
 import decorators._
 import builders._
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 case class StationNoteMsg(msg: String)
 case class LogsContainer(session_loggers: List[BPLoggerDTO], 
@@ -181,17 +183,23 @@ def stations_elems_around(id: Int, station_id: Int) = SecuredAction { implicit r
 /**
  * Fetch all sessions logs for process
  */
-def logs_index(id: Int) = SecuredAction { implicit request => 
+def logs_index(id: Int) = SecuredAction.async { implicit request => 
   if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, id)) {
-      val processHistories = ProcHistoryDAO.getByProcess(id)
+      val processHistoriesF:Future[Seq[models.DAO.ProcessHistoryDTO]] = ProcHistoryDAO.getByProcessF(id)
       val session_loggers = BPLoggerDAO.findByBPId(id)
       val stations = BPStationDAO.findByBPId(id)
       val session_ids = stations.map(st => st.session)
+
       val input_logs = InputLoggerDAO.getBySessions(session_ids)
       val session_log = SessionStateLogDAO.getAllBySessions(session_ids)
 
-      Ok(Json.toJson(LogsContainer(session_loggers, processHistories, stations,input_logs,session_log)))
-  } else { Forbidden(Json.obj("status" -> "Not found")) }
+    for {    
+      maybeHistory <- processHistoriesF
+      result <- Future(Ok(Json.toJson(LogsContainer(session_loggers, maybeHistory.toList, stations,input_logs,session_log))))
+    } yield result      
+
+      //Ok(Json.toJson(LogsContainer(session_loggers, processHistories, stations,input_logs,session_log)))
+  } else { Future(Forbidden(Json.obj("status" -> "Not found"))) }
 }
 
 

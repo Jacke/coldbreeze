@@ -52,12 +52,22 @@
  <logger name="application" level="DEBUG">
     <appender-ref ref="SYSLOG-TLS" />
  </logger>
+ <!--
+<logger name="scala.slick.jdbc.JdbcBackend.statement" level="DEBUG">
+      <appender-ref ref="SYSLOG-TLS" />
+    <appender-ref ref="STDOUT" />
+</logger>
+<logger name="slick.jdbc.JdbcBackend.statement" level="DEBUG">
+      <appender-ref ref="SYSLOG-TLS" />
+    <appender-ref ref="STDOUT" />
+</logger>
+-->
 
+<!--
   <root level="INFO">
     <appender-ref ref="SYSLOG-TLS" />
     <appender-ref ref="STDOUT" />
  </root>
-<!--
 <root level="ERROR">
     <appender-ref ref="SYSLOG-TLS" />
     <appender-ref ref="STDOUT" />

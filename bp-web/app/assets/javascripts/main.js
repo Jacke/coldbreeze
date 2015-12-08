@@ -441,6 +441,16 @@ $('a.bill-field.bill-pay-btn').click(function(e) {
 e.preventDefault();
 $(this).parent().children('.bill-form').toggle();
 $(this).toggleClass('highlighted');
+});
+
+$('a.appLink').click(function(e) {
+  e.preventDefault();
+  if (location.hash.split('#').length > 1) {
+        window.location.href = "a#/bprocesses";
+  } else {
+            window.location.href = "a";
+
+  }
 })
 
 $('.settings-insert-title').click(function(e) {

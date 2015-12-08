@@ -58,7 +58,9 @@ object Dependencies {
 
 
   val scaldiakka      = "org.scaldi"                %% "scaldi-akka"            % "0.4"
-  val hicaricp        = "com.edulify"               %% "play-hikaricp"          % "1.5.0"
+  val hikari_core     = "com.zaxxer"                % "HikariCP"                % "2.3.5"
+  //val hicaricp        = "com.edulify"               %% "play-hikaricp"          % "1.5.0"
+  val hicaricp        = "com.sandinh"               %% "play-hikaricp"          % "1.7.1"
   val javamail        = "javax.mail"                % "mail"                    % "1.5.0-b01"
   val courier         = "me.lessis"                 %% "courier"                % "0.1.3"
   val scalamandrill   = "com.github.dzsessona"      % "scamandrill_2.11"       % "1.1.0"
@@ -72,7 +74,7 @@ object Dependencies {
   val fluentlenium    = "org.fluentlenium"          % "fluentlenium-core"       % "0.10.3" //% "test"
   val fluentleniumasj = "org.fluentlenium"          % "fluentlenium-assertj"    % "0.10.3" //% "test" 
   
-  val play            = "org.webjars"               %% "webjars-play"           % "2.3.0"
+  val play            = "com.typesafe.play"         % "play_2.11"               % "2.3.9"
   val play4           = "org.webjars"               %% "webjars-play"           % "2.4.0"
   val playslick       = "com.typesafe.play"         %  "play-slick_2.11"        % "0.8.0"
   val playauth        = "jp.t2v"                    %% "play2-auth"             % "0.12.0"
@@ -123,6 +125,8 @@ object Dependencies {
   val akkaActor       = "com.typesafe.akka"         %%  "akka-actor"            % akkaVersion
   val akkaSlf4j       = "com.typesafe.akka"         %%  "akka-slf4j"            % akkaVersion
   val akkaTestKit     = "com.typesafe.akka"         %%  "akka-testkit"          % akkaVersion
+  val akkastreams     = "com.typesafe.akka"         % "akka-stream-experimental_2.11" % "1.0-M5"
+
   val logback         = "ch.qos.logback"            %   "logback-classic"       % "1.0.13"
   val reflect         = "com.taig"                  %%  "reflect"               % "0.9.3-BETA"
   val nscala          = "com.github.nscala-time"    %%  "nscala-time"           % "2.0.0"

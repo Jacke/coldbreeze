@@ -51,9 +51,9 @@
       <div class="form-group element-form-fields">
       <div class="form-group control-group clearfix">
         <div class="controls col-xs-2">
-          <label class="control-label col-sm-1" for="inputPerm">People</label>
+          <label class="control-label col-sm-1" for="inputPerm"><a ng-click="newBpelem.showPeople ? newBpelem.showPeople=false : newBpelem.showPeople=true">People</a></label>
         </div>
-        <div class="controls col-xs-6" ng-init="newBpelem.perms = [];">  
+        <div class="controls col-xs-6" ng-init="newBpelem.perms = [];newBpelem.showPeople=false;" ng-show="newBpelem.showPeople">  
           <div class="perms perm-list" ng-repeat="perm in newBpelem.perms" ng-init="perm.account = accFetch(perm)">
             <span class="account-pic" tooltip="{{ perm.account.tooltip }}">
                 <img ng-src="{{ perm.account.avatarUrl}}" alt="{{ perm.account.tooltip }}">
@@ -70,9 +70,9 @@
       <div class="form-group element-form-fields">
       <div class="form-group control-group clearfix">
         <div class="controls col-xs-2">
-          <label class="control-label col-sm-1" for="inputPerm">Cost</label>
+          <label class="control-label col-sm-1" for="inputPerm"><a ng-click="newBpelem.showCosts ? newBpelem.showCosts=false : newBpelem.showCosts=true">Cost</a></label>
         </div>
-        <div class="controls col-xs-6" ng-init="newBpelem.costs = [];">  
+        <div class="controls col-xs-6" ng-init="newBpelem.costs = [];newBpelem.showCosts=false;" ng-show="newBpelem.showCosts">  
           <div class="costs cost-list" ng-repeat="cost in newBpelem.costs">
             <span class="resource-block" tooltip="{{ cost.resource.title }}">
                 {{ cost.resource.resource.title }} — {{ entityDecorator(cost.entities, cost.resource) }}

@@ -24,7 +24,7 @@
  <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="editProcess()">{{ 'EDIT' | translate }}</a></li>
  <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="perm()">{{ 'PEOPLE' | translate }} </a></li>
  <!--<li><a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" ng-click="modalShare()">{{ 'SHARE' | translate }}</a></li>-->
- <li><a href="" class="addElemTab" ng:show="!inSession" ng:click="bp.newelemformselected==1 ? bp.newelemformselected=0 : bp.newelemformselected=1" ng-class="bp.newelemformselected==1 ? 'selected' : ''" tooltip-placement="bottom" tooltip="Create element"><span class="glyphicon glyphicon-plus"></span></a></li>
+ <li><a href="" class="addElemTab" ng:show="!inSession" ng:click="$parent.bp.newelemformselected==1 ? $parent.bp.newelemformselected=0 : $parent.bp.newelemformselected=1" ng-class="$parent.bp.newelemformselected==1 ? 'selected' : ''" tooltip-placement="bottom" tooltip="Create element"><span class="glyphicon glyphicon-plus"></span></a></li>
 </ul>
 </div>
 

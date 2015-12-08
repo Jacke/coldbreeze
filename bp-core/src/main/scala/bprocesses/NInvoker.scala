@@ -10,37 +10,6 @@ import org.slf4j.LoggerFactory
  *** © Stanislav @stanthoughts 2014-2015
  ***/
 
-/**
- * Ivoking process by moving NIMarker
- */
-
-class NIMarker(val bp: BProcess) extends BottomLine
-with StateLigher
-with NIMoves
-with NISygnals
-with NIRestrictors
-with NIDeterms 
-{
-  // Push Info
-  var station:BPStation = bp.station
-  def toStation(bp: BProcess): BPStation = { bp.station }
-  def toLogger(bp: BProcess, result: BPLoggerResult) = bp.logger.log(result)
-  def step_inc = station.update_step(station.step + 1)
-
-
-  // exec
-  def invokeExpand = {
-    bp.getSpaceByIndex(station.space).expands.map(ex => ex.invoke)
-  }
-  def invokeContainer = {
-    bp.getSpaceByIndex(station.space).container.map(ex => ex.invoke)
-  }
-
-
-
-
-}
-
 object NInvoker {
 
   val appLogger = Logger(LoggerFactory.getLogger("name"))
@@ -168,8 +137,10 @@ def move:Unit = {
     NInvoker.toApplogger(station.step)
     toStationLogger("moving")
     loopNumAdd()
+    NInvoker.toApplogger(s"loopNumAdd $loop_num")
+
     // ended?
-    if ((!station.inspace && isElementEnded) || blocator || station.paused || isInfiniteLoop)
+    if ((!station.inspace && isElementEnded) || blocator || !station.state || station.paused || isInfiniteLoop)
     {
       endOrPause
     }
@@ -203,10 +174,15 @@ def move:Unit = {
        * Front launch
        */
       val elem = bp.variety(toStation(bp).step)
-      commonBottomLine(elem)
+      NInvoker.toApplogger(s"collisionCounter check ${bp.collisionCounter}")
+      if (bp.collisionCounter > maxLoop) { // check for states && switchers
+
+      } else { // Collision free work
+        commonBottomLine(elem)
+      }
      
 
-      if (station.isInFront | station.inspace) {
+      if (!(bp.collisionCounter > maxLoop) || (station.isInFront | station.inspace) ) {
         move //  NInvoker.toApplogger("station")
              //  NInvoker.toApplogger(station.isInFront)
       }

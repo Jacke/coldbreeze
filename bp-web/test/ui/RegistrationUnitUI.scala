@@ -139,23 +139,61 @@ implicit override lazy val app: FakeApplication =
   }  
 
  "Base Core Component" must {
+     var serviceCount = findAll(className("business-service-entity")).toIndexedSeq.length
     "provide list of business services" in {
       go to (s"http://localhost:$port/")
       eventually { assertThat(pageTitle).contains("Profile") }
       val eles: IndexedSeq[Element] = findAll(className("business-service-entity")).toIndexedSeq
       eles.length should not be 0  
+      serviceCount = eles.length
       //for (e <- eles)
        // e should be ('displayed)
       Thread.sleep(500)
+    }
+    "create service" in {
       // Create service 
       val showElForm:Element = find(id("showServiceFormBtn")).get
       click on showElForm
-      textField(newServiceFormField).value = "Test service"
+      textField("newServiceFormField").value = "Test service"
       click on find(id("addNewServiceFormBtn")).get
-
-
+      val eles: IndexedSeq[Element] = findAll(className("business-service-entity")).toIndexedSeq
+      eles.length should not be serviceCount 
     }
   }    
+  "Base App Core Component" must {
+    "be active" in {
+      go to (s"http://localhost:$port/")
+      Thread.sleep(500)
+      find(id("createNewProcessBtn")).get.text should be (" New process")
+    }
+    "create process #1" in {
+      click on find(id("createNewProcessBtn")).get
+      textField("inputTitle").value = "Test process #1"
+      singleSel("newProcessServiceSelect").value should not be ""
+      click on find(id("newProcessCreateBtn")).get
+      Thread.sleep(500)
+    }
+    "create process #2" in {
+      click on find(id("createNewProcessBtn")).get
+      textField("inputTitle").value = "Test process #2"
+      singleSel("newProcessServiceSelect").value should not be ""
+      click on find(id("newProcessCreateBtn")).get
+      Thread.sleep(500)
+    }    
+    "processes must created" in {
+      val processes: IndexedSeq[Element] = findAll(className("process")).toIndexedSeq
+      processes.length should not be 0
+      Thread.sleep(500)
+    }
+    "remove process #2" in {
+      val processes: IndexedSeq[Element] = findAll(className("process")).toIndexedSeq
+      textField("inputTitle").value = "Test process #2"
+      processes.find(e => (e.underlying.findElement(By.id("processTitle"))) != null) match {
+        case Some(proc) => click on (proc.underlying.findElement(By.id("processDeleteButton")))
+        case _ =>
+      }
+    }
+  }
 
 /*
 val CHROME = new ChromeDriver

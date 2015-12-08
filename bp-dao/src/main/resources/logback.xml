@@ -27,12 +27,7 @@
       <maxMessageLength>128000</maxMessageLength>
     </syslogConfig>
 </appender>
-<appender name="ACCESS_LOG_FILE" class="ch.qos.logback.core.FileAppender">
-        <file>logs/access.log</file>
-        <encoder>
-            <pattern>%date{yyyy-MM-dd HH:mm:ss ZZZZ} %message%n</pattern>
-        </encoder>
-    </appender>
+
      <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
            <pattern>%d{HH:mm:ss} [%-5p] %class{0}.%method:%L - %m%n</pattern>
@@ -45,29 +40,26 @@
          <appender-ref ref="ACCESS_LOG_FILE" />
     </logger>  -->
 
- <logger name="play" level="INFO">
-      <appender-ref ref="SYSLOG-TLS" />
-    <appender-ref ref="STDOUT" />
- </logger>
- <logger name="application" level="DEBUG">
-    <appender-ref ref="SYSLOG-TLS" />
- </logger>
- <!--
+ <!-- <logger name="scala.slick" level="DEBUG" />-->
+
 <logger name="scala.slick.jdbc.JdbcBackend.statement" level="DEBUG">
-      <appender-ref ref="SYSLOG-TLS" />
+	    <appender-ref ref="SYSLOG-TLS" />
     <appender-ref ref="STDOUT" />
 </logger>
 <logger name="slick.jdbc.JdbcBackend.statement" level="DEBUG">
-      <appender-ref ref="SYSLOG-TLS" />
+	    <appender-ref ref="SYSLOG-TLS" />
     <appender-ref ref="STDOUT" />
 </logger>
--->
-
 <!--
+
   <root level="INFO">
     <appender-ref ref="SYSLOG-TLS" />
     <appender-ref ref="STDOUT" />
  </root>
+ <root level="DEBUG">
+    <appender-ref ref="SYSLOG-TLS" />
+    <appender-ref ref="STDOUT" />
+  </root>
 <root level="ERROR">
     <appender-ref ref="SYSLOG-TLS" />
     <appender-ref ref="STDOUT" />

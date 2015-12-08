@@ -901,11 +901,11 @@ $scope.options = {
       $scope.bp.newelemformselected = 0;
       //$scope.reloadTree($scope.trees);
       $timeout(function(){
-        $scope.reloadResources();
-        $scope.loadResources();
+        //$scope.reloadResources();
+        //$scope.loadResources();
         $timeout(function () {
           // 0 ms delay to reload the page.
-       $route.reload();
+          $route.reload();
       }, 0);
 
       }, 2000);
@@ -1272,8 +1272,8 @@ $scope.createSpaceElemFromSpace = function (obj) {
       $scope.spaceelems =  BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(d){ 
         //              $scope.cneedit = false;
               $timeout(function(){
-                $scope.reloadResources();
-                $scope.loadResources();
+                //$scope.reloadResources();
+                //$scope.loadResources();
                 $timeout(function () {
                   // 0 ms delay to reload the page.
                $route.reload();
@@ -1346,8 +1346,8 @@ $scope.createSpaceElem = function (obj, space) {
 
 
               $timeout(function(){
-                $scope.reloadResources();
-                $scope.loadResources();
+                //$scope.reloadResources();
+                //$scope.loadResources();
                 $timeout(function () {
                   // 0 ms delay to reload the page.
                 $route.reload();

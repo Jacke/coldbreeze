@@ -72,11 +72,12 @@ object ProcHisCom {
   def permCreated              = "perm_created"
   def permDeleted              = "perm_deleted"
 }
-
+                           
 object ProcHistoryDAO {
   import scala.util.Try
   import DatabaseCred.database
 
+  
 
   case object ProcCreated
   case object ProcUpdated
@@ -108,6 +109,9 @@ object ProcHistoryDAO {
       val q3 = for { s ← proc_histories if s.process === proc_id } yield s 
       q3.list//.headOption
   }
+  def getByProcessF(proc_id: Int):Future[Seq[models.DAO.ProcessHistoryDTO]] = ProcHistoryDAOF.getByProcessF(proc_id)
+  
+
   /*
   def get(k: Int) = database withSession {
     implicit session ⇒
