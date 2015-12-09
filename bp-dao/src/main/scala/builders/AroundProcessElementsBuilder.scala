@@ -27,9 +27,23 @@ object AroundProcessElementsBuilder {
     case Some(st) => buildTree(st, process_id)
    }
   }
+  def detectByStation(process_id: Int, station: Option[BPStationDTO], 
+    process:Option[BProcessDTO]=None):ElemAround = {
+    station match {
+    case Some(st) => { 
+      if (st.paused == true)
+        buildTree(st, process_id, process, station)
+      else 
+        ElemAround()
+    }
+    case _ => ElemAround()
+   }
+  }  
   
-  def buildTree(st: BPStationDTO, process_id:Int):ElemAround = {
-    val proc = service.RunnerWrapper.initFrom(st.id.get, process_id, List.empty[InputParamProc])
+  def buildTree(st: BPStationDTO, process_id:Int,
+    process:Option[BProcessDTO]=None,
+    station_dto:Option[BPStationDTO]=None):ElemAround = {
+    val proc = service.RunnerWrapper.initFrom(st.id.get, process_id, List.empty[InputParamProc])//,process,station_dto)
       
     var pre:Option[AroundAttr] = None
     var nex:Option[AroundAttr] = None

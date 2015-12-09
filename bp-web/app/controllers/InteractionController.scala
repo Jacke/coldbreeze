@@ -170,6 +170,51 @@ def fetchInteraction(session_id: Int) = SecuredAction { implicit request =>
 }
 
 
+def fetchAllInteraction() = SecuredAction { implicit request => 
+  val email = request.user.main.email.get
+  val business_request:Option[Tuple2[Int, Int]] = models.DAO.resources.EmployeesBusinessDAO.getByUID(email) 
+    val business = business_request match {
+      case Some(biz) => biz._2
+      case _ => -1
+    }
+   val sessionsCn = BPSessionDAO.findByBusiness(business)
+   val sessions = sessionsCn.map { cn => cn.sessions }.flatten
+   val combinedSessions:List[SessionInteractionContainer] = sessions.map { sessionObj =>
+    val session_id = sessionObj.session.id.get
+
+   val session = models.DAO.BPSessionDAO.findById(id = session_id)
+  
+      val process:BProcessDTO = session.get.process
+      val reactions:List[SessionUnitReaction] = SessionReactionDAO.findUnapplied(process.id.get, session_id)
+      Logger.debug("Session Reactions")
+      Logger.debug(s"reaction length ${reactions.length}")
+
+      val reaction_outs:List[SessionUnitReactionStateOut] = SessionReactionStateOutDAO.findByReactions(reactions.map(_.id.get))
+      
+      val costs:List[CostContainer] = reactions.map(reaction => findCost(sessionElemTopoId = reaction.element, 
+                                                                         launchId=session_id)).flatten
+      val session_states: List[BPSessionState] = BPSessionStateDAO.findByOriginIds(reaction_outs.map(_.state_ref))
+
+      Logger.debug("Session state")
+      Logger.debug(s"session_states length ${session_states.length}")
+        val reaction_container = reactions.map(reaction => 
+          SessionReactionContainer(session_state = session_states.find(state => Some(reaction.from_state) == state.origin_state),
+                    reaction, 
+                    reaction_outs.filter(out => Some(out.reaction) == reaction.id),
+                    costs)
+        )
+        SessionInteractionContainer(session, reaction_container, session_states)
+        
+    }
+
+Ok(Json.toJson(combinedSessions))
+}
+   
+ 
+
+
+
+
 def fillSlat(slat_id: String) = SecuredAction.async(BodyParsers.parse.json) { request => 
     val sval = request.body.validate[String]
     sval.fold(

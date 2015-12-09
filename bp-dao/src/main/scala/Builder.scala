@@ -796,17 +796,30 @@ def runFrom(station_id:Int, bpID:Int, params: List[InputParamProc], session_id: 
   
   
   
-  def initFrom(station_id:Int, bpID:Int, params: List[InputParamProc]):BProcess  = {
+  def initFrom(station_id:Int, bpID:Int, params: List[InputParamProc],
+    process_dto:Option[BProcessDTO]=None,
+    station_dto:Option[BPStationDTO]=None
 
-    val process_dto = BPDAO.get(bpID).get
+    ):BProcess  = {
+    var processObj:Option[BProcessDTO]=None
+    var station:Option[BPStationDTO]=None
+    if (process_dto.isDefined) {
+      processObj = process_dto
+    } else {
+      processObj = BPDAO.get(bpID)
+    }
+    if (station_dto.isDefined) {
+      station = station_dto
+    } else {
+      station = BPStationDAO.findById(station_id)
+    }
     val target = ProcElemDAO.findByBPId(bpID)
     val process = new BProcess(new Managment, id = Some(bpID))
     val arrays = target.map(c => c.cast(process)).flatten.toArray
-  process.push {
-    arrays.sortWith(_.order < _.order)
-  }
-  val logger_db = BPLoggerDAO.findByStation(station_id)
-  val db_station = BPStationDAO.findById(station_id).get
+    process.push {
+      arrays.sortWith(_.order < _.order)
+    }
+    val logger_db = BPLoggerDAO.findByStation(station_id)
 
     val test_space = BPSpaceDAO.findByBPId(bpID)
     val space_elems = SpaceElemDAO.findByBPId(bpID)
@@ -851,18 +864,18 @@ def runFrom(station_id:Int, bpID:Int, params: List[InputParamProc], session_id: 
   process.logger.logs = logger_results.toArray
 
   process.station.update_variables(
-    db_station.state,
-    db_station.step,
-    db_station.space,
-    db_station.container_step.toArray,
-    db_station.expand_step.toArray,
-    db_station.spaces_ids.toArray,
-    db_station.started,
-    db_station.finished,
-    db_station.inspace,
-    db_station.incontainer,
-    db_station.inexpands,
-    db_station.paused
+    station.get.state,
+    station.get.step,
+    station.get.space,
+    station.get.container_step.toArray,
+    station.get.expand_step.toArray,
+    station.get.spaces_ids.toArray,
+    station.get.started,
+    station.get.finished,
+    station.get.inspace,
+    station.get.incontainer,
+    station.get.inexpands,
+    station.get.paused
   )
     /* State sync */
     //process.restoreCVOfElems

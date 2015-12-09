@@ -78,7 +78,34 @@ canceled: Boolean = false,
 created_at:Option[org.joda.time.DateTime] = None,
 updated_at:Option[org.joda.time.DateTime] = None, session: Int = 1, front: Boolean = true) // Front par for parallels 
                                                                                            //  TODO: Avoid default value
+object BPStationDAOF {
+  import akka.actor.ActorSystem
+import akka.stream.ActorFlowMaterializer
+import akka.stream.scaladsl.Source
+import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+//import slick.driver.JdbcProfile
+import slick.driver.PostgresDriver.api._
+import slick.jdbc.meta.MTable
+import scala.concurrent.ExecutionContext.Implicits.global
+import com.github.tototoshi.slick.JdbcJodaSupport._
+import scala.concurrent.duration.Duration
+import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 
+  val dbConfig = models.DAO.conversion.DatabaseCred.dbConfig//slick.backend.DatabaseConfig.forConfig[slick.driver.JdbcProfile]("postgres")
+  val db = models.DAO.conversion.DatabaseCred.databaseF
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+
+
+  private def filterQueryBySession(session_id: Int): Query[BPStations, BPStationDTO, Seq] =
+    BPStationDAO.bpstations.filter(_.session === session_id)
+
+  def findBySessionF(id: Int): Future[Option[BPStationDTO]] =
+    try db.run(filterQueryBySession(id).result.headOption)
+    finally println("db.close")//db.close
+               
+
+}
 
 object BPStationDAO {
   import models.DAO.BPDAO.bprocesses
@@ -154,7 +181,8 @@ object BPStationDAO {
         case _ => -1
       }
     }
-  }
+  }                
+
   def findBySession(id: Int) = {
     database withSession { implicit session =>
      val q3 = for { st ← bpstations if st.session === id } yield st
