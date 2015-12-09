@@ -50,6 +50,7 @@
 	    <appender-ref ref="SYSLOG-TLS" />
     <appender-ref ref="STDOUT" />
 </logger>
+    <logger name="com.zaxxer.hikari" level="DEBUG"/>
 <!--
 
   <root level="INFO">

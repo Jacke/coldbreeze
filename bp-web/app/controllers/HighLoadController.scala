@@ -67,6 +67,7 @@ import scala.concurrent.duration._
 
 object InteractionKeepr {
 	var keepr:Option[SessionInteractionContainer] = None
+	var session:Option[models.DAO.SessionContainer] = None
 }
 
 
@@ -138,42 +139,52 @@ implicit val CostContainerWrites = Json.format[CostContainer]
   * @param  session_id id of launch
   * @return return either SessionInteractionContainer with session, reaction containers, and session states.
   */
-def load(session_id: Int) = SecuredAction { implicit request => 
+def load(session_id: Int) = SecuredAction.async { implicit request => 
+
   if (security.BRes.sessionSecured(session_id, request.user.main.userId, request.user.businessFirst)) {
 
+//loadHelp(session_id)
+//models.LoadTesting.all()
 
-   val session = models.DAO.BPSessionDAO.findById(id = session_id)
-  
-   session match {
 
-  	case Some(session) => {   
-  		val process:BProcessDTO = session.process
-  	  val reactions:List[SessionUnitReaction] = SessionReactionDAO.findUnapplied(process.id.get, session_id)
-      Logger.debug("Session Reactions")
-      Logger.debug(s"reaction length ${reactions.length}")
+//models.LoadTesting.test()
+//Future(Forbidden(Json.obj("status" -> "Access denied"))) 
+  	   Future(Ok(Json.toJson( loadHelp(session_id)  )))
 
-      val reaction_outs:List[SessionUnitReactionStateOut] = SessionReactionStateOutDAO.findByReactions(reactions.map(_.id.get))
-      
-      val costs:List[CostContainer] = reactions.map(reaction => findCost(sessionElemTopoId = reaction.element, 
-                                                                         launchId=session_id)).flatten
-  	  val session_states: List[BPSessionState] = BPSessionStateDAO.findByOriginIds(reaction_outs.map(_.state_ref))
-
-      Logger.debug("Session state")
-      Logger.debug(s"session_states length ${session_states.length}")
-        val reaction_container = reactions.map(reaction => 
-        	SessionReactionContainer(session_state = session_states.find(state => Some(reaction.from_state) == state.origin_state),
-        					  reaction, 
-                    reaction_outs.filter(out => Some(out.reaction) == reaction.id),
-                    costs)
-        )
-        	InteractionKeepr.keepr = Some(SessionInteractionContainer(Some(session), reaction_container, session_states))
-
-  	   Ok(Json.toJson(SessionInteractionContainer(Some(session), reaction_container, session_states)))
-  	}
-  	case _ => BadRequest(Json.toJson(Map("error" -> "Session not found")))
-  }
-} else { Forbidden(Json.obj("status" -> "Access denied")) }    
+} else { Future(Forbidden(Json.obj("status" -> "Access denied"))) }    
 }
+
+
+def loadHelp(session_id: Int) = {
+//val session_id = 99
+//val session = models.DAO.BPSessionDAO.findById(id = session_id)
+var session:Option[SessionContainer] = None
+ if (InteractionKeepr.session.isDefined) {
+ 	session = InteractionKeepr.session
+ } else {
+ 	session = models.DAO.BPSessionDAO.findById(id = session_id)
+
+ }
+val process:BProcessDTO = session.get.process
+val reactions:List[SessionUnitReaction] = SessionReactionDAO.findUnapplied(process.id.get, session_id)
+  
+val reaction_outs:List[SessionUnitReactionStateOut] = SessionReactionStateOutDAO.findByReactions(reactions.map(_.id.get))
+val costs:List[CostContainer] = reactions.map(reaction => findCost(sessionElemTopoId = reaction.element, 
+                                                         launchId=session_id)).flatten
+val session_states: List[BPSessionState] = BPSessionStateDAO.findByOriginIds(reaction_outs.map(_.state_ref))
+
+
+val reaction_container = reactions.map(reaction => 
+	SessionReactionContainer(session_state = session_states.find(state => Some(reaction.from_state) == state.origin_state),
+					  reaction, 
+            reaction_outs.filter(out => Some(out.reaction) == reaction.id),
+            costs)
+        )
+    	InteractionKeepr.keepr = Some(SessionInteractionContainer(Some(session.get), reaction_container, session_states))
+  SessionInteractionContainer(Some(session.get), reaction_container, session_states)
+}
+
+
 def semiload(session_id: Int) = SecuredAction { implicit request => 
   if (security.BRes.sessionSecured(session_id, request.user.main.userId, request.user.businessFirst)) {
 

@@ -49,7 +49,9 @@ object BPSessionDAO {
   import scala.util.Try
   import DatabaseCred.database
   import models.DAO.conversion.Implicits._
-
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   
 
   val bpsessions = TableQuery[BPSessions]
@@ -87,6 +89,40 @@ object BPSessionDAO {
 
     sess match {
       case Some(ses) => {
+        val stationF = BPStationDAOF.findBySessionF(ses.id.get)        
+        val element_quantity = SessionProcElementDAO.findBySession(ses.id.get).length //+ SessionSpaceElemDAO.findFlatBySession(ses.id.get).length
+        val process = BPDAO.get(ses.process).get
+        val people = SessionPeoples("not@found.com", List()) // placeholder for peoples
+        
+        val station = BPStationDAOF.await(stationF)
+        val step = station match {
+          case Some(station) => station.step.toDouble
+          case _ => element_quantity.toDouble
+        }
+        val percent = percentDecorator(step, element_quantity)
+
+      Some(SessionContainer(process, 
+        List(SessionStatus(percent, 
+          process, 
+          ses, 
+          station, 
+          Some(AroundProcessElementsBuilder.detectByStation(ses.process, 
+                                                            station,
+                                                            Some(process))),
+          Some(people))) 
+      ))
+
+      }
+      case _ => None
+    }
+  }
+  /*
+  def findByIdF(id: Int):Option[SessionContainer] = {
+    val q3 = for { s <- bpsessions if s.id === id } yield s
+    val sess = q3.list.headOption
+
+    sess match {
+      case Some(ses) => {
         val station = BPStationDAO.findBySession(ses.id.get)        
         val element_quantity = SessionProcElementDAO.findBySession(ses.id.get).length //+ SessionSpaceElemDAO.findFlatBySession(ses.id.get).length
         val process = BPDAO.get(ses.process).get
@@ -105,10 +141,8 @@ object BPSessionDAO {
 
       }
       case _ => None
-    }
-
-
-  }
+  }  
+  */
   def findListedByBusiness(bid: Int):List[SessionContainer] = database withSession {
     implicit session =>
     val p = BPDAO.findByBusiness(bid)
