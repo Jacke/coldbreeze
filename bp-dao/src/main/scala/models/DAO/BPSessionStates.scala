@@ -98,7 +98,9 @@ class BPSessionStates(tag: Tag) extends Table[BPSessionState](tag, "sessionstate
   def bpFK        = foreignKey("s_st_bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
  
 }
-
+object BPSessionStateDAOF {
+  def findByBPAndSession = ???
+}
 
 object BPSessionStateDAO {
   import scala.util.Try

@@ -138,25 +138,27 @@ def fetchInteraction(session_id: Int) = SecuredAction.async { implicit request =
 
 
    val sessionF:Future[Option[SessionContainer]] = models.DAO.BPSessionDAOF.findById(id = session_id)
-   sessionF.map { session =>
-      session match {
+   sessionF.map { session => // Future of session
+    session match {
+  	  case Some(session) => {   
+  		
+      val process:BProcessDTO = session.process
+      val unapplied:Future[SessionUnitReactionContainer] = SessionReactionDAOF.findUnapplied(process.id.get, session_id)
 
-  	case Some(session) => {   
-  		val process:BProcessDTO = session.process
-  	  val reactions:List[SessionUnitReaction] = SessionReactionDAO.findUnapplied(process.id.get, session_id)
+  	  val reactions:List[SessionUnitReaction] = SessionReactionDAOF.await(SessionReactionDAOF.await(unapplied).units).toList
       Logger.debug("Session Reactions")
       Logger.debug(s"reaction length ${reactions.length}")
 
-      val reaction_outs:List[SessionUnitReactionStateOut] = SessionReactionStateOutDAO.findByReactions(reactions.map(_.id.get))
+      val reaction_outs:List[SessionUnitReactionStateOut] = SessionReactionDAOF.await(unapplied).state_outs
+      val session_states: List[BPSessionState] = SessionReactionDAOF.await(unapplied).session_states
+      Logger.debug("Session state")
+      Logger.debug(s"session_states length ${session_states.length}")
       
       val costs:List[CostContainer] = reactions.map(reaction => findCost(sessionElemTopoId = reaction.element, 
                                                                          launchId=session_id)).flatten
-  	  val session_states: List[BPSessionState] = BPSessionStateDAO.findByOriginIds(reaction_outs.map(_.state_ref))
-
-      Logger.debug("Session state")
-      Logger.debug(s"session_states length ${session_states.length}")
         val reaction_container = reactions.map(reaction => 
-        	SessionReactionContainer(session_state = session_states.find(state => Some(reaction.from_state) == state.origin_state),
+        	SessionReactionContainer(
+                    session_state = session_states.find(state => Some(reaction.from_state) == state.origin_state),
         					  reaction, 
                     reaction_outs.filter(out => Some(out.reaction) == reaction.id),
                     costs)
