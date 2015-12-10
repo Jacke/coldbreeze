@@ -140,6 +140,7 @@ integrationTest := {
           akkaActor, 
           scaldiakka, 
           dispatch, 
+          futiles,
           scalaz, 
           scalazstream,
           mechanize,nscala, 

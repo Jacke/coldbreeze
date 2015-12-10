@@ -180,6 +180,8 @@ POST        /bprocess/:bpId/copy/:title                         @controllers.Bus
 GET         /sessions 								 @controllers.ProcessSessionController.all_sessions()
 GET         /interact/:session_id                    @controllers.InteractionController.fetchInteraction(session_id: Int)
 GET         /interacts                               @controllers.InteractionController.fetchAllInteraction()
+GET         /interactsf                              @controllers.InteractionController.fetchAllInteractionF()
+
 GET         /load/interact/:session_id               @controllers.HighLoadController.load(session_id: Int)
 GET         /semiload/interact/:session_id           @controllers.HighLoadController.semiload(session_id: Int)
 GET         /highload/interact/:session_id           @controllers.HighLoadController.highload(session_id: Int)

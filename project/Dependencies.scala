@@ -60,7 +60,7 @@ object Dependencies {
   val jacksonbson     = "de.undercouch"             %  "bson4jackson"           % "2.5.0"
   val wcs             = "eu.piotrbuda"              % "scalawebsocket_2.10"     % "0.1.1"
 
-
+  val futiles         = "com.markatta"              %% "futiles"                % "1.1.3"
   val scaldiakka      = "org.scaldi"                %% "scaldi-akka"            % "0.4"
   val hikari_core     = "com.zaxxer"                % "HikariCP"                % "2.3.5"
   //val hicaricp        = "com.edulify"               %% "play-hikaricp"          % "1.5.0"
