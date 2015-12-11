@@ -34,7 +34,7 @@ object Dependencies {
   val scalaz          = "org.scalaz"                %% "scalaz-core"            % "7.1.0"
   val scalazstream    = "org.scalaz.stream" %% "scalaz-stream" % "0.7.2a"
   // DATABASES
-  val slick           = "com.typesafe.slick"        %% "slick"                  % "3.0.0"
+  val slick           = "com.typesafe.slick"        %% "slick"                  % "3.0.3"
   val slickpg         = "com.github.tminglei"       %% "slick-pg"               % "0.9.0"
   val slick_migrate   = "io.github.nafg"            %% "slick-migration-api"    % "0.1.1"
   val slickpgcore     = "com.github.tminglei"       %  "slick-pg_core_2.11"     % "0.9.0"

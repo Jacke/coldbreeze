@@ -90,9 +90,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import com.github.tototoshi.slick.JdbcJodaSupport._
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+import models.DAO.conversion.DatabaseFuture._
 
-  val dbConfig = models.DAO.conversion.DatabaseCred.dbConfig//slick.backend.DatabaseConfig.forConfig[slick.driver.JdbcProfile]("postgres")
-  val db = models.DAO.conversion.DatabaseCred.databaseF
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
 
