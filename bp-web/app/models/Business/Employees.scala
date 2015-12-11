@@ -102,7 +102,7 @@ class Employees(tag: Tag) extends Table[EmployeeDTO](tag, "employees") {
   // TODO: CHECK AND FIX BELOW
   //def accFK = foreignKey("acc_fk", uid, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
   def maccFK      = foreignKey("emp_macc_fk", master_acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade, onUpdate = ForeignKeyAction.Cascade)
-  def workBenchFK = foreignKey("emp_workbench_fk", workbench, business_id, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def workBenchFK = foreignKey("emp_workbench_fk", workbench, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
   def eb          = EmployeesBusinessDAO.employees_businesses.filter(_.employee_id === id).flatMap(_.businessFK)
 
   def * = (id.?, uid, master_acc, position, manager, workbench) <> (EmployeeDTO.tupled, EmployeeDTO.unapply)
