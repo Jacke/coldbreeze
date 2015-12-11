@@ -45,6 +45,91 @@ case class SessionContainer(process: BProcessDTO, var sessions: List[SessionStat
 import main.scala.utils.InputParamProc
 
 
+object BPSessionDAOF {
+  import akka.actor.ActorSystem
+  import akka.stream.ActorFlowMaterializer
+  import akka.stream.scaladsl.Source
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  
+  val dbConfig = models.DAO.conversion.DatabaseCred.dbConfig//slick.backend.DatabaseConfig.forConfig[slick.driver.JdbcProfile]("postgres")
+  val db = models.DAO.conversion.DatabaseCred.databaseF // all database interactions are realised through this object
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  val bpsessions = BPSessionDAO.bpsessions
+
+  //private def filterQueryByProcess(process: Int): Query[ProcessHistoriesF, ProcessHistoryDTO, Seq] =
+  //  bpsessions.filter(_.process === process)
+  private def filterQuery(id: Int): Query[BPSessions, BPSession, Seq] =
+    bpsessions.filter(_.id === id)
+
+
+  def findById(id: Int):Future[Option[SessionContainer]] = {
+
+    val sessF:Future[Option[BPSession]] =     
+      try db.run(filterQuery(id).result.headOption)
+      finally println("db.close")//db.close
+    
+
+    sessF.map { sess =>
+    sess match {
+      case Some(ses) => {
+        val stationF = BPStationDAOF.findBySessionF(ses.id.get)        
+        val element_quantityF:Future[Int] = SessionProcElementDAOF.findBySessionLength(ses.id.get) //+ SessionSpaceElemDAO.findFlatBySession(ses.id.get).length
+        val process = BPDAO.get(ses.process).get // HAZARD!!!!!!!!!!
+        val people = SessionPeoples("not@found.com", List()) // placeholder for peoples
+        
+        val station = BPStationDAOF.await(stationF) // HAZARD!!!!!!!!!!
+// HAZARD!!!!!!!!!!
+// HAZARD!!!!!!!!!!
+        val around = AroundProcessElementsBuilder.detectByStation(ses.process,station,Some(process))
+// HAZARD!!!!!!!!!!
+
+        val step:Future[Double] = stationF.map { station =>
+          station match {
+            case Some(station) => station.step.toDouble
+            case _ => await(element_quantityF).toDouble
+          }
+        }
+        val percent = percentDecorator(await(step), await(element_quantityF))
+      Some(SessionContainer(process, 
+        List(SessionStatus(percent, 
+          process, 
+          ses, 
+          station, 
+          Some(around),
+          Some(people))) 
+      ))
+
+        }
+        case _ => None
+      }
+    }
+  }
+
+  private def percentDecorator(step: Double, element_quantity:Int):Int = {
+    if (step == 1 && element_quantity == 1) {
+        0
+    } else {
+      (step / element_quantity.toDouble * 100).toInt  
+    }  
+  }
+
+
+} // Future Impl
+
+
+
+
+
 object BPSessionDAO {
   import scala.util.Try
   import DatabaseCred.database

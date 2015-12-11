@@ -46,19 +46,19 @@ BPStateRef
 UnitSwitcherRef
 */
 case class RefContainer(ref: Ref, 
-unitelement:List[UnitElementRef],
-unitspace:List[UnitSpaceRef],
-unitspaceelement:List[UnitSpaceElementRef],
-topology: List[RefElemTopology],
-bpstate:List[BPStateRef],
-unitswitcher:List[UnitSwitcherRef],
-reactions: List[UnitReactionRef],
-reaction_state_outs: List[UnitReactionStateOutRef],
-reaction_cn: List[ReactionContainer]
+                        unitelement:List[UnitElementRef],
+                        unitspace:List[UnitSpaceRef],
+                        unitspaceelement:List[UnitSpaceElementRef],
+                        topology: List[RefElemTopology],
+                        bpstate:List[BPStateRef],
+                        unitswitcher:List[UnitSwitcherRef],
+                        reactions: List[UnitReactionRef],
+                        reaction_state_outs: List[UnitReactionStateOutRef],
+                        reaction_cn: List[ReactionContainer]
 	)
 
 case class ReactionContainer(reaction: UnitReactionRef,
-reaction_state_outs: List[UnitReactionStateOutRef])
+                             reaction_state_outs: List[UnitReactionStateOutRef])
 
 implicit val RefReads = Json.reads[Ref]
 implicit val RefWrites = Json.format[Ref]

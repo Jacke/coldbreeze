@@ -14,15 +14,6 @@ import com.github.tototoshi.slick.JdbcJodaSupport._
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 
-object ProcHistoryDAOF {
-  import scala.util.Try
-  val dbConfig = models.DAO.conversion.DatabaseCred.dbConfig//slick.backend.DatabaseConfig.forConfig[slick.driver.JdbcProfile]("postgres")
-  val db = models.DAO.conversion.DatabaseCred.databaseF // all database interactions are realised through this object
-  //import dbConfig.driver.api._ //
-  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
-
-
 class ProcessHistoriesF(tag: Tag) extends Table[ProcessHistoryDTO](tag, "process_histories") {
 //Table[(Int,String,String,Option[Int],Option[String],Option[Int], org.joda.time.DateTime)](tag, "process_histories") {
   def id       = column[Int]("id", O.PrimaryKey, O.AutoInc)
@@ -43,6 +34,31 @@ class ProcessHistoriesF(tag: Tag) extends Table[ProcessHistoryDTO](tag, "process
 //<> (ProcessHistoryDTO.tupled, ProcessHistoryDTO.unapply)
 
 }
+
+
+object ProcHistoryDAOF {
+  import scala.util.Try
+import akka.actor.ActorSystem
+import akka.stream.ActorFlowMaterializer
+import akka.stream.scaladsl.Source
+import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+//import slick.driver.JdbcProfile
+import slick.driver.PostgresDriver.api._
+import slick.jdbc.meta.MTable
+import scala.concurrent.ExecutionContext.Implicits.global
+import com.github.tototoshi.slick.JdbcJodaSupport._
+import scala.concurrent.duration.Duration
+import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+import scala.util.Try
+  
+  val dbConfig = models.DAO.conversion.DatabaseCred.dbConfig//slick.backend.DatabaseConfig.forConfig[slick.driver.JdbcProfile]("postgres")
+  val db = models.DAO.conversion.DatabaseCred.databaseF // all database interactions are realised through this object
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+
+
+
 
   val proc_historiesf = TableQuery[ProcessHistoriesF]
 

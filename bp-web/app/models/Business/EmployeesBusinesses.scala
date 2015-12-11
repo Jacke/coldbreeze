@@ -58,6 +58,11 @@ object EmployeesBusinessDAO {
       val q3 = for { s ← employees_businesses if s.employee_id === emp.getOrElse(0) } yield s 
       q3.list.headOption
   }
+  def getByID(id: Int):Option[Tuple2[Int, Int]] = database withSession {
+    implicit session =>
+      val q3 = for { s ← employees_businesses if s.employee_id === id } yield s 
+      q3.list.headOption
+  }  
   def getBusinessByUID(email: String):Option[BusinessDTO] = database withSession {
     implicit session =>
     getByUID(email) match {

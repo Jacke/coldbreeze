@@ -133,30 +133,32 @@ implicit val CostContainerWrites = Json.format[CostContainer]
   * @param  session_id id of launch
   * @return return either SessionInteractionContainer with session, reaction containers, and session states.
   */
-def fetchInteraction(session_id: Int) = SecuredAction { implicit request => 
+def fetchInteraction(session_id: Int) = SecuredAction.async { implicit request => 
   if (security.BRes.sessionSecured(session_id, request.user.main.userId, request.user.businessFirst)) {
 
 
-   val session = models.DAO.BPSessionDAO.findById(id = session_id)
-  
-   session match {
+   val sessionF:Future[Option[SessionContainer]] = models.DAO.BPSessionDAOF.findById(id = session_id)
+   sessionF.map { session => // Future of session
+    session match {
+  	  case Some(session) => {   
+  		
+      val process:BProcessDTO = session.process
+      val unapplied:SessionUnitReactionContainer = SessionReactionDAOF.findUnapplied(process.id.get, session_id)
 
-  	case Some(session) => {   
-  		val process:BProcessDTO = session.process
-  	  val reactions:List[SessionUnitReaction] = SessionReactionDAO.findUnapplied(process.id.get, session_id)
+  	  val reactions:List[SessionUnitReaction] = SessionReactionDAOF.await(unapplied.units).toList
       Logger.debug("Session Reactions")
       Logger.debug(s"reaction length ${reactions.length}")
 
-      val reaction_outs:List[SessionUnitReactionStateOut] = SessionReactionStateOutDAO.findByReactions(reactions.map(_.id.get))
+      val reaction_outs:List[SessionUnitReactionStateOut] = unapplied.state_outs
+      val session_states: List[BPSessionState] = unapplied.session_states
+      Logger.debug("Session state")
+      Logger.debug(s"session_states length ${session_states.length}")
       
       val costs:List[CostContainer] = reactions.map(reaction => findCost(sessionElemTopoId = reaction.element, 
                                                                          launchId=session_id)).flatten
-  	  val session_states: List[BPSessionState] = BPSessionStateDAO.findByOriginIds(reaction_outs.map(_.state_ref))
-
-      Logger.debug("Session state")
-      Logger.debug(s"session_states length ${session_states.length}")
         val reaction_container = reactions.map(reaction => 
-        	SessionReactionContainer(session_state = session_states.find(state => Some(reaction.from_state) == state.origin_state),
+        	SessionReactionContainer(
+                    session_state = session_states.find(state => Some(reaction.from_state) == state.origin_state),
         					  reaction, 
                     reaction_outs.filter(out => Some(out.reaction) == reaction.id),
                     costs)
@@ -166,12 +168,14 @@ def fetchInteraction(session_id: Int) = SecuredAction { implicit request =>
   	}
   	case _ => BadRequest(Json.toJson(Map("error" -> "Session not found")))
   }
-} else { Forbidden(Json.obj("status" -> "Access denied")) }    
+}
+
+} else { Future(Forbidden(Json.obj("status" -> "Access denied"))) }    
 }
 
 
-def fetchAllInteraction() = SecuredAction { implicit request => 
-  val email = request.user.main.email.get
+def fetchAllInteractionF() = Action.async { implicit request => 
+  val email = "iamjacke@gmail.com"
   val business_request:Option[Tuple2[Int, Int]] = models.DAO.resources.EmployeesBusinessDAO.getByUID(email) 
     val business = business_request match {
       case Some(biz) => biz._2
@@ -179,10 +183,18 @@ def fetchAllInteraction() = SecuredAction { implicit request =>
     }
    val sessionsCn = BPSessionDAO.findByBusiness(business)
    val sessions = sessionsCn.map { cn => cn.sessions }.flatten
-   val combinedSessions:List[SessionInteractionContainer] = sessions.map { sessionObj =>
-    val session_id = sessionObj.session.id.get
+   val combinedSessions:List[Future[SessionInteractionContainer]] = sessions.map { sessionObj =>
 
-   val session = models.DAO.BPSessionDAO.findById(id = session_id)
+      Future {
+      println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+      println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+      println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+      println(Thread.currentThread.getName()) 
+      println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+      println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+      println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+      val session_id = sessionObj.session.id.get
+      val session = models.DAO.BPSessionDAO.findById(id = session_id)
   
       val process:BProcessDTO = session.get.process
       val reactions:List[SessionUnitReaction] = SessionReactionDAO.findUnapplied(process.id.get, session_id)
@@ -204,10 +216,57 @@ def fetchAllInteraction() = SecuredAction { implicit request =>
                     costs)
         )
         SessionInteractionContainer(session, reaction_container, session_states)
+      }
         
     }
+    val listOfT = Future.sequence(combinedSessions) 
+    listOfT.map { l =>
+      Ok(Json.toJson(l))
+    }
+}
+def fetchAllInteraction() = Action.async { implicit request => 
+  val email = "iamjacke@gmail.com"
+  val business_request:Option[Tuple2[Int, Int]] = models.DAO.resources.EmployeesBusinessDAO.getByUID(email) 
+    val business = business_request match {
+      case Some(biz) => biz._2
+      case _ => -1
+    }
+   val sessionsCn = BPSessionDAO.findByBusiness(business)
+   val sessions = sessionsCn.map { cn => cn.sessions }.flatten
+   val combinedSessions:List[SessionInteractionContainer] = sessions.map { sessionObj =>
 
-Ok(Json.toJson(combinedSessions))
+      println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+      println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+      println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+      println(Thread.currentThread.getName()) 
+      println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+      println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+      println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+      val session_id = sessionObj.session.id.get
+      val session = models.DAO.BPSessionDAO.findById(id = session_id)
+  
+      val process:BProcessDTO = session.get.process
+      val reactions:List[SessionUnitReaction] = SessionReactionDAO.findUnapplied(process.id.get, session_id)
+      Logger.debug("Session Reactions")
+      Logger.debug(s"reaction length ${reactions.length}")
+
+      val reaction_outs:List[SessionUnitReactionStateOut] = SessionReactionStateOutDAO.findByReactions(reactions.map(_.id.get))
+      
+      val costs:List[CostContainer] = reactions.map(reaction => findCost(sessionElemTopoId = reaction.element, 
+                                                                         launchId=session_id)).flatten
+      val session_states: List[BPSessionState] = BPSessionStateDAO.findByOriginIds(reaction_outs.map(_.state_ref))
+
+      Logger.debug("Session state")
+      Logger.debug(s"session_states length ${session_states.length}")
+        val reaction_container = reactions.map(reaction => 
+          SessionReactionContainer(session_state = session_states.find(state => Some(reaction.from_state) == state.origin_state),
+                    reaction, 
+                    reaction_outs.filter(out => Some(out.reaction) == reaction.id),
+                    costs)
+        )
+        SessionInteractionContainer(session, reaction_container, session_states)
+      }
+      Future(Ok(Json.toJson(combinedSessions)))
 }
    
  
