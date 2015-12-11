@@ -1,7 +1,7 @@
 package models
 import models.DAO.resources.{EmployeesBusinessDAO, AccountPlanDAO}
 import models.DAO.resources.BusinessDTO._
-import models.DAO.conversion.DatabaseCred
+//import models.DAO.conversion.DatabaseCred
 import securesocial.core.providers._
 import securesocial.core._
 import securesocial.core.services.{UserService, SaveMode}
@@ -44,21 +44,28 @@ import models.DAO.conversion.DatabaseFuture._
     account_infos
 
   def getByInfoById(id: Int):Future[Seq[AccountInfo]] = { 
-    try db.run(filterQuery(id).result)
-    finally println("db.close")//db.close
+    db.run(filterQuery(id).result)
+    
   }
-  def getByInfoByUID(uid: String):Future[AccountInfo] = { 
-    try db.run(filterQueryByUID(uid).result.head)
-    finally println("db.close")//db.close
+  def getByInfoByUID(uid: String):Future[Option[AccountInfo]] = { 
+    db.run(filterQueryByUID(uid).result.headOption)
+    
   }
-
+// models.AccountInfosDAOF.updateCurrentWorkbenchForAllEmployees
+// models.AccountInfosDAOF.getByInfoByUID
   def updateCurrentWorkbenchForAllEmployees() = {
     val emps:Future[Seq[EmployeeDTO]] = EmployeeDAOF.getAll()
     emps.map { empSeq =>
-      empSeq.map { emp =>
-      val infoF = getByInfoByUID(emp.uid)
-      infoF.map { info =>
-          updateF(info.id.get, info.copy(currentWorkbench = Some(emp.workbench)))
+      println(empSeq.length)
+      empSeq.foreach { emp =>
+      println(emp.master_acc)
+      
+      getByInfoByUID(emp.master_acc).map { infoF =>
+        infoF.map { info =>
+        println(info)
+        updateF(info.id.get, info.copy(currentWorkbench = Some(emp.workbench)))          
+          
+        }
         }
       }
     }
@@ -70,15 +77,16 @@ import models.DAO.conversion.DatabaseFuture._
       empReal.map { emp =>
       val infoF = getByInfoByUID(emp.uid)
       infoF.map { info =>
-          updateF(info.id.get, info.copy(currentWorkbench = Some(workbench)))
+            info match {
+                case Some(info) => updateF(info.id.get, info.copy(currentWorkbench = Some(workbench)))
+            }
         }
       }
     }
   }
 
   def updateF(id: Int, info: AccountInfo): Future[Int] =
-    try db.run(filterQuery(id).update(info))
-    finally println(db.close)
+    db.run(filterQuery(id).update(info))
 
 
   def makeCurrentBusiness() = {
@@ -89,7 +97,8 @@ import models.DAO.conversion.DatabaseFuture._
 object AccountsDAO {
   import scala.util.Try
   import slick.driver.PostgresDriver.simple._
-  import DatabaseCred.database
+  import models.DAO.conversion.DatabaseCred._
+
 
   val accounts = TableQuery[Accounts]
   val account_infos = TableQuery[AccountInfos]
