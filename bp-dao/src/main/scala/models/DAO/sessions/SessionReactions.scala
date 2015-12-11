@@ -89,7 +89,7 @@ object SessionReactionDAOF {
      finally println("db.close")//db.close
   }
 
-  def findUnapplied(id: Int, session_id: Int):Future[SessionUnitReactionContainer] = {
+  def findUnapplied(id: Int, session_id: Int):SessionUnitReactionContainer = {
        val session_states = BPSessionStateDAO.findByBPAndSession(id, session_id)
        val session_reactionsF:Future[Seq[SessionUnitReaction]] = findBySession(session_id)
 
@@ -112,7 +112,7 @@ object SessionReactionDAOF {
           }
          }
        }
-       Future( SessionUnitReactionContainer(unapplied_reactions, state_outs, session_states) )            
+        SessionUnitReactionContainer(unapplied_reactions, state_outs, session_states)          
     } 
 }
 

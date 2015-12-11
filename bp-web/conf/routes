@@ -421,5 +421,11 @@ POST        /ea/subscribe                                       @controllers.App
 GET         /:profile_id										@controllers.ProfileController.profile(profile_id: String)
 
 
+
+# Slack
+
+GET         /slack/auth                                         @controllers.SlackController.auth(code: Option[String])
+GET         /slack/users                                        @controllers.SlackController.getUsers()
+
 #GET     /ui         com.github.mmizutani.playgulp.Gulp.index
 #->      /ui/        gulp.Routes

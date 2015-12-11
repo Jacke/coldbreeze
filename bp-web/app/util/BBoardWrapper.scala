@@ -21,11 +21,60 @@ import scala.util.Try
 import models.DAO._
 import models._
 import models.DAO.resources._
+import akka.actor._
+import akka.actor._
+import akka.pattern.ask
+import akka.util.Timeout
 
 case class BBoardWrapperConnection(host: String = "localhost", port: String = "9001")
 case class BoardContainer(boards: List[Board], entities:List[Entity], slats:List[Slat])
 case class ResourceEntitySelector(resource: ResourceDTO, entities: List[Entity])
 case class SlatSelector(entities_ids: List[String])
+
+
+case object PingMessage
+case class PongMessage(state:Boolean)
+case object StartMessage
+case object StopMessage
+case object StateMessage
+
+class BBoardPing(pong: ActorRef) extends Actor {
+  var count = 0
+  var state = false
+  def incrementAndPrint { count += 1; println("ping") }
+  def receive = {
+    case StartMessage =>
+        //incrementAndPrint
+        pong ! PingMessage
+    case x:PongMessage => 
+        //incrementAndPrint
+        //if (count > 99) {
+        //  sender ! StopMessage
+       // //  println("ping stopped")
+       //   context.stop(self)
+       // } else {
+          state = x.state
+          sender ! PingMessage
+        //}
+    case StateMessage => sender ! state
+  }
+}
+ 
+class BBoardPong(connection: BBoardWrapperConnection) extends Actor {
+  def receive = {
+    case PingMessage =>
+        println("  pong")
+        sender ! Await.result(ping(), Duration(10000, MILLISECONDS))
+    case StopMessage =>
+        println("pong stopped")
+        context.stop(self)
+  }
+  def ping():Future[PongMessage] = {
+    Try(WS.url(s"http://${connection.host}:${connection.port}/api/v1/ping").get().map(response =>
+        PongMessage(response.body == "{'status': 'ok'}") ).recover{   case _ => PongMessage(false) })
+        .getOrElse(Future.successful(PongMessage(false)))
+  }
+}
 
 
 class BBoardWrapper(connection: BBoardWrapperConnection) {
@@ -53,6 +102,21 @@ class BBoardWrapper(connection: BBoardWrapperConnection) {
     Try(WS.url(s"http://${connection.host}:${connection.port}/api/v1/ping").get().map(response =>
         response.body == "{'status': 'ok'}").recover{ 	case _ => false })
         .getOrElse(Future.successful(false))
+  }
+  val system = ActorSystem("PingPongSystem")
+  val pongg = system.actorOf(Props(new BBoardPong(connection)), name = "pongg")
+  val pingg = system.actorOf(Props(new BBoardPing(pongg)), name = "pingg")
+
+implicit val timeout = Timeout(5 seconds)
+
+  // start them going
+  //pingg ! StartMessage  
+  def newPing():Boolean = {
+
+      pingg ! StartMessage  
+      pingg ! StateMessage
+      val future2: Future[Boolean] = ask(pingg, StateMessage).mapTo[Boolean]
+      Await.result(future2, 1 second)      
   }
   def fetchCSRF():String = {  	
     val holder = Try(WS.url(s"http://${connection.host}:${connection.port}/signIn").withHeaders("PLAY_SESSION" -> 

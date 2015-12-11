@@ -105,7 +105,7 @@ object BPSessionDAOF {
           process, 
           ses, 
           station, 
-          None,//Some(around),
+          Some(around),
           Some(people))) 
       ))
 

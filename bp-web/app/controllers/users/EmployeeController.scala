@@ -55,7 +55,8 @@ class EmployeeController(override implicit val env: RuntimeEnvironment[DemoUser]
       "uid" -> nonEmptyText,
       "master_acc" -> nonEmptyText,
       "position" -> optional(text),
-      "manager" -> boolean)(EmployeeDTO.apply)(EmployeeDTO.unapply))
+      "manager" -> boolean,
+      "workbench_id" -> number)(EmployeeDTO.apply)(EmployeeDTO.unapply))
 
  def index() = SecuredAction { implicit request =>
       val user = request.user

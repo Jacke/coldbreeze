@@ -143,14 +143,14 @@ def fetchInteraction(session_id: Int) = SecuredAction.async { implicit request =
   	  case Some(session) => {   
   		
       val process:BProcessDTO = session.process
-      val unapplied:Future[SessionUnitReactionContainer] = SessionReactionDAOF.findUnapplied(process.id.get, session_id)
+      val unapplied:SessionUnitReactionContainer = SessionReactionDAOF.findUnapplied(process.id.get, session_id)
 
-  	  val reactions:List[SessionUnitReaction] = SessionReactionDAOF.await(SessionReactionDAOF.await(unapplied).units).toList
+  	  val reactions:List[SessionUnitReaction] = SessionReactionDAOF.await(unapplied.units).toList
       Logger.debug("Session Reactions")
       Logger.debug(s"reaction length ${reactions.length}")
 
-      val reaction_outs:List[SessionUnitReactionStateOut] = SessionReactionDAOF.await(unapplied).state_outs
-      val session_states: List[BPSessionState] = SessionReactionDAOF.await(unapplied).session_states
+      val reaction_outs:List[SessionUnitReactionStateOut] = unapplied.state_outs
+      val session_states: List[BPSessionState] = unapplied.session_states
       Logger.debug("Session state")
       Logger.debug(s"session_states length ${session_states.length}")
       

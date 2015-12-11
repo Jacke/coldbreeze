@@ -24,8 +24,21 @@ case class AccountInfos(tag: Tag) extends Table[AccountInfo](tag, "account_infos
   def created_at = column[org.joda.time.DateTime]("created_at")
   def ea = column[Boolean]("early_access", O.Default(false))
   def pro = column[Boolean]("pro_features", O.Default(false))
+  def currentWorkbench = column[Option[Int]]("workbench_id")
 
-  def * = (id.?, uid, created_at, ea, pro) <> (AccountInfo.tupled, AccountInfo.unapply)
+
+  def businessFK = foreignKey("acc_info_current_biz_business_fk", currentWorkbench, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def * = (id.?, uid, created_at, ea, pro, currentWorkbench) <> (AccountInfo.tupled, AccountInfo.unapply)
   def accInfoFK  = foreignKey("accInfo_fk", uid, AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
 
  }
+
+ 
+
+
+ case class AccountInfo(id: Option[Int], 
+ 						uid: String, 
+                        created_at: org.joda.time.DateTime = org.joda.time.DateTime.now(), 
+                        ea: Boolean = false, 
+                        pro: Boolean = false,
+                        currentWorkbench: Option[Int]=None)

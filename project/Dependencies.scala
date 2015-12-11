@@ -79,7 +79,8 @@ object Dependencies {
   val fluentleniumasj = "org.fluentlenium"          % "fluentlenium-assertj"    % "0.10.3" //% "test" 
   
   val play            = "com.typesafe.play"         % "play_2.11"               % "2.3.9"
-  val play4           = "org.webjars"               %% "webjars-play"           % "2.4.0"
+  val play4           = "org.webjars"               %% "webjars-play"           % "2.4.2"
+  val slackapi        = "com.github.gilbertw1"      %% "slack-scala-client"     % "0.1.3"
   val playslick       = "com.typesafe.play"         %  "play-slick_2.11"        % "0.8.0"
   val playauth        = "jp.t2v"                    %% "play2-auth"             % "0.12.0"
   val formtag         = "com.loicdescotte.coffeebean"% "html5tags_2.11"         % "1.2.1"
@@ -97,7 +98,9 @@ object Dependencies {
   val bootstrap       = "org.webjars"               %  "bootstrap"              % "3.1.1-1"   exclude("org.webjars", "jquery")
   val angulartoastr   = "org.webjars"               %  "angular-toastr"          % "1.3.0"
 
-  val securesocial    = "ws.securesocial"           %% "securesocial"           % "3.0-M3"
+  val securesocial    = "ws.securesocial"           %% "securesocial"           % "3.0-M4"
+  val securesocialold = "ws.securesocial"           %% "securesocial"           % "3.0-M3"
+
   val deadbolt        = "be.objectify"              %% "deadbolt-scala"         % "2.3.3"
   val securesocialmas = "ws.securesocial"           %% "securesocial"           % "master-SNAPSHOT"
   val jwtCore         = "com.atlassian.jwt"         % "jwt-core"                % "1.2.4"
