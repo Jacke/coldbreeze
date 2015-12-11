@@ -8,11 +8,15 @@ import models.DAO.BProcessDTO
 /**
  * Database Config
  */
+object DatabaseFuture {
+  val dbConfig = DatabaseCred.dbConfig
+  val db =  DatabaseCred.databaseF
+}
 
 object DatabaseCred {
   import slick.driver.PostgresDriver.simple._
-  def dbConfig = slick.backend.DatabaseConfig.forConfig[slick.driver.JdbcProfile]("minoritydbF")//[slick.driver.PostgresDriver]("minoritydb") 
-  def databaseF = dbConfig.db
+  val dbConfig = slick.backend.DatabaseConfig.forConfig[slick.driver.JdbcProfile]("minoritydbF")//[slick.driver.PostgresDriver]("minoritydb") 
+  val databaseF = dbConfig.db
   var database = Database.forConfig("minoritydb")
 
   /*Database.forURL("jdbc:postgresql://localhost/minority_bug", 

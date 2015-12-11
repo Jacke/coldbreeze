@@ -68,10 +68,8 @@ object SessionReactionDAOF {
   import com.github.tototoshi.slick.JdbcJodaSupport._
   import scala.concurrent.duration.Duration
   import scala.util.Try
-  
-  val dbConfig = models.DAO.conversion.DatabaseCred.dbConfig//slick.backend.DatabaseConfig.forConfig[slick.driver.JdbcProfile]("postgres")
-  val db = models.DAO.conversion.DatabaseCred.databaseF // all database interactions are realised through this object
-  //import dbConfig.driver.api._ //
+  import models.DAO.conversion.DatabaseFuture._
+    //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
   val session_reactions = SessionReactionDAO.session_reactions
@@ -294,9 +292,8 @@ object SessionReactionStateOutDAOF {
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  
-  val dbConfig = models.DAO.conversion.DatabaseCred.dbConfig//slick.backend.DatabaseConfig.forConfig[slick.driver.JdbcProfile]("postgres")
-  val db = models.DAO.conversion.DatabaseCred.databaseF // all database interactions are realised through this object
+  import models.DAO.conversion.DatabaseFuture._
+
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
