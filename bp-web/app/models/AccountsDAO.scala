@@ -60,7 +60,7 @@ import models.DAO.conversion.DatabaseFuture._
       empSeq.foreach { emp =>
       println(emp.master_acc)
       
-      getByInfoByUID(emp.master_acc).map { infoF =>
+      getByInfoByUID(emp.uid).map { infoF =>
         infoF.map { info =>
         println(info)
         updateF(info.id.get, info.copy(currentWorkbench = Some(emp.workbench)))          
