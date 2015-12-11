@@ -30,11 +30,7 @@ case class AccountInfos(tag: Tag) extends Table[AccountInfo](tag, "account_infos
   def businessFK = foreignKey("acc_info_current_biz_business_fk", currentWorkbench, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
   def * = (id.?, uid, created_at, ea, pro, currentWorkbench) <> (AccountInfo.tupled, AccountInfo.unapply)
   def accInfoFK  = foreignKey("accInfo_fk", uid, AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
-
  }
-
- 
-
 
  case class AccountInfo(id: Option[Int], 
  						uid: String, 
