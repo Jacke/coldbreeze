@@ -14,9 +14,10 @@ import com.github.tototoshi.slick.JdbcJodaSupport._
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 import scala.util.Try
-  
-  val dbConfig = models.DAO.conversion.DatabaseCred.dbConfig//slick.backend.DatabaseConfig.forConfig[slick.driver.JdbcProfile]("postgres")
-  val db = models.DAO.conversion.DatabaseCred.databaseF // all database interactions are realised through this object
+import models.DAO.conversion.DatabaseFuture._
+
+//  val dbConfig = models.DAO.conversion.DatabaseCred.dbConfig//slick.backend.DatabaseConfig.forConfig[slick.driver.JdbcProfile]("postgres")
+//  val db = models.DAO.conversion.DatabaseCred.databaseF // all database interactions are realised through this object
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
@@ -56,16 +57,27 @@ import models.DAO.conversion.DatabaseFuture._
 
   private def filterQuery(id: Int): Query[Employees, EmployeeDTO, Seq] =
     employees.filter(_.id === id)
-  private def getAll(): Query[Employees, EmployeeDTO, Seq] =
+  private def filterByEmail(email:String): Query[Employees, EmployeeDTO, Seq] = 
+    employees.filter(_.uid === email)
+  private def All(): Query[Employees, EmployeeDTO, Seq] =
     employees
 
   def getByEmpById(id: Int):Future[Seq[EmployeeDTO]] = { 
     try db.run(filterQuery(id).result)
     finally println("db.close")//db.close
   }
+  def getByEmpByUID(uid: String):Future[Option[EmployeeDTO]] = { 
+    try db.run(filterByEmail(uid).result.headOption)
+    finally println("db.close")//db.close
+  }
+
+  def getAll():Future[Seq[EmployeeDTO]] = { 
+    try db.run(All().result)
+    finally println("db.close")//db.close
+  }
 
   def updateBusinessForAllEmployees() = {
-    val emps:Future[Seq[EmployeeDTO]] = db.run(getAll().result)
+    val emps:Future[Seq[EmployeeDTO]] = db.run(All().result)
     emps.map { empSeq =>
       empSeq.map { emp =>
       val empbiz = EmployeesBusinessDAOF.findById(emp.id.get)
