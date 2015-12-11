@@ -82,7 +82,7 @@ class SettingController(override implicit val env: RuntimeEnvironment[DemoUser])
  	
   val plans = List()
  	val cred = models.AccountsDAO.fetchCredentials(request.user.main.email.get)
-  val biz0 = fetchBiz(request.user.main.userId)
+  val biz0 = fetchBiz(request.user.main.userId).get
   val biz = BizFormDTO(biz0.title, biz0.phone, biz0.website, biz0.country, biz0.city, biz0.address, biz0.nickname)
   var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
 
@@ -111,7 +111,7 @@ class SettingController(override implicit val env: RuntimeEnvironment[DemoUser])
 
  def update_biz_credentials() = SecuredAction { implicit request =>
   
-  val founded_biz = fetchBiz(request.user.main.userId)
+  val founded_biz = fetchBiz(request.user.main.userId).get
   val biz = BizFormDTO(founded_biz.title, founded_biz.phone, founded_biz.website, founded_biz.country, founded_biz.city, founded_biz.address)
     bizForm.bindFromRequest.fold(
         formWithErrors => Redirect(routes.SettingController.index),//BadRequest(views.html.settings.index(credForm.fill(cred), request.user)),
@@ -131,8 +131,11 @@ class SettingController(override implicit val env: RuntimeEnvironment[DemoUser])
  }
 
 
-private def fetchBiz(email: String) = {
-  BusinessDAO.get(EmployeesBusinessDAO.getByUID(email).get._2).get
+private def fetchBiz(email: String):Option[BusinessDTO] = {
+  AccountInfosDAOF.await(AccountInfosDAOF.getByInfoByUID(email)) match {
+    case Some(info) => BusinessDAO.get(info.currentWorkbench.getOrElse(-1))
+    case _ => None
+  }
 }
 
 
