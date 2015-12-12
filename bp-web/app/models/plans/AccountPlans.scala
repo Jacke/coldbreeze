@@ -18,7 +18,7 @@ class AccountPlans(tag: Tag) extends Table[AccountPlanDTO](tag, "account_plans")
 
   def planFK      = foreignKey("acc_plan_plan_fk", plan, models.DAO.resources.PlanDAO.plans)(_.id, onDelete = ForeignKeyAction.Cascade)
   def accFK       = foreignKey("acc_plan_macc_fk", master_acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
-  def business    = foreignKey("acc_plan_buss_fk", business_id, models.DAO.resources.BusinessDAO.businesses)(_.id)
+  def business    = foreignKey("acc_plan_buss_fk", business_id, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def planJoin    = models.DAO.resources.PlanDAO.plans.filter(_.id === plan)
 
@@ -71,9 +71,14 @@ object AccountPlanDAO {
       val q3 = for { s ← account_plans if s.id === k } yield s 
       assignPlan(q3.list.headOption)
   }
+  def getByWorkbenchAcc(workbench_id: Int):Option[AccountPlanDTO] = database withSession {
+    implicit session =>
+    val q3 = for { pl <- account_plans if pl.business_id === workbench_id } yield pl 
+      q3.list.headOption
+  }  
   def getByMasterAcc(email: String):Option[AccountPlanDTO] = database withSession {
-  	implicit session =>
-  	val q3 = for { s ← account_plans if s.master_acc === email } yield s 
+    implicit session =>
+    val q3 = for { s ← account_plans if s.master_acc === email } yield s 
       assignPlan(q3.list.headOption)
   }
   def getPlanByMasterAcc(email: String):Tuple2[DateTime, PlanDTO] = { database withSession {

@@ -21,7 +21,7 @@ object NewUserRoutine {
         if (isEmpty && !isArleadyDefined) {
       		val emp_id = EmployeeDAO.pull_object(EmployeeDTO(None, email, email, None, true))
           val biz_id = BusinessDAO.pull_object(BusinessDTO(None, "Your Company", country = "", city = "", 
-                                       address = None, walkthrough = true))
+                                       address = None, walkthrough = true, organization = true))
            defaultService(email, biz_id, isMaster)
           EmployeesBusinessDAO.pull(emp_id, biz_id)
           /**

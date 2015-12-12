@@ -22,6 +22,19 @@ body.themeGrad {
   background-color: rgb(147, 132, 255);
   height: 100%;
 }
+
+.noWorkbench nav.minMenu.menuCell.menuEntity {-webkit-filter: blur(2px) contrast(2.9) saturate(10);cursor: none;}
+.noWorkbench .minorityLogo.menuCell {-webkit-filter: contrast(5.9) hue-rotate(90deg) saturate(40) saturate(2.9);}
+.noWorkbench .menuCell.menuHelp.switcherWrap {-webkit-filter: blur(2px) contrast(2.9) saturate(10);   cursor: none;
+    pointer-events: none;
+    cursor: default;}
+.noWorkbench nav.minMenu.menuCell.menuEntity * {
+    cursor: none;
+    pointer-events: none;
+    cursor: default;
+}
+
+
 body.themeGrad div#container.container-global {
   background: rgba(255, 255, 255, 0.93);
   min-height: 100%;

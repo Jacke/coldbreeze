@@ -71,16 +71,20 @@ import models.DAO.conversion.DatabaseFuture._
     }
   }
 
-  def updateCurrentWorkbench(uid: String, workbench: Int) = {
+  def updateCurrentWorkbench(uid: String, workbench: Option[Int]):Future[Int] = {
     val empOpt:Future[Option[EmployeeDTO]] = EmployeeDAOF.getByEmpByUID(uid)
-    empOpt.map { empReal =>
-      empReal.map { emp =>
+    empOpt.flatMap { empReal =>
+      empReal match { 
+      case Some(emp) => {   
       val infoF = getByInfoByUID(emp.uid)
-      infoF.map { info =>
-            info match {
-                case Some(info) => updateF(info.id.get, info.copy(currentWorkbench = Some(workbench)))
+      val no:Int = -1
+      infoF.flatMap { infoOpt =>
+            infoOpt.map { info =>
+                  updateF(info.id.get, info.copy(currentWorkbench = workbench))
+                } getOrElse Future.successful(no)
             }
-        }
+      } 
+      case _ => Future(-1)
       }
     }
   }

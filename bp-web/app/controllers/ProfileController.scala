@@ -54,11 +54,15 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
   }
 
   def dashboardScreen = SecuredAction { implicit request =>
-
+      val business = request.user.businessFirst
+      if (business < 1) {
+        Redirect(controllers.routes.SettingController.workbench())
+      } else {
       // TODO: service.getByBusiness that manager participated
-      val services = BusinessServiceDAO.getByMaster(request.user.masterFirst)
-      val businesses = BusinessDAO.getAll
-      
+      val services = BusinessServiceDAO.getAllByBusiness(request.user.businessFirst)
+      val businesses = List(BusinessDAO.get(business).get)
+      val primaryBusiness:BusinessDTO = businesses.head
+
       val email = request.user.main.email.get
 
       var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(email).get
@@ -72,31 +76,27 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
         Home                                                // redirect to dashboard
       } else {
         val plan = planFetch(email, isManager)
-        val managerParams = makeManagerParams(email, isManager)
+        val managerParams = makeManagerParams(email, isManager, primaryBusiness)
         val walkthrought:Boolean = managerParams match {
             case  Some(param) => param.business.walkthrough
             case _ => false
-        }
-        val business_request:Option[Tuple2[Int, Int]] = models.DAO.resources.EmployeesBusinessDAO.getByUID(email) 
-        val business = business_request match {
-          case Some(biz) => biz._2
-          case _ => -1
-        }       
+        }   
         val sessions:List[SessionContainer] = BPSessionDAO.findListedByBusiness(business)//BPSessionDAO.findByBusiness(business_id).map(ses => SessionDecorator(ses._1, ses._2)).toList
         val currentReactions:List[CurrentSessionReactionContainer] = sessions.map(cn => cn.sessions.map(session_status => 
             SessionReactionDAO.findCurrentUnappliedContainer(cn.process.id.get, session_status.session.id.get)).flatten
           ).flatten
-        val dashboardTopBar: DashboardTopBar = countDashboardTopBar(email)
+        val dashboardTopBar: DashboardTopBar = countDashboardTopBar(email, business)
 
         Ok(views.html.profiles.dashboard(request.user, 
           managerParams, 
-          makeEmployeeParams(email, isEmployee), 
+          makeEmployeeParams(email, isEmployee, primaryBusiness), 
           plan, 
           walkthrought, 
           sessions,
           dashboardTopBar, currentReactions ) (
             Page(services, 1, 1, services.length), 1, "%", businesses))
       }
+    }
   }
 
 
@@ -138,15 +138,21 @@ private def profilePerms(uid: String) = {
 private def dashActs(uid: String) = {
   ActPermissionDAO.getByUID(uid)
 }
-private def countDashboardTopBar(uid: String): DashboardTopBar = {
+private def countDashboardTopBar(uid: String, business: Int = -1): DashboardTopBar = {
 
 
 // find businesses
- EmployeesBusinessDAO.getByUID(uid) match {
-  case Some(embiz) => { 
-   val biz_id = embiz._2
+ business match {
+  case -1 => {
+      DashboardTopBar(
+                       newSession = 0,
+                       interaction = 0, 
+                       completedSession = 0, 
+                       process = 0)
+  }
+  case _ => { 
     // find processes for each businesses
-    val processes = BPDAO.findByBusiness(biz_id)
+    val processes = BPDAO.findByBusiness(business)
     // find stations for processes
     val stations = BPStationDAO.findByBPIds(processes.map(_.id.get))
     // find completed stations
@@ -161,30 +167,19 @@ private def countDashboardTopBar(uid: String): DashboardTopBar = {
                        completedSession = competed.length, 
                        process = processes.length)
   }
-  case _ => {
-      DashboardTopBar(
-                       newSession = 0,
-                       interaction = 0, 
-                       completedSession = 0, 
-                       process = 0)
-  }
 }
 
 }
 
-private def makeManagerParams(email: String, isManager: Boolean): Option[managerParams] = {
+private def makeManagerParams(email: String, isManager: Boolean, business: BusinessDTO): Option[managerParams] = {
   isManager match {
     case true => {
-      EmployeesBusinessDAO.getBusinessByUID(email) match {
-        case Some(business) => Some(managerParams(business))
-        case _ => None
-      }
-      
+      Some(managerParams(business))      
     }
     case _ => None
   }
 }
-private def makeEmployeeParams(email: String, isEmployee: Boolean): Option[employeeParams] = {
+private def makeEmployeeParams(email: String, isEmployee: Boolean, business: BusinessDTO): Option[employeeParams] = {
     if (isEmployee) {
         val bps_ids = ActPermissionDAO.getByUIDprocIDS(email)
         val bps = BPDAO.getAll.filter(bp => bps_ids.contains(bp.id.get))

@@ -1,0 +1,123 @@
+@import service.DemoUser
+@import controllers.employeeParams
+@import models.DAO.resources.ActPermission
+@import models.DAO.resources.BusinessServiceDTO
+@import models.DAO.resources.BusinessDTO
+@import service.DemoUser
+
+@import helper._
+@(bizForm: Option[Form[models.DAO.resources.web.BizFormDTO]], user:DemoUser, isManager: Boolean = false, workbench:Option[BusinessDTO]=None, workbenches: Seq[BusinessDTO]=Seq())(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment[service.DemoUser])
+
+@import securesocial.core.IdentityProvider
+
+@import securesocial.core.IdentityProvider
+@import securesocial.core.providers.UsernamePasswordProvider
+@import securesocial.core.AuthenticationMethod._
+@import play.api.{Logger, Play}
+@import helper._
+@import play.api.Play
+@import models.DAO.resources.BusinessServiceDTO
+@import models.DAO.resources.BusinessDTO
+@import helper._
+
+
+@main(Messages("page.settings")(LangDet.getLang(user) ), user) {
+<style>
+.nav-sidebar {
+  margin-right: 10px;
+  margin-bottom: 20px;
+  margin-left: -20px;
+}
+.nav-sidebar > li > a {
+  padding-right: 20px;
+  padding-left: 20px;
+}
+.nav-sidebar > .active > a,
+.nav-sidebar > .active > a:hover,
+.nav-sidebar > .active > a:focus {
+  color: #fff;
+  background-color: #428bca;
+}
+</style>
+
+<div class="tableMinListWrap settings-page"><div class="panelLike organisationsGridLike">
+
+<div class="teamSettings">
+<div class="grids">
+  <div class="page-header">
+      <h2><img src="@user.main.avatarUrl.getOrElse("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iRWJlbmVfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSIxNnB4IiBoZWlnaHQ9IjE2cHgiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTYgMTYiIHhtbDpzcGFjZT0icHJlc2VydmUiPjx0aXRsZT5EZWZhdWx0IEF2YXRhcjwvdGl0bGU+PGRlc2M+RGVmYXVsdCBBdmF0YXIgZm9yIFdDRiAyLjA8L2Rlc2M+IDxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbLnN1cmZhY2UgeyBmaWxsOiAjZmZmOyB9LnNoYWRvdyB7IGZpbGw6ICNiYmI7IH1dXT48L3N0eWxlPjwvZGVmcz48cmVjdCB4PSIwIiBjbGFzcz0ic2hhZG93IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiLz48cGF0aCBjbGFzcz0ic3VyZmFjZSIgZD0iTTMuNTI4LDE2QzMuNzc2LDExLjQ5OSw1LjY4NCw4LDgsOHM0LjIyNCwzLjQ5OSw0LjQ3Myw3Ljk5OCIvPjxjaXJjbGUgY2xhc3M9InN1cmZhY2UiIGN4PSI4IiBjeT0iNiIgcj0iMy41Ii8+PC9zdmc+")" alt="@user.main.firstName.getOrElse("")" width="40px" height="40px"/> @Messages("profile.welcome")(LangDet.getLang(user) ) @user.main.firstName.getOrElse("")</h2>
+  </div>
+<!--  
+<div class="deleteInfo">
+    <h3>@Messages("page.deleteInfo")</h3>
+</div>
+-->
+
+<div class="tabpanel">
+
+<div class="col-sm-3 col-md-2 sidebar">
+    <ul class="nav nav-sidebar">
+        <li class="active"><a href="/settings">All Settings</a></li>
+    </ul>
+</div>
+
+
+<div class="container setting-container">
+
+
+@if(isManager) {
+<div id="business">
+<div class="workbench-settings">
+    @workbench.map { bench =>
+		<h4>Current workbench: @bench.title</h4>
+		<a href="@routes.SettingController.resetBench(-1)">Reset bench</a>
+    }
+    @workbenches.map { aval_bench =>
+			<h4>Current workbench: @aval_bench.title</h4>
+		<a href="@routes.SettingController.resetBench(aval_bench.id.get)">Switch bench</a>
+    }
+</div>
+
+@if(bizForm.isDefined) {
+@form(routes.SettingController.update_biz_credentials()) {
+<fieldset>
+   @inputText(bizForm.get("title"), '_label -> Messages("settings.businessName")(LangDet.getLang(user) ), 'class -> "form-control")   
+   @inputText(bizForm.get("nickname"), '_label -> Messages("settings.companyName")(LangDet.getLang(user) ), 'class -> "form-control")   
+   @inputText(bizForm.get("phone"), '_label -> Messages("settings.phone")(LangDet.getLang(user) ), 'class -> "form-control")   
+   @inputText(bizForm.get("website"), '_label -> Messages("settings.website")(LangDet.getLang(user) ), 'class -> "form-control")  
+   @inputText(bizForm.get("country"), '_label -> Messages("settings.country")(LangDet.getLang(user) ), 'class -> "form-control")  
+   @inputText(bizForm.get("city"), '_label -> Messages("settings.city")(LangDet.getLang(user) ), 'class -> "form-control")  
+   @inputText(bizForm.get("address"), '_label -> Messages("settings.address")(LangDet.getLang(user) ), 'class -> "form-control")  
+</fieldset>
+<div class="actions">
+<input type="submit" value="Update" class="btn btn-primary">
+</div> 
+}
+}
+
+</div>
+}
+
+
+
+</div>
+</div>
+
+
+
+<!--
+    <span>Link this account to
+    env.providers.values.map { provider =>
+        if( provider.authMethod == OAuth1 || provider.authMethod == OAuth2 ) {
+            defining( "images/providers/%s.png".format(provider.id) ) { imageUrl =>
+            <a href="env.routes.authenticationUrl(provider.id, Some("/link-result"))"> <img src="securesocial.controllers.routes.Assets.at(imageUrl)"/></a>
+            }
+        }
+    }
+    </span>-->
+</div> 
+</div>
+</div>
+</div>
+</div>
+}

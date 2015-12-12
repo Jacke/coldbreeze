@@ -18,13 +18,14 @@ class Businesses(tag: Tag) extends Table[BusinessDTO](tag, "businesses") {
   def nickname= column[Option[String]]("nickname", O.Default(None))
 
   def walkthrough = column[Boolean]("walkthrough")
+  def organization         = column[Boolean]("org", O.Default(false))
     
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
 
 
   def * = (id.?, title, phone, website, country, city, address, nickname, walkthrough,
-           created_at, updated_at) <> (BusinessDTO.tupled, BusinessDTO.unapply)
+           created_at, updated_at, organization) <> (BusinessDTO.tupled, BusinessDTO.unapply)
 
 }
 
@@ -41,7 +42,8 @@ case class BusinessDTO(var id: Option[Int],
   nickname: Option[String] = None,
   walkthrough: Boolean = false,
   created_at:Option[org.joda.time.DateTime] = None,
-  updated_at:Option[org.joda.time.DateTime] = None)
+  updated_at:Option[org.joda.time.DateTime] = None,
+  organization: Boolean = false)
 
 object BusinessDAO {
   import scala.util.Try
@@ -63,6 +65,11 @@ object BusinessDAO {
       val q3 = for { s ← businesses if s.id === k } yield s
       q3.list.headOption 
   }
+  def getByIDS(k: List[Int]):List[BusinessDTO] = database withSession {
+    implicit session ⇒
+      val q3 = for { s ← businesses if s.id inSetBind k } yield s
+      q3.list 
+  }  
   /**
    * Update a business
    * @param id

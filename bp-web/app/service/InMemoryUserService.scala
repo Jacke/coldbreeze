@@ -25,6 +25,7 @@ import securesocial.core.services.{UserService, SaveMode}
 import scala.concurrent.ExecutionContext.Implicits.global
 import models.AccountsDAO
 import models.TokensDAO
+import models._
 
 /**
  * A Sample In Memory user service in Scala
@@ -231,18 +232,20 @@ case class DemoUser(main: BasicProfile,
      // false
   }
   //lazy val 
-  def firstBusinessId = models.DAO.resources.EmployeesBusinessDAO.getByUID(main.userId)
-  //lazy val 
+  def firstBusinessId = AccountInfosDAOF.await(AccountInfosDAOF.getByInfoByUID(main.userId))//models.DAO.resources.EmployeesBusinessDAO.getByUID(main.userId)
+  lazy val businessObj = firstBusinessId
+  
   def masterFirstId = models.DAO.resources.EmployeeDAO.getByEmployeeUID(main.userId)
 
   def businessFirst: Int = {
      val firstBusinessDetected = firstBusinessId match {
-        case Some(tup) => tup._2
+        case Some(info) => info.currentWorkbench.getOrElse(-1)
         case _ => -1
      }
      //play.Logger.debug("First business for "+ main.userId + " are: " + firstBusinessId)
      firstBusinessDetected
   }
+
   def masterFirst: String = {
     val masterFirstDetected = masterFirstId match {
         case Some(tup) => tup.master_acc

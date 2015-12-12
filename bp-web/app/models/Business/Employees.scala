@@ -70,6 +70,11 @@ import models.DAO.conversion.DatabaseFuture._
     try db.run(filterByEmail(uid).result.headOption)
     finally println("db.close")//db.close
   }
+  def getAllByEmpByUID(uid: String):Future[Seq[EmployeeDTO]] = { 
+    try db.run(filterByEmail(uid).result)
+    finally println("db.close")//db.close
+  }
+
 
   def getAll():Future[Seq[EmployeeDTO]] = { 
     try db.run(All().result)
@@ -193,7 +198,11 @@ def pull_object_for(s: EmployeeDTO, email: String):Int = database withSession {
       println(q3.list)
       q3.list.headOption
   }
-  
+  def getAllByWorkbench(workbench: Int) = database withSession {
+    implicit session =>
+    val q3 = for { s ← employees if s.workbench === workbench } yield s// <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)
+      q3.list
+  } 
  
   /**
    * Update a employee

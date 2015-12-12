@@ -82,7 +82,10 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
       //if (current_plan.expired_at.isBefore( org.joda.time.DateTime.now() ) ) {
       //  Redirect(routes.PlanController.index)
       //} else {
-          Ok(views.html.app(request.user))
+      if (request.user.businessFirst < 1) 
+        Redirect(routes.SettingController.workbench())
+      else
+        Ok(views.html.app(request.user))
       //}
   }
   def error_test() = Action { implicit request =>
