@@ -448,7 +448,7 @@ $('a.appLink').click(function(e) {
   if (location.hash.split('#').length > 1) {
         window.location.href = "a#/bprocesses";
   } else {
-            window.location.href = "a";
+            window.location.href = "/a";
 
   }
 })

@@ -88,9 +88,12 @@ class BusinessProcessController(override implicit val env: RuntimeEnvironment[De
 
 
   def bprocess = SecuredAction { implicit request =>
-    val user_services = BusinessServiceDAO.getAllByBusiness(request.user.businessFirst).map(_.id.getOrElse(-1))
+    val business = request.user.businessFirst
+    val user_services = BusinessServiceDAO.getAllByBusiness(business).map(_.id.getOrElse(-1))
+
     val bprocess = BPDAO.getByServices(user_services) // TODO: Not safe
     // TODO: Add for actor, if they assigned to process
+
     val user = request.user
 
     /**
@@ -108,7 +111,7 @@ class BusinessProcessController(override implicit val env: RuntimeEnvironment[De
       //***
       //** Primary manager processes
       //*** 
-      val procOut = bprocess.filter(bp => user_services.contains(Some(bp.service))) 
+      val procOut = bprocess.filter(bp => user_services.contains(bp.service)) 
       Ok(Json.toJson( procOut ))
     }
 }
