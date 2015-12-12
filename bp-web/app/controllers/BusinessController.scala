@@ -43,7 +43,8 @@ class BusinessController(override implicit val env: RuntimeEnvironment[DemoUser]
       "nickname" -> optional(text),
       "walkthrough" -> boolean, 
       "created_at"-> optional(jodaDate),
-      "updated_at"-> optional(jodaDate))(BusinessDTO.apply)(BusinessDTO.unapply))
+      "updated_at"-> optional(jodaDate),
+      "organization" -> boolean)(BusinessDTO.apply)(BusinessDTO.unapply))
  
  def index() = SecuredAction { implicit request =>
       val businesses = BusinessDAO.getAll

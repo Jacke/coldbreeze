@@ -92,18 +92,23 @@ def cancel_url() = SecuredAction { implicit request =>
 }
 
 def index() = SecuredAction { implicit request =>
-  val user = request.user.main.userId
- 	val plans = PlanDAO.getAll.sortBy(_.order).filter(p => !p.hidden)
- 	val bills = BillDAO.getAllByMasterAcc(user)
-  val current_plan = AccountPlanDAO.getByMasterAcc(user).get
-  val limit_form = LimitForm.fill(LimitFormObject(current_plan.limit))
-  val billing_info = BillingInfosDAO.getByBusiness(EmployeesBusinessDAO.getByUID(user).get._2)
-  val billing_info_form = billing_info match {
-   case Some(info) => BillingInfoForm.fill(info)
-   case _ => BillingInfoForm
+  val business = request.user.businessFirst
+  if (business < 1) {
+    Redirect(controllers.routes.SettingController.workbench())
+  } else {  
+    val user = request.user.main.userId
+   	val plans = PlanDAO.getAll.sortBy(_.order).filter(p => !p.hidden)
+   	val bills = BillDAO.getAllByWorkbench(business)
+    val current_plan = AccountPlanDAO.getByWorkbenchAcc(workbench_id = business).get //REFACTOR
+    val limit_form = LimitForm.fill(LimitFormObject(current_plan.limit))
+    val billing_info = BillingInfosDAO.getByBusiness(business)
+    val billing_info_form = billing_info match {
+     case Some(info) => BillingInfoForm.fill(info)
+     case _ => BillingInfoForm
+    }
+   	Ok(views.html.plans.index(request.user, plans, bills, PayForm, billing_info_form, limit_form, current_plan))
   }
- 	Ok(views.html.plans.index(request.user, plans, bills, PayForm, billing_info_form, limit_form, current_plan))
- }
+}
 
 
 
@@ -112,9 +117,7 @@ def update_billinginfos() = SecuredAction { implicit request =>
   BillingInfoForm.bindFromRequest.fold(
         formWithErrors => Redirect(routes.PlanController.index),
         entity => {
-          
             BillingInfosDAO.push(entity)
-
         })
       Redirect(routes.PlanController.index)    
 }
@@ -123,11 +126,15 @@ def update_billinginfos() = SecuredAction { implicit request =>
   * Switch method
   */
 def switch(plan_id: Int) = SecuredAction { implicit request =>
+  val business = request.user.businessFirst
+  if (business < 1) {
+    Redirect(controllers.routes.SettingController.workbench())
+  } else {    
   val user = request.user.main.userId
   val plans = PlanDAO.getAll.sortBy(_.order).filter(p => !p.hidden)
-  val bills = BillDAO.getAllByMasterAcc(user)
+  val bills = BillDAO.getAllByWorkbench(business)
 
-  val current_plan = AccountPlanDAO.getByMasterAcc(user).get
+  val current_plan = AccountPlanDAO.getByWorkbenchAcc(workbench_id = business).get
   val desired_plan = PlanDAO.get(plan_id)
   
   desired_plan match {
@@ -136,7 +143,8 @@ def switch(plan_id: Int) = SecuredAction { implicit request =>
       val bill_id = BillDAO.pull_object(BillDTO(None, s"Bill ${DateTime.now}", user, DateTime.now(),
         approved = false,
         expired = DateTime.now().plusMonths(1),
-        sum = plan.price))
+        sum = plan.price,
+        workbench = business))
           AccountPlanHistoryDAO.pull_object(AccountPlanHistoryDTO(None, 
                                                                   account_plan = current_plan.id.get,
                                                                   limit_diff = -1,
@@ -147,11 +155,16 @@ def switch(plan_id: Int) = SecuredAction { implicit request =>
   case _ => BadRequest("Plan not found")
   }
 }
+}
 
 def delete_bill(billId: Int) = SecuredAction { implicit request => 
+  val business = request.user.businessFirst
+  if (business < 1) {
+    Redirect(controllers.routes.SettingController.workbench())
+  } else {     
     val user = request.user.main.userId
 
-    val bills = BillDAO.getAllByMasterAcc(user)
+    val bills = BillDAO.getAllByWorkbench(business)
     bills.find(bill => bill.id.get == billId && !bill.approved) match {
       case Some(bill) => {
         BillDAO.delete(billId)
@@ -159,26 +172,28 @@ def delete_bill(billId: Int) = SecuredAction { implicit request =>
       }
       case _ => Redirect(routes.PlanController.index)
     }
+  }
 }
 
 /**
  * Switch limit
  */
 def switchLimit(plan_id: Int) = SecuredAction { implicit request =>
+  val business = request.user.businessFirst
+  if (business < 1) {
+    Redirect(controllers.routes.SettingController.workbench())
+  } else {      
+
   val user = request.user.main.userId
   val plans = PlanDAO.getAll.sortBy(_.order).filter(p => !p.hidden)
-  val bills = BillDAO.getAllByMasterAcc(user)
+  val bills = BillDAO.getAllByWorkbench(business)
   var limit = -1
   LimitForm.bindFromRequest.fold(
         formWithErrors => Redirect(routes.PlanController.index),
-        entity => {
-          
-          var limit = entity.limit
-          
+        entity => {          
+          var limit = entity.limit          
         })
-
-
-  val current_plan = AccountPlanDAO.getByMasterAcc(user).get
+  val current_plan = AccountPlanDAO.getByWorkbenchAcc(workbench_id = business).get
   val desired_plan = PlanDAO.get(plan_id)
   val current_limit = current_plan.limit
   val limit_dif = limit - current_limit
@@ -193,7 +208,7 @@ def switchLimit(plan_id: Int) = SecuredAction { implicit request =>
         case Some(plan) => {
           val ammount = limit_dif * 5
           val bill_id = BillDAO.pull_object(BillDTO(None, s"Bill for increase user slots ${DateTime.now}", 
-            user, DateTime.now, false, DateTime.now().plusMonths(1), BigDecimal(ammount))
+            user, DateTime.now, false, DateTime.now().plusMonths(1), BigDecimal(ammount), workbench = business)
             )
           AccountPlanDAO.update(current_plan.id.get, current_plan.copy(limit = current_plan.limit + limit ) )
           AccountPlanHistoryDAO.pull_object(AccountPlanHistoryDTO(None, 
@@ -207,28 +222,30 @@ def switchLimit(plan_id: Int) = SecuredAction { implicit request =>
       }      
     } 
   }
+  }
 } 
-
 
 def status() = SecuredAction { implicit request =>
   Ok("test")
 }
-
-
 /**
  * Checkout action
  */
 def checkout(bill_id: Int) = SecuredAction { implicit request =>
+  val business = request.user.businessFirst
+  if (business < 1) {
+    Redirect(controllers.routes.SettingController.workbench())
+  } else {    
   val user = request.user.main.userId
   val plans = PlanDAO.getAll.sortBy(_.order).filter(p => !p.hidden)
   val bill = BillDAO.get(bill_id).get
-  val bills = BillDAO.getAllByMasterAcc(user)
-  val current_plan = AccountPlanDAO.getByMasterAcc(user).get
-  val billing_info = BillingInfosDAO.getByBusiness(EmployeesBusinessDAO.getByUID(user).get._2)
-        val billing_info_form = billing_info match {
-         case Some(info) => BillingInfoForm.fill(info)
-         case _ => BillingInfoForm
-        }
+  val bills = BillDAO.getAllByWorkbench(business)
+  val current_plan = AccountPlanDAO.getByWorkbenchAcc(workbench_id = business).get
+  val billing_info = BillingInfosDAO.getByBusiness(business)
+  val billing_info_form = billing_info match {
+   case Some(info) => BillingInfoForm.fill(info)
+   case _ => BillingInfoForm
+  }
   val limit_form = LimitForm.fill(LimitFormObject(current_plan.limit))        
   val plan_dao = PlanDAO.get(current_plan.plan).get
   val plan_price:BigDecimal = plan_dao.price
@@ -297,6 +314,8 @@ def checkout(bill_id: Int) = SecuredAction { implicit request =>
     }
     case _ => Redirect(routes.PlanController.index)
   }
+}
+
 }
 
 

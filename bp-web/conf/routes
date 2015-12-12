@@ -137,6 +137,10 @@ POST       /plan/bill/:billId/delete                            @controllers.Pla
 
 # Settings
 GET        /settings                                            @controllers.SettingController.index()
+GET        /settings/workbenchs                                 @controllers.SettingController.workbench()
+GET        /settings/reset_bench                                @controllers.SettingController.resetBench(bench_id: Int=-1)
+GET        /settings/reset_bench/:bench_id                      @controllers.SettingController.resetBench(bench_id: Int)
+
 POST       /settings/update_cred                                @controllers.SettingController.update_credentials()
 POST       /settings/update_business                            @controllers.SettingController.update_biz_credentials()
 

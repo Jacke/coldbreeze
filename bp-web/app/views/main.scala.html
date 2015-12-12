@@ -55,7 +55,11 @@
 </script>
 </head>
 
+@if(user.businessFirst < 1) {
+<body class="themeDark themeGrad website noWorkbench">
+} else {
 <body class="themeDark themeGrad website">
+}
 <div class="overlay_mobile">Please use desktop or tablet for best app experience.<a href="#">Skip</a>
 </div>
 

@@ -16,6 +16,7 @@ import play.api.data.Forms._
 import java.util.UUID
 
 import views._
+import controllers._
 import models.Page
 import models.User
 import service.DemoUser
@@ -59,10 +60,16 @@ class EmployeeController(override implicit val env: RuntimeEnvironment[DemoUser]
       "workbench_id" -> number)(EmployeeDTO.apply)(EmployeeDTO.unapply))
 
  def index() = SecuredAction { implicit request =>
+      val business = request.user.businessFirst
+      if (business < 1) {
+        Redirect(controllers.routes.SettingController.workbench())
+      }
+      else {
+
       val user = request.user
-      val employees = EmployeeDAO.getAllByMaster(user.main.email.get)
+      val employees = EmployeeDAO.getAllByWorkbench(request.user.businessFirst)
       val accounts = models.AccountsDAO.findAllByEmails(employees.map(emp => emp.uid))
-      val businesses = BusinessDAO.getAll
+      val businesses = List(BusinessDAO.get(business).get)
       val ebs = EmployeesBusinessDAO.getAll
       val assign = businesses.filter(b => !(ebs.map(eb => eb._2).contains(b.id.get)))
       val assigned = businesses.filter(b => ebs.map(eb => eb._2).contains(b.id.get))
@@ -77,12 +84,18 @@ class EmployeeController(override implicit val env: RuntimeEnvironment[DemoUser]
       // current employee limit + main manager MINUS all employee length for that master
       Ok(views.html.businesses.users.employees(
         Page(employees, 1, 1, employees.length), accounts, 1, "%", assign, assigned, groups, aval)(user))
+      }
   }
  def team() = SecuredAction { implicit request =>
+      val business = request.user.businessFirst
+      if (business < 1) {
+        Redirect(controllers.routes.SettingController.workbench())
+      }
+      else {
       val user = request.user
       val employees = EmployeeDAO.getAllByMaster(user.main.email.get)
       val accounts = models.AccountsDAO.findAllByEmails(employees.map(emp => emp.uid))
-      val businesses = BusinessDAO.getAll
+      val businesses = List(BusinessDAO.get(business).get)
       val ebs = EmployeesBusinessDAO.getAll
       val assign = businesses.filter(b => !(ebs.map(eb => eb._2).contains(b.id.get)))
       val assigned = businesses.filter(b => ebs.map(eb => eb._2).contains(b.id.get))
@@ -96,6 +109,7 @@ class EmployeeController(override implicit val env: RuntimeEnvironment[DemoUser]
       // current employee limit + main manager MINUS all employee length for that master
       Ok(views.html.businesses.users.team(
         Page(employees, 1, 1, employees.length), accounts, 1, "%", assign, assigned, master, team, aval)(user))
+      }
   }  
   def index_group(group_id: Int) = SecuredAction { implicit request =>
       val user = request.user

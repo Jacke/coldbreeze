@@ -221,7 +221,12 @@ class DataController(override implicit val env: RuntimeEnvironment[DemoUser]) ex
 
 
  def index() = SecuredAction.async { implicit request =>
+    if (request.user.businessFirst < 1) {
+      Future(Redirect(controllers.routes.SettingController.workbench()))
+    } else {
+
     var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
+    val bboardPing:Future[Boolean] = minority.utils.BBoardWrapper().ping()
     val resources = ResourceDAO.findByBusinessId(request.user.businessFirst)
     val boards_cn: Future[BoardContainer] = minority.utils.BBoardWrapper().getBoardByResource(0, 
                                                                   request.user.businessFirst.toString)
@@ -234,30 +239,32 @@ class DataController(override implicit val env: RuntimeEnvironment[DemoUser]) ex
   // //       Ok(views.html.data.index(request.user, isManager, ResourceForms.resourceForm, testResourceContainerList()))     
    // }
      for {
+        ping <- bboardPing
         actual_boards_cn <- boards_cn
      } yield Ok(views.html.data.index(request.user, isManager, ResourceFormContainer(), resources.map(r => 
                 testResourceContainerList(r, actual_boards_cn)).flatten,
-                ResourceFormContainer().entityForm
+                ResourceFormContainer().entityForm,
+                ping
                 ))     
 
 
- }
+    }
+}
 
 /***************************
  * Resources
  ****************************/
 def create_resource() = SecuredAction { implicit request => 
   	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
-    val business_request:Option[Tuple2[Int, Int]] = models.DAO.resources.EmployeesBusinessDAO.getByUID(request.user.main.email.get) 
-    val business = business_request match {
-      case Some(biz) => biz._2
-      case _ => -1
-    }        
+    val business = request.user.businessFirst
+    if (request.user.businessFirst < 1) {
+      Redirect(controllers.routes.SettingController.workbench())
+    } else {
 
     ResourceForms.resourceForm.bindFromRequest.fold(
       formWithErrors => { 
         println(formWithErrors)
-        BadRequest(views.html.data.index(request.user, isManager, ResourceFormContainer(), testResourceContainerList(),ResourceFormContainer().entityForm ))
+        Redirect(controllers.routes.DataController.index())
         },
       entity => {
           println(entity)
@@ -268,19 +275,19 @@ def create_resource() = SecuredAction { implicit request =>
           }
                   
       })
+    }
 }
 def api_create_resource() = SecuredAction(BodyParsers.parse.json) { implicit request => 
     var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
-    val business_request:Option[Tuple2[Int, Int]] = models.DAO.resources.EmployeesBusinessDAO.getByUID(request.user.main.email.get) 
-    val business = business_request match {
-      case Some(biz) => biz._2
-      case _ => -1
-    }        
+    val business = request.user.businessFirst
+    if (request.user.businessFirst < 1) {
+      Redirect(controllers.routes.SettingController.workbench())
+    } else {
     val selected = request.body.validate[ResourceAttributeContainer]
         selected.fold(
         errors => {
            Logger.error(s"error with $selected")
-          BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
+           BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
         },
         entity => { 
           println(entity)
@@ -314,6 +321,7 @@ def api_create_resource() = SecuredAction(BodyParsers.parse.json) { implicit req
 
         }
       )
+    }
 }
 
 

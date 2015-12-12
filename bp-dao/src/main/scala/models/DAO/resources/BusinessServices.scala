@@ -59,6 +59,12 @@ object BusinessServiceDAO {
                      b <- s.business if b.id === k } yield (s) 
       q3.list.headOption
   }
+  def getAllByBusiness(k: Int) = database withSession {
+    implicit session ⇒
+      val q3 = for { s ← business_services
+                     b <- s.business if b.id === k } yield (s) 
+      q3.list
+  }
 
   def getByMaster(email: String) = database withSession {
     implicit session =>

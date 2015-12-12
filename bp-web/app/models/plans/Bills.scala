@@ -14,9 +14,12 @@ class Bills(tag: Tag) extends Table[BillDTO](tag, "bills") {
   def approved    = column[Boolean]("approved")
   def expired     = column[DateTime]("expired")
   def sum         = column[BigDecimal]("sum")
+  def workbench   = column[Int]("workbench_id")
 
   def accFK = foreignKey("bill_macc_fk", master_acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
-  def * = (id.?, title, master_acc, assigned, approved, expired, sum) <> (BillDTO.tupled, BillDTO.unapply)
+  def wbFK  = foreignKey("bills_current_biz_business_fk", workbench, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+
+  def * = (id.?, title, master_acc, assigned, approved, expired, sum, workbench) <> (BillDTO.tupled, BillDTO.unapply)
 
 }
 
@@ -29,7 +32,8 @@ case class BillDTO(var id: Option[Int],
   assigned: DateTime = DateTime.now(), 
   approved: Boolean = false,
   expired: DateTime = DateTime.now(),
-  sum: BigDecimal = BigDecimal("0.0"))
+  sum: BigDecimal = BigDecimal("0.0"),
+  workbench: Int)
 
 object BillDAO {
   import scala.util.Try
@@ -51,6 +55,11 @@ object BillDAO {
   def getAllByMasterAcc(email: String) = database withSession {
     implicit session =>
     val q3 = for { s ← bills if s.master_acc === email } yield s 
+      q3.list
+  }
+  def getAllByWorkbench(workbench_id: Int) = database withSession {
+    implicit session =>
+    val q3 = for { s ← bills if s.workbench === workbench_id } yield s 
       q3.list
   }
 

@@ -73,7 +73,8 @@ object DLL_Initiator {
 
     // Default business
 
-    models.DAO.resources.web.BusinessDAO.pull_object( models.DAO.resources.web.BusinessDTO(None, "default business", country = "", city = "", address = None))
+    models.DAO.resources.web.BusinessDAO.pull_object( models.DAO.resources.web.BusinessDTO(
+        None, "default business", country = "", city = "", address = None, organization = true))
 
 
 
