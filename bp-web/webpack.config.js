@@ -40,10 +40,17 @@ module.exports = {
             "_": "underscore",
             "window.jQuery": "jquery",
             "routerDownloader": "jsRoutes"
-        })
+        }),
+       
+        new webpack.ResolverPlugin(
+            new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin("bower.json", ["main"])
+        )
+    
     ],
     devtool: "#source-map",
     resolve: {
+          root: [path.join(__dirname, "/app/public/bower_components")],
+
         //      'popupoverlay': {
         //deps: ['jquery'],
         //exports: 'popupoverlay'

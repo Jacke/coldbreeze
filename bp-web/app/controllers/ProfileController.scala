@@ -65,17 +65,17 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
 
       val email = request.user.main.email.get
 
-      var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(email).get
+      var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(email, business).get
 
-      if (!isEmployee) {// && !arePlanExist(email)) {
+      if (!isEmployee) {// && !arePlanExist(business)) {
                                                               // Initiate env for new user
         utilities.NewUserRoutine.initiate_env(email)          // run routine
         //request.user.renewPermissions()                     // renew permission
-        var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(email).get
+        var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(email, business).get
         println("redirect")
         Home                                                // redirect to dashboard
       } else {
-        val plan = planFetch(email, isManager)
+        val plan = planFetch(email, isManager, business)
         val managerParams = makeManagerParams(email, isManager, primaryBusiness)
         val walkthrought:Boolean = managerParams match {
             case  Some(param) => param.business.walkthrough
@@ -123,10 +123,16 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
 /*
  Private operations
 */
-private def planFetch(email: String, isManager: Boolean):Option[planInfo] = {
+private def planFetch(email: String, isManager: Boolean, business: Int = -1):Option[planInfo] = {
     if (isManager) {
-      val plan = AccountPlanDAO.getPlanByMasterAcc(email)
-      Some(planInfo(plan._2.title, plan._1))
+      val plan = AccountPlanDAO.getByWorkbenchAcc(workbench_id = business)//AccountPlanDAO.getPlanByMasterAcc(email)
+      plan match {
+        case Some(plan) => { 
+          val planTitle = PlanDAO.get(plan.plan).get
+          Some(planInfo(planTitle.title, plan.expired_at))
+        }
+        case _ => None
+      }
     } else {
         None
     }
@@ -192,8 +198,8 @@ private def makeEmployeeParams(email: String, isEmployee: Boolean, business: Bus
     }
     else None
 }
-private def arePlanExist(email: String): Boolean = {
-  AccountPlanDAO.getByMasterAcc(email).isDefined
+private def arePlanExist(business: Int = -1): Boolean = {
+  AccountPlanDAO.getByWorkbenchAcc(workbench_id = business).isDefined
 }
 
 }

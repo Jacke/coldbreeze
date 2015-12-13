@@ -89,6 +89,17 @@ import models.DAO.conversion.DatabaseFuture._
     }
   }
 
+  def updateCurrentWorkbenchForHead(uid: String):Future[Int] = {
+    EmployeeDAOF.getByEmpByUID(uid).flatMap { empOpt =>
+      val no:Int = -1
+      empOpt.map { emp =>
+         updateCurrentWorkbench(uid = emp.uid, workbench = Some( emp.workbench) ).flatMap { result =>
+            Future.successful(result)
+        }
+      } getOrElse Future.successful(no)
+    }
+  }
+
   def updateF(id: Int, info: AccountInfo): Future[Int] =
     db.run(filterQuery(id).update(info))
 
@@ -96,6 +107,29 @@ import models.DAO.conversion.DatabaseFuture._
   def makeCurrentBusiness() = {
 
   }
+}
+object AccountsDAOF {
+  import scala.util.Try
+import akka.actor.ActorSystem
+import akka.stream.ActorFlowMaterializer
+import akka.stream.scaladsl.Source
+import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+//import slick.driver.JdbcProfile
+import slick.driver.PostgresDriver.api._
+import slick.jdbc.meta.MTable
+import scala.concurrent.ExecutionContext.Implicits.global
+import com.github.tototoshi.slick.JdbcJodaSupport._
+import scala.concurrent.duration.Duration
+import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+import scala.util.Try
+import models.DAO.conversion.DatabaseFuture._
+    //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+
+  val accounts = AccountsDAO.accounts
+
+
 }
 
 object AccountsDAO {
@@ -181,14 +215,18 @@ object AccountsDAO {
 
 
   }
-  def getRolesAndLang(email: String): Option[Tuple3[Boolean, Boolean, String]] ={
-    val manager = AccountPlanDAO.getByMasterAcc(email).isDefined
-    val employee = models.DAO.resources.EmployeeDAO.getByEmployeeUID(email) match {
+  def getRolesAndLang(email: String, workbench_id: Int = -1): Option[Tuple3[Boolean, Boolean, String]] ={
+    val employee = models.DAO.resources.EmployeeDAO.getByEmployeeUIDAndWorkbench(email, workbench_id)
+    val isManager = employee match {
+      case Some(emp) => emp.manager
+      case _ => false
+    }//AccountPlanDAO.getByMasterAcc(email).isDefined
+    val isEmployee = employee match {
       case Some(emp) => true
       case _ => false
     }
     val lang = getLang(email)
-    Some((manager, employee, lang))
+    Some((isManager, isEmployee, lang))
   }
 
   def getLang(email: String) = database withSession {

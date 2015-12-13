@@ -210,10 +210,24 @@ def unassign_business(employee_id: Int, business_id: Int) = SecuredAction { impl
 }
 def destroy(id: Int) = SecuredAction { implicit request =>
     if (isEmployeeOwned(request.user.main.userId, request.user.businessFirst)) {
+      val emp = EmployeeDAO.get(id) 
+      val employeeCount = emp match {
+        case Some(emp) => EmployeeDAO.getLengthByWorkbench(emp.workbench)
+        case _ => 0
+      }
+      if (employeeCount > 1) { // Max number of employee per workbench are 1
       Home.flashing(EmployeeDAO.delete(id) match {
         case 0 => "failure" -> "Entity has Not been deleted"
-        case x => "success" -> s"Entity has been deleted (deleted $x row(s))"
+        case x => "success" -> { 
+          val info = models.AccountInfosDAOF.await(models.AccountInfosDAOF.getByInfoByUID(emp.get.uid)).get
+          if (info.currentWorkbench == Some(emp.get.workbench)) { // Reset current workbench
+            models.AccountInfosDAOF.await(models.AccountInfosDAOF.updateCurrentWorkbench(emp.get.uid, None ))
+          }
+
+          s"Entity has been deleted (deleted $x row(s))"
+        }
       })
+      } else { Home }
     } else { Home }
 }
 private def isEmployeeOwned(uid: String, business_id: Int):Boolean = { 

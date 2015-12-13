@@ -20,6 +20,7 @@ import securesocial.core.services.SaveMode
 import play.filters.csrf._
 import models._
 import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class CustomLoginController(implicit override val env: RuntimeEnvironment[DemoUser]) extends BaseLoginPage[DemoUser] {
   override def login: Action[AnyContent] = {
@@ -398,7 +399,7 @@ class CustomRegistrationController(implicit override val env: RuntimeEnvironment
               ) yield {
                 // Set language that user set in his browser
                 AccountsDAO.updateLang(toSave.email.get, request.acceptLanguages.head.language)
-
+                AccountInfosDAOF.await(AccountInfosDAOF.updateCurrentWorkbenchForHead(uid = toSave.email.get))
                 if (UsernamePasswordProvider.sendWelcomeEmail)
                   play.api.Logger.debug("sendWelcomeEmail to")
                   play.api.Logger.debug(newUser.userId)

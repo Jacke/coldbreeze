@@ -124,7 +124,12 @@ class Employees(tag: Tag) extends Table[EmployeeDTO](tag, "employees") {
 
 }
 
-case class EmployeeDTO(var id: Option[Int], uid: String, master_acc:String, position:Option[String], manager:Boolean = false,workbench:Int=0)
+case class EmployeeDTO(var id: Option[Int], 
+                       uid: String, 
+                       master_acc:String, 
+                       position:Option[String], 
+                       manager:Boolean = false,
+                       workbench:Int=0)
 
 
 object EmployeeDAO {
@@ -184,6 +189,13 @@ def pull_object_for(s: EmployeeDTO, email: String):Int = database withSession {
       println(q3.list)
       q3.list.headOption
   }
+  def getByEmployeeUIDAndWorkbench(uid: String, workbench_id: Int) = database withSession {
+    implicit session =>
+    val q3 = for { s ← employees if s.uid === uid && s.workbench === workbench_id } yield s// <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)
+      println(q3.selectStatement)
+      println(q3.list)
+      q3.list.headOption
+  }  
   def getAllByEmployeeUID(uid: String) = database withSession {
     implicit session =>
     val q3 = for { s ← employees if s.uid === uid } yield s// <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)
@@ -203,7 +215,11 @@ def pull_object_for(s: EmployeeDTO, email: String):Int = database withSession {
     val q3 = for { s ← employees if s.workbench === workbench } yield s// <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)
       q3.list
   } 
- 
+  def getLengthByWorkbench(workbench: Int) = database withSession {
+    implicit session =>
+    val q3 = for { s ← employees if s.workbench === workbench } yield s// <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)
+      q3.list.length
+  }  
   /**
    * Update a employee
    * @param id

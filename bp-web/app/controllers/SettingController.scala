@@ -83,10 +83,11 @@ class SettingController(override implicit val env: RuntimeEnvironment[DemoUser])
 
 
  def index() = SecuredAction { implicit request =>
+  val business = request.user.businessFirst
  	val cred = models.AccountsDAO.fetchCredentials(request.user.main.email.get)
   //val biz0 = fetchBiz(request.user.main.userId).get
   //val biz = BizFormDTO(biz0.title, biz0.phone, biz0.website, biz0.country, biz0.city, biz0.address, biz0.nickname)
-  var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
+  var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get, business).get
  	Ok(views.html.settings.index(credForm.fill(cred.get), request.user, isManager))
  }
  def workbench() = SecuredAction  { implicit request =>
@@ -102,9 +103,14 @@ class SettingController(override implicit val env: RuntimeEnvironment[DemoUser])
     case Some(biz0) => AccountInfosDAOF.await(benchesF).filter(b => b.workbench != biz0.id.get)
     case _ => AccountInfosDAOF.await(benchesF)
   }
+  val workbench_id = biz0 match {
+    case Some(w) => w.id.get
+    case _ => -1
+  }
+  
   val benches = BusinessDAO.getByIDS(account_benches.map(_.workbench).toList)
 
-  var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
+  var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get, workbench_id).get
   Ok(views.html.settings.workbench(bizFormObj, request.user, isManager, biz0, benches ))
  }
 
