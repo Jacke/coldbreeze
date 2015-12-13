@@ -75,10 +75,10 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
 
   def app() = SecuredAction { implicit request =>
     // Expired plan checking
-      AccountPlanDAO.getByMasterAcc(request.user.masterFirst) match {
-        case Some(current_plan) => applicationLogger.info(s"Plan expired_at: ${current_plan.expired_at}")
-        case _ =>
-      }
+      //AccountPlanDAO.getByMasterAcc(request.user.masterFirst) match {
+      //  case Some(current_plan) => applicationLogger.info(s"Plan expired_at: ${current_plan.expired_at}")
+      //  case _ =>
+      //}
       //if (current_plan.expired_at.isBefore( org.joda.time.DateTime.now() ) ) {
       //  Redirect(routes.PlanController.index)
       //} else {
@@ -166,20 +166,16 @@ case class WhoAmIdentify(email: String, business: Int = 0, manager: Boolean, emp
 
   def whoami = SecuredAction { implicit request =>
     val email = request.user.main.email.get
+    val business = request.user.businessFirst
     applicationLogger.debug("Attempting risky calculation.")
     applicationLogger.debug(request.host.toString)
 
-    val (isManager, isEmployee, lang):(Boolean, Boolean, String) = AccountsDAO.getRolesAndLang(email).get
-    val business_request:Option[Tuple2[Int, Int]] = models.DAO.resources.EmployeesBusinessDAO.getByUID(email) 
-    val business = business_request match {
-      case Some(biz) => biz._2
-      case _ => -1
-    }
-    val current_plan = AccountPlanDAO.getByMasterAcc(email).getOrElse(
+    val (isManager, isEmployee, lang):(Boolean, Boolean, String) = AccountsDAO.getRolesAndLang(email, business).get
+    val current_plan = AccountPlanDAO.getByWorkbenchAcc(workbench_id = business).getOrElse(
             AccountPlanDTO(None, 
-                business_id = Some(-1), 
-                master_acc = email 
-      ))
+                business_id = -1, 
+                master_acc = email)
+            )
 
     val env_mode = play.api.Play.current.mode
 

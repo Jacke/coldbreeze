@@ -140,7 +140,12 @@ integrationTest := {
           wcs,
           akkaActor, 
           scaldiakka, 
-          dispatch, 
+          dispatch,
+           
+          trireme,
+          triremenode10src,
+          jsengine,
+
           futiles,
           scalaz, 
           scalazstream,

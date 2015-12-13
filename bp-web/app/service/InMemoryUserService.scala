@@ -201,14 +201,14 @@ case class DemoUser(main: BasicProfile,
   var lang: Option[Lang] = None, 
   var created_at: Option[org.joda.time.DateTime] = None) {
 
-  permissions = AccountsDAO.getRolesAndLang(main.userId)
+  permissions = AccountsDAO.getRolesAndLang(main.userId, businessFirst)
 
   AccountsDAO.getAccountInfo(main.userId) match {
     case Some(acc_info) => created_at = Some(acc_info.created_at)
     case _ => created_at = Some(org.joda.time.DateTime.now())
   }
    
-  lang = Some(country(AccountsDAO.getRolesAndLang(main.userId).get._3))
+  lang = Some(country(AccountsDAO.getRolesAndLang(main.userId, businessFirst).get._3))
 
   def country(lang: String):Lang = {
     lang match {
@@ -219,15 +219,15 @@ case class DemoUser(main: BasicProfile,
   }
 
   def renewLang() = {
-      lang = Some(country(AccountsDAO.getRolesAndLang(main.userId).get._3))
+      lang = Some(country(AccountsDAO.getRolesAndLang(main.userId, businessFirst).get._3))
   }
   def renewPermissions() = {
-      permissions = AccountsDAO.getRolesAndLang(main.userId)
+      permissions = AccountsDAO.getRolesAndLang(main.userId, businessFirst)
   }
   def isManager:Boolean = {
     //if (permissions.isDefined)
     //  permissions.get._1
-    AccountsDAO.getRolesAndLang(main.userId).get._1
+    AccountsDAO.getRolesAndLang(main.userId, businessFirst).get._1
     //else
      // false
   }

@@ -99,7 +99,9 @@ def index() = SecuredAction { implicit request =>
     val user = request.user.main.userId
    	val plans = PlanDAO.getAll.sortBy(_.order).filter(p => !p.hidden)
    	val bills = BillDAO.getAllByWorkbench(business)
+    println("Workbench " + business)
     val current_plan = AccountPlanDAO.getByWorkbenchAcc(workbench_id = business).get //REFACTOR
+    println(current_plan)
     val limit_form = LimitForm.fill(LimitFormObject(current_plan.limit))
     val billing_info = BillingInfosDAO.getByBusiness(business)
     val billing_info_form = billing_info match {

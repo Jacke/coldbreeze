@@ -9,6 +9,8 @@ import models.DAO._
 import models._
 import views._
 import models._
+import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object NewUserRoutine {
 
@@ -23,13 +25,14 @@ object NewUserRoutine {
           val biz_id = BusinessDAO.pull_object(BusinessDTO(None, "Your Company", country = "", city = "", 
                                        address = None, walkthrough = true, organization = true))
            defaultService(email, biz_id, isMaster)
-          EmployeesBusinessDAO.pull(emp_id, biz_id)
+          //EmployeesBusinessDAO.pull(emp_id, biz_id)
+          AccountInfosDAOF.await(AccountInfosDAOF.updateCurrentWorkbench(email, Some(biz_id) ))
           /**
            * Create default analytics group
            * By default analytics(editor of processes) == managers
            */
            defaultAnalyticsGroup(email, biz_id)
-           assignToTrial(email, Some(biz_id))
+           assignToTrial(email, biz_id)
         }
         
         //request.user.renewPermissions() // Update var's of user
@@ -101,7 +104,7 @@ object NewUserRoutine {
       }
   }
 
-	private def assignToTrial(master_acc: String, bid:Option[Int] = None) = {
-      AccountPlanDAO.pull_object(AccountPlanDTO(None, bid, master_acc, 1))
+	private def assignToTrial(master_acc: String, workbench_id: Int) = {
+      AccountPlanDAO.pull_object(AccountPlanDTO(None, workbench_id, master_acc, 1))
     }
 }

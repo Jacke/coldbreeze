@@ -9,7 +9,7 @@ import org.joda.time.DateTime
 
 class AccountPlans(tag: Tag) extends Table[AccountPlanDTO](tag, "account_plans") {
   def id          = column[Int]("id", O.PrimaryKey, O.AutoInc)
-  def business_id = column[Option[Int]]("business_id")
+  def workbench   = column[Int]("business_id")
   def master_acc  = column[String]("master_acc")
   def plan        = column[Int]("plan_id") 
   def expired_at  = column[DateTime]("expired_at")
@@ -18,19 +18,19 @@ class AccountPlans(tag: Tag) extends Table[AccountPlanDTO](tag, "account_plans")
 
   def planFK      = foreignKey("acc_plan_plan_fk", plan, models.DAO.resources.PlanDAO.plans)(_.id, onDelete = ForeignKeyAction.Cascade)
   def accFK       = foreignKey("acc_plan_macc_fk", master_acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
-  def business    = foreignKey("acc_plan_buss_fk", business_id, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def business    = foreignKey("acc_plan_buss_fk", workbench, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def planJoin    = models.DAO.resources.PlanDAO.plans.filter(_.id === plan)
 
-  def * = (id.?, business_id, master_acc, plan, expired_at,active,limit) <> (AccountPlanDTO.tupled, AccountPlanDTO.unapply)
+  def * = (id.?, workbench, master_acc, plan, expired_at,active,limit) <> (AccountPlanDTO.tupled, AccountPlanDTO.unapply)
 }
 /*
   Case class
  */
 case class AccountPlanDTO(var id: Option[Int], 
-  business_id: Option[Int], 
+  business_id: Int, 
   master_acc: String, 
-  plan: Int = 1, 
+  plan: Int = -1, 
   expired_at: DateTime = DateTime.now().plusDays(5),
   active: Boolean = false,
   limit: Int = 5) {
@@ -52,6 +52,25 @@ object AccountPlanDAO {
 
   val account_plans = TableQuery[AccountPlans]
   
+  def generateDefaultAccountPlans() = database withSession {
+    implicit session =>
+        val employees = EmployeeDAO.getAll
+        val workbenches_ids = employees.map { employee =>
+          employee.workbench
+        }.distinct
+        // Now we must create plans that doesnt exist 
+        val allAc = AccountPlanDAO.getAll
+        val allAcWorkbenchIds = allAc.map(_.business_id)
+        val emptyBenchesIds = workbenches_ids.filter(ac => !allAcWorkbenchIds.contains(ac) )
+        emptyBenchesIds.map { emptyWorkbechId =>
+          val master_acc:String = employees.find(e => e.workbench == emptyWorkbechId && e.manager == true) match {
+            case Some(emp) => emp.uid
+            case _ => ""
+          }
+          AccountPlanDAO.pull_object(AccountPlanDTO(None, emptyWorkbechId, master_acc, 1))
+        }
+  }
+
   def pull_object(s: AccountPlanDTO) = database withSession {
     implicit session ⇒
       account_plans returning account_plans.map(_.id) += s
@@ -73,8 +92,8 @@ object AccountPlanDAO {
   }
   def getByWorkbenchAcc(workbench_id: Int):Option[AccountPlanDTO] = database withSession {
     implicit session =>
-    val q3 = for { pl <- account_plans if pl.business_id === workbench_id } yield pl 
-      q3.list.headOption
+    val q3 = for { pl <- account_plans if pl.workbench === workbench_id } yield pl 
+      assignPlan(q3.list.headOption) // Fetch planObject!!!
   }  
   def getByMasterAcc(email: String):Option[AccountPlanDTO] = database withSession {
     implicit session =>

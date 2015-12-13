@@ -60,6 +60,10 @@ object Dependencies {
   val jacksonbson     = "de.undercouch"             %  "bson4jackson"           % "2.5.0"
   val wcs             = "eu.piotrbuda"              % "scalawebsocket_2.10"     % "0.1.1"
 
+
+  val trireme         = "io.apigee.trireme"         % "trireme-core"            % "0.8.5"
+  val triremenode10src= "io.apigee.trireme"         % "trireme-node10src"       % "0.8.5"
+  val jsengine        = "com.typesafe"              %% "jse"                    % "1.1.2"
   val futiles         = "com.markatta"              %% "futiles"                % "1.1.3"
   val scaldiakka      = "org.scaldi"                %% "scaldi-akka"            % "0.4"
   val hikari_core     = "com.zaxxer"                % "HikariCP"                % "2.3.5"
