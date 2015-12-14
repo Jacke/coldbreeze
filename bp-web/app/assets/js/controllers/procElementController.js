@@ -50,7 +50,7 @@ minorityControllers.controller('BPelementListCtrl', ['$timeout','$window','$filt
   $scope.route = jsRoutes.controllers.BusinessProcessController;
   $scope.businessSet = $rootScope.business;
 
-
+  $scope.bb_ping = $rootScope.bb_ping;
 
   $scope.business = function () {
      return parseInt($window.localStorage.getItem('business'));
