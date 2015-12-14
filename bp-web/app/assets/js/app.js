@@ -337,8 +337,9 @@ minorityApp.config(['$locationProvider','$routeProvider', '$httpProvider', funct
                         $window.sessionStorage.setItem("business", profile.data.business);
                         $window.localStorage.setItem("business", profile.data.business);
                         $rootScope.business = profile.data.business;
-                        console.log(profile.data);
-                        console.log($rootScope.business)
+                        $rootScope.bb_ping = profile.data.bb_ping;
+                        //console.log(profile.data);
+                        console.log($rootScope.bb_ping)
                         $window.sessionStorage.setItem("employee", profile.data.employee);
                         $window.sessionStorage.setItem("manager", profile.data.manager);
                   })

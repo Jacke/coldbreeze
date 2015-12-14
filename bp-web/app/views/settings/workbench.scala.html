@@ -65,19 +65,19 @@
 <div class="container setting-container">
 
 
-@if(isManager) {
 <div id="business">
 <div class="workbench-settings">
     @workbench.map { bench =>
-		<h4>Current workbench: @bench.title</h4>
-		<a href="@routes.SettingController.resetBench(-1)">Reset bench</a>
+    <h4>Current workbench: @bench.title</h4>
+    <a href="@routes.SettingController.resetBench(-1)">Reset bench</a>
     }
     @workbenches.map { aval_bench =>
-			<h4>Current workbench: @aval_bench.title</h4>
-		<a href="@routes.SettingController.resetBench(aval_bench.id.get)">Switch bench</a>
+      <h4>Current workbench: @aval_bench.title</h4>
+    <a href="@routes.SettingController.resetBench(aval_bench.id.get)">Switch bench</a>
     }
 </div>
 
+@if(isManager) {
 @if(bizForm.isDefined) {
 @form(routes.SettingController.update_biz_credentials()) {
 <fieldset>

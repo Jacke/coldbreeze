@@ -145,7 +145,14 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
 
 
 case class UptimeMessage(server: String, uptime: String)
-case class WhoAmIdentify(email: String, business: Int = 0, manager: Boolean, employee: Boolean, lang: String = "en", payed: Boolean = false, env: String = "prod")
+case class WhoAmIdentify(email: String, 
+  business: Int = 0, 
+  manager: Boolean, 
+  employee: Boolean,
+  lang: String = "en", 
+  payed: Boolean = false, 
+  env: String = "prod",
+  bb_ping: Boolean = false)
   implicit val WhoAmIdentifyReads = Json.reads[WhoAmIdentify]
   implicit val WhoAmIdentifyWrites = Json.format[WhoAmIdentify]
   implicit val UptimeMessageReads = Json.reads[UptimeMessage]
@@ -164,7 +171,7 @@ case class WhoAmIdentify(email: String, business: Int = 0, manager: Boolean, emp
   }
 
 
-  def whoami = SecuredAction { implicit request =>
+  def whoami = SecuredAction.async { implicit request =>
     val email = request.user.main.email.get
     val business = request.user.businessFirst
     applicationLogger.debug("Attempting risky calculation.")
@@ -178,8 +185,18 @@ case class WhoAmIdentify(email: String, business: Int = 0, manager: Boolean, emp
             )
 
     val env_mode = play.api.Play.current.mode
+    
+    minority.utils.BBoardWrapper().ping.map { bb_ping =>
 
-    Ok(Json.toJson(WhoAmIdentify(request.user.main.userId, request.user.businessFirst, isManager, isEmployee, lang, payed = current_plan.expired_at.isAfter( org.joda.time.DateTime.now()), env_mode.toString() )))
+    Ok(Json.toJson(WhoAmIdentify(request.user.main.userId, 
+      request.user.businessFirst, 
+      isManager, isEmployee, 
+      lang, 
+      payed = current_plan.expired_at.isAfter( org.joda.time.DateTime.now()), 
+      env_mode.toString(),
+      bb_ping 
+      )))
+    }
   }
 
   // a sample action using an authorization implementation
