@@ -22,7 +22,8 @@ object NewUserRoutine {
         def isArleadyDefined = EmployeeDAO.getByEmployeeUID(email).isDefined
         if (isEmpty && !isArleadyDefined) {
       		val emp_id = EmployeeDAO.pull_object(EmployeeDTO(None, email, email, None, true))
-          val biz_id = BusinessDAO.pull_object(BusinessDTO(None, "Your Company", country = "", city = "", 
+          val partOfEmail = email.split("@").head
+          val biz_id = BusinessDAO.pull_object(BusinessDTO(None, s"${partOfEmail}'s Workbench", country = "", city = "", 
                                        address = None, walkthrough = true, organization = true))
            defaultService(email, biz_id, isMaster)
           //EmployeesBusinessDAO.pull(emp_id, biz_id)
