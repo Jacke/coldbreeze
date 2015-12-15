@@ -9,6 +9,8 @@ Elements mocking */
 .themeDark a {
     color: #607D8B;
 }
+.noWorkbench .teamSettings {height: 568px;}
+
 body.themeGrad {
   vertical-align: baseline;
   background-repeat: no-repeat !important;
@@ -24,7 +26,10 @@ body.themeGrad {
 }
 
 .noWorkbench nav.minMenu.menuCell.menuEntity {-webkit-filter: blur(2px) contrast(2.9) saturate(10);cursor: none;}
-.noWorkbench .minorityLogo.menuCell {-webkit-filter: contrast(5.9) hue-rotate(90deg) saturate(40) saturate(2.9);}
+.noWorkbench .minorityLogo.menuCell {
+    -webkit-filter: contrast(8.9) hue-rotate(70deg) saturate(3) saturate(5.9);
+    opacity: 0.6;
+}
 .noWorkbench .menuCell.menuHelp.switcherWrap {-webkit-filter: blur(2px) contrast(2.9) saturate(10);   cursor: none;
     pointer-events: none;
     cursor: default;}
@@ -40,8 +45,8 @@ body.themeGrad div#container.container-global {
   min-height: 100%;
 }
 body.themeDark.themeGrad.dataPage {
-    background: linear-gradient(to bottom, rgb(77, 191, 101) 0%, rgb(84, 214, 111) 54%, rgb(82, 195, 106) 94%, rgb(77, 191, 101) 100%);
-    background-color: rgb(77, 191, 101);
+    background: linear-gradient(to bottom, #CC2828 0%, #B3CA44 54%, rgb(156, 181, 59) 94%, rgb(168, 185, 26) 100%);
+    background-color: rgb(168, 185, 26);
 }
 
 ul.perm-menu li {
@@ -3150,7 +3155,27 @@ form.form-horizontal.element-new-form.form-new-bpelem.form-edit-bpelem.form-new-
     height: 3px;
     z-index: 100;
     opacity: 0.9;
+    position: relative;
 }
+.progress-lines .line span.description {
+    position: absolute;
+    margin-top: -17px;
+    padding-top: 2px;
+    text-align: center;
+    width: 100%;
+    background: red;
+    color:white;
+}
+
+.progress-lines .elem-card.confirm  span.description {
+    background: #e67e22;
+}
+.progress-lines .elem-card.container_brick span.description  {
+    background: #27ae60;
+}
+
+
+
 .history-layout ul.history-list li * {
     display: inline-block;
     margin: 10px 33px auto;

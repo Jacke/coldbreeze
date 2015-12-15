@@ -8,7 +8,7 @@ var shell = require('gulp-shell');
 gulp.task('remote', function() {
     
 remoteSrc(['jsroutes.js'], {
-        base: 'https://min.ority.us/',
+        base: 'https://min.ority.us/'
     })
     .pipe(uglify())
     //.pipe(shell('dir'))

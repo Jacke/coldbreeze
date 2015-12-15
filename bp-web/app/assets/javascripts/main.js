@@ -107,6 +107,10 @@
       },
 
 
+      'moment': {
+       deps: ['jquery'],
+       exports: 'moment'
+      },
 
 
       'angular-moment': {
@@ -115,7 +119,7 @@
       },
 
       'livestamp': {
-       deps: ['angular'],
+       deps: ['angular', 'moment'],
        exports: 'livestamp'
       },
 
