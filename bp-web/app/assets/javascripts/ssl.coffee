@@ -1,15 +1,48 @@
 ssl_enabled = (location.protocol == 'https:')
 document.ssl_enabled = ssl_enabled
-
 document.minority =
   copyright:
     name: "Empia Inc."
     founded:  2014
   jobs:
     status: "Comming soon"
-    aprox:  16                                         
-                                        
-console.log "%c      Minority App, Empia Inc.© 2015   ", "color: red"                                        
+    aprox:  16                                                                 
+console.log "%c      Minority App, Empia Inc.© 2015   ", "color: red"   
+console.log "%c       ___       ", "color:blue"
+console.log "%c      /\__\      ", "color:blue"
+console.log "%c     /::|  |     ", "color:blue"
+console.log "%c    /:|:|  |     ", "color:blue"
+console.log "%c   /:/|:|__|__   ", "color:blue"
+console.log "%c  /:/ |::::\__\  ", "color:blue"
+console.log "%c  \/__/~~/:/  /  ", "color:blue"
+console.log "%c        /:/  /   ", "color:blue"
+console.log "%c       /:/  /    ", "color:blue"
+console.log "%c      /:/  /     ", "color:blue"
+console.log "%c      \/__/      ", "color:blue"
+console.log "%c TYPE document.minority to get commands", "color: green"       
+#module.exports = ->
+#    ssl_enabled = (location.protocol == 'https:')
+#    document.ssl_enabled = ssl_enabled
+#    document.minority =
+#      copyright:
+#        name: "Empia Inc."
+#        founded:  2014
+#      jobs:
+#        status: "Comming soon"
+#        aprox:  16                                                                 
+#    console.log "%c      Minority App, Empia Inc.© 2015   ", "color: red"   
+#    console.log "%c       ___       ", "color:blue"
+#    console.log "%c      /\__\      ", "color:blue"
+#    console.log "%c     /::|  |     ", "color:blue"
+#    console.log "%c    /:|:|  |     ", "color:blue"
+#    console.log "%c   /:/|:|__|__   ", "color:blue"
+#    console.log "%c  /:/ |::::\__\  ", "color:blue"
+#    console.log "%c  \/__/~~/:/  /  ", "color:blue"
+#    console.log "%c        /:/  /   ", "color:blue"
+#    console.log "%c       /:/  /    ", "color:blue"
+#    console.log "%c      /:/  /     ", "color:blue"
+#    console.log "%c      \/__/      ", "color:blue"
+#    console.log "%c TYPE document.minority to get commands", "color: green"                                         
 #console.log "%c         ff                ff.         ", "color: blue"
 #console.log "%c        fffft             ffff;        ", "color: blue"
 #console.log "%c       fffffff          :ffffffj       ", "color: blue"
@@ -29,20 +62,6 @@ console.log "%c      Minority App, Empia Inc.© 2015   ", "color: red"
 #console.log "%c ,fff,           ,fff            ffff  ", "color: blue"
 #console.log "%c ,jf               i              tff  ", "color: blue"
 #console.log "%c ,f                                .f  ", "color: blue"
-
-console.log "%c       ___       ", "color:blue"
-console.log "%c      /\__\      ", "color:blue"
-console.log "%c     /::|  |     ", "color:blue"
-console.log "%c    /:|:|  |     ", "color:blue"
-console.log "%c   /:/|:|__|__   ", "color:blue"
-console.log "%c  /:/ |::::\__\  ", "color:blue"
-console.log "%c  \/__/~~/:/  /  ", "color:blue"
-console.log "%c        /:/  /   ", "color:blue"
-console.log "%c       /:/  /    ", "color:blue"
-console.log "%c      /:/  /     ", "color:blue"
-console.log "%c      \/__/      ", "color:blue"
-
-console.log "%c TYPE document.minority to get commands", "color: green"
 
 
 
