@@ -38,7 +38,83 @@ body.themeGrad {
     pointer-events: none;
     cursor: default;
 }
+.container.workbench-container.setting-container {
+    min-height: 400px;
+}
+.progress-lines .line span.description.ng-hide-add         { animation:0.5s lightSpeedOut ease; }
+/* when showing the picture */
+.progress-lines .line span.description.ng-hide-remove      { animation:0.5s flipInX ease; }
 
+/* ANIMATIONS (FROM ANIMATE.CSS) ======================== */
+/* flip in */
+@keyframes flipInX {
+  0% {
+    transform: perspective(400px) rotate3d(1, 0, 0, 90deg);
+    transition-timing-function: ease-in;
+    opacity: 0;
+  }
+
+  40% {
+    transform: perspective(400px) rotate3d(1, 0, 0, -20deg);
+    transform: perspective(400px) rotate3d(1, 0, 0, -20deg);
+    transform: perspective(400px) rotate3d(1, 0, 0, -20deg);
+    transition-timing-function: ease-in;
+    transition-timing-function: ease-in;
+  }
+
+  60% {
+    transform: perspective(400px) rotate3d(1, 0, 0, 10deg);
+    transform: perspective(400px) rotate3d(1, 0, 0, 10deg);
+    transform: perspective(400px) rotate3d(1, 0, 0, 10deg);
+    opacity: 1;
+  }
+
+  80% {
+    transform: perspective(400px) rotate3d(1, 0, 0, -5deg);
+    transform: perspective(400px) rotate3d(1, 0, 0, -5deg);
+    transform: perspective(400px) rotate3d(1, 0, 0, -5deg);
+  }
+
+  100% {
+    transform: perspective(400px);
+    transform: perspective(400px);
+    transform: perspective(400px);
+  }
+}
+
+/* light speed out */
+@keyframes lightSpeedOut {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate3d(0,100%, 0) skewY(5deg);
+    transform: translate3d(0,100%, 0) skewY(5deg);
+    opacity: 0;
+  }
+}
+
+@keyframes lightSpeedOut {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate3d(0,100%, 0) skewY(5deg);
+    transform: translate3d(0,200%, 0) skewY(5deg);
+    transform: translate3d(0,300%, 0) skewY(5deg);
+    opacity: 0;
+  }
+}
+
+.stations.lineDescShowed.minimal-stations {
+    margin-top: 18px;
+    transition: 0.7s linear;
+}
+.stations.lineDescShowed.minimal-stations .session__buttonInput {
+    top: 0;
+}
 
 body.themeGrad div#container.container-global {
   background: rgba(255, 255, 255, 0.93);
