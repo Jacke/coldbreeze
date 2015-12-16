@@ -51,7 +51,7 @@ addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.6.0")
 
 addSbtPlugin("com.typesafe.sbteclipse" % "sbteclipse-plugin" % "2.4.0")
 
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.0")
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.0" exclude("org.slf4j", "slf4j-simple"))
 
 // gulp required new version of play
 
@@ -111,3 +111,6 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-scalariform" % "1.3.0")
 
 
 libraryDependencies += "com.novocode" % "junit-interface" % "0.11" % "test"
+
+
+addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.8.0")

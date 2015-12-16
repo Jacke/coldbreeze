@@ -55,4 +55,14 @@ class DriveController(override implicit val env: RuntimeEnvironment[DemoUser]) e
  }
 
 
+/*
+https://github.com/timezra/dropbox-sdk-scala
+https://github.com/vjousse/dropbox-scala-play/tree/master/app/views
+https://github.com/Shinsuke-Abe/dropbox4s
+https://github.com/Rovak/ReactiveDropbox
+https://github.com/akiomik/dispatch-dropbox
+https://github.com/emchristiansen/ResolveDropboxConflictedCopy
+https://github.com/julianmichael/5langs
+*/
+
 }
