@@ -83,6 +83,7 @@ object Dependencies {
   val fluentleniumasj = "org.fluentlenium"          % "fluentlenium-assertj"    % "0.10.3" //% "test" 
   
   val play            = "com.typesafe.play"         % "play_2.11"               % "2.3.9"
+  val play2oauth2     = "com.nulab-inc"             %% "play2-oauth2-provider"  % "0.14.0"
   val play4           = "org.webjars"               %% "webjars-play"           % "2.4.2"
   val slackapi        = "com.github.gilbertw1"      %% "slack-scala-client"     % "0.1.3"
   val playslick       = "com.typesafe.play"         %  "play-slick_2.11"        % "0.8.0"

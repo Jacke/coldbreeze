@@ -119,7 +119,7 @@
       },
 
       'livestamp': {
-       deps: ['angular', 'moment'],
+       deps: ['moment'],
        exports: 'livestamp'
       },
 

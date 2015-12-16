@@ -136,6 +136,7 @@ POST       /plan/switch_limit/:plan_id                          @controllers.Pla
 POST       /plan/bill/:billId/delete                            @controllers.PlanController.delete_bill(billId: Int)
 
 # Settings
+GET        /drive                                               @controllers.DriveController.index()
 GET        /settings                                            @controllers.SettingController.index()
 GET        /settings/workbenchs                                 @controllers.SettingController.workbench()
 GET        /settings/reset_bench                                @controllers.SettingController.resetBench(bench_id: Int=-1)
@@ -430,6 +431,19 @@ GET         /:profile_id										@controllers.ProfileController.profile(profile
 
 GET         /slack/auth                                         @controllers.SlackController.auth(code: Option[String])
 GET         /slack/users                                        @controllers.SlackController.getUsers()
+
+# Asana
+
+GET         /asana/auth                                         @controllers.AsanaController.auth(code: Option[String])
+GET         /asana/users                                         @controllers.AsanaController.getUsers()
+
+
+# OAuth2 Stuff
+#POST    /oauth2/access_token        controllers.OAuth2Controller.accessToken
+
+#GET        /_oauth-callback        util.OAuth2.callback(code: Option[String], state: Option[String])
+#GET        /_oauth-success         util.OAuth2.success
+
 
 #GET     /ui         com.github.mmizutani.playgulp.Gulp.index
 #->      /ui/        gulp.Routes

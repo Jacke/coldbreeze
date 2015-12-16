@@ -141,7 +141,7 @@ integrationTest := {
           akkaActor, 
           scaldiakka, 
           dispatch,
-           
+
           trireme,
           triremenode10src,
           jsengine,
@@ -241,6 +241,7 @@ integrationTest := {
           slick, 
           playsctest,
           play, 
+          play2oauth2,
           requirejs,
           selenium,
           selenide,
