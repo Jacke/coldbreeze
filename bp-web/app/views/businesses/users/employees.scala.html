@@ -147,6 +147,18 @@
                 }
                 </a>
               </li>
+@if(!entity.manager) {              
+              <li role="presentation" class="dropdownListItem onlyMember morphAdmin"><a role="menuitem" tabindex="-1" href="#">@form(users.routes.EmployeeController.toManager(entity.id.get), 'class -> "topRight") {
+                                  <input type="submit" value='To manager' class="btn">
+              }</a>
+              </li>     
+}         
+@if(entity.manager) {              
+              <li role="presentation" class="dropdownListItem onlyMember morphAdmin"><a role="menuitem" tabindex="-1" href="#">@form(users.routes.EmployeeController.toParticipator(entity.id.get), 'class -> "topRight") {
+                                  <input type="submit" value='To participator' class="btn">
+              }</a>
+              </li>  
+}                             
               <li role="presentation" class="divider"></li>
               <li role="presentation" class="dropdownListItem onlyMember morphAdmin"><a role="menuitem" tabindex="-1" href="#"> </a></li>
             </ul>
@@ -179,7 +191,21 @@
             <ul id="menu1" class="dropdown-menu" role="menu" aria-labelledby="drop4">
               <li role="presentation" class="dropdownListItem onlyMember morphAdmin"><a role="menuitem" tabindex="-1" href="#">@form(users.routes.EmployeeController.destroy(entity.id.get), 'class -> "topRight") {
                                   <input type="submit" value='@Messages("custom.delete")' class="btn danger">
-                              }</a></li>
+              }</a>
+              </li>
+@if(!entity.manager) {                 
+              <li role="presentation" class="dropdownListItem onlyMember morphAdmin"><a role="menuitem" tabindex="-1" href="#">@form(users.routes.EmployeeController.toManager(entity.id.get), 'class -> "topRight") {
+                                  <input type="submit" value='To manager' class="btn">
+              }</a>
+              </li>      
+}
+@if(entity.manager) {                      
+              <li role="presentation" class="dropdownListItem onlyMember morphAdmin"><a role="menuitem" tabindex="-1" href="#">@form(users.routes.EmployeeController.toParticipator(entity.id.get), 'class -> "topRight") {
+                                  <input type="submit" value='To participator' class="btn">
+              }</a>
+              </li>   
+}               
+
               <li role="presentation" class="divider"></li>
               <li role="presentation" class="dropdownListItem onlyMember morphAdmin"><a role="menuitem" tabindex="-1" href="#"> </a></li>
             </ul>

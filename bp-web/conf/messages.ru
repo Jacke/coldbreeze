@@ -120,6 +120,7 @@ businesses.serviceName = Service title
 businesses.addService = Add service
 businesses.members = Members
 businesses.addPeople = Add people
+businesses.editGroup = Edit group
 businesses.anonymous = Anonymous
 
 

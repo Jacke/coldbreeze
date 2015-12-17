@@ -60,6 +60,8 @@ import models.DAO.conversion.DatabaseFuture._
     employees.filter(_.id === id)
   private def filterByEmail(email:String): Query[Employees, EmployeeDTO, Seq] = 
     employees.filter(_.uid === email)
+  private def filterByEmailAndWorkbench(email:String, workbench:Int): Query[Employees, EmployeeDTO, Seq] = 
+    employees.filter(e => e.uid === email && e.workbench === workbench)    
   private def filterByWorkbench(workbench:Int): Query[Employees, EmployeeDTO, Seq] = 
     employees.filter(_.workbench === workbench)    
   private def All(): Query[Employees, EmployeeDTO, Seq] =
@@ -72,6 +74,9 @@ import models.DAO.conversion.DatabaseFuture._
   def getByEmpByUID(uid: String):Future[Option[EmployeeDTO]] = { 
     try db.run(filterByEmail(uid).result.headOption)
     finally println("db.close")//db.close
+  }
+  def getByEmployeeUIDAndWorkbench(uid: String, workbench: Int):Future[Option[EmployeeDTO]] = {
+    db.run(filterByEmailAndWorkbench(uid, workbench).result.headOption)
   }
   def getAllByEmpByUID(uid: String):Future[Seq[EmployeeDTO]] = { 
     try db.run(filterByEmail(uid).result)

@@ -105,6 +105,8 @@ POST        /people/:employee_id/unassign/:business_id        @controllers.users
 
 POST        /people/update/:id                                @controllers.users.EmployeeController.update_make(id: Int)
 POST        /people/:id/destroy                               @controllers.users.EmployeeController.destroy(id: Int)
+POST        /people/:id/to_manager                            @controllers.users.EmployeeController.toManager(id: Int)
+POST        /people/:id/to_participator                       @controllers.users.EmployeeController.toParticipator(id: Int)
 # Clients
 ##GET         /clients                                            @controllers.users.ClientController.index()
 ##GET         /client/create                                      @controllers.users.ClientController.create()

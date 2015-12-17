@@ -21,15 +21,18 @@ class Groups(tag: Tag) extends Table[GroupDTO](tag, "groups") {
 class AccountGroup(tag: Tag) extends Table[AccoutGroupDTO](tag, "account_group") {
   def id         = column[Int]("id", O.PrimaryKey, O.AutoInc)
     
-  def account_id = column[String]("account_id")
+  def account_id = column[Option[String]]("account_id")
   def group_id   = column[Int]("group_id")
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")
+  def employee_id = column[Int]("employee_id")
 
-  def accFK    = foreignKey("acc_group_acc_fk", account_id, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade, onUpdate = ForeignKeyAction.Cascade)
-  def group_FK = foreignKey("acc_group_group_FK", group_id, models.DAO.resources.GroupsDAO.groups)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def accFK      = foreignKey("acc_group_acc_fk", account_id, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade, onUpdate = ForeignKeyAction.Cascade)
+  def group_FK   = foreignKey("acc_group_group_FK", group_id, models.DAO.resources.GroupsDAO.groups)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def employeeFK = foreignKey("acc_group_employee_fk", employee_id, models.DAO.resources.EmployeeDAO.employees)(_.id)
 
-  def * = (id.?, account_id, group_id, created_at, updated_at) <> (AccoutGroupDTO.tupled, AccoutGroupDTO.unapply)
+
+  def * = (id.?, account_id, group_id, created_at, updated_at,employee_id) <> (AccoutGroupDTO.tupled, AccoutGroupDTO.unapply)
 }
 
 /**
@@ -39,10 +42,11 @@ class AccountGroup(tag: Tag) extends Table[AccoutGroupDTO](tag, "account_group")
 **/
 case class AccoutGroupDTO(
 						var id: Option[Int],
-						account_id: String, 
+						account_id: Option[String], 
 						group_id: Int, 
 						created_at: Option[org.joda.time.DateTime],
-    				updated_at: Option[org.joda.time.DateTime])
+    				updated_at: Option[org.joda.time.DateTime],
+            employee_id: Int = 0)
 object GroupDAOF {
   import akka.actor.ActorSystem
   import akka.stream.ActorFlowMaterializer
@@ -115,17 +119,17 @@ object AccountGroupDAO {
     implicit session ⇒
       account_group returning account_group.map(_.id) += s
   }
-  def assign(account_id: String, group_id: Int) = database withSession {
+  def assign(account_id: Option[String], group_id: Int, employee_id: Int = -1) = database withSession {
   	implicit session =>
   	val now = org.joda.time.DateTime.now()
-  	getByAccountAndGroup(account_id, group_id) match {
+  	getByEmpAndGroup(employee_id, group_id) match {
   		case Some(group) => -1
-  		case _ => pull_object(AccoutGroupDTO(None, account_id, group_id, Some(now), Some(now)))
+  		case _ => pull_object(AccoutGroupDTO(None, account_id, group_id, Some(now), Some(now), employee_id))
   	}
   }
-  def unassign(account_id: String, group_id: Int) = database withSession {
+  def unassign(account_id: Option[String], group_id: Int, employee_id: Int = -1) = database withSession {
   	implicit session =>
-  	getByAccountAndGroup(account_id, group_id) match {
+  	getByEmpAndGroup(employee_id, group_id) match {
   		case Some(group) => delete(group.id.get)
   		case _ => -1
   	}
@@ -150,6 +154,11 @@ object AccountGroupDAO {
       val q3 = for { s ← account_group if (s.account_id === account_id) && (s.group_id === group_id) } yield s 
       q3.list.headOption
   }
+  def getByEmpAndGroup(employee_id: Int, group_id: Int) = database withSession {
+    implicit session ⇒
+      val q3 = for { s ← account_group if (s.employee_id === employee_id) && (s.group_id === group_id) } yield s 
+      q3.list.headOption
+  }  
   def getByAccount(account_id: String) = database withSession {
     implicit session ⇒
       val q3 = for { s ← account_group if s.account_id === account_id } yield s 
