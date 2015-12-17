@@ -69,8 +69,8 @@ object AccountPlanDAOF {
 
   private def filterQuery(id: Int): Query[AccountPlans, AccountPlanDTO, Seq] =
     account_plans.filter(_.id === id)
-  private def filterByWorkbenchQuery(id: Int): Query[AccountPlans, AccountPlanDTO, Seq] =
-    account_plans.filter(_.id === id)    
+  private def filterByWorkbenchQuery(workbench: Int): Query[AccountPlans, AccountPlanDTO, Seq] =
+    account_plans.filter(_.workbench === workbench)    
   def get(id: Int):Future[Option[AccountPlanDTO]] = {
      db.run(filterQuery(id).result.headOption)
   }
