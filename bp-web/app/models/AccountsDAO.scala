@@ -81,7 +81,12 @@ import models.DAO.conversion.DatabaseFuture._
       infoF.flatMap { infoOpt =>
             infoOpt.map { info =>
                   updateF(info.id.get, info.copy(currentWorkbench = workbench))
-                } getOrElse Future.successful(no)
+                } getOrElse Future.successful(AccountsDAO.createInfo(AccountInfo(None, 
+                                                          uid = emp.uid, 
+                                                          created_at = org.joda.time.DateTime.now(), 
+                                                          ea = false, 
+                                                          pro = false,
+                                                          currentWorkbench = workbench)))
             }
       } 
       case _ => Future(-1)
@@ -335,6 +340,11 @@ import controllers.Credentials
       val accTupled = BasicProfile.tupled(Account.unapply(acc).get)
       DemoUser(accTupled, List(accTupled))
   }
+  def createInfo(a: AccountInfo) = database withSession {
+    implicit session =>
+    account_infos += a
+  }
+
   // TODO: def link(current: UserAccount, to: BasicProfile): UserAccount =  ???
   def updatePasswordInfo(user: DemoUser, info: PasswordInfo): Option[BasicProfile] = database withSession {
     implicit session ⇒

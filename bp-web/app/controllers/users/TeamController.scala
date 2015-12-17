@@ -46,7 +46,7 @@ class GroupController(override implicit val env: RuntimeEnvironment[DemoUser]) e
       val user = request.user
       //val employees = EmployeeDAO.getAllByMaster(user.main.email.get)
       //val accounts = models.AccountsDAO.findAllByEmails(employees.map(emp => emp.uid))
-      val businesses = BusinessDAO.getAll
+      //val businesses = BusinessDAO.getAll
       //val ebs = EmployeesBusinessDAO.getAll
       //val assign = businesses.filter(b => !(ebs.map(eb => eb._2).contains(b.id.get)))
       //val assigned = businesses.filter(b => ebs.map(eb => eb._2).contains(b.id.get))

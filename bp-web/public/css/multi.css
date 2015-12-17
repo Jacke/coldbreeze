@@ -1591,9 +1591,9 @@ span.groupFormTitle {
 }
 
 .manageWholeTeam {
-    position: absolute;
+    position: fixed;
     left: 0;
-    top: 80px;
+    top: 76px;
     right: 0;
     bottom: 0;
     z-index: 3;
@@ -2491,7 +2491,7 @@ form .flatRadioLike .flatRadio:checked + .flatRadioLabel:before {
 }
 
 .upmenu.manageWholeTeam.peoplePanel {
-        top: 125px;
+    top: 125px;
 }
 
 .peopleUpMenu {
@@ -2499,6 +2499,9 @@ form .flatRadioLike .flatRadio:checked + .flatRadioLabel:before {
     margin-top: -1px;
     height: 45px;
     text-align: center;
+    position: fixed;
+    width: 100%;
+    top: 81px;
 }
 .peopleUpMenu ul li.active a {
     color: #8DC3F1;
