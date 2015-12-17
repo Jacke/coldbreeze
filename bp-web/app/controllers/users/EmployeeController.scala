@@ -80,10 +80,17 @@ class EmployeeController(override implicit val env: RuntimeEnvironment[DemoUser]
       val assigned = businesses.filter(buss => employees.map(_.workbench).contains(buss.id.get) )
       val groups:Future[Seq[GroupDTO]] = models.DAO.resources.GroupDAOF.getAllByBusiness(business)
 
-      val current_plan = models.DAO.resources.EmployeeDAOF.await(
-        models.DAO.resources.AccountPlanDAOF.getByWorkbenchAcc(business)).get
+      //val current_plan =
+      val aval = models.DAO.resources.EmployeeDAOF.await(
+        models.DAO.resources.AccountPlanDAOF.getByWorkbenchAcc(business)) match {
+        case Some(acplan) => { 
+          println(acplan)
+          (acplan.limit + 1) - employees.length
+        }
+        case _ => 0
+      }
 
-      val aval = (current_plan.limit + 1) - employees.length
+      //val aval = (current_plan.limit + 1) - employees.length
       // current employee limit + main manager MINUS all employee length for that master
       groups.map { groups =>
         Ok(views.html.businesses.users.employees(
