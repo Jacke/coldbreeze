@@ -1,29 +1,16 @@
 package main.scala.bprocesses
 
-
-
 import com.typesafe.scalalogging.Logger
-
 import main.scala.simple_parts.process._
-
 import main.scala.utils.Space
-
-import org.slf4j.LoggerFactory
-
 import main.scala.bprocesses._
-
 import main.scala.simple_parts.process.Units._
 
 /**
-
  * *
-
  * ** Grand invoking algorithm
-
  * ** © Stanislav @stanthoughts 2014-2015
-
  * *
-
  */
 
 

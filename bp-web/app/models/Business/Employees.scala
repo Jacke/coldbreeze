@@ -29,7 +29,8 @@ import models.DAO.conversion.DatabaseFuture._
   def findById(id: Int): Future[Option[(Int, Int)]] =
     try db.run(filterQuery(id).result.headOption)
     finally println("db.close")//db.close
-  }  
+
+}  
 
 
 
@@ -59,6 +60,8 @@ import models.DAO.conversion.DatabaseFuture._
     employees.filter(_.id === id)
   private def filterByEmail(email:String): Query[Employees, EmployeeDTO, Seq] = 
     employees.filter(_.uid === email)
+  private def filterByWorkbench(workbench:Int): Query[Employees, EmployeeDTO, Seq] = 
+    employees.filter(_.workbench === workbench)    
   private def All(): Query[Employees, EmployeeDTO, Seq] =
     employees
 
@@ -80,6 +83,9 @@ import models.DAO.conversion.DatabaseFuture._
     try db.run(All().result)
     finally println("db.close")//db.close
   }
+  def getAllByWorkbench(workbench: Int):Future[Seq[EmployeeDTO]] = {
+    db.run(filterByWorkbench(workbench).result) 
+  } 
 
   def updateBusinessForAllEmployees() = {
     val emps:Future[Seq[EmployeeDTO]] = db.run(All().result)

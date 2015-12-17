@@ -28,6 +28,9 @@ import models.AccountDAO
 
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.Duration
+import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 /**
  * Created by Sobolev on 22.07.2014.
  */
@@ -59,31 +62,33 @@ class EmployeeController(override implicit val env: RuntimeEnvironment[DemoUser]
       "manager" -> boolean,
       "workbench_id" -> number)(EmployeeDTO.apply)(EmployeeDTO.unapply))
 
- def index() = SecuredAction { implicit request =>
+ def index() = SecuredAction.async { implicit request =>
       val business = request.user.businessFirst
       if (business < 1) {
-        Redirect(controllers.routes.SettingController.workbench())
+        Future(Redirect(controllers.routes.SettingController.workbench()))
       }
       else {
 
       val user = request.user
-      val employees = EmployeeDAO.getAllByWorkbench(request.user.businessFirst)
-      val accounts = models.AccountsDAO.findAllByEmails(employees.map(emp => emp.uid))
-      val businesses = List(BusinessDAO.get(business).get)
-      val ebs = EmployeesBusinessDAO.getAll
-      val assign = businesses.filter(b => !(ebs.map(eb => eb._2).contains(b.id.get)))
-      val assigned = businesses.filter(b => ebs.map(eb => eb._2).contains(b.id.get))
-      val true_business = EmployeesBusinessDAO.getByUID(request.user.main.email.get)
-      var groups: List[GroupDTO] = List()
-      true_business match {
-        case Some(biz) => groups = GroupsDAO.getAllByBusiness(biz._2)
-        case _ => groups = List()
-      }
-      val current_plan = models.DAO.resources.AccountPlanDAO.getByMasterAcc(user.main.email.get).get
+      val employeesF:Future[Seq[EmployeeDTO]] = models.DAO.resources.EmployeeDAOF.getAllByWorkbench(request.user.businessFirst)
+      val employees = models.DAO.resources.EmployeeDAOF.await(employeesF)
+
+      val accounts = models.AccountsDAO.findAllByEmails(employees.toList.map(emp => emp.uid))
+      val businesses = List(models.DAO.resources.EmployeeDAOF.await(
+        models.DAO.resources.BusinessDAOF.get(business))).flatten
+      val assign = businesses.filter(buss => !employees.map(_.workbench).contains(buss.id.get) )
+      val assigned = businesses.filter(buss => employees.map(_.workbench).contains(buss.id.get) )
+      val groups:Future[Seq[GroupDTO]] = models.DAO.resources.GroupDAOF.getAllByBusiness(business)
+
+      val current_plan = models.DAO.resources.EmployeeDAOF.await(
+        models.DAO.resources.AccountPlanDAOF.getByWorkbenchAcc(business)).get
+
       val aval = (current_plan.limit + 1) - employees.length
       // current employee limit + main manager MINUS all employee length for that master
-      Ok(views.html.businesses.users.employees(
-        Page(employees, 1, 1, employees.length), accounts, 1, "%", assign, assigned, groups, aval)(user))
+      groups.map { groups =>
+        Ok(views.html.businesses.users.employees(
+          Page(employees.toList, 1, 1, employees.length), accounts, 1, "%", assign, assigned, groups.toList, aval)(user))
+        }
       }
   }
  def team() = SecuredAction { implicit request =>

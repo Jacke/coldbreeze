@@ -46,6 +46,55 @@ case class AccountPlanDTO(var id: Option[Int],
   }
 }
 
+
+
+object AccountPlanDAOF {
+  import akka.actor.ActorSystem
+  import akka.stream.ActorFlowMaterializer
+  import akka.stream.scaladsl.Source
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._  
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  val account_plans = AccountPlanDAO.account_plans
+
+  private def filterQuery(id: Int): Query[AccountPlans, AccountPlanDTO, Seq] =
+    account_plans.filter(_.id === id)
+  private def filterByWorkbenchQuery(id: Int): Query[AccountPlans, AccountPlanDTO, Seq] =
+    account_plans.filter(_.id === id)    
+  def get(id: Int):Future[Option[AccountPlanDTO]] = {
+     db.run(filterQuery(id).result.headOption)
+  }
+
+  def getByWorkbenchAcc(workbench_id: Int):Future[Option[AccountPlanDTO]] = {
+      assignPlan(db.run(filterByWorkbenchQuery(workbench_id).result.headOption))
+  }  
+
+  def assignPlan(s: Future[Option[AccountPlanDTO]]):Future[Option[AccountPlanDTO]] = {
+    s.map { v => 
+      v match {
+      case Some(account_plan) => {
+        account_plan.assignPlan(PlanDAO.get(account_plan.plan).get)
+        account_plan.assignHistory(AccountPlanHistoryDAO.getAllByAccountPlan(account_plan.id.getOrElse(0)))
+        Some(account_plan)
+      }
+        case _ => None
+      }
+    }
+  }
+
+} // Future Impl
+
+
 object AccountPlanDAO {
   import scala.util.Try
   import DatabaseCred.database

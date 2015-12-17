@@ -43,6 +43,68 @@ case class AccoutGroupDTO(
 						group_id: Int, 
 						created_at: Option[org.joda.time.DateTime],
     				updated_at: Option[org.joda.time.DateTime])
+object GroupDAOF {
+  import akka.actor.ActorSystem
+  import akka.stream.ActorFlowMaterializer
+  import akka.stream.scaladsl.Source
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._  
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  val groups = GroupsDAO.groups
+
+  //private def filterQueryByProcess(process: Int): Query[ProcessHistoriesF, ProcessHistoryDTO, Seq] =
+  //  bpsessions.filter(_.process === process)
+  private def filterQuery(id: Int): Query[Groups, GroupDTO, Seq] =
+    groups.filter(_.id === id)
+  private def filterByWorkbenchQuery(workbench_id: Int): Query[Groups, GroupDTO, Seq] =
+    groups.filter(_.business === workbench_id)
+
+  def get(id: Int):Future[Option[GroupDTO]] = {
+     db.run(filterQuery(id).result.headOption)
+  }
+  def getAllByBusiness(workbench_id: Int):Future[Seq[GroupDTO]] = {
+     db.run(filterByWorkbenchQuery(workbench_id).result)
+  }
+
+}
+object AccountGroupDAOF {
+  import akka.actor.ActorSystem
+  import akka.stream.ActorFlowMaterializer
+  import akka.stream.scaladsl.Source
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._  
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  val account_group = AccountGroupDAO.account_group
+
+  //private def filterQueryByProcess(process: Int): Query[ProcessHistoriesF, ProcessHistoryDTO, Seq] =
+  //  bpsessions.filter(_.process === process)
+  private def filterQuery(id: Int): Query[AccountGroup, AccoutGroupDTO, Seq] =
+    account_group.filter(_.id === id)
+
+  def get(id: Int):Future[Option[AccoutGroupDTO]] = {
+     db.run(filterQuery(id).result.headOption)
+  }
+}
+
 
 object AccountGroupDAO {
   import scala.util.Try

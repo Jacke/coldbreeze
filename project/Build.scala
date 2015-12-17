@@ -122,6 +122,8 @@ integrationTest := {
           sprayClient,
           play4, 
           hdrHistogram))
+    .settings(libraryDependencies ~= { _.map(_.exclude("org.slf4j", "slf4j-simple")) })
+
 
   lazy val bpCore = Project("bp-core", file("bp-core"))
     .settings(basicSettings: _*)
@@ -141,11 +143,9 @@ integrationTest := {
           akkaActor, 
           scaldiakka, 
           dispatch,
-
-          trireme,
-          triremenode10src,
+          //trireme,
+          //triremenode10src,
           jsengine,
-
           futiles,
           scalaz, 
           scalazstream,
@@ -157,6 +157,8 @@ integrationTest := {
 	        scaldi,
           sprayClient, 
           hdrHistogram))
+    .settings(libraryDependencies ~= { _.map(_.exclude("org.slf4j", "slf4j-simple")) })
+
 
         //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
         //provided(logback) ++
@@ -171,7 +173,7 @@ integrationTest := {
       libraryDependencies ++=
         List(
           async, 
-          akkaSlf4j, 
+          //akkaSlf4j, 
           paypal,
           slick, 
           slick_migrate,
@@ -197,6 +199,8 @@ integrationTest := {
           sprayRouting, 
           hdrHistogram, 
           sprayJson))
+        .settings(libraryDependencies ~= { _.map(_.exclude("org.slf4j", "slf4j-simple")) })
+
 
         //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
         //test(scalatest, akkaTestKit, sprayTestkit))
@@ -237,7 +241,7 @@ integrationTest := {
         List(
           async, 
           akkaActor, 
-          akkaSlf4j, 
+         // akkaSlf4j, 
           slick, 
           playsctest,
           play, 
@@ -293,6 +297,8 @@ integrationTest := {
           logbackClassic, 
           scalaLog, 
           hdrHistogram))
+    .settings(libraryDependencies ~= { _.map(_.exclude("org.slf4j", "slf4j-simple")) })
+
 
         //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
         //test(scalatest, akkaTestKit, sprayTestkit))

@@ -47,6 +47,41 @@ case class BusinessDTO(var id: Option[Int],
   organization: Boolean = false)
 
 
+object BusinessDAOF {
+  import akka.actor.ActorSystem
+  import akka.stream.ActorFlowMaterializer
+  import akka.stream.scaladsl.Source
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._  
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  val businesses = BusinessDAO.businesses
+
+  //private def filterQueryByProcess(process: Int): Query[ProcessHistoriesF, ProcessHistoryDTO, Seq] =
+  //  bpsessions.filter(_.process === process)
+  private def filterQuery(id: Int): Query[Businesses, BusinessDTO, Seq] =
+    businesses.filter(_.id === id)
+
+  def get(id: Int):Future[Option[BusinessDTO]] = {
+     db.run(filterQuery(id).result.headOption)
+  }
+
+
+
+
+} // Future Impl
+
+
+
 object BusinessDAO {
   import scala.util.Try
   import DatabaseCred.database

@@ -21,6 +21,85 @@
 
     */
 
+@font-face {
+  font-family: 'Rams Lt';
+  src: url('/assets/fonts/2016/RamsLt-Italic.eot');
+  src: url('/assets/fonts/2016/RamsLt-Italic.eot?#iefix') format('embedded-opentype'),
+    url('/assets/fonts/2016/RamsLt-Italic.woff') format('woff'),
+    url('/assets/fonts/2016/RamsLt-Italic.ttf') format('truetype');
+  font-weight: 300;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Rams';
+  src: url('/assets/fonts/2016/RamsBlack-Italic.eot');
+  src: url('/assets/fonts/2016/RamsBlack-Italic.eot?#iefix') format('embedded-opentype'),
+    url('/assets/fonts/2016/RamsBlack-Italic.woff') format('woff'),
+    url('/assets/fonts/2016/RamsBlack-Italic.ttf') format('truetype');
+  font-weight: 900;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Rams';
+  src: url('/assets/fonts/2016/Rams-Bold.eot');
+  src: url('/assets/fonts/2016/Rams-Bold.eot?#iefix') format('embedded-opentype'),
+    url('/assets/fonts/2016/Rams-Bold.woff') format('woff'),
+    url('/assets/fonts/2016/Rams-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Rams';
+  src: url('/assets/fonts/2016/Rams-BoldItalic.eot');
+  src: url('/assets/fonts/2016/Rams-BoldItalic.eot?#iefix') format('embedded-opentype'),
+    url('/assets/fonts/2016/Rams-BoldItalic.woff') format('woff'),
+    url('/assets/fonts/2016/Rams-BoldItalic.ttf') format('truetype');
+  font-weight: bold;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Rams Lt';
+  src: url('/assets/fonts/2016/RamsLt.eot');
+  src: url('/assets/fonts/2016/RamsLt.eot?#iefix') format('embedded-opentype'),
+    url('/assets/fonts/2016/RamsLt.woff') format('woff'),
+    url('/assets/fonts/2016/RamsLt.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Rams';
+  src: url('/assets/fonts/2016/Rams-Italic.eot');
+  src: url('/assets/fonts/2016/Rams-Italic.eot?#iefix') format('embedded-opentype'),
+    url('/assets/fonts/2016/Rams-Italic.woff') format('woff'),
+    url('/assets/fonts/2016/Rams-Italic.ttf') format('truetype');
+  font-weight: normal;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Rams';
+  src: url('/assets/fonts/2016/Rams.eot');
+  src: url('/assets/fonts/2016/Rams.eot?#iefix') format('embedded-opentype'),
+    url('/assets/fonts/2016/Rams.woff') format('woff'),
+    url('/assets/fonts/2016/Rams.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Rams';
+  src: url('/assets/fonts/2016/RamsBlack.eot');
+  src: url('/assets/fonts/2016/RamsBlack.eot?#iefix') format('embedded-opentype'),
+    url('/assets/fonts/2016/RamsBlack.woff') format('woff'),
+    url('/assets/fonts/2016/RamsBlack.ttf') format('truetype');
+  font-weight: 900;
+  font-style: normal;
+}
 
 @font-face {
   font-family: 'Aptifer Slab LT Pro';
