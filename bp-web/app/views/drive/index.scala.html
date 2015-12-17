@@ -23,7 +23,7 @@
 
 @main(Messages("page.settings")(LangDet.getLang(user) ), user) {
     <script type="text/javascript" src="https://apis.google.com/js/api.js?onload=onApiLoad"></script>
-
+<script type="text/javascript" src="https://app.box.com/js/static/select.js"></script>
     <script type="text/javascript">
 (function() {
 	/**
@@ -141,7 +141,21 @@
 
 
 <button type="button" id="pick">Pick File</button>
-	
+<div id="box-select" data-link-type="direct" data-multiselect="true" data-client-id="9nmk1hao8ea3cgpz1opysjtva6zhqd8h"></div>
+<script>
+//$(document).ready(function() {
+    var boxSelect = new BoxSelect();
+    // Register a success callback handler
+    boxSelect.success(function(response) {
+        console.log(response);
+    });
+    // Register a cancel callback handler
+    boxSelect.cancel(function() {
+        console.log("The user clicked cancel or closed the popup");
+    });
+//});
+</script>
+
 	<script>
 		function initPicker() {
 			var picker = new FilePicker({
