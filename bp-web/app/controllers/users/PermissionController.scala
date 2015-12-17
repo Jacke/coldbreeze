@@ -27,12 +27,13 @@ import models.AccountDAO
 /**
  * Created by Sobolev on 22.07.2014.
  */
-class PermissionController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
-
-
 case class ActPermissionJSON(elemperms: List[ActPermission], employees: List[EmployeeDTO], employee_groups:List[GroupDTO], accounts: List[AccountDAO])
 case class PeopleJSON(employees: List[EmployeeDTO], employee_groups:List[GroupDTO], accounts: List[AccountDAO])
 case class ActPermissionOnlyJSON(elemperms: List[ActPermission])
+
+class PermissionController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
+
+
 
 val Home = Redirect(routes.BusinessController.index())
 

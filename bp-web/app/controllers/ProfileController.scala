@@ -53,16 +53,20 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
       }
   }
 
-  def dashboardScreen = SecuredAction { implicit request =>
+  def dashboardScreen = SecuredAction.async { implicit request =>
       val business = request.user.businessFirst
       if (business < 1) {
-        Redirect(controllers.routes.SettingController.workbench())
+        Future(Redirect(controllers.routes.SettingController.workbench()))
       } else {
       // TODO: service.getByBusiness that manager participated
       val services = BusinessServiceDAO.getAllByBusiness(request.user.businessFirst)
-      val businesses = List(BusinessDAO.get(business).get)
-      val primaryBusiness:BusinessDTO = businesses.head
+      val businessF = models.DAO.resources.BusinessDAOF.get(business)
 
+
+      val RESULT:scala.concurrent.Future[play.api.mvc.Result] = businessF.flatMap { businessReal => 
+
+      val businesses = List(businessReal.get)
+      val primaryBusiness:BusinessDTO = businesses.head
       val email = request.user.main.email.get
 
       var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(email, business).get
@@ -73,31 +77,51 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
         //request.user.renewPermissions()                     // renew permission
         var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(email, business).get
         println("redirect")
-        Home                                                // redirect to dashboard
+        Future(Home)                                                // redirect to dashboard
       } else {
-        val plan = planFetch(email, isManager, business)
+
+        val planF:Future[Option[planInfo]] = planFetch(email, isManager, business) 
         val managerParams = makeManagerParams(email, isManager, primaryBusiness)
         val walkthrought:Boolean = managerParams match {
             case  Some(param) => param.business.walkthrough
             case _ => false
         }   
-        val sessions:List[SessionContainer] = BPSessionDAO.findListedByBusiness(business)//BPSessionDAO.findByBusiness(business_id).map(ses => SessionDecorator(ses._1, ses._2)).toList
-        val currentReactions:List[CurrentSessionReactionContainer] = sessions.map(cn => cn.sessions.map(session_status => 
-            SessionReactionDAO.findCurrentUnappliedContainer(cn.process.id.get, session_status.session.id.get)).flatten
-          ).flatten
-        val dashboardTopBar: DashboardTopBar = countDashboardTopBar(email, business)
 
-        Ok(views.html.profiles.dashboard(request.user, 
-          managerParams, 
-          makeEmployeeParams(email, isEmployee, primaryBusiness), 
-          plan, 
-          walkthrought, 
-          sessions,
-          dashboardTopBar, currentReactions ) (
-            Page(services, 1, 1, services.length), 1, "%", businesses))
+        val sessionsF:Future[Seq[SessionContainer]] = BPSessionDAOF.findListedByBusiness(business)
+        sessionsF.flatMap { sessions => 
+        val currentReactionsF:Future[List[Option[CurrentSessionReactionContainer]]] = Future.sequence( sessions.toList.map(cn => 
+            cn.sessions.toList.map(session_status => 
+                SessionReactionDAOF.findCurrentUnappliedContainer(cn.process.id.get, session_status.session.id.get)
+                )
+          ).flatten )
+
+        val dashboardTopBarF: Future[DashboardTopBar] = countDashboardTopBar(email, business)
+        dashboardTopBarF.flatMap { dashboardTopBar =>
+          planF.flatMap { plan =>
+            currentReactionsF.flatMap { currentReactions =>
+                
+                Future (
+                  Ok(views.html.profiles.dashboard(request.user, 
+                managerParams, 
+                makeEmployeeParams(email, isEmployee, primaryBusiness), 
+                plan, 
+                walkthrought, 
+                sessions.toList,
+                dashboardTopBar, currentReactions.flatten ) (
+                  Page(services, 1, 1, services.length), 1, "%", businesses))
+              )
+            }
+          }
+        }
+        }
       }
+
+
     }
-  }
+      RESULT
+    }
+
+}
 
 
 
@@ -123,20 +147,24 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
 /*
  Private operations
 */
-private def planFetch(email: String, isManager: Boolean, business: Int = -1):Option[planInfo] = {
+private def planFetch(email: String, isManager: Boolean, business: Int = -1):Future[Option[planInfo]] = {
     if (isManager) {
-      val plan = AccountPlanDAO.getByWorkbenchAcc(workbench_id = business)//AccountPlanDAO.getPlanByMasterAcc(email)
-      plan match {
-        case Some(plan) => { 
-          val planTitle = PlanDAO.get(plan.plan).get
-          Some(planInfo(planTitle.title, plan.expired_at))
+      val planF = AccountPlanDAOF.getByWorkbenchAcc(workbench_id = business)//AccountPlanDAO.getPlanByMasterAcc(email)
+      planF.flatMap { plan =>
+        plan match {
+          case Some(plan) => { 
+            PlanDAOF.get(plan.plan).map { planTitle =>
+              Some(planInfo(planTitle.get.title, plan.expired_at))
+            }
+          }
+          case _ => Future(None)
         }
-        case _ => None
-      }
+      } 
     } else {
-        None
+        Future(None)
     }
 }
+
 
 private def profilePerms(uid: String) = {
   ActPermissionDAO.getByUID(uid)
@@ -144,34 +172,36 @@ private def profilePerms(uid: String) = {
 private def dashActs(uid: String) = {
   ActPermissionDAO.getByUID(uid)
 }
-private def countDashboardTopBar(uid: String, business: Int = -1): DashboardTopBar = {
-
-
+private def countDashboardTopBar(uid: String, business: Int = -1): Future[DashboardTopBar] = {
 // find businesses
  business match {
   case -1 => {
-      DashboardTopBar(
+      Future(DashboardTopBar(
                        newSession = 0,
                        interaction = 0, 
                        completedSession = 0, 
-                       process = 0)
+                       process = 0))
   }
   case _ => { 
     // find processes for each businesses
-    val processes = BPDAO.findByBusiness(business)
+    val processesF:Future[Seq[BProcessDTO]] = BPDAOF.findByBusiness(business)
     // find stations for processes
-    val stations = BPStationDAO.findByBPIds(processes.map(_.id.get))
-    // find completed stations
-    val competed = stations.filter(_.finished)
-    // find not completed but not canceled stations
-    val newSession = stations.filter(s => s.started && !s.finished)
-    // find inputlogger for new stations and their coun
-    val interaction = stations.filter(s => s.started && s.paused)
-      DashboardTopBar(
-                       newSession = newSession.length,
-                       interaction = interaction.length, 
-                       completedSession = competed.length, 
-                       process = processes.length)
+    processesF.flatMap { processes =>
+      val stationsF = BPStationDAOF.findByBPIds(processes.map(_.id.get).toList)
+      stationsF.map { stations =>
+        // find completed stations
+        val competed = stations.filter(_.finished)
+        // find not completed but not canceled stations
+        val newSession = stations.filter(s => s.started && !s.finished)
+        // find inputlogger for new stations and their coun
+        val interaction = stations.filter(s => s.started && s.paused)
+          DashboardTopBar(
+                           newSession = newSession.length,
+                           interaction = interaction.length, 
+                           completedSession = competed.length, 
+                           process = processes.length)
+      }
+    }
   }
 }
 
