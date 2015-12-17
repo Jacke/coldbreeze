@@ -172,7 +172,7 @@ var map = Array.prototype.map;
 $('#addMembersForm button.posRight').on('click', function(event) {
 
 event.preventDefault();
-  var emails = map.call(document.querySelectorAll('.inputEmployee input#newUsersForGroup'), function( l ){ return l.value }).filter(function(o){return o != "" })
+  var emails = _.map(document.querySelectorAll('.inputEmployee input#newUsersForGroup'), function( l ){ return l.value }).filter(function(o){return o != "" })
 if (emails.length > 0) {
 
 /*
@@ -200,8 +200,8 @@ var lists = _.groupBy(data, function(element, index){
   return Math.floor(index/n);
 });
 lists = _.filter(_.toArray(lists), function(arr){ return arr[0] != "" });
-var admin = _.filter(lists, function(arr) { return arr[1] == true })._.map(function(el){return el[0] })
-var employee = _.filter(lists, function(arr) { return arr[1] == false })._.map(function(el){return el[0] })
+var admin = _.map(_.filter(lists, function(arr) { return arr[1] == true }), function(a){return a[0] });
+var employee = _.map(_.filter(lists, function(arr) { return arr[1] == false }), function(a){return a[0]});
 
 console.log("admin");
 console.log(admin);

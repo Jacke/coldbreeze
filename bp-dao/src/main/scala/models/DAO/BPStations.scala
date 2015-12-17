@@ -98,11 +98,17 @@ import models.DAO.conversion.DatabaseFuture._
 
   private def filterQueryBySession(session_id: Int): Query[BPStations, BPStationDTO, Seq] =
     BPStationDAO.bpstations.filter(_.session === session_id)
+  private def filterQueryByBPIds(bpIds: List[Int]): Query[BPStations, BPStationDTO, Seq] =
+    BPStationDAO.bpstations.filter(_.process inSetBind bpIds)
 
   def findBySessionF(id: Int): Future[Option[BPStationDTO]] =
     try db.run(filterQueryBySession(id).result.headOption)
     finally println("db.close")//db.close
                
+  def findByBPIds(ids: List[Int]):Future[Seq[BPStationDTO]] = {
+    db.run(filterQueryByBPIds(ids).result)
+  }
+      
 
 }
 

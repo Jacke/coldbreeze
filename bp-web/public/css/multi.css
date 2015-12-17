@@ -1395,6 +1395,10 @@ span.groupFormTitle {
 .userCard .userName .block {
     font-size: 115%;
 }
+.userCard .userName .email-block {
+    font-size: 11px;
+    color: #3D4452;
+}
 
 .userCard .infoIco {
     position: absolute;

@@ -23,6 +23,9 @@ import securesocial.core._
 import models.DAO.resources.ClientBusinessDAO
 import models.DAO.resources.web._
 import models.AccountDAO
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 /**
  * Created by Sobolev on 19.05.2015.
  */
@@ -59,26 +62,28 @@ class GroupController(override implicit val env: RuntimeEnvironment[DemoUser]) e
         Home//Ok(views.html.businesses.users.employee_form(groupForm, request.user))
   }
   def create_new() = SecuredAction(BodyParsers.parse.json) { implicit request =>
+    val business = request.user.businessFirst
+      if (business < 1) {
+        Redirect(controllers.routes.SettingController.workbench())
+    }
+    else {
   	val now = org.joda.time.DateTime.now()
-    val true_business = EmployeesBusinessDAO.getByUID(request.user.main.email.get)
-    println("true_business")
-    println(true_business)
     println(request.body.validate[GroupDTO])
-    true_business match {
-    case Some(x) => { request.body.validate[GroupDTO].map{
+    request.body.validate[GroupDTO].map{
         case entity => { 
               println("entity")
-              println(entity, x)
-          val idd = GroupsDAO.pull_object(GroupDTO(None, entity.title, business = x._2, Some(now),Some(now)))
-          Ok(Json.toJson(Map("success" -> Json.toJson(entity), "id" -> Json.toJson(idd))))
+              
+              val idd = GroupsDAO.pull_object(GroupDTO(None, entity.title, business = business, Some(now),Some(now)
+                  ))
+                Ok(Json.toJson(Map("success" -> Json.toJson(entity), "id" -> Json.toJson(idd))))
+              
         }
       }.recoverTotal{
         e => BadRequest("Can't create group")
       }
-    }
-    case _ => BadRequest("Can't create group")
-    }
-  }
+    }   
+}
+
   def update(id: Int) = SecuredAction { implicit request =>
       val employee = EmployeeDAO.get(id)
       employee match {
@@ -98,18 +103,45 @@ class GroupController(override implicit val env: RuntimeEnvironment[DemoUser]) e
         })
 
   }
-  def assign_user(account_id: String, group_id: Int) = SecuredAction { implicit request =>
-  	AccountGroupDAO.assign(account_id, group_id) match {
-  		case -1 => BadRequest("asigned operation failed")
-  		case _ => Ok("asigned")
-  	}
-  }
-  def unassign_user(account_id: String, group_id: Int) = SecuredAction { implicit request =>
-  	AccountGroupDAO.unassign(account_id, group_id) match {
+  def assign_user(account_id: String, group_id: Int) = SecuredAction.async { implicit request =>
+    val business = request.user.businessFirst
+      if (business < 1) {
+        Future(Redirect(controllers.routes.SettingController.workbench()) )
+    }
+    else {
+    val employeeF = EmployeeDAOF.getByEmployeeUIDAndWorkbench(account_id, business)
+    employeeF.map { employee =>
+    val acc = models.AccountsDAO.getAccount(account_id) match {
+      case Some(acc) => Some(acc.userId)
+      case _ => None
+    } 
+      	AccountGroupDAO.assign(acc, group_id, employee.get.id.getOrElse(-1)) match {
+      		case -1 => BadRequest("asigned operation failed")
+      		case _ => Ok("asigned")
+      	}
+    }
+    }
+}
+
+  def unassign_user(account_id: String, group_id: Int) = SecuredAction.async { implicit request =>
+    val business = request.user.businessFirst
+      if (business < 1) {
+        Future(Redirect(controllers.routes.SettingController.workbench()) )
+    }
+    else {
+    val employeeF = EmployeeDAOF.getByEmployeeUIDAndWorkbench(account_id, business)
+    employeeF.map { employee =>
+    val acc = models.AccountsDAO.getAccount(account_id) match {
+      case Some(acc) => Some(acc.userId)
+      case _ => None
+    }     
+  	AccountGroupDAO.unassign(acc, group_id, employee.get.id.getOrElse(-1)) match {
   		case -1 => BadRequest("unassigned operation failed")
   		case _ => Ok("unassigned")
   	}
+    }
   }
+}
   def destroy(id: Int) = SecuredAction { implicit request =>
       Home.flashing(GroupsDAO.delete(id) match {
         case 0 => "failure" -> "Entity has Not been deleted"

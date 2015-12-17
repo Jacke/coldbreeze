@@ -71,85 +71,96 @@ class EmployeeController(override implicit val env: RuntimeEnvironment[DemoUser]
 
       val user = request.user
       val employeesF:Future[Seq[EmployeeDTO]] = models.DAO.resources.EmployeeDAOF.getAllByWorkbench(request.user.businessFirst)
-      val employees = models.DAO.resources.EmployeeDAOF.await(employeesF)
+      employeesF.flatMap { employees => 
+        //val employees = models.DAO.resources.EmployeeDAOF.await(employeesF)
+
 
       val accounts = models.AccountsDAO.findAllByEmails(employees.toList.map(emp => emp.uid))
-      val businesses = List(models.DAO.resources.EmployeeDAOF.await(
-        models.DAO.resources.BusinessDAOF.get(business))).flatten
+      val businessF = models.DAO.resources.BusinessDAOF.get(business)
+      businessF.flatMap { businessReal => 
+
+      val businesses = List(businessReal).flatten
       val assign = businesses.filter(buss => !employees.map(_.workbench).contains(buss.id.get) )
       val assigned = businesses.filter(buss => employees.map(_.workbench).contains(buss.id.get) )
       val groups:Future[Seq[GroupDTO]] = models.DAO.resources.GroupDAOF.getAllByBusiness(business)
 
       //val current_plan =
-      val aval = models.DAO.resources.EmployeeDAOF.await(
-        models.DAO.resources.AccountPlanDAOF.getByWorkbenchAcc(business)) match {
-        case Some(acplan) => { 
-          println(acplan)
-          (acplan.limit + 1) - employees.length
+      val accPlanF = models.DAO.resources.AccountPlanDAOF.getByWorkbenchAcc(business)
+      accPlanF.flatMap { accplan =>  
+        val aval = accplan match {
+          case Some(acplan) => { 
+            println(acplan)
+            (acplan.limit + 1) - employees.length
+          }
+          case _ => 0
         }
-        case _ => 0
-      }
-
-      //val aval = (current_plan.limit + 1) - employees.length
       // current employee limit + main manager MINUS all employee length for that master
-      groups.map { groups =>
-        Ok(views.html.businesses.users.employees(
-          Page(employees.toList, 1, 1, employees.length), accounts, 1, "%", assign, assigned, groups.toList, aval)(user))
-        }
+        groups.map { groups =>
+          Ok(views.html.businesses.users.employees(
+            Page(employees.toList, 1, 1, employees.length), accounts, 1, "%", assign, assigned, groups.toList, aval)(user))
+          }
       }
-  }
- def team() = SecuredAction { implicit request =>
+      }
+      }
+      }
+}
+ def team() = SecuredAction.async { implicit request =>
       val business = request.user.businessFirst
       if (business < 1) {
-        Redirect(controllers.routes.SettingController.workbench())
+        Future(Redirect(controllers.routes.SettingController.workbench()))
       }
       else {
       val user = request.user
-      val employees = EmployeeDAO.getAllByMaster(user.main.email.get)
-      val accounts = models.AccountsDAO.findAllByEmails(employees.map(emp => emp.uid))
+      val employeesF:Future[Seq[EmployeeDTO]] = models.DAO.resources.EmployeeDAOF.getAllByWorkbench(request.user.businessFirst)
+      employeesF.map { employees => 
+      val accounts = models.AccountsDAO.findAllByEmails(employees.toList.map(emp => emp.uid))
       val businesses = List(BusinessDAO.get(business).get)
       val ebs = EmployeesBusinessDAO.getAll
-      val assign = businesses.filter(b => !(ebs.map(eb => eb._2).contains(b.id.get)))
-      val assigned = businesses.filter(b => ebs.map(eb => eb._2).contains(b.id.get))
+      val assign = businesses.filter(buss => !employees.map(_.workbench).contains(buss.id.get) )
+      val assigned = businesses.filter(buss => employees.map(_.workbench).contains(buss.id.get) )
+
       
       val master = EmployeeDAO.getMasterByAccount(user.main.email.get).get
-      val true_business = EmployeesBusinessDAO.getByUID(request.user.main.email.get)
-      val team = businesses.find(biz => biz.id == true_business)
+      val team = businesses.find(biz => biz.id.getOrElse(-1) == business)
 
       val current_plan = models.DAO.resources.AccountPlanDAO.getByMasterAcc(user.main.email.get).get
       val aval = (current_plan.limit + 1) - employees.length
       // current employee limit + main manager MINUS all employee length for that master
       Ok(views.html.businesses.users.team(
-        Page(employees, 1, 1, employees.length), accounts, 1, "%", assign, assigned, master, team, aval)(user))
+        Page(employees.toList, 1, 1, employees.length), accounts, 1, "%", assign, assigned, master, team, aval)(user))
       }
   }  
-  def index_group(group_id: Int) = SecuredAction { implicit request =>
+}  
+  def index_group(group_id: Int) = SecuredAction.async { implicit request =>
+      val business = request.user.businessFirst
+      if (business < 1) {
+        Future(Redirect(controllers.routes.SettingController.workbench()))
+      }
+      else {    
       val user = request.user
-      val all_employees = EmployeeDAO.getAllByMaster(user.main.email.get)
-      val grouped_employees = AccountGroupDAO.getAllByGroup(group_id).map(_.account_id)
+      val grouped_employees = AccountGroupDAO.getAllByGroup(group_id).map(_.employee_id)
+      val employeesF:Future[Seq[EmployeeDTO]] = models.DAO.resources.EmployeeDAOF.getAllByWorkbench(request.user.businessFirst)
+      employeesF.map { all_employees => 
+      val employees = all_employees.toList.filter(emp => grouped_employees.contains(emp.id.get))
+      val employees_ungrouped = all_employees.toList.filter(emp => !grouped_employees.contains(emp.id.get))
 
-      val employees = all_employees.filter(emp => grouped_employees.contains(emp.uid))
-      val employees_ungrouped = all_employees.filter(emp => !grouped_employees.contains(emp.uid))
-
-      val accounts = models.AccountsDAO.findAllByEmails(all_employees.map(emp => emp.uid))
+      val accounts = models.AccountsDAO.findAllByEmails(all_employees.toList.map(emp => emp.uid))
       println("Accounts: ")
       employees.map(emp => println(emp.uid))
       println(accounts)
 
-      val businesses = BusinessDAO.getAll
-      val ebs = EmployeesBusinessDAO.getAll
-      val assign = businesses.filter(b => !(ebs.map(eb => eb._2).contains(b.id.get)))
-      val assigned = businesses.filter(b => ebs.map(eb => eb._2).contains(b.id.get))
-      val true_business = EmployeesBusinessDAO.getByUID(request.user.main.email.get)
-      var groups: List[GroupDTO] = List()
 
-      true_business match {
-        case Some(biz) => groups = GroupsDAO.getAllByBusiness(biz._2)
-        case _ => groups = List()
-      }
+      val businesses = List(BusinessDAO.get(business).get)
+      val assign = businesses.filter(buss => !employees.map(_.workbench).contains(buss.id.get) )
+      val assigned = businesses.filter(buss => employees.map(_.workbench).contains(buss.id.get) )
+
+      val groups: List[GroupDTO] = GroupsDAO.getAllByBusiness(business)
+
       Ok(views.html.businesses.users.employees_group(
         Page(employees, 1, 1, employees.length), accounts, 1, "%", assign, assigned, groups, employees_ungrouped)(user))
+    }
   }
+}
 
 def actors() = SecuredAction { implicit request =>
      val user = request.user.main
@@ -161,10 +172,11 @@ def create() = SecuredAction { implicit request =>
         Ok(views.html.businesses.users.employee_form(employeeForm, request.user))
 }
 def create_new() = SecuredAction(BodyParsers.parse.json) { implicit request =>
-  if (isEmployeeOwned(request.user.main.userId, request.user.businessFirst)) {
+  val workbench = request.user.businessFirst
+  if (isEmployeeOwned(request.user.main.userId, workbench)) {
     request.body.validate[UIDS].map{
       case entity => { entity.emails.map {
-            e => EmployeeDTO(None, e, request.user.main.email.get, None, entity.manager)
+            e => EmployeeDTO(None, e, request.user.main.email.get, None, entity.manager, workbench = workbench)
       }.map{ emp =>
         val employee_id = EmployeeDAO.pull_object_for(emp, request.user.main.email.get)
         EmployeesBusinessDAO.pull(employee_id = employee_id, business_id = request.user.businessFirst)
@@ -220,6 +232,36 @@ def unassign_business(employee_id: Int, business_id: Int) = SecuredAction { impl
       }
     } else { Home }      
 }
+
+
+def toManager(id: Int) = SecuredAction { implicit request =>
+    if (isEmployeeOwned(request.user.main.userId, request.user.businessFirst)) {
+      EmployeeDAO.get(id) match {
+        case Some(emp) =>
+          Home.flashing(EmployeeDAO.update(id,emp.copy(manager = true)) match {
+            case 0 => "failure" -> "Entity has Not been deleted"
+            case x => "success" -> { 
+              s"Entity has been deleted (deleted $x row(s))"
+            }
+          })
+        case _ => Home
+      } 
+    } else { Home }
+}
+def toParticipator(id: Int) = SecuredAction { implicit request =>
+    if (isEmployeeOwned(request.user.main.userId, request.user.businessFirst)) {
+      EmployeeDAO.get(id) match {
+        case Some(emp) =>
+          Home.flashing(EmployeeDAO.update(id,emp.copy(manager = false)) match {
+            case 0 => "failure" -> "Entity has Not been deleted"
+            case x => "success" -> { 
+              s"Entity has been deleted (deleted $x row(s))"
+            }
+          })
+        case _ => Home
+      } 
+    } else { Home }
+}
 def destroy(id: Int) = SecuredAction { implicit request =>
     if (isEmployeeOwned(request.user.main.userId, request.user.businessFirst)) {
       val emp = EmployeeDAO.get(id) 
@@ -231,9 +273,13 @@ def destroy(id: Int) = SecuredAction { implicit request =>
       Home.flashing(EmployeeDAO.delete(id) match {
         case 0 => "failure" -> "Entity has Not been deleted"
         case x => "success" -> { 
-          val info = models.AccountInfosDAOF.await(models.AccountInfosDAOF.getByInfoByUID(emp.get.uid)).get
-          if (info.currentWorkbench == Some(emp.get.workbench)) { // Reset current workbench
-            models.AccountInfosDAOF.await(models.AccountInfosDAOF.updateCurrentWorkbench(emp.get.uid, None ))
+          val info = models.AccountInfosDAOF.await(models.AccountInfosDAOF.getByInfoByUID(emp.get.uid)) match {
+            case Some(info) => {          
+              if (info.currentWorkbench == Some(emp.get.workbench)) { // Reset current workbench
+                models.AccountInfosDAOF.await(models.AccountInfosDAOF.updateCurrentWorkbench(emp.get.uid, None ))
+              }
+            }
+            case _ =>  
           }
 
           s"Entity has been deleted (deleted $x row(s))"
@@ -242,6 +288,8 @@ def destroy(id: Int) = SecuredAction { implicit request =>
       } else { Home }
     } else { Home }
 }
+
+
 private def isEmployeeOwned(uid: String, business_id: Int):Boolean = { 
   EmployeesBusinessDAO.getByUID(uid) match {
     case Some(emp_biz) => {

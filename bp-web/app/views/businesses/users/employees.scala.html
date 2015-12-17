@@ -129,10 +129,14 @@
 
         <span class="userName">
         <b class="block">@{accounts.find(_.userId == entity.uid).get.firstName} 
-                         @{accounts.find(_.userId == entity.uid).get.lastName} — 
-                         @{entity.uid}</b>
+                         @{accounts.find(_.userId == entity.uid).get.lastName}</b>
+        <b class="block email-block">@{entity.uid}</b>                         
           </span>
-        <span class="infoIco opposite icon-star hidden" title="Member"></span>
+          @if(entity.manager) {
+          <span class="infoIco opposite icon-star" title="Manager"></span>
+          } else {
+          <span class="infoIco opposite icon-user" title="Participator"></span>
+          }
           @if(!entity.manager) {
           <div class="dropmenu" style="display: inline;">
           <span class="userCardMenuHandle" role="button" data-toggle="dropdown">&#x2261;</span>
@@ -143,6 +147,18 @@
                 }
                 </a>
               </li>
+@if(!entity.manager) {              
+              <li role="presentation" class="dropdownListItem onlyMember morphAdmin"><a role="menuitem" tabindex="-1" href="#">@form(users.routes.EmployeeController.toManager(entity.id.get), 'class -> "topRight") {
+                                  <input type="submit" value='To manager' class="btn">
+              }</a>
+              </li>     
+}         
+@if(entity.manager) {              
+              <li role="presentation" class="dropdownListItem onlyMember morphAdmin"><a role="menuitem" tabindex="-1" href="#">@form(users.routes.EmployeeController.toParticipator(entity.id.get), 'class -> "topRight") {
+                                  <input type="submit" value='To participator' class="btn">
+              }</a>
+              </li>  
+}                             
               <li role="presentation" class="divider"></li>
               <li role="presentation" class="dropdownListItem onlyMember morphAdmin"><a role="menuitem" tabindex="-1" href="#"> </a></li>
             </ul>
@@ -160,16 +176,36 @@
 
         <span class="infoIco icon-time" title="Waiting user invitation acceptance."></span>
 
-        <span class="userName">
-        <b class="block">@Messages("businesses.anonymous") — @{entity.uid}</b>
+         <span class="userName">
+                <b class="block">@Messages("businesses.anonymous")</b>
+
+        <b class="block email-block">@{entity.uid}</b>                         
           </span>
-        <span class="infoIco opposite icon-star hidden" title="Member"></span>
+          @if(entity.manager) {
+          <span class="infoIco opposite icon-star" title="Manager"></span>
+          } else {
+          <span class="infoIco opposite icon-user" title="Participator"></span>
+          }
           <div class="dropmenu" style="display: inline;">
           <span class="userCardMenuHandle" role="button" data-toggle="dropdown">&#x2261;</span>
             <ul id="menu1" class="dropdown-menu" role="menu" aria-labelledby="drop4">
               <li role="presentation" class="dropdownListItem onlyMember morphAdmin"><a role="menuitem" tabindex="-1" href="#">@form(users.routes.EmployeeController.destroy(entity.id.get), 'class -> "topRight") {
                                   <input type="submit" value='@Messages("custom.delete")' class="btn danger">
-                              }</a></li>
+              }</a>
+              </li>
+@if(!entity.manager) {                 
+              <li role="presentation" class="dropdownListItem onlyMember morphAdmin"><a role="menuitem" tabindex="-1" href="#">@form(users.routes.EmployeeController.toManager(entity.id.get), 'class -> "topRight") {
+                                  <input type="submit" value='To manager' class="btn">
+              }</a>
+              </li>      
+}
+@if(entity.manager) {                      
+              <li role="presentation" class="dropdownListItem onlyMember morphAdmin"><a role="menuitem" tabindex="-1" href="#">@form(users.routes.EmployeeController.toParticipator(entity.id.get), 'class -> "topRight") {
+                                  <input type="submit" value='To participator' class="btn">
+              }</a>
+              </li>   
+}               
+
               <li role="presentation" class="divider"></li>
               <li role="presentation" class="dropdownListItem onlyMember morphAdmin"><a role="menuitem" tabindex="-1" href="#"> </a></li>
             </ul>

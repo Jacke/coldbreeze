@@ -32,7 +32,7 @@ object NewUserRoutine {
            * Create default analytics group
            * By default analytics(editor of processes) == managers
            */
-           defaultAnalyticsGroup(email, biz_id)
+           defaultAnalyticsGroup(email, biz_id, emp_id)
            assignToTrial(email, biz_id)
         }
         
@@ -54,7 +54,7 @@ object NewUserRoutine {
       }
     }
 
-    private def defaultAnalyticsGroup(uid: String, biz_id: Int) = {
+    private def defaultAnalyticsGroup(uid: String, biz_id: Int, employee_id:Int = -1) = {
       val acc_groups = AccountGroupDAO.getByAccount(uid).distinct.map(_.id.get)
       val someNow = Some(org.joda.time.DateTime.now())
       val isAnalyticGroupDefined = GroupsDAO.gets(acc_groups).find(_.title == "Analytics").isDefined // TODO: Translation      
@@ -70,10 +70,11 @@ object NewUserRoutine {
             case id => {
                     AccoutGroupDTO(
                         None,
-                        account_id = uid, 
+                        account_id = Some(uid), 
                         group_id = id, 
                         created_at = someNow,
-                        updated_at = someNow)
+                        updated_at = someNow,
+                        employee_id = employee_id)
             }
         }
 

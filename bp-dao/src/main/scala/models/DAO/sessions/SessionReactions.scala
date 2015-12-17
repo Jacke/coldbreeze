@@ -80,12 +80,63 @@ object SessionReactionDAOF {
     session_reactions.filter(_.id === id)
   private def filterBySessionQuery(id: Int): Query[SessionReactionRefs, SessionUnitReaction, Seq] =
     session_reactions.filter(_.session === id)
-
+  private def filterByProcessQuery(id: Int): Query[SessionReactionRefs, SessionUnitReaction, Seq] =
+    session_reactions.filter(_.bprocess === id)
 
   def findBySession(session_id: Int):Future[Seq[SessionUnitReaction]] = {
      try db.run(filterBySessionQuery(session_id).result)
      finally println("db.close")//db.close
   }
+  def findByBP(id: Int):Future[Option[SessionUnitReaction]] = 
+    db.run(filterByProcessQuery(id).result.headOption)
+  def findAllByBP(id: Int):Future[Seq[SessionUnitReaction]] = 
+    db.run(filterByProcessQuery(id).result)
+
+  def findCurrentUnappliedContainer(id: Int, session_id: Int):Future[Option[CurrentSessionReactionContainer]] = {
+       val session_states = BPSessionStateDAO.findByBPAndSession(id, session_id)
+       val session_reactionsF:Future[Seq[SessionUnitReaction]] = findAllByBP(id)
+       session_reactionsF.map { session_reactions =>
+       val state_outs = SessionReactionStateOutDAO.findByReactions(session_reactions.flatMap(_.id).toList)
+
+       val unapplied_reactions = session_reactions.filter { reaction =>
+          val state_out = state_outs.filter(out => Some(out.reaction) == reaction.id)
+          val session_state = session_states.find(state => state_out.map(_.state_ref).contains(state.origin_state.getOrElse(0)))//reaction.from_state == state.origin_state)
+          session_state match {
+            case Some(state) => {
+              state_out.map { out =>
+                state.on != out.on
+                state.on_rate != out.on_rate
+              }.reduce(_||_) // OR for multiple state outs
+            }
+            case _ => { 
+              false
+            }
+          }
+
+       }
+
+       /**
+        * Iterate over session_reactions for geting first current reaction
+        */
+       unapplied_reactions.headOption match {
+        case Some(reaction) => {
+            models.DAO.SessionElemTopologDAO.getIdentityById(reaction.element) match {
+              case Some(identity) => Some(
+                  CurrentSessionReactionContainer(reaction, 
+                    identity.title, 
+                    identity.front, 
+                    identity.nested, 
+                    session_id )
+                )
+              case _ => None
+            }          
+        }
+        case _ => None
+       }
+                   
+    } 
+  
+}
 
   def findUnapplied(id: Int, session_id: Int):SessionUnitReactionContainer = {
        val session_states = BPSessionStateDAO.findByBPAndSession(id, session_id)
@@ -111,8 +162,24 @@ object SessionReactionDAOF {
          }
        }
         SessionUnitReactionContainer(unapplied_reactions, state_outs, session_states)          
-    } 
+} 
+
+
+
+
+
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

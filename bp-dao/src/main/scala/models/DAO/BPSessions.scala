@@ -39,7 +39,8 @@ case class SessionStatus(var percent: Int = 0,
                          around: Option[ElemAround] = None,
                          peoples: Option[SessionPeoples] = None)
 //,                         interactions: List[Interaction] = List()) 
-case class SessionContainer(process: BProcessDTO, var sessions: List[SessionStatus]) {
+case class SessionContainer(process: BProcessDTO, 
+                            var sessions: List[SessionStatus]) {
 
 }
 import main.scala.utils.InputParamProc
@@ -69,15 +70,59 @@ object BPSessionDAOF {
   //  bpsessions.filter(_.process === process)
   private def filterQuery(id: Int): Query[BPSessions, BPSession, Seq] =
     bpsessions.filter(_.id === id)
+  private def filterByProcessQuery(id: Int): Query[BPSessions, BPSession, Seq] =
+    bpsessions.filter(_.process === id)    
+  private def filterByProcessesQuery(ids: List[Int]): Query[BPSessions, BPSession, Seq] =
+    bpsessions.filter(_.process inSetBind ids)
 
+  def prepareSessionStatus(p:BProcessDTO,sess: Seq[BPSession]):Future[Seq[SessionStatus]] = {
+     val people = SessionPeoples("not@found.com", List()) // placeholder for peoples
+     Future.sequence( 
+     sess.filter(ses => ses.process == p.id.get).map { ses => 
+        val stationF = BPStationDAOF.findBySessionF(ses.id.get)        
+        val element_quantityF = SessionProcElementDAOF.findBySessionLength(ses.id.get)
+        stationF.flatMap { station =>
+          element_quantityF.map { element_quantity => 
+            val step = station match {
+              case Some(station) => station.step.toDouble
+              case _ => element_quantity.toDouble
+            }
+            val percent = percentDecorator(step, element_quantity)
+            SessionStatus(percent, p, ses, station, None, Some(people))
+          }
+        }
+      } )
+  }
+
+
+  def findListedByBusiness(bid: Int):Future[Seq[SessionContainer]] = {
+    val pF:Future[Seq[BProcessDTO]] = BPDAOF.findByBusiness(bid)
+
+    pF.flatMap { p => 
+      val ids = p.flatMap(_.id)
+      val sessF:Future[Seq[BPSession]] = db.run(filterByProcessesQuery(ids.toList).result)
+    
+      sessF.flatMap { sess =>
+        val sessionContainers = Future.sequence( 
+          p.map { p =>
+        val sessionsStasusF:Future[Seq[SessionStatus]] = prepareSessionStatus(p, sess)
+
+      sessionsStasusF.map { sessions =>
+          SessionContainer(p, 
+          // \|/ Second argument of session container 
+          sessions = sessions.toList  )
+        }
+      } )
+
+      sessionContainers    
+    }
+  }
+}
 
   def findById(id: Int):Future[Option[SessionContainer]] = {
-
     val sessF:Future[Option[BPSession]] =     
       try db.run(filterQuery(id).result.headOption)
       finally println("db.close")//db.close
-    
-
     sessF.map { sess =>
     sess match {
       case Some(ses) => {
