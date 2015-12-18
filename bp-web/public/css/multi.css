@@ -1435,6 +1435,40 @@ span.groupFormTitle {
 .userCard .dropdown {
     display: none;
 }
+.peoplePanel input.btn {
+    background: none;
+    text-align: center;
+    margin: 0 auto;
+    display: block;
+    margin: auto;
+    background: #54617A;
+    border-radius: 0px;
+    padding: 7px 19px;
+    color: white;
+    width: 100%;
+    margin-top: 0px;
+}
+
+.peoplePanel .dropdown-menu>li>a {
+    padding: 0;
+    width: 100%;
+    color: #AAB1C1;
+    font-family: 'museo';
+}
+
+.peoplePanel .open>.dropdown-menu {
+    background: #536178;
+}
+
+.peoplePanel .open>.dropdown-menu li.divider {
+    background-color: #3F5173;
+    display: none;
+}
+
+.peoplePanel input.btn:hover {
+    background: #384765;
+}
+
 
 .userCard .fullSize {
     position: absolute;
@@ -2519,13 +2553,14 @@ form .flatRadioLike .flatRadio:checked + .flatRadioLabel:before {
     color: #00A2FF;
 }
 .teamInfo {
-    min-height: 593px;
     display: block;
     background: white;
     width: 69%;
     margin: 0 auto;
     padding: 15px 15px 15px 34px;
     text-align: center;
+    margin-top: 20px;
+    flex: 1;
 }
 .teamInfo .users-added {
     margin-top: 162px;

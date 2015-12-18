@@ -41,6 +41,18 @@ body.themeGrad {
 .container.workbench-container.setting-container {
     min-height: 400px;
 }
+.workbench-container form {
+    width: 74%;
+    margin-top: 40px !important;
+    margin-left: 32% !important;
+}
+
+.workbench-container form dl {
+    display: inline-block;
+    margin-right: 13px;
+}
+
+
 .progress-lines .line span.description.ng-hide-add         { animation:0.5s lightSpeedOut ease; }
 /* when showing the picture */
 .progress-lines .line span.description.ng-hide-remove      { animation:0.5s flipInX ease; }
@@ -117,8 +129,10 @@ body.themeGrad {
 }
 
 body.themeGrad div#container.container-global {
-  background: rgba(255, 255, 255, 0.93);
-  min-height: 100%;
+    background: rgba(255, 255, 255, 0.93);
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
 }
 body.themeDark.themeGrad.dataPage {
     background: linear-gradient(to bottom, #CC2828 0%, #B3CA44 54%, rgb(156, 181, 59) 94%, rgb(168, 185, 26) 100%);
