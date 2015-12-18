@@ -140,7 +140,7 @@
 
 
 
-<button type="button" id="pick">Pick File</button>
+<button type="button" id="pick">Pick File from Google Drive</button>
 <div id="box-select" data-link-type="direct" data-multiselect="true" data-client-id="9nmk1hao8ea3cgpz1opysjtva6zhqd8h"></div>
 <script>
 //$(document).ready(function() {
@@ -163,8 +163,7 @@
 				clientId: '629371862094-egfiim60lfulkrvb9e3iqpl5a2nk5c69',
 				buttonEl: document.getElementById('pick'),
 				onSelect: function(file) {
-					console.log(file);
-					alert('Selected ' + file.title);
+					console.log(file);					
 				}
 			});	
 		}
@@ -186,7 +185,8 @@ options = {
 
     // Required. Called when a user selects an item in the Chooser.
     success: function(files) {
-        alert("Here's the file link: " + files[0].link)
+        console.log(files);
+		//alert("Here's the file link: " + files[0].link)
     },
 
     // Optional. Called when the user closes the dialog without selecting a file
@@ -202,13 +202,13 @@ options = {
 
     // Optional. A value of false (default) limits selection to a single file, while
     // true enables multiple file selection.
-    multiselect: false, // or true
+    multiselect: true, // or true
 
     // Optional. This is a list of file extensions. If specified, the user will
     // only be able to select files with these extensions. You may also specify
     // file types, such as "video" or "images" in the list. For more information,
     // see File types below. By default, all extensions are allowed.
-    extensions: ['.pdf', '.doc', '.docx'],
+    //extensions: ['.pdf', '.doc', '.docx'],
 };
 var button = Dropbox.createChooseButton(options);
 document.getElementById("result_dropbox").appendChild(button);
