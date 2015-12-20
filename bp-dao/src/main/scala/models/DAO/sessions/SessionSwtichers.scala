@@ -47,7 +47,30 @@ def sessionFK  = foreignKey("sw_s_sp_session_fk", session, models.DAO.BPSessionD
 
 }
 
+object SessionSwitcherDAOF {
+  import akka.actor.ActorSystem
+  import akka.stream.ActorFlowMaterializer
+  import akka.stream.scaladsl.Source
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._  
 
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  val session_switchers = SessionSwitcherDAO.session_switchers
+
+  private def filterQuery(id: Int): Query[SessionSwitchers, SessionUnitSwitcher, Seq] =
+    session_switchers.filter(_.id === id)
+
+}
 object SessionSwitcherDAO {
   /**
    * Actions

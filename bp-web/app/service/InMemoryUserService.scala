@@ -26,6 +26,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import models.AccountsDAO
 import models.TokensDAO
 import models._
+import play.api.cache._
+import play.api.Play.current
 
 /**
  * A Sample In Memory user service in Scala
@@ -49,33 +51,32 @@ class InMemoryUserService extends UserService[DemoUser] {
     if ( logger.isDebugEnabled ) {
       //logger.debug("users = %s".format(users))
     }
-    val result = for (
-      user <- users.values ;
-      basicProfile <- user.identities.find(su => su.providerId == providerId && su.userId == userId)
-    ) yield {
-      basicProfile
+    //val result = for (
+    //  user <- users.values ;
+    //  basicProfile <- user.identities.find(su => su.providerId == providerId && su.userId == userId)
+    //) yield {
+    //  basicProfile
+    //}
+    val accountF:Future[Option[BasicProfile]] = AccountsDAOF.find(providerId, userId)
+    accountF.map { account =>
+      logger.debug("users find = %s".format(account))
     }
-
-    logger.debug("users find = %s".format(AccountsDAO.find(providerId, userId)))
-
-    Future.successful(AccountsDAO.find(providerId, userId))
+    accountF//Future.successful(AccountsDAO.find(providerId, userId))
   }
 
   def findByEmailAndProvider(email: String, providerId: String): Future[Option[BasicProfile]] = {
     if ( logger.isDebugEnabled ) {
       //logger.debug("users = %s".format(users))
     }
-    val someEmail = Some(email)
-    val result = for (
-      user <- users.values ;
-      basicProfile <- user.identities.find(su => su.providerId == providerId && su.email == someEmail)
-    ) yield {
-      basicProfile
-    }
-    logger.debug("users findByEmailAndProvider = %s".format(AccountsDAO.findByEmailAndProvider(email, providerId)))
-
-
-    Future.successful(AccountsDAO.findByEmailAndProvider(email, providerId))
+    //val someEmail = Some(email)
+    //val result = for (
+    //  user <- users.values ;
+    //  basicProfile <- user.identities.find(su => su.providerId == providerId && su.email == someEmail)
+    //) yield {
+    //  basicProfile
+    //}
+    //logger.debug("users findByEmailAndProvider = %s".format(AccountsDAO.findByEmailAndProvider(email, providerId)))
+    AccountsDAOF.findByEmailAndProvider(email, providerId)
   }
 
   def save(user: BasicProfile, mode: SaveMode): Future[DemoUser] = {
@@ -231,8 +232,16 @@ case class DemoUser(main: BasicProfile,
     //else
      // false
   }
+import scala.concurrent.duration._
+
   //lazy val 
-  def firstBusinessId = AccountInfosDAOF.await(AccountInfosDAOF.getByInfoByUID(main.userId))//models.DAO.resources.EmployeesBusinessDAO.getByUID(main.userId)
+  def firstBusinessId = { 
+      Cache.getOrElse[Option[AccountInfo]](s"employee.business.${main.userId}") {
+      val acc_info:Option[AccountInfo] = AccountInfosDAOF.await(AccountInfosDAOF.getByInfoByUID(main.userId))//models.DAO.resources.EmployeesBusinessDAO.getByUID(main.userId)
+      Cache.set(s"employee.business.${main.userId}", acc_info, 1.minutes)  
+      acc_info 
+    }
+  }
   lazy val businessObj = firstBusinessId
   
   def masterFirstId = models.DAO.resources.EmployeeDAO.getByEmployeeUID(main.userId)

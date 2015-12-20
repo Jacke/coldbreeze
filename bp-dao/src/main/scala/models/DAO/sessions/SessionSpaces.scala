@@ -102,7 +102,30 @@ object SpaceDCO {
   }
 }
 */
+object SessionSpaceDAOF {
+  import akka.actor.ActorSystem
+  import akka.stream.ActorFlowMaterializer
+  import akka.stream.scaladsl.Source
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._  
 
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  val session_spaces = SessionSpaceDAO.session_spaces
+
+  private def filterQuery(id: Int): Query[SessionSpaces, SessionSpaceDTO, Seq] =
+    session_spaces.filter(_.id === id)
+
+}
 object SessionSpaceDAO {
   import models.DAO.conversion.DatabaseCred._
   val session_spaces = TableQuery[SessionSpaces]

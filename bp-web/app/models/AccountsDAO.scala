@@ -113,6 +113,15 @@ import models.DAO.conversion.DatabaseFuture._
 
   }
 }
+
+
+
+
+
+
+
+
+
 object AccountsDAOF {
   import scala.util.Try
 import akka.actor.ActorSystem
@@ -133,8 +142,58 @@ import models.DAO.conversion.DatabaseFuture._
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
 
   val accounts = AccountsDAO.accounts
+  private def filterQueryByUID(email: String): Query[Accounts, AccountDAO, Seq] =
+    accounts.filter(_.userId === email)
+  private def filterQueryByProviderUserId(providerId: String, userId:String): Query[Accounts, AccountDAO, Seq] =
+    for { a ← accounts if a.providerId === providerId && a.userId === userId } yield a
+  private def filterQueryByProvidereEmail(providerId: String, email:String): Query[Accounts, AccountDAO, Seq] =
+    for { a ← accounts if a.providerId === providerId && a.email === email } yield a
 
 
+
+  def getLang(email: String):Future[String] = {
+      db.run(filterQueryByUID(email).result.headOption).map { result =>
+      result match {
+        case Some(account) => account.lang
+        case _ => "en"
+      }
+      }
+  }
+
+  def getRolesAndLang(email: String, workbench_id: Int = -1): Future[Option[Tuple3[Boolean, Boolean, String]]] ={
+    val employeeF:Future[Option[EmployeeDTO]] = models.DAO.resources.EmployeeDAOF.getByEmployeeUIDAndWorkbench(email, 
+                                                                                                      workbench_id)
+    val isManagerF:Future[Boolean] = employeeF.map { employee => 
+      employee match {
+        case Some(emp) => emp.manager
+        case _ => false
+      }//AccountPlanDAO.getByMasterAcc(email).isDefined
+    }
+    val isEmployeeF:Future[Boolean] = employeeF.map { employee => 
+      employee match {
+        case Some(emp) => true
+        case _ => false
+      }
+    }
+    val langF:Future[String] = getLang(email)
+    for {
+      isManager <- isManagerF
+      isEmployee <- isEmployeeF
+      lang <- langF
+      } yield Some((isManager, isEmployee, lang))
+  }
+
+
+  def find(providerId: String, userId: String):Future[Option[BasicProfile]] = {
+      db.run(filterQueryByProviderUserId(providerId, userId).result).map { result =>
+        result.map(s => BasicProfile.tupled(Account.unapply(s.toAccount).get)).headOption
+      }
+  }
+  def findByEmailAndProvider(email: String, providerId: String): Future[Option[BasicProfile]] = {
+    db.run(filterQueryByProvidereEmail(providerId, email).result).map { result =>
+      result.map(s => BasicProfile.tupled(Account.unapply(s.toAccount).get)).headOption
+    }
+  }
 }
 
 object AccountsDAO {
@@ -293,7 +352,6 @@ object AccountsDAO {
       val q3 = for { a ← accounts if a.providerId === providerId && a.email === email } yield a
       val result = q3.list.map(s => BasicProfile.tupled(Account.unapply(s.toAccount).get))
       result.headOption
-
   }
 import controllers.Credentials
   def updateCredentials(email: String, cred: Credentials) = database withSession {

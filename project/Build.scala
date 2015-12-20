@@ -21,6 +21,8 @@ import com.typesafe.sbt.rjs.Import._
 import UglifyKeys._
 import com.github.sbtliquibase.SbtLiquibase
 import com.github.sbtliquibase.Import._
+import org.scalajs.sbtplugin.ScalaJSPlugin
+import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import spray.revolver.RevolverPlugin.Revolver._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
@@ -210,6 +212,7 @@ integrationTest := {
     .enablePlugins(SbtLiquibase)
     .enablePlugins(PlayScala)
     .enablePlugins(SbtWeb)
+    //.enablePlugins(ScalaJSPlugin)
     .settings(basicSettings: _*)
     //.settings(pipelineStages in Assets := Seq(rjs))
     //.settings(RjsKeys.baseUrl := "javascripts")

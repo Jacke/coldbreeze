@@ -21,7 +21,7 @@ import scala.concurrent._
 import scala.concurrent.duration._
 import scala.util.Success
 import scala.util.Failure
-
+import models._
 case class employeeParams(perms: List[ActPermission], bps: List[BProcessDTO], elems_titles:Map[Int, String], res_acts: List[ResAct])
 case class managerParams(business: BusinessDTO)
 case class DashboardTopBar(newSession: Int = 0, interaction: Int = 0, completedSession: Int = 0, process: Int = 0)
@@ -59,28 +59,29 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
         Future(Redirect(controllers.routes.SettingController.workbench()))
       } else {
       // TODO: service.getByBusiness that manager participated
-      val services = BusinessServiceDAO.getAllByBusiness(request.user.businessFirst)
+      val servicesF:Future[Seq[BusinessServiceDTO]] = BusinessServiceDAOF.getAllByBusiness(request.user.businessFirst)
       val businessF = models.DAO.resources.BusinessDAOF.get(business)
 
 
-      val RESULT:scala.concurrent.Future[play.api.mvc.Result] = businessF.flatMap { businessReal => 
+      val RESULT:Future[Result] = businessF.flatMap { businessReal => 
 
       val businesses = List(businessReal.get)
       val primaryBusiness:BusinessDTO = businesses.head
       val email = request.user.main.email.get
 
-      var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(email, business).get
+      var (isManager, isEmployee, lang) = AccountsDAOF.await(AccountsDAOF.getRolesAndLang(email, business)).get
 
       if (!isEmployee) {// && !arePlanExist(business)) {
                                                               // Initiate env for new user
         utilities.NewUserRoutine.initiate_env(email)          // run routine
         //request.user.renewPermissions()                     // renew permission
-        var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(email, business).get
+        var (isManager, isEmployee, lang) = AccountsDAOF.await(AccountsDAOF.getRolesAndLang(email, business)).get
         println("redirect")
         Future(Home)                                                // redirect to dashboard
       } else {
 
         val planF:Future[Option[planInfo]] = planFetch(email, isManager, business) 
+        val dashboardTopBarF: Future[DashboardTopBar] = countDashboardTopBar(email, business)        
         val managerParams = makeManagerParams(email, isManager, primaryBusiness)
         val walkthrought:Boolean = managerParams match {
             case  Some(param) => param.business.walkthrough
@@ -89,30 +90,28 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
 
         val sessionsF:Future[Seq[SessionContainer]] = BPSessionDAOF.findListedByBusiness(business)
         sessionsF.flatMap { sessions => 
-        val currentReactionsF:Future[List[Option[CurrentSessionReactionContainer]]] = Future.sequence( sessions.toList.map(cn => 
-            cn.sessions.toList.map(session_status => 
-                SessionReactionDAOF.findCurrentUnappliedContainer(cn.process.id.get, session_status.session.id.get)
-                )
-          ).flatten )
+          val currentReactionsF:Future[List[Option[CurrentSessionReactionContainer]]] = Future.sequence( 
+            sessions.toList.map(cn => 
+              cn.sessions.toList.map(session_status => 
+                  SessionReactionDAOF.findCurrentUnappliedContainer(cn.process.id.get, session_status.session.id.get)
+                  )
+            ).flatten )
+        for {
+          dashboardTopBar <- dashboardTopBarF
+          plan <- planF
+          currentReactions <- currentReactionsF
+          services <- servicesF
+          } yield Ok(views.html.profiles.dashboard(request.user, 
+                  managerParams, 
+                  makeEmployeeParams(email, isEmployee, primaryBusiness), 
+                  plan, 
+                  walkthrought, 
+                  sessions.toList,
+                  dashboardTopBar, currentReactions.flatten ) (
+                    Page(services.toList, 1, 1, services.length), 1, "%", businesses))
+        
 
-        val dashboardTopBarF: Future[DashboardTopBar] = countDashboardTopBar(email, business)
-        dashboardTopBarF.flatMap { dashboardTopBar =>
-          planF.flatMap { plan =>
-            currentReactionsF.flatMap { currentReactions =>
-                
-                Future (
-                  Ok(views.html.profiles.dashboard(request.user, 
-                managerParams, 
-                makeEmployeeParams(email, isEmployee, primaryBusiness), 
-                plan, 
-                walkthrought, 
-                sessions.toList,
-                dashboardTopBar, currentReactions.flatten ) (
-                  Page(services, 1, 1, services.length), 1, "%", businesses))
-              )
-            }
-          }
-        }
+
         }
       }
 

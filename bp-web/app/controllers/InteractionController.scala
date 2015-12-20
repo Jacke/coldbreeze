@@ -124,56 +124,56 @@ implicit val CostContainerWrites = Json.format[CostContainer]
   implicit val SessionInteractionContainerWrites = Json.format[SessionInteractionContainer]
   implicit val InteractionContainerReads = Json.reads[InteractionContainer]
   implicit val InteractionContainerWrites = Json.format[InteractionContainer]
-
- val waitSeconds = 100000
- val wrapper = minority.utils.BBoardWrapper.apply()
+  val waitSeconds = 100000
+  val wrapper = minority.utils.BBoardWrapper.apply()
 
 /** Fetch interaction action, used in input bar for making request directly to launch
-  * 
   * @param  session_id id of launch
   * @return return either SessionInteractionContainer with session, reaction containers, and session states.
   */
 def fetchInteraction(session_id: Int) = SecuredAction.async { implicit request => 
   if (security.BRes.sessionSecured(session_id, request.user.main.userId, request.user.businessFirst)) {
-
-
    val sessionF:Future[Option[SessionContainer]] = models.DAO.BPSessionDAOF.findById(id = session_id)
-   sessionF.map { session => // Future of session
+   sessionF.flatMap { session => // Future of session
     session match {
   	  case Some(session) => {   
   		
       val process:BProcessDTO = session.process
-      val unapplied:SessionUnitReactionContainer = SessionReactionDAOF.findUnapplied(process.id.get, session_id)
+      val unappliedF:scala.concurrent.Future[SessionUnitFutureContainer] = SessionReactionDAOF.findUnapplied(process.id.get, session_id)
 
-  	  val reactions:List[SessionUnitReaction] = SessionReactionDAOF.await(unapplied.units).toList
+      unappliedF.map { unapplied => 
+      val reactions = unapplied.units
       Logger.debug("Session Reactions")
       Logger.debug(s"reaction length ${reactions.length}")
 
-      val reaction_outs:List[SessionUnitReactionStateOut] = unapplied.state_outs
+      val reaction_outs: List[SessionUnitReactionStateOut] = unapplied.state_outs
       val session_states: List[BPSessionState] = unapplied.session_states
       Logger.debug("Session state")
       Logger.debug(s"session_states length ${session_states.length}")
       
-      val costs:List[CostContainer] = reactions.map(reaction => findCost(sessionElemTopoId = reaction.element, 
-                                                                         launchId=session_id)).flatten
-        val reaction_container = reactions.map(reaction => 
+        val costs:List[CostContainer] = reactions.toList.map(reaction => findCost(sessionElemTopoId = reaction.element, 
+                                                                                  launchId=session_id)).flatten
+        val reaction_container = reactions.toList.map(reaction => 
         	SessionReactionContainer(
                     session_state = session_states.find(state => Some(reaction.from_state) == state.origin_state),
         					  reaction, 
                     reaction_outs.filter(out => Some(out.reaction) == reaction.id),
                     costs)
         )
-
-  	   Ok(Json.toJson(SessionInteractionContainer(Some(session), reaction_container, session_states)))
-  	}
-  	case _ => BadRequest(Json.toJson(Map("error" -> "Session not found")))
+  	    Ok(Json.toJson(SessionInteractionContainer(Some(session), reaction_container, session_states)))
+    	}
+      }
+    	case _ => Future(BadRequest(Json.toJson(Map("error" -> "Session not found"))))
+    }
   }
-}
 
 } else { Future(Forbidden(Json.obj("status" -> "Access denied"))) }    
 }
 
-
+/** Fetch all interactions, used for speed testing purposes
+  * 
+  * @return Collection of SessionInteractionContainer with session, reaction containers, and session states.
+  */
 def fetchAllInteractionF() = Action.async { implicit request => 
   val email = "iamjacke@gmail.com"
   val business_request:Option[Tuple2[Int, Int]] = models.DAO.resources.EmployeesBusinessDAO.getByUID(email) 

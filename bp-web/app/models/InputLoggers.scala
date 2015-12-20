@@ -34,6 +34,44 @@ case class InputLogger(var id: Option[Int],
   date: org.joda.time.DateTime,
   session: Int)
 
+object InputLoggerDAOF {
+  import akka.actor.ActorSystem
+  import akka.stream.ActorFlowMaterializer
+  import akka.stream.scaladsl.Source
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._  
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  val input_loggers = InputLoggerDAO.input_loggers
+
+  //private def filterQueryByProcess(process: Int): Query[ProcessHistoriesF, ProcessHistoryDTO, Seq] =
+  //  bpsessions.filter(_.process === process)
+  private def filterQuery(id: Int): Query[InputLoggers, InputLogger, Seq] =
+    input_loggers.filter(_.id === id)
+  private def filterByBPQuery(id: Int): Query[InputLoggers, InputLogger, Seq] =
+    (for {
+      ((inlogger, session), bprocesses) <- input_loggers leftJoin 
+      models.DAO.BPSessionDAO.bpsessions on (_.session === _.id) leftJoin BPDAO.bprocesses on (_._2.process === _.id)     
+    } yield (inlogger))
+  private def filterBySessionQuery(id: Int): Query[InputLoggers, InputLogger, Seq] =
+    input_loggers.filter(_.session === id)
+
+
+  def get(id: Int):Future[Option[InputLogger]] = {
+     db.run(filterQuery(id).result.headOption)
+  }
+  def getByBP(BPid:Int) = db.run(filterByBPQuery(BPid).result)
+  def getBySession(session_id: Int) = db.run(filterBySessionQuery(session_id).result)
+
+}
 
 object InputLoggerDAO {
   import scala.util.Try

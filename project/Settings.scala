@@ -6,7 +6,8 @@ import com.typesafe.sbt.SbtScalariform
 import com.typesafe.sbt.SbtScalariform.ScalariformKeys
 import com.typesafe.sbt.web.Import._
 import com.typesafe.sbt.gzip.Import._ 
-
+import org.scalajs.sbtplugin.ScalaJSPlugin
+import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import com.typesafe.sbt.digest.Import._
 import com.typesafe.sbt.rjs.Import._
 import net.ground5hark.sbt.css.Import._
@@ -33,6 +34,7 @@ object Settings {
     // gzip = Zips all assets, Asset controller serves them automatically when client accepts them
     pipelineStages := Seq(uglify, rjs, digest, gzip, cssCompress)
     pipelineStages in Assets := Seq(rjs)//uglify)
+    scalaJSStage in Global := FastOptStage
     //includeFilter in uglify := GlobFilter("*.js")
 
     CssCompress.suffix := ".min.css"

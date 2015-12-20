@@ -389,6 +389,58 @@ require(['requirejs','jsRoutes','jquery', 'react','pnofiy','mobileDetect','popup
   ],//'jquery', 'bootstrap'],//, './app'],
     function (requirejs,jsRoutes,$,react, pnofiy,mobileDetect,popupoverlay,dragOn,niceScroll,ssl,offline,offlineSimulator,header,tooltip,dropdown,underscore,moment,selectize,tether,shepherd,tour) {
         document.tour = tour;
+
+
+$('textarea#warpArea').bind('input propertychange', function () {
+    var value = $(this).val();
+/*
+$.ajax({
+
+    type: "POST",
+    url: "/warp",
+    data: JSON.stringify({ body: value }),
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: function(data){  
+      $('#result_warp').empty();
+      underscore.forEach(data.message.entities, function(entity) {
+        $('#result_warp').append('<p>'+JSON.stringify(entity)+'</p>');
+      })      
+      underscore.forEach(data.message.slats, function(slat) {
+        $('#result_warp').append('<p>'+JSON.stringify(slat)+'</p>');
+      })
+    },
+    failure: function(errMsg) {
+        console.log(errMsg);
+    }
+});
+*/
+$.ajax({
+
+    type: "POST",
+    url: "/warp",
+    data: JSON.stringify(
+      {payload: [ { 
+      obj_type: "text", obj_title: "Text", obj_content: value } ] } ),
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: function(data){  
+      $('#result_warp').empty();
+      underscore.forEach(data.message.entities, function(entity) {
+        $('#result_warp').append('<p>'+JSON.stringify(entity)+'</p>');
+      })      
+      underscore.forEach(data.message.slats, function(slat) {
+        $('#result_warp').append('<p>'+JSON.stringify(slat)+'</p>');
+      })
+    },
+    failure: function(errMsg) {
+        console.log(errMsg);
+    }
+});
+
+
+});
+
       $(document).ready(function(){
         document.mobileDetect = new mobileDetect(window.navigator.userAgent);
         document.isMobile = (document.mobileDetect.phone() != null) ? true : false;
@@ -915,6 +967,12 @@ navActive();
 $(window).on('hashchange', function(e){
     navActive();
 });
+
+
+
+
+
+
 
 });
    

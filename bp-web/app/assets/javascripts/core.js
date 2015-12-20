@@ -30,6 +30,32 @@ require(['jsRoutes','jquery','react','moment','pnotify','mobileDetect','popupove
 		var moment2 = require("script!./moment.js");
     console.log(moment2);
         document.tour = tour;
+
+$('textarea#warpArea').bind('input propertychange', function () {
+    var value = $(this).val();
+
+$.ajax({
+
+    type: "POST",
+    url: "/warp",
+    data: JSON.stringify({ body: value }),
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: function(data){  
+      $('#result_warp').empty();
+      underscore.forEach(data.message.entities, function(entity) {
+        $('#result_warp').append('<p>'+JSON.stringify(entity)+'</p>');
+      })      
+      underscore.forEach(data.message.slats, function(slat) {
+        $('#result_warp').append('<p>'+JSON.stringify(slat)+'</p>');
+      })
+    },
+    failure: function(errMsg) {
+        console.log(errMsg);
+    }
+});
+});   
+
       $(document).ready(function(){
         document.mobileDetect = new mobileDetect(window.navigator.userAgent);
         document.isMobile = (document.mobileDetect.phone() != null) ? true : false;
@@ -556,6 +582,32 @@ navActive();
 $(window).on('hashchange', function(e){
     navActive();
 });
+
+
+$('textarea#warpArea').bind('input propertychange', function () {
+    var value = $(this).val();
+
+$.ajax({
+
+    type: "POST",
+    url: "/warp",
+    data: JSON.stringify({ body: value }),
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: function(data){  
+      $('#result_warp').empty();
+      $('#result_warp').append(JSON.stringify(data));
+    },
+    failure: function(errMsg) {
+        console.log(errMsg);
+    }
+});
+});
+
+
+
+
+
 
 });
    
