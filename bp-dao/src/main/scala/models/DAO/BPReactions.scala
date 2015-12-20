@@ -45,7 +45,54 @@ class ReactionRefs(tag: Tag) extends Table[UnitReaction](tag, "reactions") {
            created_at, updated_at) <> (UnitReaction.tupled, UnitReaction.unapply)
 }
 
+object ReactionDAOF {
+  import akka.actor.ActorSystem
+  import akka.stream.ActorFlowMaterializer
+  import akka.stream.scaladsl.Source
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._  
 
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  val reactions = ReactionDAO.reactions
+
+  private def filterQuery(id: Int): Query[ReactionRefs, UnitReaction, Seq] =
+    reactions.filter(_.id === id)
+
+}
+object ReactionStateOutDAOF {
+  import akka.actor.ActorSystem
+  import akka.stream.ActorFlowMaterializer
+  import akka.stream.scaladsl.Source
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._  
+
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  val reaction_state_outs = ReactionStateOutDAO.reaction_state_outs
+
+  private def filterQuery(id: Int): Query[ReactionStateOuts, UnitReactionStateOut, Seq] =
+    reaction_state_outs.filter(_.id === id)
+
+}
 object ReactionDAO {
   import scala.util.Try
   import DatabaseCred.database

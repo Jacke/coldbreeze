@@ -20,6 +20,10 @@ import models.DAO.conversion.Implicits.fetch_cv
 import main.scala.bprocesses._
 import main.scala.simple_parts.process.Units._
 import models.DAO.sessions._
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.Duration
+import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+import scala.util.Try
 
 object TestBuilder extends App {
   val process = Build.run(10, invoke = true)
@@ -88,8 +92,16 @@ object Build {
   * @session_id id of session
   * @params params for reaction
   **/
-  def newRunFrom(bpID:Int, session_id: Int, params: List[ReactionActivator], invoke:Boolean = true):Option[BProcess]  = {
-      val bpDTO = BPDAO.get(bpID).get
+  def newRunFrom(bpID:Int, 
+                 session_id: Int, 
+                 params: List[ReactionActivator], 
+                 invoke:Boolean = true,
+                 process_dto:Option[BProcessDTO]=None,
+                 station_dto:Option[BPStationDTO]=None):Option[BProcess]  = {
+      val bpDTO = process_dto match {
+        case Some(dto) => dto
+        case _ => BPDAO.get(bpID).get
+      }
       val process = initiate(bpID, invoke, bpDTO, session_id = Some(session_id), params = params)
       Some(process)
   }
@@ -209,20 +221,20 @@ def initiate(bpID: Int,
     ElementRegistrator.apply
     // caster
     //val process_dto = BPDAO.get(bpID).get
-    val target = ProcElemDAO.findByBPId(bpID)
+  val procElemsF = ProcElemDAOF.findByBPId(bpID)
+  val process = new BProcess(new Managment, id = bpDTO.id)
 
-    val process = new BProcess(new Managment, id = bpDTO.id)
-    initiate2(bpID, run_proc, process, bpDTO,target, Some("en"), with_pulling = true, session_id_val = session_id, 
+    initiate2(bpID, run_proc, process, bpDTO, procElemsF, lang, with_pulling = true, session_id_val = session_id, 
       params = params, pipes = pipes)
-    process
-  }
+  process
+}
 
 
 def initiate2(bpID: Int, 
   run_proc: Boolean,
   processRunned: BProcess, 
   bpDTO: BProcessDTO, 
-  target: List[UndefElement], 
+  procElemenets: Future[Seq[UndefElement]], 
   lang: Option[String] = Some("en"),
   with_pulling: Boolean = false,
   session_id_val: Option[Int],
@@ -266,11 +278,11 @@ def initiate2(bpID: Int,
       case _ => { // launch from empty session
         session_id = saveSession(processRunned, bpDTO, lang)
         // FRONT ELEM NOT FOR BRICKS
-        sessionEls = target.map { el =>
-          val obj = ExperimentalSessionBuilder.fromOriginEl(el, session_id, burnElemMap)
-          elemMap += el.id.get -> obj.id.get
-          obj
-        }     
+        sessionEls = BPSpaceDAOF.await(procElemenets).map { el =>
+            val obj = ExperimentalSessionBuilder.fromOriginEl(el, session_id, burnElemMap)
+            elemMap += el.id.get -> obj.id.get
+            obj
+        }.toList
         sessionSpaces = test_space.map { sp =>//.filter(sp => sp.brick_nested.isDefined).map { sp =>
           val obj = ExperimentalSessionBuilder.fromOriginSp(sp, session_id, elemMap, spaceElsMap)
           spaceMap += sp.id.get -> obj.id.get
@@ -304,7 +316,7 @@ def initiate2(bpID: Int,
   process.push {
     arrays.sortWith(_.order < _.order)
   }
-  toApplogger("elements " + process.allElements.length + " " + target.length)
+  toApplogger("elements " + process.allElements.length + " " + BPSpaceDAOF.await(procElemenets).length)
 
   /* Presence validation  */
   val front_bricks = process.findFrontBrick()
@@ -507,7 +519,7 @@ def initiate2(bpID: Int,
   /************************************************************************************************/
   /************************************************************************************************/
 
-    if (validateElements(target, test_space, space_elems) && run_proc)
+    if (validateElements(BPSpaceDAOF.await(procElemenets).toList, test_space, space_elems) && run_proc)
       NInvoker.run_proc(process)
     else
       toApplogger("Process launch flag is off")
@@ -796,23 +808,22 @@ def runFrom(station_id:Int, bpID:Int, params: List[InputParamProc], session_id: 
   
   
   
-  def initFrom(station_id:Int, bpID:Int, params: List[InputParamProc],
-    process_dto:Option[BProcessDTO]=None,
-    station_dto:Option[BPStationDTO]=None
+  def initFrom(station_id:Int, 
+              bpID:Int, 
+              params: List[InputParamProc],
+              process_dto:Option[BProcessDTO]=None,
+              station_dto:Option[BPStationDTO]=None
+              ):BProcess  = {
 
-    ):BProcess  = {
-    var processObj:Option[BProcessDTO]=None
-    var station:Option[BPStationDTO]=None
-    if (process_dto.isDefined) {
-      processObj = process_dto
-    } else {
-      processObj = BPDAO.get(bpID)
+    val processObj:Option[BProcessDTO] = process_dto match {
+      case Some(process) => Some(process)
+      case _ => BPDAO.get(bpID)
     }
-    if (station_dto.isDefined) {
-      station = station_dto
-    } else {
-      station = BPStationDAO.findById(station_id)
+    val station:Option[BPStationDTO]= station_dto match {
+      case Some(station_dto) => Some(station_dto)
+      case _ => BPStationDAO.findById(station_id)
     }
+
     val target = ProcElemDAO.findByBPId(bpID)
     val process = new BProcess(new Managment, id = Some(bpID))
     val arrays = target.map(c => c.cast(process)).flatten.toArray
@@ -1266,10 +1277,27 @@ def runFrom(station_id:Int, bpID:Int, params: List[InputParamProc], session_id: 
   
   
   
-  def initFrom(station_id:Int, bpID:Int, params: List[InputParamProc]):BProcess  = {
+  def initFrom(station_id:Int, 
+              bpID:Int, 
+              params: List[InputParamProc],
+              process_dtoObj:Option[BProcessDTO]=None,
+              station_dto:Option[BPStationDTO]=None
+              ):BProcess  = {
 
-    val session_id = BPStationDAO.findById(station_id).get.session
+    val process_dto:Option[BProcessDTO] = process_dtoObj match {
+      case Some(process) => Some(process)
+      case _ => BPDAO.get(bpID)
+    }
+    val station:Option[BPStationDTO]= station_dto match {
+      case Some(station_dto) => Some(station_dto)
+      case _ => BPStationDAO.findById(station_id)
+    }
+    val session_id = station_dto match {
+      case Some(station) => station.session
+      case _ => -1
+    }
     val process = Build.newRunFrom(bpID, session_id, params = List(), invoke = false)
+
     /*
     val process_dto = BPDAO.get(bpID).get
     val target = ProcElemDAO.findByBPId(bpID)
@@ -1343,7 +1371,7 @@ def runFrom(station_id:Int, bpID:Int, params: List[InputParamProc], session_id: 
       process  
   */
     process.get
-  }
+}
   
   
 } 

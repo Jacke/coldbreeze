@@ -53,7 +53,30 @@ class SessionInitialStates(tag: Tag) extends Table[SessionInitialState](tag, "se
   def sessionFK   = foreignKey("ses_init_state_session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
 }
 
+object SessionInitialStateDAOF {
+  import akka.actor.ActorSystem
+  import akka.stream.ActorFlowMaterializer
+  import akka.stream.scaladsl.Source
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._  
 
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  val session_initial_states = SessionInitialStateDAO.session_initial_states
+
+  private def filterQuery(id: Int): Query[SessionInitialStates, SessionInitialState, Seq] =
+    session_initial_states.filter(_.id === id)
+
+}
 object SessionInitialStateDAO {
   import scala.util.Try
   import DatabaseCred.database

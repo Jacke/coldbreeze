@@ -238,14 +238,13 @@ class CustomProviderController(implicit override val env: RuntimeEnvironment[Dem
     }
   }
   private def logAuth(ip: String, agent: String, email: Option[String]) = {
-    AccountLoggerDAO.pull_object(AccountLogger(None, ip, agent, email))
+    // AccountLoggerDAO.pull_object(AccountLogger(None, ip, agent, email))
   }
   private def handleAuth(provider: String, redirectTo: Option[String]) = UserAwareAction.async { implicit request =>
     import scala.concurrent.ExecutionContext.Implicits.global
     println("handle auth")
     val authenticationFlow = request.user.isEmpty
     val modifiedSession = overrideOriginalUrl(request.session, redirectTo)
-
       logAuth(request.remoteAddress, request.headers.get("User-Agent").getOrElse(""), None)
     if (!authenticationFlow) {
       logAuth(request.remoteAddress, request.headers.get("User-Agent").getOrElse(""), request.user.get.main.email)

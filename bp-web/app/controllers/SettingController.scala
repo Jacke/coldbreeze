@@ -33,7 +33,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import com.github.tototoshi.slick.JdbcJodaSupport._
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
-
+import play.api.cache._
+import play.api.Play.current
 
 case class Credentials(firstName:  Option[String], 
   lastName: Option[String], 
@@ -117,9 +118,11 @@ class SettingController(override implicit val env: RuntimeEnvironment[DemoUser])
  def resetBench(bench_id: Int) = SecuredAction.async { implicit request =>
     bench_id match {
       case -1 => AccountInfosDAOF.updateCurrentWorkbench(request.user.main.email.get, None).map { r =>
+                 Cache.remove(s"employee.business.${request.user.main.userId}")        
                  Redirect(routes.SettingController.workbench())
                  }
       case _ =>  AccountInfosDAOF.updateCurrentWorkbench(request.user.main.email.get, Some(bench_id)).map { r => 
+                 Cache.remove(s"employee.business.${request.user.main.userId}")
                  Redirect(routes.SettingController.workbench())
                  }          
     }    

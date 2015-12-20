@@ -139,8 +139,10 @@ class ProcessInputController(override implicit val env: RuntimeEnvironment[DemoU
 def inputLogs(BPid: Int) = Action { implicit request =>
     Ok(Json.toJson(InputLoggerDAO.getByBP(BPid)))
 } 
-def inputLogsBySession(BPid: Int, session_id:Int) = Action { implicit request =>
-    Ok(Json.toJson(InputLoggerDAO.getBySession(session_id)))
+def inputLogsBySession(BPid: Int, session_id:Int) = Action.async { implicit request =>
+    InputLoggerDAOF.getBySession(session_id).map { loggers =>
+      Ok(Json.toJson( loggers ))
+    }
 } 
 
 def schemes(BPid: Int, station_id: Int) = SecuredAction { implicit request =>

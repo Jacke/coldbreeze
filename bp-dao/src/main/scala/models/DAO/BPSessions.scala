@@ -75,6 +75,28 @@ object BPSessionDAOF {
   private def filterByProcessesQuery(ids: List[Int]): Query[BPSessions, BPSession, Seq] =
     bpsessions.filter(_.process inSetBind ids)
 
+  def findListedByBusiness(bid: Int):Future[Seq[SessionContainer]] = {
+    val pF:Future[Seq[BProcessDTO]] = BPDAOF.findByBusiness(bid)
+
+    pF.flatMap { p => 
+      val ids = p.flatMap(_.id)
+      val sessF:Future[Seq[BPSession]] = db.run(filterByProcessesQuery(ids.toList).result)
+    
+      sessF.flatMap { sess =>
+        val sessionContainers = Future.sequence( 
+          p.map { p =>
+        val sessionsStasusF:Future[Seq[SessionStatus]] = prepareSessionStatus(p, sess)
+
+      sessionsStasusF.map { sessions =>
+          SessionContainer(p, 
+          // \|/ Second argument of session container 
+          sessions = sessions.toList  )
+        }
+      } )
+      sessionContainers    
+    }
+  }
+}
   def prepareSessionStatus(p:BProcessDTO,sess: Seq[BPSession]):Future[Seq[SessionStatus]] = {
      val people = SessionPeoples("not@found.com", List()) // placeholder for peoples
      Future.sequence( 
@@ -94,67 +116,44 @@ object BPSessionDAOF {
       } )
   }
 
-
-  def findListedByBusiness(bid: Int):Future[Seq[SessionContainer]] = {
-    val pF:Future[Seq[BProcessDTO]] = BPDAOF.findByBusiness(bid)
-
-    pF.flatMap { p => 
-      val ids = p.flatMap(_.id)
-      val sessF:Future[Seq[BPSession]] = db.run(filterByProcessesQuery(ids.toList).result)
-    
-      sessF.flatMap { sess =>
-        val sessionContainers = Future.sequence( 
-          p.map { p =>
-        val sessionsStasusF:Future[Seq[SessionStatus]] = prepareSessionStatus(p, sess)
-
-      sessionsStasusF.map { sessions =>
-          SessionContainer(p, 
-          // \|/ Second argument of session container 
-          sessions = sessions.toList  )
-        }
-      } )
-
-      sessionContainers    
-    }
-  }
-}
-
   def findById(id: Int):Future[Option[SessionContainer]] = {
     val sessF:Future[Option[BPSession]] =     
       try db.run(filterQuery(id).result.headOption)
       finally println("db.close")//db.close
-    sessF.map { sess =>
+    sessF.flatMap { sess =>
     sess match {
       case Some(ses) => {
         val stationF = BPStationDAOF.findBySessionF(ses.id.get)        
-        val element_quantityF:Future[Int] = SessionProcElementDAOF.findBySessionLength(ses.id.get) //+ SessionSpaceElemDAO.findFlatBySession(ses.id.get).length
-        val process = BPDAO.get(ses.process).get // HAZARD!!!!!!!!!!
+        val element_quantityF = SessionProcElementDAOF.findBySessionLength(ses.id.get)
+        val pF:Future[Option[BProcessDTO]] = BPDAOF.get(ses.process)
         val people = SessionPeoples("not@found.com", List()) // placeholder for peoples
-        
-        val station = BPStationDAOF.await(stationF) // HAZARD!!!!!!!!!!
-// HAZARD!!!!!!!!!!
-// HAZARD!!!!!!!!!!
-        val around = AroundProcessElementsBuilder.detectByStation(ses.process,station,Some(process))
-// HAZARD!!!!!!!!!!
+      pF.flatMap { process =>   
+          stationF.flatMap { station =>
+        val aroundF = AroundProcessElementsBuilder.detectByStationF(process_id = ses.process, 
+                                                                  station = station, 
+                                                                  process = process)
 
-        val step:Future[Double] = stationF.map { station =>
-          station match {
+        element_quantityF.flatMap { element_quantity =>
+        val step:Double = station match {
             case Some(station) => station.step.toDouble
-            case _ => await(element_quantityF).toDouble
+            case _ => element_quantity.toDouble
+        }
+        aroundF.map { around =>
+            val percent = percentDecorator(step, element_quantity)
+            Some(SessionContainer(process.get, 
+                List(SessionStatus(percent, 
+                  process.get, 
+                  ses, 
+                  station, 
+                  Some(around),
+                  Some(people))) 
+            ))
+        }
+        }
           }
-        }
-        val percent = percentDecorator(await(step), await(element_quantityF))
-      Some(SessionContainer(process, 
-        List(SessionStatus(percent, 
-          process, 
-          ses, 
-          station, 
-          Some(around),
-          Some(people))) 
-      ))
-
-        }
-        case _ => None
+      }
+      }
+        case _ => Future(None)
       }
     }
   }

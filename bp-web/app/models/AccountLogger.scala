@@ -32,7 +32,6 @@ object AccountLoggerDAO {
 
  def pull_object(s: AccountLogger) = database withSession {
     implicit session ⇒
-      
       account_loggers returning account_loggers.map(_.id) += s
   }
   def get(k: Int) = database withSession {

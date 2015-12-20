@@ -4,6 +4,12 @@ resolvers += "sonatype-releases" at "https://oss.sonatype.org/content/repositori
 
 resolvers += "bintray-sbt-plugin-releases" at "http://dl.bintray.com/content/sbt/sbt-plugin-releases"
 
+
+resolvers += Resolver.url(
+  "bintray-sbt-plugin-releases",
+  url("https://dl.bintray.com/content/sbt/sbt-plugin-releases")
+)(Resolver.ivyStylePatterns)
+
 resolvers += "Kamon Releases" at "http://repo.kamon.io"
 
 resolvers += "Maven Central" at "http://repo1.maven.org/maven2"
@@ -114,3 +120,6 @@ libraryDependencies += "com.novocode" % "junit-interface" % "0.11" % "test"
 
 
 addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.8.0")
+
+
+addSbtPlugin("org.scala-js" % "sbt-scalajs" % "0.6.5")

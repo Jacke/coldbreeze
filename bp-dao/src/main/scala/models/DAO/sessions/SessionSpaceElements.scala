@@ -149,6 +149,30 @@ case class SessionSpaceElementDTO(id: Option[Int],
 */
 }
 
+object SessionSpaceElemDAOF {
+  import akka.actor.ActorSystem
+  import akka.stream.ActorFlowMaterializer
+  import akka.stream.scaladsl.Source
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._  
+
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  val space_elements = SessionSpaceElemDAO.space_elements
+
+  private def filterQuery(id: Int): Query[SessionSpaceElements, SessionSpaceElementDTO, Seq] =
+    space_elements.filter(_.id === id)
+
+}
 object SessionSpaceElemDAO {
   import DatabaseCred.database
   import models.DAO.BPDAO.bprocesses

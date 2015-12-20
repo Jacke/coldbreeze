@@ -32,6 +32,31 @@ class SessionStateLogs(tag: Tag) extends Table[SessionStateLog](tag, "session_st
   def stateFK   = foreignKey("s_state_log_state_fk", state_id, BPSessionStateDAO.sessionstates)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 } 
+
+object SessionStateLogDAOF {
+  import akka.actor.ActorSystem
+  import akka.stream.ActorFlowMaterializer
+  import akka.stream.scaladsl.Source
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._  
+
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  val session_state_logs = SessionStateLogDAO.session_state_logs
+
+  private def filterQuery(id: Int): Query[SessionStateLogs, SessionStateLog, Seq] =
+    session_state_logs.filter(_.id === id)
+
+}
 object SessionStateLogDAO {
   import scala.util.Try
   import DatabaseCred.database

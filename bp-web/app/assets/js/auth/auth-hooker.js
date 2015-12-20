@@ -28,11 +28,12 @@ $(function domReadyLoginFlow () {
 
   $('.form-horizontal .loginButton').on('click', function(event) {
 
-  event.preventDefault();
+  //event.preventDefault();
   var name = $('.form-horizontal #username').val();
   var pswd = $('.form-horizontal #password').val();
   $('.messageBoxWrap').remove();
   $('.form-horizontal .loginButton').toggleClass('loading');
+/*    
     $.post(jsRoutes.controllers.ProfileController.dashboard().absoluteURL(document.ssl_enabled) + "auth/api/authenticate/userpass", { username: name , password: pswd })
   .done(function( data ) {
   localStorage.setItem("token", data.token);
@@ -50,7 +51,7 @@ $(function domReadyLoginFlow () {
     });
 
   });
-
+*/
 
   if (getUrlParameter('demo') != undefined && getUrlParameter('demo') == "ycombinator") {
 

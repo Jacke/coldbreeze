@@ -23,6 +23,38 @@ class BusinessServices(tag: Tag) extends Table[BusinessServiceDTO](tag, "busines
  */
 case class BusinessServiceDTO(var id: Option[Int], title: String, business_id: Int, master_acc:String = "")
 
+object BusinessServiceDAOF {
+  import akka.actor.ActorSystem
+  import akka.stream.ActorFlowMaterializer
+  import akka.stream.scaladsl.Source
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._  
+
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  val business_services = BusinessServiceDAO.business_services
+
+  private def filterQuery(id: Int): Query[BusinessServices, BusinessServiceDTO, Seq] =
+    business_services.filter(_.id === id)
+  private def filterByBusinessQuery(k: Int): Query[BusinessServices, BusinessServiceDTO, Seq] =
+    for { s ← business_services
+          b <- s.business if b.id === k } yield s 
+
+  def getAllByBusiness(k: Int):Future[Seq[BusinessServiceDTO]] = {
+      db.run(filterByBusinessQuery(k).result)     
+  }
+
+}
+
 object BusinessServiceDAO {
   import scala.util.Try
   import DatabaseCred.database

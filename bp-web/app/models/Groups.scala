@@ -78,8 +78,8 @@ object GroupDAOF {
   def getAllByBusiness(workbench_id: Int):Future[Seq[GroupDTO]] = {
      db.run(filterByWorkbenchQuery(workbench_id).result)
   }
-
 }
+
 object AccountGroupDAOF {
   import akka.actor.ActorSystem
   import akka.stream.ActorFlowMaterializer

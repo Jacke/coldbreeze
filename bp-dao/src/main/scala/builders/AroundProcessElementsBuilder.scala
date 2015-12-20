@@ -15,6 +15,10 @@ import models.DAO.conversion.DatabaseCred
 import main.scala.utils.InputParamProc
   
 import main.scala.bprocesses.BPSession  
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.Duration
+import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+import scala.util.Try
 /**
 * Arround element builder
 **/
@@ -22,13 +26,12 @@ object AroundProcessElementsBuilder {
   def detect(process_id: Int, station_id: Int):ElemAround = {
    val station = BPStationDAO.findActiveByBPIds(List(process_id)).headOption
      
-     station match {
+   station match {
     case None => ElemAround()
     case Some(st) => buildTree(st, process_id)
    }
   }
-  def detectByStation(process_id: Int, station: Option[BPStationDTO], 
-    process:Option[BProcessDTO]=None):ElemAround = {
+  def detectByStation(process_id: Int, station: Option[BPStationDTO], process:Option[BProcessDTO]=None):ElemAround = {
     station match {
     case Some(st) => { 
       if (st.paused == true)
@@ -39,11 +42,29 @@ object AroundProcessElementsBuilder {
     case _ => ElemAround()
    }
   }  
+  def detectByStationF(process_id: Int, station: Option[BPStationDTO], process:Option[BProcessDTO]=None):Future[ElemAround] = {
+    station match {
+    case Some(st) => { 
+      if (st.paused == true)
+        Future { buildTree(st, process_id, process, station) }
+      else 
+        Future(ElemAround())
+    }
+    case _ => Future(ElemAround())
+   }
+  }    
+  
   
   def buildTree(st: BPStationDTO, process_id:Int,
     process:Option[BProcessDTO]=None,
     station_dto:Option[BPStationDTO]=None):ElemAround = {
-    val proc = service.RunnerWrapper.initFrom(st.id.get, process_id, List.empty[InputParamProc])//,process,station_dto)
+    val proc = service.RunnerWrapper.initFrom(
+                                              station_id = st.id.get, 
+                                              bpID = process_id, 
+                                              params = List.empty[InputParamProc],
+                                              process_dtoObj = process,
+                                              station_dto = station_dto
+                                              )
       
     var pre:Option[AroundAttr] = None
     var nex:Option[AroundAttr] = None
