@@ -122,9 +122,14 @@ object BPSessionStateDAOF {
     sessionstates.filter(_.id === id)
   private def filterByProcSesQuery(id: Int, session_id: Int): Query[BPSessionStates, BPSessionState, Seq] =
     sessionstates.filter(s => s.process === id && s.session === session_id)
+  private def filterByProcsSessQuery(id: List[Int], session_id: List[Int]): Query[BPSessionStates, BPSessionState, Seq] =
+    sessionstates.filter(s => (s.process inSetBind id) && (s.session inSetBind session_id))
 
   def findByBPAndSession(id: Int, session_id: Int):Future[Seq[BPSessionState]] = 
       db.run(filterByProcSesQuery(id, session_id).result)    
+
+  def findByBPSAndSessions(id: List[Int], session_id: List[Int]):Future[Seq[BPSessionState]] = 
+      db.run(filterByProcsSessQuery(id, session_id).result)    
 
 
 }

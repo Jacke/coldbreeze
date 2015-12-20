@@ -60,64 +60,65 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
       } else {
       // TODO: service.getByBusiness that manager participated
       val servicesF:Future[Seq[BusinessServiceDTO]] = BusinessServiceDAOF.getAllByBusiness(request.user.businessFirst)
-      val businessF = models.DAO.resources.BusinessDAOF.get(business)
+      val businessF:Future[Option[BusinessDTO]] = Future(request.user.businessObj) //models.DAO.resources.BusinessDAOF.get(business)
 
-
-      val RESULT:Future[Result] = businessF.flatMap { businessReal => 
-
-      val businesses = List(businessReal.get)
-      val primaryBusiness:BusinessDTO = businesses.head
       val email = request.user.main.email.get
+      val acc_tupleF = AccountsDAOF.getRolesAndLang(email, business)
+      //var (isManager, isEmployee, lang) = AccountsDAOF.await(AccountsDAOF.getRolesAndLang(email, business)).get
 
-      var (isManager, isEmployee, lang) = AccountsDAOF.await(AccountsDAOF.getRolesAndLang(email, business)).get
-
-      if (!isEmployee) {// && !arePlanExist(business)) {
+      if (false){ //!isEmployee) {// && !arePlanExist(business)) {
                                                               // Initiate env for new user
         utilities.NewUserRoutine.initiate_env(email)          // run routine
         //request.user.renewPermissions()                     // renew permission
+        //val acc_tupleF = AccountsDAOF.getRolesAndLang(email, business)
         var (isManager, isEmployee, lang) = AccountsDAOF.await(AccountsDAOF.getRolesAndLang(email, business)).get
         println("redirect")
         Future(Home)                                                // redirect to dashboard
       } else {
-
-        val planF:Future[Option[planInfo]] = planFetch(email, isManager, business) 
+        val isManagerF = acc_tupleF.map { tuple => tuple.get._1 }
+        val isEmployeeF = acc_tupleF.map { tuple => tuple.get._2 }
         val dashboardTopBarF: Future[DashboardTopBar] = countDashboardTopBar(email, business)        
-        val managerParams = makeManagerParams(email, isManager, primaryBusiness)
-        val walkthrought:Boolean = managerParams match {
+        val sessionsF:Future[Seq[SessionContainer]] = BPSessionDAOF.findListedByBusiness(business)        
+        val managerParamsF: Future[Option[managerParams]] = makeManagerParamsF(email, isManagerF, businessF)
+        val walkthroughtF:Future[Boolean] = managerParamsF.map { managerParams => 
+          managerParams match {
             case  Some(param) => param.business.walkthrough
             case _ => false
-        }   
+          }   
+        }
 
-        val sessionsF:Future[Seq[SessionContainer]] = BPSessionDAOF.findListedByBusiness(business)
-        sessionsF.flatMap { sessions => 
-          val currentReactionsF:Future[List[Option[CurrentSessionReactionContainer]]] = Future.sequence( 
-            sessions.toList.map(cn => 
-              cn.sessions.toList.map(session_status => 
-                  SessionReactionDAOF.findCurrentUnappliedContainer(cn.process.id.get, session_status.session.id.get)
-                  )
-            ).flatten )
+        //val currentReactionsF:Future[List[Option[CurrentSessionReactionContainer]]] = 
+        val currentReactionsF:Future[List[Option[CurrentSessionReactionContainer]]] = sessionsF.flatMap { sessions => 
+           //Future.sequence( 
+           // sessions.toList.map { cn => 
+           //   //cn.sessions.toList.map(session_status => 
+           //   //    SessionReactionDAOF.findCurrentUnappliedContainer(cn.process.id.get, session_status.session.id.get)
+           //   //    )
+           // }.flatten )
+           val proc_ids = sessions.toList.map { cn => cn.sessions.toList.map { cn_el => cn.process.id.get } }.flatten.distinct 
+           val ses_ids = sessions.toList.map { cn => cn.sessions.toList.map { cn_el => cn_el.session.id.get } }.flatten.distinct 
+           SessionReactionDAOF.findCurrentUnappliedContainerBatch(proc_ids, ses_ids)           
+        }  
         for {
           dashboardTopBar <- dashboardTopBarF
-          plan <- planF
           currentReactions <- currentReactionsF
           services <- servicesF
+          managerParams <- managerParamsF
+          walkthrought <- walkthroughtF
+          sessions <- sessionsF
+          primaryBusiness <- businessF
+          isEmployee <- isEmployeeF
           } yield Ok(views.html.profiles.dashboard(request.user, 
                   managerParams, 
-                  makeEmployeeParams(email, isEmployee, primaryBusiness), 
-                  plan, 
+                  makeEmployeeParams(email, isEmployee, primaryBusiness.get), 
                   walkthrought, 
                   sessions.toList,
                   dashboardTopBar, currentReactions.flatten ) (
-                    Page(services.toList, 1, 1, services.length), 1, "%", businesses))
-        
+                    Page(services.toList, 1, 1, services.length), 1, "%", List(primaryBusiness.get) ))
 
-
-        }
       }
 
 
-    }
-      RESULT
     }
 
 }
@@ -212,6 +213,19 @@ private def makeManagerParams(email: String, isManager: Boolean, business: Busin
       Some(managerParams(business))      
     }
     case _ => None
+  }
+}
+private def makeManagerParamsF(email: String, isManager: Future[Boolean], 
+  business: Future[Option[BusinessDTO]]): Future[Option[managerParams]] = {
+  isManager.flatMap { isManager =>
+    business.map { business =>
+      isManager match {
+        case true => {
+          Some(managerParams(business.get))      
+        }
+        case _ => None
+      }
+    }
   }
 }
 private def makeEmployeeParams(email: String, isEmployee: Boolean, business: BusinessDTO): Option[employeeParams] = {

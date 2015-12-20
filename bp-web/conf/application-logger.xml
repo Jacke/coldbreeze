@@ -13,7 +13,7 @@
   </appender> -->
 <appender name="SYSLOG-TLS" class="com.papertrailapp.logback.Syslog4jAppender">
     <layout class="ch.qos.logback.classic.PatternLayout">
-      <pattern>[%thread] %-5p %class{0}.%method:%L </pattern>
+      <pattern>%d{HH:mm:ss}[%thread][%-5p] %class{0}.%method:%L - %m%n</pattern>
     </layout>
 
     <syslogConfig class="org.productivity.java.syslog4j.impl.net.tcp.ssl.SSLTCPNetSyslogConfig">

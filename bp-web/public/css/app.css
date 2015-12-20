@@ -2179,21 +2179,22 @@ text-decoration: none;
 }
 .ngdialog .btn {
     margin-left: 5px;
-    border: none;  padding: 0.6em 1.2em;  
-    background-color: #6b8d4b;
-    box-shadow: 0 2px 0 #57723d;
-    color: #fff;  
-    font-family: 'Lato', Calibri, Arial, sans-serif;  
-    font-size: 1em;  letter-spacing: 1px;  
-    text-transform: uppercase;  
-    cursor: pointer;  
-    display: inline-block;  
-    margin: 3px 2px;  
+    border: none;
+    padding: 0.6em 1.2em;
+    background-color: #60C597;
+    color: #fff;
+    font-family: 'museo','Lato', Calibri, Arial, sans-serif;
+    font-size: 1em;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: inline-block;
+    margin: 3px 2px;
     border-radius: 2px;
 }
-
 .ngdialog .btn-primary:hover, .ngdialog .btn-primary:focus, .ngdialog .btn-primary:active, .ngdialog .btn-primary.active, .open .dropdown-toggle.btn-primary {
-    background-color: #60774A;
+    background-color: #4FA07B;
 }
 .ngdialog .btn-primary:focus {
     border-color: #8FB56B;
