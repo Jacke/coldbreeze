@@ -10,7 +10,7 @@
 @import models.DAO._
 @import controllers.DashboardTopBar
 
-@(user: DemoUser, mngParams: Option[managerParams], empParams: Option[employeeParams], plan: Option[planInfo], walkthrought: Boolean, sessions: List[SessionContainer], dashboardTopBar: DashboardTopBar, currentReaction: List[CurrentSessionReactionContainer] )(currentPage: Page[BusinessServiceDTO], currentOrderBy: Int, currentFilter: String, businesses: List[BusinessDTO])(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment[service.DemoUser])
+@(user: DemoUser, mngParams: Option[managerParams], empParams: Option[employeeParams], walkthrought: Boolean, sessions: List[SessionContainer], dashboardTopBar: DashboardTopBar, currentReaction: List[CurrentSessionReactionContainer] )(currentPage: Page[BusinessServiceDTO], currentOrderBy: Int, currentFilter: String, businesses: List[BusinessDTO])(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment[service.DemoUser])
 
 @import securesocial.core.IdentityProvider
 
@@ -136,7 +136,7 @@
 
 <div class="grids">
 <!--
-  @if(walkthrought) {
+  if(walkthrought) {
 
   <div class="page-sessions">
     <h2>Sessions</h2>
@@ -159,13 +159,13 @@
  <!-- AFTER PLAN REFACTOR
   <div class="page-header profile_header col-md-8">
 	<h2>
-		<a href="https://gravatar.com" data-toggle="tooltip" title="" data-original-title="Change your avatar"><img src="@gravatar(user.main.avatarUrl)" alt="@user.main.firstName.getOrElse("")" width="40px" height="40px"/></a> @Messages("profile.welcome")(LangDet.getLang(user) ) @user.main.firstName.getOrElse("")
+		<a href="https://gravatar.com" data-toggle="tooltip" title="" data-original-title="Change your avatar"><img src="gravatar(user.main.avatarUrl)" alt="user.main.firstName.getOrElse("")" width="40px" height="40px"/></a> Messages("profile.welcome")(LangDet.getLang(user) ) user.main.firstName.getOrElse("")
 	</h2>
 
-	@if(user.isManager) {
+	if(user.isManager) {
 
-	                  @Messages("page.yourPlan")(LangDet.getLang(user) ): @plan.get.title plan until <span class="date">@plan.get.expire_at</span>
-	                <a href="plans">@Messages("page.plans")(LangDet.getLang(user) )</a>
+	                   Messages("page.yourPlan")(LangDet.getLang(user) ): plan.get.title plan until <span class="date">plan.get.expire_at</span>
+	                <a href="plans">Messages("page.plans")(LangDet.getLang(user) )</a>
 	<script>
 	$('span.date').text(moment($('span.date').text()).format('MMMM Do YYYY, h:mm:ss a'))
 	</script>

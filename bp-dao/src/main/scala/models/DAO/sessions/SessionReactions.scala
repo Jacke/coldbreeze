@@ -87,6 +87,8 @@ object SessionReactionDAOF {
     session_reactions.filter(_.session === id)
   private def filterByProcessQuery(id: Int): Query[SessionReactionRefs, SessionUnitReaction, Seq] =
     session_reactions.filter(_.bprocess === id)
+  private def filterByProcessesQuery(id: List[Int]): Query[SessionReactionRefs, SessionUnitReaction, Seq] =
+    session_reactions.filter(_.bprocess inSetBind id)
 
   def findBySession(session_id: Int):Future[Seq[SessionUnitReaction]] = {
      try db.run(filterBySessionQuery(session_id).result)
@@ -96,13 +98,16 @@ object SessionReactionDAOF {
     db.run(filterByProcessQuery(id).result.headOption)
   def findAllByBP(id: Int):Future[Seq[SessionUnitReaction]] = 
     db.run(filterByProcessQuery(id).result)
+  def findAllByBPS(id: List[Int]):Future[Seq[SessionUnitReaction]] = 
+    db.run(filterByProcessesQuery(id).result)
 
   def findCurrentUnappliedContainer(id: Int, session_id: Int):Future[Option[CurrentSessionReactionContainer]] = {
-       val session_states = BPSessionStateDAO.findByBPAndSession(id, session_id)
+       val session_statesF = BPSessionStateDAOF.findByBPAndSession(id, session_id)
        val session_reactionsF:Future[Seq[SessionUnitReaction]] = findAllByBP(id)
        session_reactionsF.flatMap { session_reactions =>
        val state_outsF = SessionReactionStateOutDAOF.findByReactions(session_reactions.flatMap(_.id).toList)
-       state_outsF.map { state_outs => 
+       state_outsF.flatMap { state_outs => 
+        session_statesF.flatMap { session_states =>
        val unapplied_reactions = session_reactions.filter { reaction =>
           val state_out = state_outs.filter(out => Some(out.reaction) == reaction.id).toList
           val session_state = session_states.find(state => state_out.map(_.state_ref).contains(state.origin_state.getOrElse(0)))//reaction.from_state == state.origin_state)
@@ -119,22 +124,76 @@ object SessionReactionDAOF {
        /*** Iterate over session_reactions for geting first current reaction*/
        unapplied_reactions.headOption match {
         case Some(reaction) => {
-            models.DAO.SessionElemTopologDAO.getIdentityById(reaction.element) match {
-              case Some(identity) => Some(
-                  CurrentSessionReactionContainer(reaction, 
-                    identity.title, 
-                    identity.front, 
-                    identity.nested, 
-                    session_id )
-                )
-              case _ => None
-            }          
+            models.DAO.SessionElemTopologDAOF.getIdentityById(reaction.element).map { identity => 
+              identity match {
+                case Some(identity) => Some(
+                    CurrentSessionReactionContainer(reaction, 
+                      identity.title, 
+                      identity.front, 
+                      identity.nested, 
+                      session_id))
+                case _ => None
+              }        
+            }  
         }
-        case _ => None
+        case _ => Future.successful(None)
+       }
        }
       }                   
     } 
 }
+  def findCurrentUnappliedContainerBatch(idz: List[Int], 
+                                         session_idz: List[Int]):Future[List[Option[CurrentSessionReactionContainer]]] = {
+       //val id = idz.head
+       //val session_id = session_idz.head
+       val session_statesF = BPSessionStateDAOF.findByBPSAndSessions(idz, session_idz)
+       val session_reactionsF:Future[Seq[SessionUnitReaction]] = findAllByBPS(idz)
+       val state_outsF = session_reactionsF.flatMap { session_reactions =>
+        SessionReactionStateOutDAOF.findByReactions(session_reactions.map { reaction => reaction.id.get }.toList)
+       }
+
+       session_reactionsF.flatMap { session_reactions =>
+         state_outsF.flatMap { state_outs => 
+          session_statesF.flatMap { session_states =>
+       val unapplied_reactions = session_reactions.filter { reaction =>
+          val state_out = state_outs.filter(out => Some(out.reaction) == reaction.id).toList
+          val session_state = session_states.find(state => state_out.map(_.state_ref).contains(state.origin_state.getOrElse(0)))//reaction.from_state == state.origin_state)
+          session_state match {
+            case Some(state) => {
+              state_out.map { out =>
+                state.on != out.on
+                state.on_rate != out.on_rate
+              }.reduce(_||_) // OR for multiple state outs
+            }
+            case _ => false
+          }
+       }
+       /*** Iterate over session_reactions for geting first current reaction*/
+       val reaction_sets = unapplied_reactions.map { reaction => 
+         //reaction match {
+          //case Some(reaction) => {
+              models.DAO.SessionElemTopologDAOF.getIdentityById(reaction.element).map { identity => 
+                identity match {
+                  case Some(identity) => Some(
+                      CurrentSessionReactionContainer(reaction, 
+                        identity.title, 
+                        identity.front, 
+                        identity.nested, 
+                        reaction.session))
+                  case _ => None
+                }        
+              }  
+          //}
+          //case _ => Future.successful(None)
+         //}
+       }.toList
+       Future.sequence( reaction_sets )
+       }
+      }                   
+    } 
+}
+
+
 
 def findUnapplied(id: Int, session_id: Int):Future[SessionUnitFutureContainer] = {
        val session_statesF = BPSessionStateDAOF.findByBPAndSession(id, session_id)

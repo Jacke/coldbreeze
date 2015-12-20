@@ -118,8 +118,8 @@ object BPSessionDAOF {
 
   def findById(id: Int):Future[Option[SessionContainer]] = {
     val sessF:Future[Option[BPSession]] =     
-      try db.run(filterQuery(id).result.headOption)
-      finally println("db.close")//db.close
+      db.run(filterQuery(id).result.headOption)
+      //finally println("db.close")//db.close
     sessF.flatMap { sess =>
     sess match {
       case Some(ses) => {

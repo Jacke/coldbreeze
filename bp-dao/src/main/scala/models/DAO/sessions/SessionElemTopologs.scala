@@ -66,6 +66,37 @@ object SessionElemTopologDAOF {
   private def filterQuery(id: Int): Query[SessionTopologs, SessionElemTopology, Seq] =
     session_elem_topologs.filter(_.id === id)
 
+  def get(k: Int):Future[Option[SessionElemTopology]] = {
+    db.run(filterQuery(k).result.headOption) 
+  }
+
+  def getIdentityById(k: Int):Future[Option[SessionEitherTypeElement]] = {
+    get(k).flatMap { identity =>
+      identity match {
+      case Some(topo) => {
+        if (topo.front_elem_id.isDefined) {
+          SessionProcElementDAOF.findById(topo.front_elem_id.get).map { front_el =>            
+            Some(SessionEitherTypeElement(front = front_el, 
+                                          nested = None,
+                                          title = front_el.get.title))
+          }
+        } else if (topo.space_elem_id.isDefined) {
+          SessionSpaceElemDAOF.findById(topo.space_elem_id.get).map { nested_el =>            
+            Some(SessionEitherTypeElement(front = None, 
+                                          nested = nested_el,
+                                          title = nested_el.get.title))
+          }
+        } else {
+          Future.successful(None)
+        }
+
+      }
+      case _ => Future.successful(None)
+    }
+   }
+  }
+
+
 }
 
 object SessionElemTopologDAO {
