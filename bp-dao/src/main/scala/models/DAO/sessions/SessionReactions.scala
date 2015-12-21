@@ -172,6 +172,7 @@ object SessionReactionDAOF {
        val reaction_sets = unapplied_reactions.map { reaction => 
          //reaction match {
           //case Some(reaction) => {
+            
               models.DAO.SessionElemTopologDAOF.getIdentityById(reaction.element).map { identity => 
                 identity match {
                   case Some(identity) => Some(

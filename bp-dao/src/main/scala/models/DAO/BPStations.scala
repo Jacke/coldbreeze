@@ -94,16 +94,15 @@ import models.DAO.conversion.DatabaseFuture._
 
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
-
+  val stations = BPStationDAO.bpstations
 
   private def filterQueryBySession(session_id: Int): Query[BPStations, BPStationDTO, Seq] =
-    BPStationDAO.bpstations.filter(_.session === session_id)
+    stations.filter(_.session === session_id)
   private def filterQueryByBPIds(bpIds: List[Int]): Query[BPStations, BPStationDTO, Seq] =
-    BPStationDAO.bpstations.filter(_.process inSetBind bpIds)
+    stations.filter(_.process inSetBind bpIds)
 
   def findBySessionF(id: Int): Future[Option[BPStationDTO]] =
-    try db.run(filterQueryBySession(id).result.headOption)
-    finally println("db.close")//db.close
+    db.run(filterQueryBySession(id).result.headOption)
                
   def findByBPIds(ids: List[Int]):Future[Seq[BPStationDTO]] = {
     db.run(filterQueryByBPIds(ids).result)

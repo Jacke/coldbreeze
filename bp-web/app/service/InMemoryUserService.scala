@@ -226,12 +226,12 @@ case class DemoUser(main: BasicProfile,
       permissions = AccountsDAO.getRolesAndLang(main.userId, businessFirst)
   }
   def isManager:Boolean = {
-    //if (permissions.isDefined)
-    //  permissions.get._1
-    AccountsDAO.getRolesAndLang(main.userId, businessFirst).get._1
-    //else
-     // false
-  }
+    if (permissions.isDefined)
+      permissions.get._1
+    else
+      AccountsDAO.getRolesAndLang(main.userId, businessFirst).get._1
+      // false
+}
 import scala.concurrent.duration._
 
   //lazy val 
