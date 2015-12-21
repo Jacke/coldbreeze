@@ -169,10 +169,11 @@ object SessionReactionDAOF {
           }
        }
        /*** Iterate over session_reactions for geting first current reaction*/
-       val reaction_sets = unapplied_reactions.map { reaction => 
-         //reaction match {
-          //case Some(reaction) => {
-            
+       val reactionFirst = session_idz.map { ses_id => unapplied_reactions.filter { ur => ur.session == ses_id }.headOption }
+       val reaction_sets = reactionFirst.map { reaction => 
+         reaction match {
+          case Some(reaction) => {
+
               models.DAO.SessionElemTopologDAOF.getIdentityById(reaction.element).map { identity => 
                 identity match {
                   case Some(identity) => Some(
@@ -184,9 +185,9 @@ object SessionReactionDAOF {
                   case _ => None
                 }        
               }  
-          //}
-          //case _ => Future.successful(None)
-         //}
+          }
+          case _ => Future.successful(None)
+         }
        }.toList
        Future.sequence( reaction_sets )
        }
