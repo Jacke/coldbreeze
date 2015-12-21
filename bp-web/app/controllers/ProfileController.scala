@@ -78,7 +78,7 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
         val isManagerF = acc_tupleF.map { tuple => tuple.get._1 }
         val isEmployeeF = acc_tupleF.map { tuple => tuple.get._2 }
         val dashboardTopBarF: Future[DashboardTopBar] = countDashboardTopBar(email, business)        
-        val sessionsF:Future[Seq[SessionContainer]] = Future(Seq())//BPSessionDAOF.findListedByBusiness(business)        
+        val sessionsF:Future[Seq[SessionContainer]] = BPSessionDAOF.findListedByBusiness(business)        
         val managerParamsF: Future[Option[managerParams]] = makeManagerParamsF(email, isManagerF, businessF)
         val walkthroughtF:Future[Boolean] = managerParamsF.map { managerParams => 
           managerParams match {
