@@ -118,12 +118,10 @@ import models.DAO.conversion.DatabaseFuture._
     session_proc_elements.filter(_.session === id)
 
   def findBySessionLength(session_id: Int):Future[Int] = {
-    try db.run(filterBySessionQuery(session_id).length.result)
-    finally println("db.close")//db.close
+    db.run(filterBySessionQuery(session_id).length.result)
   }
   def findBySession(session_id: Int):Future[Seq[SessionUndefElement]] = {
-     try db.run(filterBySessionQuery(session_id).result)
-      finally println("db.close")//db.close 
+     db.run(filterBySessionQuery(session_id).result)      
   }
   def findById(id: Int):Future[Option[SessionUndefElement]] = {
         db.run(filterQuery(id).result.headOption)    

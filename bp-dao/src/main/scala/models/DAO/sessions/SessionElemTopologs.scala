@@ -15,7 +15,8 @@ import main.scala.simple_parts.process.Units._
 
 case class SessionEitherTypeElement(front: Option[SessionUndefElement] = None, 
                                     nested: Option[SessionSpaceElementDTO] = None,
-                                    title: String = "")
+                                    title: String = "",
+                                    topoId: Int = -1)
     
 class SessionTopologs(tag: Tag) extends Table[SessionElemTopology](tag, "session_elem_topologs") {
   def id            = column[Int]("id", O.PrimaryKey, O.AutoInc) 
@@ -65,10 +66,14 @@ object SessionElemTopologDAOF {
 
   private def filterQuery(id: Int): Query[SessionTopologs, SessionElemTopology, Seq] =
     session_elem_topologs.filter(_.id === id)
+  private def filterQueryByIds(ids: List[Int]): Query[SessionTopologs, SessionElemTopology, Seq] =
+    session_elem_topologs.filter(_.id inSetBind ids)
 
   def get(k: Int):Future[Option[SessionElemTopology]] = {
     db.run(filterQuery(k).result.headOption) 
   }
+  def getByIds(k: List[Int]):Future[Seq[SessionElemTopology]] = 
+     db.run(filterQueryByIds(k).result) 
 
   def getIdentityById(k: Int):Future[Option[SessionEitherTypeElement]] = {
     get(k).flatMap { identity =>
@@ -95,7 +100,32 @@ object SessionElemTopologDAOF {
     }
    }
   }
-
+  def getIdentityByIds(k: List[Int]):Future[Seq[SessionEitherTypeElement]] = { /*
+    getByIds(k).flatMap { identity =>
+        val computed:Future[Seq[Option[SessionEitherTypeElement]]] = identity.map { topo =>
+        if (topo.front_elem_id.isDefined) {
+          SessionProcElementDAOF.findById(topo.front_elem_id.get).map { front_el =>            
+            Some( SessionEitherTypeElement(front = front_el, 
+                                          nested = None,
+                                          title = front_el.get.title,
+                                          topoId = topo.id.get))
+          }
+        } else if (topo.space_elem_id.isDefined) {
+          SessionSpaceElemDAOF.findById(topo.space_elem_id.get).map { nested_el =>            
+            Some( SessionEitherTypeElement(front = None, 
+                                          nested = nested_el,
+                                          title = nested_el.get.title,
+                                          topoId = topo.id.get))
+          }
+        } else { None } 
+      }
+      computed.map { c =>
+        c.flatten
+      }
+      
+   } */
+   Future(Seq())
+  }
 
 }
 
