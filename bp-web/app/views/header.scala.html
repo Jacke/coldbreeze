@@ -16,7 +16,7 @@
 
   <div role="banner" class="minorityLogo menuCell">
   
-<a class="absFg" title="Minority" href="/"><span class="visuallyhidden">Minority</span>
+<a class="absFg" title="Minority" href="/" onclick="window.stop();window.location.pathname='/'"><span class="visuallyhidden">Minority</span>
 <svg version="1.1" id="Layer_1" xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 640 480"
    enable-background="new 0 0 640 480" xml:space="preserve">
@@ -72,12 +72,12 @@
     </li> -->
     @if(user.isManager && user.main.userId == user.masterFirst) {
     <li class="minMenuItem">
-      <a id="teamMembersLink" class="vIcoIn menuEntityLink" href="@users.routes.EmployeeController.index()">
+      <a id="teamMembersLink" class="vIcoIn menuEntityLink" onclick="window.stop();window.location.pathname='/peoples'" href="@users.routes.EmployeeController.index()">
         <span class="uicon-svg98"></span>@Messages("nav.people")(LangDet.getLang(user) )  </a>
     </li>
     } 
     <li class="minMenuItem">
-      <a id="teamSettingsLink" class="vIcoIn menuEntityLink" href="@routes.DataController.index()">
+      <a id="teamSettingsLink" class="vIcoIn menuEntityLink" onclick="window.stop()" href="@routes.DataController.index()">
         <span class="uicon-svg62222"></span>@Messages("page.data")(LangDet.getLang(user) )</a>
     </li>
 

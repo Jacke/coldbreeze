@@ -10,7 +10,7 @@
 @import models.DAO._
 @import controllers.DashboardTopBar
 
-@(user: DemoUser, mngParams: Option[managerParams], empParams: Option[employeeParams], walkthrought: Boolean, sessions: List[SessionContainer], dashboardTopBar: DashboardTopBar, currentReaction: List[CurrentSessionReactionContainer] )(currentPage: Page[BusinessServiceDTO], currentOrderBy: Int, currentFilter: String, businesses: List[BusinessDTO])(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment[service.DemoUser])
+@(user: DemoUser, mngParams: Option[managerParams], empParams: Option[employeeParams], walkthrought: Boolean, sessions: List[SessionContainer], dashboardTopBar: DashboardTopBar, currentReaction: List[CurrentSessionReactionContainer] )(currentPage: Page[BusinessServiceDTO], currentOrderBy: Int, currentFilter: String, businesses: List[BusinessDTO], isManager: Boolean = false)(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment[service.DemoUser])
 
 @import securesocial.core.IdentityProvider
 
@@ -186,7 +186,7 @@
 
 
 <div class="dashboard_services col-md-4">
-@services(user, currentPage) 
+@services(user, currentPage, isManager) 
 </div>
 
 @dashboard_footer()

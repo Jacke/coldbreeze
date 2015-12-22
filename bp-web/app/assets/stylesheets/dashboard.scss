@@ -190,11 +190,16 @@
   text-align: center;
 }
 .session_list__session .instant-input .element-thumb {
-  font-size: 13px;
-  font-weight: 100;
-  display: inline-block;
-  margin-right: 4px;
-  text-align: center;
+    font-size: 13px;
+    font-weight: 100;
+    display: inline-block;
+    margin-right: 4px;
+    text-align: center;
+    width: 68px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: -3px;
 }
 .session_list__session .instant-input button.confirm-btn {
   padding: 5px 12px;
