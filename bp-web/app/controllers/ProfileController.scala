@@ -108,13 +108,14 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
           sessions <- sessionsF
           primaryBusiness <- businessF
           isEmployee <- isEmployeeF
+          isManager <- isManagerF
           } yield Ok(views.html.profiles.dashboard(request.user, 
                   managerParams, 
                   makeEmployeeParams(email, isEmployee, primaryBusiness.get), 
                   walkthrought, 
                   sessions.toList,
                   dashboardTopBar, currentReactions.flatten ) (
-                    Page(services.toList, 1, 1, services.length), 1, "%", List(primaryBusiness.get) ))
+                    Page(services.toList, 1, 1, services.length), 1, "%", List(primaryBusiness.get), isManager ))
 
       }
 

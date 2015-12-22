@@ -17,13 +17,13 @@
 
 @import models.DAO.resources.BusinessServiceDTO
 @import models.DAO.resources.BusinessDTO
-@(user: DemoUser, currentPage: Page[BusinessServiceDTO])(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment[service.DemoUser])
+@(user: DemoUser, currentPage: Page[BusinessServiceDTO], isManager:Boolean = false)(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment[service.DemoUser])
 @header_table(orderBy: Int, title: String) = {
     <th class="headerSortDown">
         @title
     </th>
 }
-  @if(user.isManager) {
+  @if(isManager) {
     <div class="teamSettingsCheckbox">
       <header class="panel-heading head-border">@Messages("page.services")(LangDet.getLang(user) )</header>
       <p class="teamSettingsAbout">@Messages("page.servicesDesc")(LangDet.getLang(user) )</p>

@@ -61,6 +61,44 @@
         </div>
     </li>
   </ul>
+  <div class="warp-field">
+  <div class="warp_select">
+<div class="text_select_btn">Text</div>
+<div class="file_select_btn">File</div>
+</div>
+ <div class="bb_elements"><div class="bb_text"><div class="text_content"><p>some text</p></div><div class="text_control"><a href="#">Edit</a><a href="#">x</a></div></div><div class="bb_file"><div class="file_title"><h4>File title</h4></div><div class="file_url"><a href="#">file</a></div>
+
+  <div class="file_meta"><div class="file_type">file type</div><div class="file_size">file size</div></div>
+
+  <div class="file_control"><a href="#">x</a></div>
+</div>
+</div>  
+</div>
+<!-- 
+  data.message.entities
+  data.message.slats
+-->
+<!--
+{ payload: [ { obj_type: "text", obj_title: "Text", obj_content: value } ] } 
+-->
+
+
+<form action="/warp" method="post">
+<p><b>Warp field:</b></p>
+<p><textarea rows="10" cols="45" id="warpArea" name="text"></textarea></p>
+<p><input type="submit" value="Send"></p>
+</form>
+
+
+</div>
+
+</div>
+
+
+</div>
+
+
+
   <div class="process-thumb">
   <button type="submit" id="inputResumeButton" class="btn btn-small btTxt submit btn lg solid-green ng-binding" ng-disabled="runFromDisabled" ng-click="runFrom($parent.session.session.id)" tooltip-placement="top" tooltip="Resume execution">Resume</button>
 <!--
