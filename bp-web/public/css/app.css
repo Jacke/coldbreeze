@@ -2704,6 +2704,10 @@ border-radius: 6px;
     width: 14%;
     border: none;
     margin-right: -5px;
+    clear: both;
+    bottom: 22px;
+    top: initial;
+    right: 38px;
 }
 .input-stations input.switch {
     height: 2em;
@@ -8473,6 +8477,22 @@ textarea#warpArea {
 .warp_select > * {
     cursor: pointer;
 }
+.warp-field .warp_attach {
+    background: #333;
+    width: 100px;
+    color: white;
+    padding: 7px 10px;
+    margin-bottom: 8px;
+    text-align: center;
+    font-weight: 700;
+    margin-left: 8px;
+}
+
+
+
+
+
+
 
 
 
