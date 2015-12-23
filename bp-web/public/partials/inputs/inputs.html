@@ -64,29 +64,79 @@
   
 
 
-<div class="warp-field" ng-init="show_warp=false;">
-    <div class="warp_attach" ng-click="show_warp=true;">Attach</div>
+<div class="warp-field">
+    <div class="warp_attach" ng-init="show_warp=false;" ng-click="show_warp == true ? show_warp = false : show_warp = true">Attach</div>
     
-    <div class="warp-show" ng-show="show_warp">
-    <div class="warp_attach">Add field</div>
-    <div class="warp_field">
-    <div class="warp_select">
-      <div class="text_select_btn">Text</div>
-      <div class="file_select_btn">File</div>
+    <div class="warp-show" show="show_warp">
+    <div class="warp_attach" ng-click="addPayload()">Add field</div>
+    <div class="warp_field" ng-repeat="field in payload">
+    <div class="warp_select" ng-show="field.obj_type == undefined || field.obj_type.length < 1">
+      <div class="text_select_btn" ng-click="setWarpType(field, 'text')">Text</div>
+      <div class="file_select_btn" ng-click="setWarpType(field, 'file')">File</div>
     </div>
 
      <div class="bb_elements">
-     <div class="bb_text">
+     <div class="bb_text" ng-show="field.obj_type == 'text'">
        <div class="text_content"><p>some text</p></div>
-       <div class="text_control"><a href="#">Edit</a><a href="#">x</a></div>
+       <textarea rows="10" cols="45" id="warpArea" name="text"></textarea>
+       <div class="text_control"><a href="#">Edit</a></div>
      </div>
-     <div class="bb_file">
+     <div class="bb_file" ng-show="field.obj_type == 'file'">
        <div class="file_title"><h4>File title</h4></div>
        <div class="file_url"><a href="#">file</a></div>
        <div class="file_meta"><div class="file_type">file type</div><div class="file_size">file size</div></div>
-       <div class="file_control"><a href="#">x</a></div>
+       <div class="file_control"><a href="#">Select file</a></div>
+
+
+<a href="javascript:;" lk-google-picker on-picked="onPicked(docs)" on-loaded="onLoaded()" on-cancel="onCancel()" class="btn btn-2 btn-2c btn-blue">
+  <i class="fa fa-inbox"></i>
+  <span>Pick files</span>
+</a>
+<div class="center-block">
+                <p><a class="btn btn-primary btn-block" href="javascript:;" drop-box-picker dbpicker-files="dpfiles">Dropbox Picker</a></p>
+</div>
+<div class="center-block">
+    <p><a class="btn btn-primary btn-block" href="javascript:;" box-picker boxpicker-files="boxfiles">Box Picker</a></p>
+</div>
+<div class="">
+            <div class="row show-grid" ng-switch="dpfiles.length > 0 || boxfiles.length > 0">
+                <div ng-switch-when="true">
+                    <div class="" ng-repeat="file in dpfiles">
+                        <a href="{{ file.link }}" target="_blank"><img src="" class="img-responsive img-thumbnail"> {{ file.name }}</a>
+                        <button type="button" class="close" ng-click="remove($index)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    </div>
+                    <div class="" ng-repeat="file in boxfiles">
+                        <a href="{{ file.url }}" target="_blank"><img src="" class="img-responsive img-thumbnail"> {{ file.name }}</a>
+                        <button type="button" class="close" ng-click="removeboxfiles($index)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    </div>
+                </div>
+            </div>
+</div>            
+<div class="row dashed-border" ng-switch="files.length > 0">
+  <div class="text-center" ng-switch-when="false">
+    <div class="none">No files selected yet</div>
+  </div>
+  <div ng-switch-when="true">
+    <div class="col-sm-4 item item-test" ng-repeat="file in files">
+      <a href="{{ file.url }}" target="_blank">
+        <div class="icon">
+          <div class="document">
+            <span class="ng-binding">
+              {{ file.name | getExtension }}
+            </span>
+          </div>
+        </div>
+        <span>{{ file.name | limitTo:20 }}</span><span ng-if="file.name.length >=20">...</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+
+
     </div>
     </div>  
+
       <!-- 
         data.message.entities
         data.message.slats
@@ -94,12 +144,8 @@
       <!--
       { payload: [ { obj_type: "text", obj_title: "Text", obj_content: value } ] } 
       -->
-      <form action="/warp" method="post">
-      <p><b>Warp field:</b></p>
-      <p><textarea rows="10" cols="45" id="warpArea" name="text"></textarea></p>
-      <p><input type="submit" value="Send"></p>
-      </form>
-      <div class="warp_attach">Remove field</div>
+
+      <div class="warp_attach" ng-click="removePayload(field)">Remove field</div>
       </div>
 
       </div>

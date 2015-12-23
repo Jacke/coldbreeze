@@ -3106,13 +3106,16 @@ form.form-horizontal.element-new-form.form-new-bpelem.form-edit-bpelem.form-new-
 
 
 .progress-lines span.line {
-    -webkit-box-flex: 1;      -webkit-flex: 1;      -ms-flex: 1;      flex: 1;
+    -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
     display: inline-flex;
     width: 5px !important;
     height: 19px;
     background-color: black;
     /* position: absolute; */
-    margin: 1px 3px 0px 6px;
+    margin: -1px 3px 0px 6px;
     flex-wrap: wrap;
     border-radius: 3px;
 }

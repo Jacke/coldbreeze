@@ -23,148 +23,27 @@
 
 @main(Messages("page.settings")(LangDet.getLang(user) ), user) {
 
-<style>
-	.bb_elements {
-    width: 20%;
-}
-
-.bb_elements .bb_text {
-    background: white;
-    padding: 17px 18px 20px 17px;
-    margin-left: 9px;
-    margin-bottom: 15px;
-    position: relative;
-}
-.bb_elements .bb_file {
-    background: #737373;
-    padding: 17px 18px 20px 17px;
-    margin-left: 9px;
-    color: white;
-    text-shadow: none;
-    margin-bottom: 15px;
-    position: relative;
-}
-
-
-
-.bb_elements .bb_file a {
-    color: #15E5FF;
-    text-shadow: none;
-}
-
-.file_type {
-}
-
-.file_meta {
-    display: flex;
-    font-size: 12px;
-    margin-top: 6px;
-    color: white;
-}
-
-.file_url {
-    font-size: 16px;
-}
-
-.file_control {
-    position: absolute;
-    top: 11px;
-    right: 20px;
-    color: white;
-}
-
-.bb_elements .bb_file .file_control a {
-    color: white;
-}
-
-.text_control {
-    position: absolute;
-    top: 11px;
-    right: 20px;
-    color: white;
-}
-
-.text_control a {
-    color: #006263;
-    margin-right: 5px;
-    margin-left: 6px;
-    font-weight: 100;
-}
-
-.text_content {
-    margin-top: 5px;
-}
-
-
-
-
-
-
-.text_select_btn {
-    background: white;
-    padding: 17px 18px 20px 17px;
-    margin-left: 9px;
-    margin-bottom: 15px;
-    position: relative;
-    width: 50%;
-}
-
-.warp_select {
-    width: 20%;
-    display: flex;
-    text-align: center;
-    font-size: 18px;
-    font-weight: 600;
-    font-family: 'museo';
-}
-
-.file_select_btn {
-    background: #737373;
-    padding: 17px 18px 20px 17px;
-    margin-left: 9px;
-    color: white;
-    text-shadow: none;
-    margin-bottom: 15px;
-    position: relative;
-    width: 50%;
-}
-.warp_select > * {
-    cursor: pointer;
-}
-</style>
-
-    <script type="text/javascript" src="https://apis.google.com/js/api.js?onload=onApiLoad"></script>
+<script type="text/javascript" src="https://apis.google.com/js/api.js?onload=onApiLoad"></script>
 <script type="text/javascript" src="https://app.box.com/js/static/select.js"></script>
-    <script type="text/javascript">
+<script type="text/javascript">
 (function() {
-	/**
-	 * Initialise a Google Driver file picker
-	 */
 	var FilePicker = window.FilePicker = function(options) {
 		// Config
 		this.apiKey = options.apiKey;
 		this.clientId = options.clientId;
-		
 		// Elements
 		this.buttonEl = options.buttonEl;
-		
 		// Events
 		this.onSelect = options.onSelect;
 		this.buttonEl.addEventListener('click', this.open.bind(this));		
-	
 		// Disable the button until the API loads, as it won't work properly until then.
 		this.buttonEl.disabled = true;
-
 		// Load the drive API
 		gapi.client.setApiKey(this.apiKey);
 		gapi.client.load('drive', 'v2', this._driveApiLoaded.bind(this));
 		google.load('picker', '1', { callback: this._pickerApiLoaded.bind(this) });
 	}
-
 	FilePicker.prototype = {
-		/**
-		 * Open the file picker.
-		 */
 		open: function() {		
 			// Check if the user has already authenticated
 			var token = gapi.auth.getToken();
@@ -246,47 +125,7 @@
 		}
 	};
 }());
-    </script>
-  
-
-
-<div class="drivePage">
-<button type="button" id="pick">Pick File from Google Drive</button>
-<div id="box-select" data-link-type="direct" data-multiselect="true" data-client-id="9nmk1hao8ea3cgpz1opysjtva6zhqd8h"></div>
-
-
-  <div id="result"></div>
-  <div id="result_dropbox"></div>
-    <!-- The Google API Loader script. -->
-
-  <div id="result_warp">
-
-<div class="warp_select">
-<div class="text_select_btn">Text</div>
-<div class="file_select_btn">File</div>
-</div>
-  	
- <div class="bb_elements"><div class="bb_text"><div class="text_content"><p>some text</p></div><div class="text_control"><a href="#">Edit</a><a href="#">x</a></div></div><div class="bb_file"><div class="file_title"><h4>File title</h4></div><div class="file_url"><a href="#">file</a></div>
-
-  <div class="file_meta"><div class="file_type">file type</div><div class="file_size">file size</div></div>
-
-  <div class="file_control"><a href="#">x</a></div>
-</div>
-</div> 	
-
-
-  </div>
-
-
-<form action="/warp" method="post">
-<p><b>Warp field:</b></p>
-<p><textarea rows="10" cols="45" id="warpArea" name="text"></textarea></p>
-<p><input type="submit" value="Send"></p>
-</form>
-
-
-</div>
-
+</script>
 
 
 <script>
@@ -355,6 +194,46 @@ options = {
 var button = Dropbox.createChooseButton(options);
 document.getElementById("result_dropbox").appendChild(button);
 </script>
+  
+
+
+<div class="drivePage">
+<button type="button" id="pick">Pick File from Google Drive</button>
+<div id="box-select" data-link-type="direct" data-multiselect="true" data-client-id="9nmk1hao8ea3cgpz1opysjtva6zhqd8h"></div>
+
+
+  <div id="result"></div>
+  <div id="result_dropbox"></div>
+    <!-- The Google API Loader script. -->
+
+  <div id="result_warp">
+
+<div class="warp_select">
+<div class="text_select_btn">Text</div>
+<div class="file_select_btn">File</div>
+</div>
+  	
+ <div class="bb_elements"><div class="bb_text"><div class="text_content"><p>some text</p></div><div class="text_control"><a href="#">Edit</a><a href="#">x</a></div></div><div class="bb_file"><div class="file_title"><h4>File title</h4></div><div class="file_url"><a href="#">file</a></div>
+
+  <div class="file_meta"><div class="file_type">file type</div><div class="file_size">file size</div></div>
+
+  <div class="file_control"><a href="#">x</a></div>
+</div>
+</div> 	
+
+
+  </div>
+
+
+<form action="/warp" method="post">
+<p><b>Warp field:</b></p>
+<p><textarea rows="10" cols="45" id="warpArea" name="text"></textarea></p>
+<p><input type="submit" value="Send"></p>
+</form>
+
+
+</div>
+
 
 
 

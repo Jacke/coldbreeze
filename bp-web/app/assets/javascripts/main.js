@@ -194,9 +194,13 @@
 
 
 'app': {
-  deps: ['angular', 'toastr', 'toaster', 'roundProgress'],
+  deps: ['angular', 'toastr', 'toaster', 'roundProgress', 'lkgooglepicker'],
   export: 'app'
 },
+//'lkgooglepicker': {
+//  deps: ['angular', 'app'],
+//  export: 'lkgooglepicker'
+//},
 'filters': {
   deps: ['angular', 'app'],
   export: 'filters'
@@ -352,6 +356,9 @@
   'daterangepicker': '../bower_components/bootstrap-daterangepicker/daterangepicker',
   'angular-daterangepicker': '../bower_components/angular-daterangepicker/js/angular-daterangepicker',
 
+//  'filepicker': '../bower_components/filepicker-js/dist/filepicker',
+//  'angularfilepicker': '../bower_components/angular-filepicker/dist/angular_filepicker',  
+  'lkgooglepicker': '../bower_components/angular-google-picker/dist/google-picker',
   'app': '../js/app',
   'filters': '../js/filters',
   'services': '../js/services',
@@ -390,56 +397,6 @@ require(['requirejs','jsRoutes','jquery', 'react','pnofiy','mobileDetect','popup
     function (requirejs,jsRoutes,$,react, pnofiy,mobileDetect,popupoverlay,dragOn,niceScroll,ssl,offline,offlineSimulator,header,tooltip,dropdown,underscore,moment,selectize,tether,shepherd,tour) {
         document.tour = tour;
 
-
-$('textarea#warpArea').bind('input propertychange', function () {
-    var value = $(this).val();
-/*
-$.ajax({
-
-    type: "POST",
-    url: "/warp",
-    data: JSON.stringify({ body: value }),
-    contentType: "application/json; charset=utf-8",
-    dataType: "json",
-    success: function(data){  
-      $('#result_warp').empty();
-      underscore.forEach(data.message.entities, function(entity) {
-        $('#result_warp').append('<p>'+JSON.stringify(entity)+'</p>');
-      })      
-      underscore.forEach(data.message.slats, function(slat) {
-        $('#result_warp').append('<p>'+JSON.stringify(slat)+'</p>');
-      })
-    },
-    failure: function(errMsg) {
-        console.log(errMsg);
-    }
-});
-*/
-$.ajax({
-
-    type: "POST",
-    url: "/warp",
-    data: JSON.stringify(
-      {payload: [ { 
-      obj_type: "text", obj_title: "Text", obj_content: value } ] } ),
-    contentType: "application/json; charset=utf-8",
-    dataType: "json",
-    success: function(data){  
-      $('#result_warp').empty();
-      underscore.forEach(data.message.entities, function(entity) {
-        $('#result_warp').append('<p>'+JSON.stringify(entity)+'</p>');
-      })      
-      underscore.forEach(data.message.slats, function(slat) {
-        $('#result_warp').append('<p>'+JSON.stringify(slat)+'</p>');
-      })
-    },
-    failure: function(errMsg) {
-        console.log(errMsg);
-    }
-});
-
-
-});
 
       $(document).ready(function(){
         document.mobileDetect = new mobileDetect(window.navigator.userAgent);

@@ -3,8 +3,8 @@ define(['angular', 'app', 'controllers'], function (angular, minorityApp, minori
 
 
 
-minorityControllers.controller('BPRequestCtrl', ['notificationService', 'LaunchElementTopologsFactory','LaunchElemsFactory','LaunchSpacesFactory','LaunchSpaceElemsFactory','ElementTopologsFactory', 'InteractionsFactory', '$scope', '$window','$routeParams','$route', '$rootScope','$filter','BPLogsFactory', 'BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory', 'BProcessFactory', 'BPStationsFactory', 'BPRequestFactory',  '$location', '$http',
-function (notificationService, LaunchElementTopologsFactory, LaunchElemsFactory,LaunchSpacesFactory,LaunchSpaceElemsFactory, ElementTopologsFactory, InteractionsFactory, $scope, $window,$routeParams,$route, $rootScope,$filter,BPLogsFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BProcessFactory, BPStationsFactory, BPRequestFactory,  $location, $http) {
+minorityControllers.controller('BPRequestCtrl', ['DropBoxSettings', 'lkGoogleSettings', 'notificationService', 'LaunchElementTopologsFactory','LaunchElemsFactory','LaunchSpacesFactory','LaunchSpaceElemsFactory','ElementTopologsFactory', 'InteractionsFactory', '$scope', '$window','$routeParams','$route', '$rootScope','$filter','BPLogsFactory', 'BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory', 'BProcessFactory', 'BPStationsFactory', 'BPRequestFactory',  '$location', '$http',
+function (DropBoxSettings, lkGoogleSettings, notificationService, LaunchElementTopologsFactory, LaunchElemsFactory,LaunchSpacesFactory,LaunchSpaceElemsFactory, ElementTopologsFactory, InteractionsFactory, $scope, $window,$routeParams,$route, $rootScope,$filter,BPLogsFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BProcessFactory, BPStationsFactory, BPRequestFactory,  $location, $http) {
 
 $scope.bpId = $scope.session.process.id;
 $scope.session_id = $scope.session.session.id;
@@ -160,22 +160,145 @@ $scope.reactionSelect = function (reaction) {
 
 
 
-  $scope.updateBP = function () {
-    BProcessFactory.update($scope.bprocess);
-    $location.path('/bprocesses');
-  };
-  $scope.cancel = function () {
-    $location.path('/bprocesses');
-  };
-  $scope.input = function (bpId) {
-    $location.path('/bprocess/' + bPid + '/input')
+/*
+  Warp field impementation
+ */
+// { payload: [ { obj_type: "text", obj_title: "Text", obj_content: value } ] }  
+$scope.payload = [ { obj_type: "text", obj_title: "Text", obj_content: "" } ];
+$scope.removePayload = function(field) {
+  $scope.payload = _.reject($scope.payload, function(el) { return el.$$hashKey === field.$$hashKey; });
+};
+$scope.setWarpType = function(field, warp_type) {
+console.log(field);
+var index = $scope.payload.indexOf(field);
+
+if (index !== -1) {
+//    items[index] = 1010;
+
+  if (warp_type == 'text') {
+    $scope.payload[index] = { obj_type: "text", obj_title: "Text", obj_content: "" }  
+  } 
+  if (warp_type == 'file') {
+    $scope.payload[index] = { obj_type: "file", obj_title: "File", obj_content: "" }   
   }
-  $scope.filterExpression = function(station) {
-    return (station.finished != true && station.paused == true);
-  }
-  $scope.filterInputs = function(elem) {
-    return (elem.type_title == "confirm");
-  };
+} 
+  console.log(field);
+}
+
+
+$scope.addPayload = function() {
+  $scope.payload.push({})
+}
+$scope.onLoaded = function () {
+  console.log('Google Picker loaded!');
+}
+
+// Callback triggered after selecting files
+$scope.onPicked = function (docs) {
+  angular.forEach(docs, function (file, index) {
+    $scope.files.push(file);
+  });
+}
+
+// Callback triggered after clicking on cancel
+$scope.onCancel = function () {
+  console.log('Google picker close/cancel!');
+}
+$scope.files = [];
+$scope.dpfiles = [];
+$scope.remove = function(idx){
+    $scope.dpfiles.splice(idx,1);
+    }
+$scope.boxfiles = [];
+$scope.removeboxfiles = function(idx){
+    $scope.boxfiles.splice(idx,1);
+    }
+
+$scope.sendPayload = function() {
+     $http({
+      url: '/warp',
+      method: "POST",
+      data: { payload: $scope.payload },
+      })
+      .then(function(response) {
+        // success
+        //$scope.bpstations = BPStationsFactory.query({ BPid: $scope.bpId });
+      },
+      function(response) { // optional
+        // failed
+      }
+      );
+}
+
+/*
+$('textarea#warpArea').bind('input propertychange', function () {
+    var value = $(this).val();
+$.ajax({
+    type: "POST",
+    url: "/warp",
+    data: JSON.stringify({ body: value }),
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: function(data){  
+      $('#result_warp').empty();
+      underscore.forEach(data.message.entities, function(entity) {
+        $('#result_warp').append('<p>'+JSON.stringify(entity)+'</p>');
+      })      
+      underscore.forEach(data.message.slats, function(slat) {
+        $('#result_warp').append('<p>'+JSON.stringify(slat)+'</p>');
+      })
+    },
+    failure: function(errMsg) {
+        console.log(errMsg);
+    }
+});
+$.ajax({
+    type: "POST",
+    url: "/warp",
+    data: JSON.stringify(
+      {payload: [ { 
+      obj_type: "text", obj_title: "Text", obj_content: value } ] } ),
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: function(data){  
+      $('#result_warp').empty();
+      underscore.forEach(data.message.entities, function(entity) {
+        $('#result_warp').append('<p>'+JSON.stringify(entity)+'</p>');
+      })      
+      underscore.forEach(data.message.slats, function(slat) {
+        $('#result_warp').append('<p>'+JSON.stringify(slat)+'</p>');
+      })
+    },
+    failure: function(errMsg) {
+        console.log(errMsg);
+    }
+});
+});*/
+
+
+
+
+
+
+
+
+
+$scope.updateBP = function () {
+  BProcessFactory.update($scope.bprocess);
+  $location.path('/bprocesses');
+};
+$scope.cancel = function () {
+  $location.path('/bprocesses');
+};
+$scope.input = function (bpId) {
+  $location.path('/bprocess/' + bPid + '/input')
+}
+$scope.filterExpression = function(station) {
+  return (station.finished != true && station.paused == true);
+}
+$scope.filterInputs = function(elem) {
+  return (elem.type_title == "confirm");
+};
 
   $scope.highlightActive = function (station, elem) {
      var front, nest;
