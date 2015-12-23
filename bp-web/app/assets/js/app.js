@@ -6,6 +6,8 @@
 
 define(['angular', 'toaster','toastr', 'angularanimate', 'roundProgress'], function (angular, toaster, toastr, angularanimate, roundProgress) {
 
+
+
 var translationsEN = {
   PERMISSIONS: 'Permissions',
   SESSIONS: 'Sessions',
@@ -161,6 +163,7 @@ var minorityApp =
       'angularLocalStorage',
       'angular-progress-arc',
       'classy',
+      //'angular-filepicker',
       'jlareau.pnotify',
       'ngAngularError',
       'toaster',
@@ -185,6 +188,12 @@ minorityApp.filter('slice', function() {
     return arr.slice(arr.length-start, end);
   };
 });
+
+minorityApp.filter('getExtension', function () {
+  return function (url) {
+    return url.split('.').pop();
+  };
+})
 
 minorityApp.factory(
   'popupFactory', ['$resource', 'ngDialog',
@@ -271,8 +280,252 @@ minorityApp.factory('NotificationBroadcaster', ['$rootScope','$websocket', '$win
 }]);
 
 
+minorityApp.provider('lkGoogleSettings', function () {
+    this.apiKey   = 'AIzaSyC_wPVwox46HJlkHVQWgKhy6dnZ0kYfCaA';
+    this.clientId = '629371862094-egfiim60lfulkrvb9e3iqpl5a2nk5c69.apps.googleusercontent.com';
+    this.scopes   = ['https://www.googleapis.com/auth/drive'];
+    this.features = ['MULTISELECT_ENABLED'];
+    this.views    = [
+      'DocsView().setIncludeFolders(true)',
+      'DocsUploadView().setIncludeFolders(true)'
+    ];
+    this.locale   = 'en'; // Default to English
 
+    /**
+     * Provider factory $get method
+     * Return Google Picker API settings
+     */
+    this.$get = ['$window', function ($window) {
+      return {
+        apiKey   : this.apiKey,
+        clientId : this.clientId,
+        scopes   : this.scopes,
+        features : this.features,
+        views    : this.views,
+        locale   : this.locale,
+        origin   : this.origin || $window.location.protocol + '//' + $window.location.host
+      }
+    }];
 
+    /**
+     * Set the API config params using a hash
+     */
+    this.configure = function (config) {
+      for (var key in config) {
+        this[key] = config[key];
+      }
+    };
+  })
+
+  minorityApp.directive('lkGooglePicker', ['lkGoogleSettings', function (lkGoogleSettings) {
+    return {
+      restrict: 'A',
+      scope: {
+        onLoaded: '&',
+        onCancel: '&',
+        onPicked: '&'
+      },
+      link: function (scope, element, attrs) {
+        var accessToken = null;
+
+        /**
+         * Load required modules
+         */
+        function instanciate () {
+          gapi.load('auth', { 'callback': onApiAuthLoad });
+          gapi.load('picker');
+        }
+
+        /**
+         * OAuth autorization
+         * If user is already logged in, then open the Picker modal
+         */
+        function onApiAuthLoad () {
+          var authToken = gapi.auth.getToken();
+
+          if (authToken) {
+            handleAuthResult(authToken);
+          } else {
+            gapi.auth.authorize({
+              'client_id' : lkGoogleSettings.clientId,
+              'scope'     : lkGoogleSettings.scopes,
+              'immediate' : false
+            }, handleAuthResult);
+          }
+        }
+
+        /**
+         * Google API OAuth response
+         */
+        function handleAuthResult (result) {
+          if (result && !result.error) {
+            accessToken = result.access_token;
+            openDialog();
+          }
+        }
+
+        /**
+         * Everything is good, open the files picker
+         */
+        function openDialog () {
+          var picker = new google.picker.PickerBuilder()
+                                 .setLocale(lkGoogleSettings.locale)
+                                 .setOAuthToken(accessToken)
+                                 .setCallback(pickerResponse)
+                                 .setOrigin(lkGoogleSettings.origin);
+
+          if (lkGoogleSettings.features.length > 0) {
+            angular.forEach(lkGoogleSettings.features, function (feature, key) {
+              picker.enableFeature(google.picker.Feature[feature]);
+            });
+          }
+
+          if (lkGoogleSettings.views.length > 0) {
+            angular.forEach(lkGoogleSettings.views, function (view, key) {
+              view = eval('new google.picker.' + view);
+              picker.addView(view);
+            });
+          }
+
+          picker.build().setVisible(true);
+        }
+
+        /**
+         * Callback invoked when interacting with the Picker
+         * data: Object returned by the API
+         */
+        function pickerResponse (data) {
+          gapi.client.load('drive', 'v2', function () {
+            if (data.action == google.picker.Action.LOADED && scope.onLoaded) {
+              (scope.onLoaded || angular.noop)();
+            }
+            if (data.action == google.picker.Action.CANCEL && scope.onCancel) {
+              (scope.onCancel || angular.noop)();
+            }
+            if (data.action == google.picker.Action.PICKED && scope.onPicked) {
+              (scope.onPicked || angular.noop)({docs: data.docs});
+            }
+            scope.$apply();
+          });
+        }
+
+        gapi.load('auth');
+        gapi.load('picker');
+
+        element.bind('click', function (e) {
+          instanciate();
+        });
+      }
+    }
+  }]);
+
+minorityApp.provider("DropBoxSettings", function() {
+    this.box_linkType = 'shared', this.box_multiselect = 'true', this.box_clientId = null, this.linkType = 'preview', this.multiselect = false, this.extensions = ['.pdf', '.doc', '.docx'], this.$get = function() {
+        return {
+            linkType: this.linkType,
+            multiselect: this.multiselect,
+            extensions: this.extensions,
+            box_linkType: this.box_linkType,
+            box_multiselect: this.box_multiselect,
+            box_clientId: this.box_clientId
+
+        }
+    },
+    this.configure = function (config) {
+      for (var key in config) {
+        this[key] = config[key];
+      }
+    };
+
+});
+minorityApp.directive("dropBoxPicker", ["DropBoxSettings",
+            function(DropBoxSettings) {
+    return {
+        restrict: "A",
+        scope: {
+            dbpickerFiles: "="
+        },
+        link: function(scope, element, attrs) {
+            function instanciate() {
+                Dropbox.choose(dropboxOptions);
+            }
+            var dropboxOptions = {
+                success: dropboxsuccess,
+                cancel: function() {},
+                linkType : DropBoxSettings.linkType,
+                multiselect: DropBoxSettings.multiselect,
+                extensions : DropBoxSettings.extensions,
+            };
+            function dropboxsuccess(files){
+                scope.$apply(function() {
+                    for (var i = 0; i < files.length; i++){
+                        scope.dbpickerFiles.push(files[i]);
+                    }
+                });
+            };
+            element.bind("click", function() {
+                instanciate()
+            })
+        }
+    }
+}]);
+minorityApp.directive("boxPicker", ["DropBoxSettings",
+            function(DropBoxSettings) {
+    return {
+        restrict: "A",
+        scope: {
+            boxpickerFiles: "="
+        },
+        link: function(scope, element, attrs) {
+            function instanciate() {
+                var success = false;
+                var boxSelect = new BoxSelect(boxoptions);
+                boxSelect.launchPopup();
+                boxSelect.success(function(files) {
+                    if(!success){
+                        boxSelect.closePopup();
+                        scope.$apply(function() {
+                            for (var i = 0; i < files.length; i++){
+                                scope.boxpickerFiles.push(files[i]);
+                            }
+                        });
+                        //boxSelect.unregister(boxSelect.SUCCESS_EVENT_TYPE, successCallbackFunction);
+                        success = true
+                    }
+                });
+                boxSelect.cancel(function() {
+                    console.log("The user clicked cancel or closed the popup");
+                    boxSelect.closePopup();
+                });
+            }
+
+            function successCallbackFunction(){
+                boxSelect.closePopup();
+            }
+
+            var boxoptions = {
+                clientId: DropBoxSettings.box_clientId,
+                linkType: DropBoxSettings.box_linkType,
+                multiselect: DropBoxSettings.box_multiselect
+            };
+            element.bind("click", function() {
+                instanciate()
+            })
+        }
+    }
+}]);
+
+minorityApp.config(['DropBoxSettingsProvider', function(DropBoxSettingsProvider) {
+      // Configure the options
+        DropBoxSettingsProvider.configure({
+            linkType: 'preview',//dropbox link type
+            multiselect: true,//dropbox multiselect
+//            extensions: ['.pdf', '.doc', '.docx'],//dropbox file extensions
+            box_clientId: '9nmk1hao8ea3cgpz1opysjtva6zhqd8h',// box CLient Id
+            box_linkType: 'shared',//box link type
+            box_multiselect: 'true'//box multiselect
+          });
+}]);
 minorityApp.config(['$translateProvider', function ($translateProvider) {
   // add translation tables
   $translateProvider.translations('en', translationsEN);
