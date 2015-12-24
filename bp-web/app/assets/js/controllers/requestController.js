@@ -244,10 +244,10 @@ $scope.removeDriveFile = function(ids) {
 $scope.prepareFiles = function() {
   var data = _.merge(_.map($scope.files, function(el) { 
       return { obj_type: "file", obj_content: el.embedUrl, obj_title: el.name };   
-  })
+  }),
   _.map($scope.dpfiles, function(el) { 
       return { obj_type: "file", obj_content: el.url, obj_title: el.name };   
-   })
+   }),
   _.map($scope.boxfiles, function(el) {
       return { obj_type: "file", obj_content: el.url, obj_title: el.name };       
    }));
