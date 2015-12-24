@@ -8507,6 +8507,24 @@ a.btn.btn-primary.btn-block {
     background: #F6FCFF;
     color: #182931;
 }
+
+button.close {}
+
+.bb_file button.close {
+    display: inline-block;
+    float: right;
+    margin-bottom: 8px;
+    color: white;
+    position: absolute;
+    right: 19px;
+    top: 25px;
+}
+
+.bb_file .show-grid {
+    margin-bottom: 19px;
+    display: block;
+}
+
 .warp_select > * {
     cursor: pointer;
 }

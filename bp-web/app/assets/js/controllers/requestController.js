@@ -186,6 +186,29 @@ if (index !== -1) {
   console.log(field);
 }
 
+//$scope.files
+//$scope.dpfiles
+//$scope.boxfiles
+$scope.$watch("files", function(newNames, oldNames) {
+    if (Array.isArray(newNames)) {
+console.log('newNames' + newNames);
+console.log('oldNames' + oldNames);
+
+}
+}, true);
+$scope.$watch("dpfiles", function(newNames, oldNames) {
+    if (Array.isArray(newNames)) {
+console.log('newNames' + newNames);
+console.log('oldNames' + oldNames);
+
+}
+}, true);
+$scope.$watch("boxfiles", function(newNames, oldNames) {
+    if (Array.isArray(newNames)) {
+    console.log('newNames' + newNames);
+    console.log('oldNames' + oldNames);
+    };//$log.debug("    ** $watch(..., true)");
+}, true);
 
 $scope.addPayload = function() {
   $scope.payload.push({})
@@ -207,13 +230,30 @@ $scope.onCancel = function () {
 }
 $scope.files = [];
 $scope.dpfiles = [];
+$scope.boxfiles = [];
+
 $scope.remove = function(idx){
     $scope.dpfiles.splice(idx,1);
     }
-$scope.boxfiles = [];
 $scope.removeboxfiles = function(idx){
     $scope.boxfiles.splice(idx,1);
 }
+$scope.removeDriveFile = function(ids) {
+  $scope.files.splice(idx,1);
+}
+$scope.prepareFiles = function() {
+  var data = _.merge(_.map($scope.files, function(el) { 
+      return { obj_type: "file", obj_content: el.embedUrl, obj_title: el.name };   
+  })
+  _.map($scope.dpfiles, function(el) { 
+      return { obj_type: "file", obj_content: el.url, obj_title: el.name };   
+   })
+  _.map($scope.boxfiles, function(el) {
+      return { obj_type: "file", obj_content: el.url, obj_title: el.name };       
+   }));
+   $scope.sendPayload($scope.session_id,"", data);   
+};
+
 $scope.sendPayloadAction = function(element_id) {
   if (element_id != undefined) {
     $scope.sendPayload($scope.session_id, element_id);
@@ -221,7 +261,12 @@ $scope.sendPayloadAction = function(element_id) {
     $scope.sendPayload($scope.session_id);
   }
 }
-$scope.sendPayload = function(launch_id, element_id) {
+$scope.sendPayload = function(launch_id, element_id, existedPayload) {
+     if (existedPayload != undefined) {
+      var payload = existedPayload;
+     } else {
+       var payload = $scope.payload; 
+     }
      $http({
       url: '/warp?launch_id=' + launch_id +'&element_id='+element_id,
       method: "POST",
@@ -229,12 +274,12 @@ $scope.sendPayload = function(launch_id, element_id) {
       })
       .then(function(response) {
         // success
-        console.log(response);
+        $scope.payload_result = response;//console.log(response);
         //$scope.bpstations = BPStationsFactory.query({ BPid: $scope.bpId });
       },
       function(response) { // optional
         // failed
-        console.log(response);
+        $scope.payload_result = response;//console.log(response);
       }
       );
 }
