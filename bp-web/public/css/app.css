@@ -126,7 +126,7 @@ body.themeGrad {
     transition: 0.7s linear;
 }
 .stations.lineDescShowed.minimal-stations .session__buttonInput {
-    top: 0;
+    top: -3px;
 }
 
 body.themeGrad div#container.container-global {
