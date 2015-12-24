@@ -69,6 +69,7 @@
     <div class="warp_attach" ng-init="show_warp=false;" ng-click="show_warp == true ? show_warp = false : show_warp = true">Attach</div>-->
     
     <div class="warp-show" show="show_warp">
+    <div class="warp-result">{{ payload_result | json }}</div>
     <div class="warp_attach" ng-click="addPayload()">Add field</div>
     <div class="warp_field" ng-repeat="field in payload">
     <div class="warp_select" ng-show="field.obj_type == undefined || field.obj_type.length < 1">
@@ -86,10 +87,10 @@
 
 <div class="row dashed-border" ng-switch="files.length > 0">
   <div class="text-center" ng-switch-when="false">
-    <div class="none">No files selected yet</div>
+    <!--<div class="none">No files selected yet</div>-->
   </div>
   <div ng-switch-when="true">
-    <div class="col-sm-4 item item-test" ng-repeat="file in files">
+    <div class="item item-test" ng-repeat="file in files">
       <a href="{{ file.url }}" target="_blank">
         <div class="icon">
           <div class="document">
@@ -97,15 +98,39 @@
             <h4>{{ file.name | limitTo:20 }}<span ng-if="file.name.length >=20">...</span>
 			</h4>
 			</div>
-       <div class="file_url"><a href="{{ file.embedUrl }}">{{ file.embedUrl | limitTo:5 }}</a></div>
+       <div class="file_url"><a href="{{ file.embedUrl }}">{{ file.embedUrl | limitTo:15 }}</a></div>
        <div class="file_meta"><div class="file_type">{{ file.type }}</div><div class="file_size">{{ file.sizeByte}}</div></div>
-
+                        <button type="button" class="close" ng-click="removeDriveFile($index)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
           </div>
         </div>
       </a>
     </div>
   </div>
 </div>
+<div class="">
+            <div class="row show-grid" ng-switch="dpfiles.length > 0 || boxfiles.length > 0">
+                <div ng-switch-when="true">
+                    <div class="" ng-repeat="file in dpfiles">
+                        <div class="file_title">
+			            <h4>{{ file.name | limitTo:20 }}<span ng-if="file.name.length >=20">...</span>
+						</h4></div>
+       <div class="file_url"><a href="{{ file.url }}">{{ file.link | limitTo:15 }}</a></div>
+       <div class="file_meta"><div class="file_type">{{ file.type }}</div><div class="file_size">{{ file.sizeByte}}</div></div>						
+                        <button type="button" class="close" ng-click="remove($index)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    </div>
+                    <div class="" ng-repeat="file in boxfiles">
+                        <div class="file_title">
+			            <h4>{{ file.name | limitTo:20 }}<span ng-if="file.name.length >=20">...</span>
+						</h4></div>
+       <div class="file_url"><a href="{{ file.url }}">{{ file.link | limitTo:15 }}</a></div>
+       <div class="file_meta"><div class="file_type">{{ file.type }}</div><div class="file_size">{{ file.sizeByte}}</div></div>				
+
+                        <button type="button" class="close" ng-click="removeboxfiles($index)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    </div>
+                </div>
+            </div>
+</div>            
+
 <!--
        <div class="file_title"><h4>File title</h4></div>
        <div class="file_url"><a href="#">file</a></div>
@@ -124,20 +149,6 @@ Google Drive
 <div class="center-block">
     <p><a class="btn btn-primary btn-block" href="javascript:;" box-picker boxpicker-files="boxfiles">Box</a></p>
 </div>
-<div class="">
-            <div class="row show-grid" ng-switch="dpfiles.length > 0 || boxfiles.length > 0">
-                <div ng-switch-when="true">
-                    <div class="" ng-repeat="file in dpfiles">
-                        <a href="{{ file.link }}" target="_blank"><img src="" class="img-responsive img-thumbnail"> {{ file.name }}</a>
-                        <button type="button" class="close" ng-click="remove($index)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    </div>
-                    <div class="" ng-repeat="file in boxfiles">
-                        <a href="{{ file.url }}" target="_blank"><img src="" class="img-responsive img-thumbnail"> {{ file.name }}</a>
-                        <button type="button" class="close" ng-click="removeboxfiles($index)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    </div>
-                </div>
-            </div>
-</div>            
 
 
 
