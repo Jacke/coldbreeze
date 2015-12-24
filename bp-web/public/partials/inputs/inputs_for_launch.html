@@ -69,7 +69,7 @@
     <div class="warp_attach" ng-init="show_warp=false;" ng-click="show_warp == true ? show_warp = false : show_warp = true">Attach</div>-->
     
     <div class="warp-show" show="show_warp">
-    <div class="warp-result">{{ payload_result | json }}</div>
+    <div class="warp-result">{{ payload_result | prettyJSON }}</div>
     <div class="warp_attach" ng-click="addPayload()">Add field</div>
     <div class="warp_field" ng-repeat="field in payload">
     <div class="warp_select" ng-show="field.obj_type == undefined || field.obj_type.length < 1">
@@ -114,7 +114,7 @@
                         <div class="file_title">
 			            <h4>{{ file.name | limitTo:20 }}<span ng-if="file.name.length >=20">...</span>
 						</h4></div>
-       <div class="file_url"><a href="{{ file.url }}">{{ file.link | limitTo:15 }}</a></div>
+       <div class="file_url"><a href="{{ file.link }}">{{ file.link | limitTo:15 }}</a></div>
        <div class="file_meta"><div class="file_type">{{ file.type }}</div><div class="file_size">{{ file.sizeByte}}</div></div>						
                         <button type="button" class="close" ng-click="remove($index)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                     </div>
@@ -122,7 +122,7 @@
                         <div class="file_title">
 			            <h4>{{ file.name | limitTo:20 }}<span ng-if="file.name.length >=20">...</span>
 						</h4></div>
-       <div class="file_url"><a href="{{ file.url }}">{{ file.link | limitTo:15 }}</a></div>
+       <div class="file_url"><a href="{{ file.link }}">{{ file.link | limitTo:15 }}</a></div>
        <div class="file_meta"><div class="file_type">{{ file.type }}</div><div class="file_size">{{ file.sizeByte}}</div></div>				
 
                         <button type="button" class="close" ng-click="removeboxfiles($index)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>

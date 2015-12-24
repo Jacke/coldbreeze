@@ -69,16 +69,34 @@ class WarpController(override implicit val env: RuntimeEnvironment[DemoUser]) ex
   implicit val WarpResultReaders = Json.reads[WarpResult]
   implicit val WarpPayloadtFormat = Json.format[WarpPayload]
   implicit val WarpPayloadReaders = Json.reads[WarpPayload]
- def warpGenerate(launch_id: Option[Int], element_id: Option[Int]) =  	Cached2(req => "profile." + req.host, 1000 * 60) {      
+ def toInt(s: String): Option[Int] = {
+  try {
+    Some(s.toInt)
+  } catch {
+    case e: Exception => None
+  }
+}
+ def parseParam(stringAsInt: Option[String]):Option[Int] = {
+ 	stringAsInt match {
+ 		case Some(string) => {
+ 			toInt(string)
+ 		}
+ 		case _ => None
+ 	}
+ } 
+ def warpGenerate(launch_idOpt: Option[String], element_idOpt: Option[String]) =  	Cached2(req => "profile." + req.host, 1000 * 60) {      
 		 SecuredAction.async(BodyParsers.parse.json) { implicit request =>
 		  //val business = request.user.businessFirst
 		  //val cred = models.AccountsDAO.fetchCredentials(request.user.main.email.get)
 		  //val biz0 = fetchBiz(request.user.main.userId).get
 		  //val biz = BizFormDTO(biz0.title, biz0.phone, biz0.website, biz0.country, biz0.city, biz0.address, biz0.nickname)
 		  //var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get, business).get
+		val launch_id = parseParam(launch_idOpt)
+		val element_id = parseParam(element_idOpt)
 		  val warpResult = request.body.validate[WarpPayload]
 		  println(warpResult)
 		  println(request.user.businessFirst)
+
 		val warpResultOpt:Option[WarpRequest] = warpResult match {
 			  case s: JsSuccess[WarpRequest] => Some(s.get)
 		      case e: JsError => None
