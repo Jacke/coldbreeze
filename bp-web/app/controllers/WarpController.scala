@@ -93,6 +93,11 @@ class WarpController(override implicit val env: RuntimeEnvironment[DemoUser]) ex
 		  //var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get, business).get
 		val launch_id = parseParam(launch_idOpt)
 		val element_id = parseParam(element_idOpt)
+		println("launch_id")
+		println(launch_id)
+		println("element_id")
+		println(element_id)
+
 		  val warpResult = request.body.validate[WarpPayload]
 		  println(warpResult)
 		  println(request.user.businessFirst)

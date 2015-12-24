@@ -8519,7 +8519,22 @@ button.close {}
     right: 19px;
     top: 25px;
 }
-
+.bb_file .file_url a {
+    font-size: 11px;
+    width: 100%;
+    display: block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-left: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.bb_file .file_title {
+    margin-left: 14px;
+}
 .bb_file .show-grid {
     margin-bottom: 19px;
     display: block;
