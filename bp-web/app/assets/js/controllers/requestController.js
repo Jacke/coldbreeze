@@ -264,9 +264,9 @@ $scope.prepareFiles = function() {
   _.map($scope.boxfiles, function(el) {
       return { obj_type: "file", obj_content: el.link, obj_title: el.name };       
    }));
-   $scope.sendPayload($scope.session_id,"", data);   
    $scope.clearFiles();
    $scope.payload =    $scope.payload.concat(data);
+   $scope.sendPayload($scope.session_id,"", _.filter($scope.payload, function(el){return el.obj_content != "";}));   
    //$scope.sended_payload = $scope.payload.concat(data);
    //$scope.clearPayloadWithData(data);
 };

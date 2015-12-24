@@ -190,7 +190,7 @@ GET         /interacts                               @controllers.InteractionCon
 GET         /interactsf                              @controllers.InteractionController.fetchAllInteractionF()
 
 # Warp
-POST        /warp                                    @controllers.WarpController.warpGenerate(launch_idOpt: Option[String] ?= None, element_idOpt: Option[String] ?= None)
+POST        /warp                                    @controllers.WarpController.warpGenerate(launch_id: Option[String] ?= None, element_id: Option[String] ?= None)
 
 GET         /load/interact/:session_id               @controllers.HighLoadController.load(session_id: Int)
 GET         /semiload/interact/:session_id           @controllers.HighLoadController.semiload(session_id: Int)

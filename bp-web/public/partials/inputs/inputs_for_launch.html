@@ -115,9 +115,9 @@
 	            <div class="file_title">
 		            <h4>{{ file.name | limitTo:20 }}<span ng-if="file.name.length >=20">...</span></h4>
 				</div>
-       <div class="file_url"><a href="{{ file.embedUrl }}">{{ file.embedUrl | limitTo:15 }}</a></div>
+       <div class="file_url"><a href="{{ file.embedUrl }}">{{ file.embedUrl }}</a></div>
        <div class="file_meta"><div class="file_type">{{ file.type }}</div><div class="file_size">{{ file.sizeByte}}</div></div>
-                        <button type="button" class="close" ng-click="removeDriveFile($index)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <button type="button" class="close" ng-click="removeDriveFile($index)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
           </div>
         </div>
       </a>
@@ -131,7 +131,7 @@
                         <div class="file_title">
 			            <h4>{{ file.name | limitTo:20 }}<span ng-if="file.name.length >=20">...</span>
 						</h4></div>
-       <div class="file_url"><a href="{{ file.link }}">{{ file.link | limitTo:15 }}</a></div>
+       <div class="file_url"><a href="{{ file.link }}">{{ file.link }}</a></div>
        <div class="file_meta"><div class="file_type">{{ file.type }}</div><div class="file_size">{{ file.sizeByte}}</div></div>						
                         <button type="button" class="close" ng-click="remove($index)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                     </div>
@@ -139,7 +139,7 @@
                         <div class="file_title">
 			            <h4>{{ file.name | limitTo:20 }}<span ng-if="file.name.length >=20">...</span>
 						</h4></div>
-       <div class="file_url"><a href="{{ file.link }}">{{ file.link | limitTo:15 }}</a></div>
+       <div class="file_url"><a href="{{ file.link }}">{{ file.link }}</a></div>
        <div class="file_meta"><div class="file_type">{{ file.type }}</div><div class="file_size">{{ file.sizeByte}}</div></div>				
 
                         <button type="button" class="close" ng-click="removeboxfiles($index)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>

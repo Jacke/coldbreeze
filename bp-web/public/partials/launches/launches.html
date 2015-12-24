@@ -148,9 +148,8 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 </div>-->
 <div class="stations minimal-stations" ng-init="session.lineDescShow=false;" ng-class="{'lineDescShowed': session.lineDescShow == true }" ng-repeat="session in entity.sessions | orderBy:'station.paused':true | limitTo: 10 | filter:isOnlyActive" style="clear: both;">
 
-<div class="session__buttonInput" ng-if="session.station.paused == true && session.station.finished == false">
-<button class="moicon-eject moicon" ng-click="showInlineLaunch(session);session.lineDescShow==true ? session.lineDescShow=false : session.lineDescShow=true;">
-<span></span><span></span><span></span>
+<div class="session__buttonInput" ng-if="session.station.paused == true && session.station.finished == false" ng-click="showInlineLaunch(session);session.lineDescShow==true ? session.lineDescShow=false : session.lineDescShow=true;">
+<button class="moicon-menu moicon">
 </button></div>
 
         <div class="session__header">

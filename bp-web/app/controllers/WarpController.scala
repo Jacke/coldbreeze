@@ -94,9 +94,11 @@ class WarpController(override implicit val env: RuntimeEnvironment[DemoUser]) ex
 		val launch_id = parseParam(launch_idOpt)
 		val element_id = parseParam(element_idOpt)
 		println("launch_id")
+		println(launch_idOpt)
 		println(launch_id)
 		println("element_id")
 		println(element_id)
+		println(element_idOpt)
 
 		  val warpResult = request.body.validate[WarpPayload]
 		  println(warpResult)
@@ -153,7 +155,8 @@ class WarpController(override implicit val env: RuntimeEnvironment[DemoUser]) ex
 	  boardId = boardId,
 	  entityId = entityId.get,  
 	  sval = load.obj_content,
-	  publisher = userId
+	  publisher = userId,
+	  meta = metas
 	))  
 )}
 		val entities = result.map { result => result.entities }.flatten	
