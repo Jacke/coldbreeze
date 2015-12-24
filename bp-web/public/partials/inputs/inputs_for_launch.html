@@ -83,24 +83,41 @@
        <textarea rows="10" cols="45" ng-model="field.obj_content" id="warpArea" name="text"></textarea>
        <div class="text_control"><a href="#">Edit</a></div>
      </div>
-     <div class="bb_file" ng-show="field.obj_type == 'file'">
 
-<div class="row dashed-border" ng-switch="files.length > 0">
-  <div class="text-center" ng-switch-when="false">
-    <!--<div class="none">No files selected yet</div>-->
-  </div>
-  <div ng-switch-when="true">
-    <div class="item item-test" ng-repeat="file in files">
-      <a href="{{ file.url }}" target="_blank">
-        <div class="icon">
-          <div class="document">
-            <div class="file_title">
-            <h4>{{ file.name | limitTo:20 }}<span ng-if="file.name.length >=20">...</span>
-			</h4>
-			</div>
-       <div class="file_url"><a href="{{ file.embedUrl }}">{{ file.embedUrl | limitTo:15 }}</a></div>
+
+
+<div class="bb_file" ng-show="field.obj_type == 'file'">
+   	  <a href="{{ field.obj_content }}" target="_blank">
+	        <div class="icon">
+	          <div class="document">
+	            <div class="file_title">
+		            <h4>{{ field.obj_title | limitTo:20 }}<span ng-if="field.obj_title.length >=20">...</span></h4>
+				</div>
+       <div class="file_url"><a href="{{ field.obj_content }}">{{ field.obj_content | limitTo:15 }}</a></div>
+	  <!--<div class="file_meta"><div class="file_type">{{ file.type }}</div><div class="file_size">{{ file.sizeByte}}</div></div>-->
+       <button type="button" class="close" ng-click="removeField($index)">
+	       <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+       </button>
+          </div>
+        </div>
+      </a>
+
+
+	<div class="row dashed-border" ng-switch="files.length > 0">
+	  <div class="text-center" ng-switch-when="false">
+	    <!--<div class="none">No files selected yet</div>-->
+	  </div>
+    <div ng-switch-when="true">
+	    <div class="item item-test" ng-repeat="file in files">
+	      <a href="{{ file.url }}" target="_blank">
+	        <div class="icon">
+	          <div class="document">
+	            <div class="file_title">
+		            <h4>{{ file.name | limitTo:20 }}<span ng-if="file.name.length >=20">...</span></h4>
+				</div>
+       <div class="file_url"><a href="{{ file.embedUrl }}">{{ file.embedUrl }}</a></div>
        <div class="file_meta"><div class="file_type">{{ file.type }}</div><div class="file_size">{{ file.sizeByte}}</div></div>
-                        <button type="button" class="close" ng-click="removeDriveFile($index)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <button type="button" class="close" ng-click="removeDriveFile($index)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
           </div>
         </div>
       </a>
@@ -114,7 +131,7 @@
                         <div class="file_title">
 			            <h4>{{ file.name | limitTo:20 }}<span ng-if="file.name.length >=20">...</span>
 						</h4></div>
-       <div class="file_url"><a href="{{ file.link }}">{{ file.link | limitTo:15 }}</a></div>
+       <div class="file_url"><a href="{{ file.link }}">{{ file.link }}</a></div>
        <div class="file_meta"><div class="file_type">{{ file.type }}</div><div class="file_size">{{ file.sizeByte}}</div></div>						
                         <button type="button" class="close" ng-click="remove($index)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                     </div>
@@ -122,7 +139,7 @@
                         <div class="file_title">
 			            <h4>{{ file.name | limitTo:20 }}<span ng-if="file.name.length >=20">...</span>
 						</h4></div>
-       <div class="file_url"><a href="{{ file.link }}">{{ file.link | limitTo:15 }}</a></div>
+       <div class="file_url"><a href="{{ file.link }}">{{ file.link }}</a></div>
        <div class="file_meta"><div class="file_type">{{ file.type }}</div><div class="file_size">{{ file.sizeByte}}</div></div>				
 
                         <button type="button" class="close" ng-click="removeboxfiles($index)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
@@ -136,19 +153,19 @@
        <div class="file_url"><a href="#">file</a></div>
        <div class="file_meta"><div class="file_type">file type</div><div class="file_size">file size</div></div>
 -->
-<div class="center-block"><p>
+<div class="center-block provider-pick-buttons" ng-hide="field.obj_content.length > 1"><p>
 <a href="javascript:;" lk-google-picker on-picked="onPicked(docs)" on-loaded="onLoaded()" on-cancel="onCancel()" class="btn btn-primary btn-block">
 Google Drive
 </a>
 </p>
-</div>
-
 <div class="center-block">
                 <p><a class="btn btn-primary btn-block" href="javascript:;" drop-box-picker dbpicker-files="dpfiles">Dropbox</a></p>
 </div>
 <div class="center-block">
     <p><a class="btn btn-primary btn-block" href="javascript:;" box-picker boxpicker-files="boxfiles">Box</a></p>
 </div>
+</div>
+
 
 
 
@@ -164,8 +181,9 @@ Google Drive
       { payload: [ { obj_type: "text", obj_title: "Text", obj_content: value } ] } 
       -->
 
+      <!-- 
       <div class="warp_attach" ng-click="removePayload(field)">Remove field</div>
-      </div>
+      </div>-->
 
       </div>
 </div>

@@ -2861,8 +2861,6 @@ background-color: gray !important;
 .allStations .stations.minimal-stations .session_controls {
     margin-top: 8px;
 }
-
-
 .stations.minimal-stations .session__buttonInput {
     display: inline-block;
     left: -27px;
@@ -2870,13 +2868,13 @@ background-color: gray !important;
     padding: 19px 8px 20px 8px;
     background: #45475D;
     color: white;
+    cursor: pointer;
     margin-left: -4px;
     margin-top: 2px;
     font-size: 15px;
     margin-right: -9px;
     top: -3px;
 }
-
 .session__buttonInput .moicon-eject:before {
     color: white;
     opacity: 1;
@@ -8519,7 +8517,22 @@ button.close {}
     right: 19px;
     top: 25px;
 }
-
+.bb_file .file_url a {
+    font-size: 11px;
+    width: 100%;
+    display: block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-left: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.bb_file .file_title {
+    margin-left: 14px;
+}
 .bb_file .show-grid {
     margin-bottom: 19px;
     display: block;

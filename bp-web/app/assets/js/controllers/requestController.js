@@ -164,7 +164,8 @@ $scope.reactionSelect = function (reaction) {
   Warp field impementation
  */
 // { payload: [ { obj_type: "text", obj_title: "Text", obj_content: value } ] }  
-$scope.payload = [ {} ];
+$scope.payload = [];
+$scope.sended_payload = [];
 $scope.payload_result = [];
 $scope.removePayload = function(field) {
   $scope.payload = _.reject($scope.payload, function(el) { return el.$$hashKey === field.$$hashKey; });
@@ -235,9 +236,18 @@ $scope.files = [];
 $scope.dpfiles = [];
 $scope.boxfiles = [];
 
+$scope.clearFiles = function() {
+  $scope.files = [];
+$scope.dpfiles = [];
+$scope.boxfiles = [];
+}
+
+$scope.removeField = function(ids) {
+  $scope.payload.splice(ids, 1);
+}
 $scope.remove = function(idx){
     $scope.dpfiles.splice(idx,1);
-    }
+}
 $scope.removeboxfiles = function(idx){
     $scope.boxfiles.splice(idx,1);
 }
@@ -254,8 +264,20 @@ $scope.prepareFiles = function() {
   _.map($scope.boxfiles, function(el) {
       return { obj_type: "file", obj_content: el.link, obj_title: el.name };       
    }));
-   $scope.sendPayload($scope.session_id,"", data);   
+   $scope.clearFiles();
+   $scope.payload =    $scope.payload.concat(data);
+   $scope.sendPayload($scope.session_id,"", _.filter($scope.payload, function(el){return el.obj_content != "";}));   
+   //$scope.sended_payload = $scope.payload.concat(data);
+   //$scope.clearPayloadWithData(data);
 };
+$scope.clearPayloadWithData = function(data) {
+  if ($scope.payload.length > 0) {
+    if ($scope.payload[0].obj_content = "") {
+      $scope.removeField($scope.payload.indefOf($scope.payload[0]));
+      $scope.payload = data;
+    } else { $scope.payload.concat(data); }
+  } else { $scope.payload.concat(data); }
+}
 
 $scope.sendPayloadAction = function(element_id) {
   if (element_id != undefined) {
