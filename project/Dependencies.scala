@@ -84,7 +84,7 @@ object Dependencies {
   
   val play            = "com.typesafe.play"         % "play_2.11"               % "2.3.9"
   val play2oauth2     = "com.nulab-inc"             %% "play2-oauth2-provider"  % "0.14.0"
-  val play4           = "org.webjars"               %% "webjars-play"           % "2.4.2"
+  val play4           = "com.typesafe.play"         %% "play"                   % "2.4.3"
   val slackapi        = "com.github.gilbertw1"      %% "slack-scala-client"     % "0.1.3"
   val playslick       = "com.typesafe.play"         %  "play-slick_2.11"        % "0.8.0"
   val playauth        = "jp.t2v"                    %% "play2-auth"             % "0.12.0"
@@ -105,6 +105,7 @@ object Dependencies {
 
   val securesocial    = "ws.securesocial"           %% "securesocial"           % "3.0-M4"
   val securesocialold = "ws.securesocial"           %% "securesocial"           % "3.0-M3"
+  val swagger         = "com.iheart"                %% "play-swagger"           % "0.1.9"
 
   val deadbolt        = "be.objectify"              %% "deadbolt-scala"         % "2.3.3"
   val securesocialmas = "ws.securesocial"           %% "securesocial"           % "master-SNAPSHOT"

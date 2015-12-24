@@ -420,11 +420,11 @@ minorityApp.provider('lkGoogleSettings', function () {
   }]);
 
 minorityApp.provider("DropBoxSettings", function() {
-    this.box_linkType = 'shared', this.box_multiselect = 'true', this.box_clientId = null, this.linkType = 'preview', this.multiselect = false, this.extensions = ['.pdf', '.doc', '.docx'], this.$get = function() {
+    this.box_linkType = 'shared', this.box_multiselect = 'true', this.box_clientId = null, this.linkType = 'preview', this.multiselect = false, this.$get = function() {
         return {
             linkType: this.linkType,
             multiselect: this.multiselect,
-            extensions: this.extensions,
+            //extensions: this.extensions,
             box_linkType: this.box_linkType,
             box_multiselect: this.box_multiselect,
             box_clientId: this.box_clientId
@@ -453,8 +453,8 @@ minorityApp.directive("dropBoxPicker", ["DropBoxSettings",
                 success: dropboxsuccess,
                 cancel: function() {},
                 linkType : DropBoxSettings.linkType,
-                multiselect: DropBoxSettings.multiselect,
-                extensions : DropBoxSettings.extensions,
+                multiselect: DropBoxSettings.multiselect
+                //extensions : DropBoxSettings.extensions,
             };
             function dropboxsuccess(files){
                 scope.$apply(function() {

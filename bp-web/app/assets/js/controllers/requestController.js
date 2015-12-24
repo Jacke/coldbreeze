@@ -164,7 +164,8 @@ $scope.reactionSelect = function (reaction) {
   Warp field impementation
  */
 // { payload: [ { obj_type: "text", obj_title: "Text", obj_content: value } ] }  
-$scope.payload = [ { obj_type: "text", obj_title: "Text", obj_content: "" } ];
+$scope.payload = [ {} ];
+$scope.payload_result = [];
 $scope.removePayload = function(field) {
   $scope.payload = _.reject($scope.payload, function(el) { return el.$$hashKey === field.$$hashKey; });
 };
@@ -212,20 +213,28 @@ $scope.remove = function(idx){
 $scope.boxfiles = [];
 $scope.removeboxfiles = function(idx){
     $scope.boxfiles.splice(idx,1);
-    }
-
-$scope.sendPayload = function() {
+}
+$scope.sendPayloadAction = function(element_id) {
+  if (element_id != undefined) {
+    $scope.sendPayload($scope.session_id, element_id);
+  } else {
+    $scope.sendPayload($scope.session_id);
+  }
+}
+$scope.sendPayload = function(launch_id, element_id) {
      $http({
-      url: '/warp',
+      url: '/warp?launch_id=' + launch_id +'&element_id='+element_id,
       method: "POST",
       data: { payload: $scope.payload },
       })
       .then(function(response) {
         // success
+        console.log(response);
         //$scope.bpstations = BPStationsFactory.query({ BPid: $scope.bpId });
       },
       function(response) { // optional
         // failed
+        console.log(response);
       }
       );
 }
