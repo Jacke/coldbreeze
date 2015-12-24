@@ -419,6 +419,13 @@ minorityApp.provider('lkGoogleSettings', function () {
     }
   }]);
 
+minorityApp.filter('prettyJSON', function () {
+    function prettyPrintJson(json) {
+      return JSON ? JSON.stringify(json, null, '  ') : 'your browser doesnt support JSON so cant pretty print';
+    }
+    return prettyPrintJson;
+});
+
 minorityApp.provider("DropBoxSettings", function() {
     this.box_linkType = 'shared', this.box_multiselect = 'true', this.box_clientId = null, this.linkType = 'preview', this.multiselect = false, this.$get = function() {
         return {

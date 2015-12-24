@@ -190,21 +190,24 @@ if (index !== -1) {
 //$scope.dpfiles
 //$scope.boxfiles
 $scope.$watch("files", function(newNames, oldNames) {
-    if (Array.isArray(newNames)) {
+    if (newNames.length > 0) {
+      $scope.prepareFiles();
 console.log('newNames' + newNames);
 console.log('oldNames' + oldNames);
 
 }
 }, true);
 $scope.$watch("dpfiles", function(newNames, oldNames) {
-    if (Array.isArray(newNames)) {
+    if (newNames.length > 0) {
+      $scope.prepareFiles();
 console.log('newNames' + newNames);
 console.log('oldNames' + oldNames);
 
 }
 }, true);
 $scope.$watch("boxfiles", function(newNames, oldNames) {
-    if (Array.isArray(newNames)) {
+    if (newNames.length > 0) {
+      $scope.prepareFiles();
     console.log('newNames' + newNames);
     console.log('oldNames' + oldNames);
     };//$log.debug("    ** $watch(..., true)");
@@ -242,14 +245,14 @@ $scope.removeDriveFile = function(ids) {
   $scope.files.splice(idx,1);
 }
 $scope.prepareFiles = function() {
-  var data = _.merge(_.map($scope.files, function(el) { 
+  var data = _.map($scope.files, function(el) { 
       return { obj_type: "file", obj_content: el.embedUrl, obj_title: el.name };   
-  }),
+  }).concat(
   _.map($scope.dpfiles, function(el) { 
-      return { obj_type: "file", obj_content: el.url, obj_title: el.name };   
-   }),
+      return { obj_type: "file", obj_content: el.link, obj_title: el.name };   
+   })).concat(
   _.map($scope.boxfiles, function(el) {
-      return { obj_type: "file", obj_content: el.url, obj_title: el.name };       
+      return { obj_type: "file", obj_content: el.link, obj_title: el.name };       
    }));
    $scope.sendPayload($scope.session_id,"", data);   
 };
@@ -264,13 +267,10 @@ $scope.sendPayloadAction = function(element_id) {
 $scope.sendPayload = function(launch_id, element_id, existedPayload) {
      if (existedPayload != undefined) {
       var payload = existedPayload;
-     } else {
-       var payload = $scope.payload; 
-     }
      $http({
       url: '/warp?launch_id=' + launch_id +'&element_id='+element_id,
       method: "POST",
-      data: { payload: $scope.payload },
+      data: { payload: payload },
       })
       .then(function(response) {
         // success
@@ -282,6 +282,9 @@ $scope.sendPayload = function(launch_id, element_id, existedPayload) {
         $scope.payload_result = response;//console.log(response);
       }
       );
+     } else {
+       var payload = $scope.payload; 
+     }
 }
 
 /*
