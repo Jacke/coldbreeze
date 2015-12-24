@@ -105,24 +105,18 @@
         deps: ['angular','pnotify','jquery'],
         exports: 'angularpnotify'
       },
-
-
       'moment': {
        deps: ['jquery'],
        exports: 'moment'
       },
-
-
       'angular-moment': {
        deps: ['moment', 'angular'],
        exports: 'angular-moment'
       },
-
       'livestamp': {
        deps: ['moment'],
        exports: 'livestamp'
       },
-
       'ngDialog': {
        deps: ['angular'],
        exports: 'ngDialog'
@@ -131,57 +125,46 @@
         deps: ['angular'],
         exports: 'roundProgress'
       },
-
       'angular-ui-tree': {
        deps: ['angular'],
        exports: 'angular-ui-tree'
       },
-
       'angular-underscore': {
        deps: ['angular'],
        exports: 'angular-underscore'
       },
-
       'loading-bar': {
        deps: ['angular'],
        exports: 'loading-bar'
       },
- 
       'ng-slide-down': {
        deps: ['angular'],
        exports: 'ng-slide-down'
       },
-
       'ui-bootstrap': {
        deps: ['angular'],
        exports: 'ui-bootstrap'
       },
-
       'ui-bootstrap-tpls': {
        deps: ['angular', 'ui-bootstrap'],
        exports: 'ui-bootstrap-tpls'
       },
-
       'toaster': {
        deps: ['angular'],
        exports: 'toaster'
       },
-
       'angularLocalStorage': {
        deps: ['angular'],
        exports: 'angularLocalStorage'
       },
-
       'angular-awesome-error': {
        deps: ['angular'],
        exports: 'angular-awesome-error'
       },
-
       'angular-translate': {
        deps: ['angular'],
        exports: ''
       },
-
       'daterangepicker': {
        deps: ['angular'],
        exports: 'daterangepicker'

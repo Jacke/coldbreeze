@@ -1,0 +1,180 @@
+<div class="request-controller" ng-controller="BPRequestCtrl" ng-init="session=$parent.$parent.session;bpId=$parent.$parent.session.process.id">
+
+<div class="fastInput"><a href="#">f</a><span class="moicon moicon-paste"></span></div>
+
+<div class="container" ng-show="$parent.$parent.session.inlineLaunchShow">
+
+<div class="empty-notice">
+</div>
+
+<div class="stations input-stations" style="clear: both;">
+
+<div class="current-reaction-switcher">
+  <label class="radio-label" for="reaction-flag">All</label>
+  <input type="checkbox" class="switch" id="reaction-flag" data-ng-model="currentReactionFlag"/>
+  <label class="radio-label" for="reaction-flag">Current</label>
+
+</div>
+
+  <ul class="reaction_list">
+    <li class="reaction_list__reaction" ng-init="interactions.reactions.length > 0 ? reactionSelect(interactions.reactions[0]) : false" ng-repeat="reaction in interactions.reactions | filter:currentReactionFilter">
+        <a ng-click="reactionSelect(reaction)" ng-class="selectedClass(reaction)"><h3>{{ reaction.reaction.elem.element_title }} : {{ capitalizeFirstLetter(reaction.reaction.title) }}</h3></a>
+
+        <ul class="reaction_list__reaction_in_group">
+          <!-- ins -->
+        </ul>
+        
+        <ul class="reaction_list__reaction_out_group">
+          <li class="reaction_list__reaction__state_outs" ng-repeat="state_out in reaction.outs">
+          {{ stateOutAct(state_out) }} {{ state_out.state.title }} 
+          </li>
+        </ul>
+        <a ng-click="reactionSelect(reaction)" id="reactionSelectButton" ng-class="selectedClass(reaction)" class="triangle-reaction"><div class="triangle triangle-3"></div></a>
+        <!--<div class="launch-attachments" ng-show="reaction.selected">
+            <a href="#" tooltip-placement="bottom" tooltip="Not supporting right now.">Attach</a>
+        </div>-->
+        <div class="costs" ng-show="reaction.costs.length > 0">
+            <h2 class="costTitle">Costs</h2>
+
+            <div class="inputCost" ng-repeat="cost in reaction.costs">
+        <div class="pipeContent" ng-repeat="entity in cost.entities">
+          <div class="pipeContentTitle">{{ entity.title }}</div>
+          <div class="pipeContentValue" ng-repeat="slat in slatFilter(entity, cost.slats)">
+              <a ng-click="slat.refill=true;" ng-hide="slat.refill"><span>{{ slat.sval }}</span></a>
+              <div class="pipeContentValueRefill" ng-init="slat.refill=false" ng-show="slat.refill">
+                <input type="text" id="inputContentBlankValue" class="form-control" ng-model="slat.sval" required="">
+                <a class="btn btn-small btn-success" ng-click="reFillValue(cost, entity, slat)">ReFill</a>
+                <a class="btn btn-small" ng-click="slat.refill=false;">x</a>                
+              </div>
+          </div>          
+          <div class="pipeContentBlankValue" ng-show="slatFilter(entity, cost.slats).length < 1">
+                <input type="text" id="inputContentBlankValue" class="form-control" ng-init="entity.newModelValue=defaultValueParser(entity.default)" ng-model="entity.newModelValue" required="">
+                <a class="btn btn-small btn-success" ng-click="fillValue(cost, entity, entity.newModelValue)">Fill</a>
+        </div>
+        </div>               
+              <!--<div class="inputCostTitle">{{ cost.resource.title }} {{ cost.entity[0].title }}</div>
+              <div class="inputCostBlankValue">
+                    <input type="text" id="inputContentBlankValue" class="form-control" required="">
+                    <a class="btn btn-small btn-success">Fill</a>
+              </div>
+            </div>-->  
+        </div>
+    </li>
+  </ul>
+  
+
+
+<div class="warp-field">
+    <!--
+    <div class="warp_attach" ng-init="show_warp=false;" ng-click="show_warp == true ? show_warp = false : show_warp = true">Attach</div>-->
+    
+    <div class="warp-show" show="show_warp">
+    <div class="warp_attach" ng-click="addPayload()">Add field</div>
+    <div class="warp_field" ng-repeat="field in payload">
+    <div class="warp_select" ng-show="field.obj_type == undefined || field.obj_type.length < 1">
+      <div class="text_select_btn" style="display:none;" ng-click="setWarpType(field, 'text')">Text</div>
+      <div class="file_select_btn" ng-click="setWarpType(field, 'file')">File</div>
+    </div>
+
+     <div class="bb_elements">
+     <div class="bb_text" style="display:none;" ng-show="field.obj_type == 'text'">
+       <div class="text_content"><p>some text</p></div>
+       <textarea rows="10" cols="45" ng-model="field.obj_content" id="warpArea" name="text"></textarea>
+       <div class="text_control"><a href="#">Edit</a></div>
+     </div>
+     <div class="bb_file" ng-show="field.obj_type == 'file'">
+
+<div class="row dashed-border" ng-switch="files.length > 0">
+  <div class="text-center" ng-switch-when="false">
+    <div class="none">No files selected yet</div>
+  </div>
+  <div ng-switch-when="true">
+    <div class="col-sm-4 item item-test" ng-repeat="file in files">
+      <a href="{{ file.url }}" target="_blank">
+        <div class="icon">
+          <div class="document">
+            <div class="file_title">
+            <h4>{{ file.name | limitTo:20 }}<span ng-if="file.name.length >=20">...</span>
+			</h4>
+			</div>
+       <div class="file_url"><a href="{{ file.embedUrl }}">{{ file.embedUrl | limitTo:5 }}</a></div>
+       <div class="file_meta"><div class="file_type">{{ file.type }}</div><div class="file_size">{{ file.sizeByte}}</div></div>
+
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+<!--
+       <div class="file_title"><h4>File title</h4></div>
+       <div class="file_url"><a href="#">file</a></div>
+       <div class="file_meta"><div class="file_type">file type</div><div class="file_size">file size</div></div>
+-->
+<div class="center-block"><p>
+<a href="javascript:;" lk-google-picker on-picked="onPicked(docs)" on-loaded="onLoaded()" on-cancel="onCancel()" class="btn btn-primary btn-block">
+Google Drive
+</a>
+</p>
+</div>
+
+<div class="center-block">
+                <p><a class="btn btn-primary btn-block" href="javascript:;" drop-box-picker dbpicker-files="dpfiles">Dropbox</a></p>
+</div>
+<div class="center-block">
+    <p><a class="btn btn-primary btn-block" href="javascript:;" box-picker boxpicker-files="boxfiles">Box</a></p>
+</div>
+<div class="">
+            <div class="row show-grid" ng-switch="dpfiles.length > 0 || boxfiles.length > 0">
+                <div ng-switch-when="true">
+                    <div class="" ng-repeat="file in dpfiles">
+                        <a href="{{ file.link }}" target="_blank"><img src="" class="img-responsive img-thumbnail"> {{ file.name }}</a>
+                        <button type="button" class="close" ng-click="remove($index)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    </div>
+                    <div class="" ng-repeat="file in boxfiles">
+                        <a href="{{ file.url }}" target="_blank"><img src="" class="img-responsive img-thumbnail"> {{ file.name }}</a>
+                        <button type="button" class="close" ng-click="removeboxfiles($index)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    </div>
+                </div>
+            </div>
+</div>            
+
+
+
+
+    </div>
+    </div>  
+
+      <!-- 
+        data.message.entities
+        data.message.slats
+      -->
+      <!--
+      { payload: [ { obj_type: "text", obj_title: "Text", obj_content: value } ] } 
+      -->
+
+      <div class="warp_attach" ng-click="removePayload(field)">Remove field</div>
+      </div>
+
+      </div>
+</div>
+
+
+</div>
+
+  <div class="process-thumb">
+  <button type="submit" id="inputResumeButton" class="btn btn-small btTxt submit btn lg solid-green ng-binding" ng-disabled="runFromDisabled" ng-click="runFrom($parent.session.session.id)" tooltip-placement="top" tooltip="Resume execution">Resume</button>
+
+  </div>
+
+</div>
+
+
+</div>
+
+
+
+
+ 
+</div>
+</div>

@@ -40,7 +40,7 @@ import a.bug._
 
 case class WarpRequest(body: String)
 case class WarpObjRequest(obj_type: String, obj_title: String, obj_content: String)
-case class WarpResult(entities: List[Entity], slats: List[Slat])
+case class WarpResult(board: Board, entities: List[Entity], slats: List[Slat])
 case class WarpPayload(payload: List[WarpObjRequest])
 class WarpController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
   implicit val WarpRequestReads = Json.reads[WarpRequest]
@@ -69,36 +69,52 @@ class WarpController(override implicit val env: RuntimeEnvironment[DemoUser]) ex
   implicit val WarpResultReaders = Json.reads[WarpResult]
   implicit val WarpPayloadtFormat = Json.format[WarpPayload]
   implicit val WarpPayloadReaders = Json.reads[WarpPayload]
- def warpGenerate() =  	Cached2(req => "profile." + req.host, 1000 * 60) {      
- SecuredAction.async(BodyParsers.parse.json) { implicit request =>
-  //val business = request.user.businessFirst
-  //val cred = models.AccountsDAO.fetchCredentials(request.user.main.email.get)
-  //val biz0 = fetchBiz(request.user.main.userId).get
-  //val biz = BizFormDTO(biz0.title, biz0.phone, biz0.website, biz0.country, biz0.city, biz0.address, biz0.nickname)
-  //var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get, business).get
-  val warpResult = request.body.validate[WarpPayload]
-  println(warpResult)
-  println(request.user.businessFirst)
-val warpResultOpt:Option[WarpRequest] = warpResult match {
-	  case s: JsSuccess[WarpRequest] => Some(s.get)
-      case e: JsError => None
-}
- warpResult.fold(
-	 	errors => { Future( Ok(Json.obj("status" ->"BAD", "message" -> "error" ))) 
-	 	},
-		e => { 
-			Future( Ok(Json.obj("status" ->"OK", "message" -> parseWarps(e.payload, request.user.main.userId) )))
+ def warpGenerate(launch_id: Option[Int], element_id: Option[Int]) =  	Cached2(req => "profile." + req.host, 1000 * 60) {      
+		 SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+		  //val business = request.user.businessFirst
+		  //val cred = models.AccountsDAO.fetchCredentials(request.user.main.email.get)
+		  //val biz0 = fetchBiz(request.user.main.userId).get
+		  //val biz = BizFormDTO(biz0.title, biz0.phone, biz0.website, biz0.country, biz0.city, biz0.address, biz0.nickname)
+		  //var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get, business).get
+		  val warpResult = request.body.validate[WarpPayload]
+		  println(warpResult)
+		  println(request.user.businessFirst)
+		val warpResultOpt:Option[WarpRequest] = warpResult match {
+			  case s: JsSuccess[WarpRequest] => Some(s.get)
+		      case e: JsError => None
 		}
-		)
-   }
- }
- def parseWarps(payload: List[WarpObjRequest], userId: String = ""):WarpResult = {
+		 warpResult.fold(
+			 	errors => { Future( Ok(Json.obj("status" ->"BAD", "message" -> "error" ))) 
+			 	},
+				e => { 
+					Future( Ok(Json.obj("status" ->"OK", "message" -> parseWarps(e.payload, request.user.main.userId,
+						launch_id,element_id) )))
+				}
+				)
+		   }
+		 }
+ def parseWarps(payload: List[WarpObjRequest], userId: String = "", launch_id: Option[Int], element_id: Option[Int]):WarpResult = {
  	val result = payload.map { load =>
  		// obj_type: String, obj_title: String, obj_content: String
 	 	val entityId = Some(UUID.randomUUID())
 		val boardId = UUID.randomUUID()
+		val metas = launch_id match {
+			case Some(launch_id) => element_id match {
+				case Some(element_id) => List(MetaVal(key = "element_id", value = element_id.toString), MetaVal(key = "launch_id", value = launch_id.toString))
+				case _ => List(MetaVal(key = "launch_id", value = launch_id.toString))
+			}
+			case _ => List()
+		}
+		val board =   Board(
+  	id = Some(boardId),
+  title = boardId.toString,
+  content = "",
+  publisher = userId,
+  ownership = Ownership(host = "min.ority.us", uid = userId),
+  meta = metas, None,None)
+
 		WarpResult(
-	List(
+	board, List(
 		Entity(
 	  id = entityId,
 	  title = load.obj_title,
@@ -107,7 +123,7 @@ val warpResultOpt:Option[WarpRequest] = warpResult match {
 	  publisher = userId,
 	  etype = load.obj_type,
 	  default = "",
-	  meta = List.empty)),
+	  meta = metas)),
 	List(Slat(
 	  id = Some(UUID.randomUUID()),
 	  title = load.obj_title,
@@ -119,8 +135,11 @@ val warpResultOpt:Option[WarpRequest] = warpResult match {
 )}
 		val entities = result.map { result => result.entities }.flatten	
 		val slats = result.map { result => result.slats }.flatten
-		WarpResult(entities, slats)
+		WarpResult(result.map(_.board).head, entities, slats)
  }
+
+
+
   def parseWarp(body: String, userId: String = ""):WarpResult = {
   		val arrayOfElemenets = body.split("""<a[^>]*>([^<]+)</a>""")
   		arrayOfElemenets
@@ -128,7 +147,14 @@ val warpResultOpt:Option[WarpRequest] = warpResult match {
 val entityId = Some(UUID.randomUUID())
 val boardId = UUID.randomUUID()
 WarpResult(
-	List(
+  Board(
+  	id = Some(boardId),
+  title = boardId.toString,
+  content = "",
+  publisher = userId,
+  ownership = Ownership(host = "min.ority.us", uid = userId),
+  meta = List(), None,None)
+	,List(
 		Entity(
 	  id = entityId,
 	  title = "",

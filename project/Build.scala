@@ -259,6 +259,7 @@ integrationTest := {
           bootstrap, 
           angular,
           angular,
+          //swagger,
           scalamandrill,
           javamandrill,
           javamandrill2,

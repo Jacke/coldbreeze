@@ -206,7 +206,65 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
   </ul>
 </div>      
 <div class="session-launches-bar minimal" ng-if="session.station.paused == true && session.station.finished == false">
-    <div ng-include src="'assets/partials/launchesBar.html'" class="launches-bar"></div>
+    <!-- <div ng-include src="'assets/partials/launchesBar.html'" class="launches-bar"></div> -->
+
+
+<div class="launches-bar">
+  <div class="automations_connected">
+
+<div class="dishes-list"><div class="dish-presentation"><div class="dish-details">
+  <a href="/a#/bprocess/{{$parent.session.process.id }}/elements?launch={{$parent.session.session.id }}"><div class="dish-state left">
+    <span class="state-sign vertical-center error"></span>
+    <span class="state-percent vertical-center">{{ $parent.session.percent }}%</span>
+  </div></a>
+
+<!--
+    <div class="dish-error left">
+      <span class="dish-label vertical-center left">
+          Unknown error
+      </span>
+    </div>
+-->
+    <!--<div ng-controller="BPRequestCtrl" ng-init="session=$parent.session;bpId=$parent.$parent.session.process.id">-->
+  <div class="dish-summary left" ng-controller="BPRequestCtrl" ng-init="session=$parent.session;bpId=$parent.$parent.session.process.id">
+    <span class="dish-label fixed-width vertical-center left">{{ capitalizeFirstLetter(interactions.reactions[0].reaction.title)  }}</span>
+    
+    <!--<div class="service_connector-icon left" style="background-image: url('https://s3-eu-west-1.amazonaws.com/sushio.prod/service_connector_logos/5171292359d601ad33000181/AmazonWebServices-Logo-500.thumb.png?1372436798');"></div>-->
+    <div class="linking_dots-container left"><div class="linking_dots"></div></div>
+    <!--<div class="service_connector-icon left" style="background-image: url('https://s3-eu-west-1.amazonaws.com/sushio.prod/service_connector_logos/53f5ec2f7bb2d084af000001/open-uri20141014-2-7oamwe.thumb.?1413316482');"></div>-->
+    <span class="dish-label fixed-width vertical-center left">{{ interactions.reactions[0].reaction.elem.element_title  }}</span>
+    <!--</div>-->
+  </div>
+
+  <span class="dish-label vertical-center left">Started <abbr class="session__header__created_at" title="{{ $parent.session.session.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="$parent.session.session.created_at"></abbr></span>
+
+  <div class="dish-delete right">
+    <button class="moicon moicon-cancel-circle" tooltip="Cancel" ng-click="$parent.cancelSession($parent.session)"></button>
+  </div>
+
+  <div class="dish-operations-collapser right visible">
+    <button class="moicon-menu moicon" ng-click="showInlineLaunch($parent.session)">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</div>
+
+</div>
+  
+<div class="inline-launch fadein fadeout" ng-animate="animate" show="$parent.session.inlineLaunchShow">
+  <div ng-include="" src="'assets/partials/inputs/inputs_for_launch.html'"></div>
+</div>
+
+  
+  
+</div>
+</div>
+
+
+
+
+</div>
+
 </div>
 
 

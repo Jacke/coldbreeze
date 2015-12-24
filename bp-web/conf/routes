@@ -190,7 +190,7 @@ GET         /interacts                               @controllers.InteractionCon
 GET         /interactsf                              @controllers.InteractionController.fetchAllInteractionF()
 
 # Warp
-POST        /warp                                    @controllers.WarpController.warpGenerate()
+POST        /warp                                    @controllers.WarpController.warpGenerate(launch_id: Option[Int] ?= None, element_id: Option[Int] ?= None)
 
 GET         /load/interact/:session_id               @controllers.HighLoadController.load(session_id: Int)
 GET         /semiload/interact/:session_id           @controllers.HighLoadController.semiload(session_id: Int)
@@ -452,3 +452,10 @@ GET         /asana/users                                         @controllers.As
 
 #GET     /ui         com.github.mmizutani.playgulp.Gulp.index
 #->      /ui/        gulp.Routes
+
+
+###
+# summary: swagger definition
+# description: for swagger UI to consume
+###
+#GET   /docs/swagger.json         @controllers.swagger.ApiSpecs.specs

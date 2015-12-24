@@ -156,22 +156,7 @@
 <script src="https://www.google.com/jsapi?key=AIzaSyC_wPVwox46HJlkHVQWgKhy6dnZ0kYfCaA"></script>
 <script src="https://apis.google.com/js/client.js?onload=initPicker"></script>      
 <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="o4zxff9txoicjkl"></script>
-<script>
-options = {
-    // Required. Called when a user selects an item in the Chooser.
-    success: function(files) {
-        console.log(files);
-    //alert("Here's the file link: " + files[0].link)
-    },
-    cancel: function() {
 
-    },
-    multiselect: true,
-};
-var button = Dropbox.createChooseButton(options);
-document.getElementById("result_dropbox").appendChild(button);
-</script>
-  
 
 
 
