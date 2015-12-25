@@ -33,6 +33,10 @@
         <!--<div class="launch-attachments" ng-show="reaction.selected">
             <a href="#" tooltip-placement="bottom" tooltip="Not supporting right now.">Attach</a>
         </div>-->
+<!--<div class="center-block" ng-init="reaction.dpfiles = [];">
+<p><a class="btn btn-primary btn-block" href="javascript:;" drop-box-picker dbpicker-files="reaction.dpfiles">Dropbox</a></p>
+</div>-->
+
         <div class="costs" ng-show="reaction.costs.length > 0">
             <h2 class="costTitle">Costs</h2>
 
@@ -70,12 +74,13 @@
     
     <div class="warp-show" show="show_warp">
     <div class="warp-result">{{ payload_result | prettyJSON }}</div>
-    <div class="warp_attach" ng-click="addPayload()">Add field</div>
+    <div class="warp_attach" ng-click="addPayload(setWarpType(field, 'file'))">Attach file</div>
     <div class="warp_field" ng-repeat="field in payload">
+    <!--
     <div class="warp_select" ng-show="field.obj_type == undefined || field.obj_type.length < 1">
       <div class="text_select_btn" style="display:none;" ng-click="setWarpType(field, 'text')">Text</div>
       <div class="file_select_btn" ng-click="setWarpType(field, 'file')">File</div>
-    </div>
+    </div>-->
 
      <div class="bb_elements">
      <div class="bb_text" style="display:none;" ng-show="field.obj_type == 'text'">
@@ -93,15 +98,12 @@
 	            <div class="file_title">
 		            <h4>{{ field.obj_title | limitTo:20 }}<span ng-if="field.obj_title.length >=20">...</span></h4>
 				</div>
-       <div class="file_url"><a href="{{ field.obj_content }}">{{ field.obj_content | limitTo:15 }}</a></div>
-	  <!--<div class="file_meta"><div class="file_type">{{ file.type }}</div><div class="file_size">{{ file.sizeByte}}</div></div>-->
-       <button type="button" class="close" ng-click="removeField($index)">
-	       <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
-       </button>
+       <div class="file_url"><a href="{{ file.embedUrl }}">{{ field.obj_content }}</a></div>
+       <div class="file_meta"><div class="file_type">{{ file.type }}</div><div class="file_size">{{ file.sizeByte}}</div></div>
+                        <button type="button" class="close" ng-click="removePayload(field)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
           </div>
         </div>
       </a>
-
 
 	<div class="row dashed-border" ng-switch="files.length > 0">
 	  <div class="text-center" ng-switch-when="false">
@@ -117,7 +119,7 @@
 				</div>
        <div class="file_url"><a href="{{ file.embedUrl }}">{{ file.embedUrl }}</a></div>
        <div class="file_meta"><div class="file_type">{{ file.type }}</div><div class="file_size">{{ file.sizeByte}}</div></div>
-        <button type="button" class="close" ng-click="removeDriveFile($index)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <button type="button" class="close" ng-click="removePayload(field)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
           </div>
         </div>
       </a>
@@ -142,7 +144,7 @@
        <div class="file_url"><a href="{{ file.link }}">{{ file.link }}</a></div>
        <div class="file_meta"><div class="file_type">{{ file.type }}</div><div class="file_size">{{ file.sizeByte}}</div></div>				
 
-                        <button type="button" class="close" ng-click="removeboxfiles($index)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <button type="button" class="close" ng-click="removePayload(field)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                     </div>
                 </div>
             </div>
@@ -159,10 +161,10 @@ Google Drive
 </a>
 </p>
 <div class="center-block">
-                <p><a class="btn btn-primary btn-block" href="javascript:;" drop-box-picker dbpicker-files="dpfiles">Dropbox</a></p>
+<p><a class="btn btn-primary btn-block" href="javascript:;" drop-box-picker dbpicker-files="dpfiles">Dropbox</a></p>
 </div>
 <div class="center-block">
-    <p><a class="btn btn-primary btn-block" href="javascript:;" box-picker boxpicker-files="boxfiles">Box</a></p>
+<p><a class="btn btn-primary btn-block" href="javascript:;" box-picker boxpicker-files="boxfiles">Box</a></p>
 </div>
 </div>
 
@@ -181,9 +183,8 @@ Google Drive
       { payload: [ { obj_type: "text", obj_title: "Text", obj_content: value } ] } 
       -->
 
-      <!-- 
-      <div class="warp_attach" ng-click="removePayload(field)">Remove field</div>
-      </div>-->
+      <!-- <div class="warp_attach" ng-click="removePayload(field)">Remove field</div>-->
+      </div>
 
       </div>
 </div>

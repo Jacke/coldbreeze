@@ -214,8 +214,11 @@ $scope.$watch("boxfiles", function(newNames, oldNames) {
     };//$log.debug("    ** $watch(..., true)");
 }, true);
 
-$scope.addPayload = function() {
-  $scope.payload.push({})
+$scope.addPayload = function(setType) {
+  $scope.payload.push({});
+  if ($scope.payload.length > 0) {
+    $scope.setWarpType($scope.payload[$scope.payload.length-1], 'file');
+  }
 }
 $scope.onLoaded = function () {
   console.log('Google Picker loaded!');
@@ -251,7 +254,7 @@ $scope.remove = function(idx){
 $scope.removeboxfiles = function(idx){
     $scope.boxfiles.splice(idx,1);
 }
-$scope.removeDriveFile = function(ids) {
+$scope.removeDriveFile = function(idx) {
   $scope.files.splice(idx,1);
 }
 $scope.prepareFiles = function() {

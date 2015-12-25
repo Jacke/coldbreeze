@@ -465,8 +465,11 @@ minorityApp.directive("dropBoxPicker", ["DropBoxSettings",
             };
             function dropboxsuccess(files){
                 scope.$apply(function() {
+                     console.log(scope);
                     for (var i = 0; i < files.length; i++){
+                        if (scope.dbpickerFiles != undefined) {
                         scope.dbpickerFiles.push(files[i]);
+                      } else { scope.$parent.reaction.dpfiles.push(files[i]) }
                     }
                 });
             };
@@ -494,6 +497,10 @@ minorityApp.directive("boxPicker", ["DropBoxSettings",
                         scope.$apply(function() {
                             for (var i = 0; i < files.length; i++){
                                 scope.boxpickerFiles.push(files[i]);
+                        if (scope.boxpickerFiles != undefined) {
+                        scope.boxpickerFiles.push(files[i]);
+                      } else { scope.$parent.reaction.boxfiles.push(files[i]); }
+
                             }
                         });
                         //boxSelect.unregister(boxSelect.SUCCESS_EVENT_TYPE, successCallbackFunction);

@@ -4,9 +4,13 @@ package models
 
 //import slick.driver.PostgresDriver.simple._
 import models.DAO.conversion.DatabaseCred
-import models.DAO.driver.MyPostgresDriver.simple._
+//import models.DAO.driver.MyPostgresDriver.simple._
 import models.DAO._
+//import models.DAO.driver.MyPostgresDriver.simple._
+import models.DAO.conversion.DatabaseFuture._  
 import com.github.nscala_time.time.Imports._
+import models.DAO.conversion.DatabaseCred.dbConfig.driver.api._
+import com.github.tototoshi.slick.JdbcJodaSupport._
 
 class LaunchWarps(tag: Tag) extends Table[LaunchWarpDTO](tag, "launch_warps") {
   def id             = column[Int]("id", O.PrimaryKey, O.AutoInc)
@@ -35,14 +39,16 @@ object LaunchWarpDAOF {
   import akka.stream.scaladsl.Source
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
-  import slick.driver.PostgresDriver.api._
+  //import slick.driver.PostgresDriver.api._
   import slick.jdbc.meta.MTable
   import scala.concurrent.ExecutionContext.Implicits.global
-  import com.github.tototoshi.slick.JdbcJodaSupport._
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import models.DAO.conversion.DatabaseFuture._  
+//import slick.driver.PostgresDriver.api._
+
+
+
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
   val launch_warps = TableQuery[LaunchWarps]
@@ -51,14 +57,14 @@ object LaunchWarpDAOF {
   //  bpsessions.filter(_.process === process)
   private def filterQuery(id: Int): Query[LaunchWarps, LaunchWarpDTO, Seq] =
     launch_warps.filter(_.id === id)
+
+  val create: DBIO[Unit] = launch_warps.schema.create
+  val drop: DBIO[Unit] = launch_warps.schema.drop
+  
   def get(id: Int):Future[Option[LaunchWarpDTO]] = {
      db.run(filterQuery(id).result.headOption)
   }
-  def ddl_create = {
-      //db.run(DBIO.seq((launch_warps.schema).create))
-  }
-  def ddl_drop = {
-      //db.run(DBIO.seq((launch_warps.schema).drop))
-  }
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
 
 }
