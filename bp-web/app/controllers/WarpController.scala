@@ -119,8 +119,6 @@ class WarpController(override implicit val env: RuntimeEnvironment[DemoUser]) ex
 		   }
 		 }
  def parseWarps(payload: List[WarpObjRequest], userId: String = "", launch_id: Option[Int], element_id: Option[Int]):WarpResult = {
- 	val result = payload.map { load =>
- 		// obj_type: String, obj_title: String, obj_content: String
 	 	val entityId = Some(UUID.randomUUID())
 		val boardId = UUID.randomUUID()
 		val metas = launch_id match {
@@ -130,6 +128,10 @@ class WarpController(override implicit val env: RuntimeEnvironment[DemoUser]) ex
 			}
 			case _ => List()
 		}
+
+ 	val result = payload.map { load =>
+ 		// obj_type: String, obj_title: String, obj_content: String
+
 		val board =   Board(
   	id = Some(boardId),
   title = boardId.toString,
@@ -161,12 +163,18 @@ class WarpController(override implicit val env: RuntimeEnvironment[DemoUser]) ex
 )}
 		val entities = result.map { result => result.entities }.flatten	
 		val slats = result.map { result => result.slats }.flatten
-		WarpResult(result.map(_.board).head, entities, slats)
+		WarpResult(result.map(_.board).headOption.getOrElse(Board(
+  	id = Some(boardId),
+  title = boardId.toString,
+  content = "",
+  publisher = userId,
+  ownership = Ownership(host = "min.ority.us", uid = userId),
+  meta = metas, None,None)), entities, slats)
  }
 
 
 
-  def parseWarp(body: String, userId: String = ""):WarpResult = {
+def parseWarp(body: String, userId: String = ""):WarpResult = {
   		val arrayOfElemenets = body.split("""<a[^>]*>([^<]+)</a>""")
   		arrayOfElemenets
   		//body.map(normalizePhoneNumber(_)).toString

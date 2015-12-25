@@ -8371,6 +8371,7 @@ height: 40px;
 .warp_field {
     display: inline-block;
     width: 20%;
+    float: left;
 }
 
 .bb_elements .bb_text {
@@ -8382,7 +8383,6 @@ height: 40px;
     position: relative;
 }
 .bb_elements .bb_file {
-    background: #4F5377;
     padding: 17px 18px 20px 19px;
     margin-left: 9px;
     color: white;
@@ -8390,7 +8390,11 @@ height: 40px;
     margin-bottom: 15px;
     position: relative;
 }
-
+.warp-field {
+    height: 100%;
+    display: block;
+    overflow: hidden;
+}
 
 
 .bb_elements .bb_file a {
@@ -8453,7 +8457,7 @@ height: 40px;
     color: white;
     border: solid 1px white;
     padding: 3px 4px 5px 1px;
-    border-radius: 91px;
+    border-radius: 3px;
     display: inline-block;
     margin: 16px 12px;
     text-align: center;
