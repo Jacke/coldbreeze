@@ -33,6 +33,7 @@ POST    /api/v1/boards/:id/remove          controllers.BoardController.APIdelete
 ########################################################
 #                        ENTITY
 ########################################################
+GET     /board/findOrCreate                    controllers.BoardController.findOrCreate(launch_id: Option[String] ?= None, element_id: Option[String] ?= None, userId: Option[String] ?= None)
 GET     /board/:id/entities                    controllers.EntityController.index(id)
 GET     /board/:id/entities/new                controllers.EntityController.showCreationForm(id)
 POST    /board/:id/entities/create             controllers.EntityController.create(id)
