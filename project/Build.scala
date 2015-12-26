@@ -138,6 +138,7 @@ integrationTest := {
           scalarx,
           javamail,
           courier,
+          poi,poiscala,
           async, 
           amonite, 
           reflect, 

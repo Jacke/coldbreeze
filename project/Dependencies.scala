@@ -116,6 +116,9 @@ object Dependencies {
 
   val amonite         = "com.lihaoyi"               %% "ammonite-repl"          % "0.2.4" % "test"
 
+  val poi             = "com.norbitltd"             % "spoiwo"                  % "1.0.3"
+  val poiscala        = "info.folone"               %% "poi-scala"              % "0.15"
+
   val bcrypt          = "com.github.t3hnar"         % "scala-bcrypt_2.11"       % "2.4"
   val scalacheck      = "org.scalacheck"            %% "scalacheck"             % "1.11.1"
   val mockito         = "org.mockito"               % "mockito-all"             % "1.9.5"

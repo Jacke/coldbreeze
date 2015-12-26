@@ -8467,6 +8467,7 @@ span.firstInputFileName {
 
 .inline-launch .fastInput:hover {
     height: auto;
+    z-index: 1;
 }
 
 .firstInputFiles button.close {
@@ -8569,7 +8570,6 @@ button.close {}
     cursor: pointer;
 }
 .warp-field .warp_attach {
-    background: #333;
     width: 100px;
     color: white;
     padding: 7px 10px;
