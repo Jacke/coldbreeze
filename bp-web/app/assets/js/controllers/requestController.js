@@ -136,6 +136,13 @@ $scope.builder = function (station) {
           }) 
         });
 
+
+        if (data.reactions.length > 0) {
+          $scope.firstInput = data.reactions[0];
+          $scope.firstInput.files = [];
+        }
+
+
       });
    });
 
@@ -230,6 +237,12 @@ $scope.onPicked = function (docs) {
     $scope.files.push(file);
   });
 }
+$scope.onPickedFirstInput = function(first_input, docs) {
+    first_input.files = [];
+    angular.forEach(docs, function (file, index) {
+    first_input.files.push(file);
+  });
+}
 
 // Callback triggered after clicking on cancel
 $scope.onCancel = function () {
@@ -247,6 +260,9 @@ $scope.boxfiles = [];
 
 $scope.removeField = function(ids) {
   $scope.payload.splice(ids, 1);
+}
+$scope.removeFileFirstInput = function(file, firstInput){
+  firstInput.files.splice(firstInput.files.indexOf(file), 1);
 }
 $scope.remove = function(idx){
     $scope.dpfiles.splice(idx,1);

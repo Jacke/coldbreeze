@@ -1,6 +1,18 @@
 <div class="request-controller" ng-controller="BPRequestCtrl" ng-init="session=$parent.$parent.session;bpId=$parent.$parent.session.process.id">
 
-<div class="fastInput"><a href="#">f</a><span class="moicon moicon-paste"></span></div>
+<div class="fastInput">
+
+<a href="#">{{ capitalizeFirstLetter(firstInput.reaction.title) }}</a>
+
+<span class="firstInputFiles" ng-repeat="file in firstInput.files">
+		<span class="firstInputFileName">{{ file.name }}</span>
+	 <button type="button" class="close" ng-click="removeFileFirstInput(file,firstInput)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+</span>
+<a href="javascript:;" lk-google-picker on-picked="onPickedFirstInput(firstInput, docs)" ng-show="firstInput.files.length < 1" ng-class="fastInputPicker">
+	<span class="moicon moicon-paste"></span>
+</a>
+
+</div>
 
 <div class="container" ng-show="$parent.$parent.session.inlineLaunchShow">
 
@@ -74,7 +86,7 @@
     
     <div class="warp-show" show="show_warp">
     <div class="warp-result">{{ payload_result | prettyJSON }}</div>
-    <div class="warp_attach" ng-click="addPayload(setWarpType(field, 'file'))">Attach file</div>
+    <div class="warp_attach" ng-click="addPayload()">Attach file</div>
     <div class="warp_field" ng-repeat="field in payload">
     <!--
     <div class="warp_select" ng-show="field.obj_type == undefined || field.obj_type.length < 1">

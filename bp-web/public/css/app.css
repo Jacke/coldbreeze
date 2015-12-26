@@ -8452,7 +8452,31 @@ height: 40px;
     width: 120px;
     height: 59px;
 }
+span.firstInputFileName {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 87px;
+    display: inline-block;
+    clear: both;
+    margin-left: 9px;
+    margin-right: 8px;
+    float: left;
+    margin-top: -2px;
+}
 
+.inline-launch .fastInput:hover {
+    height: auto;
+    z-index: 1;
+}
+
+.firstInputFiles button.close {
+    color: white;
+    opacity: 1;
+    display: inline-block;
+    float: left;
+    margin-top: -3px;
+}
 .inline-launch .fastInput a {
     color: white;
     border: solid 1px white;
@@ -8546,7 +8570,6 @@ button.close {}
     cursor: pointer;
 }
 .warp-field .warp_attach {
-    background: #333;
     width: 100px;
     color: white;
     padding: 7px 10px;
