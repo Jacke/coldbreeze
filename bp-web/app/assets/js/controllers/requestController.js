@@ -305,6 +305,23 @@ $scope.sendPayloadAction = function(element_id) {
     $scope.sendPayload($scope.session_id);
   }
 }
+$scope.sendWarpResult = function() {
+     $http({
+      url: '/warp/send',
+      method: "POST",
+      data: $scope.payload_result.data.message,
+      })
+      .then(function(response) {
+        // success
+        console.log(response)
+      },
+      function(response) { // optional
+        // failed
+        console.log(response);
+      }
+      );
+     
+}
 $scope.sendPayload = function(launch_id, element_id, existedPayload) {
      if (existedPayload != undefined) {
       var payload = existedPayload;
@@ -522,6 +539,9 @@ $scope.reFillValue = function(cost, entity, slat) {
     //var space_params = _.filter(station.space_elems, function(obj) { return obj.param != undefined });
     //var params_output = _.flatten(_.map(front_params, function(v) { return {"f_elem": v.id, "param": v.param} }), _.map(space_params, function(v) { return {"sp_elem": v.id, "param": v.param} }));
     // TODO: Add arguments
+    if ($scope.payload_result.length > 0) { // Send warp field
+      $scope.sendWarpResult()
+    }
 
     $http({
       url: 'bprocess/' + $scope.bpId + '/invoke_from/' + session_id,

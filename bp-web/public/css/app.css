@@ -728,9 +728,9 @@ a.expand-ref-select {
     margin-top: -54px;
 }
 .stations .session__header.session__people {
-    padding-top: 0px !important;
+    padding-top: 12px !important;
     overflow: hidden;
-    width: 42%;
+    width: 20%;
     margin-left: 20px;
 }
 .proc-element .info {
@@ -2766,9 +2766,10 @@ background-color: gray !important;
 }
 .session_title {
     display: inline-block;
-    margin-top: 20px;
+    margin-top: 6px;
     float: left;
-    width: 46%;
+    width: 49%;
+    margin-bottom: -15px;
 }
 .progress-button button {
     display: block;
@@ -2845,7 +2846,7 @@ background-color: gray !important;
     width: 45px;
     height: 29px;
 }
-
+;
 .allStations .stations.minimal-stations .session_title {
     margin-top: 4px;
 }
@@ -2853,10 +2854,9 @@ background-color: gray !important;
 .allStations .stations.minimal-stations .progress-button {
     margin-top: 0px;
 }
-
 .allStations .stations.minimal-stations .session_controls {
     margin-top: 8px;
-    margin-right: 101px;
+    margin-right: 128px;
 }
 .allStations .stations.minimal-stations .session_controls {
     margin-top: 8px;
@@ -3318,7 +3318,7 @@ form.form-horizontal.element-new-form.form-new-bpelem.form-edit-bpelem.form-new-
     padding: 2px 30px;
 }
 .session-launches-bar {
-    margin-top: 10px;
+    margin-top: -11px;
     margin-left: -2%;
     margin-right: -2.5%;
 }
@@ -8449,7 +8449,7 @@ height: 40px;
     top: 0px;
     right: 0px;
     background: #3D3F55;
-    width: 120px;
+    width: 156px;
     height: 59px;
 }
 span.firstInputFileName {
@@ -8479,11 +8479,13 @@ span.firstInputFileName {
 }
 .inline-launch .fastInput a {
     color: white;
-    border: solid 1px white;
-    padding: 3px 4px 5px 1px;
+    background-color: rgba(40,43,53,0.78);
+    padding: 4px 4px 5px 2px;
     border-radius: 3px;
     display: inline-block;
-    margin: 16px 12px;
+    margin: 16px 5px;
+    font-family: 'Open Sans', Helvetica, Sans-serif;
+    font-weight: 400;
     text-align: center;
     float: left;
     width: 75px;
@@ -8492,12 +8494,49 @@ span.firstInputFileName {
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
+span.element-title {
+    display: inline-block;
+    float: left;
+    margin-top: 19px;
+    margin-left: 8px;
+    width: 45px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-family: 'Open Sans', Helvetica, Sans-serif;
+}
+.fastInput a.fastInputPicker {
+    border: none;
+    display: inline-block;
+    float: right;
+    width: 19px;
+    height: 21px;
+    margin: -41px 1px 0px 0px;
+    color: white;
+    background: transparent;
+}
 .inline-launch .fastInput span.moicon {
     display: inline-block;
     float: left;
-    margin: 22px -2px;
 }
+a.fastInputPicker.ng-isolate-scope {}
+
+.fastInput a.fastInputPicker {
+    border: none;
+    display: inline-block;
+    float: right;
+    width: 19px;
+    height: 31px;
+    margin: 19px 7px 0px 0px;
+    color: white;
+}
+
+.fastInput a.fastInputPicker span.moicon {
+    margin: 0;
+}
+
+
 textarea#warpArea {
     color: black;
     width: 100%;
@@ -8579,7 +8618,11 @@ button.close {}
     margin-left: 8px;
 }
 
-
+.warp_field .btn.btn-primary.btn-block {
+    background: #3D3F55;
+    color: white;
+    border: white 1px solid;
+}
 
 
 

@@ -136,6 +136,22 @@ implicit val timeout = Timeout(5 seconds)
   	//val readyHolder = Await.result(holder, Duration(5000, MILLISECONDS))
   	//println(readyHolder.body)
   }
+  def findOrCreateBoard(launch_id: Int, element_id: Option[Int], userId: String): Future[Option[Board]] = {
+    val empty:Option[Board] = None
+     val holder = Try(WS.url
+    (s"http://${connection.host}:${connection.port}/board/findOrCreate?launch_id=${launch_id}&element_id=${element_id.getOrElse("")}&userId=${userId}")
+    .get().map { response =>
+        val res = response.json.as[Board]
+        println(response.json)
+        Some(res) //.copy(boards =          res.boards.filter(b => b.onBusiness(biz)))
+     }.recover{ case c => {
+      println(c)
+      empty 
+      }
+      })
+        .getOrElse(Future.successful(empty))
+     holder  
+}
  
   def getBoardByResource(resource_id: Int, biz: String):Future[BoardContainer] = {
   	val empty:BoardContainer = BoardContainer(boards = List(),entities = List(), slats = List())

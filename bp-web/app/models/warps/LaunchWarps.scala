@@ -67,4 +67,8 @@ object LaunchWarpDAOF {
   def ddl_create = db.run(create)
   def ddl_drop = db.run(drop)
 
+  def pull(s: LaunchWarpDTO) = {
+  	db.run(launch_warps returning launch_warps.map(_.id) += s)
+  }
+
 }
