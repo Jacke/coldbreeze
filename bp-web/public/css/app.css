@@ -8528,10 +8528,9 @@ a.fastInputPicker.ng-isolate-scope {}
     float: right;
     width: 19px;
     height: 31px;
-    margin: 19px 7px 0px 0px;
+    margin: -39px 2px 0px 0px;
     color: white;
 }
-
 .fastInput a.fastInputPicker span.moicon {
     margin: 0;
 }
