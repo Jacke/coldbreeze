@@ -111,17 +111,24 @@ def findOrCreate(launch_idOpt: Option[String], element_idOpt: Option[String], us
     // FIND
     val launch_id = parseParam(launch_idOpt)
     val element_id = parseParam(element_idOpt)
+    println(launch_id)
+    println(element_id)
+    println("try to find")
     val userId = userIdOpt.getOrElse("")
     var metas = BSONArray.empty
-          launch_id match {
-            case Some(launch_id) => element_id match {
-              case Some(element_id) => metas = metas ++ BSONDocument("launch_id" -> launch_id.toString, 
-                                                                     "element_id" -> element_id.toString) 
-              case _ => metas = metas ++ BSONDocument("launch_id" -> launch_id.toString)
+    launch_id match {
+      case Some(launch_id) => element_id match {
+        case Some(element_id) => metas = BSONArray(BSONDocument("key" -> "launch_id", "value" -> launch_id.toString),
+          BSONDocument("key" -> "element_id", "value" -> element_id.toString))
+        case _ => metas = BSONArray(BSONDocument("key" -> "launch_id","value" -> launch_id.toString))
 
-            }
-            case _ => 
-          }
+      }
+      case _ => 
+    }
+    println("founded")
+    println(metas)
+    //println(metas.get(1))
+    //println(metas)
     val metasObj = launch_id match {
       case Some(launch_id) => element_id match {
         case Some(element_id) => List(MetaVal(key = "element_id", value = element_id.toString), MetaVal(key = "launch_id", value = launch_id.toString))
@@ -131,16 +138,29 @@ def findOrCreate(launch_idOpt: Option[String], element_idOpt: Option[String], us
     }        
 
     val cursor = collection.find(Json.obj("query" -> 
-      BSONDocument("metas" -> metas))).cursor[Board](readPreference = ReadPreference.primary)
+      BSONDocument("meta" -> 
+
+            metas
+
+        ))).cursor[Board](readPreference = ReadPreference.primary)
     //val user = Some(request.identity)
      val future = cursor.collect[List]()
     // OR CREATE 
     cursor.collect[List]().flatMap { board =>
                val searchedBoard = board.headOption
+               println(board)
+               println(board.length)
                searchedBoard match {
-                case Some(board) => Future(Ok(Json.toJson(board)))
+                case Some(board) => { 
+                  println("founded board")
+                  println(board.id)
+                  Future(Ok(Json.toJson(board)))
+                }
                 case _ => { 
+
                   val boardId = UUID.randomUUID()
+                  println("not founded board")
+                  println(boardId)
                   val board = Board(
                                 id = Some(boardId),
                               title = boardId.toString,
@@ -148,7 +168,7 @@ def findOrCreate(launch_idOpt: Option[String], element_idOpt: Option[String], us
                               publisher = userId,
                               ownership = Ownership(host = "min.ority.us", uid = userId),
                               meta = metasObj, None,None)
-                          collection.insert(board.copy(creationDate = Some(new DateTime()), 
+                 collection.insert(board.copy(creationDate = Some(new DateTime()), 
                                                updateDate = Some(new DateTime()))).map(_ =>
                      Ok(Json.toJson(board)))
                 } // Create board

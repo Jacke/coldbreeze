@@ -2,13 +2,13 @@
 
 <div class="fastInput">
 
-<a href="#">{{ capitalizeFirstLetter(firstInput.reaction.title) }}</a>
+<span class="element-title">{{ firstInput.reaction.elem.element_title }}</span><a href="#" class="reaction-title">{{ capitalizeFirstLetter(firstInput.reaction.title) }}</a>
 
 <span class="firstInputFiles" ng-repeat="file in firstInput.files">
 		<span class="firstInputFileName">{{ file.name }}</span>
 	 <button type="button" class="close" ng-click="removeFileFirstInput(file,firstInput)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 </span>
-<a href="javascript:;" lk-google-picker on-picked="onPickedFirstInput(firstInput, docs)" ng-show="firstInput.files.length < 1" ng-class="fastInputPicker">
+<a href="javascript:;" lk-google-picker on-picked="onPickedFirstInput(firstInput, docs)" ng-show="firstInput.files.length < 1" class="fastInputPicker">
 	<span class="moicon moicon-paste"></span>
 </a>
 
@@ -106,7 +106,7 @@
 <div class="bb_file" ng-show="field.obj_type == 'file'">
    	  <a href="{{ field.obj_content }}" target="_blank">
 	        <div class="icon">
-	          <div class="document">
+	          <div class="document" mg-hide="field.obj_title == 'File'">
 	            <div class="file_title">
 		            <h4>{{ field.obj_title | limitTo:20 }}<span ng-if="field.obj_title.length >=20">...</span></h4>
 				</div>

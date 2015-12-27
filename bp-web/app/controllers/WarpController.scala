@@ -84,7 +84,39 @@ class WarpController(override implicit val env: RuntimeEnvironment[DemoUser]) ex
  		case _ => None
  	}
  } 
- def warpGenerate(launch_idOpt: Option[String], element_idOpt: Option[String]) =  	Cached2(req => "profile." + req.host, 1000 * 60) {      
+ def warpSend() = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+		val warpResult = request.body.validate[WarpResult]
+
+
+		 val business = request.user.businessFirst
+		 warpResult.fold(
+			 	errors => { Future( Ok(Json.obj("status" ->"BAD", "message" -> "error" ))) },
+				e => { 
+					
+		val boardId = e.board.id
+		val launchId = e.board.meta.find(meta => meta.key == "launch_id").map { m => m.value.toInt }.getOrElse(-1)
+		val elementId = e.board.meta.find(meta => meta.key == "element_id").map { m => m.value.toInt }
+		
+		models.LaunchWarpDAOF.pull(
+			LaunchWarpDTO(
+			None,
+			launch = launchId,
+			launch_element = elementId,
+			board = boardId.get.toString,
+			created_at = Some(org.joda.time.DateTime.now()),
+			updated_at = Some(org.joda.time.DateTime.now()))
+			).map { result =>  Ok(Json.obj("status" ->"OK", "message" -> e ))		 }	
+
+										
+
+				}
+				)
+				
+		
+//*/ Future(Ok("ok"))
+}
+ def warpGenerate(launch_idOpt: Option[String], element_idOpt: Option[String]) = 
+	 Cached2(req => "profile." + req.host, 1000 * 60) {      
 		 SecuredAction.async(BodyParsers.parse.json) { implicit request =>
 		  //val business = request.user.businessFirst
 		  //val cred = models.AccountsDAO.fetchCredentials(request.user.main.email.get)
@@ -99,7 +131,6 @@ class WarpController(override implicit val env: RuntimeEnvironment[DemoUser]) ex
 		println("element_id")
 		println(element_id)
 		println(element_idOpt)
-
 		  val warpResult = request.body.validate[WarpPayload]
 		  println(warpResult)
 		  println(request.user.businessFirst)
@@ -108,69 +139,76 @@ class WarpController(override implicit val env: RuntimeEnvironment[DemoUser]) ex
 			  case s: JsSuccess[WarpRequest] => Some(s.get)
 		      case e: JsError => None
 		}
+		 val business = request.user.businessFirst
 		 warpResult.fold(
 			 	errors => { Future( Ok(Json.obj("status" ->"BAD", "message" -> "error" ))) 
 			 	},
 				e => { 
-					Future( Ok(Json.obj("status" ->"OK", "message" -> parseWarps(e.payload, request.user.main.userId,
-						launch_id,element_id) )))
+					val result = parseWarps(e.payload, s"${business}:${request.user.main.userId}",
+											launch_id,element_id)
+					result.map { result =>
+						Ok(Json.obj("status" ->"OK", "message" -> result ))						
+					}
 				}
 				)
 		   }
 		 }
- def parseWarps(payload: List[WarpObjRequest], userId: String = "", launch_id: Option[Int], element_id: Option[Int]):WarpResult = {
+ def parseWarps(payload: List[WarpObjRequest], userId: String = "", 
+ 				launch_id: Option[Int], element_id: Option[Int]):Future[WarpResult] = {
 	 	val entityId = Some(UUID.randomUUID())
-		val boardId = UUID.randomUUID()
 		val metas = launch_id match {
 			case Some(launch_id) => element_id match {
 				case Some(element_id) => List(MetaVal(key = "element_id", value = element_id.toString), MetaVal(key = "launch_id", value = launch_id.toString))
 				case _ => List(MetaVal(key = "launch_id", value = launch_id.toString))
 			}
 			case _ => List()
-		}
-
- 	val result = payload.map { load =>
- 		// obj_type: String, obj_title: String, obj_content: String
-
-		val board =   Board(
-  	id = Some(boardId),
-  title = boardId.toString,
-  content = "",
-  publisher = userId,
-  ownership = Ownership(host = "min.ority.us", uid = userId),
-  meta = metas, None,None)
-
-		WarpResult(
-	board, List(
-		Entity(
-	  id = entityId,
-	  title = load.obj_title,
-	  boardId = boardId,
-	  description = "",
+			}
+	  val boardF = getBoard(launch_id.getOrElse(-1), element_id, userId) 
+	  boardF.map { board => 
+	val boardId = board.get.id
+	val result = payload.map { load =>
+	 		// obj_type: String, obj_title: String, obj_content: String
+	/*
+	val board =   Board(
+	  	id = Some(boardId),
+	  title = boardId.toString,
+	  content = "",
 	  publisher = userId,
-	  etype = load.obj_type,
-	  default = "",
-	  meta = metas)),
-	List(Slat(
-	  id = Some(UUID.randomUUID()),
-	  title = load.obj_title,
-	  boardId = boardId,
-	  entityId = entityId.get,  
-	  sval = load.obj_content,
+	  ownership = Ownership(host = "min.ority.us", uid = userId),
+	  meta = metas, None,None)
+	*/
+			WarpResult(
+		board.get, List(
+			Entity(
+		  id = entityId,
+		  title = load.obj_title,
+		  boardId = boardId.get,
+		  description = "",
+		  publisher = userId,
+		  etype = load.obj_type,
+		  default = "",
+		  meta = metas)),
+		List(Slat(
+		  id = Some(UUID.randomUUID()),
+		  title = load.obj_title,
+		  boardId = boardId.get,
+		  entityId = entityId.get,  
+		  sval = load.obj_content,
+		  publisher = userId,
+		  meta = metas
+		))  
+	)}
+			val entities = result.map { result => result.entities }.flatten	
+			val slats = result.map { result => result.slats }.flatten
+			WarpResult(result.map(_.board).headOption.getOrElse(Board(
+	  	id = boardId,
+	  title = boardId.toString,
+	  content = "",
 	  publisher = userId,
-	  meta = metas
-	))  
-)}
-		val entities = result.map { result => result.entities }.flatten	
-		val slats = result.map { result => result.slats }.flatten
-		WarpResult(result.map(_.board).headOption.getOrElse(Board(
-  	id = Some(boardId),
-  title = boardId.toString,
-  content = "",
-  publisher = userId,
-  ownership = Ownership(host = "min.ority.us", uid = userId),
-  meta = metas, None,None)), entities, slats)
- }
+	  ownership = Ownership(host = "min.ority.us", uid = userId),
+	  meta = metas, None,None)), entities, slats)
+	  }
+}
 
 
 
@@ -222,5 +260,14 @@ val Phone2 = """(\d{3})-(\d{3})-(\d{4})""".r
 
 
  
+// Find or create board
+// 
+val wrapper = BBoardWrapper()
+def getBoard(launch_id: Int, element_id: Option[Int], userId: String) = wrapper.findOrCreateBoard(launch_id,
+ element_id, userId)
+
+
+
+
 
 }
