@@ -153,6 +153,20 @@ implicit val timeout = Timeout(5 seconds)
      holder  
 }
  
+  def getWarpBoardByLaunch(launch_id: Int, biz: String = ""):Future[BoardContainer] = {
+    val empty:BoardContainer = BoardContainer(boards = List(),entities = List(), slats = List())
+     val holder = Try(WS.url(s"http://${connection.host}:${connection.port}/api/v1/board/launch/${launch_id}").get().map { response =>
+        val res = response.json.as[BoardContainer]
+        println(response.json)
+        res //.copy(boards =          res.boards.filter(b => b.onBusiness(biz)))
+     }.recover{ case c => {
+      println(c)
+      empty 
+      }
+      })
+        .getOrElse(Future.successful(empty))
+     holder   
+  } 
   def getBoardByResource(resource_id: Int, biz: String):Future[BoardContainer] = {
   	val empty:BoardContainer = BoardContainer(boards = List(),entities = List(), slats = List())
   	 val holder = Try(WS.url(s"http://${connection.host}:${connection.port}/api/v1/board").get().map { response =>
