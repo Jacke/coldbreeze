@@ -40,6 +40,31 @@
 
 
 
+<div class="dataPipe" ng-repeat="cost in warpData" ng-show="warpData.boards.length > 0">
+      <div class="pipe">
+        <div class="pipeHeader">Launch Data</div>
+        <div class="pipeContent">
+          <div class="pipeContentTitle"></div>
+        </div>
+        <div class="pipeContent" ng-repeat="entity in cost.entities">
+          <div class="pipeContentTitle">{{ entity.title }}</div>
+          <div class="pipeContentValue" ng-repeat="slat in slatFilter(entity, cost.slats)">
+              <a ng-click="slat.refill=true;" ng-hide="slat.refill"><span>{{ slat.sval }}</span></a>
+              <div class="pipeContentValueRefill" ng-init="slat.refill=false" ng-show="slat.refill">
+                <input type="text" id="inputContentBlankValue" class="form-control" ng-model="slat.sval" required="">
+                <a class="btn btn-small btn-success" ng-click="reFillValue(cost, entity, slat)">ReFill</a>
+                <a class="btn btn-small" ng-click="slat.refill=false;">x</a>                
+              </div>
+          </div>          
+          <div class="pipeContentBlankValue" ng-show="slatFilter(entity, cost.slats).length < 1">
+                <input type="text" id="inputContentBlankValue" class="form-control" ng-init="entity.newModelValue=defaultValueParser(entity.default)" ng-model="entity.newModelValue" required="">
+                <a class="btn btn-small btn-success" ng-click="fillValue(cost, entity, entity.newModelValue)">Fill</a>
+        </div>
+        </div>      
+      </div>
+    </div>
+</div>  
+
 <div class="elements" ng-repeat="bpelem in bpelems | orderBy:'order'">
 <div class="proc-element minimal" ng-attr-id="'frontElem'+bpelem.id" ng-class="'elem-'+bpelem.id">
     <div class="element-header">
@@ -183,6 +208,8 @@
 </div>
         </div>
   </div>  
+
+
     <div class="dataPipe" ng-repeat="cost in bpelem.costs" ng-show="bpelem.costs.length > 0">
       <div class="pipe">
         <div class="pipeHeader"> {{ cost.resource.resource.title }}</div>

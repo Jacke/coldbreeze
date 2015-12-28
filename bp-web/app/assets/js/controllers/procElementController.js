@@ -71,6 +71,17 @@ minorityControllers.controller('BPelementListCtrl', ['$timeout','$window','$filt
 if ($scope.inSession) {
   DataCostLaunchAssign.query( { launchId: parseInt($location.search().launch) } ).$promise.then(function(data){
      $scope.sessionCosts = data.costs; 
+      $scope.warpData = { boards: _.filter(data.warp.boards, 
+        function(obj){ return  $scope.metaExisted(obj.meta, "element_id");
+      }),
+      entities: _.filter(data.warp.entities, 
+        function(obj){ return  $scope.metaExisted(obj.meta, "element_id");
+      }),
+      slats: _.filter(data.warp.slats, 
+        function(obj){ return  $scope.metaExisted(obj.meta, "element_id");
+      })
+     }
+
   });
 }
 
@@ -335,6 +346,11 @@ $scope.spaceelems = BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid
 });
  });
 }
+$scope.metaExisted = function(meta, key) {
+    return _.filter(meta, function(meta) {
+          return (meta.key == key && meta.value.length < 1) 
+        }).length < 1;
+}
 
 $scope.reloadResourcesForSession = function(session) {
    $scope.states = BPSessionStatesFactory.query({ BPid: $route.current.params.BPid, id: session.id });
@@ -373,6 +389,7 @@ $scope.reloadResourcesForSession = function(session) {
 
   });
 
+
     // Fetch resource and entities for that resource
   DataCostCollection.query().$promise.then(function(res) {
 
@@ -381,6 +398,17 @@ $scope.reloadResourcesForSession = function(session) {
 
     DataCostLaunchAssign.query( { launchId: session.id } ).$promise.then(function(data) {
       $scope.processCosts = data.costs;
+      $scope.warpData = { boards: _.filter(data.warp.boards, 
+        function(obj){ return  $scope.metaExisted(obj.meta, "element_id");
+      }),
+      entities: _.filter(data.warp.entities, 
+        function(obj){ return  $scope.metaExisted(obj.meta, "element_id");
+      }),
+      slats: _.filter(data.warp.slats, 
+        function(obj){ return  $scope.metaExisted(obj.meta, "element_id");
+      })
+     }
+
 
       /* cost */
       var fetchObj = function(objects) {
@@ -1720,8 +1748,17 @@ $scope.changeSession = function(session) {
  $scope.interactions = InteractionsFactory.query({session_id: $scope.session.session.id});
 
 DataCostLaunchAssign.query( { launchId: parseInt($location.search().launch) } ).$promise.then(function(data) {
-
  $scope.sessionCosts = data.costs; 
+      $scope.warpData = { boards: _.filter(data.warp.boards, 
+        function(obj){ return  $scope.metaExisted(obj.meta, "element_id");
+      }),
+      entities: _.filter(data.warp.entities, 
+        function(obj){ return  $scope.metaExisted(obj.meta, "element_id");
+      }),
+      slats: _.filter(data.warp.slats, 
+        function(obj){ return  $scope.metaExisted(obj.meta, "element_id");
+      })
+     }
 });
 
  $scope.input_logs = BPInLoggersSessionFactory.query({BPid: $route.current.params.BPid, station_id: $scope.session.id});
