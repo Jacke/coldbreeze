@@ -3092,8 +3092,13 @@ form.form-horizontal.element-new-form.form-new-bpelem.form-edit-bpelem.form-new-
     margin-right: 15px;
 }
 .process-info h3.reset-session {
-  cursor: pointer;
-  text-decoration: underline;
+    cursor: pointer;
+    text-decoration: none;
+    border-bottom: dashed 1px rgba(169, 169, 169, 0.36);
+}
+abbr[title], abbr[data-original-title] {
+    cursor: help;
+    border-bottom: 1px dotted rgba(165, 165, 165, 0.25);
 }
 .process-info {
     padding: 22px 15px 23px 26px;
