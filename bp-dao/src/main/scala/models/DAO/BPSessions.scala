@@ -327,7 +327,7 @@ object BPSessionDAO {
 
         Some(
           SessionContainer(process, 
-          sess.filter(ses => ses.process == process_id).map { ses => 
+          sess.filter(ses => ses.process == process_id && ses.id != Some(-1) ).map { ses => 
           val station = BPStationDAO.findBySession(ses.id.get)        
           val element_quantity = SessionProcElementDAO.findBySession(ses.id.get).length //+ SessionSpaceElemDAO.findFlatBySession(ses.id.get).length
           val step = station match {
@@ -335,7 +335,8 @@ object BPSessionDAO {
             case _ => element_quantity.toDouble
           }
           val percent = percentDecorator(step, element_quantity)
-          SessionStatus(percent, process, ses, station, Some(AroundProcessElementsBuilder.detect(process_id, station.get.id.get)),
+          SessionStatus(percent, process, ses, station, 
+            Some(AroundProcessElementsBuilder.detect(process_id, station.get.id.get)),
             Some(people)
             ) 
           })

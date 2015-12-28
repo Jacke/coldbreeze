@@ -105,7 +105,19 @@ class WarpController(override implicit val env: RuntimeEnvironment[DemoUser]) ex
 			board = boardId.get.toString,
 			created_at = Some(org.joda.time.DateTime.now()),
 			updated_at = Some(org.joda.time.DateTime.now()))
-			).map { result =>  Ok(Json.obj("status" ->"OK", "message" -> e ))		 }	
+			).map { result =>  
+			    e.entities.map { entity => 
+					wrapper.addEntityByResource(resource_id = -1, entity)
+					val foundedSlats = e.slats.filter(slat => slat.entityId == entity.id.get)
+					println("foundedSlats")
+					println(foundedSlats.length)
+					foundedSlats.map { slat =>
+
+						wrapper.addSlatByEntity(entity.id.get.toString, slat)
+					}
+
+			    }
+				Ok(Json.obj("status" ->"OK", "message" -> e ))		 }	
 
 										
 
@@ -145,7 +157,7 @@ class WarpController(override implicit val env: RuntimeEnvironment[DemoUser]) ex
 			 	},
 				e => { 
 					val result = parseWarps(e.payload, s"${business}:${request.user.main.userId}",
-											launch_id,element_id)
+											launch_id,element_id, business.toString)
 					result.map { result =>
 						Ok(Json.obj("status" ->"OK", "message" -> result ))						
 					}
@@ -154,7 +166,7 @@ class WarpController(override implicit val env: RuntimeEnvironment[DemoUser]) ex
 		   }
 		 }
  def parseWarps(payload: List[WarpObjRequest], userId: String = "", 
- 				launch_id: Option[Int], element_id: Option[Int]):Future[WarpResult] = {
+ 				launch_id: Option[Int], element_id: Option[Int], workbench_id: String = ""):Future[WarpResult] = {
 	 	val entityId = Some(UUID.randomUUID())
 		val metas = launch_id match {
 			case Some(launch_id) => element_id match {
@@ -181,7 +193,7 @@ class WarpController(override implicit val env: RuntimeEnvironment[DemoUser]) ex
 		board.get, List(
 			Entity(
 		  id = entityId,
-		  title = load.obj_title,
+		  title = load.obj_type,
 		  boardId = boardId.get,
 		  description = "",
 		  publisher = userId,
@@ -205,7 +217,7 @@ class WarpController(override implicit val env: RuntimeEnvironment[DemoUser]) ex
 	  title = boardId.toString,
 	  content = "",
 	  publisher = userId,
-	  ownership = Ownership(host = "min.ority.us", uid = userId),
+	  ownership = Ownership(host = "min.ority.us", uid = userId, group = workbench_id),
 	  meta = metas, None,None)), entities, slats)
 	  }
 }

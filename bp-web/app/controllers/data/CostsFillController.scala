@@ -46,7 +46,13 @@ import scala.util.{Success, Failure}
 // by default accepted resource work for all entities
 case class ResourceElementSelector(elementId: Int, resourceId: Int, entityId: String = "*")
 case class ElementResourceContainer(obj: ElementResourceDTO, entities: List[Entity])
-case class SessionElementResourceContainer(obj: SessionElementResourceDTO, entities: List[Entity], slats: List[Slat]) 
+case class WarpData(boards: List[Board], entities: List[Entity], 
+  slats: List[Slat])
+case class DatasContainer(costs: List[SessionElementResourceContainer], warp: WarpData)
+case class SessionElementResourceContainer(obj: SessionElementResourceDTO, 
+  entities: List[Entity], 
+  slats: List[Slat]) 
+
 
 class CostFillController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
   import play.api.libs.json.Json
@@ -80,17 +86,22 @@ implicit val ElementResourceContainerReaders = Json.reads[ElementResourceContain
 implicit val SessionElementResourceContainerFormat = Json.format[SessionElementResourceContainer]
 implicit val SessionElementResourceContainerReaders = Json.reads[SessionElementResourceContainer]
 
+implicit val WarpDatarFormat = Json.format[WarpData]
+implicit val WarpDataReaders = Json.reads[WarpData]
+
+implicit val DatasContainerFormat = Json.format[DatasContainer]
+implicit val DatasContainerReaders = Json.reads[DatasContainer]
 /****
  * Resource elements
  */
 //GET      /data/cost/collection/             @controllers.CostFillController.assignResourceCollection
 def assignResourceCollection = SecuredAction.async { implicit request => 
   var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
-    val resources = ResourceDAO.findByBusinessId(request.user.businessFirst)
+  val resources = ResourceDAO.findByBusinessId(request.user.businessFirst)
 	val resEntFut:Future[List[ResourceEntitySelector]] = BBoardWrapper().getEntityByResources(resources)
-     for {
-        resEntity <- resEntFut
-     } yield   Ok(Json.toJson(resEntity))
+  for {
+      resEntity <- resEntFut
+  } yield   Ok(Json.toJson(resEntity))
 }
 // GET	 /data/cost/assigns/:process_id
 def assigns(process_id: Int) = SecuredAction { implicit request => 
@@ -105,11 +116,16 @@ def launch_assigns(launch_id: Int) = SecuredAction { implicit request =>
 	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
   val assigns = SessionElementResourceDAO.getBySession(launch_id)
   val launch_assigns_cn = assigns.map { obj => 
-      val entities:List[Entity] = findEntitiesFromLaunch(launch_id,List(obj))
+      val entities:List[Entity] = findEntitiesFromLaunch(launch_id, List(obj))
       val entities_ids = entities.map(o => idGetter(o.id))
       SessionElementResourceContainer(obj, entities, findSlats(entities_ids, launch_id) )
-    }
-    Ok(Json.toJson(launch_assigns_cn))
+  }
+  // Fill by warped datas
+  val warpDatas = Await.result(wrapper.getWarpBoardByLaunch(launch_id), Duration(waitSeconds, MILLISECONDS))
+  val warpBoards = warpDatas.boards
+  val warpEntities = warpDatas.entities
+  val warpSlats = warpDatas.slats
+    Ok(Json.toJson(DatasContainer(costs = launch_assigns_cn, WarpData(warpBoards, warpEntities, warpSlats)) ))
 }
 
 //POST	 /data/cost/assign/:resource_id		@controllers.CostFillController.assign_element(resource_id: Int)

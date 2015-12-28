@@ -69,7 +69,9 @@ minorityControllers.controller('BPelementListCtrl', ['$timeout','$window','$filt
   }
 
 if ($scope.inSession) {
-   $scope.sessionCosts = DataCostLaunchAssign.query( { launchId: parseInt($location.search().launch) } )
+  DataCostLaunchAssign.query( { launchId: parseInt($location.search().launch) } ).$promise.then(function(data){
+     $scope.sessionCosts = data.costs; 
+  });
 }
 
 // /data/cost/up_assign/:resource_id
@@ -377,8 +379,8 @@ $scope.reloadResourcesForSession = function(session) {
       $scope.resources = res;
       _.forEach($scope.resources, function(r){ r.entities.unshift({title: "All", id:"*"}) });
 
-    DataCostLaunchAssign.query( { launchId: session.id } ).$promise.then(function(cost) {
-      $scope.processCosts = cost;
+    DataCostLaunchAssign.query( { launchId: session.id } ).$promise.then(function(data) {
+      $scope.processCosts = data.costs;
 
       /* cost */
       var fetchObj = function(objects) {
@@ -1717,7 +1719,10 @@ $scope.changeSession = function(session) {
 
  $scope.interactions = InteractionsFactory.query({session_id: $scope.session.session.id});
 
- $scope.sessionCosts = DataCostLaunchAssign.query( { launchId: parseInt($location.search().launch) } );
+DataCostLaunchAssign.query( { launchId: parseInt($location.search().launch) } ).$promise.then(function(data) {
+
+ $scope.sessionCosts = data.costs; 
+});
 
  $scope.input_logs = BPInLoggersSessionFactory.query({BPid: $route.current.params.BPid, station_id: $scope.session.id});
  //.$promise.then(function(reaction_array) {

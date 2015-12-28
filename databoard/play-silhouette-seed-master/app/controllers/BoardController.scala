@@ -358,6 +358,28 @@ def APIindex = Action.async { implicit request =>
         slats <- slatCollectionCursor.collect[List]()
      } yield Ok(Json.toJson(BoardContainer(boards, entities, slats)))
 }
+def APIindexByLaunch(launch_id: Int) = Action.async { implicit request =>
+
+
+    var metas = BSONArray(BSONDocument("key" -> "launch_id","value" -> launch_id.toString))
+    val entityCollectionCursor = entityCollection.find(Json.obj("query" -> 
+                                                  BSONDocument("meta" -> 
+            metas
+        ))).cursor[Entity](readPreference = ReadPreference.primary)
+    val slatCollectionCursor = slatCollection.find(Json.obj("query" -> 
+                                                  BSONDocument("meta" -> 
+            metas
+        ))).cursor[Slat](readPreference = ReadPreference.primary)
+    val cursor = collection.find(Json.obj("query" -> 
+                                   BSONDocument("meta" -> 
+            metas
+        ))).cursor[Board](readPreference = ReadPreference.primary)
+    for {
+        boards <- cursor.collect[List]()
+        entities <-  entityCollectionCursor.collect[List]()
+        slats <- slatCollectionCursor.collect[List]()
+     } yield Ok(Json.toJson(BoardContainer(boards, entities, slats)))
+}
 
 def APIcreate = Action.async(parse.json) { implicit request =>
     val id = UUID.randomUUID()

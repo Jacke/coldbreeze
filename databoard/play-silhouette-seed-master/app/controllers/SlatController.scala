@@ -199,15 +199,15 @@ def APIcreate(entity_id: String) = Action.async(parse.json) { implicit request =
     val id = UUID.randomUUID()
     for {    
       maybeEntity <- futureEntity
-      result <- maybeEntity.map { entity =>
-          slatCollection.insert(slat.copy(id = Some(id),
-                               boardId = entity.boardId, 
-                               entityId = UUID.fromString(entity_id),         
-                                                 publisher = "",//user.email.getOrElse(""),
+      result <- //maybeEntity.map { entity =>
+          slatCollection.insert(slat.copy(//id = Some(id),
+                               // boardId = entity.boardId, 
+                               //entityId = UUID.fromString(entity_id),         
+                               //                  publisher = "",//user.email.getOrElse(""),
                                                  creationDate = Some(new DateTime()), 
                                                  updateDate = Some(new DateTime()))).map(_ =>
           Ok(Json.obj("message" -> id.toString)) )
-      }.getOrElse(Future(Ok(Json.obj("message" -> "failed"))))
+      //}.getOrElse(Future(Ok(Json.obj("message" -> "failed"))))
     } yield result
     }.recoverTotal {
       case error =>

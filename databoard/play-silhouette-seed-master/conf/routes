@@ -26,6 +26,7 @@ POST    /boards/:id/remove          controllers.BoardController.delete(id)
 #                                                        API
 #######################################################################################################################
 GET     /api/v1/board                      controllers.BoardController.APIindex
+GET     /api/v1/board/launch/:launch_id    controllers.BoardController.APIindexByLaunch(launch_id: Int)
 POST    /api/v1/boards/create              controllers.BoardController.APIcreate
 POST    /api/v1/boards/:id                 controllers.BoardController.APIedit(id)
 POST    /api/v1/boards/:id/remove          controllers.BoardController.APIdelete(id)

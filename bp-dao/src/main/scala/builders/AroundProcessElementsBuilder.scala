@@ -24,11 +24,13 @@ import scala.util.Try
 **/
 object AroundProcessElementsBuilder {
   def detect(process_id: Int, station_id: Int):ElemAround = {
+   println("AroundProcessElementsBuilder DETECT")
+   println(station_id)
    val station = BPStationDAO.findActiveByBPIds(List(process_id)).headOption
      
    station match {
     case None => ElemAround()
-    case Some(st) => buildTree(st, process_id)
+    case Some(st) => buildTree(st, process_id, None, station)
    }
   }
   def detectByStation(process_id: Int, station: Option[BPStationDTO], process:Option[BProcessDTO]=None):ElemAround = {
