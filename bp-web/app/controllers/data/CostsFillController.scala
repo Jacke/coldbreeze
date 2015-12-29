@@ -128,6 +128,14 @@ def launch_assigns(launch_id: Int) = SecuredAction { implicit request =>
     Ok(Json.toJson(DatasContainer(costs = launch_assigns_cn, WarpData(warpBoards, warpEntities, warpSlats)) ))
 }
 
+//POST
+def removeEntityById(entity_id: String) = SecuredAction.async { implicit request => 
+  wrapper.removeEntityById(entity_id).map { result =>
+    Ok(Json.toJson( "oK"))
+  }
+}
+
+
 //POST	 /data/cost/assign/:resource_id		@controllers.CostFillController.assign_element(resource_id: Int)
 def assign_element(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request => 
 	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get

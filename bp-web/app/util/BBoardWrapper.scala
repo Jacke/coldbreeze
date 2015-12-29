@@ -450,6 +450,17 @@ implicit val timeout = Timeout(5 seconds)
         .getOrElse(Future.successful("false"))
      holder
   }
+  def removeEntityById(entity_id: String):Future[String] = {
+     val board_id: String = ""
+     val holder = Try(
+      WS.url(s"http://${connection.host}:${connection.port}/api/v1/entity/${entity_id}/remove").post(Map("key" -> Seq("value"))).map { response =>
+        val res = response.json
+        println(res)
+        res.toString
+        }.recover{ case _ => "" })
+        .getOrElse(Future.successful("false"))
+     holder
+  }  
   def removeSlatById(slat_id: String):Future[String] = {
      println("REMOVE SLAT")
      println(s"slat_id: $slat_id ")    

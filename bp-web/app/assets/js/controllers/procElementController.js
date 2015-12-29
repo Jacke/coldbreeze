@@ -167,7 +167,14 @@ $scope.fillValue = function(cost, entity, value) {
                     req).then(function (data) {
                       console.log(data);
   });
-
+}
+$scope.removeEntity = function(entity, store) {
+  console.log(entity);
+  $http.post(jsRoutes.controllers.CostFillController.removeEntityById(entity.id).absoluteURL(document.ssl_enabled),  
+  []).then(function (data) {
+      console.log(data);
+      $scope.loadCosts();
+  });
 }
 $scope.reFillValue = function(cost, entity, slat) {
   console.log(cost);
@@ -351,6 +358,63 @@ $scope.metaExisted = function(meta, key) {
           return (meta.key == key && meta.value.length < 1) 
         }).length < 1;
 }
+$scope.files = [];
+$scope.payload = [];
+$scope.payload_result = [];
+$scope.onPickedFirstInput = function(first_input, docs) {
+    angular.forEach(docs, function (file, index) {
+    $scope.files.push(file);
+  });
+  var data = _.map($scope.files, function(el) { 
+      return { obj_type: "file", obj_content: el.embedUrl, obj_title: el.name };   
+  })
+   $scope.files = [];
+   $scope.payload = $scope.payload.concat(data);
+   $scope.sendPayload($scope.session_id, "", _.filter($scope.payload, function(el){return el.obj_content != "";})); 
+   $scope.sendWarpResult();
+   $scope.payload_result = [];
+}
+$scope.sendWarpResult = function() {
+     $http({
+      url: '/warp/send',
+      method: "POST",
+      data: $scope.payload_result.data.message,
+      })
+      .then(function(response) {
+        // success
+        $scope.loadCosts();
+        console.log(response);
+      },
+      function(response) { // optional
+        // failed
+        console.log(response);
+      }
+      );
+     
+}
+$scope.sendPayload = function(launch_id, element_id, existedPayload) {
+     if (existedPayload != undefined) {
+      var payload = existedPayload;
+     $http({
+      url: '/warp?launch_id=' + launch_id +'&element_id='+element_id,
+      method: "POST",
+      data: { payload: payload },
+      })
+      .then(function(response) {
+        // success
+        $scope.payload_result = response;//console.log(response);
+        //$scope.bpstations = BPStationsFactory.query({ BPid: $scope.bpId });
+      },
+      function(response) { // optional
+        // failed
+        $scope.payload_result = response;//console.log(response);
+      }
+      );
+     } else {
+       var payload = $scope.payload; 
+     }
+}
+
 
 $scope.reloadResourcesForSession = function(session) {
    $scope.states = BPSessionStatesFactory.query({ BPid: $route.current.params.BPid, id: session.id });
@@ -382,7 +446,7 @@ $scope.reloadResourcesForSession = function(session) {
       z.spaces = _.filter($scope.spaces, function(s){ return s.brick_front == z.id;});
         _.forEach(z.spaces, function(sp) {
               sp.spelems = _.filter($scope.spaceelems, function(spelem){
-               return spelem.ref_space_owned == sp.id;
+               return spelem.space_owned == sp.id;
            })
         });
     //}*/
@@ -391,6 +455,7 @@ $scope.reloadResourcesForSession = function(session) {
 
 
     // Fetch resource and entities for that resource
+$scope.loadCosts = function() {    
   DataCostCollection.query().$promise.then(function(res) {
 
       $scope.resources = res;
@@ -426,7 +491,10 @@ $scope.reloadResourcesForSession = function(session) {
           return $scope.topoIdChecker(z.topo_id) == cost.obj.element_id;
       });  return fetchObj(z.costs) });
 
-    });   });   
+    });   
+});   
+}
+$scope.loadCosts();
     /********************/
       
 

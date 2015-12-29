@@ -167,10 +167,22 @@ class EntityController @Inject() (val reactiveMongoApi: ReactiveMongoApi,val mes
       })
   }
 
-  def delete(id: String) = Action { implicit request =>
-      entityCollection.remove(BSONDocument("id" -> id))
+  def delete(id: String) = Action.async { implicit request =>
+    entityCollection.remove(BSONDocument("id" -> id))
+    val cursor = slatCollection.find(Json.obj("query" -> BSONDocument("entityId" -> id ))).cursor[Slat](readPreference = ReadPreference.primary)
+    cursor.collect[List]().map { slats =>
+       slats.map { slat => slatCollection.remove(BSONDocument("id" -> slat.getId )) }      
       Redirect(routes.BoardController.index)
-  }
+    }      
+}
+def APIdelete(id: String) = Action.async { implicit request =>
+    entityCollection.remove(BSONDocument("id" -> id))
+    val cursor = slatCollection.find(Json.obj("query" -> BSONDocument("entityId" -> id ))).cursor[Slat](readPreference = ReadPreference.primary)    
+    cursor.collect[List]().map { slats =>
+       slats.foreach { slat => slatCollection.remove(BSONDocument("id" -> slat.getId )) }      
+      Ok("removed")
+    }
+}
 
 
 /***

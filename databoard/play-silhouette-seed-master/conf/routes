@@ -47,7 +47,7 @@ GET     /api/v1/board/:id/entities                    controllers.EntityControll
 POST    /api/v1/board/:id/entities/create             controllers.EntityController.APIcreate(id)
 POST    /api/v1/b/:board_id/entity/:entity_id/edit    controllers.EntityController.APIedit(board_id, entity_id)
 GET     /api/v1/board/:id/entity/:entity_id/slats     controllers.EntityController.APIindexSlat(id, entity_id)
-POST    /api/v1/entity/:id/remove                     controllers.EntityController.delete(id)
+POST    /api/v1/entity/:id/remove                     controllers.EntityController.APIdelete(id)
 ########################################################
 #                       SLATS
 ########################################################
