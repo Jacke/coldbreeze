@@ -196,6 +196,11 @@
   deps: ['angular', 'app'],
   export: 'launches'
 },
+'fastResourceCostCreation': {
+  deps: ['angular', 'app'],
+  export: 'fastResourceCostCreation'
+},
+
 //'popupService': {
 //  deps: ['angular', 'app', 'services'],
 //  export: 'services'
@@ -346,6 +351,7 @@
   'filters': '../js/filters',
   'services': '../js/services',
   'launches': '../js/services/launches',
+  'fastResourceCostCreation': '../js/services/fastResourceCostCreation',
  // 'popupService': '../js/popupService',
   'treebuilder': '../js/treebuilder',
   'controllers': '../js/controllers/controllers',

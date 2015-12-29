@@ -884,6 +884,26 @@ span.reaction-icon.minicon.minicon-gear-fill-right {
     padding-top: 0px;
     padding-bottom: 9px;
 }
+.dataPipe.launchDataPipe {
+    margin-top: 20px;
+    margin-left: 30px;
+    background: white;
+    width: 50%;
+    padding: 16px;
+}
+
+.dataPipe.launchDataPipe ul {
+    list-style: none;
+}
+.dataPipe.launchDataPipe .pipeContent .pipeContentTitle:before {
+    display: none;
+}
+.pipeContent.file .pipeContentValue span {
+    width: 100%;
+    display: block;
+    clear: both;
+    /* overflow: hidden; */
+}
 .pipeContent .pipeContentTitle {
     font-size: 14px;
     display: inline-block;
@@ -8455,7 +8475,11 @@ height: 40px;
     right: 0px;
     background: #3D3F55;
     width: 156px;
-    height: 59px;
+    height: 60px;
+}
+.inline-launch .fastInput:hover {
+    height: 100%;
+    z-index: 1;
 }
 span.firstInputFileName {
     white-space: nowrap;
@@ -8470,10 +8494,6 @@ span.firstInputFileName {
     margin-top: -2px;
 }
 
-.inline-launch .fastInput:hover {
-    height: auto;
-    z-index: 1;
-}
 
 .firstInputFiles button.close {
     color: white;
@@ -8544,12 +8564,60 @@ a.fastInputPicker.ng-isolate-scope {}
     float: right;
     width: 19px;
     height: 31px;
-    margin: -39px 2px 0px 0px;
+    margin: -35px 2px 0px 0px;
     color: white;
 }
 .fastInput a.fastInputPicker span.moicon {
     margin: 0;
+    font-size: 11px;
+    margin-top: 1px;
+    margin-left: 1px;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+.fastInput.launchDataFastInput {
+    display: block;
+    clear: both;
+    width: 59px;
+    overflow: hidden;
+    position: relative;
+    margin-top: 17px;
+    margin-left: 35px;
+}
+
+.launchDataFastInput a.fastInputPicker span:before {
+    background: none;
+    color: black;
+    font-size: 16px !important;
+    margin-right: 6px;
+}
+
+.launchDataFastInput a.fastInputPicker {
+    display: block;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.launchDataFastInput a.fastInputPicker span {
+    color: black;
+}
+
+
+
+
+
 
 
 textarea#warpArea {

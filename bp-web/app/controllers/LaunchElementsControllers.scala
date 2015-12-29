@@ -93,7 +93,7 @@ def spaces(launch_id: Int) = SecuredAction { implicit request =>
 }
 def spaceElems(launch_id: Int) = SecuredAction { implicit request =>
     if (security.BRes.launchIsOwnedByBiz(request.user.businessFirst, launch_id)) {
-          Ok(Json.toJson(SessionProcElementDAO.findBySession(launch_id)))
+          Ok(Json.toJson(SessionSpaceElemDAO.findBySession(launch_id)))
     } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
 /**

@@ -40,30 +40,6 @@
 
 
 
-<div class="dataPipe" ng-repeat="cost in warpData" ng-show="warpData.boards.length > 0">
-      <div class="pipe">
-        <div class="pipeHeader">Launch Data</div>
-        <div class="pipeContent">
-          <div class="pipeContentTitle"></div>
-        </div>
-        <div class="pipeContent" ng-repeat="entity in cost.entities">
-          <div class="pipeContentTitle">{{ entity.title }}</div>
-          <div class="pipeContentValue" ng-repeat="slat in slatFilter(entity, cost.slats)">
-              <a ng-click="slat.refill=true;" ng-hide="slat.refill"><span>{{ slat.sval }}</span></a>
-              <div class="pipeContentValueRefill" ng-init="slat.refill=false" ng-show="slat.refill">
-                <input type="text" id="inputContentBlankValue" class="form-control" ng-model="slat.sval" required="">
-                <a class="btn btn-small btn-success" ng-click="reFillValue(cost, entity, slat)">ReFill</a>
-                <a class="btn btn-small" ng-click="slat.refill=false;">x</a>                
-              </div>
-          </div>          
-          <div class="pipeContentBlankValue" ng-show="slatFilter(entity, cost.slats).length < 1">
-                <input type="text" id="inputContentBlankValue" class="form-control" ng-init="entity.newModelValue=defaultValueParser(entity.default)" ng-model="entity.newModelValue" required="">
-                <a class="btn btn-small btn-success" ng-click="fillValue(cost, entity, entity.newModelValue)">Fill</a>
-        </div>
-        </div>      
-      </div>
-    </div>
-</div>  
 
 <div class="elements" ng-repeat="bpelem in bpelems | orderBy:'order'">
 <div class="proc-element minimal" ng-attr-id="'frontElem'+bpelem.id" ng-class="'elem-'+bpelem.id">
@@ -305,11 +281,47 @@
 </div>
 </div>
   
+<div class="fastInput launchDataFastInput">
+<!--<span class="firstInputFiles" ng-repeat="file in files">
+    <span class="firstInputFileName">{{ file.name }}</span>
+   <button type="button" class="close" ng-click="removeFileFirstInput(file,firstInput)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+</span>-->
+<a href="javascript:;" lk-google-picker on-picked="onPickedFirstInput(firstInput, docs)" class="fastInputPicker">
+  <span class="moicon moicon-paste"></span>
+</a>
+</div>
 
+<div class="dataPipe launchDataPipe" ng-repeat="cost in warpData.boards" ng-show="warpData.boards.length > 0">
+
+
+
+
+      <div class="pipe">
+        <div class="pipeHeader">Launch Data</div>
+        <div class="pipeContent">
+          <div class="pipeContentTitle"></div>
+        </div>
+        <div class="pipeContent" ng-class="entity.etype" ng-repeat="entity in warpData.entities">
+          <div class="pipeContentTitle">{{ entity.etype }}: {{ entity.title }}</div>
+          <div class="pipeContentValue" ng-repeat="slat in slatFilter(entity, warpData.slats)">
+              <a ng-click="slat.refill=true;" ng-hide="slat.refill">
+                <span ng-if="entity.etype != 'file'">{{ slat.sval }}</span>
+                <span ng-if="entity.etype == 'file'">
+                    <a href="{{ slat.sval}}">{{ slat.sval }}</a>
+                </span>
+                <a class="btn btn-small btn-delete" ng-click="removeEntity(entity, warpData)">Delete</a>                
+              </a>
+          </div>          
+          <!-- <div class="pipeContentBlankValue" ng-show="slatFilter(entity, warpData.slats).length < 1">
+                <input type="text" id="inputContentBlankValue" class="form-control" ng-init="entity.newModelValue=defaultValueParser(entity.default)" ng-model="entity.newModelValue" required="">
+                <a class="btn btn-small btn-success" ng-click="fillValue(cost, entity, entity.newModelValue)">Fill</a>
+        </div>-->
+        </div>      
+      </div>
+    </div>
+</div>  
   
 <div class="elements mocking">
-  
-  
   <div class="proc-element minimal">
     <div class="element-header">
     <div class="primary-states">
