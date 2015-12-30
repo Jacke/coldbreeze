@@ -319,9 +319,9 @@ $scope.sendWarpResult = function() {
         // failed
         console.log(response);
       }
-      );
-     
+      );     
 }
+
 $scope.sendPayload = function(launch_id, element_id, existedPayload) {
      if (existedPayload != undefined) {
       var payload = existedPayload;
@@ -488,7 +488,7 @@ $scope.fastResourceCostCreationApply = function() {
 // Assign resource to current element
 // Fetch assigned costs
 // Show cost
-  
+
   console.log(fastResourceCostCreation);
 }
 
