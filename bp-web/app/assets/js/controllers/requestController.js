@@ -537,10 +537,13 @@ $scope.reFillValue = function(cost, entity, slat) {
 
   $scope.currentReactionFlag = true;
   $scope.currentReactionFilter = function (data) {
-      if ($scope.currentReactionFlag && $scope.interactions.reactions[0] == data) {
+      if ($scope.currentReactionFlag && 
+        (($scope.interactions.reactions[0] == data) || ($scope.interactions.reactions[1] == data))  ) {
         return data;
       } 
-      if ($scope.currentReactionFlag && $scope.interactions.reactions[0] != data) {
+      if ($scope.currentReactionFlag && 
+        (($scope.interactions.reactions[0] != data) || 
+          ($scope.interactions.reactions[1] != undefined && $scope.interactions.reactions[1] != data)) ) {
         return false;
       } else {
         return data;

@@ -985,6 +985,11 @@ border-left: 2px solid #4dbd74;
     padding-left: 0px;
     font-size: 15px;
 }
+li.reaction_list__reaction.reaction_list__reaction_preview {
+    display: inline-block;
+    width: 180px;
+    margin-right: 19px;
+}
 
 li.reaction_list__reaction {
     border-bottom: solid 1px #36384D;      
@@ -1051,7 +1056,25 @@ margin-top: -3px;
 padding-top: 3px;
 }
 .space-element .info h4.title {
-padding-top: 4px;
+    padding-top: 4px;
+    width: 73px;
+    float: left;
+    display: inline-block;
+    /* height: 65px; */
+    overflow: hidden;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-left: -5px;
+}
+.space-element abbr.session__header__created_at {
+    width: 92px;
+    display: block;
+}
+
+.proc-element.minimal .space-element .info {
+    padding: 0px 5px 3px 0px;
+    height: 65px;
 }
 .space-element .right-bar {
     padding: 7px 11px 11px 24px;
@@ -2885,7 +2908,7 @@ background-color: gray !important;
     display: inline-block;
     left: -27px;
     position: absolute;
-    padding: 19px 8px 20px 8px;
+    padding: 20px 8px 20px 8px;
     background: #45475D;
     color: white;
     cursor: pointer;

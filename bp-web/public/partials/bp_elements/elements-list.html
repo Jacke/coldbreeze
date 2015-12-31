@@ -281,7 +281,7 @@
 </div>
 </div>
   
-<div class="fastInput launchDataFastInput">
+<div class="fastInput launchDataFastInput" ng-show="inSession">
 <!--<span class="firstInputFiles" ng-repeat="file in files">
     <span class="firstInputFileName">{{ file.name }}</span>
    <button type="button" class="close" ng-click="removeFileFirstInput(file,firstInput)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
@@ -291,7 +291,7 @@
 </a>
 </div>
 
-<div class="dataPipe launchDataPipe" ng-repeat="cost in warpData.boards" ng-show="warpData.boards.length > 0">
+<div class="dataPipe launchDataPipe" ng-repeat="cost in warpData.boards" ng-show="inSession && warpData.boards.length > 0">
 
 
 

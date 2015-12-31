@@ -470,6 +470,30 @@ if ($('.dashboard_sessions').length > 0) {
       dataType: 'json',contentType: 'application/json',data: JSON.stringify( [{ "reaction_id": data.reactionId }] )
     }).done(function() {
         console.log( "success" );
+        var el = $($($(this)).parent()[0]).children('.instant-input-file-list');
+        if (el.length > 0) {
+          var data = $.map(el.children(), function(el) {return { obj_type: "type", obj_content: el.getAttribute('href'), obj_title: el.textContent } });
+          console.log(data);
+
+       if (data != undefined && data.length > 0) {
+         jQuery.ajax({
+          url: '/warp?launch_id=' + launch_id,
+          method: "POST",
+          data: { payload: payload },
+          }).done(function(response) {
+           jQuery.ajax({
+            url: '/warp/send',
+            method: "POST",
+            data: response.data.message,
+            }).done(function(response) {
+              console.log(response)
+            });
+
+          });
+       };    
+}
+
+
         window.location.href = "a#/launches";
       })
       .fail(function() {

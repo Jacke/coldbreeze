@@ -28,8 +28,8 @@
 
 </div>
 
-  <ul class="reaction_list">
-    <li class="reaction_list__reaction" ng-init="interactions.reactions.length > 0 ? reactionSelect(interactions.reactions[0]) : false" ng-repeat="reaction in interactions.reactions | filter:currentReactionFilter">
+  <ul class="reaction_list reaction_list_launched">
+    <li class="reaction_list__reaction reaction_list__reaction_preview" ng-init="interactions.reactions.length > 0 ? reactionSelect(interactions.reactions[0]) : false" ng-repeat="reaction in interactions.reactions | filter:currentReactionFilter">
         <a ng-click="reactionSelect(reaction)" ng-class="selectedClass(reaction)"><h3>{{ reaction.reaction.elem.element_title }} : {{ capitalizeFirstLetter(reaction.reaction.title) }}</h3></a>
 
         <ul class="reaction_list__reaction_in_group">
@@ -44,10 +44,10 @@
         <a ng-click="reactionSelect(reaction)" id="reactionSelectButton" ng-class="selectedClass(reaction)" class="triangle-reaction"><div class="triangle triangle-3"></div></a>
         <!--<div class="launch-attachments" ng-show="reaction.selected">
             <a href="#" tooltip-placement="bottom" tooltip="Not supporting right now.">Attach</a>
-        </div>-->
-<!--<div class="center-block" ng-init="reaction.dpfiles = [];">
-<p><a class="btn btn-primary btn-block" href="javascript:;" drop-box-picker dbpicker-files="reaction.dpfiles">Dropbox</a></p>
-</div>-->
+              </div>-->
+      <!--<div class="center-block" ng-init="reaction.dpfiles = [];">
+      <p><a class="btn btn-primary btn-block" href="javascript:;" drop-box-picker dbpicker-files="reaction.dpfiles">Dropbox</a></p>
+      </div>-->
 
         <div class="costs" ng-show="reaction.costs.length > 0">
             <h2 class="costTitle">Costs</h2>
