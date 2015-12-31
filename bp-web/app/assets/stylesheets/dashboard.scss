@@ -189,6 +189,19 @@
     border-radius: 4px;
     text-align: center;
 }
+.instant-input-file-list a {
+    color: white;
+    text-decoration: none;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    font-family: 'Open Sans', Helvetica;
+    font-weight: 100;
+    border-bottom: dashed 1px rgba(255, 255, 255, 0.48);
+    padding-bottom: 0px;
+}
 .instant-input-attachment {
     display: inline-block;
     margin-right: 9px;

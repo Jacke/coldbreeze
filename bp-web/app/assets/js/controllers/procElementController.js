@@ -256,6 +256,7 @@ $scope.isManager();
 **/
 
 $scope.reloadResources = function() {
+  console.log('reloadResources');
 $scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
 $scope.spaces =  BPSpacesFactory.query({ BPid: $route.current.params.BPid });
 $scope.spaceelems = BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid });
@@ -417,6 +418,7 @@ $scope.sendPayload = function(launch_id, element_id, existedPayload) {
 
 
 $scope.reloadResourcesForSession = function(session) {
+   console.log('reloadResourcesForSession');
    $scope.states = BPSessionStatesFactory.query({ BPid: $route.current.params.BPid, id: session.id });
    $scope.switches = LaunchSwitchersFactory.query({ launch_id: session.id });
 
@@ -446,9 +448,23 @@ $scope.reloadResourcesForSession = function(session) {
       z.spaces = _.filter($scope.spaces, function(s){ return s.brick_front == z.id;});
         _.forEach(z.spaces, function(sp) {
               sp.spelems = _.filter($scope.spaceelems, function(spelem){
+                console.log("check launched space elem");
                return spelem.space_owned == sp.id;
            })
         });
+
+        $scope.frontSpaces = _.object(_.uniq(_.map($scope.spaces, function(v) {
+          return [v.brick_front,
+                   _.filter($scope.spaces, function(n){
+                      return n.brick_front == v.brick_front;
+                    })
+                  ]})));
+        $scope.nestedSpaces = _.object(_.uniq(_.map($scope.spaces, function(v) {
+          return [v.brick_nested,
+                   _.filter($scope.spaces, function(n){
+                      return n.brick_nested == v.brick_nested;
+                    })
+                  ]})));  
     //}*/
 
   });
@@ -529,6 +545,7 @@ $scope.topoIdChecker = function(topo_id) {
 }
 
 $scope.loadResources = function() {
+  console.log('loadResources');
   BPElemsFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(data) {
   BPSpacesFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(data2) {
   BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(data3) {
