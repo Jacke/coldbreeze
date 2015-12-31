@@ -12,10 +12,13 @@ import play.api.libs.json.Json
  * @param sku	string	Stock keeping unit corresponding (SKU) to item. 50 characters max.
  */
 case class Item(
-                 quantity: String,
+                 quantity: Int = 1,
                  name: String, price: BigDecimal, currency: String, sku: Option[String] = None
                  )
 object Item {
   implicit val wbd = infra.paypal.Implicits.writesBigDecimal
   implicit val format = Json.format[Item]
+  def toJson(item: Item):String = {
+  	Json.toJson(item).toString
+  }
 }

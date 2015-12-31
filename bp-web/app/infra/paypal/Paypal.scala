@@ -37,8 +37,11 @@ object Paypal {
     }
 
   def post[R] = new {
-    def apply[C](token: AccessToken, resource: String, content: C)(implicit reads: Reads[R], writes: Writes[C], ec: ExecutionContext): Future[R] =
-      getRequest(token, resource).post(writes.writes(content)).map(readResponse(_, reads))
+    def apply[C](token: AccessToken, resource: String, content: C)(implicit reads: Reads[R], writes: Writes[C], ec: ExecutionContext): Future[R] = {
+      //println(content)
+      getRequestPost(token, resource,writes.writes(content)).map(readResponse(_, reads))
+      //getRequest(token, resource).post(writes.writes(content)).map(readResponse(_, reads))
+    }  
 
     def apply[C](resource: String, content: C)
                 (implicit reads: Reads[R], writes: Writes[C], ec: ExecutionContext): Future[R] =
@@ -85,5 +88,13 @@ object Paypal {
     .withHeaders(
       "Content-Type" -> "application/json",
       "Authorization" -> s"Bearer ${token.access_token}")
+  private def getRequestPost(token: AccessToken, resource: String, content: play.api.libs.json.JsValue)(implicit ec: ExecutionContext) = { 
+    println(content.toString)
+    WS.url(s"https://$endPoint/v1/$resource")
+    .withHeaders(
+      "Content-Type" -> "application/json",
+      "Authorization" -> s"Bearer ${token.access_token}").post(content)    
+
+  }
 
 }

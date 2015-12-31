@@ -308,12 +308,13 @@ li.bill {
             }
             <div class="bill-form" style="display: none;">
             @form(routes.PlanController.checkout(bill.id.get), 'class -> "topRight") {
+                    <!-- 
                     @inputText(payForm("number"), 'placeholder -> "Card number", '_label -> "Card number", 'class -> "form-control")
                     @inputText(payForm("exp_month"), 'placeholder -> "Expired month", '_label -> "Expired month", 'class -> "form-control")
                     @inputText(payForm("exp_year"), 'placeholder -> "Expired year", '_label -> "Expired year", 'class -> "form-control")
                     @inputText(payForm("first-name"), 'placeholder -> "First name", '_label -> "First name", 'class -> "form-control")
                     @inputText(payForm("last-name"), 'placeholder -> "Last name", '_label -> "Last name", 'class -> "form-control")                    
-                    @inputText(payForm("cvv2"), 'placeholder -> "CVV(if exist)", '_label -> "CVV(if exist)", 'class -> "form-control")                    
+                    @inputText(payForm("cvv2"), 'placeholder -> "CVV(if exist)", '_label -> "CVV(if exist)", 'class -> "form-control")-->                    
                     <input type="submit" value="Pay" class="btn danger">
                   }
             </div>

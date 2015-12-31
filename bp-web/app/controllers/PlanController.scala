@@ -230,6 +230,27 @@ def switchLimit(plan_id: Int) = SecuredAction { implicit request =>
 def status() = SecuredAction { implicit request =>
   Ok("test")
 }
+def test_pay() = SecuredAction.async { implicit request =>
+ val item = Item(1, "ff", BigDecimal(1),"RUB",Some("001"))  
+val card = CreditCard(
+                        id = None,
+                        payer_id = None,
+            number = "5189010006963418",
+            `type` = CardType.MasterCard,
+            expire_month = "11",
+            expire_year = "2017",
+            cvv2 = Some("678"),
+            first_name = "STANISLAV",
+           last_name = "SUSHKO",
+                        billing_address = None,
+                        state = None,
+                        valid_until = None)
+
+CheckoutUtil.checkout_proceed(item, Some(card)).map { result =>
+  println(result)
+  Ok(result.toString)
+}
+}
 /**
  * Checkout action
  */
@@ -259,13 +280,7 @@ def checkout(bill_id: Int) = SecuredAction { implicit request =>
           val forPlan = true
           val forLimit = false
           var statusMessage:Option[StatusMessage]=None
-          PayForm.bindFromRequest.fold(
-              formWithErrors => { 
-                println(formWithErrors)
-                Redirect(routes.PlanController.index)
-                 },
-              entity => {
-                 println(entity)
+
                  //BillDAO.update(bill.id.get, bill.copy( approved = true) )
                  if (bill_his.get.limit_diff == -1) {
                    // AccountPlanDAO.update(current_plan.id.get, current_plan.copy(expired_at = DateTime.now().plusMonths(1) ))
@@ -274,8 +289,9 @@ def checkout(bill_id: Int) = SecuredAction { implicit request =>
                     // limit bill changes
                  }
         // quantity: String, name: String, price: BigDecimal, currency: String, sku: Option[String] = None
-        CheckoutUtil.checkout_proceed(Item("1", plan_dao.title, plan_price, "USD", Some("001")), 
-          CreditCard( 
+        CheckoutUtil.checkout_proceed(Item(1, plan_dao.title, plan_price, "USD", Some("001")), 
+          None)
+        /*CreditCard( 
             id = None, 
             payer_id = None, 
             number = entity.number, 
@@ -288,20 +304,23 @@ def checkout(bill_id: Int) = SecuredAction { implicit request =>
             billing_address = None,
             state = None,
             valid_until = None   
-              )).onComplete {
+              )*/.onComplete {
 
               case Success(x) => {
-                println("checkout Success")
+                 
+                 println("checkout Success")
                  println(x.state)
-                 BillDAO.update(bill.id.get, bill.copy( approved = true) )
-                 AccountPlanDAO.update(current_plan.id.get, current_plan.copy(expired_at = DateTime.now().plusMonths(1) ))
+                 Redirect(x.links.get.find(link => link.method == Method.REDIRECT ).get.href)
+
+                 //BillDAO.update(bill.id.get, bill.copy( approved = true) )
+                 //AccountPlanDAO.update(current_plan.id.get, current_plan.copy(expired_at = DateTime.now().plusMonths(1) ))
               }
               case Failure(t) => { 
-                println("checkout Filure")
+                println("checkout Failure")
                 println(t)
               }
             }
-         })
+//         })
           Ok(views.html.plans.index(request.user, 
           plans, 
           bills, 
@@ -332,36 +351,41 @@ object CheckoutUtil {
  val SomeRedirectUrls = Some(RedirectUrls(Some("http://192.168.1.102/plans/redirect_url/"), 
                                           Some("http://192.168.1.102/plans/cancel_url/")))  
 
-def checkout_proceed(item: Item, card: CreditCard):Future[Payment] = {
+def checkout_proceed(item: Item, card: Option[CreditCard]):Future[Payment] = {
   val item_list = ItemList(Seq(item))
-  val body = Payment(
-        Intent.Sale,
-        redirect_urls = SomeRedirectUrls,
-        payer = Payer(Some(PaymentMethod.Paypal)),
-        transactions = Seq(Transaction(Amount(item.currency, item.price), None, Some(item_list) ))
-      )
-  Paypal.post[Payment]("payments/payment", body) 
-  val instrument =
-      FundingInstrument(credit_card = Some(card), credit_card_token = None)
+  //val instrument = FundingInstrument(credit_card = Some(card), credit_card_token = None)
+
   val item_list2 = ItemList(Seq(item))
-  val paymentAuthorize = Payment(
-      Intent.Authorize,
-      redirect_urls = SomeRedirectUrls,
-      payer = Payer(Some(PaymentMethod.CreditCard), funding_instruments = Some(Seq(instrument))),
-      transactions = Seq(Transaction(Amount(item.currency, item.price), None, Some(item_list2) ))
-  )
+  val body = Payment(
+        intent = Intent.Sale,
+        //payer = Payer(Some(PaymentMethod.CreditCard), funding_instruments = Some(Seq(instrument))),
+        payer = Payer(Some(PaymentMethod.Paypal)),
+        redirect_urls = SomeRedirectUrls, 
+        transactions = Seq(Transaction(Amount(item.currency, item.price), None, Some(item_list2) )) )
+        //transactions = Seq(Transaction(Amount(item.currency, item.price),None, None)) ) //,Some(item_list) )) )
+  val post_payment = Paypal.post[Payment]("payments/payment", body) 
+  println("check quantity")
+  println(body.transactions.head.item_list.get.items.head.quantity)
+  println(infra.paypal.objects.Item.toJson(body.transactions.head.item_list.get.items.head))
+  println(body.transactions.head.item_list.get.items.head.quantity.getClass)
+  //val paymentAuthorize = Payment(
+  //    Intent.Authorize,
+  //    redirect_urls = SomeRedirectUrls,
+  //    payer = Payer(Some(PaymentMethod.CreditCard), funding_instruments = Some(Seq(instrument))),
+  //    transactions = Seq(Transaction(Amount(item.currency, item.price), None, Some(item_list2) )) )
   // Authorize payment payment
-  val auth_payment = Paypal.post[Payment]("payments/payment", paymentAuthorize) 
+  //val auth_payment = Paypal.post[Payment]("payments/payment", paymentAuthorize) 
   // "capture authorization"
-  Paypal.post[Payment]("payments/payment", paymentAuthorize).flatMap {
-      _.transactions.head.related_resources.get.head match {
-        case a: AuthorizationB =>
-          Paypal.post[Capture](s"payments/authorization/${a.id.get}/capture", AuthorizationB.Capture(Amount(item.currency, item.price)))
-      }
-    } 
+  //Paypal.post[Payment]("payments/payment", paymentAuthorize).flatMap {
+  //    _.transactions.head.related_resources.get.head match {
+  //      case a: AuthorizationB =>
+  //        Paypal.post[Capture](s"payments/authorization/${a.id.get}/capture", AuthorizationB.Capture(Amount(item.currency, item.price)))
+  //    }
+  //  } 
   // "authorize paypal payment"      
-  Paypal.post[Payment]("payments/payment", paymentAuthorize.copy(payer = Payer(Some(PaymentMethod.Paypal)))) 
-  auth_payment
+  //Paypal.post[Payment]("payments/payment", paymentAuthorize.copy(payer = Payer(Some(PaymentMethod.Paypal)))) 
+  //auth_payment
+  post_payment
 }
 
 }
