@@ -122,25 +122,29 @@ $scope.builder = function (station) {
    ];
 
 
-   $scope.interactions = InteractionsFactory.query({session_id: $scope.session.session.id});
-   $scope.element_topologs = LaunchElementTopologsFactory.query({ launch_id: $scope.session_id });
 
-   $scope.interactions.$promise.then(function (data) {
-    $scope.element_topologs.$promise.then(function (data2) {
-        _.forEach(data.reactions, function(r) { return r.reaction.elem = _.find(data2, function(topo) { 
+InteractionsFactory.query({session_id: $scope.session.session.id}).$promise.then(function (data) {
+  $scope.interactions = data;
+    LaunchElementTopologsFactory.query({ launch_id: $scope.session_id }).$promise.then(function (data2) {
+      $scope.element_topologs = data2;
+
+        _.forEach($scope.interactions.reactions, function(r) { return r.reaction.elem = _.find($scope.element_topologs, function(topo) { 
           return topo.topo_id == r.reaction.element}); 
         })
-        _.forEach(data.reactions, function(reaction) { 
+        _.forEach($scope.interactions.reactions, function(reaction) { 
            return _.forEach(reaction.outs, function(out) {
-              return out.state = _.find(data.outs_identity, function(iden) { return iden.origin_state == out.state_ref });
+              return out.state = _.find($scope.interactions.outs_identity, function(iden) { return iden.origin_state == out.state_ref });
           }) 
         });
 
 
-        if (data.reactions.length > 0) {
-          $scope.firstInput = data.reactions[0];
+        if ($scope.interactions.reactions.length > 0) {
+          $scope.firstInput = $scope.interactions.reactions[0];
           $scope.firstInput.files = [];
         }
+if ($scope.interactions != undefined && $scope.interactions.reactions != undefined && $scope.interactions.reactions.length > 0) {
+  $scope.reactionSelect($scope.interactions.reactions[0]);
+}        
 
 
       });
@@ -160,7 +164,6 @@ $scope.reactionSelect = function (reaction) {
       $scope.addParam(reaction);
     } else {
       reaction.selected = true;
-    
       $scope.addParam(reaction);
     }
 }
@@ -581,11 +584,14 @@ $scope.reFillValue = function(cost, entity, slat) {
   $scope.reaction_params = []
   $scope.addParam = function (reaction) {
 
-        if (_.find($scope.reaction_params, function(re) { return re.reaction_id == reaction.reaction.id }) != undefined) {
+        if (_.find($scope.reaction_params, function(re) { 
+                      return re.reaction_id == reaction.reaction.id }) != undefined) {
           $scope.delParam(reaction);
         } else {
         $scope.reaction_params.push({reaction_id: reaction.reaction.id });
-        if ($scope.reaction_params.length != 0) { console.log("$scope.runFromDisabled = false;"); $scope.runFromDisabled = false; }
+          if ($scope.reaction_params.length != 0) { 
+            console.log("$scope.runFromDisabled = false;"); $scope.runFromDisabled = false; 
+          }
         }
       
   }
