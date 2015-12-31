@@ -23,7 +23,7 @@ object Mailer {
     def api:MandrillApi = new MandrillApi("lzbqtT4PxFu4hSMzkdfh0w")
     def users = api.users()
     def ping = api.users().ping
-	def getTemplate(invite_link: String = "https://min.ority.us"):String = {
+	def getTemplate(invite_link: String = "https://min.ority.us", templateName: String = "Beautiful2"):String = {
 		//views.html.mailer.ActorAdd.render("te","Te").toString
 		val vars: scala.collection.Map[String,String] = Map("current_year" -> "2015", 
                                                         "invite_list" -> invite_link,
@@ -31,7 +31,7 @@ object Mailer {
                                                         "company" -> "Empire InCloud"
                                                         )
 		val jl: java.util.Map[String,String] = vars
-		api.templates.render("Beautiful2", jl, jl)
+		api.templates.render(templateName, jl, jl)
 
 	}
   /*
@@ -43,6 +43,32 @@ object Mailer {
         }  
   }
   */
+
+  def sendText(subject: String = "Minority App Notice",
+           emails: List[String] = List(), 
+           text: String) = {
+      ping
+      val link:String = s"$text"
+      emails.foreach { email =>
+      val msg = new MandrillMessage()
+      msg.setSubject(subject)
+      msg.setHtml(getTemplate(link, "Beautiful3"))
+      msg.setAutoText(true)
+      msg.setFromEmail("a@minorityapp.com")
+      msg.setFromName("Minority App")
+      msg.setTo(makeRecipients(Map(email -> "Minority Subscriber")))
+      msg.setPreserveRecipients(true)
+      /*
+    ArrayList<String> tags = new ArrayList<String>();
+    tags.add("test");
+    tags.add("helloworld");
+    message.setTags(tags);      
+      */
+      api.messages().send(msg, false)
+      }
+  }
+
+
 
 	def sendInvite(subject: String = "Minority App Invite",
            emails: List[String] = List(), 
