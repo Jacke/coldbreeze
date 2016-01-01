@@ -136,6 +136,7 @@ integrationTest := {
       libraryDependencies ++=
         List(
           scalarx,
+          javaasist,
           javamail,
           courier,
           poi,poiscala,
@@ -244,7 +245,6 @@ integrationTest := {
       libraryDependencies ++=
         List(
           async, 
-          javaasist,
           akkaActor, 
          // akkaSlf4j, 
           slick, 
