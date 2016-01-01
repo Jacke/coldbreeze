@@ -152,26 +152,21 @@ object Mailer {
     val emails:List[String] = (response \\ "email_address").toList.map(_.toString)
     emails
   }
-  def subscribers() = { List(
-("test3@minorityapp.com", "Minority Subscriber","dba1ebf7-2306-403a-98b7-10d20623550a"),    
-
-("shabaz@appscinated.com","Minority Subscriber", "8754d3e0-2eb7-4cde-863e-b8f17f2939f3"),
-("nicolas.de_luis_merino@edu.escpeurope.eu","Minority Subscriber", "45881114-92f0-4a47-bacf-c6b29a1d99c1"),
-("miloscitakovic@gmail.com","Minority Subscriber", "9cf80e07-3342-4086-9461-e860a2693e40"),
-("condetega+minorityapp@gmail.com","Minority Subscriber", "a4d1f1e4-b6b7-4bec-ad6c-2bfce325710f"),
-("2four5oh3@gmail.com","Minority Subscriber", "3278bc63-65d2-4786-b8ed-293643066ef4"),
-("see@guol.in","Minority Subscriber", "3d05d9de-0c27-41a6-80eb-f698aa51f06a"),
-("gerald.c.hensel@gmail.com","Minority Subscriber", "91ec624e-15bc-413d-afb5-86a70dd89d0d"),
-("thomaslloyd22@gmail.com","Minority Subscriber", "3f5ddbe1-3c29-4ae4-8d2e-228495eb8905"),
-("johanssons.davids@gmail.com","Minority Subscriber", "fb57d8d6-413c-473a-83b0-df0fcfc95204"),
+  def subscribers() = { 
+List(("test3@minorityapp.com", "Minority Subscriber"),    
+("shabaz@appscinated.com","Minority Subscriber"),
+("nicolas.de_luis_merino@edu.escpeurope.eu","Minority Subscriber"),
+("miloscitakovic@gmail.com","Minority Subscriber"),
+("condetega+minorityapp@gmail.com","Minority Subscriber"),
+("2four5oh3@gmail.com","Minority Subscriber"),
+("see@guol.in","Minority Subscriber"),
+("gerald.c.hensel@gmail.com","Minority Subscriber"),
+("thomaslloyd22@gmail.com","Minority Subscriber"),
+("johanssons.davids@gmail.com","Minority Subscriber"),
 ("rsababady@pro.onet.pl","Minority Subscriber"),
 ("aroberts025@gmail.com","Minority Subscriber"),
-
-//
-//
-//
-("scott@clearlogic.co.uk","Minority Subscriber", "01b25a47-07b3-4187-9d77-8e547ea43c23"),
-("kunal@oxyzeninfolab.com","Minority Subscriber", "d4483342-74f2-4c2b-a465-78b3451a00fa"),
+("scott@clearlogic.co.uk","Minority Subscriber"),
+("kunal@oxyzeninfolab.com","Minority Subscriber"),
 ("xirofog@landmail.co","Minority Subscriber"),
 ("hazel@dalejennings.co.nz","Minority Subscriber"),
 ("greg@gregarmstrong.com.au","Minority Subscriber"),

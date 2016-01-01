@@ -244,6 +244,7 @@ integrationTest := {
       libraryDependencies ++=
         List(
           async, 
+          javaasist,
           akkaActor, 
          // akkaSlf4j, 
           slick, 

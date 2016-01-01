@@ -213,6 +213,10 @@
   deps: ['angular', 'app', 'toastr', 'toaster'],
   export: 'controllers'
 },
+'restangular': {
+  deps: ['anguar', 'underscore', 'app'],
+  export: 'restangular'
+},
 'procPermController': {
   deps: ['angular', 'app', 'controllers', 'toastr'],
   export: 'procPermController'
@@ -326,6 +330,7 @@
   'pnotifyconfirm':'../bower_components/pnotify/pnotify.confirm',
   'pnotifybuttons':'../bower_components/pnotify/pnotify.buttons',
   'angularpnotify':'../bower_components/angular-pnotify/src/angular-pnotify',
+  'restangular':'../bower_components/restangular/dist/restangular',
 
   'roundProgress': '../bower_components/angular-svg-round-progressbar/src/roundProgress',
   'angular-moment': '../bower_components/angular-moment/angular-moment',

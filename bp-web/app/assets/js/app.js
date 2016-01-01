@@ -167,6 +167,7 @@ var minorityApp =
       'jlareau.pnotify',
       'ngAngularError',
       'toaster',
+      'restangular',
       'ngAnimate',
       'toastr',
       'ngWebSocket',
