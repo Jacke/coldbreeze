@@ -85,7 +85,7 @@
     <div class="warp_attach" ng-init="show_warp=false;" ng-click="show_warp == true ? show_warp = false : show_warp = true">Attach</div>-->
     
     <div class="warp-show" show="show_warp">
-    <div class="warp-result">{{ payload_result | prettyJSON }}</div>
+    <div class="warp-result"><!-- {{ payload_result | prettyJSON }} --></div>
     <div class="warp_attach" ng-click="addPayload()">Attach file</div>
     <div class="warp_field" ng-repeat="field in payload">
     <!--
