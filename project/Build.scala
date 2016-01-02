@@ -136,6 +136,7 @@ integrationTest := {
       libraryDependencies ++=
         List(
           scalarx,
+          javaasist,
           javamail,
           courier,
           poi,poiscala,

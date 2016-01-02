@@ -25,7 +25,7 @@ object Dependencies {
 
   val akkaVersion     = "2.3.2"
   val sprayVersion    = "1.3.1-20140423"
-  
+  val javaasist       = "org.javassist" % "javassist" % "3.20.0-GA"
   val heroku          = "com.heroku"                % "sbt-heroku"              % "0.1.4"
   val scalarx         = "com.lihaoyi"               %% "scalarx"                % "0.2.8"
   val async           = "org.scala-lang.modules"    %% "scala-async"            % "0.9.1"
@@ -82,7 +82,7 @@ object Dependencies {
   val fluentlenium    = "org.fluentlenium"          % "fluentlenium-core"       % "0.10.3" //% "test"
   val fluentleniumasj = "org.fluentlenium"          % "fluentlenium-assertj"    % "0.10.3" //% "test" 
   
-  val play            = "com.typesafe.play"         % "play_2.11"               % "2.3.9"
+  val play            = "com.typesafe.play"         % "play_2.11"               % "2.3.10"
   val play2oauth2     = "com.nulab-inc"             %% "play2-oauth2-provider"  % "0.14.0"
   val play4           = "com.typesafe.play"         %% "play"                   % "2.4.3"
   val slackapi        = "com.github.gilbertw1"      %% "slack-scala-client"     % "0.1.3"

@@ -166,6 +166,8 @@ var minorityApp =
       //'angular-filepicker',
       'jlareau.pnotify',
       'ngAngularError',
+            'restangular',
+
       'toaster',
       'ngAnimate',
       'toastr',
@@ -229,7 +231,7 @@ minorityApp.factory('NotificationBroadcaster', ['$rootScope','$websocket', '$win
       // Open a WebSocket connection
       var baseUrl = $window.location.host;
       if (document.ssl_enabled) {
-	       var ws_type = "wss://";
+         var ws_type = "wss://";
       } else { var ws_type = "ws://" }
 
 

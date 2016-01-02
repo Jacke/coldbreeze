@@ -57,11 +57,11 @@
 
     </li>-->
     <li class="minMenuItem">
-      <a id="teamMinsLink" class="vIcoIn menuEntityLink appLink" href="@routes.Application.app()">
+      <a id="navProcessesLink" class="vIcoIn menuEntityLink appLink" href="@routes.Application.app()">
         <span class="uicon-svg12"></span>@Messages("nav.processes")(LangDet.getLang(user) )  </a>
     </li>
     <li class="minMenuItem">
-      <a id="teamMinsLink" class="vIcoIn menuEntityLink" href="/a#/launches">
+      <a id="navLaunchesLink" class="vIcoIn menuEntityLink" href="/a#/launches">
         <span class="uicon-svg372"></span>Launches</a>
     </li> 
     <!--
@@ -72,12 +72,12 @@
     </li> -->
     @if(user.isManager && user.main.userId == user.masterFirst) {
     <li class="minMenuItem">
-      <a id="teamMembersLink" class="vIcoIn menuEntityLink" onclick="window.stop();window.location.pathname='/peoples'" href="@users.routes.EmployeeController.index()">
+      <a id="navPeopleLink" class="vIcoIn menuEntityLink" onclick="window.stop();window.location.pathname='/peoples'" href="@users.routes.EmployeeController.index()">
         <span class="uicon-svg98"></span>@Messages("nav.people")(LangDet.getLang(user) )  </a>
     </li>
     } 
     <li class="minMenuItem">
-      <a id="teamSettingsLink" class="vIcoIn menuEntityLink" onclick="window.stop()" href="@routes.DataController.index()">
+      <a id="navDataLink" class="vIcoIn menuEntityLink" onclick="window.stop()" href="@routes.DataController.index()">
         <span class="uicon-svg62222"></span>@Messages("page.data")(LangDet.getLang(user) )</a>
     </li>
 
@@ -86,11 +86,14 @@
 
   <div class="menuCell menuHelp switcherWrap">
     <span class="helpLinks switcherToggle hint vIcoIn" data-hint="Help">
-      <span class="uicon-svg482"><span class="visuallyhidden">@Messages("page.help")</span></span>
+      <a id="navHelpLink" class="vIcoIn menuEntityLink" onclick="" href="#">
+        <span class="uicon-svg482">@Messages("page.help")</span>
+      </a>
     </span>
+
     <span class="helpPopup switcherLayer">
       <a class="hideableHelpLink vIcoIn" target="_blank" href="minorityapp.com/contacts"><span class="helpText"><span class="vIco vStackOverflow vDimmedState"></span>@Messages("page.helpByPhone")</span></a>
-      <a class="hideableHelpLink vIcoIn" target="_blank" href="http://minorityapp.com/help/"><span class="helpText"><span class="vIco vBook vDimmedState"></span> Instructions</span></a>
+      <a class="hideableHelpLink vIcoIn" target="_blank" href="http://minorityapp.com/help/"><span class="helpText"><span class="vIco vBook vDimmedState"></span>Instructions</span></a>
       <a class="vIcoIn" id="Intercom" target="_blank" href="minorityapp.com/contacts" title="Contact Support"><span class="helpText"><span class="vIco vSpeech vDimmedState"></span> @Messages("page.contactSupport") </span></a>
     </span>
   </div>

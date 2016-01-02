@@ -631,6 +631,16 @@ body .panelLegacy .githubLogin a {
     padding-bottom: 20px;
     border-bottom: 1px solid #ccc;
 }
+#navHelpLink span.uicon-svg482 {
+    color: #AAB1C1;
+    font-family: 'museo';
+}
+#navHelpLink .uicon-svg482:before {
+    content: "\e640";
+    margin-right: 5px;
+    font-family: 'ultra-icons---line-vol-1';
+}
+
 
 #externalUser #invitations ul,#externalUser #membership ul,#externalUser #invitations li,#externalUser #membership li {
     list-style-type: none;
