@@ -213,10 +213,6 @@
   deps: ['angular', 'app', 'toastr', 'toaster'],
   export: 'controllers'
 },
-'restangular': {
-  deps: ['anguar', 'underscore', 'app'],
-  export: 'restangular'
-},
 'procPermController': {
   deps: ['angular', 'app', 'controllers', 'toastr'],
   export: 'procPermController'
@@ -245,6 +241,10 @@
   deps: ['angular', 'app', 'controllers', 'toastr'],
   export: 'stationController'
 },
+'restangular': {
+  deps: ['angular', 'app'],
+  export: 'restangular'
+},
 'procElementController': {
   deps: ['angular', 'app', 'controllers', 'toastr'],
   export: 'procElementController'
@@ -261,6 +261,7 @@
   deps: ['angular', 'app', 'controllers', 'toastr'],
   export: 'directives'
 },
+
 'classie': {
   deps: ['angular'],
   export: 'classie'
@@ -330,7 +331,7 @@
   'pnotifyconfirm':'../bower_components/pnotify/pnotify.confirm',
   'pnotifybuttons':'../bower_components/pnotify/pnotify.buttons',
   'angularpnotify':'../bower_components/angular-pnotify/src/angular-pnotify',
-  'restangular':'../bower_components/restangular/dist/restangular',
+'restangular':'../bower_components/restangular/dist/restangular',
 
   'roundProgress': '../bower_components/angular-svg-round-progressbar/src/roundProgress',
   'angular-moment': '../bower_components/angular-moment/angular-moment',
@@ -427,7 +428,7 @@ require(['requirejs','jsRoutes','jquery', 'react','pnofiy','mobileDetect','popup
           });
         }
 
-    		$("html").niceScroll({styler:"fb",cursorcolor:"#000", cursorwidth:"10px", scrollspeed: 100});
+        $("html").niceScroll({styler:"fb",cursorcolor:"#000", cursorwidth:"10px", scrollspeed: 100});
         
         var now = moment();
         $('time').each(function(i, e) {
