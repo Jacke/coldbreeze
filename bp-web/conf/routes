@@ -369,6 +369,8 @@ PUT  /ref/:id/space_elem/:spelem_id/:space_id/down @controllers.ReflectionsContr
 
 # Logs
 GET         /bprocess/:id/logs                       @controllers.ProcessSessionController.logs_index(id: Int)
+GET         /bprocesses/logs                         @controllers.ProcessSessionController.logs_indexes(ids: List[Int])
+GET         /interacts/                              @controllers.InteractionController.fetchInteractions(ids: List[Int])
 
 # Elements
 GET         /bprocess/:id/elements                   @controllers.BusinessProcessController.frontElems(id: Int)

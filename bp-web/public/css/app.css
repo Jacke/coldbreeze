@@ -9,6 +9,10 @@ Elements mocking */
 .themeDark a {
     color: #607D8B;
 }
+div#reactapp {
+    margin-top: 90px;
+}
+
 .noWorkbench .teamSettings {height: 568px;}
 
 body.themeGrad {

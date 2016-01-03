@@ -85,7 +85,7 @@ class StaticApplication(applicationPath: File, mode: Mode.Value) extends Applica
       println()      
       println(s"IP: ${Option(System.getProperty("http.address")).getOrElse("0.0.0.0")}")
       println(s"PORT: ${Option(System.getProperty("http.port")).map(Integer.parseInt).getOrElse(9000)}")
-      println(s"Copyright 2014-2015 Empire inCloud")
+      println(s"Copyright 2014-2016 Empire inCloud")
       println(",,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,")
       println()
 

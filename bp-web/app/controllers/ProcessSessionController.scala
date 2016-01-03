@@ -201,6 +201,27 @@ def logs_index(id: Int) = SecuredAction.async { implicit request =>
       //Ok(Json.toJson(LogsContainer(session_loggers, processHistories, stations,input_logs,session_log)))
   } else { Future(Forbidden(Json.obj("status" -> "Not found"))) }
 }
+def logs_indexes(ids: List[Int]) = SecuredAction.async { implicit request => 
+  val secured_ids = ids.filter( id =>
+    security.BRes.procIsOwnedByBiz(request.user.businessFirst, id))
+
+    val logsContainerF = Future.sequence( secured_ids.map { id =>
+      val processHistoriesF:Future[Seq[models.DAO.ProcessHistoryDTO]] = ProcHistoryDAO.getByProcessF(id)
+      val session_loggers = BPLoggerDAO.findByBPId(id)
+      val stations = BPStationDAO.findByBPId(id)
+      val session_ids = stations.map(st => st.session)
+
+      val input_logs = InputLoggerDAO.getBySessions(session_ids)
+      val session_log = SessionStateLogDAO.getAllBySessions(session_ids)
+      processHistoriesF.map { maybeHistory =>
+        LogsContainer(session_loggers, maybeHistory.toList, stations,input_logs,session_log)
+      }       
+    } )
+    for {
+      logsContainer <- logsContainerF
+    } yield Ok(Json.toJson(logsContainer))
+      //Ok(Json.toJson(LogsContainer(session_loggers, processHistories, stations,input_logs,session_log)))
+}
 
 
   
