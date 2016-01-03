@@ -70,6 +70,8 @@ object BPSessionDAOF {
   //  bpsessions.filter(_.process === process)
   private def filterQuery(id: Int): Query[BPSessions, BPSession, Seq] =
     bpsessions.filter(_.id === id)
+  private def filterQueryByIds(ids: List[Int]): Query[BPSessions, BPSession, Seq] =
+    bpsessions.filter(_.id inSetBind ids)    
   private def filterByProcessQuery(id: Int): Query[BPSessions, BPSession, Seq] =
     bpsessions.filter(_.process === id)    
   private def filterByProcessesQuery(ids: List[Int]): Query[BPSessions, BPSession, Seq] =
@@ -157,7 +159,45 @@ object BPSessionDAOF {
       }
     }
   }
+  def findByIds(ids: List[Int]):Future[Seq[SessionContainer]] = {
+    val sessF:Future[Seq[BPSession]] =     
+      db.run(filterQueryByIds(ids).result)
+      //finally println("db.close")//db.close
+    sessF.flatMap { sessSeq =>
+    Future.sequence( sessSeq.map { ses =>
+        val stationF = BPStationDAOF.findBySessionF(ses.id.get)        
+        val element_quantityF = SessionProcElementDAOF.findBySessionLength(ses.id.get)
+        val pF:Future[Option[BProcessDTO]] = BPDAOF.get(ses.process)
+        val people = SessionPeoples("not@found.com", List()) // placeholder for peoples
+      pF.flatMap { process =>   
+          stationF.flatMap { station =>
+              val aroundF = AroundProcessElementsBuilder.detectByStationF(process_id = ses.process, 
+                                                                          station = station, 
+                                                                          process = process)
+              element_quantityF.flatMap { element_quantity =>
+              val step:Double = station match {
+                  case Some(station) => station.step.toDouble
+                  case _ => element_quantity.toDouble
+              }
+                aroundF.map { around =>
+                    val percent = percentDecorator(step, element_quantity)
+                    SessionContainer(process.get, 
+                        List(SessionStatus(percent, 
+                          process.get, 
+                          ses, 
+                          station, 
+                          Some(around),
+                          Some(people))) 
+                    )
+                }
+              }
+          }
+      }
+      
 
+      })
+    }
+  }
   private def percentDecorator(step: Double, element_quantity:Int):Int = {
     if (step == 1 && element_quantity == 1) {
         0

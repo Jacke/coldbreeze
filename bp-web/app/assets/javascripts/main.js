@@ -8,6 +8,22 @@
     // baseUrl: '/assets/javascripts',
     waitSeconds: 200,
     packages: ['common'],//, 'home', 'user', 'dashboard'],
+
+ config: {
+    jsx: {
+ transformer: "babel",
+    babelOptions: {
+      sourceMaps: 'inline'
+    }
+    }
+  },
+    jsx: {
+ transformer: "babel",
+    babelOptions: {
+      sourceMaps: 'inline'
+    }
+    },
+
     shim: {
       'jsRoutes': {
         deps: [],
@@ -175,6 +191,14 @@
        exports: 'angular-daterangepicker'
       },
 
+"react": {
+      "exports": "React"
+    },
+"react-modal":{
+   deps: ['react'],
+   exports: 'reactModal'
+},
+//"JSXTransformer": "JSXTransformer",
 
 'app': {
   deps: ['angular', 'toastr', 'toaster', 'roundProgress', 'lkgooglepicker'],
@@ -305,6 +329,10 @@
      'dropdown':  '../bower_components/bootstrap/js/dropdown',
      'underscore':  '../bower_components/underscore/underscore',
      'moment':  '../bower_components/moment/moment',
+
+  es6: "../bower_components/requirejs-babel/es6",
+  babel: "../bower_components/requirejs-babel/babel-5.8.34.min",
+
      'selectize':  '../js/selectize',
      'mobileDetect': '../js/mobile-detect',
 
@@ -316,7 +344,9 @@
 
   'angularanimate': '../bower_components/angular-animate/angular-animate',
   'angular': '../bower_components/angular/angular',
-  'react': '../bower_components/react/react',
+  'react': '../bower_components/react/react-with-addons',
+  'react-dom': '../bower_components/react/react-dom',
+  'react-modal': '../bower_components/react-modal/dist/react-modal',
 
   'angular-websocket': '../bower_components/angular-websocket/angular-websocket',
   'toastr': '../bower_components/angular-toastr/toastr',
@@ -353,7 +383,13 @@
 //  'filepicker': '../bower_components/filepicker-js/dist/filepicker',
 //  'angularfilepicker': '../bower_components/angular-filepicker/dist/angular_filepicker',  
   'lkgooglepicker': '../bower_components/angular-google-picker/dist/google-picker',
+  
+//"JSXTransformer": "../bower_components/react/JSXTransformer",
+    "jsx": "../bower_components/requirejs-react-jsx/jsx",
+    "text": "../bower_components/requirejs-text/text",
+
   'app': '../js/app',
+  'reactapp': '../js/reactapp',
   'filters': '../js/filters',
   'services': '../js/services',
   'launches': '../js/services/launches',
@@ -370,6 +406,8 @@
   'loggerController': '../js/controllers/loggerController',
   'stationController': '../js/controllers/stationController',
   'procElementController': '../js/controllers/procElementController',
+
+
   'reflectionController': '../js/controllers/reflectionController',
   'sessionController': '../js/controllers/sessionController',
   'directives': '../js/directives',
@@ -383,7 +421,7 @@
   }});
 
   requirejs.onError = function (err) {
-    console.log(err);
+    throw err;//console.log(err);
   };
 
   // Load the app. This is kept minimal so it doesn't need much updating.
@@ -391,7 +429,6 @@ require(['requirejs','jsRoutes','jquery', 'react','pnofiy','mobileDetect','popup
   ],//'jquery', 'bootstrap'],//, './app'],
     function (requirejs,jsRoutes,$,react, pnofiy,mobileDetect,popupoverlay,dragOn,niceScroll,ssl,offline,offlineSimulator,header,tooltip,dropdown,underscore,moment,selectize,tether,shepherd,tour) {
         document.tour = tour;
-
 
       $(document).ready(function(){
         document.mobileDetect = new mobileDetect(window.navigator.userAgent);

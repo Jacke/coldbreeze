@@ -42,11 +42,11 @@ object Settings {
     // ~~~
     JsKeys.filenameSuffix in Compile := ".min"
     JsEngineKeys.engineType := JsEngineKeys.EngineType.Node
-    BabelKeys.options := WebJs.JS.Object(
-      "stage" -> 2,
-      "comments" -> false,
-      "modules" -> "common"
-    )
+//    BabelKeys.options := WebJs.JS.Object(
+//      "stage" -> 2,
+//      "comments" -> false,
+//      "modules" -> "common"
+//    )
 
     RjsKeys.paths += ("jsRoutes" -> ("/jsroutes" -> "empty:"))
     RjsKeys.mainModule := "main"

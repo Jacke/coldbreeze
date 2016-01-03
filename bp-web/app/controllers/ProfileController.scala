@@ -113,7 +113,7 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
                   managerParams, 
                   makeEmployeeParams(email, isEmployee, primaryBusiness.get), 
                   walkthrought, 
-                  sessions.toList,
+                  sessions.toList.filter(cn => cn.sessions.filter(status => status.percent != 100).length > 0),
                   dashboardTopBar, currentReactions.flatten ) (
                     Page(services.toList, 1, 1, services.length), 1, "%", List(primaryBusiness.get), isManager ))
 

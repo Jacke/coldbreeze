@@ -13,13 +13,14 @@ module.exports = {
     //entry: __dirname + "/app/assets/javascripts/core.js",
         entry: {
         core: [__dirname + "/app/assets/javascripts/core.js"],
-        app_core: [__dirname + "/app/assets/javascripts/app_core.js"]
+        app_core: [__dirname + "/app/assets/javascripts/app_core.js"],
+        //react_core: [__dirname + "/app/assets/javascripts/react_core.js"]
     },
     output: {
-        path: path.join(__dirname, '/app/assets/javascripts/'), //__dirname + "/app/assets/javascripts/",
+        path: path.join(__dirname, '/app/assets/dist/js/'), //__dirname + "/app/assets/javascripts/",
         filename: "[name].bundle.js",
-        webpack_public_path: "/assets/javascripts/",
-        publicPath: "/assets/javascripts/",
+        webpack_public_path: "/assets/dist/js/",
+        publicPath: "/assets/dist/js/",
 
 /*
     entry: {
@@ -87,8 +88,16 @@ module.exports = {
       //test: /backbone/, loader: 'exports?Backbone!imports?underscore,jquery'
     module: {
         loaders: [
-            { test: /test_scripts\/\.js[x]?$/, loader: 'babel-loader?presets[]=es2015&presets[]=react' },
-            { test: /\.js$/, loader: "script" },
+            { test: /\.jsx?$/, loader: 'babel?presets[]=react,presets[]=es2015'},
+            //{ test: /test_scripts\/\.js[x]?$/, loader: 'babel-loader?presets[]=es2015&presets[]=react' },
+            //{ test: /\.js$/, loader: "script" },
+            { test: /\.js$/, 
+    exclude: /node_modules/, 
+    loader: "babel", 
+    query:
+      {
+        presets:['react']
+      } },
             { test: /app\/assets\/js\/jquery\.popupoverlay\.js$/, loader: 'exports?popupoverlay!imports?jquery'},
             { test: /.\/jsRoutes\.js$/, loader: 'exports?window._jsRoutes' },
             { test: /\.coffee$/, loader: "coffee" },
@@ -358,7 +367,7 @@ module.exports = {
 
 
     },
-    extensions: ['', '.js', '.json', '.coffee'],
+    extensions: ['', '.js', '.json', '.coffee', '.jsx'],
     modulesDirectories: [__dirname + '/app/bower_components', __dirname + '/../node_modules'],
     //__dirname + "/../node_modules", 
     alias: {
@@ -385,7 +394,11 @@ module.exports = {
       //'bootstrap': '../lib/bootstrap/js/bootstrap',
       'angularanimate': __dirname + '/public/bower_components/angular-animate/angular-animate',
       'angular': __dirname + '/public/bower_components/angular/angular',
-      'react': __dirname + '/public/bower_components/react/react',
+      'react': __dirname + '/public/bower_components/react/react-with-addons',
+      'react-dom': __dirname + '/public/bower_components/react/react-dom',
+      'react-modal': __dirname + '/public/bower_components/react-modal/dist/react-modal',
+     // 'reactapp': __dirname + '/app/assets/javascripts/reactapp',
+
       'angular-websocket': __dirname + '/public/bower_components/angular-websocket/angular-websocket.js',
       'toastr': __dirname + '/public/bower_components/angular-toastr/toastr',
       //'toastr-tpl': __dirname + '/public/bower_components/angular-toastr/toastr.tpl',

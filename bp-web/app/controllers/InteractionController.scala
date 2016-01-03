@@ -170,6 +170,43 @@ def fetchInteraction(session_id: Int) = SecuredAction.async { implicit request =
 } else { Future(Forbidden(Json.obj("status" -> "Access denied"))) }    
 }
 
+def fetchInteractions(session_ids: List[Int]) = SecuredAction.async { implicit request => 
+  val secured_ids = session_ids.filter( session_id =>
+    security.BRes.sessionSecured(session_id, request.user.main.userId, request.user.businessFirst))
+
+   val sessionF:Future[Seq[SessionContainer]] = models.DAO.BPSessionDAOF.findByIds(secured_ids)
+   sessionF.flatMap { sessionSeq => // Future of session
+    Future.sequence( sessionSeq.map { session =>
+      val session_id = session.sessions.head.session.id.getOrElse(-1)
+      val process:BProcessDTO = session.process
+      val unappliedF:scala.concurrent.Future[SessionUnitFutureContainer] = SessionReactionDAOF.findUnapplied(
+                                                                            process.id.get, session_id)
+      unappliedF.map { unapplied => 
+      val reactions = unapplied.units
+      Logger.debug("Session Reactions")
+      Logger.debug(s"reaction length ${reactions.length}")
+      val reaction_outs: List[SessionUnitReactionStateOut] = unapplied.state_outs
+      val session_states: List[BPSessionState] = unapplied.session_states
+      Logger.debug("Session state")
+      Logger.debug(s"session_states length ${session_states.length}")
+        val costs:List[CostContainer] = reactions.toList.map(reaction => findCost(sessionElemTopoId = reaction.element, 
+                                                                                  launchId=session_id)).flatten
+        val reaction_container = reactions.toList.map(reaction => 
+          SessionReactionContainer(
+                    session_state = session_states.find(state => Some(reaction.from_state) == state.origin_state),
+                    reaction, 
+                    reaction_outs.filter(out => Some(out.reaction) == reaction.id),
+                    costs)
+        )
+        SessionInteractionContainer(Some(session), reaction_container, session_states)
+      }
+    } ).map { inConF =>
+          Ok(Json.toJson(inConF))
+      }
+    
+  }
+}
+
 /** Fetch all interactions, used for speed testing purposes
   * 
   * @return Collection of SessionInteractionContainer with session, reaction containers, and session states.
