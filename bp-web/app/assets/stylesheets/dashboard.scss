@@ -11,10 +11,10 @@
 }
 
 .ReactModal__Overlay--after-open {
-  opacity: 1;
-  transition: opacity 150ms ease-out;
+    opacity: 1;
+    transition: opacity 150ms ease-out;
+    z-index: 99999;
 }
-
 .ReactModal__Content {
   -webkit-transform: scale(0.5) rotateX(-30deg);
 }
@@ -34,8 +34,9 @@
 }
 
 .ReactModal__Content.modal-dialog {
-  border: none;
-  background-color: transparent;
+    overflow: hidden !important;
+    background: none !important;
+    border: none !important;
 }
 
 
