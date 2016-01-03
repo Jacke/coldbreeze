@@ -74,7 +74,7 @@ var appElement = document.getElementById('reactapp')
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-default" onClick={this.handleModalCloseRequest}>Close</button>
-              /* <button type="button" className="btn btn-primary" onClick={this.handleSaveClicked}>Save changes</button>*/
+              {/* <button type="button" className="btn btn-primary" onClick={this.handleSaveClicked}>Save changes</button>*/}
             </div>
           </div>
         </Modal>
