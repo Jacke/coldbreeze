@@ -19842,14 +19842,7 @@
 	                  'button',
 	                  { type: 'button', className: 'btn btn-default', onClick: this.handleModalCloseRequest },
 	                  'Close'
-	                ),
-	                '/* ',
-	                React.createElement(
-	                  'button',
-	                  { type: 'button', className: 'btn btn-primary', onClick: this.handleSaveClicked },
-	                  'Save changes'
-	                ),
-	                '*/'
+	                )
 	              )
 	            )
 	          )
