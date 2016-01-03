@@ -323,7 +323,7 @@ header.fullSize {
 
 .minorityMenu {
     position: relative;
-    min-width: 1020px;
+    min-width: 100%;
     width: 100%;
     margin: 0 auto;
     background: #fafbfc;
@@ -379,7 +379,9 @@ header.fullSize {
     box-sizing: border-box;
 }
 nav.minMenu.menuCell.menuEntity {
-    width: 475px;
+    min-width: 20px;
+    max-width: 58%;
+    width: auto;
 }
 .menuCell.menuHelp.switcherWrap {
     -webkit-box-flex: 2;
@@ -769,14 +771,11 @@ polygon#e1_polygon {
     font-size: 120%;
 }
 
-.minorityMenu .minMenuList.apiMenuIcons {
-    display: table-row;
-}
-
 .minorityMenu .minMenuItem {
-    display: table-cell;
+    display: inline-block;
     text-align: center;
     vertical-align: middle;
+    float: left;
 }
 .minorityMenu .minMenuItem span {
     margin-right: 7px;

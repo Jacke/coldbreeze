@@ -377,6 +377,9 @@ table.permissions-table {
 .roww .col-md-6 * {
     cursor: default;
 }
+.roww header.panel-heading.head-border {
+    min-width: 99px;
+}
 
 .soon {
     display: block;

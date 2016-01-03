@@ -314,23 +314,31 @@
   }
 }
 .dashboard_services header.panel-heading.head-border {
-  margin: 0;
-  padding-left: 0px;
+    margin: 0;
+    padding-left: 0px;
+    min-width: 63px !important;
+    max-width: 192px;
 }
+
+
 .dashboard_services .teamSettingsCheckbox {
   margin: 0;
   margin-left: 27px;
   padding-bottom: 7px;
   padding-left: 0px;
+  width: 100%;
 }
 .dashboard_sessions .session_header__top_bar header.panel-heading.head-border {
-  padding-left: 0;
+    padding-left: 0;
+    min-width: 63px !important;
+    max-width: 192px;
 }
 .dashboard_services p.teamSettingsAbout {
   margin-left: 0px;
   margin-top: -3px;
   font-size: 12px;
   padding-left: 0px;
+  width: 100%;
 }
 .teamChangeBox.teamPaddedBox.servicePaddedTable {
   padding-top: 0px;
@@ -927,6 +935,25 @@ a.add-btn {
   display: inline-block;
   width: 63%;
 }
+
+
+/***********
+   Media queries
+*************/
+
+
+@media (min-width: 992px) {
+.dashboard_services.col-md-4 {
+    width: 30%;
+    min-width: 120px;
+}
+}
+
+
+
+
+
+
 @import 'people';
 @import 'data_board';
 @import 'launches';
