@@ -19723,13 +19723,10 @@
 
 	  /*
 	  By default the modal is anchored to document.body. All of the following overrides are available.
-	  
 	  * element
 	  Modal.setAppElement(appElement);
-	  
 	  * query selector - uses the first element found if you pass in a class.
 	  Modal.setAppElement('#your-app-element');
-	  
 	  */
 
 	  var customStyles = {
@@ -19748,9 +19745,12 @@
 	      displayName: 'AppView',
 
 	      getInitialState: function getInitialState() {
-	        return { modalIsOpen: false };
+	        return { modalIsOpen: false,
+	          imageUrl: 'https://facebook.github.io/react/img/logo.svg'
+	        };
 	      },
 	      openModal: function openModal() {
+	        console.log(window.location.href);
 	        this.setState({ modalIsOpen: true });
 	      },
 	      closeModal: function closeModal() {
@@ -19813,26 +19813,66 @@
 	              ),
 	              React.createElement(
 	                'div',
-	                { className: 'modal-body' },
+	                { className: 'modal-body tutorial-body' },
 	                React.createElement(
-	                  'h4',
-	                  null,
-	                  'Really long content...'
+	                  'div',
+	                  { className: 'tutorial-step' },
+	                  React.createElement(
+	                    'h4',
+	                    null,
+	                    'Really long content...'
+	                  ),
+	                  React.createElement('img', { className: 'image', src: "images/" + this.state.imageUrl }),
+	                  React.createElement(
+	                    'p',
+	                    null,
+	                    'Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus'
+	                  ),
+	                  React.createElement(
+	                    'p',
+	                    null,
+	                    'Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus'
+	                  )
 	                ),
 	                React.createElement(
-	                  'p',
-	                  null,
-	                  'Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus'
+	                  'div',
+	                  { className: 'tutorial-step' },
+	                  React.createElement(
+	                    'h4',
+	                    null,
+	                    'Really long content...'
+	                  ),
+	                  React.createElement('img', { className: 'image', src: "images/" + this.state.imageUrl }),
+	                  React.createElement(
+	                    'p',
+	                    null,
+	                    'Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus'
+	                  ),
+	                  React.createElement(
+	                    'p',
+	                    null,
+	                    'Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus'
+	                  )
 	                ),
 	                React.createElement(
-	                  'p',
-	                  null,
-	                  'Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus'
-	                ),
-	                React.createElement(
-	                  'p',
-	                  null,
-	                  'Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus'
+	                  'div',
+	                  { className: 'tutorial-step' },
+	                  React.createElement(
+	                    'h4',
+	                    null,
+	                    'Really long content...'
+	                  ),
+	                  React.createElement('img', { className: 'image', src: "images/" + this.state.imageUrl }),
+	                  React.createElement(
+	                    'p',
+	                    null,
+	                    'Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus'
+	                  ),
+	                  React.createElement(
+	                    'p',
+	                    null,
+	                    'Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus'
+	                  )
 	                )
 	              ),
 	              React.createElement(

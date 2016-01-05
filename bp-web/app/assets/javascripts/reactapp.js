@@ -7,13 +7,10 @@ var $ = require('jQuery');
 
 /*
 By default the modal is anchored to document.body. All of the following overrides are available.
-
 * element
 Modal.setAppElement(appElement);
-
 * query selector - uses the first element found if you pass in a class.
 Modal.setAppElement('#your-app-element');
-
 */
 
 const customStyles = {
@@ -29,10 +26,14 @@ const customStyles = {
 var appElement = document.getElementById('reactapp')
   function App() {
     this.AppView = React.createClass({
+
   getInitialState: function() {
-    return { modalIsOpen: false };
+    return { modalIsOpen: false,
+      imageUrl: 'https://facebook.github.io/react/img/logo.svg'
+   };
   },
   openModal: function() {
+    console.log(window.location.href);
     this.setState({modalIsOpen: true});
   },
   closeModal: function() {
@@ -66,12 +67,28 @@ var appElement = document.getElementById('reactapp')
               </button>
               <h4 className="modal-title">Tutorial</h4>
             </div>
-            <div className="modal-body">
-              <h4>Really long content...</h4>
-              <p>Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus</p>
-              <p>Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus</p>
-              <p>Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus</p>
+            
+            <div className="modal-body tutorial-body">
+              <div className="tutorial-step">
+                <h4>Really long content...</h4>
+                <img className="image" src={"images/" + this.state.imageUrl} />
+                <p>Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus</p>
+                <p>Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus</p>
+              </div>
+              <div className="tutorial-step">
+                <h4>Really long content...</h4>
+                <img className="image" src={"images/" + this.state.imageUrl} />
+                <p>Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus</p>
+                <p>Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus</p>
+              </div>
+              <div className="tutorial-step">
+                <h4>Really long content...</h4>
+                <img className="image" src={"images/" + this.state.imageUrl} />
+                <p>Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus</p>
+                <p>Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus</p>
+              </div>                            
             </div>
+
             <div className="modal-footer">
               <button type="button" className="btn btn-default" onClick={this.handleModalCloseRequest}>Close</button>
               {/* <button type="button" className="btn btn-primary" onClick={this.handleSaveClicked}>Save changes</button>*/}

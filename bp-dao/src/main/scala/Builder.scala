@@ -87,11 +87,11 @@ object Build {
 
   }
   /**
-  * Run from launch
-  * @bpID bpID of process
-  * @session_id id of session
-  * @params params for reaction
-  **/
+   * Run from launch
+   * @bpID bpID of process
+   * @session_id id of session
+   * @params params for reaction
+   **/
   def newRunFrom(bpID:Int, 
                  session_id: Int, 
                  params: List[ReactionActivator], 
@@ -117,14 +117,15 @@ object Build {
                             )
     BPSessionDAO.pull_object(session)
   }
-def saveSessionStates(bprocess: BProcess,
-                      bprocess_dto: BProcessDTO,
-                      session_id: Int,
-                      pulling: Boolean = false,
-                      elemMap: scala.collection.mutable.Map[Int,Int]     = scala.collection.mutable.Map().empty,
-                      spaceMap: scala.collection.mutable.Map[Int,Int]    = scala.collection.mutable.Map().empty,
-                      spaceElsMap: scala.collection.mutable.Map[Int,Int] = scala.collection.mutable.Map().empty,
-                      initialStateMap: scala.collection.mutable.Map[Int,Int] = scala.collection.mutable.Map().empty) = {
+
+  def saveSessionStates(bprocess: BProcess,
+                        bprocess_dto: BProcessDTO,
+                        session_id: Int,
+                        pulling: Boolean = false,
+                        elemMap: scala.collection.mutable.Map[Int,Int]     = scala.collection.mutable.Map().empty,
+                        spaceMap: scala.collection.mutable.Map[Int,Int]    = scala.collection.mutable.Map().empty,
+                        spaceElsMap: scala.collection.mutable.Map[Int,Int] = scala.collection.mutable.Map().empty,
+                        initialStateMap: scala.collection.mutable.Map[Int,Int] = scala.collection.mutable.Map().empty) = {
     val origin_states = BPStateDAO.findByBP(bprocess_dto.id.get)
     play.api.Logger.debug("saveSessionStates")
         play.api.Logger.debug("elemMap")

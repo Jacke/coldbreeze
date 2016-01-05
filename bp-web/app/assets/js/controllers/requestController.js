@@ -10,16 +10,26 @@ $scope.bpId = $scope.session.process.id;
 $scope.session_id = $scope.session.session.id;
 
 $scope.isManager = function () {
-  if ($scope.isManagerVal == undefined && $rootScope.manager != undefined) {
+  if ($scope.isManagerVal === undefined && $rootScope.manager !== undefined) {
     $scope.isManagerVal = $rootScope.manager;
     return $scope.isManagerVal;
   } else {
-    return $window.localStorage.manager == "true";
+    return $window.localStorage.manager === "true";
   }
 };
 
 $scope.isManagerVal = $scope.isManager();
 $scope.isManager();
+
+
+  /*****
+   *    Nested elements Fetching
+   *****/
+console.log("Nested");
+console.log($scope.$parent.$parent.$parent.$parent.$parent); // Input -> Session -> Entity -> Common scope
+
+$scope.interactionContainer = $scope.$parent.$parent.$parent.$parent.$parent.interactionContainer;
+
 
 
 
@@ -47,11 +57,11 @@ $scope.builder = function (station) {
 
   var isIsEnd = function (spElems) {
     _.forEach(spElems, function(val) {
-       val.nodes = _.filter(spacesCopy, function(space){ return space.brick_front == val.id || space.brick_nested == val.id; });
+       val.nodes = _.filter(spacesCopy, function(space){ return space.brick_front === val.id || space.brick_nested === val.id; });
     });
     _.forEach(spElems, function(tree) {
          _.forEach(tree.nodes, function(space) {
-             space.space_elem = _.filter(spaceelemsCopy, function(spelem){ return spelem.space_owned == space.id; });
+             space.space_elem = _.filter(spaceelemsCopy, function(spelem){ return spelem.space_owned === space.id; });
              isIsEnd(space.space_elem);
         });
     });
@@ -60,13 +70,13 @@ $scope.builder = function (station) {
   var spacesCopy = angular.copy($scope.spaces);
   var spaceelemsCopy = angular.copy($scope.spaceelems);
   station.trees = _.forEach(bpelemsCopy, function(val) {
-       val.nodes = _.sortBy(_.filter(spacesCopy, function(space){ return space.brick_front == val.id || space.brick_nested == val.id; }), function(em){ return em.order; });
+       val.nodes = _.sortBy(_.filter(spacesCopy, function(space){ return space.brick_front === val.id || space.brick_nested === val.id; }), function(em){ return em.order; });
   });
   _.forEach(station.trees, function(tree) {
 
     var spaceFetch = function () {
       _.forEach(tree.nodes, function(space) {
-         space.space_elem = _.sortBy(_.filter(spaceelemsCopy, function(spelem){ return spelem.space_owned == space.id; }), function(em){ return em.order; });
+         space.space_elem = _.sortBy(_.filter(spaceelemsCopy, function(spelem){ return spelem.space_owned === space.id; }), function(em){ return em.order; });
          isIsEnd(space.space_elem);
       });
     };
@@ -89,11 +99,11 @@ $scope.builder = function (station) {
 
     $scope.byObjId = function(elem) {
     return function(obj) {
-      if (obj.f_elem != undefined) {
-        return obj.f_elem == elem.id;
+      if (obj.f_elem !== undefined) {
+        return obj.f_elem === elem.id;
 
       } else {
-        return obj.sp_elem == elem.id;
+        return obj.sp_elem === elem.id;
 
       }
       
@@ -121,19 +131,21 @@ $scope.builder = function (station) {
 
    ];
 
+console.log("interactionContainer");
+console.log($scope.interactionContainer);
 
-
-InteractionsFactory.query({session_id: $scope.session.session.id}).$promise.then(function (data) {
-  $scope.interactions = data;
+if ($scope.interactionContainer === undefined || $scope.interactionContainer.$promise === undefined) {
+ InteractionsFactory.query({session_id: $scope.session.session.id}).$promise.then(function (data) {
+    $scope.interactions = data;
     LaunchElementTopologsFactory.query({ launch_id: $scope.session_id }).$promise.then(function (data2) {
       $scope.element_topologs = data2;
 
         _.forEach($scope.interactions.reactions, function(r) { return r.reaction.elem = _.find($scope.element_topologs, function(topo) { 
-          return topo.topo_id == r.reaction.element}); 
+          return topo.topo_id === r.reaction.element}); 
         })
         _.forEach($scope.interactions.reactions, function(reaction) { 
            return _.forEach(reaction.outs, function(out) {
-              return out.state = _.find($scope.interactions.outs_identity, function(iden) { return iden.origin_state == out.state_ref });
+              return out.state = _.find($scope.interactions.outs_identity, function(iden) { return iden.origin_state === out.state_ref });
           }) 
         });
 
@@ -142,13 +154,48 @@ InteractionsFactory.query({session_id: $scope.session.session.id}).$promise.then
           $scope.firstInput = $scope.interactions.reactions[0];
           $scope.firstInput.files = [];
         }
-if ($scope.interactions != undefined && $scope.interactions.reactions != undefined && $scope.interactions.reactions.length > 0) {
+if ($scope.interactions !== undefined && $scope.interactions.reactions !== undefined && $scope.interactions.reactions.length > 0) {
+  $scope.reactionSelect($scope.interactions.reactions[0]);
+}        
+   });
+});
+
+} else {
+//InteractionsFactory.query({session_id: $scope.session.session.id})
+  $scope.interactionContainer.$promise.then(function (data_cn) {
+    var data =  _.filter(data_cn, function(d) { 
+      return _.filter(d.session_container.sessions, function(dd) { 
+        return dd.session.id === $scope.session.session.id }).length > 0;
+    })[0];
+
+    $scope.interactions = data;
+
+    LaunchElementTopologsFactory.query({ launch_id: $scope.session_id }).$promise.then(function (data2) {
+      $scope.element_topologs = data2;
+
+        _.forEach($scope.interactions.reactions, function(r) { return r.reaction.elem = _.find($scope.element_topologs, function(topo) { 
+          return topo.topo_id === r.reaction.element}); 
+        })
+        _.forEach($scope.interactions.reactions, function(reaction) { 
+           return _.forEach(reaction.outs, function(out) {
+              return out.state = _.find($scope.interactions.outs_identity, function(iden) { return iden.origin_state === out.state_ref });
+          }) 
+        });
+
+
+        if ($scope.interactions.reactions.length > 0) {
+          $scope.firstInput = $scope.interactions.reactions[0];
+          $scope.firstInput.files = [];
+        }
+if ($scope.interactions !== undefined && $scope.interactions.reactions !== undefined && $scope.interactions.reactions.length > 0) {
   $scope.reactionSelect($scope.interactions.reactions[0]);
 }        
 
 
       });
-   });
+});
+}
+
 
 $scope.selectedClass = function (reaction) {
   if (reaction.selected) {
@@ -159,7 +206,7 @@ $scope.selectedClass = function (reaction) {
 }
 
 $scope.reactionSelect = function (reaction) {
-    if (reaction.selected == true) {
+    if (reaction.selected) {
       reaction.selected = false;
       $scope.addParam(reaction);
     } else {
@@ -187,10 +234,10 @@ var index = $scope.payload.indexOf(field);
 if (index !== -1) {
 //    items[index] = 1010;
 
-  if (warp_type == 'text') {
+  if (warp_type === 'text') {
     $scope.payload[index] = { obj_type: "text", obj_title: "Text", obj_content: "" }  
   } 
-  if (warp_type == 'file') {
+  if (warp_type === 'file') {
     $scope.payload[index] = { obj_type: "file", obj_title: "File", obj_content: "" }   
   }
 } 
@@ -288,7 +335,7 @@ $scope.prepareFiles = function() {
    }));
    $scope.clearFiles();
    $scope.payload =    $scope.payload.concat(data);
-   $scope.sendPayload($scope.session_id,"", _.filter($scope.payload, function(el){return el.obj_content != "";}));   
+   $scope.sendPayload($scope.session_id,"", _.filter($scope.payload, function(el){return el.obj_content !== "";}));   
    //$scope.sended_payload = $scope.payload.concat(data);
    //$scope.clearPayloadWithData(data);
 };
@@ -302,7 +349,7 @@ $scope.clearPayloadWithData = function(data) {
 }
 
 $scope.sendPayloadAction = function(element_id) {
-  if (element_id != undefined) {
+  if (element_id !== undefined) {
     $scope.sendPayload($scope.session_id, element_id);
   } else {
     $scope.sendPayload($scope.session_id);
@@ -326,7 +373,7 @@ $scope.sendWarpResult = function() {
 }
 
 $scope.sendPayload = function(launch_id, element_id, existedPayload) {
-     if (existedPayload != undefined) {
+     if (existedPayload !== undefined) {
       var payload = existedPayload;
      $http({
       url: '/warp?launch_id=' + launch_id +'&element_id='+element_id,
@@ -412,20 +459,20 @@ $scope.input = function (bpId) {
   $location.path('/bprocess/' + bPid + '/input')
 }
 $scope.filterExpression = function(station) {
-  return (station.finished != true && station.paused == true);
+  return (station.finished !== true && station.paused === true);
 }
 $scope.filterInputs = function(elem) {
-  return (elem.type_title == "confirm");
+  return (elem.type_title === "confirm");
 };
 
   $scope.highlightActive = function (station, elem) {
      var front, nest;
      front = $scope.elemsHash[$scope.logsByStation(station.id)[$scope.logsByStation(station.id).length-1].element];  
      nest = $scope.spaceElemHash[$scope.logsByStation(station.id)[$scope.logsByStation(station.id).length-1].space_elem];  
-     if (front != undefined && front.id == elem.id) {
+     if (front !== undefined && front.id === elem.id) {
        return "active";
      } 
-     if (nest != undefined && nest.id == elem.id && elem.space_owned != undefined) {
+     if (nest !== undefined && nest.id === elem.id && elem.space_owned !== undefined) {
       return "active";
      } else {
      return "passive"
@@ -450,12 +497,12 @@ $scope.filterInputs = function(elem) {
 
 
 $scope.entityDecorator = function(entities, resource) {
-  if (entities == "*") {
+  if (entities === "*") {
     return "*"
   } else {
-    if (entities != "*") {
-      var c = _.find(resource.entities, function(ent){return ent.id == entities});
-      if (c != undefined) {
+    if (entities !== "*") {
+      var c = _.find(resource.entities, function(ent){return ent.id === entities});
+      if (c !== undefined) {
         return c.title
       } else { return "" }
       
@@ -474,10 +521,10 @@ $scope.entityDecorator = function(entities, resource) {
   meta: String,
 */
 $scope.slatFilter = function(entity, slats) {
-  return _.filter(slats, function(slat){return slat.entityId == entity.id });
+  return _.filter(slats, function(slat){return slat.entityId === entity.id });
 }
 $scope.defaultValueParser = function(entity, value) {
-  if (entity.etype == "number") {
+  if (entity.etype === "number") {
     return parseInt(value);
   } else {
     return value;
@@ -541,12 +588,12 @@ $scope.reFillValue = function(cost, entity, slat) {
   $scope.currentReactionFlag = true;
   $scope.currentReactionFilter = function (data) {
       if ($scope.currentReactionFlag && 
-        (($scope.interactions.reactions[0] == data) || ($scope.interactions.reactions[1] == data))  ) {
+        (($scope.interactions.reactions[0] === data) || ($scope.interactions.reactions[1] === data))  ) {
         return data;
       } 
       if ($scope.currentReactionFlag && 
-        (($scope.interactions.reactions[0] != data) || 
-          ($scope.interactions.reactions[1] != undefined && $scope.interactions.reactions[1] != data)) ) {
+        (($scope.interactions.reactions[0] !== data) || 
+          ($scope.interactions.reactions[1] !== undefined && $scope.interactions.reactions[1] !== data)) ) {
         return false;
       } else {
         return data;
@@ -554,8 +601,8 @@ $scope.reFillValue = function(cost, entity, slat) {
   }
 
   $scope.runFrom = function (session_id) {
-    //var front_params = _.filter(station.proc_elems,  function(obj) { return obj.param != undefined });
-    //var space_params = _.filter(station.space_elems, function(obj) { return obj.param != undefined });
+    //var front_params = _.filter(station.proc_elems,  function(obj) { return obj.param !== undefined });
+    //var space_params = _.filter(station.space_elems, function(obj) { return obj.param !== undefined });
     //var params_output = _.flatten(_.map(front_params, function(v) { return {"f_elem": v.id, "param": v.param} }), _.map(space_params, function(v) { return {"sp_elem": v.id, "param": v.param} }));
     // TODO: Add arguments
     if ($scope.payload_result.length > 0) { // Send warp field
@@ -585,11 +632,11 @@ $scope.reFillValue = function(cost, entity, slat) {
   $scope.addParam = function (reaction) {
 
         if (_.find($scope.reaction_params, function(re) { 
-                      return re.reaction_id == reaction.reaction.id }) != undefined) {
+                      return re.reaction_id === reaction.reaction.id }) !== undefined) {
           $scope.delParam(reaction);
         } else {
         $scope.reaction_params.push({reaction_id: reaction.reaction.id });
-          if ($scope.reaction_params.length != 0) { 
+          if ($scope.reaction_params.length !== 0) { 
             console.log("$scope.runFromDisabled = false;"); $scope.runFromDisabled = false; 
           }
         }
@@ -601,7 +648,7 @@ $scope.reFillValue = function(cost, entity, slat) {
   }
 
 $scope.capitalizeFirstLetter = function (string) {
-    if (string != undefined) { 
+    if (string !== undefined) { 
       return string.charAt(0).toUpperCase() + string.slice(1)
     } else {
       return ""
@@ -611,7 +658,7 @@ $scope.capitalizeFirstLetter = function (string) {
 
 $scope.stateOutAct = function (act) {
   if (act) {
-    if (act.on == true) {
+    if (act.on === true) {
       return 'turn on';
     } else {
       return 'turn off';

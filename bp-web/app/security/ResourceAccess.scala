@@ -18,6 +18,11 @@ import ProcHistoryDAO._
 import helpers._
 import decorators._
 import builders._
+  import scala.concurrent.ExecutionContext.Implicits.global
+
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
 
 /* Base */
 object BRes {
@@ -38,6 +43,11 @@ def procIsOwnedByBiz(business: Int, process_id: Int):Boolean = {
         }
       }
       case _ => false
+    }
+}
+def processesIsOwnedByBiz(business: Int, processes_ids: List[Int]):Future[Boolean] = {
+    BPDAOF.gets(processes_ids).map { processes =>
+      processes.map(proc => proc.business == business).reduce(_&&_)
     }
 }
 def launchIsOwnedByBiz(business: Int, launch_id: Int):Boolean = {

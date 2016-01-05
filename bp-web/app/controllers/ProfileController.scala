@@ -88,15 +88,20 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
         }
 
         //val currentReactionsF:Future[List[Option[CurrentSessionReactionContainer]]] = 
-        val currentReactionsF:Future[List[Option[CurrentSessionReactionContainer]]] = sessionsF.flatMap { sessions => 
+        val currentReactionsF:Future[List[Option[CurrentSessionReactionContainer]]] = sessionsF.flatMap { sessionsCn => 
            //Future.sequence( 
            // sessions.toList.map { cn => 
            //   //cn.sessions.toList.map(session_status => 
            //   //    SessionReactionDAOF.findCurrentUnappliedContainer(cn.process.id.get, session_status.session.id.get)
            //   //    )
            // }.flatten )
-           val proc_ids = sessions.toList.map { cn => cn.sessions.toList.map { cn_el => cn.process.id.get } }.flatten.distinct 
-           val ses_ids = sessions.toList.map { cn => cn.sessions.toList.map { cn_el => cn_el.session.id.get } }.flatten.distinct 
+           val notCompletedSessions = sessionsCn.filter(cn => cn.sessions.filter(status => status.percent < 100).length > 0)
+           val proc_ids = notCompletedSessions.toList.map { cn => 
+              cn.sessions.toList.map(cn_el => cn.process.id.get) 
+            }.flatten.distinct 
+           val ses_ids = notCompletedSessions.toList.map { cn => 
+              cn.sessions.toList.map(cn_el => cn_el.session.id.get)
+            }.flatten.distinct 
            SessionReactionDAOF.findCurrentUnappliedContainerBatch(proc_ids, ses_ids)           
         }  
         for {
@@ -105,7 +110,7 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
           services <- servicesF
           managerParams <- managerParamsF
           walkthrought <- walkthroughtF
-          sessions <- sessionsF
+          sessionsCn <- sessionsF
           primaryBusiness <- businessF
           isEmployee <- isEmployeeF
           isManager <- isManagerF
@@ -113,7 +118,7 @@ class ProfileController(override implicit val env: RuntimeEnvironment[DemoUser])
                   managerParams, 
                   makeEmployeeParams(email, isEmployee, primaryBusiness.get), 
                   walkthrought, 
-                  sessions.toList.filter(cn => cn.sessions.filter(status => status.percent != 100).length > 0),
+                  sessionsCn.toList.filter(cn => cn.sessions.filter(status => status.percent < 100).length > 0),
                   dashboardTopBar, currentReactions.flatten ) (
                     Page(services.toList, 1, 1, services.length), 1, "%", List(primaryBusiness.get), isManager ))
 

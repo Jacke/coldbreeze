@@ -47,62 +47,55 @@ class BusinessController(override implicit val env: RuntimeEnvironment[DemoUser]
       "organization" -> boolean)(BusinessDTO.apply)(BusinessDTO.unapply))
  
  def index() = SecuredAction { implicit request =>
-      val businesses = BusinessDAO.getAll
-      Ok(views.html.businesses.index(
-        Page(businesses, 1, 1, businesses.length), 1, "%", request.user))
-    
+    val businesses = BusinessDAO.getAll
+    Ok(views.html.businesses.index(
+      Page(businesses, 1, 1, businesses.length), 1, "%", request.user))
   }
+
   def create() = SecuredAction { implicit request =>
         Ok(views.html.businesses.business_form(businessForm, request.user))    
   }
-  def create_new() = SecuredAction { implicit request =>
 
+  def create_new() = SecuredAction { implicit request =>
     businessForm.bindFromRequest.fold(
       formWithErrors => BadRequest(views.html.businesses.business_form(formWithErrors, request.user)),
       entity => {
-
           val biz_id = BusinessDAO.pull_object(entity)
           val emp_id = EmployeeDAO.getByUID(request.user.main.userId) 
           emp_id match {
             case Some(employee) => EmployeesBusinessDAO.pull(employee_id = employee.id.get, business_id = biz_id)
             case _ =>
           }
-          
-          
           Home.flashing("success" -> s"Entity ${entity.title} has been created")
-        
       })
   }
-  def update(id: Int) = SecuredAction { implicit request =>
-      val business = BusinessDAO.get(id)
-      business match {
-        case Some(business) =>
+
+def update(id: Int) = SecuredAction { implicit request =>
+    val business = BusinessDAO.get(id)
+    business match {
+      case Some(business) =>
         val biz = BusinessDTO(business.id, business.title, business.phone, business.website, business.country, business.city, business.address)
          Ok(views.html.businesses.business_edit_form(id, businessForm.fill(biz), request.user)) 
-        case None => Ok("not found")
-      }
+      case None => Ok("not found")
+    }
+  }
 
-      
-    
-  }
-  def update_make(id: Int) = SecuredAction { implicit request =>
-      businessForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.businesses.business_edit_form(id, formWithErrors, request.user)),
-        entity => {
-          Home.flashing(BusinessDAO.update(id,entity) match {
-            case 0 => "failure" -> s"Could not update entity ${entity.title}"
-            case _ => "success" -> s"Entity ${entity.title} has been updated"
-          })
+def update_make(id: Int) = SecuredAction { implicit request =>
+    businessForm.bindFromRequest.fold(
+      formWithErrors => BadRequest(views.html.businesses.business_edit_form(id, formWithErrors, request.user)),
+      entity => {
+        Home.flashing(BusinessDAO.update(id,entity) match {
+          case 0 => "failure" -> s"Could not update entity ${entity.title}"
+          case _ => "success" -> s"Entity ${entity.title} has been updated"
         })
-    
-  }
-  def destroy(id: Int) = SecuredAction { implicit request =>
-    
-      Home.flashing(BusinessDAO.delete(id) match {
-        case 0 => "failure" -> "Entity has Not been deleted"
-        case x => "success" -> s"Entity has been deleted (deleted $x row(s))"
-      })
-    
-  }
+      })   
+}
+
+def destroy(id: Int) = SecuredAction { implicit request =>
+    Home.flashing(BusinessDAO.delete(id) match {
+      case 0 => "failure" -> "Entity has Not been deleted"
+      case x => "success" -> s"Entity has been deleted (deleted $x row(s))"
+    }) 
+}
 
 }

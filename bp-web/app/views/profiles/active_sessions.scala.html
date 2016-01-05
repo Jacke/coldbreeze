@@ -15,7 +15,7 @@
     		  </div>
           
             
-                @session_cn.sessions.take(3).map { session =>
+                @session_cn.sessions.filter(status => status.percent < 100).map { session =>
                 <div class="session-container">
                 <div class="active-sessions">
                                                 <div class="info">

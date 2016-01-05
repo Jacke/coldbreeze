@@ -10,6 +10,7 @@ minorityControllers.controller('LaunchesCtrl', ['$controller','$timeout','$http'
   '$rootScope',
   'Restangular',
   'ngDialog',
+  'InteractionsBulkFactory',
   'ProcPermissionsFactory',
   'TreeBuilder',
   'BPStationsFactory', 
@@ -22,7 +23,7 @@ minorityControllers.controller('LaunchesCtrl', ['$controller','$timeout','$http'
   'BPElemsFactory',
   'BPSpacesFactory',
   'BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
-  function ($controller, $timeout, $http, $window, $translate, $scope, $filter, $routeParams, $rootScope,Restangular, ngDialog, ProcPermissionsFactory, TreeBuilder, BPStationsFactory, SessionsFactory, BProcessesFactory, BProcessFactory, ObserversFactory, ObserverFactory, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
+  function ($controller, $timeout, $http, $window, $translate, $scope, $filter, $routeParams, $rootScope,Restangular, ngDialog, InteractionsBulkFactory, ProcPermissionsFactory, TreeBuilder, BPStationsFactory, SessionsFactory, BProcessesFactory, BProcessFactory, ObserversFactory, ObserverFactory, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
 
 
 $scope.loadSessions = function (process_id) { 
@@ -48,12 +49,12 @@ $scope.isEmptyLaunches = false;
 $scope.sessions = [];
 $scope.isEmptyLaunchesCheck = function() {
   //$rootScope.$on('cfpLoadingBar:completed', function(event, data){
-    console.log("$scope.isEmptyLaunchesStart")
+  console.log("$scope.isEmptyLaunchesStart")
   console.log($scope.isEmptyLaunches);
- $scope.isEmptyLaunches = false;
- console.log(($scope.sessions));
- var AllSessions = _.flatten(_.map($scope.sessions, function(ses) { return ses.sessions }));
- console.log(AllSessions);
+   $scope.isEmptyLaunches = false;
+   console.log(($scope.sessions));
+   var AllSessions = _.flatten(_.map($scope.sessions, function(ses) { return ses.sessions }));
+   console.log(AllSessions);
 
   if ($scope.sessions != undefined && AllSessions.length > 0) {
     var vals = _.map($scope.sessions, function(ses) {
@@ -118,6 +119,26 @@ SessionsFactory.query().$promise.then(function (data2) {
                       }
                     }
                 })
+
+ var session_ids = _.map(data2, function(d){
+
+    return _.map(_.filter(d.sessions, function(fd) {
+      return fd.station.finished != true;
+    }), function(dd){ 
+        return 'ids='+dd.session.id+'&'
+    })
+   });
+
+$scope.interactionContainer = InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') });
+
+/*
+  Restangular.all('users').getList()  // GET: /users
+    .then(function(users) {
+    // returns a list of users
+    $scope.user = users[0]; // first Restangular obj in list: { id: 123 }
+  })
+*/
+
                 // polyfill ended
                  if (process_id != undefined) {
                     console.log(process_id);
