@@ -83,7 +83,7 @@ implicit val SessionStateLogWrites  = Json.format[SessionStateLog]
   implicit val SessionContainerWrites = Json.format[SessionContainer]
 
 
-
+// GET         /bprocess/:id/stations
 def station_index(id: Int) = SecuredAction { implicit request => 
   if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, id)) {  
 
@@ -92,10 +92,11 @@ def station_index(id: Int) = SecuredAction { implicit request =>
 
   } else { Forbidden(Json.obj("status" -> "Not found")) }   
 }
+// GET         /bprocess/stations
 def all_stations() = SecuredAction { implicit request =>
   Ok(Json.toJson(BPStationDAO.getAll))
 }
-
+// GET          /bprocess/:BPid/sessions
 def process_all_session(pid: Int) = SecuredAction { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, pid)) {
 
@@ -112,6 +113,7 @@ def process_all_session(pid: Int) = SecuredAction { implicit request =>
     } else { Forbidden(Json.obj("status" -> "Not found")) }
 }
 
+// GET         /sessions
 def all_sessions() = SecuredAction { implicit request =>
 	val email = request.user.main.email.get
 	val business_request:Option[Tuple2[Int, Int]] = models.DAO.resources.EmployeesBusinessDAO.getByUID(email) 
@@ -149,13 +151,14 @@ def halt_session(id: Int, session_id: Int) = SecuredAction { implicit request =>
 
 
 
-
+// POST        /session/:id/unlisted
 def makeUnlisted(id: Int) = SecuredAction { implicit request =>
     if (security.BRes.sessionSecured(id, request.user.main.userId, request.user.businessFirst)) {
          Ok(Json.toJson(BPSessionDAO.makeUnlisted(id)))
     } else { Forbidden(Json.obj("status" -> "Not found")) }
 
 }
+// POST        /session/:id/listed
 def makeListed(id: Int) = SecuredAction { implicit request =>
   if (security.BRes.sessionSecured(id, request.user.main.userId, request.user.businessFirst)) {
      Ok(Json.toJson(BPSessionDAO.makeListed(id)))
@@ -170,7 +173,7 @@ def delete_session(session_id: Int) = SecuredAction { implicit request =>
 
 
 
-
+// /bprocess/:id/station/:station_id/around
 def stations_elems_around(id: Int, station_id: Int) = SecuredAction { implicit request =>
   if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, id)) {
       Ok(Json.toJson(AroundProcessElementsBuilder.detect(id, station_id)))
@@ -183,6 +186,7 @@ def stations_elems_around(id: Int, station_id: Int) = SecuredAction { implicit r
 /**
  * Fetch all sessions logs for process
  */
+ //GET         /bprocess/:id/logs
 def logs_index(id: Int) = SecuredAction.async { implicit request => 
   if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, id)) {
       val processHistoriesF:Future[Seq[models.DAO.ProcessHistoryDTO]] = ProcHistoryDAO.getByProcessF(id)
@@ -201,6 +205,7 @@ def logs_index(id: Int) = SecuredAction.async { implicit request =>
       //Ok(Json.toJson(LogsContainer(session_loggers, processHistories, stations,input_logs,session_log)))
   } else { Future(Forbidden(Json.obj("status" -> "Not found"))) }
 }
+//GET         /bprocesses/logs
 def logs_indexes(ids: List[Int]) = SecuredAction.async { implicit request => 
   val secured_ids = ids.filter( id =>
     security.BRes.procIsOwnedByBiz(request.user.businessFirst, id))
@@ -230,6 +235,7 @@ def logs_indexes(ids: List[Int]) = SecuredAction.async { implicit request =>
 /**
  * Update station note
  */
+// POST        /bprocess/:id/station/:station_id/note
 def update_note(id: Int, station_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
   val perm = true // TODO: Make permission !!!
   if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, id)) {

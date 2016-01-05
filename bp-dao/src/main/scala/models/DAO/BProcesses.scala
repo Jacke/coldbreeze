@@ -67,6 +67,9 @@ object BPDAOF {
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
   val bprocesses = BPDAO.bprocesses
 
+  private def filterByIdsQuery(ids: List[Int]): Query[BProcesses, BProcessDTO, Seq] =
+    bprocesses.filter(_.id inSetBind ids) 
+
   private def filterQuery(id: Int): Query[BProcesses, BProcessDTO, Seq] =
     bprocesses.filter(_.id === id) 
   private def filterByWorkbenchQuery(id: Int): Query[BProcesses, BProcessDTO, Seq] =
@@ -79,6 +82,9 @@ object BPDAOF {
   def get(id: Int):Future[Option[BProcessDTO]] = {
      db.run(filterQuery(id).result.headOption)
   }
+  def gets(ids: List[Int]):Future[Seq[BProcessDTO]] = {
+     db.run(filterByIdsQuery(ids).result)
+  }  
 }
 
 

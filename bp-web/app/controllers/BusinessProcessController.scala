@@ -321,7 +321,14 @@ request.body.validate[RefElemContainer].map{
   case entity => {
          if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, entity.process)) {
             haltActiveStations(entity.process)
-            RefDAO.retrive(entity.ref, entity.process, entity.business, in = "front", entity.title, entity.desc, space_id = None) match {//ProcElemDAO.pull_object(entity) match {
+            RefDAO.retrive(entity.ref, 
+                           entity.process, 
+                           entity.business, 
+                           in = "front", 
+                           entity.title, 
+                           entity.desc, 
+                           space_id = None) match {//ProcElemDAO.pull_object(entity) match {
+
             case None =>  Ok(Json.toJson(Map("failure" ->  s"Could not create front element ${entity.title}")))
             case ref_resulted =>  { 
               val element_result = ref_resulted
@@ -371,13 +378,13 @@ def createSpaceElem() = SecuredAction(BodyParsers.parse.json) { implicit request
 
  
                 haltActiveStations(entity.process); 
-                RefDAO.retrive(entity.ref, 
-                entity.process, 
-                entity.business, 
-                in = "nested", 
-                entity.title, 
-                entity.desc, 
-                entity.space_id) match { //SpaceElemDAO.pull_object(entity) match {
+                 RefDAO.retrive(entity.ref, 
+                                entity.process, 
+                                entity.business, 
+                                in = "nested", 
+                                entity.title, 
+                                entity.desc, 
+                                entity.space_id) match { //SpaceElemDAO.pull_object(entity) match {
                     case None =>  Ok(Json.toJson(Map("failure" ->  s"Could not create space element ${entity.title}")))
                     case ref_resulted =>   { 
                       val element_result = ref_resulted

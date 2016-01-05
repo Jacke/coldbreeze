@@ -201,6 +201,9 @@ GET         /semiload/interact/:session_id           @controllers.HighLoadContro
 GET         /highload/interact/:session_id           @controllers.HighLoadController.highload(session_id: Int)
 
 # Sessions
+GET         /bprocess/:id/logs                       @controllers.ProcessSessionController.logs_index(id: Int)
+GET         /bprocesses/logs                         @controllers.ProcessSessionController.logs_indexes(ids: List[Int])
+
 GET          /bprocess/:BPid/sessions        		 @controllers.ProcessSessionController.process_all_session(BPid: Int)
 #GET         /bprocess/:BPid/session/:id     		 #
 #DELETE      /bprocess/:BPid/session/:id     		 #
@@ -211,8 +214,8 @@ GET         /bprocess/:id/station/:station_id        @controllers.ProcessSession
 POST        /bprocess/:id/session/:session_id/halt   @controllers.ProcessSessionController.halt_session(id: Int, session_id: Int)
 DELETE      /session/:session_id                     @controllers.ProcessSessionController.delete_session(session_id: Int)
 POST        /bprocess/:id/station/:station_id/note   @controllers.ProcessSessionController.update_note(id: Int, station_id: Int)
-POST        /session/:id/listed                      @controllers.ProcessSessionController.makeListed(id: Int)
 POST        /session/:id/unlisted                    @controllers.ProcessSessionController.makeUnlisted(id: Int)
+POST        /session/:id/listed                      @controllers.ProcessSessionController.makeListed(id: Int)
 
 
 
@@ -368,8 +371,6 @@ PUT  /ref/:id/space_elem/:spelem_id/:space_id/down @controllers.ReflectionsContr
 
 
 # Logs
-GET         /bprocess/:id/logs                       @controllers.ProcessSessionController.logs_index(id: Int)
-GET         /bprocesses/logs                         @controllers.ProcessSessionController.logs_indexes(ids: List[Int])
 GET         /interacts/                              @controllers.InteractionController.fetchInteractions(ids: List[Int])
 
 # Elements

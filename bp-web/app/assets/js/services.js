@@ -408,10 +408,15 @@ minorityAppServices.factory('BPInLoggersSessionFactory', ['$resource', function 
 
 minorityAppServices.factory('InteractionsFactory', ['$resource', function ($resource) {
     return $resource(baseUrl + 'interact/:session_id', {}, {
-        query: { method: 'GET', isArray: false }
+        query: { method: 'GET', isArray: false },
+        queryAll: { method: 'GET', isArray: true }
     })
 }]);
-
+minorityAppServices.factory('InteractionsBulkFactory', ['$resource', function ($resource) {
+    return $resource(baseUrl + 'interacts/?:ids', {}, {
+        queryAll: { method: 'GET', isArray: true }
+    })
+}]);
 /*
 ** BPLoggers FACTORY
 */

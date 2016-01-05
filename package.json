@@ -15,6 +15,7 @@
     "moment": "^2.10.6",
     "npm-collect": "^1.0.5",
     "react": "^0.14.3",
+    "redux-actions": "^0.9.0",
     "script-loader": "^0.6.1",
     "tether": "^1.1.1",
     "webpack": "^1.12.9"
