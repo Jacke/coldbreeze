@@ -1,17 +1,23 @@
-define(function(require){
+import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
+import Modal from 'react-modal';
+import jQuery from 'jQuery';
 
-var React = require('react');
-var ReactDOM = require('react-dom');
-var Modal = require('react-modal');
-var $ = require('jQuery');
-
-/*
-By default the modal is anchored to document.body. All of the following overrides are available.
-* element
-Modal.setAppElement(appElement);
-* query selector - uses the first element found if you pass in a class.
-Modal.setAppElement('#your-app-element');
-*/
+export default class App extends Component {
+  static defaultProps = {
+    autoPlay: false,
+    maxLoops: 10,
+  }
+  state = {
+      modalIsOpen: false,
+      imageUrl: 'https://facebook.github.io/react/img/logo.svg',
+  }   
+  render() {
+    return (
+      <h1>Hello, worssld.</h1>
+    );
+  }
+}
 
 const customStyles = {
   content : {
@@ -23,32 +29,32 @@ const customStyles = {
     transform             : 'translate(-50%, -50%)'
   }
 };
-var appElement = document.getElementById('reactapp')
-  function App() {
-    this.AppView = React.createClass({
 
-  getInitialState: function() {
-    return { modalIsOpen: false,
-      imageUrl: 'https://facebook.github.io/react/img/logo.svg'
-   };
-  },
-  openModal: function() {
+export default class App2 extends React.Component {
+
+  state = {
+      modalIsOpen: false,
+      imageUrl: 'https://facebook.github.io/react/img/logo.svg',
+  }
+
+  openModal() {
     console.log(window.location.href);
     this.setState({modalIsOpen: true});
-  },
-  closeModal: function() {
+  }
+  closeModal() {
     this.setState({modalIsOpen: false});
-  },
-  handleModalCloseRequest: function() {
+  }
+  handleModalCloseRequest() {
     // opportunity to validate something and keep the modal open even if it
     // requested to be closed
     this.setState({modalIsOpen: false});
-  },
-  handleSaveClicked: function(e) {
+  }
+  handleSaveClicked(e) {
     alert('Save button was clicked');
-  },
-  render: function() {
-    return (
+  }
+
+  render() {
+return (
       <div>
         <a className="vIcoIn menuEntityLink" onClick={this.openModal}>
             <span className="uicon-svg482">Help</span>        
@@ -70,42 +76,32 @@ var appElement = document.getElementById('reactapp')
             
             <div className="modal-body tutorial-body">
               <div className="tutorial-step">
-                <h4>Really long content...</h4>
-                <img className="image" src={"images/" + this.state.imageUrl} />
-                <p>Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus</p>
-                <p>Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus</p>
-              </div>
-              <div className="tutorial-step">
-                <h4>Really long content...</h4>
-                <img className="image" src={"images/" + this.state.imageUrl} />
-                <p>Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus</p>
+                <h4>Ressssally long coffffntent...</h4>
+                <img className="image" src={this.state.imageUrl} />
+                <p>Nam dsui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus</p>
                 <p>Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus</p>
               </div>
               <div className="tutorial-step">
                 <h4>Really long content...</h4>
-                <img className="image" src={"images/" + this.state.imageUrl} />
+                <img className="image" src={this.state.imageUrl} />
+                <p>   sssui s, accumsan porttitor, facilisis luctus, metus</p>
                 <p>Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus</p>
+              </div>
+              <div className="tutorial-step">
+                <h4>Really long content...</h4>
+                <img className="image" src={this.state.imageUrl} />
+                <p>   sssui s, accumsan porttitor, facilisis luctus, metus</p>
                 <p>Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus</p>
               </div>                            
             </div>
 
             <div className="modal-footer">
               <button type="button" className="btn btn-default" onClick={this.handleModalCloseRequest}>Close</button>
-              {/* <button type="button" className="btn btn-primary" onClick={this.handleSaveClicked}>Save changes</button>*/}
+              { <button type="button" className="btn btn-primary" onClick={this.handleSaveClicked}>Save changes</button>}
             </div>
           </div>
         </Modal>
       </div>
     );
   }
-});
-
-  }
-
-  App.prototype.init = function () {
-    ReactDOM.render(<this.AppView />, document.getElementById('navHelpLink'));
-  };
-
-  return App;
-
-});
+}

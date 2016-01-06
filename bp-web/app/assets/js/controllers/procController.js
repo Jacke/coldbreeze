@@ -208,42 +208,45 @@ $rootScope.$on('cfpLoadingBar:completed', function(event, data){
       $scope.isEmptyProcessesCheck();
 });
 
-  $scope.perm = function(proc_id) {
-    $scope.BPid = proc_id;
-    ngDialog.open({
-      template: '/assets/partials/perms/perm-list.html',
-      controller: 'BPPermListCtrl',
-      scope: $scope
-    });
-  };
+$scope.perm = function(proc_id) {
+  $scope.BPid = proc_id;
+  ngDialog.open({
+    template: '/assets/partials/perms/perm-list.html',
+    controller: 'BPPermListCtrl',
+    scope: $scope
+  });
+};
 
-  $scope.business = $rootScope.business;
+$scope.business = $rootScope.business;
 
-  $scope.deleteBP = function (bpId) {
-    BProcessFactory.delete({ id: bpId }).$promise.then(function(data) {
-      $scope.bprocesses = BProcessesFactory.query();
-          $scope.bprocesses.$promise.then(function (processes) {
-              _.forEach(processes, function(proc) { TreeBuilder.buildFetch(proc, function(success){}); });
-          });
-    });
-  };
-  $scope.hasActiveStation = function (bprocess) {
-    _.filter($scope.stations, function(st) { return st.paused == true && st.process == bprocess.id }).length > 0;
-  };
-  $scope.allServices = function () {
+$scope.deleteBP = function (bpId) {
+  BProcessFactory.delete({ id: bpId }).$promise.then(function(data) {
+    $scope.bprocesses = BProcessesFactory.query();
+        $scope.bprocesses.$promise.then(function (processes) {
+            _.forEach(processes, function(proc) { TreeBuilder.buildFetch(proc, function(success){}); });
+        });
+  });
+};
+
+$scope.hasActiveStation = function (bprocess) {
+   _.filter($scope.stations, function(st) { return st.paused == true && st.process == bprocess.id }).length > 0;
+};
+
+$scope.allServices = function () {
     $routeParams.service = undefined;
     $location.search('service', null);
            $scope.service_id = null;
           $location.path('/bprocesses');
-  }
-  /* callback for ng-click 'createBP': */
-  $scope.createNewBP = function () {
+}
+
+/* callback for ng-click 'createBP': */
+$scope.createNewBP = function () {
     ngDialog.open({
       template: '/assets/partials/bprocesses/bp-new.html',
       controller: 'BPCreationCtrl',
       scope: $scope
     });
-  };
+};
 
 
 
