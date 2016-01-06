@@ -536,8 +536,7 @@ if ($('.dashboard_sessions').length > 0) {
        };    
 }
 
-
-        window.location.href = "a#/launches";
+        window.location.reload();//.href = "a#/launches";
       })
       .fail(function() {
         $(this).parent().remove('loading');

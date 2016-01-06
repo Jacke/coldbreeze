@@ -740,13 +740,33 @@ a.expand-ref-select {
     margin-left: 20px;
 }
 .proc-element .info {
-padding: 0px 11px 3px 25px;
-margin-top: -3px;
+  padding: 0px 11px 3px 25px;
+  margin-top: -3px;
 }
 .proc-element .element-header {
-padding-top: 3px;
-position: relative;
+  padding-top: 3px;
+  position: relative;
 }
+
+
+
+.tutorial-step {
+    margin-left: 25px;
+}
+
+.step-body a.back-link {
+    margin-left: 15px;
+    margin-top: 10px;
+    display: block;
+    margin-bottom: -10px;
+}
+
+.step-body h3 {
+    margin-left: 14px;
+    margin-bottom: 15px;
+}
+
+
 .element-header .info h6.desc {
     padding-bottom: 8px;
     height: 13px;
