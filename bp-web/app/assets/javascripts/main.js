@@ -277,9 +277,9 @@
   deps: ['angular', 'app', 'controllers', 'toastr'],
   export: 'reflectionController'
 },
-'sessionController': {
+'launchesController': {
   deps: ['angular', 'app', 'controllers', 'toastr'],
-  export: 'sessionController'
+  export: 'launchesController'
 },
 'directives': {
   deps: ['angular', 'app', 'controllers', 'toastr'],
@@ -409,7 +409,7 @@
 
 
   'reflectionController': '../js/controllers/reflectionController',
-  'sessionController': '../js/controllers/sessionController',
+  'launchesController': '../js/controllers/launchesController',
   'directives': '../js/directives',
   'classie': '../js/classie',
   'cssParser': '../js/cssParser',

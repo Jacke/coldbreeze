@@ -57,20 +57,22 @@
 }
 @media (max-width:1250px) {
 	.session_list__session .instant-input .element-thumb {
-
 		/* margin-left: 16px; */
 	}
+
+
 .session_list__session .instant-input .element-thumb {
         width: 42px;
 }	
+    .instant-input-attachment {
+        margin-top: -27px;
+        margin-right: 3px;
+    }
 	.session_list__session .instant-input button.confirm-btn {
 
-		/* margin-left: 14px; */
-
-		/* margin-top: 4px; */
-		margin: 0 auto 6px;
-		width: 89px;
-		display: block;
+    margin: 0 auto 6px;
+    width: 84px;
+    display: block;
 	}
 	.session_list__session .session-container .instant-input {
 		width: 20%;
