@@ -347,6 +347,26 @@
     font-weight: 100;
     opacity: 1 !important;
 }
+a#reactionSelectButton {
+    text-align: center;
+    display: block;
+    clear: both;
+    width: 50%;
+    color: white;
+    background-color: rgba(40,43,53,0.78);
+    border-radius: 3px;
+    font-family: 'Open Sans', Helvetica, Sans-serif;
+    font-weight: 400;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-decoration: none;
+    margin: 0 auto;
+    padding: 4px 4px 4px 4px;
+    float: none;
+}
+
 .triangle-3 {
     width: 28px;
     height: 27px;
