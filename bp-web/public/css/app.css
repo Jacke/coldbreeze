@@ -1003,6 +1003,7 @@ border-left: 2px solid #4dbd74;
     list-style: none;
     padding-bottom: 25px;
     margin-left: 0px;
+    overflow: hidden;
     padding-left: 0px;
 }
 
@@ -1014,6 +1015,7 @@ border-left: 2px solid #4dbd74;
 li.reaction_list__reaction.reaction_list__reaction_preview {
     display: inline-block;
     width: 180px;
+    float: left;
     margin-right: 19px;
 }
 

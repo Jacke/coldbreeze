@@ -41,7 +41,7 @@
              <!-- {{ stateOutAct(state_out) }} {{ state_out.state.title }} -->
           </li>
         </ul>
-        <a ng-click="reactionSelect(reaction);runFrom($parent.session.session.id)" id="reactionSelectButton" ng-class="selectedClass(reaction)" class="triangle-reaction" ng-show="reaction.reaction.id === interactions.reactions[0].reaction.reaction.id">{{ capitalizeFirstLetter(reaction.reaction.title) }}</a>
+        <a ng-click="reactionSelect(reaction);runFrom($parent.session.session.id)" id="reactionSelectButton" ng-class="selectedClass(reaction)" class="triangle-reaction" ng-show="reaction === interactions.reactions[0]">{{ capitalizeFirstLetter(reaction.reaction.title) }}</a>
         <!--<div class="launch-attachments" ng-show="reaction.selected">
             <a href="#" tooltip-placement="bottom" tooltip="Not supporting right now.">Attach</a>
               </div>-->
