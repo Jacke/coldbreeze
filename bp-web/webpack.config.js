@@ -338,9 +338,9 @@ module.exports = {
   deps: ['angular', 'app', 'controllers', 'toastr'],
   export: 'reflectionController'
 },
-'sessionController': {
+'launchesController': {
   deps: ['angular', 'app', 'controllers', 'toastr'],
-  export: 'sessionController'
+  export: 'launchesController'
 },
 'directives': {
   deps: ['angular', 'app', 'controllers', 'toastr'],
@@ -445,7 +445,7 @@ module.exports = {
       'stationController': __dirname + '/app/assets/js/controllers/stationController',
       'procElementController': __dirname + '/app/assets/js/controllers/procElementController',
       'reflectionController': __dirname + '/app/assets/js/controllers/reflectionController',
-      'sessionController': __dirname + '/app/assets/js/controllers/sessionController',
+      'launchesController': __dirname + '/app/assets/js/controllers/launchesController',
       'directives': __dirname + '/app/assets/js/directives',
       'classie': __dirname + '/app/assets/js/classie',
       'cssParser': __dirname + '/app/assets/js/cssParser',

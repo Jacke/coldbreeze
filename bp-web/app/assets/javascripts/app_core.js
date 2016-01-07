@@ -114,7 +114,7 @@ require(['angular','pnotify',
 'stationController',
 'procElementController',
 'reflectionController',
-'sessionController',
+'launchesController',
 'directives',
 'classie',
 'cssParser'], function(angular, pnotify, app) {
