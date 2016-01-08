@@ -44,6 +44,8 @@ import main.scala.bprocesses._
 /*
   Case class
  */
+case class ElemSessionCount(session_id: Int, count: Int)  
+
 case class SessionUndefElement(id: Option[Int],
                         title:String,
                         desc:String,
@@ -56,7 +58,6 @@ case class SessionUndefElement(id: Option[Int],
                         order:Int,
                         created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
                         updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
-  
   /*
 
   def cast(process: BProcess):Option[ProcElems] = { 
@@ -116,16 +117,33 @@ import models.DAO.conversion.DatabaseFuture._
     session_proc_elements.filter(_.id === id)
   private def filterBySessionQuery(id: Int): Query[SessionProcElements, SessionUndefElement, Seq] =
     session_proc_elements.filter(_.session === id)
+  private def filterBySessionsQuery(ids: List[Int]): Query[SessionProcElements, SessionUndefElement, Seq] =
+    session_proc_elements.filter(_.session inSetBind ids)
 
   def findBySessionLength(session_id: Int):Future[Int] = {
     db.run(filterBySessionQuery(session_id).length.result)
   }
-  def findBySession(session_id: Int):Future[Seq[SessionUndefElement]] = {
+
+
+def findBySessionsLength(session_ids: List[Int]):Future[Seq[ElemSessionCount]] = {
+    val ids = session_ids.mkString(",")
+    db.run(
+      sql"""SELECT session_id, count(session_id) FROM session_proc_elements 
+          WHERE session_proc_elements.session_id 
+          IN (#${ids}) GROUP BY session_id""".as[(Int,Int)]
+    ).map { tupleSeq =>
+      tupleSeq.map { tuple => ElemSessionCount(tuple._1, tuple._2) }.toSeq
+    } 
+}  
+
+def findBySession(session_id: Int):Future[Seq[SessionUndefElement]] = {
      db.run(filterBySessionQuery(session_id).result)      
-  }
-  def findById(id: Int):Future[Option[SessionUndefElement]] = {
+}
+
+def findById(id: Int):Future[Option[SessionUndefElement]] = {
         db.run(filterQuery(id).result.headOption)    
-  }  
+}  
+
 }
 
 object SessionProcElementDAO {

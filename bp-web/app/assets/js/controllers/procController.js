@@ -1,8 +1,8 @@
 define(['angular', 'app', 'controllers'], function (angular, minorityApp, minorityControllers) {
 
 // INDEX
-return minorityControllers.controller('BProcessListCtrl', ['$rootScope','$scope','$window','$translate' ,'$rootScope','BPElemsFactory','RefsFactory','TreeBuilder', 'NotificationBroadcaster','SessionsFactory' ,'ngDialog', '$http', '$routeParams', '$filter', 'BPElemsFactory','BPSpacesFactory', 'BPSpaceElemsFactory',  'BProcessesFactory','BProcessFactory', 'BPStationsFactory', 'BPServicesFactory', '$location',
-  function ($rootScope,$scope, $window, $translate, $rootScope,BPElemsFactory, RefsFactory, TreeBuilder, NotificationBroadcaster,SessionsFactory, ngDialog, $http, $routeParams, $filter, BPElemsFactory, BPSpacesFactory, BPSpaceElemsFactory, BProcessesFactory, BProcessFactory, BPStationsFactory, BPServicesFactory, $location) {
+return minorityControllers.controller('BProcessListCtrl', ['$rootScope','$scope','$window','$translate' ,'$rootScope','InteractionsBulkFactory','BPElemsFactory','RefsFactory','TreeBuilder', 'NotificationBroadcaster','SessionsFactory' ,'ngDialog', '$http', '$routeParams', '$filter', 'BPElemsFactory','BPSpacesFactory', 'BPSpaceElemsFactory',  'BProcessesFactory','BProcessFactory', 'BPStationsFactory', 'BPServicesFactory', '$location',
+  function ($rootScope,$scope, $window, $translate, $rootScope,InteractionsBulkFactory, BPElemsFactory, RefsFactory, TreeBuilder, NotificationBroadcaster,SessionsFactory, ngDialog, $http, $routeParams, $filter, BPElemsFactory, BPSpacesFactory, BPSpaceElemsFactory, BProcessesFactory, BProcessFactory, BPStationsFactory, BPServicesFactory, $location) {
 
 
  $scope.changeLanguage = function () {
@@ -348,14 +348,35 @@ $scope.capitalizeFirstLetter = function (string) {
  * Services
  *******/
 $scope.reloadSessions = function() {
-$scope.sessions = SessionsFactory.query();
-$scope.sessions.$promise.then(function (data2) {
-    _.forEach(data2.sessions, function(session) { return session.session.station = session.station })
-      $scope.bprocesses.$promise.then(function (processes) { 
-        _.forEach(processes, function(proc) { 
-          proc.sessions = _.filter(data2, function(ses) { return ses.process.id == proc.id });
-        });
-      })  
+
+SessionsFactory.query().$promise.then(function (sessions) {
+
+var session_ids = _.map(sessions, function(d){
+
+    return _.map(_.filter(d.sessions, function(fd) {
+      return fd.station.finished != true;
+    }), function(dd){ 
+        return 'ids='+dd.session.id+'&'
+    })
+});
+
+$scope.sessions = sessions;
+
+
+$scope.interactionContainer = InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') });
+console.log($scope.interactionContainer);
+console.log($scope.sessions);
+
+_.forEach($scope.sessions, function(session_cn) {
+  _.forEach(session_cn.sessions, function(session) { return session.session.station = session.station });
+});
+
+$scope.bprocesses.$promise.then(function (processes) { 
+  _.forEach(processes, function(proc) { 
+    proc.sessions = _.filter($scope.sessions, function(ses) { return ses.process.id == proc.id });
+  });
+}); 
+
 });
 };
 $scope.reloadSessions();

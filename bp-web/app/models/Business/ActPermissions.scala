@@ -56,6 +56,42 @@ case class ActPermission(var id: Option[Int],
 case class ResAct(bprocess_id: Int, bprocess_title: String, elem_title: String)
 
 
+object ActPermissionDAOF {
+  import akka.actor.ActorSystem
+  import akka.stream.ActorFlowMaterializer
+  import akka.stream.scaladsl.Source
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._ 
+
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  val act_permissions = ActPermissionDAO.act_permissions
+
+  private def filterQuery(id: Int): Query[ActPermissions, ActPermission, Seq] =
+    act_permissions.filter(_.id === id)
+  private def filterQueryByProcess(id: Int): Query[ActPermissions, ActPermission, Seq] =
+    act_permissions.filter(_.process === id)
+  private def filterQueryByProcesses(ids: List[Int]): Query[ActPermissions, ActPermission, Seq] =
+    act_permissions.filter(_.process inSetBind ids)
+
+  def getAllByProcessId(process_id: Int):Future[Seq[ActPermission]] = {
+    db.run(filterQueryByProcess(process_id).result)
+  }
+  def getAllByProcessesId(process_ids: List[Int]):Future[Seq[ActPermission]] = {
+    db.run(filterQueryByProcesses(process_ids).result)
+  }
+
+
+}
+
+
 object ActPermissionDAO {
   import scala.util.Try
   import DatabaseCred.database

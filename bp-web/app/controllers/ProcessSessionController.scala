@@ -114,20 +114,17 @@ def process_all_session(pid: Int) = SecuredAction { implicit request =>
 }
 
 // GET         /sessions
-def all_sessions() = SecuredAction { implicit request =>
+def all_sessions() = SecuredAction.async { implicit request =>
 	val email = request.user.main.email.get
-	val business_request:Option[Tuple2[Int, Int]] = models.DAO.resources.EmployeesBusinessDAO.getByUID(email) 
-    val business = business_request match {
-      case Some(biz) => biz._2
-      case _ => -1
+  val sess_cnsF = BPSessionDAOF.findByBusiness(request.user.businessFirst)
+  //val updated_cns:List[SessionContainer] = sess_cns.map { cn => 
+  //val updatedStatuses:List[SessionStatus] = cn.sessions.map(status => InputLoggerDAO.launchPeopleFetcher(status)) 
+  //val updatedCN = updatedStatuses.map(status => cn.updateStatus(status))
+  sess_cnsF.flatMap { sess_cns =>
+    InputLoggerDAOF.fetchPeopleBySessions(sess_cns).map { sess_cns_with_peoples =>
+        Ok(Json.toJson( sess_cns_with_peoples )) 
     }
-	  val sess_cns = BPSessionDAO.findByBusiness(business)
-       //val updated_cns:List[SessionContainer] = sess_cns.map { cn => 
-       //val updatedStatuses:List[SessionStatus] = cn.sessions.map(status => InputLoggerDAO.launchPeopleFetcher(status)) 
-       //val updatedCN = updatedStatuses.map(status => cn.updateStatus(status))
-        
-      
-      Ok(Json.toJson(sess_cns.map(cn => InputLoggerDAO.fetchPeople(cn))))
+  }
 }
 
 

@@ -160,7 +160,7 @@ case class WhoAmIdentify(email: String,
   implicit val UptimeMessageWrites = Json.format[UptimeMessage]
 
 
-  def uptime() = Action { implicit request =>
+def uptime() = Action { implicit request =>
 
           val main_uptime = "uptime" !!
           val a_uptime    = "ansible a.min.ority.us -a 'uptime'" !!
@@ -169,7 +169,7 @@ case class WhoAmIdentify(email: String,
 			UptimeMessage("min.ority.us", main_uptime.split("\n")(0)),
 			UptimeMessage("a.min.ority.us", a_uptime.split("\n")(1))
 			)))
-  }
+}
 
 
   def whoami = SecuredAction.async { implicit request =>
@@ -178,8 +178,14 @@ case class WhoAmIdentify(email: String,
     applicationLogger.debug("Attempting risky calculation.")
     applicationLogger.debug(request.host.toString)
 
-    val (isManager, isEmployee, lang):(Boolean, Boolean, String) = AccountsDAO.getRolesAndLang(email, business).get
-    val current_plan = AccountPlanDAO.getByWorkbenchAcc(workbench_id = business).getOrElse(
+    AccountPlanDAOF.getByWorkbenchAcc(workbench_id = business).flatMap { acc_plan =>
+
+
+    models.AccountsDAOF.getRolesAndLang(email, business).flatMap { credentials =>
+
+
+    val (isManager, isEmployee, lang):(Boolean, Boolean, String) = credentials.get
+    val current_plan = acc_plan.getOrElse(
             AccountPlanDTO(None, 
                 business_id = -1, 
                 master_acc = email)
@@ -198,7 +204,9 @@ case class WhoAmIdentify(email: String,
       bb_ping 
       )))
     }
+    }
   }
+}
 
   // a sample action using an authorization implementation
   def onlyTwitter = SecuredAction(WithProvider("twitter")) { implicit request =>
