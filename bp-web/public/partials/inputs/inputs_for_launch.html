@@ -30,31 +30,30 @@
 </div>
 -->
 
-  <ul class="reaction_list reaction_list_launched">
-    <li class="reaction_list__reaction reaction_list__reaction_preview" ng-init="interactions.reactions.length > 0 ? reactionSelect(interactions.reactions[0]) : false" ng-repeat="reaction in interactions.reactions">
-        <a ng-class="selectedClass(reaction)"><h3>{{ reaction.reaction.elem.element_title }} <!-- : {{ capitalizeFirstLetter(reaction.reaction.title) }} --></h3></a>
+<ul class="reaction_list reaction_list_launched">
+  <li class="reaction_list__reaction reaction_list__reaction_preview" ng-init="interactions.reactions.length > 0 ? reactionSelect(interactions.reactions[0]) : false" ng-repeat="reaction in interactions.reactions">
+      <a ng-class="selectedClass(reaction)"><h3>{{ reaction.reaction.elem.element_title }} <!-- : {{ capitalizeFirstLetter(reaction.reaction.title) }} --></h3></a>
 
-        <ul class="reaction_list__reaction_in_group">
-          <!-- ins -->
-        </ul>
+      <ul class="reaction_list__reaction_in_group">
+        <!-- ins -->
+      </ul>
         
-        <ul class="reaction_list__reaction_out_group">
-          <li class="reaction_list__reaction__state_outs" ng-repeat="state_out in reaction.outs">
-             <!-- {{ stateOutAct(state_out) }} {{ state_out.state.title }} -->
-          </li>
-        </ul>
-        <a ng-click="reactionSelect(reaction);runFrom($parent.session.session.id)" id="reactionSelectButton" ng-class="selectedClass(reaction)" class="triangle-reaction" ng-show="reaction === interactions.reactions[0]">{{ capitalizeFirstLetter(reaction.reaction.title) }}</a>
-        <!--<div class="launch-attachments" ng-show="reaction.selected">
-            <a href="#" tooltip-placement="bottom" tooltip="Not supporting right now.">Attach</a>
-              </div>-->
+      <ul class="reaction_list__reaction_out_group">
+        <li class="reaction_list__reaction__state_outs" ng-repeat="state_out in reaction.outs">
+           <!-- {{ stateOutAct(state_out) }} {{ state_out.state.title }} -->
+        </li>
+      </ul>
+      <a ng-click="reactionSelect(reaction);runFrom($parent.session.session.id)" id="reactionSelectButton" ng-class="selectedClass(reaction)" class="triangle-reaction" ng-show="reaction === interactions.reactions[0]">{{ capitalizeFirstLetter(reaction.reaction.title) }}</a>
+      <!--<div class="launch-attachments" ng-show="reaction.selected">
+          <a href="#" tooltip-placement="bottom" tooltip="Not supporting right now.">Attach</a>
+            </div>-->
       <!--<div class="center-block" ng-init="reaction.dpfiles = [];">
       <p><a class="btn btn-primary btn-block" href="javascript:;" drop-box-picker dbpicker-files="reaction.dpfiles">Dropbox</a></p>
       </div>-->
 
-        <div class="costs" ng-show="reaction.costs.length > 0">
+      <div class="costs" ng-show="reaction.costs.length > 0">
             <h2 class="costTitle">Costs</h2>
-
-            <div class="inputCost" ng-repeat="cost in reaction.costs">
+        <div class="inputCost" ng-repeat="cost in reaction.costs">
         <div class="pipeContent" ng-repeat="entity in cost.entities">
           <div class="pipeContentTitle">{{ entity.title }}</div>
           <div class="pipeContentValue" ng-repeat="slat in slatFilter(entity, cost.slats)">
@@ -68,7 +67,7 @@
           <div class="pipeContentBlankValue" ng-show="slatFilter(entity, cost.slats).length < 1">
                 <input type="text" id="inputContentBlankValue" class="form-control" ng-init="entity.newModelValue=defaultValueParser(entity.default)" ng-model="entity.newModelValue" required="">
                 <a class="btn btn-small btn-success" ng-click="fillValue(cost, entity, entity.newModelValue)">Fill</a>
-        </div>
+          </div>
         </div>               
               <!--<div class="inputCostTitle">{{ cost.resource.title }} {{ cost.entity[0].title }}</div>
               <div class="inputCostBlankValue">
@@ -77,8 +76,9 @@
               </div>
             </div>-->  
         </div>
-    </li>
-  </ul>
+      </div>
+  </li>
+</ul>
   
 
 
