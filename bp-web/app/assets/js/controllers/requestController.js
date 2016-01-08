@@ -24,14 +24,14 @@ $scope.isManager();
 
   /*****
    *    Nested elements Fetching
-   *****/
+   *****
 console.log("Nested");
 console.log($scope.$parent.$parent.$parent.$parent.$parent); // Input -> Session -> Entity -> Common scope
 console.log($scope.$parent.$parent.$parent.$parent.interactionContainer);
 console.log($scope.$parent.$parent.$parent.interactionContainer);
 console.log($scope.$parent.$parent.interactionContainer);
 console.log($scope.$parent.interactionContainer);
-
+*/
 if ($scope.$parent.$parent.$parent.$parent.interactionContainer != undefined) {
   console.log('parent')
   $scope.interactionContainer = $scope.$parent.$parent.$parent.$parent.interactionContainer;
@@ -42,10 +42,13 @@ if ($scope.$parent.$parent.$parent.$parent.$parent.interactionContainer != undef
 }
 
 $scope.reloadSession = function(session_id) {
-  if ($location.hash === "#/launches") {
+  console.log($window.location.hash);
+  if ($window.location.hash === "#/launches") {
+    console.log('reload session');
     $scope.$parent.reloadSession();
   }
-  if ($location.hash === "#/bprocesses") {
+  if ($window.location.hash === "#/bprocesses") {
+    console.log('reload session');
     $scope.$parent.reloadSessions();
   }
 }
