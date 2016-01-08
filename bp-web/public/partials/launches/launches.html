@@ -199,9 +199,9 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 
 <div class="session_controls">
   <ul>
-    <li tooltip="History" ng-click="history(session, entity)"><span class="moicon moicon-book"></span></li>  
+    <!--<li tooltip="History" ng-click="history(session, entity)"><span class="moicon moicon-book"></span></li> --> 
     <li ng-class="isPinned(session)" tooltip="Pin launch to bottom bar" ng-click="pin(session)"><span class="pin_session moicon moicon-pushpin"></span></li>
-    <li tooltip="Delete" ng-click="deleteSession(session.session.id)"><span class="moicon icon-trash"></span></li>
+    <li tooltip="Cancel" ng-click="deleteSession(session.session.id)"><span class="moicon icon-trash"></span></li>
   </ul>
 </div>      
 <div class="session-launches-bar minimal" ng-if="session.station.paused == true && session.station.finished == false">

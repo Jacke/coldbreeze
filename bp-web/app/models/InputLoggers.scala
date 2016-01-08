@@ -64,12 +64,61 @@ object InputLoggerDAOF {
   private def filterBySessionQuery(id: Int): Query[InputLoggers, InputLogger, Seq] =
     input_loggers.filter(_.session === id)
 
+  private def filterBySessionsQuery(ids: List[Int]): Query[InputLoggers, InputLogger, Seq] =
+    input_loggers.filter(_.session inSetBind ids)
 
-  def get(id: Int):Future[Option[InputLogger]] = {
-     db.run(filterQuery(id).result.headOption)
-  }
-  def getByBP(BPid:Int) = db.run(filterByBPQuery(BPid).result)
-  def getBySession(session_id: Int) = db.run(filterBySessionQuery(session_id).result)
+
+def launchesPeoplesFetcher(sessionStatuses: List[SessionStatus]):Future[List[SessionStatus]] = {
+    //val launchedBy = ???
+    val act_permsF = ActPermissionDAOF.getAllByProcessesId(sessionStatuses.map(status => status.process.id.get).toList)
+    act_permsF.flatMap { all_act_perms =>
+      val groupsF = AccountGroupDAOF.getAllByGroupIDS(all_act_perms.map(_.group.getOrElse(-1)).toList)
+      val loggersF = getBySessions(sessionStatuses.map(status => status.session.id.get).toList)
+      loggersF.flatMap { loggers => 
+        groupsF.map { groups =>
+          sessionStatuses.map { sessionStatus => // Iterate over each session
+               val act_perms = all_act_perms.filter(perm => perm.process == sessionStatus.process.id.get)
+                                               .filter(perm => perm.role == "interact" || perm.role == "all")
+               val participators = act_perms.map(_.uid).flatten ++ groups.filter(group => act_perms.map(_.group)
+                                                                         .flatten.contains(group.id.get))
+                                                                         .flatMap(_.account_id)
+                                                                         .distinct // remove dublicates
+              loggers.find(logger => logger.session == sessionStatus.session.id.get).headOption match {
+                case Some(firstInputLog) => {
+                  sessionStatus.copy(peoples = Some(SessionPeoples(
+                              launched_by = firstInputLog.uid.getOrElse("not@found.com"), 
+                              participators = participators.toSet.toList)))
+                }
+                case _ => sessionStatus.copy(peoples = Some(SessionPeoples(launched_by = "not@found.com", 
+                  participators = participators.toSet.toList))) 
+              }
+          }
+        }
+      }
+    }
+}
+/***** 
+  Because in first bp-dao project no account models presented we make this polyfil
+  It's copy session container and add people and participator list of String
+******/
+def fetchPeopleBySessions(sessionContainers: Seq[SessionContainer]):Future[Seq[SessionContainer]] = {
+    val sessionStatuses = sessionContainers.map(cn => cn.sessions).flatten.toList
+    val containersF = launchesPeoplesFetcher(sessionStatuses)
+    containersF.map { container =>
+      sessionContainers.map { sessionContainer =>
+        sessionContainer.copy(sessions = container
+                                          .filter( containered => containered.process.id == sessionContainer.process.id ))      
+      }
+    }
+}
+
+
+
+
+  def get(id: Int):Future[Option[InputLogger]] = db.run(filterQuery(id).result.headOption)
+  def getByBP(BPid:Int)                        = db.run(filterByBPQuery(BPid).result)
+  def getBySession(session_id: Int)            = db.run(filterBySessionQuery(session_id).result)
+  def getBySessions(session_ids: List[Int])    = db.run(filterBySessionsQuery(session_ids).result)
 
 }
 

@@ -103,10 +103,19 @@ object AccountGroupDAOF {
   //  bpsessions.filter(_.process === process)
   private def filterQuery(id: Int): Query[AccountGroup, AccoutGroupDTO, Seq] =
     account_group.filter(_.id === id)
+  private def filterQueryByGroups(ids: List[Int]): Query[AccountGroup, AccoutGroupDTO, Seq] =
+    account_group.filter(_.id inSetBind ids)
+
 
   def get(id: Int):Future[Option[AccoutGroupDTO]] = {
      db.run(filterQuery(id).result.headOption)
   }
+
+  def getAllByGroupIDS(group_ids: List[Int]):Future[Seq[AccoutGroupDTO]] = {
+    db.run(filterQueryByGroups(group_ids).result)
+
+  }  
+
 }
 
 

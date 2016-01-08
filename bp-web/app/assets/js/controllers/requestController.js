@@ -27,8 +27,28 @@ $scope.isManager();
    *****/
 console.log("Nested");
 console.log($scope.$parent.$parent.$parent.$parent.$parent); // Input -> Session -> Entity -> Common scope
+console.log($scope.$parent.$parent.$parent.$parent.interactionContainer);
+console.log($scope.$parent.$parent.$parent.interactionContainer);
+console.log($scope.$parent.$parent.interactionContainer);
+console.log($scope.$parent.interactionContainer);
 
-$scope.interactionContainer = $scope.$parent.$parent.$parent.$parent.$parent.interactionContainer;
+if ($scope.$parent.$parent.$parent.$parent.interactionContainer != undefined) {
+  console.log('parent')
+  $scope.interactionContainer = $scope.$parent.$parent.$parent.$parent.interactionContainer;
+}
+if ($scope.$parent.$parent.$parent.$parent.$parent.interactionContainer != undefined) {
+  console.log('parent')
+    $scope.interactionContainer = $scope.$parent.$parent.$parent.$parent.$parent.interactionContainer;
+}
+
+$scope.reloadSession = function(session_id) {
+  if ($location.hash === "#/launches") {
+    $scope.$parent.reloadSession();
+  }
+  if ($location.hash === "#/bprocesses") {
+    $scope.$parent.reloadSessions();
+  }
+}
 
 
 
@@ -135,6 +155,7 @@ console.log("interactionContainer");
 console.log($scope.interactionContainer);
 
 if ($scope.interactionContainer === undefined || $scope.interactionContainer.$promise === undefined) {
+  console.log('interactionContainer are undefined');
  InteractionsFactory.query({session_id: $scope.session.session.id}).$promise.then(function (data) {
     $scope.interactions = data;
     LaunchElementTopologsFactory.query({ launch_id: $scope.session_id }).$promise.then(function (data2) {
@@ -581,7 +602,6 @@ $scope.reFillValue = function(cost, entity, slat) {
 
 
 
-
   $scope.runFromDisabled = true;
 
 
@@ -618,7 +638,9 @@ $scope.reFillValue = function(cost, entity, slat) {
         // success
         $scope.invoke_res = [response.data];
         //$scope.closeThisDialog();
-        $location.path('/a#/bprocess/' + $scope.bpId + 'elements?session=' + parseInt(response.data.session));
+        $scope.reloadSession(session_id);
+        //$location.reload();
+        //.path('/a#/bprocess/' + $scope.bpId + 'elements?session=' + parseInt(response.data.session));
       },
       function(fail) { // optional
         // fail
@@ -628,24 +650,24 @@ $scope.reFillValue = function(cost, entity, slat) {
       );
   };
 
-  $scope.reaction_params = []
-  $scope.addParam = function (reaction) {
+$scope.reaction_params = []
 
-        if (_.find($scope.reaction_params, function(re) { 
-                      return re.reaction_id === reaction.reaction.id }) !== undefined) {
-          $scope.delParam(reaction);
-        } else {
-        $scope.reaction_params.push({reaction_id: reaction.reaction.id });
-          if ($scope.reaction_params.length !== 0) { 
-            console.log("$scope.runFromDisabled = false;"); $scope.runFromDisabled = false; 
-          }
-        }
-      
-  }
-  $scope.delParam = function (reaction) {
-    $scope.reaction_params = _.reject($scope.reaction_params, function(el) { return el.reaction_id === reaction.reaction.id; });
-    if ($scope.reaction_params.length == 0) { console.log("$scope.runFromDisabled = true;"); $scope.runFromDisabled = true; }
-  }
+$scope.addParam = function (reaction) {
+  if (_.find($scope.reaction_params, function(re) { 
+      return re.reaction_id === reaction.reaction.id }) !== undefined) {
+        $scope.delParam(reaction);
+  } else {
+    $scope.reaction_params.push({reaction_id: reaction.reaction.id });
+      if ($scope.reaction_params.length !== 0) { 
+        console.log("$scope.runFromDisabled = false;"); $scope.runFromDisabled = false; 
+      }
+  }      
+}
+
+$scope.delParam = function (reaction) {
+  $scope.reaction_params = _.reject($scope.reaction_params, function(el) { return el.reaction_id === reaction.reaction.id; });
+  if ($scope.reaction_params.length == 0) { console.log("$scope.runFromDisabled = true;"); $scope.runFromDisabled = true; }
+}
 
 $scope.capitalizeFirstLetter = function (string) {
     if (string !== undefined) { 
