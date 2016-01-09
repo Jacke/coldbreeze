@@ -54,7 +54,47 @@ import main.scala.bprocesses._
 
 
 
+object ProcElemReflectionDAOF {
+  import akka.actor.ActorSystem
+  import akka.stream.ActorFlowMaterializer
+  import akka.stream.scaladsl.Source
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._  
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  val proc_element_reflections = ProcElemReflectionDAO.proc_element_reflections
 
+  private def filterByIdsQuery(ids: List[Int]): Query[ProcElementReflections, UnitElementRef, Seq] =
+    proc_element_reflections.filter(_.id inSetBind ids) 
+  private def filterByReflection(reflection: Int): Query[ProcElementReflections, UnitElementRef, Seq] =
+    proc_element_reflections.filter(_.reflection === reflection) 
+  private def filterByReflections(reflections: List[Int]): Query[ProcElementReflections, UnitElementRef, Seq] =
+    proc_element_reflections.filter(_.reflection inSetBind reflections) 
+
+
+  def findByRef(reflection: Int):Future[Seq[UnitElementRef]] = {
+    db.run(filterByReflection(reflection).result)
+  }
+
+  def findByRefs(reflections: List[Int]):Future[Seq[UnitElementRef]] = {
+    db.run(filterByReflections(reflections).result)
+  }
+
+  def retrive(k: Int, bid: Int, process: Int, space_own:Option[Int] = None):Future[Seq[UnitElement]] = {
+      findByRef(k).map { elems =>
+        elems.map(e => e.reflect(bid, process, space_own))
+      }
+  }
+}
 
 /**
  * Actions
@@ -99,8 +139,8 @@ object ProcElemReflectionDAO {
   def retrive(k: Int, bid: Int, process: Int, space_own:Option[Int] = None):List[UnitElement] = database withSession {
     implicit session =>
       findByRef(k).map(e => e.reflect(bid, process, space_own))
-
   }
+
   def update(id: Int, entity: UnitElementRef):Boolean = {
     database withSession { implicit session =>
       findById(id) match {

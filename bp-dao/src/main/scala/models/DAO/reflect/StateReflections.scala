@@ -57,24 +57,57 @@ var id:Option[Int],
   lang:         String = "en"*/
     
   def * = (id.?, 
-reflection, 
-title, 
-neutral,
-process_state,
-on,
-on_rate,
-front_elem_id,
-space_elem_id,
-space_id,
-created_at, updated_at, 
-lang,
-middle,
-middleable,
-oposite,
-opositable) <> (BPStateRef.tupled, BPStateRef.unapply)
-
+          reflection, 
+          title, 
+          neutral,
+          process_state,
+          on,
+          on_rate,
+          front_elem_id,
+          space_elem_id,
+          space_id,
+          created_at, updated_at, 
+          lang,
+          middle,
+          middleable,
+          oposite,
+          opositable) <> (BPStateRef.tupled, BPStateRef.unapply)
 }
 
+object BPStateRefDAOF {
+  import akka.actor.ActorSystem
+  import akka.stream.ActorFlowMaterializer
+  import akka.stream.scaladsl.Source
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._  
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  val state_refs = BPStateRefDAO.state_refs
+
+  private def filterByIdsQuery(ids: List[Int]): Query[StateRefs, BPStateRef, Seq] =
+    state_refs.filter(_.id inSetBind ids) 
+  private def filterByReflection(reflection: Int): Query[StateRefs, BPStateRef, Seq] =
+    state_refs.filter(_.reflection === reflection) 
+
+  def findByRef(reflection: Int):Future[Seq[BPStateRef]] = {
+    db.run(filterByReflection(reflection).result)
+  }
+  def retrive(k: Int, process: Int, front_elem_id:Option[Int],
+  space_elem_id:Option[Int], state_id:Option[Int]):Future[List[BPState]] = {
+      findByRef(k).map { elems =>
+        elems.map(e => e.reflect(process, front_elem_id, space_elem_id, state_id)).toList
+      }
+  }
+}
 
 object BPStateRefDAO {
   /**

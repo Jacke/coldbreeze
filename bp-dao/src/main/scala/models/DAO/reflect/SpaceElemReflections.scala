@@ -54,7 +54,53 @@ import main.scala.bprocesses._
 
 
 
+object SpaceElementReflectionDAOF {
+  import akka.actor.ActorSystem
+  import akka.stream.ActorFlowMaterializer
+  import akka.stream.scaladsl.Source
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._  
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  val space_element_reflections = SpaceElementReflectionDAO.space_element_reflections
 
+  private def filterByIdsQuery(ids: List[Int]): Query[SpaceElementReflections, UnitSpaceElementRef, Seq] =
+    space_element_reflections.filter(_.id inSetBind ids) 
+  private def filterByReflection(reflection: Int): Query[SpaceElementReflections, UnitSpaceElementRef, Seq] =
+    space_element_reflections.filter(_.reflection === reflection) 
+  private def filterByReflections(reflections: List[Int]): Query[SpaceElementReflections, UnitSpaceElementRef, Seq] =
+    space_element_reflections.filter(_.reflection inSetBind reflections) 
+
+  private def filterByElemReflections(ids: List[Int]): Query[SpaceElementReflections, UnitSpaceElementRef, Seq] =
+    space_element_reflections.filter(_.ref_space_owned inSetBind ids) 
+
+  def findByRefs(reflections: List[Int]):Future[Seq[UnitSpaceElementRef]] = {
+    db.run(filterByReflections(reflections).result)
+  }
+
+  def findByElemRefs(ids: List[Int]) = {
+       db.run(filterByElemReflections(ids).result)
+  }
+
+  def findByRef(reflection: Int):Future[Seq[UnitSpaceElementRef]] = {
+    db.run(filterByReflection(reflection).result)
+  }
+
+  def retrive(k: Int, business: Int, process: Int,space_own:Option[Int],ref_space_owned: Int):Future[List[UnitSpaceElement]] = {
+      findByRef(k).map { elems =>
+        elems.map(e => e.reflect(business, process, space_own, ref_space_owned)).toList
+      }
+  }
+}
 
 /**
  * Actions
@@ -103,8 +149,7 @@ object SpaceElementReflectionDAO {
        q3.list                   
     } 
   }
-  def retrive(k: Int, business: Int, process: Int,space_own:Option[Int],
-                        ref_space_owned: Int):List[UnitSpaceElement] = database withSession {
+  def retrive(k: Int, business: Int, process: Int,space_own:Option[Int],ref_space_owned: Int):List[UnitSpaceElement] = database withSession {
     implicit session =>
       findByRef(k).map(e => e.reflect(business, process, space_own, ref_space_owned))
 

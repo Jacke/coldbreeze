@@ -13,13 +13,13 @@ import main.scala.simple_parts.process.Units._
  **/
 object ElementProposals {
   
-    def dropRefElements() = {
-// PH
-RefDAO.deleteByTitle("Placeholder")
-// CF
-RefDAO.deleteByTitle("Confirmation")
-// CN
-RefDAO.deleteByTitle("Container")
+def dropRefElements() = {
+      // PH
+      RefDAO.deleteByTitle("Placeholder")
+      // CF
+      RefDAO.deleteByTitle("Confirmation")
+      // CN
+      RefDAO.deleteByTitle("Container")
 }
 
 

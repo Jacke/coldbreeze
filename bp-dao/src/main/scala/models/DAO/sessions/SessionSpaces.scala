@@ -124,6 +124,12 @@ object SessionSpaceDAOF {
 
   private def filterQuery(id: Int): Query[SessionSpaces, SessionSpaceDTO, Seq] =
     session_spaces.filter(_.id === id)
+  private def filterQueryBySession(id: Int): Query[SessionSpaces, SessionSpaceDTO, Seq] =
+    session_spaces.filter(_.session === id)
+
+  def findBySession(k: Int):Future[Seq[SessionSpaceDTO]] =  {
+      db.run(filterQueryBySession(k).result)
+  }  
 
 }
 object SessionSpaceDAO {

@@ -176,8 +176,6 @@ def saveOrUpdateSessionStates(bprocess: BProcess, bprocess_dto: BProcessDTO, ses
     session_states.foreach { state =>
         toApplogger(s"session state ${state.id} ${state.title} ${state.on}-${state.on_rate} ")
     }
-
-
     val deltas = session_states.filter { state =>
       session_states_initial.find(initialState => initialState.id == state.origin_state && 
       (initialState.on_rate != state.on_rate || initialState.on != state.on)).isDefined // TODO: 4-Dimension checking
@@ -219,33 +217,62 @@ def initiate(bpID: Int,
              session_id: Option[Int],
              params: List[ReactionActivator] = List(), 
              pipes: List[LaunchMapPipe => ExecutedLaunchCVPipes]=List() ):BProcess = {
-    ElementRegistrator.apply
-    // caster
-    //val process_dto = BPDAO.get(bpID).get
-  val procElemsF = ProcElemDAOF.findByBPId(bpID)
-  val process = new BProcess(new Managment, id = bpDTO.id)
 
-    initiate2(bpID, run_proc, process, bpDTO, procElemsF, lang, with_pulling = true, session_id_val = session_id, 
-      params = params, pipes = pipes)
-  process
+ElementRegistrator.apply
+// caster
+//val process_dto = BPDAO.get(bpID).get
+val procElemsF = ProcElemDAOF.findByBPId(bpID)
+val process = new BProcess(new Managment, id = bpDTO.id)
+
+initiate2(bpID, run_proc, process, bpDTO, procElemsF, lang, with_pulling = true, session_id_val = session_id, 
+          params = params, pipes = pipes)
+process
 }
 
-
 def initiate2(bpID: Int, 
-  run_proc: Boolean,
-  processRunned: BProcess, 
-  bpDTO: BProcessDTO, 
-  procElemenets: Future[Seq[UndefElement]], 
-  lang: Option[String] = Some("en"),
-  with_pulling: Boolean = false,
-  session_id_val: Option[Int],
-  params: List[ReactionActivator] = List(),
-  pipes: List[LaunchMapPipe => ExecutedLaunchCVPipes]=List()
-  ):BProcess = 
-  
+              run_proc: Boolean,
+              processRunned: BProcess, 
+              bpDTO: BProcessDTO, 
+              procElementsF: Future[Seq[UndefElement]], 
+              lang: Option[String] = Some("en"),
+              with_pulling: Boolean = false,
+              session_id_val: Option[Int],
+              params: List[ReactionActivator] = List(),
+              pipes: List[LaunchMapPipe => ExecutedLaunchCVPipes]=List() ):BProcess = {
+ val processF =initiate2F(bpID, 
+                          run_proc,
+                          processRunned, 
+                          bpDTO, 
+                          procElementsF, 
+                          lang,
+                          with_pulling,
+                          session_id_val,
+                          params,
+                          pipes)
+ models.DAO.sessions.SessionProcElementDAOF.await(processF)
+}
+
+def initiate2F(bpID: Int, 
+              run_proc: Boolean,
+              processRunned: BProcess, 
+              bpDTO: BProcessDTO, 
+              procElementsF: Future[Seq[UndefElement]], 
+              lang: Option[String] = Some("en"),
+              with_pulling: Boolean = false,
+              session_id_val: Option[Int],
+              params: List[ReactionActivator] = List(),
+              pipes: List[LaunchMapPipe => ExecutedLaunchCVPipes]=List() ):Future[BProcess] = 
 {
-    val test_space = BPSpaceDAO.findByBPId(bpID)
-    val space_elems = SpaceElemDAO.findByBPId(bpID)
+    val test_spaceF = BPSpaceDAOF.findByBPId(bpID)
+    val space_elemsF = SpaceElemDAOF.findByBPId(bpID)
+    procElementsF.flatMap { procElementsObj =>
+    test_spaceF.flatMap { test_spaceObj => 
+    space_elemsF.flatMap { space_elemsObj => 
+
+    val procElements = procElementsObj.toList
+    val test_space = test_spaceObj.toList
+    val space_elems = space_elemsObj.toList
+
     val process = processRunned
 
 
@@ -268,31 +295,38 @@ def initiate2(bpID: Int,
     var burnSpaceElMap:scala.collection.mutable.Map[Int,Int] = scala.collection.mutable.Map().empty
 
     // Generate sessions
-    session_id_val match {
+    session_id_val match {  
       case Some(session_val) => { // Launch from existed session
         runFrom = true
         session_id = session_val
-        sessionEls = SessionProcElementDAO.findBySession(session_id)
-        sessionSpaces = SessionSpaceDAO.findBySession(session_id)
-        sessionSpaceEls = SessionSpaceElemDAO.findBySession(session_id)
+        //val sessionElsF:Future[Seq[SessionUndefElement]]         = SessionProcElementDAOF.findBySession(session_id)
+        //val sessionSpacesF:Future[Seq[SessionSpaceDTO]]          = SessionSpaceDAOF.findBySession(session_id)      
+        //val sessionSpaceElsF:Future[Seq[SessionSpaceElementDTO]] = SessionSpaceElemDAOF.findBySession(session_id)  
+        //sessionElsF     .map { sessionElsObj =>
+        //sessionSpacesF  .map { sessionSpacesObj =>
+        //sessionSpaceElsF.map { sessionSpaceElsObj =>
+          sessionEls      = SessionProcElementDAO.findBySession(session_id)//sessionElsObj.toList
+          sessionSpaces   = SessionSpaceDAO.findBySession(session_id)//sessionSpacesObj.toList
+          sessionSpaceEls = SessionSpaceElemDAO.findBySession(session_id)//sessionSpaceElsObj.toList
+        //}
+        //}
+        //}
       }
       case _ => { // launch from empty session
         session_id = saveSession(processRunned, bpDTO, lang)
         // FRONT ELEM NOT FOR BRICKS
-        sessionEls = BPSpaceDAOF.await(procElemenets).map { el =>
+        sessionEls = procElements.map { el =>
             val obj = ExperimentalSessionBuilder.fromOriginEl(el, session_id, burnElemMap)
             elemMap += el.id.get -> obj.id.get
             obj
         }.toList
-        sessionSpaces = test_space.map { sp =>//.filter(sp => sp.brick_nested.isDefined).map { sp =>
+        sessionSpaces = test_space.map { sp =>//.filter(sp => sp.brick_nested.isDefined).map ( sp =>
           val obj = ExperimentalSessionBuilder.fromOriginSp(sp, session_id, elemMap, spaceElsMap)
           spaceMap += sp.id.get -> obj.id.get
           obj
         }        
         ExperimentalAfterBurning.makeBurn(spaceMap, burnElemMap)
-
-
-        sessionSpaceEls = space_elems.map { spel =>//.filter(n => n.space_own.isDefined).map { spel =>
+        sessionSpaceEls = space_elems.map { spel =>//.filter(n => n.space_own.isDefined).map ( spel =>
           val obj = ExperimentalSessionBuilder.fromOriginSpElem(spel, session_id, spaceMap)
           spaceElsMap += spel.id.get -> obj.id.get
           obj
@@ -317,7 +351,7 @@ def initiate2(bpID: Int,
   process.push {
     arrays.sortWith(_.order < _.order)
   }
-  toApplogger("elements " + process.allElements.length + " " + BPSpaceDAOF.await(procElemenets).length)
+  toApplogger("elements " + process.allElements.length + " " + procElements.length)
 
   /* Presence validation  */
   val front_bricks = process.findFrontBrick()
@@ -341,9 +375,7 @@ def initiate2(bpID: Int,
      * Retriving
      * with_pulling: Boolean - use db for save session and retrive ids
      **/
-    var session_states:List[BPSessionState] = List()
-
-
+    var session_states:   List[BPSessionState]              = List()
     var initialStates:    List[SessionInitialState]         = List()
     var sessionTopologs:  List[SessionElemTopology]         = List()
     var sessionSwitchers: List[SessionUnitSwitcher]         = List()
@@ -352,15 +384,15 @@ def initiate2(bpID: Int,
 
     // Maps Origin to Session
     var initialStateMap:scala.collection.mutable.Map[Int, Int]    = scala.collection.mutable.Map().empty
-    var TopologsMap:scala.collection.mutable.Map[Int, Int]    = scala.collection.mutable.Map().empty
-    var SwitchersMap:scala.collection.mutable.Map[Int, Int]   = scala.collection.mutable.Map().empty
-    var ReactionsMap:scala.collection.mutable.Map[Int,Int]    = scala.collection.mutable.Map().empty
-    var ReactOutsMap:scala.collection.mutable.Map[Int,Int]    = scala.collection.mutable.Map().empty
+    var TopologsMap:scala.collection.mutable.Map[Int, Int]        = scala.collection.mutable.Map().empty
+    var SwitchersMap:scala.collection.mutable.Map[Int, Int]       = scala.collection.mutable.Map().empty
+    var ReactionsMap:scala.collection.mutable.Map[Int,Int]        = scala.collection.mutable.Map().empty
+    var ReactOutsMap:scala.collection.mutable.Map[Int,Int]        = scala.collection.mutable.Map().empty
 
 
     if (runFrom) { // Run from session
-        initialStates = SessionInitialStateDAO.findBySession(session_id)  
-        states = initialStates.map(in => ExperimentalSessionBuilder.fromInitialState(in))                  
+        initialStates    = SessionInitialStateDAO.findBySession(session_id)  
+        states           = initialStates.map(in => ExperimentalSessionBuilder.fromInitialState(in))                  
         sessionTopologs  = SessionElemTopologDAO.findBySession(session_id)
         sessionSwitchers = SessionSwitcherDAO.findBySession(session_id)
         sessionReactions = SessionReactionDAO.findBySession(session_id)
@@ -390,7 +422,7 @@ def initiate2(bpID: Int,
             obj
         }
       sessionSwitchers = SwitcherDAO.findByBPId(bpID).map { el => 
-        val obj:SessionUnitSwitcher = ExperimentalSessionBuilder.fromOriginSwitcher(el, session_id, initialStateMap)
+        val obj: SessionUnitSwitcher = ExperimentalSessionBuilder.fromOriginSwitcher(el, session_id, initialStateMap)
         SwitchersMap += el.id.get -> obj.id.get 
         obj
       }
@@ -411,11 +443,9 @@ def initiate2(bpID: Int,
       toApplogger(s"sessionSwitchers ${sessionSwitchers.length}")
       toApplogger(s"sessionReactions ${sessionReactions.length}")
       toApplogger(s"sessionReactOuts ${sessionReactOuts.length}")
-
       toApplogger("REACT OUT FROM PLAIN RUN")
       ReactionsMap.values.toList.foreach { l => toApplogger(l)}
       toApplogger(s"${ReactionsMap.values.toList.length}")
-
 
 
     }
@@ -496,9 +526,6 @@ def initiate2(bpID: Int,
 
   /************************************************************************************************/
   /*************************** BEFORE LAUNCH ******************************************************/
-
-
-
     val launchPipe = LaunchMapPipe(
     launchId = session_id,
     elementPipe =     ElementPipe(
@@ -517,13 +544,20 @@ def initiate2(bpID: Int,
                                     ReactOutsMap)
     )  
     val executedPipes:List[ExecutedLaunchCVPipes] = pipes.map(pipe => pipe(launchPipe))
-  /************************************************************************************************/
-  /************************************************************************************************/
-
-    if (validateElements(BPSpaceDAOF.await(procElemenets).toList, test_space, space_elems) && run_proc)
+/************************************************************************************************/
+/************************************************************************************************/
+/************************************************************************************************/
+/************************************************************************************************/
+/************************************************************************************************/
+/************************************************************************************************/
+/************************************************************************************************/
+    if (validateElements(procElements.toList, test_space, space_elems) && run_proc)
       NInvoker.run_proc(process)
     else
       toApplogger("Process launch flag is off")
+/************************************************************************************************/
+/************************************************************************************************/
+/************************************************************************************************/      
 /************************************************************************************************/
 /*************************** AFTER LAUNCH *******************************************************/
 /************************************************************************************************/
@@ -539,8 +573,10 @@ def initiate2(bpID: Int,
       saveStationLog(bpID, station_id, process)
     }
 
-    process
-
+    Future( process )
+    }
+    }
+  }
 }  
 
 

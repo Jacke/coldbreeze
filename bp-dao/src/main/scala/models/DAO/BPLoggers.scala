@@ -50,19 +50,18 @@ def spaceFK    = foreignKey("lg_sp_fk", space, models.DAO.BPSpaceDAO.bpspaces)(_
 }
 
 case class BPLoggerDTO(
-id: Option[Int],
-bprocess: Int,
-element: Option[Int],
-space_elem: Option[Int],
-order: Int,
-space: Option[Int],
-station: Int,
-invoked: Boolean,
-expanded: Boolean,
-container: Boolean,
-date: org.joda.time.DateTime,
-step: Int = 0
-)
+                      id: Option[Int],
+                      bprocess: Int,
+                      element: Option[Int],
+                      space_elem: Option[Int],
+                      order: Int,
+                      space: Option[Int],
+                      station: Int,
+                      invoked: Boolean,
+                      expanded: Boolean,
+                      container: Boolean,
+                      date: org.joda.time.DateTime,
+                      step: Int = 0)
 
 /*
   Data Conversion

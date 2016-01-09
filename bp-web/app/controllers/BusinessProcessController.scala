@@ -34,6 +34,11 @@ import main.scala.simple_parts.process.Units._
 import models.DAO.reflect._
 import models.DAO.conversion._
 import cloner.util._
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.Duration
+import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+import scala.util.Try
+
 
 case class RefElemContainer(title: String, desc: String = "", business: Int, process: Int, ref: Int, space_id: Option[Int]= None)
 
@@ -315,38 +320,39 @@ val SpaceElementForm = Form(
 
 
 
-def createFrontElem() = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def createFrontElem() = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
 
-request.body.validate[RefElemContainer].map{ 
+request.body.validate[RefElemContainer].map { 
   case entity => {
          if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, entity.process)) {
             haltActiveStations(entity.process)
-            RefDAO.retrive(entity.ref, 
+            RefDAOF.retrive(entity.ref, 
                            entity.process, 
                            entity.business, 
                            in = "front", 
                            entity.title, 
                            entity.desc, 
-                           space_id = None) match {//ProcElemDAO.pull_object(entity) match {
-
-            case None =>  Ok(Json.toJson(Map("failure" ->  s"Could not create front element ${entity.title}")))
-            case ref_resulted =>  { 
-              val element_result = ref_resulted
-              val elem_id = element_result match {
-                case Some(res) => res.proc_elems.headOption 
-                case _ => None
-              }
-              action(request.user.main.userId, process = Some(entity.process), 
-                action = ProcHisCom.elementCreated, 
-                what = Some(entity.title), 
-                what_id = elem_id)                 
-              Ok(Json.toJson(Map("success" ->  Json.toJson(ref_resulted))))
-            }
+                           space_id = None).map { retrived =>
+                              retrived match {//ProcElemDAO.pull_object(entity) match {
+                                case None =>  Ok(Json.toJson(Map("failure" ->  s"Could not create front element ${entity.title}")))
+                                case ref_resulted =>  { 
+                                  val element_result = ref_resulted
+                                  val elem_id = element_result match {
+                                    case Some(res) => res.proc_elems.headOption 
+                                    case _ => None
+                                }
+                              action(request.user.main.userId, process = Some(entity.process), 
+                                action = ProcHisCom.elementCreated, 
+                                what = Some(entity.title), 
+                                what_id = elem_id)                 
+                              Ok(Json.toJson(Map("success" ->  Json.toJson(ref_resulted))))
+                            }
+                          }
           }
-        } else { Forbidden(Json.obj("status" -> "Access denied")) }
+        } else { Future( Forbidden(Json.obj("status" -> "Access denied")) ) }
     }
     }.recoverTotal{
-      e => BadRequest("formWithErrors")
+      e => Future( BadRequest("formWithErrors") )
     }
 }
 def createSpace() = SecuredAction(BodyParsers.parse.json) { implicit request =>
@@ -365,7 +371,7 @@ def createSpace() = SecuredAction(BodyParsers.parse.json) { implicit request =>
     }
 }
 
-def createSpaceElem() = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def createSpaceElem() = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
 //RefDAO.retrive(k: Int, entity.bprocess, entity.business, in = "nested", entity.title, entity.desc, space_id: Option[Int] = None)
 //models.DAO.reflect.RefResulted
   val placeResult = request.body.validate[RefElemContainer]  
@@ -375,34 +381,34 @@ def createSpaceElem() = SecuredAction(BodyParsers.parse.json) { implicit request
   request.body.validate[RefElemContainer].map{ 
       case entity => {
             if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, entity.process)) {
-
- 
                 haltActiveStations(entity.process); 
-                 RefDAO.retrive(entity.ref, 
-                                entity.process, 
-                                entity.business, 
-                                in = "nested", 
-                                entity.title, 
-                                entity.desc, 
-                                entity.space_id) match { //SpaceElemDAO.pull_object(entity) match {
-                    case None =>  Ok(Json.toJson(Map("failure" ->  s"Could not create space element ${entity.title}")))
-                    case ref_resulted =>   { 
-                      val element_result = ref_resulted
-                      val elem_id = element_result match {
-                        case Some(res) => res.space_elems.headOption
-                        case _ => None
-                      }                      
-                      action(request.user.main.userId, process = Some(entity.process), 
-                        action = ProcHisCom.spaceElementCreated, 
-                        what = Some(entity.title), 
-                        what_id = elem_id)                        
-                      Ok(Json.toJson(Map("success" ->  Json.toJson(ref_resulted))))
-                    }
+                 RefDAOF.retrive(entity.ref, 
+                                 entity.process, 
+                                 entity.business, 
+                                 in = "nested", 
+                                 entity.title, 
+                                 entity.desc, 
+                                 entity.space_id).map { retrived => 
+                                retrived match { //SpaceElemDAO.pull_object(entity) match {
+                                  case None =>  Ok(Json.toJson(Map("failure" ->  s"Could not create space element ${entity.title}")))
+                                  case ref_resulted =>   { 
+                                    val element_result = ref_resulted
+                                    val elem_id = element_result match {
+                                      case Some(res) => res.space_elems.headOption
+                                      case _ => None
+                                    }                      
+                                    action(request.user.main.userId, process = Some(entity.process), 
+                                      action = ProcHisCom.spaceElementCreated, 
+                                      what = Some(entity.title), 
+                                      what_id = elem_id)                        
+                                    Ok(Json.toJson(Map("success" ->  Json.toJson(ref_resulted))))
+                                  }
+                                }
                   }
-          } else { Forbidden(Json.obj("status" -> "Access denied")) }
+          } else { Future(Forbidden(Json.obj("status" -> "Access denied"))) }
       }
     }.recoverTotal{
-      e => BadRequest("formWithErrors")
+      e => Future(BadRequest("formWithErrors"))
     }
 }
 

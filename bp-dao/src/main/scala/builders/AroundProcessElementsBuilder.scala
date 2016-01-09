@@ -57,16 +57,14 @@ object AroundProcessElementsBuilder {
   }    
   
   
-  def buildTree(st: BPStationDTO, process_id:Int,
+def buildTree(st: BPStationDTO, process_id:Int,
     process:Option[BProcessDTO]=None,
     station_dto:Option[BPStationDTO]=None):ElemAround = {
-    val proc = service.RunnerWrapper.initFrom(
-                                              station_id = st.id.get, 
+    val proc = service.RunnerWrapper.initFrom(station_id = st.id.get, 
                                               bpID = process_id, 
                                               params = List.empty[InputParamProc],
                                               process_dtoObj = process,
-                                              station_dto = station_dto
-                                              )
+                                              station_dto = station_dto)
       
     var pre:Option[AroundAttr] = None
     var nex:Option[AroundAttr] = None
@@ -84,9 +82,9 @@ object AroundProcessElementsBuilder {
 
     ElemAround(now = now, prev = pre, next = nex)
     // TODO: Nested around
-  }
-  // Return: Option[Map[Station_id, ElemAround]]
-  def detectForProcess(process_id: Int):List[ListAround] = {
+}
+// Return: Option[Map[Station_id, ElemAround]]
+def detectForProcess(process_id: Int):List[ListAround] = {
    val stations = BPStationDAO.findActiveByBPIds(List(process_id))
       
      if (stations.length > 0) {
@@ -94,7 +92,8 @@ object AroundProcessElementsBuilder {
      } else {
        val list:List[ListAround] = List();list;
      }
-  }
+}
+
 }
 
 case class AroundAttr(id: Int, title: String = "")

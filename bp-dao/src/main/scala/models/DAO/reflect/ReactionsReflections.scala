@@ -37,6 +37,41 @@ class ReactionRefs(tag: Tag) extends Table[UnitReactionRef](tag, "reaction_refs"
 
 }
 
+object ReactionRefDAOF {
+  import akka.actor.ActorSystem
+  import akka.stream.ActorFlowMaterializer
+  import akka.stream.scaladsl.Source
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._  
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  val reaction_refs = ReactionRefDAO.reaction_refs
+
+  private def filterByIdsQuery(ids: List[Int]): Query[ReactionRefs, UnitReactionRef, Seq] =
+    reaction_refs.filter(_.id inSetBind ids) 
+  private def filterByReflection(reflection: Int): Query[ReactionRefs, UnitReactionRef, Seq] =
+    reaction_refs.filter(_.reflection === reflection) 
+
+  def findByRef(reflection: Int):Future[Seq[UnitReactionRef]] = {
+    db.run(filterByReflection(reflection).result)
+  }
+
+  def retrive(k: Int, process: Int, element: Int, from_state: Option[Int]):Future[List[UnitReaction]] = {
+      findByRef(k).map { elems =>
+        elems.map(e => e.reflect(process, element, from_state)).toList
+      }
+  }
+}
+
 
 object ReactionRefDAO {
   import scala.util.Try

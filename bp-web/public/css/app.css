@@ -105,8 +105,7 @@ body.themeGrad {
   }
 
   100% {
-    transform: translate3d(0,100%, 0) skewX(5deg);
-    transform: translate3d(0,100%, 0) skewX(5deg);
+    transform: translate3d(0,30%, 0) scale(0.9);
     opacity: 0;
   }
 }
@@ -117,9 +116,7 @@ body.themeGrad {
   }
 
   100% {
-    transform: translate3d(0,100%, 0) skewX(5deg);
-    transform: translate3d(0,200%, 0) skewX(5deg);
-    transform: translate3d(0,300%, 0) skewX(5deg);
+    transform: translate3d(0,30%, 0) scale(0.9);
     opacity: 0;
   }
 }

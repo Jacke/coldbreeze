@@ -59,6 +59,10 @@
     background-position: -900px 0;
 }
 
+#navHelpLink a.vIcoIn.menuEntityLink {
+    text-decoration: none;
+}
+
 .vRadio:after {
     background-position: -1000px 0;
 }
