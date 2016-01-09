@@ -14,6 +14,11 @@ object DevNettyServer extends App {
 object ProdNettyServer extends App {
   new NettyServer(Mode.Prod)
 }
+//java.lang.NoClassDefFoundError: StaticApplication$$anonfun$get$1
+//bbSDK[ERROR]    at StaticApplication.get(Main.scala:110) ~[classes/:na]
+//bbSDK[ERROR]    at play.core.server.Server$class.sendHandler$1(Server.scala:39) [play_2.11-2.3.9.jar:2.3.9]
+//bbSDK[ERROR]    at play.core.server.Server$$anonfun$getHandlerFor$4.apply(Server.scala:72) [play_2.11-2.3.9.jar:2.3.9]
+//bbSDK[ERROR]    at play.core.server.Server$$anonfun$getHandlerFor$4.apply(Server.scala:71) [play_2.11-2.3.9.jar:2.3.9]
 
 class NettyServer(mode: Mode.Value) {
   if (Properties.propIsSet("config.file")) System.clearProperty("config.resource")

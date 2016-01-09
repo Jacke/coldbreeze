@@ -351,14 +351,14 @@ $scope.reloadSessions = function() {
 
 SessionsFactory.query().$promise.then(function (sessions) {
 
-var session_ids = _.map(sessions, function(d){
-
+ var session_ids = _.map(data2, function(d){
     return _.map(_.filter(d.sessions, function(fd) {
-      return fd.station.finished != true;
+      return (fd.station !== undefined) && (fd.station.finished != true);
     }), function(dd){ 
         return 'ids='+dd.session.id+'&'
     })
-});
+   });
+
 
 $scope.sessions = sessions;
 

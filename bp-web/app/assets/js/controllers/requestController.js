@@ -38,7 +38,7 @@ if ($scope.$parent.$parent.$parent.$parent.interactionContainer != undefined) {
 }
 if ($scope.$parent.$parent.$parent.$parent.$parent.interactionContainer != undefined) {
   console.log('parent')
-    $scope.interactionContainer = $scope.$parent.$parent.$parent.$parent.$parent.interactionContainer;
+  $scope.interactionContainer = $scope.$parent.$parent.$parent.$parent.$parent.interactionContainer;
 }
 
 $scope.reloadSession = function(session_id) {
