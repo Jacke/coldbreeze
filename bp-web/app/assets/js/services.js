@@ -171,6 +171,13 @@ minorityAppServices.factory('SessionsFactory', ['$resource', function ($resource
 
     })
 }]);
+minorityAppServices.factory('FilteredSessionsFactory', ['$resource', function($resource) {
+    return $resource(baseUrl + 'sessions/filter?ids=:id', {}, {
+        query: { method: 'GET', isArray: true }
+    })
+}]);
+
+
 minorityAppServices.factory('BPSessionsFactory', ['$resource', function ($resource) {
     return $resource(baseUrl + 'bprocess/:BPid/sessions', {}, {
         query: { method: 'GET', isArray: false }

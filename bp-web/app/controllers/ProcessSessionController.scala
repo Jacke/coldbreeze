@@ -127,6 +127,20 @@ def all_sessions() = SecuredAction.async { implicit request =>
   }
 }
 
+// GET         /sessions/filter
+def filtered_sessions(session_ids: List[Int]) = SecuredAction.async { implicit request =>
+  val email = request.user.main.email.get
+  val sess_cnsF = BPSessionDAOF.findByBusinessAndIds(request.user.businessFirst, session_ids)
+  //val updated_cns:List[SessionContainer] = sess_cns.map { cn => 
+  //val updatedStatuses:List[SessionStatus] = cn.sessions.map(status => InputLoggerDAO.launchPeopleFetcher(status)) 
+  //val updatedCN = updatedStatuses.map(status => cn.updateStatus(status))
+  sess_cnsF.flatMap { sess_cns =>
+    InputLoggerDAOF.fetchPeopleBySessions(sess_cns).map { sess_cns_with_peoples =>
+        Ok(Json.toJson( sess_cns_with_peoples )) 
+    }
+  }
+}
+
 
 // /bprocess/:id/station/:station_id  
 def show_station(id: Int, station_id: Int) = SecuredAction { implicit request =>

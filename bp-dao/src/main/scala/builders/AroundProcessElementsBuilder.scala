@@ -64,7 +64,8 @@ def buildTree(st: BPStationDTO, process_id:Int,
                                               bpID = process_id, 
                                               params = List.empty[InputParamProc],
                                               process_dtoObj = process,
-                                              station_dto = station_dto)
+                                              station_dto = station_dto,
+                                              minimal = true)
       
     var pre:Option[AroundAttr] = None
     var nex:Option[AroundAttr] = None

@@ -148,9 +148,9 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 </div>-->
 <div class="stations minimal-stations" ng-init="session.lineDescShow=false;" ng-class="{'lineDescShowed': session.lineDescShow == true }" ng-repeat="session in entity.sessions | orderBy:'station.paused':true | limitTo: 10 | filter:isOnlyActive" style="clear: both;">
 
-<div class="session__buttonInput" ng-if="session.station.paused == true && session.station.finished == false" ng-click="showInlineLaunch(session);session.lineDescShow==true ? session.lineDescShow=false : session.lineDescShow=true;">
-<button class="moicon-menu moicon">
-</button></div>
+<div class="session__buttonInput" ng-click="showInlineLaunch(session);session.lineDescShow==true ? session.lineDescShow=false : session.lineDescShow=true;">
+  <button class="moicon-menu moicon"></button>
+</div>
 
         <div class="session__header">
               <div class="progress-button loading" ng-class="bubbleClass(session)" tooltip="{{bubbleTooltip(session)}}">
@@ -160,7 +160,7 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
                               size="60"
                               stroke-width="2"
                               complete="session.percent / 100">
-                              </progress-arc><span class="round-percent">{{ session.percent }}</span>
+                </progress-arc><span class="round-percent">{{ session.percent }}</span>
         </div>  
         </div>
              <div class="session_title">
@@ -190,7 +190,7 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 
 <div class="progress">
     <div class="progress-lines" ng-init="tree=session.session">
-                <div ng-include src="'assets/partials/treeLiner.html'"></div>
+      <div ng-include src="'assets/partials/treeLiner.html'"></div>
     </div>    
    <div class="progress-bar" role="progressbar" aria-valuenow="{{session.percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{session.percent}}%;">
     <!--<span>{{session.percent}}%</span>-->
@@ -204,7 +204,7 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
     <li tooltip="Cancel" ng-click="deleteSession(session.session.id)"><span class="moicon icon-trash"></span></li>
   </ul>
 </div>      
-<div class="session-launches-bar minimal" ng-if="session.station.paused == true && session.station.finished == false">
+<div class="session-launches-bar minimal">
     <!-- <div ng-include src="'assets/partials/launchesBar.html'" class="launches-bar"></div> -->
 
 

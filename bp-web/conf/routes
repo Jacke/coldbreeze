@@ -186,6 +186,9 @@ POST        /bprocess/:bpId/copy/:title                         @controllers.Bus
 
 # Stations
 GET         /sessions 								 @controllers.ProcessSessionController.all_sessions()
+GET         /sessions/filter                         @controllers.ProcessSessionController.filtered_sessions(ids: List[Int])
+
+
 GET         /interact/:session_id                    @controllers.InteractionController.fetchInteraction(session_id: Int)
 GET         /interacts                               @controllers.InteractionController.fetchAllInteraction()
 GET         /interactsf                              @controllers.InteractionController.fetchAllInteractionF()

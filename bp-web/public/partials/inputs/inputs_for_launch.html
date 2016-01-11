@@ -1,6 +1,6 @@
 <div class="request-controller" ng-controller="BPRequestCtrl" ng-init="session=$parent.$parent.session;bpId=$parent.$parent.session.process.id">
 
-<div class="fastInput">
+<div class="fastInput" ng-hide="$parent.$parent.session.inlineLaunchShow || ($parent.$parent.session.station.paused !== true && $parent.$parent.session.station.finished !== false)">
 
 <span class="element-title">{{ firstInput.reaction.elem.element_title }}</span>
 

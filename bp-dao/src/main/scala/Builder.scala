@@ -97,12 +97,13 @@ object Build {
                  params: List[ReactionActivator], 
                  invoke:Boolean = true,
                  process_dto:Option[BProcessDTO]=None,
-                 station_dto:Option[BPStationDTO]=None):Option[BProcess]  = {
+                 station_dto:Option[BPStationDTO]=None,
+                 minimal: Boolean = false):Option[BProcess]  = {
       val bpDTO = process_dto match {
         case Some(dto) => dto
         case _ => BPDAO.get(bpID).get
       }
-      val process = initiate(bpID, invoke, bpDTO, session_id = Some(session_id), params = params)
+      val process = initiate(bpID, invoke, bpDTO, session_id = Some(session_id), params = params, minimal = minimal)
       Some(process)
   }
 
@@ -216,7 +217,8 @@ def initiate(bpID: Int,
              lang: Option[String] = Some("en"), 
              session_id: Option[Int],
              params: List[ReactionActivator] = List(), 
-             pipes: List[LaunchMapPipe => ExecutedLaunchCVPipes]=List() ):BProcess = {
+             pipes: List[LaunchMapPipe => ExecutedLaunchCVPipes]=List(),
+             minimal: Boolean = false ):BProcess = {
 
 ElementRegistrator.apply
 // caster
@@ -225,7 +227,7 @@ val procElemsF = ProcElemDAOF.findByBPId(bpID)
 val process = new BProcess(new Managment, id = bpDTO.id)
 
 initiate2(bpID, run_proc, process, bpDTO, procElemsF, lang, with_pulling = true, session_id_val = session_id, 
-          params = params, pipes = pipes)
+          params = params, pipes = pipes, minimal = minimal)
 process
 }
 
@@ -238,7 +240,8 @@ def initiate2(bpID: Int,
               with_pulling: Boolean = false,
               session_id_val: Option[Int],
               params: List[ReactionActivator] = List(),
-              pipes: List[LaunchMapPipe => ExecutedLaunchCVPipes]=List() ):BProcess = {
+              pipes: List[LaunchMapPipe => ExecutedLaunchCVPipes]=List(),
+              minimal:Boolean = false ):BProcess = {
  val processF =initiate2F(bpID, 
                           run_proc,
                           processRunned, 
@@ -248,7 +251,7 @@ def initiate2(bpID: Int,
                           with_pulling,
                           session_id_val,
                           params,
-                          pipes)
+                          pipes, minimal = minimal)
  models.DAO.sessions.SessionProcElementDAOF.await(processF)
 }
 
@@ -261,7 +264,8 @@ def initiate2F(bpID: Int,
               with_pulling: Boolean = false,
               session_id_val: Option[Int],
               params: List[ReactionActivator] = List(),
-              pipes: List[LaunchMapPipe => ExecutedLaunchCVPipes]=List() ):Future[BProcess] = 
+              pipes: List[LaunchMapPipe => ExecutedLaunchCVPipes]=List(),
+              minimal: Boolean = false ):Future[BProcess] = 
 {
     val test_spaceF = BPSpaceDAOF.findByBPId(bpID)
     val space_elemsF = SpaceElemDAOF.findByBPId(bpID)
@@ -369,7 +373,10 @@ def initiate2F(bpID: Int,
 /*************************************************************************************************************************/
 /*************************************************************************************************************************/
 /*************************************************************************************************************************/
-    var states:List[BPState] = BPStateDAO.findByBP(bpID)
+    var states:List[BPState] = List()
+    if (!minimal) {
+    states = BPStateDAO.findByBP(bpID)
+    }
     /**
      * Session state
      * Retriving
@@ -390,7 +397,7 @@ def initiate2F(bpID: Int,
     var ReactOutsMap:scala.collection.mutable.Map[Int,Int]        = scala.collection.mutable.Map().empty
 
 
-    if (runFrom) { // Run from session
+    if (runFrom && !minimal) { // Run from session
         initialStates    = SessionInitialStateDAO.findBySession(session_id)  
         states           = initialStates.map(in => ExperimentalSessionBuilder.fromInitialState(in))                  
         sessionTopologs  = SessionElemTopologDAO.findBySession(session_id)
@@ -400,7 +407,7 @@ def initiate2F(bpID: Int,
 
         val existedSesStates = BPSessionStateDAO.findByBPAndSession(bpID, session_id)
         session_states = SessionStatesContainer(existedSesStates, existedSesStates.map(o => o.id.getOrElse(0))).session_states
-    } else       { // Run from plain
+    } else if( !minimal ) { // Run from plain
         states = states.map { state =>
             val ogState = ExperimentalSessionBuilder.fromOriginState(state, session_id, elemMap,spaceMap,spaceElsMap)
             initialStateMap += state.id.get -> ogState.id.get
@@ -446,8 +453,6 @@ def initiate2F(bpID: Int,
       toApplogger("REACT OUT FROM PLAIN RUN")
       ReactionsMap.values.toList.foreach { l => toApplogger(l)}
       toApplogger(s"${ReactionsMap.values.toList.length}")
-
-
     }
 
 
@@ -565,7 +570,7 @@ def initiate2F(bpID: Int,
 /**
     *  Save state and logs only if process was runned
     **/
-    if (run_proc) {
+    if (run_proc && !minimal) {
       saveLogsInit(process, bpDTO, station_id, test_space)
       saveOrUpdateSessionStates(process, bpDTO, session_id, pulling = true)
       saveSessionStateLogs(process, bpDTO)
@@ -1318,7 +1323,8 @@ def runFrom(station_id:Int, bpID:Int, params: List[InputParamProc], session_id: 
               bpID:Int, 
               params: List[InputParamProc],
               process_dtoObj:Option[BProcessDTO]=None,
-              station_dto:Option[BPStationDTO]=None
+              station_dto:Option[BPStationDTO]=None,
+              minimal: Boolean = false
               ):BProcess  = {
 
     val process_dto:Option[BProcessDTO] = process_dtoObj match {
@@ -1333,7 +1339,7 @@ def runFrom(station_id:Int, bpID:Int, params: List[InputParamProc], session_id: 
       case Some(station) => station.session
       case _ => -1
     }
-    val process = Build.newRunFrom(bpID, session_id, params = List(), invoke = false)
+    val process = Build.newRunFrom(bpID, session_id, params = List(), invoke = false, minimal = minimal)
 
     /*
     val process_dto = BPDAO.get(bpID).get
