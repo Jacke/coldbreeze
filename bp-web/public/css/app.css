@@ -105,8 +105,7 @@ body.themeGrad {
   }
 
   100% {
-    transform: translate3d(0,100%, 0) skewX(5deg);
-    transform: translate3d(0,100%, 0) skewX(5deg);
+    transform: translate3d(0,30%, 0) scale(0.9);
     opacity: 0;
   }
 }
@@ -117,9 +116,7 @@ body.themeGrad {
   }
 
   100% {
-    transform: translate3d(0,100%, 0) skewX(5deg);
-    transform: translate3d(0,200%, 0) skewX(5deg);
-    transform: translate3d(0,300%, 0) skewX(5deg);
+    transform: translate3d(0,30%, 0) scale(0.9);
     opacity: 0;
   }
 }
@@ -8536,6 +8533,33 @@ height: 40px;
     height: 100%;
     z-index: 1;
 }
+.inline-launch .fastInput.ng-hide-add         { animation:0.5s lightSpeedOutY ease; }
+/* when showing the picture */
+.inline-launch .fastInput.ng-hide-remove      { animation:0.5s flipInXY ease; }
+@keyframes lightSpeedOutY {
+  0% {
+    opacity: 1;
+  }
+  40% {
+    transform: translate3d(50%,0, 0) scale(0.9) rotate3d(0, 50, 0, 122deg);
+    opacity: 0.5;
+  }
+  100% {
+    transform: translate3d(60%,0, 0) scale(0.9) rotate3d(0, 50, 0, 122deg);
+    opacity: 0;
+  }
+}
+@keyframes flipInXY {
+  0% {
+    transform: perspective(400px) rotate3d(0, 1, 0, 50deg);
+    transition-timing-function: ease-in;
+    opacity: 0;
+  }
+  100% {
+    transform: perspective(400px) rotate3d(0, 1, 0, 0deg);
+  }
+}
+
 span.firstInputFileName {
     white-space: nowrap;
     overflow: hidden;
@@ -8558,6 +8582,7 @@ span.firstInputFileName {
     margin-top: -3px;
 }
 .inline-launch .fastInput a {
+    cursor: pointer;
     color: white;
     background-color: rgba(40,43,53,0.78);
     padding: 4px 4px 5px 2px;

@@ -31,18 +31,53 @@ class SwitcherRefs(tag: Tag) extends Table[UnitSwitcherRef](tag, "switcher_refs"
   def reflectFK = foreignKey("sw_ref_reflect_fk", reflection, models.DAO.reflect.RefDAO.refs)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?, 
-reflection, 
-switch_type, 
-priority,           
-state_ref,
-fn,
-target,
-override_group,
-created_at, updated_at) <> (UnitSwitcherRef.tupled, UnitSwitcherRef.unapply)
+          reflection, 
+          switch_type, 
+          priority,           
+          state_ref,
+          fn,
+          target,
+          override_group,
+          created_at, updated_at) <> (UnitSwitcherRef.tupled, UnitSwitcherRef.unapply)
 
   def state_refFK = foreignKey("state_ref_fk", state_ref, models.DAO.reflect.BPStateRefDAO.state_refs)(_.id, onDelete = ForeignKeyAction.Cascade)
 //def session_state_refFK = foreignKey("session_state_ref_fk", session_state_ref, SpaceElementReflectionDAO.space_element_reflections)(_.id, onDelete = ForeignKeyAction.Cascade)
+}
 
+
+object SwitcherRefDAOF {
+  import akka.actor.ActorSystem
+  import akka.stream.ActorFlowMaterializer
+  import akka.stream.scaladsl.Source
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._  
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  val switcher_refs = SwitcherRefDAO.switcher_refs
+
+  private def filterByIdsQuery(ids: List[Int]): Query[SwitcherRefs, UnitSwitcherRef, Seq] =
+    switcher_refs.filter(_.id inSetBind ids) 
+  private def filterByReflection(reflection: Int): Query[SwitcherRefs, UnitSwitcherRef, Seq] =
+    switcher_refs.filter(_.reflection === reflection) 
+
+  def findByRef(reflection: Int):Future[Seq[UnitSwitcherRef]] = {
+    db.run(filterByReflection(reflection).result)
+  }
+
+  def retrive(k: Int, process: Int, state_ref: Int, sess: Option[Int] = None):Future[List[UnitSwitcher]] = {
+      findByRef(k).map { elems =>
+        elems.map(e => e.reflect(process, state_ref, sess)).toList
+      }
+  }
 }
 
 

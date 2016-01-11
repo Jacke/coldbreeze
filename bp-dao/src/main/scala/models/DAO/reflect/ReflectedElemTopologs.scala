@@ -40,6 +40,37 @@ case class RefElemTopology(id: Option[Int],
   updated_at: Option[org.joda.time.DateTime] = None,
   space_id: Option[Int] = None)
 
+
+object ReflectElemTopologDAOF {
+  import akka.actor.ActorSystem
+  import akka.stream.ActorFlowMaterializer
+  import akka.stream.scaladsl.Source
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._  
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  val reflected_elem_topologs = ReflectElemTopologDAO.reflected_elem_topologs
+
+  private def filterByIdsQuery(ids: List[Int]): Query[ReflectElemTopologs, RefElemTopology, Seq] =
+    reflected_elem_topologs.filter(_.id inSetBind ids) 
+  private def filterByReflection(reflection: Int): Query[ReflectElemTopologs, RefElemTopology, Seq] =
+    reflected_elem_topologs.filter(_.reflection === reflection) 
+
+  def findByRef(reflection: Int):Future[Seq[RefElemTopology]] = {
+    db.run(filterByReflection(reflection).result)
+  }
+
+}
+
 object ReflectElemTopologDAO {
   /**
    * Actions

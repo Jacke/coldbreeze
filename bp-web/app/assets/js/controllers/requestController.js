@@ -32,50 +32,57 @@ console.log($scope.$parent.$parent.$parent.interactionContainer);
 console.log($scope.$parent.$parent.interactionContainer);
 console.log($scope.$parent.interactionContainer);
 */
-if ($scope.$parent.$parent.$parent.$parent.interactionContainer != undefined) {
-  console.log('parent')
-  $scope.interactionContainer = $scope.$parent.$parent.$parent.$parent.interactionContainer;
+/***
+ * Nested interaction fetching
+ */
+$scope.reloadInteractionContainer = function() {
+  if ($scope.$parent.$parent.$parent.$parent.interactionContainer != undefined) {
+    console.log('parent')
+    $scope.interactionContainer = $scope.$parent.$parent.$parent.$parent.interactionContainer;
+  }
+  if ($scope.$parent.$parent.$parent.$parent.$parent.interactionContainer != undefined) {
+    console.log('parent')
+    $scope.interactionContainer = $scope.$parent.$parent.$parent.$parent.$parent.interactionContainer;
+  }
 }
-if ($scope.$parent.$parent.$parent.$parent.$parent.interactionContainer != undefined) {
-  console.log('parent')
-  $scope.interactionContainer = $scope.$parent.$parent.$parent.$parent.$parent.interactionContainer;
-}
-
+$scope.reloadInteractionContainer();
 $scope.reloadSession = function(session_id) {
   console.log($window.location.hash);
   if ($window.location.hash === "#/launches") {
     console.log('reload session');
-    $scope.$parent.reloadSession();
+    $scope.$parent.reloadSession(session_id);
+    $scope.reloadInteractionContainer();
   }
   if ($window.location.hash === "#/bprocesses") {
     console.log('reload session');
-    $scope.$parent.reloadSessions();
+    $scope.$parent.reloadSession(session_id);
+    $scope.reloadInteractionContainer();
   }
 }
 
 
 
 
-  $scope.bpelems = LaunchElemsFactory.query({ launch_id: $scope.session_id }); 
-  $scope.spaces =  LaunchSpacesFactory.query({ launch_id: $scope.session_id });
-  $scope.spaceelems = LaunchSpaceElemsFactory.query({ launch_id: $scope.session_id });
-  /* callback for ng-click 'editUser': */
-  $scope.bpelems.$promise.then(function(data) {
-    $scope.spaces.$promise.then(function(data2) {
-      $scope.spaceelems.$promise.then(function(data3) {
-        //$scope.builder();
-
-  });
-  });
-  });
-  $scope.bpelems.$promise.then(function(data) {
+$scope.bpelems = LaunchElemsFactory.query({ launch_id: $scope.session_id }); 
+$scope.spaces =  LaunchSpacesFactory.query({ launch_id: $scope.session_id });
+$scope.spaceelems = LaunchSpaceElemsFactory.query({ launch_id: $scope.session_id });
+/* callback for ng-click 'editUser': */
+$scope.bpelems.$promise.then(function(data) {
+  $scope.spaces.$promise.then(function(data2) {
     $scope.spaceelems.$promise.then(function(data3) {
-      $scope.elemsHash = _.object(_.map($scope.bpelems, function(x){return [x.id, x]}));
-      $scope.spaceElemHash = _.object(_.map($scope.spaceelems, function(x){return [x.id, x]}));
-   });
-  });
+      //$scope.builder();
 
- $scope.trees = undefined;
+});
+});
+});
+$scope.bpelems.$promise.then(function(data) {
+  $scope.spaceelems.$promise.then(function(data3) {
+    $scope.elemsHash = _.object(_.map($scope.bpelems, function(x){return [x.id, x]}));
+    $scope.spaceElemHash = _.object(_.map($scope.spaceelems, function(x){return [x.id, x]}));
+ });
+});
+
+$scope.trees = undefined;
 $scope.builder = function (station) {
 
   var isIsEnd = function (spElems) {
@@ -112,51 +119,47 @@ $scope.builder = function (station) {
   });
 }
 
-  $scope.bpelems.$promise.then(function(data) {
-    $scope.spaceelems.$promise.then(function(data3) {
-      $scope.elemsHash = _.object(_.map($scope.bpelems, function(x){return [x.id, x]}));
-      $scope.spaceElemHash = _.object(_.map($scope.spaceelems, function(x){return [x.id, x]}));
-   });
-  });
+$scope.bpelems.$promise.then(function(data) {
+  $scope.spaceelems.$promise.then(function(data3) {
+    $scope.elemsHash = _.object(_.map($scope.bpelems, function(x){return [x.id, x]}));
+    $scope.spaceElemHash = _.object(_.map($scope.spaceelems, function(x){return [x.id, x]}));
+ });
+});
 
 
-    $scope.byObjId = function(elem) {
-    return function(obj) {
-      if (obj.f_elem !== undefined) {
-        return obj.f_elem === elem.id;
-
-      } else {
-        return obj.sp_elem === elem.id;
-
-      }
-      
-
+$scope.byObjId = function(elem) {
+  return function(obj) {
+    if (obj.f_elem !== undefined) {
+      return obj.f_elem === elem.id;
+    } else {
+      return obj.sp_elem === elem.id;
     }
+  }
 }
 
 
 
-  $scope.logs = BPLogsFactory.query({  BPid: $scope.bpId });
+$scope.logs = BPLogsFactory.query({  BPid: $scope.bpId });
 
-  $scope.logsByStation = function (stationId) {
-         var found = $filter('filter')($scope.logs, {station: stationId}, true);
-         if (found.length) {
-             //console.log(found)
-             return found;
-         } else {
-             '';
-         }
+$scope.logsByStation = function (stationId) {
+  var found = $filter('filter')($scope.logs, {station: stationId}, true);
+  if (found.length) {
+     //console.log(found)
+     return found;
+  } else {
+     '';
   }
+}
 
-
-  $scope.params = [
-   
-
-   ];
+$scope.params = [];
 
 console.log("interactionContainer");
 console.log($scope.interactionContainer);
 
+/***
+ * Initiation of interactions
+ * Autostart
+ */
 if ($scope.interactionContainer === undefined || $scope.interactionContainer.$promise === undefined) {
   console.log('interactionContainer are undefined');
  InteractionsFactory.query({session_id: $scope.session.session.id}).$promise.then(function (data) {
@@ -166,11 +169,11 @@ if ($scope.interactionContainer === undefined || $scope.interactionContainer.$pr
 
         _.forEach($scope.interactions.reactions, function(r) { return r.reaction.elem = _.find($scope.element_topologs, function(topo) { 
           return topo.topo_id === r.reaction.element}); 
-        })
+        });
         _.forEach($scope.interactions.reactions, function(reaction) { 
            return _.forEach(reaction.outs, function(out) {
               return out.state = _.find($scope.interactions.outs_identity, function(iden) { return iden.origin_state === out.state_ref });
-          }) 
+          }); 
         });
 
 
@@ -178,22 +181,22 @@ if ($scope.interactionContainer === undefined || $scope.interactionContainer.$pr
           $scope.firstInput = $scope.interactions.reactions[0];
           $scope.firstInput.files = [];
         }
-if ($scope.interactions !== undefined && $scope.interactions.reactions !== undefined && $scope.interactions.reactions.length > 0) {
-  $scope.reactionSelect($scope.interactions.reactions[0]);
-}        
-   });
+        if ($scope.interactions !== undefined && $scope.interactions.reactions 
+                                !== undefined && $scope.interactions.reactions.length > 0) {
+              $scope.reactionSelect($scope.interactions.reactions[0]);
+        }        
+    });
 });
 
 } else {
 //InteractionsFactory.query({session_id: $scope.session.session.id})
-  $scope.interactionContainer.$promise.then(function (data_cn) {
-    var data =  _.filter(data_cn, function(d) { 
+    var data =  _.filter($scope.interactionContainer, function(d) { 
       return _.filter(d.session_container.sessions, function(dd) { 
         return dd.session.id === $scope.session.session.id }).length > 0;
     })[0];
 
     $scope.interactions = data;
-
+    if ($scope.interactions !== undefined && $scope.interactions.reactions !== undefined) { // Check for nulled interactions
     LaunchElementTopologsFactory.query({ launch_id: $scope.session_id }).$promise.then(function (data2) {
       $scope.element_topologs = data2;
 
@@ -206,18 +209,17 @@ if ($scope.interactions !== undefined && $scope.interactions.reactions !== undef
           }) 
         });
 
-
-        if ($scope.interactions.reactions.length > 0) {
-          $scope.firstInput = $scope.interactions.reactions[0];
-          $scope.firstInput.files = [];
-        }
-if ($scope.interactions !== undefined && $scope.interactions.reactions !== undefined && $scope.interactions.reactions.length > 0) {
-  $scope.reactionSelect($scope.interactions.reactions[0]);
-}        
-
-
+          if ($scope.interactions.reactions.length > 0) {
+            $scope.firstInput = $scope.interactions.reactions[0];
+            $scope.firstInput.files = [];
+          }
+          if ($scope.interactions !== undefined && $scope.interactions.reactions !== undefined 
+                                                && $scope.interactions.reactions.length > 0) {
+            $scope.reactionSelect($scope.interactions.reactions[0]);
+          }        
       });
-});
+      }
+
 }
 
 
@@ -622,6 +624,7 @@ $scope.reFillValue = function(cost, entity, slat) {
         return data;
       }
   }
+$scope.reaction_params = []
 
   $scope.runFrom = function (session_id) {
     //var front_params = _.filter(station.proc_elems,  function(obj) { return obj.param !== undefined });
@@ -632,10 +635,11 @@ $scope.reFillValue = function(cost, entity, slat) {
       $scope.sendWarpResult()
     }
 
+    if ($scope.reaction_params.length > 0) {
     $http({
       url: 'bprocess/' + $scope.bpId + '/invoke_from/' + session_id,
       method: "POST",
-      data: $scope.reaction_params
+      data: [$scope.reaction_params[0]]
       })
       .then(function(response) {
         // success
@@ -651,20 +655,20 @@ $scope.reFillValue = function(cost, entity, slat) {
         notificationService.error(fail.data.error);
       }
       );
-  };
+  }
+};
 
-$scope.reaction_params = []
 
 $scope.addParam = function (reaction) {
-  if (_.find($scope.reaction_params, function(re) { 
-      return re.reaction_id === reaction.reaction.id }) !== undefined) {
-        $scope.delParam(reaction);
-  } else {
+  //if (_.find($scope.reaction_params, function(re) { 
+  //    return re.reaction_id === reaction.reaction.id }) !== undefined) {
+  //      $scope.delParam(reaction);
+  //} else {
     $scope.reaction_params.push({reaction_id: reaction.reaction.id });
       if ($scope.reaction_params.length !== 0) { 
         console.log("$scope.runFromDisabled = false;"); $scope.runFromDisabled = false; 
       }
-  }      
+  //}      
 }
 
 $scope.delParam = function (reaction) {

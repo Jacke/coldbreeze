@@ -362,8 +362,10 @@ var session_ids = _.map(sessions, function(d){
 
 $scope.sessions = sessions;
 
+InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') }).$promise.then(function (d) {
 
-$scope.interactionContainer = InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') });
+
+$scope.interactionContainer = d;
 console.log($scope.interactionContainer);
 console.log($scope.sessions);
 
@@ -378,7 +380,48 @@ $scope.bprocesses.$promise.then(function (processes) {
 }); 
 
 });
+});
+
 };
+
+$scope.reloadSession = function(session_id) {
+
+SessionsFactory.query().$promise.then(function (sessions) {
+
+var session_ids = _.map(sessions, function(d){
+    return _.map(_.filter(d.sessions, function(fd) {
+      return (fd.station !== undefined) && (fd.station.finished != true);
+    }), function(dd){ 
+      return 'ids='+dd.session.id+'&'
+  })
+});
+
+
+$scope.sessions = sessions;
+
+InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') }).$promise.then(function (d) {
+  $scope.interactionContainer = d;
+  console.log($scope.interactionContainer);
+  console.log($scope.sessions);
+  
+
+
+_.forEach($scope.sessions, function(session_cn) {
+  _.forEach(session_cn.sessions, function(session) { return session.session.station = session.station });
+});
+
+$scope.bprocesses.$promise.then(function (processes) { 
+  _.forEach(processes, function(proc) { 
+    proc.sessions = _.filter($scope.sessions, function(ses) { return ses.process.id == proc.id });
+  });
+}); 
+
+});
+
+});
+
+};
+
 $scope.reloadSessions();
 // Session lock by notification
 // NotificationBroadcaster

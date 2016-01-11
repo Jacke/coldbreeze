@@ -1,19 +1,46 @@
 package models.DAO
-  
-  
 import main.scala.bprocesses.{BProcess, BPLoggerResult}
 import main.scala.simple_parts.process.ProcElems
-import models.DAO.driver.MyPostgresDriver.simple._
-import com.github.nscala_time.time.Imports._
-//import com.github.tminglei.slickpg.date.PgDateJdbcTypes
-import slick.model.ForeignKeyAction
-
 import models.DAO.ProcElemDAO._
 import models.DAO.BPDAO._
 import models.DAO.BPStationDAO._
 import models.DAO.conversion.DatabaseCred
 import main.scala.simple_parts.process.Units._
 
+  
+object ElemTopologDAOF {
+  import akka.actor.ActorSystem
+  import akka.stream.ActorFlowMaterializer
+  import akka.stream.scaladsl.Source
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._  
+  import dbConfig.driver.api._
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  val elem_topologs = ElemTopologDAO.elem_topologs
+
+  private def filterQuery(id: Int): Query[ElemTopologs, ElemTopology, Seq] =
+    elem_topologs.filter(_.id === id)
+
+  def pull_object(s: ElemTopology):Future[Int] = {
+    val insertion = (elem_topologs returning elem_topologs.map(_.id)) += s
+    db.run(insertion)
+    //  db.run ( elem_topologs returning elem_topologs.map(_.id) += s )
+  }
+}  
+
+
+import models.DAO.driver.MyPostgresDriver.simple._
+import com.github.nscala_time.time.Imports._
+//import com.github.tminglei.slickpg.date.PgDateJdbcTypes
+import slick.model.ForeignKeyAction
 case class EitherTypeElement(front: Option[UndefElement] = None, 
                                     nested: Option[SpaceElementDTO] = None,
                                     title: String = "")
@@ -44,30 +71,7 @@ class ElemTopologs(tag: Tag) extends Table[ElemTopology](tag, "elem_topologs") {
 }
 
 
-object ElemTopologDAOF {
-  import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
-  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
-  //import slick.driver.JdbcProfile
-  import slick.driver.PostgresDriver.api._
-  import slick.jdbc.meta.MTable
-  import scala.concurrent.ExecutionContext.Implicits.global
-  import com.github.tototoshi.slick.JdbcJodaSupport._
-  import scala.concurrent.duration.Duration
-  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
-  import scala.util.Try
-  import models.DAO.conversion.DatabaseFuture._  
 
-  //import dbConfig.driver.api._ //
-  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
-  val elem_topologs = ElemTopologDAO.elem_topologs
-
-  private def filterQuery(id: Int): Query[ElemTopologs, ElemTopology, Seq] =
-    elem_topologs.filter(_.id === id)
-
-}
 object ElemTopologDAO {
   /**
    * Actions

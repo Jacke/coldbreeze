@@ -5,7 +5,10 @@ import main.scala.simple_parts.process.Units.{ElemTopology, UnitElement}
 import models.DAO.reflect._
 import models.DAO._
 import models.DAO.projections.ref._
-
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.Duration
+import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+import scala.util.Try
 
 object RefProjector extends FrontElemProjection
   with SpaceProjection

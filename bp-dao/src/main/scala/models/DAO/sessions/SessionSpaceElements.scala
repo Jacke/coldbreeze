@@ -176,6 +176,13 @@ object SessionSpaceElemDAOF {
         db.run(filterQuery(id).result.headOption)    
   }  
 
+   private def filterQueryBySession(id: Int): Query[SessionSpaceElements, SessionSpaceElementDTO, Seq] =
+    space_elements.filter(_.session === id)
+
+  def findBySession(k: Int):Future[Seq[SessionSpaceElementDTO]] =  {
+      db.run(filterQueryBySession(k).result)
+  }   
+
 }
 object SessionSpaceElemDAO {
   import DatabaseCred.database

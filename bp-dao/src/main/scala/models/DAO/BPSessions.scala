@@ -76,7 +76,8 @@ object BPSessionDAOF {
     bpsessions.filter(_.process === id)    
   private def filterByProcessesQuery(ids: List[Int]): Query[BPSessions, BPSession, Seq] =
     bpsessions.filter(_.process inSetBind ids)
-
+  private def filterByProcessesAndIdsQuery(processes_ids: List[Int], session_ids: List[Int]): Query[BPSessions, BPSession, Seq] =
+    bpsessions.filter(c => (c.process inSetBind processes_ids) && (c.id inSetBind session_ids) )    
 
 
 def findByBusiness(bid: Int):Future[Seq[SessionContainer]] = {
@@ -84,6 +85,27 @@ def findByBusiness(bid: Int):Future[Seq[SessionContainer]] = {
     pF.flatMap { processes =>
       val processIds:List[Int] = processes.map(_.id.get).toList
       val sessF = db.run(filterByProcessesQuery(processIds).result)
+      sessF.flatMap { sess =>
+        val allStationsF = BPStationDAOF.findBySessions(sess.map(s => s.id.get).toList)      
+        allStationsF.flatMap { stations =>
+          Future.sequence( processes.map { process =>
+              val sesStatusF = prepareSessionStatusWithStations(process, 
+                                                                sess.filter(ses => ses.process == process.id.get),
+                                                                stations)
+              sesStatusF.map { ses_status =>
+                SessionContainer(process, ses_status.toList)
+              }
+          } 
+          )
+        }
+      }
+    }
+}
+def findByBusinessAndIds(bid: Int, ids: List[Int]):Future[Seq[SessionContainer]] = {
+    val pF = BPDAOF.findByBusiness(bid)
+    pF.flatMap { processes =>
+      val processIds:List[Int] = processes.map(_.id.get).toList
+      val sessF = db.run(filterByProcessesAndIdsQuery(processIds, ids).result)
       sessF.flatMap { sess =>
         val allStationsF = BPStationDAOF.findBySessions(sess.map(s => s.id.get).toList)      
         allStationsF.flatMap { stations =>

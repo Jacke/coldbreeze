@@ -37,6 +37,53 @@ class ReactionStateOutRefs(tag: Tag) extends Table[UnitReactionStateOutRef](tag,
 
 }
 
+object ReactionStateOutRefDAOF {
+  import akka.actor.ActorSystem
+  import akka.stream.ActorFlowMaterializer
+  import akka.stream.scaladsl.Source
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._  
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  val reaction_state_out_refs = ReactionStateOutRefDAO.reaction_state_out_refs
+
+  private def filterByIdsQuery(ids: List[Int]): Query[ReactionStateOutRefs, UnitReactionStateOutRef, Seq] =
+    reaction_state_out_refs.filter(_.id inSetBind ids) 
+
+  private def filterByReactionsQuery(ids: List[Int]): Query[ReactionStateOutRefs, UnitReactionStateOutRef, Seq] =
+    reaction_state_out_refs.filter(_.reaction inSetBind ids) 
+  private def filterByReactionQuery(id: Int): Query[ReactionStateOutRefs, UnitReactionStateOutRef, Seq] =
+    reaction_state_out_refs.filter(_.reaction === id) 
+
+
+
+  def findByReactionRefs(ids: List[Int]) = {
+     db.run(filterByReactionsQuery(ids).result)
+  }
+
+  def findByReactionRef(id: Int) = {
+    db.run(filterByReactionQuery(id).result)
+  }
+
+  def retrive(k: Int, state_ref: Int, reaction: Int):Future[List[UnitReactionStateOut]] = {
+      findByReactionRef(k).map { res =>
+        res.map(e => e.reflect(state_ref, reaction)).toList
+      }
+  }
+
+
+}
+
+
 
 object ReactionStateOutRefDAO {
   import scala.util.Try
@@ -68,7 +115,6 @@ object ReactionStateOutRefDAO {
   def retrive(k: Int, state_ref: Int, reaction: Int):List[UnitReactionStateOut] = database withSession {
     implicit session =>
       findByReactionRef(k).map(e => e.reflect(state_ref, reaction))
-
   }
   def update(id: Int, switcher: UnitReactionStateOutRef) = database withSession { implicit session ⇒
     val switcherToUpdate: UnitReactionStateOutRef = switcher.copy(Option(id))

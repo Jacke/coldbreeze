@@ -1,12 +1,6 @@
 package models.DAO.reflect
-
 import main.scala.bprocesses.{BProcess, BPLoggerResult}
 import main.scala.simple_parts.process.ProcElems
-import models.DAO.driver.MyPostgresDriver.simple._
-import com.github.nscala_time.time.Imports._
-//import com.github.tminglei.slickpg.date.PgDateJdbcTypes
-import slick.model.ForeignKeyAction
-
 import models.DAO.ProcElemDAO._
 import models.DAO.BPDAO._
 import models.DAO.BPStationDAO._
@@ -16,7 +10,51 @@ import models.DAO._
 import models.DAO.projections._
 import main.scala.simple_parts.process.Units._
 import main.scala.bprocesses.refs.UnitRefs._  
-import com.typesafe.scalalogging._
+
+
+object RefDAOF {
+  import akka.actor.ActorSystem
+  import akka.stream.ActorFlowMaterializer
+  import akka.stream.scaladsl.Source
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._  
+  //import dbConfig.driver.api._ //
+
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  val refs = RefDAO.refs
+
+  private def filterQuery(id: Int): Query[Refs, Ref, Seq] =
+    refs.filter(_.id === id)
+
+  def retrive(k: Int, process: Int,
+              business: Int, in: String = "front", 
+              title: String, desc:String = "", 
+              space_id: Option[Int] = None):Future[Option[RefResulted]] = {
+      in match {
+        case "front" => RefProjectorF.projecting(k, process, business, title,desc, "front")
+        case _ => RefProjectorF.projecting(k, process, business, title,desc, "nested", space_id)
+      }
+  }
+  def get(k: Int):Future[Option[Ref]] = {
+    db.run(filterQuery(k).result.headOption)
+  }
+
+}    
+
+
+import models.DAO.driver.MyPostgresDriver.simple._
+import com.github.nscala_time.time.Imports._
+//import com.github.tminglei.slickpg.date.PgDateJdbcTypes
+import slick.model.ForeignKeyAction
 
 class Refs(tag: Tag) extends Table[Ref](tag, "refs") {
   def id      = column[Int]("id", O.PrimaryKey, O.AutoInc) 
@@ -34,28 +72,36 @@ class Refs(tag: Tag) extends Table[Ref](tag, "refs") {
 
 }
 
-case class Ref(id: Option[Int], title: String, host: String = "", desc: Option[String] = None,
-created_at:Option[org.joda.time.DateTime] = None, updated_at:Option[org.joda.time.DateTime] = None, category: String = "Base", hidden:Boolean = false)
+case class Ref(id: Option[Int], 
+              title: String, 
+              host: String = "", 
+              desc: Option[String] = None,
+              created_at:Option[org.joda.time.DateTime] = None, 
+              updated_at:Option[org.joda.time.DateTime] = None, 
+              category: String = "Base", 
+              hidden:Boolean = false)
 
 
-  case class RetrivedRef(
-    proc_elems: List[UnitElement], 
-    spaces: List[UnitSpace], // change to DTO
-    space_elems: List[UnitSpaceElement], // change to DTO
-    states: List[BPState],
-    switches: List[UnitSwitcher],
-    reactions: List[UnitReaction],
-    reaction_state_outs: List[UnitReactionStateOut])
+case class RetrivedRef(
+  proc_elems: List[UnitElement], 
+  spaces: List[UnitSpace], // change to DTO
+  space_elems: List[UnitSpaceElement], // change to DTO
+  states: List[BPState],
+  switches: List[UnitSwitcher],
+  reactions: List[UnitReaction],
+  reaction_state_outs: List[UnitReactionStateOut])
 
-  case class RefResulted(proc_elems: List[Int], 
-    space_elems: List[Int], 
-    spaces:List[Int],
-    states: List[Int], 
-    switches: List[Int], 
-    reactions: List[Int], 
-    reaction_state_outs: List[Int],
-    topoElem:List[Int]=List.empty,
-    topoSpaceElem:List[Int]=List.empty)
+case class RefResulted(
+  proc_elems: List[Int], 
+  space_elems: List[Int], 
+  spaces:List[Int],
+  states: List[Int], 
+  switches: List[Int], 
+  reactions: List[Int], 
+  reaction_state_outs: List[Int],
+  topoElem:List[Int]=List.empty,
+  topoSpaceElem:List[Int]=List.empty)
+
 
   
 object RefDAO {
