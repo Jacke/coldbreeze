@@ -21,10 +21,23 @@
 <div class="empty-notice">
 </div>
 
+
+<div class="launch-info-details">
+  <div class="minDate">Started at: 
+<abbr class="session__header__created_at" title="{{ lastExecuted().minDate | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="lastExecuted().minDate"></abbr>
+  </div>
+  <div class="maxDate" ng-show="interactions.reactions.length > 1">Latest action at: 
+<abbr class="session__header__created_at" title="{{ lastExecuted().lastDate | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="lastExecuted().lastDate"></abbr>
+</div>  
+  <div class="maxDate" ng-show="interactions.reactions === undefined">Ended at: 
+<abbr class="session__header__created_at" title="{{ lastExecuted().lastDate | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="lastExecuted().lastDate"></abbr>
+  </div>
+</div>
+
 <div class="stations input-stations" style="clear: both;">
 
 <!-- Completed launch info -->
-<ul class="reaction_list reaction_list_launched" ng-show="interactions.reactions.length < 1">
+<ul class="reaction_list reaction_list_launched" ng-show="interactions.reactions === undefined">
   <li class="reaction_list__reaction reaction_list__reaction_preview" ng-repeat="treeElement in $parent.tree.trees">
       <a>
       <h3>{{ treeElement.title }} <!-- : {{ capitalizeFirstLetter(reaction.reaction.title) }} --></h3></a>

@@ -697,7 +697,17 @@ $scope.stateOutAct = function (act) {
 
 
 
-
+$scope.lastExecuted = function() {
+  var AllDates = _.map($scope.logs.input_logs, function(log) {
+    return log.date;
+  });
+  var minDate = _.min(AllDates);
+  var lastDate = _.max(AllDates);
+  return {
+    minDate: minDate,
+    lastDate: lastDate
+  }
+}
 
 
   $scope.defaultParam = function () {
