@@ -8529,6 +8529,12 @@ height: 40px;
     width: 156px;
     height: 60px;
 }
+.launch-info-details {
+    text-align: center;
+    width: 50%;
+    margin: 10px auto;
+}
+
 .inline-launch .fastInput:hover {
     height: 100%;
     z-index: 1;
