@@ -26,7 +26,7 @@
   <div class="minDate">Started at: 
 <abbr class="session__header__created_at" title="{{ lastExecuted().minDate | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="lastExecuted().minDate"></abbr>
   </div>
-  <div class="maxDate" ng-show="interactions.reactions.length > 1">Latest action at: 
+  <div class="maxDate" ng-show="interactions.reactions.length > 0">Latest action at: 
 <abbr class="session__header__created_at" title="{{ lastExecuted().lastDate | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="lastExecuted().lastDate"></abbr>
 </div>  
   <div class="maxDate" ng-show="interactions.reactions === undefined">Ended at: 
