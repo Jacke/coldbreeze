@@ -368,8 +368,8 @@ $scope.sessions = sessions;
 InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') }).$promise.then(function (d) {
 
 
-$scope.interactionContainer = d;
-console.log($scope.interactionContainer);
+$scope.interactionContainerProc = d;
+console.log($scope.interactionContainerProc);
 console.log($scope.sessions);
 
 _.forEach($scope.sessions, function(session_cn) {
@@ -403,8 +403,8 @@ var session_ids = _.map(sessions, function(d){
 $scope.sessions = sessions;
 
 InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') }).$promise.then(function (d) {
-  $scope.interactionContainer = d;
-  console.log($scope.interactionContainer);
+  $scope.interactionContainerProc = d;
+  console.log($scope.interactionContainerProc);
   console.log($scope.sessions);
   
 

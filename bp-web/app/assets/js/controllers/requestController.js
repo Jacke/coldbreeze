@@ -21,10 +21,37 @@ $scope.isManager = function () {
 $scope.isManagerVal = $scope.isManager();
 $scope.isManager();
 
+$scope.element_topologsPromise = LaunchElementTopologsFactory.query({ launch_id: $scope.session_id }); 
 
 $scope.reactionElementRoutine = function (interactions) {
-    if (interactions) {
-          _.forEach(interactions.reactions, function(r) { return r.reaction.elem = _.find($scope.element_topologs, function(topo) { 
+  console.log('reactionElementRoutine', $scope.element_topologs);
+  if ($scope.element_topologsPromise) {
+        console.log('reactionElementRoutine');
+        $scope.element_topologsPromise.$promise.then(function(d) {
+        console.log('reactionElementRoutine', d);
+
+        if (interactions) {
+              _.forEach(interactions.reactions, function(r) { 
+                var data = _.find(d, function(topo) { 
+              return topo.topo_id === r.reaction.element}); 
+                console.log('finded', data);
+                if (data !== undefined) { return r.reaction.elem = data; };
+
+            });
+            _.forEach(interactions.reactions, function(reaction) { 
+               return _.forEach(reaction.outs, function(out) {
+                  return out.state = _.find(interactions.outs_identity, function(iden) { return iden.origin_state === out.state_ref });
+              }); 
+            });
+        } 
+           
+    })
+
+} else {
+  console.log('reactionElementRoutine', $scope.element_topologs);
+  LaunchElementTopologsFactory.query({ launch_id: $scope.session_id }).$promise.then(function (d) {
+      if (interactions) {
+          _.forEach(interactions.reactions, function(r) { return r.reaction.elem = _.find(d, function(topo) { 
           return topo.topo_id === r.reaction.element}); 
         });
         _.forEach(interactions.reactions, function(reaction) { 
@@ -32,8 +59,12 @@ $scope.reactionElementRoutine = function (interactions) {
               return out.state = _.find(interactions.outs_identity, function(iden) { return iden.origin_state === out.state_ref });
           }); 
         });
-    }        
+    } 
+
+  });
 }
+
+};
   /*****
    *    Nested elements Fetching
    *****
@@ -48,21 +79,65 @@ console.log($scope.$parent.interactionContainer);
  * Nested interaction fetching
  */
 $scope.reloadInteractionContainer = function() {
-  if ($scope.$parent.$parent.$parent.$parent.interactionContainer != undefined) {
-    console.log('parent')
-    $scope.interactionContainer = $scope.$parent.$parent.$parent.$parent.interactionContainer;
-  }
-  else {// ($scope.$parent.$parent.$parent.$parent.$parent.interactionContainer != undefined) {
-    console.log('parent')
-    $scope.interactionContainer = $scope.$parent.$parent.$parent.$parent.$parent.interactionContainer;
-  }
-  var data = _.find($scope.interactionContainer, function(cn) { return cn.session_container.sessions[0].session.id === $scope.session_id })
-  console.log(data);
-  $scope.interactions = data;
-  console.log($scope.interactions);
-  $scope.reactionElementRoutine($scope.interactions);
 
+  if ($scope.interactionContainer === undefined && $scope.$parent.$parent.$parent.$parent.interactionContainerLaunch != undefined) {
+    console.log('parent are', $scope.$parent.$parent.$parent.$parent.interactionContainerLaunch)
+    $scope.interactionContainer = $scope.$parent.$parent.$parent.$parent.interactionContainerLaunch;
+
+  } else if ($scope.interactionContainer === undefined && $scope.$parent.$parent.$parent.$parent.$parent.interactionContainerProc != undefined) {
+    console.log('else parent are', $scope.$parent.$parent.$parent.$parent.$parent.interactionContainerProc);
+    $scope.interactionContainer = $scope.$parent.$parent.$parent.$parent.$parent.interactionContainerProc;
+  }
+   if ($scope.interactionContainer !== undefined && $scope.interactionContainer.$promise !== undefined && typeof $scope.interactionContainer.then === 'function') {
+    // Promise check
+    console.log('reloadInteractionContainer promises getted', $scope.interactionContainer);
+    $scope.interactionContainer.$promise.then(function (d) {
+    console.log('reloadInteractionContainer promises getted inside', d);      
+      $scope.interactionContainer = d;
+      var data = _.find($scope.interactionContainer, function(cn) { return cn.session_container.sessions[0].session.id === $scope.session_id })
+      console.log(data);
+      $scope.interactions = data;
+      console.log($scope.interactions);
+      $scope.element_topologsPromise.$promise.then(function(d) { 
+        $scope.reactionElementRoutine($scope.interactions);
+ });
+    });  
+  } else {
+      var data = _.find($scope.interactionContainer, function(cn) { 
+                              return cn.session_container.sessions[0].session.id === $scope.session_id });
+      console.log(data);
+      $scope.interactions = data;
+      console.log($scope.interactions);
+      $scope.element_topologsPromise.$promise.then(function(d) { 
+        $scope.reactionElementRoutine($scope.interactions);
+ });
+  }
+
+  console.log('$scope.interactionContainer is undefined??', $scope.interactionContainer);
+  console.log($scope.$parent.$parent.$parent.$parent.interactionContainerLaunch);
+  console.log($scope);
+  if ($scope.interactions === undefined && $scope.$parent.$parent.$parent.$parent.interactionContainerPromise !== undefined) {
+    $scope.$parent.$parent.$parent.$parent.interactionContainerPromise.$promise.then(function(d) {
+      console.log('promise loaded');
+      console.log($scope.$parent.$parent.$parent.$parent.interactionContainerLaunch);
+
+      $scope.interactionContainer = $scope.$parent.$parent.$parent.$parent.interactionContainerLaunch;
+      var data = _.find($scope.interactionContainer, function(cn) { 
+                              return cn.session_container.sessions[0].session.id === $scope.session_id });
+      console.log(data);
+      $scope.interactions = data;
+      console.log($scope.interactions);
+      $scope.element_topologsPromise.$promise.then(function(d) { 
+        $scope.reactionElementRoutine($scope.interactions);
+       });
+      //$scope.$apply();
+
+      //$scope.reloadInteractionContainer();      
+    })
+    //$scope.reloadSession();
+  }
 }
+
 $scope.reloadInteractionContainer();
 $scope.reloadSession = function(session_id) {
   console.log($window.location.hash);
@@ -188,7 +263,7 @@ console.log($scope.interactionContainer);
  * Autostart
  */
 if ($scope.interactionContainer === undefined || $scope.interactionContainer.$promise === undefined) {
-  console.log('interactionContainer are undefined');
+ /* console.log('interactionContainer are undefined');
  InteractionsFactory.query({session_id: $scope.session.session.id}).$promise.then(function (data) {
     $scope.interactions = data;
     LaunchElementTopologsFactory.query({ launch_id: $scope.session_id }).$promise.then(function (data2) {
@@ -206,7 +281,7 @@ if ($scope.interactionContainer === undefined || $scope.interactionContainer.$pr
         }        
     });
 });
-
+*/
 } else {
 //InteractionsFactory.query({session_id: $scope.session.session.id})
     var data =  _.filter($scope.interactionContainer, function(d) { 
@@ -215,13 +290,15 @@ if ($scope.interactionContainer === undefined || $scope.interactionContainer.$pr
     })[0];
 
     $scope.interactions = data;
-    if ($scope.interactions !== undefined && $scope.interactions.reactions !== undefined) { // Check for nulled interactions
-    LaunchElementTopologsFactory.query({ launch_id: $scope.session_id }).$promise.then(function (data2) {
+    if ($scope.interactions !== undefined && $scope.interactions.reactions !== undefined) { // Check for nulled interactions    
+    $scope.element_topologsPromise.$promise.then(function (data2) {
       $scope.element_topologs = data2;
 
         _.forEach($scope.interactions.reactions, function(r) { return r.reaction.elem = _.find($scope.element_topologs, function(topo) { 
           return topo.topo_id === r.reaction.element}); 
-        })
+        });
+        $scope.firstInput = $scope.interactions.reactions[0];
+
         _.forEach($scope.interactions.reactions, function(reaction) { 
            return _.forEach(reaction.outs, function(out) {
               return out.state = _.find($scope.interactions.outs_identity, function(iden) { return iden.origin_state === out.state_ref });
