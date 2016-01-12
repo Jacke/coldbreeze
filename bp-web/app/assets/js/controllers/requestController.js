@@ -38,6 +38,8 @@ $scope.reactionElementRoutine = function (interactions) {
                 if (data !== undefined) { return r.reaction.elem = data; };
 
             });
+              $scope.firstInput = interactions.reactions[0];
+
             _.forEach(interactions.reactions, function(reaction) { 
                return _.forEach(reaction.outs, function(out) {
                   return out.state = _.find(interactions.outs_identity, function(iden) { return iden.origin_state === out.state_ref });
@@ -262,6 +264,7 @@ console.log($scope.interactionContainer);
  * Initiation of interactions
  * Autostart
  */
+$scope.firstInput = {}; 
 if ($scope.interactionContainer === undefined || $scope.interactionContainer.$promise === undefined) {
  /* console.log('interactionContainer are undefined');
  InteractionsFactory.query({session_id: $scope.session.session.id}).$promise.then(function (data) {
