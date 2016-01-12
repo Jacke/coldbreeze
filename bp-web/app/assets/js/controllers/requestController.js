@@ -22,6 +22,16 @@ $scope.isManagerVal = $scope.isManager();
 $scope.isManager();
 
 
+$scope.reactionElementRoutine = function (interactions) {
+          _.forEach(interactions.reactions, function(r) { return r.reaction.elem = _.find($scope.element_topologs, function(topo) { 
+          return topo.topo_id === r.reaction.element}); 
+        });
+        _.forEach(interactions.reactions, function(reaction) { 
+           return _.forEach(reaction.outs, function(out) {
+              return out.state = _.find(interactions.outs_identity, function(iden) { return iden.origin_state === out.state_ref });
+          }); 
+        });
+}
   /*****
    *    Nested elements Fetching
    *****
@@ -40,10 +50,16 @@ $scope.reloadInteractionContainer = function() {
     console.log('parent')
     $scope.interactionContainer = $scope.$parent.$parent.$parent.$parent.interactionContainer;
   }
-  if ($scope.$parent.$parent.$parent.$parent.$parent.interactionContainer != undefined) {
+  else {// ($scope.$parent.$parent.$parent.$parent.$parent.interactionContainer != undefined) {
     console.log('parent')
     $scope.interactionContainer = $scope.$parent.$parent.$parent.$parent.$parent.interactionContainer;
   }
+  var data = _.find($scope.interactionContainer, function(cn) { return cn.session_container.sessions[0].session.id === $scope.session_id })
+  console.log(data);
+  $scope.interactions = data;
+  console.log($scope.interactions);
+  $scope.reactionElementRoutine($scope.interactions);
+
 }
 $scope.reloadInteractionContainer();
 $scope.reloadSession = function(session_id) {
@@ -60,7 +76,14 @@ $scope.reloadSession = function(session_id) {
   }
 }
 
+ $scope.$on('reloadSession', function(event, session_id) { 
+  if (session_id === $scope.session_id) {
+    $scope.reloadInteractionContainer();//$scope.reloadSession(session_id)
+  }
+  console.log('reloadSession event');
+  console.log(session_id); 
 
+});
 
 
 $scope.bpelems = LaunchElemsFactory.query({ launch_id: $scope.session_id }); 
@@ -156,6 +179,8 @@ $scope.params = [];
 console.log("interactionContainer");
 console.log($scope.interactionContainer);
 
+
+
 /***
  * Initiation of interactions
  * Autostart
@@ -165,17 +190,9 @@ if ($scope.interactionContainer === undefined || $scope.interactionContainer.$pr
  InteractionsFactory.query({session_id: $scope.session.session.id}).$promise.then(function (data) {
     $scope.interactions = data;
     LaunchElementTopologsFactory.query({ launch_id: $scope.session_id }).$promise.then(function (data2) {
-      $scope.element_topologs = data2;
-
-        _.forEach($scope.interactions.reactions, function(r) { return r.reaction.elem = _.find($scope.element_topologs, function(topo) { 
-          return topo.topo_id === r.reaction.element}); 
-        });
-        _.forEach($scope.interactions.reactions, function(reaction) { 
-           return _.forEach(reaction.outs, function(out) {
-              return out.state = _.find($scope.interactions.outs_identity, function(iden) { return iden.origin_state === out.state_ref });
-          }); 
-        });
-
+        
+        $scope.element_topologs = data2;
+        $scope.reactionElementRoutine($scope.interactions);
 
         if ($scope.interactions.reactions.length > 0) {
           $scope.firstInput = $scope.interactions.reactions[0];

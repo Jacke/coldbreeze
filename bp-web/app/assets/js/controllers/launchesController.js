@@ -214,13 +214,18 @@ var session_ids = _.map(data2, function(d){
 InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') }).$promise.then(function(d) {
 
   // Update interaction container
-  _.forEach($scope.interactionContainer, function(icon) {
+  $scope.interactionContainer = _.map($scope.interactionContainer, function(icon) {
     if (icon.session_container.sessions[0].session.id === session_id) {
-      return icon = d;
+      icon = d[0]; // Take first element(first is interaction container for updated session)
     }
+    return icon;
   });
   //$scope.interactionContainer = InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') });
                 $scope.updateSessionInCollection(data2[0]);
+
+    $scope.$broadcast('reloadSession', session_id);
+
+
                   $scope.lastChecked = true;
                  _.forEach(data2, function(d){  // entity
                   _.forEach(d.sessions, function(s) { // read session from entity
@@ -236,10 +241,13 @@ InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') })
 }
 
 $scope.updateSessionInCollection = function(session, collection) {
+  console.log('updateSessionInCollection');
+  console.log(session);
+  console.log($scope.sessions);
   var process = session.process.id;
   var updatedSession = session.sessions[0];
   // Iterate over container for process
-  _.forEach($scope.sessions, function(sessionContainer) {
+  $scope.sessions = _.map($scope.sessions, function(sessionContainer) {
     if (sessionContainer.process.id === process) {
   // Iterate over process session for updated session
   //sessionContainer.sessions = _.without(sessionContainer.sessions, _.find(sessionContainer.sessions, function(s) { 
@@ -247,10 +255,17 @@ $scope.updateSessionInCollection = function(session, collection) {
   //sessionContainer.sessions.push(updatedSession);
   _.forEach(sessionContainer.sessions, function(session) {
     if (session.session.id === updatedSession.session.id) {
-      _.reduce(session, function(obj, val, key) {
+      console.log('update session attr', session);
+      var updated = _.reduce(session, function(obj, val, key) {
+          console.log('obj[key]', obj[key]);
+          console.log('updatedSession[key]', updatedSession[key]);
           obj[key] = updatedSession[key]//val;
           return obj;
       }, {});
+      session.station = updatedSession.station;
+      session.percent = updatedSession.percent;
+      session = updated;
+      return session;
     }
   })
 
@@ -258,19 +273,25 @@ $scope.updateSessionInCollection = function(session, collection) {
   // ???
   // PROFIT!!!
     }
+    return sessionContainer;
   });
+  console.log($scope.sessions);  
 }
 
 $scope.reloadSession = function(session_id) {
   if ($routeParams.process != undefined) {
     $scope.loadSessions($routeParams.process);    
-  //} 
-  //if (session_id) {
-  //  $scope.reloadSessionFn(session_id);    
+  } 
+  if (session_id) {
+    $scope.reloadSessionFn(session_id);    
+
   } else { // Load all process
     $scope.loadSessions();    
   }
-}
+};
+
+
+
 $scope.reloadSession();
 $scope.history_session_id = [];
 $scope.history_entity = [];

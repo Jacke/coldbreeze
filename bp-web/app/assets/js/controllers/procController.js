@@ -253,6 +253,8 @@ $scope.createNewBP = function () {
   $scope.services = BPServicesFactory.query();
 
 
+$scope.loadProcesses = function() {
+
   if ($routeParams.service != undefined) {
       $scope.bprocesses = BProcessesFactory.query();
       $scope.bprocesses.$promise.then(function(data){
@@ -283,7 +285,8 @@ $scope.createNewBP = function () {
     }); });
     
   });
-
+};
+$scope.loadProcesses();
 
   // New form 
   if ($window.location.hash.split("?")[1] == "new") {
@@ -496,6 +499,7 @@ $scope.createNewElem = function (elem,process) {
       process.newBpelem = { title: "", desc: "", process: process.id, business: process.business };
       //$scope.reloadTree($scope.trees);
       $scope.switchFastElementForm(process);
+      $scope.loadProcesses();
 
     });
 

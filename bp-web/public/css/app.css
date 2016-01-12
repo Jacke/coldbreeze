@@ -8530,9 +8530,13 @@ height: 40px;
     height: 60px;
 }
 .launch-info-details {
-    text-align: center;
+    /* text-align: center; */
     width: 50%;
-    margin: 10px auto;
+    margin: 10px 23px;
+}
+.launch-info-details .launch-info-description {
+    width: 104px;
+    display: inline-block;
 }
 
 .inline-launch .fastInput:hover {
