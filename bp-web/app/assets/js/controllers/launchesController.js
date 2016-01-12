@@ -125,8 +125,9 @@ SessionsFactory.query().$promise.then(function (data2) {
     })
    });
 
- InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') }).$promise.then(function (d) {
-    $scope.interactionContainer = d;
+$scope.interactionContainerPromise = InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') })
+$scope.interactionContainerPromise.$promise.then(function (d) {
+    $scope.interactionContainerLaunch = d;
  })
 
 /*
@@ -211,16 +212,16 @@ var session_ids = _.map(data2, function(d){
         return 'ids='+dd.session.id+'&'
     })   
 });
-InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') }).$promise.then(function(d) {
+$scope.interactionContainerLaunch = InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') }).$promise.then(function(d) {
 
   // Update interaction container
-  $scope.interactionContainer = _.map($scope.interactionContainer, function(icon) {
+  $scope.interactionContainerLaunch = _.map($scope.interactionContainerLaunch, function(icon) {
     if (icon.session_container.sessions[0].session.id === session_id) {
       icon = d[0]; // Take first element(first is interaction container for updated session)
     }
     return icon;
   });
-  //$scope.interactionContainer = InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') });
+  //$scope.interactionContainerLaunch = InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') });
                 $scope.updateSessionInCollection(data2[0]);
 
     $scope.$broadcast('reloadSession', session_id);
