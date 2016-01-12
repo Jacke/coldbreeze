@@ -23,6 +23,7 @@ $scope.isManager();
 
 
 $scope.reactionElementRoutine = function (interactions) {
+    if (interactions) {
           _.forEach(interactions.reactions, function(r) { return r.reaction.elem = _.find($scope.element_topologs, function(topo) { 
           return topo.topo_id === r.reaction.element}); 
         });
@@ -31,6 +32,7 @@ $scope.reactionElementRoutine = function (interactions) {
               return out.state = _.find(interactions.outs_identity, function(iden) { return iden.origin_state === out.state_ref });
           }); 
         });
+    }        
 }
   /*****
    *    Nested elements Fetching
