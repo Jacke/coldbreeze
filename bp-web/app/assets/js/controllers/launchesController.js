@@ -215,8 +215,9 @@ var session_ids = _.map(data2, function(d){
 $scope.interactionContainerLaunch = InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') }).$promise.then(function(d) {
 
   // Update interaction container
-  $scope.interactionContainerLaunch = _.map($scope.interactionContainerLaunch, function(icon) {
+  $scope.interactionContainerLaunch = _.map(d, function(icon) {
     if (icon.session_container.sessions[0].session.id === session_id) {
+        
       icon = d[0]; // Take first element(first is interaction container for updated session)
     }
     return icon;
