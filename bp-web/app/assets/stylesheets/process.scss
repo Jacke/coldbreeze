@@ -352,20 +352,22 @@ a#reactionSelectButton {
     cursor: pointer;
     display: block;
     clear: both;
-    width: 50%;
-    color: white;
-    background-color: rgba(40,43,53,0.78);
+    color: #FFF;
+    background-color: rgba(40, 43, 53, 0.78);
     border-radius: 3px;
-    font-family: 'Open Sans', Helvetica, Sans-serif;
+    font-family: "Open Sans",Helvetica,sans-serif;
     font-weight: 400;
-    text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     text-decoration: none;
-    margin: 0 auto;
-    padding: 4px 4px 4px 4px;
+    padding: 4px;
     float: none;
+    width: 50%;
+    position: absolute;
+    margin: 0px auto;
+    bottom: 25px;
+    left: 20%;
 }
 
 .triangle-3 {

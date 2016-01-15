@@ -1008,6 +1008,9 @@ border-left: 2px solid #4dbd74;
     margin-left: 0px;
     padding-left: 0px;
     font-size: 15px;
+    height: 209px;
+    overflow: hidden;
+    position: relative;
 }
 li.reaction_list__reaction.reaction_list__reaction_preview {
     display: inline-block;
@@ -1015,7 +1018,12 @@ li.reaction_list__reaction.reaction_list__reaction_preview {
     float: left;
     margin-right: 19px;
 }
-
+.reaction_list__reaction.reaction_list__reaction_preview h3 {
+    font-size: 19px;
+}
+.session__buttonInput .moicon-menu.moicon {
+    line-height: 21px !important;
+}
 li.reaction_list__reaction {
     border-bottom: solid 1px #36384D;      
     padding-bottom: 18px;
@@ -3424,11 +3432,11 @@ abbr[title], abbr[data-original-title] {
 }
 
 .allStations .station-filters {
-  display: inline-block;
-  float: right;
-  position: relative;
-  padding-top: 23px;
-  margin-right: 40px;
+    display: inline-block;
+    float: right;
+    position: relative;
+    padding-top: 2px;
+    margin-right: 40px;
 }
 .allStations .station-filters ul {
     list-style: none;
