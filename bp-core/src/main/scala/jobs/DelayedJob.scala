@@ -13,9 +13,8 @@ object DelayedJob {
   // After delay
 
 
-
-
 }
+
 case class MinorityJob(id: Option[Long], owner: String)
 
 object MinorityJobs {
