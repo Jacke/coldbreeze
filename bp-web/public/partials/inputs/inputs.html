@@ -30,7 +30,7 @@
              <!-- {{ stateOutAct(state_out) }} {{ state_out.state.title }} -->
           </li>
         </ul>
-        <a ng-click="reactionSelect(reaction);runFrom($parent.session.session.id)" id="reactionSelectButton" ng-class="selectedClass(reaction)" class="triangle-reaction" ng-show="reaction === interactions.reactions[0]">
+        <a ng-click="reactionSelect(reaction);runFrom($parent.session.session.id, reaction)" id="reactionSelectButton" ng-class="selectedClass(reaction)" class="triangle-reaction" ng-show="reaction === interactions.reactions[0]">
           {{ capitalizeFirstLetter(reaction.reaction.title) }}
         </a>
         <!--

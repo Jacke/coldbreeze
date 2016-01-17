@@ -4,7 +4,7 @@
 
 <span class="element-title">{{ firstInput.reaction.elem.element_title }}</span>
 
-<a ng-click="reactionSelect(firstInput);runFrom($parent.session.session.id)" class="reaction-title">{{ capitalizeFirstLetter(firstInput.reaction.title) }}</a>
+<a ng-click="reactionSelect(firstInput);runFrom($parent.session.session.id, reaction)" class="reaction-title">{{ capitalizeFirstLetter(firstInput.reaction.title) }}</a>
 
 <span class="firstInputFiles" ng-repeat="file in firstInput.files">
 		<span class="firstInputFileName">{{ file.name }}</span>
@@ -59,7 +59,7 @@
            <!-- {{ stateOutAct(state_out) }} {{ state_out.state.title }} -->
         </li>
       </ul>
-      <a ng-click="reactionSelect(reaction);runFrom($parent.session.session.id)" id="reactionSelectButton" ng-class="selectedClass(reaction)" class="triangle-reaction" ng-show="reaction === interactions.reactions[0]">{{ capitalizeFirstLetter(reaction.reaction.title) }}</a>
+      <a ng-click="reactionSelect(reaction);runFrom($parent.session.session.id, reaction)" id="reactionSelectButton" ng-class="selectedClass(reaction)" class="triangle-reaction" ng-show="reaction === interactions.reactions[0]">{{ capitalizeFirstLetter(reaction.reaction.title) }}</a>
       <!--<div class="launch-attachments" ng-show="reaction.selected">
           <a href="#" tooltip-placement="bottom" tooltip="Not supporting right now.">Attach</a>
             </div>-->
