@@ -789,7 +789,7 @@ $scope.runFrom = function (session_id, reaction) {
       $scope.sendWarpResult()
     }
     if (reaction) {
-      var reaction_params = {reaction_id: reaction.id}
+      var reaction_params = {reaction_id: reaction.reaction.id}
     } else {
       var reaction_params = $scope.reaction_params[0]
     }
