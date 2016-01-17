@@ -214,32 +214,33 @@ var session_ids = _.map(data2, function(d){
         return 'ids='+dd.session.id+'&'
     })   
 });
-InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') }).$promise.then(function(d) {
+InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') }).$promise.then(function(updatedInteraction) {
 
   console.log("219",$scope.interactionContainerLaunch);
-  console.log("219",d);
+  console.log("219", updatedInteraction);
 
   // Update interaction container
-  $scope.interactionContainerLaunch = _.map($scope.interactionContainerLaunch, function(icon) {
-    if (icon.session_container.sessions[0].session.id === session_id) {
-      icon = d[0]; // Take first element(first is interaction container for updated session)
-      console.log("icon finded",icon);
-      return icon;
-    } else {
-      return icon;
-    }
-  });
+  
+  //$scope.interactionContainerLaunch = _.map($scope.interactionContainerLaunch, function(icon) {
+  //  if (icon.session_container.sessions[0].session.id === session_id) {
+  //    icon = d[0]; // Take first element(first is interaction container for updated session)
+  //    console.log("icon finded",icon);
+  //    return icon;
+  //  } else {
+  //    return icon;
+  //  }
+  //});
+
   //$scope.interactionContainerLaunch = InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') });
     $scope.updateSessionInCollection(data2[0]);
-    $scope.$broadcast('reloadSession', session_id);
-
+    //$scope.$broadcast('reloadSession', session_id);
 _.forEach($scope.nestedRequestScopes, function(sc) {
   if (sc.session_id === session_id) {
     console.log('scope before', sc.scope.interactions);
     console.log('scope before', $scope.interactionContainerLaunch);
-
-  return sc.scope.interactions = _.map($scope.interactionContainerLaunch, function(icon) {
-    if (icon.session_container.sessions[0].session.id === session_id) {
+/*
+  _.map(updatedInteraction, function(icon) {
+    if (icon !== undefined && icon.session_container.sessions[0].session.id === session_id) {
       icon = d[0]; // Take first element(first is interaction container for updated session)
       console.log("icon finded",icon);
       console.log('scope after', sc.scope.interactions);
@@ -248,17 +249,22 @@ _.forEach($scope.nestedRequestScopes, function(sc) {
     //  return icon;
     }
 
-  }).filter(function(n){ return n != undefined })[0];
+  }).filter(function(n){ return n != undefined })[0]; // nested interactions must be an object, not an array.
+*/  return sc.scope.interactions = updatedInteraction;//
+  
   }
-})
+});
 
-      $scope.lastChecked = true;
-     _.forEach(data2, function(d){  // entity
-      _.forEach(d.sessions, function(s) { // read session from entity
+  $scope.$broadcast('newInteractionsForLaunch', {session_id: session_id, updatedInteraction: updatedInteraction});
+  
+  $scope.$broadcast('reloadElementRoutine', session_id);
+  $scope.lastChecked = true;
+   _.forEach(data2, function(d){  // entity
+    _.forEach(d.sessions, function(s) { // read session from entity
         return TreeBuilder.launchBuildFetch(d.process, s.session, function(success){});
-      }) 
-    });
-    $scope.isEmptyLaunchesCheck();
+    }) 
+  });
+  $scope.isEmptyLaunchesCheck();
             
             });
       });
