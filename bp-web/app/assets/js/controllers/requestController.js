@@ -24,6 +24,7 @@ $scope.isManager();
 $scope.element_topologsPromise = LaunchElementTopologsFactory.query({ launch_id: $scope.session_id }); 
 
 $scope.reactionElementRoutine = function (interactions) {
+  console.log('entry in reactionElementRoutine', interactions);
   console.log('reactionElementRoutine', $scope.element_topologs);
   if ($scope.element_topologsPromise) {
         console.log('reactionElementRoutine');
@@ -67,6 +68,21 @@ $scope.reactionElementRoutine = function (interactions) {
 }
 
 };
+
+if ($scope.interactionContainer === undefined && $scope.$parent.$parent.$parent.$parent.nestedRequestScopes != undefined) {
+  console.log('parent scope are', $scope.$parent.$parent.$parent.$parent.nestedRequestScopes);
+
+  $scope.$parent.$parent.$parent.$parent.nestedRequestScopes.push({ session_id: $scope.session_id, scope: $scope}); 
+
+  //$scope.interactionContainer = $scope.$parent.$parent.$parent.$parent.interactionContainerLaunch;
+
+} else if ($scope.interactionContainer === undefined && $scope.$parent.$parent.$parent.$parent.$parent.nestedRequestScopes != undefined) {
+  console.log('else parent scope are', $scope.$parent.$parent.$parent.$parent.$parent.nestedRequestScopes);
+  $scope.$parent.$parent.$parent.$parent.$parent.nestedRequestScopes.push({ session_id: $scope.session_id, scope: $scope});
+  //$scope.interactionContainer = $scope.$parent.$parent.$parent.$parent.$parent.interactionContainerProc;
+}
+
+
   /*****
    *    Nested elements Fetching
    *****
@@ -90,7 +106,7 @@ $scope.reloadInteractionContainer = function() {
     console.log('else parent are', $scope.$parent.$parent.$parent.$parent.$parent.interactionContainerProc);
     $scope.interactionContainer = $scope.$parent.$parent.$parent.$parent.$parent.interactionContainerProc;
   }
-   if ($scope.interactionContainer !== undefined && $scope.interactionContainer.$promise !== undefined && typeof $scope.interactionContainer.then === 'function') {
+  if ($scope.interactionContainer !== undefined && $scope.interactionContainer.$promise !== undefined && typeof $scope.interactionContainer.then === 'function') {
     // Promise check
     console.log('reloadInteractionContainer promises getted', $scope.interactionContainer);
     $scope.interactionContainer.$promise.then(function (d) {

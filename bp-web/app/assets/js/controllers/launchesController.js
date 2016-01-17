@@ -128,6 +128,8 @@ SessionsFactory.query().$promise.then(function (data2) {
 $scope.interactionContainerPromise = InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') })
 $scope.interactionContainerPromise.$promise.then(function (d) {
     $scope.interactionContainerLaunch = d;
+    console.log("219",$scope.interactionContainerLaunch);
+
  })
 
 /*
@@ -171,7 +173,7 @@ BProcessesFactory.query().$promise.then(function (proc) {
 
 }; // </ load session
 
-
+$scope.nestedRequestScopes = [];
 
 
 $scope.reloadSessionFn = function(session_id) {
@@ -212,29 +214,52 @@ var session_ids = _.map(data2, function(d){
         return 'ids='+dd.session.id+'&'
     })   
 });
-$scope.interactionContainerLaunch = InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') }).$promise.then(function(d) {
+InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') }).$promise.then(function(d) {
+
+  console.log("219",$scope.interactionContainerLaunch);
+  console.log("219",d);
 
   // Update interaction container
-  $scope.interactionContainerLaunch = _.map(d, function(icon) {
+  $scope.interactionContainerLaunch = _.map($scope.interactionContainerLaunch, function(icon) {
     if (icon.session_container.sessions[0].session.id === session_id) {
-        
       icon = d[0]; // Take first element(first is interaction container for updated session)
+      console.log("icon finded",icon);
+      return icon;
+    } else {
+      return icon;
     }
-    return icon;
   });
   //$scope.interactionContainerLaunch = InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') });
-                $scope.updateSessionInCollection(data2[0]);
-
+    $scope.updateSessionInCollection(data2[0]);
     $scope.$broadcast('reloadSession', session_id);
 
+_.forEach($scope.nestedRequestScopes, function(sc) {
+  if (sc.session_id === session_id) {
+    console.log('scope before', sc.scope.interactions);
+    console.log('scope before', $scope.interactionContainerLaunch);
 
-                  $scope.lastChecked = true;
-                 _.forEach(data2, function(d){  // entity
-                  _.forEach(d.sessions, function(s) { // read session from entity
-                    return TreeBuilder.launchBuildFetch(d.process, s.session, function(success){});
-                  }) 
-                });
-                $scope.isEmptyLaunchesCheck();
+  return sc.scope.interactions = _.map($scope.interactionContainerLaunch, function(icon) {
+    if (icon.session_container.sessions[0].session.id === session_id) {
+      icon = d[0]; // Take first element(first is interaction container for updated session)
+      console.log("icon finded",icon);
+      console.log('scope after', sc.scope.interactions);
+      return icon;
+    //} else {
+    //  return icon;
+    }
+
+  }).filter(function(n){ return n != undefined })[0];
+  }
+})
+
+      $scope.lastChecked = true;
+     _.forEach(data2, function(d){  // entity
+      _.forEach(d.sessions, function(s) { // read session from entity
+        return TreeBuilder.launchBuildFetch(d.process, s.session, function(success){});
+      }) 
+    });
+    $scope.isEmptyLaunchesCheck();
+            
             });
       });
     } //else { $scope.lastChecked = true; console.log("else");$scope.isEmptyLaunchesCheck() } 
