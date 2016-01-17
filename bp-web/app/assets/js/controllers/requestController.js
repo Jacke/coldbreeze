@@ -169,12 +169,12 @@ $scope.reloadSession = function(session_id) {
   if ($window.location.hash === "#/launches") {
     console.log('reload session');
     $scope.$parent.reloadSession(session_id);
-    $scope.reloadInteractionContainer();
+    //$scope.reloadInteractionContainer();
   }
   if ($window.location.hash === "#/bprocesses") {
     console.log('reload session');
     $scope.$parent.reloadSession(session_id);
-    $scope.reloadInteractionContainer();
+    //$scope.reloadInteractionContainer();
   }
 }
 
@@ -780,7 +780,7 @@ $scope.reaction_params = []
  * @param session_id  {[Number]}
  * @return {[Void]}
  */   
-$scope.runFrom = function (session_id) {
+$scope.runFrom = function (session_id, reaction) {
     //var front_params = _.filter(station.proc_elems,  function(obj) { return obj.param !== undefined });
     //var space_params = _.filter(station.space_elems, function(obj) { return obj.param !== undefined });
     //var params_output = _.flatten(_.map(front_params, function(v) { return {"f_elem": v.id, "param": v.param} }), _.map(space_params, function(v) { return {"sp_elem": v.id, "param": v.param} }));
@@ -788,12 +788,17 @@ $scope.runFrom = function (session_id) {
     if ($scope.payload_result.length > 0) { // Send warp field
       $scope.sendWarpResult()
     }
+    if (reaction) {
+      var reaction_params = {reaction_id: reaction.reaction.id}
+    } else {
+      var reaction_params = $scope.reaction_params[0]
+    }
 
     if ($scope.reaction_params.length > 0) {
     $http({
       url: 'bprocess/' + $scope.bpId + '/invoke_from/' + session_id,
       method: "POST",
-      data: [$scope.reaction_params[0]]
+      data: [reaction_params]
       })
       .then(function(response) {
         // success

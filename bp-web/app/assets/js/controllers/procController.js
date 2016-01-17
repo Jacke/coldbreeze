@@ -351,7 +351,7 @@ $scope.capitalizeFirstLetter = function (string) {
  * Services
  *******/
 $scope.nestedRequestScopes = [];
- 
+
 $scope.reloadSessions = function() {
 
 SessionsFactory.query().$promise.then(function (sessions) {
@@ -409,6 +409,9 @@ InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') })
   console.log($scope.interactionContainerProc);
   console.log($scope.sessions);
   
+
+  $scope.$broadcast('newInteractionsForLaunch', {session_id: session_id, updatedInteraction: d});
+  $scope.$broadcast('reloadElementRoutine', session_id);
 
 
 _.forEach($scope.sessions, function(session_cn) {

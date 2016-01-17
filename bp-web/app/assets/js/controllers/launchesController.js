@@ -250,7 +250,7 @@ _.forEach($scope.nestedRequestScopes, function(sc) {
     }
 
   }).filter(function(n){ return n != undefined })[0]; // nested interactions must be an object, not an array.
-*/  return sc.scope.interactions = updatedInteraction;//
+*/  //return sc.scope.interactions = updatedInteraction;//
   
   }
 });
