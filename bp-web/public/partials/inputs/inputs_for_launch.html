@@ -4,7 +4,7 @@
 
 <span class="element-title">{{ firstInput.reaction.elem.element_title }}</span>
 
-<a ng-click="reactionSelect(firstInput);runFrom($parent.session.session.id, reaction)" class="reaction-title">{{ capitalizeFirstLetter(firstInput.reaction.title) }}</a>
+<a ng-click="reactionSelect(firstInput);runFrom($parent.session.session.id, firstInput)" class="reaction-title">{{ capitalizeFirstLetter(firstInput.reaction.title) }}</a>
 
 <span class="firstInputFiles" ng-repeat="file in firstInput.files">
 		<span class="firstInputFileName">{{ file.name }}</span>
