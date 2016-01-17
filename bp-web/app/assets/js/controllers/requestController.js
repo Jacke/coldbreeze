@@ -23,7 +23,13 @@ $scope.isManager();
 
 $scope.element_topologsPromise = LaunchElementTopologsFactory.query({ launch_id: $scope.session_id }); 
 
+/**
+ * Helper for fetching element object to every reaction element
+ * @param  interaction {main interaction object, not an array!!!}
+ * @return {void}
+ */
 $scope.reactionElementRoutine = function (interactions) {
+  console.log('entry in reactionElementRoutine', interactions);
   console.log('reactionElementRoutine', $scope.element_topologs);
   if ($scope.element_topologsPromise) {
         console.log('reactionElementRoutine');
@@ -67,9 +73,26 @@ $scope.reactionElementRoutine = function (interactions) {
 }
 
 };
-  /*****
-   *    Nested elements Fetching
-   *****
+
+
+/*
+  Pusher request scope to child scope[for process or launches controllers].
+ */
+if ($scope.interactionContainer === undefined && $scope.$parent.$parent.$parent.$parent.nestedRequestScopes != undefined) {
+  console.log('parent scope are', $scope.$parent.$parent.$parent.$parent.nestedRequestScopes);
+  $scope.$parent.$parent.$parent.$parent.nestedRequestScopes.push({ session_id: $scope.session_id, scope: $scope}); 
+  //$scope.interactionContainer = $scope.$parent.$parent.$parent.$parent.interactionContainerLaunch;
+
+} else if ($scope.interactionContainer === undefined && $scope.$parent.$parent.$parent.$parent.$parent.nestedRequestScopes != undefined) {
+  console.log('else parent scope are', $scope.$parent.$parent.$parent.$parent.$parent.nestedRequestScopes);
+  $scope.$parent.$parent.$parent.$parent.$parent.nestedRequestScopes.push({ session_id: $scope.session_id, scope: $scope});
+  //$scope.interactionContainer = $scope.$parent.$parent.$parent.$parent.$parent.interactionContainerProc;
+}
+
+
+/*****
+ *    Nested elements Fetching
+ *****
 console.log("Nested");
 console.log($scope.$parent.$parent.$parent.$parent.$parent); // Input -> Session -> Entity -> Common scope
 console.log($scope.$parent.$parent.$parent.$parent.interactionContainer);
@@ -80,8 +103,8 @@ console.log($scope.$parent.interactionContainer);
 /***
  * Nested interaction fetching
  */
-$scope.reloadInteractionContainer = function() {
 
+$scope.reloadInteractionContainer = function() {
   if ($scope.interactionContainer === undefined && $scope.$parent.$parent.$parent.$parent.interactionContainerLaunch != undefined) {
     console.log('parent are', $scope.$parent.$parent.$parent.$parent.interactionContainerLaunch)
     $scope.interactionContainer = $scope.$parent.$parent.$parent.$parent.interactionContainerLaunch;
@@ -90,7 +113,7 @@ $scope.reloadInteractionContainer = function() {
     console.log('else parent are', $scope.$parent.$parent.$parent.$parent.$parent.interactionContainerProc);
     $scope.interactionContainer = $scope.$parent.$parent.$parent.$parent.$parent.interactionContainerProc;
   }
-   if ($scope.interactionContainer !== undefined && $scope.interactionContainer.$promise !== undefined && typeof $scope.interactionContainer.then === 'function') {
+  if ($scope.interactionContainer !== undefined && $scope.interactionContainer.$promise !== undefined && typeof $scope.interactionContainer.then === 'function') {
     // Promise check
     console.log('reloadInteractionContainer promises getted', $scope.interactionContainer);
     $scope.interactionContainer.$promise.then(function (d) {
@@ -163,6 +186,33 @@ $scope.reloadSession = function(session_id) {
   console.log(session_id); 
 
 });
+/**
+ * Events Fetch updated interactions
+ * @param  {[type]}
+ * @param  {[type]}
+ * @return {[type]}
+ */
+$scope.$on('newInteractionsForLaunch', function(event, obj) {
+  if (obj.session_id === $scope.session_id) {
+    console.log('newInteractionsForLaunch', $scope.interactions);
+    console.log('obj.updatedInteraction', obj.updatedInteraction);
+    $scope.interactions = obj.updatedInteraction[0]; // fetch only one interactions
+  }
+}); 
+/**
+ * Fetch element objects
+ * @param  {[type]}
+ * @param  {[type]}
+ * @return {[type]}
+ */
+$scope.$on('reloadElementRoutine', function(event, session_id) { 
+  if (session_id === $scope.session_id) {
+    $scope.reactionElementRoutine($scope.interactions);//$scope.reloadSession(session_id)
+  }
+  console.log('reloadElementRoutine event');
+  console.log(session_id); 
+});
+
 
 
 $scope.bpelems = LaunchElemsFactory.query({ launch_id: $scope.session_id }); 
@@ -292,7 +342,7 @@ if ($scope.interactionContainer === undefined || $scope.interactionContainer.$pr
         return dd.session.id === $scope.session.session.id }).length > 0;
     })[0];
 
-    $scope.interactions = data;
+    //$scope.interactions = data;
     if ($scope.interactions !== undefined && $scope.interactions.reactions !== undefined) { // Check for nulled interactions    
     $scope.element_topologsPromise.$promise.then(function (data2) {
       $scope.element_topologs = data2;
@@ -725,7 +775,12 @@ $scope.reFillValue = function(cost, entity, slat) {
   }
 $scope.reaction_params = []
 
-  $scope.runFrom = function (session_id) {
+/**
+ * Execute a launch run 
+ * @param session_id  {[Number]}
+ * @return {[Void]}
+ */   
+$scope.runFrom = function (session_id) {
     //var front_params = _.filter(station.proc_elems,  function(obj) { return obj.param !== undefined });
     //var space_params = _.filter(station.space_elems, function(obj) { return obj.param !== undefined });
     //var params_output = _.flatten(_.map(front_params, function(v) { return {"f_elem": v.id, "param": v.param} }), _.map(space_params, function(v) { return {"sp_elem": v.id, "param": v.param} }));

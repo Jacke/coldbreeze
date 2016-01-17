@@ -350,6 +350,8 @@ $scope.capitalizeFirstLetter = function (string) {
 /*******
  * Services
  *******/
+$scope.nestedRequestScopes = [];
+ 
 $scope.reloadSessions = function() {
 
 SessionsFactory.query().$promise.then(function (sessions) {
