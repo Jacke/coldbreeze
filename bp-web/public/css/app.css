@@ -1020,6 +1020,7 @@ li.reaction_list__reaction.reaction_list__reaction_preview {
 }
 .reaction_list__reaction.reaction_list__reaction_preview h3 {
     font-size: 19px;
+    text-align: center;
 }
 .session__buttonInput .moicon-menu.moicon {
     line-height: 21px !important;
