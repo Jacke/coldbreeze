@@ -19,8 +19,8 @@ import com.typesafe.sbt.less.Import._
 import com.typesafe.sbt.uglify.Import._
 import com.typesafe.sbt.rjs.Import._
 import UglifyKeys._
-import com.github.sbtliquibase.SbtLiquibase
-import com.github.sbtliquibase.Import._
+//import com.github.sbtliquibase.SbtLiquibase
+//import com.github.sbtliquibase.Import._
 import org.scalajs.sbtplugin.ScalaJSPlugin
 import org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._
 import spray.revolver.RevolverPlugin.Revolver._
@@ -211,7 +211,7 @@ integrationTest := {
     .dependsOn(bpCore)
 
   lazy val bpWeb = Project("bp-web", file("bp-web"))
-    .enablePlugins(SbtLiquibase)
+//    .enablePlugins(SbtLiquibase)
     .enablePlugins(PlayScala)
     .enablePlugins(SbtWeb)
     //.enablePlugins(ScalaJSPlugin)
@@ -225,10 +225,10 @@ integrationTest := {
     .settings(revolverSettings: _*)
     .settings(jsSettings : _*)
     .settings(sassSettings : _*)
-    .settings(liquibaseUsername := "postgres")
-    .settings(liquibasePassword := "12344321")
-    .settings(liquibaseDriver   := "org.postgresql.Driver")
-    .settings(liquibaseUrl      := "jdbc:postgresql://localhost/minority1?createDatabaseIfNotExist=true")
+    //.settings(liquibaseUsername := "postgres")
+    //.settings(liquibasePassword := "12344321")
+    //.settings(liquibaseDriver   := "org.postgresql.Driver")
+    //.settings(liquibaseUrl      := "jdbc:postgresql://localhost/minority1?createDatabaseIfNotExist=true")
     //.settings((compile in Compile) <<= (compile in Compile).dependsOn(WebKeys.assets in Assets))
     .settings(sassOptions in Assets ++= Seq("--compass", "-r", "compass"))
 /*.settings(
