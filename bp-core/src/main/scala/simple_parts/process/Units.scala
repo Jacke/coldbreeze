@@ -184,6 +184,16 @@ case class SessionUnitSwitcher(id: Option[Int],
        //bprocesses.ReactionExecutor.execute(process, this)
     }
  } 
+case class SessionUnitReactionStateOut(id: Option[Int],
+  state_ref: Int,
+  reaction: Int,
+  on:Boolean = false,
+  on_rate: Int = 0,
+  created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+  updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
+  )
+
+
 case class SessionElemTopology(id: Option[Int], 
     process: Int, 
     session: Int,
@@ -194,12 +204,4 @@ case class SessionElemTopology(id: Option[Int],
     updated_at: Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
     space_id: Option[Int] = None)
 
-case class SessionUnitReactionStateOut(id: Option[Int],
-  state_ref: Int,
-  reaction: Int,
-  on:Boolean = false,
-  on_rate: Int = 0,
-  created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
-  updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
-  )
 }

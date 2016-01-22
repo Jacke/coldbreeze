@@ -5,9 +5,9 @@ return minorityControllers.controller('BProcessListCtrl', ['$rootScope','$scope'
   function ($rootScope,$scope, $window, $translate, $rootScope,InteractionsBulkFactory, BPElemsFactory, RefsFactory, TreeBuilder, NotificationBroadcaster,SessionsFactory, ngDialog, $http, $routeParams, $filter, BPElemsFactory, BPSpacesFactory, BPSpaceElemsFactory, BProcessesFactory, BProcessFactory, BPStationsFactory, BPServicesFactory, $location) {
 
 
- $scope.changeLanguage = function () {
-    $translate.use($rootScope.lang);
-  };
+$scope.changeLanguage = function () {
+  $translate.use($rootScope.lang);
+};
 $scope.changeLanguage();
 
 

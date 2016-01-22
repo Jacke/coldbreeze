@@ -9,10 +9,12 @@ import main.scala.simple_parts.process.control._
 import main.scala.simple_parts.process.data._
 import main.scala.utils._
 import main.scala.resources.scopes._
+import us.ority.min.actions._
+
 
 import main.scala.bprocesses.links._
 
- class ReactionSpec extends Specification {
+ class ActionSpec extends Specification {
 
     var instance:Option[BProcess] = None
 
@@ -72,52 +74,18 @@ import main.scala.bprocesses.links._
         proc.spaces.head.findByOrder("container", order = 3).get.order == 3
         proc.spaces.head.getOrderNum("container") === 4
       }
-
-
-
-
-
-      "Order auto-assign for ProcElems" in {
-        "ProcElem" in {
-          true
-        }
-        "SpaceElem" in {
-          true
-        }
-      }
-      "Parent test(at brick point)" in {
-        proc.spaces.head.getBrick.isInstanceOf[Brick]
-        proc.spaces.head.getBrick.order == 4
-      }
-      "Calling space_elem from brick" in {
-        true
-        "Many spaces for one brick" in {
-          true
-        }
-        "SubBrick call" in {
-          true
-        }
-      }
-
-      "Space elem record to logger" in {
-        true
-      }
-      "Update CV" in { // Throught update checker, from logs(by logs and station)
-        "spaceelem's" in {
-          true  
-        }
-        "front elements" in {
-          true
-        }
-      }
-      "Space chain invoking" in {
-        true  
-      }
-      "Sygnal for Station" in {
-        true
-      }
-      
     }
+
+
+    "Order auto-assign for ProcElems" in {
+      "ProcElem" in {
+        true
+      }
+      "SpaceElem" in {
+        true
+      }
+    }
+
    
 
   }
