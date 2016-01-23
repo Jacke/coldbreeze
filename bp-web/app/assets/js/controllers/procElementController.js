@@ -210,6 +210,73 @@ $scope.reFillValue = function(cost, entity, slat) {
 
 
 
+
+/****
+ *  Mionority Action Middleware 
+ **/
+  $scope.vm = this; // vm stands for "View Model" --> see https://github.com/johnpapa/angular-styleguide#controlleras-with-vm
+  //$scope.newBpelem.middleware = {};
+
+  $scope.vm.userFields = [
+    {
+      // the key to be used in the model values
+      // so this will be bound to vm.user.username
+      key: 'username',
+      type: 'input',
+      templateOptions: {
+        label: 'Username',
+        placeholder: 'johndoe',
+        required: true,
+        description: 'Descriptive text'
+      }
+    },
+    {
+      key: 'password',
+      type: 'input',
+      templateOptions: {
+        type: 'password',
+        label: 'Password',
+        required: true
+      },
+      expressionProperties: {
+        'templateOptions.disabled': '!model.username' // disabled when username is blank
+      }
+    }
+  ];
+  
+  $scope.vm.onSubmit = onSubmit;
+  
+  
+  function onSubmit() {
+    console.log('form submitted:', $scope.newBpelem);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 $scope.isManager = function () {
   if ($scope.isManagerVal == undefined && $rootScope.manager != undefined) {
     $scope.isManagerVal = $rootScope.manager;
@@ -826,7 +893,7 @@ $scope.options = {
    Elements template
   */
   $scope.newSpace = { process: parseInt($route.current.params.BPid), nestingLevel: 1, container:false,subbrick:false }
-  $scope.newBpelem = { desc: "", process: parseInt($route.current.params.BPid), business: $scope.business(), comps: [ { "a_string" : null} ] }
+  $scope.newBpelem = { middleware: {}, desc: "", process: parseInt($route.current.params.BPid), business: $scope.business(), comps: [ { "a_string" : null} ] }
   $scope.newSpaceelem = { desc:  "", process: parseInt($route.current.params.BPid), business: $scope.business(), space_role: "container",  comps: [ { "a_string" : null} ] }
 
 
@@ -1011,7 +1078,7 @@ $scope.options = {
 
       //$scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
       console.log("lighted");
-      $scope.newBpelem = { desc: "", process: parseInt($route.current.params.BPid), business: $scope.business() };
+      $scope.newBpelem = { middleware: {}, desc: "", process: parseInt($route.current.params.BPid), business: $scope.business() };
       $scope.trees = undefined;
       $scope.bp.newelemformselected = 0;
       //$scope.reloadTree($scope.trees);

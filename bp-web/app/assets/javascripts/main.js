@@ -269,6 +269,23 @@
   deps: ['angular', 'app'],
   export: 'restangular'
 },
+'ui-select': {
+  deps: ['angular', 'app'],
+  export: 'ui-select'
+},
+'apiCheck': {
+  deps: ['angular', 'app'],  
+  export: 'apiCheck'
+},
+'angular-formly': {
+  deps: ['angular', 'app'],
+  export: 'angular-formly'
+},
+'angularformlybootstrap': {
+  deps: ['angular', 'app'],
+  export: 'angularformlybootstrap'
+},
+
 'procElementController': {
   deps: ['angular', 'app', 'controllers', 'toastr'],
   export: 'procElementController'
@@ -309,8 +326,8 @@
 'tether': { deps: [], export: 'tether' },
 'offline': { deps: [], export: 'offline' },
 'offlineSimulator': { deps: ['offline'], export: 'offlineSimulator' },
-'shepherd': { deps: ['tether'], export: 'shepherd' }
-
+'shepherd': { deps: ['tether'], export: 'shepherd' },
+'notie': {deps: [], export: 'notie'},
 
 
       //'bootstrap': ['jquery']
@@ -357,11 +374,18 @@
   'angular-resource': '../bower_components/angular-resource/angular-resource',
   'angular-cookies': '../bower_components/angular-cookies/angular-cookies',
   'select': '../bower_components/angular-ui-select/dist/select',
+
+'apiCheck': '../bower_components/api-check/dist/api-check',
+'angular-formly': '../bower_components/angular-formly/dist/formly',
+'angularformlybootstrap': '../bower_components/angular-formly-templates-bootstrap/dist/angular-formly-templates-bootstrap',
+
   'pnotify': '../bower_components/pnotify/pnotify.core',
   'pnotifyconfirm':'../bower_components/pnotify/pnotify.confirm',
   'pnotifybuttons':'../bower_components/pnotify/pnotify.buttons',
   'angularpnotify':'../bower_components/angular-pnotify/src/angular-pnotify',
 'restangular':'../bower_components/restangular/dist/restangular',
+'ui-select': '../bower_components/ui-select/src/select3',
+'notie': '../bower_components/notie/notie',
 
   'roundProgress': '../bower_components/angular-svg-round-progressbar/src/roundProgress',
   'angular-moment': '../bower_components/angular-moment/angular-moment',
@@ -425,9 +449,9 @@
   };
 
   // Load the app. This is kept minimal so it doesn't need much updating.
-require(['requirejs','jsRoutes','jquery', 'react','pnofiy','mobileDetect','popupoverlay','drag-on','jquery.nicescroll','ssl','offline','offlineSimulator','header','tooltip','dropdown','underscore','moment','selectize', 'tether', 'shepherd','tour',
+require(['requirejs','jsRoutes','jquery', 'react','pnofiy','mobileDetect','popupoverlay','drag-on','jquery.nicescroll','ssl','offline','offlineSimulator','header','tooltip','dropdown','underscore','moment','selectize', 'tether', 'shepherd','tour','notie',
   ],//'jquery', 'bootstrap'],//, './app'],
-    function (requirejs,jsRoutes,$,react, pnofiy,mobileDetect,popupoverlay,dragOn,niceScroll,ssl,offline,offlineSimulator,header,tooltip,dropdown,underscore,moment,selectize,tether,shepherd,tour) {
+    function (requirejs,jsRoutes,$,react, pnofiy,mobileDetect,popupoverlay,dragOn,niceScroll,ssl,offline,offlineSimulator,header,tooltip,dropdown,underscore,moment,selectize,tether,shepherd,tour,notie) {
         document.tour = tour;
 
       $(document).ready(function(){

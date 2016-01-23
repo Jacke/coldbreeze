@@ -1148,6 +1148,15 @@ form.form-horizontal.form-new-bpelem.form-edit-bpelem.form-edit-spaceelem .contr
     margin-left: 5px;
 }
 
+.form-new-bpelem .formly-field.formly-field-input {
+    width: 50%;
+    clear: both;
+}
+.form-new-bpelem .formly {
+    padding-bottom: 20px;
+    display: block;
+}
+
 
 .space-element .right-bar {
     border-left: solid 2px #7f8c8d;

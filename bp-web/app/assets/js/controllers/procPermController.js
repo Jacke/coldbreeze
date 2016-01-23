@@ -58,7 +58,7 @@ $scope.isManager();
    });
   });
   $scope.credFetch = function (obj) {
-    if (obj.uid != undefined) { // it's employee
+    if (obj !== undefined && obj.uid !== undefined) { // it's employee
 
     var res = _.find($scope.creds, function(cr){ return cr.userId == obj.uid});
     if (res != undefined) {
@@ -66,7 +66,7 @@ $scope.isManager();
     } else if (res == undefined) {
       return "Anonymous " + obj.uid;
     }
-    } else { // it's group
+    } else if(obj !== undefined) { // it's group
       //var res = _.find($scope.groups, function(gr) { return gr.id == obj.id });
       //if (res != undefined) {
         return "Group " + obj.title;
@@ -160,9 +160,13 @@ $scope.accFetch = function (obj) {
       } else {
       perm.space_elem_id = elem.id;
       };
+      // Fill group
       if (perm.group == true || (perm.employeegroup != undefined && perm.employeegroup.group == true) ) {
         perm.group = perm.employeegroup.id;
-
+      } 
+      // Fill employee
+      if ((perm.employeegroup != undefined && perm.employeegroup.uid !== undefined) ) {
+        perm.uid = perm.employeegroup.uid ;
       } 
       if (perm.role == undefined) {
         perm.role = 'all';

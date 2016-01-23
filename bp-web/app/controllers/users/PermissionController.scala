@@ -162,20 +162,27 @@ val elemPermForm = Form(
   }
 
   def create_new() = SecuredAction(BodyParsers.parse.json) { request =>
+    val business = request.user.businessFirst
+
     val permResult = request.body.validate[ActPermission]
       permResult.fold(
       errors => {
         BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
       },
       perm => { 
-        ActPermissionDAO.pull_object(perm) match {
-          case -1 => BadRequest(Json.obj("status" -> "Cannot create permission"))
-          case _@id:Int => { 
-          action(request.user.main.userId, process = Some(perm.process), 
-            action = ProcHisCom.permCreated, what = Some(ProcHisCom.permCreated), what_id = perm.id)                                          
+        security.BRes.procIsOwnedByBiz(business = business, process_id = perm.process) match {
+          case true => {
+            ActPermissionDAO.pull_object(perm) match {
+              case -1 => BadRequest(Json.obj("status" -> "Can't create permission"))
+              case _@id:Int => { 
+              action(request.user.main.userId, process = Some(perm.process), 
+                action = ProcHisCom.permCreated, what = Some(ProcHisCom.permCreated), what_id = perm.id)                                          
 
-            Ok(Json.obj("status" ->"OK", "message" -> ("Perm '"+perm.id+"' saved.") ))  
+                Ok(Json.obj("status" ->"OK", "message" -> ("Perm '"+id+"' saved.") ))  
+              }
+            }
           }
+          case _ => BadRequest(Json.obj("status" -> "Access Denied"))
         }
         
       }
