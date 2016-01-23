@@ -121,27 +121,33 @@ $scope.accFetch = function (obj) {
   $scope.newperms = [];
 
 
-  $scope.addPerm = function () {
+$scope.addPerm = function () {
       if(typeof $scope.perms === 'undefined') {
         $scope.perms = [];
         $scope.defaultParam();
       }
-
-
-
       $scope.newperms.push({});
-  }
-  $scope.byObjId = function(elem) {
+}
+
+$scope.notExistedInElement = function(elem, scoping) {
+    return function(obj) {
+      if (scoping === 'front' && $scope.perms.length > 0) {
+        return _.find($scope.perms, function(perm) {
+          perm.front_elem_id === elem.id && (perm.uid === obj.uid) || (perm.group === obj.group) }) === undefined;
+      } else if(scoping === 'nested' && $scope.perms.length > 0) {
+        return _.find($scope.perms, function(perm) {
+          perm.space_elem_id === elem.id && (perm.uid === obj.uid) || (perm.group === obj.group) }) === undefined;
+      }    
+    }
+}
+
+$scope.byObjId = function(elem) {
     return function(obj) {
       if (obj.front_elem_id != undefined) {
         return obj.front_elem_id == elem.id;
-
       } else {
         return obj.space_elem_id == elem.id;
-
-      }
-      
-
+      }    
     }
 }
   $scope.delPerm = function (perm) {

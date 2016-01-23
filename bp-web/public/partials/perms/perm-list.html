@@ -43,7 +43,7 @@
 
                   <ui-select ng-model="bpelem.perm.employeegroup" theme="selectize" style="min-width: 300px;">
                       <ui-select-match placeholder="Select follower for adding to an element">{{credFetch($select.selected)}}</ui-select-match>
-                    <ui-select-choices repeat="employeegroup in employees_groups">
+                    <ui-select-choices repeat="employeegroup in employees_groups | filter:notExistedInElement(bpelem, 'front')">
                       <div ng-bind-html="credFetch(employeegroup)">{{ employeegroup.uid }}</div>
                       <small>
                          {{credFetch(employeegroup)}}        
@@ -67,7 +67,7 @@
 
                   <ui-select ng-model="spaceelem.perm.employeegroup" theme="selectize" style="min-width: 300px;">
                       <ui-select-match placeholder="Select follower for adding to an element">{{credFetch($select.selected)}}</ui-select-match>
-                    <ui-select-choices repeat="employeegroup in employees_groups">
+                    <ui-select-choices repeat="employeegroup in employees_groups | filter:notExistedInElement(spaceelem, 'nested')">
                       <div ng-bind-html="credFetch(employeegroup)">{{ employeegroup.uid }}</div>
                       <small>
                          {{credFetch(employeegroup)}}        
