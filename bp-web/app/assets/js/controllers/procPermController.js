@@ -129,16 +129,20 @@ $scope.addPerm = function () {
       $scope.newperms.push({});
 }
 
-$scope.notExistedInElement = function(elem, scoping) {
+$scope.notExistedInElement = function(perms, elem) {
+    var definedPerms = _.filter(perms, $scope.byObjId(elem))
     return function(obj) {
-      if (scoping === 'front' && $scope.perms.length > 0) {
-        return _.find($scope.perms, function(perm) {
-          perm.front_elem_id === elem.id && (perm.uid === obj.uid) || (perm.group === obj.group) }) === undefined;
-      } else if(scoping === 'nested' && $scope.perms.length > 0) {
-        return _.find($scope.perms, function(perm) {
-          perm.space_elem_id === elem.id && (perm.uid === obj.uid) || (perm.group === obj.group) }) === undefined;
-      }    
+      //if (obj.front_elem_id != undefined) {
+      console.log('notExistedInElement',definedPerms);
+      console.log('notExistedInElement',obj);
+
+      console.log('notExistedInElement', _.find(definedPerms, function(p){ (p.uid == obj.uid || p.group == obj.group) }) === undefined);
+        return _.find(definedPerms, function(p){ return (p.uid == obj.uid || p.group == obj.group) }) === undefined;
+      //} else {
+      //  return obj.space_elem_id == elem.id;
+      //}    
     }
+
 }
 
 $scope.byObjId = function(elem) {
