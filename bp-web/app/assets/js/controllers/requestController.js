@@ -756,6 +756,23 @@ $scope.reFillValue = function(cost, entity, slat) {
 
 
 
+$scope.finishedInteractionFilter = function(obj) {
+    return function(obj) {
+      //obj.id // tree element
+      if ($scope.interactions !== undefined) {
+      //console.log('finishedInteractionFilter', _.find($scope.interactions.reactions, function(reaction) { 
+      //                              return reaction.reaction.elem.element_id === obj.id}));
+      //console.log('finishedInteractionFilter', obj.id);
+
+      return _.find($scope.interactions.reactions, function(reaction) { 
+                                    if (reaction.reaction.elem) {
+                                    return reaction.reaction.elem.element_id === obj.id }
+                                    }) === undefined;
+      }
+    }
+}
+
+
   $scope.runFromDisabled = true;
 
 

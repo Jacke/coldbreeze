@@ -599,7 +599,12 @@ span.account-pic img {
 .elements-perm span.account-pic {
     background-color: white;
 }
-
+.elements-perm .perms {
+    display: inline-block;
+    float: left;
+    margin-right: 15px;
+    margin-bottom: 18px;
+}
 .elements-perm button.btn-delete {
     padding-top: 0px;
 }
@@ -2262,7 +2267,7 @@ text-decoration: none;
 }
 
 .inline-launch .input-stations ul.reaction_list {
-    clear: both;
+    display: inline-block;
 }
 
 .inline-launch .container {
@@ -2740,6 +2745,9 @@ a.confirmation-btn.btn.btn-small.confirmed {
   padding-left: 26px;
   padding: 9px 10px 9px 24px;
 }
+.process-status .tableMinListControls a:active span {
+    color: white;
+}
 .process-status .tableMinListControls a span {
   margin-left: -13px;
   color: black;
@@ -3025,14 +3033,23 @@ h2.tableMinListName {
 
 .process-status li.tableMinListItem {
     height: auto;  
-width: 100%;
+    width: 100%;
     overflow: hidden;
+}
+
+.perm-menu a {
+    cursor: pointer;
+}
+
+.perm-menu a:hover {
+    text-decoration: none;
 }
 .process-status .tableMinListControls a:hover {
     text-decoration: none;
     cursor: pointer;
+    background: #F9F9F9;
+    color: black;
 }
-
 .process-thumb p.tableMinListGithub {
 opacity: 0.4;
 right: 35px;

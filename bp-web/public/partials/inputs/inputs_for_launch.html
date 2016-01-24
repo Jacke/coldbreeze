@@ -37,8 +37,8 @@
 <div class="stations input-stations" style="clear: both;">
 
 <!-- Completed launch info -->
-<ul class="reaction_list reaction_list_launched" ng-show="interactions.reactions === undefined">
-  <li class="reaction_list__reaction reaction_list__reaction_preview" ng-repeat="treeElement in $parent.tree.trees">
+<ul class="reaction_list reaction_list_launched reaction_list_finished">
+  <li class="reaction_list__reaction reaction_list__reaction_preview" ng-repeat="treeElement in $parent.tree.trees | filter:finishedInteractionFilter(treeElement)">
       <a>
       <h3>{{ treeElement.title }} <!-- : {{ capitalizeFirstLetter(reaction.reaction.title) }} --></h3></a>
   </li>
@@ -48,7 +48,7 @@
 
 <ul class="reaction_list reaction_list_launched">
   <li class="reaction_list__reaction reaction_list__reaction_preview" ng-init="interactions.reactions.length > 0 ? reactionSelect(interactions.reactions[0]) : false" ng-repeat="reaction in interactions.reactions">
-      <a ng-class="selectedClass(reaction)"><h3>{{ reaction.reaction.elem.element_title }} <!-- : {{ capitalizeFirstLetter(reaction.reaction.title) }} --></h3></a>
+      <a class="selected"><h3>{{ reaction.reaction.elem.element_title }} <!-- : {{ capitalizeFirstLetter(reaction.reaction.title) }} --></h3></a>
 
       <ul class="reaction_list__reaction_in_group">
         <!-- ins -->
