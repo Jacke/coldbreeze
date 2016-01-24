@@ -4,6 +4,8 @@ import main.scala.bprocesses._
 import main.scala.utils._
 import com.github.nscala_time.time.Imports._
 import scala.collection.mutable.ListBuffer  
+import us.ority.min.actions._
+
 
 object Units {
  /*
@@ -121,9 +123,20 @@ created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
 updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
 
 
+    var middlewares:ListBuffer[Middleware]                   = ListBuffer() 
+    var reaction_state_ins:ListBuffer[UnitReactionStateIn]   = ListBuffer() 
     var reaction_state_outs:ListBuffer[UnitReactionStateOut] = ListBuffer() 
-    def execute(process: BProcess) {
-       bprocesses.ReactionExecutor.execute(process, this)
+
+
+    var reaction_data_ins:ListBuffer[UnitReactionDataIn]     = ListBuffer() 
+    var reaction_data_outs:ListBuffer[UnitReactionDataOut]   = ListBuffer() 
+
+    def execute(process: BProcess) = {
+       if (middlewares.length < 1) {
+         bprocesses.ReactionExecutor.execute(process, this)
+       } else {
+         bprocesses.ReactionExecutor.executeWithMiddleware(process, this)
+       }
     }
  } 
 
@@ -141,6 +154,14 @@ case class ElemTopology(id: Option[Int],
 
 
 
+ case class UnitReactionStateIn(id: Option[Int],
+  state_ref: Int,
+  reaction: Int,
+  on:Boolean = false,
+  on_rate: Int = 0,
+  created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+  updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
+) 
  case class UnitReactionStateOut(id: Option[Int],
   state_ref: Int,
   reaction: Int,
@@ -148,7 +169,22 @@ case class ElemTopology(id: Option[Int],
   on_rate: Int = 0,
   created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
   updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
-  )
+)
+
+ case class UnitReactionDataIn(id: Option[Int],
+  data_ref: String,
+  reaction: Int,
+  data_type:String,
+  created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+  updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
+)
+ case class UnitReactionDataOut(id: Option[Int],
+  data_ref: String,
+  reaction: Int,
+  data_type:String,
+  created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+  updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
+) 
 
 
 /*********
@@ -184,6 +220,16 @@ case class SessionUnitSwitcher(id: Option[Int],
        //bprocesses.ReactionExecutor.execute(process, this)
     }
  } 
+case class SessionUnitReactionStateOut(id: Option[Int],
+  state_ref: Int,
+  reaction: Int,
+  on:Boolean = false,
+  on_rate: Int = 0,
+  created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+  updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
+  )
+
+
 case class SessionElemTopology(id: Option[Int], 
     process: Int, 
     session: Int,
@@ -194,12 +240,4 @@ case class SessionElemTopology(id: Option[Int],
     updated_at: Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
     space_id: Option[Int] = None)
 
-case class SessionUnitReactionStateOut(id: Option[Int],
-  state_ref: Int,
-  reaction: Int,
-  on:Boolean = false,
-  on_rate: Int = 0,
-  created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
-  updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
-  )
 }

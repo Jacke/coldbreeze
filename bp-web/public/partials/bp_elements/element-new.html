@@ -100,9 +100,19 @@
     <input type="hidden" id="input_space_own" ng-model="newBpelem.space_own"/>
     <input type="hidden" id="input_order" ng-model="newBpelem.order" value="{{ orderFrontGen(newBpelem) }}"/>
     <input type="hidden" id="input_ref" ng-model="newBpelem.ref"/>
+
+<!--
+    <formly-form model="newBpelem.middleware" fields="vm.userFields">
+    </formly-form>
+-->
+
     <div class="control-group form-submit form-group" style="clear:both;" ng-show="isManagerVal">
       <div class="controls">
         <button type="submit" id="createFrontElementFormButton" class="btn btn-small btTxt submit btn lg solid-green ng-binding">{{ 'CREATE' | translate }}</button>
       </div>
     </div>
-  </form>
+
+
+
+
+</form>

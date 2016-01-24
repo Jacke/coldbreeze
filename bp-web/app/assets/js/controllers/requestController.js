@@ -857,14 +857,26 @@ $scope.stateOutAct = function (act) {
 
 
 $scope.lastExecuted = function() {
-  var AllDates = _.map($scope.logs.input_logs, function(log) {
-    return log.date;
-  });
-  var minDate = _.min(AllDates);
-  var lastDate = _.max(AllDates);
-  return {
-    minDate: minDate,
-    lastDate: lastDate
+  // For empty input logs
+  if ($scope.logs !== undefined && $scope.logs.input_logs !== undefined && $scope.logs.input_logs.length === 0) {
+    var AllDates = _.map(_.filter($scope.logs.stations, function(d) { return d.session === $scope.session_id }), function(f) {
+      return f.updated_at;
+    });
+  
+    return {
+      minDate: AllDates[0],
+      lastDate: AllDates[0]
+    }
+  } else {
+    var AllDates = _.map($scope.logs.input_logs, function(log) {
+      return log.date;
+    });
+    var minDate = _.min(AllDates);
+    var lastDate = _.max(AllDates);
+    return {
+      minDate: minDate,
+      lastDate: lastDate
+    }
   }
 }
 

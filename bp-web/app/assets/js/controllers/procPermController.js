@@ -58,7 +58,7 @@ $scope.isManager();
    });
   });
   $scope.credFetch = function (obj) {
-    if (obj.uid != undefined) { // it's employee
+    if (obj !== undefined && obj.uid !== undefined) { // it's employee
 
     var res = _.find($scope.creds, function(cr){ return cr.userId == obj.uid});
     if (res != undefined) {
@@ -66,7 +66,7 @@ $scope.isManager();
     } else if (res == undefined) {
       return "Anonymous " + obj.uid;
     }
-    } else { // it's group
+    } else if(obj !== undefined) { // it's group
       //var res = _.find($scope.groups, function(gr) { return gr.id == obj.id });
       //if (res != undefined) {
         return "Group " + obj.title;
@@ -121,27 +121,37 @@ $scope.accFetch = function (obj) {
   $scope.newperms = [];
 
 
-  $scope.addPerm = function () {
+$scope.addPerm = function () {
       if(typeof $scope.perms === 'undefined') {
         $scope.perms = [];
         $scope.defaultParam();
       }
-
-
-
       $scope.newperms.push({});
-  }
-  $scope.byObjId = function(elem) {
+}
+
+$scope.notExistedInElement = function(perms, elem) {
+    var definedPerms = _.filter(perms, $scope.byObjId(elem))
+    return function(obj) {
+      //if (obj.front_elem_id != undefined) {
+      console.log('notExistedInElement',definedPerms);
+      console.log('notExistedInElement',obj);
+
+      console.log('notExistedInElement', _.find(definedPerms, function(p){ (p.uid == obj.uid || p.group == obj.group) }) === undefined);
+        return _.find(definedPerms, function(p){ return (p.uid == obj.uid || p.group == obj.group) }) === undefined;
+      //} else {
+      //  return obj.space_elem_id == elem.id;
+      //}    
+    }
+
+}
+
+$scope.byObjId = function(elem) {
     return function(obj) {
       if (obj.front_elem_id != undefined) {
         return obj.front_elem_id == elem.id;
-
       } else {
         return obj.space_elem_id == elem.id;
-
-      }
-      
-
+      }    
     }
 }
   $scope.delPerm = function (perm) {
@@ -160,9 +170,13 @@ $scope.accFetch = function (obj) {
       } else {
       perm.space_elem_id = elem.id;
       };
+      // Fill group
       if (perm.group == true || (perm.employeegroup != undefined && perm.employeegroup.group == true) ) {
         perm.group = perm.employeegroup.id;
-
+      } 
+      // Fill employee
+      if ((perm.employeegroup != undefined && perm.employeegroup.uid !== undefined) ) {
+        perm.uid = perm.employeegroup.uid ;
       } 
       if (perm.role == undefined) {
         perm.role = 'all';

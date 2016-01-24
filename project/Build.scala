@@ -145,6 +145,7 @@ integrationTest := {
           reflect, 
           wcs,
           akkaActor, 
+          akkaQuartz,
           scaldiakka, 
           dispatch,
           //trireme,
