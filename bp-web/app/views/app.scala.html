@@ -119,7 +119,9 @@
       }
     },
     _pickerApiLoaded: function() {
-      this.buttonEl.disabled = false;
+      if (this.buttonEl) {
+        this.buttonEl.disabled = false;
+      }
     },
     _driveApiLoaded: function() {
       this._doAuth(true);
