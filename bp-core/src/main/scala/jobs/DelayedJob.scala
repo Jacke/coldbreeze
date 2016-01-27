@@ -3,12 +3,12 @@ package us.ority.min.jobs
 import com.typesafe.config.ConfigFactory
 import akka.actor.ActorSystem
 import java.util.{Calendar, GregorianCalendar, Date, TimeZone}
-import org.quartz.impl.calendar._
-import org.quartz.impl.triggers.CronTriggerImpl
-import org.quartz.TriggerUtils
+//import org.quartz.impl.calendar._
+//import org.quartz.impl.triggers.CronTriggerImpl
+//import org.quartz.TriggerUtils
 import scala.collection.JavaConverters._
-import com.typesafe.akka.extension.quartz._
-import com.typesafe.akka.extension.quartz.QuartzSchedulerExtension._
+//import com.typesafe.akka.extension.quartz._
+//import com.typesafe.akka.extension.quartz.QuartzSchedulerExtension._
 import akka.actor._
 
 case class NewProbe(probe: ActorRef)
@@ -43,9 +43,9 @@ def receive = {
 object DelayedJob {
 
   val _system = ActorSystem("MinorityCoreSystem")
-  val scheduler = QuartzSchedulerExtension(_system)
-  val cleaner = _system.actorOf(Props[HelloActor])  
-  val s = scheduler.schedule("Every59Seconds", cleaner, "hello") //.asInstanceOf[QuartzCronSchedule]
+  //              val scheduler = QuartzSchedulerExtension(_system)
+  //              val cleaner = _system.actorOf(Props[HelloActor])  
+  //              val s = scheduler.schedule("Every59Seconds", cleaner, "hello") //.asInstanceOf[QuartzCronSchedule]
   //val _t = s.buildTrigger("parseCronScheduleTest")
   //val t = _t.asInstanceOf[CronTriggerImpl]
 

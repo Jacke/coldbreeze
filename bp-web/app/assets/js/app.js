@@ -167,6 +167,8 @@ var minorityApp =
       'classy',
       //'angular-filepicker',
       'jlareau.pnotify',
+       'yaru22.hovercard',
+         '720kb.tooltips',
       'ngAngularError',
       'restangular',
       'ui.select',

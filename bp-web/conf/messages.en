@@ -146,6 +146,7 @@ footer.privacy=Privacy
 # Not authorized page
 securesocial.notAuthorized.title=Not Authorized
 securesocial.notAuthorized.message=You are not authorized to access that page
+securesocial.login.invalidCredentials=Wrong email or password
 
 #
 securesocial.loginRequired=You need to log in to access that page.

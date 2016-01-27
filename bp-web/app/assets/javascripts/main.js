@@ -269,6 +269,14 @@
   deps: ['angular', 'app'],
   export: 'restangular'
 },
+'angular-tooltips': {
+    deps: ['angular', 'app'],
+  export: 'angular-tooltips'
+},
+'angular-hovercard': {
+  deps: ['angular', 'app'],
+  export: 'angular-hovercard'
+},
 'ui-select': {
   deps: ['angular', 'app'],
   export: 'ui-select'
@@ -384,6 +392,8 @@
   'pnotifybuttons':'../bower_components/pnotify/pnotify.buttons',
   'angularpnotify':'../bower_components/angular-pnotify/src/angular-pnotify',
 'restangular':'../bower_components/restangular/dist/restangular',
+'angular-hovercard':'../bower_components/angular-hovercard/dist/angular-hovercard',
+'angular-tooltips':'../bower_components/angular-tooltips/dist/angular-tooltips.min',
 'ui-select': '../bower_components/ui-select/src/select3',
 'notie': '../bower_components/notie/notie',
 

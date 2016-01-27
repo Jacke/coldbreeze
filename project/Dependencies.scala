@@ -142,7 +142,7 @@ object Dependencies {
   val akkaSlf4j       = "com.typesafe.akka"         %%  "akka-slf4j"            % akkaVersion
   val akkaTestKit     = "com.typesafe.akka"         %%  "akka-testkit"          % akkaVersion
   val akkastreams     = "com.typesafe.akka"         % "akka-stream-experimental_2.11" % "1.0-M5"
-  val akkaQuartz      = "com.enragedginger"         %% "akka-quartz-scheduler"  % "1.4.0-akka-2.3.x"
+  val akkaQuartz      = "com.enragedginger"         %% "akka-quartz-scheduler"  % "1.3.0-akka-2.3.x"
 
   val logback         = "ch.qos.logback"            %   "logback-classic"       % "1.0.13"
   val reflect         = "com.taig"                  %%  "reflect"               % "0.9.3-BETA"

@@ -2,6 +2,8 @@ resolvers += "Sonatype snapshots" at "http://oss.sonatype.org/content/repositori
 
 resolvers += "sonatype-releases" at "https://oss.sonatype.org/content/repositories/releases/"
 
+resolvers += "Madoushi sbt-plugins" at "https://dl.bintray.com/madoushi/sbt-plugins/"
+
 resolvers += "bintray-sbt-plugin-releases" at "http://dl.bintray.com/content/sbt/sbt-plugin-releases"
 
 
@@ -86,12 +88,12 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-mocha" % "1.0.0")
 addSbtPlugin("me.lessis" % "bintray-sbt" % "0.1.1")
   
   
-//addSbtPlugin("default" % "sbt-sass" % "0.1.9")
+addSbtPlugin("default" % "sbt-sass" % "0.1.9")
 
 
 resolvers += Resolver.url("GitHub repository", url("http://shaggyyeti.github.io/releases"))(Resolver.ivyStylePatterns)
 
-addSbtPlugin("default" % "sbt-sass" % "0.1.9")
+//addSbtPlugin("default" % "sbt-sass" % "0.1.9")
 
 
 //addSbtPlugin("au.com.onegeek.sbtdotenv" % "sbt-dotenv" % "1.0.17")
@@ -104,6 +106,8 @@ addSbtPlugin("net.ground5hark.sbt" % "sbt-css-compress" % "0.1.3")
 addSbtPlugin("com.untyped" % "sbt-js"       % "0.8-M3")
 
 addSbtPlugin("com.untyped" % "sbt-sass"     % "0.8-M3")
+
+//addSbtPlugin("org.madoushi.sbt" % "sbt-sass" % "0.9.3")
 
 //addSbtPlugin("com.github.sbtliquibase" % "sbt-liquibase" % "0.1.0-SNAPSHOT")
 

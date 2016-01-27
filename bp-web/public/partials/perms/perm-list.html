@@ -33,7 +33,7 @@
               <div ng-repeat="bpelem in bpelems | filter:filterPerms" class="controls inputRequests">
                     <h4>{{bpelem.title}}</h4>
               <div class="perms" ng-repeat="perm in perms | filter:byObjId(bpelem)"ng-init="perm.account = accFetch(perm)" >
-                    <span class="account-pic" tooltip="{{ perm.account.tooltip }}">
+                    <span class="account-pic" tooltips tooltip-template="{{ perm.account.tooltip }}" tooltip-side="left">
                         <img ng-src="{{ perm.account.avatarUrl}}" alt="{{ perm.account.tooltip }}">
                         <a ng-click="delPerm(perm,newBpelem.perms)" class="btn-delete minicon"></a>
                     </span>
@@ -57,7 +57,7 @@
               <div ng-repeat="spaceelem in spaceelems | filter:filterPerms" class="controls inputRequests">
                     <h4>{{spaceelem.title}}</h4>
                 <div class="perms" ng-repeat="perm in perms | filter:byObjId(spaceelem)" ng-init="perm.account = accFetch(perm)">
-                    <span class="account-pic" tooltip="{{ perm.account.tooltip }}">
+                    <span class="account-pic" tooltips tooltip-template="{{ perm.account.tooltip }}" tooltip-side="left">
                         <img ng-src="{{ perm.account.avatarUrl}}" alt="{{ perm.account.tooltip }}">
                         <a ng-click="delPerm(perm)" class="btn-delete minicon"></a>
                     </span>

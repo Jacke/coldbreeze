@@ -402,6 +402,16 @@ $scope.payload_result = [];
 $scope.removePayload = function(field) {
   $scope.payload = _.reject($scope.payload, function(el) { return el.$$hashKey === field.$$hashKey; });
 };
+$scope.removeFromPayload = function(field, elem) {
+  console.log('removeFromPayload');
+  console.log(elem.payload);
+  console.log(elem.payload.length);
+  elem.payload = _.reject(elem.payload, function(el) { return el.$$hashKey === field.$$hashKey; });
+  console.log(elem.payload);
+  console.log(elem.payload.length);
+  //$scope.$apply();
+};
+
 $scope.setWarpType = function(field, warp_type) {
 console.log(field);
 var index = $scope.payload.indexOf(field);
@@ -414,6 +424,22 @@ if (index !== -1) {
   } 
   if (warp_type === 'file') {
     $scope.payload[index] = { obj_type: "file", obj_title: "File", obj_content: "" }   
+  }
+} 
+  console.log(field);
+}
+$scope.setWarpTypeForPayload = function(field, warp_type, payload) {
+console.log(field);
+var index = payload.indexOf(field);
+
+if (index !== -1) {
+//    items[index] = 1010;
+
+  if (warp_type === 'text') {
+    payload[index] = { obj_type: "text", obj_title: "Text", obj_content: "" }  
+  } 
+  if (warp_type === 'file') {
+    payload[index] = { obj_type: "file", obj_title: "File", obj_content: "" }   
   }
 } 
   console.log(field);
@@ -446,6 +472,12 @@ $scope.$watch("boxfiles", function(newNames, oldNames) {
     };//$log.debug("    ** $watch(..., true)");
 }, true);
 
+$scope.addToPayload = function(payload) {
+    payload.push({});
+  if (payload.length > 0) {
+    $scope.setWarpTypeForPayload(payload[payload.length-1], 'file', payload);
+  }
+}
 $scope.addPayload = function(setType) {
   $scope.payload.push({});
   if ($scope.payload.length > 0) {
@@ -768,6 +800,8 @@ $scope.finishedInteractionFilter = function(obj) {
                                     if (reaction.reaction.elem) {
                                     return reaction.reaction.elem.element_id === obj.id }
                                     }) === undefined;
+      } else { // Finished launch
+        true
       }
     }
 }

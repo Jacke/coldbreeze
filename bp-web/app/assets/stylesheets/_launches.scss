@@ -96,13 +96,14 @@
 
 
 .stations.input-stations {
-  background-color: rgb(61, 63, 85);
-  margin-left: 0px;
-  padding-left: 20px;
-  padding-top: 1px;
-  padding-bottom: 50px;
-  position: relative;
-  margin-bottom: 0px;
+    background-color: #3D3F55;
+    margin-left: 0px;
+    padding-left: 20px;
+    padding-top: 1px;
+    padding-bottom: 50px;
+    position: relative;
+    margin-bottom: 0px;
+    overflow: hidden;
 }
 .stations .inline-launch .container {
     padding-left: 11px;
