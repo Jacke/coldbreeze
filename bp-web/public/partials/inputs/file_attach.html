@@ -26,7 +26,7 @@
 	        <div class="icon">
 	          <div class="document" mg-hide="field.obj_title == 'File'">
 	            <div class="file_title">
-		            <h4>{{ field.obj_title | limitTo:20 }}<span ng-if="field.obj_title.length >=20">...</span></h4>
+		            <h4 class="file_title_full">{{ field.obj_title }}<span ng-if="field.obj_title.length >=20">...</span></h4>
 				</div>
        <div class="file_url"><a href="{{ file.embedUrl }}">{{ field.obj_content }}</a></div>
        <div class="file_meta"><div class="file_type">{{ file.type }}</div><div class="file_size">{{ file.sizeByte}}</div></div>
@@ -86,16 +86,17 @@
        <div class="file_meta"><div class="file_type">file type</div><div class="file_size">file size</div></div>
 -->
 <div class="center-block provider-pick-buttons" ng-hide="field.obj_content.length > 1"><p>
-<a href="javascript:;" lk-google-picker on-picked="onPicked(docs)" on-loaded="onLoaded()" on-cancel="onCancel()" class="btn btn-primary btn-block">
+<a href="javascript:;" lk-google-picker on-picked="onPicked(docs, $parent.elem)" on-loaded="onLoaded()" on-cancel="onCancel()" class="btn btn-primary btn-block">
 Google Drive
 </a>
 </p>
+<!-- Some complication with this providers
 <div class="center-block">
 <p><a class="btn btn-primary btn-block" href="javascript:;" drop-box-picker dbpicker-files="allFiles.dpfiles">Dropbox</a></p>
 </div>
 <div class="center-block">
 <p><a class="btn btn-primary btn-block" href="javascript:;" box-picker boxpicker-files="allFiles.boxfiles">Box</a></p>
-</div>
+</div>-->
 </div>
 
 

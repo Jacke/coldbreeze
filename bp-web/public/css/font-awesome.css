@@ -20,6 +20,39 @@
     Work: Lead Product Designer @ http://kyruus.com
 
     */
+@font-face {
+  font-family: 'jaf-bernino-sans_normal';
+  src: url('/assets/fonts/201601/jaf-bernino-sans_normal_300.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'jaf-bernino-sans_normal';
+  src: url('/assets/fonts/201601/jaf-bernino-sans_normal_400.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'jaf-bernino-sans_normal';
+  src: url('/assets/fonts/201601/jaf-bernino-sans_normal_500.ttf') format('truetype');
+  font-weight: 500;
+  font-style: italic;
+}
+@font-face {
+  font-family: 'ff-tisa-web-pro_normal';
+  src: url('/assets/fonts/201601/ff-tisa-web-pro_normal_400.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'ff-tisa-web-pro_normal';
+  src: url('/assets/fonts/201601/ff-tisa-web-pro_normal_700.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+
+
 
 @font-face {
   font-family: 'Rams Lt';

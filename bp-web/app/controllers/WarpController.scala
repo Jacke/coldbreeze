@@ -177,51 +177,72 @@ class WarpController(override implicit val env: RuntimeEnvironment[DemoUser]) ex
 			}
 	  val boardF = getBoard(launch_id.getOrElse(-1), element_id, userId) 
 	  boardF.map { board => 
-	val boardId = board.get.id
-	val result = payload.map { load =>
+	    val boardId = board.get.id
+	    val result = payload.map { load =>
 	 		// obj_type: String, obj_title: String, obj_content: String
-	/*
-	val board =   Board(
-	  	id = Some(boardId),
-	  title = boardId.toString,
-	  content = "",
-	  publisher = userId,
-	  ownership = Ownership(host = "min.ority.us", uid = userId),
-	  meta = metas, None,None)
-	*/
+				/*
+				val board =   Board(
+				  	id = Some(boardId),
+				  title = boardId.toString,
+				  content = "",
+				  publisher = userId,
+				  ownership = Ownership(host = "min.ority.us", uid = userId),
+				  meta = metas, None,None)
+				*/
 			WarpResult(
-		board.get, List(
-			Entity(
-		  id = entityId,
-		  title = load.obj_type,
-		  boardId = boardId.get,
-		  description = "",
-		  publisher = userId,
-		  etype = load.obj_type,
-		  default = "",
-		  meta = metas)),
-		List(Slat(
-		  id = Some(UUID.randomUUID()),
-		  title = load.obj_title,
-		  boardId = boardId.get,
-		  entityId = entityId.get,  
-		  sval = load.obj_content,
-		  publisher = userId,
-		  meta = metas
-		))  
-	)}
+				board.get, List(
+					Entity(
+				  id = entityId,
+				  title = load.obj_type,
+				  boardId = boardId.get,
+				  description = "",
+				  publisher = userId,
+				  etype = load.obj_type,
+				  default = "",
+				  meta = metas)),
+				List(Slat(
+				  id = Some(UUID.randomUUID()),
+				  title = load.obj_title,
+				  boardId = boardId.get,
+				  entityId = entityId.get,  
+				  sval = load.obj_content,
+				  publisher = userId,
+				  meta = metas
+				))  
+			)
+	}
 			val entities = result.map { result => result.entities }.flatten	
 			val slats = result.map { result => result.slats }.flatten
+			addWarpResultToBoard(entities, slats)
+
 			WarpResult(result.map(_.board).headOption.getOrElse(Board(
-	  	id = boardId,
-	  title = boardId.toString,
-	  content = "",
-	  publisher = userId,
-	  ownership = Ownership(host = "min.ority.us", uid = userId, group = workbench_id),
-	  meta = metas, None,None)), entities, slats)
+																  	  id = boardId,
+																	  title = boardId.toString,
+																	  content = "",
+																	  publisher = userId,
+																	  ownership = Ownership(host = "min.ority.us", 
+																	  						uid = userId, 	
+																	  						group = workbench_id),
+																	  meta = metas, None,None)), entities, slats)
 	  }
 }
 
+def addWarpResultToBoard(entities: List[Entity], slats: List[Slat]) = {
+	entities.map { entity =>
+		wrapper.addEntityByResource(0, entity)
+		println(">>>>>>>>>>>>>>>>>>>>>>>>>")
+		println("slats")
+		println(slats.length)
+		println(">>>>>>>>>>>>>>>>>>>>>>>>>")
+		slats.map { slat => //(slat => slat.entityId == entity.id.get.toString).map { slat =>
+			println("addToSlat")
+			println(slat)
+			wrapper.addSlatByEntity(entity_id = entity.id.get.toString, slat = slat)
+		}
+
+	}
+
+}
 
 
 def parseWarp(body: String, userId: String = ""):WarpResult = {

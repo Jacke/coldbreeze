@@ -8694,9 +8694,8 @@ height: 40px;
   width: auto;
 }
 .reaction_list__reaction .warp_field {
-  width: auto;
+    width: 195px;
 }
-
 .bb_elements .bb_text {
     background: white;
     padding: 17px 18px 20px 17px;
