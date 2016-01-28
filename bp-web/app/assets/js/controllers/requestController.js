@@ -3,8 +3,8 @@ define(['angular', 'app', 'controllers'], function (angular, minorityApp, minori
 
 
 
-minorityControllers.controller('BPRequestCtrl', ['fastResourceCostCreation', 'DropBoxSettings', 'lkGoogleSettings', 'notificationService', 'LaunchElementTopologsFactory','LaunchElemsFactory','LaunchSpacesFactory','LaunchSpaceElemsFactory','ElementTopologsFactory', 'InteractionsFactory', '$scope', '$window','$routeParams','$route', '$rootScope','$filter','BPLogsFactory', 'BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory', 'BProcessFactory', 'BPStationsFactory', 'BPRequestFactory',  '$location', '$http',
-function (fastResourceCostCreation, DropBoxSettings, lkGoogleSettings, notificationService, LaunchElementTopologsFactory, LaunchElemsFactory,LaunchSpacesFactory,LaunchSpaceElemsFactory, ElementTopologsFactory, InteractionsFactory, $scope, $window,$routeParams,$route, $rootScope,$filter,BPLogsFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BProcessFactory, BPStationsFactory, BPRequestFactory,  $location, $http) {
+minorityControllers.controller('BPRequestCtrl', ['DataCostLaunchAssign', 'fastResourceCostCreation', 'DropBoxSettings', 'lkGoogleSettings', 'notificationService', 'LaunchElementTopologsFactory','LaunchElemsFactory','LaunchSpacesFactory','LaunchSpaceElemsFactory','ElementTopologsFactory', 'InteractionsFactory', '$scope', '$window','$routeParams','$route', '$rootScope','$filter','BPLogsFactory', 'BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory', 'BProcessFactory', 'BPStationsFactory', 'BPRequestFactory',  '$location', '$http',
+function (DataCostLaunchAssign, fastResourceCostCreation, DropBoxSettings, lkGoogleSettings, notificationService, LaunchElementTopologsFactory, LaunchElemsFactory,LaunchSpacesFactory,LaunchSpaceElemsFactory, ElementTopologsFactory, InteractionsFactory, $scope, $window,$routeParams,$route, $rootScope,$filter,BPLogsFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BProcessFactory, BPStationsFactory, BPRequestFactory,  $location, $http) {
 
 $scope.bpId = $scope.session.process.id;
 $scope.session_id = $scope.session.session.id;
@@ -402,6 +402,33 @@ $scope.payload_result = [];
 $scope.removePayload = function(field) {
   $scope.payload = _.reject($scope.payload, function(el) { return el.$$hashKey === field.$$hashKey; });
 };
+$scope.removeFromPayload = function(field, elem) {
+  console.log('removeFromPayload');
+  console.log(elem.payload);
+  console.log(elem.payload.length);
+  elem.payload = _.reject(elem.payload, function(el) { return el.$$hashKey === field.$$hashKey; });
+  console.log(elem.payload);
+  console.log(elem.payload.length);
+  if (field.entityId) {
+     var entityId = field.entityId;
+     $http({
+      url: '/data/entity/'+entityId+'/delete',
+      method: "POST",
+      data: {},
+      })
+      .then(function(response) {
+        // success
+        console.log(response)
+      },
+      function(response) { // optional
+        // failed
+        console.log(response);
+      }
+      ); 
+  }
+  //$scope.$apply();
+};
+
 $scope.setWarpType = function(field, warp_type) {
 console.log(field);
 var index = $scope.payload.indexOf(field);
@@ -413,7 +440,23 @@ if (index !== -1) {
     $scope.payload[index] = { obj_type: "text", obj_title: "Text", obj_content: "" }  
   } 
   if (warp_type === 'file') {
-    $scope.payload[index] = { obj_type: "file", obj_title: "File", obj_content: "" }   
+    $scope.payload[index] = { obj_type: "file", obj_title: "", obj_content: "" }   
+  }
+} 
+  console.log(field);
+}
+$scope.setWarpTypeForPayload = function(field, warp_type, payload) {
+console.log(field);
+var index = payload.indexOf(field);
+
+if (index !== -1) {
+//    items[index] = 1010;
+
+  if (warp_type === 'text') {
+    payload[index] = { obj_type: "text", obj_title: "Text", obj_content: "" }  
+  } 
+  if (warp_type === 'file') {
+    payload[index] = { obj_type: "file", obj_title: "", obj_content: "" }   
   }
 } 
   console.log(field);
@@ -446,6 +489,12 @@ $scope.$watch("boxfiles", function(newNames, oldNames) {
     };//$log.debug("    ** $watch(..., true)");
 }, true);
 
+$scope.addToPayload = function(payload) {
+    payload.push({});
+  if (payload.length > 0) {
+    $scope.setWarpTypeForPayload(payload[payload.length-1], 'file', payload);
+  }
+}
 $scope.addPayload = function(setType) {
   $scope.payload.push({});
   if ($scope.payload.length > 0) {
@@ -457,11 +506,29 @@ $scope.onLoaded = function () {
 }
 
 // Callback triggered after selecting files
-$scope.onPicked = function (docs) {
+$scope.onPicked = function (docs, element) {
+
+
+  var data = _.map(docs, function(el) { 
+      return { obj_type: "file", obj_content: el.embedUrl, obj_title: el.name };   
+  });
+  element.payload = element.payload.slice(0, -1).concat(data);
+  // make element id
+  if (element.reaction != undefined) { element.element_id = element.reaction.elem.element_id; }//reaction
+  else { element.element_id = element.id; } // from tree
+
+  $scope.sendPayloadForElement($scope.session_id, element, _.filter(element.payload, function(el){return el.obj_content !== "";}))
+};
+
+/*
+$scope.onPicked = function (docs, payload) {
   angular.forEach(docs, function (file, index) {
     $scope.files.push(file);
   });
-}
+};
+*/
+ 
+
 $scope.onPickedFirstInput = function(first_input, docs) {
     first_input.files = [];
     angular.forEach(docs, function (file, index) {
@@ -546,7 +613,22 @@ $scope.sendWarpResult = function() {
       }
       );     
 }
-
+$scope.sendWarpResultForElement = function(payload_result) {
+     $http({
+      url: '/warp/send',
+      method: "POST",
+      data: payload_result.data.message,
+      })
+      .then(function(response) {
+        // success
+        console.log(response)
+      },
+      function(response) { // optional
+        // failed
+        console.log(response);
+      }
+      );     
+}
 $scope.sendPayload = function(launch_id, element_id, existedPayload) {
      if (existedPayload !== undefined) {
       var payload = existedPayload;
@@ -568,7 +650,65 @@ $scope.sendPayload = function(launch_id, element_id, existedPayload) {
      } else {
        var payload = $scope.payload; 
      }
-}
+};
+
+$scope.warpData = {};
+DataCostLaunchAssign.query( { launchId: $scope.session_id } ).$promise.then(function(data) {
+  $scope.processCosts = data.costs;
+  $scope.warpData = data.warp;
+  /**
+   * Push warpData to request elements
+   */
+/*
+  // make element id
+  if (element.reaction != undefined) { element.element_id = element.reaction.elem.element_id; }//reaction
+  else { element.element_id = element.id; } // from tree
+ */
+
+  _.forEach($scope.$parent.tree.trees, function(tree_elem) {
+    var elem_id = tree_elem.id;
+    var payloadResult = _.filter($scope.warpData.slats, function(slat) { 
+      return _.filter(slat.meta, function(meta){ return (meta.key === "element_id" && meta.value === elem_id+"")  }).length > 0 })
+    
+    return tree_elem.payload = _.map(payloadResult, function(presult) {
+      return { obj_type: "file", obj_title: presult.title, obj_content: presult.sval, entityId: presult.entityId }   
+    });
+  });
+  _.forEach($scope.interactions.reactions, function(reaction) {
+    var elem_id = reaction.reaction.elem.element_id;;
+    var payloadResult = _.filter($scope.warpData.slats, function(slat) { 
+      return _.filter(slat.meta, function(meta){ return (meta.key === "element_id" && meta.value === elem_id+"")  }).length > 0 })
+    reaction.payload = _.map(payloadResult, function(presult) {
+      return { obj_type: "file", obj_title: presult.title, obj_content: presult.sval, entityId: presult.entityId }   
+    })
+  });
+
+});
+
+$scope.sendPayloadForElement = function(launch_id, element, existedPayload) {
+     if (existedPayload !== undefined) {
+      var payload = existedPayload;
+     $http({
+      url: '/warp?launch_id=' + launch_id +'&element_id='+element.element_id,
+      method: "POST",
+      data: { payload: payload },
+      })
+      .then(function(response) {
+        // success
+        element.payload_result = response;//console.log(response);
+        //$scope.bpstations = BPStationsFactory.query({ BPid: $scope.bpId });
+      },
+      function(response) { // optional
+        // failed
+        element.payload_result = response;//console.log(response);
+      }
+      );
+     } else {
+       var payload = element.payload; 
+     }
+};
+
+
 
 /*
 $('textarea#warpArea').bind('input propertychange', function () {
@@ -768,6 +908,8 @@ $scope.finishedInteractionFilter = function(obj) {
                                     if (reaction.reaction.elem) {
                                     return reaction.reaction.elem.element_id === obj.id }
                                     }) === undefined;
+      } else { // Finished launch
+        true
       }
     }
 }
@@ -802,8 +944,9 @@ $scope.runFrom = function (session_id, reaction) {
     //var space_params = _.filter(station.space_elems, function(obj) { return obj.param !== undefined });
     //var params_output = _.flatten(_.map(front_params, function(v) { return {"f_elem": v.id, "param": v.param} }), _.map(space_params, function(v) { return {"sp_elem": v.id, "param": v.param} }));
     // TODO: Add arguments
-    if ($scope.payload_result.length > 0) { // Send warp field
-      $scope.sendWarpResult()
+    if (reaction.payload_result !== undefined && reaction.payload_result.length > 0) { // Send warp field
+      //$scope.sendWarpResult()
+      $scope.sendWarpResultForElement(reaction.payload_result);
     }
     if (reaction) {
       var reaction_params = {reaction_id: reaction.reaction.id}

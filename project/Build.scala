@@ -145,7 +145,7 @@ integrationTest := {
           reflect, 
           wcs,
           akkaActor, 
-          akkaQuartz,
+      //    akkaQuartz,
           scaldiakka, 
           dispatch,
           //trireme,
@@ -225,13 +225,14 @@ integrationTest := {
     //.settings(formatSettings: _*)(WebKeys.public in Assets) := (classDirectory in Compile).value / "public",
     .settings(revolverSettings: _*)
     .settings(jsSettings : _*)
+   .settings(sassOptions in Assets ++= Seq("--compass", "-r", "compass"))    
     .settings(sassSettings : _*)
     //.settings(liquibaseUsername := "postgres")
     //.settings(liquibasePassword := "12344321")
     //.settings(liquibaseDriver   := "org.postgresql.Driver")
     //.settings(liquibaseUrl      := "jdbc:postgresql://localhost/minority1?createDatabaseIfNotExist=true")
     //.settings((compile in Compile) <<= (compile in Compile).dependsOn(WebKeys.assets in Assets))
-    .settings(sassOptions in Assets ++= Seq("--compass", "-r", "compass"))
+    //.settings(sassOptions in Assets ++= Seq("--compass", "-r", "compass"))
 /*.settings(
     sassOptions := Seq("--compass")
 )*/

@@ -1,0 +1,121 @@
+<div class="warp-field" ng-init="allFiles = {files: [], dpfiles: [],boxfiles: []};">
+    <!--
+    <div class="warp_attach" ng-init="show_warp=false;" ng-click="show_warp == true ? show_warp = false : show_warp = true">Attach</div>-->
+    
+    <div class="warp-show" show="show_warp">
+    <div class="warp-result"><!-- {{ payload_result | prettyJSON }} --></div>
+    <div class="warp_attach" ng-click="addToPayload($parent.elem.payload)">Attach file</div>
+    <div class="warp_field" ng-repeat="field in $parent.elem.payload">
+    <!--
+    <div class="warp_select" ng-show="field.obj_type == undefined || field.obj_type.length < 1">
+      <div class="text_select_btn" style="display:none;" ng-click="setWarpType(field, 'text')">Text</div>
+      <div class="file_select_btn" ng-click="setWarpType(field, 'file')">File</div>
+    </div>-->
+
+     <div class="bb_elements">
+     <div class="bb_text" style="display:none;" ng-show="field.obj_type == 'text'">
+       <div class="text_content"><p>some text</p></div>
+       <textarea rows="10" cols="45" ng-model="field.obj_content" id="warpArea" name="text"></textarea>
+       <div class="text_control"><a href="#">Edit</a></div>
+     </div>
+
+
+
+<div class="bb_file" ng-show="field.obj_type == 'file'">
+   	  <a href="{{ field.obj_content }}" target="_blank">
+	        <div class="icon">
+	          <div class="document" mg-hide="field.obj_title == 'File'">
+	            <div class="file_title">
+		            <h4 class="file_title_full">{{ field.obj_title }}<span ng-if="field.obj_title.length >=20">...</span></h4>
+				</div>
+       <div class="file_url"><a href="{{ file.embedUrl }}">{{ field.obj_content }}</a></div>
+       <div class="file_meta"><div class="file_type">{{ file.type }}</div><div class="file_size">{{ file.sizeByte}}</div></div>
+                        <button type="button" class="close" ng-click="removeFromPayload(field, $parent.elem)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          </div>
+        </div>
+      </a>
+
+<div class="row dashed-border" ng-switch="allFiles.files.length > 0">
+	  <div class="text-center" ng-switch-when="false">
+	    <!--<div class="none">No files selected yet</div>-->
+	  </div>
+    <div ng-switch-when="true">
+	    <div class="item item-test" ng-repeat="file in allFiles.files">
+	      <a href="{{ file.url }}" target="_blank">
+	        <div class="icon">
+	          <div class="document">
+	            <div class="file_title">
+		            <h4>{{ file.name | limitTo:20 }}<span ng-if="file.name.length >=20">...</span></h4>
+				</div>
+       <div class="file_url"><a href="{{ file.embedUrl }}">{{ file.embedUrl }}</a></div>
+       <div class="file_meta"><div class="file_type">{{ file.type }}</div><div class="file_size">{{ file.sizeByte}}</div></div>
+                        <button type="button" class="close" ng-click="removeFromPayload(field, $parent.elem)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+</div>
+<div class="files-container">
+            <div class="row show-grid" ng-switch="allFiles.dpfiles.length > 0 || allFiles.boxfiles.length > 0">
+                <div ng-switch-when="true">
+                    <div class="" ng-repeat="file in allFiles.dpfiles">
+                        <div class="file_title">
+			            <h4>{{ file.name | limitTo:20 }}<span ng-if="file.name.length >=20">...</span>
+						</h4></div>
+       <div class="file_url"><a href="{{ file.link }}">{{ file.link }}</a></div>
+       <div class="file_meta"><div class="file_type">{{ file.type }}</div><div class="file_size">{{ file.sizeByte}}</div></div>						
+                        <button type="button" class="close" ng-click="remove($index)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    </div>
+                    <div class="" ng-repeat="file in allFiles.boxfiles">
+                        <div class="file_title">
+			            <h4>{{ file.name | limitTo:20 }}<span ng-if="file.name.length >=20">...</span>
+						</h4></div>
+       <div class="file_url"><a href="{{ file.link }}">{{ file.link }}</a></div>
+       <div class="file_meta"><div class="file_type">{{ file.type }}</div><div class="file_size">{{ file.sizeByte}}</div></div>				
+
+                        <button type="button" class="close" ng-click="removeFromPayload(field, $parent.elem)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    </div>
+                </div>
+            </div>
+</div>            
+
+<!--
+       <div class="file_title"><h4>File title</h4></div>
+       <div class="file_url"><a href="#">file</a></div>
+       <div class="file_meta"><div class="file_type">file type</div><div class="file_size">file size</div></div>
+-->
+<div class="center-block provider-pick-buttons" ng-hide="field.obj_content.length > 1"><p>
+<a href="javascript:;" lk-google-picker on-picked="onPicked(docs, $parent.elem)" on-loaded="onLoaded()" on-cancel="onCancel()" class="btn btn-primary btn-block">
+Google Drive
+</a>
+</p>
+<!-- Some complication with this providers
+<div class="center-block">
+<p><a class="btn btn-primary btn-block" href="javascript:;" drop-box-picker dbpicker-files="allFiles.dpfiles">Dropbox</a></p>
+</div>
+<div class="center-block">
+<p><a class="btn btn-primary btn-block" href="javascript:;" box-picker boxpicker-files="allFiles.boxfiles">Box</a></p>
+</div>-->
+</div>
+
+
+
+
+
+    </div>
+    </div>  
+
+      <!-- 
+        data.message.entities
+        data.message.slats
+      -->
+      <!--
+      { payload: [ { obj_type: "text", obj_title: "Text", obj_content: value } ] } 
+      -->
+
+      <!-- <div class="warp_attach" ng-click="removePayload(field)">Remove field</div>-->
+      </div>
+
+      </div>
+</div>

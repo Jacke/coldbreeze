@@ -85,21 +85,21 @@ custom.needAccount=Need an account?
 custom.haveAccount=Already have an account?
 custom.byClicking=By clicking "Sign up for Minority", you agree to our
 
-custom.signUp= Sign Up
-custom.signUpFor= Sign up for Minority
-custom.signIn= Sign in
-custom.logIn= Log In
-custom.and= And
-custom.or= or
-custom.cancel= Cancel
-custom.send = Send
-custom.delete = Delete
-custom.status = Status
-custom.active = Active
+custom.signUp= Регистрация
+custom.signUpFor= Зарегистрируйтесь в Minority
+custom.signIn= Вход
+custom.logIn= Вход
+custom.and= И
+custom.or= или
+custom.cancel= Отмена
+custom.send = Отправить
+custom.delete = Удалить
+custom.status = Статус
+custom.active = Активный
 custom.elem = Elem
 custom.space = Space
 custom.spaceelem = Spaceelem
-custom.companyinfo = Company info
+custom.companyinfo = Информация о компании
 
 
 
@@ -144,6 +144,9 @@ footer.privacy=Privacy
 # Password change
 securesocial.passwordChange.title=Изменение пароля
 securesocial.passwordChange.currentPassword=Текущий пароль
+securesocial.invalidCredentials=Неправильный email или пароль
+securesocial.login.invalidCredentials=Неправильный email или пароль
+
 securesocial.passwordChange.newPassword1=Новый пароль
 securesocial.passwordChange.newPassword2=Новый пароль (повторите)
 securesocial.passwordChange.changeButton=Изменить

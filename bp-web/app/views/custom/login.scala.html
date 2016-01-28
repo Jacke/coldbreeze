@@ -5,19 +5,19 @@
 @errorMsg.map { msg =>
 <div class="messageBoxWrap">
   <p class="message">
-  @msg </p>
+  @Messages(msg) </p>
 </div>
 }
 @request.flash.get("success").map { msg =>
 <div class="messageBoxWrap">
   <p class="message">
-  @msg </p>
+  @Messages(msg) </p>
 </div>
 }
 @request.flash.get("error").map { msg =>
 <div class="messageBoxWrap">
   <p class="message">
-  @msg </p>
+  @Messages(msg) </p>
 </div>
 }
 

@@ -137,8 +137,8 @@ def findOrCreate(launch_idOpt: Option[String], element_idOpt: Option[String], us
       case _ => List()
     }        
 
-    val cursor = collection.find(Json.obj("query" -> 
-      BSONDocument("meta" -> 
+    val cursor = collection.find(Json.obj("meta" -> 
+      BSONDocument("$in" -> 
 
             metas
 
@@ -361,24 +361,30 @@ def APIindex = Action.async { implicit request =>
 def APIindexByLaunch(launch_id: Int) = Action.async { implicit request =>
 
 
-    var metas = BSONArray(BSONDocument("key" -> "launch_id","value" -> launch_id.toString))
-    val entityCollectionCursor = entityCollection.find(Json.obj("query" -> 
-                                                  BSONDocument("meta" -> 
+    var metas = BSONArray(BSONDocument("key" -> "launch_id", "value" -> launch_id.toString))
+        
+
+    val entityCollectionCursor = entityCollection.find(Json.obj("meta" -> 
+                                                  BSONDocument("$in" -> 
             metas
         ))).cursor[Entity](readPreference = ReadPreference.primary)
-    val slatCollectionCursor = slatCollection.find(Json.obj("query" -> 
-                                                  BSONDocument("meta" -> 
+    val slatCollectionCursor = slatCollection.find(Json.obj("meta" -> 
+                                                  BSONDocument("$in" -> 
             metas
         ))).cursor[Slat](readPreference = ReadPreference.primary)
-    val cursor = collection.find(Json.obj("query" -> 
-                                   BSONDocument("meta" -> 
+    val cursor = collection.find(Json.obj("meta" -> 
+                                   BSONDocument("$in" -> 
             metas
         ))).cursor[Board](readPreference = ReadPreference.primary)
     for {
         boards <- cursor.collect[List]()
         entities <-  entityCollectionCursor.collect[List]()
         slats <- slatCollectionCursor.collect[List]()
-     } yield Ok(Json.toJson(BoardContainer(boards, entities, slats)))
+     } yield { 
+      println("finded")
+      println(boards)
+      Ok(Json.toJson(BoardContainer(boards, entities, slats)))
+    }
 }
 
 def APIcreate = Action.async(parse.json) { implicit request =>
