@@ -9035,6 +9035,9 @@ button.close {}
     font-weight: 700;
     margin-left: 8px;
 }
+.file-view-container .warp-field .warp_attach {
+    width: auto;
+}
 
 .warp_field .btn.btn-primary.btn-block {
     background: #3D3F55;
