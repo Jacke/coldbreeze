@@ -136,7 +136,7 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 <div class="session-process-header"><h2><a id="launchProcessTitle" href="/a#/bprocess/{{ entity.process.id }}/elements">{{ entity.process.title }}</a></h2>
 <div class="session_controls">
   <ul>
-    <li class="process-history-btn" tooltip="Process History" ng-click="processHistory(entity)"><span class="moicon moicon-book"></span></li>  
+    <li class="process-history-btn" tooltips tooltip-template="Process history" tooltip-side="bottom"  ng-click="processHistory(entity)"><span class="moicon moicon-book"></span></li>  
   </ul>
 </div>   
 
@@ -153,7 +153,7 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 </div>
 
         <div class="session__header">
-              <div class="progress-button loading" ng-class="bubbleClass(session)" tooltip="{{bubbleTooltip(session)}}">
+              <div class="progress-button loading" ng-class="bubbleClass(session)" tooltip-template="{{bubbleTooltip(session)}}" tooltip-side="left">
         <div class="round-progress-container">
                <progress-arc stroke="#3080E8"
                               background="#eee"
@@ -170,13 +170,13 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
              </div>
         <div class="session__header session__people">
           <div class="launched-by" ng-show="session.peoples.launched_by != 'not@found.com'" ng-init="account = accFetchSessioned(session.peoples.launched_by)">
-              <span class="account-pic" tooltip="{{ account.tooltip }}">
+              <span class="account-pic" tooltips tooltip-template="{{ account.tooltip }}" tooltip-side="left">
                         <img ng-src="{{ account.avatarUrl}}" alt="{{ account.tooltip }}">
               </span>
           </div>
           <div class="participators">
                   <div class="perms perm-list" ng-repeat="perm in session.peoples.participators | limitTo:3" ng-init="account = accFetchSessioned(perm)">
-                    <span class="account-pic" tooltip="{{ account.tooltip }}">
+                    <span class="account-pic" tooltips tooltip-template="{{ account.tooltip }}" tooltip-side="left">
                         <img ng-src="{{ account.avatarUrl}}" alt="{{ account.tooltip }}">
                     </span>
                   </div>       
@@ -186,7 +186,20 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 
 
 
-         
+
+<div class="session_controls">
+  <div class="launch_share_link" ng-show="session.shareLink !== undefined && session.shareLink !== {}">
+    <span class="share_link"><a href="/shared/launch/{{ session.shareLink.share_hash }}">Share link</a></span>
+  </div>
+  <ul class="session_controls_menu">
+    <!--<li tooltip="History" ng-click="history(session, entity)"><span class="moicon moicon-book"></span></li> --> 
+    <li tooltips tooltip-template="Share" tooltip-side="top" ng-click="shareLaunch(session, session.session.id)"><span class="moicon icon-share"></span></li>    
+    <!-- 
+    <li ng-class="isPinned(session)" tooltips tooltip-template="Pin launch to bottom bar" tooltip-side="top" ng-click="pin(session)"><span class="pin_session moicon moicon-pushpin"></span></li>
+    -->
+    <li tooltips tooltip-template="Cancel" tooltip-side="top" ng-click="deleteSession(session.session.id)"><span class="moicon icon-trash"></span></li>
+  </ul>
+</div>          
 
 <div class="progress">
     <div class="progress-lines" ng-init="tree=session.session">
@@ -196,14 +209,7 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
     <!--<span>{{session.percent}}%</span>-->
    </div>
 </div>              
-
-<div class="session_controls">
-  <ul>
-    <!--<li tooltip="History" ng-click="history(session, entity)"><span class="moicon moicon-book"></span></li> --> 
-    <li ng-class="isPinned(session)" tooltip="Pin launch to bottom bar" ng-click="pin(session)"><span class="pin_session moicon moicon-pushpin"></span></li>
-    <li tooltip="Cancel" ng-click="deleteSession(session.session.id)"><span class="moicon icon-trash"></span></li>
-  </ul>
-</div>      
+     
 <div class="session-launches-bar minimal">
     <!-- <div ng-include src="'assets/partials/launchesBar.html'" class="launches-bar"></div> -->
 
@@ -238,7 +244,7 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
   <span class="dish-label vertical-center left">Started <abbr class="session__header__created_at" title="{{ $parent.session.session.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="$parent.session.session.created_at"></abbr></span>
 
   <div class="dish-delete right">
-    <button class="moicon moicon-cancel-circle" tooltip="Cancel" ng-click="$parent.cancelSession($parent.session)"></button>
+    <button class="moicon moicon-cancel-circle" tooltips tooltip-template="Cancel" tooltip-side="left" ng-click="$parent.cancelSession($parent.session)"></button>
   </div>
 
   <div class="dish-operations-collapser right visible">

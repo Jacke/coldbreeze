@@ -772,10 +772,8 @@ a.expand-ref-select {
     width: 215px;
 }
 .minimal .session__header.session__people {
-    display: inline-block;
-    width: 221px;
-    float: right;
-    margin-top: -54px;
+    width: 114px;
+    margin-left: auto;
 }
 .stations .session__header.session__people {
     overflow: hidden;
@@ -901,13 +899,18 @@ span.reaction-icon.minicon.minicon-gear-fill-right {
  Minimal layout
 */
 .proc-element.minimal .info {
-    padding: 0px 5px 3px 0px;
+    padding: 0px 5px 0px 0px;
+    display: flex;
 }
 
 .proc-element.minimal .element-header {
     padding-top: 0px;
     margin-top: -10px;
-    background: white;
+    position: relative;
+    background: #fff;
+    border-radius: 3px;
+    box-shadow: 0 1px 2px rgba(0,0,0,.1),0 0 0 1px rgba(63,63,68,.1);
+    cursor: auto;
 }
 
 .proc-element.minimal .element-header .info h6.desc {
@@ -918,8 +921,9 @@ span.reaction-icon.minicon.minicon-gear-fill-right {
 
 .proc-element.minimal .element-header .info .type {
     border-radius: 0px;
-    height: 65px;
-        border-top-left-radius: 4px;
+    height: auto;
+    min-height: 62px;
+    border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
 }
 .proc-element.minimal .element-header .info .type:hover {
@@ -1018,12 +1022,14 @@ span.reaction-icon.minicon.minicon-gear-fill-right {
 }
 
 .proc-element.minimal .element-header .info .type:hover ul.type-tabs {
-     border-radius: 0px;
-     border-top-left-radius: 4px;
-     border-bottom-left-radius: 4px;
-     height: 65px;
+    border-radius: 0px;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    height: auto;
+    overflow: hidden;
+    min-height: 61px;
+    margin-bottom: 0px;
 }
-
 
 
 .proc-element.invoking .info { 
@@ -1152,7 +1158,7 @@ padding-top: 3px;
 }
 
 .proc-element.minimal .space-element .info {
-    padding: 0px 5px 3px 0px;
+    padding: 0px 5px 0px 0px;
     height: 65px;
 }
 .space-element .right-bar {
@@ -3258,10 +3264,9 @@ abbr[title], abbr[data-original-title] {
 .process-info {
     padding: 22px 15px 23px 26px;
     clear: both;
-    margin: 18px 0px 5px 15px;
+    margin: 18px 0px 25px 15px;
     border-radius: 5px;
 }
-
 
 
 .progress-lines span.line {
@@ -5120,6 +5125,31 @@ display: inline-block;
   margin-top: -30px;
     height: 30px;
 }
+.launch_share_link {
+    width: 41px;
+    display: block;
+    clear: both;
+    overflow: hidden;
+    display: inline-block;
+    float: left;
+    margin-top: 9px;
+    font-size: 15px;
+}
+
+.launch_share_link span.share_link {
+    width: 47px;
+    display: block;
+    overflow: hidden;
+    height: 17px;
+}
+
+.launch_share_link span.share_link a {
+    width: 45px;
+    display: block;
+    overflow: hidden;
+    height: 20px;
+}
+
 
 .session-info .expand_sessions a * {
     margin-left: 6px;

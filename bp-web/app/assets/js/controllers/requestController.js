@@ -977,6 +977,9 @@ $scope.runFrom = function (session_id, reaction) {
   }
 };
 
+$scope.shareLaunch = function(launch_id) {
+  console.log(launch_id);
+}
 
 $scope.addParam = function (reaction) {
   //if (_.find($scope.reaction_params, function(re) { 

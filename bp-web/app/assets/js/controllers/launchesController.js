@@ -463,6 +463,31 @@ $scope.bubbleClass = function(session) {
   } else { return ""; }
 };
 
+$scope.shareLaunch = function(launch, launch_id) {
+  console.log(launch_id);
+
+  $http({
+      url: '/share/launch/'+launch_id,
+      method: "POST",
+      data: {  }
+      })
+      .then(function(response) {
+        // success
+        //$scope.stationsRefresh(); // Not for session controller
+        launch.shareLink = response.data;
+        //$scope.invoke_res = [response];
+      },
+      function(response) { // optional
+        // failed
+      }
+      );
+
+}
+
+//POST    /share/launch/:launch_id            
+//GET     /shared/launch/:launch_hash 
+
+
 $scope.highlightActive = function (station, elem) {
      /*var front, nest;
      front = $scope.elemsHash[$scope.logsByStation(station.id)[$scope.logsByStation(station.id).length-1].element];  
