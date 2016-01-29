@@ -47,8 +47,11 @@ class LaunchShareController(override implicit val env: RuntimeEnvironment[DemoUs
    val shareF = LaunchSharesDAOF.getByHash(launchHash)
    shareF.map { shareOpt =>
    	shareOpt match {
-   		case Some(share) => Ok(Json.toJson(share))
-   		case _ => Ok("{}")
+   		case Some(share) => { 
+   			val result = Json.toJson(share)
+   			Ok(views.html.share.launchShare("Shared"))
+   		}
+   		case _ => Ok(views.html.share.launchShare("Shared") )
    	}
 
    }
