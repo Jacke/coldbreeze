@@ -15,6 +15,43 @@ import play.api.data.format.Formats
 import play.api.data.format.Formatter
 import play.api.data.FormError
 
+import models.DAO.resources.{BusinessDAO, BusinessDTO}
+import models.DAO._
+
+import play.api._
+import play.api.mvc._
+import play.twirl.api.Html
+
+//{Action, Controller}
+import play.api.http.MimeTypes
+import play.api.libs.json._
+import play.api.cache._
+import play.api.data._
+import play.api.data.Forms._
+import play.api.data.format.Formats
+import play.api.data.format.Formatter
+import play.api.data.FormError
+import play.api.Logger
+
+import views._
+import models.User
+import service.DemoUser
+import securesocial.core._
+import models.DAO.BProcessDTO
+import models.DAO.BPDAO
+import models.DAO._
+import models.DAO.resources._
+import models.DAO.CompositeValues
+import play.api.Play.current
+
+import main.scala.bprocesses._
+import main.scala.simple_parts.process.Units._
+import models.DAO.reflect._
+import models.DAO.conversion._
+import ProcHistoryDAO._
+import helpers._
+import decorators._
+import builders._
 
 import views._
 import models.User
@@ -36,7 +73,41 @@ import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 
 
 class LaunchShareController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
- 
+implicit val InputLoggerReads = Json.reads[InputLogger]
+implicit val InputLoggerWrites = Json.format[InputLogger]
+implicit val SessionStateLogReads  = Json.reads[SessionStateLog]
+implicit val SessionStateLogWrites  = Json.format[SessionStateLog]
+
+  implicit val CompositeVReads = Json.reads[CompositeValues]
+  implicit val CompositeVWrites = Json.format[CompositeValues]
+  implicit val logReads = Json.reads[BPLoggerDTO]
+  implicit val logWrites = Json.format[BPLoggerDTO]
+  implicit val ProcessHistoryDTOreads = Json.reads[ProcessHistoryDTO]
+  implicit val ProcessHistoryDTOformat = Json.format[ProcessHistoryDTO]
+  implicit val stationReads = Json.reads[BPStationDTO]
+  implicit val stationWrites = Json.format[BPStationDTO]
+  implicit val StationNoteReads = Json.reads[StationNoteMsg]
+  implicit val StationNoteWrites = Json.format[StationNoteMsg]
+  implicit val LogsContainerreads = Json.reads[LogsContainer]
+  implicit val LogsContainerformat = Json.format[LogsContainer]
+  implicit val AroundAttrReads = Json.reads[AroundAttr]
+  implicit val AroundAttrWrites = Json.format[AroundAttr]
+  implicit val ElemAroundReads = Json.reads[ElemAround]
+  implicit val ElemAroundWrites = Json.format[ElemAround]
+  implicit val ListAroundReads = Json.reads[ListAround]
+  implicit val ListAroundWrites = Json.format[ListAround]
+  implicit val sessionReads = Json.reads[BPSession]
+  implicit val sessionWrites = Json.format[BPSession]
+  implicit val BProcessDTOReads = Json.reads[BProcessDTO]
+  implicit val BProcessDTOWrites = Json.format[BProcessDTO]
+  implicit val SessionPeoplesReads = Json.reads[SessionPeoples]
+  implicit val SessionPeoplesFormat = Json.format[SessionPeoples]
+  implicit val SessionStatusReads = Json.reads[SessionStatus]
+  implicit val SessionStatusWrites = Json.format[SessionStatus]  
+  implicit val SessionContainerReads = Json.reads[SessionContainer]
+  implicit val SessionContainerWrites = Json.format[SessionContainer]
+
+
   implicit val LaunchShareDTOReads = Json.reads[LaunchShareDTO]
   implicit val LaunchShareDTOWrites = Json.format[LaunchShareDTO]
   //val Home = Redirect(routes.LaunchShareController.index())
@@ -45,13 +116,22 @@ class LaunchShareController(override implicit val env: RuntimeEnvironment[DemoUs
 //GET     /shared/launch/:launch_hash
  def index(launchHash: String) = Action.async { implicit request =>
    val shareF = LaunchSharesDAOF.getByHash(launchHash)
-   shareF.map { shareOpt =>
+   shareF.flatMap { shareOpt =>
    	shareOpt match {
    		case Some(share) => { 
-   			val result = Json.toJson(share)
-   			Ok(views.html.share.launchShare("Shared"))
+   			val session_ids:List[Int] = List(share.launch_id)
+
+			  val sess_cnsF = BPSessionDAOF.findByBusinessAndIds(share.workbench_id, session_ids)
+			  sess_cnsF.flatMap { sess_cns =>
+			    InputLoggerDAOF.fetchPeopleBySessions(sess_cns).map { sess_cns_with_peoples =>
+			        //Ok(Json.toJson( sess_cns_with_peoples )) 
+		   			val result = Json.toJson(share)
+		   			Ok(views.html.share.launchShare("Shared", Some( sess_cns_with_peoples.head ) ))
+			    }
+			  }
+
    		}
-   		case _ => Ok(views.html.share.launchShare("Shared") )
+   		case _ => Future.successful(Ok(views.html.share.launchShare("Shared") ) )
    	}
 
    }
