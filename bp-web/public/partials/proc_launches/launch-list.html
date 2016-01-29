@@ -134,7 +134,7 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
 <div class="stations" ng-repeat="session in sessions.sessions | orderBy:'station.paused':true | limitTo: 10 | filter: isOnlyActive | filter: { session: onlyListed }" style="clear: both;">
 
         <div class="session__header">
-              <div class="progress-button loading" ng-class="bubbleClass(session)" tooltip="{{bubbleTooltip(session)}}">
+              <div class="progress-button loading" ng-class="bubbleClass(session)" tooltips tooltip-template="{{bubbleTooltip(session)}}" tooltip-side="left" tooltip="{{bubbleTooltip(session)}}">
         <div class="round-progress-container">
                <progress-arc stroke="#3080E8"
                               background="#eee"

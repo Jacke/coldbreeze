@@ -253,6 +253,8 @@ GET    	/launch/:launch_id/spaces  				   	@controllers.LaunchElementsController
 GET  	/launch/:launch_id/space_elems  			@controllers.LaunchElementsControllers.spaceElems(launch_id: Int)
 GET     /launch/:launch_id/switchers 				@controllers.LaunchElementsControllers.switches_index(launch_id: Int)
 GET     /launch/:launch_id/reactions 				@controllers.LaunchElementsControllers.reactions_index(launch_id: Int)
+POST    /share/launch/:launch_id				    @controllers.LaunchShareController.makeShare(launch_id: Int)
+GET     /shared/launch/:launch_hash				    @controllers.LaunchShareController.index(launch_hash: String)
 
 #POST   	launch/:launch_id/elements 					# @controllers.LaunchElementsControllers
 #GET    	launch/:launch_id/element/:id 				# @controllers.LaunchElementsControllers

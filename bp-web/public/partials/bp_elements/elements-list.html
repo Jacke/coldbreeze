@@ -24,7 +24,7 @@
  <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="editProcess()">{{ 'EDIT' | translate }}</a></li>
  <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="perm()">{{ 'PEOPLE' | translate }} </a></li>
  <!--<li><a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" ng-click="modalShare()">{{ 'SHARE' | translate }}</a></li>-->
- <li><a href="" class="addElemTab" ng:show="!inSession" ng:click="$parent.bp.newelemformselected==1 ? $parent.bp.newelemformselected=0 : $parent.bp.newelemformselected=1" ng-class="$parent.bp.newelemformselected==1 ? 'selected' : ''" tooltip-placement="bottom" tooltip="Create element"><span class="glyphicon glyphicon-plus"></span></a></li>
+ <li><a href="" class="addElemTab" ng:show="!inSession" ng:click="$parent.bp.newelemformselected==1 ? $parent.bp.newelemformselected=0 : $parent.bp.newelemformselected=1" ng-class="$parent.bp.newelemformselected==1 ? 'selected' : ''" tooltips tooltip-template="Create element" tooltip-side="left" tooltip="{{bubbleTooltip(session)}}"><span class="glyphicon glyphicon-plus"></span></a></li>
 </ul>
 </div>
 
@@ -61,7 +61,7 @@
       <div class="session__header session__people">
          <div class="participators"> 
           <ul class="perms perm-list" ng-repeat="perm in bpelem.perms | limitTo:6" ng-init="perm.account = accFetch(perm)">
-            <span class="account-pic" tooltip="{{ perm.account.tooltip }}">
+            <span class="account-pic" tooltips tooltip-template="{{ perm.account.tooltip }}" tooltip-side="left" tooltip="{{bubbleTooltip(session)}}" tooltip="{{ perm.account.tooltip }}">
                 <img ng-src="{{ perm.account.avatarUrl}}" alt="{{ perm.account.tooltip }}">
                 <a ng-click="delPermForForm(perm,newBpelem.perms)" class="btn-delete minicon"></a>
             </span>
@@ -454,7 +454,7 @@
     <div class="proc-session active" ng-click="resetSession()" data-desc="Model">
     </div> 
 <a href="a#/bprocess/{{session.process.id}}/elements?launch={{session.session.id}}" ng-click="changeSession(session)" ng-repeat="session in sessions | limitTo: 5" class="current-proc-session-info session-link proc-session"  data-desc="Launch {{$index+1 }} - {{ session.percent}}%" ng-class="isSelected(session.session.id)">
-   <span class="unpin moicon moicon-pushpin" tooltip="Unpin" tooltip-placement="bottom" ng-click="unlisted(session.session)"></span>
+   <span class="unpin moicon moicon-pushpin" ng-click="unlisted(session.session)"></span>
 </a> 
 
 

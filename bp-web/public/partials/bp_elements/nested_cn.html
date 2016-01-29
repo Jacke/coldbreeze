@@ -103,7 +103,7 @@ Space: {{ space.index }} —
         </div>
         <div class="controls col-xs-6" ng-init="space.newSpaceelem.perms = [];">  
           <div class="perms perm-list" ng-repeat="perm in space.newSpaceelem.perms" ng-init="perm.account = accFetch(perm)">
-            <span class="account-pic" tooltip="{{ perm.account.tooltip }}">
+            <span class="account-pic" tooltips tooltip-template="{{ perm.account.tooltip }}" tooltip-side="left" tooltip="{{bubbleTooltip(session)}}" tooltip="{{ perm.account.tooltip }}" tooltip="{{ perm.account.tooltip }}">
                 <img ng-src="{{ perm.account.avatarUrl}}" alt="{{ perm.account.tooltip }}">
                 <a ng-click="delPermForForm(perm,space.newSpaceelem.perms)" class="btn-delete minicon"></a>
             </span>
