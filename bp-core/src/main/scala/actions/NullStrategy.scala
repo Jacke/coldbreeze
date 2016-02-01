@@ -17,6 +17,7 @@ class NullStrategy(
 	}
 	def asStrategy():Strategy = new Strategy(id,
 											ident,
+											-1,
 											created_at,
 											updated_at)
 												
