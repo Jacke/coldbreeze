@@ -8,6 +8,7 @@ import main.scala.simple_parts.process.Units._
 case class Middleware(
 		id: Option[Long],
 		ident: String,
+		reaction: Int = -1,
 		created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
 	    updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)		
 	) {

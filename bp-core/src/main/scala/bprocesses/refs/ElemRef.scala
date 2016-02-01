@@ -193,15 +193,6 @@ updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
                         updated_at)
   }
 }
-  
-case class StrategyRef(val id: Option[Long],
-        ident: String,
-        reflection: Int,
-        created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
-          updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
-
-}
-
 
 
 
@@ -209,9 +200,20 @@ case class MiddlewareRef(
     id: Option[Long],
     ident: String,
     reflection: Int,
+    reaction: Int,
     created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
       updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)    
   )
+  
+case class StrategyRef(val id: Option[Long],
+        ident: String,
+        reflection: Int,
+        middleware: Int,
+        created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+          updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
+
+}
+
 
 
 

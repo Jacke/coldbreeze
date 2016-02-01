@@ -16,12 +16,16 @@ import main.scala.bprocesses.refs.UnitRefs._
 class MiddlewareRefs(tag: Tag) extends Table[MiddlewareRef](tag, "middleware_refs") {
   def id          = column[Long]("id", O.PrimaryKey, O.AutoInc) 
   def ident       = column[String]("ident")
+  def reaction    = column[Int]("reaction_id")
+
   def reflection  = column[Int]("reflection_id")
   def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")  
   def reflectFK   = foreignKey("middleware_ref_reflect_fk", reflection, models.DAO.reflect.RefDAO.refs)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def reaction_refFK = foreignKey("middleware_ref_reaction_ref_fk", reaction, models.DAO.reflect.ReactionRefDAO.reaction_refs)(_.id, onDelete = ForeignKeyAction.Cascade)
+
   def * = (id.?, 
-           ident, reflection,
+           ident, reflection, reaction,
            created_at, updated_at) <> (MiddlewareRef.tupled, MiddlewareRef.unapply)
 }
 
