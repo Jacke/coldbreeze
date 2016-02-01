@@ -211,7 +211,6 @@ case class StrategyRef(val id: Option[Long],
         middleware: Long,
         created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
         updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
-
 }
 
 
