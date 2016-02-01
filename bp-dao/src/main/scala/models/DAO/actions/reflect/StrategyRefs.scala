@@ -25,7 +25,7 @@ class StrategyRefs(tag: Tag) extends Table[StrategyRef](tag, "strategy_refs") {
   def id          = column[Long]("id", O.PrimaryKey, O.AutoInc) 
   def ident       = column[String]("ident")
   def reflection  = column[Int]("reflection_id")
-  def middleware  = column[Int]("middleware_id")
+  def middleware  = column[Long]("middleware_id")
   def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")  
   def reflectFK   = foreignKey("strategy_ref_reflect_fk", reflection, models.DAO.reflect.RefDAO.refs)(_.id, onDelete = ForeignKeyAction.Cascade)

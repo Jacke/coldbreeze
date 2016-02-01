@@ -23,12 +23,15 @@ val id: Option[Long],
 class Strategies(tag: Tag) extends Table[Strategy](tag, "strategies") {
   def id          = column[Long]("id", O.PrimaryKey, O.AutoInc) 
   def ident       = column[String]("ident")
+  def middleware  = column[Long]("middleware_id")
   def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")  
 
 
+  def middleware_FK = foreignKey("strategy_middleware_fk", middleware, models.DAO.MiddlewaresDAOF.middlewares)(_.id, onDelete = ForeignKeyAction.Cascade)
+
   def * = (id.?, 
-           ident, 
+           ident, middleware,
            created_at, updated_at) <> (Strategy.tupled, Strategy.unapply)
 }
 

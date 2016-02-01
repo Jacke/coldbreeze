@@ -16,12 +16,14 @@ import com.github.tototoshi.slick.JdbcJodaSupport._
 class Middlewares(tag: Tag) extends Table[Middleware](tag, "middlewares") {
   def id          = column[Long]("id", O.PrimaryKey, O.AutoInc) 
   def ident       = column[String]("ident")
+  def reaction    = column[Int]("reaction_id")
   def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")  
 
+  def reaction_FK = foreignKey("middleware_reaction_fk", reaction, models.DAO.ReactionDAO.reactions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?, 
-           ident, 
+           ident, reaction,
            created_at, updated_at) <> (Middleware.tupled, Middleware.unapply)
 }
 

@@ -208,9 +208,9 @@ case class MiddlewareRef(
 case class StrategyRef(val id: Option[Long],
         ident: String,
         reflection: Int,
-        middleware: Int,
+        middleware: Long,
         created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
-          updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
+        updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
 
 }
 

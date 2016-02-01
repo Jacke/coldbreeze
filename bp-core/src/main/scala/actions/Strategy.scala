@@ -6,7 +6,7 @@ import scala.collection.mutable._
 
 case class Strategy(val id: Option[Long],
 				ident: String,
-				middleware: Int = -1, 
+				middleware: Long = -1L, 
 				created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
 			    updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
 
