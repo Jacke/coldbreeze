@@ -181,20 +181,41 @@ updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
   on:Boolean = false,
   on_rate: Int = 0,
   created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
-updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
+  updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
   ) {
   def reflect(state_ref: Int, reaction: Int):UnitReactionStateOut = {
     UnitReactionStateOut(None,
-state_ref,
-reaction,
-on,
-on_rate,
-created_at,
-updated_at)
-
+                        state_ref,
+                        reaction,
+                        on,
+                        on_rate,
+                        created_at,
+                        updated_at)
   }
- }
+}
+
+
+
+case class MiddlewareRef(
+    id: Option[Long],
+    ident: String,
+    reflection: Int,
+    reaction: Int,
+    created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+      updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)    
+  )
   
+case class StrategyRef(val id: Option[Long],
+        ident: String,
+        reflection: Int,
+        middleware: Long,
+        created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+        updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
+}
+
+
+
+
   
 }
 

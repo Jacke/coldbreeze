@@ -16,7 +16,7 @@
   <div class="process" ng-repeat="bprocess in bprocesses | filter:search">
     <div class="process-status">
     <div class="fastElCreateBtn">
-      <a class="fastElFormButton" ng-click="switchFastElementForm(bprocess)" tooltips tooltip-template="Add element" tooltip-side="left">+</a>
+      <a class="fastElFormButton" ng-click="switchFastElementForm(bprocess)" tooltip-template="Add element" tooltip-side="left">+</a>
     </div> 
     <li class="tableMinListItem frontProcessInfo" ng-hide="bprocess.fastElForm">
       <h2 class="tableMinListName">
@@ -34,7 +34,7 @@
       </div>
       <div class="process-thumb" ng:show="emptyElemCheck(bprocess.trees)">
         <p class="tableMinListGithub">
-          <a class="redButton" id="launchProcessButton" ng-click="run(bprocess)" tooltips tooltip-template="Launch process" tooltip-side="left"></a>
+          <a class="redButton" id="launchProcessButton" ng-click="run(bprocess)" tooltip-template="Launch process" tooltip-side="left"></a>
         </p>
       </div>
     </li>
@@ -42,7 +42,7 @@
     <li class="tableMinListItem fastElementForm nga-fast nga-stagger-fast nga-squash-right" ng-show="bprocess.fastElForm">
       <div ng-include src="'assets/partials/bprocesses/fastElementCreation.html'"></div>
           <div class="fastElCreateBtn">
-            <a class="fastElFormButton" ng-click="switchFastElementForm(bprocess)" tooltips tooltip-template="Close form" tooltip-side="left">-</a>
+            <a class="fastElFormButton" ng-click="switchFastElementForm(bprocess)" tooltip-template="Close form" tooltip-side="left">-</a>
           </div>   
     </li>
     <!-- Fast element form /-->

@@ -77,7 +77,7 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-rjs" % "1.0.7")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-digest" % "1.0.0")
 
-addSbtPlugin("io.teamscala.sbt" % "sbt-babel" % "1.0.2")
+//addSbtPlugin("io.teamscala.sbt" % "sbt-babel" % "1.0.2")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-gzip" % "1.0.0")
 

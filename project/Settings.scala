@@ -15,7 +15,7 @@ import com.typesafe.sbt.uglify.Import._
 import com.untyped.sbtjs.Plugin._
 import com.untyped.sbtsass.Plugin._
 import com.typesafe.sbt.jse.JsEngineImport._
-import io.teamscala.sbt.babel.Import._
+//import io.teamscala.sbt.babel.Import._
 import UglifyKeys._
 
 //import twirl.sbt.TwirlPlugin._

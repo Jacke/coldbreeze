@@ -101,18 +101,22 @@ def findByBusiness(bid: Int):Future[Seq[SessionContainer]] = {
       }
     }
 }
-def findByBusinessAndIds(bid: Int, ids: List[Int]):Future[Seq[SessionContainer]] = {
+def findByBusinessAndIds(bid: Int, session_ids: List[Int], withArroundVal:Boolean=false):Future[Seq[SessionContainer]] = {
     val pF = BPDAOF.findByBusiness(bid)
     pF.flatMap { processes =>
       val processIds:List[Int] = processes.map(_.id.get).toList
-      val sessF = db.run(filterByProcessesAndIdsQuery(processIds, ids).result)
+      val sessF = db.run(filterByProcessesAndIdsQuery(processIds, session_ids).result)
       sessF.flatMap { sess =>
+        println("findByBusinessAndIds")
+        println("findByBusinessAndIds sessions.length: " + sess.length)
         val allStationsF = BPStationDAOF.findBySessions(sess.map(s => s.id.get).toList)      
         allStationsF.flatMap { stations =>
+          println("findByBusinessAndIds")
+          println("findByBusinessAndIds stations.length: " + stations.length)  
           Future.sequence( processes.map { process =>
               val sesStatusF = prepareSessionStatusWithStations(process, 
-                                                                sess.filter(ses => ses.process == process.id.get),
-                                                                stations)
+                                                sess.filter(ses => ses.process == process.id.get),
+                                                                stations, withArroundVal)
               sesStatusF.map { ses_status =>
                 SessionContainer(process, ses_status.toList)
               }
@@ -147,24 +151,38 @@ def findByBusinessAndIds(bid: Int, ids: List[Int]):Future[Seq[SessionContainer]]
     }
   }
 }
-  def prepareSessionStatusWithStations(p:BProcessDTO,sess: Seq[BPSession], stations:Seq[BPStationDTO]):Future[Seq[SessionStatus]] = {
+  def prepareSessionStatusWithStations(p:BProcessDTO,
+    sess: Seq[BPSession], stations:Seq[BPStationDTO], 
+    withArroundVal:Boolean=false):Future[Seq[SessionStatus]] = {
+    println("prepareSessionStatusWithStations")
+    println("prepareSessionStatusWithStations session.length: " + sess.length)
      val people = SessionPeoples("not@found.com", List()) // placeholder for peoples
      Future.sequence( 
      sess.filter(ses => ses.process == p.id.get).map { ses => 
         val station = stations.find(station => station.session == ses.id.get)        
         val element_quantityF = SessionProcElementDAOF.findBySessionLength(ses.id.get)
           element_quantityF.map { element_quantity => 
+            
             val step = station match {
               case Some(station) => station.step.toDouble
               case _ => element_quantity.toDouble
             }
             val percent = percentDecorator(step, element_quantity)
-            SessionStatus(percent, p, ses, station, None, Some(people))
+            withArround(withArroundVal, Some(ses), station, Some(p) ) match {
+             case Some(futureAr) => { 
+              //futureAr.flatMap { arr =>
+                SessionStatus(percent, p, ses, station, Some(await(futureAr) ), Some(people))
+              //}
+             }
+             case _ => SessionStatus(percent, p, ses, station, None, Some(people))
+            }      
+
+
           }
         
       } )
   }
-  def prepareSessionStatus(p:BProcessDTO,sess: Seq[BPSession]):Future[Seq[SessionStatus]] = {
+  def prepareSessionStatus(p:BProcessDTO,sess: Seq[BPSession], withArroundVal:Boolean=false):Future[Seq[SessionStatus]] = {
      val people = SessionPeoples("not@found.com", List()) // placeholder for peoples
      Future.sequence( 
      sess.filter(ses => ses.process == p.id.get).map { ses => 
@@ -177,10 +195,33 @@ def findByBusinessAndIds(bid: Int, ids: List[Int]):Future[Seq[SessionContainer]]
               case _ => element_quantity.toDouble
             }
             val percent = percentDecorator(step, element_quantity)
-            SessionStatus(percent, p, ses, station, None, Some(people))
+            withArround(withArroundVal) match {
+             case Some(futureAr) => { //futureAr.flatMap { arr =>
+                println("withArround")
+                val ar = await(futureAr)
+                println(ar)
+                SessionStatus(percent, p, ses, station, Some( ar ), Some(people))
+             //}
+             }
+             case _ => SessionStatus(percent, p, ses, station, None, Some(people))
+            }
           }
         }
       } )
+  }
+  def withArround(yes:Boolean = true,
+    sesOpt: Option[BPSession] = None,
+    stationOpt: Option[BPStationDTO] = None,
+    processOpt: Option[models.DAO.BProcessDTO] = None):Option[Future[ElemAround]] = {
+    if (yes) {
+        val aroundF = AroundProcessElementsBuilder.detectByStationF(process_id = sesOpt.get.process, 
+                                                                    station = stationOpt, 
+                                                                    process = processOpt)
+        println("withArround:")
+        Some(aroundF)
+        } else {
+        None
+        }
   }
 
   def findById(id: Int):Future[Option[SessionContainer]] = {

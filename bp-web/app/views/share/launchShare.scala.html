@@ -1,6 +1,11 @@
+@import _root_.main.scala.simple_parts.process._
 @import service.DemoUser
+@import models.DAO.resources.{BusinessDAO, BusinessDTO}
+@import models.DAO._
+@import builders._
+@import controllers._
 
-@(title: String = "")(implicit lang: Lang)
+@(title: String = "", sessionContainerOpt: Option[SessionContainer] = None, tree:Option[ElementTree]=None)(implicit lang: Lang)
 
 <!doctype html>
 <html prefix="og: http://ogp.me/ns#">
@@ -26,7 +31,7 @@
 
 <!-- website-header -->
   <header id="websiteHeader"><div class="positioning">
-<a class="headerLogotypeLink" href="//min.ority.us/"><h1 class="visuallyhidden" title="Minority">Minority</h1><svg version="1.1" id="header_logotype" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 640 480" enable-background="new 0 0 640 480" xml:space="preserve">
+<a class="headerLogotypeLink" href="//minorityapp.com/"><h1 class="visuallyhidden" title="Minority">Minority</h1><svg version="1.1" id="header_logotype" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 640 480" enable-background="new 0 0 640 480" xml:space="preserve">
 <rect id="svgEditorBackground" y="28.2" fill="none" width="640" height="423.5" style="
 "></rect>
 <g id="workspace">
@@ -49,7 +54,34 @@ l123.5,94.8V191.6l-116.2-91.2l-118.8,90.6l-116.2-90.1L88,196.4L88,196.4z"></path
 <!-- /website-header -->
 
 <div class="loginFlowPage">
-  Test
+Test:
+  @sessionContainerOpt.map { sess =>
+  @sess.sessions.length
+    @sess.sessions.headOption.map { session_status =>
+      <div class="shared_session">
+        <div classs="shared_session_percent">@{session_status.percent}%</div>  
+        <div class="shared_session_process_title">@{session_status.process.title}</div>
+        @session_status.around.map { arr =>
+          <div class="shared_session_elem_around">@{arr}</div>       
+          <div class="shared_session_tree">
+             @arr.tree.map { t => 
+              <div class="shared_session_fronts">@t.variety.map { el => 
+                  <p class="shared_session_elem el_tree_title">@el.b_type
+                    @el.type_title @el.title</p>                  
+
+               }</div>
+              <div class="shared_session_spaces">@t.spaces</div>
+              <div class="shared_session_nesteds">@t.varietySpaces.map { el => 
+                  <p class="shared_session_nelem el_tree_title">@el.b_type
+                    @el.type_title @el.title</p>
+               }</div>                            
+             } 
+          </div> 
+        }
+      </div>
+    
+    }
+  }
 </div>
 
 <script src='@routes.Assets.versioned("/js/jquery.js")'></script>
