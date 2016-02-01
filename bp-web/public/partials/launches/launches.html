@@ -170,13 +170,13 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
              </div>
         <div class="session__header session__people">
           <div class="launched-by" ng-show="session.peoples.launched_by != 'not@found.com'" ng-init="account = accFetchSessioned(session.peoples.launched_by)">
-              <span class="account-pic" tooltip-placement="left" uib-tooltip="{{ account.tooltip }}" tooltip-side="left">
+              <span class="account-pic" tooltip-placement="right" uib-tooltip="{{ account.tooltip }}" tooltip-side="left">
                         <img ng-src="{{ account.avatarUrl}}" alt="{{ account.tooltip }}">
               </span>
           </div>
           <div class="participators">
                   <div class="perms perm-list" ng-repeat="perm in session.peoples.participators | limitTo:3" ng-init="account = accFetchSessioned(perm)">
-                    <span class="account-pic" tooltip-placement="left" uib-tooltip="{{ account.tooltip }}" tooltip-side="left">
+                    <span class="account-pic" tooltip-placement="right" uib-tooltip="{{ account.tooltip }}" tooltip-side="left">
                         <img ng-src="{{ account.avatarUrl}}" alt="{{ account.tooltip }}">
                     </span>
                   </div>       
