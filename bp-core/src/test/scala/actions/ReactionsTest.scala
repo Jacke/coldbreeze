@@ -69,13 +69,13 @@ import main.scala.bprocesses.links._
         }
         "Execute strategy" in {
 
-        val resultmiddleware = middleware.executeStrategy
+        val resultmiddleware = middleware.executeStrategy()
         resultmiddleware.isDefined
         resultmiddleware.get.executed == true && resultmiddleware.get.resultedStrategy == "DurationStrategy"
-        val resultmiddleware1 = middleware1.executeStrategy
+        val resultmiddleware1 = middleware1.executeStrategy()
         resultmiddleware1.isDefined
         resultmiddleware1.get.executed == true && resultmiddleware1.get.resultedStrategy == "ScheduleStrategy"
-        val resultmiddleware2 = middleware2.executeStrategy
+        val resultmiddleware2 = middleware2.executeStrategy()
         resultmiddleware2.isDefined
         resultmiddleware2.get.executed == true && resultmiddleware2.get.resultedStrategy == "NullStrategy"
         }

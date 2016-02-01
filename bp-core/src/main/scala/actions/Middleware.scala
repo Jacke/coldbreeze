@@ -20,7 +20,8 @@ case class Middleware(
 	  strategies += s
 	}
 
-	def executeStrategy(stateInputs:List[UnitReactionStateIn], dataInputs: List[UnitReactionDataIn]):Option[StrategyResult] = {
+	def executeStrategy(stateInputs:List[UnitReactionStateIn] = List(), 
+						dataInputs: List[UnitReactionDataIn] = List()):Option[StrategyResult] = {
 		ident match {
 			case "delay" => {
 				strategies match {

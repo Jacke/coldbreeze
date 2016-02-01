@@ -5,7 +5,6 @@ import models.DAO._
 import play.api._
 import play.api.mvc._
 import play.twirl.api.Html
-
 import play.api.http.MimeTypes
 import play.api.libs.json._
 import play.api.cache._
@@ -14,14 +13,11 @@ import play.api.data.Forms._
 import play.api.data.format.Formats
 import play.api.data.format.Formatter
 import play.api.data.FormError
-
 import models.DAO.resources.{BusinessDAO, BusinessDTO}
 import models.DAO._
-
 import play.api._
 import play.api.mvc._
 import play.twirl.api.Html
-
 //{Action, Controller}
 import play.api.http.MimeTypes
 import play.api.libs.json._
@@ -117,22 +113,26 @@ implicit val SessionStateLogWrites  = Json.format[SessionStateLog]
  def index(launchHash: String) = Action.async { implicit request =>
    val shareF = LaunchSharesDAOF.getByHash(launchHash)
    shareF.flatMap { shareOpt =>
-   	shareOpt match {
-   		case Some(share) => { 
-   			val session_ids:List[Int] = List(share.launch_id)
+    shareOpt match {
+      case Some(share) => { 
+        val session_ids:List[Int] = List(share.launch_id)
+        val sess_cnsF = BPSessionDAOF.findByBusinessAndIds(share.workbench_id, session_ids, 
+                      withArroundVal = true)
+        sess_cnsF.flatMap { sess_cns =>
+          InputLoggerDAOF.fetchPeopleBySessions(sess_cns).map { sess_cns_with_peoples =>
+              //Ok(Json.toJson( sess_cns_with_peoples )) 
+            val cnOpt = sess_cns_with_peoples.find(cn => 
+              cn.sessions.length > 0
+            )
+            val elementTree:Option[ElementTree] = cnOpt.get.sessions.head.around.get.tree
+            println("elementTree " + elementTree)
+            Ok(views.html.share.launchShare("Shared", cnOpt, elementTree ))
+          }
+        }
 
-			  val sess_cnsF = BPSessionDAOF.findByBusinessAndIds(share.workbench_id, session_ids)
-			  sess_cnsF.flatMap { sess_cns =>
-			    InputLoggerDAOF.fetchPeopleBySessions(sess_cns).map { sess_cns_with_peoples =>
-			        //Ok(Json.toJson( sess_cns_with_peoples )) 
-		   			val result = Json.toJson(share)
-		   			Ok(views.html.share.launchShare("Shared", Some( sess_cns_with_peoples.head ) ))
-			    }
-			  }
-
-   		}
-   		case _ => Future.successful(Ok(views.html.share.launchShare("Shared") ) )
-   	}
+      }
+      case _ => Future.successful(Ok(views.html.share.launchShare("Shared not found") ) )
+    }
 
    }
  }
@@ -140,10 +140,10 @@ implicit val SessionStateLogWrites  = Json.format[SessionStateLog]
 //POST    /share/launch/:launch_id
 def makeShare(launch_id: Int) = SecuredAction.async { implicit request =>
   val business = request.user.businessFirst
-	val launchShareF: Future[LaunchShareDTO] = LaunchSharesDAOF.generateForLaunch(launch_id, workbench_id = business)
-	launchShareF.map { launchShare =>
-	 	Ok(Json.toJson(launchShare))
-	}
+  val launchShareF: Future[LaunchShareDTO] = LaunchSharesDAOF.generateForLaunch(launch_id, workbench_id = business)
+  launchShareF.map { launchShare =>
+    Ok(Json.toJson(launchShare))
+  }
 }
 
 
