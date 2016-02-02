@@ -147,7 +147,26 @@ var translationsRU= {
   ADD_OBSERVER: 'Добавить наблюдателя',
   OPEN: 'Открыть'
 };
-
+/*
+[ "chieffancypants.loadingBar", 
+"ngAnimate", 
+"ngSanitize", 
+"ngResource", 
+"ngCookies", 
+"ui.router", 
+"ui.bootstrap", 
+"colorpicker.module", 
+"iso-3166-country-codes", 
+"infinite-scroll", 
+"angulartics", 
+"angulartics.google.analytics", 
+"angulartics.mixpanel", 
+"ac-adWordsTracking", 
+"angular-chartist", 
+"daterangepicker", 
+"angular-clipboard", 
+"ac-presence" ]);
+*/
 var minorityApp =
   angular.module(
     'minorityApp',
