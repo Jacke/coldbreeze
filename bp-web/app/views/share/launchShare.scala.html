@@ -23,6 +23,8 @@
   <link rel="stylesheet" href='@routes.Assets.versioned("css/auth/footer.css")'>
   <link rel="stylesheet" href='@routes.Assets.versioned("css/auth/website.css")'>
   <link rel="stylesheet" href='@routes.Assets.versioned("css/auth/loginflow.css")' />
+  <link rel="stylesheet" href='@routes.Assets.versioned("css/app.css")' />
+
   <!-- /Styles -->
   <script src='@routes.Assets.versioned("javascripts/ssl.js")' type="text/javascript"></script>
   <link rel="shortcut icon" href="/assets/favicon.ico">
@@ -53,32 +55,132 @@ l123.5,94.8V191.6l-116.2-91.2l-118.8,90.6l-116.2-90.1L88,196.4L88,196.4z"></path
   </div></header>
 <!-- /website-header -->
 
-<div class="loginFlowPage">
+<div class="loginFlowPage shareLaunchPage allStations">
+
+
 Test:
   @sessionContainerOpt.map { sess =>
   @sess.sessions.length
     @sess.sessions.headOption.map { session_status =>
-      <div class="shared_session">
-        <div classs="shared_session_percent">@{session_status.percent}%</div>  
-        <div class="shared_session_process_title">@{session_status.process.title}</div>
-        @session_status.around.map { arr =>
-          <div class="shared_session_elem_around">@{arr}</div>       
-          <div class="shared_session_tree">
-             @arr.tree.map { t => 
-              <div class="shared_session_fronts">@t.variety.map { el => 
-                  <p class="shared_session_elem el_tree_title">@el.b_type
-                    @el.type_title @el.title</p>                  
 
-               }</div>
-              <div class="shared_session_spaces">@t.spaces</div>
-              <div class="shared_session_nesteds">@t.varietySpaces.map { el => 
-                  <p class="shared_session_nelem el_tree_title">@el.b_type
-                    @el.type_title @el.title</p>
-               }</div>                            
-             } 
-          </div> 
-        }
-      </div>
+<div class="stations minimal-stations" style="clear: both;margin-top: 205px;">
+
+
+<div class="session__header">
+<div class="progress-button loading paused">
+<div class="round-progress-container">
+<progress-arc stroke="#3080E8" background="#eee" size="60" stroke-width="2" complete="session.percent / 100" class="ng-isolate-scope"><svg ng-attr-width="{{size}}" ng-attr-height="{{size}}" width="60" height="60"><!-- ngIf: background --><circle fill="none" ng-if="background" ng-attr-cx="{{size/2}}" ng-attr-cy="{{size/2}}" ng-attr-r="{{radius}}" ng-attr-stroke="{{background}}" ng-attr-stroke-width="{{strokeWidthCapped}}" cx="30" cy="30" r="28" stroke="#eee" stroke-width="2"></circle><!-- end ngIf: background --><circle fill="none" ng-attr-cx="{{size/2}}" ng-attr-cy="{{size/2}}" ng-attr-r="{{radius}}" ng-attr-stroke="{{stroke}}" ng-attr-stroke-width="{{strokeWidthCapped}}" ng-attr-stroke-dasharray="{{circumference}}" ng-attr-stroke-dashoffset="{{(1 - complete()) * circumference}}" ng-attr-transform="rotate({{offset}}, {{size/2}}, {{size/2}}){{ (counterClockwise &amp;&amp; counterClockwise != 'false') ? ' translate(0, ' + size + ') scale(1, -1)' : '' }}" cx="30" cy="30" r="28" stroke="#3080E8" stroke-width="2" stroke-dasharray="175.92918860102841" stroke-dashoffset="175.92918860102841" transform="rotate(-90, 30, 30)"></circle></svg></progress-arc><span class="round-percent ng-binding">@{session_status.percent}%</span>
+</div>
+</div>
+<div class="session_title">
+  <a href="#">
+    @{session_status.process.title}
+    <!--- {{session.station.note }} ---->
+  </a>
+  <abbr class="session__header__created_at" title="Monday, January 18th 2016, 1:00:26 am" am-time-ago="session.session.created_at">January 18th 2016, 1:00 am</abbr>
+</div>
+
+
+</div>
+
+
+<div class="progress">
+<div class="progress-lines">
+<!-- ngInclude:  --><div>
+
+<!--
+<div class="line-container ng-scope">
+@session_status.around.map { arr =>
+  <div class="shared_session_elem_around">@{arr}</div>       
+  <div class="shared_session_tree">
+     @arr.tree.map { t => 
+      <div class="shared_session_fronts">@t.variety.map { el => 
+          <p class="shared_session_elem el_tree_title">@el.b_type
+            @el.type_title @el.title</p>                  
+
+       }</div>
+      <div class="shared_session_spaces">@t.spaces</div>
+      <div class="shared_session_nesteds">@t.varietySpaces.map { el => 
+          <p class="shared_session_nelem el_tree_title">@el.b_type
+            @el.type_title @el.title</p>
+       }</div>                            
+     } 
+  </div> 
+}
+-->
+
+@session_status.around.map { arr =>
+@arr.tree.map { t => 
+  @t.variety.map { el => 
+<span class="line elem-card ng-scope @el.b_type @el.type_title passive">
+  <span class="tree-liner-desc description ng-binding ng-hide" ng-show="session.lineDescShow" style="">@el.title</span>
+</span>
+  }
+}
+
+}
+
+<!--
+<span class="line elem-card ng-scope confirm passive" ng-repeat="trr in tree.trees | orderBy:'order'" ng-class="[trr.type_title, $parent.highlightActive(station, trr)]" tooltip-placement="bottom" tooltip="Create Process">
+  <span class="tree-liner-desc description ng-binding ng-hide" ng-show="session.lineDescShow" style="">Create Process</span>
+</span>
+
+<span class="line elem-card ng-scope confirm passive" ng-repeat="trr in tree.trees | orderBy:'order'" ng-class="[trr.type_title, $parent.highlightActive(station, trr)]" tooltip-placement="bottom" tooltip="Add Elements">
+  <span class="tree-liner-desc description ng-binding ng-hide" ng-show="session.lineDescShow" style="">Add Elements</span>
+</span>
+
+<span class="line elem-card ng-scope confirm passive" ng-repeat="trr in tree.trees | orderBy:'order'" ng-class="[trr.type_title, $parent.highlightActive(station, trr)]" tooltip-placement="bottom" tooltip="Add People">
+  <span class="tree-liner-desc description ng-binding ng-hide" ng-show="session.lineDescShow" style="">Add People</span>
+</span>
+
+<span class="line elem-card ng-scope confirm passive" ng-repeat="trr in tree.trees | orderBy:'order'" ng-class="[trr.type_title, $parent.highlightActive(station, trr)]" tooltip-placement="bottom" tooltip="Share">
+  <span class="tree-liner-desc description ng-binding ng-hide" ng-show="session.lineDescShow" style="">Share</span>
+</span>
+
+<span class="line elem-card ng-scope confirm passive" ng-repeat="trr in tree.trees | orderBy:'order'" ng-class="[trr.type_title, $parent.highlightActive(station, trr)]" tooltip-placement="bottom" tooltip="Launch"><span class="tree-liner-desc description ng-binding ng-hide" ng-show="session.lineDescShow" style="">Launch</span></span>
+<span class="line elem-card ng-scope container_brick passive" ng-repeat="trr in tree.trees | orderBy:'order'" ng-class="[trr.type_title, $parent.highlightActive(station, trr)]" tooltip-placement="bottom" tooltip="Manage" style=""><span class="tree-liner-desc description ng-binding ng-hide" ng-show="session.lineDescShow" style="">Manage</span></span>
+<span class="line elem-card ng-scope container_brick passive" ng-repeat="trr in tree.trees | orderBy:'order'" ng-class="[trr.type_title, $parent.highlightActive(station, trr)]" tooltip-placement="bottom" tooltip="iElement"><span class="tree-liner-desc description ng-binding ng-hide" ng-show="session.lineDescShow" style="">iElement</span></span>
+<span class="line elem-card ng-scope positive passive" ng-repeat="trr in tree.trees | orderBy:'order'" ng-class="[trr.type_title, $parent.highlightActive(station, trr)]" tooltip-placement="bottom" tooltip="Zero block" style=""><span class="tree-liner-desc description ng-binding ng-hide" ng-show="session.lineDescShow" style="">Zero block</span></span>-->
+
+</div>
+
+
+</div>
+</div>
+<div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;">
+
+</div>
+<div class="session-launches-bar minimal">
+
+<div class="launches-bar">
+<div class="automations_connected">
+<div class="dishes-list"><div class="dish-presentation"><div class="dish-details">
+<a href="#">
+<!--<div class="dish-state left">
+<span class="state-sign vertical-center error"></span>
+<span class="state-percent vertical-center ng-binding">%</span>
+</div>-->
+</a>
+
+
+
+<span class="dish-label vertical-center left">Started <abbr class="session__header__created_at" title="" am-time-ago="$parent.session.session.created_at"></abbr></span>
+
+
+</div>
+</div>
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+
+
+
     
     }
   }
