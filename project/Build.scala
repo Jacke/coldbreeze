@@ -254,6 +254,7 @@ integrationTest := {
           play, 
           play2oauth2,
           requirejs,
+          slf4j,
           selenium,
           selenide,
           fluentlenium,
