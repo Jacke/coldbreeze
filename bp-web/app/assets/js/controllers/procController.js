@@ -16,7 +16,7 @@ $scope.isManager = function () {
     $scope.isManagerVal = $rootScope.manager;
     return $scope.isManagerVal;
   } else {
-    return $window.localStorage.manager == "true";
+    return $window.sessionStorage.manager == "true";
   }
 };
 

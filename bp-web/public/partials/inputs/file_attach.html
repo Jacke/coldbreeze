@@ -4,7 +4,7 @@
     
     <div class="warp-show" show="show_warp">
     <div class="warp-result"><!-- {{ payload_result | prettyJSON }} --></div>
-    <div class="warp_attach" ng-click="addToPayload($parent.elem.payload)">Attach file</div>
+    <div class="warp_attach" ng-show="$parent.elem.payload.length < 3" ng-click="addToPayload($parent.elem.payload)">Attach file</div>
     <div class="warp_field" ng-repeat="field in $parent.elem.payload">
     <!--
     <div class="warp_select" ng-show="field.obj_type == undefined || field.obj_type.length < 1">

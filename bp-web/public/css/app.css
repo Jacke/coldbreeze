@@ -811,9 +811,15 @@ span.account-pic img {
 }
 .elements-perm .perms {
     display: inline-block;
-    float: left;
     margin-right: 15px;
     margin-bottom: 18px;
+}
+.elements-perm .perms .btn-delete::before {
+    margin-top: 1px;
+    display: block;
+    margin-left: 3px;
+    font-weight: 100;
+    font-size: 12px;
 }
 .elements-perm button.btn-delete {
     padding-top: 0px;
@@ -1206,8 +1212,8 @@ span.reaction-icon.minicon.minicon-gear-fill-right {
 
 .proc-element.invoking .info { 
  border-left: solid 2px #f1c40f;
-
 }
+
 .proc-element.invoking .right-bar {
  border-left: solid 2px #cca711; 
 }
@@ -1234,8 +1240,9 @@ border-left: 2px solid #4dbd74;
     font-size: 15px;
     overflow: hidden;
     position: relative;
-    min-height: 49px;
+    height: 249px;
 }
+
 li.reaction_list__reaction.reaction_list__reaction_preview {
     display: inline-block;
     width: 180px;
@@ -4356,6 +4363,13 @@ td.hidden-lg {
 }
 .launched-by {
     width: 41px;
+}
+    .session_title {
+    margin-top: -4px;
+    }
+    .session-process abbr.session__header__created_at {
+clear:both;margin-left: 0px;display: block;width: 162px;text-align: left;     white-space: nowrap;     
+overflow: hidden;     text-overflow: ellipsis;
 }
 }
 
@@ -8924,17 +8938,28 @@ height: 40px;
     position: relative;
 }
 .bb_elements .bb_file {
-    padding: 17px 18px 20px 19px;
+    padding: 0px 77px 0px 11px;
     margin-left: 9px;
     color: white;
     text-shadow: none;
-    margin-bottom: 15px;
+    margin-bottom: 0px;
+    margin-left: 0px;
     position: relative;
+    margin-top: -21px;
+}
+.bb_elements .icon {
+    margin-left: 0px;
+    padding: 0;
+    right: 0px;
+    position: absolute;
 }
 .warp-field {
     height: 100%;
     display: block;
     overflow: hidden;
+}
+.warp-field .warp-show {
+    margin-top: 4px;
 }
 
 
@@ -9001,8 +9026,8 @@ height: 40px;
 .launch-info-details .launch-info-description {
     width: 104px;
     display: inline-block;
+    float: left;
 }
-
 .inline-launch .fastInput:hover {
     height: 100%;
     z-index: 1;
@@ -9250,10 +9275,12 @@ button.close {}
     color: white;
     padding: 7px 10px;
     margin-bottom: 8px;
+    font-weight: 100 !important;
     text-align: center;
-    font-weight: 700;
     margin-left: 8px;
+    font-size: 13px;
 }
+
 .file-view-container .warp-field .warp_attach {
     width: auto;
 }
@@ -9262,6 +9289,7 @@ button.close {}
     background: #3D3F55;
     color: white;
     border: white 1px solid;
+    padding: 3px 0px 3px 0px;
 }
 
 
