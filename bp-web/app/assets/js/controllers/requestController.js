@@ -674,15 +674,16 @@ DataCostLaunchAssign.query( { launchId: $scope.session_id } ).$promise.then(func
       return { obj_type: "file", obj_title: presult.title, obj_content: presult.sval, entityId: presult.entityId }   
     });
   });
-  _.forEach($scope.interactions.reactions, function(reaction) {
-    var elem_id = reaction.reaction.elem.element_id;;
-    var payloadResult = _.filter($scope.warpData.slats, function(slat) { 
-      return _.filter(slat.meta, function(meta){ return (meta.key === "element_id" && meta.value === elem_id+"")  }).length > 0 })
-    reaction.payload = _.map(payloadResult, function(presult) {
-      return { obj_type: "file", obj_title: presult.title, obj_content: presult.sval, entityId: presult.entityId }   
-    })
-  });
-
+  if($scope.interactions.reactions) {
+    _.forEach($scope.interactions.reactions, function(reaction) {
+      var elem_id = reaction.reaction.elem.element_id;;
+      var payloadResult = _.filter($scope.warpData.slats, function(slat) { 
+        return _.filter(slat.meta, function(meta){ return (meta.key === "element_id" && meta.value === elem_id+"")  }).length > 0 })
+      reaction.payload = _.map(payloadResult, function(presult) {
+        return { obj_type: "file", obj_title: presult.title, obj_content: presult.sval, entityId: presult.entityId }   
+      })
+    });
+  }
 });
 
 $scope.sendPayloadForElement = function(launch_id, element, existedPayload) {

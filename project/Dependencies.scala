@@ -43,6 +43,7 @@ object Dependencies {
   //val scalikejdbcplay = "org.scalikejdbc"           %% "scalikejdbc-play-initializer" % "2.4.3"
   //val slickpgplay     = "com.github.tminglei"       %% "slick-pg_play-json"     % "0.9.0"
   //val slf4j           = "org.slf4j"                 %  "slf4j-nop"              % "1.7.3"
+  val slf4j           = "org.slf4j"                 % "slf4j-simple"            % "1.7.12"
   val json4sNative    = "org.json4s"                %% "json4s-native"          % "3.2.10"
   val json4sJackson   = "org.json4s"                %% "json4s-jackson"         % "3.2.10"
   val autoschema      = "org.coursera"              %% "autoschema"             % "0.1"
