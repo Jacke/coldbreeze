@@ -127,7 +127,8 @@ for (var i = 0; i < this.buttonEl.length; i++) {
     _showPicker: function() {
       var accessToken = gapi.auth.getToken().access_token;
       this.picker = new google.picker.PickerBuilder().
-        addView(google.picker.ViewId.DOCUMENTS).
+        addView(google.picker.ViewId.DOCS).
+        addView(new google.picker.DocsUploadView().setIncludeFolders(true)).
         setAppId(this.clientId).
         setOAuthToken(accessToken).
         enableFeature(google.picker.Feature.MULTISELECT_ENABLED).
