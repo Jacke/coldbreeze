@@ -156,6 +156,7 @@ object ProcessCloner {
                                   reaction = new_reactions_ids.get(reaction_out.reaction).get,
                                   reaction_out.on,
                                   reaction_out.on_rate,
+                                  reaction_out.is_input,                                  
                                   created_at = Some(org.joda.time.DateTime.now),
                                   updated_at = Some(org.joda.time.DateTime.now))),
              new_reaction_outs_ids)

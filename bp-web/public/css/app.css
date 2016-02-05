@@ -1,3 +1,175 @@
+@font-face {
+    font-family: CircularSpotifyText-Black;
+    src: url(/assets/fonts/CircularSpotifyText-Black_gdi.eot);
+    src: url(/assets/fonts/CircularSpotifyText-Black_gdi.eot?#iefix) 
+    format('embedded-opentype'), url(/assets/fonts/CircularSpotifyText-Black_gdi.woff) format('woff'), 
+    url(/assets/fonts/CircularSpotifyText-Black_gdi.ttf) format('truetype'), 
+    url(/assets/fonts/CircularSpotifyText-Black_gdi.svg#CircularSpotifyText-Black) format('svg');
+    font-style: normal;
+    font-stretch: normal;
+    unicode-range: U+000D-25CA
+}
+@font-face {
+    font-family: CircularSpotifyText-Book;
+    src: url(/assets/fonts/CircularSpotifyText-Book_gdi.eot);
+    src: url(/assets/fonts/CircularSpotifyText-Book_gdi.eot?#iefix) format('embedded-opentype'), 
+    url(/assets/fonts/CircularSpotifyText-Book_gdi.woff) format('woff'), 
+    url(/assets/fonts/CircularSpotifyText-Book_gdi.ttf) format('truetype'), 
+    url(/assets/fonts/CircularSpotifyText-Book_gdi.svg#CircularSpotifyText-Book) format('svg');
+    font-style: normal;
+    font-stretch: normal;
+    unicode-range: U+000D-25CA
+}
+@font-face {
+    font-family: CircularSpotifyText-Bold;
+    src: url(/assets/fonts/CircularSpotifyText-Bold_gdi.eot);
+    src: url(/assets/fonts/CircularSpotifyText-Bold_gdi.eot?#iefix) format('embedded-opentype'), 
+    url(/assets/fonts/CircularSpotifyText-Bold_gdi.woff) format('woff'), 
+    url(/assets/fonts/CircularSpotifyText-Bold_gdi.ttf) format('truetype'), 
+    url(/assets/fonts/CircularSpotifyText-Bold_gdi.svg#CircularSpotifyText-Bold) format('svg');
+    font-style: normal;
+    font-stretch: normal;
+    unicode-range: U+000D-25CA
+}
+@font-face {
+    font-family: CircularSpotifyText-Light;
+    src: url(/assets/fonts/CircularSpotifyText-Light_gdi.eot);
+    src: url(/assets/fonts/CircularSpotifyText-Light_gdi.eot?#iefix) format('embedded-opentype'), 
+    url(/assets/fonts/CircularSpotifyText-Light_gdi.woff) format('woff'), 
+    url(/assets/fonts/CircularSpotifyText-Light_gdi.ttf) format('truetype'), 
+    url(/assets/fonts/CircularSpotifyText-Light_gdi.svg#CircularSpotifyText-Light) format('svg');
+    font-style: normal;
+    font-stretch: normal;
+    unicode-range: U+000D-25CA
+}
+@font-face {
+    font-family: CircularSpotifyText-Medium;
+    src: url(/assets/fonts/CircularSpotifyText-Medium.eot);
+    src: url(/assets/fonts/CircularSpotifyText-Medium.eot?#iefix) format('embedded-opentype'), 
+    url(/assets/fonts/CircularSpotifyText-Medium.woff) format('woff'), 
+    url(/assets/fonts/CircularSpotifyText-Medium.ttf) format('truetype'), 
+    url(/assets/fonts/CircularSpotifyText-Medium.svg#CircularSpotifyText-Light) format('svg');
+    font-style: normal;
+    font-stretch: normal;
+    unicode-range: U+000D-25CA
+}
+@font-face {
+    font-family: CircularSpotifyHead-Bold;
+    src: url(/assets/fonts/CircularSpotifyHead-Bold_gdi.eot);
+    src: url(/assets/fonts/CircularSpotifyHead-Bold_gdi.eot?#iefix) format('embedded-opentype'), 
+    url(/assets/fonts/CircularSpotifyHead-Bold_gdi.woff) format('woff'), 
+    url(/assets/fonts/CircularSpotifyHead-Bold_gdi.ttf) format('truetype'), 
+    url(/assets/fonts/CircularSpotifyHead-Bold_gdi.svg#CircularSpotifyHead-Bold) format('svg');
+    font-style: normal;
+    font-stretch: normal;
+    unicode-range: U+000D-25CA
+}
+@font-face {
+    font-family: CircularSpotifyText-Black;
+    src: url(/assets/fonts/CircularSpotifyText-Black_gdi.eot);
+    src: url(/assets/fonts/CircularSpotifyText-Black_gdi.eot?#iefix) format('embedded-opentype'), 
+    url(/assets/fonts/CircularSpotifyText-Black_gdi.woff) format('woff'), 
+    url(/assets/fonts/CircularSpotifyText-Black_gdi.ttf) format('truetype'), 
+    url(/assets/fonts/CircularSpotifyText-Black_gdi.svg#CircularSpotifyText-Black) format('svg');
+    font-style: normal;
+    font-stretch: normal;
+    unicode-range: U+000D-25CA
+}
+@font-face {
+    font-family: CircularSpotifyText-Book;
+    src: url(/assets/fonts/CircularSpotifyText-Book_gdi.eot);
+    src: url(/assets/fonts/CircularSpotifyText-Book_gdi.eot?#iefix) format('embedded-opentype'), 
+    url(/assets/fonts/CircularSpotifyText-Book_gdi.woff) format('woff'), 
+    url(/assets/fonts/CircularSpotifyText-Book_gdi.ttf) format('truetype'), 
+    url(/assets/fonts/CircularSpotifyText-Book_gdi.svg#CircularSpotifyText-Book) format('svg');
+    font-style: normal;
+    font-stretch: normal;
+    unicode-range: U+000D-25CA
+}
+@font-face {
+    font-family: CircularSpotifyText-Bold;
+    src: url(/assets/fonts/CircularSpotifyText-Bold_gdi.eot);
+    src: url(/assets/fonts/CircularSpotifyText-Bold_gdi.eot?#iefix) format('embedded-opentype'), 
+    url(/assets/fonts/CircularSpotifyText-Bold_gdi.woff) format('woff'), 
+    url(/assets/fonts/CircularSpotifyText-Bold_gdi.ttf) format('truetype'), 
+    url(/assets/fonts/CircularSpotifyText-Bold_gdi.svg#CircularSpotifyText-Bold) format('svg');
+    font-style: normal;
+    font-stretch: normal;
+    unicode-range: U+000D-25CA
+}
+@font-face {
+    font-family: CircularSpotifyText-Light;
+    src: url(/assets/fonts/CircularSpotifyText-Light_gdi.eot);
+    src: url(/assets/fonts/CircularSpotifyText-Light_gdi.eot?#iefix) format('embedded-opentype'), 
+    url(/assets/fonts/CircularSpotifyText-Light_gdi.woff) format('woff'), 
+    url(/assets/fonts/CircularSpotifyText-Light_gdi.ttf) format('truetype'), 
+    url(/assets/fonts/CircularSpotifyText-Light_gdi.svg#CircularSpotifyText-Light) format('svg');
+    font-style: normal;
+    font-stretch: normal;
+    unicode-range: U+000D-25CA
+}
+@font-face {
+    font-family: CircularSpotifyText-Medium;
+    src: url(/assets/fonts/CircularSpotifyText-Medium.eot);
+    src: url(/assets/fonts/CircularSpotifyText-Medium.eot?#iefix) format('embedded-opentype'), 
+    url(/assets/fonts/CircularSpotifyText-Medium.woff) format('woff'), 
+    url(/assets/fonts/CircularSpotifyText-Medium.ttf) format('truetype'), 
+    url(/assets/fonts/CircularSpotifyText-Medium.svg#CircularSpotifyText-Light) format('svg');
+    font-style: normal;
+    font-stretch: normal;
+    unicode-range: U+000D-25CA
+}
+@font-face {
+    font-family: CircularSpotifyHead-Bold;
+    src: url(/assets/fonts/CircularSpotifyHead-Bold_gdi.eot);
+    src: url(/assets/fonts/CircularSpotifyHead-Bold_gdi.eot?#iefix) format('embedded-opentype'), 
+    url(/assets/fonts/CircularSpotifyHead-Bold_gdi.woff) format('woff'), 
+    url(/assets/fonts/CircularSpotifyHead-Bold_gdi.ttf) format('truetype'), 
+    url(/assets/fonts/CircularSpotifyHead-Bold_gdi.svg#CircularSpotifyHead-Bold) format('svg');
+    font-style: normal;
+    font-stretch: normal;
+    unicode-range: U+000D-25CA
+}
+.hamburger-menu {
+    right: 31px;
+    top: 35px;
+    width: 26px;
+    height: 18px;
+    cursor: pointer;
+    position: absolute;
+    z-index: 110;
+}
+.hamburger-menu span {
+    opacity: 1
+}
+.hamburger-menu span:first-of-type,#app-menu.show .hamburger-menu span:nth-of-type(2),#app-menu.show .hamburger-menu span:nth-of-type(3),#app-menu.show .hamburger-menu span:nth-of-type(4) {
+    -webkit-transform: translate3d(0,0,0);
+    transform: translate3d(0,0,0)
+}
+.hamburger-menu:hover span:first-of-type {
+    -webkit-transform: translate3d(0,-2px,0);
+    transform: translate3d(0,-2px,0)
+}
+.hamburger-menu:hover span:nth-of-type(4) {
+    -webkit-transform: translate3d(0,2px,0);
+    transform: translate3d(0,2px,0)
+}
+.hamburger-menu:hover span:nth-of-type(2) {
+    -webkit-transform-origin: 0 50%;
+    -ms-transform-origin: 0 50%;
+    transform-origin: 0 50%;
+    -webkit-transform: translate3d(0,-3px,0) scale3d(.6,.6,.6);
+    transform: translate3d(0,-3px,0) scale3d(.6,.6,.6)
+}
+.hamburger-menu:hover span:nth-of-type(3) {
+    -webkit-transform-origin: 0 50%;
+    -ms-transform-origin: 0 50%;
+    transform-origin: 0 50%;
+    -webkit-transform: translate3d(0,3px,0) scale3d(.6,.6,.6);
+    transform: translate3d(0,3px,0) scale3d(.6,.6,.6)
+}
+
+
 /*
 Elements mocking */
 .mocking.elements {
@@ -1062,6 +1234,7 @@ border-left: 2px solid #4dbd74;
     font-size: 15px;
     overflow: hidden;
     position: relative;
+    min-height: 49px;
 }
 li.reaction_list__reaction.reaction_list__reaction_preview {
     display: inline-block;
@@ -4176,6 +4349,14 @@ td.hidden-lg {
   td.hidden-lg.hidden-md {
     display: none !important;
   }
+}
+@media (min-width: 992px) {
+.stations .session__header.session__people {
+    width: 25%;
+}
+.launched-by {
+    width: 41px;
+}
 }
 
 @media (min-width: 1200px) {
@@ -10301,3 +10482,40 @@ ul.minMenuList.minMenuTexts {
 }
 
 */
+
+
+@media(max-width: 956px) {
+nav.minMenu.menuCell.menuEntity {
+    min-width: 0%;
+    /* max-width: 0%; */
+    width: 15%;
+    display:none;
+}
+ul.minMenuList.minMenuTexts {
+    /* margin-left: 190%; */
+}
+
+.minorityMenu .menuRow {
+    display: initial;
+}
+header.fullSize {
+    height: 289px;
+}
+body.themeGrad.mobileMenu div#container.container-global {
+    height: 137px;
+    padding-top: 254px;
+}
+body.themeGrad.mobileMenu nav.minMenu.menuCell.menuEntity, body.themeGrad.mobileMenu .minorityMenu .secondaryNav .switcherToggle {
+    display:block;
+    clear: both;
+    margin-left: 14%;
+}
+.themeDark .minorityMenu .secondaryNav .switcherToggle {
+    width: 284px; 
+    display:none;
+}
+}
+
+
+
+

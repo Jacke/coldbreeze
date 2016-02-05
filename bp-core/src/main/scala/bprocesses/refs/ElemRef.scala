@@ -180,6 +180,7 @@ updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
   reaction: Int,
   on:Boolean = false,
   on_rate: Int = 0,
+  is_input:Boolean = false,
   created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
   updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
   ) {
@@ -189,6 +190,7 @@ updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
                         reaction,
                         on,
                         on_rate,
+                        is_input,
                         created_at,
                         updated_at)
   }
