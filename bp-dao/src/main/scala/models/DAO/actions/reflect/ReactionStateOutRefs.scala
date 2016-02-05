@@ -18,7 +18,7 @@ class ReactionStateOutRefs(tag: Tag) extends Table[UnitReactionStateOutRef](tag,
   def state_ref   = column[Int]("state_ref")
   def on          = column[Boolean]("on")
   def on_rate     = column[Int]("on_rate")
-
+  def is_input    = column[Boolean]("input", O.Default(false)) 
     
   def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")  
@@ -29,6 +29,7 @@ class ReactionStateOutRefs(tag: Tag) extends Table[UnitReactionStateOutRef](tag,
     reaction,
     on,
     on_rate,
+    is_input,
     created_at, updated_at) <> (UnitReactionStateOutRef.tupled, UnitReactionStateOutRef.unapply)
 
   def reaction_refFK = foreignKey("react_out_reaction_ref_fk", reaction, models.DAO.reflect.ReactionRefDAO.reaction_refs)(_.id, onDelete = ForeignKeyAction.Cascade)

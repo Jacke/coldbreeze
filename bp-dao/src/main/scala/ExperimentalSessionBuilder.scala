@@ -23,6 +23,13 @@ import models.DAO.sessions._
 import main.scala.bprocesses._
 import main.scala.simple_parts.process.Units._
 
+/******************************************************************************
+
+	Convert launched object to original and original to launched
+
+*******************************************************************************/
+
+
 object ExperimentalSessionBuilder {
 	// session elements
 	// session spaces
@@ -193,6 +200,7 @@ object ExperimentalSessionBuilder {
 					ReactionsMap.get(p.reaction).getOrElse(-1),
 					p.on,
 					p.on_rate,
+					p.is_input,
 					p.created_at,
 					p.updated_at
       	)
@@ -335,6 +343,7 @@ object ExperimentalSessionBuilder {
 				p.reaction,
 				p.on,
 				p.on_rate,
+				p.is_input,
 				p.created_at,
 				p.updated_at     	
       	)

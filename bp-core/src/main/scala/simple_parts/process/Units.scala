@@ -167,6 +167,7 @@ case class ElemTopology(id: Option[Int],
   reaction: Int,
   on:Boolean = false,
   on_rate: Int = 0,
+  is_input: Boolean = false,
   created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
   updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
 )
@@ -187,9 +188,23 @@ case class ElemTopology(id: Option[Int],
 ) 
 
 
-/*********
+
+
+
+
+
+
+
+
+
+
+
+
+
+/***********************************************************
  * Session Units
- */
+ *
+ *****************************************************************/
 
 case class SessionUnitSwitcher(id: Option[Int],
     bprocess: Int,
@@ -225,6 +240,7 @@ case class SessionUnitReactionStateOut(id: Option[Int],
   reaction: Int,
   on:Boolean = false,
   on_rate: Int = 0,
+  is_input: Boolean = false,
   created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
   updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
   )
