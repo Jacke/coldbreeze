@@ -490,7 +490,7 @@ $scope.$watch("boxfiles", function(newNames, oldNames) {
 }, true);
 
 $scope.addToPayload = function(payload) {
-    payload.push({});
+  payload.push({});
   if (payload.length > 0) {
     $scope.setWarpTypeForPayload(payload[payload.length-1], 'file', payload);
   }
