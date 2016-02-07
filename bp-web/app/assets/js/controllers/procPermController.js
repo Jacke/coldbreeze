@@ -5,8 +5,8 @@ define(['angular', 'app', 'controllers'], function (angular, minorityApp, minori
  * BP Perm
  */
 // INDEX
-minorityControllers.controller('BPPermListCtrl', ['$scope', '$filter', '$rootScope','EmployeesFactory','ProcPermissionsFactory','PermissionsFactory', 'PermissionFactory', 'BProcessesFactory','BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route', '$window',
-  function ($scope, $filter, $rootScope,EmployeesFactory,ProcPermissionsFactory,PermissionsFactory, PermissionFactory, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route, $window) {
+minorityControllers.controller('BPPermListCtrl', ['$sce','$scope', '$filter', '$rootScope','EmployeesFactory','ProcPermissionsFactory','PermissionsFactory', 'PermissionFactory', 'BProcessesFactory','BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route', '$window',
+  function ($sce, $scope, $filter, $rootScope,EmployeesFactory,ProcPermissionsFactory,PermissionsFactory, PermissionFactory, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route, $window) {
 
 $scope.isManager = function () {
   if ($scope.isManagerVal == undefined && $rootScope.manager != undefined) {
@@ -77,7 +77,6 @@ $scope.accFetch = function (obj) {
   if (obj.uid != undefined) { // it's employee
 
   var res = _.find($scope.accounts, function(cr){ return cr.userId == obj.uid});
-  console.log(res);
   if (res != undefined) { // it's account
                           // anonumous checking
     res.fullName != undefined ? res.tooltip = res.fullName : res.tooltip = res.email;
@@ -94,16 +93,22 @@ $scope.accFetch = function (obj) {
     } else { return }
   }
 };
-  $scope.loadPerm = function () {
+
+$scope.loadPerm = function () {
   ProcPermissionsFactory.query({ BPid: $scope.BPid }).$promise.then(function(qu){
       $scope.perms = qu.elemperms;
 
       $scope.accounts = qu.accounts;
       $scope.emps = qu.employees;
       $scope.employee_groups = qu.employee_groups;
+      console.log('emps');
+      console.log($scope.emps);
+
       _.forEach($scope.employee_groups, function(gr){ return gr.group = true; });
       $scope.groups = qu.employee_groups;
-      $scope.employees_groups = _.union($scope.emps,$scope.employee_groups);
+      $scope.employees_groups = _.union($scope.emps, $scope.employee_groups);
+      console.log('employees_groups united');
+      console.log($scope.employees_groups);
       _.forEach($scope.perms, function(perm) {
       if (perm.group != undefined) {
         var group = _.find($scope.groups, function(group) {return group.id == perm.group});
@@ -115,10 +120,9 @@ $scope.accFetch = function (obj) {
       }
       })
   });
-  }
-  $scope.loadPerm()
-
-  $scope.newperms = [];
+}
+$scope.loadPerm()
+$scope.newperms = [];
 
 
 $scope.addPerm = function () {
@@ -129,13 +133,44 @@ $scope.addPerm = function () {
       $scope.newperms.push({});
 }
 
-$scope.notExistedInElement = function(perms, elem) {
-    var definedPerms = _.filter(perms, $scope.byObjId(elem))
-    return function(obj) {
-        return _.find(definedPerms, function(p){ return (p.uid == obj.uid || p.group == obj.group) }) === undefined;
-    }
-}
+$scope.notExistedInElement = function(allPerms, elem, scope) {
+  return function(obj) {
+      var definedPerms = $scope.permByElem(allPerms, elem, scope);
+      console.log('notExistedInElement', definedPerms, elem.id);
+      var f = _.find(definedPerms, function(p){ 
+        return (p.uid == obj.uid || p.group == obj.group) }) === undefined;
+      console.log('obj', obj.uid);
+      console.log(_.find(definedPerms, function(p) { return p.uid == obj.uid }) );
+      console.log('>>>')
+      console.log('f', f);
+     return f;
+  }
+};
+$scope.notExistedInElementFiltered = function(objects, allPerms, elem, scope) {
+      var definedPerms = $scope.permByElem(allPerms, elem, scope);
+      //var f = _.filter(definedPerms, function(p){ 
+      //  return (p.uid == obj.uid || p.group == obj.group) }) === undefined;
+      // o is employee group
+      console.log('definedPerms', definedPerms);
+      console.log('objects', objects);      
+      return _.filter(objects, function(obj) {
+        return _.find(definedPerms, function(p) { 
+                                      return ((obj.uid !== undefined && obj.uid == p.uid) || 
+                                              (obj.group !== undefined && obj.group == p.group)) }) == undefined;
+          //return _.filter(definedPerms, function(p) {
+          //  return (p.uid === obj.uid || p.group === obj.group)
+          //}).length > 0; 
+      });
+};
 
+$scope.permByElem = function(allPerms, elem, scope) {
+    console.log('permByElem allPerms', allPerms);
+   return _.filter(allPerms, function(perm) {
+    console.log('permByElem', perm.front_elem_id, elem.id)
+    return (scope == "front" && perm.front_elem_id == elem.id) || 
+           (scope == "nested" && perm.space_elem_id == elem.id)
+   });
+}
 $scope.byObjId = function(elem) {
     return function(obj) {
       if (obj.front_elem_id != undefined) {
@@ -192,14 +227,9 @@ $scope.byObjId = function(elem) {
       });
       _.each(targets, function(target) {
 
-
-
-
         BPRequestFactory.scheme({ BPid: $scope.BPid, station_id: target.id }).$promise.then(function(data) {
-
-
-                      //target.proc_elems = [];
-                     //target.space_elems = [];
+                  //target.proc_elems = [];
+                  //target.space_elems = [];
                   target.proc_elems = data.proc_elems;
                   target.space_elems = data.space_elems;
               }, function(error) {
@@ -267,6 +297,11 @@ $scope.byObjId = function(elem) {
   $scope.filterProcessPermView = function(perm) { 
     return (perm.role == 'view');
   }
+
+$scope.trustAsHtml = function(value) {
+  return $sce.trustAsHtml(value);
+};
+
 
 
 }]);
