@@ -29,18 +29,13 @@ $scope.element_topologsPromise = LaunchElementTopologsFactory.query({ launch_id:
  * @return {void}
  */
 $scope.reactionElementRoutine = function (interactions) {
-  console.log('entry in reactionElementRoutine', interactions);
-  console.log('reactionElementRoutine', $scope.element_topologs);
   if ($scope.element_topologsPromise) {
-        console.log('reactionElementRoutine');
         $scope.element_topologsPromise.$promise.then(function(d) {
-        console.log('reactionElementRoutine', d);
 
         if (interactions) {
               _.forEach(interactions.reactions, function(r) { 
                 var data = _.find(d, function(topo) { 
               return topo.topo_id === r.reaction.element}); 
-                console.log('finded', data);
                 if (data !== undefined) { return r.reaction.elem = data; };
 
             });
@@ -56,7 +51,6 @@ $scope.reactionElementRoutine = function (interactions) {
     })
 
 } else {
-  console.log('reactionElementRoutine', $scope.element_topologs);
   LaunchElementTopologsFactory.query({ launch_id: $scope.session_id }).$promise.then(function (d) {
       if (interactions) {
           _.forEach(interactions.reactions, function(r) { return r.reaction.elem = _.find(d, function(topo) { 
@@ -79,12 +73,10 @@ $scope.reactionElementRoutine = function (interactions) {
   Pusher request scope to child scope[for process or launches controllers].
  */
 if ($scope.interactionContainer === undefined && $scope.$parent.$parent.$parent.$parent.nestedRequestScopes != undefined) {
-  console.log('parent scope are', $scope.$parent.$parent.$parent.$parent.nestedRequestScopes);
   $scope.$parent.$parent.$parent.$parent.nestedRequestScopes.push({ session_id: $scope.session_id, scope: $scope}); 
   //$scope.interactionContainer = $scope.$parent.$parent.$parent.$parent.interactionContainerLaunch;
 
 } else if ($scope.interactionContainer === undefined && $scope.$parent.$parent.$parent.$parent.$parent.nestedRequestScopes != undefined) {
-  console.log('else parent scope are', $scope.$parent.$parent.$parent.$parent.$parent.nestedRequestScopes);
   $scope.$parent.$parent.$parent.$parent.$parent.nestedRequestScopes.push({ session_id: $scope.session_id, scope: $scope});
   //$scope.interactionContainer = $scope.$parent.$parent.$parent.$parent.$parent.interactionContainerProc;
 }
@@ -106,23 +98,17 @@ console.log($scope.$parent.interactionContainer);
 
 $scope.reloadInteractionContainer = function() {
   if ($scope.interactionContainer === undefined && $scope.$parent.$parent.$parent.$parent.interactionContainerLaunch != undefined) {
-    console.log('parent are', $scope.$parent.$parent.$parent.$parent.interactionContainerLaunch)
     $scope.interactionContainer = $scope.$parent.$parent.$parent.$parent.interactionContainerLaunch;
 
   } else if ($scope.interactionContainer === undefined && $scope.$parent.$parent.$parent.$parent.$parent.interactionContainerProc != undefined) {
-    console.log('else parent are', $scope.$parent.$parent.$parent.$parent.$parent.interactionContainerProc);
     $scope.interactionContainer = $scope.$parent.$parent.$parent.$parent.$parent.interactionContainerProc;
   }
   if ($scope.interactionContainer !== undefined && $scope.interactionContainer.$promise !== undefined && typeof $scope.interactionContainer.then === 'function') {
     // Promise check
-    console.log('reloadInteractionContainer promises getted', $scope.interactionContainer);
     $scope.interactionContainer.$promise.then(function (d) {
-    console.log('reloadInteractionContainer promises getted inside', d);      
       $scope.interactionContainer = d;
       var data = _.find($scope.interactionContainer, function(cn) { return cn.session_container.sessions[0].session.id === $scope.session_id })
-      console.log(data);
       $scope.interactions = data;
-      console.log($scope.interactions);
       $scope.element_topologsPromise.$promise.then(function(d) { 
         $scope.reactionElementRoutine($scope.interactions);
  });
@@ -130,28 +116,18 @@ $scope.reloadInteractionContainer = function() {
   } else {
       var data = _.find($scope.interactionContainer, function(cn) { 
                               return cn.session_container.sessions[0].session.id === $scope.session_id });
-      console.log(data);
       $scope.interactions = data;
-      console.log($scope.interactions);
       $scope.element_topologsPromise.$promise.then(function(d) { 
         $scope.reactionElementRoutine($scope.interactions);
  });
   }
 
-  console.log('$scope.interactionContainer is undefined??', $scope.interactionContainer);
-  console.log($scope.$parent.$parent.$parent.$parent.interactionContainerLaunch);
-  console.log($scope);
   if ($scope.interactions === undefined && $scope.$parent.$parent.$parent.$parent.interactionContainerPromise !== undefined) {
     $scope.$parent.$parent.$parent.$parent.interactionContainerPromise.$promise.then(function(d) {
-      console.log('promise loaded');
-      console.log($scope.$parent.$parent.$parent.$parent.interactionContainerLaunch);
-
       $scope.interactionContainer = $scope.$parent.$parent.$parent.$parent.interactionContainerLaunch;
       var data = _.find($scope.interactionContainer, function(cn) { 
                               return cn.session_container.sessions[0].session.id === $scope.session_id });
-      console.log(data);
       $scope.interactions = data;
-      console.log($scope.interactions);
       $scope.element_topologsPromise.$promise.then(function(d) { 
         $scope.reactionElementRoutine($scope.interactions);
        });
@@ -165,14 +141,11 @@ $scope.reloadInteractionContainer = function() {
 
 $scope.reloadInteractionContainer();
 $scope.reloadSession = function(session_id) {
-  console.log($window.location.hash);
   if ($window.location.hash === "#/launches") {
-    console.log('reload session');
     $scope.$parent.reloadSession(session_id);
     //$scope.reloadInteractionContainer();
   }
   if ($window.location.hash === "#/bprocesses") {
-    console.log('reload session');
     $scope.$parent.reloadSession(session_id);
     //$scope.reloadInteractionContainer();
   }
@@ -182,9 +155,6 @@ $scope.reloadSession = function(session_id) {
   if (session_id === $scope.session_id) {
     $scope.reloadInteractionContainer();//$scope.reloadSession(session_id)
   }
-  console.log('reloadSession event');
-  console.log(session_id); 
-
 });
 /**
  * Events Fetch updated interactions
@@ -194,8 +164,6 @@ $scope.reloadSession = function(session_id) {
  */
 $scope.$on('newInteractionsForLaunch', function(event, obj) {
   if (obj.session_id === $scope.session_id) {
-    console.log('newInteractionsForLaunch', $scope.interactions);
-    console.log('obj.updatedInteraction', obj.updatedInteraction);
     $scope.interactions = obj.updatedInteraction[0]; // fetch only one interactions
   }
 }); 
@@ -209,8 +177,6 @@ $scope.$on('reloadElementRoutine', function(event, session_id) {
   if (session_id === $scope.session_id) {
     $scope.reactionElementRoutine($scope.interactions);//$scope.reloadSession(session_id)
   }
-  console.log('reloadElementRoutine event');
-  console.log(session_id); 
 });
 
 
@@ -304,10 +270,6 @@ $scope.logsByStation = function (stationId) {
 }
 
 $scope.params = [];
-
-console.log("interactionContainer");
-console.log($scope.interactionContainer);
-
 
 
 /***
@@ -403,12 +365,7 @@ $scope.removePayload = function(field) {
   $scope.payload = _.reject($scope.payload, function(el) { return el.$$hashKey === field.$$hashKey; });
 };
 $scope.removeFromPayload = function(field, elem) {
-  console.log('removeFromPayload');
-  console.log(elem.payload);
-  console.log(elem.payload.length);
   elem.payload = _.reject(elem.payload, function(el) { return el.$$hashKey === field.$$hashKey; });
-  console.log(elem.payload);
-  console.log(elem.payload.length);
   if (field.entityId) {
      var entityId = field.entityId;
      $http({
@@ -430,35 +387,30 @@ $scope.removeFromPayload = function(field, elem) {
 };
 
 $scope.setWarpType = function(field, warp_type) {
-console.log(field);
-var index = $scope.payload.indexOf(field);
-
-if (index !== -1) {
-//    items[index] = 1010;
-
-  if (warp_type === 'text') {
-    $scope.payload[index] = { obj_type: "text", obj_title: "Text", obj_content: "" }  
+  var index = $scope.payload.indexOf(field);
+  if (index !== -1) {
+  //    items[index] = 1010;
+    if (warp_type === 'text') {
+      $scope.payload[index] = { obj_type: "text", obj_title: "Text", obj_content: "" }  
+    } 
+    if (warp_type === 'file') {
+      $scope.payload[index] = { obj_type: "file", obj_title: "", obj_content: "" }   
+    }
   } 
-  if (warp_type === 'file') {
-    $scope.payload[index] = { obj_type: "file", obj_title: "", obj_content: "" }   
-  }
-} 
-  console.log(field);
 }
+
 $scope.setWarpTypeForPayload = function(field, warp_type, payload) {
-console.log(field);
-var index = payload.indexOf(field);
+  var index = payload.indexOf(field);
+  if (index !== -1) {
+  //    items[index] = 1010;
 
-if (index !== -1) {
-//    items[index] = 1010;
-
-  if (warp_type === 'text') {
-    payload[index] = { obj_type: "text", obj_title: "Text", obj_content: "" }  
+    if (warp_type === 'text') {
+      payload[index] = { obj_type: "text", obj_title: "Text", obj_content: "" }  
+    } 
+    if (warp_type === 'file') {
+      payload[index] = { obj_type: "file", obj_title: "", obj_content: "" }   
+    }
   } 
-  if (warp_type === 'file') {
-    payload[index] = { obj_type: "file", obj_title: "", obj_content: "" }   
-  }
-} 
   console.log(field);
 }
 
@@ -468,24 +420,16 @@ if (index !== -1) {
 $scope.$watch("files", function(newNames, oldNames) {
     if (newNames.length > 0) {
       $scope.prepareFiles();
-console.log('newNames' + newNames);
-console.log('oldNames' + oldNames);
-
-}
+    }
 }, true);
 $scope.$watch("dpfiles", function(newNames, oldNames) {
     if (newNames.length > 0) {
       $scope.prepareFiles();
-console.log('newNames' + newNames);
-console.log('oldNames' + oldNames);
-
-}
+    }
 }, true);
 $scope.$watch("boxfiles", function(newNames, oldNames) {
     if (newNames.length > 0) {
       $scope.prepareFiles();
-    console.log('newNames' + newNames);
-    console.log('oldNames' + oldNames);
     };//$log.debug("    ** $watch(..., true)");
 }, true);
 
@@ -854,13 +798,11 @@ $scope.fastResourceCostCreationApply = function() {
 // Assign resource to current element
 // Fetch assigned costs
 // Show cost
-
   console.log(fastResourceCostCreation);
 }
 
 
 $scope.fillValue = function(cost, entity, value) {
-  console.log(cost);
   // entityId: String, launchId: Int, resourceId: Int
   var resourceId = cost.resource.resource.id;
   var launchId = $scope.session.session.id;
@@ -875,7 +817,6 @@ $scope.fillValue = function(cost, entity, value) {
 
 }
 $scope.reFillValue = function(cost, entity, slat) {
-  console.log(cost);
   // entityId: String, launchId: Int, resourceId: Int
   var resourceId = cost.resource.resource.id;
   var launchId = $scope.session.session.id;

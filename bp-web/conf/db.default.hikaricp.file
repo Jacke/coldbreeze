@@ -1,4 +1,4 @@
-jdbcUrl=jdbc:postgresql://localhost/minority1
+jdbcUrl=jdbc:postgresql://localhost/minority3
 driverClassName=org.postgresql.Driver
 
 username=postgres
