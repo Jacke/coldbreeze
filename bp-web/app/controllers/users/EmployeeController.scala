@@ -31,6 +31,8 @@ import play.api.libs.functional.syntax._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+import utilities.AccountCredHiding
+
 /**
  * Created by Sobolev on 22.07.2014.
  */
@@ -161,13 +163,22 @@ class EmployeeController(override implicit val env: RuntimeEnvironment[DemoUser]
     }
   }
 }
+//GET         /actors      @controllers.users.EmployeeController.actors()
+def actors() = SecuredAction.async { implicit request =>
+     val user                        = request.user.main
+     val business                    = request.user.businessFirst
 
-def actors() = SecuredAction { implicit request =>
-     val user = request.user.main
-     val employees:List[EmployeeDTO] = EmployeeDAO.getAllByMaster(user.email.get)
-     val creds:List[AccountDAO] =  models.AccountsDAO.findAllByEmails(employees.map(_.master_acc))
-      Ok(Json.toJson(ActorCont(employees, creds)))
+     val employeesF                  = models.DAO.resources.EmployeeDAOF.getAllByWorkbench(business)
+     employeesF.map { employees =>
+       val employeesList = employees.toList
+       val creds:List[AccountDAO]      =  models.AccountsDAO.findAllByEmails(employeesList.map(_.master_acc))
+       val cleanCreds = creds.map(acc => AccountCredHiding.hide(acc))
+
+       Ok(Json.toJson(ActorCont(employeesList, cleanCreds)))
+     }
 }
+
+
 def create() = SecuredAction { implicit request =>
         Ok(views.html.businesses.users.employee_form(employeeForm, request.user))
 }

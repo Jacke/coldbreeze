@@ -112,25 +112,30 @@ val elemPermForm = Form(
       /*Ok(views.html.permissions.element.index(
         Page(elemperms, 1, 1, elemperms.length), 1, "%")(Some(request.user.main)))*/ 
   }
+//GET         /bprocess/:BPid/elemperms           @controllers.PermissionController.proc_index(BPid: Int)
+def proc_index(BPid: Int) = SecuredAction.async { implicit request =>
+  val elemperms = ActPermissionDAO.getAll
+  val elms = ProcElemDAO.findByBPId(BPid).map(_.id)
+  val spelms = SpaceElemDAO.findByBPId(BPid).map(_.id)
+  val business                    = request.user.businessFirst
 
-  def proc_index(BPid: Int) = SecuredAction { implicit request =>
-    val elemperms = ActPermissionDAO.getAll
-    val elms = ProcElemDAO.findByBPId(BPid).map(_.id)
-    val spelms = SpaceElemDAO.findByBPId(BPid).map(_.id)
     
-    val employees = EmployeeDAO.getAllByMaster(request.user.masterFirst)
-    val employee_groups = AccountGroupDAO.getByAccounts(employees.map(_.master_acc)).distinct
-    val accounts = models.AccountsDAO.findAllByEmails(employees.map(emp => emp.uid)).map(ac => AccountCredHiding.hide(ac))
+  val employeesF                  = EmployeeDAOF.getAllByWorkbench(business)
+  employeesF.map { employees =>
+    val employeesList = employees.toList 
+    val employee_groups = AccountGroupDAO.getByAccounts(employeesList.map(_.master_acc)).distinct
+    val accounts = models.AccountsDAO.findAllByEmails(employeesList.map(emp => emp.uid)).map(ac => AccountCredHiding.hide(ac))
 
     Ok(Json.toJson(
       ActPermissionJSON(
         elemperms.filter(perm => perm.process == BPid ),
-        employees,
+        employeesList,
         employee_groups,
         accounts
         )))
   }
-  def permsOnly(BPid: Int) = SecuredAction { implicit request =>
+}
+def permsOnly(BPid: Int) = SecuredAction { implicit request =>
     val elemperms = ActPermissionDAO.getAll
     //val elms = ProcElemDAO.findByBPId(BPid).map(_.id)
     //val spelms = SpaceElemDAO.findByBPId(BPid).map(_.id)
