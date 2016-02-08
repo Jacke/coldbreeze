@@ -15,7 +15,11 @@ import main.scala.utils.InputParamProc
 import scala.collection.mutable.ListBuffer  
 import main.scala.simple_parts.process.Units._
 
-class BProcess(scope: Scope, val id: Option[Int] = None, var assigned_session_id: Option[Int] = None, resources: Option[Array[Resource]] = None, groups: Option[Array[Group]] = None) extends BPLinkContainer[BPLink] 
+class BProcess(scope: Scope, 
+               val id: Option[Int] = None, 
+               var assigned_session_id: Option[Int] = None, 
+               resources: Option[Array[Resource]] = None, 
+               groups: Option[Array[Group]] = None) extends BPLinkContainer[BPLink] 
    with OwnershipContainer
    with BPFlow 
 {

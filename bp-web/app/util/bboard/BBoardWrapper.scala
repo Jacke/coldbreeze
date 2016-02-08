@@ -106,13 +106,11 @@ class BBoardWrapper(connection: BBoardWrapperConnection) {
   val system = ActorSystem("PingPongSystem")
   val pongg = system.actorOf(Props(new BBoardPong(connection)), name = "pongg")
   val pingg = system.actorOf(Props(new BBoardPing(pongg)), name = "pingg")
-
-implicit val timeout = Timeout(5 seconds)
+  implicit val timeout = Timeout(5 seconds)
 
   // start them going
   //pingg ! StartMessage  
   def newPing():Boolean = {
-
       pingg ! StartMessage  
       pingg ! StateMessage
       val future2: Future[Boolean] = ask(pingg, StateMessage).mapTo[Boolean]
@@ -127,70 +125,43 @@ implicit val timeout = Timeout(5 seconds)
   }
   def auth(email: String, password: String) = {
   	val csrfToken:String = fetchCSRF()
-	val data = Map(
-	  "csrfToken" -> Seq(csrfToken),
-	  "email" -> Seq("value2"),
-	  "password" -> Seq("password")
-	)
+  	val data = Map(
+  	  "csrfToken" -> Seq(csrfToken),
+  	  "email" -> Seq("value2"),
+  	  "password" -> Seq("password")
+  	)
   	//val holder: Future[WSResponse] = WS.url(s"http://${connection.host}:${connection.port}/authenticate/credentials").post(data)
   	//val readyHolder = Await.result(holder, Duration(5000, MILLISECONDS))
   	//println(readyHolder.body)
   }
+
+
+
   def findOrCreateBoard(launch_id: Int, element_id: Option[Int], userId: String): Future[Option[Board]] = {
-    val empty:Option[Board] = None
-     val holder = Try(WS.url
-    (s"http://${connection.host}:${connection.port}/board/findOrCreate?launch_id=${launch_id}&element_id=${element_id.getOrElse("")}&userId=${userId}")
-    .get().map { response =>
-        val res = response.json.as[Board]
-        println(response.json)
-        Some(res) //.copy(boards =          res.boards.filter(b => b.onBusiness(biz)))
-     }.recover{ case c => {
-      println(c)
-      empty 
-      }
-      })
-        .getOrElse(Future.successful(empty))
-     holder  
-}
- 
+    bboard.BoardDAO.findOrCreateBoard(launch_id, element_id, userId)(connection)
+  }
   def getWarpBoardByLaunch(launch_id: Int, biz: String = ""):Future[BoardContainer] = {
-    val empty:BoardContainer = BoardContainer(boards = List(),entities = List(), slats = List())
-     val holder = Try(WS.url(s"http://${connection.host}:${connection.port}/api/v1/board/launch/${launch_id}").get().map { response =>
-        val res = response.json.as[BoardContainer]
-        println(response.json)
-        res //.copy(boards =          res.boards.filter(b => b.onBusiness(biz)))
-     }.recover{ case c => {
-      println(c)
-      empty 
-      }
-      })
-        .getOrElse(Future.successful(empty))
-     holder   
+    bboard.BoardDAO.getBoardByResource(launch_id, biz)(connection)
   } 
   def getBoardByResource(resource_id: Int, biz: String):Future[BoardContainer] = {
-  	val empty:BoardContainer = BoardContainer(boards = List(),entities = List(), slats = List())
-  	 val holder = Try(WS.url(s"http://${connection.host}:${connection.port}/api/v1/board").get().map { response =>
-        val res = response.json.as[BoardContainer]
-        println(response.json)
-        res //.copy(boards =         	res.boards.filter(b => b.onBusiness(biz)))
-     }.recover{ case c => {
-     	println(c)
-     	empty 
-     	}
-     	})
-        .getOrElse(Future.successful(empty))
-     holder   
+  	bboard.BoardDAO.getBoardByResource(resource_id,biz)(connection)
   }
+  def addBoardForResource(board: Board):Future[String] = {
+     bboard.BoardDAO.addBoardForResource(board)(connection) 
+  }
+
+
   def isOnBoardByResources(board: Board, resource_ids: List[Int]):Boolean = {
     board.meta.find(m => m.key == "resource_id" && resource_ids.map(_.toString).contains(m.value)).isDefined 
   }
+
   def isOnBoardByResource(board: Board, resource_id: Int):Boolean = {
-    //println("isOnBoardByResource")
-    //board.meta.foreach(println)
-    //println(resource_id)
-    //println( board.meta.find(m => m.key == "resource_id" && m.value == resource_id.toString).isDefined )    
     board.meta.find(m => m.key == "resource_id" && m.value == resource_id.toString).isDefined 
   }  
+
+
+
+
   def getEntityByResources(resources: List[ResourceDTO]):Future[List[ResourceEntitySelector]] = {
     val resource_ids = resources.map(_.id.get)
     val empty = List.empty[ResourceEntitySelector]
@@ -332,17 +303,6 @@ implicit val timeout = Timeout(5 seconds)
 /*-------------------------------------------
  * Create
  --------------------------------------------*/  
-  def addBoardForResource(board: Board):Future[String] = {
-  	 val data = Json.toJson(board)
-  	 val holder = Try(
-              WS.url(s"http://${connection.host}:${connection.port}/api/v1/boards/create").post(data).map { response =>
-        val res = response.json
-        println(res)
-        res.toString
-        }.recover{ case _ => "" })
-        .getOrElse(Future.successful("false"))
-     holder   
-  }
   def addEntityByResource(resource_id: Int, entity: Entity):Future[String] = {
      val data = Json.toJson(entity)
      val boardId: String = entity.boardId.toString

@@ -1083,7 +1083,7 @@ span.reaction-icon.minicon.minicon-gear-fill-right {
 
 .proc-element.minimal .element-header {
     padding-top: 0px;
-    margin-top: -10px;
+    margin-top: 8px;
     position: relative;
     background: #fff;
     border-radius: 3px;
@@ -5440,11 +5440,24 @@ display: inline-block;
 .form-edit-bpelem a.btn.btn-small.btTxt.submit.btn.lg.solid-green {
     margin-left: 12px;
 }
-
 .form-edit-bpelem a.btn.btn-small.btn.btn-danger.btTxt.btn.lg.solid-green {
     background-color: #d9534f;
     border-color: #d43f3a;
+    color: white;
 }
+
+a.btn.btn-small.btTxt.submit.btn.lg.solid-green.btn-add-entity {
+    margin-top: 0px;
+    margin-left: 0px;
+    padding: 9px 7px;
+    margin-bottom: 5px;
+    color: white;
+}
+a.btn.btn-small.btTxt.submit.btn.lg.solid-green.btn-add-entity:hover {
+    text-decoration: none;
+    border: none;
+}
+
 
 .form-edit-bpelem .form-control {
     padding: 4px 8px;

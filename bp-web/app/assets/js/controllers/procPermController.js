@@ -101,14 +101,14 @@ $scope.loadPerm = function () {
       $scope.accounts = qu.accounts;
       $scope.emps = qu.employees;
       $scope.employee_groups = qu.employee_groups;
-      console.log('emps');
-      console.log($scope.emps);
+      console.debug('emps');
+      console.debug($scope.emps);
 
       _.forEach($scope.employee_groups, function(gr){ return gr.group = true; });
       $scope.groups = qu.employee_groups;
       $scope.employees_groups = _.union($scope.emps, $scope.employee_groups);
-      console.log('employees_groups united');
-      console.log($scope.employees_groups);
+      console.debug('employees_groups united');
+      console.debug($scope.employees_groups);
       _.forEach($scope.perms, function(perm) {
       if (perm.group != undefined) {
         var group = _.find($scope.groups, function(group) {return group.id == perm.group});
@@ -136,13 +136,13 @@ $scope.addPerm = function () {
 $scope.notExistedInElement = function(allPerms, elem, scope) {
   return function(obj) {
       var definedPerms = $scope.permByElem(allPerms, elem, scope);
-      console.log('notExistedInElement', definedPerms, elem.id);
+      console.debug('notExistedInElement', definedPerms, elem.id);
       var f = _.find(definedPerms, function(p){ 
         return (p.uid == obj.uid || p.group == obj.group) }) === undefined;
-      console.log('obj', obj.uid);
-      console.log(_.find(definedPerms, function(p) { return p.uid == obj.uid }) );
-      console.log('>>>')
-      console.log('f', f);
+      console.debug('obj', obj.uid);
+      console.debug(_.find(definedPerms, function(p) { return p.uid == obj.uid }) );
+      console.debug('>>>')
+      console.debug('f', f);
      return f;
   }
 };
@@ -151,8 +151,8 @@ $scope.notExistedInElementFiltered = function(objects, allPerms, elem, scope) {
       //var f = _.filter(definedPerms, function(p){ 
       //  return (p.uid == obj.uid || p.group == obj.group) }) === undefined;
       // o is employee group
-      console.log('definedPerms', definedPerms);
-      console.log('objects', objects);      
+      console.debug('definedPerms', definedPerms);
+      console.debug('objects', objects);      
       return _.filter(objects, function(obj) {
         return _.find(definedPerms, function(p) { 
                                       return ((obj.uid !== undefined && obj.uid == p.uid) || 
@@ -164,9 +164,9 @@ $scope.notExistedInElementFiltered = function(objects, allPerms, elem, scope) {
 };
 
 $scope.permByElem = function(allPerms, elem, scope) {
-    console.log('permByElem allPerms', allPerms);
+    console.debug('permByElem allPerms', allPerms);
    return _.filter(allPerms, function(perm) {
-    console.log('permByElem', perm.front_elem_id, elem.id)
+    console.debug('permByElem', perm.front_elem_id, elem.id)
     return (scope == "front" && perm.front_elem_id == elem.id) || 
            (scope == "nested" && perm.space_elem_id == elem.id)
    });
@@ -233,7 +233,7 @@ $scope.byObjId = function(elem) {
                   target.proc_elems = data.proc_elems;
                   target.space_elems = data.space_elems;
               }, function(error) {
-                  console.log('error', error);
+                  console.debug('error', error);
         });
 
       });
