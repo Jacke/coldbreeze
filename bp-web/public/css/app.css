@@ -1388,6 +1388,12 @@ form.form-horizontal.form-new-bpelem.form-edit-bpelem.form-edit-spaceelem .contr
     width: 45%;
     margin-left: 5px;
 }
+.form-new-bpelem.form-edit-bpelem input:focus {
+    border-color: #79589F;
+    outline: 0;
+    box-shadow: none;
+}
+
 
 .form-new-bpelem .formly-field.formly-field-input {
     width: 50%;
