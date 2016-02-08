@@ -1198,6 +1198,9 @@ span.reaction-icon.minicon.minicon-gear-fill-right {
     font-weight: 600;
     background-color: #27ae60;
 }
+.pipeContentBlankValue input:focus {
+    box-shadow: none;
+}
 
 .pipeContent .pipeContentValue {
     font-size: 13px;

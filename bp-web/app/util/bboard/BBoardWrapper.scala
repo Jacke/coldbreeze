@@ -168,7 +168,7 @@ class BBoardWrapper(connection: BBoardWrapperConnection) {
      val holder = Try(WS.url(s"http://${connection.host}:${connection.port}/api/v1/board").get().map { response =>
         val ponse = response.json.as[BoardContainer]
         // ResourceEntitySelector(resource: ResourceDTO, entities: List[Entity])
-        println(response.json)
+        //println(response.json)
         resources.map { resource =>
           val resource_id = resource.id.get
           val board_ids:List[String] = ponse.boards//.map(cn => cn.boards)
@@ -194,7 +194,7 @@ class BBoardWrapper(connection: BBoardWrapperConnection) {
      val holder = Try(WS.url(s"http://${connection.host}:${connection.port}/api/v1/board").get().map { response =>
         val ponse = response.json.as[BoardContainer]
         // ResourceEntitySelector(resource: ResourceDTO, entities: List[Entity])
-        println(response.json)
+        //println(response.json)
           val resource_id = resource.id.get
           val board_ids:List[String] = ponse.boards//.map(cn => cn.boards)
                           .filter(board => isOnBoardByResource(board, resource_id))
@@ -218,7 +218,7 @@ class BBoardWrapper(connection: BBoardWrapperConnection) {
      val holder = Try(WS.url(s"http://${connection.host}:${connection.port}/api/v1/board").get().map { response =>
         val ponse = response.json.as[BoardContainer]
         // ResourceEntitySelector(resource: ResourceDTO, entities: List[Entity])
-        println(response.json)
+        //println(response.json)
           val board_ids:List[String] = ponse.boards//.map(cn => cn.boards)
                           .filter(board => isOnBoardByResource(board, resource_id))
                           .map(b => b.id.get.toString)
@@ -242,7 +242,7 @@ class BBoardWrapper(connection: BBoardWrapperConnection) {
         res.copy(boards = res.boards.filter(_.id == board_id), entities = res.entities.filter(entity =>
             entity.boardId.toString == board_id
           ))
-        println(response.json)
+        //println(response.json)
         res //.copy(boards =          res.boards.filter(b => b.onBusiness(biz)))
      }.recover{ case c => {
       println(c)
@@ -288,10 +288,10 @@ class BBoardWrapper(connection: BBoardWrapperConnection) {
   def getSlatByEntitiesIds(entities_ids: List[String]):Future[List[Slat]] = {
     val empty:List[Slat] = List() 
     val data = Json.toJson(SlatSelector(entities_ids))
-     val holder = Try(WS.url(s"http://${connection.host}:${connection.port}/api/v1/entities/slats").post(data).map { response =>
-        val res = response.json.as[List[Slat]]
-        println(response.json)
-        res
+       val holder = Try(WS.url(s"http://${connection.host}:${connection.port}/api/v1/entities/slats").post(data).map { response =>
+       val res = response.json.as[List[Slat]]
+       println(response.json)
+       res
      }.recover{ case c => {
       println(c)
       empty 
