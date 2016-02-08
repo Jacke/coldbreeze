@@ -868,7 +868,6 @@ span.selectedRefType {
 .element-new-form input#inputTitle, .element-new-form textarea#inputBusinessId {
     box-shadow: none;
     border-radius: 4px;
-    
 }
 
 
@@ -994,7 +993,15 @@ a.expand-ref-select {
     height: 20px;
 }
 .proc-element .info h4.title {
-padding-top: 11px;
+    padding-top: 11px;
+    display: block;
+    padding: 0;
+    margin: 0;
+    height: 28px;
+    float: left;
+    width: 293px;
+    display: inline-block;
+    margin-top: 10px;
 }
 .proc-element .right-bar {
   border-left: solid 2px #7f8c8d;
@@ -1093,8 +1100,14 @@ span.reaction-icon.minicon.minicon-gear-fill-right {
 
 .proc-element.minimal .element-header .info h6.desc {
     padding-bottom: 0px;
-    margin-bottom: 9px;
     height: 13px;
+    float: left;
+    display: block;
+    overflow: hidden;
+    clear: both !important;
+    position: absolute;
+    left: 78px;
+    top: 26px;
 }
 
 .proc-element.minimal .element-header .info .type {
@@ -3180,7 +3193,7 @@ background-color: gray !important;
     width: 45px;
     height: 29px;
 }
-;
+
 .allStations .stations.minimal-stations .session_title {
     margin-top: 4px;
 }
@@ -5622,18 +5635,6 @@ tooltip {
   90% {
     opacity: 1; } }
 
-@-ms-keyframes animate-tooltip {
-  tooltip 0% {
-    opacity: 0; }
-  tooltip 50% {
-    opacity: .5; }
-  tooltip 60% {
-    opacity: .8; }
-  tooltip 70% {
-    opacity: .9; }
-  tooltip 90% {
-    opacity: 1; } }
-
 @keyframes animate-tooltip {
   0% {
     opacity: 0; }
@@ -5653,6 +5654,7 @@ tooltip {
     animation: animate-tooltip 0.15s; }
   tooltip._steady._ready tip {
     animation: animate-tooltip 0.35s; }
+
   tooltip tip {
     border-radius: 3px;
     background: rgba(0, 0, 0, 0.85);
@@ -5674,8 +5676,12 @@ tooltip {
     display: block;
     opacity: 1;
     z-index: 999; }
-  tooltip tip-tip {
-    font-size: .95em; }
+tooltip tip-tip {
+    font-size: 14px;
+    font-weight: 400;
+    font-family: Open Sans;
+    text-align: center;
+}
     tooltip tip-tip._large {
       font-size: 1.1em; }
     tooltip tip-tip._small {
@@ -7771,7 +7777,7 @@ width: 865px;
     -webkit-align-items: flex-start;
     -ms-flex-align: start;
     align-items: flex-start;
-  }http://chelyabinskaya-oblast.doski.ru/cat-uslugi/uridicheskie-buhgalterskie/vremennaya-registratsiya-propiska/
+  }
   .middle--desk {
     -webkit-box-align: center;
     -webkit-align-items: center;
@@ -9902,47 +9908,6 @@ body.shepherd-active .teamSettings .grids > * {
   }
 }
 
-@-ms-keyframes offline-dropin {
-  /* line 40, ../sass/_keyframes.sass */
-  0% {
-    transform: translateY(0);
-    -webkit-transform: translateY(0);
-    -moz-transform: translateY(0);
-    -ms-transform: translateY(0);
-    -o-transform: translateY(0);
-    opacity: 0;
-  }
-
-  /* line 43, ../sass/_keyframes.sass */
-  1% {
-    transform: translateY(-800px);
-    -webkit-transform: translateY(-800px);
-    -moz-transform: translateY(-800px);
-    -ms-transform: translateY(-800px);
-    -o-transform: translateY(-800px);
-    opacity: 0;
-  }
-
-  /* line 48, ../sass/_keyframes.sass */
-  2% {
-    transform: translateY(-800px);
-    -webkit-transform: translateY(-800px);
-    -moz-transform: translateY(-800px);
-    -ms-transform: translateY(-800px);
-    -o-transform: translateY(-800px);
-    opacity: 1;
-  }
-
-  /* line 51, ../sass/_keyframes.sass */
-  100% {
-    transform: translateY(0);
-    -webkit-transform: translateY(0);
-    -moz-transform: translateY(0);
-    -ms-transform: translateY(0);
-    -o-transform: translateY(0);
-    opacity: 1;
-  }
-}
 
 @-o-keyframes offline-dropin {
   /* line 40, ../sass/_keyframes.sass */
@@ -10068,25 +10033,6 @@ body.shepherd-active .teamSettings .grids > * {
   }
 }
 
-@-ms-keyframes offline-dropout {
-  /* line 57, ../sass/_keyframes.sass */
-  0% {
-    transform: translateY(0);
-    -webkit-transform: translateY(0);
-    -moz-transform: translateY(0);
-    -ms-transform: translateY(0);
-    -o-transform: translateY(0);
-  }
-
-  /* line 59, ../sass/_keyframes.sass */
-  100% {
-    transform: translateY(-800px);
-    -webkit-transform: translateY(-800px);
-    -moz-transform: translateY(-800px);
-    -ms-transform: translateY(-800px);
-    -o-transform: translateY(-800px);
-  }
-}
 
 @-o-keyframes offline-dropout {
   /* line 57, ../sass/_keyframes.sass */
@@ -10168,25 +10114,6 @@ body.shepherd-active .teamSettings .grids > * {
   }
 }
 
-@-ms-keyframes offline-rotation {
-  /* line 64, ../sass/_keyframes.sass */
-  0% {
-    transform: rotate(0deg);
-    -webkit-transform: rotate(0deg);
-    -moz-transform: rotate(0deg);
-    -ms-transform: rotate(0deg);
-    -o-transform: rotate(0deg);
-  }
-
-  /* line 66, ../sass/_keyframes.sass */
-  100% {
-    transform: rotate(359deg);
-    -webkit-transform: rotate(359deg);
-    -moz-transform: rotate(359deg);
-    -ms-transform: rotate(359deg);
-    -o-transform: rotate(359deg);
-  }
-}
 
 @-o-keyframes offline-rotation {
   /* line 64, ../sass/_keyframes.sass */
