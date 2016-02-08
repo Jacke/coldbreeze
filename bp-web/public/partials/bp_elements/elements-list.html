@@ -198,13 +198,13 @@
               <a ng-click="slat.refill=true;" ng-hide="slat.refill"><span>{{ slat.sval }}</span></a>
               <div class="pipeContentValueRefill" ng-init="slat.refill=false" ng-show="slat.refill">
                 <input type="text" id="inputContentBlankValue" class="form-control" ng-model="slat.sval" required="">
-                <a class="btn btn-small btn-success" ng-click="reFillValue(cost, entity, slat)">ReFill</a>
+                <a class="btn btn-small btn-success btn-fill" ng-click="reFillValue(cost, entity, slat)">ReFill</a>
                 <a class="btn btn-small" ng-click="slat.refill=false;">x</a>                
               </div>
           </div>          
           <div class="pipeContentBlankValue" ng-show="inSession && slatFilter(entity, cost.slats).length < 1">
                 <input type="text" id="inputContentBlankValue" class="form-control" ng-init="entity.newModelValue=defaultValueParser(entity.default)" ng-model="entity.newModelValue" required="">
-                <a class="btn btn-small btn-success" ng-click="fillValue(cost, entity, entity.newModelValue)">Fill</a>
+                <a class="btn btn-small btn-success btn-fill" ng-click="fillValue(cost, entity, entity.newModelValue)">Fill</a>
         </div>
         </div>      
       </div>
