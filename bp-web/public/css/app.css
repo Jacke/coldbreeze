@@ -1173,7 +1173,7 @@ span.reaction-icon.minicon.minicon-gear-fill-right {
     display: inline-block;
     margin-right: 17px;
     margin-bottom: 2px;
-    margin-left: 11px;
+    margin-left: 0px;
     position: relative;
 }
 .pipeContent .pipeContentTitle:before {
@@ -1189,7 +1189,15 @@ span.reaction-icon.minicon.minicon-gear-fill-right {
     left: -10px;
     top: 7px;
 }
-
+.pipeContent a.btn.btn-small.btn-success {
+    color: white;
+    padding: 3px 9px;
+    border-radius: 2px;
+    font-size: 14px;
+    font-family: 'Open Sans', Helvetica;
+    font-weight: 600;
+    background-color: #27ae60;
+}
 
 .pipeContent .pipeContentValue {
     font-size: 13px;
