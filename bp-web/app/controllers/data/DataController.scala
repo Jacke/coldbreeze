@@ -213,47 +213,53 @@ class DataController(override implicit val env: RuntimeEnvironment[DemoUser]) ex
 
  val Home = Redirect(routes.DataController.index())
  val waitSeconds = 100000
- def testResourceContainerList(res: ResourceDTO = ResourceDTO(None, "test", 0, None, None),
-                               boardCN:BoardContainer = BoardContainer(boards = List(), 
-                                                                       entities = List(), 
-                                                                       slats = List())):List[ResourceContainer] =
+
+
+
+
+def testResourceContainerList(res: ResourceDTO, boardCN:BoardContainer):List[ResourceContainer] =
     List(ResourceContainer(res, List(boardCN)))
 
 
- def index() = SecuredAction.async { implicit request =>
+//GET      /data                @controllers.DataController.index()
+def index() = SecuredAction.async { implicit request =>
     if (request.user.businessFirst < 1) {
       Future(Redirect(controllers.routes.SettingController.workbench()))
     } else {
 
-    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
-    val bboardPing:Future[Boolean] = minority.utils.BBoardWrapper().ping()
-    val resources = ResourceDAO.findByBusinessId(request.user.businessFirst)
-    val boards_cn: Future[BoardContainer] = minority.utils.BBoardWrapper().getBoardByResource(0, 
-                                                                  request.user.businessFirst.toString)
+      var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
+      val bboardPing:Future[Boolean] = minority.utils.BBoardWrapper().ping()
+      val resources = ResourceDAO.findByBusinessId(request.user.businessFirst)
+      val boards_cn: Future[BoardContainer] = minority.utils.BBoardWrapper().getBoardByResource(0, 
+                                                                    request.user.businessFirst.toString)
    // boards_cn onComplete { 
    //   case Success(bcn) =>
    //     val actual_boards_cn = bcn
    //     val resources_cn = resources.map(r => testResourceContainerList(r, actual_boards_cn)).flatten
    //       Ok(views.html.data.index(request.user, isManager, ResourceForms.resourceForm, resources_cn))     
    //   case Failure(failure) =>
-  // //       Ok(views.html.data.index(request.user, isManager, ResourceForms.resourceForm, testResourceContainerList()))     
+   // //       Ok(views.html.data.index(request.user, isManager, ResourceForms.resourceForm, testResourceContainerList()))     
    // }
-     for {
+      for {
         ping <- bboardPing
         actual_boards_cn <- boards_cn
-     } yield Ok(views.html.data.index(request.user, isManager, ResourceFormContainer(), resources.map(r => 
-                testResourceContainerList(r, actual_boards_cn)).flatten,
-                ResourceFormContainer().entityForm,
-                ping
-                ))     
-
-
+      } yield { 
+         val filteredBoards = resources.map(r => testResourceContainerList(r, actual_boards_cn)).flatten
+    
+         Ok(views.html.data.index(request.user, isManager, ResourceFormContainer(), filteredBoards,
+                  ResourceFormContainer().entityForm,
+                  ping
+         ))     
+      }
     }
 }
+
+
 
 /***************************
  * Resources
  ****************************/
+//POST     /data/resources          @controllers.DataController.create_resource()
 def create_resource() = SecuredAction { implicit request => 
   	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
     val business = request.user.businessFirst
@@ -272,11 +278,12 @@ def create_resource() = SecuredAction { implicit request =>
           val future = createDefaultBoardsForRes(entity.copy(business = business, id = Some(resource_id)))
           Await.result(future, Duration(waitSeconds, MILLISECONDS)) match {
             case _ => Home
-          }
-                  
+          }      
       })
     }
 }
+
+//POST     /api/v1/data/resources             @controllers.DataController.api_create_resource() 
 def api_create_resource() = SecuredAction(BodyParsers.parse.json) { implicit request => 
     var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
     val business = request.user.businessFirst
@@ -297,7 +304,6 @@ def api_create_resource() = SecuredAction(BodyParsers.parse.json) { implicit req
           println(entity.attribute)
           // val boardId
           /*
-
           */
           Await.result(future, Duration(waitSeconds, MILLISECONDS)) match {
             case message => { 
@@ -312,7 +318,6 @@ def api_create_resource() = SecuredAction(BodyParsers.parse.json) { implicit req
                 Await.result(future, Duration(waitSeconds, MILLISECONDS)) match {
                   case _ => Home
                 }                
-
                } else {
                   Ok(message)
                }
@@ -324,7 +329,7 @@ def api_create_resource() = SecuredAction(BodyParsers.parse.json) { implicit req
     }
 }
 
-
+//PUT      /data/resource/:id         @controllers.DataController.update_resource(id: Int)
 def update_resource(id: Int) = SecuredAction { implicit request => 
 	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
   ResourceForms.resourceForm.bindFromRequest.fold(

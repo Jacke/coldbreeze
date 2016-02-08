@@ -957,16 +957,17 @@ $(".tableMinListFilter.search-process-input.add-resource-field.filterLayer #reso
     
 
     var attribute = {
-    title: $('#newInlineAttrTitleField').val(), 
-    boardId: 'ce6ffac0-df91-4ec6-a1dd-3fa7f7833589', // Random UUID, doesnt make sense, will regenerated
-    description: $('#newInlineAttrDescField').val(), 
-    publisher: '', 
-    etype: $('#newInlineAttrEtypeField').val(), 
-    default: $('#newInlineAttrDefaultField').val()
+      title: $('#newInlineAttrTitleField').val(), 
+      boardId: 'ce6ffac0-df91-4ec6-a1dd-3fa7f7833589', // Random UUID, doesnt make sense, will regenerated
+      description: $('#newInlineAttrDescField').val(), 
+      publisher: '', 
+      meta: [],
+      etype: $('#newInlineAttrEtypeField').val(), 
+      default: $('#newInlineAttrDefaultField').val(),
     };
 
     jsRoutes.controllers.DataController.api_create_resource().ajax({
-      dataType: 'json',contentType: 'application/json',data: JSON.stringify( { "resource": resource, 
+      dataType: 'json',contentType: 'application/json', data: JSON.stringify( { "resource": resource, 
         "attribute": attribute } )
     }).done(function() {
         document.location.reload();
