@@ -26,7 +26,10 @@ import akka.actor._
 import akka.actor._
 import akka.pattern.ask
 import akka.util.Timeout
+import com.typesafe.scalalogging.Logger
+import org.slf4j.LoggerFactory
 
+    
 object BoardDAO {
   import play.api.libs.json.Json
   implicit val ResourceDTOReaders = Json.reads[ResourceDTO]
@@ -47,6 +50,15 @@ object BoardDAO {
   implicit val ResourceEntitySelectorReaders = Json.reads[ResourceEntitySelector]
   implicit val SlatSelectorFormat = Json.format[SlatSelector]
   implicit val SlatSelectorReaders = Json.reads[SlatSelector]
+  
+  val appLogger = Logger(LoggerFactory.getLogger("bboard"))
+  def toApplogger(msg: Any, log_type: String = "info") = {
+      log_type match {
+        case "debug" => appLogger.info(msg.toString)
+        case "info" => appLogger.info(msg.toString)
+        case "error" => appLogger.info(msg.toString)
+      }
+  }
 
 def findOrCreateBoard(launch_id: Int, element_id: Option[Int], userId: String)(connection: BBoardWrapperConnection): Future[Option[Board]] = {
     val empty:Option[Board] = None
@@ -54,7 +66,7 @@ def findOrCreateBoard(launch_id: Int, element_id: Option[Int], userId: String)(c
     (s"http://${connection.host}:${connection.port}/board/findOrCreate?launch_id=${launch_id}&element_id=${element_id.getOrElse("")}&userId=${userId}")
     .get().map { response =>
         val res = response.json.as[Board]
-        println(response.json)
+        //println(response.json)
         Some(res) //.copy(boards =          res.boards.filter(b => b.onBusiness(biz)))
      }.recover{ case c => {
       println(c)
@@ -69,7 +81,7 @@ def getWarpBoardByLaunch(launch_id: Int, biz: String = "")(connection: BBoardWra
     val empty:BoardContainer = BoardContainer(boards = List(),entities = List(), slats = List())
      val holder = Try(WS.url(s"http://${connection.host}:${connection.port}/api/v1/board/launch/${launch_id}").get().map { response =>
         val res = response.json.as[BoardContainer]
-        println(response.json)
+        //println(response.json)
         res //.copy(boards =          res.boards.filter(b => b.onBusiness(biz)))
      }.recover{ case c => {
       println(c)
@@ -97,6 +109,7 @@ def getBoardByResource(resource_id: Int, biz: String)(connection: BBoardWrapperC
 
 def addBoardForResource(board: Board)(connection: BBoardWrapperConnection):Future[String] = {
      val data = Json.toJson(board)
+     println("addBoardForResource")
      val holder = Try(
               WS.url(s"http://${connection.host}:${connection.port}/api/v1/boards/create").post(data).map { response =>
         val res = response.json
