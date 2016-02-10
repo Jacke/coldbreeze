@@ -130,7 +130,7 @@ $scope.allLaunchedElemPromise = AllLaunchedElementsBulkFactory.queryAll({ids: (s
 $scope.allLaunchedElemPromise.$promise.then(function (d) {
     $scope.allLaunchedElem = d;
     console.log("132",$scope.allLaunchedElem);
-})
+});
 $scope.interactionContainerPromise = InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') });
 $scope.interactionContainerPromise.$promise.then(function (d) {
     $scope.interactionContainerLaunch = d;

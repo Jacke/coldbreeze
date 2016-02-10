@@ -204,35 +204,39 @@ $scope.$on('reloadElementRoutine', function(event, session_id) {
   }
 });
 
+if ($scope.$parent.allLaunchedElemPromise) {
+  $scope.allLaunchedElemPromise = $scope.$parent.allLaunchedElemPromise;
+  $scope.allLaunchedElemPromise.$promise.then(function(data) {
+    var currentContainer = _.find(data, function(d) { return d.launchId == $scope.session_id});
+    $scope.bpelems = currentContainer.elements;
+    $scope.spaces = currentContainer.spaces;
+    $scope.spaceelems = currentContainer.space_elements;
+    $scope.elemsHash = _.object(_.map($scope.bpelems, function(x){return [x.id, x]}));
+    $scope.spaceElemHash = _.object(_.map($scope.spaceelems, function(x){return [x.id, x]}));  
+  });
+} else {
+  console.log('$scope.allLaunchedElemPromise not found', $scope.$parent);
+    $scope.bpelems = LaunchElemsFactory.query({ launch_id: $scope.session_id }); 
+    $scope.spaces =  LaunchSpacesFactory.query({ launch_id: $scope.session_id });
+    $scope.spaceelems = LaunchSpaceElemsFactory.query({ launch_id: $scope.session_id });
+    /* callback for ng-click 'editUser': */
+    $scope.bpelems.$promise.then(function(data) {
+      $scope.spaces.$promise.then(function(data2) {
+        $scope.spaceelems.$promise.then(function(data3) {
+          //$scope.builder();
+  
+    });
+    });
+    });
+    $scope.bpelems.$promise.then(function(data) {
+      $scope.spaceelems.$promise.then(function(data3) {
+        $scope.elemsHash = _.object(_.map($scope.bpelems, function(x){return [x.id, x]}));
+        $scope.spaceElemHash = _.object(_.map($scope.spaceelems, function(x){return [x.id, x]}));
+     });
+    });
 
-$scope.$parent.allLaunchedElemPromise.$promise.then(function(data) {
-  var currentContainer = _.find(data, function(d) { return d.launchId == $scope.session_id});
-  $scope.bpelems = currentContainer.elements;
-  $scope.spaces = currentContainer.spaces;
-  $scope.spaceelems = currentContainer.space_elements;
-  $scope.elemsHash = _.object(_.map($scope.bpelems, function(x){return [x.id, x]}));
-  $scope.spaceElemHash = _.object(_.map($scope.spaceelems, function(x){return [x.id, x]}));  
-  //$scope.bpelems = LaunchElemsFactory.query({ launch_id: $scope.session_id }); 
-  //$scope.spaces =  LaunchSpacesFactory.query({ launch_id: $scope.session_id });
-  //$scope.spaceelems = LaunchSpaceElemsFactory.query({ launch_id: $scope.session_id });
-  /* callback for ng-click 'editUser': */
-  //$scope.bpelems.$promise.then(function(data) {
-  //  $scope.spaces.$promise.then(function(data2) {
-  //    $scope.spaceelems.$promise.then(function(data3) {
-        //$scope.builder();
-//
-  //});
-  //});
-  //});
-  //$scope.bpelems.$promise.then(function(data) {
-  //  $scope.spaceelems.$promise.then(function(data3) {
-  //    $scope.elemsHash = _.object(_.map($scope.bpelems, function(x){return [x.id, x]}));
-  //    $scope.spaceElemHash = _.object(_.map($scope.spaceelems, function(x){return [x.id, x]}));
-  // });
-  //});
-  
-  
-});
+};
+
 
 
 $scope.trees = undefined;
