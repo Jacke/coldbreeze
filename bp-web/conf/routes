@@ -253,6 +253,8 @@ GET    	/launch/:launch_id/spaces  				   	@controllers.LaunchElementsController
 GET  	/launch/:launch_id/space_elems  			@controllers.LaunchElementsControllers.spaceElems(launch_id: Int)
 GET     /launch/:launch_id/switchers 				@controllers.LaunchElementsControllers.switches_index(launch_id: Int)
 GET     /launch/:launch_id/reactions 				@controllers.LaunchElementsControllers.reactions_index(launch_id: Int)
+
+
 POST    /share/launch/:launch_id				    @controllers.LaunchShareController.makeShare(launch_id: Int)
 GET     /shared/launch/:launch_hash				    @controllers.LaunchShareController.index(launch_hash: String)
 
@@ -384,6 +386,12 @@ GET         /bprocess/:id/element_topos			     @controllers.BusinessProcessContr
 GET         /bprocess/:id/spaces                     @controllers.BusinessProcessController.spaces(id: Int)
 GET         /bprocess/:id/space_elems                @controllers.BusinessProcessController.spaceElems(id: Int)
 GET         /bprocess/elems_length                   @controllers.BusinessProcessController.bpElemLength()
+
+
+# All elements
+GET   /processes/elements/	 @controllers.BusinessProcessController.allElements(ids: List[Int])
+GET   /launches/allElements/ @controllers.LaunchElementsControllers.allElements(ids: List[Int])
+
 
 ###############
 # Elements CUDs

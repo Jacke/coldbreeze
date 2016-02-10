@@ -3,7 +3,32 @@ define(['angular', 'app', 'controllers'], function (angular, minorityApp, minori
 
 
 
-minorityControllers.controller('BPRequestCtrl', ['DataCostLaunchAssign', 'fastResourceCostCreation', 'DropBoxSettings', 'lkGoogleSettings', 'notificationService', 'LaunchElementTopologsFactory','LaunchElemsFactory','LaunchSpacesFactory','LaunchSpaceElemsFactory','ElementTopologsFactory', 'InteractionsFactory', '$scope', '$window','$routeParams','$route', '$rootScope','$filter','BPLogsFactory', 'BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory', 'BProcessFactory', 'BPStationsFactory', 'BPRequestFactory',  '$location', '$http',
+minorityControllers.controller('BPRequestCtrl', ['DataCostLaunchAssign', 
+  'fastResourceCostCreation', 
+  'DropBoxSettings', 
+  'lkGoogleSettings', 
+  'notificationService', 
+  'LaunchElementTopologsFactory',
+  'LaunchElemsFactory',
+  'LaunchSpacesFactory',
+  'LaunchSpaceElemsFactory',
+  'ElementTopologsFactory', 
+  'InteractionsFactory', 
+  '$scope', 
+  '$window',
+  '$routeParams',
+  '$route', 
+  '$rootScope',
+  '$filter',
+  'BPLogsFactory', 
+  'BPElemsFactory',
+  'BPSpacesFactory',
+  'BPSpaceElemsFactory', 
+  'BProcessFactory', 
+  'BPStationsFactory', 
+  'BPRequestFactory', 
+  '$location', 
+  '$http',
 function (DataCostLaunchAssign, fastResourceCostCreation, DropBoxSettings, lkGoogleSettings, notificationService, LaunchElementTopologsFactory, LaunchElemsFactory,LaunchSpacesFactory,LaunchSpaceElemsFactory, ElementTopologsFactory, InteractionsFactory, $scope, $window,$routeParams,$route, $rootScope,$filter,BPLogsFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BProcessFactory, BPStationsFactory, BPRequestFactory,  $location, $http) {
 
 $scope.bpId = $scope.session.process.id;
@@ -180,25 +205,35 @@ $scope.$on('reloadElementRoutine', function(event, session_id) {
 });
 
 
+$scope.$parent.allLaunchedElemPromise.$promise.then(function(data) {
+  var currentContainer = _.find(data, function(d) { return d.launchId == $scope.session_id});
+  $scope.bpelems = currentContainer.elements;
+  $scope.spaces = currentContainer.spaces;
+  $scope.spaceelems = currentContainer.space_elements;
+  $scope.elemsHash = _.object(_.map($scope.bpelems, function(x){return [x.id, x]}));
+  $scope.spaceElemHash = _.object(_.map($scope.spaceelems, function(x){return [x.id, x]}));  
+  //$scope.bpelems = LaunchElemsFactory.query({ launch_id: $scope.session_id }); 
+  //$scope.spaces =  LaunchSpacesFactory.query({ launch_id: $scope.session_id });
+  //$scope.spaceelems = LaunchSpaceElemsFactory.query({ launch_id: $scope.session_id });
+  /* callback for ng-click 'editUser': */
+  //$scope.bpelems.$promise.then(function(data) {
+  //  $scope.spaces.$promise.then(function(data2) {
+  //    $scope.spaceelems.$promise.then(function(data3) {
+        //$scope.builder();
+//
+  //});
+  //});
+  //});
+  //$scope.bpelems.$promise.then(function(data) {
+  //  $scope.spaceelems.$promise.then(function(data3) {
+  //    $scope.elemsHash = _.object(_.map($scope.bpelems, function(x){return [x.id, x]}));
+  //    $scope.spaceElemHash = _.object(_.map($scope.spaceelems, function(x){return [x.id, x]}));
+  // });
+  //});
+  
+  
+});
 
-$scope.bpelems = LaunchElemsFactory.query({ launch_id: $scope.session_id }); 
-$scope.spaces =  LaunchSpacesFactory.query({ launch_id: $scope.session_id });
-$scope.spaceelems = LaunchSpaceElemsFactory.query({ launch_id: $scope.session_id });
-/* callback for ng-click 'editUser': */
-$scope.bpelems.$promise.then(function(data) {
-  $scope.spaces.$promise.then(function(data2) {
-    $scope.spaceelems.$promise.then(function(data3) {
-      //$scope.builder();
-
-});
-});
-});
-$scope.bpelems.$promise.then(function(data) {
-  $scope.spaceelems.$promise.then(function(data3) {
-    $scope.elemsHash = _.object(_.map($scope.bpelems, function(x){return [x.id, x]}));
-    $scope.spaceElemHash = _.object(_.map($scope.spaceelems, function(x){return [x.id, x]}));
- });
-});
 
 $scope.trees = undefined;
 $scope.builder = function (station) {
@@ -237,12 +272,14 @@ $scope.builder = function (station) {
   });
 }
 
+/*
 $scope.bpelems.$promise.then(function(data) {
   $scope.spaceelems.$promise.then(function(data3) {
     $scope.elemsHash = _.object(_.map($scope.bpelems, function(x){return [x.id, x]}));
     $scope.spaceElemHash = _.object(_.map($scope.spaceelems, function(x){return [x.id, x]}));
  });
 });
+*/
 
 
 $scope.byObjId = function(elem) {
@@ -609,26 +646,50 @@ DataCostLaunchAssign.query( { launchId: $scope.session_id } ).$promise.then(func
   else { element.element_id = element.id; } // from tree
  */
 
-  _.forEach($scope.$parent.tree.trees, function(tree_elem) {
-    var elem_id = tree_elem.id;
-    var payloadResult = _.filter($scope.warpData.slats, function(slat) { 
-      return _.filter(slat.meta, function(meta){ return (meta.key === "element_id" && meta.value === elem_id+"")  }).length > 0 })
-    
-    return tree_elem.payload = _.map(payloadResult, function(presult) {
-      return { obj_type: "file", obj_title: presult.title, obj_content: presult.sval, entityId: presult.entityId }   
+_.forEach($scope.$parent.tree.trees, function(tree_elem) {
+  var elem_id = tree_elem.id;
+  var payloadResult = _.filter($scope.warpData.slats, function(slat) { 
+    return _.filter(slat.meta, function(meta){ return (meta.key === "element_id" && meta.value === elem_id+"")  }).length > 0 })
+  
+  if ($scope.interactions !== undefined 
+      && $scope.interactions.reactions 
+      && $scope.interactions.reactions.length > 0) {
+    $scope.fillCosts($scope.interactions.reactions[0].reaction.costs);
+  }
+  if ($scope.interactions !== undefined) {
+  tree_elem.costs = $scope.filterCostByElementId(elem_id, $scope.interactions.reactions[0].reaction.costs);
+  }
+  return tree_elem.payload = _.map(payloadResult, function(presult) {
+      return { obj_type: "file", 
+               obj_title: presult.title, 
+               obj_content: presult.sval, 
+               entityId: presult.entityId }   
     });
   });
-  if($scope.interactions.reactions) {
+  $scope.trees = $scope.$parent.tree.trees;
+  console.log('$scope.trees');
+  console.log($scope.trees);
+  if($scope.interactions !== undefined && $scope.interactions.reactions) {
     _.forEach($scope.interactions.reactions, function(reaction) {
+      console.log('call fill cost');
+      $scope.fillCosts(reaction.costs); // TODO: make for all cost not for costs in this reaction
+
       var elem_id = reaction.reaction.elem.element_id;;
       var payloadResult = _.filter($scope.warpData.slats, function(slat) { 
         return _.filter(slat.meta, function(meta){ return (meta.key === "element_id" && meta.value === elem_id+"")  }).length > 0 })
       reaction.payload = _.map(payloadResult, function(presult) {
         return { obj_type: "file", obj_title: presult.title, obj_content: presult.sval, entityId: presult.entityId }   
-      })
+      });
     });
   }
 });
+
+$scope.fillCosts = function(costs) {
+  _.forEach($scope.$parent.tree.trees, function(t) {
+    return t.costs = $scope.filterCostByElementId(t.id, costs);
+  });
+  console.log('filtered Costs', $scope.$parent.tree.trees);
+}
 
 $scope.sendPayloadForElement = function(launch_id, element, existedPayload) {
      if (existedPayload !== undefined) {
@@ -959,7 +1020,11 @@ $scope.stateOutAct = function (act) {
   } else { return ''; }
 }
 
-
+$scope.filterCostByElementId = function(elemId, costs) {
+  return _.filter(costs, function(cost) {
+    return cost.elementId == elemId;
+  });
+}
 
 $scope.lastExecuted = function() {
   // For empty input logs

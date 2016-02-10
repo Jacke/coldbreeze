@@ -424,6 +424,17 @@ minorityAppServices.factory('InteractionsBulkFactory', ['$resource', function ($
         queryAll: { method: 'GET', isArray: true }
     })
 }]);
+minorityAppServices.factory('AllElementsBulkFactory', ['$resource', function ($resource) {
+    return $resource(baseUrl + 'processes/elements/?:ids', {}, {
+        queryAll: { method: 'GET', isArray: true }
+    })
+}]);
+minorityAppServices.factory('AllLaunchedElementsBulkFactory', ['$resource', function ($resource) {
+    return $resource(baseUrl + 'launches/allElements/?:ids', {}, {
+        queryAll: { method: 'GET', isArray: true }
+    })
+}]);
+
 /*
 ** BPLoggers FACTORY
 */
