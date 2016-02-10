@@ -6,6 +6,8 @@ return minorityControllers.controller('BProcessListCtrl', ['$rootScope',
   '$window',
   '$translate',
   '$rootScope',
+  'AllLaunchedElementsBulkFactory',
+  'AllElementsBulkFactory',
   'InteractionsBulkFactory',
   'BPElemsFactory',
   'RefsFactory',
@@ -24,9 +26,17 @@ return minorityControllers.controller('BProcessListCtrl', ['$rootScope',
   'BPStationsFactory',
   'BPServicesFactory',
   '$location',
-  function ($rootScope,$scope, $window, $translate, $rootScope,InteractionsBulkFactory, BPElemsFactory, RefsFactory, TreeBuilder, NotificationBroadcaster,SessionsFactory, ngDialog, $http, $routeParams, $filter, BPElemsFactory, BPSpacesFactory, BPSpaceElemsFactory, BProcessesFactory, BProcessFactory, BPStationsFactory, BPServicesFactory, $location) {
+  function ($rootScope,$scope, $window, $translate, $rootScope,AllLaunchedElementsBulkFactory, AllElementsBulkFactory, InteractionsBulkFactory, BPElemsFactory, RefsFactory, TreeBuilder, NotificationBroadcaster,SessionsFactory, ngDialog, $http, $routeParams, $filter, BPElemsFactory, BPSpacesFactory, BPSpaceElemsFactory, BProcessesFactory, BProcessFactory, BPStationsFactory, BPServicesFactory, $location) {
 
+/*
+        $scope.allElemsPromise = AllElementsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') });
 
+        $scope.allElemsPromise.$promise.then(function (d) {
+            $scope.allElems = d;
+            console.log("132",$scope.allElems);
+        });
+
+ */
 $scope.changeLanguage = function () {
   $translate.use($rootScope.lang);
 };
@@ -383,11 +393,17 @@ var session_ids = _.map(sessions, function(d){
       return (fd.station !== undefined) && (fd.station.finished != true);
     }), function(dd){ 
       return 'ids='+dd.session.id+'&'
-  })
+  });
 });
 
 
 $scope.sessions = sessions;
+
+$scope.allLaunchedElemPromise = AllLaunchedElementsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') });
+$scope.allLaunchedElemPromise.$promise.then(function (d) {
+    $scope.allLaunchedElem = d;
+    console.log("132",$scope.allLaunchedElem);
+});
 
 InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') }).$promise.then(function (d) {
 
@@ -425,6 +441,12 @@ var session_ids = _.map(sessions, function(d){
 
 
 $scope.sessions = sessions;
+
+$scope.allLaunchedElemPromise = AllLaunchedElementsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') });
+$scope.allLaunchedElemPromise.$promise.then(function (d) {
+    $scope.allLaunchedElem = d;
+    console.log("132",$scope.allLaunchedElem);
+});
 
 InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') }).$promise.then(function (d) {
   $scope.interactionContainerProc = d;
