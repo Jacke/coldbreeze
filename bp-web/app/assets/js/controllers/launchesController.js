@@ -1,7 +1,7 @@
 define(['angular', 'app', 'controllers'], function (angular, minorityApp, minorityControllers) {
 
 // For all processes
-minorityControllers.controller('LaunchesCtrl', ['$controller','$timeout','$http', 
+minorityControllers.controller('LaunchesCtrl', ['$q','$controller','$timeout','$http', 
   '$window', 
   '$translate',
   '$scope', 
@@ -24,7 +24,7 @@ minorityControllers.controller('LaunchesCtrl', ['$controller','$timeout','$http'
   'BProcessesFactory', 
   'BPSpacesFactory',
   'BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
-  function ($controller, $timeout, $http, $window, $translate, $scope, $filter, $routeParams, $rootScope,Restangular, ngDialog, FilteredSessionsFactory, InteractionsBulkFactory, AllLaunchedElementsBulkFactory, ProcPermissionsFactory, TreeBuilder, BPStationsFactory, SessionsFactory, BProcessesFactory, BProcessFactory, ObserversFactory, ObserverFactory, BProcessesFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
+  function ($q, $controller, $timeout, $http, $window, $translate, $scope, $filter, $routeParams, $rootScope,Restangular, ngDialog, FilteredSessionsFactory, InteractionsBulkFactory, AllLaunchedElementsBulkFactory, ProcPermissionsFactory, TreeBuilder, BPStationsFactory, SessionsFactory, BProcessesFactory, BProcessFactory, ObserversFactory, ObserverFactory, BProcessesFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
 
 $scope.isEmptyLaunchesCheck = function() {
   //$rootScope.$on('cfpLoadingBar:completed', function(event, data){
@@ -135,7 +135,7 @@ $scope.interactionContainerPromise = InteractionsBulkFactory.queryAll({ids: (ses
 $scope.interactionContainerPromise.$promise.then(function (d) {
     $scope.interactionContainerLaunch = d;
     console.log("137",$scope.interactionContainerLaunch);
- });
+});
 
 /*
   Restangular.all('users').getList()  // GET: /users
@@ -145,24 +145,21 @@ $scope.interactionContainerPromise.$promise.then(function (d) {
   })
 */
 
-                // polyfill ended
-                 if (process_id != undefined) {
-                    console.log(process_id);
-                    $scope.sessions = _.filter(data2, function(dat) { 
-                      return dat.process.id === process_id 
+    // polyfill ended
+     if (process_id != undefined) {
+        console.log(process_id);
+        $scope.sessions = _.filter(data2, function(dat) { 
+          return dat.process.id === process_id 
 
-                    });
-                 } else { 
-                  $scope.sessions = data2;
-                 }
-                  $scope.lastChecked = true;
-                 _.forEach(data2, function(d){  // entity
-                  _.forEach(d.sessions, function(s) { // read session from entity
-                    return TreeBuilder.launchBuildFetch(d.process, s.session, $scope.allLaunchedElemPromise, function(success){});
-                  }) 
-                });
-                $scope.isEmptyLaunchesCheck();
-            });
+        });
+     } else { 
+      $scope.sessions = data2;
+   }
+    $scope.lastChecked = true;
+
+    $scope.treePromises = $scope.buildTree(data2, $scope.allLaunchedElemPromise)
+    $scope.isEmptyLaunchesCheck();
+    });
     } //else { $scope.lastChecked = true; console.log("else");$scope.isEmptyLaunchesCheck() } 
   } else { $scope.lastChecked = true; $scope.isEmptyLaunches = true; }    
 /*
@@ -179,6 +176,22 @@ BProcessesFactory.query().$promise.then(function (proc) {
 }; // </ load session
 
 $scope.nestedRequestScopes = [];
+
+$scope.buildTree = function(processes, allLaunchedElemPromise) {
+  var deferred = $q.defer();
+
+   _.forEach(processes, function(d){  // entity
+    return _.forEach(d.sessions, function(s) {
+      return TreeBuilder.launchBuildFetch(d.process, 
+                                          s.session, 
+                                          $scope.allLaunchedElemPromise, 
+                                          function(success){});
+      });
+  });
+   deferred.resolve();
+   return deferred.promise;
+}
+
 
 
 $scope.reloadSessionFn = function(session_id) {

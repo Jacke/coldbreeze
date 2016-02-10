@@ -28,15 +28,6 @@ return minorityControllers.controller('BProcessListCtrl', ['$rootScope',
   '$location',
   function ($rootScope,$scope, $window, $translate, $rootScope,AllLaunchedElementsBulkFactory, AllElementsBulkFactory, InteractionsBulkFactory, BPElemsFactory, RefsFactory, TreeBuilder, NotificationBroadcaster,SessionsFactory, ngDialog, $http, $routeParams, $filter, BPElemsFactory, BPSpacesFactory, BPSpaceElemsFactory, BProcessesFactory, BProcessFactory, BPStationsFactory, BPServicesFactory, $location) {
 
-/*
-        $scope.allElemsPromise = AllElementsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') });
-
-        $scope.allElemsPromise.$promise.then(function (d) {
-            $scope.allElems = d;
-            console.log("132",$scope.allElems);
-        });
-
- */
 $scope.changeLanguage = function () {
   $translate.use($rootScope.lang);
 };
@@ -82,7 +73,7 @@ $scope.cancelSession = function (session) {
 /*
         $scope.bprocesses = BProcessesFactory.query();
             $scope.bprocesses.$promise.then(function (processes) {
-                _.forEach(processes, function(proc) { TreeBuilder.buildFetch(proc, function(success){}); });
+                _.forEach(processes, function(proc) { TreeBuilder.buildFetch(proc, $scope.allLaunchedElemPromise, function(success){}); });
             });*/
 
         $location.path('/a#/bprocess/' + session.process.id);
@@ -96,44 +87,6 @@ $scope.cancelSession = function (session) {
 
 
 
-
-/*
-*  Thumbnail tree builder
-*/
- 
-$scope.builderFetch = function (bp) {
-  var bpelems, spaces, spaceelems;
-    bpelems = BPElemsFactory.query({ BPid: bp.id });
-    spaces =  BPSpacesFactory.query({ BPid: bp.id });
-    spaceelems = BPSpaceElemsFactory.query({ BPid: bp.id });
-
-  /**
-   * TREE BUILDER 
-   */
-
-  bpelems.$promise.then(function(data) {
-    spaces.$promise.then(function(data2) {
-      spaceelems.$promise.then(function(data3) {
-        $scope.builder(bp, data, data2, data3);
-
-        bp.frontSpaces = _.object(_.uniq(_.map(spaces, function(v) {
-          return [v.brick_front,
-                   _.filter(spaces, function(n){
-                      return n.brick_front == v.brick_front;
-                    })
-                  ]})));
-        bp.nestedSpaces = _.object(_.uniq(_.map(spaces, function(v) {
-          return [v.brick_nested,
-                   _.filter(spaces, function(n){
-                      return n.brick_nested == v.brick_nested;
-                    })
-                  ]})));
-
-
-  });
-  });
-  });
-};
 
 $scope.showInlineLaunch = function (session) {
   if (session.inlineLaunchShow) {
@@ -254,9 +207,18 @@ $scope.business = $rootScope.business;
 $scope.deleteBP = function (bpId) {
   BProcessFactory.delete({ id: bpId }).$promise.then(function(data) {
     $scope.bprocesses = BProcessesFactory.query();
-        $scope.bprocesses.$promise.then(function (processes) {
-            _.forEach(processes, function(proc) { TreeBuilder.buildFetch(proc, function(success){}); });
+      $scope.bprocesses.$promise.then(function (processes) {
+        var process_ids = _.map(processes, function(proc) { return proc.id });
+        $scope.allElementsPromise = AllElementsBulkFactory.queryAll({
+                                              ids: (process_ids + '').split(',').join('') });
+        $scope.allElementsPromise.$promise.then(function (d) {
+          $scope.allElements = d;
+          console.log("132",$scope.allElements);
         });
+        _.forEach(processes, function(proc) { 
+              TreeBuilder.buildFetch(proc, $scope.allElementsPromise, function(success){}); 
+        });
+      });
   });
 };
 
@@ -292,7 +254,6 @@ $scope.loadProcesses = function() {
       $scope.bprocesses.$promise.then(function(data){
         $scope.service_id = $routeParams.service;
         $scope.bprocesses = _.filter(data, function(proc){ return proc.service == $routeParams.service });
-
       });
 
   } else {
@@ -301,6 +262,19 @@ $scope.loadProcesses = function() {
   
   // Init thumb
   $scope.bprocesses.$promise.then(function (processes) {
+
+        var process_ids = _.map(processes, function(proc) { return proc.id });
+        $scope.allElementsPromise = AllElementsBulkFactory.queryAll({
+                                              ids: (process_ids + '').split(',').join('') });
+        $scope.allElementsPromise.$promise.then(function (d) {
+          $scope.allElements = d;
+          console.log("132",$scope.allElements);
+        });
+        _.forEach(processes, function(proc) { 
+              TreeBuilder.buildFetch(proc, $scope.allElementsPromise, function(success){}); 
+        });
+
+
 
         // url param for opening fast elem create form
         if ($window.location.hash.split('fast_proc=')[1] != undefined) {
@@ -312,7 +286,7 @@ $scope.loadProcesses = function() {
           //}
         }
 
-    _.forEach(processes, function(proc) { TreeBuilder.buildFetch(proc, function(success){
+    _.forEach(processes, function(proc) { TreeBuilder.buildFetch(proc, $scope.allElementsPromise, function(success){
         $('.process_content .tree-thumb.process-tree').dragOn();
     }); });
     

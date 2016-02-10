@@ -25,6 +25,7 @@
     margin-bottom: 5px;
     overflow: hidden;
 }
+
 .minimal-stations .dish-presentation {
     display: none;
 }
@@ -232,8 +233,10 @@
 .dishes-list .dish-presentation .dish-details .dish-operations-collapser button:before {
     color: white;
     opacity: 1;
-    -webkit-animation: cc 074s linear 0.7s infinite alternate;
+    /*
+     -webkit-animation: cc 074s linear 0.7s infinite alternate;
     animation: cc 0.7s linear 0.7s infinite alternate;
+    */
 }
 @-webkit-keyframes cc {
     0% {
