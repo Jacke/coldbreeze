@@ -661,10 +661,15 @@ DataCostLaunchAssign.query( { launchId: $scope.session_id } ).$promise.then(func
   if (element.reaction != undefined) { element.element_id = element.reaction.elem.element_id; }//reaction
   else { element.element_id = element.id; } // from tree
  */
-if ($scope.$parent.tree) {
-  $scope.trees = $scope.$parent.tree.trees;
+if ($scope.$parent.tree !== undefined) {
+  $scope.$parent.allLaunchedElemPromise.$promise.then(function(d) {
+    console.debug('getted', $scope.$parent.tree);
+    $scope.trees = $scope.$parent.tree.trees;
+    console.debug('getted', $scope.trees);
+  });
 }
 if ($scope.$parent.bprocess) {
+  console.debug('getted', $scope.$parent.bprocess);
   $scope.trees = $scope.$parent.bprocess.trees;
 }
 
