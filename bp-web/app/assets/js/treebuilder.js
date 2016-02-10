@@ -117,15 +117,42 @@ var launchBuilderFetch = function (bp, launch, cnPromise, onSuccess) {
   });
 };
 
-var builderFetch = function (bp, onSuccess) {
+var builderFetch = function (bp, cnPromise, onSuccess) {
   var bpelems, spaces, spaceelems;
+
+  var bpelems, spaces, spaceelems;
+  cnPromise.$promise.then(function(cn) {
+    var currentContainer = _.find(cn, function(d) { return d.processId == bp.id});
+
+  if (currentContainer) {
+    bpelems = currentContainer.elements;//LaunchElemsFactory.query({ launch_id: launch.id });
+    spaces =  currentContainer.spaces;//LaunchSpacesFactory.query({ launch_id: launch.id });
+    spaceelems = currentContainer.space_elements;//LaunchSpaceElemsFactory.query({ launch_id: launch.id });
+
+        builder(bp, bpelems, spaces, spaceelems);
+
+        bp.frontSpaces = _.object(_.uniq(_.map(spaces, function(v) {
+          return [v.brick_front,
+                   _.filter(spaces, function(n){
+                      return n.brick_front == v.brick_front;
+                    })
+                  ]})));
+        bp.nestedSpaces = _.object(_.uniq(_.map(spaces, function(v) {
+          return [v.brick_nested,
+                   _.filter(spaces, function(n){
+                      return n.brick_nested == v.brick_nested;
+                    })
+                  ]})));
+
+          if (onSuccess != undefined) {
+            onSuccess();
+          }
+
+
+} else {
     bpelems = BPElemsFactory.query({ BPid: bp.id });
     spaces =  BPSpacesFactory.query({ BPid: bp.id });
     spaceelems = BPSpaceElemsFactory.query({ BPid: bp.id });
-
-  /**
-   * TREE BUILDER 
-   */
 
   bpelems.$promise.then(function(data) {
     spaces.$promise.then(function(data2) {
@@ -151,23 +178,25 @@ var builderFetch = function (bp, onSuccess) {
   });
   });
   });
+
+  }
+
+  });
 };
 
 
 
 
 
- return { buildFetch: function(data,onSuccess) {
- 	builderFetch(data, onSuccess);
- }, launchBuildFetch: function(proc,session,cn, onSuccess) {
-    console.log('launchBuildFetch');
-    console.log(proc);
-    console.log(session);
+ return { 
+  buildFetch: function(data, cnPromise, onSuccess) {
+   	builderFetch(data, cnPromise, onSuccess);
+  }, 
+  launchBuildFetch: function(proc,session,cn, onSuccess) {
     if (session != undefined) {
       return launchBuilderFetch(proc,session, cn, onSuccess);
     } else { return null; }
  }
-
 }
 
 

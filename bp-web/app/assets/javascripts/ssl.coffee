@@ -7,7 +7,7 @@ document.minority =
   jobs:
     status: "Comming soon"
     aprox:  16                                                                 
-console.log "%c      Minority App, Empia Inc.© 2015   ", "color: red"   
+console.log "%c      Minority App, Empia Inc.© 2014-2016   ", "color: red"   
 console.log "%c       ___       ", "color:blue"
 console.log "%c      /\__\      ", "color:blue"
 console.log "%c     /::|  |     ", "color:blue"
@@ -30,7 +30,7 @@ console.log "%c TYPE document.minority to get commands", "color: green"
 #      jobs:
 #        status: "Comming soon"
 #        aprox:  16                                                                 
-#    console.log "%c      Minority App, Empia Inc.© 2015   ", "color: red"   
+#    console.log "%c      Minority App, Empia Inc.© 2014-2016   ", "color: red"   
 #    console.log "%c       ___       ", "color:blue"
 #    console.log "%c      /\__\      ", "color:blue"
 #    console.log "%c     /::|  |     ", "color:blue"
