@@ -52,21 +52,45 @@ var builder = function (bp, data, data2,data3) {
 }
 
 
-var launchBuilderFetch = function (bp, launch, onSuccess) {
+var launchBuilderFetch = function (bp, launch, cnPromise, onSuccess) {
   console.log('launchBuilderFetch launched');
   var bpelems, spaces, spaceelems;
+  cnPromise.$promise.then(function(cn) {
+    console.log(launch);
+  var currentContainer = _.find(cn, function(d) { return d.launchId == launch.id});
+
+  if (currentContainer) {
+    bpelems = currentContainer.elements;//LaunchElemsFactory.query({ launch_id: launch.id });
+    spaces =  currentContainer.spaces;//LaunchSpacesFactory.query({ launch_id: launch.id });
+    spaceelems = currentContainer.space_elements;//LaunchSpaceElemsFactory.query({ launch_id: launch.id });
+    builder(launch, bpelems, spaces, spaceelems);
+
+        launch.frontSpaces = _.object(_.uniq(_.map(spaces, function(v) {
+          return [v.brick_front,
+                   _.filter(spaces, function(n){
+                      return n.brick_front == v.brick_front;
+                    })
+                  ]})));
+        launch.nestedSpaces = _.object(_.uniq(_.map(spaces, function(v) {
+          return [v.brick_nested,
+                   _.filter(spaces, function(n){
+                      return n.brick_nested == v.brick_nested;
+                    })
+                  ]})));
+
+          if (onSuccess != undefined) {
+            onSuccess();
+          }
+  //});
+
+} else {
     bpelems = LaunchElemsFactory.query({ launch_id: launch.id });
     spaces =  LaunchSpacesFactory.query({ launch_id: launch.id });
     spaceelems = LaunchSpaceElemsFactory.query({ launch_id: launch.id });
-
-  /**
-   * TREE BUILDER 
-   */
-
-  bpelems.$promise.then(function(data) {
-    spaces.$promise.then(function(data2) {
-      spaceelems.$promise.then(function(data3) {
-          builder(launch, data, data2, data3);
+  bpelems.$promise.then(function(bpelems) {
+    spaces.$promise.then(function(spaces) {
+      spaceelems.$promise.then(function(spaceelems) {
+        builder(launch, bpelems, spaces, spaceelems);
 
         launch.frontSpaces = _.object(_.uniq(_.map(spaces, function(v) {
           return [v.brick_front,
@@ -86,6 +110,10 @@ var launchBuilderFetch = function (bp, launch, onSuccess) {
           }
   });
   });
+  });
+}
+
+
   });
 };
 
@@ -131,12 +159,12 @@ var builderFetch = function (bp, onSuccess) {
 
  return { buildFetch: function(data,onSuccess) {
  	builderFetch(data, onSuccess);
- }, launchBuildFetch: function(proc,session,onSuccess) {
+ }, launchBuildFetch: function(proc,session,cn, onSuccess) {
     console.log('launchBuildFetch');
     console.log(proc);
     console.log(session);
     if (session != undefined) {
-      return launchBuilderFetch(proc,session, onSuccess);
+      return launchBuilderFetch(proc,session, cn, onSuccess);
     } else { return null; }
  }
 

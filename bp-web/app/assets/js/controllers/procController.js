@@ -1,7 +1,29 @@
 define(['angular', 'app', 'controllers'], function (angular, minorityApp, minorityControllers) {
 
 // INDEX
-return minorityControllers.controller('BProcessListCtrl', ['$rootScope','$scope','$window','$translate' ,'$rootScope','InteractionsBulkFactory','BPElemsFactory','RefsFactory','TreeBuilder', 'NotificationBroadcaster','SessionsFactory' ,'ngDialog', '$http', '$routeParams', '$filter', 'BPElemsFactory','BPSpacesFactory', 'BPSpaceElemsFactory',  'BProcessesFactory','BProcessFactory', 'BPStationsFactory', 'BPServicesFactory', '$location',
+return minorityControllers.controller('BProcessListCtrl', ['$rootScope',
+  '$scope',
+  '$window',
+  '$translate',
+  '$rootScope',
+  'InteractionsBulkFactory',
+  'BPElemsFactory',
+  'RefsFactory',
+  'TreeBuilder',
+  'NotificationBroadcaster',
+  'SessionsFactory',
+  'ngDialog',
+  '$http',
+  '$routeParams',
+  '$filter',
+  'BPElemsFactory',
+  'BPSpacesFactory',
+  'BPSpaceElemsFactory',
+  'BProcessesFactory',
+  'BProcessFactory',
+  'BPStationsFactory',
+  'BPServicesFactory',
+  '$location',
   function ($rootScope,$scope, $window, $translate, $rootScope,InteractionsBulkFactory, BPElemsFactory, RefsFactory, TreeBuilder, NotificationBroadcaster,SessionsFactory, ngDialog, $http, $routeParams, $filter, BPElemsFactory, BPSpacesFactory, BPSpaceElemsFactory, BProcessesFactory, BProcessFactory, BPStationsFactory, BPServicesFactory, $location) {
 
 

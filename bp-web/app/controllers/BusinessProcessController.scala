@@ -47,6 +47,14 @@ case class ReactionCollection(reaction: UnitReaction,
 reaction_state_outs: List[UnitReactionStateOut])
 case class ElementTopologyWrapper(topo_id: Int, element_id: Int, element_title: String, space_element: Boolean = false)
 
+case class AllProcessElementsContainer(processId: Int,
+  elements: List[UndefElement],
+  spaces: List[BPSpaceDTO],
+  space_elements: List[SpaceElementDTO],
+  element_topos: List[ElemTopology]
+)
+
+
 class BusinessProcessController(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
 
 
@@ -90,9 +98,11 @@ class BusinessProcessController(override implicit val env: RuntimeEnvironment[De
   implicit val ElementTopologyWrites = Json.format[ElemTopology]
   implicit val ElementTopologyWrapperReads = Json.reads[ElementTopologyWrapper]
   implicit val ElementTopologyWrapperWrites = Json.format[ElementTopologyWrapper]
+  implicit val AllProcessElementsContainerReads = Json.reads[AllProcessElementsContainer]
+  implicit val AllProcessElementsContainerWrites = Json.format[AllProcessElementsContainer]
 
 
-  def bprocess = SecuredAction { implicit request =>
+def bprocess = SecuredAction { implicit request =>
     val business = request.user.businessFirst
     val user_services = BusinessServiceDAO.getAllByBusiness(business).map(_.id.getOrElse(-1))
 
@@ -214,6 +224,31 @@ def delete_bprocess(id: Int) = SecuredAction { implicit request =>
       }
       case _ => BadRequest(Json.obj("status" -> "Not found"))
     }
+}
+
+def allElements(process_ids: List[Int]) = SecuredAction.async { implicit request =>
+  val securedProcessIdsF = security.BRes.processesIdsIsOwnedByBiz(request.user.businessFirst, process_ids) 
+
+  securedProcessIdsF.map { securedProcessIds =>
+    val allElementCn = securedProcessIds.map { processId =>
+      val topologs_dto = ElemTopologDAO.findByBP(processId)
+      Logger.debug(s"topos quantity are $topologs_dto.length")
+      val topologs:List[ElementTopologyWrapper] = topologs_dto.filter(topo => topo.front_elem_id.isDefined).map { topolog =>
+          val element = ProcElemDAO.findById(topolog.front_elem_id.get).get
+          ElementTopologyWrapper(topo_id = topolog.id.get, element_id = element.id.get, element_title = element.title, space_element = false)
+      } ++ topologs_dto.filter(topo => topo.space_elem_id.isDefined).map { topolog => 
+          val element = SpaceElemDAO.findById(topolog.space_elem_id.get).get
+          ElementTopologyWrapper(topo_id = topolog.id.get, element_id = element.id.get, element_title = element.title, space_element = true)
+      }      
+      AllProcessElementsContainer(processId = processId,
+        elements = ProcElemDAO.findByBPId(processId),
+        spaces = BPSpaceDAO.findByBPId(processId) ,
+        space_elements = SpaceElemDAO.findByBPId(processId),
+        element_topos = topologs_dto
+      )
+    }
+    Ok(Json.toJson(allElementCn) )
+  }
 }
 
 /* Index */

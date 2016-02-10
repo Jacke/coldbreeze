@@ -12,6 +12,7 @@ minorityControllers.controller('LaunchesCtrl', ['$controller','$timeout','$http'
   'ngDialog',
   'FilteredSessionsFactory',
   'InteractionsBulkFactory',
+  'AllLaunchedElementsBulkFactory',
   'ProcPermissionsFactory',
   'TreeBuilder',
   'BPStationsFactory', 
@@ -21,10 +22,9 @@ minorityControllers.controller('LaunchesCtrl', ['$controller','$timeout','$http'
   'ObserversFactory', 
   'ObserverFactory', 
   'BProcessesFactory', 
-  'BPElemsFactory',
   'BPSpacesFactory',
   'BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
-  function ($controller, $timeout, $http, $window, $translate, $scope, $filter, $routeParams, $rootScope,Restangular, ngDialog, FilteredSessionsFactory, InteractionsBulkFactory, ProcPermissionsFactory, TreeBuilder, BPStationsFactory, SessionsFactory, BProcessesFactory, BProcessFactory, ObserversFactory, ObserverFactory, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
+  function ($controller, $timeout, $http, $window, $translate, $scope, $filter, $routeParams, $rootScope,Restangular, ngDialog, FilteredSessionsFactory, InteractionsBulkFactory, AllLaunchedElementsBulkFactory, ProcPermissionsFactory, TreeBuilder, BPStationsFactory, SessionsFactory, BProcessesFactory, BProcessFactory, ObserversFactory, ObserverFactory, BProcessesFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
 
 $scope.isEmptyLaunchesCheck = function() {
   //$rootScope.$on('cfpLoadingBar:completed', function(event, data){
@@ -125,12 +125,17 @@ SessionsFactory.query().$promise.then(function (data2) {
     })
    });
 
-$scope.interactionContainerPromise = InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') })
+
+$scope.allLaunchedElemPromise = AllLaunchedElementsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') });
+$scope.allLaunchedElemPromise.$promise.then(function (d) {
+    $scope.allLaunchedElem = d;
+    console.log("132",$scope.allLaunchedElem);
+})
+$scope.interactionContainerPromise = InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') });
 $scope.interactionContainerPromise.$promise.then(function (d) {
     $scope.interactionContainerLaunch = d;
-    console.log("219",$scope.interactionContainerLaunch);
-
- })
+    console.log("137",$scope.interactionContainerLaunch);
+ });
 
 /*
   Restangular.all('users').getList()  // GET: /users
@@ -153,7 +158,7 @@ $scope.interactionContainerPromise.$promise.then(function (d) {
                   $scope.lastChecked = true;
                  _.forEach(data2, function(d){  // entity
                   _.forEach(d.sessions, function(s) { // read session from entity
-                    return TreeBuilder.launchBuildFetch(d.process, s.session, function(success){});
+                    return TreeBuilder.launchBuildFetch(d.process, s.session, $scope.allLaunchedElemPromise, function(success){});
                   }) 
                 });
                 $scope.isEmptyLaunchesCheck();
@@ -214,6 +219,8 @@ var session_ids = _.map(data2, function(d){
         return 'ids='+dd.session.id+'&'
     })   
 });
+
+
 InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') }).$promise.then(function(updatedInteraction) {
 
   console.log("219",$scope.interactionContainerLaunch);
@@ -261,7 +268,7 @@ _.forEach($scope.nestedRequestScopes, function(sc) {
   $scope.lastChecked = true;
    _.forEach(data2, function(d){  // entity
     _.forEach(d.sessions, function(s) { // read session from entity
-        return TreeBuilder.launchBuildFetch(d.process, s.session, function(success){});
+        return TreeBuilder.launchBuildFetch(d.process, s.session, $scope.allLaunchedElemPromise, function(success){});
     }) 
   });
   $scope.isEmptyLaunchesCheck();

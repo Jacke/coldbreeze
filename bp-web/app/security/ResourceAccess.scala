@@ -50,6 +50,12 @@ def processesIsOwnedByBiz(business: Int, processes_ids: List[Int]):Future[Boolea
       processes.map(proc => proc.business == business).reduce(_&&_)
     }
 }
+def processesIdsIsOwnedByBiz(business: Int, processes_ids: List[Int]):Future[List[Int]] = {
+    BPDAOF.gets(processes_ids).map { processes =>
+      val realProcessIds = processes.map(p => p.id.getOrElse(0)).toList
+      processes_ids.filter(id => realProcessIds.contains(id))
+    }
+}
 def launchIsOwnedByBiz(business: Int, launch_id: Int):Boolean = {
     val launch = BPSessionDAO.get(launch_id).get
     BPDAO.get(launch.process) match {

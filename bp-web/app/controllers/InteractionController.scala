@@ -153,6 +153,7 @@ def fetchInteraction(session_id: Int) = SecuredAction.async { implicit request =
       
         val costs:List[CostContainer] = reactions.toList.map(reaction => findCost(sessionElemTopoId = reaction.element, 
                                                                                   launchId=session_id)).flatten
+
         val reaction_container = reactions.toList.map(reaction => 
         	SessionReactionContainer(
                     session_state = session_states.find(state => Some(reaction.from_state) == state.origin_state),
@@ -175,6 +176,9 @@ def fetchInteractions(session_ids: List[Int]) = SecuredAction.async { implicit r
     security.BRes.sessionSecured(session_id, request.user.main.userId, request.user.businessFirst))
 
    val sessionF:Future[Seq[SessionContainer]] = models.DAO.BPSessionDAOF.findByIds(secured_ids)
+   val toposF = SessionElemTopologDAOF.getBySessions(secured_ids)
+   //toposF.flatMap { toposSeq =>
+   //val topos = toposSeq.toList 
    sessionF.flatMap { sessionSeq => // Future of session
     Future.sequence( sessionSeq.map { session =>
       val session_id = session.sessions.head.session.id.getOrElse(-1)
@@ -189,22 +193,35 @@ def fetchInteractions(session_ids: List[Int]) = SecuredAction.async { implicit r
       val session_states: List[BPSessionState] = unapplied.session_states
       Logger.debug("Session state")
       Logger.debug(s"session_states length ${session_states.length}")
-        val costs:List[CostContainer] = reactions.toList.map(reaction => findCost(sessionElemTopoId = reaction.element, 
-                                                                                  launchId=session_id)).flatten
-        val reaction_container = reactions.toList.map(reaction => 
+      
+      val costs:List[CostContainer] = reactions.toList.map { reaction => 
+        findCost(sessionElemTopoId = reaction.element, launchId=session_id)
+      }.flatten
+      //val thisSessionTopos = topos.filter(topo => topo.session == session_id)
+      //val launchCosts:List[CostContainer] = thisSessionTopos.map { topo =>
+      //  findCost(sessionElemTopoId = topo.id.getOrElse(0), 
+      //           launchId=session_id)
+      //}.flatten
+
+      val reaction_container = reactions.toList.map(reaction => 
           SessionReactionContainer(
-                    session_state = session_states.find(state => Some(reaction.from_state) == state.origin_state),
-                    reaction, 
-                    reaction_outs.filter(out => Some(out.reaction) == reaction.id),
-                    costs)
-        )
-        SessionInteractionContainer(Some(session), reaction_container, session_states)
+                    session_state = session_states.find(state => 
+                                                Some(reaction.from_state) == state.origin_state),
+                    reaction      = reaction, 
+                    outs          = reaction_outs.filter(out => Some(out.reaction) == reaction.id),
+                    costs         = costs)
+      )
+      SessionInteractionContainer(session_container = Some(session), 
+                                  reactions         = reaction_container,
+                                  outs_identity     = session_states,
+                                  costs             = costs)
       }
     } ).map { inConF =>
           Ok(Json.toJson(inConF))
       }
     
   }
+  //}
 }
 
 /** Fetch all interactions, used for speed testing purposes

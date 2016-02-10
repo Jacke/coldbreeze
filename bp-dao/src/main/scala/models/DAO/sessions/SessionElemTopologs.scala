@@ -68,10 +68,21 @@ object SessionElemTopologDAOF {
     session_elem_topologs.filter(_.id === id)
   private def filterQueryByIds(ids: List[Int]): Query[SessionTopologs, SessionElemTopology, Seq] =
     session_elem_topologs.filter(_.id inSetBind ids)
+  private def filterBySession(session: Int): Query[SessionTopologs, SessionElemTopology, Seq] =
+    session_elem_topologs.filter(_.session === session)
+  private def filterBySessionIds(sessions: List[Int]): Query[SessionTopologs, SessionElemTopology, Seq] =
+    session_elem_topologs.filter(_.session inSetBind sessions)
+
 
   def get(k: Int):Future[Option[SessionElemTopology]] = {
     db.run(filterQuery(k).result.headOption) 
   }
+  def getBySession(k: Int):Future[Option[SessionElemTopology]] = {
+    db.run(filterBySession(k).result.headOption) 
+  } 
+  def getBySessions(k: List[Int]):Future[Seq[SessionElemTopology]] = {
+    db.run(filterBySessionIds(k).result) 
+  }    
   def getByIds(k: List[Int]):Future[Seq[SessionElemTopology]] = 
      db.run(filterQueryByIds(k).result) 
 

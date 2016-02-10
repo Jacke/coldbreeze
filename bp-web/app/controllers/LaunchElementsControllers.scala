@@ -36,9 +36,21 @@ import models.DAO.reflect._
 import models.DAO.conversion._
 import cloner.util._
 import ProcHistoryDAO._
+import scala.util.{Success, Failure}
+import scala.concurrent._
+import scala.concurrent.duration._
+
 
 case class SessionElementTopologyWrapper(topo_id: Int, element_id: Int, element_title: String, space_element: Boolean = false)
 case class SessionReactionCollection(reaction: SessionUnitReaction, reaction_state_outs: List[SessionUnitReactionStateOut])
+
+
+case class AllLaunchedElementsContainer(launchId: Int,
+  elements: List[SessionUndefElement],
+  spaces: List[SessionSpaceDTO],
+  space_elements: List[SessionSpaceElementDTO],
+  element_topos: List[SessionElementTopologyWrapper]
+)
 
 class LaunchElementsControllers(override implicit val env: RuntimeEnvironment[DemoUser]) extends Controller with securesocial.core.SecureSocial[DemoUser] {
 
@@ -68,6 +80,8 @@ implicit val SessionElementTopologyWrapperReads = Json.reads[SessionElementTopol
 implicit val SessionElementTopologyWrapperWrites = Json.format[SessionElementTopologyWrapper] 
 implicit val SessionReactionCollectionReads = Json.reads[SessionReactionCollection]
 implicit val SessionReactionCollectionWrites = Json.format[SessionReactionCollection]
+implicit val AllLaunchedElementsContainerReads = Json.reads[AllLaunchedElementsContainer]
+implicit val AllLaunchedElementsContainerWrites = Json.format[AllLaunchedElementsContainer]
 
 /* Index */
 def frontElems(launch_id: Int) = SecuredAction { implicit request =>
@@ -158,7 +172,41 @@ def reactions_index(launch_id: Int) = SecuredAction { implicit request =>
 
 
 
+def allElements(launchIds: List[Int]) = SecuredAction.async { implicit request => 
+  val secured_ids = launchIds.filter( launchId =>
+    security.BRes.sessionSecured(launchId, request.user.main.userId, request.user.businessFirst))
 
+
+  val allElemCn = secured_ids.map { launchId =>
+
+    val topologs_dto = SessionElemTopologDAO.findBySession(launchId)
+    Logger.debug(s"topos quantity are $topologs_dto.length")
+    val topologs:List[SessionElementTopologyWrapper] = topologs_dto.filter(topo => topo.front_elem_id.isDefined).map { topolog =>
+        val element = SessionProcElementDAO.findById(topolog.front_elem_id.get).get
+        SessionElementTopologyWrapper(
+         topo_id = topolog.id.get,
+         element_id = element.id.get,
+         element_title = element.title,
+         space_element = false)
+    } ++ topologs_dto.filter(topo => topo.space_elem_id.isDefined).map { topolog => 
+        val element = SessionSpaceElemDAO.findById(topolog.space_elem_id.get).get
+        SessionElementTopologyWrapper(
+         topo_id = topolog.id.get,
+         element_id = element.id.get,
+         element_title = element.title,
+         space_element = true)
+    }      
+
+    AllLaunchedElementsContainer(
+      launchId = launchId,
+      elements = SessionProcElementDAO.findBySession(launchId),
+      spaces = SessionSpaceDAO.findBySession(launchId),
+      space_elements = SessionSpaceElemDAO.findBySession(launchId),
+      element_topos = topologs
+    )
+  }
+  Future(Ok(Json.toJson( allElemCn ) ))
+}
 
 
 
