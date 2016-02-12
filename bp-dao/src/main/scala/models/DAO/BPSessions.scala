@@ -314,7 +314,7 @@ def findByBusinessAndIds(bid: Int, session_ids: List[Int], withArroundVal:Boolea
     if (step == 1 && element_quantity == 1) {
         0
     } else {
-      ( (step + 1 ) / element_quantity.toDouble * 100).toInt  
+      ( step / element_quantity.toDouble * 100).toInt  
     }  
   }
 
@@ -550,11 +550,8 @@ object BPSessionDAO {
     println(s"BPLaunches::::percentDecorator step $step: $element_quantity")
     if (step == 1 && element_quantity == 1) {
         0
-    } 
-    if (step == element_quantity) {
-      100
     } else {
-      ( (step + 1 ) / element_quantity.toDouble * 100).toInt  
+      ( step / element_quantity.toDouble * 100).toInt  
     }  
   }
 }
