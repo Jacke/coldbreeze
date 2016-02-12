@@ -700,8 +700,9 @@ console.log('$scope.trees');
 console.log($scope.trees);
 if($scope.interactions !== undefined && $scope.interactions.reactions) {
     _.forEach($scope.interactions.reactions, function(reaction) {
-      console.debug('call fill cost');
-      $scope.fillCosts(reaction.costs); // TODO: make for all cost not for costs in this reaction
+
+    console.debug('call fill cost');
+    $scope.fillCosts(reaction.costs); // TODO: make for all cost not for costs in this reaction
 
     console.log($scope.initiationOfInteractionPromise);
      $scope.initiationOfInteractionPromise.then(function(topo) {
@@ -710,13 +711,17 @@ if($scope.interactions !== undefined && $scope.interactions.reactions) {
         var elem_id = reaction.reaction.elem.element_id;
         var payloadResult = _.filter($scope.warpData.slats, function(slat) { 
           return _.filter(slat.meta, function(meta){ 
-                return (meta.key === "element_id" && meta.value === elem_id+"")  }).length > 0 });
+                return (meta.key === "element_id" && meta.value === elem_id+"")  }).length > 0 
+        });
+
         reaction.payload = _.map(payloadResult, function(presult) {
                               return { obj_type: "file", 
                                        obj_title: presult.title, 
                                        obj_content: presult.sval, 
                                        entityId: presult.entityId }   
         });
+        console.debug('payloadResult', payloadResult);
+
       }
       });
 
