@@ -194,6 +194,9 @@ def findByBusinessAndIds(bid: Int, session_ids: List[Int], withArroundVal:Boolea
               case Some(station) => station.step.toDouble
               case _ => element_quantity.toDouble
             }
+            println("percentDecorator")
+            println(step)
+            println(element_quantity)
             val percent = percentDecorator(step, element_quantity)
             withArround(withArroundVal) match {
              case Some(futureAr) => { //futureAr.flatMap { arr =>
@@ -304,11 +307,14 @@ def findByBusinessAndIds(bid: Int, session_ids: List[Int], withArroundVal:Boolea
       })
     }
   }
-  private def percentDecorator(step: Double, element_quantity:Int):Int = {
+
+
+  def percentDecorator(step: Double, element_quantity:Int):Int = {
+    println(s"BPLaunches::::percentDecorator step $step: $element_quantity")
     if (step == 1 && element_quantity == 1) {
         0
     } else {
-      (step / element_quantity.toDouble * 100).toInt  
+      ( (step + 1 ) / element_quantity.toDouble * 100).toInt  
     }  
   }
 
@@ -540,11 +546,15 @@ object BPSessionDAO {
       q3.list.sortBy(_.id)
   }
 
-  private def percentDecorator(step: Double, element_quantity:Int):Int = {
+  def percentDecorator(step: Double, element_quantity:Int):Int = {
+    println(s"BPLaunches::::percentDecorator step $step: $element_quantity")
     if (step == 1 && element_quantity == 1) {
         0
+    } 
+    if (step == element_quantity) {
+      100
     } else {
-      (step / element_quantity.toDouble * 100).toInt  
+      ( (step + 1 ) / element_quantity.toDouble * 100).toInt  
     }  
   }
 }
