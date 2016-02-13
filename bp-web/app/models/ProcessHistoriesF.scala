@@ -66,15 +66,15 @@ import models.DAO.conversion.DatabaseFuture._
     proc_historiesf.filter(_.id === id)
 
   def getByProcessF(proc_id: Int):Future[Seq[ProcessHistoryDTO]] = { 
-    try db.run(filterQueryByProcess(proc_id).result)
-    finally println("db.close")//db.close
+    db.run(filterQueryByProcess(proc_id).result)
+    //finally println("db.close")//db.close
   }
   def findById(id: Int): Future[ProcessHistoryDTO] =
-    try db.run(filterQuery(id).result.head)
-    finally println("db.close")//db.close
+    db.run(filterQuery(id).result.head)
+    //finally println("db.close")//db.close
 
 
-  def getAll:Future[Int] = try db.run(proc_historiesf.length.result)
-  finally println("db.close")//db.close
+  def getAll:Future[Int] = db.run(proc_historiesf.length.result)
+  //println("db.close")//db.close
     
 }    

@@ -57,16 +57,12 @@ object ClientBusinessDAO {
   def getByBusinessAndClient(client: Int, k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← clients_businesses if s.business_id === k && s.client_id === client } yield s
-      println(q3.selectStatement)
-      println(q3.list)
       q3.list.headOption 
   }
 
   def getByBusiness(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← clients_businesses if s.business_id === k } yield s
-      println(q3.selectStatement)
-      println(q3.list)
       q3.list 
   }
   def deleteByClientAndBusiness(client_id: Int, business_id: Int) = database withSession { implicit session ⇒

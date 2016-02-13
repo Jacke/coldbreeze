@@ -53,6 +53,7 @@ object ReactionExecutor {
           element.session_states.find(st => st.origin_state.getOrElse(0) == out.state_ref) match {
             case Some(state) => {
               // update state with
+              println(s"execute state ${state.title} by ${out.on}")
               state.on = out.on
               state.on_rate = out.on_rate
             }

@@ -56,15 +56,11 @@ import models.DAO.conversion.DatabaseFuture._
   def updateCurrentWorkbenchForAllEmployees() = {
     val emps:Future[Seq[EmployeeDTO]] = EmployeeDAOF.getAll()
     emps.map { empSeq =>
-      println(empSeq.length)
       empSeq.foreach { emp =>
-      println(emp.master_acc)
       
       getByInfoByUID(emp.uid).map { infoF =>
         infoF.map { info =>
-        println(info)
-        updateF(info.id.get, info.copy(currentWorkbench = Some(emp.workbench)))          
-          
+          updateF(info.id.get, info.copy(currentWorkbench = Some(emp.workbench)))          
         }
         }
       }

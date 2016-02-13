@@ -179,12 +179,17 @@ def commonSpaceBottomLine(space: Space) = {
 *
 **/
   def decision(switchers: List[UnitSwitcher], el: ProcElems) = {
-
+    println("decision making")
+    println(s"founded ${switchers.length} switchers, applying")
 
     switchers.foreach { switcher =>
- 		applySwitcher(switcher, el)
+      println(s"""applying switcher, 
+                ${switcher.switch_type},
+                ${switcher.fn},
+                ${switcher.target}
+                """)
+ 		  applySwitcher(switcher, el)
     }
-
     def applySwitcher(switcher: UnitSwitcher, el: ProcElems) {
     	/*
     	switcher.switch_type match {

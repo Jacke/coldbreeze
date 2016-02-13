@@ -117,6 +117,7 @@ def bprocess = SecuredAction { implicit request =>
      */
     if (user.isEmployee && !user.isManager) { 
        println(request.user.isEmployee)
+       println("Restricted by Act Permission")
        // Employee assigned process
        val acts = ActPermissionDAO.getByUID(request.user.main.email.get)
        val bpIds = ActPermissionDAO.getByUIDprocIDS(request.user.main.email.get)
@@ -126,6 +127,7 @@ def bprocess = SecuredAction { implicit request =>
       //***
       //** Primary manager processes
       //*** 
+      println("Primary manager processes")
       val procOut = bprocess.filter(bp => user_services.contains(bp.service)) 
       Ok(Json.toJson( procOut ))
     }

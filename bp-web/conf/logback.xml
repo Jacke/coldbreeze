@@ -52,13 +52,14 @@
  <logger name="application" level="DEBUG">
  </logger>
 
+<!--
 <logger name="scala.slick.jdbc.JdbcBackend.statement" level="DEBUG">
     <appender-ref ref="STDOUT" />
 </logger>
 <logger name="slick.jdbc.JdbcBackend.statement" level="DEBUG">
     <appender-ref ref="STDOUT" />
 </logger>
-
+-->
 <!--
 <logger name="slick.jdbc" level="DEBUG">
       <appender-ref ref="SYSLOG-TLS" />

@@ -1,7 +1,5 @@
 package main.scala.bprocesses
 
-
-
 import com.typesafe.scalalogging.Logger
 import main.scala.simple_parts.process._
 import main.scala.utils.Space
@@ -77,10 +75,13 @@ trait StateLigher extends SpaceStateLigher {
   }
 
 	def lightElem(elem: ProcElems, state: String, rate: Int = 100, reason: String = "flow"):Unit = {
-		elem.session_states.find(_.title == state) match {
-			case Some(state) => {
-				state.on = true
-				state.on_rate = rate
+
+      println("StateLigher:: lightElem called")     
+      println(s"Light ${elem.title} with State ${state} to ${rate}") 
+  		elem.session_states.find(_.title == state) match {
+  			case Some(state) => {
+  				state.on = true
+  				state.on_rate = rate
 
         /**
          * Existed switcher for Some(state) scope.

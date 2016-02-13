@@ -69,14 +69,16 @@ $scope.cancelSession = function (session) {
       data: {  }
       })
       .then(function(response) {
+        console.log('reloadSession');
+        $scope.reloadSessions();
         // success
-/*
+        /*
         $scope.bprocesses = BProcessesFactory.query();
             $scope.bprocesses.$promise.then(function (processes) {
                 _.forEach(processes, function(proc) { TreeBuilder.buildFetch(proc, $scope.allLaunchedElemPromise, function(success){}); });
-            });*/
-
-        $location.path('/a#/bprocess/' + session.process.id);
+            });
+        */
+        //$location.path('/a#/bprocess/' + session.process.id);
     
       },
       function(response) { // optional

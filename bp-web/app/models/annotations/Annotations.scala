@@ -52,8 +52,6 @@ object AnnotationDAO {
   def get(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← annotations if s.id === k } yield s 
-      println(q3.selectStatement)
-      println(q3.list)
       q3.list.headOption
   }
   def update(id: Int, annotation: AnnotationDTO) = database withSession { implicit session ⇒
@@ -122,8 +120,6 @@ object UserAnnotationDAO {
   def get(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← userannotations if s.id === k } yield s 
-      println(q3.selectStatement)
-      println(q3.list)
       q3.list.headOption
   }
   def update(id: Int, userannotation: UserAnnotationDTO) = database withSession { implicit session ⇒
@@ -206,8 +202,6 @@ object AnnotationRangeDAO {
   def get(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← annotation_ranges if s.id === k } yield s 
-      println(q3.selectStatement)
-      println(q3.list)
       q3.list.headOption
   }
   def update(id: Int, annotation_range: AnnotationRangeDTO) = database withSession { implicit session ⇒

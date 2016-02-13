@@ -204,7 +204,7 @@ class BPStation(val bp: BProcess) {
       case "step" => {
         fn match {
           case "inc" => { 
-            println("absoluteStepInc()")
+            println("absoluteStepInc :: absoluteStepInc :: absoluteStepInc()")
             absoluteStepInc()
           }
           case "dec" => { 

@@ -150,7 +150,7 @@ def show_station(id: Int, station_id: Int) = SecuredAction { implicit request =>
 }
 // /bprocess/:id/station/:station_id/halt  
 def halt_session(id: Int, session_id: Int) = SecuredAction { implicit request =>
-  if (security.BRes.stationSecured(session_id, request.user.main.userId, request.user.businessFirst)) {
+  if (security.BRes.sessionSecured(session_id, request.user.main.userId, request.user.businessFirst)) {
 
     val station_id = BPStationDAO.findBySession(session_id) 
     station_id match {
