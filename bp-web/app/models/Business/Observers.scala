@@ -41,8 +41,6 @@ object ObserverDAO {
   def get(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← observers if s.id === k } yield s 
-      println(q3.selectStatement)
-      println(q3.list)
       q3.list.headOption
   }
   def getAllByBP(k: Int) = database withSession {

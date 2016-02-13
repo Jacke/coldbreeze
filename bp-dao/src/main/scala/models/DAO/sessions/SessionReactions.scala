@@ -91,8 +91,8 @@ object SessionReactionDAOF {
     session_reactions.filter(_.bprocess inSetBind id)
 
   def findBySession(session_id: Int):Future[Seq[SessionUnitReaction]] = {
-     try db.run(filterBySessionQuery(session_id).result)
-     finally println("db.close")//db.close
+     db.run(filterBySessionQuery(session_id).result)
+     //finally println("")//db.close
   }
   def findByBP(id: Int):Future[Option[SessionUnitReaction]] = 
     db.run(filterByProcessQuery(id).result.headOption)

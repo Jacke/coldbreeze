@@ -27,8 +27,8 @@ import models.DAO.conversion.DatabaseFuture._
     employees_businesses.filter(_.employee_id === id)
 
   def findById(id: Int): Future[Option[(Int, Int)]] =
-    try db.run(filterQuery(id).result.headOption)
-    finally println("db.close")//db.close
+    db.run(filterQuery(id).result.headOption)
+    //finally println("db.close")//db.close
 
 }  
 
@@ -68,25 +68,25 @@ import models.DAO.conversion.DatabaseFuture._
     employees
 
   def getByEmpById(id: Int):Future[Seq[EmployeeDTO]] = { 
-    try db.run(filterQuery(id).result)
-    finally println("db.close")//db.close
+    db.run(filterQuery(id).result)
+    //finally println("db.close")//db.close
   }
   def getByEmpByUID(uid: String):Future[Option[EmployeeDTO]] = { 
-    try db.run(filterByEmail(uid).result.headOption)
-    finally println("db.close")//db.close
+    db.run(filterByEmail(uid).result.headOption)
+    //finally println("db.close")//db.close
   }
   def getByEmployeeUIDAndWorkbench(uid: String, workbench: Int):Future[Option[EmployeeDTO]] = {
     db.run(filterByEmailAndWorkbench(uid, workbench).result.headOption)
   }
   def getAllByEmpByUID(uid: String):Future[Seq[EmployeeDTO]] = { 
-    try db.run(filterByEmail(uid).result)
-    finally println("db.close")//db.close
+    db.run(filterByEmail(uid).result)
+    //finally println("db.close")//db.close
   }
 
 
   def getAll():Future[Seq[EmployeeDTO]] = { 
-    try db.run(All().result)
-    finally println("db.close")//db.close
+    db.run(All().result)
+    //finally println("db.close")//db.close
   }
   def getAllByWorkbench(workbench: Int):Future[Seq[EmployeeDTO]] = {
     db.run(filterByWorkbench(workbench).result) 
@@ -108,8 +108,8 @@ import models.DAO.conversion.DatabaseFuture._
   }
 
   def updateF(id: Int, employee: EmployeeDTO): Future[Int] =
-    try db.run(filterQuery(id).update(employee))
-    finally println(db.close)
+    db.run(filterQuery(id).update(employee))
+    //finally println(db.close)
 
 }
 
@@ -196,29 +196,21 @@ def pull_object_for(s: EmployeeDTO, email: String):Int = database withSession {
   def getByEmployeeUID(uid: String) = database withSession {
     implicit session =>
     val q3 = for { s ← employees if s.uid === uid } yield s// <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)
-      println(q3.selectStatement)
-      println(q3.list)
       q3.list.headOption
   }
   def getByEmployeeUIDAndWorkbench(uid: String, workbench_id: Int) = database withSession {
     implicit session =>
     val q3 = for { s ← employees if s.uid === uid && s.workbench === workbench_id } yield s// <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)
-      println(q3.selectStatement)
-      println(q3.list)
       q3.list.headOption
   }  
   def getAllByEmployeeUID(uid: String) = database withSession {
     implicit session =>
     val q3 = for { s ← employees if s.uid === uid } yield s// <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)
-      println(q3.selectStatement)
-      println(q3.list)
       q3.list
   }  
   def getByUID(uid: String) = database withSession {
     implicit session =>
     val q3 = for { s ← employees if s.uid === uid && s.master_acc === uid } yield s// <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)
-      println(q3.selectStatement)
-      println(q3.list)
       q3.list.headOption
   }
   def getAllByWorkbench(workbench: Int) = database withSession {

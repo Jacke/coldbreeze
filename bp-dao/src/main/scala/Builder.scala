@@ -552,6 +552,7 @@ def initiateWithElements2F(bpID: Int,
     * Activate reaction by params
     **/
     params.foreach { param =>
+      println(s"param detected ${param.toString}")
       val reaction = process.allElements.map(el => el.reactions).flatten
         reaction.find(reaction => reaction.id == Some(param.reaction_id)) match {
         case Some(target_reaction) => {
@@ -1738,6 +1739,38 @@ def runFrom(station_id:Int, bpID:Int, params: List[InputParamProc], session_id: 
 
     process.inputPmsApply(params)
     
+    println("""
+>>>>>>>>>>>>>>>>>>>.
+>>>>>>>>>>>>>>>>>>>.
+>>>>>>>>>>>>>>>>>>>.
+>>>>>>>>>>>>>>>>>>>.
+>>>>>>>>>>>>>>>>>>>.
+>>>>>>>>>>>>>>>>>>>.
+>>>>>>>>>>>>>>>>>>>.
+>>>>>>>>>>>>>>>>>>>.
+>>>>>>>>>>>>>>>>>>>.
+>>>>>>>>>>>>>>>>>>>.
+
+OLD METHOD INVOCATION
+Builder ->  InvokeTracer.run_proc(process)
+
+
+
+>>>>>>>>>>>>>>>>>>>.
+>>>>>>>>>>>>>>>>>>>.
+>>>>>>>>>>>>>>>>>>>.
+>>>>>>>>>>>>>>>>>>>.
+>>>>>>>>>>>>>>>>>>>.
+>>>>>>>>>>>>>>>>>>>.
+>>>>>>>>>>>>>>>>>>>.
+>>>>>>>>>>>>>>>>>>>.
+>>>>>>>>>>>>>>>>>>>.
+>>>>>>>>>>>>>>>>>>>.
+
+
+
+      """)
+
     InvokeTracer.run_proc(process)
 
 
