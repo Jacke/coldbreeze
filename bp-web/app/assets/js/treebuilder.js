@@ -53,10 +53,10 @@ var builder = function (bp, data, data2,data3) {
 
 
 var launchBuilderFetch = function (bp, launch, cnPromise, onSuccess) {
-  console.log('launchBuilderFetch launched');
+  //console.log('launchBuilderFetch launched');
   var bpelems, spaces, spaceelems;
   cnPromise.$promise.then(function(cn) {
-    console.log(launch);
+  //console.log(launch);
   var currentContainer = _.find(cn, function(d) { return d.launchId == launch.id});
 
   if (currentContainer) {

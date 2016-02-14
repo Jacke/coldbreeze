@@ -8986,8 +8986,7 @@ height: 40px;
 .bb_elements .icon {
     margin-left: 0px;
     padding: 0;
-    right: 0px;
-    position: absolute;
+    right: 0px;  
 }
 .warp-field {
     height: 100%;
