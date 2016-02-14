@@ -37,6 +37,7 @@
 <div class="stations input-stations" style="clear: both;">
 
 
+
 <!-- Completed launch info -->
 <ul class="reaction_list reaction_list_launched reaction_list_finished">
   <li class="reaction_list__reaction reaction_list__reaction_preview" ng-repeat="elem in trees | orderBy:'+order'">
@@ -47,7 +48,7 @@
         <div ng-include src="'assets/partials/inputs/costs.html'" class="cost-view-container" ng-init="costs = filterCostByElementId(reaction.reaction.element, reaction.costs);"></div>
       </div>
     
-      <div ng-include src="'assets/partials/inputs/file_attach.html'" class="file-view-container" ng-init="elem.payload = [];"></div>
+      <div ng-include src="'assets/partials/inputs/file_attach.html'" class="file-view-container" ng-init="elem.payload = []; $parent.elem.payloadNew = [];"></div>
 
 
 
