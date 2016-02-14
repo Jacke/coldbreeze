@@ -39,42 +39,50 @@
 
 <!-- Completed launch info -->
 <ul class="reaction_list reaction_list_launched reaction_list_finished">
-  <li class="reaction_list__reaction reaction_list__reaction_preview" ng-repeat="elem in trees | filter:finishedInteractionFilter(elem)">
+  <li class="reaction_list__reaction reaction_list__reaction_preview" ng-repeat="elem in trees | orderBy:'+order'">
       <a>
       <h3>{{ elem.title }} <!-- : {{ capitalizeFirstLetter(reaction.reaction.title) }} --></h3></a>
+      <div class="interaction-input-existence" ng-repeat="reaction in interactions.reactions | filter:filterReactionByElem(elem)">
+        <a ng-click="reactionSelect(reaction);runFrom($parent.session.session.id, reaction)" id="reactionSelectButton" ng-class="selectedClass(reaction)" class="triangle-reaction" ng-show="reaction === interactions.reactions[0]">{{ capitalizeFirstLetter(reaction.reaction.title) }}</a>        
+        <div ng-include src="'assets/partials/inputs/costs.html'" class="cost-view-container" ng-init="costs = filterCostByElementId(reaction.reaction.element, reaction.costs);"></div>
+      </div>
+    
       <div ng-include src="'assets/partials/inputs/file_attach.html'" class="file-view-container" ng-init="elem.payload = [];"></div>
+
+
+
   </li>
 </ul>
 
 
 
+<!--
 <ul class="reaction_list reaction_list_launched">
   <li class="reaction_list__reaction reaction_list__reaction_preview" ng-init="interactions.reactions.length > 0 ? reactionSelect(interactions.reactions[0]) : false" ng-repeat="reaction in interactions.reactions">
-      <a class="selected"><h3>{{ reaction.reaction.elem.element_title }} <!-- : {{ capitalizeFirstLetter(reaction.reaction.title) }} --></h3></a>
+      <a class="selected"><h3>{{ reaction.reaction.elem.element_title }} </h3></a>
 
       <ul class="reaction_list__reaction_in_group" style="display: none;">
-        <!-- ins -->
       </ul>
         
       <ul class="reaction_list__reaction_out_group" style="display: none;">
         <li class="reaction_list__reaction__state_outs" ng-repeat="state_out in reaction.outs">
-           <!-- {{ stateOutAct(state_out) }} {{ state_out.state.title }} -->
+           {{ stateOutAct(state_out) }} {{ state_out.state.title }}
         </li>
       </ul>
       <a ng-click="reactionSelect(reaction);runFrom($parent.session.session.id, reaction)" id="reactionSelectButton" ng-class="selectedClass(reaction)" class="triangle-reaction" ng-show="reaction === interactions.reactions[0]">{{ capitalizeFirstLetter(reaction.reaction.title) }}</a>
       <div ng-include src="'assets/partials/inputs/file_attach.html'" class="file-view-container" ng-init="elem=reaction;elem.payload = [];"></div>
 
-      <!--<div class="launch-attachments" ng-show="reaction.selected">
+      <!<div class="launch-attachments" ng-show="reaction.selected">
           <a href="#" tooltip-placement="bottom" tooltip="Not supporting right now.">Attach</a>
             </div>-->
       <!--<div class="center-block" ng-init="reaction.dpfiles = [];">
       <p><a class="btn btn-primary btn-block" href="javascript:;" drop-box-picker dbpicker-files="reaction.dpfiles">Dropbox</a></p>
-      </div>-->
+      </div>
       <div ng-include src="'assets/partials/inputs/costs.html'" class="cost-view-container" ng-init="costs = filterCostByElementId(reaction.reaction.element, reaction.costs);"></div>
  
   </li>
 </ul>
-  
+-->  
 
 
 
