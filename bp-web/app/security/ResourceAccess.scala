@@ -35,7 +35,7 @@ object BRes {
 def procIsOwnedByBiz(business: Int, process_id: Int):Boolean = {
     BPDAO.get(process_id) match {
       case Some(bprocess) => { 
-        println(s"procIsOwnedByBiz ${business}:${process_id}")
+        //println(s"procIsOwnedByBiz ${business}:${process_id}")
         if (bprocess.business == business) {
           true 
         }

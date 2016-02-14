@@ -862,7 +862,28 @@ $scope.filterInputs = function(elem) {
         // failed
       }
       );
-  };
+};
+
+$scope.filterReactionByElem = function(elem) {
+  return function(obj) {
+    return false;
+  }
+};
+
+$scope.initiationOfInteractionPromise.then(function(d) {
+$scope.filterReactionByElem = function(elem) {
+  return function(obj) {
+      console.log('filterReactionByElem elem', elem);
+      console.log('filterReactionByElem obj', obj);
+      console.log('filterReactionByElem elem.id, obj.reaction.element', elem.id, obj.reaction.element);
+      if (obj.reaction.elem.element_title === elem.title) {
+        return obj;
+      } else {
+        return false;
+      }
+  }
+};
+});
 
 
 $scope.entityDecorator = function(entities, resource) {
