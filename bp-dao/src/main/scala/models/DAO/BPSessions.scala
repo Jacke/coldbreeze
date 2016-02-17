@@ -154,8 +154,8 @@ def findByBusinessAndIds(bid: Int, session_ids: List[Int], withArroundVal:Boolea
   def prepareSessionStatusWithStations(p:BProcessDTO,
     sess: Seq[BPSession], stations:Seq[BPStationDTO], 
     withArroundVal:Boolean=false):Future[Seq[SessionStatus]] = {
-    println("prepareSessionStatusWithStations")
-    println("prepareSessionStatusWithStations session.length: " + sess.length)
+//    println("prepareSessionStatusWithStations")
+//    println("prepareSessionStatusWithStations session.length: " + sess.length)
      val people = SessionPeoples("not@found.com", List()) // placeholder for peoples
      Future.sequence( 
      sess.filter(ses => ses.process == p.id.get).map { ses => 

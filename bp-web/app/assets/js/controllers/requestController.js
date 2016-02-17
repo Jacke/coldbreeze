@@ -207,7 +207,9 @@ if ($scope.$parent.allLaunchedElemPromise) {
   $scope.allLaunchedElemPromise = $scope.$parent.allLaunchedElemPromise;
   $scope.allLaunchedElemPromise.$promise.then(function(data) {
     var currentContainer = _.find(data, function(d) { return d.launchId == $scope.session_id});
-    $scope.bpelems = currentContainer.elements;
+//    $scope.bpelems = currentContainer.elements;
+    $scope.bpelems = LaunchElemsFactory.query({ launch_id: $scope.session_id }); 
+
     $scope.spaces = currentContainer.spaces;
     $scope.spaceelems = currentContainer.space_elements;
     $scope.elemsHash = _.object(_.map($scope.bpelems, function(x){return [x.id, x]}));
@@ -239,42 +241,6 @@ if ($scope.$parent.allLaunchedElemPromise) {
 
 
 $scope.trees = undefined;
-$scope.builder = function (station) {
-
-  var isIsEnd = function (spElems) {
-    _.forEach(spElems, function(val) {
-       val.nodes = _.filter(spacesCopy, function(space){ return space.brick_front === val.id || space.brick_nested === val.id; });
-    });
-    _.forEach(spElems, function(tree) {
-         _.forEach(tree.nodes, function(space) {
-             space.space_elem = _.filter(spaceelemsCopy, function(spelem){ return spelem.space_owned === space.id; });
-             isIsEnd(space.space_elem);
-        });
-    });
-  };
-  var bpelemsCopy = angular.copy($scope.bpelems);
-  var spacesCopy = angular.copy($scope.spaces);
-  var spaceelemsCopy = angular.copy($scope.spaceelems);
-  station.trees = _.forEach(bpelemsCopy, function(val) {
-       val.nodes = _.sortBy(_.filter(spacesCopy, function(space){ return space.brick_front === val.id || space.brick_nested === val.id; }), function(em){ return em.order; });
-  });
-  _.forEach(station.trees, function(tree) {
-
-    var spaceFetch = function () {
-      _.forEach(tree.nodes, function(space) {
-         space.space_elem = _.sortBy(_.filter(spaceelemsCopy, function(spelem){ return spelem.space_owned === space.id; }), function(em){ return em.order; });
-         isIsEnd(space.space_elem);
-      });
-    };
-
-    spaceFetch();
-    spaceFetch();
-    spaceFetch();
-    spaceFetch();
-    spaceFetch();
-  });
-}
-
 /*
 $scope.bpelems.$promise.then(function(data) {
   $scope.spaceelems.$promise.then(function(data3) {
@@ -686,16 +652,29 @@ $scope.bboardDataPromiseBuilder = $scope.bboardDataPromise.$promise.then(functio
   if (element.reaction != undefined) { element.element_id = element.reaction.elem.element_id; }//reaction
   else { element.element_id = element.id; } // from tree
  */
+$scope.fileSelectTab = function(elem) {
+  elem.dataSelectTabSelected = false;
+  elem.fileSelectTabSelected = true;
+  return elem.fileSelectTabSelected;
+}
+$scope.dataSelectTab = function(elem) {
+  elem.fileSelectTabSelected = false;
+  elem.dataSelectTabSelected = true;
+  return elem.dataSelectTabSelected;
+}
 
 $scope.treesDefiner = function() {
   var deferred = $q.defer();
   if ($scope.$parent.tree !== undefined) {
     $scope.$parent.allLaunchedElemPromise.$promise.then(function(d) {
     //console.debug('getted', $scope.$parent.tree);
-    $scope.trees = $scope.$parent.tree.trees;
+    $scope.bpelems.$promise.then(function(d) {
+          console.log('tree from launch elems are', d);
+          $scope.trees = d;//$scope.$parent.tree.trees;
+          deferred.resolve($scope.tree);
+          return deferred.promise;
+    });
     //console.debug('getted', $scope.trees);
-    deferred.resolve($scope.tree);
-    return deferred.promise;
     });
   } else if ($scope.$parent.bprocess) {
     //console.debug('getted', $scope.$parent.bprocess);
@@ -726,16 +705,16 @@ $scope.bboardDataPromiseBuilder.then(function(d) {
 $scope.treesDefinerPromise.then(function(d) {
 
 
-console.log('bboardDataPromiseBuilder', $scope.warpData.slats);
+
+console.log('bboardDataPromiseBuilder', $scope.processCosts);
 console.log('so trees are ', $scope.trees);
 
 $scope.elemsPayload = _.map($scope.trees, function(tree_elem) {
-
   var elem_id = tree_elem.id;
+
   var payloadResult = _.filter($scope.warpData.slats, function(slat) { 
     return _.filter(slat.meta, function(meta){ return (meta.key === "element_id" && meta.value === elem_id+"") 
-
-    }).length > 0 })
+  }).length > 0 })
   
   if ($scope.interactions !== undefined 
       && $scope.interactions.reactions 
@@ -743,59 +722,34 @@ $scope.elemsPayload = _.map($scope.trees, function(tree_elem) {
     $scope.fillCosts($scope.interactions.reactions[0].reaction.costs);
   }
   if ($scope.interactions !== undefined) {
-    tree_elem.costs = $scope.filterCostByElementId(elem_id, 
-                                                   $scope.interactions.reactions[0].reaction.costs);
+    tree_elem.costs = $scope.filterCostByElementId(elem_id, $scope.interactions.reactions[0].reaction.costs);
   }
-
-var files = _.map(payloadResult, function(presult) {
+  var files = _.map(payloadResult, function(presult) {
       return { obj_type: "file", 
                obj_title: presult.title, 
                obj_content: presult.sval, 
                entityId: presult.entityId }   
   });
-
  return {elementId: elem_id, files: files};
-
 });
 
-/*
-_.forEach($scope.trees, function(tree_elem) {
+
+$scope.costsPayload = _.map($scope.trees, function(tree_elem) {
   var elem_id = tree_elem.id;
-  var payloadResult = _.filter($scope.warpData.slats, function(slat) { 
-    return _.filter(slat.meta, function(meta){ return true;//(meta.key === "element_id" && meta.value === elem_id+"") 
-
-    }).length > 0 })
-  
-  if ($scope.interactions !== undefined 
-      && $scope.interactions.reactions 
-      && $scope.interactions.reactions.length > 0) {
-    $scope.fillCosts($scope.interactions.reactions[0].reaction.costs);
-  }
-  if ($scope.interactions !== undefined) {
-    tree_elem.costs = $scope.filterCostByElementId(elem_id, 
-                                                   $scope.interactions.reactions[0].reaction.costs);
-  }
-  console.log('return payload by payloadResult', payloadResult);
-  $timeout(function() {
-
-
-  tree_elem.payloadNew = _.map(payloadResult, function(presult) {
-      return { obj_type: "file", 
-               obj_title: presult.title, 
-               obj_content: presult.sval, 
-               entityId: presult.entityId }   
-    });
-  tree_elem.payload = _.map(payloadResult, function(presult) {
-      return { obj_type: "file", 
-               obj_title: presult.title, 
-               obj_content: presult.sval, 
-               entityId: presult.entityId }   
-  });
-  return tree_elem;
-  });
-});
-console.log('so trees after', $scope.trees);
+  /**
+   * Optimize Costs
+   *
+  Then implement this
+  console.log('$scope.processCosts', $scope.processCosts)
+  var costs = _.filter($scope.processCosts, function(slat) { 
+    return _.filter(slat.meta, function(meta){ return (meta.key === "element_id" && meta.value === elem_id+"") 
+ }).length > 0 })
 */
+  var costs = $scope.warpData;
+ return {elementId: elem_id, costs: costs};
+});
+console.log('$scope.costsPayload', $scope.costsPayload);
+
 
 });
 
@@ -978,7 +932,7 @@ $scope.filterReactionByElem = function(elem) {
 $scope.initiationOfInteractionPromise.then(function(d) {
 $scope.filterReactionByElem = function(elem) {
   return function(obj) {
-      if (obj.reaction.elem !== undefined && obj.reaction.elem.element_title === elem.title) {
+      if (obj.reaction.elem !== undefined && obj.reaction.elem.element_id === elem.id) {
         return obj;
       } else {
         return false;
@@ -1192,8 +1146,11 @@ $scope.stateOutAct = function (act) {
 }
 
 $scope.filterCostByElementId = function(elemId, costs) {
-  return _.filter(costs, function(cost) {
-    return cost.elementId == elemId;
+  $scope.treesDefinerPromise.then(function(d) {
+    console.log('filterCostByElementId', elemId, costs);
+    return _.filter(costs, function(cost) {
+      return cost.elementId == elemId;
+    });
   });
 }
 

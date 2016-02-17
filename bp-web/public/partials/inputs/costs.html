@@ -1,6 +1,9 @@
-<div class="costs" ng-show="costs.length > 0">
-	<h2 class="costTitle">Costs</h2>
-	<div class="inputCost" ng-repeat="cost in costs">
+<div class="costs">
+	<h2 class="costTitle">Data</h2>
+
+<div class="costs_fields" ng-repeat="f in $parent.costsPayload | filter: filterPayload($parent.elem.id)">
+
+	<div class="inputCost" ng-repeat="cost in f.costs">
 		<div class="pipeContent" ng-repeat="entity in cost.entities">
 			<div class="pipeContentTitle">{{ entity.title }}</div>
 			<div class="pipeContentValue" ng-repeat="slat in slatFilter(entity, cost.slats)">
@@ -22,5 +25,7 @@
 			<a class="btn btn-small btn-success">Fill</a>
 		</div>
 	</div>-->
+	</div>
 </div>
+
 </div>

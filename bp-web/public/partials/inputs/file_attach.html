@@ -5,12 +5,12 @@
 -->
   <div class="warp-show" show="show_warp">
     <div class="warp-result"><!-- {{ payload_result | prettyJSON }} --></div>
-    <div class="warp_attach" ng-show="$parent.elem.payload.length < 3" ng-click="addToPayload($parent.elem.payload)">Attach file</div>
 
 
-<div class="" ng-repeat="f in $parent.elemsPayload | filter: filterPayload($parent.elem.id)">
+<div class="warp_fields" ng-repeat="f in $parent.elemsPayload | filter: filterPayload($parent.elem.id)">
+    <div class="warp_attach" ng-show="f.files.length < 2" ng-click="addToPayload(f.files)">Attach file</div>
 
-    <div class="warp_field" ng-repeat="field in f.files">
+    <div class="warp_field" ng-repeat="field in f.files | limitTo:2">
       <div class="bb_elements">
         <div class="bb_text" style="display:none;" ng-show="field.obj_type == 'text'">
           <div class="text_content"><p>some text</p></div>
@@ -18,18 +18,16 @@
           <div class="text_control"><a href="#">Edit</a></div>
         </div>
         <div class="bb_file" ng-show="field.obj_type == 'file'">
-          <a href="{{ field.obj_content }}" target="_blank">
             <div class="icon">
               <div class="document" mg-hide="field.obj_title == 'File'">
                 <div class="file_title">
-                  <h4 class="file_title_full">{{ field.obj_title }}<span ng-if="field.obj_title.length >=20">...</span></h4>
+                  <h4 class="file_title_full">{{ field.obj_title | limitTo:20 }}<span ng-if="field.obj_title.length >=20">...</span></h4>
                 </div>
-                <div class="file_url"><a href="{{ file.embedUrl }}">{{ field.obj_content }}</a></div>
+                <div class="file_url"><a href="{{ file.embedUrl }}"><span class="moicon-link moicon"></span></a></div>
                 <div class="file_meta"><div class="file_type">{{ file.type }}</div><div class="file_size">{{ file.sizeByte}}</div></div>
                 <button type="button" class="close" ng-click="removeFromNewPayload(field, $parent.elem)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
               </div>
             </div>
-          </a>
 
       </div>
     </div>
@@ -61,7 +59,6 @@
           <div class="text_control"><a href="#">Edit</a></div>
         </div>
         <div class="bb_file" ng-show="field.obj_type == 'file'">
-          <a href="{{ field.obj_content }}" target="_blank">
             <div class="icon">
               <div class="document" mg-hide="field.obj_title == 'File'">
                 <div class="file_title">
@@ -72,14 +69,12 @@
                 <button type="button" class="close" ng-click="removeFromPayload(field, $parent.elem)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
               </div>
             </div>
-          </a>
           <div class="row dashed-border" ng-switch="allFiles.files.length > 0">
             <div class="text-center" ng-switch-when="false">
               <!--<div class="none">No files selected yet</div>-->
             </div>
             <div ng-switch-when="true">
               <div class="item item-test" ng-repeat="file in allFiles.files">
-                <a href="{{ file.url }}" target="_blank">
                   <div class="icon">
                     <div class="document">
                       <div class="file_title">
@@ -90,7 +85,6 @@
                       <button type="button" class="close" ng-click="removeFromPayload(field, $parent.elem)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                     </div>
                   </div>
-                </a>
               </div>
             </div>
           </div>
@@ -101,7 +95,7 @@
                   <div class="file_title">
                     <h4>{{ file.name | limitTo:20 }}<span ng-if="file.name.length >=20">...</span>
                   </h4></div>
-                  <div class="file_url"><a href="{{ file.link }}">{{ file.link }}</a></div>
+                  <div class="file_url"><a href="{{ file.embedUrl }}"><span class="moicon-link moicon"></span></a></div>
                   <div class="file_meta"><div class="file_type">{{ file.type }}</div><div class="file_size">{{ file.sizeByte}}</div></div>
                   <button type="button" class="close" ng-click="remove($index)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                 </div>
@@ -109,7 +103,7 @@
                   <div class="file_title">
                     <h4>{{ file.name | limitTo:20 }}<span ng-if="file.name.length >=20">...</span>
                   </h4></div>
-                  <div class="file_url"><a href="{{ file.link }}">{{ file.link }}</a></div>
+                  <div class="file_url"><a href="{{ file.embedUrl }}"><span class="moicon-link moicon"></span></a></div>
                   <div class="file_meta"><div class="file_type">{{ file.type }}</div><div class="file_size">{{ file.sizeByte}}</div></div>
                   <button type="button" class="close" ng-click="removeFromPayload(field, $parent.elem)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                 </div>

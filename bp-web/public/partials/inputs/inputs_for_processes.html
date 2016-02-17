@@ -21,67 +21,26 @@
 <ul class="reaction_list reaction_list_launched reaction_list_finished">
   <li class="reaction_list__reaction reaction_list__reaction_preview" ng-repeat="elem in trees | orderBy:'+order'">
       <a>
-      <h3>{{ elem.title }} <!-- : {{ capitalizeFirstLetter(reaction.reaction.title) }} --></h3></a>
+      <h3>{{ elem.title }}</h3></a>
+      <a ng-click="fileSelectTab(elem)" id="fileSelectTabButton" class="fileSelectTabButton">Files</a>      
+
       <div class="interaction-input-existence" ng-repeat="reaction in interactions.reactions | filter:filterReactionByElem(elem)">
         <a ng-click="reactionSelect(reaction);runFrom($parent.session.session.id, reaction)" id="reactionSelectButton" ng-class="selectedClass(reaction)" class="triangle-reaction" ng-show="reaction === interactions.reactions[0]">{{ capitalizeFirstLetter(reaction.reaction.title) }}</a>        
-        <div ng-include src="'assets/partials/inputs/costs.html'" class="cost-view-container" ng-init="costs = filterCostByElementId(reaction.reaction.element, reaction.costs);"></div>
       </div>
-      <div ng-include src="'assets/partials/inputs/file_attach.html'" class="file-view-container" ng-init="elem.payload = [];"></div>
+
+      <a ng-click="dataSelectTab(elem)" id="dataSelectTabButton" class="expandLaunchWindowTabButton dataSelectTabButton">Data</a> 
+    
+      <div ng-include src="'assets/partials/inputs/costs.html'" class="cost-view-container" ng-init="costs = elem.costs;" ng-show="elem.dataSelectTabSelected"></div>
+
+      <div ng-include src="'assets/partials/inputs/file_attach.html'" class="expandLaunchWindowTabButton file-view-container" ng-init="elem.payload = []; $parent.elem.payloadNew = [];elem.fileSelectTabSelected=true;" ng-show="elem.fileSelectTabSelected"></div>
+
+
+
   </li>
 </ul>
 
 
 
-
-<ul class="reaction_list reaction_list_launched" style="display:none;">
-  <li class="reaction_list__reaction reaction_list__reaction_preview" ng-repeat="reaction in interactions.reactions">
-        <a ng-class="selectedClass(reaction)"><h3>{{ reaction.reaction.elem.element_title }} <!-- : {{ capitalizeFirstLetter(reaction.reaction.title) }} --></h3></a>
-
-        <ul class="reaction_list__reaction_in_group">
-          <!-- ins -->
-        </ul>
-        
-        <ul class="reaction_list__reaction_out_group">
-          <li class="reaction_list__reaction__state_outs" ng-repeat="state_out in reaction.outs">
-             <!-- {{ stateOutAct(state_out) }} {{ state_out.state.title }} -->
-          </li>
-        </ul>
-        <a ng-click="reactionSelect(reaction);runFrom($parent.session.session.id, reaction)" id="reactionSelectButton" ng-class="selectedClass(reaction)" class="triangle-reaction" ng-show="reaction === interactions.reactions[0]">
-          {{ capitalizeFirstLetter(reaction.reaction.title) }}
-        </a>
-        <!--
-          <div class="launch-attachments" ng-show="reaction.selected">
-              <a href="#" tooltip-placement="bottom" tooltip="Not supporting right now.">Attach</a>
-          </div>
-        -->
-    <div class="costs" ng-show="reaction.costs.length > 0">
-        <h2 class="costTitle">Costs</h2>
-        <div class="inputCost" ng-repeat="cost in reaction.costs">
-        <div class="pipeContent" ng-repeat="entity in cost.entities">
-          <div class="pipeContentTitle">{{ entity.title }}</div>
-          <div class="pipeContentValue" ng-repeat="slat in slatFilter(entity, cost.slats)">
-              <a ng-click="slat.refill=true;" ng-hide="slat.refill"><span>{{ slat.sval }}</span></a>
-              <div class="pipeContentValueRefill" ng-init="slat.refill=false" ng-show="slat.refill">
-                <input type="text" id="inputContentBlankValue" class="form-control" ng-model="slat.sval" required="">
-                <a class="btn btn-small btn-success" ng-click="reFillValue(cost, entity, slat)">ReFill</a>
-                <a class="btn btn-small" ng-click="slat.refill=false;">x</a>                
-              </div>
-          </div>          
-          <div class="pipeContentBlankValue" ng-show="slatFilter(entity, cost.slats).length < 1">
-                <input type="text" id="inputContentBlankValue" class="form-control" ng-init="entity.newModelValue=defaultValueParser(entity.default)" ng-model="entity.newModelValue" required="">
-                <a class="btn btn-small btn-success" ng-click="fillValue(cost, entity, entity.newModelValue)">Fill</a>
-        </div>
-        </div>               
-              <!--<div class="inputCostTitle">{{ cost.resource.title }} {{ cost.entity[0].title }}</div>
-              <div class="inputCostBlankValue">
-                    <input type="text" id="inputContentBlankValue" class="form-control" required="">
-                    <a class="btn btn-small btn-success">Fill</a>
-              </div>
-            </div>-->  
-        </div>
-    </div>
-  </li>
-</ul>
   
 
 

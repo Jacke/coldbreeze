@@ -43,12 +43,15 @@
   <li class="reaction_list__reaction reaction_list__reaction_preview" ng-repeat="elem in trees | orderBy:'+order'">
       <a>
       <h3>{{ elem.title }} <!-- : {{ capitalizeFirstLetter(reaction.reaction.title) }} --></h3></a>
+      <a ng-click="fileSelectTab(elem)" id="fileSelectTabButton" class="fileSelectTabButton expandLaunchWindowTabButton" ng-class="elem.fileSelectTabSelected ? 'selected' : ''">Files</a>      
       <div class="interaction-input-existence" ng-repeat="reaction in interactions.reactions | filter:filterReactionByElem(elem)">
-        <a ng-click="reactionSelect(reaction);runFrom($parent.session.session.id, reaction)" id="reactionSelectButton" ng-class="selectedClass(reaction)" class="triangle-reaction" ng-show="reaction === interactions.reactions[0]">{{ capitalizeFirstLetter(reaction.reaction.title) }}</a>        
-        <div ng-include src="'assets/partials/inputs/costs.html'" class="cost-view-container" ng-init="costs = filterCostByElementId(reaction.reaction.element, reaction.costs);"></div>
+        <a ng-click="reactionSelect(reaction);runFrom($parent.session.session.id, reaction)" id="reactionSelectButton" ng-class="selectedClass(reaction)" class="reactionSelectButton triangle-reaction" ng-show="reaction === interactions.reactions[0]">{{ capitalizeFirstLetter(reaction.reaction.title) }}</a>        
       </div>
+      <a ng-click="dataSelectTab(elem)" id="dataSelectTabButton" class="expandLaunchWindowTabButton dataSelectTabButton" ng-class="elem.dataSelectTabSelected ? 'selected' : ''">Data</a> 
     
-      <div ng-include src="'assets/partials/inputs/file_attach.html'" class="file-view-container" ng-init="elem.payload = []; $parent.elem.payloadNew = [];"></div>
+      <div ng-include src="'assets/partials/inputs/costs.html'" class="cost-view-container" ng-init="costs = elem.costs;" ng-show="elem.dataSelectTabSelected"></div>
+
+      <div ng-include src="'assets/partials/inputs/file_attach.html'" class="file-view-container" ng-init="elem.payload = []; $parent.elem.payloadNew = [];elem.fileSelectTabSelected=true;" ng-show="elem.fileSelectTabSelected"></div>
 
 
 

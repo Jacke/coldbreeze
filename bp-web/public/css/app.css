@@ -1276,6 +1276,7 @@ li.reaction_list__reaction.reaction_list__reaction_preview {
 .reaction_list__reaction.reaction_list__reaction_preview h3 {
     font-size: 19px;
     text-align: center;
+    color: #f2f6fe;
 }
 .session__buttonInput .moicon-menu.moicon {
     line-height: 21px !important;
@@ -8983,6 +8984,16 @@ height: 40px;
     position: relative;
     margin-top: -21px;
 }
+.warp_field .bb_elements .bb_file {
+    padding: 0px 77px 0px 11px;
+    margin-left: 9px;
+    color: white;
+    text-shadow: none;
+    margin-bottom: 0px;
+    margin-left: 0px;
+    position: relative;
+    margin-top: 0px;
+}
 .bb_elements .icon {
     margin-left: 0px;
     padding: 0;
@@ -9015,8 +9026,19 @@ height: 40px;
 
 .file_url {
     font-size: 16px;
+    display: inline-block;
+    float: left;
+    margin-top: 0px;
+    margin-left: 1px;
+    width: 11px;
 }
-
+h4.file_title_full {
+    font-size: 11px;
+}
+.warp_field h4.file_title_full {
+    font-size: 11px;
+    margin-top: 0px;
+}
 .file_control {
     position: absolute;
     top: 11px;
@@ -9279,7 +9301,7 @@ button.close {}
     color: white;
     position: absolute;
     right: 19px;
-    top: 25px;
+    top: -6px;
 }
 .bb_file .file_url a {
     font-size: 11px;
@@ -9296,10 +9318,42 @@ button.close {}
 }
 .bb_file .file_title {
     margin-left: 14px;
+    display: inline-block;
+    width: 81px;
+    float: left;
+    max-height: 36px;
+    overflow: hidden;
 }
 .bb_file .show-grid {
     margin-bottom: 19px;
     display: block;
+}
+.file-view-container {
+    top: 111px;
+    position: absolute;
+}
+.dataSelectTabButton {
+    position: absolute;
+    right: 0px;
+}
+.dataSelectTabButton {
+    position: absolute;
+    right: 0px;
+    font-weight: 100;
+    top: 86px;
+}
+.fileSelectTabButton {
+    position: absolute;
+    left: 0;
+    font-weight: 100;   
+    top: 86px;     
+}
+.cost-view-container {
+    top: 111px;
+    position: absolute;
+}
+.expandLaunchWindowTabButton.selected {
+  color: #219FD1;
 }
 
 .warp_select > * {
