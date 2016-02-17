@@ -115,11 +115,13 @@ def assigns(process_id: Int) = SecuredAction { implicit request =>
 def launch_assigns(launch_id: Int) = SecuredAction { implicit request => 
 	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
   val assigns = SessionElementResourceDAO.getBySession(launch_id)
+  println(s"finded assigns ${assigns.length}")
   val launch_assigns_cn = assigns.map { obj => 
       val entities:List[Entity] = findEntitiesFromLaunch(launch_id, List(obj))
       val entities_ids = entities.map(o => idGetter(o.id))
       SessionElementResourceContainer(obj, entities, findSlats(entities_ids, launch_id) )
   }
+
   // Fill by warped datas
   val warpDatas = Await.result(wrapper.getWarpBoardByLaunch(launch_id), Duration(waitSeconds, MILLISECONDS))
   val warpBoards = warpDatas.boards
@@ -224,11 +226,13 @@ private def findEntitiesFromLaunch(launch_id:Int,costs: List[SessionElementResou
   entities.flatten
 }
 private def findSlats(entities_ids: List[String], launchId: Int):List[Slat] = {
-  println("find Slats")
+  println("find Slats for costs")
   entities_ids.foreach(println)
   val ft = wrapper.getSlatByEntitiesIds(entities_ids)
   val result = Await.result(ft, Duration(waitSeconds, MILLISECONDS))
-    result.filter(slat => detectMetaLaunch(slat.meta) == launchId)
+  val finalResult = result.filter(slat => detectMetaLaunch(slat.meta) == launchId)
+  println(s"find Slats for costs ${finalResult.length}")
+  finalResult
 }
 private def detectMetaLaunch(meta: List[minority.utils.MetaVal]) = meta.find(m => m.key == "launchId") match {
     case Some(meta) => meta.value.toInt
