@@ -1260,13 +1260,17 @@ border-left: 2px solid #4dbd74;
 
 .inline-launch ul.reaction_list li {
     margin-left: 0px;
-    padding-left: 0px;
     font-size: 15px;
     overflow: hidden;
     position: relative;
     height: 249px;
+    border-right: solid 1px #2f344a;
+    padding-right: 12px;
+    width: 210px;
+    border-bottom: solid 1px #2f344a;
+    padding-left: 23px;
+    margin-right: 0px;
 }
-
 li.reaction_list__reaction.reaction_list__reaction_preview {
     display: inline-block;
     width: 180px;
@@ -8964,7 +8968,7 @@ height: 40px;
   width: auto;
 }
 .reaction_list__reaction .warp_field {
-    width: 195px;
+    width: 188px;
 }
 .bb_elements .bb_text {
     background: white;
@@ -9023,14 +9027,13 @@ height: 40px;
     margin-top: 6px;
     color: white;
 }
-
 .file_url {
     font-size: 16px;
     display: inline-block;
-    float: left;
     margin-top: 0px;
-    margin-left: 1px;
+    margin-left: -23px;
     width: 11px;
+    float: left;
 }
 h4.file_title_full {
     font-size: 11px;
@@ -9300,7 +9303,7 @@ button.close {}
     margin-bottom: 8px;
     color: white;
     position: absolute;
-    right: 19px;
+    right: 27px;
     top: -6px;
 }
 .bb_file .file_url a {
@@ -9317,7 +9320,7 @@ button.close {}
     text-overflow: ellipsis;
 }
 .bb_file .file_title {
-    margin-left: 14px;
+    margin-left: 16px;
     display: inline-block;
     width: 81px;
     float: left;
@@ -9338,23 +9341,30 @@ button.close {}
 }
 .dataSelectTabButton {
     position: absolute;
-    right: 0px;
+    right: 16px;
     font-weight: 100;
     top: 86px;
 }
 .fileSelectTabButton {
     position: absolute;
-    left: 0;
-    font-weight: 100;   
-    top: 86px;     
+    left: 22px;
+    font-weight: 100;
+    top: 86px;
+    overflow: visible;
 }
 .cost-view-container {
     top: 111px;
     position: absolute;
 }
 .expandLaunchWindowTabButton.selected {
-  color: #219FD1;
+    color: white !important;
+    border-bottom: 2px solid white;
 }
+.expandLaunchWindowTabButton {
+    font-size: 12px;
+    font-family: 'Open Sans';
+}
+
 
 .warp_select > * {
     cursor: pointer;
@@ -9366,12 +9376,11 @@ button.close {}
     margin-bottom: 8px;
     font-weight: 100 !important;
     text-align: center;
-    margin-left: 8px;
-    font-size: 13px;
-}
-
-.file-view-container .warp-field .warp_attach {
-    width: auto;
+    margin-left: -20px;
+    font-size: 12px;
+    position: absolute !important;
+    left: 54px !important;
+    top: -32px;
 }
 
 .warp_field .btn.btn-primary.btn-block {
@@ -9379,8 +9388,10 @@ button.close {}
     color: white;
     border: white 1px solid;
     padding: 3px 0px 3px 0px;
+    width: 120px;
+    margin: 0 auto;
+    margin-bottom: 5px;
 }
-
 
 
 
