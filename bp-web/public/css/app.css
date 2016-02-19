@@ -1264,12 +1264,11 @@ border-left: 2px solid #4dbd74;
     overflow: hidden;
     position: relative;
     height: 249px;
-    border-right: solid 1px #2f344a;
     padding-right: 12px;
     width: 210px;
-    border-bottom: solid 1px #2f344a;
     padding-left: 23px;
     margin-right: 0px;
+    box-shadow: 2px 0px 1px #2f344a;
 }
 li.reaction_list__reaction.reaction_list__reaction_preview {
     display: inline-block;
@@ -9370,17 +9369,19 @@ button.close {}
     cursor: pointer;
 }
 .warp-field .warp_attach {
-    width: 100px;
-    color: white;
-    padding: 7px 10px;
-    margin-bottom: 8px;
-    font-weight: 100 !important;
-    text-align: center;
-    margin-left: -20px;
-    font-size: 12px;
-    position: absolute !important;
-    left: 54px !important;
-    top: -32px;
+width: 100px;
+color: #f6f6f6;
+padding: 7px 10px;
+margin-bottom: 8px;
+font-weight: 100 !important;
+text-align: center;
+margin-left: -20px;
+font-size: 11px;
+position: absolute !important;
+left: 54px !important;
+top: -30px;
+font-family: 'Open Sans', Helvetica;
+text-shadow: none;
 }
 
 .warp_field .btn.btn-primary.btn-block {

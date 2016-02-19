@@ -111,6 +111,10 @@ def assigns(process_id: Int) = SecuredAction { implicit request =>
     }
     Ok(Json.toJson(assigns))
 }
+// BBOARD: getEntityByResourceId
+// BBOARD: getSlatByEntitiesIds
+// BBOARD: getWarpBoardByLaunch
+// 
 // GET	 /data/cost/launch_assigns/:launch_id
 def launch_assigns(launch_id: Int) = SecuredAction { implicit request => 
 	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
@@ -121,14 +125,15 @@ def launch_assigns(launch_id: Int) = SecuredAction { implicit request =>
       val entities_ids = entities.map(o => idGetter(o.id))
       SessionElementResourceContainer(obj, entities, findSlats(entities_ids, launch_id) )
   }
-
   // Fill by warped datas
   val warpDatas = Await.result(wrapper.getWarpBoardByLaunch(launch_id), Duration(waitSeconds, MILLISECONDS))
   val warpBoards = warpDatas.boards
   val warpEntities = warpDatas.entities
   val warpSlats = warpDatas.slats
     Ok(Json.toJson(DatasContainer(costs = launch_assigns_cn, WarpData(warpBoards, warpEntities, warpSlats)) ))
+
 }
+
 
 //POST
 def removeEntityById(entity_id: String) = SecuredAction.async { implicit request => 

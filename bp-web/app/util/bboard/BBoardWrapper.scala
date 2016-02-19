@@ -147,7 +147,7 @@ class BBoardWrapper(connection: BBoardWrapperConnection) {
   	bboard.BoardDAO.getBoardByResource(resource_id,biz)(connection)
   }
   def addBoardForResource(board: Board):Future[String] = {
-     bboard.BoardDAO.addBoardForResource(board)(connection) 
+    bboard.BoardDAO.addBoardForResource(board)(connection) 
   }
 
 
@@ -163,277 +163,67 @@ class BBoardWrapper(connection: BBoardWrapperConnection) {
 
 
   def getEntityByResources(resources: List[ResourceDTO]):Future[List[ResourceEntitySelector]] = {
-    val resource_ids = resources.map(_.id.get)
-    val empty = List.empty[ResourceEntitySelector]
-     val holder = Try(WS.url(s"http://${connection.host}:${connection.port}/api/v1/board").get().map { response =>
-        val ponse = response.json.as[BoardContainer]
-        // ResourceEntitySelector(resource: ResourceDTO, entities: List[Entity])
-        //println(response.json)
-        resources.map { resource =>
-          val resource_id = resource.id.get
-          val board_ids:List[String] = ponse.boards//.map(cn => cn.boards)
-                          .filter(board => isOnBoardByResource(board, resource_id))
-                          .map(b => b.id.get.toString)
-          //println("boards_ids")
-          //board_ids.foreach(println)                          
-
-          val entities:List[Entity] = ponse.entities.filter(entity => board_ids.contains(entity.boardId.toString))
-          ResourceEntitySelector(resource, entities = entities)
-        }
-     }.recover{ case c => {
-      println(c)
-      empty 
-      }
-      })
-        .getOrElse(Future.successful(empty))
-     holder   
+    bboard.EntityDAO.getEntityByResources(resources)(connection)  
+ 
   }
   def getEntityByResource(resource: ResourceDTO):Future[List[ResourceEntitySelector]] = {
-    val resource_ids = List()//resources.map(_.id.get)
-    val empty = List.empty[ResourceEntitySelector]
-     val holder = Try(WS.url(s"http://${connection.host}:${connection.port}/api/v1/board").get().map { response =>
-        val ponse = response.json.as[BoardContainer]
-        // ResourceEntitySelector(resource: ResourceDTO, entities: List[Entity])
-        //println(response.json)
-          val resource_id = resource.id.get
-          val board_ids:List[String] = ponse.boards//.map(cn => cn.boards)
-                          .filter(board => isOnBoardByResource(board, resource_id))
-                          .map(b => b.id.get.toString)
-          //println("boards_ids")
-          //board_ids.foreach(println)                          
-
-          val entities:List[Entity] = ponse.entities.filter(entity => board_ids.contains(entity.boardId.toString))
-          List(ResourceEntitySelector(resource, entities = entities))
-        
-     }.recover{ case c => {
-      println(c)
-      empty 
-      }
-      })
-        .getOrElse(Future.successful(empty))
-     holder   
+    bboard.EntityDAO.getEntityByResource(resource)(connection)  
+ 
   }  
   def getEntityByResourceId(resource_id: Int):Future[List[Entity]] = {
-    val empty = List.empty[Entity]
-     val holder = Try(WS.url(s"http://${connection.host}:${connection.port}/api/v1/board").get().map { response =>
-        val ponse = response.json.as[BoardContainer]
-        // ResourceEntitySelector(resource: ResourceDTO, entities: List[Entity])
-        //println(response.json)
-          val board_ids:List[String] = ponse.boards//.map(cn => cn.boards)
-                          .filter(board => isOnBoardByResource(board, resource_id))
-                          .map(b => b.id.get.toString)
-          //println("boards_ids")
-          //board_ids.foreach(println)                          
-          val entities:List[Entity] = ponse.entities.filter(entity => board_ids.contains(entity.boardId.toString))
-          entities
-     }.recover{ case c => {
-      println(c)
-      empty 
-      }
-      })
-        .getOrElse(Future.successful(empty))
-     holder   
+    bboard.EntityDAO.getEntityByResourceId(resource_id)(connection)  
   }  
-
   def getEntitiesByBoard(board_id: String, resource_id: Int = 0, biz: String = "") = {
-    val empty:BoardContainer = BoardContainer(boards = List(),entities = List(), slats = List())
-     val holder = Try(WS.url(s"http://${connection.host}:${connection.port}/api/v1/board").get().map { response =>
-        val res = response.json.as[BoardContainer]
-        res.copy(boards = res.boards.filter(_.id == board_id), entities = res.entities.filter(entity =>
-            entity.boardId.toString == board_id
-          ))
-        //println(response.json)
-        res //.copy(boards =          res.boards.filter(b => b.onBusiness(biz)))
-     }.recover{ case c => {
-      println(c)
-      empty 
-      }
-      })
-        .getOrElse(Future.successful(empty))
-     holder   
+    bboard.EntityDAO.getEntitiesByBoard(board_id, resource_id, biz)(connection)  
   }
   def getEntityById(entity_id: String):Future[Option[Entity]] = {
-    val empty:Option[Entity] = None //BoardContainer(boards = List(),entities = List(), slats = List())
-     val holder = Try(WS.url(s"http://${connection.host}:${connection.port}/api/v1/board").get().map { response =>
-        val res = response.json.as[BoardContainer]
-        println(response.json)
-        res.copy(entities = res.entities.filter(entity =>
-            entity.getId == entity_id
-          )).entities.headOption
-     }.recover{ case c => {
-      println(c)
-      empty 
-      }
-      })
-        .getOrElse(Future.successful(empty))
-     holder   
+    bboard.EntityDAO.getEntityById(entity_id)(connection)  
   }
   def getSlatById(slat_id: String):Future[Option[Slat]] = {
-    val empty:Option[Slat] = None //BoardContainer(boards = List(),entities = List(), slats = List())
-     val holder = Try(WS.url(s"http://${connection.host}:${connection.port}/api/v1/board").get().map { response =>
-        val res = response.json.as[BoardContainer]
-        println(response.json)
-        res.copy(slats = res.slats.filter(slat =>
-            slat.getId == slat_id
-          )).slats.headOption
-     }.recover{ case c => {
-      println(c)
-      empty 
-      }
-      })
-        .getOrElse(Future.successful(empty))
-     holder   
+    bboard.SlatDAO.getSlatById(slat_id)(connection) 
   }  
   // GET     /api/v1/entities/slats
   def getSlatByEntitiesIds(entities_ids: List[String]):Future[List[Slat]] = {
-    val empty:List[Slat] = List() 
-    val data = Json.toJson(SlatSelector(entities_ids))
-       val holder = Try(WS.url(s"http://${connection.host}:${connection.port}/api/v1/entities/slats").post(data).map { response =>
-       val res = response.json.as[List[Slat]]
-       println(response.json)
-       res
-     }.recover{ case c => {
-      println(c)
-      empty 
-      }
-      })
-        .getOrElse(Future.successful(empty))
-     holder   
+    bboard.SlatDAO.getSlatByEntitiesIds(entities_ids)(connection) 
   }    
 /*-------------------------------------------
  * Create
  --------------------------------------------*/  
   def addEntityByResource(resource_id: Int, entity: Entity):Future[String] = {
-     val data = Json.toJson(entity)
-     val boardId: String = entity.boardId.toString
-     println("UPDATE ENTITY")
-     println(s"boardId: ${entity.boardId} entity: ${entity.toString} ")
-     println(data)
-     val holder = Try(
-      WS.url(s"http://${connection.host}:${connection.port}/api/v1/board/${boardId}/entities/create").post(data).map { response =>
-        val res = response.json
-        println(res)
-        res.toString
-        }.recover{ case e => {println("error");println( );println();println();println(e); "false" }})
-        .getOrElse(Future.successful("false"))
-      holder  
+    bboard.EntityDAO.addEntityByResource(resource_id, entity)(connection)  
   }
   def addSlatByEntity(entity_id: String, slat: Slat):Future[String] = {
-     val data = Json.toJson(slat)
-     // find entity, find board id of that entity
-     val board_id: String = ""
-     val holder = Try(
-      WS.url(s"http://${connection.host}:${connection.port}/api/v1/entity/${entity_id}/slats/create").post(data).map { response =>
-        val res = response.json
-        println(res)
-        res.toString
-        }.recover{ case e => {println("error");println( );println();println();println(e); "false" }})
-        .getOrElse(Future.successful("false"))
-      holder  
+    bboard.SlatDAO.addSlatByEntity(entity_id, slat)(connection) 
   }
 /*-------------------------------------------
  * Remove
  --------------------------------------------*/  
   def updateEntity(entity_id: String, entity: Entity):Future[String] = {
-     val data = Json.toJson(entity)
-     println("UPDATE ENTITY")
-     println(s"entity_id: $entity_id entity: ${entity.toString} ")
-     println(data)
-     val board_id: String = ""
-     val holder = Try(
-      WS.url(s"http://${connection.host}:${connection.port}/api/v1/b/${entity_id}/entity/${entity_id}/edit").post(data).map { response =>
-        val res = response.json
-        println(res)
-        res.toString
-        }.recover{ case e => {println("error");println( );println();println();println(e); "false" }})
-        .getOrElse(Future.successful("false"))
-      holder  
+     bboard.EntityDAO.updateEntity(entity_id, entity)(connection)  
   }
   def updateSlatByEntity(entity_id: String, slat_id: String, slat: Slat):Future[String] = {
-     val data = Json.toJson(slat)
-     println("UPDATE ENTITY")
-     println(s"entity_id: $entity_id slat_id: ${slat_id} entity: ${slat.toString} ")
-     println(data)
-
-     val board_id: String = ""
-     val holder = Try(
-     WS.url(s"http://${connection.host}:${connection.port}/api/v1/ent/${entity_id}/slat/${slat_id}/edit").post(data)
-      .map { response =>
-        val res = response.json
-        println(res)
-        res.toString
-        }.recover{ case e => {println("error");println( );println();println();println(e); "false" }})
-        .getOrElse(Future.successful("false"))
-      holder  
+    bboard.SlatDAO.updateSlatByEntity(entity_id, slat_id, slat)(connection) 
   }
   // /api/v1/slat/:slat_id/fill
   def fillSlat(slat_id: String, sval: String):Future[String] = {
-     val data = Json.toJson(sval)
-     println("FILL SLAT")
-     println(data)
-     val holder = Try(
-     WS.url(s"http://${connection.host}:${connection.port}/api/v1/slat/${slat_id}/fill").post(data)
-      .map { response =>
-        val res = response.json
-        println(res)
-        res.toString
-        }.recover{ case e => {println("error");println( );println();println();println(e); "false" }})
-        .getOrElse(Future.successful("false"))
-      holder  
+    bboard.SlatDAO.fillSlat(slat_id, sval)(connection)  
   }  
   // /api/v1/slat/:slat_id/refill
   def refillSlat(slat_id: String, sval: String):Future[String] = {
-     val data = Json.toJson(sval)
-     println("REFILL SLAT")
-     println(data)
-     val holder = Try(
-     WS.url(s"http://${connection.host}:${connection.port}/api/v1/slat/${slat_id}/refill").post(data)
-      .map { response =>
-        val res = response.json
-        println(res)
-        res.toString
-        }.recover{ case e => {println("error");println( );println();println();println(e); "false" }})
-        .getOrElse(Future.successful("false"))
-      holder  
+    bboard.SlatDAO.refillSlat(slat_id, sval)(connection)  
   }
 /*-------------------------------------------
  * Remove
  --------------------------------------------*/
   def removeEntityByBoard(board_id: String, entity_id: String):Future[String] = {
-     val board_id: String = ""
-     val holder = Try(
-      WS.url(s"http://${connection.host}:${connection.port}/api/v1/entity/${entity_id}/remove").post(Map("key" -> Seq("value"))).map { response =>
-        val res = response.json
-        println(res)
-        res.toString
-        }.recover{ case _ => "" })
-        .getOrElse(Future.successful("false"))
-     holder
+    bboard.EntityDAO.removeEntityByBoard(board_id, entity_id)(connection)  
   }
   def removeEntityById(entity_id: String):Future[String] = {
-     val board_id: String = ""
-     val holder = Try(
-      WS.url(s"http://${connection.host}:${connection.port}/api/v1/entity/${entity_id}/remove").post(Map("key" -> Seq("value"))).map { response =>
-        val res = response.json
-        println(res)
-        res.toString
-        }.recover{ case _ => "" })
-        .getOrElse(Future.successful("false"))
-     holder
+    bboard.EntityDAO.removeEntityById(entity_id)(connection)  
   }  
   def removeSlatById(slat_id: String):Future[String] = {
-     println("REMOVE SLAT")
-     println(s"slat_id: $slat_id ")    
-     val holder = Try(
-      WS.url(s"http://${connection.host}:${connection.port}/api/v1/slat/${slat_id}/remove").post(Map("key" -> Seq("value"))).map { response =>
-        val res = response
-        println(res)
-        res.toString
-        }.recover{ case e => {println("error");println( );println();println();println(e); "false" }})
-        .getOrElse(Future.successful("false"))
-     holder
+   bboard.SlatDAO.removeSlatById(slat_id)(connection)  
   }
-
 
 }
 

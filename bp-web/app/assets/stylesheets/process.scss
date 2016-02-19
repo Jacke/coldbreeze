@@ -408,6 +408,10 @@ a.triangle-reaction:hover {
 li.reaction_list__reaction a {
     color: #7FDBFF;
 }
+li.reaction_list__reaction a:hover {
+    text-decoration: none;
+}
+
 @media (min-width:376px) {
     .tableMinListControls.processListControls {
         margin-left: 37px;
