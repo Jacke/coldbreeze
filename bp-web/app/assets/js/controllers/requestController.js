@@ -271,7 +271,7 @@ $scope.logsByStation = function (stationId) {
      //console.log(found)
      return found;
   } else {
-     '';
+     return '';
   }
 }
 
@@ -658,6 +658,8 @@ $scope.bboardDataPromiseBuilder = $scope.bboardDataPromise.$promise.then(functio
   $scope.processCosts = data.costs;
   $scope.warpData = data.warp;
   console.log('BBOARD Request DataCostLaunchAssign', data);
+});
+
   /**
    * Push warpData to request elements
    */
@@ -713,7 +715,7 @@ $scope.filterPayload = function(elemId) {
   }
 }
 
-
+$scope.fillBBoardData = function() {
 
 $scope.bboardDataPromiseBuilder.then(function(d) {
 $scope.treesDefinerPromise.then(function(d) {
@@ -766,8 +768,19 @@ console.log('$scope.costsPayload', $scope.costsPayload);
 
 
 });
-
 });
+}
+$scope.reFillBBoardData = function() {
+  $scope.bboardDataPromise = DataCostLaunchAssign.query( { launchId: $scope.session_id } );
+  $scope.bboardDataPromiseBuilder = $scope.bboardDataPromise.$promise.then(function(data) {
+    $scope.processCosts = data.costs;
+    $scope.warpData = data.warp;
+    console.log('BBOARD Request DataCostLaunchAssign', data);
+  });
+  $scope.fillBBoardData();
+};  
+
+$scope.fillBBoardData();
 
 //console.log('$scope.trees');
 //console.log($scope.trees);
@@ -802,8 +815,6 @@ if($scope.interactions !== undefined && $scope.interactions.reactions) {
 }
 
 
-
-});
 
 $scope.fillCosts = function(costs) {
   _.forEach($scope.trees, function(t) {
@@ -907,21 +918,21 @@ $scope.filterInputs = function(elem) {
   return (elem.type_title === "confirm");
 };
 
-  $scope.highlightActive = function (station, elem) {
-     var front, nest;
-     front = $scope.elemsHash[$scope.logsByStation(station.id)[$scope.logsByStation(station.id).length-1].element];  
-     nest = $scope.spaceElemHash[$scope.logsByStation(station.id)[$scope.logsByStation(station.id).length-1].space_elem];  
-     if (front !== undefined && front.id === elem.id) {
-       return "active";
-     } 
-     if (nest !== undefined && nest.id === elem.id && elem.space_owned !== undefined) {
-      return "active";
-     } else {
+$scope.highlightActive = function (station, elem) {
+   var front, nest;
+   front = $scope.elemsHash[$scope.logsByStation(station.id)[$scope.logsByStation(station.id).length-1].element];  
+   nest = $scope.spaceElemHash[$scope.logsByStation(station.id)[$scope.logsByStation(station.id).length-1].space_elem];  
+   if (front !== undefined && front.id === elem.id) {
+     return "active";
+   } 
+   if (nest !== undefined && nest.id === elem.id && elem.space_owned !== undefined) {
+    return "active";
+   } else {
      return "passive"
-     }
-  };
+   }
+};
 
-  $scope.haltSession = function (session_id) {
+$scope.haltSession = function (session_id) {
    $http({
       url: 'bprocess/' + $scope.bpId + '/session/' + session_id + '/halt',
       method: "POST",
@@ -964,12 +975,10 @@ $scope.entityDecorator = function(entities, resource) {
       var c = _.find(resource.entities, function(ent){return ent.id === entities});
       if (c !== undefined) {
         return c.title
-      } else { return "" }
-      
+      } else { return "" } 
     } else {
       return "";
     }
-  
   }
 }
 /* Slat
@@ -982,15 +991,14 @@ $scope.entityDecorator = function(entities, resource) {
 */
 $scope.slatFilter = function(entity, slats) {
   return _.filter(slats, function(slat){return slat.entityId === entity.id });
-}
+};
 $scope.defaultValueParser = function(entity, value) {
   if (entity.etype === "number") {
     return parseInt(value);
   } else {
     return value;
   }
-}
-
+};
 $scope.fastResourceCostCreationApply = function() {
 // Add resource
 // Add attribute
@@ -999,7 +1007,7 @@ $scope.fastResourceCostCreationApply = function() {
 // Fetch assigned costs
 // Show cost
   console.log(fastResourceCostCreation);
-}
+};
 
 
 $scope.fillValue = function(cost, entity, value) {
@@ -1014,8 +1022,8 @@ $scope.fillValue = function(cost, entity, value) {
                     req).then(function (data) {
                       console.log(data);
   });
+};
 
-}
 $scope.reFillValue = function(cost, entity, slat) {
   // entityId: String, launchId: Int, resourceId: Int
   var resourceId = cost.resource.resource.id;
@@ -1028,12 +1036,10 @@ $scope.reFillValue = function(cost, entity, slat) {
                     req).then(function (data) {
                       console.log(data);
   });
-}
+};
 /**************
  * ////END Cost module
  *****************/////////////////////////////////////////////////////*/
-
-
 
 
 
@@ -1054,14 +1060,13 @@ $scope.finishedInteractionFilter = function(obj) {
         true
       }
     }
-}
+};
 
 
-  $scope.runFromDisabled = true;
+$scope.runFromDisabled = true;
+$scope.currentReactionFlag = true;
 
-
-  $scope.currentReactionFlag = true;
-  $scope.currentReactionFilter = function (data) {
+$scope.currentReactionFilter = function (data) {
       if ($scope.currentReactionFlag && 
         (($scope.interactions.reactions[0] === data) || ($scope.interactions.reactions[1] === data))  ) {
         return data;
@@ -1073,9 +1078,9 @@ $scope.finishedInteractionFilter = function(obj) {
       } else {
         return data;
       }
-  }
-$scope.reaction_params = []
+};
 
+$scope.reaction_params = []
 /**
  * Execute a launch run 
  * @param session_id  {[Number]}
@@ -1121,7 +1126,7 @@ $scope.runFrom = function (session_id, reaction) {
 
 $scope.shareLaunch = function(launch_id) {
   console.log(launch_id);
-}
+};
 
 $scope.addParam = function (reaction) {
   //if (_.find($scope.reaction_params, function(re) { 
@@ -1133,12 +1138,12 @@ $scope.addParam = function (reaction) {
         console.log("$scope.runFromDisabled = false;"); $scope.runFromDisabled = false; 
       }
   //}      
-}
+};
 
 $scope.delParam = function (reaction) {
   $scope.reaction_params = _.reject($scope.reaction_params, function(el) { return el.reaction_id === reaction.reaction.id; });
   if ($scope.reaction_params.length == 0) { console.log("$scope.runFromDisabled = true;"); $scope.runFromDisabled = true; }
-}
+};
 
 $scope.capitalizeFirstLetter = function (string) {
     if (string !== undefined) { 
@@ -1146,7 +1151,7 @@ $scope.capitalizeFirstLetter = function (string) {
     } else {
       return ""
     }
-}
+};
 
 
 $scope.stateOutAct = function (act) {
@@ -1157,7 +1162,7 @@ $scope.stateOutAct = function (act) {
       return 'turn off';
     }
   } else { return ''; }
-}
+};
 
 $scope.filterCostByElementId = function(elemId, costs) {
   $scope.treesDefinerPromise.then(function(d) {
@@ -1166,7 +1171,7 @@ $scope.filterCostByElementId = function(elemId, costs) {
       return cost.elementId == elemId;
     });
   });
-}
+};
 
 $scope.lastExecuted = function() {
   // For empty input logs
@@ -1174,7 +1179,6 @@ $scope.lastExecuted = function() {
     var AllDates = _.map(_.filter($scope.logs.stations, function(d) { return d.session === $scope.session_id }), function(f) {
       return f.updated_at;
     });
-  
     return {
       minDate: AllDates[0],
       lastDate: AllDates[0]
@@ -1190,18 +1194,15 @@ $scope.lastExecuted = function() {
       lastDate: lastDate
     }
   }
-}
+};
 
 
-  $scope.defaultParam = function () {
+$scope.defaultParam = function () {
       var targets = _.filter($scope.bpstations, function(station){ return station.paused == true; });
       _.each(targets, function(target) {
         target.params = [];
       });
       _.each(targets, function(target) {
-
-
-
 
         BPRequestFactory.scheme({ BPid: $scope.bpId, station_id: target.id }).$promise.then(function(data) {
                 $(".inputRequests:not(:eq(0))").toggle();
@@ -1212,16 +1213,14 @@ $scope.lastExecuted = function() {
               }, function(error) {
                   console.log('error', error);
         });
-
       });
-  };
+};
 
   
-
-  $scope.invoke_res = [];
-  $scope.selectedTab = 1;
-  /*
-  BPStationsFactory.query({ BPid: $scope.bpId }).$promise.then(function(data) {
+$scope.invoke_res = [];
+$scope.selectedTab = 1;
+/*
+BPStationsFactory.query({ BPid: $scope.bpId }).$promise.then(function(data) {
          $scope.bpstations = data;      
          console.log("boom");
 
@@ -1248,9 +1247,9 @@ $scope.lastExecuted = function() {
   $scope.bprocess = BProcessFactory.show({ id: $scope.bpId });
 */
 
-  $scope.showAll = function () {
-    $(".inputRequests:not(:eq(0))").toggle();
-  }
+$scope.showAll = function () {
+  $(".inputRequests:not(:eq(0))").toggle();
+}
 
 
 
