@@ -9099,21 +9099,26 @@ h4.file_title_full {
     opacity: 1;
   }
   40% {
-    transform: translate3d(50%,0, 0) scale(0.9) rotate3d(0, 50, 0, 122deg);
+    transform: translate3d(26%, 0px, 0px) scale(0.9) rotate3d(0, 50, 0, 24deg);
     opacity: 0.5;
   }
   100% {
-    transform: translate3d(60%,0, 0) scale(0.9) rotate3d(0, 50, 0, 122deg);
+    transform: translate3d(40%, 0px, 0px) scale(0.9) rotate3d(0, 50, 0, 24deg);
     opacity: 0;
   }
 }
 @keyframes flipInXY {
   0% {
-    transform: perspective(400px) rotate3d(0, 1, 0, 50deg);
+    transform: translate3d(40%, 0px, 0px) scale(0.9) rotate3d(0, 50, 0, 24deg);
     transition-timing-function: ease-in;
     opacity: 0;
   }
+  40% {
+    transform: translate3d(26%, 0px, 0px) scale(0.9) rotate3d(0, 50, 0, 24deg);
+    opacity: 0.5;
+  }
   100% {
+    opacity: 1;
     transform: perspective(400px) rotate3d(0, 1, 0, 0deg);
   }
 }

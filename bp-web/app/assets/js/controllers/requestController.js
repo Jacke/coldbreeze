@@ -34,6 +34,9 @@ function ($timeout, $q, DataCostLaunchAssign, fastResourceCostCreation, DropBoxS
 $scope.bpId = $scope.session.process.id;
 $scope.session_id = $scope.session.session.id;
 
+$scope.reaction_params = []
+
+
 $scope.isManager = function () {
   if ($scope.isManagerVal === undefined && $rootScope.manager !== undefined) {
     $scope.isManagerVal = $rootScope.manager;
@@ -715,6 +718,38 @@ $scope.filterPayload = function(elemId) {
   }
 }
 
+
+$scope.filterCostByElementId = function(elemId, costs) {
+  $scope.treesDefinerPromise.then(function(d) {
+    //console.log('filterCostByElementId', elemId, costs);
+    return _.filter(costs, function(cost) {
+      return cost.elementId == elemId;
+    });
+  });
+};
+
+
+
+$scope.fillCosts = function(costs) {
+  _.forEach($scope.trees, function(t) {
+    return t.costs = $scope.filterCostByElementId(t.id, costs);
+  });
+  //console.log('filtered Costs', $scope.trees);
+}
+$scope.addParam = function (reaction) {
+  //if (_.find($scope.reaction_params, function(re) { 
+  //    return re.reaction_id === reaction.reaction.id }) !== undefined) {
+  //      $scope.delParam(reaction);
+  //} else {
+    $scope.reaction_params.push({reaction_id: reaction.reaction.id });
+      if ($scope.reaction_params.length !== 0) { 
+        console.log("$scope.runFromDisabled = false;"); $scope.runFromDisabled = false; 
+      }
+  //}      
+};
+
+
+
 $scope.fillBBoardData = function() {
 
 $scope.bboardDataPromiseBuilder.then(function(d) {
@@ -770,6 +805,9 @@ console.log('$scope.costsPayload', $scope.costsPayload);
 });
 });
 }
+
+
+
 $scope.reFillBBoardData = function() {
   $scope.bboardDataPromise = DataCostLaunchAssign.query( { launchId: $scope.session_id } );
   $scope.bboardDataPromiseBuilder = $scope.bboardDataPromise.$promise.then(function(data) {
@@ -816,12 +854,6 @@ if($scope.interactions !== undefined && $scope.interactions.reactions) {
 
 
 
-$scope.fillCosts = function(costs) {
-  _.forEach($scope.trees, function(t) {
-    return t.costs = $scope.filterCostByElementId(t.id, costs);
-  });
-  //console.log('filtered Costs', $scope.trees);
-}
 
 $scope.sendPayloadForElement = function(launch_id, element, existedPayload) {
      if (existedPayload !== undefined) {
@@ -1080,7 +1112,6 @@ $scope.currentReactionFilter = function (data) {
       }
 };
 
-$scope.reaction_params = []
 /**
  * Execute a launch run 
  * @param session_id  {[Number]}
@@ -1128,17 +1159,7 @@ $scope.shareLaunch = function(launch_id) {
   console.log(launch_id);
 };
 
-$scope.addParam = function (reaction) {
-  //if (_.find($scope.reaction_params, function(re) { 
-  //    return re.reaction_id === reaction.reaction.id }) !== undefined) {
-  //      $scope.delParam(reaction);
-  //} else {
-    $scope.reaction_params.push({reaction_id: reaction.reaction.id });
-      if ($scope.reaction_params.length !== 0) { 
-        console.log("$scope.runFromDisabled = false;"); $scope.runFromDisabled = false; 
-      }
-  //}      
-};
+
 
 $scope.delParam = function (reaction) {
   $scope.reaction_params = _.reject($scope.reaction_params, function(el) { return el.reaction_id === reaction.reaction.id; });
@@ -1164,14 +1185,7 @@ $scope.stateOutAct = function (act) {
   } else { return ''; }
 };
 
-$scope.filterCostByElementId = function(elemId, costs) {
-  $scope.treesDefinerPromise.then(function(d) {
-    //console.log('filterCostByElementId', elemId, costs);
-    return _.filter(costs, function(cost) {
-      return cost.elementId == elemId;
-    });
-  });
-};
+
 
 $scope.lastExecuted = function() {
   // For empty input logs
