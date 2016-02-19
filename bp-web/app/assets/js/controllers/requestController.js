@@ -769,8 +769,8 @@ console.log('$scope.costsPayload', $scope.costsPayload);
 
 });
 
-console.log('$scope.trees');
-console.log($scope.trees);
+//console.log('$scope.trees');
+//console.log($scope.trees);
 if($scope.interactions !== undefined && $scope.interactions.reactions) {
     _.forEach($scope.interactions.reactions, function(reaction) {
 
@@ -809,7 +809,7 @@ $scope.fillCosts = function(costs) {
   _.forEach($scope.trees, function(t) {
     return t.costs = $scope.filterCostByElementId(t.id, costs);
   });
-  console.log('filtered Costs', $scope.trees);
+  //console.log('filtered Costs', $scope.trees);
 }
 
 $scope.sendPayloadForElement = function(launch_id, element, existedPayload) {
@@ -1161,7 +1161,7 @@ $scope.stateOutAct = function (act) {
 
 $scope.filterCostByElementId = function(elemId, costs) {
   $scope.treesDefinerPromise.then(function(d) {
-    console.log('filterCostByElementId', elemId, costs);
+    //console.log('filterCostByElementId', elemId, costs);
     return _.filter(costs, function(cost) {
       return cost.elementId == elemId;
     });

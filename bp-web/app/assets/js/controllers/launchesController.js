@@ -336,6 +336,7 @@ $scope.reloadSession = function(session_id) {
     $scope.loadSessions($routeParams.process);    
   } 
   if (session_id) {
+    console.log('reload session from request controller');
     $scope.reloadSessionFn(session_id);    
 
   } else { // Load all process
