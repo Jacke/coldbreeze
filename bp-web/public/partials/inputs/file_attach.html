@@ -21,7 +21,7 @@
         <div class="bb_file" ng-show="field.obj_type == 'file'">
             <div class="icon">
               <div class="document" mg-hide="field.obj_title == 'File'">
-                <div class="file_url"><a ng-href="{{ field.obj_content }}" href="{{ field.obj_content }}"><span class="moicon-link moicon"></span></a></div>
+                <div class="file_url"><a target="_blank" ng-href="{{ field.obj_content }}" href="{{ field.obj_content }}"><span class="moicon-link moicon"></span></a></div>
                 <div class="file_title">
                   <h4 class="file_title_full">{{ field.obj_title | limitTo:20 }}<span ng-if="field.obj_title.length >=20">...</span></h4>
                 </div>
