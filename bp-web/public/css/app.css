@@ -3324,11 +3324,9 @@ h2.tableMinListName {
     color: black;
 }
 .process-thumb p.tableMinListGithub {
-opacity: 0.4;
-right: 35px;
-top: 20px;
+  right: 35px;
+  top: 20px;
 }
-
 .process-thumb:hover p.tableMinListGithub {
     opacity: 1;
 }
