@@ -35,6 +35,8 @@ resolvers += Resolver.url("heroku-sbt-plugin-releases",
   url("http://dl.bintray.com/heroku/sbt-plugins/"))(Resolver.ivyStylePatterns)
 
 
+resolvers += Resolver.bintrayIvyRepo("untyped", "ivy")
+
 resolvers += Resolver.url("untyped", url("http://ivy.untyped.com"))(Resolver.ivyStylePatterns)
 
 //resolvers += "Linter Repository" at "https://hairyfotr.github.io/linteRepo/releases"
@@ -86,8 +88,8 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-coffeescript" % "1.0.0")
 addSbtPlugin("com.typesafe.sbt" % "sbt-mocha" % "1.0.0")
 
 addSbtPlugin("me.lessis" % "bintray-sbt" % "0.1.1")
-  
-  
+
+
 addSbtPlugin("default" % "sbt-sass" % "0.1.9")
 
 
@@ -103,9 +105,9 @@ addSbtPlugin("com.typesafe.sbt" % "sbt-uglify" % "1.0.3")
 
 addSbtPlugin("net.ground5hark.sbt" % "sbt-css-compress" % "0.1.3")
 
-addSbtPlugin("com.untyped" % "sbt-js"       % "0.8-M3")
+addSbtPlugin("com.untyped" % "sbt-js"       % "0.8")
 
-addSbtPlugin("com.untyped" % "sbt-sass"     % "0.8-M3")
+addSbtPlugin("com.untyped" % "sbt-sass"     % "0.8")
 
 //addSbtPlugin("org.madoushi.sbt" % "sbt-sass" % "0.9.3")
 
