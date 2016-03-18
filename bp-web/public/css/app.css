@@ -1,9 +1,9 @@
 @font-face {
     font-family: CircularSpotifyText-Black;
     src: url(/assets/fonts/CircularSpotifyText-Black_gdi.eot);
-    src: url(/assets/fonts/CircularSpotifyText-Black_gdi.eot?#iefix) 
-    format('embedded-opentype'), url(/assets/fonts/CircularSpotifyText-Black_gdi.woff) format('woff'), 
-    url(/assets/fonts/CircularSpotifyText-Black_gdi.ttf) format('truetype'), 
+    src: url(/assets/fonts/CircularSpotifyText-Black_gdi.eot?#iefix)
+    format('embedded-opentype'), url(/assets/fonts/CircularSpotifyText-Black_gdi.woff) format('woff'),
+    url(/assets/fonts/CircularSpotifyText-Black_gdi.ttf) format('truetype'),
     url(/assets/fonts/CircularSpotifyText-Black_gdi.svg#CircularSpotifyText-Black) format('svg');
     font-style: normal;
     font-stretch: normal;
@@ -12,9 +12,9 @@
 @font-face {
     font-family: CircularSpotifyText-Book;
     src: url(/assets/fonts/CircularSpotifyText-Book_gdi.eot);
-    src: url(/assets/fonts/CircularSpotifyText-Book_gdi.eot?#iefix) format('embedded-opentype'), 
-    url(/assets/fonts/CircularSpotifyText-Book_gdi.woff) format('woff'), 
-    url(/assets/fonts/CircularSpotifyText-Book_gdi.ttf) format('truetype'), 
+    src: url(/assets/fonts/CircularSpotifyText-Book_gdi.eot?#iefix) format('embedded-opentype'),
+    url(/assets/fonts/CircularSpotifyText-Book_gdi.woff) format('woff'),
+    url(/assets/fonts/CircularSpotifyText-Book_gdi.ttf) format('truetype'),
     url(/assets/fonts/CircularSpotifyText-Book_gdi.svg#CircularSpotifyText-Book) format('svg');
     font-style: normal;
     font-stretch: normal;
@@ -23,9 +23,9 @@
 @font-face {
     font-family: CircularSpotifyText-Bold;
     src: url(/assets/fonts/CircularSpotifyText-Bold_gdi.eot);
-    src: url(/assets/fonts/CircularSpotifyText-Bold_gdi.eot?#iefix) format('embedded-opentype'), 
-    url(/assets/fonts/CircularSpotifyText-Bold_gdi.woff) format('woff'), 
-    url(/assets/fonts/CircularSpotifyText-Bold_gdi.ttf) format('truetype'), 
+    src: url(/assets/fonts/CircularSpotifyText-Bold_gdi.eot?#iefix) format('embedded-opentype'),
+    url(/assets/fonts/CircularSpotifyText-Bold_gdi.woff) format('woff'),
+    url(/assets/fonts/CircularSpotifyText-Bold_gdi.ttf) format('truetype'),
     url(/assets/fonts/CircularSpotifyText-Bold_gdi.svg#CircularSpotifyText-Bold) format('svg');
     font-style: normal;
     font-stretch: normal;
@@ -34,9 +34,9 @@
 @font-face {
     font-family: CircularSpotifyText-Light;
     src: url(/assets/fonts/CircularSpotifyText-Light_gdi.eot);
-    src: url(/assets/fonts/CircularSpotifyText-Light_gdi.eot?#iefix) format('embedded-opentype'), 
-    url(/assets/fonts/CircularSpotifyText-Light_gdi.woff) format('woff'), 
-    url(/assets/fonts/CircularSpotifyText-Light_gdi.ttf) format('truetype'), 
+    src: url(/assets/fonts/CircularSpotifyText-Light_gdi.eot?#iefix) format('embedded-opentype'),
+    url(/assets/fonts/CircularSpotifyText-Light_gdi.woff) format('woff'),
+    url(/assets/fonts/CircularSpotifyText-Light_gdi.ttf) format('truetype'),
     url(/assets/fonts/CircularSpotifyText-Light_gdi.svg#CircularSpotifyText-Light) format('svg');
     font-style: normal;
     font-stretch: normal;
@@ -45,9 +45,9 @@
 @font-face {
     font-family: CircularSpotifyText-Medium;
     src: url(/assets/fonts/CircularSpotifyText-Medium.eot);
-    src: url(/assets/fonts/CircularSpotifyText-Medium.eot?#iefix) format('embedded-opentype'), 
-    url(/assets/fonts/CircularSpotifyText-Medium.woff) format('woff'), 
-    url(/assets/fonts/CircularSpotifyText-Medium.ttf) format('truetype'), 
+    src: url(/assets/fonts/CircularSpotifyText-Medium.eot?#iefix) format('embedded-opentype'),
+    url(/assets/fonts/CircularSpotifyText-Medium.woff) format('woff'),
+    url(/assets/fonts/CircularSpotifyText-Medium.ttf) format('truetype'),
     url(/assets/fonts/CircularSpotifyText-Medium.svg#CircularSpotifyText-Light) format('svg');
     font-style: normal;
     font-stretch: normal;
@@ -56,9 +56,9 @@
 @font-face {
     font-family: CircularSpotifyHead-Bold;
     src: url(/assets/fonts/CircularSpotifyHead-Bold_gdi.eot);
-    src: url(/assets/fonts/CircularSpotifyHead-Bold_gdi.eot?#iefix) format('embedded-opentype'), 
-    url(/assets/fonts/CircularSpotifyHead-Bold_gdi.woff) format('woff'), 
-    url(/assets/fonts/CircularSpotifyHead-Bold_gdi.ttf) format('truetype'), 
+    src: url(/assets/fonts/CircularSpotifyHead-Bold_gdi.eot?#iefix) format('embedded-opentype'),
+    url(/assets/fonts/CircularSpotifyHead-Bold_gdi.woff) format('woff'),
+    url(/assets/fonts/CircularSpotifyHead-Bold_gdi.ttf) format('truetype'),
     url(/assets/fonts/CircularSpotifyHead-Bold_gdi.svg#CircularSpotifyHead-Bold) format('svg');
     font-style: normal;
     font-stretch: normal;
@@ -67,9 +67,9 @@
 @font-face {
     font-family: CircularSpotifyText-Black;
     src: url(/assets/fonts/CircularSpotifyText-Black_gdi.eot);
-    src: url(/assets/fonts/CircularSpotifyText-Black_gdi.eot?#iefix) format('embedded-opentype'), 
-    url(/assets/fonts/CircularSpotifyText-Black_gdi.woff) format('woff'), 
-    url(/assets/fonts/CircularSpotifyText-Black_gdi.ttf) format('truetype'), 
+    src: url(/assets/fonts/CircularSpotifyText-Black_gdi.eot?#iefix) format('embedded-opentype'),
+    url(/assets/fonts/CircularSpotifyText-Black_gdi.woff) format('woff'),
+    url(/assets/fonts/CircularSpotifyText-Black_gdi.ttf) format('truetype'),
     url(/assets/fonts/CircularSpotifyText-Black_gdi.svg#CircularSpotifyText-Black) format('svg');
     font-style: normal;
     font-stretch: normal;
@@ -78,9 +78,9 @@
 @font-face {
     font-family: CircularSpotifyText-Book;
     src: url(/assets/fonts/CircularSpotifyText-Book_gdi.eot);
-    src: url(/assets/fonts/CircularSpotifyText-Book_gdi.eot?#iefix) format('embedded-opentype'), 
-    url(/assets/fonts/CircularSpotifyText-Book_gdi.woff) format('woff'), 
-    url(/assets/fonts/CircularSpotifyText-Book_gdi.ttf) format('truetype'), 
+    src: url(/assets/fonts/CircularSpotifyText-Book_gdi.eot?#iefix) format('embedded-opentype'),
+    url(/assets/fonts/CircularSpotifyText-Book_gdi.woff) format('woff'),
+    url(/assets/fonts/CircularSpotifyText-Book_gdi.ttf) format('truetype'),
     url(/assets/fonts/CircularSpotifyText-Book_gdi.svg#CircularSpotifyText-Book) format('svg');
     font-style: normal;
     font-stretch: normal;
@@ -89,9 +89,9 @@
 @font-face {
     font-family: CircularSpotifyText-Bold;
     src: url(/assets/fonts/CircularSpotifyText-Bold_gdi.eot);
-    src: url(/assets/fonts/CircularSpotifyText-Bold_gdi.eot?#iefix) format('embedded-opentype'), 
-    url(/assets/fonts/CircularSpotifyText-Bold_gdi.woff) format('woff'), 
-    url(/assets/fonts/CircularSpotifyText-Bold_gdi.ttf) format('truetype'), 
+    src: url(/assets/fonts/CircularSpotifyText-Bold_gdi.eot?#iefix) format('embedded-opentype'),
+    url(/assets/fonts/CircularSpotifyText-Bold_gdi.woff) format('woff'),
+    url(/assets/fonts/CircularSpotifyText-Bold_gdi.ttf) format('truetype'),
     url(/assets/fonts/CircularSpotifyText-Bold_gdi.svg#CircularSpotifyText-Bold) format('svg');
     font-style: normal;
     font-stretch: normal;
@@ -100,9 +100,9 @@
 @font-face {
     font-family: CircularSpotifyText-Light;
     src: url(/assets/fonts/CircularSpotifyText-Light_gdi.eot);
-    src: url(/assets/fonts/CircularSpotifyText-Light_gdi.eot?#iefix) format('embedded-opentype'), 
-    url(/assets/fonts/CircularSpotifyText-Light_gdi.woff) format('woff'), 
-    url(/assets/fonts/CircularSpotifyText-Light_gdi.ttf) format('truetype'), 
+    src: url(/assets/fonts/CircularSpotifyText-Light_gdi.eot?#iefix) format('embedded-opentype'),
+    url(/assets/fonts/CircularSpotifyText-Light_gdi.woff) format('woff'),
+    url(/assets/fonts/CircularSpotifyText-Light_gdi.ttf) format('truetype'),
     url(/assets/fonts/CircularSpotifyText-Light_gdi.svg#CircularSpotifyText-Light) format('svg');
     font-style: normal;
     font-stretch: normal;
@@ -111,9 +111,9 @@
 @font-face {
     font-family: CircularSpotifyText-Medium;
     src: url(/assets/fonts/CircularSpotifyText-Medium.eot);
-    src: url(/assets/fonts/CircularSpotifyText-Medium.eot?#iefix) format('embedded-opentype'), 
-    url(/assets/fonts/CircularSpotifyText-Medium.woff) format('woff'), 
-    url(/assets/fonts/CircularSpotifyText-Medium.ttf) format('truetype'), 
+    src: url(/assets/fonts/CircularSpotifyText-Medium.eot?#iefix) format('embedded-opentype'),
+    url(/assets/fonts/CircularSpotifyText-Medium.woff) format('woff'),
+    url(/assets/fonts/CircularSpotifyText-Medium.ttf) format('truetype'),
     url(/assets/fonts/CircularSpotifyText-Medium.svg#CircularSpotifyText-Light) format('svg');
     font-style: normal;
     font-stretch: normal;
@@ -122,15 +122,16 @@
 @font-face {
     font-family: CircularSpotifyHead-Bold;
     src: url(/assets/fonts/CircularSpotifyHead-Bold_gdi.eot);
-    src: url(/assets/fonts/CircularSpotifyHead-Bold_gdi.eot?#iefix) format('embedded-opentype'), 
-    url(/assets/fonts/CircularSpotifyHead-Bold_gdi.woff) format('woff'), 
-    url(/assets/fonts/CircularSpotifyHead-Bold_gdi.ttf) format('truetype'), 
+    src: url(/assets/fonts/CircularSpotifyHead-Bold_gdi.eot?#iefix) format('embedded-opentype'),
+    url(/assets/fonts/CircularSpotifyHead-Bold_gdi.woff) format('woff'),
+    url(/assets/fonts/CircularSpotifyHead-Bold_gdi.ttf) format('truetype'),
     url(/assets/fonts/CircularSpotifyHead-Bold_gdi.svg#CircularSpotifyHead-Bold) format('svg');
     font-style: normal;
     font-stretch: normal;
     unicode-range: U+000D-25CA
 }
 .hamburger-menu {
+    display: none;
     right: 31px;
     top: 35px;
     width: 26px;
@@ -645,12 +646,12 @@ i.uicon-svg142 {
 
 /* on-neutral */
 .state-thumbnail.on-neutral .neutral {display: inline;}
-.state-thumbnail.on-neutral .middleable {display: none;} 
+.state-thumbnail.on-neutral .middleable {display: none;}
 .state-thumbnail.on-neutral .oposite {display: none;}
-.state-thumbnail.on-neutral .ended {display: none;} 
+.state-thumbnail.on-neutral .ended {display: none;}
 .state-thumbnail.on-neutral:hover .middleable {display: inline;}
 .state-thumbnail.on-neutral:hover .oposite {display: inline;}
-.state-thumbnail.on-neutral:hover .ended {display: inline;} 
+.state-thumbnail.on-neutral:hover .ended {display: inline;}
 
 
 /* on-middleable*/
@@ -685,9 +686,9 @@ i.uicon-svg142 {
 
 
 /*
- 
+
  Reflects
- 
+
 */
 .ref-element input#inputBusinessId {
     clear: both;
@@ -825,7 +826,7 @@ span.account-pic img {
     padding-top: 0px;
 }
 .elements-perm button.btn-delete:before {
-  
+
 margin-top: -3px;
 display: block;
 }
@@ -890,13 +891,13 @@ span.moicon.expand-ref-select {
 button.expand-ref-select {
  position: relative;
  width: 19px;
- display: inline-block;   
+ display: inline-block;
  height: 14px;
 }
 a.expand-ref-select {
  position: relative;
  width: 19px;
- display: inline-block;   
+ display: inline-block;
  height: 14px;
 }
 
@@ -1234,12 +1235,12 @@ span.reaction-icon.minicon.minicon-gear-fill-right {
 }
 
 
-.proc-element.invoking .info { 
+.proc-element.invoking .info {
  border-left: solid 2px #f1c40f;
 }
 
 .proc-element.invoking .right-bar {
- border-left: solid 2px #cca711; 
+ border-left: solid 2px #cca711;
 }
 
 .proc-element.invoked .info {
@@ -1284,7 +1285,7 @@ li.reaction_list__reaction.reaction_list__reaction_preview {
     line-height: 21px !important;
 }
 li.reaction_list__reaction {
-    border-bottom: solid 1px #36384D;      
+    border-bottom: solid 1px #36384D;
     padding-bottom: 18px;
     padding-top: 15px;
 }
@@ -1302,7 +1303,7 @@ li.reaction_list__reaction {
 
 .proc-space .space-element {
     border-top-right-radius: 0;
-    border-top-left-radius: 0;      
+    border-top-left-radius: 0;
     box-shadow: inset 0px 0px 4px 0px #ADB0B2;
 }
 
@@ -1422,12 +1423,12 @@ form.form-horizontal.form-new-bpelem.form-edit-bpelem.form-edit-spaceelem .contr
 .space-element .right-bar {
     border-left: solid 2px #7f8c8d;
 }
-.space-element.invoking .info { 
+.space-element.invoking .info {
  border-left: solid 2px #f1c40f;
 
 }
 .space-element.invoking .right-bar {
- border-left: solid 2px #cca711; 
+ border-left: solid 2px #cca711;
 }
 
 .space-element.invoked .info {
@@ -1525,28 +1526,28 @@ span.switcher-icon {font-family: "fontello";
       font-style: normal;
       font-weight: normal;
       speak: none;
-     
+
       display: inline-block;
       text-decoration: inherit;
       width: 1em;
       margin-right: .2em;
       text-align: center;
       /* opacity: .8; */
-     
+
       /* For safety - reset parent styles, that can break glyph codes*/
       font-variant: normal;
       text-transform: none;
-     
+
       /* fix buttons height, for twitter bootstrap */
       line-height: 1em;
-     
+
       /* Animation center compensation - margins should be symmetric */
       /* remove if not needed */
       margin-left: .2em;
-     
+
       /* You can be more comfortable with increased icons size */
       /* font-size: 120%; */
-     
+
       /* Font smoothing. That was taken from TWBS */
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;}
@@ -1591,7 +1592,7 @@ border-color: pink;
 
 div#proc-sessions.hiding {
     bottom: -122px;
-}  
+}
 .current-proc-session-info.proc-session {
     padding: 0px;
 }
@@ -1899,7 +1900,7 @@ margin-right: -4px;
 .manager-tab .btn.btn-primary {
 
     border-radius: 0px;
-    
+
 
     border-top-right-radius: 4px;
 
@@ -1913,7 +1914,7 @@ margin-right: -4px;
 
 
 .page-sessions h2 {
-    position: relative;  padding: 8px 10px;  margin: 0;  font-size: 16px;  font-weight: bold;  color: #fff;  text-shadow: 0 -1px 0 rgba(0,0,0,0.4); 
+    position: relative;  padding: 8px 10px;  margin: 0;  font-size: 16px;  font-weight: bold;  color: #fff;  text-shadow: 0 -1px 0 rgba(0,0,0,0.4);
 background-color: #6689A3;
 border: 1px solid #677c89;  border-bottom-color: #6b808d;  border-radius: 3px 3px 0 0;
 }
@@ -1934,14 +1935,14 @@ ul.sessions-menu {
     color: rgb(202, 49, 49);
 }
 ul.sessions-menu li {
-    background-color: #4C5264;  
-    background-image: -webkit-linear-gradient(#275070, #2D5574);  
-    background-image: linear-gradient(#275070, #2D5574);  background-repeat: repeat-x;  position: relative;  display: block;  float: left;  
-    width: 24%;  
-height: 163px; 
- margin: 0 1% 0 0;  overflow: hidden;  font-size: 13px;  font-weight: normal;  
+    background-color: #4C5264;
+    background-image: -webkit-linear-gradient(#275070, #2D5574);
+    background-image: linear-gradient(#275070, #2D5574);  background-repeat: repeat-x;  position: relative;  display: block;  float: left;
+    width: 24%;
+height: 163px;
+ margin: 0 1% 0 0;  overflow: hidden;  font-size: 13px;  font-weight: normal;
     text-align: center;
-    color: #666;  
+    color: #666;
     border: 1px solid #2F3438;  border-radius: 3px;  box-shadow: 0 1px 0 #fff;
 }
 
@@ -1951,7 +1952,7 @@ ul.sessions-menu li a {
     display: block;
     color: white;
     font-family: 'Proxima Nova', Helvetica, Arial;
-    text-align: center; 
+    text-align: center;
 }
 ul.sessions-menu li a:hover {
 text-decoration: none;
@@ -2069,7 +2070,7 @@ top: 0;
 }
 
 .widget h2.widget-chart-title {
-    font-size: 20px;  
+    font-size: 20px;
     color: white;
     font-weight: bold;
 }
@@ -2207,7 +2208,7 @@ padding-left: 16px;
     top: 0;
     min-width: 100%;
     height: 26px;
-    position: absolute;  
+    position: absolute;
     top: 77px;
 }
 
@@ -2623,7 +2624,7 @@ form {
 
 
 .proc-element-edit {
-  
+
 }
 
 
@@ -2717,16 +2718,16 @@ a.current-proc-session-info.session-link.proc-session:hover span.unpin {
 .process-tree .elem-card.container_brick {
     background: #27ae60;
 
-}   
+}
 .process-tree .elem-card {
-    
+
     padding-left: 15px;
     padding-top: 3px;
     padding-bottom: 3px;
     color: white;
     font-size: 14px;
     font-family: 'Proxima Nova','Helvetica',sans-serif;
-    
+
 }
 .process-tree .angular-ui-tree-nodes .angular-ui-tree-nodes {
     margin-left: 5px;
@@ -2755,55 +2756,55 @@ animation: redGlowIt 7s infinite;
 
 /* key-frame-animations */
 @-webkit-keyframes redGlowIt {
-  0% { 
-    background-color: #c0392b; 
-    -webkit-box-shadow: 0 0 9px #ccc; 
+  0% {
+    background-color: #c0392b;
+    -webkit-box-shadow: 0 0 9px #ccc;
   }
-  50% { 
-    background-color: #A52A1D; 
-    -webkit-box-shadow: 0 0 18px #91bd09; 
+  50% {
+    background-color: #A52A1D;
+    -webkit-box-shadow: 0 0 18px #91bd09;
   }
-  100% { 
-    background-color: #88271D; 
+  100% {
+    background-color: #88271D;
     -webkit-box-shadow: 0 0 9px #ccc; }
 }
 @-moz-keyframes redGlowIt {
-  0% { 
-    background-color: #c0392b; 
-    -moz-box-shadow: 0 0 9px #ccc; 
+  0% {
+    background-color: #c0392b;
+    -moz-box-shadow: 0 0 9px #ccc;
   }
-  50% { 
-    background-color: #A52A1D; 
-    -moz-box-shadow: 0 0 18px #91bd09; 
+  50% {
+    background-color: #A52A1D;
+    -moz-box-shadow: 0 0 18px #91bd09;
   }
-  100% { 
-    background-color: #88271D; 
+  100% {
+    background-color: #88271D;
     -moz-box-shadow: 0 0 9px #ccc; }
 }
 @-o-keyframes redGlowIt {
-  0% { 
-    background-color: #c0392b; 
-    -o-box-shadow: 0 0 9px #ccc; 
+  0% {
+    background-color: #c0392b;
+    -o-box-shadow: 0 0 9px #ccc;
   }
-  50% { 
-    background-color: #A52A1D; 
-    -o-box-shadow: 0 0 18px #91bd09; 
+  50% {
+    background-color: #A52A1D;
+    -o-box-shadow: 0 0 18px #91bd09;
   }
-  100% { 
-    background-color: #88271D; 
+  100% {
+    background-color: #88271D;
     -o-box-shadow: 0 0 9px #ccc; }
 }
 @keyframes redGlowIt {
-  0% { 
-    background-color: #c0392b; 
-    box-shadow: 0 0 9px #ccc; 
+  0% {
+    background-color: #c0392b;
+    box-shadow: 0 0 9px #ccc;
   }
-  50% { 
-    background-color: #A52A1D; 
-    box-shadow: 0 0 18px #91bd09; 
+  50% {
+    background-color: #A52A1D;
+    box-shadow: 0 0 18px #91bd09;
   }
-  100% { 
-    background-color: #88271D; 
+  100% {
+    background-color: #88271D;
     box-shadow: 0 0 9px #ccc; }
 }
 
@@ -2812,16 +2813,16 @@ animation: redGlowIt 7s infinite;
 
 
 @-webkit-keyframes glowIt {
-  0% { 
-    background-color: #749a02; 
-    -webkit-box-shadow: 0 0 9px #ccc; 
+  0% {
+    background-color: #749a02;
+    -webkit-box-shadow: 0 0 9px #ccc;
   }
-  50% { 
-    background-color: #91bd09; 
-    -webkit-box-shadow: 0 0 18px #91bd09; 
+  50% {
+    background-color: #91bd09;
+    -webkit-box-shadow: 0 0 18px #91bd09;
   }
-  100% { 
-    background-color: #749a02; 
+  100% {
+    background-color: #749a02;
     -webkit-box-shadow: 0 0 9px #ccc; }
 }
 
@@ -2842,16 +2843,16 @@ animation: redGlowIt 7s infinite;
 }
 
 @-moz-keyframes glowIt {
-  0% { 
-    background-color: #749a02; 
-    -moz-box-shadow: 0 0 9px #ccc; 
+  0% {
+    background-color: #749a02;
+    -moz-box-shadow: 0 0 9px #ccc;
   }
-  50% { 
-    background-color: #91bd09; 
-    -moz-box-shadow: 0 0 18px #91bd09; 
+  50% {
+    background-color: #91bd09;
+    -moz-box-shadow: 0 0 18px #91bd09;
   }
-  100% { 
-    background-color: #749a02; 
+  100% {
+    background-color: #749a02;
     -moz-box-shadow: 0 0 9px #ccc; }
 }
 
@@ -2872,16 +2873,16 @@ animation: redGlowIt 7s infinite;
 }
 
 @-o-keyframes glowIt {
-  0% { 
-    background-color: #749a02; 
-    -o-box-shadow: 0 0 9px #ccc; 
+  0% {
+    background-color: #749a02;
+    -o-box-shadow: 0 0 9px #ccc;
   }
-  50% { 
-    background-color: #91bd09; 
-    -o-box-shadow: 0 0 18px #91bd09; 
+  50% {
+    background-color: #91bd09;
+    -o-box-shadow: 0 0 18px #91bd09;
   }
-  100% { 
-    background-color: #749a02; 
+  100% {
+    background-color: #749a02;
     -o-box-shadow: 0 0 9px #ccc; }
 }
 
@@ -2901,16 +2902,16 @@ animation: redGlowIt 7s infinite;
 }
 
 @keyframes glowIt {
-  0% { 
-    background-color: #749a02; 
-    box-shadow: 0 0 9px #ccc; 
+  0% {
+    background-color: #749a02;
+    box-shadow: 0 0 9px #ccc;
   }
-  50% { 
-    background-color: #91bd09; 
-    box-shadow: 0 0 18px #91bd09; 
+  50% {
+    background-color: #91bd09;
+    box-shadow: 0 0 18px #91bd09;
   }
-  100% { 
-    background-color: #749a02; 
+  100% {
+    background-color: #749a02;
     box-shadow: 0 0 9px #ccc; }
 }
 
@@ -2944,7 +2945,7 @@ animation: redGlowIt 7s infinite;
   display: none;
 }
 .edit-in-place edit.span {
-  display: none;   
+  display: none;
 }
 .edit-in-place.active ok.span {
     display: inline-block;
@@ -3267,7 +3268,7 @@ background-color: gray !important;
 @-moz-document url-prefix() {
   .process_content .tree-thumb.process-tree {
     height: 38px;
-  } 
+  }
 }
 
 .allStationsList .process_content {
@@ -3302,7 +3303,7 @@ h2.tableMinListName {
     clear: both;
 }
 .process-status li.tableMinListItem {
-    height: auto;  
+    height: auto;
     width: 100%;
     overflow: hidden;
 }
@@ -3363,7 +3364,7 @@ h2.tableMinListName {
 form.form-new-bpelem {
   text-shadow: none;
 }
- 
+
 .container_brick .templateButton a.btn.btn-small.btn-primary.container_brick {
     background: gray;
 }
@@ -3621,7 +3622,7 @@ abbr[title], abbr[data-original-title] {
 
 
 .session-process .progress {
-    z-index: 400;      
+    z-index: 400;
     background-color: rgba(0, 0, 0, 0.21);      height: 4px;      overflow: visible;      height: 4px;
     background-color: white;
 }
@@ -3803,7 +3804,7 @@ abbr[title], abbr[data-original-title] {
 }
 .allStations .station-settings {
   display: none;
-} 
+}
 .allStations .active-switcher {
     display: inline-block;
     float: right;
@@ -4394,7 +4395,7 @@ td.hidden-lg {
     margin-top: -4px;
     }
     .session-process abbr.session__header__created_at {
-clear:both;margin-left: 0px;display: block;width: 162px;text-align: left;     white-space: nowrap;     
+clear:both;margin-left: 0px;display: block;width: 162px;text-align: left;     white-space: nowrap;
 overflow: hidden;     text-overflow: ellipsis;
 }
 }
@@ -4983,16 +4984,16 @@ position: relative;
     list-style: none;
 }
 li.legend-elem {
-    display: block;  
+    display: block;
     background: #e74c3c;
     margin-left: -30px;
     padding: 2px 2px 2px 4px;
 }
-li.legend-elem.confirm { 
+li.legend-elem.confirm {
     background: #e67e22;
 color: white;
 }
-li.legend-elem.con { 
+li.legend-elem.con {
 background: #27ae60;
 color: white;
 }
@@ -5563,7 +5564,7 @@ a.btn.btn-small.btTxt.submit.btn.lg.solid-green.btn-add-entity:hover {
 /*    font-family: "Avenir Next W01", "Avenir Next", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
 */
     font-family: "AvenirNextCyr-Good", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
-    font-size: 16px;      
+    font-size: 16px;
     line-height: 32px;
     font-weight: 200;
     margin-top: 0px;
@@ -5600,7 +5601,7 @@ display: block;
   -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
   -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
   transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
- 
+
 }
 
 
@@ -8992,7 +8993,7 @@ height: 40px;
 .bb_elements .icon {
     margin-left: 0px;
     padding: 0;
-    right: 0px;  
+    right: 0px;
 }
 .warp-field {
     height: 100%;
@@ -9800,14 +9801,14 @@ Settings
   transition: 400ms cubic-bezier(0.250, 0.250, 0.750, 0.750) all;
   position: relative;
   display: block;
-} 
- 
+}
+
 .animate-enter.animate-enter-active, .animate-leave {
   opacity: 1;
   top: 0;
   height: 30px;
 }
- 
+
 .animate-leave.animate-leave-active, .animate-enter {
   opacity: 0;
   top: -50px;
@@ -10498,8 +10499,8 @@ header.fullSize {
 }
 
 .fullSize .minorityMenu {
-    width: 49px;      
-    min-width: 428px;      
+    width: 49px;
+    min-width: 428px;
     margin: 0;
 }
 
@@ -10558,11 +10559,7 @@ body.themeGrad.mobileMenu nav.minMenu.menuCell.menuEntity, body.themeGrad.mobile
     margin-left: 14%;
 }
 .themeDark .minorityMenu .secondaryNav .switcherToggle {
-    width: 284px; 
+    width: 284px;
     display:none;
 }
 }
-
-
-
-

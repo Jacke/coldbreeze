@@ -25,7 +25,7 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
   import play.api.Play.current
 
   val applicationLogger = play.api.Logger("application")
-  
+
   /**
    * Returns the JavaScript router that the client can use for "type-safe" routes.
    * Uses browser caching; set duration (in seconds) according to your release cycle.
@@ -48,7 +48,7 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
             routes.javascript.Application.whoami,
             routes.javascript.Application.proPage,
             routes.javascript.Application.subscribePro,
-            routes.javascript.Application.subscribeEa,            
+            routes.javascript.Application.subscribeEa,
             routes.javascript.ProfileController.dashboard,
             routes.javascript.ProfileController.profile,
             routes.javascript.ProcessSessionController.update_note,
@@ -83,12 +83,16 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
       //if (current_plan.expired_at.isBefore( org.joda.time.DateTime.now() ) ) {
       //  Redirect(routes.PlanController.index)
       //} else {
-      if (request.user.businessFirst < 1) 
+      if (request.user.businessFirst < 1)
         Redirect(routes.SettingController.workbench())
       else
         Ok(views.html.app(request.user))
       //}
   }
+  def app2() = SecuredAction { implicit request =>
+        Ok(views.html.app2(request.user))
+  }
+
   def error_test() = Action { implicit request =>
     val test_error = 1 / 0
     Ok(Json.toJson(test_error))
@@ -130,9 +134,9 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
       }
   }
 
-  case class ConfigurationWrapper(switcher_options: List[String], 
-                                  switcher_cmd: List[String], 
-                                  switcher_target: List[String], 
+  case class ConfigurationWrapper(switcher_options: List[String],
+                                  switcher_cmd: List[String],
+                                  switcher_target: List[String],
                                   switcher_desc: Map[String, String])
   implicit val ConfigurationWrapperReads = Json.reads[ConfigurationWrapper]
   implicit val ConfigurationWrapperWrites = Json.format[ConfigurationWrapper]
@@ -146,12 +150,12 @@ class Application(override implicit val env: RuntimeEnvironment[DemoUser]) exten
 
 
 case class UptimeMessage(server: String, uptime: String)
-case class WhoAmIdentify(email: String, 
-  business: Int = 0, 
-  manager: Boolean, 
+case class WhoAmIdentify(email: String,
+  business: Int = 0,
+  manager: Boolean,
   employee: Boolean,
-  lang: String = "en", 
-  payed: Boolean = false, 
+  lang: String = "en",
+  payed: Boolean = false,
   env: String = "prod",
   bb_ping: Boolean = false)
   implicit val WhoAmIdentifyReads = Json.reads[WhoAmIdentify]
@@ -186,22 +190,22 @@ def uptime() = Action { implicit request =>
 
     val (isManager, isEmployee, lang):(Boolean, Boolean, String) = credentials.get
     val current_plan = acc_plan.getOrElse(
-            AccountPlanDTO(None, 
-                business_id = -1, 
+            AccountPlanDTO(None,
+                business_id = -1,
                 master_acc = email)
             )
 
     val env_mode = play.api.Play.current.mode
-    
+
     minority.utils.BBoardWrapper().ping.map { bb_ping =>
 
-    Ok(Json.toJson(WhoAmIdentify(request.user.main.userId, 
-      request.user.businessFirst, 
-      isManager, isEmployee, 
-      lang, 
-      payed = current_plan.expired_at.isAfter( org.joda.time.DateTime.now()), 
+    Ok(Json.toJson(WhoAmIdentify(request.user.main.userId,
+      request.user.businessFirst,
+      isManager, isEmployee,
+      lang,
+      payed = current_plan.expired_at.isAfter( org.joda.time.DateTime.now()),
       env_mode.toString(),
-      bb_ping 
+      bb_ping
       )))
     }
     }
@@ -216,7 +220,7 @@ def uptime() = Action { implicit request =>
 
   /**
    * Sample use of SecureSocial.currentUser. Access the /current-user to test it
-   
+
   def currentUser = Action.async { implicit request =>
     import play.api.libs.concurrent.Execution.Implicits._
     SecureSocial.currentUser[DemoUser].map { maybeUser =>
@@ -255,9 +259,9 @@ def savePlace = Action(BodyParsers.parse.json) { request =>
     errors => {
       BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
     },
-    place => { 
+    place => {
       Place.save(place)
-      Ok(Json.obj("status" ->"OK", "message" -> ("Place '"+place.name+"' saved.") ))  
+      Ok(Json.obj("status" ->"OK", "message" -> ("Place '"+place.name+"' saved.") ))
     }
   )
 }
@@ -270,12 +274,12 @@ implicit val CompositeVWrites = Json.format[CompositeValues]
 implicit val UndefElement1Reads = Json.reads[UndefElement]
 implicit val UndefElementWrites = Json.format[UndefElement]
 implicit val SpaceElementReads = Json.reads[SpaceElementDTO]
-implicit val SpaceElementWrites = Json.format[SpaceElementDTO] 
+implicit val SpaceElementWrites = Json.format[SpaceElementDTO]
 implicit val BPSpaceDTOReads = Json.reads[BPSpaceDTO]
-implicit val BPSpaceDTOWrites = Json.format[BPSpaceDTO] 
+implicit val BPSpaceDTOWrites = Json.format[BPSpaceDTO]
 
 implicit val BPLoggerDTOReads = Json.reads[BPLoggerDTO]
-implicit val BPLoggerDTOWrites = Json.format[BPLoggerDTO] 
+implicit val BPLoggerDTOWrites = Json.format[BPLoggerDTO]
 
 import com.github.nscala_time.time.Imports._
 
@@ -290,7 +294,7 @@ import com.github.nscala_time.time.Imports._
 trait SubdomainController extends Controller {
   def WithSubdomain(f: => String => Request[AnyContent] => Result) = Action { implicit request =>
     val splitDomain = request.domain.split("\\.")
- 
+
     if (splitDomain.length < 2) {
       BadRequest("Domain not found!")
     } else {
