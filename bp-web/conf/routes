@@ -45,7 +45,7 @@ POST    /auth/signup/:token              @controllers.CustomRegistrationControll
 # Notification routine
 GET         /notify								    @controllers.NotificationController.socket
 GET         /notify_test/:msg                       @controllers.NotificationController.notify_test(msg: String)
-GET         /popup/:emails_hash/:target             @controllers.NotificationController.popup(emails_hash: String, target: String) 
+GET         /popup/:emails_hash/:target             @controllers.NotificationController.popup(emails_hash: String, target: String)
 GET         /notify2/test_action                    @controllers.NotificationController.tagItem
 GET         /invite/:emails_hash/:invite_link       @controllers.SubscribtionController.sendInvite(emails_hash: String, invite_link: String)
 GET         /subscribers                            @controllers.SubscribtionController.fetchSubscribers()
@@ -123,6 +123,8 @@ POST        /people/:id/to_participator                       @controllers.users
 GET         /test                                               @controllers.Application.index()
 GET         /test/test										    @controllers.TestController.index()
 GET         /a                                                  @controllers.Application.app()
+GET         /a2                                                 @controllers.Application.app2()
+
 GET         /error                                              @controllers.Application.error_test()
 POST        /whoami                                             @controllers.Application.whoami()
 PUT         /configuration/ 									@controllers.Application.configuration()
@@ -154,7 +156,7 @@ GET        /observe/:hash_code                                  @controllers.Obs
 GET        /observers/:process/:station                         @controllers.ObserverController.indexStation(process: Int, station: Int)
 GET        /observers/:process                                  @controllers.ObserverController.index(process: Int)
 POST       /observers                                           @controllers.ObserverController.create()
-DELETE     /observe/:observe_id                                 @controllers.ObserverController.destroy(observe_id: Int)  
+DELETE     /observe/:observe_id                                 @controllers.ObserverController.destroy(observe_id: Int)
 
 
 # Walkthrough
@@ -182,7 +184,7 @@ POST        /bprocesses                                         @controllers.Bus
 GET         /bprocess/:id/info                                  @controllers.BusinessProcessController.show_bprocess(id: Int)
 DELETE      /bprocess/:id/info                                  @controllers.BusinessProcessController.delete_bprocess(id: Int)
 PUT         /bprocess/:id/info                                  @controllers.BusinessProcessController.update_bprocess(id: Int)
-POST        /bprocess/:bpId/copy/:title                         @controllers.BusinessProcessController.copy(bpId: Int, title: String) 
+POST        /bprocess/:bpId/copy/:title                         @controllers.BusinessProcessController.copy(bpId: Int, title: String)
 
 # Stations
 GET         /sessions 								 @controllers.ProcessSessionController.all_sessions()
@@ -294,7 +296,7 @@ GET      /cards                             @controllers.CardController.index()
 ###
 GET      /data 								@controllers.DataController.index()
 POST     /data/resources					@controllers.DataController.create_resource()
-POST     /api/v1/data/resources             @controllers.DataController.api_create_resource() 
+POST     /api/v1/data/resources             @controllers.DataController.api_create_resource()
 PUT      /data/resource/:id					@controllers.DataController.update_resource(id: Int)
 POST     /data/resource/:id/delete     		@controllers.DataController.delete_resource(id: Int)
 GET      /data/test                         @controllers.DataController.boardTest()
@@ -320,15 +322,15 @@ GET      /data/ent/:eid/slat/:id/edit	@controllers.DataController.update_slat_fo
 POST     /data/ent/:eid/slat/:id/update	@controllers.DataController.update_slat(eid: String, id: String)
 POST     /data/slat/:id/delete        	@controllers.DataController.delete_slat(id: String)
 #### FILL
-POST     /data/fill/ent/:entityId/:launchId/:resourceId  @controllers.DataController.fill_slat(entityId: String, launchId: Int, resourceId: Int) 
-POST     /data/refill/ent/:entityId/:launchId/:resourceId/:slatId  @controllers.DataController.refill_slat(entityId: String, launchId: Int, resourceId: Int, slatId: String) 
+POST     /data/fill/ent/:entityId/:launchId/:resourceId  @controllers.DataController.fill_slat(entityId: String, launchId: Int, resourceId: Int)
+POST     /data/refill/ent/:entityId/:launchId/:resourceId/:slatId  @controllers.DataController.refill_slat(entityId: String, launchId: Int, resourceId: Int, slatId: String)
 
 
 ################
 # Reflections
 ###
 
-GET  		/refs 							@controllers.ReflectionsController.index()		
+GET  		/refs 							@controllers.ReflectionsController.index()
 POST        /refs							@controllers.ReflectionsController.create()
 PUT     	/ref/:id                        @controllers.ReflectionsController.update(id: Int)
 DELETE  	/ref/:id                        @controllers.ReflectionsController.delete(id: Int)
@@ -336,7 +338,7 @@ DELETE  	/ref/:id                        @controllers.ReflectionsController.dele
 POST		/ref/:id/elems  		   @controllers.ReflectionsController.elem_create(id: Int)
 PUT			/ref/elem/:elem_id         @controllers.ReflectionsController.elem_update(elem_id: Int)
 DELETE		/ref/elem/:elem_id         @controllers.ReflectionsController.elem_delete(elem_id: Int)
-POST		/ref/:id/spaces		       @controllers.ReflectionsController.space_create(id: Int)	
+POST		/ref/:id/spaces		       @controllers.ReflectionsController.space_create(id: Int)
 PUT		    /ref/space/:space_id       @controllers.ReflectionsController.space_update(space_id: Int)
 DELETE		/ref/space/:space_id       @controllers.ReflectionsController.space_delete(space_id: Int)
 
@@ -447,8 +449,8 @@ GET         /assets/*file                                       controllers.Asse
 
 
 GET         /pro                                                @controllers.Application.proPage()
-POST        /pro/subscribe                                      @controllers.Application.subscribePro()  
-POST        /ea/subscribe                                       @controllers.Application.subscribeEa()  
+POST        /pro/subscribe                                      @controllers.Application.subscribePro()
+POST        /ea/subscribe                                       @controllers.Application.subscribeEa()
 GET         /:profile_id										@controllers.ProfileController.profile(profile_id: String)
 
 

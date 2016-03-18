@@ -1,0 +1,128 @@
+@import play.api.i18n._
+
+@import service.DemoUser
+@import helper._
+
+@import service.DemoUser
+
+@(user: DemoUser)
+
+<!doctype html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>Minority | title</title>
+  <meta name="description" content="Minority Application. Process defines result. Application for modeling, executing and optimize any processes.">
+  <meta name="author" content="Empia Corp.">
+  <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+  <link rel="stylesheet" href='@routes.Assets.versioned("css/font-awesome.css")'>
+  <link rel="stylesheet" href='@routes.Assets.versioned("css/new.css")'>
+  <link rel="stylesheet" href='@routes.Assets.versioned("css/head-foot.css")' media='screen, presentation' />
+  <link rel="stylesheet" href='@routes.Assets.versioned("css/multi.css")'>
+  <link rel="stylesheet" href="@routes.Assets.versioned("css/app.css")"/>
+  <link rel="stylesheet" href="@routes.Assets.versioned("css/auth/fonts.css")"/>
+  <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800' rel='stylesheet' type='text/css'>
+  <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("favicon.png")">
+  <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/dashboard.css")">
+  <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main-layout.css")">
+  <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.versioned("css/bootstrap.css")">
+  <link rel="stylesheet" href="@routes.Assets.versioned("css/selectize.css")"/>
+  <link rel="stylesheet" href="@routes.Assets.versioned("css/selectize.bootstrap3.css")"/>
+  <link rel="stylesheet" href="@routes.Assets.versioned("bower_components/tether-shepherd/dist/css/shepherd-theme-arrows.css")"/>
+
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
+  <style>
+.overlay_mobile {
+    position: fixed;
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    z-index: 99999;
+    font-size: 52px;
+    text-align: center;
+    padding-top: 37px;
+    display: none;
+    padding: 10% 8% 16% 8%;
+}
+.visible_overlay.overlay_mobile {
+    display: block;
+}
+</style>
+
+</head>
+
+@if(user.businessFirst < 1) {
+<body class="themeDark themeGrad website noWorkbench">
+} else {
+<body class="themeDark themeGrad website">
+}
+<div class="overlay_mobile">Please use desktop or tablet for best app experience.<a href="#">Skip</a>
+</div>
+
+<!-- <div id="reactapp"></div>-->
+  <div id="container" class="container-global">
+        @header(user)
+
+
+
+<style>
+.applicationFooter {
+  display: none;
+}
+</style>
+<div class="app-container">
+<div class="container app">
+
+  <app>
+     Loading...
+   </app>
+
+
+
+
+</div>
+</div>
+
+
+
+<footer class="applicationFooter">
+
+  <div class="applicationFooterRow">
+    <div class="applicationFooterColumns">
+    <div class="applicationFooterColumn">
+    </div>
+  </div>
+
+  <div class="applicationFooterRow">
+    <p class="applicationFooterCopyright"> 2014—2016 &copy; Empire InCloud Inc. @Messages("footer.rights")(LangDet.getLang(user) ). <span class="applicationFooterCopyrightLinks"><a href="http://minorityapp.com/tos" class="applicationFooterCopyrightLink">@Messages("footer.terms")(LangDet.getLang(user) )</a> <a href="https://www.iubenda.com/privacy-policy/" class="applicationFooterCopyrightLink">@Messages("footer.privacy")(LangDet.getLang(user) )</a></span></p>
+  </div>
+</footer>
+<!-- Webpack Dev Server reload -->
+<script src="http://localhost:3000/webpack-dev-server.js"></script>
+<script src="http://localhost:3000/polyfills.bundle.js"></script>
+<script src="http://localhost:3000/vendor.bundle.js"></script>
+<script src="http://localhost:3000/main.bundle.js"></script>
+<link rel="stylesheet" href='@routes.Assets.versioned("css/picaso.css")'>
+<link rel="stylesheet" href='@routes.Assets.versioned("bower_components/angular-ui-select/dist/select.min.css")'>
+<link rel="stylesheet" href='@routes.Assets.versioned("bower_components/angular-ui-tree/dist/angular-ui-tree.min.css")'>
+<link rel="stylesheet" href='@routes.Assets.versioned("bower_components/ngDialog/css/ngDialog.css")'>
+<link rel="stylesheet" href='@routes.Assets.versioned("bower_components/ngDialog/css/ngDialog-theme-default.css")'>
+<link rel="stylesheet" href='@routes.Assets.versioned("bower_components/ngDialog/css/ngDialog-theme-plain.css")'>
+<link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/process.css")'>
+<link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/process_list.css")">
+<link rel="stylesheet" href='@routes.Assets.versioned("bower_components/pnotify/pnotify.core.css")'>
+<link rel="stylesheet" href='@routes.Assets.versioned("bower_components/pnotify/pnotify.buttons.css")'>
+<link rel="stylesheet" href='@routes.Assets.versioned("bower_components/pnotify/pnotify.core.css")'/>
+<link rel="stylesheet" href='@routes.Assets.versioned("bower_components/angular-loading-bar/src/loading-bar.css")'/>
+<link rel="stylesheet" href='@routes.Assets.versioned("bower_components/bootstrap-daterangepicker/daterangepicker-bs3.css")'/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.8.5/css/selectize.default.css">
+<link rel="import" href='@routes.Assets.versioned("bower_components/polymer/polymer.html")'>
+
+<!--<link href='//fast.fonts.net/cssapi/b9eaba6c-4710-4005-8ce7-ab53bba4f423.css' rel='stylesheet' type='text/css'>-->
+<link href='@routes.Assets.versioned("fonts/avenirnextcyr/stylesheet.css")' rel='stylesheet' type='text/css'>

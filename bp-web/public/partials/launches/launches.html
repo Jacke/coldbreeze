@@ -131,6 +131,7 @@ _switch.onclick = toggleHit;
 _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.click(); }
 </script>
 
+<div class="empty-reponse" ng-cloak> {{ sessions.length }} You have no launches. Run <a href="/a">process</a> and come back here</div>
 
 <div class="empty-reponse" ng-show="isEmptyLaunches" ng-cloak>You have no launches. Run <a href="/a">process</a> and come back here</div>
 
