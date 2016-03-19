@@ -19,7 +19,7 @@ Minority platform is a cloud-enabled, language-agnostic platform for workflow ma
 
 Dillinger uses a number of open source projects to work properly:
 
-* [Playframework] - 
+* [Playframework] -
 
 
 And of course Dillinger itself is open source with a [public repository][dill]
@@ -29,7 +29,7 @@ And of course Dillinger itself is open source with a [public repository][dill]
 
 Building a mobile messaging application is quite a complex procedure that requires a lot of preparation, e.g.: have developer accounts with Google and Apple, have SSL certificates for your servers, integrate the server with various services like SMS gate, push systems, etc.
 
-For more info, you can read the [server installation manual](docs/SERVER.md). After installing the server, you can [start building the apps](docs/APPS.md). 
+For more info, you can read the [server installation manual](docs/SERVER.md). After installing the server, you can [start building the apps](docs/APPS.md).
 
 ### Run instructions
 
@@ -97,10 +97,8 @@ Minority Platform released under [Empia proprietary license](LICENSE).
    [express]: <http://expressjs.com>
    [AngularJS]: <http://angularjs.org>
    [Gulp]: <http://gulpjs.com>
-   
+
    [PlDb]: <https://github.com/joemccann/dillinger/tree/master/plugins/dropbox/README.md>
    [PlGh]:  <https://github.com/joemccann/dillinger/tree/master/plugins/github/README.md>
    [PlGd]: <https://github.com/joemccann/dillinger/tree/master/plugins/googledrive/README.md>
    [PlOd]: <https://github.com/joemccann/dillinger/tree/master/plugins/onedrive/README.md>
-
-
