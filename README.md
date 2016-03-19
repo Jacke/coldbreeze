@@ -15,6 +15,39 @@ Minority platform is a cloud-enabled, language-agnostic platform for workflow ma
 ### Version
 1.2.0
 
+
+### Action abstraction
+
+
+```
+                                                           +--------------+
+                                       ACTION ARG +-------->Argument processor
+                                          +                +--------------+
+                                    +-----+--+
+ +-------------------------+        |        |
+ |                         |        |   IO   |
+ |       Action            +-------->        |
+ |                         |        +----+---+
+ +-------------------------+             |
+      +---------------+                  v                 +--------------+
+      |  Middleware   |                ACTION RESULT+      |  Result      |
+      +---------------+                             +------>  Processor   |
+                                                           +--------------+
+
+   +---------------------+          +--------+
+   |                     |          |        |
+   |       Strategy      +---------^+   IO   +-->STRATEGY
+   |                     |          |        |   FIELD
+   +---------------------+          +--------+      +
++----------------------------+                      |
+|       Null strategy        |                +-----+-----------+
+|----------------------------|                |Setting processor|
+                                              +-----------------+
+
+
+```
+
+
 ### Tech
 
 Dillinger uses a number of open source projects to work properly:
