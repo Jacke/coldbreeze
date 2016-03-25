@@ -1,0 +1,12 @@
+<div class="confirm-template in-space-template" ng-show="$parent.bpelem.type_title == 'confirm' ">
+   <a class="confirmation-btn btn btn-small {{$parent.bpelem.param}}" ng-click="$parent.bpelem.param = 'confirmed' ">
+   	{{ 'MAKE_CONFIRMED' | translate }}
+   </a>
+</div>
+
+<div class="confirm-template in-space-template" ng-show="$parent.spaceelem.type_title == 'confirm' ">
+   <a class="confirmation-btn btn btn-small {{$parent.spaceelem.param}}" ng-click="$parent.spaceelem.param = 'confirmed' ">
+   	{{ 'MAKE_CONFIRMED' | translate }}
+   </a>
+</div>
+

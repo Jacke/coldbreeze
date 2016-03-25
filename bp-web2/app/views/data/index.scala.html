@@ -1,0 +1,193 @@
+@import service.DemoUser
+@import controllers.employeeParams
+@import models.DAO.resources.ActPermission
+@import models.DAO.resources.BusinessServiceDTO
+@import models.DAO.resources.BusinessDTO
+@import service.DemoUser
+@import controllers._
+@import minority.utils._
+@import helper._
+@(user:DemoUser, isManager: Boolean = false, resourceForms: ResourceFormContainer, resContainer: List[ResourceContainer], entityForm: Form[minority.utils.Entity], ping: Boolean = false)(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment)
+@import securesocial.core.IdentityProvider
+@import securesocial.core.providers.UsernamePasswordProvider
+@import securesocial.core.AuthenticationMethod._
+@import play.api.{Logger, Play}
+@import helper._
+@import play.api.Play
+@import models.DAO.resources.BusinessServiceDTO
+@import models.DAO.resources.BusinessDTO
+@import helper._
+
+@main(Messages("page.data"), user) {
+
+<div class="app-container">
+<div class="container app"> 
+<div id="main" class="container dataTables resources-list">
+<div class="tableMinListWrap dataTablesTable">
+
+@if(ping) {
+<div class="newResourceForm">
+<div class="newResourceFormContainer">
+@form(routes.DataController.create_resource(), 'id -> "createResourceFormObject", 'class -> "createResourceForm") {
+   <h3>Create resource</h3>
+  <button type="submit" id="createResourceBtn" class="createMin ajaxLink cacheable resource-add-btn offed">Create</button>
+  <div class="tableMinListFilter search-process-input add-resource-field filterLayer">
+    <!-- <span class="magnifyGlass vIco vLoupe vLight2State"></span>-->
+    <label for="resourceTitle">Resource name</label>
+    <input type="text" id="resourceTitle" name="title" value="" class="filterInput tableMinListFilterInput">
+    <!-- <input type="text" size="71" data-toggle-class="hidden" class="filterInput tableMinListFilterInput" placeholder="Name"> -->
+  </div>
+}
+
+</div>
+<div class="inlineEntityForm" style="display: none;">
+  <h4>Attribute</h4>
+  @helper.form(routes.DataController.create_entity("")) {
+              @helper.inputText(entityForm("title"), 'class -> "form-control", 'id -> "newInlineAttrTitleField", '_label -> "Title")    
+              @helper.textarea(entityForm("description"), 'class -> "form-control", 'id -> "newInlineAttrDescField", '_label -> "Description")
+              @helper.select(entityForm("etype"), Seq("number"->"Number", "text"->"Text", "boolean" -> "Boolean"), 'class -> "form-control", 'id -> "newInlineAttrEtypeField",'_label -> "Type")      
+              @helper.inputText(entityForm("default"), 'class -> "form-control", 'id -> "newInlineAttrDefaultField", '_label -> "Default value")
+              <input type="hidden" name="newInlineAttrMetaField" name="@entityForm("meta").name" value='""' >
+  }
+</div>
+</div>
+}
+
+@if(resContainer.length < 1) {
+  <div class="dataEmptyPlaceholder">
+        <span class="uicon-svg62222"></span>
+        <p class="primary">Start adding resources</p>
+        <p class="small">As an example they may be time or expendable materials</p>
+  </div>
+}
+<div class="panelLike organisationsGridLike redDataGrid">
+  <ul ul id="tablemin" class="tableMinList processList resourceList">
+  @resContainer.map { cn =>
+  <div class="resource" id="resource-@{cn.resource.id.getOrElse(0)}">
+    <div class="process-status">
+    <li class="tableMinListItem">
+      <h2 class="tableMinListName">
+        <a class="tableMinName vIcoIn" href="#">@cn.resource.title</a>
+      </h2>
+        @cn.board_cn.map { bcn =>
+        <div class="boards">
+           @bcn.boards.filter(board => board.meta.find(m => m.key == "resource_id" && m.value == cn.resource.id.get.toString).isDefined).map { board =>
+          <div class="board">
+            <h4>@board.title</h4>
+            <span class="boardContent">@board.content</span>
+            <div class="entities" style="">
+              <!--<a href="@routes.DataController.create_entity_form(cn.resource.id.getOrElse(0), board.getId)" class="btn success btn-success createEntity" id="entityCreateBtn">Create Attribute</a>-->
+
+                @bcn.entities.filter(e => e.boardId.toString == board.getId).map { entity =>
+              <div class="boardEntity">
+                  <h4>@entity.title - @entity.etype @entity.default</h4>   
+
+                <!-- entity form -->
+                <div class="inlineEntityForm">
+            @helper.form(routes.DataController.update_entity(entity.getId), 'class -> "updateEntityForm") {
+              @helper.inputText(entityForm("title").copy(value=Some(entity.title)),   'class -> "form-control", '_label -> "Title")    
+              @helper.textarea(entityForm("description").copy(value=Some(entity.description)),   'class -> "form-control", '_label -> "Description")
+              @helper.select(entityForm("etype").copy(value=Some(entity.etype)), Seq("number"->"Number", "text"->"Text", "boolean" -> "Boolean"), 'class -> "form-control", '_label -> "Type")      
+              @helper.inputText(entityForm("default").copy(value=Some(entity.default)),   'class -> "form-control", '_label -> "Default value")
+              <input type="hidden" name="inlineEntityFormMetaField" name="@entityForm("meta").name" value='@entity.meta' >
+
+
+              <div class="form-actions">
+                <button class="" type="submit" data-toggle="tooltip" data-placement="right" title="Update attribute"><span class="moicon icon-pencil"></span></button>
+              </div>
+            }
+            <div class="inlineEntityFormDelete">
+            @helper.form(routes.DataController.delete_entity(entity.getId)) {
+                 <button type="submit" class="btn danger deleteEntity" data-toggle="tooltip" data-placement="right" title="Delete attribute"><span class="moicon icon-trash"></span></button>
+            }
+            </div>
+
+            </div>
+
+
+                  <!-- @@entity.meta.map { meta =>  -->
+                  <!--   <b>@@meta.key - @@meta.value</b> -->
+                  <!-- } -->
+                  <div class="slats" style="display: none;">
+                      <a href="@routes.DataController.create_slat_form(entity.getId)" class="btn success btn-success">Create Instance</a>
+                    @bcn.slats.filter(s => s.entityId.toString == entity.getId).map { slat =>
+                      <div class="entitySlat">
+                          <a href="@routes.DataController.update_slat_form(entity.getId, slat.getId)">
+                            @slat.title
+                            @slat.sval
+                          </a>      
+                         @helper.form(routes.DataController.delete_slat(slat.getId)) {
+                              <button type="submit" class="btn danger deleteSlat"><span class="moicon icon-trash"></span></button>
+                          }                      
+                        
+                      </div>
+                    }
+                  </div>
+              </div>
+                }
+                <!-- new entity form -->
+                <div class="inlineEntityForm">
+            @helper.form(routes.DataController.create_entity(board.getId), 'class -> "inlineEntityFormNewForm") {
+              @helper.inputText(entityForm("title"), 'class -> "form-control", '_label -> "Title")    
+              @helper.textarea(entityForm("description"), 'class -> "form-control", '_label -> "Description")
+              @helper.select(entityForm("etype"), Seq("number"->"Number", "text"->"Text", "boolean" -> "Boolean"), 'class -> "form-control", '_label -> "Type")      
+              @helper.inputText(entityForm("default"), 'class -> "form-control", '_label -> "Default value")
+              <input type="hidden" name="newInlineEntityForm" name="@entityForm("meta").name" value='""' >
+
+              <div class="form-actions">
+                <button class="btn" type="submit" data-toggle="tooltip" data-placement="right" title="Create attribute"><span class="moicon icon-plus"></span></button>
+              </div>
+            }
+            </div>
+
+
+            </div>
+          </div>
+        }
+      </div>
+        }
+      <div class="tableMinListControls processListControls">
+        <!-- <a class="tableMinControlsLink ajaxLink tableMinLinkPeople"><span class="uicon-svg98"></span>Boards</a>-->
+        <!--<a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" ng-click="modalShare(bprocess.id)"><span class="minicon-share"></span> {{ 'SHARE' | translate }}</a>
+        <a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" href="/a#/launches?process={{ bprocess.id }}"><span class="uicon-svg372"></span>{{ 'STATIONS' | translate }}</a>-->
+@if(ping) {        
+        @form(routes.DataController.delete_resource(cn.resource.id.getOrElse(0)), 'class -> "topRight") {
+          <button type="submit" class="tableMinControlsLink teamSettingsLink tableMinLinkDelete" href="@cn.resource.id.getOrElse(0)"> <span class="minicon-trash"></span></button>
+        }
+}        
+      </div>
+    </li>
+    </div>
+  </div>
+
+  }
+
+  </ul>
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+</div>
+</div>
+
+
+}

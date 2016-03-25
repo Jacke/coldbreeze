@@ -1,0 +1,40 @@
+@import service.DemoUser
+@(serviceForm: Form[models.DAO.resources.EmployeeDTO], user:DemoUser)
+
+@import helper._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f)}
+
+@main("playing-kundera-cassandra", user) {
+<!-- Begin page content -->
+<div class="container">
+<div class="page-header">
+<h1>Add an service</h1>
+</div>
+
+<div class="row">
+<div class="col-md-8">
+@form(users.routes.EmployeeController.create_new()) {
+<fieldset>
+
+
+
+@inputText(serviceForm("uid"), '_label -> "Name", 'class -> "form-control")
+@inputText(serviceForm("uid"), '_label -> "Name", 'class -> "form-control")
+@inputText(serviceForm("uid"), '_label -> "Name", 'class -> "form-control")
+@inputText(serviceForm("uid"), '_label -> "Name", 'class -> "form-control")
+@inputText(serviceForm("uid"), '_label -> "Name", 'class -> "form-control")
+
+
+</fieldset>
+
+<div class="actions">
+<input type="submit" value="Create this service" class="btn btn-primary"> or
+<a href="@users.routes.EmployeeController.index()" class="btn btn-default">Cancel</a>
+</div>  
+}
+</div>
+
+</div>
+</div>
+}

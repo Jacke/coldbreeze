@@ -1,0 +1,9 @@
+
+.icon-cubes:before { content: '\e800'; } /* '' */
+.icon-cube:before { content: '\e801'; } /* '' */
+.icon-database:before { content: '\e802'; } /* '' */
+.icon-empire:before { content: '\e803'; } /* '' */
+.icon-box:before { content: '\e804'; } /* '' */
+.icon-folder-empty:before { content: '\e805'; } /* '' */
+.icon-folder:before { content: '\e806'; } /* '' */
+.icon-th-list:before { content: '\e807'; } /* '' */

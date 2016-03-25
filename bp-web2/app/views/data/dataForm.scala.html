@@ -1,0 +1,20 @@
+@import service.DemoUser
+@(title:String, user: DemoUser)(content: Html)
+
+@main(title, user) {
+<!-- Begin page content -->
+<div class="container form-container">
+<div class="page-header">
+<h1>@title</h1>
+</div>
+
+<div class="row">
+<div class="col-md-8">
+
+	@content
+
+</div>
+</div>
+</div>
+</div>
+}

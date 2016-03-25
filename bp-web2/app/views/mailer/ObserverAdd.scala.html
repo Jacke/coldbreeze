@@ -1,0 +1,11 @@
+@(mail: String, host: String, hash_code: String)
+@import securesocial.core.IdentityProvider
+<html>
+  <body>
+    <p>@Messages("mail.hello"), @Messages("mail.observerAdded").</p>
+    
+    <p>@Messages("mail.follow")
+      <a href="http://@host/observe/@hash_code">@Messages("mail.link")</a> @Messages("mail.toSeeProcess").
+    </p>
+  </body>
+</html>

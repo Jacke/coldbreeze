@@ -1,0 +1,73 @@
+<div class="container">
+<h1>Reflections</h1>
+
+<hr>
+<form novalidate="novalidate" class="form-horizontal form-new-ref">
+<div class="control-group form-group">
+  <label class="control-label col-sm-1" for="inputTitle">{{ 'TITLE' | translate }}:</label>
+  <div class="controls col-xs-4">
+    <input type="text" id="inputTitle" class="form-control" ng-model="newRef.title"/>
+  </div>
+</div>
+<div class="control-group form-group">
+  <label class="control-label col-sm-1" for="inputBusinessId">Host:</label>
+  <div class="controls col-xs-4">
+    <textarea type="text" class="form-control" id="inputBusinessId" ng-model="newRef.host"/>
+  </div>
+</div>
+
+<div class="control-group form-group" ng-show="isManagerVal">
+  <div class="controls col-xs-4">
+    <a ng-click="createRef(newRef)" class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</a>
+  </div>
+</div>
+</form>
+
+<div class="tab-content ref-element" ng-repeat="ref in refs.ref">
+<div class="process-info header-frame">
+<h3>{{ ref.title }}</h3>
+
+<form novalidate="novalidate" class="form-horizontal form-update-ref">
+<div class="control-group form-group">
+  <label class="control-label col-sm-1" for="inputTitle">{{ 'TITLE' | translate }}:</label>
+  <div class="controls col-xs-4">
+    <input type="text" id="inputTitle" class="form-control" ng-model="ref.title"/>
+  </div>
+</div>
+<div class="control-group form-group">
+  <label class="control-label col-sm-1" for="inputBusinessId">Host:</label>
+  <div class="controls col-xs-4">
+    <textarea type="text" class="form-control" id="inputBusinessId" ng-model="ref.host"/>
+  </div>
+</div>
+
+<div class="control-group form-group" ng-show="isManagerVal">
+  <div class="controls col-xs-4">
+    <a ng-click="updateRef(ref)" class="btn btn-small btn-primary">{{ 'UPDATE' | translate }}</a>
+  </div>
+</div>
+</form>
+
+</div>
+
+<div class="tab-content">
+
+<div ng-include src="'partials/reflections/elems.html'"></div>
+
+</div>
+</div>
+</div>
+
+
+
+
+<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+<style>
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400,700,600);
+</style>
+
+
+
+
+
+

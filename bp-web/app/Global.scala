@@ -1,4 +1,4 @@
-package a.bug
+//package a.bug
 
 import play.api.GlobalSettings
 import play.api.mvc.WithFilters
@@ -32,38 +32,39 @@ object AccessLoggingFilter extends Filter {
     result
   }
 }
- 
+
 object Global extends WithFilters(new GzipFilter(shouldGzip =
   (request, response) => {
     val contentType = response.headers.get("Content-Type")
     contentType.exists(_.startsWith("text/html")) || request.path.endsWith("jsroutes.js")
   }
-), CORSFilter(), AccessLog(), AccessLoggingFilter, HTMLCompressorFilter()) with play.api.GlobalSettings {
+), CORSFilter(), AccessLog(), AccessLoggingFilter) with play.api.GlobalSettings {
 
   /**
    * The runtime environment for this sample app.
    */
-  object MyRuntimeEnvironment extends RuntimeEnvironment.Default[DemoUser] {
+  class MyRuntimeEnvironment extends RuntimeEnvironment.Default {
+    type U = DemoUser
     override lazy val routes = new CustomRoutesService()
     override lazy val viewTemplates = ViewTemplates1.Default(this)
     override lazy val userService: InMemoryUserService = new InMemoryUserService()
     override lazy val eventListeners = List(new MyEventListener())
   }
 
-  
+
   /**
    * Service pages
    */
    // called when a route is found, but it was not possible to bind the request parameters
     //override def onBadRequest(request: RequestHeader, error: String) = {
     //  BadRequest("Bad Request: " + error)
-    //} 
-   
+    //}
+
     // 500 - internal server error
     override def onError(request: RequestHeader, throwable: Throwable) = {
       Future.successful(InternalServerError(views.html.custom.msg400("", Some(throwable)))) //views.html.errors.onError(throwable))
     }
-   
+
     // 404 - page not found error
     override def onHandlerNotFound(request: RequestHeader) = {
       Future.successful(NotFound(views.html.custom.msg404("Not found", request)))

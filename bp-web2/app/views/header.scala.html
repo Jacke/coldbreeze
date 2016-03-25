@@ -1,0 +1,156 @@
+@import service.DemoUser
+
+@(user: DemoUser)(implicit request: Option[RequestHeader] = None, env: Option[securesocial.core.RuntimeEnvironment] = None)
+@import securesocial.core.IdentityProvider
+
+
+@import securesocial.core.IdentityProvider
+@import securesocial.core.providers.UsernamePasswordProvider
+@import securesocial.core.AuthenticationMethod._
+@import play.api.{Logger, Play}
+@import helper._
+@import play.api.Play
+
+
+<header class="fullSize"><div class="minorityMenu"><div class="wholeMenu menuRow">
+
+  <div role="banner" class="minorityLogo menuCell">
+  
+<a class="absFg" title="Minority" href="/" onclick="window.stop();window.location.pathname='/'"><span class="visuallyhidden">Minority</span>
+<svg version="1.1" id="Layer_1" xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 640 480"
+   enable-background="new 0 0 640 480" xml:space="preserve">
+<rect id="svgEditorBackground" y="28.2" fill="none" width="640" height="423.5"/>
+<g id="workspace">
+</g>
+<g transform="matrix(1 0 0 1 -7.105427357601002e-15 -1.7763568394002505e-15)">
+  <g id="_x23_fafafaff">
+    <path id="svg_1" d="M-0.4,28.7h640v423.5h-640V28.7 M88,196.4v181.2l122.9-99l-71.4-69.8l180.8,142.7l182.3-141.7l-71.4,70.8
+      l123.5,94.8V191.6l-116.2-91.2l-118.8,90.6l-116.2-90.1L88,196.4L88,196.4z"/>
+  </g>
+  <g id="_x23_77787c">
+  </g>
+</g>
+<polygon id="e1_polygon" fill="#F0E68C" points="88,377.6 88,196.3 203.6,100.9 319.8,191.1 438.6,100.4 554.8,191.6 554.8,375.5 
+  431.3,280.7 502.7,209.8 320.3,351.5 139.6,208.8 210.9,278.6 "/>
+</svg>
+</a>
+
+<button class="hamburger-menu">
+      <span class="line-1"></span>
+      <span class="line-2"></span>
+      <span class="line-3"></span>
+      <span class="line-4"></span>
+</button>
+  
+  
+
+  </div>
+
+@gravatar(url: Option[String]) = {
+
+  @{ url match {
+    case Some(avatar) => { avatar.replace("http", "https") }
+    case _ => { "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iRWJlbmVfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSIxNnB4IiBoZWlnaHQ9IjE2cHgiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTYgMTYiIHhtbDpzcGFjZT0icHJlc2VydmUiPjx0aXRsZT5EZWZhdWx0IEF2YXRhcjwvdGl0bGU+PGRlc2M+RGVmYXVsdCBBdmF0YXIgZm9yIFdDRiAyLjA8L2Rlc2M+IDxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbLnN1cmZhY2UgeyBmaWxsOiAjZmZmOyB9LnNoYWRvdyB7IGZpbGw6ICNiYmI7IH1dXT48L3N0eWxlPjwvZGVmcz48cmVjdCB4PSIwIiBjbGFzcz0ic2hhZG93IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiLz48cGF0aCBjbGFzcz0ic3VyZmFjZSIgZD0iTTMuNTI4LDE2QzMuNzc2LDExLjQ5OSw1LjY4NCw4LDgsOHM0LjIyNCwzLjQ5OSw0LjQ3Myw3Ljk5OCIvPjxjaXJjbGUgY2xhc3M9InN1cmZhY2UiIGN4PSI4IiBjeT0iNiIgcj0iMy41Ii8+PC9zdmc+" }
+  } }
+}
+
+<nav class="minMenu menuCell menuEntity">
+  <ul class="minMenuList minMenuTexts">
+    <!--<li class="minMenuItem">
+      <a id="teamMembersLink" class="vIcoIn menuEntityLink" href="@routes.ProfileController.dashboard()">
+       <span class="uicon-svg542"></span>
+        @Messages("nav.profile")  </a>
+
+    </li>-->
+    <li class="minMenuItem">
+      <a id="navProcessesLink" class="vIcoIn menuEntityLink appLink" href="@routes.Application.app()">
+        <span class="uicon-svg12"></span>@Messages("nav.processes")  </a>
+    </li>
+    <li class="minMenuItem">
+      <a id="navLaunchesLink" class="vIcoIn menuEntityLink" href="/a#/launches">
+        <span class="uicon-svg372"></span>Launches</a>
+    </li> 
+    <!--
+    <li class="minMenuItem">
+      <a id="teamMinsLink" class="vIcoIn menuEntityLink" href="/a#/ref">
+        <span class="uicon-svg14"></span>
+        Refs</a>
+    </li> -->
+    @if(user.isManager && user.main.userId == user.masterFirst) {
+    <li class="minMenuItem">
+      <a id="navPeopleLink" class="vIcoIn menuEntityLink" onclick="window.stop();window.location.pathname='/peoples'" href="@users.routes.EmployeeController.index()">
+        <span class="uicon-svg98"></span>@Messages("nav.people")  </a>
+    </li>
+    } 
+    <li class="minMenuItem">
+      <a id="navDataLink" class="vIcoIn menuEntityLink" onclick="window.stop()" href="@routes.DataController.index()">
+        <span class="uicon-svg62222"></span>@Messages("page.data")</a>
+    </li>
+
+  </ul>
+</nav>
+
+  <div class="menuCell menuHelp switcherWrap">
+    <span class="helpLinks switcherToggle hint vIcoIn" id="navHelpLink" data-hint="Help">
+
+    </span>
+
+    <span class="helpPopup switcherLayer">
+      <a class="hideableHelpLink vIcoIn" target="_blank" href="minorityapp.com/contacts"><span class="helpText"><span class="vIco vStackOverflow vDimmedState"></span>@Messages("page.helpByPhone")</span></a>
+      <a class="hideableHelpLink vIcoIn" target="_blank" href="http://minorityapp.com/help/"><span class="helpText"><span class="vIco vBook vDimmedState"></span>Instructions</span></a>
+      <a class="vIcoIn" id="Intercom" target="_blank" href="minorityapp.com/contacts" title="Contact Support"><span class="helpText"><span class="vIco vSpeech vDimmedState"></span> @Messages("page.contactSupport") </span></a>
+    </span>
+  </div>
+<script>
+  window.intercomSettings = {
+    app_id: "ckuh178p",
+    name: "@{user.main.fullName}", // Full name
+    email: "@{user.main.userId}", // Email address
+    created_at: "@{user.created_at.getOrElse(0)}" // Signup date as a Unix timestamp
+  };
+</script>
+<script>(function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',intercomSettings);}else{var d=document;var i=function(){i.c(arguments)};i.q=[];i.c=function(args){i.q.push(args)};w.Intercom=i;function l(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src='https://widget.intercom.io/widget/ckuh178p';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);}if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})()</script>
+
+  <div class="menuCell flexibleSpace"></div>
+    <div class="secondaryNav switcherWrap menuCell">
+    <div class="switcherToggle" data-toggle="dropdown">
+        @{user.main.userId}
+        <span class="gravatar">
+            <img src="@gravatar(user.main.avatarUrl)" width="32px" height="32px"/>
+        </span>
+
+    </div>
+      <nav class="switcherLayer secondaryNavLayer dropdown-menu" role="menu">
+        <ul>
+                      <!--<li class="secondaryNavItem"><a id="accountLink" class="accountLink vIcoIn" href="https://login.ority.us/account">
+
+                                                <span class="smallGravatar">
+                                                    <img src="@user.main.avatarUrl.getOrElse("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iRWJlbmVfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSIxNnB4IiBoZWlnaHQ9IjE2cHgiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTYgMTYiIHhtbDpzcGFjZT0icHJlc2VydmUiPjx0aXRsZT5EZWZhdWx0IEF2YXRhcjwvdGl0bGU+PGRlc2M+RGVmYXVsdCBBdmF0YXIgZm9yIFdDRiAyLjA8L2Rlc2M+IDxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbLnN1cmZhY2UgeyBmaWxsOiAjZmZmOyB9LnNoYWRvdyB7IGZpbGw6ICNiYmI7IH1dXT48L3N0eWxlPjwvZGVmcz48cmVjdCB4PSIwIiBjbGFzcz0ic2hhZG93IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiLz48cGF0aCBjbGFzcz0ic3VyZmFjZSIgZD0iTTMuNTI4LDE2QzMuNzc2LDExLjQ5OSw1LjY4NCw4LDgsOHM0LjIyNCwzLjQ5OSw0LjQ3Myw3Ljk5OCIvPjxjaXJjbGUgY2xhc3M9InN1cmZhY2UiIGN4PSI4IiBjeT0iNiIgcj0iMy41Ii8+PC9zdmc+")" alt="@user.main.firstName.getOrElse("")" width="32px" height="32px"/>
+
+</span>
+                                Back to My Account
+                          </a></li>-->
+
+          @if(user.isManager) {
+            <li class="secondaryNavItem">
+            <a class="changelogLink vIcoIn" href="@routes.PlanController.index()"><i class="uicon-svg142"></i>
+            @Messages("page.plans") </a></li>
+          }
+
+          <li class="secondaryNavItem">
+            <a class="changelogLink vIcoIn" href="@routes.Application.proPage()">
+              <span class="moicon moicon-rocket"></span>@Messages("nav.pro")  </a>
+          </li>
+          <li class="secondaryNavItem">
+            <a class="changelogLink vIcoIn" href="@routes.SettingController.index()">
+              <span class="uicon-svg2222"></span>@Messages("nav.settings")  </a>
+          </li>
+          <li class="secondaryNavItem"><form class="logoutForm" action="@routes.CustomLoginController.logout()" method="POST"><button class="logoutBtn vIcoIn" type="submit"><span class="uicon-svg522 vLogout vDimmedState"></span> @Messages("page.signout") </button></form></li>
+
+        </ul>
+      </nav>
+    </div>
+
+</div>
+</header>

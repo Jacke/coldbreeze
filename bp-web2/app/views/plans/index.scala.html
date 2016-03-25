@@ -1,0 +1,380 @@
+@import service.DemoUser
+@import controllers.employeeParams
+@import models.DAO.resources.ActPermission
+@import models.DAO.resources.BusinessServiceDTO
+@import models.DAO.resources.BusinessDTO
+@import models.DAO.resources._
+
+@(user: DemoUser, plans: List[PlanDTO], bills: List[BillDTO], payForm: Form[PayInfo], billing_info: Form[models.DAO.BillingInfoDTO], limitForm: Form[LimitFormObject], current_plan: AccountPlanDTO, status: Option[StatusMessage]=None)(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment)
+
+@import securesocial.core.IdentityProvider
+
+@import securesocial.core.IdentityProvider
+@import securesocial.core.providers.UsernamePasswordProvider
+@import securesocial.core.AuthenticationMethod._
+@import play.api.{Logger, Play}
+@import helper._
+@import play.api.Play
+@import models.DAO.resources.BusinessServiceDTO
+@import models.DAO.resources.BusinessDTO
+@import helper._
+
+@main(Messages("page.plans"), user) {
+<link rel="stylesheet" href="/assets/css/plan.css">
+<style>
+button.button-default.button-confirm.limit-button {
+    display: block !important;
+    width: 120px !important;
+    height: 37px !important;
+    clear: both !important;
+    overflow: hidden;
+    position: relative !important;
+    background: #6B8D4B !important;
+    margin: 0 auto !important;
+}
+
+.plans_collection-item.secondary_item.limit-form dd.info {
+    display: none;
+}
+li.ember-view.plans_collection-item.secondary_item.limit-form {
+    width: 175px;
+    margin: 20px 33%;
+    clear: both;
+    display: block;
+    overflow: hidden;
+}
+
+li.ember-view.plans_collection-item.secondary_item.limit-form input#limit {
+    width: 32%;
+    float: right;
+    display: inline-block;
+    margin-bottom: 10px;
+    margin-right: 51px;
+    margin-top: 7px;
+}
+.bill-list .bill-field {
+    display: inline-block;
+    float: left;
+}
+.bill-list .bill-field.bill-expired {
+    clear: both;
+}
+.bill-list .bill-form {
+    clear: both;
+    margin-top: 117px;
+    display: block;
+}
+li.bill {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+.bill-field.bill-approved {
+    clear: both;
+    float: right;
+    margin-top: -36px;
+}
+.bill-field.bill-sum {
+    font-size: 18px;
+}
+.bill-field.bill-pay-btn {
+    clear: both;
+    float: right;
+    border: solid 1px #BBBBBB;
+    padding: 4px 18px;
+    border-radius: 5px;
+    color: black;
+    background: #FFFFFF;
+    font-family: 'Open Sans', helvetica;
+    font-weight: 700;
+    font-size: 14px;
+    text-shadow: none;
+    margin-top: -34px;
+}
+.bill-form dd.info {
+    display: none;
+}
+.bill-form dl {
+    width: 30%;
+    display: inline-block;
+    float: left;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+.bill-form {
+    clear: both;
+}
+.bill-list .bill-field.bill-title {
+    margin-right: 4px;
+}
+.bill-field.bill-pay-btn.highlighted {
+    background: #A7A7A7;
+    color: white;
+}
+.bill-field.bill-pay-btn.highlighted a {
+    color: white;
+}
+</style>
+
+<div id="ember2864" class="ember-view settings-inner">
+
+<h1 class="settings-title">Billing Overview</h1>
+<div class="plan-container">
+
+@status.map { status =>
+
+<h3 class="settings-insert-title">Status</h3>
+<div class="settings-insert">
+  <div class="settings-insert-inner clearfix">
+    <div class="settings-insert-column settings-insert-column-left">
+      <p>Status @status.message </p>
+      <!-- <p>Active since : n/a</p> -->
+      <p>@status.state</p>
+    </div>
+  </div>
+</div>
+}
+</div>
+
+<div class="plan-container">
+<h3 class="settings-insert-title">Billing Info</h3>
+<div class="settings-insert">
+  <div class="settings-insert-inner clearfix">
+    <div class="settings-insert-column settings-insert-column-left">
+      <p>Your current Plan : <span class="currentPlanTitle">@current_plan.planObj.get.title</span> </p>
+      <!-- <p>Active since : n/a</p> -->
+      <p>Next billing : <span class="date-span" data-date="@current_plan.expired_at"></span></p>
+    </div>
+    <div class="settings-insert-column settings-insert-column-right">
+      <p>Current Monthly Payment :
+          <strong class="currentMonthlyPayment">$@current_plan.planObj.get.price</strong>
+     </p>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="plan-container">
+<h3 class="settings-insert-title highlighted">Change your Plan</h3>
+<div class="settings-insert settings-plans" style="text-align: center; display: none;">
+  <div class="settings-insert-inner">
+    <ul id="ember2878" class="ember-view plans_collection clearfix">
+
+        @plans.map { plan =>
+
+@if((plan.title == "Trial" && current_plan.planObj.get.title == "Trial") || (plan.title == "Free" && current_plan.planObj.get.title == "Free")) {
+    <li id="ember3011" class="ember-view plans_collection-item">
+      <h3 class="plans_collection-item-header">@plan.title</h3>
+
+<div class="plans_collection-item-content">
+  <div>@plan.description.getOrElse("")</div>
+</div>
+<div class="plans_collection-item-footer">
+@if(current_plan.planObj.get.title == plan.title) {
+  @form(routes.PlanController.switch(plan.id.get), 'class -> "topRight") {
+  <button class="button-default button-confirm button-activated">Active</button>
+}
+}
+@if(current_plan.planObj.get.title != plan.title && plan.title != "Trial") {
+@form(routes.PlanController.switch(plan.id.get), 'class -> "topRight") {
+  <button class="button-default button-confirm" type="submit">Switch</button>
+}
+}
+</div>
+</li>
+}
+
+
+
+
+
+@if(plan.title != "Trial" && plan.title != "Free") {
+
+<li id="ember3011" class="ember-view plans_collection-item"><h3 class="plans_collection-item-header">@plan.title</h3>
+
+<div class="plans_collection-item-content">
+  <div>@plan.description.getOrElse("")</div>
+</div>
+
+@if(plan.title != "Trial") {
+<div class="plans_collection-item-price">
+  $ @plan.price<i> / month</i>
+</div>
+}
+
+<div class="plans_collection-item-footer">
+@if(current_plan.planObj.get.title == plan.title) {
+  @form(routes.PlanController.switch(plan.id.get), 'class -> "topRight") {
+  <button class="button-default button-confirm button-activated">Active</button>
+}
+}
+@if(current_plan.planObj.get.title != plan.title && plan.title != "Trial") {
+@form(routes.PlanController.switch(plan.id.get), 'class -> "topRight") {
+  <button class="button-default button-confirm" type="submit">Switch</button>
+}
+
+
+</div>
+</li>
+}
+}
+
+
+}
+
+@if(current_plan.planObj.get.title != "Free") {
+<li  class="ember-view plans_collection-item secondary_item limit-form">
+@form(routes.PlanController.switchLimit(current_plan.planObj.get.id.getOrElse(0))) {
+                   <!--
+                    @inputText(billing_info("id"), 'class -> "form-control", 'hidden -> "hidden")
+                    @inputText(billing_info("business"), 'placeholder -> "business", '_label -> "business", 'class -> "form-control", 'hidden -> "hidden") -->
+                    @inputText(limitForm("limit"), '_label -> "Participator limit", 'class -> "form-control")
+      <button class="button-default button-confirm limit-button" type="submit">Change</button>
+
+}
+</li>
+}
+
+
+<!--
+<li  class="ember-view plans_collection-item secondary_item"><script id="metamorph-160-start" type="text/x-placeholder"></script>
+    <button data-ember-action="3029" data-bindattr-3030="3030"></button>
+    or Subscribe to Startup plan with Up to 200 transactions for $49 / month
+</li>
+
+<li id="ember3012" class="ember-view plans_collection-item"><h3 class="plans_collection-item-header"><script id="metamorph-152-start" type="text/x-placeholder"></script>Pro<script id="metamorph-152-end" type="text/x-placeholder"></script></h3>
+
+<div class="plans_collection-item-content">
+  <div><script id="metamorph-153-start" type="text/x-placeholder"></script>Up to 1,500 Invoices, Bills &amp; Financial operations every month.<script id="metamorph-153-end" type="text/x-placeholder"></script></div>
+</div>
+
+<div class="plans_collection-item-price">
+  $<script id="metamorph-154-start" type="text/x-placeholder"></script>249<script id="metamorph-154-end" type="text/x-placeholder"></script> <i>/ month</i>
+</div>
+
+<div class="plans_collection-item-footer">
+  <button class="button-default button-confirm" data-ember-action="3023" data-bindattr-3024="3024"><script id="metamorph-155-start" type="text/x-placeholder"></script>Subscribe<script id="metamorph-155-end" type="text/x-placeholder"></script></button>
+</div>
+</li><li id="ember3013" class="ember-view plans_collection-item"><h3 class="plans_collection-item-header"><script id="metamorph-156-start" type="text/x-placeholder"></script>Enterprise<script id="metamorph-156-end" type="text/x-placeholder"></script></h3>
+
+<div class="plans_collection-item-content">
+  <div><script id="metamorph-157-start" type="text/x-placeholder"></script>Up to 4,000 Invoices, Bills &amp; Financial operations every month.<script id="metamorph-157-end" type="text/x-placeholder"></script></div>
+</div>
+
+<div class="plans_collection-item-price">
+  $<script id="metamorph-158-start" type="text/x-placeholder"></script>399<script id="metamorph-158-end" type="text/x-placeholder"></script> <i>/ month</i>
+</div>
+
+<div class="plans_collection-item-footer">
+  <button class="button-default button-confirm" data-ember-action="3025" data-bindattr-3026="3026"><script id="metamorph-159-start" type="text/x-placeholder"></script>Subscribe<script id="metamorph-159-end" type="text/x-placeholder"></script></button>
+</div>
+</li>-->
+
+</ul>
+<!--
+      <p>
+        <a class="cancel-subscription">Cancel my subscription</a>
+      </p> -->
+  </div>
+</div>
+</div>
+
+<div class="plan-container">
+<h3 class="settings-insert-title">Billing History</h3>
+<div class="settings-insert settings-billing_history bill-list">
+  <div class="settings-insert-inner">
+      <div class="centering">
+        @if(bills.length < 1) {
+          No receipt yet.
+        }
+        @bills.map { bill =>
+          <li class="bill">
+            <div class="bill-field bill-title">Bill</div>
+            <div class="bill-field bill-assigned">@Messages("page.assigned"): <span class="date-span" data-date="@bill.assigned"></span></div>
+            <div class="bill-field bill-expired">Expired: <span class="date-span" data-date="@bill.expired"></span></div>
+            @if(bill.approved) {
+              <div class="bill-field bill-approved @bill.approved">Approved</div>
+            } else {
+              <div class="bill-field bill-approved @bill.approved">Not approved</div>
+            }
+            <div class="bill-field bill-sum">$ @bill.sum</div>
+            <a href="#" class="bill-field bill-pay-btn">Pay</a>
+
+            @if(!bill.approved) {
+              @helper.form(routes.PlanController.delete_bill(bill.id.getOrElse(-1))) {
+                   <button type="submit" class="btn danger"><span class="moicon icon-trash"></span></button>
+              }
+            }
+            <div class="bill-form" style="display: none;">
+            @form(routes.PlanController.checkout(bill.id.get), 'class -> "topRight") {
+                    <!--
+                    @inputText(payForm("number"), 'placeholder -> "Card number", '_label -> "Card number", 'class -> "form-control")
+                    @inputText(payForm("exp_month"), 'placeholder -> "Expired month", '_label -> "Expired month", 'class -> "form-control")
+                    @inputText(payForm("exp_year"), 'placeholder -> "Expired year", '_label -> "Expired year", 'class -> "form-control")
+                    @inputText(payForm("first-name"), 'placeholder -> "First name", '_label -> "First name", 'class -> "form-control")
+                    @inputText(payForm("last-name"), 'placeholder -> "Last name", '_label -> "Last name", 'class -> "form-control")
+                    @inputText(payForm("cvv2"), 'placeholder -> "CVV(if exist)", '_label -> "CVV(if exist)", 'class -> "form-control")-->
+                    <input type="submit" value="Pay" class="btn danger">
+                  }
+            </div>
+      </li>
+}
+</div>
+      </div>
+  </div>
+</div>
+
+
+<div class="plan-container">
+
+<h3 class="settings-insert-title highlighted">Your Billing Information</h3>
+<div class="settings-insert settings-insert-form" style="display: none;">
+  <div class="settings-insert-inner">
+@form(routes.PlanController.update_billinginfos(), 'class -> "topRight") {
+                   <!--
+                    @inputText(billing_info("id"), 'class -> "form-control", 'hidden -> "hidden")
+                    @inputText(billing_info("business"), 'placeholder -> "business", '_label -> "business", 'class -> "form-control", 'hidden -> "hidden") -->
+                    @inputText(billing_info("firstName"), 'placeholder -> "First name", '_label -> "First name", 'class -> "form-control")
+                    @inputText(billing_info("lastName"), 'placeholder -> "Last name", '_label -> "Last name", 'class -> "form-control")
+                    @inputText(billing_info("zipcode"), 'placeholder -> "Zipcode", '_label -> "Zipcode", 'class -> "form-control")
+                    @inputText(billing_info("address"), 'placeholder -> "Address", '_label -> "Address", 'class -> "form-control")
+
+                    <button type="submit" value="Update" class="button-default button-confirm">Update</button>
+}
+
+    <form id="ember2983" class="ember-view clearfix " novalidate="novalidate" style="display: none;">
+      <div>
+        <p>
+          <input id="ember2984" class="ember-view ember-text-field settings-insert-form-firstname-input" placeholder="Firstname" type="text">
+          <input id="ember2985" class="ember-view ember-text-field settings-insert-form-lastname-input" placeholder="Lastname" type="text">
+        </p>
+      </div>
+      <div>
+        <p><input id="ember2986" class="ember-view ember-text-field settings-insert-form-address-input" placeholder="Address" type="text"></p>
+      </div>
+      <div class="settings-insert-row">
+        <div>
+          <p>
+            <input id="ember2987" class="ember-view ember-text-field settings-insert-form-state-input" placeholder="State" type="text">
+            <input id="ember2988" class="ember-view ember-text-field settings-insert-form-city-input" placeholder="City" type="text">
+            <input id="ember2989" class="ember-view ember-text-field settings-insert-form-zipcode-input" placeholder="Zipcode" type="text">
+          </p>
+        </div>
+      </div>
+
+    </form>
+
+  </div>
+</div>
+</div>
+
+</div>
+
+
+
+
+
+
+</div>
+}

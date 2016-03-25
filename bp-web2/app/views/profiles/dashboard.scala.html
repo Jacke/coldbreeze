@@ -1,0 +1,204 @@
+@import service.DemoUser
+@import controllers.employeeParams
+@import controllers.managerParams
+@import controllers.planInfo
+@import models.DAO.resources.ActPermission
+@import models.DAO.resources.BusinessServiceDTO
+@import models.DAO.resources.BusinessDTO
+@import controllers.BusinessServiceForms._
+@import decorators._
+@import models.DAO._
+@import controllers.DashboardTopBar
+
+@(user: DemoUser, mngParams: Option[managerParams], empParams: Option[employeeParams], walkthrought: Boolean, sessions: List[SessionContainer], dashboardTopBar: DashboardTopBar, currentReaction: List[CurrentSessionReactionContainer] )(currentPage: Page[BusinessServiceDTO], currentOrderBy: Int, currentFilter: String, businesses: List[BusinessDTO], isManager: Boolean = false)(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment)
+
+@import securesocial.core.IdentityProvider
+
+@import securesocial.core.IdentityProvider
+@import securesocial.core.providers.UsernamePasswordProvider
+@import securesocial.core.AuthenticationMethod._
+@import play.api.{Logger, Play}
+@import helper._
+@import play.api.Play
+@import models.DAO.resources.BusinessServiceDTO
+@import models.DAO.resources.BusinessDTO
+@import helper._
+
+
+@****************************************
+* Helper generating navigation links *
+****************************************@
+
+
+@**********************************
+* Helper generating table headers *
+***********************************@
+@header_table(orderBy: Int, title: String) = {
+    <th class="col@orderBy header @if(scala.math.abs(currentOrderBy) == orderBy) @{if(currentOrderBy < 0) "headerSortDown" else "headerSortUp"}">
+        <a href="#">@title</a>
+    </th>
+}
+@gravatar(url: Option[String]) = {
+
+  @{ url match {
+    case Some(avatar) => { avatar.replace("http", "https") }
+    case _ => { "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iRWJlbmVfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSIxNnB4IiBoZWlnaHQ9IjE2cHgiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTYgMTYiIHhtbDpzcGFjZT0icHJlc2VydmUiPjx0aXRsZT5EZWZhdWx0IEF2YXRhcjwvdGl0bGU+PGRlc2M+RGVmYXVsdCBBdmF0YXIgZm9yIFdDRiAyLjA8L2Rlc2M+IDxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbLnN1cmZhY2UgeyBmaWxsOiAjZmZmOyB9LnNoYWRvdyB7IGZpbGw6ICNiYmI7IH1dXT48L3N0eWxlPjwvZGVmcz48cmVjdCB4PSIwIiBjbGFzcz0ic2hhZG93IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiLz48cGF0aCBjbGFzcz0ic3VyZmFjZSIgZD0iTTMuNTI4LDE2QzMuNzc2LDExLjQ5OSw1LjY4NCw4LDgsOHM0LjIyNCwzLjQ5OSw0LjQ3Myw3Ljk5OCIvPjxjaXJjbGUgY2xhc3M9InN1cmZhY2UiIGN4PSI4IiBjeT0iNiIgcj0iMy41Ii8+PC9zdmc+" }
+  }
+}
+} 
+
+@biz(ser: BusinessServiceDTO) = {
+  @{businesses.find(b => b.id == Some(ser.business_id)) match {
+   case Some(business) => <b> @{business.title} </b>
+   case _ => <b></b>
+ }}
+}
+@elemOut(perm: ActPermission) = {
+  @if(perm.space_elem_id.isDefined) {
+     <b>@empParams.get.elems_titles(perm.space_elem_id.get)</b>
+    <b>@empParams.get.bps.find(_.id == Some(perm.process)).get.title</b>    
+
+}
+  @if(perm.front_elem_id.isDefined) {
+  <b>@empParams.get.elems_titles(perm.front_elem_id.get)</b>
+    <b>@empParams.get.bps.find(_.id == Some(perm.process)).get.title</b>
+}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+@main(Messages("page.profile"), user) {
+<div class="tableMinListWrap dashboard-sessions"><div class="panelLike organisationsGridLike">
+
+<div class="teamSettings">
+
+
+<div class="roww state-overview">
+                    <div class="col-lg-3 col-sm-6">
+                        <section class="panel purple">
+                            <div class="symbol">
+                                <i class="minicon-bell minicon"></i>
+                            </div>
+                            <div class="value white">
+                                <h1 class="timer" data-from="0" data-to="320" data-speed="1000">@dashboardTopBar.newSession</h1>
+                                <p>New Launches</p>
+                            </div>
+                        </section>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <section class="panel ">
+                            <div class="symbol purple-color">
+                                <i class="moicon moicon-tab"></i>
+                            </div>
+                            <div class="value gray">
+                                <h1 class="purple-color timer" data-from="0" data-to="123" data-speed="1000">@dashboardTopBar.interaction</h1>
+                                <p>Interaction</p>
+                            </div>
+                        </section>
+                    </div>
+                    <div class="col-lg-3 col-sm-6 finished-launches-indicator">
+                        <section class="panel green">
+                            <div class="symbol ">
+                                <i class="moicon minicon-completed"></i>
+                            </div>
+                            <div class="value white">
+                                <h1 class="timer" data-from="0" data-to="432" data-speed="1000">@dashboardTopBar.completedSession</h1>
+                                <p>Done Launches</p>
+                            </div>
+                        </section>
+                    </div>
+                    <div class="col-lg-3 col-sm-6">
+                        <section class="panel">
+                            <div class="symbol green-color">
+                                <i class="moicon moicon-list"></i>
+                            </div>
+                            <div class="add-button-panel minicon" data-toggle="tooltip" data-placement="left" title="Create Process"><a href="/a#/bprocesses?new" class="add-button"></a></div>
+                            <div class="value gray">
+                                <h1 class="green-color timer" data-from="0" data-to="2345" data-speed="3000">@dashboardTopBar.process</h1>
+                                <p>Process</p>
+                            </div>
+                        </section>
+                    </div>
+</div>
+
+
+
+
+
+<div class="grids">
+<!--
+  if(walkthrought) {
+
+  <div class="page-sessions">
+    <h2>Sessions</h2>
+      <ul class="sessions-menu">
+         <li><a href="@routes.Application.app()#/bprocesses?service=entity.id">Session 1</a></li>
+         <li><a href="@routes.Application.app()#/bprocesses?service=entity.id">Session 2</a></li>
+         <li><a href="@routes.Application.app()#/bprocesses?service=entity.id">Session 3</a></li>
+         <li><a href="@routes.Application.app()#/bprocesses?service=entity.id">Session 4</a></li>
+      </ul>
+     <span class="uicon-svg54"></span> 
+  </div>
+
+
+  
+  }
+ -->
+
+
+
+ <!-- AFTER PLAN REFACTOR
+  <div class="page-header profile_header col-md-8">
+	<h2>
+		<a href="https://gravatar.com" data-toggle="tooltip" title="" data-original-title="Change your avatar"><img src="gravatar(user.main.avatarUrl)" alt="user.main.firstName.getOrElse("")" width="40px" height="40px"/></a> Messages("profile.welcome") user.main.firstName.getOrElse("")
+	</h2>
+
+	if(user.isManager) {
+
+	                   Messages("page.yourPlan"): plan.get.title plan until <span class="date">plan.get.expire_at</span>
+	                <a href="plans">Messages("page.plans")</a>
+	<script>
+	$('span.date').text(moment($('span.date').text()).format('MMMM Do YYYY, h:mm:ss a'))
+	</script>
+
+	}
+	</div>
+
+<div class="profile_advices col-md-4">
+ 	<div class="profile_advices__advice">
+ 		Some shit from futurama
+ 	</div>
+</div>
+-->
+
+<div class="dashboard_sessions col-md-8">
+@active_sessions(sessions, currentReaction)
+</div>
+
+
+<div class="dashboard_services col-md-4">
+@services(user, currentPage, isManager) 
+</div>
+
+@dashboard_footer()
+
+
+
+
+
+
+</div> 
+</div>
+</div>
+</div>
+
+}

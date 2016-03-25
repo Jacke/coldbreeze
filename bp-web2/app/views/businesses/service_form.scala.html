@@ -1,0 +1,34 @@
+@import service.DemoUser
+@(serviceForm: Form[models.DAO.resources.BusinessServiceDTO], user: DemoUser)
+
+@import helper._
+
+@implicitFieldConstructor = @{ FieldConstructor(twitterBootstrapInput.f)}
+
+@main(Messages("businesses.addService"), user) {
+<!-- Begin page content -->
+<div class="container">
+<div class="page-header">
+<h1>Messages("businesses.addService")</h1>
+</div>
+
+<div class="row">
+<div class="col-md-8">
+@form(routes.BusinessServiceController.create_new()) {
+<fieldset>
+
+
+
+@inputText(serviceForm("title"), '_label -> Messages("businesses.serviceName"), 'class -> "form-control")
+</fieldset>
+
+<div class="actions">
+<input type="submit" value="Create this service" class="btn btn-primary"> Messages("custom.or")
+<a href="@routes.ProfileController.dashboard()" class="btn btn-default">Messages("custom.cancel")</a>
+</div>
+}
+</div>
+
+</div>
+</div>
+}
