@@ -1,5 +1,5 @@
 # Login page
-GET         /login        @securesocial.controllers.LoginPage.login
+GET         /login         @securesocial.controllers.LoginPage.login
 GET         /logout        @securesocial.controllers.LoginPage.logout
 
 # Registration routes

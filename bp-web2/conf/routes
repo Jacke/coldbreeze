@@ -20,6 +20,17 @@ POST    /auth/signup                     @controllers.CustomRegistrationControll
 POST    /auth/signup/:token              @controllers.CustomRegistrationController.handleSignUp(token)
 
 
+# Auth
+GET         /signIn                          @controllers.ApplicationController2.signIn
+GET         /signUp                          @controllers.ApplicationController2.signUp
+GET         /signOut                         @controllers.ApplicationController2.signOut
+GET         /authenticate/:provider          @controllers.SocialAuthController.authenticate(provider)
+POST        /authenticate/credentials        @controllers.CredentialsAuthController.authenticate
+POST        /signUp                          @controllers.SignUpController.signUp
+
+
+
+
 ->          /auth                                               securesocial.Routes
 
 # Login page
@@ -481,4 +492,4 @@ GET         /asana/users                                         @controllers.As
 # summary: swagger definition
 # description: for swagger UI to consume
 ###
-#GET   /docs/swagger.json         @controllers.swagger.ApiSpecs.specs
+GET   /docs/swagger.json         @controllers.swagger.ApiSpecs.specs

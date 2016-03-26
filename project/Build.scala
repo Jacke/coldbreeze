@@ -117,6 +117,7 @@ integrationTest := {
           .settings(libraryDependencies ++=
         List(
           play4, // good
+          playslick,
           bootstrap, // good
           guice,
           filter4, // good
@@ -128,6 +129,13 @@ integrationTest := {
           ficus,
           anorm4,
           jdbc4,
+          swaggerRoute,
+          silhouette,
+
+          scalamandrill,
+          javamandrill,
+          javamandrill2,
+
           webserviceclient,
           bootstrapplay4
         //  securesocial

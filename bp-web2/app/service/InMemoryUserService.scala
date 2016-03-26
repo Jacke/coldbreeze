@@ -28,6 +28,7 @@ import models.TokensDAO
 import models._
 import play.api.cache._
 import play.api.Play.current
+import scala.concurrent.duration._
 
 /**
  * A Sample In Memory user service in Scala
@@ -232,7 +233,6 @@ case class DemoUser(main: BasicProfile,
       AccountsDAO.getRolesAndLang(main.userId, businessFirst).get._1
       // false
 }
-import scala.concurrent.duration._
 
   //lazy val
   def firstBusinessId = {

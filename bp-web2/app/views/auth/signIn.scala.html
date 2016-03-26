@@ -1,0 +1,92 @@
+@(signInForm: Form[forms.SignInForm.Data], socialProviders: com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry)(implicit request: RequestHeader)
+
+@import com.mohiva.play.silhouette.impl.providers.oauth2.ClefProvider
+@import b3.inline.fieldConstructor
+
+
+
+
+@views.html.auth.main(Messages("sign.in.title")) {
+
+@request.flash.get("error").map { msg =>
+<div class="messageBoxWrap">
+  <p class="message">
+  @Messages("error") @msg </p>
+</div>
+}
+
+
+
+<div class="loginPage loginPage__login loginPage__active">
+    <div class="loginView">
+      <div class="page-header">
+         <h1 class="loginHeading">@Messages("custom.signIn")</h1>
+      </div>
+            <div class="clearfix">
+
+
+
+
+              @helper.form(action = routes.CredentialsAuthController.authenticate(),
+              'id -> "email-form",
+              'class -> "loginInputs form-horizontal") {
+                          @helper.CSRF.formField
+
+
+              @b3.text(signInForm("email"),
+              '_label -> Messages("securesocial.signup.email1"),
+              'id -> "name-11",'class -> "textField block")
+
+              @b3.password(signInForm("password"),
+              '_label -> Messages("securesocial.signup.password1"),
+              'id -> "name-12", 'class -> "textField block")
+
+      <div class="form-actions">
+        <p class="loginText">
+          <button type="submit" id="l_submit" class="loginButton block actionOk" tabindex="6">@Messages("securesocial.login.title")</button></p>
+      </div>
+      <div class="clearfix">
+          <p>
+            <!--
+            <a class="loginText"><a tabindex="5" class="forgottenPass" href="env.routes.startResetPasswordUrl">
+              @Messages("securesocial.login.forgotPassword")
+            </a></p>
+          -->
+      </div>
+           <div class="clearfix">
+              <p class="loginText">@Messages("custom.needAccount") <a tabindex="7" class="switchView" href="/signUp">@Messages("custom.signUp") now</a>.</p>
+               <!--<p>@Messages("securesocial.login.signUp") <a href="env.routes.handleStartSignUpUrl">@Messages("securesocial.login.here")</a></p>-->
+            </div>
+
+      }
+
+
+
+
+
+            </div>
+  </div>
+</div>
+
+<div class="loginPage loginPage__register">
+  <div class="loginView">
+  <h1 class="loginHeading">@Messages("custom.signUp")</h1>
+  <form action="env.routes.handleStartSignUpUrl" method="post" accept-charset="utf-8" class="loginInputs">
+    <div>
+      <input required placeholder="Work Email" class="textField block" type="email" name="email" value="" id="r_email" tabindex="11" />
+    </div>
+    <p class="loginText">
+      <button type="submit" id="r_submit" class="loginButton block actionOk" tabindex="13">@Messages("custom.signUpFor")</button>
+    </p>
+  </form>
+
+  <p class="loginText">@Messages("custom.haveAccount")<a class="switchView" tabindex="14" href="/login">@Messages("custom.signIn")</a>.</p>
+  <p class="loginText smaller">@Messages("custom.byClicking") <a tabindex="15" href="#">@Messages("footer.terms")</a> @Messages("custom.and") <a tabindex="15" href="https://www.iubenda.com/privacy-policy/">@Messages("footer.privacy")y</a>.</p>
+  </div>
+</div>
+
+
+
+
+
+}

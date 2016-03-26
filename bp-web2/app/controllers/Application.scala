@@ -145,6 +145,8 @@ class Application @Inject() (override implicit val env: MyEnvironment) extends s
                                   switcher_desc: Map[String, String])
   implicit val ConfigurationWrapperReads = Json.reads[ConfigurationWrapper]
   implicit val ConfigurationWrapperWrites = Json.format[ConfigurationWrapper]
+
+  
   def configuration() = Action { implicit request =>
     Ok(Json.toJson(ConfigurationWrapper(
       main.scala.bprocesses.refs.UnitRefs.SwitcherConfiguration.switcher_options,

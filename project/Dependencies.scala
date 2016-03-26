@@ -22,7 +22,9 @@ object Dependencies {
      Resolver.url( "Reflect GitHub Repository", url( "http://taig.github.io/Reflect/release/" ) )( Resolver.ivyStylePatterns ),
      Resolver.url("heroku-sbt-plugin-releases", url("http://dl.bintray.com/heroku/sbt-plugins/"))(Resolver.ivyStylePatterns),
      Resolver.url("Edulify Repository", url("http://edulify.github.io/modules/releases/"))(Resolver.ivyStylePatterns),
-     Resolver.url("github repo for html5tags", url("http://loicdescotte.github.io/Play2-HTML5Tags/releases/"))(Resolver.ivyStylePatterns)
+     Resolver.url("github repo for html5tags", url("http://loicdescotte.github.io/Play2-HTML5Tags/releases/"))(Resolver.ivyStylePatterns),
+
+     Resolver.jcenterRepo
 
 
   )
@@ -91,7 +93,7 @@ object Dependencies {
   val play2oauth2     = "com.nulab-inc"             %% "play2-oauth2-provider"  % "0.14.0"
   val play4           = "com.typesafe.play"         %% "play"                   % "2.4.3"
   val slackapi        = "com.github.gilbertw1"      %% "slack-scala-client"     % "0.1.3"
-  val playslick       = "com.typesafe.play"         %  "play-slick_2.11"        % "0.8.0"
+  val playslick       = "com.typesafe.play"         %  "play-slick_2.11"        % "1.0.1"
   val playauth        = "jp.t2v"                    %% "play2-auth"             % "0.12.0"
   val formtag         = "com.loicdescotte.coffeebean"% "html5tags_2.11"         % "1.2.1"
   val formtag4         = "com.loicdescotte.coffeebean"% "html5tags_2.11"         % "1.2.2"
@@ -112,7 +114,7 @@ object Dependencies {
 
   val securesocial    = "ws.securesocial"           %% "securesocial"           % "3.0-M4"
   val securesocialold = "ws.securesocial"           %% "securesocial"           % "3.0-M3"
-  val swagger         = "com.iheart"                %% "play-swagger"           % "0.1.9"
+  val swaggerRoute    = "com.iheart"                %% "play-swagger"           % "0.2.0"
 
   val deadbolt        = "be.objectify"              %% "deadbolt-scala"         % "2.3.3"
   val securesocialmas = "ws.securesocial"           %% "securesocial"           % "master-SNAPSHOT"
@@ -136,18 +138,18 @@ object Dependencies {
   val mailerses       = "nl.rhinofly"               %% "play-mailer"            % "3.0.0"
   val apamailer       = "org.apache.commons"        %  "commons-email"          % "1.3.1"
   val filter          = "com.typesafe.play"         %% "filters-helpers"        % "2.3.7"
-  val filter4         = "com.typesafe.play"         %% "filters-helpers"        % "2.4.0"
+  val filter4         = "com.typesafe.play"         %% "filters-helpers"        % "2.4.6"
   val cache           = "com.typesafe.play"         %% "play-cache"             % "2.3.7"
-  val cache4           = "com.typesafe.play.modules" %% "play-modules-redis" % "2.4.0"
+  val cache4           = "com.typesafe.play.modules" %% "play-modules-redis" % "2.4.1"
 
   val rediscache      = "com.typesafe.play.plugins" %% "play-plugins-redis"     % "2.3.1"
   val ptest           = "com.typesafe.play"         %% "play-test"              % "2.3.7"
-  val jdbc4            = "com.typesafe.play"         %% "play-jdbc"              % "2.4.0"
+  val jdbc4            = "com.typesafe.play"         %% "play-jdbc"              % "2.4.6"
   val jdbc            = "com.typesafe.play"         %% "play-jdbc"              % "2.3.7"
   val playjson        = "com.typesafe.play"         %% "play-json"              % "2.3.7"
   val junit           = "com.novocode"              % "junit-interface"         % "0.10" % "test"
   val anorm           = "com.typesafe.play"         %% "anorm"                  % "2.3.7"
-  val anorm4          =  "com.typesafe.play" %% "anorm" % "2.4.0"
+  val anorm4          =  "com.typesafe.play"        %% "anorm"                  % "2.4.0"
 
 
   val jodatime        = "joda-time"                 % "joda-time"               % "2.7"
@@ -181,7 +183,10 @@ object Dependencies {
   val scalatest2      =  "org.specs2"           %%   "specs2-junit"      % "2.3.13-scalaz-7.1.0-RC1" % "test"
   val scalatest3      = "org.specs2"            %%   "specs2-mock"       % "2.3.13-scalaz-7.1.0-RC1" % "test"
 
-  val webserviceclient =   "com.typesafe.play"      %% "play-ws"         % "2.4.0"
+
+
+
+  val webserviceclient =   "com.typesafe.play"      %% "play-ws"         % "2.4.6"
 
 
   val scalaLog        = "com.typesafe.scala-logging"%%  "scala-logging"         % "3.1.0"

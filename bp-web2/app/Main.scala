@@ -11,6 +11,15 @@ import com.google.inject.{ TypeLiteral, Scopes, AbstractModule }
 import net.codingwell.scalaguice.ScalaModule
 import securesocial.core.{ BasicProfile, RuntimeEnvironment }
 import service.{ MyEnvironment, DemoUser }
+import javax.inject.Inject
+
+import play.api.http.HttpFilters
+import play.filters.cors.CORSFilter
+
+class Filters @Inject() (corsFilter: CORSFilter) extends HttpFilters {
+  def filters = Seq(corsFilter)
+}
+
 
 class DemoModule extends AbstractModule with ScalaModule {
   override def configure() {
