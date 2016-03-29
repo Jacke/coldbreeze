@@ -1,0 +1,3 @@
+<div class="line-container">
+          <span class="line elem-card" ng-repeat="trr in tree.trees | orderBy:'order'" ng-class="[trr.type_title, $parent.highlightActive(station, trr)]" tooltip-placement="bottom" tooltip="{{trr.title}}"><span class="tree-liner-desc description" ng-show="session.lineDescShow">{{ trr.title }}</span></span>
+</div>

@@ -1,0 +1,22 @@
+<div class="history-layout">
+<h3>Process history</h3>
+
+<p>{{ historyMode }}</p>
+
+<ul class="history-list">
+	<li ng-repeat="history in currentEntity.process.logs.process_histories">
+	    <pre>{{ history | json }}</pre>
+        <!-- 
+		user action target date  
+        -->	    
+		<div class="history-status"></div>
+		<div class="history-info">
+			<div class="history-title">Title</div>
+			<div class="history-desc">Desc</div>			
+		</div>
+		<div class="history-datetime">01.01.01</div>
+	</li>
+</ul>
+
+
+</div>

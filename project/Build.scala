@@ -4,18 +4,22 @@ import com.typesafe.sbt.web.Import._
 import com.typesafe.sbt.web._
 
 // 2.3.4
-import play.PlayScala
-import play.Play.autoImport._
+//import play.PlayScala
+//import play.Play.autoImport._
 // 2.4.3
-//import play.sbt.PlayScala
-//import play.sbt.Play.autoImport._
+import play.sbt.PlayScala
+import play.sbt.Play.autoImport._
+
+
+
 import PlayKeys._
 import sass.Import._
 
 import com.untyped.sbtjs.Plugin._
 import com.untyped.sbtsass.Plugin._
+import play.twirl.sbt.Import._
 
-import com.typesafe.sbt.less.Import._ 
+import com.typesafe.sbt.less.Import._
 import com.typesafe.sbt.uglify.Import._
 import com.typesafe.sbt.rjs.Import._
 import UglifyKeys._
@@ -42,8 +46,8 @@ import scala.sys.process._
 
 
   val hello = InputKey[Unit]("routeGenerator", "Prints 'Hello World'")
-  val testJsTask = TaskKey[Int]("testJs", "Run javascript tests.")    
-  //val test2Task = TaskKey[Int]("test2taskAct", "Run javascript tests.")    
+  val testJsTask = TaskKey[Int]("testJs", "Run javascript tests.")
+  //val test2Task = TaskKey[Int]("test2taskAct", "Run javascript tests.")
 
 
   val helloTask = hello := {
@@ -59,7 +63,7 @@ import scala.sys.process._
   }
   def testJs = (streams) map { (s) => {
     s.log.info("Executing router downloading")
-    Thread.sleep(6000)    
+    Thread.sleep(6000)
     url("http://127.0.0.1:9000/jsroutes.js") #> file("jsroutes.js") !
     // Your implementation
   }
@@ -75,7 +79,7 @@ lazy val setEnvTask: Def.Initialize[InputTask[Unit]] = Def.inputTask{
   val env = spaceDelimited("<arg>").parsed.head
   System.setProperty("checkEnv", env)
 }
-setEnvironmentTask <<= setEnvTask 
+setEnvironmentTask <<= setEnvTask
 runIntegrationTest := setEnvironmentTask.parsed.flatMap{ _ =>
   integrationTest.taskValue
 }.value
@@ -85,7 +89,7 @@ integrationTest := {
 
 
   initialCommands in console := "ammonite.repl.Repl.main(null)"
-    
+
   lazy val root = Project("root", file("."))
     .aggregate(bpCore, bpDao, bpWeb)
     .settings(basicSettings: _*)
@@ -96,6 +100,52 @@ integrationTest := {
     .settings(compilerSettings: _*)
     //.settings((helloTask in Test) <<= (test in Test) dependsOn (testJsTask))
 
+
+
+    lazy val bpWeb2 = Project("bp-web2", file("bp-web2"))
+      .enablePlugins(PlayScala)
+      .enablePlugins(SbtWeb)
+      .settings(basicSettings: _*)
+      .settings((WebKeys.public in Assets) := (classDirectory in Compile).value / "public")
+      .settings(jsSettings : _*)
+      .settings(TwirlKeys.templateImports ++= Seq(
+        "play.api.Play.current",
+        "play.api.i18n.Messages.Implicits._"
+      ))
+      .settings(sassOptions in Assets ++= Seq("--compass", "-r", "compass"))
+      .settings(sassSettings : _*)
+          .settings(libraryDependencies ++=
+        List(
+          play4, // good
+          playslick,
+          bootstrap, // good
+          guice,
+          filter4, // good
+          formtag4, // good
+          bcrypt,
+          requirejs,
+          cache4,
+          mailer4,
+          ficus,
+          anorm4,
+          jdbc4,
+          swaggerRoute,
+          silhouette,
+
+          scalamandrill,
+          javamandrill,
+          javamandrill2,
+
+          webserviceclient,
+          bootstrapplay4
+        //  securesocial
+        ))
+      .settings(libraryDependencies ~= { _.map(_.exclude("org.slf4j", "slf4j-simple")) })
+      .dependsOn(bpCore, bpDao)
+
+
+
+
   lazy val bbSDK = Project("bbSDK", file("bb-sdk"))
     .settings(basicSettings: _*)
     .settings(revolverSettings: _*)
@@ -104,25 +154,25 @@ integrationTest := {
         List(
           scalarx,
           courier,
-          async, 
-          amonite, 
-          reflect, 
+          async,
+          amonite,
+          reflect,
           wcs,
-          akkaActor, 
-          scaldiakka, 
-          dispatch, 
-          scalaz, 
+          akkaActor,
+          scaldiakka,
+          dispatch,
+          scalaz,
           webserviceclient,
           scalazstream,
           slackapi,
-          mechanize,nscala, 
-          scalatest, 
-          scalaLog, 
-          logback, 
-          syslog,  
+          mechanize,nscala,
+          scalatest,
+          scalaLog,
+          logback,
+          syslog,
           scaldi,
           sprayClient,
-          play4, 
+          play4,
           hdrHistogram))
     .settings(libraryDependencies ~= { _.map(_.exclude("org.slf4j", "slf4j-simple")) })
 
@@ -140,27 +190,27 @@ integrationTest := {
           javamail,
           courier,
           poi,poiscala,
-          async, 
-          amonite, 
-          reflect, 
+          async,
+          amonite,
+          reflect,
           wcs,
-          akkaActor, 
+          akkaActor,
       //    akkaQuartz,
-          scaldiakka, 
+          scaldiakka,
           dispatch,
           //trireme,
           //triremenode10src,
           jsengine,
           futiles,
-          scalaz, 
+          scalaz,
           scalazstream,
-          mechanize,nscala, 
-          scalatest, 
-          scalaLog, 
-          logback, 
-          syslog,  
+          mechanize,nscala,
+          scalatest,
+          scalaLog,
+          logback,
+          syslog,
 	        scaldi,
-          sprayClient, 
+          sprayClient,
           hdrHistogram))
     .settings(libraryDependencies ~= { _.map(_.exclude("org.slf4j", "slf4j-simple")) })
 
@@ -177,10 +227,10 @@ integrationTest := {
     .settings(
       libraryDependencies ++=
         List(
-          async, 
-          //akkaSlf4j, 
+          async,
+          //akkaSlf4j,
           paypal,
-          slick, 
+          slick,
           slick_migrate,
           hikari_core,
           jacksonbson,
@@ -193,16 +243,16 @@ integrationTest := {
           slickpg,
           slickpgcore,
           jodaconvert,
-          jodamapper, 
+          jodamapper,
           scalatest,
-          rediscache, 
-          reflect, 
-          postgres, 
-          logbackClassic, 
-          scalaLog, 
-          sprayCan, 
-          sprayRouting, 
-          hdrHistogram, 
+          rediscache,
+          reflect,
+          postgres,
+          logbackClassic,
+          scalaLog,
+          sprayCan,
+          sprayRouting,
+          hdrHistogram,
           sprayJson))
         .settings(libraryDependencies ~= { _.map(_.exclude("org.slf4j", "slf4j-simple")) })
 
@@ -213,7 +263,7 @@ integrationTest := {
 
   lazy val bpWeb = Project("bp-web", file("bp-web"))
 //    .enablePlugins(SbtLiquibase)
-    .enablePlugins(PlayScala)
+    .enablePlugins(_root_.play.PlayScala)
     .enablePlugins(SbtWeb)
     //.enablePlugins(ScalaJSPlugin)
     .settings(basicSettings: _*)
@@ -225,7 +275,7 @@ integrationTest := {
     //.settings(formatSettings: _*)(WebKeys.public in Assets) := (classDirectory in Compile).value / "public",
     .settings(revolverSettings: _*)
     .settings(jsSettings : _*)
-   .settings(sassOptions in Assets ++= Seq("--compass", "-r", "compass"))    
+   .settings(sassOptions in Assets ++= Seq("--compass", "-r", "compass"))
     .settings(sassSettings : _*)
     //.settings(liquibaseUsername := "postgres")
     //.settings(liquibasePassword := "12344321")
@@ -246,12 +296,12 @@ integrationTest := {
     .settings(
       libraryDependencies ++=
         List(
-          async, 
-          akkaActor, 
-         // akkaSlf4j, 
-          slick, 
+          async,
+          akkaActor,
+         // akkaSlf4j,
+          slick,
           playsctest,
-          play, 
+          play,
           play2oauth2,
           requirejs,
           slf4j,
@@ -261,7 +311,7 @@ integrationTest := {
           fluentleniumasj,
           underscore,
           jquery,
-          bootstrap, 
+          bootstrap,
           angular,
           angular,
           //swagger,
@@ -271,8 +321,8 @@ integrationTest := {
           //scalamandril2,
           angulartoastr,
           mailchimp,
-          apamailer, 
-          logentries, 
+          apamailer,
+          logentries,
           playauth,
           securesocialold,
           deadbolt,
@@ -280,31 +330,31 @@ integrationTest := {
           compressor,
           mockito,
           formtag,
-          ptest, 
-          scaldiplay, 
-          jsonvariants, 
-          playflyway, 
+          ptest,
+          scaldiplay,
+          jsonvariants,
+          playflyway,
           playctrl,
-          cache, 
-          filter, 
+          cache,
+          filter,
 //          hicaricp,
           scalikejdbc,
           scalikejdbcconf,
           //scalikejdbcplay,
-          jdbc, 
-          anorm, 
-          shapeless, 
-          mailer, 
+          jdbc,
+          anorm,
+          shapeless,
+          mailer,
           mailerses,
           scalatest0,
           scalatest,
           scalatest2,
           scalatest3,
-          reflect, 
-          bcrypt, 
-          postgres, 
-          logbackClassic, 
-          scalaLog, 
+          reflect,
+          bcrypt,
+          postgres,
+          logbackClassic,
+          scalaLog,
           hdrHistogram))
     .settings(libraryDependencies ~= { _.map(_.exclude("org.slf4j", "slf4j-simple")) })
 
@@ -356,9 +406,9 @@ integrationTest := {
     .settings(
       libraryDependencies ++=
         List(
-          // async, 
-          // akkaActor, 
-          // akkaSlf4j, 
+          // async,
+          // akkaActor,
+          // akkaSlf4j,
           // reactivemongo,
           // playreactmongo,
           // jshemavalid,
@@ -366,40 +416,46 @@ integrationTest := {
           // wcs,
           // simplereacmongo,
           // reactivemongoext,
-          play4, 
+          play4,
           // requirejs,
           // underscore,
           // jquery,
-          bootstrap, 
-          // angular,      
+          bootstrap,
+          // angular,
           // playauth,
           guice,
           ficus,
           bootstrapplay,
           silhouette,
           silhouettetest,
-          // jsonvariants, 
-          // playflyway, 
-          // playctrl, 
-          // cache, 
+          // jsonvariants,
+          // playflyway,
+          // playctrl,
+          // cache,
           // scaldiplay,
           // salat,
-          // filter, 
-          // jdbc, 
-          // anorm, 
-          // shapeless, 
-          // mailer, 
-          // scalatest, 
-          // reflect, 
-          // bcrypt, 
-          // postgres, 
-          // logbackClassic, 
-          // scalaLog, 
+          // filter,
+          // jdbc,
+          // anorm,
+          // shapeless,
+          // mailer,
+          // scalatest,
+          // reflect,
+          // bcrypt,
+          // postgres,
+          // logbackClassic,
+          // scalaLog,
           hdrHistogram))
         //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
         //test(scalatest, akkaTestKit, sprayTestkit))
     //.dependsOn(bpCore, bpDao)
 */
+
+
+
+
+
+
 
 
   val noPublishing = Seq(publish := (), publishLocal := ())

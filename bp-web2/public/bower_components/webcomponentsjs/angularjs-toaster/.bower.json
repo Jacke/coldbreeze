@@ -1,0 +1,31 @@
+{
+  "name": "angular-toaster",
+  "version": "1.0.0",
+  "homepage": "https://github.com/emorvillez/angular-toaster",
+  "authors": [
+    "emorvillez"
+  ],
+  "description": "Simple toaster directive for angular",
+  "main": "toaster.js",
+  "keywords": [
+    "toaster",
+    "angular"
+  ],
+  "ignore": [
+    "**/.*"
+  ],
+  "dependencies": {
+    "angular": "1.3.0"
+  },
+  "license": "MIT",
+  "_release": "1.0.0",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.0.0",
+    "commit": "207e01b98675b35731d9017feeafbafed7051fe9"
+  },
+  "_source": "git://github.com/emorvillez/angular-toaster.git",
+  "_target": "~1.0.0",
+  "_originalSource": "angular-toaster",
+  "_direct": true
+}

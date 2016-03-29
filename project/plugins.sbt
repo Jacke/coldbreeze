@@ -61,7 +61,10 @@ addSbtPlugin("com.github.mpeltonen" % "sbt-idea" % "1.6.0")
 
 addSbtPlugin("com.typesafe.sbteclipse" % "sbteclipse-plugin" % "2.4.0")
 
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.0" exclude("org.slf4j", "slf4j-simple"))
+//addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.3.0" exclude("org.slf4j", "slf4j-simple"))
+
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.4.6" exclude("org.slf4j", "slf4j-simple"))
+
 
 // gulp required new version of play
 

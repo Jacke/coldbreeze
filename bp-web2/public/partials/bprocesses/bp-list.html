@@ -1,0 +1,154 @@
+<div class="tableMinListWrap">
+  <a class="createMin ajaxLink cacheable" id="createNewProcessBtn" ng-click="createNewBP()" ng-show="isManagerVal"><span class="plusSign vIco vPlusSquare vShineState"></span> {{ 'NEW_PROCESS' | translate }}</a>
+
+  <div class="service-helper" ng-show="service_id != null">   
+    <a ng-click="allServices()">{{ 'ALL_SERVICES' | translate }} </a>
+  </div>
+  <div class="tableMinListFilter search-process-input filterLayer">
+    <span class="magnifyGlass vIco vLoupe vLight2State"></span>
+    <input type="text" size="41" ng-model="search.$" data-toggle-class="hidden" class="filterInput tableMinListFilterInput" placeholder="{{ 'SEARCH_PROC' | translate }}">
+  </div>
+
+<div class="panelLike organisationsGridLike">
+<div class="empty-reponse" ng-init="isEmptyProcesses = false;" ng-show="isEmptyProcesses" ng-cloak>You have no process. Create one by describing simple workflow. Then come back here</div>
+
+  <ul ul id="tablemin" class="tableMinList processList">
+  <div class="process" ng-repeat="bprocess in bprocesses | filter:search">
+    <div class="process-status">
+    <div class="fastElCreateBtn">
+      <a class="fastElFormButton" ng-click="switchFastElementForm(bprocess)" uib-tooltip="Add element" tooltip-side="left">+</a>
+    </div> 
+    <li class="tableMinListItem frontProcessInfo" ng-hide="bprocess.fastElForm">
+      <h2 class="tableMinListName">
+        <a class="tableMinName vIcoIn" href="/a#/bprocess/{{ bprocess.id }}/elements" id="processTitle">{{ bprocess.title }}</a>
+        <span class="tableMinVanity">{{ filterService(bprocess.service) }}</span>
+      </h2>
+      <div class="process_content" ng:show="emptyElemCheck(bprocess.trees)">
+        <div ng-include src="'assets/partials/treeThumb.html'"></div>
+      </div>
+      <div class="tableMinListControls processListControls" ng-show="isManagerVal">
+        <a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="perm(bprocess.id)"><span class="uicon-svg98"></span> {{ 'PEOPLE' | translate }} </a>
+        <!--<a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" ng-click="modalShare(bprocess.id)"><span class="minicon-share"></span> {{ 'SHARE' | translate }}</a>-->
+        <!--
+          <a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" href="/a#/launches?process={{ bprocess.id }}"><span class="uicon-svg372"></span>{{ 'STATIONS' | translate }}</a>
+        -->
+        <a class="tableMinControlsLink teamSettingsLink tableMinLinkDelete" id="processDeleteButton" ng-click="deleteBP(bprocess.id)"> <span class="minicon-trash"></span> {{ 'DELETE' | translate }} </a>
+      </div>
+      <div class="process-thumb" ng:show="emptyElemCheck(bprocess.trees)">
+        <p class="tableMinListGithub">
+          <a class="redButton" id="launchProcessButton" ng-click="run(bprocess)" tooltip-placement="left" uib-tooltip="Launch process" tooltip-side="left"></a>
+        </p>
+      </div>
+    </li>
+    <!-- Fast element form -->
+    <li class="tableMinListItem fastElementForm nga-fast nga-stagger-fast nga-squash-right" ng-show="bprocess.fastElForm">
+      <div ng-include src="'assets/partials/bprocesses/fastElementCreation.html'"></div>
+          <div class="fastElCreateBtn">
+            <a class="fastElFormButton" ng-click="switchFastElementForm(bprocess)" uib-tooltip="Close form" tooltip-side="left">-</a>
+          </div>   
+    </li>
+    <!-- Fast element form /-->
+    </div>
+    <div class="stations"> <!-- ng:show="emptyCheck(process.stations, bprocess.id)">    | filter: { station.paused: true } | slice:2:2 -->
+      <div ng-include src="'assets/partials/launchesBar.html'" class="launches-bar" ng-repeat="session in bprocess.sessions[0].sessions | filter: filterForActiveLaunch"></div>
+    <!--
+        <div class="station-markers">
+              <a class="marker" href="/a#/bprocess/{{ bprocess.id }}/stations" ng-repeat="station in stations | filter: { finished: true, process: bprocess.id } | slice:2:2">
+
+              <span class="number small {{ station.state }}">{{ $index + 1 }}</span>
+                    <ul class="station-states">
+                      <li class="state started {{ station.started }}"> {{ 'STARTED' | translate }}  </li>
+                      <li class="state paused {{ station.paused }}"> {{ 'PAUSED' | translate }}  </li>
+                      <li class="state finished {{ station.finished }}"> {{ 'FINISHED' | translate }}  </li>
+                    </ul>
+        </div>-->
+        <!--<a class="allStation" href="/a#/bprocess/{{ bprocess.id }}/launches">{{ 'STATIONS' | translate }} </a>-->
+        <!--<div class="station-markers" ng:show="emptyCheck(stations, bprocess.id)">
+              <a class="marker" ng-repeat="station in stations | filter: { finished: false, paused: true, process: bprocess.id }">
+                <span class="number small {{ station.state }}">{{ $index + 1 }}</span>
+                    <ul class="station-states">
+                      <li class="state started {{ station.started }}"> {{ parsePercent(((station.step+1)/bpElemLength[bprocess.id])*100)}}% </li>
+                      <li class="state paused {{ station.paused }}"> {{ 'PAUSED' | translate }}  </li>
+                      <li class="state finished {{ station.finished }}"> {{ 'FINISHED' | translate }} </li>
+                    </ul>        
+        </div>-->
+    </div>
+  </div>
+  </ul>
+</div>
+</div><!-- <div class="tableMinListWrap"> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--
+<div class="span6">
+
+  <table class="table table-striped table-condensed">
+    <thead>
+      <tr>
+        <th style="min-width: 80px;">Service name</th>
+        <th style="min-width: 80px;">Process title</th>
+        <th style="min-width: 80px;">Invokation</th>
+        <th style="min-width: 80px;">Edit</th>
+        <th style="min-width: 80px;">Elements</th>
+        <th style="min-width: 80px;">Permission</th>
+        <th style="min-width: 80px;">Delete</th>
+        <th style="min-width: 80px;">Station</th>
+        <th style="width:20px;">&nbsp;</th>
+        <th style="width:20px;">&nbsp;</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="bprocess in bprocesses">
+        <td><a href="/services">{{ filterService(bprocess.service) }}</a></td>
+        <td>{{ bprocess.title }}</td>
+        <td><a href="/a#/bprocess/{{ bprocess.id }}/input" class="btn btn-small btn-success">Invoking</a></td>
+        <td><a ng-click="showBP(bprocess.id)" class="btn btn-small btn-primary">Edit</a></td>
+        <td><a href="/a#/bprocess/{{ bprocess.id }}/elements" class="btn btn-small btn-primary">Elements</a></td>
+        <td><a href="/a#/bprocess/{{ bprocess.id }}/perms" class="btn btn-small btn-primary">Permissions</a></td>
+        <td><a ng-click="deleteBP(bprocess.id)" class="btn btn-small btn-danger">Delete</a></td>
+        <td><a href="/a#/bprocess/{{ bprocess.id }}/stations">Show All stations</a></td>
+        <td ng-repeat="station in stations | filter: { finished: false, paused: true, process: bprocess.id }">
+              <div class="progress">
+              <div class="progress-bar" role="progressbar" aria-valuenow="{{station.step*10}}" aria-valuemin="0" aria-valuemax="100" style="width: {{station.step*10}}%;">
+              <a href="/a#/bprocess/{{ bprocess.id }}/input">{{ stationPercent(station) }} {{station.step*10}}%</a><
+              </div>
+              </div>
+        </td>
+
+      </tr>
+
+    </tbody>
+  </table>
+  <a ng-click="createNewBP()" class="btn btn-small">Create</a>
+</div>-->
+
+
+
+<script>
+
+
+$('.menu-hamburger').click(function(ev) { ev.preventDefault(); $('.menu-hamburger').toggleClass('open')});
+</script>
+

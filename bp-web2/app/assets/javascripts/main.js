@@ -1,0 +1,1031 @@
+// `main.js` is the file that sbt-web will use as an entry point
+(function (requirejs) {
+  'use strict';
+
+  // -- RequireJS config --
+  requirejs.config({
+    // Packages = top-level folders; loads a contained file named 'main.js"
+    // baseUrl: '/assets/javascripts',
+    waitSeconds: 200,
+    packages: ['common'],//, 'home', 'user', 'dashboard'],
+
+ config: {
+    jsx: {
+ transformer: "babel",
+    babelOptions: {
+      sourceMaps: 'inline'
+    }
+    }
+  },
+    jsx: {
+ transformer: "babel",
+    babelOptions: {
+      sourceMaps: 'inline'
+    }
+    },
+
+    shim: {
+      'jsRoutes': {
+        deps: [],
+        // it's not a RequireJS module, so we have to tell it what var is returned
+        exports: 'jsRoutes'
+      },
+      // Hopefully this all will not be necessary but can be fetched from WebJars in the future
+      'angular': {
+        deps: ['jquery'],
+        exports: 'angular'
+      },
+      'mobileDetect': {
+        exports: 'mobileDetect'
+      },
+      'selectize': {
+        deps: ['jquery'],
+        exports: 'selectize'
+      },
+      'popupoverlay': {
+        deps: ['jquery'],
+        exports: 'popupoverlay'
+      },
+     'angularAMD': ['angular'],
+
+      'angular-route': {
+       deps: ['angular'],
+       exports: 'angular-route'
+      },
+
+      'angularanimate': {
+       deps: ['angular'],
+       exports: 'angularanimate'
+      },
+
+      'angular-websocket': {
+       deps: ['angular'],
+       exports: 'angular-websocket'
+      },
+
+
+      'toastr': {
+       deps: ['angular'],
+       exports: 'toastr'
+      },
+//
+//      'toastr-tpl': {
+//      deps: ['angular'],
+//      exports: 'toastr-tpl'
+//      },
+
+      'angular-pageslide-directive': {
+       deps: ['angular'],
+       exports: 'angular-pageslide-directive'
+      },
+
+      'jcs-auto-validate': {
+       deps: ['angular'],
+       exports: 'jcs-auto-validate'
+      },
+
+      'angular-classy': {
+       deps: ['angular'],
+       exports: 'angular-classy'
+      },
+
+      'angular-resource': {
+       deps: ['angular'],
+       exports: 'angular-resource'
+      },
+
+      'angular-cookies': {
+       deps: ['angular'],
+       exports: 'angular-cookies'
+      },
+
+      'select': {
+       deps: ['angular'],
+       exports: 'select'
+      },
+
+      'pnotify': {
+       deps: ['angular'],
+       exports: 'pnotify'
+      },
+
+      'pnotifyconfirm': {
+        deps: ['pnotify','jquery'],
+        exports: 'pnotifyconfirm'
+      },
+      'pnotifybuttons': {
+        deps: ['pnotify', 'jquery'],
+        exports: 'pnotifybuttons'
+      },
+      'angularpnotify': {
+        deps: ['angular','pnotify','jquery'],
+        exports: 'angularpnotify'
+      },
+      'moment': {
+       deps: ['jquery'],
+       exports: 'moment'
+      },
+      'angular-moment': {
+       deps: ['moment', 'angular'],
+       exports: 'angular-moment'
+      },
+      'livestamp': {
+       deps: ['moment'],
+       exports: 'livestamp',
+      },
+      'ngDialog': {
+       deps: ['angular'],
+       exports: 'ngDialog'
+      },
+      'roundProgress': {
+        deps: ['angular'],
+        exports: 'roundProgress'
+      },
+      'angular-ui-tree': {
+       deps: ['angular'],
+       exports: 'angular-ui-tree'
+      },
+      'angular-underscore': {
+       deps: ['angular'],
+       exports: 'angular-underscore'
+      },
+      'loading-bar': {
+       deps: ['angular'],
+       exports: 'loading-bar'
+      },
+      'ng-slide-down': {
+       deps: ['angular'],
+       exports: 'ng-slide-down'
+      },
+      'ui-bootstrap': {
+       deps: ['angular'],
+       exports: 'ui-bootstrap'
+      },
+      'ui-bootstrap-tpls': {
+       deps: ['angular', 'ui-bootstrap'],
+       exports: 'ui-bootstrap-tpls'
+      },
+      'toaster': {
+       deps: ['angular'],
+       exports: 'toaster'
+      },
+      'angularLocalStorage': {
+       deps: ['angular'],
+       exports: 'angularLocalStorage'
+      },
+      'angular-awesome-error': {
+       deps: ['angular'],
+       exports: 'angular-awesome-error'
+      },
+      'angular-translate': {
+       deps: ['angular'],
+       exports: ''
+      },
+      'daterangepicker': {
+       deps: ['angular'],
+       exports: 'daterangepicker'
+      },
+
+      'angular-daterangepicker': {
+       deps: ['angular', 'daterangepicker'],
+       exports: 'angular-daterangepicker'
+      },
+
+"react": {
+      "exports": "React"
+    },
+"react-modal":{
+   deps: ['react'],
+   exports: 'reactModal'
+},
+//"JSXTransformer": "JSXTransformer",
+
+'app': {
+  deps: ['angular', 'toastr', 'toaster', 'roundProgress'],
+  export: 'app'
+},
+//'lkgooglepicker': {
+//  deps: ['angular', 'app'],
+//  export: 'lkgooglepicker'
+//},
+'filters': {
+  deps: ['angular', 'app'],
+  export: 'filters'
+},
+'services': {
+  deps: ['angular', 'app'],
+  export: 'services'
+},
+'launches': {
+  deps: ['angular', 'app'],
+  export: 'launches'
+},
+'fastResourceCostCreation': {
+  deps: ['angular', 'app'],
+  export: 'fastResourceCostCreation'
+},
+
+//'popupService': {
+//  deps: ['angular', 'app', 'services'],
+//  export: 'services'
+//},
+'treebuilder': {
+  deps: ['angular', 'app'],
+  export: 'treebuilder'
+},
+'controllers': {
+  deps: ['angular', 'app', 'toastr', 'toaster'],
+  export: 'controllers'
+},
+'procPermController': {
+  deps: ['angular', 'app', 'controllers', 'toastr'],
+  export: 'procPermController'
+},
+'procController': {
+  deps: ['angular', 'app', 'controllers', 'toastr'],
+  export: 'procController'
+},
+'procDetailController': {
+  deps: ['angular', 'app', 'controllers', 'toastr'],
+  export: 'procDetailController'
+},
+'procCreateController': {
+  deps: ['angular', 'app', 'controllers', 'toastr'],
+  export: 'procCreateController'
+},
+'requestController': {
+  deps: ['angular', 'app', 'controllers', 'toaster'],
+  export: 'requestController'
+},
+'loggerController': {
+  deps: ['angular', 'app', 'controllers', 'toastr'],
+  export: 'loggerController'
+},
+'stationController': {
+  deps: ['angular', 'app', 'controllers', 'toastr'],
+  export: 'stationController'
+},
+'restangular': {
+  deps: ['angular', 'app'],
+  export: 'restangular'
+},
+'angular-tooltips': {
+    deps: ['angular', 'app'],
+  export: 'angular-tooltips'
+},
+'angular-hovercard': {
+  deps: ['angular', 'app'],
+  export: 'angular-hovercard'
+},
+'ui-select': {
+  deps: ['angular', 'app'],
+  export: 'ui-select'
+},
+'apiCheck': {
+  deps: ['angular', 'app'],
+  export: 'apiCheck'
+},
+'angular-formly': {
+  deps: ['angular', 'app'],
+  export: 'angular-formly'
+},
+'angular-cache': {
+  deps: ['angular', 'app'],
+  export: 'angular-cache'
+},
+'angularformlybootstrap': {
+  deps: ['angular', 'app'],
+  export: 'angularformlybootstrap'
+},
+
+'procElementController': {
+  deps: ['angular', 'app', 'controllers', 'toastr'],
+  export: 'procElementController'
+},
+'reflectionController': {
+  deps: ['angular', 'app', 'controllers', 'toastr'],
+  export: 'reflectionController'
+},
+'launchesController': {
+  deps: ['angular', 'app', 'controllers', 'toastr'],
+  export: 'launchesController'
+},
+'directives': {
+  deps: ['angular', 'app', 'controllers', 'toastr'],
+  export: 'directives'
+},
+
+'classie': {
+  deps: ['angular'],
+  export: 'classie'
+},
+'cssParser': {
+  deps: ['angular'],
+  export: 'cssParser'
+},
+'dropdown': {
+  deps: ['jquery'],
+  export: 'dropdown'
+},
+'drag-on': {
+  deps: ['jquery'],
+  export: 'drag-on'
+},
+'tooltip': {
+    deps: ['jquery'],
+  export: 'dropdown'
+},
+'tether': { deps: [], export: 'tether' },
+'offline': { deps: [], export: 'offline' },
+'offlineSimulator': { deps: ['offline'], export: 'offlineSimulator' },
+'shepherd': { deps: ['tether'], export: 'shepherd' },
+'notie': {deps: [], export: 'notie'},
+
+
+      //'bootstrap': ['jquery']
+    },
+    paths: {
+     'requirejs': '../lib/requirejs/require',
+     'angularAMD': '../javascripts/angularAMD',
+     'jsRoutes': '/jsroutes',
+     'jquery':  '../javascripts/jquery-2.1.3.min',
+     'popupoverlay': '../js/jquery.popupoverlay',
+     'drag-on':  '../js/drag-on',
+     'jquery.nicescroll':  '../bower_components/jquery.nicescroll/jquery.nicescroll',
+     'ssl':  '../javascripts/ssl',
+     'header':  '../javascripts/header',
+     'tooltip':  '../bower_components/bootstrap/js/tooltip',
+     'dropdown':  '../bower_components/bootstrap/js/dropdown',
+     'underscore':  '../bower_components/underscore/underscore',
+     'moment':  '../bower_components/moment/moment',
+
+  es6: "../bower_components/requirejs-babel/es6",
+  babel: "../bower_components/requirejs-babel/babel-5.8.34.min",
+
+     'selectize':  '../js/selectize',
+     'mobileDetect': '../js/mobile-detect',
+
+      //'jquery': '../lib/jquery/jquery',
+      //'angular': '../lib/angularjs/angular',
+      //'angular-route': '../lib/angularjs/angular-route',
+      //'angular-cookies': '../lib/angularjs/angular-cookies',
+      //'bootstrap': '../lib/bootstrap/js/bootstrap',
+
+  'angularanimate': '../bower_components/angular-animate/angular-animate',
+  'angular': '../bower_components/angular/angular',
+  'react': '../bower_components/react/react-with-addons',
+  'react-dom': '../bower_components/react/react-dom',
+  'react-modal': '../bower_components/react-modal/dist/react-modal',
+
+  'angular-websocket': '../bower_components/angular-websocket/angular-websocket',
+  'toastr': '../bower_components/angular-toastr/toastr',
+  //'toastr-tpl': '../bower_components/angular-toastr/toastr.tpl',
+  'angular-pageslide-directive': '../bower_components/angular-pageslide-directive/src/angular-pageslide-directive',
+  'jcs-auto-validate': '../bower_components/angular-auto-validate/dist/jcs-auto-validate.min',
+  'angular-classy': '../bower_components/angular-classy/angular-classy.min',
+  'angular-resource': '../bower_components/angular-resource/angular-resource',
+  'angular-cookies': '../bower_components/angular-cookies/angular-cookies',
+  'select': '../bower_components/angular-ui-select/dist/select',
+
+'apiCheck': '../bower_components/api-check/dist/api-check',
+'angular-formly': '../bower_components/angular-formly/dist/formly',
+'angularformlybootstrap': '../bower_components/angular-formly-templates-bootstrap/dist/angular-formly-templates-bootstrap',
+
+  'pnotify': '../bower_components/pnotify/pnotify.core',
+  'pnotifyconfirm':'../bower_components/pnotify/pnotify.confirm',
+  'pnotifybuttons':'../bower_components/pnotify/pnotify.buttons',
+  'angularpnotify':'../bower_components/angular-pnotify/src/angular-pnotify',
+'restangular':'../bower_components/restangular/dist/restangular',
+'angular-cache':'../bower_components/angular-cache/dist/angular-cache',
+'angular-hovercard':'../bower_components/angular-hovercard/dist/angular-hovercard',
+'angular-tooltips':'../bower_components/angular-tooltips/dist/angular-tooltips.min',
+'ui-select': '../bower_components/ui-select/src/select3',
+'notie': '../bower_components/notie/notie',
+
+  'roundProgress': '../bower_components/angular-svg-round-progressbar/src/roundProgress',
+  'angular-moment': '../bower_components/angular-moment/angular-moment',
+  'livestamp': '../bower_components/livestamp/livestamp',
+  'ngDialog': '../bower_components/ngDialog/js/ngDialog',
+  'angular-ui-tree': '../bower_components/angular-ui-tree/dist/angular-ui-tree',
+  'angular-underscore': '../bower_components/angularjs-toaster/angularunderscore',
+  'loading-bar': '../bower_components/angular-loading-bar/src/loading-bar',
+  'ng-slide-down': '../bower_components/ng-slide-down/dist/ng-slide-down',
+  'ui-bootstrap': '../bower_components/angular-bootstrap/ui-bootstrap',
+  'ui-bootstrap-tpls': '../bower_components/angular-bootstrap/ui-bootstrap-tpls',
+  'toaster': '../bower_components/angularjs-toaster/toaster',
+  'angularLocalStorage': '../bower_components/angularLocalStorage/src/angularLocalStorage',
+  'angular-awesome-error': '../bower_components/angular-errors-directive/angular-awesome-error',
+  'angular-translate': '../js/angular-translate',
+  'daterangepicker': '../bower_components/bootstrap-daterangepicker/daterangepicker',
+  'angular-daterangepicker': '../bower_components/angular-daterangepicker/js/angular-daterangepicker',
+
+//  'filepicker': '../bower_components/filepicker-js/dist/filepicker',
+//  'angularfilepicker': '../bower_components/angular-filepicker/dist/angular_filepicker',
+  'lkgooglepicker': '../bower_components/angular-google-picker/dist/google-picker',
+
+//"JSXTransformer": "../bower_components/react/JSXTransformer",
+    "jsx": "../bower_components/requirejs-react-jsx/jsx",
+    "text": "../bower_components/requirejs-text/text",
+
+  'app': '../js/app',
+  'reactapp': '../js/reactapp',
+  'filters': '../js/filters',
+  'services': '../js/services',
+  'launches': '../js/services/launches',
+  'fastResourceCostCreation': '../js/services/fastResourceCostCreation',
+ // 'popupService': '../js/popupService',
+  'treebuilder': '../js/treebuilder',
+  'controllers': '../js/controllers/controllers',
+  'procPermController': '../js/controllers/procPermController',
+  'procController': '../js/controllers/procController',
+  'historyController': '../js/controllers/historyController',
+  'procCreateController': '../js/controllers/processes/procCreateController',
+  'procDetailController': '../js/controllers/processes/procDetailController',
+  'requestController': '../js/controllers/requestController',
+  'loggerController': '../js/controllers/loggerController',
+  'stationController': '../js/controllers/stationController',
+  'procElementController': '../js/controllers/procElementController',
+
+
+  'reflectionController': '../js/controllers/reflectionController',
+  'launchesController': '../js/controllers/launchesController',
+  'directives': '../js/directives',
+  'classie': '../js/classie',
+  'cssParser': '../js/cssParser',
+  'tether': '../bower_components/tether/dist/js/tether',
+  'shepherd': '../bower_components/tether-shepherd/dist/js/shepherd',
+  'tour': '../javascripts/tour',
+  'offline': '../bower_components/offline/offline',
+  'offlineSimulator': '../bower_components/offlinejs-simulate-ui/offline-simulate-ui.min'
+  }});
+
+  requirejs.onError = function (err) {
+    throw err;//console.log(err);
+  };
+
+  // Load the app. This is kept minimal so it doesn't need much updating.
+require(['requirejs','jsRoutes','jquery', 'react','pnofiy','mobileDetect','popupoverlay','drag-on','jquery.nicescroll','ssl','offline','offlineSimulator','header','tooltip','dropdown','underscore','moment','selectize', 'tether', 'shepherd','tour','notie',
+  ],//'jquery', 'bootstrap'],//, './app'],
+    function (requirejs,jsRoutes,$,react, pnofiy,mobileDetect,popupoverlay,dragOn,niceScroll,ssl,offline,offlineSimulator,header,tooltip,dropdown,underscore,moment,selectize,tether,shepherd,tour,notie) {
+        document.tour = tour;
+
+      $(document).ready(function(){
+        document.mobileDetect = new mobileDetect(window.navigator.userAgent);
+        document.isMobile = (document.mobileDetect.phone() != null) ? true : false;
+        document.react = react;
+        $('[data-toggle="tooltip"]').tooltip();
+
+
+        // Tours
+        var dashBoardTour = function() {
+          if (location.pathname == "/") {
+            document.tour.dashboardTour.start()
+          }
+        }
+        if (localStorage.dashBoardTour == undefined) {
+          localStorage.setItem("dashBoardTour", true);
+          dashBoardTour();
+          localStorage.setItem("dashBoardTour", false);
+        } else {
+          if (localStorage.dashBoardTour == "true") {
+            dashBoardTour();
+            localStorage.setItem("dashBoardTour", false);
+          }
+        }
+
+
+        if (document.isMobile) {
+          $('.overlay_mobile').toggleClass('visible_overlay');
+          $('#container').hide();
+          $('.overlay_mobile a').on('click', function(event) {
+                $('.overlay_mobile').toggleClass('visible_overlay');
+                $('#container').show();
+
+          });
+        }
+
+        $("html").niceScroll({styler:"fb",cursorcolor:"#000", cursorwidth:"10px", scrollspeed: 100});
+
+        var now = moment();
+        $('time').each(function(i, e) {
+            var time = moment($(e).attr('datetime'));
+
+            if(now.diff(time, 'days') != 1) {
+                $(e).text('Started ' + time.from(now));
+            }
+        });
+        $(function () {
+            $('#dashTab a:last').tab('show');
+        })
+        $('.date-span').each(function(i, e) {
+            var time = moment($(e).data('date')).format('MMMM Do YYYY, h:mm:ss a');
+            $(e).text(time);
+        });
+$('a.bill-field.bill-pay-btn').click(function(e) {
+e.preventDefault();
+$(this).parent().children('.bill-form').toggle();
+$(this).toggleClass('highlighted');
+});
+
+$('a.appLink').click(function(e) {
+  e.preventDefault();
+  if (location.hash.split('#').length > 1) {
+        window.location.href = "a#/bprocesses";
+  } else {
+            window.location.href = "/a";
+
+  }
+})
+
+$('.settings-insert-title').click(function(e) {
+  $(this).parent().children('.settings-insert').toggle();
+  $(this).toggleClass('highlighted');
+})
+
+// Utils for fast input on dashboard
+if ($('.dashboard_sessions').length > 0) {
+  $('.instant-input button').on('click', function(ev){
+    ev.preventDefault;
+    $(this).parent().addClass('loading');
+    var data = $( this ).data();
+    jsRoutes.controllers.ProcessInputController.invokeFrom(data.sessionId, data.processId).ajax({
+      dataType: 'json',contentType: 'application/json',data: JSON.stringify( [{ "reaction_id": data.reactionId }] )
+    }).done(function() {
+        console.log( "success" );
+        var el = $($($(this)).parent()[0]).children('.instant-input-file-list');
+        if (el.length > 0) {
+          var data = $.map(el.children(), function(el) {return { obj_type: "type", obj_content: el.getAttribute('href'), obj_title: el.textContent } });
+          console.log(data);
+
+       if (data != undefined && data.length > 0) {
+         jQuery.ajax({
+          url: '/warp?launch_id=' + launch_id,
+          method: "POST",
+          data: { payload: payload },
+          }).done(function(response) {
+           jQuery.ajax({
+            url: '/warp/send',
+            method: "POST",
+            data: response.data.message,
+            }).done(function(response) {
+              console.log(response)
+            });
+
+          });
+       };
+}
+
+        window.location.reload();//.href = "a#/launches";
+      })
+      .fail(function() {
+        $(this).parent().remove('loading');
+        $(this).parent().text('Error');
+        console.log( "error" );
+      })
+    console.log($( this ).data())
+  });
+}
+
+
+
+});
+$('.showServiceForm span.moicon.moicon-plus').first().click(function(event) {
+  event.preventDefault();
+  $('.serviceForm').toggle();
+});
+
+// Settings
+//
+$('#select-country').selectize();
+$('#sideTab a').click(function (e) {
+  e.preventDefault()
+  $(this).tab('show')
+});
+
+//
+// Peoples
+//
+$('.manageWholeTeam').toggleClass('upmenu');
+
+ $('.teamCreationForm button').on('click', function(event) {
+    event.preventDefault();
+    jsRoutes.controllers.GroupController.create_new().ajax({data: JSON.stringify({title: $('.teamCreationForm input').val(), business: -1}), dataType: "json", contentType: 'application/json',
+            xhrFields: {
+                withCredentials: !0
+            },
+            accepts: {
+                json: "application/json"
+            }}).done(function( data ) { console.log(data);
+              location.reload();
+            })
+});
+$('a.delete-group').on('click', function (event) {
+  event.preventDefault();
+  var id = $(this).attr('class').split(' ')[1].split('-')[1];
+
+  jsRoutes.controllers.GroupController.destroy(id).ajax().done(function( data ) { console.log(data);
+              location.reload();
+            });
+});
+
+//$('#addMembersForm').slideToggle();
+var map = Array.prototype.map;
+
+$('#addMembersForm button.posRight').on('click', function(event) {
+
+event.preventDefault();
+  var emails = _.map(document.querySelectorAll('.inputEmployee input#newUsersForGroup'), function( l ){ return l.value }).filter(function(o){return o != "" })
+if (emails.length > 0) {
+
+/*
+jsRoutes.controllers.users.EmployeeController.create_new().ajax({
+        data: JSON.stringify({emails: emails, manager: admin}), dataType: "json", contentType: 'application/json',
+            xhrFields: {
+                withCredentials: !0
+            },
+            accepts: {
+                json: "application/json"
+            }}).done(function( data ) { console.log(data);
+            location.reload();
+            $('#addMembersForm').slideToggle();
+//$('.form-horizontal')[0].submit();
+}).fail(function( jqXHR, textStatus) {
+    //$('.loginFlowPage').prepend('<div class="messageBoxWrap"><p class="message">'+ JSON.parse(jqXHR.responseText).error +'</p></div>');
+  });
+*/
+//var map = Array.prototype.map;
+// map.call(document.querySelectorAll('.inputEmployee input#newUsersForGroup'), function( l ){ return l.value })
+
+var data = $('.inputEmployee').map(function(c){return [$(this).find('.flatInput').val(), $(this).find('.flatCheckbox input').is(':checked') ] })
+var n = 2;
+var lists = _.groupBy(data, function(element, index){
+  return Math.floor(index/n);
+});
+lists = _.filter(_.toArray(lists), function(arr){ return arr[0] != "" });
+var admin = _.map(_.filter(lists, function(arr) { return arr[1] == true }), function(a){return a[0] });
+var employee = _.map(_.filter(lists, function(arr) { return arr[1] == false }), function(a){return a[0]});
+
+console.log("admin");
+console.log(admin);
+console.log("employee");
+console.log(employee);
+
+/**
+ * Submiting
+ */
+var admin_status = false;
+if (admin.length > 0) {
+jsRoutes.controllers.users.EmployeeController.create_new().ajax({
+        data: JSON.stringify({emails: admin, manager: true}), dataType: "json", contentType: 'application/json',
+            xhrFields: {
+                withCredentials: !0
+            },
+            accepts: {
+                json: "application/json"
+            }}).done(function( data ) { console.log(data);
+            reload("admin");
+            $('#addMembersForm').slideToggle();
+//$('.form-horizontal')[0].submit();
+}).fail(function( jqXHR, textStatus) {
+    //$('.loginFlowPage').prepend('<div class="messageBoxWrap"><p class="message">'+ JSON.parse(jqXHR.responseText).error +'</p></div>');
+  });
+} else { admin_status = true; }
+if (employee.length > 0) {
+jsRoutes.controllers.users.EmployeeController.create_new().ajax({
+        data: JSON.stringify({emails: employee, manager: false}), dataType: "json", contentType: 'application/json',
+            xhrFields: {
+                withCredentials: !0
+            },
+            accepts: {
+                json: "application/json"
+            }}).done(function( data ) { console.log(data);
+            reload("employee");
+            $('#addMembersForm').slideToggle();
+//$('.form-horizontal')[0].submit();
+}).fail(function( jqXHR, textStatus) {
+    //$('.loginFlowPage').prepend('<div class="messageBoxWrap"><p class="message">'+ JSON.parse(jqXHR.responseText).error +'</p></div>');
+  });
+}
+
+var reload = function(obj) {
+  if (obj == "admin" && employee.length == 0) {
+    location.reload();
+  }
+  if (obj == "employee" && admin.length == 0) {
+    location.reload();
+  }
+  if (obj == "employee" && admin.length > 0) {
+    location.reload();
+  }
+}
+
+}
+});
+$('#addMembersForm .cancelButton').on('click', function(event) {
+    event.preventDefault();
+    $('#addMembersForm').slideToggle();
+});
+$('.addMembersLink').on('click', function(event) {
+    event.preventDefault();
+    $('#addMembersForm').slideToggle();
+});
+$('.dropdown-toggle').dropdown();
+
+$(document).ready(function(){
+$(".filterInput.tableMinListFilterInput").keyup(function(){
+
+    // Retrieve the input field text and reset the count to zero
+    var filter = $(this).val(), count = 0;
+    if(!filter){
+        $( "li.userCard" ).hide();
+        return;
+    }
+    var regex = new RegExp(filter, "i");
+    // Loop through the user list
+    $( "li.userCard" ).each(function(){
+
+        // If the list item does not contain the text phrase fade it out
+        if ($( ".block", this ).text().search(regex) < 0) {
+            $(this).hide();
+
+        // Show the list item if the phrase matches and increase the count by 1
+        } else {
+            $(this).show();
+            count++;
+        }
+    });
+    // Update the count
+    //var numberItems = count;
+    //$("#filter-count").text("Number of Comments = "+count);
+});
+});
+//
+// Teams
+//
+
+//$('#addMembersForm').slideToggle();
+
+$('#addMembersForm button.updateGroup').on('click', function(event) {
+
+event.preventDefault();
+var names_assign = [];
+var names_unassign = [];
+var promises = [];
+$('input.assignCheckbox:checked').each(function(thos) { names_assign.push($(this).attr('name')) });
+$('input.unassignCheckbox:checked').each(function(thos) { names_unassign.push($(this).attr('name')) });
+
+var uid = "";
+var group_id = location.pathname.split("/peoples/")[1];
+
+_.forEach(names_assign, function(uid) {
+var promise = jsRoutes.controllers.GroupController.assign_user(uid, group_id).ajax().done(function( data ) { console.log(data);
+
+    })
+promises.push(promise);
+promise.fail(function( jqXHR, textStatus) {
+        //$('.loginFlowPage').prepend('<div class="messageBoxWrap"><p class="message">'+ JSON.parse(jqXHR.responseText).error +'</p></div>');
+      });
+});
+_.forEach(names_unassign, function(uid) {
+var promise = jsRoutes.controllers.GroupController.unassign_user(uid, group_id).ajax().done(function( data ) { console.log(data);
+    })
+    promises.push(promise);
+    promise.fail(function( jqXHR, textStatus) {
+        //$('.loginFlowPage').prepend('<div class="messageBoxWrap"><p class="message">'+ JSON.parse(jqXHR.responseText).error +'</p></div>');
+      });
+});
+
+$('#addMembersForm').slideToggle();
+$.when.apply($, promises).done(function () {
+        location.reload();
+});
+
+});
+/*
+$('#addMembersForm .cancelButton').on('click', function(event) {
+event.preventDefault();
+$('#addMembersForm').slideToggle();
+});
+$('.addMembersForm').on('click', function(event) {
+event.preventDefault();
+$('#addMembersForm').slideToggle();
+})
+$('.addMembersLink').on('click', function(event) {
+event.preventDefault();
+$('#addMembersForm').slideToggle();
+})
+$('.dropdown-toggle').dropdown()
+*/
+
+
+$(document).ready(function(){
+$(".filterInput.tableMinListFilterInput").keyup(function(){
+
+    // Retrieve the input field text and reset the count to zero
+    var filter = $(this).val(), count = 0;
+    if(!filter){
+        $( "li.userCard" ).hide();
+        return;
+    }
+    var regex = new RegExp(filter, "i");
+    // Loop through the user list
+    $( "li.userCard" ).each(function(){
+
+        // If the list item does not contain the text phrase fade it out
+        if ($( ".block", this ).text().search(regex) < 0) {
+            $(this).hide();
+
+        // Show the list item if the phrase matches and increase the count by 1
+        } else {
+            $(this).show();
+            count++;
+        }
+    });
+    // Update the count
+    //var numberItems = count;
+    //$("#filter-count").text("Number of Comments = "+count);
+});
+});
+
+
+//
+//
+// Pro layout
+//
+//
+if ($('.pro-layout').length > 0) {
+$('.pro-submit').on('click', function(event) {
+  //POST /pro/subscribe
+  event.preventDefault();
+  console.log(event);
+
+  jsRoutes.controllers.Application.subscribePro().ajax({data: JSON.stringify({}),dataType: "json", contentType: "application/json"}).done(function(data) {
+      console.log(data);
+      document.location.pathname = "/pro";
+});
+
+});
+
+
+$('.ea-submit').on('click', function(event) {
+  console.log(event);
+  event.preventDefault();
+  jsRoutes.controllers.Application.subscribeEa().ajax({data: JSON.stringify({}),dataType: "json", contentType: "application/json"}).done(function(data) {
+      console.log(data);
+      document.location.pathname = "/pro";
+  });
+
+});
+
+}
+//
+// Databoard
+//
+
+        var scntDiv = $('#p_scents');
+        if (scntDiv != undefined) {
+        var i = $('div.meta_fields').size() + 1;
+        var name = $('#addScnt').data('name');
+
+        $('#addScnt').on('click', function() {
+                $('<div class="meta_fields"><label for="p_scnts"><input type="text" id="p_scnt" size="20" name="'+name + '[' + i +'].key" value="" placeholder="Key" /></label><input type="text" id="p_scnt" size="20" name="'+name + '[' + i +'].value" value="" placeholder="Value" /></label><a href="#" id="remScnt">Remove</a></div>').appendTo(scntDiv);
+                i++;
+                return false;
+        });
+
+        $('#remScnt').on('click', function() {
+                if( i > 2 ) {
+                        $(this).parents('p').remove();
+                        i--;
+                }
+                return false;
+        });
+        $('.removeMeta').on('click', function(ev) {
+            ev.preventDefault;
+                if( i > 2 ) {
+                        $(this).parents('div.meta_fields').remove();
+                        i--;
+                }
+                return false;
+        });
+
+        //        $('#addScnt').data('name')
+        }
+// Databoard
+//
+// case class ResourceAttributeContainer(resource: ResourceDTO, attribute: Entity)
+/*
+Entity
+  title: String,
+  boardId: UUID,
+  description: String,
+  publisher: String,
+  etype: String,
+  default: String = "",
+ResourceDTO
+  title
+  business
+*/
+if ($('#createResourceBtn').length > 0) {
+
+$('#resourceTitle').change(function() {
+  if ($( this ).val() != "") {
+  $(".resources-list button#createResourceBtn").removeClass('offed');
+} else {
+  $(".resources-list button#createResourceBtn").addClass('offed');
+}
+});
+$('.newResourceForm').on('input', function() {
+  if ($( this ).val() != "") {
+  $(".resources-list button#createResourceBtn").addClass('offed');
+} else {   $(".resources-list button#createResourceBtn").removeClass('offed');
+}
+});
+
+
+$(".tableMinListFilter.search-process-input.add-resource-field.filterLayer #resourceTitle").focusin(function() {
+  $( ".inlineEntityForm" ).slideDown();
+});
+$(".tableMinListFilter.search-process-input.add-resource-field.filterLayer #resourceTitle").focusout(function() {
+  if ($('#resourceTitle').val() != "") {
+
+  } else {
+  $( ".inlineEntityForm" ).hide();
+  }
+});
+
+
+  $('#createResourceBtn').click(function(ev){
+    ev.preventDefault();
+    $('#createResourceBtn').hide();
+    var resource = { title: $('#resourceTitle').val(), business: 0 };
+
+
+    var attribute = {
+      title: $('#newInlineAttrTitleField').val(),
+      boardId: 'ce6ffac0-df91-4ec6-a1dd-3fa7f7833589', // Random UUID, doesnt make sense, will regenerated
+      description: $('#newInlineAttrDescField').val(),
+      publisher: '',
+      meta: [],
+      etype: $('#newInlineAttrEtypeField').val(),
+      default: $('#newInlineAttrDefaultField').val(),
+    };
+
+    jsRoutes.controllers.DataController.api_create_resource().ajax({
+      dataType: 'json',contentType: 'application/json', data: JSON.stringify( { "resource": resource,
+        "attribute": attribute } )
+    }).done(function() {
+        document.location.reload();
+        console.log( "success" );
+      })
+      .fail(function() {
+        document.location.reload();
+        console.log( "error" );
+      })
+    console.log($( this ).data())
+  });
+}
+
+
+//
+// Plans
+//
+/*
+$('.active form').card({
+    container: $('.card-wrapper'),
+    nameInput: 'input[name="first-name"], input[name="last-name"]'
+})
+*/
+
+var navActive = function () {
+  var path = decodeURIComponent(window.location.pathname.replace(/\/$/, ""))
+  $('.themeDark .minorityMenu .minMenuItem a').each(function () {
+        var href = $(this).attr('href');
+        $(this).removeClass('active');
+        if (window.location.hash == '#/launches' && href == '/a#/launches') {
+          $(this).addClass('active');
+        } else {
+        if (path.substring(0, href.length) === href && window.location.hash != '#/launches') {
+            $(this).addClass('active');
+        }
+        }
+    });
+  if (window.location.pathname.split('/')[1] == "data") {
+    $('body').addClass('dataPage');
+  }
+}
+navActive();
+
+$(window).on('hashchange', function(e){
+    navActive();
+});
+
+
+
+
+
+
+
+});
+
+})(requirejs);

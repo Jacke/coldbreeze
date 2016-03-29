@@ -1,0 +1,52 @@
+/**
+ * Common functionality.
+ */
+define([
+//'angular',
+//'angular-animate',
+//'angular-websocket',
+//'toastr',
+//'toastr-tpl',
+//'angular-pageslide-directive',
+//'jcs-auto-validate',
+//'angular-classy',
+//'angular-resource',
+//'angular-cookies',
+//'select',
+//'pnotify.core',
+//'angular-moment',
+//'livestamp',
+//'ngDialog',
+//'angular-ui-tree',
+//'angular-underscore',
+//'loading-bar',
+//'ng-slide-down',
+//'ui-bootstrap',
+//'ui-bootstrap-tpls',
+//'toaster',
+//'angularLocalStorage',
+//'angular-awesome-error',
+//'angular-translate',
+//'daterangepicker',
+//'angular-daterangepicker',
+//'app',
+//'filters',
+//'services',
+//'treebuilder',
+//'controllers',
+//'procPermController',
+//'procController',
+//'requestController',
+//'loggerController',
+//'stationController',
+//'procElementController',
+//'reflectionController',
+//'sessionController',
+//'directives',
+//'classie',
+'cssParser'],
+    function() {
+  'use strict';
+  console.log(true);
+  return true//.module('yourprefix.common', ['common.helper', 'common.playRoutes', 'common.filters','common.directives.example']);
+});

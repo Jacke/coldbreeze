@@ -14,12 +14,18 @@ object Dependencies {
     "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases",
     "bintray-naftoligug-maven" at "http://dl.bintray.com/naftoligug/maven",
     "Rhinofly Internal Release Repository" at "http://maven-repository.rhinofly.net:8081/artifactory/libs-release-local",
-  
+"google-sedis-fix" at "http://pk11-scratch.googlecode.com/svn/trunk",
+
+    "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
+
     "softprops-maven" at "http://dl.bintray.com/content/softprops/maven",
      Resolver.url( "Reflect GitHub Repository", url( "http://taig.github.io/Reflect/release/" ) )( Resolver.ivyStylePatterns ),
      Resolver.url("heroku-sbt-plugin-releases", url("http://dl.bintray.com/heroku/sbt-plugins/"))(Resolver.ivyStylePatterns),
      Resolver.url("Edulify Repository", url("http://edulify.github.io/modules/releases/"))(Resolver.ivyStylePatterns),
-     Resolver.url("github repo for html5tags", url("http://loicdescotte.github.io/Play2-HTML5Tags/releases/"))(Resolver.ivyStylePatterns)
+     Resolver.url("github repo for html5tags", url("http://loicdescotte.github.io/Play2-HTML5Tags/releases/"))(Resolver.ivyStylePatterns),
+
+     Resolver.jcenterRepo
+
 
   )
 
@@ -75,21 +81,23 @@ object Dependencies {
   val scalamandrill   = "com.github.dzsessona"      % "scamandrill_2.11"       % "1.1.0"
   val javamandrill    = "com.mandrillapp.wrapper.lutung" % "lutung"             % "0.0.5"
   val javamandrill2   = "com.cribbstechnologies.clients" % "mandrillClient"     % "1.1"
-  //val scalamandril2   = "org.globalmoney"           % "play-mandrill"           % "0.1.1-SNAPSHOT" 
+  //val scalamandril2   = "org.globalmoney"           % "play-mandrill"           % "0.1.1-SNAPSHOT"
   val mailchimp       = "com.ecwid" % "ecwid-mailchimp" % "2.0.1.0"
 
   val selenium        = "org.seleniumhq.selenium"   % "selenium-java"           % "2.44.0" //% "test"
   val selenide        = "com.codeborne"             % "selenide"                % "2.23"
   val fluentlenium    = "org.fluentlenium"          % "fluentlenium-core"       % "0.10.3" //% "test"
-  val fluentleniumasj = "org.fluentlenium"          % "fluentlenium-assertj"    % "0.10.3" //% "test" 
-  
+  val fluentleniumasj = "org.fluentlenium"          % "fluentlenium-assertj"    % "0.10.3" //% "test"
+
   val play            = "com.typesafe.play"         % "play_2.11"               % "2.3.10"
   val play2oauth2     = "com.nulab-inc"             %% "play2-oauth2-provider"  % "0.14.0"
   val play4           = "com.typesafe.play"         %% "play"                   % "2.4.3"
   val slackapi        = "com.github.gilbertw1"      %% "slack-scala-client"     % "0.1.3"
-  val playslick       = "com.typesafe.play"         %  "play-slick_2.11"        % "0.8.0"
+  val playslick       = "com.typesafe.play"         %  "play-slick_2.11"        % "1.0.1"
   val playauth        = "jp.t2v"                    %% "play2-auth"             % "0.12.0"
   val formtag         = "com.loicdescotte.coffeebean"% "html5tags_2.11"         % "1.2.1"
+  val formtag4         = "com.loicdescotte.coffeebean"% "html5tags_2.11"         % "1.2.2"
+
   val playctrl        = "jp.t2v"                    %% "stackable-controller"   % "0.4.0"
   val paypal          = "com.paypal.sdk"            %  "rest-api-sdk"           % "1.2.3"
   val logentries      = "com.logentries"            %  "logentries-appender"    % "1.1.21"
@@ -106,7 +114,7 @@ object Dependencies {
 
   val securesocial    = "ws.securesocial"           %% "securesocial"           % "3.0-M4"
   val securesocialold = "ws.securesocial"           %% "securesocial"           % "3.0-M3"
-  val swagger         = "com.iheart"                %% "play-swagger"           % "0.1.9"
+  val swaggerRoute    = "com.iheart"                %% "play-swagger"           % "0.2.0"
 
   val deadbolt        = "be.objectify"              %% "deadbolt-scala"         % "2.3.3"
   val securesocialmas = "ws.securesocial"           %% "securesocial"           % "master-SNAPSHOT"
@@ -124,16 +132,25 @@ object Dependencies {
   val scalacheck      = "org.scalacheck"            %% "scalacheck"             % "1.11.1"
   val mockito         = "org.mockito"               % "mockito-all"             % "1.9.5"
   val mailer          = "com.typesafe"              % "play-plugins-mailer_2.10"% "2.2.0"
+
+  val mailer4         = "com.typesafe.play" %% "play-mailer" % "4.0.0"
+
   val mailerses       = "nl.rhinofly"               %% "play-mailer"            % "3.0.0"
   val apamailer       = "org.apache.commons"        %  "commons-email"          % "1.3.1"
   val filter          = "com.typesafe.play"         %% "filters-helpers"        % "2.3.7"
+  val filter4         = "com.typesafe.play"         %% "filters-helpers"        % "2.4.6"
   val cache           = "com.typesafe.play"         %% "play-cache"             % "2.3.7"
+  val cache4           = "com.typesafe.play.modules" %% "play-modules-redis" % "2.4.1"
+
   val rediscache      = "com.typesafe.play.plugins" %% "play-plugins-redis"     % "2.3.1"
   val ptest           = "com.typesafe.play"         %% "play-test"              % "2.3.7"
+  val jdbc4            = "com.typesafe.play"         %% "play-jdbc"              % "2.4.6"
   val jdbc            = "com.typesafe.play"         %% "play-jdbc"              % "2.3.7"
   val playjson        = "com.typesafe.play"         %% "play-json"              % "2.3.7"
   val junit           = "com.novocode"              % "junit-interface"         % "0.10" % "test"
   val anorm           = "com.typesafe.play"         %% "anorm"                  % "2.3.7"
+  val anorm4          =  "com.typesafe.play"        %% "anorm"                  % "2.4.0"
+
 
   val jodatime        = "joda-time"                 % "joda-time"               % "2.7"
   val jodaconvert     = "org.joda"                  % "joda-convert"            % "1.7"
@@ -159,15 +176,19 @@ object Dependencies {
   val guice           = "net.codingwell"            %% "scala-guice"            % "4.0.0"
   val ficus           = "net.ceedubs" %% "ficus" % "1.1.2"
   val bootstrapplay   = "com.adrianhurt" %% "play-bootstrap3" % "0.4.4-P24"
-  val scalatest0      =  "org.scalatest"        %%   "scalatest"         % "2.2.1"       
-  val playsctest      =  "org.scalatestplus"    %% "play"                % "1.2.0" 
+  val bootstrapplay4  = "com.adrianhurt" %% "play-bootstrap" % "1.0-P24-B3-SNAPSHOT"
+  val scalatest0      =  "org.scalatest"        %%   "scalatest"         % "2.2.1"
+  val playsctest      =  "org.scalatestplus"    %% "play"                % "1.2.0"
   val scalatest       =  "org.specs2"           %%   "specs2-core"       % "2.3.13-scalaz-7.1.0-RC1" % "test"
   val scalatest2      =  "org.specs2"           %%   "specs2-junit"      % "2.3.13-scalaz-7.1.0-RC1" % "test"
   val scalatest3      = "org.specs2"            %%   "specs2-mock"       % "2.3.13-scalaz-7.1.0-RC1" % "test"
 
-  val webserviceclient =   "com.typesafe.play"      %% "play-ws"         % "2.4.0"
 
- 
+
+
+  val webserviceclient =   "com.typesafe.play"      %% "play-ws"         % "2.4.6"
+
+
   val scalaLog        = "com.typesafe.scala-logging"%%  "scala-logging"         % "3.1.0"
   val snakeYaml       = "org.yaml"                  %   "snakeyaml"             % "1.13"
   val logbackClassic  = "ch.qos.logback"            % "logback-classic"         % "1.0.13"
