@@ -20,7 +20,14 @@ import play.api.data.FormError
 import views._
 import models.User
 import service.DemoUser
-import securesocial.core._
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.BProcessDTO
 import models.DAO.BPDAO
 import models.DAO._
@@ -30,13 +37,24 @@ import play.api.Play.current
 
 import javax.inject.Inject
 
-import securesocial.core._
-import service.{ MyEnvironment, MyEventListener, DemoUser }
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 import play.api.mvc.{ Action, RequestHeader }
 
-class FeedController @Inject() (override implicit val env: MyEnvironment) extends securesocial.core.SecureSocial {
+class FeedController @Inject() (
+  val messagesApi: MessagesApi,
+  val env: Environment[User2, CookieAuthenticator],
+  socialProviderRegistry: SocialProviderRegistry)
+  extends Silhouette[User2, CookieAuthenticator] {
  def index() = SecuredAction { implicit request =>
  	val feeds = List()
- 	Ok(views.html.feeds.index(request.user))
+ 	Ok(views.html.feeds.index(request.identity))
  }
 }

@@ -15,7 +15,14 @@ import play.api.Logger
 import views._
 import models.{AccountsDAO, User}
 import service.DemoUser
-import securesocial.core._
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 import controllers.users._
 import models.DAO.resources._
 import scala.util.{Success, Failure}
@@ -55,11 +62,22 @@ object AsanaCred {
 
 import javax.inject.Inject
 
-import securesocial.core._
-import service.{ MyEnvironment, MyEventListener, DemoUser }
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 import play.api.mvc.{ Action, RequestHeader }
 
-class AsanaController @Inject() (override implicit val env: MyEnvironment) extends securesocial.core.SecureSocial {
+class AsanaController @Inject() (
+  val messagesApi: MessagesApi,
+  val env: Environment[User2, CookieAuthenticator],
+  socialProviderRegistry: SocialProviderRegistry)
+  extends Silhouette[User2, CookieAuthenticator] {
   import play.api.Play.current
 implicit val AsanaWorkspaceFormat = Json.format[AsanaWorkspace]
 implicit val AsanaWorkspaceReaders = Json.reads[AsanaWorkspace]
@@ -94,7 +112,7 @@ implicit val AsanaUserResultReaders = Json.reads[AsanaUserResult]
         val tokenResult:Option[AsanaTokenResult] = Await.result(tokenAction, Duration(25000, MILLISECONDS))
 
         tokenResult match {
-	      case Some(result) =>    val coded = AsanaUserCode(request.user.main.email.get, code.get, Some(result))
+	      case Some(result) =>    val coded = AsanaUserCode(request.identity.emailFilled, code.get, Some(result))
 							    	AsanaCred.userCodes += coded
 								    Redirect("http://192.168.1.102/asana/users")//Ok("auth by code "+coded.token.get.access_token)
 		  case _ => Ok("not get")
@@ -106,7 +124,7 @@ implicit val AsanaUserResultReaders = Json.reads[AsanaUserResult]
   }
 
   def getUsers() = SecuredAction.async { implicit request =>
-  	val userEmail = request.user.main.email.get
+  	val userEmail = request.identity.emailFilled
   	val result = AsanaCred.userCodes.find(code => code.email == userEmail) match {
   		case Some(code) => {
 

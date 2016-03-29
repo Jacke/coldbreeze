@@ -1,4 +1,3 @@
-@import service.DemoUser
 @import helpers._
 @import controllers.employeeParams
 @import controllers.managerParams
@@ -7,17 +6,15 @@
 @import models.DAO.resources.BusinessServiceDTO
 @import models.DAO.resources.BusinessDTO
 @import controllers.BusinessServiceForms._
-@import securesocial.core.IdentityProvider
-@import securesocial.core.IdentityProvider
-@import securesocial.core.providers.UsernamePasswordProvider
-@import securesocial.core.AuthenticationMethod._
 @import play.api.{Logger, Play}
 @import play.api.Play
 @import html5.tags.html._
 
 @import models.DAO.resources.BusinessServiceDTO
 @import models.DAO.resources.BusinessDTO
-@(user: DemoUser, currentPage: Page[BusinessServiceDTO], isManager:Boolean = false)(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment)
+@(user: models.User2,
+currentPage: Page[BusinessServiceDTO],
+isManager:Boolean = false)(implicit request: RequestHeader)
 @header_table(orderBy: Int, title: String) = {
     <th class="headerSortDown">
         @title
@@ -27,9 +24,9 @@
     <div class="teamSettingsCheckbox">
       <header class="panel-heading head-border">@Messages("page.services")</header>
       <p class="teamSettingsAbout">@Messages("page.servicesDesc")</p>
-    </div> 
+    </div>
 
-  
+
 
   <div class="teamChangeBox teamPaddedBox servicePaddedTable">
       @Option(currentPage.items).filterNot(_.isEmpty).map { entities =>
@@ -76,7 +73,7 @@
             @text(serviceForm("title"), '_label -> Messages("page.title"), 'id -> "newServiceFormField",'class -> "form-control", 'placeholder -> Messages("page.title"))
           </fieldset>
           <div class="actions">
-            <input type="submit" value="Add" id="addNewServiceFormBtn" class="btn btn-primary"> 
+            <input type="submit" value="Add" id="addNewServiceFormBtn" class="btn btn-primary">
           </div>
         }
     </div>

@@ -1,16 +1,13 @@
-@import service.DemoUser
+
 @import controllers.employeeParams
 @import models.DAO.resources.ActPermission
 @import models.DAO.resources.BusinessServiceDTO
 @import models.DAO.resources.BusinessDTO
-@import service.DemoUser
+
 @import controllers._
 @import minority.utils._
 @import helper._
-@(user:DemoUser, isManager: Boolean = false)(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment)
-@import securesocial.core.IdentityProvider
-@import securesocial.core.providers.UsernamePasswordProvider
-@import securesocial.core.AuthenticationMethod._
+@(user: models.User2, isManager: Boolean = false)(implicit request: RequestHeader)
 @import play.api.{Logger, Play}
 @import helper._
 @import play.api.Play
@@ -22,7 +19,7 @@
 @main(Messages("page.data"), user) {
 
 <div class="app-container">
-<div class="container app"> 
+<div class="container app">
 <div id="main" class="container card-lists">
 
 <div class="tableMinListWrap dataTablesTable cardTablesTable">
@@ -64,7 +61,7 @@
      	<h2>Subheader</h2>
      	<p>Description</p>
      </li>
-  </ul>  
+  </ul>
 </div>
 </div>
 

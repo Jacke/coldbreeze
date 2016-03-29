@@ -32,7 +32,14 @@ import play.api.Logger
 import views._
 import models.User
 import service.DemoUser
-import securesocial.core._
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.BProcessDTO
 import models.DAO.BPDAO
 import models.DAO._
@@ -52,7 +59,14 @@ import builders._
 import views._
 import models.User
 import service.DemoUser
-import securesocial.core._
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.BProcessDTO
 import models.DAO.BPDAO
 import models.DAO._
@@ -69,10 +83,21 @@ import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 
 import javax.inject.Inject
 
-import securesocial.core._
-import service.{ MyEnvironment, MyEventListener, DemoUser }
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 import play.api.mvc.{ Action, RequestHeader }
-class LaunchShareController @Inject() (override implicit val env: MyEnvironment) extends securesocial.core.SecureSocial {
+class LaunchShareController @Inject() (
+  val messagesApi: MessagesApi,
+  val env: Environment[User2, CookieAuthenticator],
+  socialProviderRegistry: SocialProviderRegistry)
+  extends Silhouette[User2, CookieAuthenticator] {
 implicit val InputLoggerReads = Json.reads[InputLogger]
 implicit val InputLoggerWrites = Json.format[InputLogger]
 implicit val SessionStateLogReads  = Json.reads[SessionStateLog]
@@ -143,7 +168,7 @@ implicit val SessionStateLogWrites  = Json.format[SessionStateLog]
 
 //POST    /share/launch/:launch_id
 def makeShare(launch_id: Int) = SecuredAction.async { implicit request =>
-  val business = request.user.businessFirst
+  val business = request.identity.businessFirst
   val launchShareF: Future[LaunchShareDTO] = LaunchSharesDAOF.generateForLaunch(launch_id, workbench_id = business)
   launchShareF.map { launchShare =>
     Ok(Json.toJson(launchShare))

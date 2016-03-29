@@ -19,7 +19,14 @@ import views._
 import models.Page
 import models.User
 import service.DemoUser
-import securesocial.core._
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.resources.ClientBusinessDAO
 import models.DAO.resources.web._
 import models.AccountDAO
@@ -29,14 +36,25 @@ import models.AccountDAO
 
   import javax.inject.Inject
 
-  import securesocial.core._
-  import service.{ MyEnvironment, MyEventListener, DemoUser }
+  import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
   import play.api.mvc.{ Action, RequestHeader }
 
 /**
  * Created by Sobolev on 19.05.2015.
  */
-class GroupController @Inject() (override implicit val env: MyEnvironment) extends securesocial.core.SecureSocial {
+class GroupController @Inject() (
+  val messagesApi: MessagesApi,
+  val env: Environment[User2, CookieAuthenticator],
+  socialProviderRegistry: SocialProviderRegistry)
+  extends Silhouette[User2, CookieAuthenticator] {
   import play.api.Play.current
 
    val Home = Redirect(users.routes.EmployeeController.index())
@@ -52,7 +70,7 @@ class GroupController @Inject() (override implicit val env: MyEnvironment) exten
       "created_at" -> optional(jodaDate))(GroupDTO.apply)(GroupDTO.unapply))
 
  def index() = SecuredAction { implicit request =>
-      val user = request.user
+      val user = request.identity
       //val employees = EmployeeDAO.getAllByMaster(user.main.email.get)
       //val accounts = models.AccountsDAO.findAllByEmails(employees.map(emp => emp.uid))
       //val businesses = BusinessDAO.getAll
@@ -65,10 +83,10 @@ class GroupController @Inject() (override implicit val env: MyEnvironment) exten
 
   }
   def create() = SecuredAction { implicit request =>
-        Home//Ok(views.html.businesses.users.employee_form(groupForm, request.user))
+        Home//Ok(views.html.businesses.users.employee_form(groupForm, request.identity))
   }
   def create_new() = SecuredAction(BodyParsers.parse.json) { implicit request =>
-    val business = request.user.businessFirst
+    val business = request.identity.businessFirst
       if (business < 1) {
         Redirect(controllers.routes.SettingController.workbench())
     }
@@ -94,13 +112,13 @@ class GroupController @Inject() (override implicit val env: MyEnvironment) exten
       val employee = EmployeeDAO.get(id)
       employee match {
         case Some(group) =>
-         Home//Ok(views.html.businesses.users.employee_edit_form(id, groupForm.fill(group), request.user))
+         Home//Ok(views.html.businesses.users.employee_edit_form(id, groupForm.fill(group), request.identity))
         case None => Ok("not found")
       }
   }
   def update_make(id: Int) = SecuredAction { implicit request =>
       groupForm.bindFromRequest.fold(
-        formWithErrors => Home,//BadRequest(views.html.businesses.users.employee_edit_form(id, formWithErrors, request.user)),
+        formWithErrors => Home,//BadRequest(views.html.businesses.users.employee_edit_form(id, formWithErrors, request.identity)),
         entity => {
           Home.flashing(GroupsDAO.update(id,entity) match {
             case 0 => "failure" -> s"Could not update entity ${entity.id}"
@@ -110,7 +128,7 @@ class GroupController @Inject() (override implicit val env: MyEnvironment) exten
 
   }
   def assign_user(account_id: String, group_id: Int) = SecuredAction.async { implicit request =>
-    val business = request.user.businessFirst
+    val business = request.identity.businessFirst
       if (business < 1) {
         Future(Redirect(controllers.routes.SettingController.workbench()) )
     }
@@ -118,7 +136,7 @@ class GroupController @Inject() (override implicit val env: MyEnvironment) exten
     val employeeF = EmployeeDAOF.getByEmployeeUIDAndWorkbench(account_id, business)
     employeeF.map { employee =>
     val acc = models.AccountsDAO.getAccount(account_id) match {
-      case Some(acc) => Some(acc.userId)
+      case Some(acc) => Some(acc.email.getOrElse(""))
       case _ => None
     }
       	AccountGroupDAO.assign(acc, group_id, employee.get.id.getOrElse(-1)) match {
@@ -130,7 +148,7 @@ class GroupController @Inject() (override implicit val env: MyEnvironment) exten
 }
 
   def unassign_user(account_id: String, group_id: Int) = SecuredAction.async { implicit request =>
-    val business = request.user.businessFirst
+    val business = request.identity.businessFirst
       if (business < 1) {
         Future(Redirect(controllers.routes.SettingController.workbench()) )
     }
@@ -138,7 +156,7 @@ class GroupController @Inject() (override implicit val env: MyEnvironment) exten
     val employeeF = EmployeeDAOF.getByEmployeeUIDAndWorkbench(account_id, business)
     employeeF.map { employee =>
     val acc = models.AccountsDAO.getAccount(account_id) match {
-      case Some(acc) => Some(acc.userId)
+      case Some(acc) => Some(acc.email.getOrElse(""))
       case _ => None
     }
   	AccountGroupDAO.unassign(acc, group_id, employee.get.id.getOrElse(-1)) match {

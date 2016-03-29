@@ -20,7 +20,14 @@ import play.api.data.FormError
 import views._
 import models.User
 import service.DemoUser
-import securesocial.core._
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.BProcessDTO
 import models.DAO.BPDAO
 import models.DAO._
@@ -56,10 +63,21 @@ case class Credentials(firstName:  Option[String],
 
 import javax.inject.Inject
 
-import securesocial.core._
-import service.{ MyEnvironment, MyEventListener, DemoUser }
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 import play.api.mvc.{ Action, RequestHeader }
-class SettingController @Inject() (override implicit val env: MyEnvironment) extends securesocial.core.SecureSocial {
+class SettingController @Inject() (
+  val messagesApi: MessagesApi,
+  val env: Environment[User2, CookieAuthenticator],
+  socialProviderRegistry: SocialProviderRegistry)
+  extends Silhouette[User2, CookieAuthenticator] {
 
 
   val Home = Redirect(routes.SettingController.index())
@@ -90,16 +108,16 @@ class SettingController @Inject() (override implicit val env: MyEnvironment) ext
 
 
  def index() = SecuredAction { implicit request =>
-  val business = request.user.businessFirst
- 	val cred = models.AccountsDAO.fetchCredentials(request.user.main.email.get)
-  //val biz0 = fetchBiz(request.user.main.userId).get
+  val business = request.identity.businessFirst
+ 	val cred = models.AccountsDAO.fetchCredentials(request.identity.emailFilled)
+  //val biz0 = fetchBiz(request.identity.emailFilled).get
   //val biz = BizFormDTO(biz0.title, biz0.phone, biz0.website, biz0.country, biz0.city, biz0.address, biz0.nickname)
-  var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get, business).get
- 	Ok(views.html.settings.index(credForm.fill(cred.get), request.user, isManager))
+  var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled, business).get
+ 	Ok(views.html.settings.index(credForm.fill(cred.get), request.identity, isManager))
  }
  def workbench() = SecuredAction  { implicit request =>
-  val biz0 = fetchBiz(request.user.main.userId)
-  val benchesF = EmployeeDAOF.getAllByEmpByUID(request.user.main.userId)
+  val biz0 = fetchBiz(request.identity.emailFilled)
+  val benchesF = EmployeeDAOF.getAllByEmpByUID(request.identity.emailFilled)
   val bizFormObj = biz0 match {
     case Some(biz0) => Some(
         bizForm.fill(BizFormDTO(biz0.title, biz0.phone, biz0.website, biz0.country, biz0.city, biz0.address, biz0.nickname))
@@ -117,18 +135,18 @@ class SettingController @Inject() (override implicit val env: MyEnvironment) ext
 
   val benches = BusinessDAO.getByIDS(account_benches.map(_.workbench).toList)
 
-  var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get, workbench_id).get
-  Ok(views.html.settings.workbench(bizFormObj, request.user, isManager, biz0, benches ))
+  var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled, workbench_id).get
+  Ok(views.html.settings.workbench(bizFormObj, request.identity, isManager, biz0, benches ))
  }
 
  def resetBench(bench_id: Int) = SecuredAction.async { implicit request =>
     bench_id match {
-      case -1 => AccountInfosDAOF.updateCurrentWorkbench(request.user.main.email.get, None).map { r =>
-                 Cache.remove(s"employee.business.${request.user.main.userId}")
+      case -1 => AccountInfosDAOF.updateCurrentWorkbench(request.identity.emailFilled, None).map { r =>
+                 Cache.remove(s"employee.business.${request.identity.emailFilled}")
                  Redirect(routes.SettingController.workbench())
                  }
-      case _ =>  AccountInfosDAOF.updateCurrentWorkbench(request.user.main.email.get, Some(bench_id)).map { r =>
-                 Cache.remove(s"employee.business.${request.user.main.userId}")
+      case _ =>  AccountInfosDAOF.updateCurrentWorkbench(request.identity.emailFilled, Some(bench_id)).map { r =>
+                 Cache.remove(s"employee.business.${request.identity.emailFilled}")
                  Redirect(routes.SettingController.workbench())
                  }
     }
@@ -136,12 +154,13 @@ class SettingController @Inject() (override implicit val env: MyEnvironment) ext
 
 
  def update_credentials() = SecuredAction { implicit request =>
-    val cred = Credentials(request.user.main.firstName, request.user.main.lastName, request.user.main.fullName)
+    val cred = Credentials(request.identity.firstName, request.identity.lastName,
+      request.identity.fullName)
     credForm.bindFromRequest.fold(
-        formWithErrors => Redirect(routes.SettingController.index),//BadRequest(views.html.settings.index(credForm.fill(cred), request.user)),
+        formWithErrors => Redirect(routes.SettingController.index),//BadRequest(views.html.settings.index(credForm.fill(cred), request.identity)),
         entity => {
           Home.flashing(AccountsDAO.updateCredentials(
-            request.user.main.email.get, entity.copy(fullName = entity.getFullName,
+            request.identity.emailFilled, entity.copy(fullName = entity.getFullName,
                                                      lang = entity.lang,
                                                      country = entity.country,
                                                      phone = entity.phone,
@@ -155,10 +174,10 @@ class SettingController @Inject() (override implicit val env: MyEnvironment) ext
 
  def update_biz_credentials() = SecuredAction { implicit request =>
 
-  val founded_biz = fetchBiz(request.user.main.userId).get
+  val founded_biz = fetchBiz(request.identity.emailFilled).get
   val biz = BizFormDTO(founded_biz.title, founded_biz.phone, founded_biz.website, founded_biz.country, founded_biz.city, founded_biz.address)
     bizForm.bindFromRequest.fold(
-        formWithErrors => Redirect(routes.SettingController.index),//BadRequest(views.html.settings.index(credForm.fill(cred), request.user)),
+        formWithErrors => Redirect(routes.SettingController.index),//BadRequest(views.html.settings.index(credForm.fill(cred), request.identity)),
         entity => {
           Home.flashing(models.DAO.resources.web.BusinessDAO.updateCredentials(
             founded_biz.id.get, entity) match {

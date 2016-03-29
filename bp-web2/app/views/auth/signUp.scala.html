@@ -2,7 +2,7 @@
 
 @import b3.inline.fieldConstructor
 
-@views.html.auth.main(Messages("sign.up.title")) {
+@views.html.auth.main("Sign Up") {
 
 <div class="loginPage loginPage__login">
       <div class="loginView">
@@ -48,13 +48,13 @@
       'class -> "textField block",
       'placeholder -> "Doe")
 
-      @b3.text(signInForm("email"),
+      @b3.email(signInForm("email"),
       'id -> "name-11",
       '_label -> "E-mail",
       'class -> "textField block",
       'placeholder -> "some@email.com")
 
-      @b3.text(signInForm("password"),
+      @b3.password(signInForm("password"),
       'id -> "r_pass",
       '_label -> Messages("securesocial.signup.password1"),
       'class -> "textField block")

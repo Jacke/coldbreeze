@@ -23,7 +23,14 @@ import play.api.libs.json._
 import views._
 import models.User
 import service.DemoUser
-import securesocial.core._
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.BProcessDTO
 import models.DAO.BPDAO
 import models.DAO._
@@ -46,12 +53,23 @@ import scala.concurrent.duration._
 
 import javax.inject.Inject
 
-import securesocial.core._
-import service.{ MyEnvironment, MyEventListener, DemoUser }
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 import play.api.mvc.{ Action, RequestHeader }
 
 
-class InteractionController @Inject() (override implicit val env: MyEnvironment) extends securesocial.core.SecureSocial {
+class InteractionController @Inject() (
+  val messagesApi: MessagesApi,
+  val env: Environment[User2, CookieAuthenticator],
+  socialProviderRegistry: SocialProviderRegistry)
+  extends Silhouette[User2, CookieAuthenticator] {
   implicit val SessionElementsReads = Json.reads[SessionElements]
   implicit val SessionElementsFormat = Json.format[SessionElements]
   implicit val CompositeVReads = Json.reads[CompositeValues]
@@ -139,7 +157,7 @@ implicit val CostContainerWrites = Json.format[CostContainer]
   * @return return either SessionInteractionContainer with session, reaction containers, and session states.
   */
 def fetchInteraction(session_id: Int) = SecuredAction.async { implicit request =>
-  if (security.BRes.sessionSecured(session_id, request.user.main.userId, request.user.businessFirst)) {
+  if (security.BRes.sessionSecured(session_id, request.identity.emailFilled, request.identity.businessFirst)) {
    val sessionF:Future[Option[SessionContainer]] = models.DAO.BPSessionDAOF.findById(id = session_id)
    sessionF.flatMap { session => // Future of session
     session match {
@@ -180,7 +198,7 @@ def fetchInteraction(session_id: Int) = SecuredAction.async { implicit request =
 
 def fetchInteractions(session_ids: List[Int]) = SecuredAction.async { implicit request =>
   val secured_ids = session_ids.filter( session_id =>
-    security.BRes.sessionSecured(session_id, request.user.main.userId, request.user.businessFirst))
+    security.BRes.sessionSecured(session_id, request.identity.emailFilled, request.identity.businessFirst))
 
    val sessionF:Future[Seq[SessionContainer]] = models.DAO.BPSessionDAOF.findByIds(secured_ids)
    val toposF = SessionElemTopologDAOF.getBySessions(secured_ids)

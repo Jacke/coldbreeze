@@ -20,11 +20,17 @@ import controllers._
 import models.Page
 import models.User
 import service.DemoUser
-import securesocial.core._
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.resources.{AccoutGroupDTO,AccountGroupDAO,GroupDTO,GroupsDAO}
 import models.DAO.resources.ClientBusinessDAO
 import models.DAO.resources.web._
-import models.AccountDAO
 
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
@@ -36,13 +42,24 @@ import utilities.AccountCredHiding
 /**
  * Created by Sobolev on 22.07.2014.
  */
-case class ActorCont(emps: List[EmployeeDTO], creds:List[AccountDAO])
+case class ActorCont(emps: List[EmployeeDTO], creds:List[models.daos.DBUser])
 import javax.inject.Inject
 
-import securesocial.core._
-import service.{ MyEnvironment, MyEventListener, DemoUser }
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 import play.api.mvc.{ Action, RequestHeader }
-class EmployeeController @Inject() (override implicit val env: MyEnvironment) extends securesocial.core.SecureSocial {
+class EmployeeController @Inject() (
+  val messagesApi: MessagesApi,
+  val env: Environment[User2, CookieAuthenticator],
+  socialProviderRegistry: SocialProviderRegistry)
+  extends Silhouette[User2, CookieAuthenticator] {
    import play.api.Play.current
    import models.AccImplicits._
   val Home = Redirect(routes.EmployeeController.index())
@@ -52,8 +69,8 @@ class EmployeeController @Inject() (override implicit val env: MyEnvironment) ex
   implicit val UIDSWrites = Json.format[UIDS]
   implicit val InputParamReads = Json.reads[EmployeeDTO]
   implicit val InputParamWrites = Json.format[EmployeeDTO]
-  implicit val AccountReads = Json.reads[AccountDAO]
-  implicit val AccountWrites = Json.format[AccountDAO]
+  implicit val AccountReads = Json.reads[models.daos.DBUser]
+  implicit val AccountWrites = Json.format[models.daos.DBUser]
   implicit val ActorContReads = Json.reads[ActorCont]
   implicit val ActorContWrites = Json.format[ActorCont]
 
@@ -69,14 +86,14 @@ class EmployeeController @Inject() (override implicit val env: MyEnvironment) ex
       "workbench_id" -> number)(EmployeeDTO.apply)(EmployeeDTO.unapply))
 
  def index() = SecuredAction.async { implicit request =>
-      val business = request.user.businessFirst
+      val business = request.identity.businessFirst
       if (business < 1) {
         Future(Redirect(controllers.routes.SettingController.workbench()))
       }
       else {
 
-      val user = request.user
-      val employeesF:Future[Seq[EmployeeDTO]] = models.DAO.resources.EmployeeDAOF.getAllByWorkbench(request.user.businessFirst)
+      val user = request.identity
+      val employeesF:Future[Seq[EmployeeDTO]] = models.DAO.resources.EmployeeDAOF.getAllByWorkbench(request.identity.businessFirst)
       employeesF.flatMap { employees =>
         //val employees = models.DAO.resources.EmployeeDAOF.await(employeesF)
 
@@ -111,13 +128,13 @@ class EmployeeController @Inject() (override implicit val env: MyEnvironment) ex
       }
 }
  def team() = SecuredAction.async { implicit request =>
-      val business = request.user.businessFirst
+      val business = request.identity.businessFirst
       if (business < 1) {
         Future(Redirect(controllers.routes.SettingController.workbench()))
       }
       else {
-      val user = request.user
-      val employeesF:Future[Seq[EmployeeDTO]] = models.DAO.resources.EmployeeDAOF.getAllByWorkbench(request.user.businessFirst)
+      val user = request.identity
+      val employeesF:Future[Seq[EmployeeDTO]] = models.DAO.resources.EmployeeDAOF.getAllByWorkbench(request.identity.businessFirst)
       employeesF.map { employees =>
       val accounts = models.AccountsDAO.findAllByEmails(employees.toList.map(emp => emp.uid))
       val businesses = List(BusinessDAO.get(business).get)
@@ -126,26 +143,26 @@ class EmployeeController @Inject() (override implicit val env: MyEnvironment) ex
       val assigned = businesses.filter(buss => employees.map(_.workbench).contains(buss.id.get) )
 
 
-      val master = EmployeeDAO.getMasterByAccount(user.main.email.get).get
+      //val master = EmployeeDAO.getMasterByAccount(user.email.get).get
       val team = businesses.find(biz => biz.id.getOrElse(-1) == business)
 
-      val current_plan = models.DAO.resources.AccountPlanDAO.getByMasterAcc(user.main.email.get).get
+      val current_plan = models.DAO.resources.AccountPlanDAO.getByMasterAcc(user.email.get).get
       val aval = (current_plan.limit + 1) - employees.length
       // current employee limit + main manager MINUS all employee length for that master
       Ok(views.html.businesses.users.team(
-        Page(employees.toList, 1, 1, employees.length), accounts, 1, "%", assign, assigned, master, team, aval)(user))
+        Page(employees.toList, 1, 1, employees.length), accounts, 1, "%", assign, assigned, team, aval)(user))
       }
   }
 }
   def index_group(group_id: Int) = SecuredAction.async { implicit request =>
-      val business = request.user.businessFirst
+      val business = request.identity.businessFirst
       if (business < 1) {
         Future(Redirect(controllers.routes.SettingController.workbench()))
       }
       else {
-      val user = request.user
+      val user = request.identity
       val grouped_employees = AccountGroupDAO.getAllByGroup(group_id).map(_.employee_id)
-      val employeesF:Future[Seq[EmployeeDTO]] = models.DAO.resources.EmployeeDAOF.getAllByWorkbench(request.user.businessFirst)
+      val employeesF:Future[Seq[EmployeeDTO]] = models.DAO.resources.EmployeeDAOF.getAllByWorkbench(request.identity.businessFirst)
       employeesF.map { all_employees =>
       val employees = all_employees.toList.filter(emp => grouped_employees.contains(emp.id.get))
       val employees_ungrouped = all_employees.toList.filter(emp => !grouped_employees.contains(emp.id.get))
@@ -169,13 +186,13 @@ class EmployeeController @Inject() (override implicit val env: MyEnvironment) ex
 }
 //GET         /actors      @controllers.users.EmployeeController.actors()
 def actors() = SecuredAction.async { implicit request =>
-     val user                        = request.user.main
-     val business                    = request.user.businessFirst
+     val user                        = request.identity.emailFilled
+     val business                    = request.identity.businessFirst
 
      val employeesF                  = models.DAO.resources.EmployeeDAOF.getAllByWorkbench(business)
      employeesF.map { employees =>
        val employeesList = employees.toList
-       val creds:List[AccountDAO]      =  models.AccountsDAO.findAllByEmails(employeesList.map(_.master_acc))
+       val creds:List[models.daos.DBUser]      =  models.AccountsDAO.findAllByEmails(employeesList.map(_.master_acc))
        val cleanCreds = creds.map(acc => AccountCredHiding.hide(acc))
 
        Ok(Json.toJson(ActorCont(employeesList, cleanCreds)))
@@ -184,18 +201,20 @@ def actors() = SecuredAction.async { implicit request =>
 
 
 def create() = SecuredAction { implicit request =>
-        Ok(views.html.businesses.users.employee_form(employeeForm, request.user))
+        Ok(views.html.businesses.users.employee_form(employeeForm, request.identity))
 }
 def create_new() = SecuredAction(BodyParsers.parse.json) { implicit request =>
-  val workbench = request.user.businessFirst
-  if (isEmployeeOwned(request.user.main.userId, workbench)) {
+  val workbench = request.identity.businessFirst
+  if (isEmployeeOwned(request.identity.emailFilled, workbench)) {
     request.body.validate[UIDS].map{
       case entity => { entity.emails.map {
-            e => EmployeeDTO(None, e, request.user.main.email.get, None, entity.manager, workbench = workbench)
+            e => EmployeeDTO(None, e, request.identity.emailFilled, None, entity.manager, workbench = workbench)
       }.map{ emp =>
-        val employee_id = EmployeeDAO.pull_object_for(emp, request.user.main.email.get)
-        EmployeesBusinessDAO.pull(employee_id = employee_id, business_id = request.user.businessFirst)
-        controllers.CustomRegistration.handleStartSignUp(emp.uid, request.host)
+        val employee_id = EmployeeDAO.pull_object_for(emp, request.identity.emailFilled)
+        EmployeesBusinessDAO.pull(employee_id = employee_id, business_id = request.identity.businessFirst)
+        // TODO SEND SIGN UP
+        ///////??????????
+        ////// controllers.CustomRegistration.handleStartSignUp(emp.uid, request.host)
       }
       Ok(Json.toJson(Map("success" -> Json.toJson(entity))))
       }
@@ -208,15 +227,15 @@ def update(id: Int) = SecuredAction { implicit request =>
       val employee = EmployeeDAO.get(id)
       employee match {
         case Some(employee) =>
-         Ok(views.html.businesses.users.employee_edit_form(id, employeeForm.fill(employee), request.user))
+         Ok(views.html.businesses.users.employee_edit_form(id, employeeForm.fill(employee), request.identity))
         case None => Ok("not found")
       }
 }
 def update_make(id: Int) = SecuredAction { implicit request =>
-    if (isEmployeeOwned(request.user.main.userId, request.user.businessFirst)) {
+    if (isEmployeeOwned(request.identity.emailFilled, request.identity.businessFirst)) {
 
       employeeForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.businesses.users.employee_edit_form(id, formWithErrors, request.user)),
+        formWithErrors => BadRequest(views.html.businesses.users.employee_edit_form(id, formWithErrors, request.identity)),
         entity => {
           Home.flashing(EmployeeDAO.update(id,entity) match {
             case 0 => "failure" -> s"Could not update entity ${entity.uid}"
@@ -226,7 +245,7 @@ def update_make(id: Int) = SecuredAction { implicit request =>
     } else { Home }
 }
 def assign_business(employee_id: Int, business_id: Int) = SecuredAction { implicit request =>
-      if (isEmployeeOwned(request.user.main.userId, request.user.businessFirst)) {
+      if (isEmployeeOwned(request.identity.emailFilled, request.identity.businessFirst)) {
         val business = BusinessDAO.get(business_id)
         business match {
           case Some(business) =>
@@ -237,7 +256,7 @@ def assign_business(employee_id: Int, business_id: Int) = SecuredAction { implic
       } else { Home }
 }
 def unassign_business(employee_id: Int, business_id: Int) = SecuredAction { implicit request =>
-      if (isEmployeeOwned(request.user.main.userId, request.user.businessFirst)) {
+      if (isEmployeeOwned(request.identity.emailFilled, request.identity.businessFirst)) {
       val business = BusinessDAO.get(business_id)
       business match {
         case Some(business) =>
@@ -250,7 +269,7 @@ def unassign_business(employee_id: Int, business_id: Int) = SecuredAction { impl
 
 
 def toManager(id: Int) = SecuredAction { implicit request =>
-    if (isEmployeeOwned(request.user.main.userId, request.user.businessFirst)) {
+    if (isEmployeeOwned(request.identity.emailFilled, request.identity.businessFirst)) {
       EmployeeDAO.get(id) match {
         case Some(emp) =>
           Home.flashing(EmployeeDAO.update(id,emp.copy(manager = true)) match {
@@ -264,7 +283,7 @@ def toManager(id: Int) = SecuredAction { implicit request =>
     } else { Home }
 }
 def toParticipator(id: Int) = SecuredAction { implicit request =>
-    if (isEmployeeOwned(request.user.main.userId, request.user.businessFirst)) {
+    if (isEmployeeOwned(request.identity.emailFilled, request.identity.businessFirst)) {
       EmployeeDAO.get(id) match {
         case Some(emp) =>
           Home.flashing(EmployeeDAO.update(id,emp.copy(manager = false)) match {
@@ -278,7 +297,7 @@ def toParticipator(id: Int) = SecuredAction { implicit request =>
     } else { Home }
 }
 def destroy(id: Int) = SecuredAction { implicit request =>
-    if (isEmployeeOwned(request.user.main.userId, request.user.businessFirst)) {
+    if (isEmployeeOwned(request.identity.emailFilled, request.identity.businessFirst)) {
       val emp = EmployeeDAO.get(id)
       val employeeCount = emp match {
         case Some(emp) => EmployeeDAO.getLengthByWorkbench(emp.workbench)

@@ -20,7 +20,14 @@ import models.User
 import models.DAO.resources._
 import models.DAO._
 import service.DemoUser
-import securesocial.core._
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 /**
  * Created by Sobolev on 22.07.2014.
  */
@@ -35,12 +42,23 @@ object BusinessServiceForms {
 
 import javax.inject.Inject
 
-import securesocial.core._
-import service.{ MyEnvironment, MyEventListener, DemoUser }
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 import play.api.mvc.{ Action, RequestHeader }
 
 
-class BusinessServiceController @Inject() (override implicit val env: MyEnvironment) extends securesocial.core.SecureSocial {
+class BusinessServiceController @Inject() (
+  val messagesApi: MessagesApi,
+  val env: Environment[User2, CookieAuthenticator],
+  socialProviderRegistry: SocialProviderRegistry)
+  extends Silhouette[User2, CookieAuthenticator] {
    import play.api.Play.current
 
    val Home = Redirect(routes.ProfileController.dashboard())
@@ -54,7 +72,7 @@ class BusinessServiceController @Inject() (override implicit val env: MyEnvironm
  def index() = SecuredAction { implicit request =>
       val services = BusinessServiceDAO.getAll
       val businesses = BusinessDAO.getAll
-      //Ok(views.html.businesses.services(Page(services, 1, 1, services.length), 1, "%", businesses, request.user))
+      //Ok(views.html.businesses.services(Page(services, 1, 1, services.length), 1, "%", businesses, request.identity))
       Home
   }
   implicit val bservicesReads = Json.reads[BusinessServiceDTO]
@@ -62,19 +80,19 @@ class BusinessServiceController @Inject() (override implicit val env: MyEnvironm
 
 
   def bprocesses_services() = SecuredAction { implicit request =>
-      val business = request.user.businessFirst
+      val business = request.identity.businessFirst
       val services = BusinessServiceDAO.getAll.filter(service => service.business_id == business)
       Ok(Json.toJson(services))
   }
 
   def create() = SecuredAction { implicit request =>
-        Ok(views.html.businesses.service_form(serviceForm, request.user))
+        Ok(views.html.businesses.service_form(serviceForm, request.identity))
   }
   def create_new() = SecuredAction { implicit request =>
     serviceForm.bindFromRequest.fold(
-      formWithErrors => Home, //BadRequest(views.html.businesses.service_form(formWithErrors, request.user)),
+      formWithErrors => Home, //BadRequest(views.html.businesses.service_form(formWithErrors, request.identity)),
       entity => {
-          val uid = request.user.main.email.get
+          val uid = request.identity.emailFilled
           val emp = EmployeeDAO.getByUID(uid).isDefined
 
 
@@ -87,13 +105,13 @@ class BusinessServiceController @Inject() (override implicit val env: MyEnvironm
       })
   }
   def update(id: Int) = SecuredAction { implicit request =>
-     if (serviceOwned(id, request.user.businessFirst)) {
+     if (serviceOwned(id, request.identity.businessFirst)) {
 
       val services = BusinessServiceDAO.get(id)
       services match {
         case Some(service) =>
-        val srvc = BusinessServiceDTO(service.id, service.title, service.business_id, request.user.main.email.get)
-         Ok(views.html.businesses.service_edit_form(id, serviceForm.fill(srvc), request.user))
+        val srvc = BusinessServiceDTO(service.id, service.title, service.business_id, request.identity.emailFilled)
+         Ok(views.html.businesses.service_edit_form(id, serviceForm.fill(srvc), request.identity))
         case None => Ok("not found")
       }
  } else {
@@ -101,13 +119,13 @@ class BusinessServiceController @Inject() (override implicit val env: MyEnvironm
  }
 }
   def update_make(id: Int) = SecuredAction { implicit request =>
-     if (serviceOwned(id, request.user.businessFirst)) {
+     if (serviceOwned(id, request.identity.businessFirst)) {
       val service = BusinessServiceDAO.get(id).get
 
       serviceForm.bindFromRequest.fold(
-        formWithErrors => BadRequest(views.html.businesses.service_edit_form(id, formWithErrors, request.user)),
+        formWithErrors => BadRequest(views.html.businesses.service_edit_form(id, formWithErrors, request.identity)),
         entity => {
-          Home.flashing(BusinessServiceDAO.update(id,entity.copy(business_id = service.business_id, master_acc = request.user.main.email.get) ) match {
+          Home.flashing(BusinessServiceDAO.update(id,entity.copy(business_id = service.business_id, master_acc = request.identity.emailFilled) ) match {
             case 0 => "failure" -> s"Could not update entity ${entity.title}"
             case _ => "success" -> s"Entity ${entity.title} has been updated"
           })
@@ -117,7 +135,7 @@ class BusinessServiceController @Inject() (override implicit val env: MyEnvironm
     }
   }
   def destroy(id: Int) = SecuredAction { implicit request =>
-    if (serviceOwned(id, request.user.businessFirst)) {
+    if (serviceOwned(id, request.identity.businessFirst)) {
       Home.flashing(BusinessServiceDAO.delete(id) match {
         case 0 => "failure" -> "Entity has Not been deleted"
         case x => "success" -> s"Entity has been deleted (deleted $x row(s))"

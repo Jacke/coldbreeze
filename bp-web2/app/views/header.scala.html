@@ -1,12 +1,4 @@
-@import service.DemoUser
-
-@(user: DemoUser)(implicit request: Option[RequestHeader] = None, env: Option[securesocial.core.RuntimeEnvironment] = None)
-@import securesocial.core.IdentityProvider
-
-
-@import securesocial.core.IdentityProvider
-@import securesocial.core.providers.UsernamePasswordProvider
-@import securesocial.core.AuthenticationMethod._
+@(user: models.User2)(implicit request: Option[RequestHeader] = None)
 @import play.api.{Logger, Play}
 @import helper._
 @import play.api.Play
@@ -15,7 +7,7 @@
 <header class="fullSize"><div class="minorityMenu"><div class="wholeMenu menuRow">
 
   <div role="banner" class="minorityLogo menuCell">
-  
+
 <a class="absFg" title="Minority" href="/" onclick="window.stop();window.location.pathname='/'"><span class="visuallyhidden">Minority</span>
 <svg version="1.1" id="Layer_1" xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 640 480"
@@ -31,7 +23,7 @@
   <g id="_x23_77787c">
   </g>
 </g>
-<polygon id="e1_polygon" fill="#F0E68C" points="88,377.6 88,196.3 203.6,100.9 319.8,191.1 438.6,100.4 554.8,191.6 554.8,375.5 
+<polygon id="e1_polygon" fill="#F0E68C" points="88,377.6 88,196.3 203.6,100.9 319.8,191.1 438.6,100.4 554.8,191.6 554.8,375.5
   431.3,280.7 502.7,209.8 320.3,351.5 139.6,208.8 210.9,278.6 "/>
 </svg>
 </a>
@@ -42,8 +34,8 @@
       <span class="line-3"></span>
       <span class="line-4"></span>
 </button>
-  
-  
+
+
 
   </div>
 
@@ -70,19 +62,19 @@
     <li class="minMenuItem">
       <a id="navLaunchesLink" class="vIcoIn menuEntityLink" href="/a#/launches">
         <span class="uicon-svg372"></span>Launches</a>
-    </li> 
+    </li>
     <!--
     <li class="minMenuItem">
       <a id="teamMinsLink" class="vIcoIn menuEntityLink" href="/a#/ref">
         <span class="uicon-svg14"></span>
         Refs</a>
     </li> -->
-    @if(user.isManager && user.main.userId == user.masterFirst) {
+    @if(user.isManager && user.emailFilled == user.masterFirst) {
     <li class="minMenuItem">
       <a id="navPeopleLink" class="vIcoIn menuEntityLink" onclick="window.stop();window.location.pathname='/peoples'" href="@users.routes.EmployeeController.index()">
         <span class="uicon-svg98"></span>@Messages("nav.people")  </a>
     </li>
-    } 
+    }
     <li class="minMenuItem">
       <a id="navDataLink" class="vIcoIn menuEntityLink" onclick="window.stop()" href="@routes.DataController.index()">
         <span class="uicon-svg62222"></span>@Messages("page.data")</a>
@@ -105,8 +97,8 @@
 <script>
   window.intercomSettings = {
     app_id: "ckuh178p",
-    name: "@{user.main.fullName}", // Full name
-    email: "@{user.main.userId}", // Email address
+    name: "@{user.fullName}", // Full name
+    email: "@{user.emailFilled}", // Email address
     created_at: "@{user.created_at.getOrElse(0)}" // Signup date as a Unix timestamp
   };
 </script>
@@ -115,9 +107,9 @@
   <div class="menuCell flexibleSpace"></div>
     <div class="secondaryNav switcherWrap menuCell">
     <div class="switcherToggle" data-toggle="dropdown">
-        @{user.main.userId}
+        @{user.emailFilled}
         <span class="gravatar">
-            <img src="@gravatar(user.main.avatarUrl)" width="32px" height="32px"/>
+            <img src="@gravatar(None)" width="32px" height="32px"/>
         </span>
 
     </div>
@@ -126,7 +118,7 @@
                       <!--<li class="secondaryNavItem"><a id="accountLink" class="accountLink vIcoIn" href="https://login.ority.us/account">
 
                                                 <span class="smallGravatar">
-                                                    <img src="@user.main.avatarUrl.getOrElse("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iRWJlbmVfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSIxNnB4IiBoZWlnaHQ9IjE2cHgiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTYgMTYiIHhtbDpzcGFjZT0icHJlc2VydmUiPjx0aXRsZT5EZWZhdWx0IEF2YXRhcjwvdGl0bGU+PGRlc2M+RGVmYXVsdCBBdmF0YXIgZm9yIFdDRiAyLjA8L2Rlc2M+IDxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbLnN1cmZhY2UgeyBmaWxsOiAjZmZmOyB9LnNoYWRvdyB7IGZpbGw6ICNiYmI7IH1dXT48L3N0eWxlPjwvZGVmcz48cmVjdCB4PSIwIiBjbGFzcz0ic2hhZG93IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiLz48cGF0aCBjbGFzcz0ic3VyZmFjZSIgZD0iTTMuNTI4LDE2QzMuNzc2LDExLjQ5OSw1LjY4NCw4LDgsOHM0LjIyNCwzLjQ5OSw0LjQ3Myw3Ljk5OCIvPjxjaXJjbGUgY2xhc3M9InN1cmZhY2UiIGN4PSI4IiBjeT0iNiIgcj0iMy41Ii8+PC9zdmc+")" alt="@user.main.firstName.getOrElse("")" width="32px" height="32px"/>
+                                                    <img src="@None.getOrElse("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iRWJlbmVfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSIxNnB4IiBoZWlnaHQ9IjE2cHgiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTYgMTYiIHhtbDpzcGFjZT0icHJlc2VydmUiPjx0aXRsZT5EZWZhdWx0IEF2YXRhcjwvdGl0bGU+PGRlc2M+RGVmYXVsdCBBdmF0YXIgZm9yIFdDRiAyLjA8L2Rlc2M+IDxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbLnN1cmZhY2UgeyBmaWxsOiAjZmZmOyB9LnNoYWRvdyB7IGZpbGw6ICNiYmI7IH1dXT48L3N0eWxlPjwvZGVmcz48cmVjdCB4PSIwIiBjbGFzcz0ic2hhZG93IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiLz48cGF0aCBjbGFzcz0ic3VyZmFjZSIgZD0iTTMuNTI4LDE2QzMuNzc2LDExLjQ5OSw1LjY4NCw4LDgsOHM0LjIyNCwzLjQ5OSw0LjQ3Myw3Ljk5OCIvPjxjaXJjbGUgY2xhc3M9InN1cmZhY2UiIGN4PSI4IiBjeT0iNiIgcj0iMy41Ii8+PC9zdmc+")" alt="user.main.firstName.getOrElse("")" width="32px" height="32px"/>
 
 </span>
                                 Back to My Account
@@ -146,8 +138,12 @@
             <a class="changelogLink vIcoIn" href="@routes.SettingController.index()">
               <span class="uicon-svg2222"></span>@Messages("nav.settings")  </a>
           </li>
-          <li class="secondaryNavItem"><form class="logoutForm" action="@routes.CustomLoginController.logout()" method="POST"><button class="logoutBtn vIcoIn" type="submit"><span class="uicon-svg522 vLogout vDimmedState"></span> @Messages("page.signout") </button></form></li>
-
+          <li class="secondaryNavItem">
+            @form(routes.ApplicationController2.signOut(), 'class -> "logoutForm") {
+            <button class="logoutBtn vIcoIn" type="submit"><span class="uicon-svg522 vLogout vDimmedState"></span>
+              @Messages("page.signout") </button>
+            }
+        </li>
         </ul>
       </nav>
     </div>

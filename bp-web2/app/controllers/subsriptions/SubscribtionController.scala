@@ -3,7 +3,14 @@ import scala.util.{Try, Success, Failure}
 
 import models.{AccountsDAO, User, Page}
 import service.DemoUser
-import securesocial.core._
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 import controllers.users._
 import models.DAO.resources._
 import models.DAO._
@@ -17,13 +24,20 @@ import play.api.libs.json._
 import play.api.mvc.WebSocket.FrameFormatter
 import SumActor._
 import SumActor.Sum._
-//////import play.modules.mailer._
+import play.api.libs.mailer._
 import scala.util.{Try, Success, Failure}
 import play.api.libs.concurrent.Execution.Implicits._
 import scala.concurrent._
 
 import play.api.mvc._
-import securesocial.core._
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object Subscribe
 object StatusCheck
@@ -33,11 +47,22 @@ case class Subscriber(email: String)
 
 import javax.inject.Inject
 
-import securesocial.core._
-import service.{ MyEnvironment, MyEventListener, DemoUser }
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 import play.api.mvc.{ Action, RequestHeader }
 
-class SubscribtionController @Inject() (override implicit val env: MyEnvironment) extends securesocial.core.SecureSocial {
+class SubscribtionController @Inject() (
+  val messagesApi: MessagesApi,
+  val env: Environment[User2, CookieAuthenticator],
+  socialProviderRegistry: SocialProviderRegistry)
+  extends Silhouette[User2, CookieAuthenticator] {
     implicit val sumFormat                    = Json.format[SumActor.Sum]
     implicit val sumFrameFormatter            = FrameFormatter.jsonFrame[SumActor.Sum]
     implicit val sumResultFormat              = Json.format[SumActor.SumResult]
@@ -54,31 +79,31 @@ class SubscribtionController @Inject() (override implicit val env: MyEnvironment
 
 def sendInvite(emails_hash: String, invite_link: String) = SecuredAction { implicit request =>
   val emails = emails_hash.split(",").toList
-  ////// mailers.Mailer.sendInvite(subject = "Minority Platform Invite",
-  //////            emails = emails,
-  //////            invite_link)
+  mailers.Mailer.sendInvite(subject = "Minority Platform Invite",
+              emails = emails,
+              invite_link)
   Ok("sended to" + emails_hash)
 }
 
 def fetchSubscribers() = Action { implicit request =>
-  val emails: List[Subscriber] = List() //////mailers.Mailer.fetchMembers().map(Subscriber(_))
+  val emails: List[Subscriber] = mailers.Mailer.fetchMembers().map(Subscriber(_))
    Ok(Json.toJson(emails))
 }
 
 def newSubscribers() = Action { implicit request =>
    type Email = String
-   val emails: List[String] = List() /////mailers.Mailer.fetchMembers()
+   val emails: List[String] = mailers.Mailer.fetchMembers()
    val filtered = AccountsDAO.getAccounts(emails).map(_.userId)
    Ok(Json.toJson(emails.filter(e => !filtered.contains(e)).map(Subscriber(_))))
 }
 def sendToNew() = Action { implicit request =>
    type Email = String
-   val emails: List[String] =  List() ///// AccountsDAO.getAccounts(mailers.Mailer.fetchMembers()).map(_.userId)
+   val emails: List[String] =  AccountsDAO.getAccounts(mailers.Mailer.fetchMembers()).map(_.userId)
    emails.foreach { email =>
    val invite_link:String = "invite_link"
-   /////mailers.Mailer.sendInvite(subject = "Minority Platform Invite",
-    ////         emails = List(email),
-    ////         invite_link)
+    mailers.Mailer.sendInvite(subject = "Minority Platform Invite",
+              emails = List(email),
+              invite_link)
    }
    Ok(Json.toJson("sended to"))
 }

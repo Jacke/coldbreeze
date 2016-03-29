@@ -1,18 +1,12 @@
-@import service.DemoUser
+
 @import controllers.employeeParams
 @import models.DAO.resources.ActPermission
 @import models.DAO.resources.BusinessServiceDTO
 @import models.DAO.resources.BusinessDTO
-@import service.DemoUser
+
 
 @import helper._
-@(bizForm: Option[Form[models.DAO.resources.web.BizFormDTO]], user:DemoUser, isManager: Boolean = false, workbench:Option[BusinessDTO]=None, workbenches: Seq[BusinessDTO]=Seq())(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment)
-
-@import securesocial.core.IdentityProvider
-
-@import securesocial.core.IdentityProvider
-@import securesocial.core.providers.UsernamePasswordProvider
-@import securesocial.core.AuthenticationMethod._
+@(bizForm: Option[Form[models.DAO.resources.web.BizFormDTO]], user: models.User2, isManager: Boolean = false, workbench:Option[BusinessDTO]=None, workbenches: Seq[BusinessDTO]=Seq())(implicit request: RequestHeader)
 @import play.api.{Logger, Play}
 @import helper._
 @import play.api.Play
@@ -156,9 +150,11 @@ svg#Capa_2 {
 <div class="teamSettings">
 <div class="grids">
   <div class="page-header">
-      <h2><img src="@user.main.avatarUrl.getOrElse("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iRWJlbmVfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSIxNnB4IiBoZWlnaHQ9IjE2cHgiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTYgMTYiIHhtbDpzcGFjZT0icHJlc2VydmUiPjx0aXRsZT5EZWZhdWx0IEF2YXRhcjwvdGl0bGU+PGRlc2M+RGVmYXVsdCBBdmF0YXIgZm9yIFdDRiAyLjA8L2Rlc2M+IDxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbLnN1cmZhY2UgeyBmaWxsOiAjZmZmOyB9LnNoYWRvdyB7IGZpbGw6ICNiYmI7IH1dXT48L3N0eWxlPjwvZGVmcz48cmVjdCB4PSIwIiBjbGFzcz0ic2hhZG93IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiLz48cGF0aCBjbGFzcz0ic3VyZmFjZSIgZD0iTTMuNTI4LDE2QzMuNzc2LDExLjQ5OSw1LjY4NCw4LDgsOHM0LjIyNCwzLjQ5OSw0LjQ3Myw3Ljk5OCIvPjxjaXJjbGUgY2xhc3M9InN1cmZhY2UiIGN4PSI4IiBjeT0iNiIgcj0iMy41Ii8+PC9zdmc+")" alt="@user.main.firstName.getOrElse("")" width="40px" height="40px"/> @Messages("profile.welcome") @user.main.firstName.getOrElse("")</h2>
+      <h2><img src="@None.getOrElse("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iRWJlbmVfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSIxNnB4IiBoZWlnaHQ9IjE2cHgiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTYgMTYiIHhtbDpzcGFjZT0icHJlc2VydmUiPjx0aXRsZT5EZWZhdWx0IEF2YXRhcjwvdGl0bGU+PGRlc2M+RGVmYXVsdCBBdmF0YXIgZm9yIFdDRiAyLjA8L2Rlc2M+IDxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbLnN1cmZhY2UgeyBmaWxsOiAjZmZmOyB9LnNoYWRvdyB7IGZpbGw6ICNiYmI7IH1dXT48L3N0eWxlPjwvZGVmcz48cmVjdCB4PSIwIiBjbGFzcz0ic2hhZG93IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiLz48cGF0aCBjbGFzcz0ic3VyZmFjZSIgZD0iTTMuNTI4LDE2QzMuNzc2LDExLjQ5OSw1LjY4NCw4LDgsOHM0LjIyNCwzLjQ5OSw0LjQ3Myw3Ljk5OCIvPjxjaXJjbGUgY2xhc3M9InN1cmZhY2UiIGN4PSI4IiBjeT0iNiIgcj0iMy41Ii8+PC9zdmc+")"
+        alt="@user.firstName.getOrElse("")" width="40px" height="40px"/> @Messages("profile.welcome")
+        @user.firstName.getOrElse("")</h2>
   </div>
-<!--  
+<!--
 <div class="deleteInfo">
     <h3>@Messages("page.deleteInfo")</h3>
 </div>
@@ -242,7 +238,7 @@ svg#Capa_2 {
     }
     @if(!workbench.isDefined) {
     <h4>You are disconnected from workbench</h4>
-    <p>Please select any avaliable workbench below. For any questions <a href="mailto:a@@minorityapp.com">a@@minorityapp.com</a></p>  
+    <p>Please select any avaliable workbench below. For any questions <a href="mailto:a@@minorityapp.com">a@@minorityapp.com</a></p>
 <svg version="1.1" id="Capa_2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
    viewBox="0 0 472.951 472.951" style="enable-background:new 0 0 472.951 472.951;" xml:space="preserve">
 <g>
@@ -309,12 +305,12 @@ svg#Capa_2 {
 </g>
 </svg>
     }
-</div>    
+</div>
     <div class="avaliable-workbenches">
     @workbenches.map { aval_bench =>
       <div class="avaliable-workbench">
         <h4><a class="changeBenchBtn" href="@routes.SettingController.resetBench(aval_bench.id.get)">Workbench: @aval_bench.title</a></h4>
-      </div>  
+      </div>
     }
     </div>
 </div>
@@ -323,17 +319,17 @@ svg#Capa_2 {
 @if(bizForm.isDefined) {
 @form(routes.SettingController.update_biz_credentials()) {
 <fieldset>
-   @inputText(bizForm.get("title"), '_label -> Messages("settings.businessName"), 'class -> "form-control")   
-   @inputText(bizForm.get("nickname"), '_label -> Messages("settings.companyName"), 'class -> "form-control")   
-   @inputText(bizForm.get("phone"), '_label -> Messages("settings.phone"), 'class -> "form-control")   
-   @inputText(bizForm.get("website"), '_label -> Messages("settings.website"), 'class -> "form-control")  
-   @inputText(bizForm.get("country"), '_label -> Messages("settings.country"), 'class -> "form-control")  
-   @inputText(bizForm.get("city"), '_label -> Messages("settings.city"), 'class -> "form-control")  
-   @inputText(bizForm.get("address"), '_label -> Messages("settings.address"), 'class -> "form-control")  
+   @inputText(bizForm.get("title"), '_label -> Messages("settings.businessName"), 'class -> "form-control")
+   @inputText(bizForm.get("nickname"), '_label -> Messages("settings.companyName"), 'class -> "form-control")
+   @inputText(bizForm.get("phone"), '_label -> Messages("settings.phone"), 'class -> "form-control")
+   @inputText(bizForm.get("website"), '_label -> Messages("settings.website"), 'class -> "form-control")
+   @inputText(bizForm.get("country"), '_label -> Messages("settings.country"), 'class -> "form-control")
+   @inputText(bizForm.get("city"), '_label -> Messages("settings.city"), 'class -> "form-control")
+   @inputText(bizForm.get("address"), '_label -> Messages("settings.address"), 'class -> "form-control")
 </fieldset>
 <div class="actions">
 <input type="submit" value="Update" class="btn btn-primary">
-</div> 
+</div>
 }
 }
 
@@ -357,7 +353,7 @@ svg#Capa_2 {
         }
     }
     </span>-->
-</div> 
+</div>
 </div>
 </div>
 </div>

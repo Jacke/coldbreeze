@@ -1,5 +1,5 @@
-@import service.DemoUser
-@(id: Option[String], form: Form[minority.utils.Entity], user: DemoUser, boardId: Option[String], resourceId: Option[Int]=None)
+
+@(id: Option[String], form: Form[minority.utils.Entity], user: models.User2, boardId: Option[String], resourceId: Option[Int]=None)
 @entityTitle = {
    @id match {
      case Some(id) => { "Edit an entity" }

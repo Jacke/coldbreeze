@@ -4,7 +4,7 @@
 
 
 
-define(['angular', 'toaster','toastr', 'angularanimate', 'roundProgress'], function (angular, toaster, toastr, angularanimate, roundProgress) {
+define(['angular', 'toaster','toastr', 'angularanimate','roundProgress'], function (angular, toaster, toastr,angularanimate, roundProgress) {
 
 
 
@@ -77,7 +77,7 @@ var translationsEN = {
   ADD_OBSERVER: 'Add observer',
   OPEN: 'Open'
 };
- 
+
 var translationsRU= {
   PERMISSIONS: 'Права',
   DELETE: 'Удалить',
@@ -148,23 +148,23 @@ var translationsRU= {
   OPEN: 'Открыть'
 };
 /*
-[ "chieffancypants.loadingBar", 
-"ngAnimate", 
-"ngSanitize", 
-"ngResource", 
-"ngCookies", 
-"ui.router", 
-"ui.bootstrap", 
-"colorpicker.module", 
-"iso-3166-country-codes", 
-"infinite-scroll", 
-"angulartics", 
-"angulartics.google.analytics", 
-"angulartics.mixpanel", 
-"ac-adWordsTracking", 
-"angular-chartist", 
-"daterangepicker", 
-"angular-clipboard", 
+[ "chieffancypants.loadingBar",
+"ngAnimate",
+"ngSanitize",
+"ngResource",
+"ngCookies",
+"ui.router",
+"ui.bootstrap",
+"colorpicker.module",
+"iso-3166-country-codes",
+"infinite-scroll",
+"angulartics",
+"angulartics.google.analytics",
+"angulartics.mixpanel",
+"ac-adWordsTracking",
+"angular-chartist",
+"daterangepicker",
+"angular-clipboard",
 "ac-presence" ]);
 */
 var minorityApp =
@@ -175,7 +175,7 @@ var minorityApp =
       'minorityApp.TreeBuilderService',
       'minorityApp.controllers',
       'ngRoute',
-      'formly', 
+      'formly',
       'formlyBootstrap',
       'ngResource',
       'jcs-autoValidate',
@@ -191,6 +191,7 @@ var minorityApp =
       'ngAngularError',
       'restangular',
       'ui.select',
+      'angular-cache',
       'toaster',
       'ngAnimate',
       'toastr',
@@ -241,7 +242,7 @@ minorityApp.factory(
                     template: '/assets/partials/popup/first-process-finished.html',
                     //template: '/assets/partials/popup/first-process-finished.html',
                     controller: 'LaunchesCtrl'
-                  });            
+                  });
           }
 
       };
@@ -271,7 +272,7 @@ minorityApp.factory('NotificationBroadcaster', ['$rootScope','$websocket', '$win
             }
             // laucnh locker
             if (object.type == "launchLocker") {
-               $rootScope.$broadcast('launchLocker', {launchId: object.launchId, lockState: object.state }); 
+               $rootScope.$broadcast('launchLocker', {launchId: object.launchId, lockState: object.state });
             }
             if (object.type == "popup") {
               popupFactory.pop(object);
@@ -289,7 +290,7 @@ minorityApp.factory('NotificationBroadcaster', ['$rootScope','$websocket', '$win
             console.log(message);//socketLoad();
           };
           return dataStream;
-        
+
       }
       var dataStream = socketLoad();
 
@@ -571,7 +572,7 @@ minorityApp.config(['$translateProvider', function ($translateProvider) {
   $translateProvider.translations('ru', translationsRU);
   //$translateProvider.useLocalStorage();
   $translateProvider.preferredLanguage('en');
-  
+
   $translateProvider.fallbackLanguage('en');
 }]);
 minorityApp.directive('loading', ['$http' , function ($http) {
@@ -582,16 +583,16 @@ minorityApp.directive('loading', ['$http' , function ($http) {
             scope.isLoading = function () {
                 return $http.pendingRequests.length > 0;
             };
- 
+
             scope.$watch(scope.isLoading, function (value) {
                 if (value) {
                     element.attr("disabled", "disabled");
                     $(element).click(function (event) {
                         event.preventDefault();
                     });
- 
+
                 } else {
- 
+
                     if (oldNgClick) {
                         attrs.$set('ngClick', oldNgClick);
                         element.bind('click', function () {
@@ -601,12 +602,12 @@ minorityApp.directive('loading', ['$http' , function ($http) {
                         $(element).unbind('click');
                     }
                     element.removeAttr("disabled");
- 
+
                 }
             });
         }
     };
- 
+
 }]);
 minorityApp.config(['$locationProvider','$routeProvider', '$httpProvider', function($locationProvider, $routeProvider, $httpProvide) {
 
@@ -616,15 +617,15 @@ minorityApp.config(['$locationProvider','$routeProvider', '$httpProvider', funct
      $routeProvider.when('/profile', {templateUrl: '/assets/partials/profile.html', controller: 'ProfileController'});
 // BProcess
 /*I*/$routeProvider.when('/bprocesses', {
-                 templateUrl: '/assets/partials/bprocesses/bp-list.html', 
+                 templateUrl: '/assets/partials/bprocesses/bp-list.html',
                  controller: 'BProcessListCtrl',
                  resolve: { Auth: ['$http', '$q', '$window', '$rootScope', 'NotificationBroadcaster', function($http, $q, $window, $rootScope, NotificationBroadcaster) {
 //                    var deffered = $q.defer();
-                  var token = $window.sessionStorage.getItem('token'); 
+                  var token = $window.sessionStorage.getItem('token');
                   var biz_id = $window.localStorage.getItem('business');
                   $rootScope.notify = NotificationBroadcaster;
                   //if (biz_id == undefined || biz_id == "-1") {
-                   $rootScope.whoami = $http.post(jsRoutes.controllers.Application.whoami().absoluteURL(document.ssl_enabled), { 
+                   $rootScope.whoami = $http.post(jsRoutes.controllers.Application.whoami().absoluteURL(document.ssl_enabled), {
                     headers:  {'X-Auth-Token': token, 'Access_Name': 'user'}}).then(function (profile) {
                         $window.sessionStorage.setItem("business", profile.data.business);
                         $window.localStorage.setItem("business", profile.data.business);
@@ -640,7 +641,7 @@ minorityApp.config(['$locationProvider','$routeProvider', '$httpProvider', funct
                         $window.sessionStorage.setItem("manager", profile.data.manager);
                   })
                   //}
-                  
+
  //                   $rootScope.whoami = $http.post('https://min.ority.us/whoami', {headers:  {'X-Auth-Token': token, 'Access_Name': 'user'}})
   //                    .then(function (profile) {
    //                    console.log("profile " + profile);
@@ -682,9 +683,9 @@ minorityApp.config(['$locationProvider','$routeProvider', '$httpProvider', funct
      // Inputs
 /*C*/$routeProvider.when('/bprocess/:BPid/input', {templateUrl: '/assets/partials/inputs/inputs.html', controller: 'BPRequestCtrl'});
      // Reflections
-/*I*/$routeProvider.when('/ref', {templateUrl: '/assets/partials/reflections/ref-list.html', controller: 'ReflectionCtrl'});  
-/*C*/$routeProvider.when('/ref/new', {templateUrl: '/assets/partials/reflections/ref-list.html', controller: 'ReflectionCtrl'});  
-  
+/*I*/$routeProvider.when('/ref', {templateUrl: '/assets/partials/reflections/ref-list.html', controller: 'ReflectionCtrl'});
+/*C*/$routeProvider.when('/ref/new', {templateUrl: '/assets/partials/reflections/ref-list.html', controller: 'ReflectionCtrl'});
+
 
      $routeProvider.otherwise({redirectTo: '/bprocesses'});
 
@@ -728,40 +729,3 @@ angular.module('myApp.filters', []).
     }
   }]);
 */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

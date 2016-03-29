@@ -1,22 +1,20 @@
 package controllers
 
-import securesocial.controllers.BaseLoginPage
 import play.api.mvc.{RequestHeader, AnyContent, Action}
 import play.api.Logger
-import securesocial.core.{RuntimeEnvironment, IdentityProvider}
-import service.DemoUser
-import securesocial.core.services.RoutesService
 
 import play.api.data.Forms._
 import play.api.data._
 import play.api.i18n.Messages
 import play.api.mvc.Action
-import securesocial.core._
-import securesocial.controllers._
-import securesocial.core.authenticator.CookieAuthenticator
-import securesocial.core.providers.UsernamePasswordProvider
-import securesocial.core.providers.utils._
-import securesocial.core.services.SaveMode
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 import play.filters.csrf._
 import models._
 import scala.concurrent.{Await, ExecutionContext, Future}
@@ -26,79 +24,19 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 import javax.inject.Inject
 
-import securesocial.core._
-import service.{ MyEnvironment, MyEventListener, DemoUser }
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 import play.api.mvc.{ Action, RequestHeader }
 
 //import controllers.Actions.Implicits._
 import play.api.Play.current
 import play.api.i18n.Messages.Implicits._
-class CustomLoginController @Inject() (implicit override val env: RuntimeEnvironment) extends BaseLoginPage {
 
-  override def login: Action[AnyContent] = {
-    Logger.debug("using CustomLoginController")
-    super.login
-  }
-  override def logout: Action[AnyContent] = {
-    Logger.debug("using logout")
-    super.logout
-  }
-}
-class CustomPasswordReset @Inject() (implicit override val env: RuntimeEnvironment) extends BasePasswordReset {
-  override def startResetPassword = {
-    Logger.debug("startResetPassword")
-    super.startResetPassword
-  }
-  override def handleStartResetPassword = {
-    Logger.debug("handleStartResetPassword")
-    super.handleStartResetPassword
-  }
-// GET     /auth/reset/:mailToken
-  override def resetPassword(token: String) =  CSRFAddToken {
-     Logger.debug(s"GET resetPassowrd $token")
-    Action.async {
-      implicit request =>
-        executeForToken(token, false, {
-          t =>
-            Future.successful(Ok(env.viewTemplates.getResetPasswordPage(changePasswordForm, token)))
-        })
-    }
-  }
-
-
-
-// POST    /auth/reset/:mailToken
-  override def handleResetPassword(token: String) = CSRFCheck {
-    Action.async { implicit request =>
-      import scala.concurrent.ExecutionContext.Implicits.global
-      executeForToken(token, false, {
-        t =>
-          changePasswordForm.bindFromRequest.fold(errors =>
-            Future.successful(BadRequest(env.viewTemplates.getResetPasswordPage(errors, token))),
-            p =>
-              env.userService.findByEmailAndProvider(t.email, UsernamePasswordProvider.UsernamePassword).flatMap {
-                case Some(profile) =>
-                  val hashed = env.currentHasher.hash(p._1)
-                  for (
-                    updated <- env.userService.save(profile.copy(passwordInfo = Some(hashed)), SaveMode.PasswordChange);
-                    deleted <- env.userService.deleteToken(token)
-                  ) yield {
-                    env.mailer.sendPasswordChangedNotice(profile)
-                    val eventSession = Events.fire(new PasswordResetEvent(updated)).getOrElse(request.session)
-                    confirmationResult().withSession(eventSession).flashing(Success -> Messages(PasswordUpdated))
-                  }
-                case _ =>
-                  Logger.error("[securesocial] could not find user with email %s during password reset".format(t.email))
-                  Future.successful(confirmationResult().flashing(Error -> Messages(ErrorUpdatingPassword)))
-              }
-          )
-      })
-    }
-  }
-
-
-}
-
+/*
 object BaseRegistrationMsgs {
   val UserNameAlreadyTaken = "securesocial.signup.userNameAlreadyTaken"
   val ThankYouCheckEmail = "securesocial.signup.thankYouCheckEmail"
@@ -111,6 +49,8 @@ object BaseRegistrationMsgs {
 
   val PasswordsDoNotMatch = "securesocial.signup.passwordsDoNotMatch"
 }
+*/
+
 
 
 import _root_.java.util.UUID
@@ -119,18 +59,19 @@ import play.api.data._
 import play.api.data.Forms._
 import play.api.data.validation.Constraints._
 import play.api.Play
-import securesocial.core.providers.UsernamePasswordProvider
-import securesocial.core._
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 import com.typesafe.plugin._
 import Play.current
-import securesocial.core.providers.utils._
 import org.joda.time.DateTime
 import play.api.i18n.Messages
-import scala.Some
-import securesocial.core.providers._
-
 import scala.language.reflectiveCalls
-import securesocial.controllers.Registration
 import com.typesafe.plugin._
 import controllers._
 import play.api.i18n.Lang
@@ -161,13 +102,13 @@ object CustomRegistration {
               //////  mail.setCc(email)
               //////  mail.setFrom("app@minorityapp.com")
               //views.html.mailBody.render(user).body();
-              val token = securesocial.core.providers.MailToken("XXXX",email, DateTime.now, DateTime.now.plusMinutes(60),false)
+              //////val token = securesocial.core.providers.MailToken("XXXX",email, DateTime.now, DateTime.now.plusMinutes(60),false)
               //mail.sendHtml(views.html.mailer.ActorAdd.render(token.email, host).body)
               // SEND WELCOME
               //Mailer.sendAlreadyRegisteredEmail(user)
-              play.Logger.info(s"employment registration for $email with token $token")
+              play.Logger.info(s"employment registration for email with token token")
               play.Logger.info(s".... INVITE LINK ...")
-              play.Logger.info(s"/auth/signup/$token")
+              play.Logger.info(s"/auth/signup/token")
               play.Logger.info(s".... INVITE LINK ...")
               Future {
               //////    mailers.Mailer.sendInvite(subject = "Invitation as employee",
@@ -185,7 +126,7 @@ object CustomRegistration {
               //////  mail.setFrom("app@minorityapp.com")
               //views.html.mailBody.render(user).body();
               //mail.sendHtml(views.html.mailer.ActorAdd.render(token._1, host).body)
-              play.Logger.info(s"employment arleady defined registration for $email !!!!!")
+              play.Logger.info(s"employment arleady defined registration for email !!!!!")
               play.Logger.info(s".... PLEASE STANBY ...")
               //play.Logger.info(s"/auth/signup/$token")
               play.Logger.info(s".... PLEASE STANBY ...")
@@ -196,25 +137,31 @@ object CustomRegistration {
               //}
               //Mailer.sendAlreadyRegisteredEmail(user)
           }
-
-
+        }
   }
-  }
-  private def createToken(email: String, isSignUp: Boolean): (String, MailToken) = {
+  private def createToken(email: String, isSignUp: Boolean): (String) = {
     val uuid:String = UUID.randomUUID().toString
     val now = DateTime.now
     play.Logger.info(s".... TOKEN CREATED ...")
-//case class MailToken(uuid: String, email: String, creationTime: DateTime, expirationTime: DateTime, isSignUp: Boolean)
-    val token = MailToken(
-      uuid, email,
-      now,
-      now.plusDays(60),
-      isSignUp = isSignUp)
-    TokensDAO.saveToken(token)
-    (uuid, token)
+    //case class MailToken(uuid: String, email: String, creationTime: DateTime, expirationTime: DateTime, isSignUp: Boolean)
+    //val token = MailToken(
+    //  uuid, email,
+    //  now,
+    //  now.plusDays(60),
+    //  isSignUp = isSignUp)
+    //TokensDAO.saveToken(token)
+    (uuid)
   }
 
 }
+
+
+
+
+
+
+
+/*
 
 class CustomProviderController @Inject() (implicit override val env: RuntimeEnvironment) extends securesocial.controllers.BaseProviderController {
   import BaseRegistrationMsgs._
@@ -222,7 +169,14 @@ class CustomProviderController @Inject() (implicit override val env: RuntimeEnvi
   import play.api.Play.current
   import play.api.i18n.Messages
   import play.api.mvc._
-  import securesocial.core._
+  import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
   import securesocial.core.authenticator.CookieAuthenticator
   import securesocial.core.services.SaveMode
   import securesocial.core.utils._
@@ -257,11 +211,11 @@ class CustomProviderController @Inject() (implicit override val env: RuntimeEnvi
   private def handleAuth(provider: String, redirectTo: Option[String]) = UserAwareAction.async { implicit request =>
     import scala.concurrent.ExecutionContext.Implicits.global
     println("handle auth")
-    val authenticationFlow = request.user.isEmpty
+    val authenticationFlow = request.identity.isEmpty
     val modifiedSession = overrideOriginalUrl(request.session, redirectTo)
          logAuth(request.remoteAddress, request.headers.get("User-Agent").getOrElse(""), None)
     if (!authenticationFlow) {
-         logAuth(request.remoteAddress, request.headers.get("User-Agent").getOrElse(""), Some(request.user.get.toString) ) // .main.email)
+         logAuth(request.remoteAddress, request.headers.get("User-Agent").getOrElse(""), Some(request.identity.get.toString) ) // .main.email)
     }
 
     env.providers.get(provider).map {
@@ -299,7 +253,7 @@ class CustomProviderController @Inject() (implicit override val env: RuntimeEnvi
               }
             }
           } else {
-            request.user match {
+            request.identity match {
               case Some(currentUser) =>
                 for (
                   linked <- env.userService.link(currentUser, authenticated.profile);
@@ -437,8 +391,4 @@ class CustomRegistrationController @Inject() (implicit override val env: Runtime
   }
 }
 
-
-
-class CustomRoutesService extends RoutesService.Default {
-  override def loginPageUrl(implicit req: RequestHeader): String = controllers.routes.CustomLoginController.login().absoluteURL(IdentityProvider.sslEnabled)
-}
+*/

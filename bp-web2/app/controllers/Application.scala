@@ -15,18 +15,29 @@ import play.api.Logger
 import views._
 import models.{AccountsDAO, User}
 import service.DemoUser
-import securesocial.core._
 import controllers.users._
 import models.DAO.resources._
 
 
+
+import play.api.mvc.{ Action, RequestHeader }
 import javax.inject.Inject
 
-import securesocial.core._
-import service.{ MyEnvironment, MyEventListener, DemoUser }
-import play.api.mvc.{ Action, RequestHeader }
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
-class Application @Inject() (override implicit val env: MyEnvironment) extends securesocial.core.SecureSocial {
+
+class Application @Inject() (
+  val messagesApi: MessagesApi,
+  val env: Environment[User2, CookieAuthenticator],
+  socialProviderRegistry: SocialProviderRegistry)
+  extends Silhouette[User2, CookieAuthenticator] {
   import play.api.Play.current
 
   val applicationLogger = play.api.Logger("application")
@@ -40,7 +51,7 @@ class Application @Inject() (override implicit val env: MyEnvironment) extends s
     Action { implicit request =>
       Ok(
         Routes.javascriptRouter(varName)(
-          routes.javascript.CustomLoginController.login,
+          routes.javascript.ApplicationController2.signIn,
             routes.javascript.BusinessProcessController.frontElems,
             routes.javascript.BusinessProcessController.spaces,
             routes.javascript.BusinessProcessController.copy,
@@ -55,7 +66,6 @@ class Application @Inject() (override implicit val env: MyEnvironment) extends s
             routes.javascript.Application.subscribePro,
             routes.javascript.Application.subscribeEa,
             routes.javascript.ProfileController.dashboard,
-            routes.javascript.ProfileController.profile,
             routes.javascript.ProcessSessionController.update_note,
             routes.javascript.ProcessInputController.invokeFrom,
             routes.javascript.APIController.v1,
@@ -81,21 +91,21 @@ class Application @Inject() (override implicit val env: MyEnvironment) extends s
 
   def app() = SecuredAction { implicit request =>
     // Expired plan checking
-      //AccountPlanDAO.getByMasterAcc(request.user.masterFirst) match {
+      //AccountPlanDAO.getByMasterAcc(request.identity.masterFirst) match {
       //  case Some(current_plan) => applicationLogger.info(s"Plan expired_at: ${current_plan.expired_at}")
       //  case _ =>
       //}
       //if (current_plan.expired_at.isBefore( org.joda.time.DateTime.now() ) ) {
       //  Redirect(routes.PlanController.index)
       //} else {
-      if (request.user.businessFirst < 1)
+      if (request.identity.businessFirst < 1)
         Redirect(routes.SettingController.workbench())
       else
-        Ok(views.html.app(request.user))
+        Ok(views.html.app(request.identity))
       //}
   }
   def app2() = SecuredAction { implicit request =>
-        Ok(views.html.app2(request.user))
+        Ok(views.html.app2(request.identity))
   }
 
   def error_test() = Action { implicit request =>
@@ -103,20 +113,20 @@ class Application @Inject() (override implicit val env: MyEnvironment) extends s
     Ok(Json.toJson(test_error))
   }
   def proPage() = SecuredAction { implicit request =>
-      AccountsDAO.getAccountInfo(request.user.main.userId) match {
+      AccountsDAO.getAccountInfo(request.identity.emailFilled) match {
         case Some(infos) => {
                 val eaSubmited  = infos.ea
                 val proSubmited = infos.pro
-                Ok(views.html.pro(request.user, eaSubmited, proSubmited))
+                Ok(views.html.pro(request.identity, eaSubmited, proSubmited))
         }
-        case _ => Ok(views.html.pro(request.user, false,false))
+        case _ => Ok(views.html.pro(request.identity, false,false))
       }
 
   }
   def subscribePro() = SecuredAction(BodyParsers.parse.json) { implicit request =>
       println(request.body)
-      AccountsDAO.subscribeToPro(request.user.main.userId)
-      AccountsDAO.getAccountInfo(request.user.main.userId) match {
+      AccountsDAO.subscribeToPro(request.identity.emailFilled)
+      AccountsDAO.getAccountInfo(request.identity.emailFilled) match {
         case Some(infos) => {
                 val eaSubmited  = infos.ea
                 val proSubmited = infos.pro
@@ -128,8 +138,8 @@ class Application @Inject() (override implicit val env: MyEnvironment) extends s
 
   def subscribeEa() = SecuredAction(BodyParsers.parse.json) { implicit request =>
       println(request.body)
-      AccountsDAO.subscribeToEA(request.user.main.userId)
-      AccountsDAO.getAccountInfo(request.user.main.userId) match {
+      AccountsDAO.subscribeToEA(request.identity.emailFilled)
+      AccountsDAO.getAccountInfo(request.identity.emailFilled) match {
         case Some(infos) => {
                 val eaSubmited  = infos.ea
                 val proSubmited = infos.pro
@@ -146,7 +156,7 @@ class Application @Inject() (override implicit val env: MyEnvironment) extends s
   implicit val ConfigurationWrapperReads = Json.reads[ConfigurationWrapper]
   implicit val ConfigurationWrapperWrites = Json.format[ConfigurationWrapper]
 
-  
+
   def configuration() = Action { implicit request =>
     Ok(Json.toJson(ConfigurationWrapper(
       main.scala.bprocesses.refs.UnitRefs.SwitcherConfiguration.switcher_options,
@@ -184,8 +194,8 @@ def uptime() = Action { implicit request =>
 
 
   def whoami = SecuredAction.async { implicit request =>
-    val email = request.user.main.email.get
-    val business = request.user.businessFirst
+    val email = request.identity.emailFilled
+    val business = request.identity.businessFirst
     applicationLogger.debug("Attempting risky calculation.")
     applicationLogger.debug(request.host.toString)
 
@@ -206,8 +216,8 @@ def uptime() = Action { implicit request =>
 
     minority.utils.BBoardWrapper().ping.map { bb_ping =>
 
-    Ok(Json.toJson(WhoAmIdentify(request.user.main.userId,
-      request.user.businessFirst,
+    Ok(Json.toJson(WhoAmIdentify(request.identity.emailFilled,
+      request.identity.businessFirst,
       isManager, isEmployee,
       lang,
       payed = current_plan.expired_at.isAfter( org.joda.time.DateTime.now()),
@@ -219,30 +229,8 @@ def uptime() = Action { implicit request =>
   }
 }
 
-  // a sample action using an authorization implementation
-  def onlyTwitter = SecuredAction(WithProvider("twitter")) { implicit request =>
-    Ok("You can see this because you logged in using Twitter")
-  }
 
 
-  /**
-   * Sample use of SecureSocial.currentUser. Access the /current-user to test it
-
-  def currentUser = Action.async { implicit request =>
-    import play.api.libs.concurrent.Execution.Implicits._
-    SecureSocial.currentUser[DemoUser].map { maybeUser =>
-      val userId = maybeUser.map(_.main.userId).getOrElse("unknown")
-      Ok(s"Your id is $userId")
-    }
-  }
-*/
-
-// An Authorization implementation that only authorizes uses that logged in using twitter
-  case class WithProvider(provider: String) extends Authorization[DemoUser] {
-    def isAuthorized(user: DemoUser, request: RequestHeader) = {
-      user.main.providerId == provider
-    }
-  }
 
 
 /**

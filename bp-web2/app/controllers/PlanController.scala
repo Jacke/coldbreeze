@@ -20,7 +20,14 @@ import play.api.data.FormError
 import views._
 import models.User
 import service.DemoUser
-import securesocial.core._
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.BProcessDTO
 import models.DAO.BPDAO
 import models.DAO._
@@ -49,11 +56,22 @@ case class StatusMessage(message:String, state: String="error", lang: String="en
 
 import javax.inject.Inject
 
-import securesocial.core._
-import service.{ MyEnvironment, MyEventListener, DemoUser }
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 import play.api.mvc.{ Action, RequestHeader }
 
-class PlanController @Inject() (override implicit val env: MyEnvironment) extends securesocial.core.SecureSocial {
+class PlanController @Inject() (
+  val messagesApi: MessagesApi,
+  val env: Environment[User2, CookieAuthenticator],
+  socialProviderRegistry: SocialProviderRegistry)
+  extends Silhouette[User2, CookieAuthenticator] {
 
 
 
@@ -98,11 +116,11 @@ def cancel_url() = SecuredAction { implicit request =>
 }
 
 def index() = SecuredAction { implicit request =>
-  val business = request.user.businessFirst
+  val business = request.identity.businessFirst
   if (business < 1) {
     Redirect(controllers.routes.SettingController.workbench())
   } else {
-    val user = request.user.main.userId
+    val user = request.identity.emailFilled
    	val plans = PlanDAO.getAll.sortBy(_.order).filter(p => !p.hidden)
    	val bills = BillDAO.getAllByWorkbench(business)
     println("Workbench " + business)
@@ -114,7 +132,7 @@ def index() = SecuredAction { implicit request =>
      case Some(info) => BillingInfoForm.fill(info)
      case _ => BillingInfoForm
     }
-   	Ok(views.html.plans.index(request.user, plans, bills, PayForm, billing_info_form, limit_form, current_plan))
+   	Ok(views.html.plans.index(request.identity, plans, bills, PayForm, billing_info_form, limit_form, current_plan))
   }
 }
 
@@ -134,11 +152,11 @@ def update_billinginfos() = SecuredAction { implicit request =>
   * Switch method
   */
 def switch(plan_id: Int) = SecuredAction { implicit request =>
-  val business = request.user.businessFirst
+  val business = request.identity.businessFirst
   if (business < 1) {
     Redirect(controllers.routes.SettingController.workbench())
   } else {
-  val user = request.user.main.userId
+  val user = request.identity.emailFilled
   val plans = PlanDAO.getAll.sortBy(_.order).filter(p => !p.hidden)
   val bills = BillDAO.getAllByWorkbench(business)
 
@@ -166,11 +184,11 @@ def switch(plan_id: Int) = SecuredAction { implicit request =>
 }
 
 def delete_bill(billId: Int) = SecuredAction { implicit request =>
-  val business = request.user.businessFirst
+  val business = request.identity.businessFirst
   if (business < 1) {
     Redirect(controllers.routes.SettingController.workbench())
   } else {
-    val user = request.user.main.userId
+    val user = request.identity.emailFilled
 
     val bills = BillDAO.getAllByWorkbench(business)
     bills.find(bill => bill.id.get == billId && !bill.approved) match {
@@ -187,12 +205,12 @@ def delete_bill(billId: Int) = SecuredAction { implicit request =>
  * Switch limit
  */
 def switchLimit(plan_id: Int) = SecuredAction { implicit request =>
-  val business = request.user.businessFirst
+  val business = request.identity.businessFirst
   if (business < 1) {
     Redirect(controllers.routes.SettingController.workbench())
   } else {
 
-  val user = request.user.main.userId
+  val user = request.identity.emailFilled
   val plans = PlanDAO.getAll.sortBy(_.order).filter(p => !p.hidden)
   val bills = BillDAO.getAllByWorkbench(business)
   var limit = -1
@@ -261,11 +279,11 @@ CheckoutUtil.checkout_proceed(item, Some(card)).map { result =>
  * Checkout action
  */
 def checkout(bill_id: Int) = SecuredAction { implicit request =>
-  val business = request.user.businessFirst
+  val business = request.identity.businessFirst
   if (business < 1) {
     Redirect(controllers.routes.SettingController.workbench())
   } else {
-  val user = request.user.main.userId
+  val user = request.identity.emailFilled
   val plans = PlanDAO.getAll.sortBy(_.order).filter(p => !p.hidden)
   val bill = BillDAO.get(bill_id).get
   val bills = BillDAO.getAllByWorkbench(business)
@@ -327,7 +345,7 @@ def checkout(bill_id: Int) = SecuredAction { implicit request =>
               }
             }
 //         })
-          Ok(views.html.plans.index(request.user,
+          Ok(views.html.plans.index(request.identity,
           plans,
           bills,
           PayForm,

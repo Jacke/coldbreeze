@@ -6,7 +6,7 @@
 
 
 
-@views.html.auth.main(Messages("sign.in.title")) {
+@views.html.auth.main("Sign In") {
 
 @request.flash.get("error").map { msg =>
 <div class="messageBoxWrap">
@@ -33,7 +33,7 @@
                           @helper.CSRF.formField
 
 
-              @b3.text(signInForm("email"),
+              @b3.email(signInForm("email"),
               '_label -> Messages("securesocial.signup.email1"),
               'id -> "name-11",'class -> "textField block")
 

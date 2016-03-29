@@ -5,7 +5,30 @@ import slick.driver.JdbcProfile
 import slick.lifted.ProvenShape.proveShapeOf
 import models._
 
+case class DBUser (
+  userID: String,
+  firstName: Option[String],
+  lastName: Option[String],
+  fullName: Option[String],
+  email: Option[String],
+  avatarURL: Option[String]
+)
+case class DBUserLoginInfo (
+  userID: String,
+  loginInfoId: Long
+)
 
+case class DBLoginInfo (
+  id: Option[Long],
+  providerID: String,
+  providerKey: String
+)
+case class DBPasswordInfo (
+  hasher: String,
+  password: String,
+  salt: Option[String],
+  loginInfoId: Long
+)
 
 trait DBTableDefinitions {
 
@@ -18,14 +41,6 @@ trait DBTableDefinitions {
 
 
 
-  case class DBUser (
-    userID: String,
-    firstName: Option[String],
-    lastName: Option[String],
-    fullName: Option[String],
-    email: Option[String],
-    avatarURL: Option[String]
-  )
 
   class Users(tag: Tag) extends Table[DBUser](tag, "user") {
     def id = column[String]("userID", O.PrimaryKey)
@@ -37,11 +52,7 @@ trait DBTableDefinitions {
     def * = (id, firstName, lastName, fullName, email, avatarURL) <> (DBUser.tupled, DBUser.unapply)
   }
 
-  case class DBLoginInfo (
-    id: Option[Long],
-    providerID: String,
-    providerKey: String
-  )
+
 
   class LoginInfos(tag: Tag) extends Table[DBLoginInfo](tag, "logininfo") {
     def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
@@ -50,10 +61,7 @@ trait DBTableDefinitions {
     def * = (id.?, providerID, providerKey) <> (DBLoginInfo.tupled, DBLoginInfo.unapply)
   }
 
-  case class DBUserLoginInfo (
-    userID: String,
-    loginInfoId: Long
-  )
+
 
   class UserLoginInfos(tag: Tag) extends Table[DBUserLoginInfo](tag, "userlogininfo") {
     def userID = column[String]("userID")
@@ -61,12 +69,7 @@ trait DBTableDefinitions {
     def * = (userID, loginInfoId) <> (DBUserLoginInfo.tupled, DBUserLoginInfo.unapply)
   }
 
-  case class DBPasswordInfo (
-    hasher: String,
-    password: String,
-    salt: Option[String],
-    loginInfoId: Long
-  )
+
 
   class PasswordInfos(tag: Tag) extends Table[DBPasswordInfo](tag, "passwordinfo") {
     def hasher = column[String]("hasher")

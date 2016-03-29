@@ -62,7 +62,7 @@
        deps: ['angular'],
        exports: 'angular-websocket'
       },
-      
+
 
       'toastr': {
        deps: ['angular'],
@@ -282,12 +282,16 @@
   export: 'ui-select'
 },
 'apiCheck': {
-  deps: ['angular', 'app'],  
+  deps: ['angular', 'app'],
   export: 'apiCheck'
 },
 'angular-formly': {
   deps: ['angular', 'app'],
   export: 'angular-formly'
+},
+'angular-cache': {
+  deps: ['angular', 'app'],
+  export: 'angular-cache'
 },
 'angularformlybootstrap': {
   deps: ['angular', 'app'],
@@ -318,7 +322,7 @@
 'cssParser': {
   deps: ['angular'],
   export: 'cssParser'
-},    
+},
 'dropdown': {
   deps: ['jquery'],
   export: 'dropdown'
@@ -392,6 +396,7 @@
   'pnotifybuttons':'../bower_components/pnotify/pnotify.buttons',
   'angularpnotify':'../bower_components/angular-pnotify/src/angular-pnotify',
 'restangular':'../bower_components/restangular/dist/restangular',
+'angular-cache':'../bower_components/angular-cache/dist/angular-cache',
 'angular-hovercard':'../bower_components/angular-hovercard/dist/angular-hovercard',
 'angular-tooltips':'../bower_components/angular-tooltips/dist/angular-tooltips.min',
 'ui-select': '../bower_components/ui-select/src/select3',
@@ -415,9 +420,9 @@
   'angular-daterangepicker': '../bower_components/angular-daterangepicker/js/angular-daterangepicker',
 
 //  'filepicker': '../bower_components/filepicker-js/dist/filepicker',
-//  'angularfilepicker': '../bower_components/angular-filepicker/dist/angular_filepicker',  
+//  'angularfilepicker': '../bower_components/angular-filepicker/dist/angular_filepicker',
   'lkgooglepicker': '../bower_components/angular-google-picker/dist/google-picker',
-  
+
 //"JSXTransformer": "../bower_components/react/JSXTransformer",
     "jsx": "../bower_components/requirejs-react-jsx/jsx",
     "text": "../bower_components/requirejs-text/text",
@@ -500,7 +505,7 @@ require(['requirejs','jsRoutes','jquery', 'react','pnofiy','mobileDetect','popup
         }
 
         $("html").niceScroll({styler:"fb",cursorcolor:"#000", cursorwidth:"10px", scrollspeed: 100});
-        
+
         var now = moment();
         $('time').each(function(i, e) {
             var time = moment($(e).attr('datetime'));
@@ -539,8 +544,8 @@ $('.settings-insert-title').click(function(e) {
 
 // Utils for fast input on dashboard
 if ($('.dashboard_sessions').length > 0) {
-  $('.instant-input button').on('click', function(ev){ 
-    ev.preventDefault; 
+  $('.instant-input button').on('click', function(ev){
+    ev.preventDefault;
     $(this).parent().addClass('loading');
     var data = $( this ).data();
     jsRoutes.controllers.ProcessInputController.invokeFrom(data.sessionId, data.processId).ajax({
@@ -567,7 +572,7 @@ if ($('.dashboard_sessions').length > 0) {
             });
 
           });
-       };    
+       };
 }
 
         window.location.reload();//.href = "a#/launches";
@@ -586,11 +591,11 @@ if ($('.dashboard_sessions').length > 0) {
 });
 $('.showServiceForm span.moicon.moicon-plus').first().click(function(event) {
   event.preventDefault();
-  $('.serviceForm').toggle();  
+  $('.serviceForm').toggle();
 });
 
 // Settings
-// 
+//
 $('#select-country').selectize();
 $('#sideTab a').click(function (e) {
   e.preventDefault()
@@ -649,7 +654,7 @@ jsRoutes.controllers.users.EmployeeController.create_new().ajax({
   });
 */
 //var map = Array.prototype.map;
-// map.call(document.querySelectorAll('.inputEmployee input#newUsersForGroup'), function( l ){ return l.value }) 
+// map.call(document.querySelectorAll('.inputEmployee input#newUsersForGroup'), function( l ){ return l.value })
 
 var data = $('.inputEmployee').map(function(c){return [$(this).find('.flatInput').val(), $(this).find('.flatCheckbox input').is(':checked') ] })
 var n = 2;
@@ -665,7 +670,7 @@ console.log(admin);
 console.log("employee");
 console.log(employee);
 
-/** 
+/**
  * Submiting
  */
 var admin_status = false;
@@ -714,7 +719,7 @@ var reload = function(obj) {
   }
 }
 
-} 
+}
 });
 $('#addMembersForm .cancelButton').on('click', function(event) {
     event.preventDefault();
@@ -756,7 +761,7 @@ $(".filterInput.tableMinListFilterInput").keyup(function(){
 });
 //
 // Teams
-// 
+//
 
 //$('#addMembersForm').slideToggle();
 
@@ -779,7 +784,7 @@ var promise = jsRoutes.controllers.GroupController.assign_user(uid, group_id).aj
 promises.push(promise);
 promise.fail(function( jqXHR, textStatus) {
         //$('.loginFlowPage').prepend('<div class="messageBoxWrap"><p class="message">'+ JSON.parse(jqXHR.responseText).error +'</p></div>');
-      });   
+      });
 });
 _.forEach(names_unassign, function(uid) {
 var promise = jsRoutes.controllers.GroupController.unassign_user(uid, group_id).ajax().done(function( data ) { console.log(data);
@@ -787,7 +792,7 @@ var promise = jsRoutes.controllers.GroupController.unassign_user(uid, group_id).
     promises.push(promise);
     promise.fail(function( jqXHR, textStatus) {
         //$('.loginFlowPage').prepend('<div class="messageBoxWrap"><p class="message">'+ JSON.parse(jqXHR.responseText).error +'</p></div>');
-      });   
+      });
 });
 
 $('#addMembersForm').slideToggle();
@@ -856,7 +861,7 @@ $('.pro-submit').on('click', function(event) {
 
   jsRoutes.controllers.Application.subscribePro().ajax({data: JSON.stringify({}),dataType: "json", contentType: "application/json"}).done(function(data) {
       console.log(data);
-      document.location.pathname = "/pro";      
+      document.location.pathname = "/pro";
 });
 
 });
@@ -887,15 +892,15 @@ $('.ea-submit').on('click', function(event) {
                 i++;
                 return false;
         });
-        
-        $('#remScnt').on('click', function() { 
+
+        $('#remScnt').on('click', function() {
                 if( i > 2 ) {
                         $(this).parents('p').remove();
                         i--;
                 }
                 return false;
         });
-        $('.removeMeta').on('click', function(ev) { 
+        $('.removeMeta').on('click', function(ev) {
             ev.preventDefault;
                 if( i > 2 ) {
                         $(this).parents('div.meta_fields').remove();
@@ -907,7 +912,7 @@ $('.ea-submit').on('click', function(event) {
         //        $('#addScnt').data('name')
         }
 // Databoard
-// 
+//
 // case class ResourceAttributeContainer(resource: ResourceDTO, attribute: Entity)
 /*
 Entity
@@ -926,7 +931,7 @@ if ($('#createResourceBtn').length > 0) {
 $('#resourceTitle').change(function() {
   if ($( this ).val() != "") {
   $(".resources-list button#createResourceBtn").removeClass('offed');
-} else {   
+} else {
   $(".resources-list button#createResourceBtn").addClass('offed');
 }
 });
@@ -950,24 +955,24 @@ $(".tableMinListFilter.search-process-input.add-resource-field.filterLayer #reso
 });
 
 
-  $('#createResourceBtn').click(function(ev){ 
-    ev.preventDefault(); 
+  $('#createResourceBtn').click(function(ev){
+    ev.preventDefault();
     $('#createResourceBtn').hide();
     var resource = { title: $('#resourceTitle').val(), business: 0 };
-    
+
 
     var attribute = {
-      title: $('#newInlineAttrTitleField').val(), 
+      title: $('#newInlineAttrTitleField').val(),
       boardId: 'ce6ffac0-df91-4ec6-a1dd-3fa7f7833589', // Random UUID, doesnt make sense, will regenerated
-      description: $('#newInlineAttrDescField').val(), 
-      publisher: '', 
+      description: $('#newInlineAttrDescField').val(),
+      publisher: '',
       meta: [],
-      etype: $('#newInlineAttrEtypeField').val(), 
+      etype: $('#newInlineAttrEtypeField').val(),
       default: $('#newInlineAttrDefaultField').val(),
     };
 
     jsRoutes.controllers.DataController.api_create_resource().ajax({
-      dataType: 'json',contentType: 'application/json', data: JSON.stringify( { "resource": resource, 
+      dataType: 'json',contentType: 'application/json', data: JSON.stringify( { "resource": resource,
         "attribute": attribute } )
     }).done(function() {
         document.location.reload();
@@ -980,7 +985,7 @@ $(".tableMinListFilter.search-process-input.add-resource-field.filterLayer #reso
     console.log($( this ).data())
   });
 }
-      
+
 
 //
 // Plans
@@ -1022,5 +1027,5 @@ $(window).on('hashchange', function(e){
 
 
 });
-   
+
 })(requirejs);

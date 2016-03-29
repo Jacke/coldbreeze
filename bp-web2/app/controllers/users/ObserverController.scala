@@ -12,7 +12,14 @@ import views._
 import models.User
 import service.DemoUser
 import java.util.UUID._
-import securesocial.core._
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.resources._
 import org.joda.time.DateTime
 import models.DAO._
@@ -30,11 +37,22 @@ case class Tree(leaf: TreeLeaf, active: Int = 0)
 
 import javax.inject.Inject
 
-import securesocial.core._
-import service.{ MyEnvironment, MyEventListener, DemoUser }
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 import play.api.mvc.{ Action, RequestHeader }
 
-class ObserverController @Inject() (override implicit val env: MyEnvironment) extends securesocial.core.SecureSocial {
+class ObserverController @Inject() (
+  val messagesApi: MessagesApi,
+  val env: Environment[User2, CookieAuthenticator],
+  socialProviderRegistry: SocialProviderRegistry)
+  extends Silhouette[User2, CookieAuthenticator] {
   import play.api.Play.current
   implicit val ObserverDTOReads = Json.reads[ObserverDTO]
   implicit val ObserverDTOWrites = Json.format[ObserverDTO]
@@ -44,11 +62,11 @@ class ObserverController @Inject() (override implicit val env: MyEnvironment) ex
   implicit val ObserveSetupWrites = Json.format[ObserveSetup]
 
 
-  def index(process: Int) = SecuredAction() { implicit request =>
+  def index(process: Int) = SecuredAction { implicit request =>
         val observers = ObserverDAO.getAllByBP(process)
         Ok(Json.toJson(observers))
   }
-  def indexStation(process: Int, station: Int) = SecuredAction() { implicit request =>
+  def indexStation(process: Int, station: Int) = SecuredAction { implicit request =>
 
         val observers = ObserverDAO.getByBpAndStation(process, station)
         Ok(Json.toJson(observers))
@@ -61,7 +79,7 @@ class ObserverController @Inject() (override implicit val env: MyEnvironment) ex
   	  val observer:play.api.mvc.Result = ObserverDAO.getByHashCode(hash_code) match {
   	  	case Some(obs) => {
 
-  	      //val biz = fetchBiz(request.user.main.userId)
+  	      //val biz = fetchBiz(request.identity.emailFilled)
           //val business_info = BizFormDTO(biz.title, biz.phone, biz.website)
 
           val station = BPStationDAO.findById(obs.station_id)
@@ -91,7 +109,7 @@ class ObserverController @Inject() (override implicit val env: MyEnvironment) ex
   def create() = SecuredAction(BodyParsers.parse.json) { implicit request =>
      val host = request.host
      val uuid = randomUUID.toString
-     val user = request.user.main.userId
+     val user = request.identity.emailFilled
      val biz =  models.DAO.resources.EmployeesBusinessDAO.getByUID(user).get._2
 	  request.body.validate[ObserveSetup].map{
 	    case entity => savePull( entity.observer.copy(hash_code = Some(uuid), created_at = Some(DateTime.now()) ), user ) match {
@@ -107,10 +125,10 @@ class ObserverController @Inject() (override implicit val env: MyEnvironment) ex
 	    }
   }
 
-  def destroy(observe_id: Int) = SecuredAction() { implicit request =>
+  def destroy(observe_id: Int) = SecuredAction { implicit request =>
 
       // Access check
-      val user = request.user.main.userId
+      val user = request.identity.emailFilled
       val access = ObserverDAO.get(observe_id) match {
         case Some(observe) => BPDAO.get(observe.bprocess) match {
           case Some(bp) => EmployeesBusinessDAO.isEmployable(bp.business, user)
@@ -191,7 +209,11 @@ class ObserverController @Inject() (override implicit val env: MyEnvironment) ex
   }
 
   private def sendMailToObservers(emails: List[String], host: String, hash_code: String) = {
-    emails.foreach(email => CustomRegistration.handleObserver(email, host, hash_code))
+    //emails.foreach(email =>
+
+      // CustomRegistration.handleObserver(email, host, hash_code)
+
+    //)
   }
 
   private def fetchBiz(email: String) = {

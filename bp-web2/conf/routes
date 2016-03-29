@@ -10,20 +10,15 @@ GET         /                                                   @controllers.Pro
 GET         /dashboard  										@controllers.ProfileController.dashboardScreen()
 GET         /uptime                                             @controllers.Application.uptime()
 
-GET     /auth/authenticate/:provider     @controllers.CustomProviderController.authenticate(provider)
-POST    /auth/authenticate/:provider     @controllers.CustomProviderController.authenticateByPost(provider)
-GET     /auth/reset        		 @controllers.CustomPasswordReset.startResetPassword
-POST    /auth/reset        		 @controllers.CustomPasswordReset.handleStartResetPassword
-GET     /auth/reset/:mailToken        	 @controllers.CustomPasswordReset.resetPassword(mailToken)
-POST    /auth/reset/:mailToken        	 @controllers.CustomPasswordReset.handleResetPassword(mailToken)
-POST    /auth/signup                     @controllers.CustomRegistrationController.handleStartSignUp
-POST    /auth/signup/:token              @controllers.CustomRegistrationController.handleSignUp(token)
 
 
 # Auth
+GET         /migrate                         @controllers.LegacyAuthController.migrate
 GET         /signIn                          @controllers.ApplicationController2.signIn
 GET         /signUp                          @controllers.ApplicationController2.signUp
 GET         /signOut                         @controllers.ApplicationController2.signOut
+POST        /signOut                         @controllers.ApplicationController2.signOut
+
 GET         /authenticate/:provider          @controllers.SocialAuthController.authenticate(provider)
 POST        /authenticate/credentials        @controllers.CredentialsAuthController.authenticate
 POST        /signUp                          @controllers.SignUpController.signUp
@@ -61,13 +56,9 @@ GET         /popup/:emails_hash/:target             @controllers.NotificationCon
 GET         /invite/:emails_hash/:invite_link       @controllers.SubscribtionController.sendInvite(emails_hash: String, invite_link: String)
 GET         /subscribers                            @controllers.SubscribtionController.fetchSubscribers()
 GET         /subscribers/new                        @controllers.SubscribtionController.newSubscribers()
-GET         /only-twitter                           @controllers.Application.onlyTwitter
 
 
 
-# Custom
-GET         /auth/login                                         @controllers.CustomLoginController.login
-POST        /auth/logout                                        @controllers.CustomLoginController.logout
 
 
 
@@ -198,7 +189,9 @@ PUT         /bprocess/:id/info                                  @controllers.Bus
 POST        /bprocess/:bpId/copy/:title                         @controllers.BusinessProcessController.copy(bpId: Int, title: String)
 
 # Stations
-GET         /sessions 								 @controllers.ProcessSessionController.all_sessions()
+GET         /sessions 								   @controllers.ProcessSessionController.all_sessions()
+GET         /sessions/cached/:timestamp	 @controllers.ProcessSessionController.all_cached_sessions(timestamp:String)
+
 GET         /sessions/filter                         @controllers.ProcessSessionController.filtered_sessions(ids: List[Int])
 
 
@@ -462,7 +455,6 @@ GET         /assets/*file                                       controllers.Asse
 GET         /pro                                                @controllers.Application.proPage()
 POST        /pro/subscribe                                      @controllers.Application.subscribePro()
 POST        /ea/subscribe                                       @controllers.Application.subscribeEa()
-GET         /:profile_id										@controllers.ProfileController.profile(profile_id: String)
 
 
 

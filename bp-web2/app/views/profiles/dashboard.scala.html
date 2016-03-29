@@ -1,4 +1,4 @@
-@import service.DemoUser
+
 @import controllers.employeeParams
 @import controllers.managerParams
 @import controllers.planInfo
@@ -10,13 +10,18 @@
 @import models.DAO._
 @import controllers.DashboardTopBar
 
-@(user: DemoUser, mngParams: Option[managerParams], empParams: Option[employeeParams], walkthrought: Boolean, sessions: List[SessionContainer], dashboardTopBar: DashboardTopBar, currentReaction: List[CurrentSessionReactionContainer] )(currentPage: Page[BusinessServiceDTO], currentOrderBy: Int, currentFilter: String, businesses: List[BusinessDTO], isManager: Boolean = false)(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment)
+@(user: models.User2,
+  mngParams: Option[managerParams],
+  empParams: Option[employeeParams],
+  walkthrought: Boolean,
+  sessions: List[SessionContainer],
+  dashboardTopBar: DashboardTopBar,
+  currentReaction: List[CurrentSessionReactionContainer] )(currentPage: Page[BusinessServiceDTO],
+  currentOrderBy: Int,
+  currentFilter: String,
+  businesses: List[BusinessDTO],
+  isManager: Boolean = false)(implicit request: RequestHeader)
 
-@import securesocial.core.IdentityProvider
-
-@import securesocial.core.IdentityProvider
-@import securesocial.core.providers.UsernamePasswordProvider
-@import securesocial.core.AuthenticationMethod._
 @import play.api.{Logger, Play}
 @import helper._
 @import play.api.Play
@@ -135,50 +140,6 @@
 
 
 <div class="grids">
-<!--
-  if(walkthrought) {
-
-  <div class="page-sessions">
-    <h2>Sessions</h2>
-      <ul class="sessions-menu">
-         <li><a href="@routes.Application.app()#/bprocesses?service=entity.id">Session 1</a></li>
-         <li><a href="@routes.Application.app()#/bprocesses?service=entity.id">Session 2</a></li>
-         <li><a href="@routes.Application.app()#/bprocesses?service=entity.id">Session 3</a></li>
-         <li><a href="@routes.Application.app()#/bprocesses?service=entity.id">Session 4</a></li>
-      </ul>
-     <span class="uicon-svg54"></span>
-  </div>
-
-
-
-  }
- -->
-
-
-
- <!-- AFTER PLAN REFACTOR
-  <div class="page-header profile_header col-md-8">
-	<h2>
-		<a href="https://gravatar.com" data-toggle="tooltip" title="" data-original-title="Change your avatar"><img src="gravatar(user.main.avatarUrl)" alt="user.main.firstName.getOrElse("")" width="40px" height="40px"/></a> Messages("profile.welcome") user.main.firstName.getOrElse("")
-	</h2>
-
-	if(user.isManager) {
-
-	                   Messages("page.yourPlan"): plan.get.title plan until <span class="date">plan.get.expire_at</span>
-	                <a href="plans">Messages("page.plans")</a>
-	<script>
-	$('span.date').text(moment($('span.date').text()).format('MMMM Do YYYY, h:mm:ss a'))
-	</script>
-
-	}
-	</div>
-
-<div class="profile_advices col-md-4">
- 	<div class="profile_advices__advice">
- 		Some shit from futurama
- 	</div>
-</div>
--->
 
 <div class="dashboard_sessions col-md-8">
 @active_sessions(sessions, currentReaction)
@@ -186,7 +147,7 @@
 
 
 <div class="dashboard_services col-md-4">
-@services2(user, currentPage, isManager) 
+@services2(user, currentPage, isManager)
 </div>
 
 @dashboard_footer()

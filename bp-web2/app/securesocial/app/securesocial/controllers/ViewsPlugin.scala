@@ -139,33 +139,32 @@ object ViewTemplates {
     implicit val implicitEnv = env
 
     override def getLoginPage(form: Form[(String, String)],
-                              msg: Option[String] = None)(implicit request: RequestHeader, lang: Lang): play.twirl.api.Html = {
-      views.html.custom.login(form, msg)(request, lang, env)
+      msg: Option[String] = None)(implicit request: RequestHeader, lang: Lang): Html = {
+      play.twirl.api.Html("")//securesocial.views.html.login(form, msg)
     }
 
-    override def getSignUpPage(form: Form[RegistrationInfo], token: String)(implicit request: RequestHeader, lang: Lang): play.twirl.api.Html = {
-      views.html.custom.signUp(form, token)(request, lang, env)
+    override def getSignUpPage(form: Form[RegistrationInfo], token: String)(implicit request: RequestHeader, lang: Lang): Html = {
+      play.twirl.api.Html("")//securesocial.views.html.Registration.signUp(form, token)
     }
 
-    override def getStartSignUpPage(form: Form[String])(implicit request: RequestHeader, lang: Lang): play.twirl.api.Html = {
-      println("getStartSignUpPage")
-      views.html.custom.startSignUp(form)(request, lang, env)
+    override def getStartSignUpPage(form: Form[String])(implicit request: RequestHeader, lang: Lang): Html = {
+      play.twirl.api.Html("")//securesocial.views.html.Registration.startSignUp(form)
     }
 
-    override def getStartResetPasswordPage(form: Form[String])(implicit request: RequestHeader, lang: Lang): play.twirl.api.Html = {
-      views.html.custom.startResetPassword(form)(request, lang, env)
+    override def getStartResetPasswordPage(form: Form[String])(implicit request: RequestHeader, lang: Lang): Html = {
+      play.twirl.api.Html("")//securesocial.views.html.Registration.startResetPassword(form)
     }
 
-    override def getResetPasswordPage(form: Form[(String, String)], token: String)(implicit request: RequestHeader, lang: Lang): play.twirl.api.Html = {
-      views.html.custom.resetPassword(form, token)(request, lang, env)
+    override def getResetPasswordPage(form: Form[(String, String)], token: String)(implicit request: RequestHeader, lang: Lang): Html = {
+      play.twirl.api.Html("")//securesocial.views.html.Registration.resetPasswordPage(form, token)
     }
 
-    override def getPasswordChangePage(form: Form[ChangeInfo])(implicit request: RequestHeader, lang: Lang): play.twirl.api.Html = {
-      views.html.custom.passwordChanged(form)(request, lang, env)
+    override def getPasswordChangePage(form: Form[ChangeInfo])(implicit request: RequestHeader, lang: Lang): Html = {
+      play.twirl.api.Html("")//securesocial.views.html.passwordChange(form)
     }
 
-    def getNotAuthorizedPage(implicit request: RequestHeader, lang: Lang): play.twirl.api.Html = {
-      views.html.securesocial_views.notAuthorized()(request, lang, env)
+    override def getNotAuthorizedPage(implicit request: RequestHeader, lang: Lang): Html = {
+      play.twirl.api.Html("")//securesocial.views.html.notAuthorized()
     }
   }
 }
@@ -177,27 +176,27 @@ object MailTemplates {
   class Default(env: RuntimeEnvironment) extends MailTemplates {
     implicit val implicitEnv = env
     def getSignUpEmail(token: String)(implicit request: RequestHeader, lang: Lang): (Option[Txt], Option[Html]) = {
-      (None, Some(views.html.securesocial_views.mails.signUpEmail(token)))
+      (None, Some(play.twirl.api.Html("")))  //securesocial.views.html.mails.signUpEmail(token)))
     }
 
     def getAlreadyRegisteredEmail(user: BasicProfile)(implicit request: RequestHeader, lang: Lang): (Option[Txt], Option[Html]) = {
-      (None, Some(views.html.securesocial_views.mails.alreadyRegisteredEmail(user)))
+      (None, Some(play.twirl.api.Html("")))  //securesocial.views.html.mails.alreadyRegisteredEmail(user)))
     }
 
     def getWelcomeEmail(user: BasicProfile)(implicit request: RequestHeader, lang: Lang): (Option[Txt], Option[Html]) = {
-      (None, Some(views.html.securesocial_views.mails.welcomeEmail(user)))
+      (None, Some(play.twirl.api.Html("")))  //securesocial.views.html.mails.welcomeEmail(user)))
     }
 
     def getUnknownEmailNotice()(implicit request: RequestHeader, lang: Lang): (Option[Txt], Option[Html]) = {
-      (None, Some(views.html.securesocial_views.mails.unknownEmailNotice()))
+      (None, Some(play.twirl.api.Html("")))  //securesocial.views.html.mails.unknownEmailNotice()))
     }
 
     def getSendPasswordResetEmail(user: BasicProfile, token: String)(implicit request: RequestHeader, lang: Lang): (Option[Txt], Option[Html]) = {
-      (None, Some(views.html.securesocial_views.mails.passwordResetEmail(user, token)))
+      (None, Some(play.twirl.api.Html("")))  //securesocial.views.html.mails.passwordResetEmail(user, token)))
     }
 
     def getPasswordChangedNoticeEmail(user: BasicProfile)(implicit request: RequestHeader, lang: Lang): (Option[Txt], Option[Html]) = {
-      (None, Some(views.html.securesocial_views.mails.passwordChangedNotice(user)))
+      (None, Some(play.twirl.api.Html("")))  //securesocial.views.html.mails.passwordChangedNotice(user)))
     }
   }
 }

@@ -1,8 +1,8 @@
-@import service.DemoUser
+
 @import models.DAO.resources.BusinessServiceDTO
 @import models.DAO.resources.BusinessDTO
 @import helper._
-@(currentPage: Page[BusinessServiceDTO], currentOrderBy: Int, currentFilter: String, businesses: List[BusinessDTO], user: DemoUser)(implicit flash: play.api.mvc.Flash)
+@(currentPage: Page[BusinessServiceDTO], currentOrderBy: Int, currentFilter: String, businesses: List[BusinessDTO], user: models.User2)(implicit flash: play.api.mvc.Flash)
 
 @****************************************
 * Helper generating navigation links *

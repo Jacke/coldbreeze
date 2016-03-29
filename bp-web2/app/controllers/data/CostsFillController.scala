@@ -29,7 +29,14 @@ import models.User
 import service.DemoUser
 import scala.concurrent._
 import scala.concurrent.duration._
-import securesocial.core._
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.BProcessDTO
 import models.DAO.BPDAO
 import models.DAO._
@@ -55,10 +62,21 @@ case class SessionElementResourceContainer(obj: SessionElementResourceDTO,
 
   import javax.inject.Inject
 
-  import securesocial.core._
-  import service.{ MyEnvironment, MyEventListener, DemoUser }
+  import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+  
   import play.api.mvc.{ Action, RequestHeader }
-class CostFillController @Inject() (override implicit val env: MyEnvironment) extends securesocial.core.SecureSocial {
+class CostFillController @Inject() (
+  val messagesApi: MessagesApi,
+  val env: Environment[User2, CookieAuthenticator],
+  socialProviderRegistry: SocialProviderRegistry)
+  extends Silhouette[User2, CookieAuthenticator] {
   import play.api.libs.json.Json
   implicit val MetaValFormat = Json.format[MetaVal]
   implicit val MetaValReader = Json.reads[MetaVal]
@@ -100,8 +118,8 @@ implicit val DatasContainerReaders = Json.reads[DatasContainer]
  */
 //GET      /data/cost/collection/             @controllers.CostFillController.assignResourceCollection
 def assignResourceCollection = SecuredAction.async { implicit request =>
-  var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
-  val resources = ResourceDAO.findByBusinessId(request.user.businessFirst)
+  var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
+  val resources = ResourceDAO.findByBusinessId(request.identity.businessFirst)
 	val resEntFut:Future[List[ResourceEntitySelector]] = BBoardWrapper().getEntityByResources(resources)
   for {
       resEntity <- resEntFut
@@ -109,7 +127,7 @@ def assignResourceCollection = SecuredAction.async { implicit request =>
 }
 // GET	 /data/cost/assigns/:process_id
 def assigns(process_id: Int) = SecuredAction { implicit request =>
-	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
+	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
 	val assigns = ElementResourceDAO.getByProcess(process_id).map { obj =>
       ElementResourceContainer(obj, findEntitiesElRes(List(obj)) )
     }
@@ -121,7 +139,7 @@ def assigns(process_id: Int) = SecuredAction { implicit request =>
 //
 // GET	 /data/cost/launch_assigns/:launch_id
 def launch_assigns(launch_id: Int) = SecuredAction { implicit request =>
-	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
+	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
   val assigns = SessionElementResourceDAO.getBySession(launch_id)
   println(s"finded assigns ${assigns.length}")
   val launch_assigns_cn = assigns.map { obj =>
@@ -149,7 +167,7 @@ def removeEntityById(entity_id: String) = SecuredAction.async { implicit request
 
 //POST	 /data/cost/assign/:resource_id		@controllers.CostFillController.assign_element(resource_id: Int)
 def assign_element(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
-	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
+	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
     val selected = request.body.validate[List[ResourceElementSelector]]
     selected.fold(
     errors => {
@@ -178,7 +196,7 @@ def assign_element(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit r
 }
 //POST	 /data/cost/up_assign/:resource_id	@controllers.CostFillController.update_assigned_element(resource_id: Int)
 def update_assigned_element(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
-	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
+	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
     val selected = request.body.validate[ResourceElementSelector]
     selected.fold(
     errors => {
@@ -193,7 +211,7 @@ def update_assigned_element(id: Int) = SecuredAction(BodyParsers.parse.json) { i
 }
 //POST	 /data/cost/del_assign/:resource_id @controllers.CostFillController.delete_assigned_element(resource_id: Int)
 def delete_assigned_element(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
-	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
+	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
     /*
     val selected = request.body.validate[ResourceElementSelector]
     selected.fold(

@@ -29,7 +29,14 @@ import models.User
 import service.DemoUser
 import scala.concurrent._
 import scala.concurrent.duration._
-import securesocial.core._
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.BProcessDTO
 import models.DAO.BPDAO
 import models.DAO._
@@ -200,10 +207,21 @@ object ResourceForms {
 }
 import javax.inject.Inject
 
-import securesocial.core._
-import service.{ MyEnvironment, MyEventListener, DemoUser }
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 import play.api.mvc.{ Action, RequestHeader }
-class DataController @Inject() (override implicit val env: MyEnvironment) extends securesocial.core.SecureSocial {
+class DataController @Inject() (
+  val messagesApi: MessagesApi,
+  val env: Environment[User2, CookieAuthenticator],
+  socialProviderRegistry: SocialProviderRegistry)
+  extends Silhouette[User2, CookieAuthenticator] {
 
   implicit val MetaValFormat = Json.format[MetaVal]
   implicit val MetaValReader = Json.reads[MetaVal]
@@ -228,22 +246,22 @@ def testResourceContainerList(res: ResourceDTO, boardCN:BoardContainer):List[Res
 
 //GET      /data                @controllers.DataController.index()
 def index() = SecuredAction.async { implicit request =>
-    if (request.user.businessFirst < 1) {
+    if (request.identity.businessFirst < 1) {
       Future(Redirect(controllers.routes.SettingController.workbench()))
     } else {
 
-      var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
+      var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
       val bboardPing:Future[Boolean] = minority.utils.BBoardWrapper().ping()
-      val resources = ResourceDAO.findByBusinessId(request.user.businessFirst)
+      val resources = ResourceDAO.findByBusinessId(request.identity.businessFirst)
       val boards_cn: Future[BoardContainer] = minority.utils.BBoardWrapper().getBoardByResource(0,
-                                                                    request.user.businessFirst.toString)
+                                                                    request.identity.businessFirst.toString)
    // boards_cn onComplete {
    //   case Success(bcn) =>
    //     val actual_boards_cn = bcn
    //     val resources_cn = resources.map(r => testResourceContainerList(r, actual_boards_cn)).flatten
-   //       Ok(views.html.data.index(request.user, isManager, ResourceForms.resourceForm, resources_cn))
+   //       Ok(views.html.data.index(request.identity, isManager, ResourceForms.resourceForm, resources_cn))
    //   case Failure(failure) =>
-   // //       Ok(views.html.data.index(request.user, isManager, ResourceForms.resourceForm, testResourceContainerList()))
+   // //       Ok(views.html.data.index(request.identity, isManager, ResourceForms.resourceForm, testResourceContainerList()))
    // }
       for {
         ping <- bboardPing
@@ -251,7 +269,7 @@ def index() = SecuredAction.async { implicit request =>
       } yield {
          val filteredBoards = resources.map(r => testResourceContainerList(r, actual_boards_cn)).flatten
 
-         Ok(views.html.data.index(request.user, isManager, ResourceFormContainer(), filteredBoards,
+         Ok(views.html.data.index(request.identity, isManager, ResourceFormContainer(), filteredBoards,
                   ResourceFormContainer().entityForm,
                   ping
          ))
@@ -266,9 +284,9 @@ def index() = SecuredAction.async { implicit request =>
  ****************************/
 //POST     /data/resources          @controllers.DataController.create_resource()
 def create_resource() = SecuredAction { implicit request =>
-  	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
-    val business = request.user.businessFirst
-    if (request.user.businessFirst < 1) {
+  	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
+    val business = request.identity.businessFirst
+    if (request.identity.businessFirst < 1) {
       Redirect(controllers.routes.SettingController.workbench())
     } else {
 
@@ -290,9 +308,9 @@ def create_resource() = SecuredAction { implicit request =>
 
 //POST     /api/v1/data/resources             @controllers.DataController.api_create_resource()
 def api_create_resource() = SecuredAction(BodyParsers.parse.json) { implicit request =>
-    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
-    val business = request.user.businessFirst
-    if (request.user.businessFirst < 1) {
+    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
+    val business = request.identity.businessFirst
+    if (request.identity.businessFirst < 1) {
       Redirect(controllers.routes.SettingController.workbench())
     } else {
     val selected = request.body.validate[ResourceAttributeContainer]
@@ -336,7 +354,7 @@ def api_create_resource() = SecuredAction(BodyParsers.parse.json) { implicit req
 
 //PUT      /data/resource/:id         @controllers.DataController.update_resource(id: Int)
 def update_resource(id: Int) = SecuredAction { implicit request =>
-	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
+	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
   ResourceForms.resourceForm.bindFromRequest.fold(
       formWithErrors => {
         println(formWithErrors)
@@ -345,7 +363,7 @@ def update_resource(id: Int) = SecuredAction { implicit request =>
       entity => {
           ResourceDAO.get(id) match {
           case Some(res) => {
-            if (request.user.businessFirst == res.business) {
+            if (request.identity.businessFirst == res.business) {
               ResourceDAO.update(id, entity.copy(id = res.id))
             }
             Home
@@ -355,10 +373,10 @@ def update_resource(id: Int) = SecuredAction { implicit request =>
       })
 }
 def delete_resource(id: Int) = SecuredAction { implicit request =>
-	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
+	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
   ResourceDAO.get(id) match {
     case Some(res) => {
-      if (request.user.businessFirst == res.business) {
+      if (request.identity.businessFirst == res.business) {
         ResourceDAO.delete(res.id.get)
       }
       Home
@@ -372,11 +390,11 @@ def delete_resource(id: Int) = SecuredAction { implicit request =>
  * Entities
  */
 def create_entity_form(resourceId: Int, boardId: String) = SecuredAction { implicit request =>
-    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
-    Ok(views.html.data.editEntity(None, ResourceFormContainer().entityForm, request.user, Some(boardId), Some(resourceId) ))
+    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
+    Ok(views.html.data.editEntity(None, ResourceFormContainer().entityForm, request.identity, Some(boardId), Some(resourceId) ))
 }
 def create_entity(boardId: String) = SecuredAction { implicit request =>
-    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
+    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
     ResourceForms.entityForm.bindFromRequest.fold(
       formWithErrors => {
         println("erorrs:")
@@ -394,15 +412,15 @@ def create_entity(boardId: String) = SecuredAction { implicit request =>
       })
 }
 def update_entity_form(id: String) = SecuredAction { implicit request =>
-    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
+    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
     val entity = minority.utils.BBoardWrapper().getEntityById(entity_id = id)
     Await.result(entity, Duration(waitSeconds, MILLISECONDS)) match {
-      case Some(en) =>   Ok(views.html.data.editEntity(Some(id), ResourceFormContainer().entityForm.fill(en), request.user, None ))
-      case _ =>   Ok(views.html.data.editEntity(Some(id), ResourceFormContainer().entityForm, request.user, None ))
+      case Some(en) =>   Ok(views.html.data.editEntity(Some(id), ResourceFormContainer().entityForm.fill(en), request.identity, None ))
+      case _ =>   Ok(views.html.data.editEntity(Some(id), ResourceFormContainer().entityForm, request.identity, None ))
     }
 }
 def update_entity(id: String) = SecuredAction { implicit request =>
-    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
+    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
     ResourceForms.entityForm.bindFromRequest.fold(
       formWithErrors => {
         println("erorrs:")
@@ -417,7 +435,7 @@ def update_entity(id: String) = SecuredAction { implicit request =>
     Home
 }
 def delete_entity(id: String) = SecuredAction { implicit request =>
-  	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
+  	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
     Await.result(minority.utils.BBoardWrapper().removeEntityByBoard("", entity_id = id), Duration(waitSeconds, MILLISECONDS)) match {
       case _ => Home
     }
@@ -426,16 +444,16 @@ def delete_entity(id: String) = SecuredAction { implicit request =>
  * Slats
  */
 def create_slat_form(eid: String) = SecuredAction.async { implicit request =>
-    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
+    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
     minority.utils.BBoardWrapper().getEntityById(entity_id = eid).map { pi =>
       pi match {
-      case Some(e) => Ok(views.html.data.editSlat(eid, eid, None, ResourceFormContainer().slatForm, request.user, Some(e) ))
+      case Some(e) => Ok(views.html.data.editSlat(eid, eid, None, ResourceFormContainer().slatForm, request.identity, Some(e) ))
       case _ => Home
       }
     }
 }
 def create_slat(eid: String) = SecuredAction { implicit request =>
-    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
+    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
     ResourceForms.slatForm.bindFromRequest.fold(
       formWithErrors => {
         println("erorrs:")
@@ -450,15 +468,15 @@ def create_slat(eid: String) = SecuredAction { implicit request =>
       })
 }
 def update_slat_form(eid: String, id: String) = SecuredAction { implicit request =>
-    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
+    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
     val entity = minority.utils.BBoardWrapper().getSlatById(slat_id = id)
     Await.result(entity, Duration(waitSeconds, MILLISECONDS)) match {
-      case Some(sl) =>   Ok(views.html.data.editSlat(eid, eid, Some(id), ResourceFormContainer().slatForm.fill(sl), request.user ))
-      case _ =>   Ok(views.html.data.editSlat(eid, eid, Some(id), ResourceFormContainer().slatForm, request.user ))
+      case Some(sl) =>   Ok(views.html.data.editSlat(eid, eid, Some(id), ResourceFormContainer().slatForm.fill(sl), request.identity ))
+      case _ =>   Ok(views.html.data.editSlat(eid, eid, Some(id), ResourceFormContainer().slatForm, request.identity ))
     }
 }
 def update_slat(eid: String, id: String) = SecuredAction { implicit request =>
-    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
+    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
     ResourceForms.slatForm.bindFromRequest.fold(
       formWithErrors => {
         println(formWithErrors)
@@ -467,7 +485,7 @@ def update_slat(eid: String, id: String) = SecuredAction { implicit request =>
       entity => {
           minority.utils.BBoardWrapper().updateSlatByEntity(entity_id = eid, slat_id = id, slat = entity) match {
           //case Some(res) => {
-          //  if (request.user.businessFirst == res.business) {
+          //  if (request.identity.businessFirst == res.business) {
           //    ResourceDAO.update(id, entity.copy(id = res.id))
           //  }
           //  Home
@@ -477,7 +495,7 @@ def update_slat(eid: String, id: String) = SecuredAction { implicit request =>
       })
 }
 def delete_slat(id: String) = SecuredAction { implicit request =>
-    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
+    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
     Await.result(minority.utils.BBoardWrapper().removeSlatById(id), Duration(waitSeconds, MILLISECONDS)) match {
       case _ => Home
     }
@@ -496,7 +514,7 @@ def fill_slat(entityId: String, launchId: Int, resourceId: Int) = SecuredAction(
     },
     slat => {
     val metaString = List(MetaVal("launchId", s"$launchId"), MetaVal("resourceId", s"$resourceId"))
-    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
+    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
           minority.utils.BBoardWrapper().addSlatByEntity(entity_id = entityId,
              slat.copy(title = slat.title.replaceAll("[ \f\t\\v]+$",""), entityId = UUID.fromString(entityId),
               meta = metaString)) match {
@@ -515,7 +533,7 @@ def refill_slat(entityId: String, launchId: Int, resourceId: Int, slatId: String
     },
     slat => {
     val metaString = List(MetaVal("launchId", s"$launchId"), MetaVal("resourceId", s"$resourceId"))
-    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get).get
+    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
           // updateSlatByEntity(entity_id: String, slat_id: String, slat: Slat)
           minority.utils.BBoardWrapper().updateSlatByEntity(entity_id = entityId,
             slat_id = slatId,

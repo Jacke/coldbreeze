@@ -2,10 +2,7 @@
 import play.api.GlobalSettings
 import play.api.mvc.WithFilters
 import play.filters.gzip.GzipFilter
-import controllers.CustomRoutesService
 import java.lang.reflect.Constructor
-import securesocial.core.RuntimeEnvironment
-import service.{DemoUser, MyEventListener, InMemoryUserService}
 import controllers.plugin._
 import controllers.Default
 import play.api.Logger
@@ -16,10 +13,10 @@ import play.api.mvc._
 import play.api.mvc.Results._
 import play.api.mvc.Results.Redirect
 import play.api.mvc.WithFilters
-import controllers.CustomRoutesService
+
+//import controllers.CustomRoutesService
+
 import java.lang.reflect.Constructor
-import securesocial.core.RuntimeEnvironment
-import service.{ DemoUser, MyEventListener, InMemoryUserService }
 
 object AccessLoggingFilter extends Filter {
   def apply(next: (RequestHeader) => Future[Result])(request: RequestHeader): Future[Result] = {
@@ -34,15 +31,7 @@ object AccessLoggingFilter extends Filter {
 }
 
 object Global extends play.api.GlobalSettings {
-  class MyRuntimeEnvironment extends RuntimeEnvironment.Default {
-    type U = DemoUser
-    override implicit val executionContext = play.api.libs.concurrent.Execution.defaultContext
-    override lazy val routes = new CustomRoutesService()
-    override lazy val viewTemplates = ViewTemplates1.Default(this)
 
-    override lazy val userService: InMemoryUserService = new InMemoryUserService()
-    override lazy val eventListeners = List(new MyEventListener())
-  }
 
 
 }

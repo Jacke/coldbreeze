@@ -12,7 +12,14 @@ import play.api.cache._
 import views._
 import models.{AccountsDAO, User, Page}
 import service.DemoUser
-import securesocial.core._
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 import controllers.users._
 import models.DAO.resources._
 import models.DAO._
@@ -22,60 +29,74 @@ import scala.concurrent.duration._
 import scala.util.Success
 import scala.util.Failure
 import models._
+
+import javax.inject.Inject
+
+// auth
+import models.daos._
+import play.api.mvc.{ Action, RequestHeader }
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models._
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext.Implicits._
+
+
+
 case class employeeParams(perms: List[ActPermission], bps: List[BProcessDTO], elems_titles:Map[Int, String], res_acts: List[ResAct])
 case class managerParams(business: BusinessDTO)
 case class DashboardTopBar(newSession: Int = 0, interaction: Int = 0, completedSession: Int = 0, process: Int = 0)
 case class planInfo(title: String, expire_at: org.joda.time.DateTime)
 
 
-import javax.inject.Inject
-
-import securesocial.core._
-import service.{ MyEnvironment, MyEventListener, DemoUser }
-import play.api.mvc.{ Action, RequestHeader }
-class ProfileController @Inject() (override implicit val env: MyEnvironment) extends securesocial.core.SecureSocial {
+class ProfileController @Inject() (
+  val messagesApi: MessagesApi,
+  val env: Environment[User2, CookieAuthenticator],
+  socialProviderRegistry: SocialProviderRegistry)
+  extends Silhouette[User2, CookieAuthenticator] {
 
   val Home = Redirect(routes.ProfileController.dashboard())
   val DashScreen = Redirect(routes.ProfileController.dashboardScreen())
-  //val Login = Redirect(routes.securesocial.controllers.LoginPage.login)
+
   /************
    * Root entry point
    ************/
-  def dashboard = Action { implicit request =>
-    implicit val req: RequestHeader = request
-      val user:Future[Option[service.DemoUser]] = env.authenticatorService.fromRequest.map {
-         case Some(authenticator) if authenticator.isValid => {
-           Some(authenticator.user)
-       }
-      case _ => {
-        None
-      }
-    }
-      var cred:Option[service.DemoUser] = Await.result(user, Duration(5000, MILLISECONDS))
-      cred match {
-          case Some(u) => DashScreen
-          case _ => Redirect("/auth/login")
-          //Login.flashing("success" -> s"Entity  has been created")
-      }
-  }
+  def dashboard = UserAwareAction.async { implicit request =>
+
+    request.identity match {
+          case Some(user) => Future.successful( DashScreen )
+          case None => Future.successful( Redirect("/signIn") )
+        }
+}
 
   def dashboardScreen = SecuredAction.async { implicit request =>
-      val business = request.user.businessFirst
+      val business = request.identity.businessFirst
       if (business < 1) {
         Future(Redirect(controllers.routes.SettingController.workbench()))
       } else {
       // TODO: service.getByBusiness that manager participated
-      val servicesF:Future[Seq[BusinessServiceDTO]] = BusinessServiceDAOF.getAllByBusiness(request.user.businessFirst)
+      val servicesF:Future[Seq[BusinessServiceDTO]] = BusinessServiceDAOF.getAllByBusiness(request.identity.businessFirst)
       val businessF:Future[Option[BusinessDTO]] = models.DAO.resources.BusinessDAOF.get(business)
 
-      val email = request.user.main.email.get
+      val email = request.identity.email.get
       val acc_tupleF = AccountsDAOF.getRolesAndLang(email, business)
       //var (isManager, isEmployee, lang) = AccountsDAOF.await(AccountsDAOF.getRolesAndLang(email, business)).get
 
       if (false){ //!isEmployee) {// && !arePlanExist(business)) {
                                                               // Initiate env for new user
         utilities.NewUserRoutine.initiate_env(email)          // run routine
-        //request.user.renewPermissions()                     // renew permission
+        //request.identity.renewPermissions()                     // renew permission
         //val acc_tupleF = AccountsDAOF.getRolesAndLang(email, business)
         var (isManager, isEmployee, lang) = AccountsDAOF.await(AccountsDAOF.getRolesAndLang(email, business)).get
         println("redirect")
@@ -120,7 +141,7 @@ class ProfileController @Inject() (override implicit val env: MyEnvironment) ext
           primaryBusiness <- businessF
           isEmployee <- isEmployeeF
           isManager <- isManagerF
-          } yield Ok(views.html.profiles.dashboard(request.user,
+          } yield Ok(views.html.profiles.dashboard(request.identity,
                   managerParams,
                   makeEmployeeParams(email, isEmployee, primaryBusiness.get),
                   walkthrought,
@@ -137,23 +158,6 @@ class ProfileController @Inject() (override implicit val env: MyEnvironment) ext
 
 
 
-  def profile(profile_id: String) = SecuredAction { implicit request =>
-    val optAccount = AccountsDAO.findByNickname(profile_id)
-    val optBusiness = models.DAO.resources.BusinessDAO.findByNickname(profile_id)
-
-    optAccount match {
-      case Some(account) => {
-        Ok(views.html.profiles.profile(account = Some(account), business = None)(request.user))
-      }
-      case _ => {
-        optBusiness match {
-          case Some(business) => Ok(views.html.profiles.profile(account = None, business = Some(business))(request.user))
-          case _ => NotFound(views.html.custom.msg404("", request))
-        }
-      }
-    }
-
-  }
 
 
 /*

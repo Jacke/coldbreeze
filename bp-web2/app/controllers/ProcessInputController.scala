@@ -27,7 +27,14 @@ import views._
 import models.User
 import service.DemoUser
 import service._
-import securesocial.core._
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO._
 import models.DAO.resources._
 import main.scala.utils.{InputParamProc, ReactionActivator}
@@ -36,14 +43,25 @@ import ExecutionContext.Implicits.global
 
 import javax.inject.Inject
 
-import securesocial.core._
-import service.{ MyEnvironment, MyEventListener, DemoUser }
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 import play.api.mvc.{ Action, RequestHeader }
 
 /**
  * Created by Sobolev on 22.07.2014.
  */
-class ProcessInputController @Inject() (override implicit val env: MyEnvironment) extends securesocial.core.SecureSocial {
+class ProcessInputController @Inject() (
+  val messagesApi: MessagesApi,
+  val env: Environment[User2, CookieAuthenticator],
+  socialProviderRegistry: SocialProviderRegistry)
+  extends Silhouette[User2, CookieAuthenticator] {
   import play.api.Play.current
   import models.DAO.CompositeValues
   implicit val CompositeVReads = Json.reads[CompositeValues]
@@ -67,15 +85,15 @@ class ProcessInputController @Inject() (override implicit val env: MyEnvironment
   implicit val inLoggerWrites = Json.format[InputLogger]
 
   def invoke(bpID: Int)  = SecuredAction { implicit request =>
-    if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, bpID)) {
-      val userId = request.user.main.userId
+    if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, bpID)) {
+      val userId = request.identity.emailFilled
       val lang:String = models.AccountsDAO.getRolesAndLang(userId).get._3
       val costs = ElementResourceDAO.getByProcess(bpID)
       val costPipeFn = pipes.ElementResourceBuilderPipe.apply(costs)
       val pipesList:List[LaunchMapPipe => ExecutedLaunchCVPipes] = List(costPipeFn)
       service.Build.run(bpID, Some(lang), invoke = true, pipesList) match {
         case Some(process) => {
-          action(request.user.main.userId, process = Some(bpID), ProcHisCom.processLaunched, None, None)
+          action(request.identity.emailFilled, process = Some(bpID), ProcHisCom.processLaunched, None, None)
           Ok(Json.toJson(Map("success" -> "station_id", "session" -> process.session_id.toString)))
         }
         case _ => Ok(Json.toJson(Map("error" -> "Error output")))
@@ -84,7 +102,7 @@ class ProcessInputController @Inject() (override implicit val env: MyEnvironment
   }
 
   def invokeFrom(session_id: Int, bpID: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
-    if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, bpID)) {
+    if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, bpID)) {
 
 
 
@@ -103,7 +121,7 @@ class ProcessInputController @Inject() (override implicit val env: MyEnvironment
     val input_logs = pmsResult.map{
                               case entity => entity.map { pm =>
                                   InputLogger(None,
-                                    uid = request.user.main.email,
+                                    uid = request.identity.email,
                                     action = "input", // TODO: Add reaction title
                                     arguments = List.empty[String],
                                     reaction = pm.reaction_id,
@@ -114,7 +132,7 @@ class ProcessInputController @Inject() (override implicit val env: MyEnvironment
       }
 
     if (controlles.launches.LaunchStack.push(launchId = session_id)) {
-       controllers.UserActor.updateLaunchLock(target="lock", email=request.user.main.userId, isLock=true, launchId=session_id)
+       controllers.UserActor.updateLaunchLock(target="lock", email=request.identity.emailFilled, isLock=true, launchId=session_id)
 
     InputLoggerDAO.pull_for_input(input_logs.get)
         // case class InputParamProc(felem: Option[Int], selem: Option[Int], param: String, args: List[String])
@@ -128,9 +146,9 @@ class ProcessInputController @Inject() (override implicit val env: MyEnvironment
         }*/
     service.Build.newRunFrom(session_id = session_id,bpID = bpID, params = pmsResult.get, invoke = true) match {
       case Some(process) => {
-       action(request.user.main.userId, process = Some(bpID), ProcHisCom.processResumed, None, None)
+       action(request.identity.emailFilled, process = Some(bpID), ProcHisCom.processResumed, None, None)
        controlles.launches.LaunchStack.pop(launchId = session_id)
-       controllers.UserActor.updateLaunchLock(target="lock", email=request.user.main.userId, isLock=true, launchId=session_id)
+       controllers.UserActor.updateLaunchLock(target="lock", email=request.identity.emailFilled, isLock=true, launchId=session_id)
 
        Ok(Json.toJson(Map("success" -> process.session_id)))
       }
@@ -153,7 +171,7 @@ def inputLogsBySession(BPid: Int, session_id:Int) = Action.async { implicit requ
 }
 
 def schemes(BPid: Int, station_id: Int) = SecuredAction { implicit request =>
-    if (security.BRes.procIsOwnedByBiz(request.user.businessFirst, BPid)) {
+    if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, BPid)) {
 
 
     val logs = BPLoggerDAO.findByStation(station_id)
@@ -163,9 +181,9 @@ def schemes(BPid: Int, station_id: Int) = SecuredAction { implicit request =>
     val owner_email = BPDAO.findOwnerByBP(BPid)
     val admins:List[String] = List(owner_email)//Employee.findAdminByBP(BPid)
     val actors = EmployeeDAO.getAllByMaster(owner_email)
-    val permited_elems = ActPermissionDAO.getByUID(request.user.main.email.get)
+    val permited_elems = ActPermissionDAO.getByUID(request.identity.emailFilled)
 
-    if (isActor(request.user.main.email.get, actors)) {
+    if (isActor(request.identity.emailFilled, actors)) {
     Ok(
       Json.toJson(
         Map("proc_elems" -> Json.toJson(ProcElemDAO.findByBPId(BPid).filter(elem => !elem_logs_ids.contains(elem.id) && permited_elems.flatMap(_.front_elem_id).contains(elem.id)   ) ),
@@ -173,7 +191,7 @@ def schemes(BPid: Int, station_id: Int) = SecuredAction { implicit request =>
         )
       )
     }
-    if (isAdmin(request.user.main.email.get, admins)) {
+    if (isAdmin(request.identity.emailFilled, admins)) {
       Ok(
       Json.toJson(
         Map("proc_elems" -> Json.toJson(ProcElemDAO.findByBPId(BPid).filter(elem => !elem_logs_ids.contains(elem.id)  ) ),

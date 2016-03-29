@@ -43,13 +43,13 @@ import models.DAO.conversion.DatabaseFuture._
   private def getAll(): Query[AccountInfos, AccountInfo, Seq] =
     account_infos
 
-  def getByInfoById(id: Int):Future[Seq[AccountInfo]] = { 
+  def getByInfoById(id: Int):Future[Seq[AccountInfo]] = {
     db.run(filterQuery(id).result)
-    
+
   }
-  def getByInfoByUID(uid: String):Future[Option[AccountInfo]] = { 
+  def getByInfoByUID(uid: String):Future[Option[AccountInfo]] = {
     db.run(filterQueryByUID(uid).result.headOption)
-    
+
   }
 // models.AccountInfosDAOF.updateCurrentWorkbenchForAllEmployees
 // models.AccountInfosDAOF.getByInfoByUID
@@ -57,10 +57,10 @@ import models.DAO.conversion.DatabaseFuture._
     val emps:Future[Seq[EmployeeDTO]] = EmployeeDAOF.getAll()
     emps.map { empSeq =>
       empSeq.foreach { emp =>
-      
+
       getByInfoByUID(emp.uid).map { infoF =>
         infoF.map { info =>
-          updateF(info.id.get, info.copy(currentWorkbench = Some(emp.workbench)))          
+          updateF(info.id.get, info.copy(currentWorkbench = Some(emp.workbench)))
         }
         }
       }
@@ -70,21 +70,21 @@ import models.DAO.conversion.DatabaseFuture._
   def updateCurrentWorkbench(uid: String, workbench: Option[Int]):Future[Int] = {
     val empOpt:Future[Option[EmployeeDTO]] = EmployeeDAOF.getByEmpByUID(uid)
     empOpt.flatMap { empReal =>
-      empReal match { 
-      case Some(emp) => {   
+      empReal match {
+      case Some(emp) => {
       val infoF = getByInfoByUID(emp.uid)
       val no:Int = -1
       infoF.flatMap { infoOpt =>
             infoOpt.map { info =>
                   updateF(info.id.get, info.copy(currentWorkbench = workbench))
-                } getOrElse Future.successful(AccountsDAO.createInfo(AccountInfo(None, 
-                                                          uid = emp.uid, 
-                                                          created_at = org.joda.time.DateTime.now(), 
-                                                          ea = false, 
+                } getOrElse Future.successful(AccountsDAO.createInfo(AccountInfo(None,
+                                                          uid = emp.uid,
+                                                          created_at = org.joda.time.DateTime.now(),
+                                                          ea = false,
                                                           pro = false,
                                                           currentWorkbench = workbench)))
             }
-      } 
+      }
       case _ => Future(-1)
       }
     }
@@ -138,6 +138,8 @@ import models.DAO.conversion.DatabaseFuture._
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
 
   val accounts = AccountsDAO.accounts
+  val account_infos = AccountInfosDAOF.account_infos
+
   private def filterQueryByUID(email: String): Query[Accounts, AccountDAO, Seq] =
     accounts.filter(_.userId === email)
   private def filterQueryByProviderUserId(providerId: String, userId:String): Query[Accounts, AccountDAO, Seq] =
@@ -145,27 +147,29 @@ import models.DAO.conversion.DatabaseFuture._
   private def filterQueryByProvidereEmail(providerId: String, email:String): Query[Accounts, AccountDAO, Seq] =
     for { a ← accounts if a.providerId === providerId && a.email === email } yield a
 
+    private def filterInfoQueryByUID(email: String): Query[AccountInfos, AccountInfo, Seq] =
+      account_infos.filter(_.uid === email)
 
 
   def getLang(email: String):Future[String] = {
-      db.run(filterQueryByUID(email).result.headOption).map { result =>
+      db.run(filterInfoQueryByUID(email).result.headOption).map { result =>
       result match {
-        case Some(account) => account.lang
+        case Some(account) => account.lang.getOrElse("en")
         case _ => "en"
       }
       }
   }
 
   def getRolesAndLang(email: String, workbench_id: Int = -1): Future[Option[Tuple3[Boolean, Boolean, String]]] ={
-    val employeeF:Future[Option[EmployeeDTO]] = models.DAO.resources.EmployeeDAOF.getByEmployeeUIDAndWorkbench(email, 
+    val employeeF:Future[Option[EmployeeDTO]] = models.DAO.resources.EmployeeDAOF.getByEmployeeUIDAndWorkbench(email,
                                                                                                       workbench_id)
-    val isManagerF:Future[Boolean] = employeeF.map { employee => 
+    val isManagerF:Future[Boolean] = employeeF.map { employee =>
       employee match {
         case Some(emp) => emp.manager
         case _ => false
       }//AccountPlanDAO.getByMasterAcc(email).isDefined
     }
-    val isEmployeeF:Future[Boolean] = employeeF.map { employee => 
+    val isEmployeeF:Future[Boolean] = employeeF.map { employee =>
       employee match {
         case Some(emp) => true
         case _ => false
@@ -200,6 +204,69 @@ object AccountsDAO {
 
   val accounts = TableQuery[Accounts]
   val account_infos = TableQuery[AccountInfos]
+  // New auth
+
+  import models.daos._
+  class UsersTable(tag: Tag) extends Table[DBUser](tag, "user") {
+    def id = column[String]("userID", O.PrimaryKey)
+    def firstName = column[Option[String]]("firstName")
+    def lastName = column[Option[String]]("lastName")
+    def fullName = column[Option[String]]("fullName")
+    def email = column[Option[String]]("email")
+    def avatarURL = column[Option[String]]("avatarURL")
+    def * = (id, firstName, lastName, fullName, email, avatarURL) <> (DBUser.tupled, DBUser.unapply)
+  }
+  class LoginInfosTable(tag: Tag) extends Table[DBLoginInfo](tag, "logininfo") {
+    def id = column[Long]("id", O.PrimaryKey, O.AutoInc)
+    def providerID = column[String]("providerID")
+    def providerKey = column[String]("providerKey")
+    def * = (id.?, providerID, providerKey) <> (DBLoginInfo.tupled, DBLoginInfo.unapply)
+  }
+
+
+
+  class UserLoginInfosTable(tag: Tag) extends Table[DBUserLoginInfo](tag, "userlogininfo") {
+    def userID = column[String]("userID")
+    def loginInfoId = column[Long]("loginInfoId")
+    def * = (userID, loginInfoId) <> (DBUserLoginInfo.tupled, DBUserLoginInfo.unapply)
+  }
+
+
+
+  class PasswordInfosTable(tag: Tag) extends Table[DBPasswordInfo](tag, "passwordinfo") {
+    def hasher = column[String]("hasher")
+    def password = column[String]("password")
+    def salt = column[Option[String]]("salt")
+    def loginInfoId = column[Long]("loginInfoId")
+    def * = (hasher, password, salt, loginInfoId) <> (DBPasswordInfo.tupled, DBPasswordInfo.unapply)
+  }
+
+
+  val users = TableQuery[UsersTable]
+  val logininfo =  TableQuery[LoginInfosTable]
+  val userlogininfo =  TableQuery[UserLoginInfosTable]
+  val passwordinfo =  TableQuery[PasswordInfosTable]
+
+  def pull_user_object(s: DBUser) = database withSession {
+    implicit session ⇒
+      users returning users.map(_.id) += s
+  }
+
+
+  def pull_loginInfo_object(s: DBLoginInfo) = database withSession {
+    implicit session ⇒
+      logininfo returning logininfo.map(_.id) += s
+  }
+  def pull_userInfo_object(s: DBUserLoginInfo) = database withSession {
+    implicit session ⇒
+      userlogininfo returning userlogininfo.map(_.userID) += s
+  }
+  def pull_passwordInfo_object(s: DBPasswordInfo) = database withSession {
+    implicit session ⇒
+      passwordinfo returning passwordinfo.map(_.loginInfoId) += s
+  }
+
+
 
   def ddl {
     database withSession {
@@ -223,7 +290,7 @@ object AccountsDAO {
         }
         case _ => false
       }
-    } 
+    }
   }
   def subscribeToEA(account_id: String):Boolean  = { database withSession {
      implicit session =>
@@ -235,7 +302,7 @@ object AccountsDAO {
         }
         case _ => false
       }
-    } 
+    }
   }
   def getAllInfos: List[AccountInfo] = { database withSession {
     implicit session =>
@@ -252,7 +319,7 @@ object AccountsDAO {
                 case -1 => false
                 case _ => true
           }
-        } 
+        }
         case _ => false
       }
   }
@@ -297,16 +364,21 @@ object AccountsDAO {
         case _ => "en"
       }
   }
-  def getAccount(email: String):Option[AccountDAO] = database withSession {
+  def getAccount(email: String):Option[models.daos.DBUser] = database withSession {
     implicit session ⇒
-      val q3 = for { a ← accounts if a.userId === email } yield a
+      val q3 = for { a ← users if a.email === email } yield a
       q3.list.headOption
   }
   def getAccounts(emails: List[String]):List[AccountDAO] = database withSession {
     implicit session ⇒
       val q3 = for { a ← accounts if a.userId inSetBind emails } yield a
       q3.list
-  }  
+  }
+  def getAll():List[AccountDAO] = database withSession {
+    implicit session ⇒
+      val q3 = for { a ← accounts } yield a
+      q3.list
+  }
   def getAccountInfo(email: String): Option[AccountInfo] = database withSession {
     implicit session =>
     val q3 = for { a ← account_infos if a.uid === email } yield a
@@ -321,13 +393,16 @@ object AccountsDAO {
     implicit session ⇒
       val q3 = for { a ← accounts if a.userId === email } yield a
       q3.list.headOption match {
-        case Some(account) => accounts.filter(_.email === email).update(account.copy(lang = lang)) 
+        case Some(account) => accounts.filter(_.email === email).update(account.copy(lang = lang))
         case _ => "en"
       }
   }
+
+
+
   def findAllByEmails(emails: List[String]) = database withSession {
     implicit session ⇒
-      val q3 = for { a ← accounts if a.userId inSetBind emails } yield a
+      val q3 = for { a ← users if a.email inSetBind emails } yield a
       q3.list
   }
 
@@ -341,50 +416,49 @@ object AccountsDAO {
   def deleteUser(uuid: String) = database withSession {
     implicit session ⇒
       val tok = findAllByEmails(List(uuid)).head
-      accounts.filter(_.userId === tok.userId).delete
+      //accounts.filter(_.userId === tok.userId).delete
   }
+
   def findByEmailAndProvider(email: String, providerId: String): Option[BasicProfile] = database withSession {
     implicit session ⇒
       val q3 = for { a ← accounts if a.providerId === providerId && a.email === email } yield a
       val result = q3.list.map(s => BasicProfile.tupled(Account.unapply(s.toAccount).get))
       result.headOption
   }
-import controllers.Credentials
+
+  import controllers.Credentials
   def updateCredentials(email: String, cred: Credentials) = database withSession {
     implicit session =>
-    val q3 = for { a ← accounts if a.email === email } yield a
+    val q3 = for { a ← users if a.email === email } yield a
       val result = q3.list.headOption
       result match {
         case Some(origin) => {
-         val toUpdate = origin.copy(firstName = cred.firstName, 
-                                    lastName = cred.lastName, 
-                                    fullName = cred.fullName, 
-                                    lang = cred.lang, 
-                                    country = cred.country, 
-                                    phone = cred.phone, 
-                                    nickname = cred.nickname)
-           accounts.filter(_.email === email).update(toUpdate)
+         val toUpdate = origin.copy(firstName = cred.firstName,
+                                    lastName = cred.lastName,
+                                    fullName = cred.fullName)
+           users.filter(_.email === email).update(toUpdate)
            true
         }
         case _ => false
       }
-
   }
   def fetchCredentials(email: String) = database withSession {
     implicit session =>
-    (findByEmailAndProvider(email, "userpass"), getAccount(email)) match {
-      case (Some(user), Some(account)) => { 
-        Some(Credentials(user.firstName, 
-          user.lastName, 
-          user.fullName, 
-          account.lang, 
-          country  = account.country, 
-          phone    = account.phone, 
-          nickname = account.nickname))
+    val q3 = for { a ← users if a.email === email } yield a
+      val result = q3.list.headOption
+      result match {
+      case Some(origin) => {
+        Some(Credentials(origin.firstName,
+          origin.lastName,
+          origin.fullName,
+          "en",//account.lang,
+          country  = None,
+          phone    = None,
+          nickname = None))
       }
       case _ => None
     }
-  }
+}
 
   def save(user: BasicProfile):DemoUser =  database withSession {
     implicit session ⇒

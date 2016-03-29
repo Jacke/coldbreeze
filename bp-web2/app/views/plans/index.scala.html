@@ -1,17 +1,11 @@
-@import service.DemoUser
+
 @import controllers.employeeParams
 @import models.DAO.resources.ActPermission
 @import models.DAO.resources.BusinessServiceDTO
 @import models.DAO.resources.BusinessDTO
 @import models.DAO.resources._
 
-@(user: DemoUser, plans: List[PlanDTO], bills: List[BillDTO], payForm: Form[PayInfo], billing_info: Form[models.DAO.BillingInfoDTO], limitForm: Form[LimitFormObject], current_plan: AccountPlanDTO, status: Option[StatusMessage]=None)(implicit request: RequestHeader, env: securesocial.core.RuntimeEnvironment)
-
-@import securesocial.core.IdentityProvider
-
-@import securesocial.core.IdentityProvider
-@import securesocial.core.providers.UsernamePasswordProvider
-@import securesocial.core.AuthenticationMethod._
+@(user: models.User2, plans: List[PlanDTO], bills: List[BillDTO], payForm: Form[PayInfo], billing_info: Form[models.DAO.BillingInfoDTO], limitForm: Form[LimitFormObject], current_plan: AccountPlanDTO, status: Option[StatusMessage]=None)(implicit request: RequestHeader)
 @import play.api.{Logger, Play}
 @import helper._
 @import play.api.Play

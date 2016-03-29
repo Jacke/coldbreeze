@@ -19,7 +19,14 @@ import play.api.data.FormError
 import views._
 import models.User
 import service.DemoUser
-import securesocial.core._
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.BProcessDTO
 import models.DAO.BPDAO
 import models.DAO._
@@ -37,10 +44,21 @@ import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 
 import javax.inject.Inject
 
-import securesocial.core._
-import service.{ MyEnvironment, MyEventListener, DemoUser }
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 import play.api.mvc.{ Action, RequestHeader }
-class DriveController @Inject() (override implicit val env: MyEnvironment) extends securesocial.core.SecureSocial {
+class DriveController @Inject() (
+  val messagesApi: MessagesApi,
+  val env: Environment[User2, CookieAuthenticator],
+  socialProviderRegistry: SocialProviderRegistry)
+  extends Silhouette[User2, CookieAuthenticator] {
 
 
   val Home = Redirect(routes.DriveController.index())
@@ -50,12 +68,12 @@ class DriveController @Inject() (override implicit val env: MyEnvironment) exten
 
 
  def index() = SecuredAction { implicit request =>
-  val business = request.user.businessFirst
- 	val cred = models.AccountsDAO.fetchCredentials(request.user.main.email.get)
-  //val biz0 = fetchBiz(request.user.main.userId).get
+  val business = request.identity.businessFirst
+ 	val cred = models.AccountsDAO.fetchCredentials(request.identity.emailFilled)
+  //val biz0 = fetchBiz(request.identity.emailFilled).get
   //val biz = BizFormDTO(biz0.title, biz0.phone, biz0.website, biz0.country, biz0.city, biz0.address, biz0.nickname)
-  var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get, business).get
- 	Ok(views.html.drive.index(request.user, isManager))
+  var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled, business).get
+ 	Ok(views.html.drive.index(request.identity, isManager))
  }
 
 

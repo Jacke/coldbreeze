@@ -20,19 +20,37 @@ import views._
 import models.Page
 import models.User
 import service.DemoUser
-import securesocial.core._
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.resources.web._
 
 import javax.inject.Inject
 
-import securesocial.core._
-import service.{ MyEnvironment, MyEventListener, DemoUser }
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 import play.api.mvc.{ Action, RequestHeader }
 
 /**
  * Created by Sobolev on 22.07.2014.
  */
-class BusinessController @Inject() (override implicit val env: MyEnvironment) extends securesocial.core.SecureSocial {
+class BusinessController @Inject() (
+  val messagesApi: MessagesApi,
+  val env: Environment[User2, CookieAuthenticator],
+  socialProviderRegistry: SocialProviderRegistry)
+  extends Silhouette[User2, CookieAuthenticator] {
   import play.api.Play.current
 
    val Home = Redirect(routes.BusinessController.index())
@@ -55,19 +73,19 @@ class BusinessController @Inject() (override implicit val env: MyEnvironment) ex
  def index() = SecuredAction { implicit request =>
     val businesses = BusinessDAO.getAll
     Ok(views.html.businesses.index(
-      Page(businesses, 1, 1, businesses.length), 1, "%", request.user))
+      Page(businesses, 1, 1, businesses.length), 1, "%", request.identity))
   }
 
   def create() = SecuredAction { implicit request =>
-        Ok(views.html.businesses.business_form(businessForm, request.user))
+        Ok(views.html.businesses.business_form(businessForm, request.identity))
   }
 
   def create_new() = SecuredAction { implicit request =>
     businessForm.bindFromRequest.fold(
-      formWithErrors => BadRequest(views.html.businesses.business_form(formWithErrors, request.user)),
+      formWithErrors => BadRequest(views.html.businesses.business_form(formWithErrors, request.identity)),
       entity => {
           val biz_id = BusinessDAO.pull_object(entity)
-          val emp_id = EmployeeDAO.getByUID(request.user.main.userId)
+          val emp_id = EmployeeDAO.getByUID(request.identity.emailFilled)
           emp_id match {
             case Some(employee) => EmployeesBusinessDAO.pull(employee_id = employee.id.get, business_id = biz_id)
             case _ =>
@@ -81,14 +99,14 @@ def update(id: Int) = SecuredAction { implicit request =>
     business match {
       case Some(business) =>
         val biz = BusinessDTO(business.id, business.title, business.phone, business.website, business.country, business.city, business.address)
-         Ok(views.html.businesses.business_edit_form(id, businessForm.fill(biz), request.user))
+         Ok(views.html.businesses.business_edit_form(id, businessForm.fill(biz), request.identity))
       case None => Ok("not found")
     }
   }
 
 def update_make(id: Int) = SecuredAction { implicit request =>
     businessForm.bindFromRequest.fold(
-      formWithErrors => BadRequest(views.html.businesses.business_edit_form(id, formWithErrors, request.user)),
+      formWithErrors => BadRequest(views.html.businesses.business_edit_form(id, formWithErrors, request.identity)),
       entity => {
         Home.flashing(BusinessDAO.update(id,entity) match {
           case 0 => "failure" -> s"Could not update entity ${entity.title}"

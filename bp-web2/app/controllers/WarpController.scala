@@ -21,7 +21,14 @@ import play.api.data.FormError
 import views._
 import models.User
 import service.DemoUser
-import securesocial.core._
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.BProcessDTO
 import models.DAO.BPDAO
 import models.DAO._
@@ -46,11 +53,22 @@ case class WarpPayload(payload: List[WarpObjRequest])
 
 import javax.inject.Inject
 
-import securesocial.core._
-import service.{ MyEnvironment, MyEventListener, DemoUser }
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 import play.api.mvc.{ Action, RequestHeader }
 
-class WarpController @Inject() (override implicit val env: MyEnvironment) extends securesocial.core.SecureSocial {
+class WarpController @Inject() (
+  val messagesApi: MessagesApi,
+  val env: Environment[User2, CookieAuthenticator],
+  socialProviderRegistry: SocialProviderRegistry)
+  extends Silhouette[User2, CookieAuthenticator] {
   implicit val WarpRequestReads = Json.reads[WarpRequest]
   implicit val WarpRequestWrites = Json.format[WarpRequest]
   implicit val WarpObjRequestReads = Json.reads[WarpObjRequest]
@@ -96,7 +114,7 @@ class WarpController @Inject() (override implicit val env: MyEnvironment) extend
 		val warpResult = request.body.validate[WarpResult]
 
 
-		 val business = request.user.businessFirst
+		 val business = request.identity.businessFirst
 		 warpResult.fold(
 			 	errors => { Future( Ok(Json.obj("status" ->"BAD", "message" -> "error" ))) },
 				e => {
@@ -138,11 +156,6 @@ class WarpController @Inject() (override implicit val env: MyEnvironment) extend
  def warpGenerate(launch_idOpt: Option[String], element_idOpt: Option[String]) =
 	 Cached2(req => "profile." + req.host, 1000 * 60) {
 		 SecuredAction.async(BodyParsers.parse.json) { implicit request =>
-		  //val business = request.user.businessFirst
-		  //val cred = models.AccountsDAO.fetchCredentials(request.user.main.email.get)
-		  //val biz0 = fetchBiz(request.user.main.userId).get
-		  //val biz = BizFormDTO(biz0.title, biz0.phone, biz0.website, biz0.country, biz0.city, biz0.address, biz0.nickname)
-		  //var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.user.main.email.get, business).get
 		val launch_id = parseParam(launch_idOpt)
 		val element_id = parseParam(element_idOpt)
 		println("launch_id")
@@ -153,18 +166,18 @@ class WarpController @Inject() (override implicit val env: MyEnvironment) extend
 		println(element_idOpt)
 		  val warpResult = request.body.validate[WarpPayload]
 		  println(warpResult)
-		  println(request.user.businessFirst)
+		  println(request.identity.businessFirst)
 
 		val warpResultOpt:Option[WarpRequest] = warpResult match {
 			  case s: JsSuccess[WarpRequest] => Some(s.get)
 		      case e: JsError => None
 		}
-		 val business = request.user.businessFirst
+		 val business = request.identity.businessFirst
 		 warpResult.fold(
 			 	errors => { Future( Ok(Json.obj("status" ->"BAD", "message" -> "error" )))
 			 	},
 				e => {
-					val result = parseWarps(e.payload, s"${business}:${request.user.main.userId}",
+					val result = parseWarps(e.payload, s"${business}:${request.identity.emailFilled}",
 											launch_id,element_id, business.toString)
 					result.map { result =>
 						Ok(Json.obj("status" ->"OK", "message" -> result ))

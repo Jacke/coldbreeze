@@ -6,6 +6,7 @@ return minorityControllers.controller('BProcessListCtrl', ['$rootScope',
   '$window',
   '$translate',
   '$rootScope',
+  'CacheFactory',
   'AllLaunchedElementsBulkFactory',
   'AllElementsBulkFactory',
   'InteractionsBulkFactory',
@@ -26,12 +27,15 @@ return minorityControllers.controller('BProcessListCtrl', ['$rootScope',
   'BPStationsFactory',
   'BPServicesFactory',
   '$location',
-  function ($rootScope,$scope, $window, $translate, $rootScope,AllLaunchedElementsBulkFactory, AllElementsBulkFactory, InteractionsBulkFactory, BPElemsFactory, RefsFactory, TreeBuilder, NotificationBroadcaster,SessionsFactory, ngDialog, $http, $routeParams, $filter, BPElemsFactory, BPSpacesFactory, BPSpaceElemsFactory, BProcessesFactory, BProcessFactory, BPStationsFactory, BPServicesFactory, $location) {
+  function ($rootScope,$scope, $window, $translate, $rootScope,CacheFactory,AllLaunchedElementsBulkFactory, AllElementsBulkFactory, InteractionsBulkFactory, BPElemsFactory, RefsFactory, TreeBuilder, NotificationBroadcaster,SessionsFactory, ngDialog, $http, $routeParams, $filter, BPElemsFactory, BPSpacesFactory, BPSpaceElemsFactory, BProcessesFactory, BProcessFactory, BPStationsFactory, BPServicesFactory, $location) {
 
 $scope.changeLanguage = function () {
   $translate.use($rootScope.lang);
 };
 $scope.changeLanguage();
+
+
+$scope.cacheFactory = CacheFactory;
 
 
 $scope.isManager = function () {
@@ -72,14 +76,7 @@ $scope.cancelSession = function (session) {
         console.log('reloadSession');
         $scope.reloadSessions();
         // success
-        /*
-        $scope.bprocesses = BProcessesFactory.query();
-            $scope.bprocesses.$promise.then(function (processes) {
-                _.forEach(processes, function(proc) { TreeBuilder.buildFetch(proc, $scope.allLaunchedElemPromise, function(success){}); });
-            });
-        */
-        //$location.path('/a#/bprocess/' + session.process.id);
-    
+
       },
       function(response) { // optional
         // failed
@@ -170,7 +167,7 @@ $scope.emptyElemCheck = function(col) {
     });
   };
 $scope.filterForActiveLaunch = function(ses) {
-    
+
    if (ses.station != undefined && ses.station.finished == false && ses.station.paused == true && ses.station.state == true) {
       return ses;
     } else {
@@ -217,8 +214,8 @@ $scope.deleteBP = function (bpId) {
           $scope.allElements = d;
           console.log("132",$scope.allElements);
         });
-        _.forEach(processes, function(proc) { 
-              TreeBuilder.buildFetch(proc, $scope.allElementsPromise, function(success){}); 
+        _.forEach(processes, function(proc) {
+              TreeBuilder.buildFetch(proc, $scope.allElementsPromise, function(success){});
         });
       });
   });
@@ -249,6 +246,51 @@ $scope.createNewBP = function () {
   $scope.services = BPServicesFactory.query();
 
 
+$scope.loadLaunchesFromCache = function() {
+  var launchesCache;
+  var launchesCursosCache;
+  // 1. create cursor and cache
+    $scope.cacheFactory.createCache('launchesCache',{storageMode: 'sessionStorage'})
+    $scope.cacheFactory.createCache('launchesCursosCache',{storageMode: 'sessionStorage'});
+
+
+  launchesCache = $scope.cacheFactory.get('launchesCache');
+  console.log('launchesCursosCache', $scope.cacheFactory.get('launchesCursosCache'));
+  launchesCursorCache = $scope.cacheFactory.get('launchesCursosCache');
+  if (launchesCursorCache.get('updated') == undefined) {
+  CacheFactory.get('launchesCursosCache').put('updated', 0) }
+  if (launchesCache.get('launches') == undefined) {
+    launchesCache.put('launches', []);
+  }
+
+  // 3. Make request
+  return $http.get('/sessions/cached/'+launchesCursorCache.get('updated'))
+          .then(function (resp) {
+            console.log('  return $http.get(/sessions/cached/+launchesCursosCache.get(updated))', resp);
+            // 4. Split C and D and apply C for new created resources
+            launchesCache.put('launches', launchesCache.get('launches').concat(resp.data.c));
+            // 5. D for resource with ids that need to be removed
+            launchesCache.put('launchesRemoved', resp.data.d)
+            // 6. Put request to cache and update cursor
+            launchesCursorCache.put('updated', Date.now());
+            // 7. Return resource itself
+            return launchesCache.get('launches');
+          });
+}
+
+$scope.loadProcessesFromCache = function() {
+  var processesCache;
+  var processesCursosCache;
+  if (!$scope.cacheFactory.get('processesCache')) {
+    processesCache = $scope.cacheFactory('processesCache');
+  }
+  if (!$scope.cacheFactory.get('processesCache')) {
+    processesCursosCache = $scope.cacheFactory('processesCursosCache');
+  }
+
+}
+
+
 $scope.loadProcesses = function() {
 
   if ($routeParams.service != undefined) {
@@ -261,7 +303,7 @@ $scope.loadProcesses = function() {
   } else {
       $scope.bprocesses = BProcessesFactory.query();
   }
-  
+
   // Init thumb
   $scope.bprocesses.$promise.then(function (processes) {
 
@@ -272,8 +314,8 @@ $scope.loadProcesses = function() {
           $scope.allElements = d;
           console.log("132",$scope.allElements);
         });
-        _.forEach(processes, function(proc) { 
-              TreeBuilder.buildFetch(proc, $scope.allElementsPromise, function(success){}); 
+        _.forEach(processes, function(proc) {
+              TreeBuilder.buildFetch(proc, $scope.allElementsPromise, function(success){});
         });
 
 
@@ -291,12 +333,12 @@ $scope.loadProcesses = function() {
     _.forEach(processes, function(proc) { TreeBuilder.buildFetch(proc, $scope.allElementsPromise, function(success){
         $('.process_content .tree-thumb.process-tree').dragOn();
     }); });
-    
+
   });
 };
 $scope.loadProcesses();
 
-  // New form 
+  // New form
   if ($window.location.hash.split("?")[1] == "new") {
     console.log("new form");
     $scope.createNewBP();
@@ -362,12 +404,16 @@ $scope.nestedRequestScopes = [];
 
 $scope.reloadSessions = function() {
 
-SessionsFactory.query().$promise.then(function (sessions) {
+//SessionsFactory.query()
+
+$scope.loadLaunchesFromCache().then(function (sessions) {
+
+console.log('$scope.loadLaunchesFromCache().then(function (sessions) {', sessions);
 
 var session_ids = _.map(sessions, function(d){
     return _.map(_.filter(d.sessions, function(fd) {
       return (fd.station !== undefined) && (fd.station.finished != true);
-    }), function(dd){ 
+    }), function(dd){
       return 'ids='+dd.session.id+'&'
   });
 });
@@ -392,11 +438,11 @@ _.forEach($scope.sessions, function(session_cn) {
   _.forEach(session_cn.sessions, function(session) { return session.session.station = session.station });
 });
 
-$scope.bprocesses.$promise.then(function (processes) { 
-  _.forEach(processes, function(proc) { 
+$scope.bprocesses.$promise.then(function (processes) {
+  _.forEach(processes, function(proc) {
     proc.sessions = _.filter($scope.sessions, function(ses) { return ses.process.id == proc.id });
   });
-}); 
+});
 
 });
 });
@@ -405,12 +451,13 @@ $scope.bprocesses.$promise.then(function (processes) {
 
 $scope.reloadSession = function(session_id) {
 
-SessionsFactory.query().$promise.then(function (sessions) {
+//SessionsFactory.query()
+$scope.loadLaunchesFromCache().then(function (sessions) {
 
 var session_ids = _.map(sessions, function(d){
     return _.map(_.filter(d.sessions, function(fd) {
       return (fd.station !== undefined) && (fd.station.finished != true);
-    }), function(dd){ 
+    }), function(dd){
       return 'ids='+dd.session.id+'&'
   })
 });
@@ -428,7 +475,7 @@ InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') })
   $scope.interactionContainerProc = d;
   console.log($scope.interactionContainerProc);
   console.log($scope.sessions);
-  
+
 
   $scope.$broadcast('newInteractionsForLaunch', {session_id: session_id, updatedInteraction: d});
   $scope.$broadcast('reloadElementRoutine', session_id);
@@ -438,11 +485,11 @@ _.forEach($scope.sessions, function(session_cn) {
   _.forEach(session_cn.sessions, function(session) { return session.session.station = session.station });
 });
 
-$scope.bprocesses.$promise.then(function (processes) { 
-  _.forEach(processes, function(proc) { 
+$scope.bprocesses.$promise.then(function (processes) {
+  _.forEach(processes, function(proc) {
     proc.sessions = _.filter($scope.sessions, function(ses) { return ses.process.id == proc.id });
   });
-}); 
+});
 
 });
 
@@ -614,7 +661,7 @@ minorityControllers.controller('ProcShareCtrl', ['$scope', '$http', '$rootScope'
          $scope.observers = ObserversFactory.query({ process: $scope.bpId, station: $scope.station});
          $scope.newObserver = {bprocess: $scope.bpId, station_id: $scope.station};
       });
-      
+
     }
 
     $scope.deleteObserver = function(observe_id) {
@@ -625,7 +672,7 @@ minorityControllers.controller('ProcShareCtrl', ['$scope', '$http', '$rootScope'
 
 
 
-  
+
 
 
   $scope.filterExpression = function(station) {

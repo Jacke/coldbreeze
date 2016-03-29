@@ -3,7 +3,14 @@ import scala.util.{Try, Success, Failure}
 
 import models.{AccountsDAO, User, Page}
 import service.DemoUser
-import securesocial.core._
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 import controllers.users._
 import models.DAO.resources._
 import models.DAO._
@@ -21,17 +28,34 @@ import SumActor.Sum._
 import scala.util.{Try, Success, Failure}
 
 import play.api.mvc._
-import securesocial.core._
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 import javax.inject.Inject
 
-import securesocial.core._
-import service.{ MyEnvironment, MyEventListener, DemoUser }
+import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
+import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
+import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
+import forms._
+import models.User2
+import play.api.i18n.MessagesApi
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+
 import play.api.mvc.{ Action, RequestHeader }
-import securesocial.core.SecureSocial.{ RequestWithUser, SecuredRequest }
 
 
-class NotificationController @Inject() (override implicit val env: MyEnvironment) extends securesocial.core.SecureSocial {
+class NotificationController @Inject() (
+  val messagesApi: MessagesApi,
+  val env: Environment[User2, CookieAuthenticator],
+  socialProviderRegistry: SocialProviderRegistry)
+  extends Silhouette[User2, CookieAuthenticator] {
     implicit val sumFormat                    = Json.format[SumActor.Sum]
     implicit val sumFrameFormatter            = FrameFormatter.jsonFrame[SumActor.Sum]
     implicit val sumResultFormat              = Json.format[SumActor.SumResult]
@@ -46,6 +70,7 @@ class NotificationController @Inject() (override implicit val env: MyEnvironment
   // auth.get.identityId.userId
 
 def socket = WebSocket.tryAcceptWithActor[JsValue, JsValue] { request => //[SumActor.Sum, SumActor.SumResult] { request =>
+/*
       implicit val req: RequestHeader = request
       val user:Future[Option[service.DemoUser]] = env.authenticatorService.fromRequest.map {
          case Some(authenticator) if authenticator.isValid => {
@@ -55,15 +80,26 @@ def socket = WebSocket.tryAcceptWithActor[JsValue, JsValue] { request => //[SumA
         None
       }
     }
-    //val cleanCred = SecureSocial.currentUser[DemoUser](request, env, env.executionContext).value
     var cred:Option[service.DemoUser] = Await.result(user, Duration(5000, MILLISECONDS))
     cred match {
       case Some(userid) => {
         //Future.successful(Right(SumActor.props(_, Some(userid))))
         Future.successful(Right(UserActor.props(userid.main.userId)))
       }
-      case None => Future.successful(Left(Forbidden))
+      case None =>
     }
+
+    */
+
+        implicit val req = Request(request, AnyContentAsEmpty)
+        SecuredRequestHandler { securedRequest =>
+          Future.successful(HandlerResult(Ok, Some(securedRequest.identity)))
+        }.map {
+          case HandlerResult(r, Some(user)) => Right(UserActor.props(user.email.getOrElse("")) _)
+          case HandlerResult(r, None) => Left(r)
+        }
+
+//    Future.successful(Left(Forbidden))
 }
 def popup(emails_hash: String, target: String) = Action { request =>
           request.body.asJson.map { json =>
@@ -120,7 +156,7 @@ def notify_test(msg: String) = SecuredAction { implicit request =>
           }
           */
           BoardActor() ! StatusCheck
-          BoardActor() ! Message(request.user.main.userId, msg )
+          BoardActor() ! Message(request.identity.emailFilled, msg )
           Ok("sended")
     }
 import play.api.libs.concurrent.Execution.Implicits._
@@ -128,7 +164,7 @@ import play.api.libs.concurrent.Execution.Implicits._
 case class Item(value: String = "test")
 /*
 class ItemRequest[A](val item: Item, request: SecuredRequest[A, env.U]) extends WrappedRequest[A](request) {
-  def username = request.user
+  def username = request.identity
 }
 def UserItemAction = new ActionRefiner[SecuredRequest[A, env.U], ItemRequest] {
     def find() = {
@@ -149,7 +185,7 @@ def UserItemAction = new ActionRefiner[SecuredRequest[A, env.U], ItemRequest] {
 
 def tagItem = (SecuredAction andThen UserItemAction) { request =>
     //request.item.addTag(tag)
-    Ok("User " + request.username.toString + " tagged ")
+    Ok("User " + request.identityname.toString + " tagged ")
 }
 */
 

@@ -1,5 +1,5 @@
-@import service.DemoUser
-@(serviceForm: Form[models.DAO.resources.EmployeeDTO], user:DemoUser)
+
+@(serviceForm: Form[models.DAO.resources.EmployeeDTO], user: models.User2)
 
 @import helper._
 
@@ -31,7 +31,7 @@
 <div class="actions">
 <input type="submit" value="Create this service" class="btn btn-primary"> or
 <a href="@users.routes.EmployeeController.index()" class="btn btn-default">Cancel</a>
-</div>  
+</div>
 }
 </div>
 
