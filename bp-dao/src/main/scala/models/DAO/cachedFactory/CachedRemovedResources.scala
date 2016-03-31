@@ -23,10 +23,11 @@ class CachedRemovedResources(tag: Tag) extends Table[CachedRemovedResourceDTO](t
   def action            = column[String]("action")
   def resourceTitle     = column[String]("what")
   def resourceId        = column[String]("what_id")
+  def updatedAttributes = column[String]("updatedAttributes")
   def date              = column[org.joda.time.DateTime]("date")
 
 
-  def * = (id.?, scope, scopeType, action, resourceTitle, resourceId, date) <> (CachedRemovedResourceDTO.tupled, CachedRemovedResourceDTO.unapply _)
+  def * = (id.?, scope, scopeType, action, resourceTitle, resourceId, updatedAttributes, date) <> (CachedRemovedResourceDTO.tupled, CachedRemovedResourceDTO.unapply _)
 
 }
 
@@ -36,7 +37,16 @@ case class CachedRemovedResourceDTO(var id: Option[Int],
   action: String,
   resourceTitle: String,
   resourceId: String,
-  date: org.joda.time.DateTime)
+  updatedAttributes: String,
+  date: org.joda.time.DateTime) {
+
+    // extract json from updatedAttributes and transform it
+    def detectUpdates:List[String] = {
+      List(updatedAttributes)
+    }
+
+  }
+case class DeltasContainer(u: Seq[CachedRemovedResourceDTO], d: Seq[CachedRemovedResourceDTO])
 
 object CachedRemovedResourcesDAO {
   import scala.util.Try
@@ -64,19 +74,73 @@ import models.DAO.conversion.DatabaseFuture._
 
   private def filterQuery(id: Int): Query[CachedRemovedResources, CachedRemovedResourceDTO, Seq] =
     cached_removed_resources.filter(_.id === id)
-    private def filterByScopeQuery(scope: String): Query[CachedRemovedResources, CachedRemovedResourceDTO, Seq] =
-      cached_removed_resources.filter(_.scope === scope)
+    private def filterByScopeQuery(scope: String, scopeType: String, resourceTitle:String, t:org.joda.time.DateTime): Query[CachedRemovedResources, CachedRemovedResourceDTO, Seq] =
+      cached_removed_resources.filter(c => c.scope === scope
+        && c.scopeType === scopeType
+        && c.resourceTitle === resourceTitle
+        && c.date > t)
 
 
   def findById(id: Int): Future[CachedRemovedResourceDTO] =
     db.run(filterQuery(id).result.head)
 
-  def findAllByScope(scope: String): Future[Seq[CachedRemovedResourceDTO]] =
-      db.run(filterByScopeQuery(scope).result)
+  def findAllByScope(scope: String, scopeType: String, resourceTitle:String, timestamp: Option[String]): Future[DeltasContainer] = {
+      val sInt:String = timestamp.getOrElse("0")
+      val datetime = new org.joda.time.DateTime(sInt.toLong)
+
+      db.run(filterByScopeQuery(scope, scopeType, resourceTitle,datetime).result).map { resourceDeltas =>
+        DeltasContainer(
+          u = resourceDeltas.filter(c => c.action == "updated"),
+          d = resourceDeltas.filter(c => c.action == "deleted")
+        )
+      }
+  }
+
+
+ def makeResourceRemoveEntity(
+   scope: String,
+   action: String,
+   resourceTitle: String,
+   resourceId: String
+ ) = {
+   println("makeResourceRemoveEntity")
+   pull_object(
+     CachedRemovedResourceDTO(
+       None,
+       scope,
+       scopeType = "workbench",
+       action = "deleted",
+       resourceTitle,
+       resourceId,
+       "",
+       org.joda.time.DateTime.now()
+   ))
+ }
+ def makeResourceUpdateEntity(
+   scope: String,
+   action: String,
+   resourceTitle: String,
+   resourceId: String,
+   updatedEntity:Map[String, String]=Map()
+ ) = {
+   pull_object(
+     CachedRemovedResourceDTO(
+       None,
+       scope,
+       scopeType = "workbench",
+       action = "updated",
+       resourceTitle,
+       resourceId,
+       updatedEntity.foldLeft(":") { (s: String, pair: (String, String)) =>
+         pair._1 + s + pair._2
+       },
+       org.joda.time.DateTime.now()
+     ))
+ }
 
 
  def pull_object(s: CachedRemovedResourceDTO) =
-      cached_removed_resources returning cached_removed_resources.map(_.id) += s
+      db.run(cached_removed_resources returning cached_removed_resources.map(_.id) += s)
 
 
   def getAll:Future[Int] = db.run(cached_removed_resources.length.result)

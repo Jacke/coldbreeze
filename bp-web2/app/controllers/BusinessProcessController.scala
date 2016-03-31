@@ -124,6 +124,11 @@ class BusinessProcessController @Inject() (
   implicit val AllProcessElementsContainerReads = Json.reads[AllProcessElementsContainer]
   implicit val AllProcessElementsContainerWrites = Json.format[AllProcessElementsContainer]
 
+  implicit val CachedRemovedResourceDTOReads = Json.reads[CachedRemovedResourceDTO]
+  implicit val CachedRemovedResourceDTOWrites = Json.format[CachedRemovedResourceDTO]
+  implicit val DeltasContainerReads = Json.reads[DeltasContainer]
+  implicit val DeltasContainerWrites = Json.format[DeltasContainer]
+
 
 def bprocess = SecuredAction { implicit request =>
     val business = request.identity.businessFirst
@@ -155,6 +160,53 @@ def bprocess = SecuredAction { implicit request =>
       Ok(Json.toJson( procOut ))
     }
 }
+
+
+def all_cached_bprocess(timestamp: String) = SecuredAction.async { implicit request =>
+    val business = request.identity.businessFirst
+    val user_services = BusinessServiceDAO.getAllByBusiness(business).map(_.id.getOrElse(-1))
+
+    val bprocess = BPDAOF.getByServices(user_services, Some(timestamp)) // TODO: Not safe
+    // TODO: Add for actor, if they assigned to process
+    bprocess.flatMap { bprocess =>
+
+    val user = request.identity
+    if (user.isEmployee && !user.isManager) {
+       println(request.identity.isEmployee)
+       println("Restricted by Act Permission")
+       // Employee assigned process
+       val acts = ActPermissionDAO.getByUID(request.identity.emailFilled)
+       val bpIds = ActPermissionDAO.getByUIDprocIDS(request.identity.emailFilled)
+       val procOut = bprocess.filter(bp => bpIds.contains(bp.id.get))
+       Future.successful(
+         Ok(Json.toJson( procOut ))
+      )
+    } else {
+      //** Primary manager processes
+      val procOut = bprocess.filter(bp => user_services.contains(bp.service))
+      val deltasF = CachedRemovedResourcesDAO
+                          .findAllByScope(request.identity.businessFirst.toString,"workbench",
+                              "processes",
+                              Some(timestamp)
+                          )
+      deltasF.map { deltas =>
+
+      val deltasJson = Json.toJson( deltas )
+      val jsonProcesses = Json.toJson( procOut )
+      Ok(
+          JsObject(Seq(
+            "c" -> jsonProcesses,
+            "deltas" -> deltasJson
+          ))
+      )
+    }
+
+    }
+    }
+}
+
+
+
 
 
 

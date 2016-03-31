@@ -92,8 +92,6 @@ implicit val getBPSessionResult = GetResult(r => BPSession(r.<<, r.<<))
       println("cnames: "+cnames)
 val s = sql"SELECT * from bpsessions where bpsessions.created_at > to_timestamp(${ts}) AND bpsessions.process_id IN (#${cnames}   )"
   .as[BPSession]
-
-      println(s)
       s
 }
 
@@ -543,11 +541,45 @@ object BPSessionDAO {
 
   def update(id: Int, bpsession: BPSession) = database withSession { implicit session ⇒
     val bpToUpdate: BPSession = bpsession.copy(Option(id))
-    bpsessions.filter(_.id === id).update(bpToUpdate)
+    val procF = BPDAOF.get(bpsession.process).map { procOpt =>
+      procOpt match {
+        case Some(proc) => {
+          CachedRemovedResourcesDAO.makeResourceUpdateEntity(
+          scope = proc.business.toString,
+          action = "updated",
+          resourceTitle = "launches",
+          resourceId = s"$id",
+          updatedEntity = Map())
+          bpsessions.filter(_.id === id).update(bpToUpdate)
+        }
+        case _ => -1
+      }
+    }
   }
-  def delete(id: Int) = database withSession { implicit session ⇒
-    bpsessions.filter(_.id === id).delete
+
+  def delete(id: Int):Future[Int] = database withSession { implicit session ⇒
+    BPSessionDAO.get(id) match {
+      case Some(launch) => {
+        val procF = BPDAOF.get(launch.process)
+        procF.map { procOpt =>
+          procOpt match {
+            case Some(proc) => {
+              CachedRemovedResourcesDAO.makeResourceRemoveEntity(
+                scope = "",
+                action = "removed",
+                resourceTitle = "launches",
+                resourceId = s"$id")
+              bpsessions.filter(_.id === id).delete
+              id
+            }
+            case _ => -1
+          }
+        }
+      }
+      case _ => Future.successful(-1)
+    }
   }
+
   def count: Int = database withSession { implicit session ⇒
     Query(bpsessions.length).first
   }

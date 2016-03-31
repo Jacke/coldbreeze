@@ -186,6 +186,7 @@ integrationTest := {
       libraryDependencies ++=
         List(
           scalarx,
+          loggly,
           javaasist,
           javamail,
           courier,

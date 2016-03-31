@@ -5,7 +5,7 @@ import models.DAO.driver.MyPostgresDriver1.simple._
 import com.github.nscala_time.time.Imports._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
 import slick.model.ForeignKeyAction
-  
+
 import slick.model.ForeignKeyAction
 import models.DAO.resources.BusinessDTO._
 import models.DAO.conversion.DatabaseCred
@@ -14,19 +14,19 @@ import models.DAO.conversion.DatabaseCred
  * BProcess Scheme
  */
 class BProcesses(tag: Tag) extends Table[BProcessDTO](tag, "bprocesses") {
-  def id          = column[Int]("id", O.PrimaryKey, O.AutoInc) 
+  def id          = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def title       = column[String]("title")
   def service     = column[Int]("service_id")
   def business    = column[Int]("business_id")
-    
+
   def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")  
+  def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")
 
   def version     = column[Long]("version", O.Default(1L))
   def state_machine_type = column[String]("state_machine_type", O.Default("base"))
   // Every table needs a * projection with the same type as the table's type parameter
   def * = (id.?, title, service, business ,created_at, updated_at, version, state_machine_type) <> (BProcessDTO.tupled, BProcessDTO.unapply)
-  
+
   def businessFK  = foreignKey("proc_business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
   def serviceFK   = foreignKey("proc_service_fk", service, models.DAO.resources.BusinessServiceDAO.business_services)(_.id, onDelete = ForeignKeyAction.Cascade)
 }
@@ -35,10 +35,10 @@ class BProcesses(tag: Tag) extends Table[BProcessDTO](tag, "bprocesses") {
 /*
   Case class
  */
-case class BProcessDTO(var id: Option[Int], title: String, 
-                       service: Int, business: Int , 
-                       created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
-                       updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now), 
+case class BProcessDTO(var id: Option[Int], title: String,
+                       service: Int, business: Int ,
+                       created_at:Option[org.joda.time.DateTime] = None,
+                       updated_at:Option[org.joda.time.DateTime] = None,
                        version: Long = 1L, state_machine_type: String = "base")
 
 /*
@@ -61,19 +61,42 @@ object BPDAOF {
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import models.DAO.conversion.DatabaseFuture._  
+  import models.DAO.conversion.DatabaseFuture._
+  import slick.jdbc._
+
+
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
   val bprocesses = BPDAO.bprocesses
+  implicit val getBProcessDTOResult = GetResult(r => BProcessDTO(r.<<, r.<<,r.<<,r.<<))
 
   private def filterByIdsQuery(ids: List[Int]): Query[BProcesses, BProcessDTO, Seq] =
-    bprocesses.filter(_.id inSetBind ids) 
+    bprocesses.filter(_.id inSetBind ids)
 
   private def filterQuery(id: Int): Query[BProcesses, BProcessDTO, Seq] =
-    bprocesses.filter(_.id === id) 
+    bprocesses.filter(_.id === id)
   private def filterByWorkbenchQuery(id: Int): Query[BProcesses, BProcessDTO, Seq] =
-    bprocesses.filter(_.business === id) 
+    bprocesses.filter(_.business === id)
+    private def filterByServicesQuery(services: List[Int]): Query[BProcesses, BProcessDTO, Seq] =
+      bprocesses.filter(_.service inSetBind services)
+
+  private def filterByProcessesTimestampQuery(ids: List[Int], timestamp: Option[String]): DBIO[Seq[BProcessDTO]] = {
+          val sInt:String = timestamp.getOrElse("0")
+          val datetime = new org.joda.time.DateTime(sInt.toLong)
+          val ts = datetime.getMillis() / 1000
+          var cnames: String = ""
+          if (ids.length > 0) {
+            cnames = ids.mkString(",")
+          } else {
+            cnames = "0"
+          }
+          println("cnames: "+cnames)
+    val s = sql"SELECT * from bprocesses where bprocesses.created_at > to_timestamp(${ts}) AND bprocesses.service_id IN (#${cnames}   )"
+      .as[BProcessDTO]
+          s
+    }
+
 
   def findByBusiness(business: Int):Future[Seq[BProcessDTO]] = {
     db.run(filterByWorkbenchQuery(business).result)
@@ -84,7 +107,11 @@ object BPDAOF {
   }
   def gets(ids: List[Int]):Future[Seq[BProcessDTO]] = {
      db.run(filterByIdsQuery(ids).result)
-  }  
+  }
+
+  def getByServices(services: List[Int], timestamp: Option[String]=None):Future[Seq[BProcessDTO]] = {
+    db.run(filterByProcessesTimestampQuery(services, timestamp))
+  }
 }
 
 
@@ -103,18 +130,17 @@ object BPDAO {
 
   def pull_object(s: BProcessDTO) = database withSession {
     implicit session ⇒
-      bprocesses returning bprocesses.map(_.id) += s
+      val process = s.copy(created_at = Some(org.joda.time.DateTime.now()),updated_at = Some(org.joda.time.DateTime.now()) )
+      bprocesses returning bprocesses.map(_.id) += process
   }
-
   def findOwnerByBP(BPid: Int) = database withSession {
     implicit session =>
-      val q3 = for { bp ← bprocesses 
+      val q3 = for { bp ← bprocesses
                      srv <- models.DAO.resources.BusinessServiceDAO.business_services
         if bp.id === BPid && srv.id === bp.service  } yield srv
       q3.list.headOption.get.master_acc
 
   }
-
   def findByBusiness(business: Int):List[BProcessDTO] = database withSession {
     implicit session =>
     val q3 = for { s ← bprocesses if s.business === business } yield s
@@ -149,6 +175,14 @@ object BPDAO {
    */
   def update(id: Int, bprocess: BProcessDTO) = database withSession { implicit session ⇒
     val bpToUpdate: BProcessDTO = bprocess.copy(Option(id))
+
+    CachedRemovedResourcesDAO.makeResourceUpdateEntity(
+    scope = bpToUpdate.business.toString,
+    action = "updated",
+    resourceTitle = "processes",
+    resourceId = s"$id",
+    updatedEntity = Map("title" -> bprocess.title))
+
     bprocesses.filter(_.id === id).update(bpToUpdate)
   }
   /**
@@ -156,8 +190,17 @@ object BPDAO {
    * @param id
    */
   def delete(id: Int) = database withSession { implicit session ⇒
-
-    bprocesses.filter(_.id === id).delete
+    get(id) match {
+      case Some(proc) => {
+        CachedRemovedResourcesDAO.makeResourceRemoveEntity(
+        scope = proc.business.toString,
+        action = "removed",
+        resourceTitle = "processes",
+        resourceId = s"$id")
+        bprocesses.filter(_.id === id).delete
+      }
+      case _ => -1
+    }
   }
   /**
    * Count all bprocesses

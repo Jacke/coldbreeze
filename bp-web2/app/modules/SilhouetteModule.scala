@@ -10,6 +10,7 @@ import com.mohiva.play.silhouette.impl.daos.DelegableAuthInfoDAO
 import com.mohiva.play.silhouette.impl.providers._
 import com.mohiva.play.silhouette.impl.providers.oauth1._
 import com.mohiva.play.silhouette.impl.providers.oauth1.secrets.{ CookieSecretProvider, CookieSecretSettings }
+import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 import com.mohiva.play.silhouette.impl.providers.oauth1.services.PlayOAuth1Service
 import com.mohiva.play.silhouette.impl.providers.oauth2._
 import com.mohiva.play.silhouette.impl.providers.oauth2.state.{ CookieStateProvider, CookieStateSettings, DummyStateProvider }
@@ -30,6 +31,19 @@ import play.api.libs.openid.OpenIdClient
 import play.api.libs.ws.WSClient
 
 
+import com.mohiva.play.silhouette.impl.providers._
+import com.mohiva.play.silhouette.impl.providers.oauth1._
+import com.mohiva.play.silhouette.impl.providers.oauth1.secrets.{ CookieSecretProvider, CookieSecretSettings }
+import com.mohiva.play.silhouette.impl.providers.oauth1.services.PlayOAuth1Service
+import com.mohiva.play.silhouette.impl.providers.oauth2._
+import com.mohiva.play.silhouette.impl.providers.oauth2.state.{ CookieStateProvider, CookieStateSettings, DummyStateProvider }
+import com.mohiva.play.silhouette.impl.providers.openid.services.PlayOpenIDService
+import com.mohiva.play.silhouette.impl.repositories.DelegableAuthInfoRepository
+import com.mohiva.play.silhouette.impl.services._
+import com.mohiva.play.silhouette.impl.util._
+import com.mohiva.play.silhouette.impl.daos.{ CacheAuthenticatorDAO, DelegableAuthInfoDAO }
+import com.mohiva.play.silhouette.impl.providers._
+
 import models._
 /**
  * The Guice module which wires all Silhouette dependencies.
@@ -42,6 +56,7 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
   def configure() {
     bind[UserService].to[UserServiceImpl]
     bind[UserDAO].to[UserDAOImpl]
+    bind[controllers.CustomRegistration].to[controllers.CustomRegistrationImpl]
 
 
     bind[DelegableAuthInfoDAO[PasswordInfo]].to[PasswordInfoDAO]
@@ -80,6 +95,21 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
     eventBus: EventBus): Environment[User2, CookieAuthenticator] = {
 
     Environment[User2, CookieAuthenticator](
+      userService,
+      authenticatorService,
+      Seq(),
+      eventBus
+    )
+  }
+
+
+  @Provides
+  def provideGWTEnvironment(
+    userService: UserService,
+    authenticatorService: AuthenticatorService[JWTAuthenticator],
+    eventBus: EventBus): Environment[User2, JWTAuthenticator] = {
+
+    Environment[User2, JWTAuthenticator](
       userService,
       authenticatorService,
       Seq(),
@@ -138,6 +168,17 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
 
     val config = configuration.underlying.as[CookieAuthenticatorSettings]("silhouette.authenticator")
     new CookieAuthenticatorService(config, None, fingerprintGenerator, idGenerator, clock)
+  }
+
+  @Provides
+  def provideGWTAuthenticatorService(
+    cacheLayer: CacheLayer,
+    idGenerator: IDGenerator,
+    configuration: Configuration,
+    clock: Clock): AuthenticatorService[JWTAuthenticator] = {
+
+    val config = configuration.underlying.as[JWTAuthenticatorSettings]("silhouette.authenticator")
+    new JWTAuthenticatorService(config, Some(new CacheAuthenticatorDAO[JWTAuthenticator](cacheLayer)), idGenerator, clock)
   }
 
   /**

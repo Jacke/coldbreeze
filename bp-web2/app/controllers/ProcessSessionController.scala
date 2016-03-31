@@ -109,6 +109,12 @@ implicit val SessionStateLogWrites  = Json.format[SessionStateLog]
   implicit val SessionContainerWrites = Json.format[SessionContainer]
 
 
+  implicit val CachedRemovedResourceDTOReads = Json.reads[CachedRemovedResourceDTO]
+  implicit val CachedRemovedResourceDTOWrites = Json.format[CachedRemovedResourceDTO]
+  implicit val DeltasContainerReads = Json.reads[DeltasContainer]
+  implicit val DeltasContainerWrites = Json.format[DeltasContainer]
+
+
 // GET         /bprocess/:id/stations
 def station_index(id: Int) = SecuredAction { implicit request =>
   if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, id)) {
@@ -163,18 +169,28 @@ def all_cached_sessions(timestamp:String) = SecuredAction.async { implicit reque
   //val updatedStatuses:List[SessionStatus] = cn.sessions.map(status => InputLoggerDAO.launchPeopleFetcher(status))
   //val updatedCN = updatedStatuses.map(status => cn.updateStatus(status))
   sess_cnsF.flatMap { sess_cns =>
-    InputLoggerDAOF.fetchPeopleBySessions(sess_cns).map { sess_cns_with_peoples =>
+    InputLoggerDAOF.fetchPeopleBySessions(sess_cns).flatMap { sess_cns_with_peoples =>
       val jsonSessions = Json.toJson( sess_cns_with_peoples.filter(c => c.sessions.length > 0) )
-
-        Ok(
-          JsObject(Seq(
-            "c" -> jsonSessions,
-            "d" -> JsArray(Seq())
-         ))
-       )
+      val deltasF = CachedRemovedResourcesDAO
+                          .findAllByScope(request.identity.businessFirst.toString,"workbench",
+                              "launches",
+                              Some(timestamp)
+                          )
+      deltasF.map { deltas =>
+        val deltasJson = Json.toJson( deltas )
+          Ok(
+            JsObject(Seq(
+              "c" -> jsonSessions,
+              "deltas" -> deltasJson
+           ))
+         )
+      }
     }
   }
 }
+
+
+
 
 
 // GET         /sessions/filter
@@ -226,10 +242,12 @@ def makeListed(id: Int) = SecuredAction { implicit request =>
   } else { Forbidden(Json.obj("status" -> "Not found")) }
 }
 // DELETE /session/:session_id/
-def delete_session(session_id: Int) = SecuredAction { implicit request =>
+def delete_session(session_id: Int) = SecuredAction.async { implicit request =>
     if (security.BRes.sessionSecured(session_id, request.identity.emailFilled, request.identity.businessFirst)) {
-  Ok(Json.toJson(BPSessionDAO.delete(session_id)))
-    } else { Forbidden(Json.obj("status" -> "Not found")) }
+      BPSessionDAO.delete(session_id).map { result =>
+        Ok(Json.toJson(result))
+      }
+    } else { Future.successful( Forbidden(Json.obj("status" -> "Not found")) ) }
 }
 
 

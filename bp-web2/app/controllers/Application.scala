@@ -68,7 +68,7 @@ class Application @Inject() (
             routes.javascript.ProfileController.dashboard,
             routes.javascript.ProcessSessionController.update_note,
             routes.javascript.ProcessInputController.invokeFrom,
-            routes.javascript.APIController.v1,
+            //routes.javascript.APIController.v1,
             routes.javascript.CostFillController.assign_element,
             routes.javascript.CostFillController.update_assigned_element,
             routes.javascript.CostFillController.delete_assigned_element,
