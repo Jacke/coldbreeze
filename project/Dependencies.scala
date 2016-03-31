@@ -96,11 +96,12 @@ object Dependencies {
   val playslick       = "com.typesafe.play"         %  "play-slick_2.11"        % "1.0.1"
   val playauth        = "jp.t2v"                    %% "play2-auth"             % "0.12.0"
   val formtag         = "com.loicdescotte.coffeebean"% "html5tags_2.11"         % "1.2.1"
-  val formtag4         = "com.loicdescotte.coffeebean"% "html5tags_2.11"         % "1.2.2"
+  val formtag4        = "com.loicdescotte.coffeebean"% "html5tags_2.11"         % "1.2.2"
 
   val playctrl        = "jp.t2v"                    %% "stackable-controller"   % "0.4.0"
   val paypal          = "com.paypal.sdk"            %  "rest-api-sdk"           % "1.2.3"
   val logentries      = "com.logentries"            %  "logentries-appender"    % "1.1.21"
+  val loggly          = "org.logback-extensions"    %  "logback-ext-loggly"     % "0.1.2"
   val syslog   	      = "com.papertrailapp"   	    %  "logback-syslog4j"       % "1.0.0"
   val compressor      = "com.mohiva"                %% "play-html-compressor"   % "0.3.1"
   val jsonvariants    = "org.julienrf"              %% "play-json-variants"     % "0.2"
@@ -174,14 +175,14 @@ object Dependencies {
   val sprayJsonLenses = "net.virtual-void"          %%  "json-lenses"           % "0.5.5-SNAPSHOT"
   val sprayClient     = "io.spray"                  %%  "spray-client"          % sprayVersion
   val guice           = "net.codingwell"            %% "scala-guice"            % "4.0.0"
-  val ficus           = "net.ceedubs" %% "ficus" % "1.1.2"
-  val bootstrapplay   = "com.adrianhurt" %% "play-bootstrap3" % "0.4.4-P24"
-  val bootstrapplay4  = "com.adrianhurt" %% "play-bootstrap" % "1.0-P24-B3-SNAPSHOT"
-  val scalatest0      =  "org.scalatest"        %%   "scalatest"         % "2.2.1"
-  val playsctest      =  "org.scalatestplus"    %% "play"                % "1.2.0"
-  val scalatest       =  "org.specs2"           %%   "specs2-core"       % "2.3.13-scalaz-7.1.0-RC1" % "test"
-  val scalatest2      =  "org.specs2"           %%   "specs2-junit"      % "2.3.13-scalaz-7.1.0-RC1" % "test"
-  val scalatest3      = "org.specs2"            %%   "specs2-mock"       % "2.3.13-scalaz-7.1.0-RC1" % "test"
+  val ficus           = "net.ceedubs"               %% "ficus" % "1.1.2"
+  val bootstrapplay   = "com.adrianhurt"            %% "play-bootstrap3"     % "0.4.4-P24"
+  val bootstrapplay4  = "com.adrianhurt"            %% "play-bootstrap"      % "1.0-P24-B3-SNAPSHOT"
+  val scalatest0      =  "org.scalatest"            %% "scalatest"           % "2.2.1"
+  val playsctest      =  "org.scalatestplus"        %% "play"                % "1.2.0"
+  val scalatest       =  "org.specs2"               %% "specs2-core"         % "2.3.13-scalaz-7.1.0-RC1" % "test"
+  val scalatest2      =  "org.specs2"               %% "specs2-junit"        % "2.3.13-scalaz-7.1.0-RC1" % "test"
+  val scalatest3      = "org.specs2"                %% "specs2-mock"         % "2.3.13-scalaz-7.1.0-RC1" % "test"
 
 
 

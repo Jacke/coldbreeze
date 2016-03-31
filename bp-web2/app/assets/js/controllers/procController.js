@@ -250,8 +250,10 @@ $scope.loadLaunchesFromCache = function() {
   var launchesCache;
   var launchesCursosCache;
   // 1. create cursor and cache
-    $scope.cacheFactory.createCache('launchesCache',{storageMode: 'sessionStorage'})
-    $scope.cacheFactory.createCache('launchesCursosCache',{storageMode: 'sessionStorage'});
+  if ($scope.cacheFactory.get('launchesCache') == undefined) {
+      $scope.cacheFactory.createCache('launchesCache',{storageMode: 'sessionStorage'}); }
+  if ($scope.cacheFactory.get('launchesCursosCache') == undefined) {
+      $scope.cacheFactory.createCache('launchesCursosCache',{storageMode: 'sessionStorage'}); }
 
 
   launchesCache = $scope.cacheFactory.get('launchesCache');
@@ -268,7 +270,10 @@ $scope.loadLaunchesFromCache = function() {
           .then(function (resp) {
             console.log('  return $http.get(/sessions/cached/+launchesCursosCache.get(updated))', resp);
             // 4. Split C and D and apply C for new created resources
-            launchesCache.put('launches', launchesCache.get('launches').concat(resp.data.c));
+            var removedIds = _.map(resp.data.deltas.d, function(d) { return parseInt(d.resourceId) });
+            var concatedProcess = launchesCache.get('launches').concat(resp.data.c);
+            var finalizedProcess = _.filter(concatedProcess, function(c){ return !_.contains(removedIds, c.id) });
+            launchesCache.put('launches', finalizedProcess);
             // 5. D for resource with ids that need to be removed
             launchesCache.put('launchesRemoved', resp.data.d)
             // 6. Put request to cache and update cursor
@@ -276,17 +281,45 @@ $scope.loadLaunchesFromCache = function() {
             // 7. Return resource itself
             return launchesCache.get('launches');
           });
+
+
 }
 
 $scope.loadProcessesFromCache = function() {
   var processesCache;
   var processesCursosCache;
-  if (!$scope.cacheFactory.get('processesCache')) {
-    processesCache = $scope.cacheFactory('processesCache');
+  // 1. create cursor and cache
+    if ($scope.cacheFactory.get('processesCache') == undefined) {
+        $scope.cacheFactory.createCache('processesCache',{storageMode: 'sessionStorage'}); }
+    if ($scope.cacheFactory.get('processesCursosCache') == undefined) {
+        $scope.cacheFactory.createCache('processesCursosCache',{storageMode: 'sessionStorage'}); }
+
+
+  processesCache = $scope.cacheFactory.get('processesCache');
+  console.log('processesCursosCache', $scope.cacheFactory.get('processesCursosCache'));
+  processesCursorCache = $scope.cacheFactory.get('processesCursosCache');
+  if (processesCursorCache.get('updated') == undefined) {
+  CacheFactory.get('processesCursosCache').put('updated', 0) }
+  if (processesCache.get('processes') == undefined) {
+    processesCache.put('processes', []);
   }
-  if (!$scope.cacheFactory.get('processesCache')) {
-    processesCursosCache = $scope.cacheFactory('processesCursosCache');
-  }
+
+  // 3. Make request
+  return $http.get('/bprocesses/cached/'+processesCursorCache.get('updated'))
+          .then(function (resp) {
+            console.log('  return $http.get(/bprocesses/cached/+processesCursorCache.get(updated))', resp);
+            // 4. Split C and D and apply C for new created resources
+            var removedIds = _.map(resp.data.deltas.d, function(d) { return parseInt(d.resourceId) });
+            var concatedProcess = processesCache.get('processes').concat(resp.data.c);
+            var finalizedProcess = _.filter(concatedProcess, function(c){ return !_.contains(removedIds, c.id) });
+            processesCache.put('processes', finalizedProcess);
+            // 5. D for resource with ids that need to be removed
+            processesCache.put('processesRemoved', resp.data.deltas.d)
+            // 6. Put request to cache and update cursor
+            processesCursorCache.put('updated', Date.now());
+            // 7. Return resource itself
+            return processesCache.get('processes');
+          });
 
 }
 
@@ -294,18 +327,24 @@ $scope.loadProcessesFromCache = function() {
 $scope.loadProcesses = function() {
 
   if ($routeParams.service != undefined) {
-      $scope.bprocesses = BProcessesFactory.query();
-      $scope.bprocesses.$promise.then(function(data){
+      $scope.bprocesses = $scope.loadProcessesFromCache();
+      $scope.bprocesses.then(function(data){//.$promise.then(function(data){
         $scope.service_id = $routeParams.service;
+        console.log(data)
+        console.log("push data to bprocesses", _.filter(data, function(proc){ return proc.service == $routeParams.service }))
         $scope.bprocesses = _.filter(data, function(proc){ return proc.service == $routeParams.service });
       });
 
   } else {
-      $scope.bprocesses = BProcessesFactory.query();
+      $scope.bprocesses = $scope.loadProcessesFromCache();//BProcessesFactory.query();
+      $scope.bprocesses.then(function(data){//.$promise.then(function(data){
+        $scope.bprocesses = data;
+      });
   }
 
   // Init thumb
-  $scope.bprocesses.$promise.then(function (processes) {
+  $scope.bprocesses.then(function(processes){//.$promise.then(function (processes) {
+      console.log('$scope.loadProcessesFromCache', processes);
 
         var process_ids = _.map(processes, function(proc) { return proc.id });
         $scope.allElementsPromise = AllElementsBulkFactory.queryAll({
@@ -438,11 +477,20 @@ _.forEach($scope.sessions, function(session_cn) {
   _.forEach(session_cn.sessions, function(session) { return session.session.station = session.station });
 });
 
-$scope.bprocesses.$promise.then(function (processes) {
+if ($scope.bprocesses.then !== undefined) { // check if it's promises
+$scope.bprocesses.then(function (processes) {
   _.forEach(processes, function(proc) {
     proc.sessions = _.filter($scope.sessions, function(ses) { return ses.process.id == proc.id });
   });
 });
+} else {
+  _.forEach($scope.bprocesses, function(proc) {
+    return proc.sessions = _.filter($scope.sessions, function(ses) { return ses.process.id == proc.id });
+  });
+}
+
+
+
 
 });
 });

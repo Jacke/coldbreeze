@@ -21,6 +21,8 @@ POST        /signOut                         @controllers.ApplicationController2
 
 GET         /authenticate/:provider          @controllers.SocialAuthController.authenticate(provider)
 POST        /authenticate/credentials        @controllers.CredentialsAuthController.authenticate
+POST        /api/authenticate/credentials    @controllers.RestCredentialsAuthController.authenticate
+
 POST        /signUp                          @controllers.SignUpController.signUp
 
 
@@ -65,8 +67,8 @@ GET         /subscribers/new                        @controllers.SubscribtionCon
 
 # API
 
-GET         /v1													@controllers.APIController.v1
-
+#GET         /v1													@controllers.APIController.v1
+GET         /api/v1/launches            @controllers.APIController.all_sessions_v1
 
 
 
@@ -181,6 +183,9 @@ DELETE /group/destroy/:id						    @controllers.GroupController.destroy(id: Int)
 ##################################################################
 # BProcess
 GET         /bprocesses                                         @controllers.BusinessProcessController.bprocess()
+GET         /bprocesses/cached/:timestamp	                      @controllers.BusinessProcessController.all_cached_bprocess(timestamp:String)
+
+
 GET         /bprocesses/services                                @controllers.BusinessServiceController.bprocesses_services()
 POST        /bprocesses                                         @controllers.BusinessProcessController.create_bprocess()
 GET         /bprocess/:id/info                                  @controllers.BusinessProcessController.show_bprocess(id: Int)
