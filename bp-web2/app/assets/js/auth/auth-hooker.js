@@ -55,8 +55,8 @@ $(function domReadyLoginFlow () {
 
   if (getUrlParameter('demo') != undefined && getUrlParameter('demo') == "ycombinator") {
 
-    $('input#username').val('testing@minorityapp.com');
-    $('input#password').val('12344321');
+    $('input#name-11').val('testing@minorityapp.com');
+    $('input#name-12').val('12344321');
     $('button#l_submit').text('PRESS TO ENTER');
 
   }

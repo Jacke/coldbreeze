@@ -15,6 +15,7 @@ GET         /uptime                                             @controllers.App
 # Auth
 GET         /migrate                         @controllers.LegacyAuthController.migrate
 GET         /signIn                          @controllers.ApplicationController2.signIn
+GET         /auth/login                      @controllers.ApplicationController2.signIn
 GET         /signUp                          @controllers.ApplicationController2.signUp
 GET         /signOut                         @controllers.ApplicationController2.signOut
 POST        /signOut                         @controllers.ApplicationController2.signOut
@@ -27,8 +28,6 @@ POST        /signUp                          @controllers.SignUpController.signU
 
 
 
-
-->          /auth                                               securesocial.Routes
 
 # Login page
 #GET     /login                      securesocial.controllers.LoginPage.login
