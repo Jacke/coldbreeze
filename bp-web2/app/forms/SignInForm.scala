@@ -13,7 +13,7 @@ object SignInForm {
    */
   val form = Form(
     mapping(
-      "email" -> text,
+      "email" -> nonEmptyText,
       "password" -> nonEmptyText,
       "rememberMe" -> boolean
     )(Data.apply)(Data.unapply)

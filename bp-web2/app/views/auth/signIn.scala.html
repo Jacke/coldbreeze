@@ -16,6 +16,80 @@
 }
 
 
+<style>
+body.website.loginFlow.animate {
+    background-color: #f0f1f4;
+position: relative;
+background: linear-gradient(120deg, #aadbe4, #eaf6fe, #ccebff);
+background-size: 300% 400%;
+animation: AnimationName 3s ease infinite;
+z-index: -9999 !important;
+overflow: visible;
+}
+
+body.website.loginFlow.animate header#websiteHeader {
+    padding: 48px 0px;
+height: 100%;
+background: transparent none repeat scroll 0% 0%;
+}
+body.website.loginFlow.animate #outerLayer {
+    fill: transparent !important;
+}
+body.website.loginFlow.animate svg#header_logotype {
+    background: transparent;
+}
+body.website.loginFlow.animate svg#header_logotype {
+    width: 311px;
+    height: 209px;
+    display: block;
+    background: none;
+    margin-left: -50px;
+    margin-top: -23px;
+    float: left;
+    display: inline-block;
+}
+body.website.loginFlow.animate .logo_title {
+    margin-top: -6px;
+    font-family: 'Manifold CF Demi Bold',sans-serif;
+    font-size: 49px;
+    line-height: 139px;
+    display: inline-block;
+    float: left;
+    font-family: TitilliumText,sans-serif;
+    margin-top: 17px;
+    color: black;
+    font-weight: 100;
+    margin-left: 10px;
+}
+body.website.loginFlow.animate #websiteHeader .headerLogotypeLink {
+    position: absolute !important;
+    top: 70%;
+    overflow: visible;
+    position: absolute;
+    width: 605px;
+    height: 166px;
+    left: 19%;
+}
+body.website.loginFlow.animate .loginPage.loginPage__login.loginPage__active {
+    display: none;
+}
+@@-webkit-keyframes AnimationName {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@@-moz-keyframes AnimationName {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+@@keyframes AnimationName {
+    0%{background-position:0% 50%}
+    50%{background-position:100% 50%}
+    100%{background-position:0% 50%}
+}
+
+</style>
 
 <div class="loginPage loginPage__login loginPage__active">
     <div class="loginView">

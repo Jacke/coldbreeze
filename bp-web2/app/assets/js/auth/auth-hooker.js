@@ -1,14 +1,14 @@
 
 $(function domReadyLoginFlow () {
-  
+
   var getUrlParameter = function(sParam)
 {
     var sPageURL = window.location.search.substring(1);
     var sURLVariables = sPageURL.split('&');
-    for (var i = 0; i < sURLVariables.length; i++) 
+    for (var i = 0; i < sURLVariables.length; i++)
     {
         var sParameterName = sURLVariables[i].split('=');
-        if (sParameterName[0] == sParam) 
+        if (sParameterName[0] == sParam)
         {
             return sParameterName[1];
         }
@@ -33,12 +33,12 @@ $(function domReadyLoginFlow () {
   var pswd = $('.form-horizontal #password').val();
   $('.messageBoxWrap').remove();
   $('.form-horizontal .loginButton').toggleClass('loading');
-   
+
  $.post(jsRoutes.controllers.ProfileController.dashboard().absoluteURL(document.ssl_enabled) + "auth/api/authenticate/userpass", { username: name , password: pswd })
   .done(function( data ) {
   localStorage.setItem("token", data.token);
   sessionStorage.setItem("token", data.token);
-  
+
   // Fetch whoami creds
   whoamiCreds(data);
   // Submit main form
@@ -60,7 +60,7 @@ $(function domReadyLoginFlow () {
     $('button#l_submit').text('PRESS TO ENTER');
 
   }
-  
+
   $('.loginView a.switchView2').on('click', function clickViewSwitch(e) {
     var nextPage;
     e.preventDefault();
@@ -119,6 +119,7 @@ $(function domReadyLoginFlow () {
   $('.loginView form').on('submit', function submittedForm (e) {
     var $requireds;
     e.preventDefault();
+    $('body.website.loginFlow').toggleClass('animate');
     e = $(this);
     $requireds = e.find('input[required]').filter(function(){return this.value==="";});
     if ($requireds.length) {
@@ -132,6 +133,9 @@ $(function domReadyLoginFlow () {
     setTimeout(function submitTheForm () {
       e.trigger('submit');
     }, 200);
+  });
+  $('.loginView form').bind('ajax:complete', function() {
+    $('body.website.loginFlow').toggleClass('animate');
   });
 
   var el = $('input.onchangeGenerateSubdomain');
@@ -150,5 +154,5 @@ $(function domReadyLoginFlow () {
   $('#navigation').toggleClass('expanded');
 });
 
-  
+
 });
