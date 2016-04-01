@@ -246,7 +246,7 @@ def create_bprocess = SecuredAction(BodyParsers.parse.json) { request =>
     bpResult.fold(
     errors => {
        Logger.error(s"error with $bpResult")
-      BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
+      BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toJson(errors)))
     },
     bprocess => {
       BPDAO.pull_object(bprocess.copy(business = business)) match {
@@ -270,7 +270,7 @@ def update_bprocess(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit 
     val business:Int = request.identity.businessFirst
       bpResult.fold(
         errors => {
-          BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
+          BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toJson(errors)))
         },
         bprocess => {
           if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, id)) {

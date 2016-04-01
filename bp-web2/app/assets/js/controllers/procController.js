@@ -349,11 +349,14 @@ $scope.loadProcesses = function() {
       });
   }
 
-  // Init thumb
+// Init thumb
 return  $scope.bprocesses.then(function(processes){
       console.log('$scope.loadProcessesFromCache', processes);
 
-        var process_ids = _.map(processes, function(proc) { return proc.id });
+        var process_ids = _.map(processes, function(d){
+              return 'ids='+d.id+'&'
+        });
+
         $scope.allElementsPromise = AllElementsBulkFactory.queryAll({
                                               ids: (process_ids + '').split(',').join('') });
         $scope.allElementsPromise.$promise.then(function (d) {
@@ -362,7 +365,7 @@ return  $scope.bprocesses.then(function(processes){
         });
         _.forEach(processes, function(proc) {
               // Add bulk process elements loading
-              1/0
+
               TreeBuilder.buildFetch(proc, $scope.allElementsPromise, function(success){});
         });
 
