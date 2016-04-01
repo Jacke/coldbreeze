@@ -31,7 +31,7 @@ class BillingInfoCard(tag: Tag) extends Table[BillingInfoCardDTO](tag, "billing_
                    postal_code: Option[String],
                    state: String,
                    phone: Option[String] = None)*/
-case class BillingInfoCardDTO(var id: Option[Int] = None, 
+case class BillingInfoCardDTO(var id: Option[Int] = None,
 				      billing_info: Int,
                       number: String,
                       expire_month: String,
@@ -39,8 +39,8 @@ case class BillingInfoCardDTO(var id: Option[Int] = None,
                       first_name: String,
                       last_name: String,
                       cvv2: Option[String] = None,
-                      created_at: Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now()), 
-                      updated_at: Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now()))
+                      created_at: Option[org.joda.time.DateTime] = None,
+                      updated_at: Option[org.joda.time.DateTime] = None)
 
 
 object BillingInfoCardsDAO {
@@ -50,23 +50,23 @@ object BillingInfoCardsDAO {
 
 
   val billing_info_cards = TableQuery[BillingInfoCard]
- 
+
 
 
   def pull_object(s: BillingInfoCardDTO) = database withSession {
     implicit session ⇒
-      billing_info_cards returning billing_info_cards.map(_.id) += s
+      billing_info_cards returning billing_info_cards.map(_.id) += s.copy(created_at = Some(org.joda.time.DateTime.now()) )
   }
   def get(k: Int) = database withSession {
     implicit session ⇒
-      val q3 = for { s ← billing_info_cards if s.id === k } yield s 
+      val q3 = for { s ← billing_info_cards if s.id === k } yield s
       q3.list.headOption
   }
 
   def update(id: Int, code: BillingInfoCardDTO) = database withSession { implicit session ⇒
-    val codeToUpdate: BillingInfoCardDTO = code.copy(Option(id))
+    val codeToUpdate: BillingInfoCardDTO = code.copy(Option(id), updated_at = Some(org.joda.time.DateTime.now()) )
     billing_info_cards.filter(_.id === id).update(codeToUpdate)
-  } 
+  }
 
   def delete(id: Int) = database withSession { implicit session ⇒
 
@@ -80,7 +80,7 @@ object BillingInfoCardsDAO {
 
   def getAll = database withSession {
     implicit session ⇒
-      val q3 = for { s ← billing_info_cards } yield s 
+      val q3 = for { s ← billing_info_cards } yield s
       q3.list.sortBy(_.id)
 
   }

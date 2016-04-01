@@ -205,7 +205,11 @@ $scope.business = $rootScope.business;
 
 $scope.deleteBP = function (bpId) {
   BProcessFactory.delete({ id: bpId }).$promise.then(function(data) {
-    $scope.bprocesses = BProcessesFactory.query();
+      $scope.loadProcesses().then(function() {
+          $scope.reloadSessions();
+      });
+      /*
+      $scope.bprocesses = BProcessesFactory.query();
       $scope.bprocesses.$promise.then(function (processes) {
         var process_ids = _.map(processes, function(proc) { return proc.id });
         $scope.allElementsPromise = AllElementsBulkFactory.queryAll({
@@ -218,6 +222,9 @@ $scope.deleteBP = function (bpId) {
               TreeBuilder.buildFetch(proc, $scope.allElementsPromise, function(success){});
         });
       });
+      */
+
+
   });
 };
 
@@ -343,7 +350,7 @@ $scope.loadProcesses = function() {
   }
 
   // Init thumb
-  $scope.bprocesses.then(function(processes){//.$promise.then(function (processes) {
+return  $scope.bprocesses.then(function(processes){
       console.log('$scope.loadProcessesFromCache', processes);
 
         var process_ids = _.map(processes, function(proc) { return proc.id });
@@ -374,6 +381,8 @@ $scope.loadProcesses = function() {
     }); });
 
   });
+
+
 };
 $scope.loadProcesses();
 
@@ -442,106 +451,100 @@ $scope.capitalizeFirstLetter = function (string) {
 $scope.nestedRequestScopes = [];
 
 $scope.reloadSessions = function() {
+  //SessionsFactory.query()
+  $scope.loadLaunchesFromCache().then(function (sessions) {
+  console.log('$scope.loadLaunchesFromCache().then(function (sessions) {', sessions);
 
-//SessionsFactory.query()
-
-$scope.loadLaunchesFromCache().then(function (sessions) {
-
-console.log('$scope.loadLaunchesFromCache().then(function (sessions) {', sessions);
-
-var session_ids = _.map(sessions, function(d){
-    return _.map(_.filter(d.sessions, function(fd) {
-      return (fd.station !== undefined) && (fd.station.finished != true);
-    }), function(dd){
-      return 'ids='+dd.session.id+'&'
+  var session_ids = _.map(sessions, function(d){
+      return _.map(_.filter(d.sessions, function(fd) {
+        return (fd.station !== undefined) && (fd.station.finished != true);
+      }), function(dd){
+        return 'ids='+dd.session.id+'&'
+    });
   });
-});
 
 
-$scope.sessions = sessions;
+  $scope.sessions = sessions;
 
-$scope.allLaunchedElemPromise = AllLaunchedElementsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') });
-$scope.allLaunchedElemPromise.$promise.then(function (d) {
-    $scope.allLaunchedElem = d;
-    console.log("132",$scope.allLaunchedElem);
-});
-
-InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') }).$promise.then(function (d) {
-
-
-$scope.interactionContainerProc = d;
-console.log($scope.interactionContainerProc);
-console.log($scope.sessions);
-
-_.forEach($scope.sessions, function(session_cn) {
-  _.forEach(session_cn.sessions, function(session) { return session.session.station = session.station });
-});
-
-if ($scope.bprocesses.then !== undefined) { // check if it's promises
-$scope.bprocesses.then(function (processes) {
-  _.forEach(processes, function(proc) {
-    proc.sessions = _.filter($scope.sessions, function(ses) { return ses.process.id == proc.id });
+  $scope.allLaunchedElemPromise = AllLaunchedElementsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') });
+  $scope.allLaunchedElemPromise.$promise.then(function (d) {
+      $scope.allLaunchedElem = d;
+      console.log("132",$scope.allLaunchedElem);
   });
-});
-} else {
-  _.forEach($scope.bprocesses, function(proc) {
-    return proc.sessions = _.filter($scope.sessions, function(ses) { return ses.process.id == proc.id });
-  });
-}
+
+  InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') }).$promise.then(function (d) {
 
 
-
-
-});
-});
-
-};
-
-$scope.reloadSession = function(session_id) {
-
-//SessionsFactory.query()
-$scope.loadLaunchesFromCache().then(function (sessions) {
-
-var session_ids = _.map(sessions, function(d){
-    return _.map(_.filter(d.sessions, function(fd) {
-      return (fd.station !== undefined) && (fd.station.finished != true);
-    }), function(dd){
-      return 'ids='+dd.session.id+'&'
-  })
-});
-
-
-$scope.sessions = sessions;
-
-$scope.allLaunchedElemPromise = AllLaunchedElementsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') });
-$scope.allLaunchedElemPromise.$promise.then(function (d) {
-    $scope.allLaunchedElem = d;
-    console.log("132",$scope.allLaunchedElem);
-});
-
-InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') }).$promise.then(function (d) {
   $scope.interactionContainerProc = d;
   console.log($scope.interactionContainerProc);
   console.log($scope.sessions);
 
-
-  $scope.$broadcast('newInteractionsForLaunch', {session_id: session_id, updatedInteraction: d});
-  $scope.$broadcast('reloadElementRoutine', session_id);
-
-
-_.forEach($scope.sessions, function(session_cn) {
-  _.forEach(session_cn.sessions, function(session) { return session.session.station = session.station });
-});
-
-$scope.bprocesses.$promise.then(function (processes) {
-  _.forEach(processes, function(proc) {
-    proc.sessions = _.filter($scope.sessions, function(ses) { return ses.process.id == proc.id });
+  _.forEach($scope.sessions, function(session_cn) {
+    _.forEach(session_cn.sessions, function(session) { return session.session.station = session.station });
   });
-});
 
-});
+  if ($scope.bprocesses.then !== undefined) { // check if it's promises
+  $scope.bprocesses.then(function (processes) {
+    _.forEach(processes, function(proc) {
+      proc.sessions = _.filter($scope.sessions, function(ses) { return ses.process.id == proc.id });
+    });
+  });
+  } else {
+    _.forEach($scope.bprocesses, function(proc) {
+      return proc.sessions = _.filter($scope.sessions, function(ses) { return ses.process.id == proc.id });
+    });
+  }
 
-});
+
+  });
+  });
+
+};
+
+$scope.reloadSession = function(session_id) {
+  //SessionsFactory.query()
+  $scope.loadLaunchesFromCache().then(function (sessions) {
+
+  var session_ids = _.map(sessions, function(d){
+      return _.map(_.filter(d.sessions, function(fd) {
+        return (fd.station !== undefined) && (fd.station.finished != true);
+      }), function(dd){
+        return 'ids='+dd.session.id+'&'
+    })
+  });
+
+
+  $scope.sessions = sessions;
+
+  $scope.allLaunchedElemPromise = AllLaunchedElementsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') });
+  $scope.allLaunchedElemPromise.$promise.then(function (d) {
+      $scope.allLaunchedElem = d;
+      console.log("132",$scope.allLaunchedElem);
+  });
+
+  InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') }).$promise.then(function (d) {
+    $scope.interactionContainerProc = d;
+    console.log($scope.interactionContainerProc);
+    console.log($scope.sessions);
+
+
+    $scope.$broadcast('newInteractionsForLaunch', {session_id: session_id, updatedInteraction: d});
+    $scope.$broadcast('reloadElementRoutine', session_id);
+
+
+  _.forEach($scope.sessions, function(session_cn) {
+    _.forEach(session_cn.sessions, function(session) { return session.session.station = session.station });
+  });
+
+  $scope.bprocesses.$promise.then(function (processes) {
+    _.forEach(processes, function(proc) {
+      proc.sessions = _.filter($scope.sessions, function(ses) { return ses.process.id == proc.id });
+    });
+  });
+
+  });
+
+  });
 
 };
 
@@ -712,24 +715,16 @@ minorityControllers.controller('ProcShareCtrl', ['$scope', '$http', '$rootScope'
 
     }
 
-    $scope.deleteObserver = function(observe_id) {
-      ObserverFactory.delete({ observe_id: observe_id }).$promise.then( function() {
-          $scope.observers = ObserversFactory.query($scope.bpId, $scope.station);
-      });
-    }
 
 
 
 
-
-
-  $scope.filterExpression = function(station) {
+$scope.filterExpression = function(station) {
   return (station.finished != true && station.paused == true);
-  }
-  $scope.filterInputs = function(elem) {
+}
+$scope.filterInputs = function(elem) {
     return (elem.type_title == "confirm");
-  };
-
+};
 
 
 

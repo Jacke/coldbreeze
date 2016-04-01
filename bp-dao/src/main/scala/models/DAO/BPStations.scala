@@ -30,7 +30,7 @@ class BPStations(tag: Tag) extends Table[BPStationDTO](tag, "bpstations") {
   def canceled      = column[Boolean]("canceled", O.Default(false))
 
   def created_at    = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at    = column[Option[org.joda.time.DateTime]]("updated_at")  
+  def updated_at    = column[Option[org.joda.time.DateTime]]("updated_at")
   def session       = column[Int]("session_id")
   def front         = column[Boolean]("front")
   def sesFK         = foreignKey("station_session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
@@ -48,7 +48,7 @@ class BPStations(tag: Tag) extends Table[BPStationDTO](tag, "bpstations") {
     inspace,
     incontainer,
     inexpands,
-    paused, 
+    paused,
     note,
     canceled,
     created_at, updated_at,session, front) <> (BPStationDTO.tupled, BPStationDTO.unapply)
@@ -76,7 +76,7 @@ paused: Boolean,
 note: Option[String] = None,
 canceled: Boolean = false,
 created_at:Option[org.joda.time.DateTime] = None,
-updated_at:Option[org.joda.time.DateTime] = None, session: Int = 1, front: Boolean = true) // Front par for parallels 
+updated_at:Option[org.joda.time.DateTime] = None, session: Int = 1, front: Boolean = true) // Front par for parallels
                                                                                            //  TODO: Avoid default value
 object BPStationDAOF {
   import akka.actor.ActorSystem
@@ -104,16 +104,16 @@ import models.DAO.conversion.DatabaseFuture._
   private def filterQueryByBPIds(bpIds: List[Int]): Query[BPStations, BPStationDTO, Seq] =
     stations.filter(_.process inSetBind bpIds)
 
-  def findBySessions(ids: List[Int]):Future[Seq[BPStationDTO]] = 
+  def findBySessions(ids: List[Int]):Future[Seq[BPStationDTO]] =
     db.run(filterQueryBySessions(ids).result)
-    
+
   def findBySessionF(id: Int): Future[Option[BPStationDTO]] =
     db.run(filterQueryBySession(id).result.headOption)
-               
+
   def findByBPIds(ids: List[Int]):Future[Seq[BPStationDTO]] = {
     db.run(filterQueryByBPIds(ids).result)
   }
-      
+
 
 }
 
@@ -140,10 +140,10 @@ object BPStationDAO {
         station.inspace,
         station.incontainer,
         station.inexpands,
-        station.paused, 
+        station.paused,
         note = None,
-        created_at = Some(org.joda.time.DateTime.now()),
-        updated_at = Some(org.joda.time.DateTime.now()),
+        created_at = None,
+        updated_at = None,
         session = session_id)
   }
   //def to_origin_station(station: BPStationDTO1):BPStation = {
@@ -165,7 +165,7 @@ object BPStationDAO {
 
   def pull_object(s: BPStationDTO, lang: Option[String] = Some("en")):Int = database withSession {
     implicit session ⇒
-      bpstations returning bpstations.map(_.id) += s.copy(note = Some(noteFunction(lang.get)) )  
+      bpstations returning bpstations.map(_.id) += s.copy(note = Some(noteFunction(lang.get)), created_at = Some(org.joda.time.DateTime.now()) )
   }
   def saveOrUpdate(s: BPStationDTO, lang: Option[String] = Some("en"), run_proc: Boolean = true):Int = database withSession {
     implicit session ⇒
@@ -191,7 +191,7 @@ object BPStationDAO {
         case _ => -1
       }
     }
-  }                
+  }
 
   def findBySession(id: Int) = {
     database withSession { implicit session =>
@@ -227,7 +227,7 @@ def update(id: Int, entity: BPStationDTO):Boolean = {
       findById(id) match {
       case Some(e) => {
 
-        bpstations.filter(_.id === id).update(entity.copy(id = Some(id)))
+        bpstations.filter(_.id === id).update(entity.copy(id = Some(id), updated_at = Some(org.joda.time.DateTime.now()) ))
         true
       }
       case None => false
@@ -249,7 +249,7 @@ def update(id: Int, entity: BPStationDTO):Boolean = {
     val q3 = for { st ← bpstations if (st.process inSetBind ids) && st.paused === true } yield st// <> (BPStationDTO.tupled, BPStationDTO.unapply _)
 
       q3.list
-    
+
   }
   def findById(id: Int):Option[BPStationDTO] = {
     database withSession {
@@ -266,7 +266,7 @@ def update(id: Int, entity: BPStationDTO):Boolean = {
 
       q3.list //.map(Supplier.tupled(_))
     }
-  }  
+  }
   def findByBPIds(ids: List[Int]):List[BPStationDTO] = {
     database withSession {
     implicit session =>
@@ -274,7 +274,7 @@ def update(id: Int, entity: BPStationDTO):Boolean = {
 
       q3.list //.map(Supplier.tupled(_))
     }
-  }    
+  }
   def haltUpdate(id: Int):Boolean = {
     database withSession { implicit session =>
       findById(id) match {
