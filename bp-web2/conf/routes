@@ -124,18 +124,18 @@ POST        /people/:id/to_participator                       @controllers.users
 # App
 
 GET         /test                                               @controllers.Application.index()
-GET         /test/test										    @controllers.TestController.index()
+GET         /test/test										                      @controllers.TestController.index()
 GET         /a                                                  @controllers.Application.app()
 GET         /a2                                                 @controllers.Application.app2()
 
 GET         /error                                              @controllers.Application.error_test()
 POST        /whoami                                             @controllers.Application.whoami()
-PUT         /configuration/ 									@controllers.Application.configuration()
+PUT         /configuration/ 									                  @controllers.Application.configuration()
 
 # Plans
 GET        /plans                                               @controllers.PlanController.index()
-GET        /plans/redirect_url									@controllers.PlanController.redirect_url()
-GET        /plans/cancel_url									@controllers.PlanController.cancel_url()
+GET        /plans/redirect_url									                @controllers.PlanController.redirect_url()
+GET        /plans/cancel_url									                  @controllers.PlanController.cancel_url()
 GET        /plan/test_pay                                       @controllers.PlanController.test_pay()
 POST       /plan/switch/:plan_id                                @controllers.PlanController.switch(plan_id: Int)
 POST       /plan/checkout/:bill_id                              @controllers.PlanController.checkout(bill_id: Int)
@@ -238,35 +238,35 @@ POST        /session/:id/listed                      @controllers.ProcessSession
 
 
 # States, switcher and reactions with outputs
-GET /bprocess/:BPid/states        			  	  @controllers.BusinessProcessController.state_index(BPid: Int)
-GET /bprocess/:BPid/session/:session_id/states    @controllers.BusinessProcessController.state_session_index(BPid: Int, session_id: Int)
+GET    /bprocess/:BPid/states        			  	             @controllers.BusinessProcessController.state_index(BPid: Int)
+GET    /bprocess/:BPid/session/:session_id/states          @controllers.BusinessProcessController.state_session_index(BPid: Int, session_id: Int)
 PUT    /bprocess/:BPid/session/:session_id/state/:state_id @controllers.BusinessProcessController.update_session_state(BPid: Int, session_id: Int, state_id: Int)
 DELETE /bprocess/:BPid/session/:session_id/state/:state_id @controllers.BusinessProcessController.delete_session_state(BPid: Int, session_id: Int, state_id: Int)
-PUT    /bprocess/:BPid/state/:state_id  @controllers.BusinessProcessController.update_state(BPid: Int, state_id: Int)
-DELETE /bprocess/:BPid/state/:state_id  @controllers.BusinessProcessController.delete_state(BPid: Int, state_id: Int)
+PUT    /bprocess/:BPid/state/:state_id   @controllers.BusinessProcessController.update_state(BPid: Int, state_id: Int)
+DELETE /bprocess/:BPid/state/:state_id   @controllers.BusinessProcessController.delete_state(BPid: Int, state_id: Int)
 
-GET 			/bprocess/:BPid/switches		  @controllers.BusinessProcessController.switches_index(BPid: Int)
-PUT 			/bprocess/switch/:id 			  @controllers.BusinessProcessController.update_switcher(id: Int)
-DELETE 			/bprocess/switch/:id 			  @controllers.BusinessProcessController.delete_switcher(id: Int)
+GET 			/bprocess/:BPid/switches		      @controllers.BusinessProcessController.switches_index(BPid: Int)
+PUT 			/bprocess/switch/:id 			        @controllers.BusinessProcessController.update_switcher(id: Int)
+DELETE 		/bprocess/switch/:id 			        @controllers.BusinessProcessController.delete_switcher(id: Int)
 
-GET 			/bprocess/:BPid/reactions		  @controllers.BusinessProcessController.reactions_index(BPid: Int)
-PUT 			/bprocess/reaction/:id 			  @controllers.BusinessProcessController.update_reaction(id: Int)
-DELETE 			/bprocess/reaction/:id            @controllers.BusinessProcessController.delete_reaction(id: Int)
+GET 			/bprocess/:BPid/reactions		      @controllers.BusinessProcessController.reactions_index(BPid: Int)
+PUT 			/bprocess/reaction/:id 			      @controllers.BusinessProcessController.update_reaction(id: Int)
+DELETE 		/bprocess/reaction/:id            @controllers.BusinessProcessController.delete_reaction(id: Int)
 
 ################
 # Launches
 ####
-GET     /launch/:launch_id/initial_state		    @controllers.LaunchElementsControllers.state_index(launch_id: Int)
-GET    	/launch/:launch_id/element_topos			@controllers.LaunchElementsControllers.element_topos(launch_id: Int)
+GET     /launch/:launch_id/initial_state		@controllers.LaunchElementsControllers.state_index(launch_id: Int)
+GET    	/launch/:launch_id/element_topos		@controllers.LaunchElementsControllers.element_topos(launch_id: Int)
 GET    	/launch/:launch_id/elements 				@controllers.LaunchElementsControllers.frontElems(launch_id: Int)
-GET    	/launch/:launch_id/spaces  				   	@controllers.LaunchElementsControllers.spaces(launch_id: Int)
-GET  	/launch/:launch_id/space_elems  			@controllers.LaunchElementsControllers.spaceElems(launch_id: Int)
+GET    	/launch/:launch_id/spaces  				  @controllers.LaunchElementsControllers.spaces(launch_id: Int)
+GET  	  /launch/:launch_id/space_elems  		@controllers.LaunchElementsControllers.spaceElems(launch_id: Int)
 GET     /launch/:launch_id/switchers 				@controllers.LaunchElementsControllers.switches_index(launch_id: Int)
 GET     /launch/:launch_id/reactions 				@controllers.LaunchElementsControllers.reactions_index(launch_id: Int)
 
 
 POST    /share/launch/:launch_id				    @controllers.LaunchShareController.makeShare(launch_id: Int)
-GET     /shared/launch/:launch_hash				    @controllers.LaunchShareController.index(launch_hash: String)
+GET     /shared/launch/:launch_hash				  @controllers.LaunchShareController.index(launch_hash: String)
 
 #POST   	launch/:launch_id/elements 					# @controllers.LaunchElementsControllers
 #GET    	launch/:launch_id/element/:id 				# @controllers.LaunchElementsControllers
@@ -390,12 +390,13 @@ PUT  /ref/:id/space_elem/:spelem_id/:space_id/down @controllers.ReflectionsContr
 # Logs
 GET         /interacts/                              @controllers.InteractionController.fetchInteractions(ids: List[Int])
 
+
+GET         /bprocess/elems_length                   @controllers.BusinessProcessController.bpElemLength()
 # Elements
 GET         /bprocess/:id/elements                   @controllers.BusinessProcessController.frontElems(id: Int)
-GET         /bprocess/:id/element_topos			     @controllers.BusinessProcessController.element_topos(id: Int)
+GET         /bprocess/:id/element_topos			         @controllers.BusinessProcessController.element_topos(id: Int)
 GET         /bprocess/:id/spaces                     @controllers.BusinessProcessController.spaces(id: Int)
 GET         /bprocess/:id/space_elems                @controllers.BusinessProcessController.spaceElems(id: Int)
-GET         /bprocess/elems_length                   @controllers.BusinessProcessController.bpElemLength()
 
 
 # All elements

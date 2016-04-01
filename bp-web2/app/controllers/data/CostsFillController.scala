@@ -172,7 +172,7 @@ def assign_element(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit r
     selected.fold(
     errors => {
        Logger.error(s"error with $selected")
-      BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
+      BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toJson(errors)))
     },
     resElSelects => {
     	println(resElSelects)
@@ -201,7 +201,7 @@ def update_assigned_element(id: Int) = SecuredAction(BodyParsers.parse.json) { i
     selected.fold(
     errors => {
        Logger.error(s"error with $selected")
-      BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
+      BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toJson(errors)))
     },
     resElSelect => {
     	println(resElSelect)
@@ -217,7 +217,7 @@ def delete_assigned_element(id: Int) = SecuredAction(BodyParsers.parse.json) { i
     selected.fold(
     errors => {
        Logger.error(s"error with $selected")
-      BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
+      BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toJson(errors)))
     },
     resElSelect => {
     	println(resElSelect)

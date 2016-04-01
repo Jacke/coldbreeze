@@ -328,14 +328,16 @@ def allElements(process_ids: List[Int]) = SecuredAction.async { implicit request
   }
 }
 
-/* Index */
+// /bprocess/:id/elements
 def frontElems(id: Int) = SecuredAction { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, id)) {
         Ok(Json.toJson(ProcElemDAO.findByBPId(id)))
     } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
+
 def show_elem_length(id: Int):Int = { ProcElemDAO.findLengthByBPId(id) }
 
+// /bprocess/elems_length
 def bpElemLength() = SecuredAction { implicit request =>
     val bps = BPDAO.getAll // TODO: Weak perm
     val elms = ProcElemDAO.getAll
@@ -345,16 +347,24 @@ def bpElemLength() = SecuredAction { implicit request =>
       Map(bps.map(bp => (bp.id.get.toString -> all_length(bp.id.get))) map {s => (s._1, s._2)} : _*)//show_elem_length(bp.id.get))) map {s => (s._1, s._2)} : _*)
       ))
 }
+
+// /bprocess/:id/spaces
 def spaces(id: Int) = SecuredAction { implicit request =>
       if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, id)) {
             Ok(Json.toJson(BPSpaceDAO.findByBPId(id)))
       } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
+// /bprocess/:id/space_elems
 def spaceElems(id: Int) = SecuredAction { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, id)) {
           Ok(Json.toJson(SpaceElemDAO.findByBPId(id)))
     } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
+
+
+
+
+
 /**
  * Forms
  */

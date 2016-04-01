@@ -358,7 +358,7 @@ def fillSlat(slat_id: String) = SecuredAction.async(BodyParsers.parse.json) { re
     sval.fold(
     errors => {
        Logger.error(s"error with $sval")
-       Future.successful(BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors))))
+       Future.successful(BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toJson(errors))))
     },
     sval => {
       println(sval)
@@ -374,7 +374,7 @@ def refillSlat(slat_id: String) = SecuredAction.async(BodyParsers.parse.json) { 
     sval.fold(
     errors => {
        Logger.error(s"error with $sval")
-       Future.successful(BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors))))
+       Future.successful(BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toJson(errors))))
     },
     sval => {
       println(sval)

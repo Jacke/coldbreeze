@@ -8,7 +8,7 @@ sealed trait PaypalError extends Throwable{
 }
 
 case class JsonError(status: Int, statusText: String, err: JsError, body: Option[String] = None) extends PaypalError {
-  override def toString = s"$status $statusText -> $body -> ${JsError.toFlatJson(err)}"
+  override def toString = s"$status $statusText -> $body -> ${JsError.toJson(err)}"
   override def getMessage = this.toString
 }
 

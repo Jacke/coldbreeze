@@ -8,7 +8,7 @@ import com.github.nscala_time.time.Imports._
 
 class Groups(tag: Tag) extends Table[GroupDTO](tag, "groups") {
   def id          = column[Int]("id", O.PrimaryKey, O.AutoInc)
-    
+
   def title       = column[String]("title")
   def business    = column[Int]("business_id")
   def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
@@ -20,14 +20,14 @@ class Groups(tag: Tag) extends Table[GroupDTO](tag, "groups") {
 }
 class AccountGroup(tag: Tag) extends Table[AccoutGroupDTO](tag, "account_group") {
   def id         = column[Int]("id", O.PrimaryKey, O.AutoInc)
-    
+
   def account_id = column[Option[String]]("account_id")
   def group_id   = column[Int]("group_id")
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")
   def employee_id = column[Int]("employee_id")
 
-  def accFK      = foreignKey("acc_group_acc_fk", account_id, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade, onUpdate = ForeignKeyAction.Cascade)
+  def accFK      = foreignKey("acc_group_acc_fk", account_id, models.AccountsDAO.users)(_.email, onDelete = ForeignKeyAction.Cascade, onUpdate = ForeignKeyAction.Cascade)
   def group_FK   = foreignKey("acc_group_group_FK", group_id, models.DAO.resources.GroupsDAO.groups)(_.id, onDelete = ForeignKeyAction.Cascade)
   def employeeFK = foreignKey("acc_group_employee_fk", employee_id, models.DAO.resources.EmployeeDAO.employees)(_.id, onDelete = ForeignKeyAction.Cascade)
 
@@ -42,8 +42,8 @@ class AccountGroup(tag: Tag) extends Table[AccoutGroupDTO](tag, "account_group")
 **/
 case class AccoutGroupDTO(
 						var id: Option[Int],
-						account_id: Option[String], 
-						group_id: Int, 
+						account_id: Option[String],
+						group_id: Int,
 						created_at: Option[org.joda.time.DateTime],
     				updated_at: Option[org.joda.time.DateTime],
             employee_id: Int = 0)
@@ -60,7 +60,7 @@ object GroupDAOF {
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import models.DAO.conversion.DatabaseFuture._  
+  import models.DAO.conversion.DatabaseFuture._
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
   val groups = GroupsDAO.groups
@@ -93,7 +93,7 @@ object AccountGroupDAOF {
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import models.DAO.conversion.DatabaseFuture._  
+  import models.DAO.conversion.DatabaseFuture._
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
@@ -114,7 +114,7 @@ object AccountGroupDAOF {
   def getAllByGroupIDS(group_ids: List[Int]):Future[Seq[AccoutGroupDTO]] = {
     db.run(filterQueryByGroups(group_ids).result)
 
-  }  
+  }
 
 }
 
@@ -145,37 +145,37 @@ object AccountGroupDAO {
   }
   def getAllByGroup(group_id: Int) = database withSession {
     implicit session ⇒
-      val q3 = for { s ← account_group if s.group_id === group_id } yield s 
+      val q3 = for { s ← account_group if s.group_id === group_id } yield s
       q3.list
   }
   def getAllByGroupIDS(group_ids: List[Int]) = database withSession {
     implicit session ⇒
-      val q3 = for { s ← account_group if s.group_id inSetBind group_ids } yield s 
+      val q3 = for { s ← account_group if s.group_id inSetBind group_ids } yield s
       q3.list
-  }  
+  }
   def get(k: Int) = database withSession {
     implicit session ⇒
-      val q3 = for { s ← account_group if s.id === k } yield s 
+      val q3 = for { s ← account_group if s.id === k } yield s
       q3.list.headOption
   }
   def getByAccountAndGroup(account_id: String, group_id: Int) = database withSession {
     implicit session ⇒
-      val q3 = for { s ← account_group if (s.account_id === account_id) && (s.group_id === group_id) } yield s 
+      val q3 = for { s ← account_group if (s.account_id === account_id) && (s.group_id === group_id) } yield s
       q3.list.headOption
   }
   def getByEmpAndGroup(employee_id: Int, group_id: Int) = database withSession {
     implicit session ⇒
-      val q3 = for { s ← account_group if (s.employee_id === employee_id) && (s.group_id === group_id) } yield s 
+      val q3 = for { s ← account_group if (s.employee_id === employee_id) && (s.group_id === group_id) } yield s
       q3.list.headOption
-  }  
+  }
   def getByAccount(account_id: String) = database withSession {
     implicit session ⇒
-      val q3 = for { s ← account_group if s.account_id === account_id } yield s 
+      val q3 = for { s ← account_group if s.account_id === account_id } yield s
       q3.list
   }
   def getByAccounts(account_ids: List[String]) = database withSession {
     implicit session ⇒
-      val q3 = for { s ← account_group if s.account_id inSetBind account_ids } yield s 
+      val q3 = for { s ← account_group if s.account_id inSetBind account_ids } yield s
       GroupsDAO.gets(q3.list.map(_.group_id))
   }
   def update(id: Int, group: AccoutGroupDTO) = database withSession { implicit session ⇒
@@ -218,27 +218,27 @@ object GroupsDAO {
 
   def get(k: Int) = database withSession {
     implicit session ⇒
-      val q3 = for { s ← groups if s.id === k } yield s 
+      val q3 = for { s ← groups if s.id === k } yield s
       q3.list.headOption
   }
   def gets(ids: List[Int]) = database withSession {
     implicit session ⇒
-      val q3 = for { s ← groups if s.id inSetBind ids } yield s 
+      val q3 = for { s ← groups if s.id inSetBind ids } yield s
       q3.list
   }
   def getsByBusiness(business: Int) = database withSession {
     implicit session =>
-      val q3 = for { s ← groups if s.business === business } yield s 
-      q3.list 
+      val q3 = for { s ← groups if s.business === business } yield s
+      q3.list
   }
   def getByBusiness(bid: Int) = database withSession {
     implicit session =>
-     val q3 = for { s ← groups if s.business === bid } yield s 
+     val q3 = for { s ← groups if s.business === bid } yield s
       q3.list.headOption
   }
   def getAllByBusiness(bid: Int) = database withSession {
     implicit session =>
-     val q3 = for { s ← groups if s.business === bid } yield s 
+     val q3 = for { s ← groups if s.business === bid } yield s
       q3.list
   }
   def update(id: Int, group: GroupDTO) = database withSession { implicit session ⇒
@@ -273,5 +273,3 @@ object GroupsDAO {
   }
 
 }
-
-

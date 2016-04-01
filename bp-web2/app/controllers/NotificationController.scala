@@ -106,8 +106,8 @@ def popup(emails_hash: String, target: String) = Action { request =>
           val placeResult = json.validate[PopupRequest]
           placeResult.fold(
             errors => {
-              println(JsError.toFlatJson(errors))
-              //BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
+              println(JsError.toJson(errors))
+              //BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toJson(errors)))
             },
             place => {
               println(place)

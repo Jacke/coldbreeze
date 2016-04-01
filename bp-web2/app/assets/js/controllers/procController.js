@@ -361,6 +361,8 @@ return  $scope.bprocesses.then(function(processes){
           console.log("132",$scope.allElements);
         });
         _.forEach(processes, function(proc) {
+              // Add bulk process elements loading
+              1/0
               TreeBuilder.buildFetch(proc, $scope.allElementsPromise, function(success){});
         });
 

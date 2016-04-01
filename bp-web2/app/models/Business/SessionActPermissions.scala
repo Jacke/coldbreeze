@@ -24,17 +24,17 @@ class SessionActPermissions(tag: Tag) extends Table[SessionActPermission](tag, "
   def role    = column[String]("role")
   /***
    *  Role:
-   *  1. View 
+   *  1. View
    *  2. Edit
-   *  3. All 
-   *  4. Interact 
-   */  
+   *  3. All
+   *  4. Interact
+   */
   // Elements permissions
   def front_elem_id = column[Option[Int]]("front_elem_id")
   def space_elem_id = column[Option[Int]]("space_elem_id")
   def reaction      = column[Option[Int]]("reaction_id")
 
-  def maccFK  = foreignKey("pr_perm_acc_fk", uid, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade, onUpdate = ForeignKeyAction.Cascade)
+  def maccFK  = foreignKey("pr_perm_acc_fk", uid, models.AccountsDAO.users)(_.email, onDelete = ForeignKeyAction.Cascade, onUpdate = ForeignKeyAction.Cascade)
   def procFK  = foreignKey("pr_perm_process_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
   def fElemFK = foreignKey("pr_perm_fElemPermFK", front_elem_id, models.DAO.ProcElemDAO.proc_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
   def spElemFK= foreignKey("pr_perm_spElemPermFK", space_elem_id, models.DAO.SpaceElemDAO.space_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
@@ -47,12 +47,12 @@ class SessionActPermissions(tag: Tag) extends Table[SessionActPermission](tag, "
   //def eb = EmployeesBusinessDAO.employees_businesses.filter(_.employee_id === id).flatMap(_.businessFK)
 }
 
-case class SessionActPermission(var id: Option[Int], 
-                         uid: Option[String], 
-                         group:Option[Int], 
+case class SessionActPermission(var id: Option[Int],
+                         uid: Option[String],
+                         group:Option[Int],
                          process: Int,
                          session: Int,
-                         front_elem_id:Option[Int], 
+                         front_elem_id:Option[Int],
                          space_elem_id:Option[Int],
                          reaction: Option[Int],
                          role: String = "interact"
@@ -71,7 +71,7 @@ object SessionActPermissionDAO {
       def creation(perm: SessionActPermission) = {
         if (PermissionRole.roles.contains(perm.role))
           session_act_permissions returning session_act_permissions.map(_.id) += perm
-        else 
+        else
           -1
       }
       perm.uid match {
@@ -81,8 +81,8 @@ object SessionActPermissionDAO {
             case Some(account_group) => {
               val group_id = GroupsDAO.get(account_group) match {
                 case Some(group) => { creation(perm.copy(group = Some(group.id.get))) }
-                case _ => { println("group not found" + account_group); -1 }                                      
-                } 
+                case _ => { println("group not found" + account_group); -1 }
+                }
             }
             case _ => -1
           }
@@ -102,12 +102,12 @@ object SessionActPermissionDAO {
   def getByProcessesIDS(proc_ids: List[Int]) = database withSession {
      implicit session =>
     val q3 = for { s ← session_act_permissions if s.process inSetBind proc_ids } yield s
-      q3.list  
+      q3.list
   }
   def getByProcessId(process_id: Int) = database withSession {
     implicit session =>
     val q3 = for { s ← session_act_permissions if s.process === process_id } yield s
-      q3.list  
+      q3.list
   }
 
   def getByUIDprocIDS(uid: String):List[Int] = {
@@ -132,9 +132,9 @@ object SessionActPermissionDAO {
   }
   z.map(_.process)
   }
-  
 
-def getByUIDelemTitles(uid: String) = { 
+
+def getByUIDelemTitles(uid: String) = {
     // TODO: Refactor that shit above and below
     val z = {
     database withSession {
@@ -157,11 +157,11 @@ def getByUIDelemTitles(uid: String) = {
       }
     result_map
     }
-  
+
   val u = Map.empty[Int, String]
   if (z.length > 0) {
     val u = prepareElements(z)
-  } 
+  }
   /*
 
   val result = u.asInstanceOf[List[Map[Int, String]]]
@@ -183,17 +183,17 @@ def getByUIDelemTitles(uid: String) = {
     // Active stations
     // processes on dat
     // Current element and next
-    val acts: List[Option[SessionResAct]] = { 
-      active_stations.map { station =>  
+    val acts: List[Option[SessionResAct]] = {
+      active_stations.map { station =>
         processes.find(bp => bp.id.get == station.process) match {
-          case Some(process) => Some(SessionResAct(station.process, process.title, "Обрезка")) 
+          case Some(process) => Some(SessionResAct(station.process, process.title, "Обрезка"))
           case _ => None
         }
-      
+
     }
     }
     acts.flatten
-   
+
   }
 
 

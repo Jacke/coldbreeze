@@ -317,7 +317,7 @@ def api_create_resource() = SecuredAction(BodyParsers.parse.json) { implicit req
         selected.fold(
         errors => {
            Logger.error(s"error with $selected")
-           BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
+           BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toJson(errors)))
         },
         entity => {
           println(entity)
@@ -510,7 +510,7 @@ def fill_slat(entityId: String, launchId: Int, resourceId: Int) = SecuredAction(
     selected.fold(
     errors => {
        Logger.error(s"error with $selected")
-      BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
+      BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toJson(errors)))
     },
     slat => {
     val metaString = List(MetaVal("launchId", s"$launchId"), MetaVal("resourceId", s"$resourceId"))
@@ -529,7 +529,7 @@ def refill_slat(entityId: String, launchId: Int, resourceId: Int, slatId: String
     selected.fold(
     errors => {
        Logger.error(s"error with $selected")
-      BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
+      BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toJson(errors)))
     },
     slat => {
     val metaString = List(MetaVal("launchId", s"$launchId"), MetaVal("resourceId", s"$resourceId"))

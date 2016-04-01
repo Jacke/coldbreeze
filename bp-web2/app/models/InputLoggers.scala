@@ -16,7 +16,7 @@ class InputLoggers(tag: Tag) extends Table[InputLogger](tag, "input_loggers") {
   def date            = column[org.joda.time.DateTime]("date")
   def session         = column[Int]("session_id")
 
-  def maccFK          = foreignKey("in_log_macc_fk", uid, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade, onUpdate = ForeignKeyAction.Cascade)
+  def maccFK          = foreignKey("in_log_macc_fk", uid, models.AccountsDAO.users)(_.email, onDelete = ForeignKeyAction.Cascade, onUpdate = ForeignKeyAction.Cascade)
   def fReactionFK     = foreignKey("in_log_fReactionFK", reaction, models.DAO.SessionReactionDAO.session_reactions)(_.id, onDelete = ForeignKeyAction.Cascade)
   def sessionFK       = foreignKey("in_log_sessionFK", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
@@ -25,12 +25,12 @@ class InputLoggers(tag: Tag) extends Table[InputLogger](tag, "input_loggers") {
   //def eb = EmployeesBusinessDAO.employees_businesses.filter(_.employee_id === id).flatMap(_.businessFK)
 }
 
-case class InputLogger(var id: Option[Int], 
-  uid:Option[String]=None, 
-  action:String, 
-  arguments:List[String], 
-  reaction:Int, 
-  input:Option[Int], 
+case class InputLogger(var id: Option[Int],
+  uid:Option[String]=None,
+  action:String,
+  arguments:List[String],
+  reaction:Int,
+  input:Option[Int],
   date: org.joda.time.DateTime,
   session: Int)
 
@@ -47,7 +47,7 @@ object InputLoggerDAOF {
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import models.DAO.conversion.DatabaseFuture._  
+  import models.DAO.conversion.DatabaseFuture._
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
   val input_loggers = InputLoggerDAO.input_loggers
@@ -58,8 +58,8 @@ object InputLoggerDAOF {
     input_loggers.filter(_.id === id)
   private def filterByBPQuery(id: Int): Query[InputLoggers, InputLogger, Seq] =
     (for {
-      ((inlogger, session), bprocesses) <- input_loggers leftJoin 
-      models.DAO.BPSessionDAO.bpsessions on (_.session === _.id) leftJoin BPDAO.bprocesses on (_._2.process === _.id)     
+      ((inlogger, session), bprocesses) <- input_loggers leftJoin
+      models.DAO.BPSessionDAO.bpsessions on (_.session === _.id) leftJoin BPDAO.bprocesses on (_._2.process === _.id)
     } yield (inlogger))
   private def filterBySessionQuery(id: Int): Query[InputLoggers, InputLogger, Seq] =
     input_loggers.filter(_.session === id)
@@ -74,7 +74,7 @@ def launchesPeoplesFetcher(sessionStatuses: List[SessionStatus]):Future[List[Ses
     act_permsF.flatMap { all_act_perms =>
       val groupsF = AccountGroupDAOF.getAllByGroupIDS(all_act_perms.map(_.group.getOrElse(-1)).toList)
       val loggersF = getBySessions(sessionStatuses.map(status => status.session.id.get).toList)
-      loggersF.flatMap { loggers => 
+      loggersF.flatMap { loggers =>
         groupsF.map { groups =>
           sessionStatuses.map { sessionStatus => // Iterate over each session
                val act_perms = all_act_perms.filter(perm => perm.process == sessionStatus.process.id.get)
@@ -86,18 +86,18 @@ def launchesPeoplesFetcher(sessionStatuses: List[SessionStatus]):Future[List[Ses
               loggers.find(logger => logger.session == sessionStatus.session.id.get).headOption match {
                 case Some(firstInputLog) => {
                   sessionStatus.copy(peoples = Some(SessionPeoples(
-                              launched_by = firstInputLog.uid.getOrElse("not@found.com"), 
+                              launched_by = firstInputLog.uid.getOrElse("not@found.com"),
                               participators = participators.toSet.toList)))
                 }
-                case _ => sessionStatus.copy(peoples = Some(SessionPeoples(launched_by = "not@found.com", 
-                  participators = participators.toSet.toList))) 
+                case _ => sessionStatus.copy(peoples = Some(SessionPeoples(launched_by = "not@found.com",
+                  participators = participators.toSet.toList)))
               }
           }
         }
       }
     }
 }
-/***** 
+/*****
   Because in first bp-dao project no account models presented we make this polyfil
   It's copy session container and add people and participator list of String
 ******/
@@ -107,7 +107,7 @@ def fetchPeopleBySessions(sessionContainers: Seq[SessionContainer]):Future[Seq[S
     containersF.map { container =>
       sessionContainers.map { sessionContainer =>
         sessionContainer.copy(sessions = container
-                                          .filter( containered => containered.process.id == sessionContainer.process.id ))      
+                                          .filter( containered => containered.process.id == sessionContainer.process.id ))
       }
     }
 }
@@ -154,20 +154,20 @@ object InputLoggerDAO {
 
  def pull_object(s: InputLogger) = database withSession {
     implicit session ⇒
-      
+
       input_loggers returning input_loggers.map(_.id) += s
   }
   def get(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← input_loggers if s.id === k } yield s
-      q3.list.headOption 
+      q3.list.headOption
   }
 
 
   def getByBP(BPid:Int) = database withSession {
     implicit session =>
     val q3 = (for {
-      ((inlogger, session), bprocesses) <- input_loggers leftJoin models.DAO.BPSessionDAO.bpsessions on (_.session === _.id) leftJoin BPDAO.bprocesses on (_._2.process === _.id)     
+      ((inlogger, session), bprocesses) <- input_loggers leftJoin models.DAO.BPSessionDAO.bpsessions on (_.session === _.id) leftJoin BPDAO.bprocesses on (_._2.process === _.id)
     } yield (inlogger))
     q3.list
   }
@@ -180,7 +180,7 @@ object InputLoggerDAO {
     implicit session =>
     val q3 = for { s <- input_loggers if s.session inSetBind ids } yield s
     q3.list
-  }  
+  }
 
   def update(id: Int, obj: InputLogger) = database withSession { implicit session ⇒
     val toUpdate: InputLogger = obj.copy(Option(id))
@@ -193,10 +193,10 @@ object InputLoggerDAO {
   }
   def count: Int = database withSession { implicit session ⇒
     Query(input_loggers.length).first
-  }  
+  }
   def getAll = database withSession {
     implicit session ⇒
-      val q3 = for { s ← input_loggers } yield s 
+      val q3 = for { s ← input_loggers } yield s
       q3.list.sortBy(_.id)
   }
 
@@ -210,11 +210,11 @@ object InputLoggerDAO {
     getBySession(sessionStatus.session.id.get).headOption match {
       case Some(firstInputLog) => {
         sessionStatus.copy(peoples = Some(SessionPeoples(
-                    launched_by = firstInputLog.uid.getOrElse("not@found.com"), 
+                    launched_by = firstInputLog.uid.getOrElse("not@found.com"),
                     participators = participators.toSet.toList)))
       }
-      case _ => sessionStatus.copy(peoples = Some(SessionPeoples(launched_by = "not@found.com", 
-        participators = participators.toSet.toList))) 
+      case _ => sessionStatus.copy(peoples = Some(SessionPeoples(launched_by = "not@found.com",
+        participators = participators.toSet.toList)))
     }
   }
   /* Because in first bp-dao project no account models presented we make this polyfil
@@ -239,7 +239,3 @@ object InputLoggerDAO {
   }
 
 }
-
-
-
-

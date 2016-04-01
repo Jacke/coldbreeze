@@ -205,7 +205,7 @@ def permsOnly(BPid: Int) = SecuredAction { implicit request =>
     val permResult = request.body.validate[ActPermission]
       permResult.fold(
       errors => {
-        BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
+        BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toJson(errors)))
       },
       perm => {
         security.BRes.procIsOwnedByBiz(business = business, process_id = perm.process) match {
@@ -232,7 +232,7 @@ def update(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =
     val permResult = request.body.validate[ActPermission]
       permResult.fold(
         errors => {
-          BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
+          BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toJson(errors)))
         },
         perm => {
           ActPermissionDAO.update(id, perm)

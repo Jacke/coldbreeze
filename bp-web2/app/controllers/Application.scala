@@ -200,9 +200,7 @@ def uptime() = Action { implicit request =>
     applicationLogger.debug(request.host.toString)
 
     AccountPlanDAOF.getByWorkbenchAcc(workbench_id = business).flatMap { acc_plan =>
-
-
-    models.AccountsDAOF.getRolesAndLang(email, business).flatMap { credentials =>
+      models.AccountsDAOF.getRolesAndLang(email, business).map { credentials =>
 
 
     val (isManager, isEmployee, lang):(Boolean, Boolean, String) = credentials.get
@@ -214,7 +212,7 @@ def uptime() = Action { implicit request =>
 
     val env_mode = play.api.Play.current.mode
 
-    minority.utils.BBoardWrapper().ping.map { bb_ping =>
+    //minority.utils.BBoardWrapper().ping.map { bb_ping =>
 
     Ok(Json.toJson(WhoAmIdentify(request.identity.emailFilled,
       request.identity.businessFirst,
@@ -222,9 +220,9 @@ def uptime() = Action { implicit request =>
       lang,
       payed = current_plan.expired_at.isAfter( org.joda.time.DateTime.now()),
       env_mode.toString(),
-      bb_ping
+      false//bb_ping
       )))
-    }
+    //}
     }
   }
 }
@@ -252,7 +250,7 @@ def savePlace = Action(BodyParsers.parse.json) { request =>
   val placeResult = request.body.validate[Place]
   placeResult.fold(
     errors => {
-      BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toFlatJson(errors)))
+      BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toJson(errors)))
     },
     place => {
       Place.save(place)
