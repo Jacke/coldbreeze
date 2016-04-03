@@ -227,7 +227,7 @@ $scope.reloadInteractionContainer = function() {
 
       $scope.allElFetcherPromise().then(function() {
 
-      $scope.element_topologsPromise.$promise.then(function(d) {
+      $scope.element_topologsPromise().then(function(d) {
         $scope.reactionElementRoutine($scope.interactions);
        });
      });
@@ -293,14 +293,6 @@ $scope.$on('reloadElementRoutine', function(event, session_id) {
 
 
 $scope.trees = undefined;
-/*
-$scope.bpelems.$promise.then(function(data) {
-  $scope.spaceelems.$promise.then(function(data3) {
-    $scope.elemsHash = _.object(_.map($scope.bpelems, function(x){return [x.id, x]}));
-    $scope.spaceElemHash = _.object(_.map($scope.spaceelems, function(x){return [x.id, x]}));
- });
-});
-*/
 
 
 $scope.byObjId = function(elem) {
@@ -763,12 +755,14 @@ $scope.treesDefiner = function() {
   var deferred = $q.defer();
   if ($scope.$parent.tree !== undefined) {
     $scope.$parent.allLaunchedElemPromise.$promise.then(function(d) {
-    //console.debug('getted', $scope.$parent.tree);
-    $scope.bpelems.$promise.then(function(d) {
-          console.log('tree from launch elems are', d);
-          $scope.trees = d;//$scope.$parent.tree.trees;
-          deferred.resolve($scope.tree);
-          return deferred.promise;
+      $scope.allElFetcherPromise().then(function() {
+
+      //$scope.bpelems.then(function(d) {
+            console.log('tree from launch elems are', $scope.bpelems);
+            $scope.trees = $scope.bpelems;//$scope.$parent.tree.trees;
+            deferred.resolve($scope.tree);
+            return deferred.promise;
+      //});
     });
     //console.debug('getted', $scope.trees);
     });
@@ -1301,33 +1295,7 @@ $scope.defaultParam = function () {
 
 $scope.invoke_res = [];
 $scope.selectedTab = 1;
-/*
-BPStationsFactory.query({ BPid: $scope.bpId }).$promise.then(function(data) {
-         $scope.bpstations = data;
-         console.log("boom");
 
-         //_.forEach($scope.bpstations, function (st) { $scope.addParam(st); });
-
-    $scope.bpelems.$promise.then(function(data34) {
-        $scope.spaces.$promise.then(function(data2) {
-          $scope.spaceelems.$promise.then(function(data3) {
-            $scope.logs.$promise.then(function(loggg) {
-               _.forEach(data, function(station) { $scope.builder(station);  $(".inputRequests:not(:eq(0))").toggle(); });
-                  console.log(data);
-                   $(".inputRequests:not(:eq(0))").toggle();
-
-  });
-  });
-  });
-  });
-
-
-  });
-
-
-  $scope.defaultParam();
-  $scope.bprocess = BProcessFactory.show({ id: $scope.bpId });
-*/
 
 $scope.showAll = function () {
   $(".inputRequests:not(:eq(0))").toggle();

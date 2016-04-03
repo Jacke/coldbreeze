@@ -1,11 +1,11 @@
 define(['angular', 'app', 'controllers'], function (angular, minorityApp, minorityControllers) {
 
 // For all processes
-minorityControllers.controller('LaunchesCtrl', ['$q','$controller','$timeout','$http', 
-  '$window', 
+minorityControllers.controller('LaunchesCtrl', ['$q','$controller','$timeout','$http',
+  '$window',
   '$translate',
-  '$scope', 
-  '$filter', 
+  '$scope',
+  '$filter',
   '$routeParams',
   '$rootScope',
   'Restangular',
@@ -15,13 +15,13 @@ minorityControllers.controller('LaunchesCtrl', ['$q','$controller','$timeout','$
   'AllLaunchedElementsBulkFactory',
   'ProcPermissionsFactory',
   'TreeBuilder',
-  'BPStationsFactory', 
+  'BPStationsFactory',
   'SessionsFactory',
   'BProcessesFactory',
-  'BProcessFactory', 
-  'ObserversFactory', 
-  'ObserverFactory', 
-  'BProcessesFactory', 
+  'BProcessFactory',
+  'ObserversFactory',
+  'ObserverFactory',
+  'BProcessesFactory',
   'BPSpacesFactory',
   'BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
   function ($q, $controller, $timeout, $http, $window, $translate, $scope, $filter, $routeParams, $rootScope,Restangular, ngDialog, FilteredSessionsFactory, InteractionsBulkFactory, AllLaunchedElementsBulkFactory, ProcPermissionsFactory, TreeBuilder, BPStationsFactory, SessionsFactory, BProcessesFactory, BProcessFactory, ObserversFactory, ObserverFactory, BProcessesFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
@@ -51,7 +51,7 @@ $scope.isEmptyLaunchesCheck = function() {
   } else {
     //if ($scope.sessions != undefined && $scope.sessions.length === 0) {
     //  $scope.isEmptyLaunches = true;
-    //} else { 
+    //} else {
       $scope.isEmptyLaunches = true//; }
   }
   console.log("$scope.isEmptyLaunches")
@@ -60,7 +60,7 @@ $scope.isEmptyLaunchesCheck = function() {
 }
 $scope.sessions = [];
 
-$scope.loadSessions = function (process_id) { 
+$scope.loadSessions = function (process_id) {
 
 /*
 process: Object
@@ -86,10 +86,10 @@ $scope.lastChecked = false;
 
 
 SessionsFactory.query().$promise.then(function (data2) {
-    _.forEach(data2.sessions, function(session) { 
+    _.forEach(data2.sessions, function(session) {
       session.station.inlineLaunchShow = false;
       $scope.loadPerm(session.process);
-//      return session.session.station = session.station 
+//      return session.session.station = session.station
       return session.process.logs = BPLogsFactory.query({  BPid: session.process.id });
     });
     _.forEach(data2, function(d){ return d.process.logs = BPLogsFactory.query({  BPid: d.process.id }); })
@@ -120,10 +120,12 @@ SessionsFactory.query().$promise.then(function (data2) {
 
     return _.map(_.filter(d.sessions, function(fd) {
       return (fd.station !== undefined) && (fd.station.finished !== true);
-    }), function(dd){ 
+    }), function(dd){
         return 'ids='+dd.session.id+'&'
     })
    });
+
+
 
 
 $scope.allLaunchedElemPromise = AllLaunchedElementsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') });
@@ -148,11 +150,11 @@ $scope.interactionContainerPromise.$promise.then(function (d) {
     // polyfill ended
      if (process_id != undefined) {
         console.log(process_id);
-        $scope.sessions = _.filter(data2, function(dat) { 
-          return dat.process.id === process_id 
+        $scope.sessions = _.filter(data2, function(dat) {
+          return dat.process.id === process_id
 
         });
-     } else { 
+     } else {
       $scope.sessions = data2;
    }
     $scope.lastChecked = true;
@@ -160,8 +162,8 @@ $scope.interactionContainerPromise.$promise.then(function (d) {
     $scope.treePromises = $scope.buildTree(data2, $scope.allLaunchedElemPromise)
     $scope.isEmptyLaunchesCheck();
     });
-    } //else { $scope.lastChecked = true; console.log("else");$scope.isEmptyLaunchesCheck() } 
-  } else { $scope.lastChecked = true; $scope.isEmptyLaunches = true; }    
+    } //else { $scope.lastChecked = true; console.log("else");$scope.isEmptyLaunchesCheck() }
+  } else { $scope.lastChecked = true; $scope.isEmptyLaunches = true; }
 /*
 BProcessesFactory.query().$promise.then(function (proc) {
     if (proc.length > 0) {
@@ -182,9 +184,9 @@ $scope.buildTree = function(processes, allLaunchedElemPromise) {
 
    _.forEach(processes, function(d){  // entity
     return _.forEach(d.sessions, function(s) {
-      return TreeBuilder.launchBuildFetch(d.process, 
-                                          s.session, 
-                                          $scope.allLaunchedElemPromise, 
+      return TreeBuilder.launchBuildFetch(d.process,
+                                          s.session,
+                                          $scope.allLaunchedElemPromise,
                                           function(success){});
       });
   });
@@ -196,10 +198,10 @@ $scope.buildTree = function(processes, allLaunchedElemPromise) {
 
 $scope.reloadSessionFn = function(session_id) {
   FilteredSessionsFactory.query({id: session_id}).$promise.then(function (data2) {
-    _.forEach(data2.sessions, function(session) { 
+    _.forEach(data2.sessions, function(session) {
       session.station.inlineLaunchShow = false;
       $scope.loadPerm(session.process);
-//      return session.session.station = session.station 
+//      return session.session.station = session.station
       return session.process.logs = BPLogsFactory.query({  BPid: session.process.id });
     });
     _.forEach(data2, function(d){ return d.process.logs = BPLogsFactory.query({  BPid: d.process.id }); })
@@ -228,9 +230,9 @@ $scope.reloadSessionFn = function(session_id) {
 var session_ids = _.map(data2, function(d){
     return _.map(_.filter(d.sessions, function(fd) {
       return (fd.station !== undefined) && (fd.station.finished !== true);
-    }), function(dd){ 
+    }), function(dd){
         return 'ids='+dd.session.id+'&'
-    })   
+    })
 });
 
 
@@ -240,7 +242,7 @@ InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') })
   console.log("219", updatedInteraction);
 
   // Update interaction container
-  
+
   //$scope.interactionContainerLaunch = _.map($scope.interactionContainerLaunch, function(icon) {
   //  if (icon.session_container.sessions[0].session.id === session_id) {
   //    icon = d[0]; // Take first element(first is interaction container for updated session)
@@ -271,25 +273,25 @@ _.forEach($scope.nestedRequestScopes, function(sc) {
 
   }).filter(function(n){ return n != undefined })[0]; // nested interactions must be an object, not an array.
 */  //return sc.scope.interactions = updatedInteraction;//
-  
+
   }
 });
 
   $scope.$broadcast('newInteractionsForLaunch', {session_id: session_id, updatedInteraction: updatedInteraction});
-  
+
   $scope.$broadcast('reloadElementRoutine', session_id);
   $scope.lastChecked = true;
    _.forEach(data2, function(d){  // entity
     _.forEach(d.sessions, function(s) { // read session from entity
         return TreeBuilder.launchBuildFetch(d.process, s.session, $scope.allLaunchedElemPromise, function(success){});
-    }) 
+    })
   });
   $scope.isEmptyLaunchesCheck();
-            
+
             });
       });
-    } //else { $scope.lastChecked = true; console.log("else");$scope.isEmptyLaunchesCheck() } 
-  } else { $scope.lastChecked = true; $scope.isEmptyLaunches = true; }    
+    } //else { $scope.lastChecked = true; console.log("else");$scope.isEmptyLaunchesCheck() }
+  } else { $scope.lastChecked = true; $scope.isEmptyLaunches = true; }
   });
 }
 
@@ -303,7 +305,7 @@ $scope.updateSessionInCollection = function(session, collection) {
   $scope.sessions = _.map($scope.sessions, function(sessionContainer) {
     if (sessionContainer.process.id === process) {
   // Iterate over process session for updated session
-  //sessionContainer.sessions = _.without(sessionContainer.sessions, _.find(sessionContainer.sessions, function(s) { 
+  //sessionContainer.sessions = _.without(sessionContainer.sessions, _.find(sessionContainer.sessions, function(s) {
   //                                                                            return s.session.id === updatedSession.session.id }));
   //sessionContainer.sessions.push(updatedSession);
   _.forEach(sessionContainer.sessions, function(session) {
@@ -328,19 +330,19 @@ $scope.updateSessionInCollection = function(session, collection) {
     }
     return sessionContainer;
   });
-  console.log($scope.sessions);  
+  console.log($scope.sessions);
 }
 
 $scope.reloadSession = function(session_id) {
   if ($routeParams.process != undefined) {
-    $scope.loadSessions($routeParams.process);    
-  } 
+    $scope.loadSessions($routeParams.process);
+  }
   if (session_id) {
     console.log('reload session from request controller');
-    $scope.reloadSessionFn(session_id);    
+    $scope.reloadSessionFn(session_id);
 
   } else { // Load all process
-    $scope.loadSessions();    
+    $scope.loadSessions();
   }
 };
 
@@ -363,7 +365,7 @@ $scope.history = function(session_id, entity) {
 }
 $scope.processHistory = function(entity) {
     $scope.historyMode = "process";
-    $scope.history_session_id = undefined;    
+    $scope.history_session_id = undefined;
     $scope.history_entity = entity;
     ngDialog.open({
         template: '/assets/partials/histories/process-history.html',
@@ -412,13 +414,13 @@ $scope.accFetchSessioned = function (obj) {
     res.fullName != undefined ? res.tooltip = res.fullName : res.tooltip = res.email;
     if (res.avatarUrl === undefined || res.avatarUrl === "") {
       res.avatarUrl = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iRWJlbmVfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSIxNnB4IiBoZWlnaHQ9IjE2cHgiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTYgMTYiIHhtbDpzcGFjZT0icHJlc2VydmUiPjx0aXRsZT5EZWZhdWx0IEF2YXRhcjwvdGl0bGU+PGRlc2M+RGVmYXVsdCBBdmF0YXIgZm9yIFdDRiAyLjA8L2Rlc2M+IDxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbLnN1cmZhY2UgeyBmaWxsOiAjZmZmOyB9LnNoYWRvdyB7IGZpbGw6ICNiYmI7IH1dXT48L3N0eWxlPjwvZGVmcz48cmVjdCB4PSIwIiBjbGFzcz0ic2hhZG93IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiLz48cGF0aCBjbGFzcz0ic3VyZmFjZSIgZD0iTTMuNTI4LDE2QzMuNzc2LDExLjQ5OSw1LjY4NCw4LDgsOHM0LjIyNCwzLjQ5OSw0LjQ3Myw3Ljk5OCIvPjxjaXJjbGUgY2xhc3M9InN1cmZhY2UiIGN4PSI4IiBjeT0iNiIgcj0iMy41Ii8+PC9zdmc+'
-    } 
+    }
     return res;
   } else if (res === undefined) {
     //if (res.avatarUrl === undefined || res.avatarUrl === "") {
       res = {};
       res.avatarUrl = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iRWJlbmVfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSIxNnB4IiBoZWlnaHQ9IjE2cHgiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTYgMTYiIHhtbDpzcGFjZT0icHJlc2VydmUiPjx0aXRsZT5EZWZhdWx0IEF2YXRhcjwvdGl0bGU+PGRlc2M+RGVmYXVsdCBBdmF0YXIgZm9yIFdDRiAyLjA8L2Rlc2M+IDxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbLnN1cmZhY2UgeyBmaWxsOiAjZmZmOyB9LnNoYWRvdyB7IGZpbGw6ICNiYmI7IH1dXT48L3N0eWxlPjwvZGVmcz48cmVjdCB4PSIwIiBjbGFzcz0ic2hhZG93IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiLz48cGF0aCBjbGFzcz0ic3VyZmFjZSIgZD0iTTMuNTI4LDE2QzMuNzc2LDExLjQ5OSw1LjY4NCw4LDgsOHM0LjIyNCwzLjQ5OSw0LjQ3Myw3Ljk5OCIvPjxjaXJjbGUgY2xhc3M9InN1cmZhY2UiIGN4PSI4IiBjeT0iNiIgcj0iMy41Ii8+PC9zdmc+'
-    //} 
+    //}
     return "Anonymous " + obj;
   }
   } else { // it's group
@@ -462,13 +464,13 @@ $scope.bubbleTooltip = function(session) {
     return  "Finished";
   } else if (session.station.paused) {
      return "Paused";
-  } else if (session.station.started) { 
+  } else if (session.station.started) {
      return "Started";
   }
   } else {
-    return ""; 
+    return "";
   }
- 
+
 
 };
 $scope.bubbleClass = function(session) {
@@ -478,7 +480,7 @@ $scope.bubbleClass = function(session) {
     return  "finished";
   } else if (session.station.paused) {
      return "paused";
-  } else if (session.station.started) { 
+  } else if (session.station.started) {
      return "started";
   }
   } else { return ""; }
@@ -505,17 +507,17 @@ $scope.shareLaunch = function(launch, launch_id) {
 
 }
 
-//POST    /share/launch/:launch_id            
-//GET     /shared/launch/:launch_hash 
+//POST    /share/launch/:launch_id
+//GET     /shared/launch/:launch_hash
 
 
 $scope.highlightActive = function (station, elem) {
      /*var front, nest;
-     front = $scope.elemsHash[$scope.logsByStation(station.id)[$scope.logsByStation(station.id).length-1].element];  
-     nest = $scope.spaceElemHash[$scope.logsByStation(station.id)[$scope.logsByStation(station.id).length-1].space_elem];  
+     front = $scope.elemsHash[$scope.logsByStation(station.id)[$scope.logsByStation(station.id).length-1].element];
+     nest = $scope.spaceElemHash[$scope.logsByStation(station.id)[$scope.logsByStation(station.id).length-1].space_elem];
      if (front !== undefined && front.id === elem.id && station.finished === false) {
        return "active";
-     } 
+     }
      if (nest !== undefined && nest.id === elem.id && elem.space_owned !== undefined && station.finished === false) {
       return "active";
      } else { */
@@ -551,7 +553,7 @@ $scope.unlisted = function (session) {
         // failed
       }
       );
-} 
+}
 $scope.listed = function (session) {
   $http({
       url: '/session/' + session.session.id + '/listed',
@@ -569,7 +571,7 @@ $scope.listed = function (session) {
         // failed
       }
       );
-} 
+}
 
 $scope.pin = function (session) {
   if (session.session.active_listed === true) {
@@ -633,13 +635,13 @@ $scope.isOnlyActive = function(session) {
     if (session.station !== undefined) {
 
     if ($scope.onlyActive && !$scope.onlyPaused && !$scope.onlyFinished) {
-      return session.station.paused === true && session.station.state !== false; 
+      return session.station.paused === true && session.station.state !== false;
     }
     if (!$scope.onlyActive && !$scope.onlyPaused && $scope.onlyFinished) {
-      return session.station.finished === true; 
+      return session.station.finished === true;
     }
     if (!$scope.onlyActive && $scope.onlyCanceled) {
-      return session.station.canceled === true; 
+      return session.station.canceled === true;
     }
     else {
       return session;
@@ -651,7 +653,7 @@ $scope.isOnlyActive = function(session) {
 
 $scope.isSessionsOnlyActive = function(sessions) {
    return _.filter(sessions, function(session){ return $scope.isOnlyActive(session) }).length < 1;
-}  
+}
 $scope.isOnlyListed = function(session) {
   return session;
 }
@@ -660,6 +662,3 @@ $scope.date = {startDate: null, endDate: null};
 
 }]);
 });
-
-
-
