@@ -25,10 +25,10 @@ class SessionProcElements(tag: Tag) extends Table[SessionUndefElement](tag, "ses
 
   def order     = column[Int]("order")
   //def comps = column[Option[List[CompositeValues]]]("comps", O.DBType("compositevalues[]"))
-    
+
   def created_at= column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at= column[Option[org.joda.time.DateTime]]("updated_at")  
-    
+  def updated_at= column[Option[org.joda.time.DateTime]]("updated_at")
+
   def * = (id.?, title, desc, business, bprocess, session, b_type, type_title, space_own, order,
            created_at, updated_at) <> (SessionUndefElement.tupled, SessionUndefElement.unapply)
 
@@ -44,7 +44,7 @@ import main.scala.bprocesses._
 /*
   Case class
  */
-case class ElemSessionCount(session_id: Int, count: Int)  
+case class ElemSessionCount(session_id: Int, count: Int)
 
 case class SessionUndefElement(id: Option[Int],
                         title:String,
@@ -60,8 +60,8 @@ case class SessionUndefElement(id: Option[Int],
                         updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
   /*
 
-  def cast(process: BProcess):Option[ProcElems] = { 
-// TODO: to space casting 
+  def cast(process: BProcess):Option[ProcElems] = {
+// TODO: to space casting
 // TODO: Refactor
     this match {
       case y if (y.b_type == "brick" && y.type_title == "container_brick") => {
@@ -87,7 +87,7 @@ case class SessionUndefElement(id: Option[Int],
           new Block(id.get,title,desc,None,process,b_type,type_title,order)
         )
     }
-  
+
   }
 */
 }
@@ -120,6 +120,11 @@ import models.DAO.conversion.DatabaseFuture._
   private def filterBySessionsQuery(ids: List[Int]): Query[SessionProcElements, SessionUndefElement, Seq] =
     session_proc_elements.filter(_.session inSetBind ids)
 
+    private def filterByLaunchesQuery(ids: List[Int]): Query[SessionProcElements, SessionUndefElement, Seq] =
+      session_proc_elements.filter(_.session inSetBind ids)
+    def findByLaunchesIds(bpsId: List[Int]) = db.run(filterByLaunchesQuery(bpsId).result)
+
+
   def findBySessionLength(session_id: Int):Future[Int] = {
     db.run(filterBySessionQuery(session_id).length.result)
   }
@@ -128,21 +133,23 @@ import models.DAO.conversion.DatabaseFuture._
 def findBySessionsLength(session_ids: List[Int]):Future[Seq[ElemSessionCount]] = {
     val ids = session_ids.mkString(",")
     db.run(
-      sql"""SELECT session_id, count(session_id) FROM session_proc_elements 
-          WHERE session_proc_elements.session_id 
+      sql"""SELECT session_id, count(session_id) FROM session_proc_elements
+          WHERE session_proc_elements.session_id
           IN (#${ids}) GROUP BY session_id""".as[(Int,Int)]
     ).map { tupleSeq =>
       tupleSeq.map { tuple => ElemSessionCount(tuple._1, tuple._2) }.toSeq
-    } 
-}  
+    }
+}
 
 def findBySession(session_id: Int):Future[Seq[SessionUndefElement]] = {
-     db.run(filterBySessionQuery(session_id).result)      
+     db.run(filterBySessionQuery(session_id).result)
 }
 
 def findById(id: Int):Future[Option[SessionUndefElement]] = {
-        db.run(filterQuery(id).result.headOption)    
-}  
+        db.run(filterQuery(id).result.headOption)
+}
+
+
 
 }
 
@@ -158,19 +165,19 @@ object SessionProcElementDAO {
   def findByBPId(id: Int) = {
     database withSession { implicit session =>
      val q3 = for { el ← session_proc_elements if el.bprocess === id } yield el
-      q3.list 
+      q3.list
     }
   }
   def findByBPSessionId(id: Int, session_id: Int) = {
     database withSession { implicit session =>
      val q3 = for { el ← session_proc_elements if el.bprocess === id && el.session === session_id } yield el
-      q3.list 
+      q3.list
     }
-  }  
+  }
   def findBySession(session_id: Int) = {
     database withSession { implicit session =>
      val q3 = for { el ← session_proc_elements if el.session === session_id } yield el
-      q3.list 
+      q3.list
     }
   }
   def lastOrderOfBP(id: Int):Int = {
@@ -182,21 +189,21 @@ object SessionProcElementDAO {
     }
   }
   def findLengthByBPId(id: Int):Int = {
-    database withSession { implicit session => 
+    database withSession { implicit session =>
        val q3 = for { el ← session_proc_elements if el.bprocess === id } yield el
       Query(q3.length).first
     }
   }
   def findById(id: Int):Option[SessionUndefElement] = {
     database withSession { implicit session =>
-     val q3 = for { el ← session_proc_elements if el.id === id } yield el 
+     val q3 = for { el ← session_proc_elements if el.id === id } yield el
       q3.list.headOption
     }
   }
   def findByBPanOrder(id: Int, order: Int) = {
     database withSession { implicit session =>
      val q3 = for { el ← session_proc_elements if el.bprocess === id; if el.order === order } yield el
-      q3.list.headOption 
+      q3.list.headOption
     }
   }
   def pull_object(s: SessionUndefElement) = database withSession {
@@ -224,13 +231,13 @@ object SessionProcElementDAO {
       case None => false
       }
     }
-  }  
+  }
   def getAll = database withSession {
-    implicit session ⇒ 
+    implicit session ⇒
       val q3 = for { s ← session_proc_elements } yield s
       q3.list.sortBy(_.id)
   }
-  def delete(id: Int) = { 
+  def delete(id: Int) = {
     database withSession { implicit session ⇒
 
     val elem = findById(id)
@@ -246,13 +253,13 @@ object SessionProcElementDAO {
     database withSession { implicit session =>
       val minimum = findByBPId(bprocess).sortBy(_.order)
       findById(element_id) match {
-        case Some(e) => { 
+        case Some(e) => {
           if (e.order > 1 && e.order != minimum.head.order) {
             session_proc_elements.filter(_.id === element_id).update(e.copy(order = e.order - 1))
             val ch = findById(minimum.find(_.order == (e.order - 1)).get.id.get).get
             session_proc_elements.filter(_.id === minimum.find(_.order == (e.order - 1)).get.id.get).update(ch.copy(order = ch.order + 1))
           }
-          true 
+          true
         }
         case None => false
       }
@@ -262,13 +269,13 @@ object SessionProcElementDAO {
     database withSession { implicit session =>
       val maximum = findByBPId(bprocess).sortBy(_.order)
       findById(element_id) match {
-        case Some(e) => { 
+        case Some(e) => {
           if (e.order < maximum.last.order && e.order != maximum.last.order) {
             session_proc_elements.filter(_.id === element_id).update(e.copy(order = e.order + 1))
             val ch = findById(maximum.find(_.order == (e.order + 1)).get.id.get).get
             session_proc_elements.filter(_.id === maximum.find(_.order == (e.order + 1)).get.id.get).update(ch.copy(order = ch.order - 1))
           }
-          true 
+          true
         }
         case None => false
       }
@@ -289,11 +296,11 @@ object SessionProcElementDAO {
     database withSession { implicit session ⇒
       val q3 = for { el ← session_proc_elements if el.bprocess === bprocess && el.order > order_num } yield el
       val ordered = q3.list.zipWithIndex.map(el => el._1.copy(order = (el._2 + 1) + (order_num - 1)))
-      ordered.foreach { el => 
+      ordered.foreach { el =>
          update(el.id.get, el)
       }
     }
-    
+
 /*
 
     session_proc_elements.filter(_.bprocess === bprocess && _.order > order_num)

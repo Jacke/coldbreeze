@@ -7,6 +7,7 @@ return minorityControllers.controller('BProcessListCtrl', ['$rootScope',
   '$translate',
   '$rootScope',
   'CacheFactory',
+  'AllBPLogsFactory',
   'AllLaunchedElementsBulkFactory',
   'AllElementsBulkFactory',
   'InteractionsBulkFactory',
@@ -27,7 +28,7 @@ return minorityControllers.controller('BProcessListCtrl', ['$rootScope',
   'BPStationsFactory',
   'BPServicesFactory',
   '$location',
-  function ($rootScope,$scope, $window, $translate, $rootScope,CacheFactory,AllLaunchedElementsBulkFactory, AllElementsBulkFactory, InteractionsBulkFactory, BPElemsFactory, RefsFactory, TreeBuilder, NotificationBroadcaster,SessionsFactory, ngDialog, $http, $routeParams, $filter, BPElemsFactory, BPSpacesFactory, BPSpaceElemsFactory, BProcessesFactory, BProcessFactory, BPStationsFactory, BPServicesFactory, $location) {
+  function ($rootScope,$scope, $window, $translate, $rootScope,CacheFactory,AllBPLogsFactory,AllLaunchedElementsBulkFactory, AllElementsBulkFactory, InteractionsBulkFactory, BPElemsFactory, RefsFactory, TreeBuilder, NotificationBroadcaster,SessionsFactory, ngDialog, $http, $routeParams, $filter, BPElemsFactory, BPSpacesFactory, BPSpaceElemsFactory, BProcessesFactory, BProcessFactory, BPStationsFactory, BPServicesFactory, $location) {
 
 $scope.changeLanguage = function () {
   $translate.use($rootScope.lang);
@@ -350,12 +351,20 @@ $scope.loadProcesses = function() {
   }
 
 // Init thumb
-return  $scope.bprocesses.then(function(processes){
-      console.log('$scope.loadProcessesFromCache', processes);
-
+return  $scope.bprocesses.then(function(processes) {
+        console.log('$scope.loadProcessesFromCache', processes);
         var process_ids = _.map(processes, function(d){
               return 'ids='+d.id+'&'
         });
+
+
+        $scope.allLogsPromise = AllBPLogsFactory.query({ids: (process_ids + '').split(',').join('') });
+        //AllBPLogsFactory
+        $scope.allLogsPromise.$promise.then(function(d) {
+          $scope.allLogs = d;
+          console.log('allLogsPromise', $scope.allLogs);
+
+        })
 
         $scope.allElementsPromise = AllElementsBulkFactory.queryAll({
                                               ids: (process_ids + '').split(',').join('') });
@@ -387,61 +396,80 @@ return  $scope.bprocesses.then(function(processes){
 
   });
 
-
 };
+
 $scope.loadProcesses();
 
-  // New form
-  if ($window.location.hash.split("?")[1] == "new") {
-    console.log("new form");
-    $scope.createNewBP();
-  }
 
-  $scope.stations = BPStationsFactory.query();
 
-  $scope.stations.$promise.then(function(data) {
-    $scope.stations = _.forEach(data, function(d) { d.inlineLaunchShow = false; return d });
-  });
-  $scope.bpElemLength = $http.get(jsRoutes.controllers.ProfileController.dashboard().absoluteURL(document.ssl_enabled) + 'bprocess/elems_length')
-          .success(function (data) {
-              // Stores the token until the user closes the browser window.
-              $scope.bpElemLength = data;
-          })
-          .error(function () {
-          });
 
-  $scope.stationPercent = function(proc_id) {
-    /*var found = $filter('filter')($scope.bpElemLength, {id: station.process});
+/***************
+ *  RequestController data
+ */
+$scope.bboardDataPromises = [];
 
-    if (found.length) {
-             return found[0];
-         } else {
-             100;
-         }*/
-         //$scope.bpElemLength.$promise.then(function(data) {
-             $scope.bpElemLength[proc_id];
-     //});
-  };
-  $scope.parsePercent = function(num) {
-    return parseInt(num);
-  };
+$scope.pushBboardDataPromise = function(launchId, bboardDataPromise) {
+  $scope.bboardDataPromises.push({ launchId, bboardDataPromise });
+}
 
-  $scope.openInvoke = function(proc_id) {
-    $scope.bpId = proc_id;
-    ngDialog.open({
-      template: '/assets/partials/inputs/inputs.html',
-      controller: 'BPRequestCtrl',
-      scope: $scope
-    })
-  };
-  $scope.filterService = function(service_id) {
-         var found = $filter('filter')($scope.services, {id: service_id}, true);
-         if (found.length) {
-             return found[0].title;
-         } else {
-             '';
-         }
-     }
+
+
+
+
+
+// New form
+if ($window.location.hash.split("?")[1] == "new") {
+  console.log("new form");
+  $scope.createNewBP();
+}
+
+$scope.stations = BPStationsFactory.query();
+
+$scope.stations.$promise.then(function(data) {
+  $scope.stations = _.forEach(data, function(d) { d.inlineLaunchShow = false; return d });
+});
+
+$scope.bpElemLength = $http.get(
+  jsRoutes.controllers.ProfileController.dashboard().absoluteURL(document.ssl_enabled) + 'bprocess/elems_length')
+      .success(function (data) {
+          // Stores the token until the user closes the browser window.
+          $scope.bpElemLength = data;
+      }).error(function () {  });
+
+$scope.stationPercent = function(proc_id) {
+  /*var found = $filter('filter')($scope.bpElemLength, {id: station.process});
+
+  if (found.length) {
+           return found[0];
+       } else {
+           100;
+       }*/
+       //$scope.bpElemLength.$promise.then(function(data) {
+           $scope.bpElemLength[proc_id];
+   //});
+};
+
+$scope.parsePercent = function(num) {
+  return parseInt(num);
+};
+
+$scope.openInvoke = function(proc_id) {
+  $scope.bpId = proc_id;
+  ngDialog.open({
+    template: '/assets/partials/inputs/inputs.html',
+    controller: 'BPRequestCtrl',
+    scope: $scope
+  })
+};
+
+$scope.filterService = function(service_id) {
+       var found = $filter('filter')($scope.services, {id: service_id}, true);
+       if (found.length) {
+           return found[0].title;
+       } else {
+           '';
+       }
+}
 
 
 $scope.capitalizeFirstLetter = function (string) {
@@ -565,7 +593,10 @@ $scope.$on('launchLocker', function(event, args) {
 
 
 
-    //BPInLoggersStationFactory.query({BPid: $route.current.params.BPid, session_id: stationId});
+
+
+
+//BPInLoggersStationFactory.query({BPid: $route.current.params.BPid, session_id: stationId});
 
   /**
   *

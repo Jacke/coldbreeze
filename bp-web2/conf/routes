@@ -67,12 +67,28 @@ GET         /subscribers/new                        @controllers.SubscribtionCon
 # API
 
 #GET         /v1													@controllers.APIController.v1
+
+###
+#  summary: fetch launches
+#  responses:
+#    200:
+#      description: success
+#      schema:
+#        $ref: '#/definitions/us.ority.core.Protocol.BPSession'
+###
 GET         /api/v1/launches            @controllers.APIController.all_sessions_v1
 
 
 
 # Businesses
+
+#  summary: fetch businesses
+#  responses:
+#    200:
+#      description: success
+###
 GET         /businesses                                         @controllers.BusinessController.index()
+
 GET         /business/create                                    @controllers.BusinessController.create()
 POST        /business/create                                    @controllers.BusinessController.create_new()
 GET         /business/update/:id                                @controllers.BusinessController.update(id: Int)
@@ -82,7 +98,16 @@ GET         /bprocess/:BPid/elemperms                           @controllers.Per
 GET         /bprocess/:BPid/perms                               @controllers.PermissionController.permsOnly(BPid: Int)
 GET         /api/v1/peoples                                  	@controllers.PermissionController.peoplesOnly()
 
+
+#  summary: fetch businesses
+#  responses:
+#    200:
+#      description: success
+#      schema:
+#        $ref: '#/definitions/com.iheart.api.Protocol.CardCreated'
+###
 GET         /elemperms                                          @controllers.PermissionController.index()
+
 POST        /elemperms                                          @controllers.PermissionController.create_new()
 PUT         /elemperm/:id                                       @controllers.PermissionController.update(id: Int)
 DELETE      /elemperm/:id                                       @controllers.PermissionController.destroy(id: Int)
@@ -215,7 +240,7 @@ POST        /warp/send 								 @controllers.WarpController.warpSend()
 
 # Sessions
 GET         /bprocess/:id/logs                       @controllers.ProcessSessionController.logs_index(id: Int)
-GET         /bprocesses/logs                         @controllers.ProcessSessionController.logs_indexes(ids: List[Int])
+GET         /bprocess/allLogs/                       @controllers.ProcessSessionController.logs_indexes(ids: List[Int])
 
 GET          /bprocess/:BPid/sessions        		 @controllers.ProcessSessionController.process_all_session(BPid: Int)
 #GET         /bprocess/:BPid/session/:id     		 #
@@ -238,20 +263,20 @@ POST        /session/:id/listed                      @controllers.ProcessSession
 
 
 # States, switcher and reactions with outputs
-GET    /bprocess/:BPid/states        			  	             @controllers.BusinessProcessController.state_index(BPid: Int)
-GET    /bprocess/:BPid/session/:session_id/states          @controllers.BusinessProcessController.state_session_index(BPid: Int, session_id: Int)
-PUT    /bprocess/:BPid/session/:session_id/state/:state_id @controllers.BusinessProcessController.update_session_state(BPid: Int, session_id: Int, state_id: Int)
-DELETE /bprocess/:BPid/session/:session_id/state/:state_id @controllers.BusinessProcessController.delete_session_state(BPid: Int, session_id: Int, state_id: Int)
-PUT    /bprocess/:BPid/state/:state_id   @controllers.BusinessProcessController.update_state(BPid: Int, state_id: Int)
-DELETE /bprocess/:BPid/state/:state_id   @controllers.BusinessProcessController.delete_state(BPid: Int, state_id: Int)
+GET    /bprocess/:BPid/states        			  	             @controllers.ProcessElementsController.state_index(BPid: Int)
+GET    /bprocess/:BPid/session/:session_id/states          @controllers.ProcessElementsController.state_session_index(BPid: Int, session_id: Int)
+PUT    /bprocess/:BPid/session/:session_id/state/:state_id @controllers.ProcessElementsController.update_session_state(BPid: Int, session_id: Int, state_id: Int)
+DELETE /bprocess/:BPid/session/:session_id/state/:state_id @controllers.ProcessElementsController.delete_session_state(BPid: Int, session_id: Int, state_id: Int)
+PUT    /bprocess/:BPid/state/:state_id   @controllers.ProcessElementsController.update_state(BPid: Int, state_id: Int)
+DELETE /bprocess/:BPid/state/:state_id   @controllers.ProcessElementsController.delete_state(BPid: Int, state_id: Int)
 
-GET 			/bprocess/:BPid/switches		      @controllers.BusinessProcessController.switches_index(BPid: Int)
-PUT 			/bprocess/switch/:id 			        @controllers.BusinessProcessController.update_switcher(id: Int)
-DELETE 		/bprocess/switch/:id 			        @controllers.BusinessProcessController.delete_switcher(id: Int)
+GET 			/bprocess/:BPid/switches		      @controllers.ProcessElementsController.switches_index(BPid: Int)
+PUT 			/bprocess/switch/:id 			        @controllers.ProcessElementsController.update_switcher(id: Int)
+DELETE 		/bprocess/switch/:id 			        @controllers.ProcessElementsController.delete_switcher(id: Int)
 
-GET 			/bprocess/:BPid/reactions		      @controllers.BusinessProcessController.reactions_index(BPid: Int)
-PUT 			/bprocess/reaction/:id 			      @controllers.BusinessProcessController.update_reaction(id: Int)
-DELETE 		/bprocess/reaction/:id            @controllers.BusinessProcessController.delete_reaction(id: Int)
+GET 			/bprocess/:BPid/reactions		      @controllers.ProcessElementsController.reactions_index(BPid: Int)
+PUT 			/bprocess/reaction/:id 			      @controllers.ProcessElementsController.update_reaction(id: Int)
+DELETE 		/bprocess/reaction/:id            @controllers.ProcessElementsController.delete_reaction(id: Int)
 
 ################
 # Launches
@@ -391,40 +416,44 @@ PUT  /ref/:id/space_elem/:spelem_id/:space_id/down @controllers.ReflectionsContr
 GET         /interacts/                              @controllers.InteractionController.fetchInteractions(ids: List[Int])
 
 
-GET         /bprocess/elems_length                   @controllers.BusinessProcessController.bpElemLength()
+GET         /bprocess/elems_length                   @controllers.ProcessElementsController.bpElemLength()
 # Elements
-GET         /bprocess/:id/elements                   @controllers.BusinessProcessController.frontElems(id: Int)
-GET         /bprocess/:id/element_topos			         @controllers.BusinessProcessController.element_topos(id: Int)
-GET         /bprocess/:id/spaces                     @controllers.BusinessProcessController.spaces(id: Int)
-GET         /bprocess/:id/space_elems                @controllers.BusinessProcessController.spaceElems(id: Int)
+GET         /bprocess/:id/elements                   @controllers.ProcessElementsController.frontElems(id: Int)
+GET         /bprocess/:id/element_topos			         @controllers.ProcessElementsController.element_topos(id: Int)
+GET         /bprocess/:id/spaces                     @controllers.ProcessElementsController.spaces(id: Int)
+GET         /bprocess/:id/space_elems                @controllers.ProcessElementsController.spaceElems(id: Int)
 
 
 # All elements
-GET   /processes/elements/	 @controllers.BusinessProcessController.allElements(ids: List[Int])
-GET   /launches/allElements/ @controllers.LaunchElementsControllers.allElements(ids: List[Int])
+GET   /processes/elements/	       @controllers.ProcessElementsController.allElements(ids: List[Int])
+GET   /processes/elements/cached   @controllers.LaunchElementsControllers.allElementsCached(ids: List[Int],timestamp: String)
+
+GET   /launches/allElements/       @controllers.LaunchElementsControllers.allElements(ids: List[Int])
+GET   /launches/allElements/cached @controllers.LaunchElementsControllers.allElements(ids: List[Int])
+
 
 
 ###############
 # Elements CUDs
-POST /bprocess/elements                              @controllers.BusinessProcessController.createFrontElem()
-POST /bprocess/spaces                                @controllers.BusinessProcessController.createSpace()
-POST /bprocess/space_elems                           @controllers.BusinessProcessController.createSpaceElem()
+POST /bprocess/elements                              @controllers.ProcessElementsController.createFrontElem()
+POST /bprocess/spaces                                @controllers.ProcessElementsController.createSpace()
+POST /bprocess/space_elems                           @controllers.ProcessElementsController.createSpaceElem()
 #### Make parameterized /|\ ??????
 
-PUT  /bprocess/:bpId/element/:elem_id                @controllers.BusinessProcessController.updateFrontElem(bpId: Int, elem_id: Int)
-PUT  /bprocess/:bpId/element/:elem_id/up             @controllers.BusinessProcessController.moveUpFrontElem(bpId: Int, elem_id: Int)
-PUT  /bprocess/:bpId/element/:elem_id/down           @controllers.BusinessProcessController.moveDownFrontElem(bpId: Int, elem_id: Int)
+PUT  /bprocess/:bpId/element/:elem_id                @controllers.ProcessElementsController.updateFrontElem(bpId: Int, elem_id: Int)
+PUT  /bprocess/:bpId/element/:elem_id/up             @controllers.ProcessElementsController.moveUpFrontElem(bpId: Int, elem_id: Int)
+PUT  /bprocess/:bpId/element/:elem_id/down           @controllers.ProcessElementsController.moveDownFrontElem(bpId: Int, elem_id: Int)
 
-PUT  /bprocess/:id/space/:space_id                   @controllers.BusinessProcessController.updateSpace(id: Int, space_id: Int)
+PUT  /bprocess/:id/space/:space_id                   @controllers.ProcessElementsController.updateSpace(id: Int, space_id: Int)
 
-PUT  /bprocess/:id/space_elem/:spelem_id                @controllers.BusinessProcessController.updateSpaceElem(id: Int, spelem_id: Int)
-PUT  /bprocess/:id/space_elem/:spelem_id/:space_id/up   @controllers.BusinessProcessController.moveUpSpaceElem(id: Int, spelem_id: Int, space_id: Int)
-PUT  /bprocess/:id/space_elem/:spelem_id/:space_id/down @controllers.BusinessProcessController.moveDownSpaceElem(id: Int, spelem_id: Int, space_id: Int)
+PUT  /bprocess/:id/space_elem/:spelem_id                @controllers.ProcessElementsController.updateSpaceElem(id: Int, spelem_id: Int)
+PUT  /bprocess/:id/space_elem/:spelem_id/:space_id/up   @controllers.ProcessElementsController.moveUpSpaceElem(id: Int, spelem_id: Int, space_id: Int)
+PUT  /bprocess/:id/space_elem/:spelem_id/:space_id/down @controllers.ProcessElementsController.moveDownSpaceElem(id: Int, spelem_id: Int, space_id: Int)
 
 
-DELETE /bprocess/:bpID/element/:elem_id                 @controllers.BusinessProcessController.deleteFrontElem(bpID: Int, elem_id: Int)
-DELETE /bprocess/:bpID/space/:space_id                  @controllers.BusinessProcessController.deleteSpace(bpID: Int, space_id: Int)
-DELETE /bprocess/:bpID/space_elem/:spelem_id            @controllers.BusinessProcessController.deleteSpaceElem(bpID: Int, spelem_id: Int)
+DELETE /bprocess/:bpID/element/:elem_id                 @controllers.ProcessElementsController.deleteFrontElem(bpID: Int, elem_id: Int)
+DELETE /bprocess/:bpID/space/:space_id                  @controllers.ProcessElementsController.deleteSpace(bpID: Int, space_id: Int)
+DELETE /bprocess/:bpID/space_elem/:spelem_id            @controllers.ProcessElementsController.deleteSpaceElem(bpID: Int, spelem_id: Int)
 
 
 

@@ -7,8 +7,8 @@ var treeBuilderService = angular.module('minorityApp.TreeBuilderService', ['mino
     })
 
 // 4. define a module component
-treeBuilderService.factory('TreeBuilder', ['LaunchElemsFactory', 'LaunchSpacesFactory', 'LaunchSpaceElemsFactory', 'LaunchElementTopologsFactory', 'BPElemsFactory','BPSpacesFactory', 'BPSpaceElemsFactory', 
-  function(LaunchElemsFactory, LaunchSpacesFactory, LaunchSpaceElemsFactory, LaunchElementTopologsFactory, BPElemsFactory,BPSpacesFactory, BPSpaceElemsFactory) {
+treeBuilderService.factory('TreeBuilder', ['LaunchElemsFactory', 'LaunchSpacesFactory', 'LaunchSpaceElemsFactory', 'BPElemsFactory','BPSpacesFactory', 'BPSpaceElemsFactory',
+  function(LaunchElemsFactory, LaunchSpacesFactory, LaunchSpaceElemsFactory, BPElemsFactory,BPSpacesFactory, BPSpaceElemsFactory) {
 
 
 var builder = function (bp, data, data2,data3) {
@@ -55,14 +55,19 @@ var builder = function (bp, data, data2,data3) {
 var launchBuilderFetch = function (bp, launch, cnPromise, onSuccess) {
   //console.log('launchBuilderFetch launched');
   var bpelems, spaces, spaceelems;
+  console.log('cnPromise',cnPromise);
+
   cnPromise.$promise.then(function(cn) {
   //console.log(launch);
   var currentContainer = _.find(cn, function(d) { return d.launchId == launch.id});
 
-  if (currentContainer) {
+
+if (currentContainer) {
     bpelems = currentContainer.elements;//LaunchElemsFactory.query({ launch_id: launch.id });
     spaces =  currentContainer.spaces;//LaunchSpacesFactory.query({ launch_id: launch.id });
     spaceelems = currentContainer.space_elements;//LaunchSpaceElemsFactory.query({ launch_id: launch.id });
+    console.log('launchBuilderFetch',bpelems,spaces,spaceelems);
+
     builder(launch, bpelems, spaces, spaceelems);
 
         launch.frontSpaces = _.object(_.uniq(_.map(spaces, function(v) {
@@ -81,8 +86,6 @@ var launchBuilderFetch = function (bp, launch, cnPromise, onSuccess) {
           if (onSuccess != undefined) {
             onSuccess();
           }
-  //});
-
 } else {
     bpelems = LaunchElemsFactory.query({ launch_id: launch.id });
     spaces =  LaunchSpacesFactory.query({ launch_id: launch.id });
@@ -116,6 +119,8 @@ var launchBuilderFetch = function (bp, launch, cnPromise, onSuccess) {
 
   });
 };
+
+
 
 var builderFetch = function (bp, cnPromise, onSuccess) {
   var bpelems, spaces, spaceelems;
@@ -188,25 +193,18 @@ var builderFetch = function (bp, cnPromise, onSuccess) {
 
 
 
- return { 
+ return {
   buildFetch: function(data, cnPromise, onSuccess) {
    	builderFetch(data, cnPromise, onSuccess);
-  }, 
+  },
   launchBuildFetch: function(proc,session,cn, onSuccess) {
     if (session != undefined) {
       return launchBuilderFetch(proc,session, cn, onSuccess);
     } else { return null; }
- }
+  }
 }
 
 
 
 
-
-
-
-
-
-
-
-    }]);
+}]);

@@ -78,8 +78,8 @@ object BPDAOF {
     bprocesses.filter(_.id === id)
   private def filterByWorkbenchQuery(id: Int): Query[BProcesses, BProcessDTO, Seq] =
     bprocesses.filter(_.business === id)
-    private def filterByServicesQuery(services: List[Int]): Query[BProcesses, BProcessDTO, Seq] =
-      bprocesses.filter(_.service inSetBind services)
+  private def filterByServicesQuery(services: List[Int]): Query[BProcesses, BProcessDTO, Seq] =
+    bprocesses.filter(_.service inSetBind services)
 
   private def filterByProcessesTimestampQuery(ids: List[Int], timestamp: Option[String]): DBIO[Seq[BProcessDTO]] = {
           val sInt:String = timestamp.getOrElse("0")
@@ -95,7 +95,7 @@ object BPDAOF {
     val s = sql"SELECT * from bprocesses where bprocesses.created_at > to_timestamp(${ts}) AND bprocesses.service_id IN (#${cnames}   )"
       .as[BProcessDTO]
           s
-    }
+  }
 
 
   def findByBusiness(business: Int):Future[Seq[BProcessDTO]] = {

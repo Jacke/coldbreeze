@@ -198,11 +198,16 @@ def reactions_index(launch_id: Int) = SecuredAction { implicit request =>
 
 def allElements(launchIds: List[Int]) = SecuredAction.async { implicit request =>
   val secured_ids = launchIds.filter( launchId =>
-    security.BRes.sessionSecured(launchId, request.identity.emailFilled, request.identity.businessFirst))
+        security.BRes.sessionSecured(launchId, request.identity.emailFilled, request.identity.businessFirst))
+  val elementsAllF = SessionProcElementDAOF.findByLaunchesIds(secured_ids)
+  val spacesAllF = SessionSpaceDAOF.findByLaunchesIds(secured_ids)
+  val spaceElementsAllF = SessionSpaceElemDAOF.findByLaunchesIds(secured_ids)
 
+    elementsAllF.flatMap { elementsAll =>
+      spacesAllF.flatMap { spacesAll =>
+        spaceElementsAllF.map { spaceElementsAll =>
 
-  val allElemCn = secured_ids.map { launchId =>
-
+    val allElemCn = secured_ids.map { launchId =>
     val topologs_dto = SessionElemTopologDAO.findBySession(launchId)
     Logger.debug(s"topos quantity are $topologs_dto.length")
     val topologs:List[SessionElementTopologyWrapper] = topologs_dto.filter(topo => topo.front_elem_id.isDefined).map { topolog =>
@@ -223,18 +228,67 @@ def allElements(launchIds: List[Int]) = SecuredAction.async { implicit request =
 
     AllLaunchedElementsContainer(
       launchId = launchId,
-      elements = SessionProcElementDAO.findBySession(launchId),
-      spaces = SessionSpaceDAO.findBySession(launchId),
-      space_elements = SessionSpaceElemDAO.findBySession(launchId),
+      elements = elementsAll.filter(c => c.session == launchId).toList,
+      spaces = spacesAll.filter(c => c.session == launchId).toList,
+      space_elements = spaceElementsAll.filter(c => c.session == launchId).toList,
       element_topos = topologs
     )
+    }
+    Ok(Json.toJson( allElemCn ) )
+
   }
-  Future(Ok(Json.toJson( allElemCn ) ))
+  }
+  }
+
+
 }
 
 
+def allElementsCached(launchIds: List[Int], timestamp: String) = SecuredAction.async { implicit request =>
+  val secured_ids = launchIds.filter( launchId =>
+        security.BRes.sessionSecured(launchId, request.identity.emailFilled, request.identity.businessFirst))
+  val elementsAllF = SessionProcElementDAOF.findByLaunchesIds(secured_ids)
+  val spacesAllF = SessionSpaceDAOF.findByLaunchesIds(secured_ids)
+  val spaceElementsAllF = SessionSpaceElemDAOF.findByLaunchesIds(secured_ids)
 
+    elementsAllF.flatMap { elementsAll =>
+      spacesAllF.flatMap { spacesAll =>
+        spaceElementsAllF.map { spaceElementsAll =>
 
+    val allElemCn = secured_ids.map { launchId =>
+    val topologs_dto = SessionElemTopologDAO.findBySession(launchId)
+    Logger.debug(s"topos quantity are $topologs_dto.length")
+    val topologs:List[SessionElementTopologyWrapper] = topologs_dto.filter(topo => topo.front_elem_id.isDefined).map { topolog =>
+        val element = SessionProcElementDAO.findById(topolog.front_elem_id.get).get
+        SessionElementTopologyWrapper(
+         topo_id = topolog.id.get,
+         element_id = element.id.get,
+         element_title = element.title,
+         space_element = false)
+    } ++ topologs_dto.filter(topo => topo.space_elem_id.isDefined).map { topolog =>
+        val element = SessionSpaceElemDAO.findById(topolog.space_elem_id.get).get
+        SessionElementTopologyWrapper(
+         topo_id = topolog.id.get,
+         element_id = element.id.get,
+         element_title = element.title,
+         space_element = true)
+    }
+
+    AllLaunchedElementsContainer(
+      launchId = launchId,
+      elements = elementsAll.filter(c => c.session == launchId).toList,
+      spaces = spacesAll.filter(c => c.session == launchId).toList,
+      space_elements = spaceElementsAll.filter(c => c.session == launchId).toList,
+      element_topos = topologs
+    )
+    }
+    Ok(Json.toJson( allElemCn ) )
+
+  }
+  }
+  }
+
+}
 
 
 

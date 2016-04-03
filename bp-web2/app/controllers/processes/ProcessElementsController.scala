@@ -2,12 +2,9 @@ package controllers
 
 import models.DAO.resources.{BusinessDAO, BusinessDTO}
 import models.DAO._
-
 import play.api._
 import play.api.mvc._
 import play.twirl.api.Html
-
-//{Action, Controller}
 import play.api.http.MimeTypes
 import play.api.libs.json._
 import play.api.cache._
@@ -17,7 +14,6 @@ import play.api.data.format.Formats
 import play.api.data.format.Formatter
 import play.api.data.FormError
 import play.api.Logger
-
 import views._
 import models.User
 import service.DemoUser
@@ -35,7 +31,6 @@ import models.DAO._
 import models.DAO.resources._
 import models.DAO.CompositeValues
 import play.api.Play.current
-
 import main.scala.bprocesses._
 import main.scala.simple_parts.process.Units._
 import models.DAO.reflect._
@@ -45,24 +40,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 import scala.util.Try
-
-
-case class RefElemContainer(title: String, desc: String = "", business: Int, process: Int, ref: Int, space_id: Option[Int]= None)
-
-
-case class ReactionCollection(reaction: UnitReaction,
-reaction_state_outs: List[UnitReactionStateOut])
-case class ElementTopologyWrapper(topo_id: Int, element_id: Int, element_title: String, space_element: Boolean = false)
-
-case class AllProcessElementsContainer(processId: Int,
-  elements: List[UndefElement],
-  spaces: List[BPSpaceDTO],
-  space_elements: List[SpaceElementDTO],
-  element_topos: List[ElemTopology]
-)
-
 import javax.inject.Inject
-
 import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
@@ -71,10 +49,12 @@ import models.User2
 import play.api.i18n.MessagesApi
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-
 import play.api.mvc.{ Action, RequestHeader }
 
-class BusinessProcessController @Inject() (
+
+
+
+class ProcessElementsController @Inject() (
   val messagesApi: MessagesApi,
   val env: Environment[User2, CookieAuthenticator],
   socialProviderRegistry: SocialProviderRegistry)
@@ -130,179 +110,8 @@ class BusinessProcessController @Inject() (
   implicit val DeltasContainerWrites = Json.format[DeltasContainer]
 
 
-def bprocess = SecuredAction { implicit request =>
-    val business = request.identity.businessFirst
-    val user_services = BusinessServiceDAO.getAllByBusiness(business).map(_.id.getOrElse(-1))
 
-    val bprocess = BPDAO.getByServices(user_services) // TODO: Not safe
-    // TODO: Add for actor, if they assigned to process
-
-    val user = request.identity
-
-    /**
-     * Simple employee
-     * Restricted by Act Permission
-     */
-    if (user.isEmployee && !user.isManager) {
-       println(request.identity.isEmployee)
-       println("Restricted by Act Permission")
-       // Employee assigned process
-       val acts = ActPermissionDAO.getByUID(request.identity.emailFilled)
-       val bpIds = ActPermissionDAO.getByUIDprocIDS(request.identity.emailFilled)
-       val procOut = bprocess.filter(bp => bpIds.contains(bp.id.get))
-       Ok(Json.toJson( procOut ))
-    } else {
-      //***
-      //** Primary manager processes
-      //***
-      println("Primary manager processes")
-      val procOut = bprocess.filter(bp => user_services.contains(bp.service))
-      Ok(Json.toJson( procOut ))
-    }
-}
-
-
-def all_cached_bprocess(timestamp: String) = SecuredAction.async { implicit request =>
-    val business = request.identity.businessFirst
-    val user_services = BusinessServiceDAO.getAllByBusiness(business).map(_.id.getOrElse(-1))
-
-    val bprocess = BPDAOF.getByServices(user_services, Some(timestamp)) // TODO: Not safe
-    // TODO: Add for actor, if they assigned to process
-    bprocess.flatMap { bprocess =>
-
-    val user = request.identity
-    if (user.isEmployee && !user.isManager) {
-       println(request.identity.isEmployee)
-       println("Restricted by Act Permission")
-       // Employee assigned process
-       val acts = ActPermissionDAO.getByUID(request.identity.emailFilled)
-       val bpIds = ActPermissionDAO.getByUIDprocIDS(request.identity.emailFilled)
-       val procOut = bprocess.filter(bp => bpIds.contains(bp.id.get))
-       Future.successful(
-         Ok(Json.toJson( procOut ))
-      )
-    } else {
-      //** Primary manager processes
-      val procOut = bprocess.filter(bp => user_services.contains(bp.service))
-      val deltasF = CachedRemovedResourcesDAO
-                          .findAllByScope(request.identity.businessFirst.toString,"workbench",
-                              "processes",
-                              Some(timestamp)
-                          )
-      deltasF.map { deltas =>
-
-      val deltasJson = Json.toJson( deltas )
-      val jsonProcesses = Json.toJson( procOut )
-      Ok(
-          JsObject(Seq(
-            "c" -> jsonProcesses,
-            "deltas" -> deltasJson
-          ))
-      )
-    }
-
-    }
-    }
-}
-
-
-
-
-
-
-def copy(bpId: Int, orig_title: String) = SecuredAction { implicit request =>
-    if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, bpId)) {
-       val cloned:Int = cloner.util.ProcessCloner.clone(bpId, orig_title)
-       cloned match {
-         case -1 => BadRequest(Json.toJson(Map("error" -> "Cannot copy process")))
-         case id:Int => Ok(Json.toJson(id))
-       }
-     } else {
-          Forbidden(Json.obj("status" -> "Access denied"))
-     }
-}
-
-
-def show_bprocess(id: Int) = SecuredAction { implicit request =>
-    val business:Int = request.identity.businessFirst
-    BPDAO.get(id) match {
-      case Some(bprocess) => {
-        if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, id)) {
-         Ok(Json.toJson(bprocess))
-        } else {
-          Forbidden(Json.obj("status" -> "Access denied"))
-        }
-      }
-      case _ => BadRequest(Json.obj("status" -> "Not found"))
-    }
-}
-
-
-
-def create_bprocess = SecuredAction(BodyParsers.parse.json) { request =>
-  val bpResult = request.body.validate[BProcessDTO]
-  val business:Int = request.identity.businessFirst
-    Logger.debug(s"trying create process with $bpResult")
-    bpResult.fold(
-    errors => {
-       Logger.error(s"error with $bpResult")
-      BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toJson(errors)))
-    },
-    bprocess => {
-      BPDAO.pull_object(bprocess.copy(business = business)) match {
-        case -1 => BadRequest(Json.obj("status" -> "Cannot create process"))
-        case _@id:Int => {
-          AutoTracer.defaultStatesForProcess(process_id = id)
-          utilities.NewUserRoutine.defaultPermsForAnalytics(process_id = id, business = bprocess.business)
-
-          action(request.identity.emailFilled, process = Some(id),
-                 action = ProcHisCom.processCreated, what = Some(ProcHisCom.processCreated), what_id = Some(id))
-
-          Ok(Json.obj("status" ->"OK", "message" -> id ))
-        }
-      }
-
-    }
-  )
-}
-def update_bprocess(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
-    val bpResult = request.body.validate[BProcessDTO]
-    val business:Int = request.identity.businessFirst
-      bpResult.fold(
-        errors => {
-          BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toJson(errors)))
-        },
-        bprocess => {
-          if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, id)) {
-              BPDAO.update(id, bprocess.copy(business = business))
-
-              action(request.identity.emailFilled, process = Some(id),
-                 action = ProcHisCom.processUpdated, what = Some(ProcHisCom.processUpdated), what_id = Some(id))
-
-              Ok(Json.obj("status" ->"OK", "message" -> ("Bprocess '"+bprocess.title+"' saved.") ))
-            } else {
-              Forbidden(Json.obj("status" -> "Access denied"))
-            }
-        }
-      )
-}
-
-def delete_bprocess(id: Int) = SecuredAction { implicit request =>
-     val business:Int = request.identity.businessFirst
-     BPDAO.get(id) match {
-      case Some(bprocess) => {
-        if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, id)) {
-           action(request.identity.emailFilled, process = Some(id),
-             action = ProcHisCom.processDeleted, what = Some(ProcHisCom.processDeleted), what_id = Some(id))
-           Ok(Json.toJson(BPDAO.delete(id)))
-           } else {
-           Forbidden(Json.obj("status" -> "Access denied"))
-        }
-      }
-      case _ => BadRequest(Json.obj("status" -> "Not found"))
-    }
-}
-
+// GET   /processes/elements/
 def allElements(process_ids: List[Int]) = SecuredAction.async { implicit request =>
   val securedProcessIdsF = security.BRes.processesIdsIsOwnedByBiz(request.identity.businessFirst, process_ids)
 
@@ -327,6 +136,45 @@ def allElements(process_ids: List[Int]) = SecuredAction.async { implicit request
     Ok(Json.toJson(allElementCn) )
   }
 }
+
+// GET   /processes/elements/cached
+def allElementsCached(process_ids: List[Int],timestamp:String) = SecuredAction.async { implicit request =>
+
+  val securedProcessIdsF = security.BRes.processesIdsIsOwnedByBiz(request.identity.businessFirst, process_ids)
+  securedProcessIdsF.flatMap { securedProcessIds =>
+    val elementsAllF = ProcElemDAOF.findByBPSId(securedProcessIds)
+    val spacesAllF = BPSpaceDAOF.findByBPSId(securedProcessIds)
+    val spaceElementsAllF = SpaceElemDAOF.findByBPSId(securedProcessIds)
+    elementsAllF.flatMap { elementsAll =>
+      spacesAllF.flatMap { spacesAll =>
+        spaceElementsAllF.map { spaceElementsAll =>
+          val allElementCn = securedProcessIds.map { processId =>
+            val topologs_dto = ElemTopologDAO.findByBP(processId)
+            val topologs:List[ElementTopologyWrapper] = topologs_dto.filter(topo => topo.front_elem_id.isDefined).map { topolog =>
+                val element = ProcElemDAO.findById(topolog.front_elem_id.get).get
+                ElementTopologyWrapper(topo_id = topolog.id.get, element_id = element.id.get, element_title = element.title, space_element = false)
+            } ++ topologs_dto.filter(topo => topo.space_elem_id.isDefined).map { topolog =>
+                val element = SpaceElemDAO.findById(topolog.space_elem_id.get).get
+                ElementTopologyWrapper(topo_id = topolog.id.get, element_id = element.id.get, element_title = element.title, space_element = true)
+            }
+
+
+            AllProcessElementsContainer(processId = processId,
+              elements = elementsAll.filter(c => c.bprocess == processId).toList,
+              spaces = spacesAll.filter(c => c.bprocess == processId).toList,
+              space_elements = spaceElementsAll.filter(c => c.bprocess == processId).toList,
+              element_topos = topologs_dto
+            )
+          }
+          Ok(Json.toJson(allElementCn) )
+
+      }
+    }
+  }
+
+  }
+}
+
 
 // /bprocess/:id/elements
 def frontElems(id: Int) = SecuredAction { implicit request =>
@@ -363,14 +211,6 @@ def spaceElems(id: Int) = SecuredAction { implicit request =>
 
 
 
-
-
-/**
- * Forms
- */
-def generateCV(a: String):Some[CompositeValues] = {
-  Some(CompositeValues())
-}
 
 
 val UndefElementForm = Form(
@@ -796,9 +636,6 @@ private def haltActiveStations(BPid: Int) = {
     }
 }
 
-def embed() = {
-  ???
-}
 private def deleteOwnedSpace(elem_id:Option[Int],spelem_id:Option[Int]) {
   if (elem_id.isDefined) {
     BPSpaceDAO.deleteOwnedSpace(elem_id,spelem_id)

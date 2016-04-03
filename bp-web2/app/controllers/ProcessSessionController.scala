@@ -52,7 +52,8 @@ case class LogsContainer(session_loggers: List[BPLoggerDTO],
                          process_histories: List[ProcessHistoryDTO],
                          stations: List[BPStationDTO],
                          input_logs: List[InputLogger] = List.empty,
-                         state_logs: List[SessionStateLog] = List.empty)
+                         state_logs: List[SessionStateLog] = List.empty,
+                         procId: Int = 0)
 
 
 import javax.inject.Inject
@@ -278,28 +279,38 @@ def logs_index(id: Int) = SecuredAction.async { implicit request =>
 
     for {
       maybeHistory <- processHistoriesF
-      result <- Future(Ok(Json.toJson(LogsContainer(session_loggers, maybeHistory.toList, stations,input_logs,session_log))))
+      result <- Future(Ok(Json.toJson(LogsContainer(session_loggers,
+        maybeHistory.toList,
+        stations,input_logs,
+        session_log,
+        id
+        ))))
     } yield result
 
       //Ok(Json.toJson(LogsContainer(session_loggers, processHistories, stations,input_logs,session_log)))
   } else { Future(Forbidden(Json.obj("status" -> "Not found"))) }
 }
-//GET         /bprocesses/logs
+
+
+
+//GET         /bprocess/allLogs/
 def logs_indexes(ids: List[Int]) = SecuredAction.async { implicit request =>
   val secured_ids = ids.filter( id =>
     security.BRes.procIsOwnedByBiz(request.identity.businessFirst, id))
 
-    val logsContainerF = Future.sequence( secured_ids.map { id =>
-      val processHistoriesF:Future[Seq[models.DAO.ProcessHistoryDTO]] = ProcHistoryDAO.getByProcessF(id)
-      val session_loggers = BPLoggerDAO.findByBPId(id)
-      val stations = BPStationDAO.findByBPId(id)
-      val session_ids = stations.map(st => st.session)
+    val logsContainerF = Future.sequence(
 
-      val input_logs = InputLoggerDAO.getBySessions(session_ids)
-      val session_log = SessionStateLogDAO.getAllBySessions(session_ids)
-      processHistoriesF.map { maybeHistory =>
-        LogsContainer(session_loggers, maybeHistory.toList, stations,input_logs,session_log)
-      }
+      secured_ids.map { id =>
+        val processHistoriesF:Future[Seq[models.DAO.ProcessHistoryDTO]] = ProcHistoryDAO.getByProcessF(id)
+        val session_loggers = BPLoggerDAO.findByBPId(id)
+        val stations = BPStationDAO.findByBPId(id)
+        val session_ids = stations.map(st => st.session)
+
+        val input_logs = InputLoggerDAO.getBySessions(session_ids)
+        val session_log = SessionStateLogDAO.getAllBySessions(session_ids)
+        processHistoriesF.map { maybeHistory =>
+          LogsContainer(session_loggers, maybeHistory.toList, stations,input_logs,session_log, id)
+        }
     } )
     for {
       logsContainer <- logsContainerF

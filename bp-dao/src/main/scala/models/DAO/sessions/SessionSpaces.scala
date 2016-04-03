@@ -4,7 +4,7 @@ import com.github.nscala_time.time.Imports._
 import models.DAO.conversion.DatabaseCred
 import slick.model.ForeignKeyAction
 import main.scala.simple_parts.process.Units._
-import main.scala.bprocesses.refs.UnitRefs._  
+import main.scala.bprocesses.refs.UnitRefs._
 
 class SessionSpaces(tag: Tag) extends Table[SessionSpaceDTO](tag, "session_spaces") {
   def id        = column[Int]("id", O.PrimaryKey, O.AutoInc)
@@ -18,9 +18,9 @@ class SessionSpaces(tag: Tag) extends Table[SessionSpaceDTO](tag, "session_space
   def brick_nested = column[Option[Int]]("brick_nested_id")
   def nestingLevel = column[Int]("nesting_level")
 
-  
+
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
+  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")
 
 
   def * = (id.?, bprocess, session, index, container, subbrick, brick_front, brick_nested, nestingLevel,
@@ -29,23 +29,23 @@ class SessionSpaces(tag: Tag) extends Table[SessionSpaceDTO](tag, "session_space
   def sessionFK  = foreignKey("s_sp_session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }
-case class SessionSpaceDTO(id: Option[Int], 
-                      bprocess: Int, 
+case class SessionSpaceDTO(id: Option[Int],
+                      bprocess: Int,
                       session: Int,
-                      index:Int, 
-                      container:Boolean, 
-                      subbrick:Boolean, 
+                      index:Int,
+                      container:Boolean,
+                      subbrick:Boolean,
                       brick_front:Option[Int]=None,
-                      brick_nested:Option[Int]=None, 
+                      brick_nested:Option[Int]=None,
                       nestingLevel: Int = 1,
                       created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
                       updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
-  
+
 import main.scala.utils._
 import main.scala.bprocesses._
 /*
   // @example method, did not fully implemented. primary implementation in Builder object.
-  def cast_nested(bprocess: BProcess, space_elems: List[SpaceElementDTO]):Option[Space] = { 
+  def cast_nested(bprocess: BProcess, space_elems: List[SpaceElementDTO]):Option[Space] = {
     val brick = bprocess.findNestedBricks().find(brick => brick.space_parent_id == id)
     if (brick.isDefined) {
     this match {
@@ -59,13 +59,13 @@ import main.scala.bprocesses._
       }
       case _ => None
     }
-  
+
   } else {
     None
   }
   }
   def castFront(bprocess: BProcess, space_elems: List[SpaceElementDTO]):Option[Space] = {
-// TODO: to space casting 
+// TODO: to space casting
 // TODO: Refactor
 
     this match {
@@ -79,7 +79,7 @@ import main.scala.bprocesses._
       }
       case _ => None
     }
-  
+
   }
 */
 
@@ -90,12 +90,12 @@ object SpaceDCO {
   def conv(el: UnitSpaceRef, business: Int, process: Int, index: Int, brick_front: Int): BPSpaceDTO = {
     BPSpaceDTO(
                       None,
-                      process, 
-                      index, 
-                      container = true, 
-                      subbrick = false, 
+                      process,
+                      index,
+                      container = true,
+                      subbrick = false,
                       brick_front = Some(brick_front),
-                      brick_nested=None, 
+                      brick_nested=None,
                       nestingLevel = 1,
                       el.created_at,
                       el.updated_at)
@@ -115,7 +115,7 @@ object SessionSpaceDAOF {
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import models.DAO.conversion.DatabaseFuture._  
+  import models.DAO.conversion.DatabaseFuture._
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
@@ -127,9 +127,13 @@ object SessionSpaceDAOF {
   private def filterQueryBySession(id: Int): Query[SessionSpaces, SessionSpaceDTO, Seq] =
     session_spaces.filter(_.session === id)
 
+    private def filterByLaunchesQuery(ids: List[Int]): Query[SessionSpaces, SessionSpaceDTO, Seq] =
+      session_spaces.filter(_.session inSetBind ids)
+    def findByLaunchesIds(bpsId: List[Int]) = db.run(filterByLaunchesQuery(bpsId).result)
+
   def findBySession(k: Int):Future[Seq[SessionSpaceDTO]] =  {
       db.run(filterQueryBySession(k).result)
-  }  
+  }
 
 }
 object SessionSpaceDAO {
@@ -152,35 +156,35 @@ object SessionSpaceDAO {
   def get(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← session_spaces if s.id === k } yield s
-      q3.list.headOption 
+      q3.list.headOption
   }
   def findBySession(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← session_spaces if s.session === k } yield s
       q3.list
-  }  
+  }
   def getAllByFront(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← session_spaces if s.brick_front === k } yield s
-      q3.list 
+      q3.list
   }
   def getAllByNested(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← session_spaces if s.brick_nested === k } yield s
-      q3.list 
+      q3.list
   }
   def findByBPId(id: Int) = {
     database withSession { implicit session =>
      val q3 = for { sp ← session_spaces if sp.bprocess === id } yield sp// <> (UndefElement.tupled, UndefElement.unapply _)
-      q3.list 
+      q3.list
     }
   }
   def findByBPSessionId(id: Int, session_id: Int) = {
     database withSession { implicit session =>
      val q3 = for { sp ← session_spaces if sp.bprocess === id && sp.session === session_id } yield sp// <> (UndefElement.tupled, UndefElement.unapply _)
-      q3.list 
+      q3.list
     }
-  }  
+  }
   def deleteOwnedSpace(elem_id:Option[Int],spelem_id:Option[Int]) {
   if (elem_id.isDefined) {
       getAllByFront(elem_id.get).map(_.id.get).foreach{ id => delete(id) }
@@ -213,7 +217,7 @@ object SessionSpaceDAO {
     }
     res
   }
-  
+
   }
   /**
    * Count all session_spaces
@@ -240,7 +244,7 @@ object SessionSpaceDAO {
       val q3 = for { sp ← session_spaces if sp.bprocess === bprocess && sp.index > index_num } yield sp
       val ordered = q3.list.zipWithIndex.map(sp => sp._1.copy(index = (sp._2 + 1) + (index_num - 1)))
       //val ordered = q3.list.zipWithIndex.map(sp => sp._1.copy(index = sp._2+index_num))
-      ordered.foreach { sp => 
+      ordered.foreach { sp =>
          update(sp.id.get, sp)
       }
     }

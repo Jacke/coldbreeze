@@ -52,8 +52,8 @@ class Application @Inject() (
       Ok(
         Routes.javascriptRouter(varName)(
           routes.javascript.ApplicationController2.signIn,
-            routes.javascript.BusinessProcessController.frontElems,
-            routes.javascript.BusinessProcessController.spaces,
+            routes.javascript.ProcessElementsController.frontElems,
+            routes.javascript.ProcessElementsController.spaces,
             routes.javascript.BusinessProcessController.copy,
             users.routes.javascript.EmployeeController.create_new,
             routes.javascript.GroupController.create_new,

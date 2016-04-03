@@ -154,7 +154,7 @@ minorityAppServices.factory('BPStationFactory', ['$resource', function ($resourc
     return $resource(baseUrl + 'bprocess/:BPid/station/:id', {}, {
         show: { method: 'GET' },
         update: { method: 'PUT', params: {id: '@id'} },
-        delete: { method: 'DELETE', params: {id: '@id'} } 
+        delete: { method: 'DELETE', params: {id: '@id'} }
     })
 }]);
 
@@ -186,7 +186,7 @@ minorityAppServices.factory('BPSessionsFactory', ['$resource', function ($resour
 minorityAppServices.factory('BPSessionFactory', ['$resource', function ($resource) {
     return $resource(baseUrl + 'bprocess/:BPid/session/:id', {}, {
         show: { method: 'GET' },
-        delete: { method: 'DELETE', params: {id: '@id'} } 
+        delete: { method: 'DELETE', params: {id: '@id'} }
     })
 }]);
 /*
@@ -200,7 +200,7 @@ minorityAppServices.factory('BPStatesFactory', ['$resource', function ($resource
 minorityAppServices.factory('BPStateFactory', ['$resource', function ($resource) {
     return $resource(baseUrl + 'bprocess/:BPid/state/:id', {}, {
         show: { method: 'GET' },
-        delete: { method: 'DELETE', params: {id: '@id'} } 
+        delete: { method: 'DELETE', params: {id: '@id'} }
     })
 }]);
 minorityAppServices.factory('BPSessionStatesFactory', ['$resource', function ($resource) {
@@ -211,7 +211,7 @@ minorityAppServices.factory('BPSessionStatesFactory', ['$resource', function ($r
 minorityAppServices.factory('BPSessionStateFactory', ['$resource', function ($resource) {
     return $resource(baseUrl + 'bprocess/:BPid/session/:id/state/:state_id', {}, {
         show: { method: 'GET' },
-        delete: { method: 'DELETE', params: {id: '@id', state_id: '@state_id'} } 
+        delete: { method: 'DELETE', params: {id: '@id', state_id: '@state_id'} }
     })
 }]);
 minorityAppServices.factory('SwitchesFactory', ['$resource', function ($resource) {
@@ -223,8 +223,8 @@ minorityAppServices.factory('SwitchesFactory', ['$resource', function ($resource
 }]);
 minorityAppServices.factory('SwitchFactory', ['$resource', function ($resource) {
     return $resource(baseUrl + 'bprocess/switch/:id', {}, {
-        update: { method: 'PUT', params: {id: '@id'} }, 
-        delete: { method: 'DELETE', params: {id: '@id'} } 
+        update: { method: 'PUT', params: {id: '@id'} },
+        delete: { method: 'DELETE', params: {id: '@id'} }
     })
 }]);
 // Reaction
@@ -237,8 +237,8 @@ minorityAppServices.factory('ReactionsFactory', ['$resource', function ($resourc
 }]);
 minorityAppServices.factory('ReactionFactory', ['$resource', function ($resource) {
     return $resource(baseUrl + 'bprocess/reaction/:id', {}, {
-        update: { method: 'PUT', params: {id: '@id'} }, 
-        delete: { method: 'DELETE', params: {id: '@id'} } 
+        update: { method: 'PUT', params: {id: '@id'} },
+        delete: { method: 'DELETE', params: {id: '@id'} }
     })
 }]);
 
@@ -262,7 +262,7 @@ minorityAppServices.factory('RefsFactory', ['$resource', function ($resource) {
 minorityAppServices.factory('RefFactory', ['$resource', function ($resource) {
     return $resource(baseUrl + 'ref/:id', {}, {
         update: { method: 'PUT', params: {id: '@id'} },
-        delete: { method: 'DELETE', params: {id: '@id'} } 
+        delete: { method: 'DELETE', params: {id: '@id'} }
     })
 }]);
 
@@ -281,8 +281,8 @@ minorityAppServices.factory('RefElemsFactory', ['$resource', function ($resource
 }]);
 minorityAppServices.factory('RefElemFactory', ['$resource', function ($resource) {
     return $resource(baseUrl + 'ref/elem/:id', {}, {
-        update: { method: 'PUT', params: {id: '@id'} }, 
-        delete: { method: 'DELETE', params: {id: '@id'} } 
+        update: { method: 'PUT', params: {id: '@id'} },
+        delete: { method: 'DELETE', params: {id: '@id'} }
     })
 }]);
 // SPACES
@@ -294,8 +294,8 @@ minorityAppServices.factory('RefSpacesFactory', ['$resource', function ($resourc
 }]);
 minorityAppServices.factory('RefSpaceFactory', ['$resource', function ($resource) {
     return $resource(baseUrl + 'ref/space/:id', {}, {
-        update: { method: 'PUT', params: {id: '@id'} }, 
-        delete: { method: 'DELETE', params: {id: '@id'} } 
+        update: { method: 'PUT', params: {id: '@id'} },
+        delete: { method: 'DELETE', params: {id: '@id'} }
     })
 }]);
 // SPACE ELEMENTS
@@ -307,8 +307,8 @@ minorityAppServices.factory('RefSpaceElemsFactory', ['$resource', function ($res
 }]);
 minorityAppServices.factory('RefSpaceElemFactory', ['$resource', function ($resource) {
     return $resource(baseUrl + 'ref/spaceelem/:id', {}, {
-        update: { method: 'PUT', params: {id: '@id'} }, 
-        delete: { method: 'DELETE', params: {id: '@id'} } 
+        update: { method: 'PUT', params: {id: '@id'} },
+        delete: { method: 'DELETE', params: {id: '@id'} }
     })
 }]);
 // STATES
@@ -321,8 +321,8 @@ minorityAppServices.factory('RefStatesFactory', ['$resource', function ($resourc
 }]);
 minorityAppServices.factory('RefStateFactory', ['$resource', function ($resource) {
     return $resource(baseUrl + 'ref/state/:id', {}, {
-        update: { method: 'PUT', params: {id: '@id'} }, 
-        delete: { method: 'DELETE', params: {id: '@id'} } 
+        update: { method: 'PUT', params: {id: '@id'} },
+        delete: { method: 'DELETE', params: {id: '@id'} }
     })
 }]);
 // SWITCHES
@@ -335,8 +335,8 @@ minorityAppServices.factory('RefSwitchesFactory', ['$resource', function ($resou
 }]);
 minorityAppServices.factory('RefSwitchFactory', ['$resource', function ($resource) {
     return $resource(baseUrl + 'ref/switch/:id', {}, {
-        update: { method: 'PUT', params: {id: '@id'} }, 
-        delete: { method: 'DELETE', params: {id: '@id'} } 
+        update: { method: 'PUT', params: {id: '@id'} },
+        delete: { method: 'DELETE', params: {id: '@id'} }
     })
 }]);
 // Reaction
@@ -349,8 +349,8 @@ minorityAppServices.factory('RefReactionsFactory', ['$resource', function ($reso
 }]);
 minorityAppServices.factory('RefReactionFactory', ['$resource', function ($resource) {
     return $resource(baseUrl + 'ref/reaction/:id', {}, {
-        update: { method: 'PUT', params: {id: '@id'} }, 
-        delete: { method: 'DELETE', params: {id: '@id'} } 
+        update: { method: 'PUT', params: {id: '@id'} },
+        delete: { method: 'DELETE', params: {id: '@id'} }
     })
 }]);
 
@@ -398,7 +398,7 @@ minorityAppServices.factory('PermissionFactory', ['$resource', function ($resour
 
 
 
-/* 
+/*
 ** BPInputLogger FACTORY
 */
 minorityAppServices.factory('BPInLoggersFactory', ['$resource', function ($resource) {
@@ -444,6 +444,12 @@ minorityAppServices.factory('BPLogsFactory', ['$resource', function ($resource) 
         create: { method: 'POST' }
     })
 }]);
+minorityAppServices.factory('AllBPLogsFactory', ['$resource', function ($resource) {
+    return $resource(baseUrl + 'bprocess/allLogs/?:ids', {}, {
+        query: { method: 'GET', isArray: true },
+    });
+}]);
+
 minorityAppServices.factory('BPLogFactory', ['$resource', function ($resource) {
     return $resource(baseUrl + 'bprocess/:BPid/log/:id', {}, {
         show: { method: 'GET' },
@@ -535,7 +541,7 @@ minorityAppServices.factory('ObserverFactory', ['$resource', function ($resource
 // In this case it is a simple value service.
 //angular.module('minorityApp.services', []).
 //  value('version', '0.1');
-// 
-  return minorityAppServices; 
-   
+//
+  return minorityAppServices;
+
 });

@@ -24,10 +24,10 @@ class ProcElements(tag: Tag) extends Table[UndefElement](tag, "proc_elements") {
 
   def order     = column[Int]("order")
   //def comps = column[Option[List[CompositeValues]]]("comps", O.DBType("compositevalues[]"))
-    
+
   def created_at= column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at= column[Option[org.joda.time.DateTime]]("updated_at")  
-    
+  def updated_at= column[Option[org.joda.time.DateTime]]("updated_at")
+
   def * = (id.?, title, desc, business, bprocess, b_type, type_title, space_own, order,
            created_at, updated_at) <> (UndefElement.tupled, UndefElement.unapply)
 
@@ -58,14 +58,14 @@ case class UndefElement(id: Option[Int],
                         type_title:String,
                         space_own:Option[Int],
                         order:Int,
-                        
+
 created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
 updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
-  
-  
 
-  def cast(process: BProcess):Option[ProcElems] = { 
-// TODO: to space casting 
+
+
+  def cast(process: BProcess):Option[ProcElems] = {
+// TODO: to space casting
 // TODO: Refactor
     this match {
       case y if (y.b_type == "brick" && y.type_title == "container_brick") => {
@@ -91,7 +91,7 @@ updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
           new Block(id.get,title,desc,None,process,b_type,type_title,order)
         )
     }
-  
+
   }
 }
 
@@ -127,7 +127,7 @@ object ProcElemDCO {
                         el.created_at,
                         el.updated_at)
   }
-  
+
 }
 
 
@@ -150,7 +150,7 @@ object ProcElemDAOF {
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import models.DAO.conversion.DatabaseFuture._  
+  import models.DAO.conversion.DatabaseFuture._
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
@@ -161,9 +161,19 @@ object ProcElemDAOF {
     proc_elements.filter(_.id === id)
   private def filterByBPQuery(id: Int): Query[ProcElements, UndefElement, Seq] =
     proc_elements.filter(_.bprocess === id)
+    private def filterByBPSQuery(ids: List[Int]): Query[ProcElements, UndefElement, Seq] =
+      proc_elements.filter(_.bprocess inSetBind ids)
+
   def findByBPId(bpId: Int) = db.run(filterByBPQuery(bpId).result)
+  def findByBPSId(bpsId: List[Int]) = db.run(filterByBPSQuery(bpsId).result)
+
+
+  def findByBPIdAndTimestamp(bpId: Int, timestamp: Option[String]) = db.run(filterByBPQuery(bpId).result)
 
 }
+
+
+
 object ProcElemDAO {
   import DatabaseCred.database
   import models.DAO.BPDAO.bprocesses
@@ -173,12 +183,13 @@ object ProcElemDAO {
   /**
    * Find a specific entity by id.
    */
-  def findByBPId(id: Int) = {
+  def findByBPId(id: Int, timestamp: Option[String] = None) = {
     database withSession { implicit session =>
      val q3 = for { el ← proc_elements if el.bprocess === id } yield el
-      q3.list 
+      q3.list
     }
   }
+
   def lastOrderOfBP(id: Int):Int = {
     database withSession { implicit session =>
        val q3 = for { el ← proc_elements if el.bprocess === id } yield el
@@ -188,21 +199,21 @@ object ProcElemDAO {
     }
   }
   def findLengthByBPId(id: Int):Int = {
-    database withSession { implicit session => 
+    database withSession { implicit session =>
        val q3 = for { el ← proc_elements if el.bprocess === id } yield el
       Query(q3.length).first
     }
   }
   def findById(id: Int):Option[UndefElement] = {
     database withSession { implicit session =>
-     val q3 = for { el ← proc_elements if el.id === id } yield el 
+     val q3 = for { el ← proc_elements if el.id === id } yield el
       q3.list.headOption
     }
   }
   def findByBPanOrder(id: Int, order: Int) = {
     database withSession { implicit session =>
      val q3 = for { el ← proc_elements if el.bprocess === id; if el.order === order } yield el
-      q3.list.headOption 
+      q3.list.headOption
     }
   }
   def pull_object(s: UndefElement) = database withSession {
@@ -220,11 +231,11 @@ object ProcElemDAO {
     }
   }
   def getAll = database withSession {
-    implicit session ⇒ 
+    implicit session ⇒
       val q3 = for { s ← proc_elements } yield s
       q3.list.sortBy(_.id)
   }
-  def delete(id: Int) = { 
+  def delete(id: Int) = {
     database withSession { implicit session ⇒
 
     val elem = findById(id)
@@ -240,13 +251,13 @@ object ProcElemDAO {
     database withSession { implicit session =>
       val minimum = findByBPId(bprocess).sortBy(_.order)
       findById(element_id) match {
-        case Some(e) => { 
+        case Some(e) => {
           if (e.order > 1 && e.order != minimum.head.order) {
             proc_elements.filter(_.id === element_id).update(e.copy(order = e.order - 1))
             val ch = findById(minimum.find(_.order == (e.order - 1)).get.id.get).get
             proc_elements.filter(_.id === minimum.find(_.order == (e.order - 1)).get.id.get).update(ch.copy(order = ch.order + 1))
           }
-          true 
+          true
         }
         case None => false
       }
@@ -256,13 +267,13 @@ object ProcElemDAO {
     database withSession { implicit session =>
       val maximum = findByBPId(bprocess).sortBy(_.order)
       findById(element_id) match {
-        case Some(e) => { 
+        case Some(e) => {
           if (e.order < maximum.last.order && e.order != maximum.last.order) {
             proc_elements.filter(_.id === element_id).update(e.copy(order = e.order + 1))
             val ch = findById(maximum.find(_.order == (e.order + 1)).get.id.get).get
             proc_elements.filter(_.id === maximum.find(_.order == (e.order + 1)).get.id.get).update(ch.copy(order = ch.order - 1))
           }
-          true 
+          true
         }
         case None => false
       }
@@ -283,11 +294,11 @@ object ProcElemDAO {
     database withSession { implicit session ⇒
       val q3 = for { el ← proc_elements if el.bprocess === bprocess && el.order > order_num } yield el
       val ordered = q3.list.zipWithIndex.map(el => el._1.copy(order = (el._2 + 1) + (order_num - 1)))
-      ordered.foreach { el => 
+      ordered.foreach { el =>
          update(el.id.get, el)
       }
     }
-    
+
 /*
 
     proc_elements.filter(_.bprocess === bprocess && _.order > order_num)

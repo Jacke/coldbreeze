@@ -7,7 +7,7 @@ import com.github.nscala_time.time.Imports._
 import models.DAO.conversion.DatabaseCred
 import slick.model.ForeignKeyAction
 import main.scala.simple_parts.process.Units._
-import main.scala.bprocesses.refs.UnitRefs._  
+import main.scala.bprocesses.refs.UnitRefs._
 
 class BPSpaces(tag: Tag) extends Table[BPSpaceDTO](tag, "bpspaces") {
   def id        = column[Int]("id", O.PrimaryKey, O.AutoInc)
@@ -20,9 +20,9 @@ class BPSpaces(tag: Tag) extends Table[BPSpaceDTO](tag, "bpspaces") {
   def brick_nested = column[Option[Int]]("brick_nested_id")
   def nestingLevel = column[Int]("nesting_level")
 
-  
+
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
+  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")
 
 
   def * = (id.?, bprocess, index, container, subbrick, brick_front, brick_nested, nestingLevel,
@@ -30,22 +30,22 @@ class BPSpaces(tag: Tag) extends Table[BPSpaceDTO](tag, "bpspaces") {
   def bpFK = foreignKey("sp_bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }
-case class BPSpaceDTO(id: Option[Int], 
-                      bprocess: Int, 
-                      index:Int, 
-                      container:Boolean, 
-                      subbrick:Boolean, 
+case class BPSpaceDTO(id: Option[Int],
+                      bprocess: Int,
+                      index:Int,
+                      container:Boolean,
+                      subbrick:Boolean,
                       brick_front:Option[Int]=None,
-                      brick_nested:Option[Int]=None, 
+                      brick_nested:Option[Int]=None,
                       nestingLevel: Int = 1,
 created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
 updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
-  
+
 import main.scala.utils._
 import main.scala.bprocesses._
 
   // @example method, did not fully implemented. primary implementation in Builder object.
-  def cast_nested(bprocess: BProcess, space_elems: List[SpaceElementDTO]):Option[Space] = { 
+  def cast_nested(bprocess: BProcess, space_elems: List[SpaceElementDTO]):Option[Space] = {
     val brick = bprocess.findNestedBricks().find(brick => brick.space_parent_id == id)
     if (brick.isDefined) {
     this match {
@@ -59,13 +59,13 @@ import main.scala.bprocesses._
       }
       case _ => None
     }
-  
+
   } else {
     None
   }
   }
   def castFront(bprocess: BProcess, space_elems: List[SpaceElementDTO]):Option[Space] = {
-// TODO: to space casting 
+// TODO: to space casting
 // TODO: Refactor
 
     this match {
@@ -79,22 +79,22 @@ import main.scala.bprocesses._
       }
       case _ => None
     }
-  
+
   }
 }
 object SpaceDCO {
   def conv(el: UnitSpaceRef, business: Int, process: Int, index: Int, brick_front: Int): BPSpaceDTO = {
     BPSpaceDTO(
 None,
-                      process, 
-                      index, 
-                      container = true, 
-                      subbrick = false, 
+                      process,
+                      index,
+                      container = true,
+                      subbrick = false,
                       brick_front = Some(brick_front),
-                      brick_nested=None, 
+                      brick_nested=None,
                       nestingLevel = 1,
 el.created_at,
-el.updated_at 
+el.updated_at
 )
   }
 }
@@ -112,7 +112,7 @@ object BPSpaceDAOF {
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import models.DAO.conversion.DatabaseFuture._  
+  import models.DAO.conversion.DatabaseFuture._
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
@@ -125,13 +125,17 @@ object BPSpaceDAOF {
     bpspaces.filter(_.bprocess === id)
   def findByBPId(bpId: Int) = db.run(filterByBPQuery(bpId).result)
 
+  private def filterByBPSQuery(ids: List[Int]): Query[BPSpaces, BPSpaceDTO, Seq] =
+    bpspaces.filter(_.bprocess inSetBind ids)
+  def findByBPSId(bpsId: List[Int]) = db.run(filterByBPSQuery(bpsId).result)
+
 }
 
 object BPSpaceDAO {
   import models.DAO.conversion.DatabaseCred._
   val bpspaces = TableQuery[BPSpaces]
 
-  def pull_object(s: BPSpaceDTO) = database withSession {
+  def pull_object(s: BPSpaceDTO, timestamp: Option[String] = None) = database withSession {
     implicit session ⇒
       val id = bpspaces returning bpspaces.map(_.id) += s
       models.utils.IdAfterBurner.elSpaceOwn(s.copy(id = Some(id)))
@@ -164,7 +168,7 @@ object BPSpaceDAO {
   def findByBPId(id: Int) = {
     database withSession { implicit session =>
      val q3 = for { sp ← bpspaces if sp.bprocess === id } yield sp// <> (UndefElement.tupled, UndefElement.unapply _)
-      q3.list 
+      q3.list
     }
   }
   def deleteOwnedSpace(elem_id:Option[Int],spelem_id:Option[Int]) {
@@ -199,7 +203,7 @@ object BPSpaceDAO {
     }
     res
   }
-  
+
   }
   /**
    * Count all bpspaces
@@ -236,7 +240,7 @@ object BPSpaceDAO {
       val q3 = for { sp ← bpspaces if sp.bprocess === bprocess && sp.index > index_num } yield sp
       val ordered = q3.list.zipWithIndex.map(sp => sp._1.copy(index = (sp._2 + 1) + (index_num - 1)))
       //val ordered = q3.list.zipWithIndex.map(sp => sp._1.copy(index = sp._2+index_num))
-      ordered.foreach { sp => 
+      ordered.foreach { sp =>
          update(sp.id.get, sp)
       }
     }

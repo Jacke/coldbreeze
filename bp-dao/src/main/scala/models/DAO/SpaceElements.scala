@@ -6,7 +6,7 @@ import models.DAO.driver.MyPostgresDriver.simple._
 import slick.model.ForeignKeyAction
 import models.DAO.conversion.{DatabaseCred, Implicits}
 import com.github.nscala_time.time.Imports._
-  
+
 import main.scala.simple_parts.process.data.{Confirm, Note, Constant}
 import main.scala.simple_parts.process.Block
 import main.scala.simple_parts.process.ContainerBrick
@@ -28,10 +28,10 @@ class SpaceElements(tag: Tag) extends Table[SpaceElementDTO](tag, "space_element
 
   def order     = column[Int]("order")
   //def comps = column[Option[List[CompositeValues]]]("comps", O.DBType("compositevalues[]"))
-    
+
   def created_at= column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at= column[Option[org.joda.time.DateTime]]("updated_at")  
-    
+  def updated_at= column[Option[org.joda.time.DateTime]]("updated_at")
+
   def * = (id.?, title, desc,  business,
            bprocess,   b_type, type_title,
            space_own,  space_owned,
@@ -61,7 +61,7 @@ case class SpaceElementDTO(id: Option[Int],
                         order:Int,
 created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
 updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
-  
+
   def cast(process: BProcess, space_dto: BPSpaceDTO):Option[ProcElems] = {
     this match {
       case x if (x.b_type == "block" && x.type_title == "test block") => {
@@ -106,7 +106,7 @@ updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
         println("space_parent REFACTOR!!!!!!!" + space_own)
         // TODO REFACTOR space_parent in brick
         Option(
-          new ContainerBrick(id.get, title, desc, None, process, b_type, type_title, order, 
+          new ContainerBrick(id.get, title, desc, None, process, b_type, type_title, order,
             None, space_role.getOrElse("container"), space_own) // Default space role is Container
           //new Block(id.get,title,desc,Implicits.fetch_cv(comps),process,b_type,type_title,order, space_parent = Some(space), space_role)
         )
@@ -165,7 +165,7 @@ None,
                         space_role = Some("container"),
                         el.order,
                         el.created_at,
-                        el.updated_at 
+                        el.updated_at
                         )
   }
   def conv2(el: main.scala.bprocesses.refs.UnitRefs.UnitSpaceElementRef, business: Int, process: Int, space_own:Option[Int], space_owned: Int): SpaceElementDTO = {
@@ -182,7 +182,7 @@ None,
                         space_role = Some("container"),
                         el.order,
                         el.created_at,
-                        el.updated_at 
+                        el.updated_at
                         )
   }
 }
@@ -205,7 +205,7 @@ object SpaceElemDAOF {
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import models.DAO.conversion.DatabaseFuture._  
+  import models.DAO.conversion.DatabaseFuture._
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
@@ -217,6 +217,13 @@ object SpaceElemDAOF {
   private def filterByBPQuery(id: Int): Query[SpaceElements, SpaceElementDTO, Seq] =
     space_elements.filter(_.bprocess === id)
   def findByBPId(bpId: Int) = db.run(filterByBPQuery(bpId).result)
+
+  private def filterByBPSQuery(ids: List[Int]): Query[SpaceElements, SpaceElementDTO, Seq] =
+    space_elements.filter(_.bprocess inSetBind ids)
+  def findByBPSId(bpsId: List[Int]) = db.run(filterByBPSQuery(bpsId).result)
+
+
+
 }
 
 object SpaceElemDAO {
@@ -228,12 +235,13 @@ object SpaceElemDAO {
   /**
    * Find a specific entity by id.
    */
-  def findByBPId(id: Int) = {
+  def findByBPId(id: Int, timestamp: Option[String] = None) = {
     database withSession { implicit session =>
       val q3 = for { el ← space_elements if el.bprocess === id } yield el
       q3.list
     }
   }
+
   def lastOrderOfBP(id: Int, space_id: Int):Int = {
     database withSession { implicit session =>
        val q3 = for { el ← space_elements if el.bprocess === id && el.space_owned === space_id } yield el
@@ -258,7 +266,7 @@ object SpaceElemDAO {
     database withSession { implicit session =>
       val q3 = for { el ← space_elements if el.id inSetBind ids } yield el
       q3.list
-               
+
     }
   }
   def findByBPanOrder(id: Int, order: Int) = {
@@ -292,7 +300,7 @@ object SpaceElemDAO {
     }
   }
   def getAll = database withSession {
-    implicit session ⇒ 
+    implicit session ⇒
       val q3 = for { s ← space_elements } yield s
       q3.list.sortBy(_.id)
   }
@@ -305,22 +313,22 @@ object SpaceElemDAO {
        case Some(el) => renewOrder(el.bprocess, el.space_owned, el.order)
        case _ =>
     }
-    res 
+    res
   }
-  
+
   }
 
 def moveUp(bprocess: Int, element_id: Int, space_id: Int) = {
     database withSession { implicit session =>
       val minimum = findByBPId(bprocess).sortBy(_.order)
       findById(element_id) match {
-        case Some(e) => { 
+        case Some(e) => {
           if (e.order > 1 && e.order != minimum.head.order) {
             space_elements.filter(_.id === element_id).update(e.copy(order = e.order - 1))
             val ch = findById(minimum.find(_.order == (e.order - 1)).get.id.get).get
             space_elements.filter(_.id === minimum.find(_.order == (e.order - 1)).get.id.get).update(ch.copy(order = ch.order + 1))
           }
-          true 
+          true
         }
         case None => false
       }
@@ -330,13 +338,13 @@ def moveUp(bprocess: Int, element_id: Int, space_id: Int) = {
     database withSession { implicit session =>
       val maximum = findBySpace(space_id).sortBy(_.order)
       findById(element_id) match {
-        case Some(e) => { 
+        case Some(e) => {
           if (e.order < maximum.last.order && e.order != maximum.last.order) {
             space_elements.filter(_.id === element_id).update(e.copy(order = e.order + 1))
             val ch = findById(maximum.find(_.order == (e.order + 1)).get.id.get).get
             space_elements.filter(_.id === maximum.find(_.order == (e.order + 1)).get.id.get).update(ch.copy(order = ch.order - 1))
           }
-          true 
+          true
         }
         case None => false
       }
@@ -358,12 +366,12 @@ def moveUp(bprocess: Int, element_id: Int, space_id: Int) = {
     database withSession { implicit session ⇒
       val q3 = for { el ← space_elements if el.bprocess === bprocess && el.space_owned === space_id && el.order > order_num } yield el
       val ordered = q3.list.zipWithIndex.map(el => el._1.copy(order = (el._2 + 1) + (order_num - 1)))
-      ordered.foreach { el => 
+      ordered.foreach { el =>
          update(el.id.get, el)
       }
     }
 
-    
+
 /*
 
     proc_elements.filter(_.bprocess === bprocess && _.order > order_num)
