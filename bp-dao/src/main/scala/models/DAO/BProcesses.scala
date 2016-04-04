@@ -181,7 +181,11 @@ object BPDAO {
     action = "updated",
     resourceTitle = "processes",
     resourceId = s"$id",
-    updatedEntity = Map("title" -> bprocess.title))
+    updatedEntity = Map("title" -> bprocess.title,
+      "service" -> bprocess.service.toString,
+      "version" -> bprocess.version.toString,
+      "state_machine_type" -> bprocess.state_machine_type.toString
+    ))
 
     bprocesses.filter(_.id === id).update(bpToUpdate)
   }

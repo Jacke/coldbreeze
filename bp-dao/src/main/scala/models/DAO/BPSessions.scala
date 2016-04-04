@@ -549,7 +549,7 @@ object BPSessionDAO {
           action = "updated",
           resourceTitle = "launches",
           resourceId = s"$id",
-          updatedEntity = Map())
+          updatedEntity = Map("active_listed" -> bpToUpdate.active_listed.toString))
           bpsessions.filter(_.id === id).update(bpToUpdate)
         }
         case _ => -1

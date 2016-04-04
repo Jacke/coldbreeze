@@ -323,6 +323,22 @@ $scope.loadProcessesFromCache = function() {
             processesCache.put('processes', finalizedProcess);
             // 5. D for resource with ids that need to be removed
             processesCache.put('processesRemoved', resp.data.deltas.d)
+            // title:.(\S+\s+\S+|\S+).service:
+
+            var updatedTitles = _.map(resp.data.deltas.u, function(d) {
+              return {id: parseInt(d.resourceId), title: d.updatedAttributes.split(/title:.(\S+\s+\S+|\S+).service:/)[1] }
+            });
+            console.log('updatedTitles', updatedTitles);
+            if (updatedTitles.length > 0){
+              var concatedProcess = _.forEach(processesCache.get('processes'), function(proc) {
+                var newTitle = _.find(updatedTitles, function(d) { return d.id == proc.id });
+                if (newTitle) {
+                  return proc.title = newTitle.title;
+                }
+              });
+              console.log('updatedTitles', concatedProcess);
+              processesCache.put('processes', concatedProcess);
+            }
             // 6. Put request to cache and update cursor
             processesCursorCache.put('updated', Date.now());
             // 7. Return resource itself

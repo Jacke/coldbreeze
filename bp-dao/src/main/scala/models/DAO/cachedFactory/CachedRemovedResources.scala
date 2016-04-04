@@ -131,9 +131,7 @@ import models.DAO.conversion.DatabaseFuture._
        action = "updated",
        resourceTitle,
        resourceId,
-       updatedEntity.foldLeft(":") { (s: String, pair: (String, String)) =>
-         pair._1 + s + pair._2
-       },
+       updatedEntity.foldLeft("")( (acc, kv) => acc + (kv._1 + ": "+ kv._2 + " ") ),
        org.joda.time.DateTime.now()
      ))
  }
