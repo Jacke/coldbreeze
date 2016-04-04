@@ -251,11 +251,12 @@ $scope.reloadSession = function(session_id) {
   }
 }
 
- $scope.$on('reloadSession', function(event, session_id) {
+$scope.$on('reloadSession', function(event, session_id) {
   if (session_id === $scope.session_id) {
     $scope.reloadInteractionContainer();//$scope.reloadSession(session_id)
   }
 });
+
 /**
  * Events Fetch updated interactions
  * @param  {[type]}
@@ -267,6 +268,7 @@ $scope.$on('newInteractionsForLaunch', function(event, obj) {
     $scope.interactions = obj.updatedInteraction[0]; // fetch only one interactions
   }
 });
+
 /**
  * Fetch element objects
  * @param  {[type]}
@@ -346,7 +348,7 @@ var deferred = $q.defer();
 if ($scope.interactionContainer === undefined || $scope.interactionContainer.$promise === undefined) {
   deferred.resolve();
 } else {
-//InteractionsFactory.query({session_id: $scope.session.session.id})
+  //InteractionsFactory.query({session_id: $scope.session.session.id})
     var data =  _.filter($scope.interactionContainer, function(d) {
       return _.filter(d.session_container.sessions, function(dd) {
         return dd.session.id === $scope.session.session.id }).length > 0;
@@ -878,7 +880,8 @@ console.log('$scope.costsPayload', $scope.costsPayload);
 }
 
 
-
+$scope.interactions = {};
+$scope.interactions.reactions = [];
 
 $scope.fillBBoardData();
 
@@ -1043,6 +1046,7 @@ $scope.haltSession = function (session_id) {
 };
 
 $scope.filterReactionByElem = function(elem) {
+  console.log('filterReactionByElem', elem);
   return function(obj) {
     return false;
   }
