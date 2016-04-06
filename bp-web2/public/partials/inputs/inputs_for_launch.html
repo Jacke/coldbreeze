@@ -26,9 +26,9 @@
   <div class="minDate"><div class="launch-info-description">Started at: </div>
 <abbr class="session__header__created_at" title="{{ lastExecuted().minDate | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="lastExecuted().minDate"></abbr>
   </div>
-  <div class="maxDate" ng-show="interactions.reactions.length > 0"><div class="launch-info-description">Latest action at:</div> 
+  <div class="maxDate" ng-show="interactions.reactions.length > 0"><div class="launch-info-description">Latest action at:</div>
 <abbr class="session__header__created_at" title="{{ lastExecuted().lastDate | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="lastExecuted().lastDate"></abbr>
-</div>  
+</div>
   <div class="maxDate" ng-show="interactions.reactions === undefined"><div class="launch-info-description">Ended at: </div>
 <abbr class="session__header__created_at" title="{{ lastExecuted().lastDate | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="lastExecuted().lastDate"></abbr>
   </div>
@@ -43,12 +43,12 @@
   <li class="reaction_list__reaction reaction_list__reaction_preview" ng-repeat="elem in trees | orderBy:'+order'">
       <a>
       <h3>{{ elem.title }} <!-- : {{ capitalizeFirstLetter(reaction.reaction.title) }} --></h3></a>
-      <a ng-click="fileSelectTab(elem)" id="fileSelectTabButton" class="fileSelectTabButton expandLaunchWindowTabButton" ng-class="elem.fileSelectTabSelected ? 'selected' : ''">Files</a>      
+      <a ng-click="fileSelectTab(elem)" id="fileSelectTabButton" class="fileSelectTabButton expandLaunchWindowTabButton" ng-class="elem.fileSelectTabSelected ? 'selected' : ''">Files</a>
       <div class="interaction-input-existence" ng-repeat="reaction in interactions.reactions | filter:filterReactionByElem(elem)">
-        <a ng-click="reactionSelect(reaction);runFrom($parent.session.session.id, reaction)" id="reactionSelectButton" ng-class="selectedClass(reaction)" class="reactionSelectButton triangle-reaction" ng-show="reaction === interactions.reactions[0]">{{ capitalizeFirstLetter(reaction.reaction.title) }}</a>        
+        <a ng-click="reactionSelect(reaction);runFrom($parent.session.session.id, reaction)" id="reactionSelectButton" ng-class="selectedClass(reaction)" class="reactionSelectButton triangle-reaction" ng-show="reaction === interactions.reactions[0]">{{ capitalizeFirstLetter(reaction.reaction.title) }}</a>
       </div>
-      <a ng-click="dataSelectTab(elem)" id="dataSelectTabButton" class="expandLaunchWindowTabButton dataSelectTabButton" ng-class="elem.dataSelectTabSelected ? 'selected' : ''">Data</a> 
-    
+      <a ng-click="dataSelectTab(elem)" id="dataSelectTabButton" class="expandLaunchWindowTabButton dataSelectTabButton" ng-class="elem.dataSelectTabSelected ? 'selected' : ''">Data</a>
+
       <div ng-include src="'assets/partials/inputs/costs.html'" class="cost-view-container" ng-init="costs = elem.costs;" ng-show="elem.dataSelectTabSelected"></div>
 
       <div ng-include src="'assets/partials/inputs/file_attach.html'" class="file-view-container" ng-init="elem.payload = []; $parent.elem.payloadNew = [];elem.fileSelectTabSelected=true;" ng-show="elem.fileSelectTabSelected"></div>
@@ -60,46 +60,11 @@
 
 
 
-<!--
-<ul class="reaction_list reaction_list_launched">
-  <li class="reaction_list__reaction reaction_list__reaction_preview" ng-init="interactions.reactions.length > 0 ? reactionSelect(interactions.reactions[0]) : false" ng-repeat="reaction in interactions.reactions">
-      <a class="selected"><h3>{{ reaction.reaction.elem.element_title }} </h3></a>
-
-      <ul class="reaction_list__reaction_in_group" style="display: none;">
-      </ul>
-        
-      <ul class="reaction_list__reaction_out_group" style="display: none;">
-        <li class="reaction_list__reaction__state_outs" ng-repeat="state_out in reaction.outs">
-           {{ stateOutAct(state_out) }} {{ state_out.state.title }}
-        </li>
-      </ul>
-      <a ng-click="reactionSelect(reaction);runFrom($parent.session.session.id, reaction)" id="reactionSelectButton" ng-class="selectedClass(reaction)" class="triangle-reaction" ng-show="reaction === interactions.reactions[0]">{{ capitalizeFirstLetter(reaction.reaction.title) }}</a>
-      <div ng-include src="'assets/partials/inputs/file_attach.html'" class="file-view-container" ng-init="elem=reaction;elem.payload = [];"></div>
-
-      <!<div class="launch-attachments" ng-show="reaction.selected">
-          <a href="#" tooltip-placement="bottom" tooltip="Not supporting right now.">Attach</a>
-            </div>-->
-      <!--<div class="center-block" ng-init="reaction.dpfiles = [];">
-      <p><a class="btn btn-primary btn-block" href="javascript:;" drop-box-picker dbpicker-files="reaction.dpfiles">Dropbox</a></p>
-      </div>
-      <div ng-include src="'assets/partials/inputs/costs.html'" class="cost-view-container" ng-init="costs = filterCostByElementId(reaction.reaction.element, reaction.costs);"></div>
- 
-  </li>
-</ul>
--->  
-
-
 
 
 
 </div>
 
-  <div class="process-thumb">
-  <!--
-  <button type="submit" id="inputResumeButton" class="btn btn-small btTxt submit btn lg solid-green ng-binding" ng-disabled="runFromDisabled" ng-click="runFrom($parent.session.session.id)" tooltip-placement="top" tooltip="Resume execution">Resume</button>
-  -->
-
-  </div>
 
 </div>
 
@@ -109,6 +74,6 @@
 
 
 
- 
+
 </div>
 </div>

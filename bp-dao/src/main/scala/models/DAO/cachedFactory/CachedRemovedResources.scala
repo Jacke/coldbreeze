@@ -89,8 +89,9 @@ import models.DAO.conversion.DatabaseFuture._
       val datetime = new org.joda.time.DateTime(sInt.toLong)
 
       db.run(filterByScopeQuery(scope, scopeType, resourceTitle,datetime).result).map { resourceDeltas =>
+        val updateVal = resourceDeltas.filter(c => c.action == "updated").lastOption
         DeltasContainer(
-          u = resourceDeltas.filter(c => c.action == "updated"),
+          u = List(updateVal).flatten,
           d = resourceDeltas.filter(c => c.action == "deleted")
         )
       }

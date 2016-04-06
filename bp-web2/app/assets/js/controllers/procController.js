@@ -1,7 +1,7 @@
 define(['angular', 'app', 'controllers'], function (angular, minorityApp, minorityControllers) {
 
 // INDEX
-return minorityControllers.controller('BProcessListCtrl', ['$rootScope',
+return minorityControllers.controller('BProcessListCtrl', ['$q','$rootScope',
   '$scope',
   '$window',
   '$translate',
@@ -28,7 +28,7 @@ return minorityControllers.controller('BProcessListCtrl', ['$rootScope',
   'BPStationsFactory',
   'BPServicesFactory',
   '$location',
-  function ($rootScope,$scope, $window, $translate, $rootScope,CacheFactory,AllBPLogsFactory,AllLaunchedElementsBulkFactory, AllElementsBulkFactory, InteractionsBulkFactory, BPElemsFactory, RefsFactory, TreeBuilder, NotificationBroadcaster,SessionsFactory, ngDialog, $http, $routeParams, $filter, BPElemsFactory, BPSpacesFactory, BPSpaceElemsFactory, BProcessesFactory, BProcessFactory, BPStationsFactory, BPServicesFactory, $location) {
+  function ($q, $rootScope,$scope, $window, $translate, $rootScope,CacheFactory,AllBPLogsFactory,AllLaunchedElementsBulkFactory, AllElementsBulkFactory, InteractionsBulkFactory, BPElemsFactory, RefsFactory, TreeBuilder, NotificationBroadcaster,SessionsFactory, ngDialog, $http, $routeParams, $filter, BPElemsFactory, BPSpacesFactory, BPSpaceElemsFactory, BProcessesFactory, BProcessFactory, BPStationsFactory, BPServicesFactory, $location) {
 
 $scope.changeLanguage = function () {
   $translate.use($rootScope.lang);
@@ -74,7 +74,7 @@ $scope.cancelSession = function (session) {
       data: {  }
       })
       .then(function(response) {
-        console.log('reloadSession');
+
         $scope.reloadSessions();
         // success
 
@@ -265,7 +265,6 @@ $scope.loadLaunchesFromCache = function() {
 
 
   launchesCache = $scope.cacheFactory.get('launchesCache');
-  console.log('launchesCursosCache', $scope.cacheFactory.get('launchesCursosCache'));
   launchesCursorCache = $scope.cacheFactory.get('launchesCursosCache');
   if (launchesCursorCache.get('updated') == undefined) {
   CacheFactory.get('launchesCursosCache').put('updated', 0) }
@@ -276,7 +275,6 @@ $scope.loadLaunchesFromCache = function() {
   // 3. Make request
   return $http.get('/sessions/cached/'+launchesCursorCache.get('updated'))
           .then(function (resp) {
-            console.log('  return $http.get(/sessions/cached/+launchesCursosCache.get(updated))', resp);
             // 4. Split C and D and apply C for new created resources
             var removedIds = _.map(resp.data.deltas.d, function(d) { return parseInt(d.resourceId) });
             var concatedProcess = launchesCache.get('launches').concat(resp.data.c);
@@ -304,7 +302,6 @@ $scope.loadProcessesFromCache = function() {
 
 
   processesCache = $scope.cacheFactory.get('processesCache');
-  console.log('processesCursosCache', $scope.cacheFactory.get('processesCursosCache'));
   processesCursorCache = $scope.cacheFactory.get('processesCursosCache');
   if (processesCursorCache.get('updated') == undefined) {
   CacheFactory.get('processesCursosCache').put('updated', 0) }
@@ -315,7 +312,6 @@ $scope.loadProcessesFromCache = function() {
   // 3. Make request
   return $http.get('/bprocesses/cached/'+processesCursorCache.get('updated'))
           .then(function (resp) {
-            console.log('  return $http.get(/bprocesses/cached/+processesCursorCache.get(updated))', resp);
             // 4. Split C and D and apply C for new created resources
             var removedIds = _.map(resp.data.deltas.d, function(d) { return parseInt(d.resourceId) });
             var concatedProcess = processesCache.get('processes').concat(resp.data.c);
@@ -328,15 +324,13 @@ $scope.loadProcessesFromCache = function() {
             var updatedTitles = _.map(resp.data.deltas.u, function(d) {
               return {id: parseInt(d.resourceId), title: d.updatedAttributes.split(/title:.(\S+\s+\S+|\S+).service:/)[1] }
             });
-            console.log('updatedTitles', updatedTitles);
             if (updatedTitles.length > 0){
               var concatedProcess = _.forEach(processesCache.get('processes'), function(proc) {
-                var newTitle = _.find(updatedTitles, function(d) { return d.id == proc.id });
-                if (newTitle) {
-                  return proc.title = newTitle.title;
+                var newTitle = _.filter(updatedTitles, function(d) { return d.id == proc.id });
+                if (newTitle.length > 0 && (newTitle[0].title !== undefined || newTitle[0].title !== "") ) {
+                  return proc.title = newTitle[0].title;
                 }
               });
-              console.log('updatedTitles', concatedProcess);
               processesCache.put('processes', concatedProcess);
             }
             // 6. Put request to cache and update cursor
@@ -368,7 +362,6 @@ $scope.loadProcesses = function() {
 
 // Init thumb
 return  $scope.bprocesses.then(function(processes) {
-        console.log('$scope.loadProcessesFromCache', processes);
         var process_ids = _.map(processes, function(d){
               return 'ids='+d.id+'&'
         });
@@ -378,7 +371,6 @@ return  $scope.bprocesses.then(function(processes) {
         //AllBPLogsFactory
         $scope.allLogsPromise.$promise.then(function(d) {
           $scope.allLogs = d;
-          console.log('allLogsPromise', $scope.allLogs);
 
         })
 
@@ -499,10 +491,15 @@ $scope.capitalizeFirstLetter = function (string) {
  *******/
 $scope.nestedRequestScopes = [];
 
+$scope.isProcessPage = true;
+
+
 $scope.reloadSessions = function() {
+
+  var deferred = $q.defer();
+
   //SessionsFactory.query()
   $scope.loadLaunchesFromCache().then(function (sessions) {
-  console.log('$scope.loadLaunchesFromCache().then(function (sessions) {', sessions);
 
   var session_ids = _.map(sessions, function(d){
       return _.map(_.filter(d.sessions, function(fd) {
@@ -515,18 +512,27 @@ $scope.reloadSessions = function() {
 
   $scope.sessions = sessions;
 
+
+
+
   $scope.allLaunchedElemPromise = AllLaunchedElementsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') });
   $scope.allLaunchedElemPromise.$promise.then(function (d) {
       $scope.allLaunchedElem = d;
+      //$scope.interactionContainerLaunch = d;
       console.log("132",$scope.allLaunchedElem);
+      deferred.resolve();
+      console.log($scope.interactionContainerLaunch);
+      console.log($scope.sessions);
   });
 
-  InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') }).$promise.then(function (d) {
+$scope.interactionContainerPromise =  InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') });
+
+$scope.interactionContainerPromise.$promise.then(function(d) {
+  $scope.interactionContainerLaunch = d;
+})
 
 
-  $scope.interactionContainerProc = d;
-  console.log($scope.interactionContainerProc);
-  console.log($scope.sessions);
+
 
   _.forEach($scope.sessions, function(session_cn) {
     _.forEach(session_cn.sessions, function(session) { return session.session.station = session.station });
@@ -546,9 +552,13 @@ $scope.reloadSessions = function() {
 
 
   });
-  });
 
+  return deferred.promise;
 };
+
+
+
+
 
 $scope.reloadSession = function(session_id) {
   //SessionsFactory.query()
@@ -565,15 +575,12 @@ $scope.reloadSession = function(session_id) {
 
   $scope.sessions = sessions;
 
-  $scope.allLaunchedElemPromise = AllLaunchedElementsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') });
-  $scope.allLaunchedElemPromise.$promise.then(function (d) {
-      $scope.allLaunchedElem = d;
-      console.log("132",$scope.allLaunchedElem);
-  });
 
-  InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') }).$promise.then(function (d) {
-    $scope.interactionContainerProc = d;
-    console.log($scope.interactionContainerProc);
+$scope.interactionContainerPromise =  InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') });
+
+$scope.interactionContainerPromise.$promise.then(function (d) {
+    $scope.interactionContainerLaunch = d;
+    console.log($scope.interactionContainerLaunch);
     console.log($scope.sessions);
 
 
@@ -597,7 +604,7 @@ $scope.reloadSession = function(session_id) {
 
 };
 
-$scope.reloadSessions();
+$scope.reloadSessionsPromise = $scope.reloadSessions();
 // Session lock by notification
 // NotificationBroadcaster
 $scope.$on('launchLocker', function(event, args) {
@@ -654,7 +661,6 @@ $scope.switchFastElementForm = function(process) {
   if ($scope.refs.length == 0) {
      $scope.refs = RefsFactory.query();
   }
-  console.log('switchFastElementForm')
   process.fastElForm == true ? process.fastElForm=false : process.fastElForm=true;
   if (process.fastElForm == undefined) {
     process.fastElForm = true;

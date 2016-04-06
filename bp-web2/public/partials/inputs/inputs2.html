@@ -12,31 +12,18 @@
            <p>
             {{ stationByProcess($parent.session.station.id).id }}
             {{ stationByProcess($parent.session.station.id).title }}
-           
+
            </p>
-            <div class=" col-md-9 col-lg-9 "> 
+            <div class=" col-md-9 col-lg-9 ">
 
   <div class="station-markers">
-    
+
   <ul class="station-states">
                       <li class="state started {{ $parent.session.station.started }}"> {{ 'STARTED' | translate }} </li>
                       <li class="state paused {{ $parent.session.station.paused }}"> {{ 'PAUSED' | translate }} </li>
                       <li class="state finished {{ $parent.session.station.finished }}"> {{ 'FINISHED' | translate }} </li>
   </ul>
   </div>
-  <!--          <p> station.started — {{ station.started}} </p>
-            <p> station.finished — {{ station.finished}} </p>
-            <p> station.state — {{ station.state }}</p> 
-            <p> station.step — {{ station.step }}</p>
-            <p> station.space — {{ station.space }}</p>
-            <p> station.container_step — {{ station.container_step }}</p> 
-            <p> station.expand_step — {{ station.expand_step }}</p>
-            <p> station.spaces_ids — {{ station.spaces_ids }} </p>
-            <p> station.inspace — {{ station.inspace }}</p>
-            <p> station.incontainer — {{ station.incontainer }}</p>
-            <p> station.inexpands — {{ station.inexpands }}</p>
-            <p> station.paused — {{ station.paused }}</p>
---> 
           <h3><a ng-click="expand = !expand">{{ 'LOGS' | translate }}</a></h3>
           <div class="slide" ng-show="expand">
 
@@ -57,7 +44,7 @@
 
                       </tr>
                       <tr>
-<td> {{ elemsHash[log.element].id }} {{ elemsHash[log.element].title }} — {{ elemsHash[log.element].type_title }} 
+<td> {{ elemsHash[log.element].id }} {{ elemsHash[log.element].title }} — {{ elemsHash[log.element].type_title }}
 {{ spaceElemHash[log.space_elem].id }} {{ spaceElemHash[log.space_elem].title }} — {{ spaceElemHash[log.element].type_title }}  </td>
 <td> {{ log.station }} </td>
 <td> {{ log.invoked }} </td>
@@ -69,7 +56,7 @@
                     </tbody>
                   </table>
 
-           
+
           </div>
         </div>
 
@@ -83,7 +70,7 @@
           <div class="params">
 
         </div>
-        
+
           <!-- <button ng-click="addParam(station)" class="btn btn-big btn-success">Add input params</button> -->
 
 
@@ -101,10 +88,10 @@
 
               <div class="params" ng-repeat="cont in station.params">
                 <pre>{{ cont.param }} {{ bpelem.id }}</pre>
-                
+
               </div>
                 </div>
-                
+
 
               </div>
               <div ng-repeat="spaceelem in station.space_elems" class="controls inputRequests">
@@ -130,6 +117,6 @@
            <hr>
           </div>
 
-        
- 
+
+
 </div>

@@ -507,35 +507,14 @@ $scope.shareLaunch = function(launch, launch_id) {
 
 }
 
-//POST    /share/launch/:launch_id
-//GET     /shared/launch/:launch_hash
-
-
-$scope.highlightActive = function (station, elem) {
-     /*var front, nest;
-     front = $scope.elemsHash[$scope.logsByStation(station.id)[$scope.logsByStation(station.id).length-1].element];
-     nest = $scope.spaceElemHash[$scope.logsByStation(station.id)[$scope.logsByStation(station.id).length-1].space_elem];
-     if (front !== undefined && front.id === elem.id && station.finished === false) {
-       return "active";
-     }
-     if (nest !== undefined && nest.id === elem.id && elem.space_owned !== undefined && station.finished === false) {
-      return "active";
-     } else { */
-     return "passive"
-     //}
-  }
-
-  //$scope.logs = BPLogsFactory.query({  BPid: $route.current.params.BPid });
-
-
-  $scope.stationByProcess = function (processId) {
+$scope.stationByProcess = function (processId) {
         var found = $filter('filter')($scope.bprocesses, {id: processId}, true);
          if (found.length) {
              return found[0];
          } else {
              '1';
          }
-  }
+}
 $scope.unlisted = function (session) {
   $http({
       url: '/session/' + session.session.id + '/unlisted',
