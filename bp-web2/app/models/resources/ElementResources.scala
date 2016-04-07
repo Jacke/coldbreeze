@@ -1,11 +1,18 @@
 package models.DAO
 
-import models.DAO.driver.MyPostgresDriver1.simple._
-import slick.model.ForeignKeyAction
-import models.DAO.conversion.{DatabaseCred, Implicits}
-import slick.model.ForeignKeyAction
-import minority.utils._
 
+//import models.DAO.driver.MyPostgresDriver1.simple._
+//import com.github.tminglei.slickpg.composite._
+import models.DAO.conversion.{DatabaseCred, Implicits}
+import org.joda.time.DateTime
+//import slick.driver.PostgresDriver.api._
+import scala.concurrent.Future
+import models.DAO.driver.MyPostgresDriver1.simple._
+import com.github.tminglei.slickpg.composite._
+//import com.github.tototoshi.slick.PostgresJodaSupport._
+import scala.concurrent._
+import ExecutionContext.Implicits.global
+//  import slick.model.ForeignKeyAction
 /*
  Try implement this shit, for nested objects, like slats and entities
 object Foo {
@@ -78,9 +85,11 @@ case class SessionElementResourceDTO(
     entities.split(",").toList
   }
 }
+
+
 object ElementResourceDAO {
   import scala.util.Try
-  import DatabaseCred.database
+  import models.DAO.conversion.DatabaseCred.database
   val element_resources = TableQuery[ElementResources]
   def pull_object(s: ElementResourceDTO) = database withSession {
     implicit session ⇒ element_resources returning element_resources.map(_.id) += s.copy(
@@ -131,9 +140,12 @@ object ElementResourceDAO {
     }
   }
 }
+
+
 object SessionElementResourceDAO {
   import scala.util.Try
-  import DatabaseCred.database
+  import models.DAO.conversion.DatabaseCred.database
+
   val session_element_resources = TableQuery[SessionElementResources]
   def pull_object(s: SessionElementResourceDTO) = database withSession {
     implicit session ⇒  session_element_resources returning session_element_resources.map(_.id) += s.copy(

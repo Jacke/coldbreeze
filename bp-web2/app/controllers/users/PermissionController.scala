@@ -260,7 +260,7 @@ def destroy(id: Int) = SecuredAction { implicit request =>
 }
 
 private def action(acc: String, process: Option[Int], action: String, what: Option[String]=None, what_id: Option[Int]=None) = {
-  ProcHistoryDAO.pull_object(ProcessHistoryDTO(
+  ProcHistoryDAOF.pull(ProcessHistoryDTO(
     None, acc, action, process, what, what_id, org.joda.time.DateTime.now() ))
 }
 

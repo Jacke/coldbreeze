@@ -84,24 +84,40 @@ class ProcessInputController @Inject() (
   implicit val inLoggerReads = Json.reads[InputLogger]
   implicit val inLoggerWrites = Json.format[InputLogger]
 
-  def invoke(bpID: Int)  = SecuredAction { implicit request =>
+
+
+def invoke(bpID: Int)  = SecuredAction.async { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, bpID)) {
       val userId = request.identity.emailFilled
-      val lang:String = models.AccountsDAO.getRolesAndLang(userId).get._3
-      val costs = ElementResourceDAO.getByProcess(bpID)
-      val costPipeFn = pipes.ElementResourceBuilderPipe.apply(costs)
-      val pipesList:List[LaunchMapPipe => ExecutedLaunchCVPipes] = List(costPipeFn)
-      service.Build.run(bpID, Some(lang), invoke = true, pipesList) match {
-        case Some(process) => {
-          action(request.identity.emailFilled, process = Some(bpID), ProcHisCom.processLaunched, None, None)
-          Ok(Json.toJson(Map("success" -> "station_id", "session" -> process.session_id.toString)))
+      val langF = models.AccountsDAOF.getRolesAndLang(userId)
+      val costsF = ElementResourceDAOF.getByProcess(bpID)
+      costsF.flatMap { costs =>
+        val costPipeFn = pipes.ElementResourceBuilderPipe.apply(costs.toList)
+        val pipesList:List[LaunchMapPipe => ExecutedLaunchCVPipes] = List(costPipeFn)
+        langF.map { langOpt =>
+          val lang = langOpt.get._3
+          service.Build.run(bpID, Some(lang), invoke = true, pipesList) match {
+            case Some(process) => {
+              action(request.identity.emailFilled, process = Some(bpID), ProcHisCom.processLaunched, None, None)
+              Ok(Json.toJson(Map("success" -> "station_id", "session" -> process.session_id.toString)))
+            }
+            case _ => Ok(Json.toJson(Map("error" -> "Error output")))
+          }
         }
-        case _ => Ok(Json.toJson(Map("error" -> "Error output")))
       }
-    } else { Forbidden(Json.obj("status" -> "Access denied")) }
-  }
+    } else { Future.successful(
+      Forbidden(Json.obj("status" -> "Access denied"))
+    )
+   }
+}
 
-  def invokeFrom(session_id: Int, bpID: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+
+
+
+
+
+
+def invokeFrom(session_id: Int, bpID: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, bpID)) {
 
 
@@ -211,11 +227,13 @@ def isActor(email:String, actors: List[EmployeeDTO]):Boolean = {
 def isAdmin(email:String, admins: List[String]):Boolean = {
     admins.contains(email)
 }
-private def action(acc: String, process: Option[Int], action: String, what: Option[String]=None, what_id: Option[Int]=None):Future[Int] = {
-  Future {
-      ProcHistoryDAO.pull_object(ProcessHistoryDTO(
+private def action(acc: String,
+  process: Option[Int],
+  action: String,
+  what: Option[String]=None,
+  what_id: Option[Int]=None):Future[Int] = {
+      ProcHistoryDAOF.pull(ProcessHistoryDTO(
         None, acc, action, process, what, what_id, org.joda.time.DateTime.now() ))
-    }
 }
 
 /**

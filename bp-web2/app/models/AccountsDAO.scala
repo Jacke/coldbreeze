@@ -160,7 +160,7 @@ import models.DAO.conversion.DatabaseFuture._
       }
   }
 
-  def getRolesAndLang(email: String, workbench_id: Int = -1): Future[Option[Tuple3[Boolean, Boolean, String]]] ={
+  def getRolesAndLang(email: String, workbench_id: Int = -1): Future[Option[Tuple3[Boolean, Boolean, String]]] = {
     val employeeF:Future[Option[EmployeeDTO]] = models.DAO.resources.EmployeeDAOF.getByEmployeeUIDAndWorkbench(email,
                                                                                                       workbench_id)
     val isManagerF:Future[Boolean] = employeeF.map { employee =>

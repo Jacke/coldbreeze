@@ -142,8 +142,8 @@ object BPStationDAO {
         station.inexpands,
         station.paused,
         note = None,
-        created_at = None,
-        updated_at = None,
+        created_at = station.created_at,
+        updated_at = station.updated_at,
         session = session_id)
   }
   //def to_origin_station(station: BPStationDTO1):BPStation = {
@@ -165,7 +165,8 @@ object BPStationDAO {
 
   def pull_object(s: BPStationDTO, lang: Option[String] = Some("en")):Int = database withSession {
     implicit session ⇒
-      bpstations returning bpstations.map(_.id) += s.copy(note = Some(noteFunction(lang.get)), created_at = Some(org.joda.time.DateTime.now()) )
+      bpstations returning bpstations.map(_.id) += s.copy(note = Some(noteFunction(lang.get)),
+      created_at = Some(org.joda.time.DateTime.now()) )
   }
   def saveOrUpdate(s: BPStationDTO, lang: Option[String] = Some("en"), run_proc: Boolean = true):Int = database withSession {
     implicit session ⇒
@@ -208,12 +209,12 @@ object BPStationDAO {
   }
   def haltByBPId(id: Int) = {
     database withSession { implicit session =>
-      val q3 = for { st ← bpstations if st.process === id && st.paused === true && st.state === true } yield st// <> (BPStationDTO.tupled, BPStationDTO.unapply _)
+      val q3 = for { st ← bpstations if st.process === id && st.paused === true && st.state === true } yield st
       q3.list.map(station => update(station.id.get, station.copy(state = false, paused = false)))
     }
   }
 
-  def getAll = database withSession {
+def getAll = database withSession {
     implicit session ⇒ // TODO: s.service === 1 CHANGE DAT
       val q3 = for { s ← bpstations } yield s
       q3.list.sortBy(_.id)
@@ -221,20 +222,22 @@ object BPStationDAO {
     //  case (id, title, address, city, state, zip) ⇒
     //    Supplier(id, title, address, city, state, zip)
     //}
-  }
+}
+
 def update(id: Int, entity: BPStationDTO):Boolean = {
     database withSession { implicit session =>
       findById(id) match {
       case Some(e) => {
-
         bpstations.filter(_.id === id).update(entity.copy(id = Some(id), updated_at = Some(org.joda.time.DateTime.now()) ))
+        BPSessionDAO.updateMeta(entity.session, entity.step)
         true
       }
       case None => false
       }
     }
-  }
-  def areActiveForBP(id: Int) = {
+}
+
+def areActiveForBP(id: Int) = {
      database withSession { implicit session =>
         val q3 = for { st ← bpstations
           if st.process === id
@@ -243,49 +246,56 @@ def update(id: Int, entity: BPStationDTO):Boolean = {
 
         q3.list
      }
-  }
-  def findActiveByBPIds(ids: List[Int]) = database withSession {
+}
+
+def findActiveByBPIds(ids: List[Int]) = database withSession {
     implicit session =>
     val q3 = for { st ← bpstations if (st.process inSetBind ids) && st.paused === true } yield st// <> (BPStationDTO.tupled, BPStationDTO.unapply _)
 
       q3.list
 
-  }
-  def findById(id: Int):Option[BPStationDTO] = {
+}
+
+def findById(id: Int):Option[BPStationDTO] = {
     database withSession {
     implicit session =>
       val q3 = for { s <- bpstations if s.id === id } yield s// <> (BPStationDTO.tupled, BPStationDTO.unapply _)
 
       q3.list.headOption //.map(Supplier.tupled(_))
     }
-  }
-  def findByIds(ids: List[Int]):List[BPStationDTO] = {
+}
+
+def findByIds(ids: List[Int]):List[BPStationDTO] = {
     database withSession {
     implicit session =>
       val q3 = for { s <- bpstations if s.id inSetBind ids } yield s// <> (BPStationDTO.tupled, BPStationDTO.unapply _)
 
       q3.list //.map(Supplier.tupled(_))
     }
-  }
-  def findByBPIds(ids: List[Int]):List[BPStationDTO] = {
+}
+
+def findByBPIds(ids: List[Int]):List[BPStationDTO] = {
     database withSession {
     implicit session =>
       val q3 = for { s <- bpstations if s.process inSetBind ids } yield s// <> (BPStationDTO.tupled, BPStationDTO.unapply _)
 
       q3.list //.map(Supplier.tupled(_))
     }
-  }
-  def haltUpdate(id: Int):Boolean = {
+}
+
+def haltUpdate(id: Int, scope:String):Boolean = {
     database withSession { implicit session =>
       findById(id) match {
       case Some(e) => {
-        bpstations.filter(_.id === id).update(e.copy(state = false, finished = true, paused = false, canceled = true))
+        BPSessionDAO.delete(e.session, scope)
+        //bpstations.filter(_.id === id).update(e.copy(state = false, finished = true, paused = false, canceled = true))
         true
       }
       case None => false
       }
     }
-  }
+}
+
   def ddl_create = {
     database withSession {
       implicit session =>

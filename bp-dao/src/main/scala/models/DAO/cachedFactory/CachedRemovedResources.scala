@@ -86,6 +86,7 @@ import models.DAO.conversion.DatabaseFuture._
 
   def findAllByScope(scope: String, scopeType: String, resourceTitle:String, timestamp: Option[String]): Future[DeltasContainer] = {
       val sInt:String = timestamp.getOrElse("0")
+      println(s"findAllByScope $scope")
       val datetime = new org.joda.time.DateTime(sInt.toLong)
 
       db.run(filterByScopeQuery(scope, scopeType, resourceTitle,datetime).result).map { resourceDeltas =>

@@ -168,8 +168,7 @@ $scope.emptyElemCheck = function(col) {
     });
   };
 $scope.filterForActiveLaunch = function(ses) {
-
-   if (ses.station != undefined && ses.station.finished == false && ses.station.paused == true && ses.station.state == true) {
+   if (ses.percent !== 100 && ses.station != undefined && ses.station.finished == false && ses.station.paused == true && ses.station.state == true) {
       return ses;
     } else {
       return false;
@@ -276,14 +275,59 @@ $scope.loadLaunchesFromCache = function() {
   return $http.get('/sessions/cached/'+launchesCursorCache.get('updated'))
           .then(function (resp) {
             // 4. Split C and D and apply C for new created resources
+
             var removedIds = _.map(resp.data.deltas.d, function(d) { return parseInt(d.resourceId) });
-            var concatedProcess = launchesCache.get('launches').concat(resp.data.c);
-            var finalizedProcess = _.filter(concatedProcess, function(c){ return !_.contains(removedIds, c.id) });
-            launchesCache.put('launches', finalizedProcess);
+            console.log('removedIds', removedIds)
+
+            var oldLaunches = _.forEach(launchesCache.get('launches'), function(d) {
+              return d.sessions = _.filter(d.sessions, function(d) {
+                                                        return !_.contains(removedIds, d.session.id) })
+            });
+            //.concat(resp.data.c);
+            //var finalizedLaunch = _.filter(concatedLaunches, function(c){ return !_.contains(removedIds, c.id) });
+            var newLaunches = resp.data.c
+            _.forEach(oldLaunches, function(oldLaunchCn) {
+              return _.forEach(newLaunches, function(launchCn) {
+                if (launchCn.process.id == oldLaunchCn.process.id) {
+                  return oldLaunchCn.sessions = oldLaunchCn.sessions.concat(launchCn.sessions)
+                }
+              });
+            });
+            function percParse(perc) {
+              return perc.split('percent:')[1].replace(/\s/g, '')
+            }
+
+            var finalizedLaunches = oldLaunches.concat(newLaunches)
+  /**************************************************************************************************************
+     Update percent
+  **************************************************************************************************************/
+            var dates = _.sortBy(resp.data.deltas.u, 'date');
+            var newPercents = _.map(dates, function(perc) {
+                return { launchId: parseInt(perc.resourceId), percent: percParse(perc.updatedAttributes) }
+              });
+
+            _.forEach(finalizedLaunches, function(finLaunchCn) {
+              return _.forEach(finLaunchCn.sessions, function(sessionStatus) {
+                var isProcentExist = _.find(newPercents, function(d){
+                    return d.launchId === sessionStatus.session.id })
+                  if (isProcentExist !== undefined) {
+                    console.log('update percent', isProcentExist.percent)
+                    return sessionStatus.percent = isProcentExist.percent;
+                  } else {
+                    return sessionStatus;
+                  }
+              });
+            })
+
+
+            launchesCache.put('launches', finalizedLaunches);
             // 5. D for resource with ids that need to be removed
             launchesCache.put('launchesRemoved', resp.data.d)
             // 6. Put request to cache and update cursor
+            console.log('old cursor', launchesCursorCache.get('updated'))
             launchesCursorCache.put('updated', Date.now());
+            console.log('new cursor', launchesCursorCache.get('updated'))
+
             // 7. Return resource itself
             return launchesCache.get('launches');
           });
@@ -503,7 +547,7 @@ $scope.reloadSessions = function() {
 
   var session_ids = _.map(sessions, function(d){
       return _.map(_.filter(d.sessions, function(fd) {
-        return (fd.station !== undefined) && (fd.station.finished != true);
+        return (fd !== null && fd.station !== undefined) && (fd !== null && fd.station.finished != true);
       }), function(dd){
         return 'ids='+dd.session.id+'&'
     });
@@ -608,6 +652,7 @@ $scope.reloadSessionsPromise = $scope.reloadSessions();
 // Session lock by notification
 // NotificationBroadcaster
 $scope.$on('launchLocker', function(event, args) {
+  console.log('launchLocker');
     console.log(event);
     console.log(args);
     $scope.reloadSessions();
@@ -627,19 +672,26 @@ $scope.$on('launchLocker', function(event, args) {
   *
   **/
 $scope.run = function (process) {
+      process.loading = true;
       $http({
       url: 'bprocess/' + process.id + '/invoke',
       method: "POST",
-      data: {  }
+      data: {  },
+      ignoreLoadingBar: true
       })
       .then(function(response) {
         // success
-        $scope.invoke_res = [response.data];
-        $location.path('/a#/bprocess/' + process.id + 'elements?session=' + parseInt(response.data.session));
+        process.loading = false;
 
+        $scope.invoke_res = [response.data];
+        //$location.path('/a#/bprocess/' + process.id + 'elements?session=' + parseInt(response.data.session));
+        //$scope.loadLaunchesFromCache()
+        $scope.reloadSessions();
       },
       function(response) { // optional
         // failed
+        process.loading = false;
+
         new PNotify({
           title: 'Launch failed!',
           text: 'Can\'t launch process.',

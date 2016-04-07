@@ -1,7 +1,6 @@
 package models.DAO
 
-
-import main.scala.bprocesses.{BProcess, BPLoggerResult}
+import main.scala.bprocesses.{ BProcess, BPLoggerResult }
 import main.scala.simple_parts.process.ProcElems
 import models.DAO.driver.MyPostgresDriver.simple._
 import com.github.nscala_time.time.Imports._
@@ -18,14 +17,14 @@ import builders._
 import main.scala.bprocesses.BPSession
 
 class BPSessions(tag: Tag) extends Table[BPSession](tag, "bpsessions") {
-  def id            = column[Int]("id", O.PrimaryKey, O.AutoInc)
-  def process       = column[Int]("process_id")
+  def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
+  def process = column[Int]("process_id")
 
-  def created_at    = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at    = column[Option[org.joda.time.DateTime]]("updated_at")
+  def created_at = column[Option[org.joda.time.DateTime]]("created_at")
+  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")
   def active_listed = column[Boolean]("active_listed", O.Default(true))
 
-  def *    = (id.?, process, created_at, updated_at, active_listed) <> (BPSession.tupled, BPSession.unapply)
+  def * = (id.?, process, created_at, updated_at, active_listed) <> (BPSession.tupled, BPSession.unapply)
 
   def bpFK = foreignKey("sess_bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 }
@@ -33,31 +32,32 @@ class BPSessions(tag: Tag) extends Table[BPSession](tag, "bpsessions") {
 case class SessionPeoples(launched_by: String, participators: List[String])
 
 case class SessionStatus(var percent: Int = 0,
-                         process:BProcessDTO,
-                         session: BPSession,
-                         station: Option[BPStationDTO],
-                         around: Option[ElemAround] = None,
-                         peoples: Option[SessionPeoples] = None)
+  process: BProcessDTO,
+  session: BPSession,
+  station: Option[BPStationDTO],
+  around: Option[ElemAround] = None,
+  peoples: Option[SessionPeoples] = None,
+  created_at: Option[org.joda.time.DateTime] = None,
+  updated_at: Option[org.joda.time.DateTime] = None)
 //,                         interactions: List[Interaction] = List())
 case class SessionContainer(process: BProcessDTO,
-                            var sessions: List[SessionStatus]) {
+  var sessions: List[SessionStatus]) {
 
 }
 import main.scala.utils.InputParamProc
-
 
 object BPSessionDAOF {
   import akka.actor.ActorSystem
   import akka.stream.ActorFlowMaterializer
   import akka.stream.scaladsl.Source
-  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  import slick.backend.{ StaticDatabaseConfig, DatabaseConfig }
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._
   import slick.jdbc.meta.MTable
   import scala.concurrent.ExecutionContext.Implicits.global
   import com.github.tototoshi.slick.JdbcJodaSupport._
   import scala.concurrent.duration.Duration
-  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.concurrent.{ ExecutionContext, Awaitable, Await, Future }
   import scala.util.Try
   import models.DAO.conversion.DatabaseFuture._
   import slick.jdbc._
@@ -67,7 +67,7 @@ object BPSessionDAOF {
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
   val bpsessions = BPSessionDAO.bpsessions
 
-implicit val getBPSessionResult = GetResult(r => BPSession(r.<<, r.<<))
+  implicit val getBPSessionResult = GetResult(r => BPSession(r.<<, r.<<))
   //private def filterQueryByProcess(process: Int): Query[ProcessHistoriesF, ProcessHistoryDTO, Seq] =
   //  bpsessions.filter(_.process === process)
   private def filterQuery(id: Int): Query[BPSessions, BPSession, Seq] =
@@ -80,58 +80,50 @@ implicit val getBPSessionResult = GetResult(r => BPSession(r.<<, r.<<))
     bpsessions.filter(_.process inSetBind ids)
 
   private def filterByProcessesTimestampQuery(ids: List[Int], timestamp: Option[String]): DBIO[Seq[BPSession]] = {
-      val sInt:String = timestamp.getOrElse("0")
-      val datetime = new org.joda.time.DateTime(sInt.toLong)
-      val ts = datetime.getMillis() / 1000
-      var cnames: String = ""
-      if (ids.length > 0) {
-        cnames = ids.mkString(",")
-      } else {
-        cnames = "0"
-      }
-      println("cnames: "+cnames)
-val s = sql"SELECT * from bpsessions where bpsessions.created_at > to_timestamp(${ts}) AND bpsessions.process_id IN (#${cnames}   )"
-  .as[BPSession]
-      s
-}
+    val sInt: String = timestamp.getOrElse("0")
+    val datetime = new org.joda.time.DateTime(sInt.toLong)
+    val ts = datetime.getMillis() / 1000
+    var cnames: String = ""
+    if (ids.length > 0) {
+      cnames = ids.mkString(",")
+    } else {
+      cnames = "0"
+    }
+    println("cnames: " + cnames)
+    val s = sql"SELECT * from bpsessions where bpsessions.created_at > to_timestamp(${ts}) AND bpsessions.process_id IN (#${cnames}   )"
+      .as[BPSession]
+    s
+  }
 
   private def filterByProcessesAndIdsQuery(processes_ids: List[Int], session_ids: List[Int]): Query[BPSessions, BPSession, Seq] =
-    bpsessions.filter(c => (c.process inSetBind processes_ids) && (c.id inSetBind session_ids) )
+    bpsessions.filter(c => (c.process inSetBind processes_ids) && (c.id inSetBind session_ids))
 
-
-def findByBusiness(bid: Int, timestamp: Option[String] = None):Future[Seq[SessionContainer]] = {
+  def findByBusiness(bid: Int, timestamp: Option[String] = None): Future[Seq[SessionContainer]] = {
     val pF = BPDAOF.findByBusiness(bid)
     pF.flatMap { processes =>
-      val processIds:List[Int] = processes.map(_.id.get).toList
+      val processIds: List[Int] = processes.map(_.id.get).toList
       val sessF = db.run(filterByProcessesTimestampQuery(processIds, timestamp))
       sessF.flatMap { sess =>
         println("sess result ")
         val allStationsF = BPStationDAOF.findBySessions(sess.map(s => s.id.get).toList)
         allStationsF.flatMap { stations =>
-          Future.sequence( processes.map { process =>
-              val sesStatusF = prepareSessionStatusWithStations(process,
-                                                                sess.filter(ses => ses.process == process.id.get),
-                                                                stations)
-              sesStatusF.map { ses_status =>
-                SessionContainer(process, ses_status.toList)
-              }
-          }
-          )
+          Future.sequence(processes.map { process =>
+            val sesStatusF = prepareSessionStatusWithStations(process,
+              sess.filter(ses => ses.process == process.id.get),
+              stations)
+            sesStatusF.map { ses_status =>
+              SessionContainer(process, ses_status.toList)
+            }
+          })
         }
       }
     }
-}
+  }
 
-
-
-
-
-
-
-def findByBusinessAndIds(bid: Int, session_ids: List[Int], withArroundVal:Boolean=false):Future[Seq[SessionContainer]] = {
+  def findByBusinessAndIds(bid: Int, session_ids: List[Int], withArroundVal: Boolean = false): Future[Seq[SessionContainer]] = {
     val pF = BPDAOF.findByBusiness(bid)
     pF.flatMap { processes =>
-      val processIds:List[Int] = processes.map(_.id.get).toList
+      val processIds: List[Int] = processes.map(_.id.get).toList
       val sessF = db.run(filterByProcessesAndIdsQuery(processIds, session_ids).result)
       sessF.flatMap { sess =>
         println("findByBusinessAndIds")
@@ -140,81 +132,85 @@ def findByBusinessAndIds(bid: Int, session_ids: List[Int], withArroundVal:Boolea
         allStationsF.flatMap { stations =>
           println("findByBusinessAndIds")
           println("findByBusinessAndIds stations.length: " + stations.length)
-          Future.sequence( processes.map { process =>
-              val sesStatusF = prepareSessionStatusWithStations(process,
-                                                sess.filter(ses => ses.process == process.id.get),
-                                                                stations, withArroundVal)
-              sesStatusF.map { ses_status =>
-                SessionContainer(process, ses_status.toList)
-              }
-          }
-          )
+          Future.sequence(processes.map { process =>
+            val sesStatusF = prepareSessionStatusWithStations(process,
+              sess.filter(ses => ses.process == process.id.get),
+              stations, withArroundVal)
+            sesStatusF.map { ses_status =>
+              SessionContainer(process, ses_status.toList)
+            }
+          })
         }
       }
     }
-}
+  }
 
-
-
-  def findListedByBusiness(bid: Int):Future[Seq[SessionContainer]] = {
-    val pF:Future[Seq[BProcessDTO]] = BPDAOF.findByBusiness(bid)
+  def findListedByBusiness(bid: Int): Future[Seq[SessionContainer]] = {
+    val pF: Future[Seq[BProcessDTO]] = BPDAOF.findByBusiness(bid)
 
     pF.flatMap { p =>
       val ids = p.flatMap(_.id)
-      val sessF:Future[Seq[BPSession]] = db.run(filterByProcessesQuery(ids.toList).result)
+      val sessF: Future[Seq[BPSession]] = db.run(filterByProcessesQuery(ids.toList).result)
 
       sessF.flatMap { sess =>
         val sessionContainers = Future.sequence(
           p.map { p =>
-        val sessionsStasusF:Future[Seq[SessionStatus]] = prepareSessionStatus(p, sess)
+            val sessionsStasusF: Future[Seq[SessionStatus]] = prepareSessionStatus(p, sess)
 
-      sessionsStasusF.map { sessions =>
-          SessionContainer(p,
-          // \|/ Second argument of session container
-          sessions = sessions.toList  )
-        }
-      } )
-      sessionContainers
+            sessionsStasusF.map { sessions =>
+              SessionContainer(p,
+                // \|/ Second argument of session container
+                sessions = sessions.toList)
+            }
+          })
+        sessionContainers
+      }
     }
   }
-}
-  def prepareSessionStatusWithStations(p:BProcessDTO,
-    sess: Seq[BPSession], stations:Seq[BPStationDTO],
-    withArroundVal:Boolean=false):Future[Seq[SessionStatus]] = {
-//    println("prepareSessionStatusWithStations")
-//    println("prepareSessionStatusWithStations session.length: " + sess.length)
-     val people = SessionPeoples("not@found.com", List()) // placeholder for peoples
-     Future.sequence(
-     sess.filter(ses => ses.process == p.id.get).map { ses =>
+
+  def prepareSessionStatusWithStations(p: BProcessDTO,
+    sess: Seq[BPSession], stations: Seq[BPStationDTO],
+    withArroundVal: Boolean = false): Future[Seq[SessionStatus]] = {
+    //    println("prepareSessionStatusWithStations")
+    //    println("prepareSessionStatusWithStations session.length: " + sess.length)
+    val people = SessionPeoples("not@found.com", List()) // placeholder for peoples
+    Future.sequence(
+      sess.filter(ses => ses.process == p.id.get).map { ses =>
+        println(s"ses ${ses.created_at}")
         val station = stations.find(station => station.session == ses.id.get)
         val element_quantityF = SessionProcElementDAOF.findBySessionLength(ses.id.get)
-          element_quantityF.map { element_quantity =>
+        element_quantityF.map { element_quantity =>
 
-            val step = station match {
-              case Some(station) => station.step.toDouble
-              case _ => element_quantity.toDouble
-            }
-            val percent = percentDecorator(step, element_quantity)
-            withArround(withArroundVal, Some(ses), station, Some(p) ) match {
-             case Some(futureAr) => {
+          val step = station match {
+            case Some(station) => station.step.toDouble
+            case _ => element_quantity.toDouble
+          }
+          val percent = percentDecorator(step, element_quantity)
+          withArround(withArroundVal, Some(ses), station, Some(p)) match {
+            case Some(futureAr) => {
               //futureAr.flatMap { arr =>
-                SessionStatus(percent, p, ses, station, Some(await(futureAr) ), Some(people))
+              SessionStatus(percent, p, ses, station, Some(await(futureAr)), Some(people),
+                created_at = ses.created_at,
+                updated_at = ses.updated_at)
               //}
-             }
-             case _ => SessionStatus(percent, p, ses, station, None, Some(people))
             }
-
-
+            case _ => SessionStatus(percent, p, ses, station, None, Some(people),
+              created_at = ses.created_at,
+              updated_at = ses.updated_at)
           }
 
-      } )
+        }
+
+      })
   }
-  def prepareSessionStatus(p:BProcessDTO,sess: Seq[BPSession], withArroundVal:Boolean=false):Future[Seq[SessionStatus]] = {
-     val people = SessionPeoples("not@found.com", List()) // placeholder for peoples
-     Future.sequence(
-     sess.filter(ses => ses.process == p.id.get).map { ses =>
+
+  def prepareSessionStatus(p: BProcessDTO, sess: Seq[BPSession], withArroundVal: Boolean = false): Future[Seq[SessionStatus]] = {
+    val people = SessionPeoples("not@found.com", List()) // placeholder for peoples
+    Future.sequence(
+      sess.filter(ses => ses.process == p.id.get).map { ses =>
         val stationF = BPStationDAOF.findBySessionF(ses.id.get)
         val element_quantityF = SessionProcElementDAOF.findBySessionLength(ses.id.get)
+        println(s"ses ${ses.created_at}")
         stationF.flatMap { station =>
           element_quantityF.map { element_quantity =>
             val step = station match {
@@ -223,130 +219,132 @@ def findByBusinessAndIds(bid: Int, session_ids: List[Int], withArroundVal:Boolea
             }
             val percent = percentDecorator(step, element_quantity)
             withArround(withArroundVal) match {
-             case Some(futureAr) => { //futureAr.flatMap { arr =>
+              case Some(futureAr) => { //futureAr.flatMap { arr =>
                 println("withArround")
                 val ar = await(futureAr)
                 println(ar)
-                SessionStatus(percent, p, ses, station, Some( ar ), Some(people))
-             //}
-             }
-             case _ => SessionStatus(percent, p, ses, station, None, Some(people))
+                SessionStatus(percent, p, ses, station, Some(ar), Some(people),
+                  created_at = ses.created_at,
+                  updated_at = ses.updated_at)
+                //}
+              }
+              case _ => SessionStatus(percent, p, ses, station, None, Some(people),
+                created_at = ses.created_at,
+                updated_at = ses.updated_at)
             }
           }
         }
-      } )
+      })
   }
-  def withArround(yes:Boolean = true,
+  def withArround(yes: Boolean = true,
     sesOpt: Option[BPSession] = None,
     stationOpt: Option[BPStationDTO] = None,
-    processOpt: Option[models.DAO.BProcessDTO] = None):Option[Future[ElemAround]] = {
+    processOpt: Option[models.DAO.BProcessDTO] = None): Option[Future[ElemAround]] = {
     if (yes) {
-        val aroundF = AroundProcessElementsBuilder.detectByStationF(process_id = sesOpt.get.process,
-                                                                    station = stationOpt,
-                                                                    process = processOpt)
-        println("withArround:")
-        Some(aroundF)
-        } else {
-        None
-        }
+      val aroundF = AroundProcessElementsBuilder.detectByStationF(process_id = sesOpt.get.process,
+        station = stationOpt,
+        process = processOpt)
+      println("withArround:")
+      Some(aroundF)
+    } else {
+      None
+    }
   }
 
-  def findById(id: Int):Future[Option[SessionContainer]] = {
-    val sessF:Future[Option[BPSession]] =
+  def findById(id: Int): Future[Option[SessionContainer]] = {
+    val sessF: Future[Option[BPSession]] =
       db.run(filterQuery(id).result.headOption)
-      //finally println("db.close")//db.close
+    //finally println("db.close")//db.close
     sessF.flatMap { sess =>
-    sess match {
-      case Some(ses) => {
-        val stationF = BPStationDAOF.findBySessionF(ses.id.get)
-        val element_quantityF = SessionProcElementDAOF.findBySessionLength(ses.id.get)
-        val pF:Future[Option[BProcessDTO]] = BPDAOF.get(ses.process)
-        val people = SessionPeoples("not@found.com", List()) // placeholder for peoples
-      pF.flatMap { process =>
-          stationF.flatMap { station =>
-        val aroundF = AroundProcessElementsBuilder.detectByStationF(process_id = ses.process,
-                                                                  station = station,
-                                                                  process = process)
+      sess match {
+        case Some(ses) => {
+          println(s"ses ${ses.created_at}")
+          val stationF = BPStationDAOF.findBySessionF(ses.id.get)
+          val element_quantityF = SessionProcElementDAOF.findBySessionLength(ses.id.get)
+          val pF: Future[Option[BProcessDTO]] = BPDAOF.get(ses.process)
+          val people = SessionPeoples("not@found.com", List()) // placeholder for peoples
+          pF.flatMap { process =>
+            stationF.flatMap { station =>
+              val aroundF = AroundProcessElementsBuilder.detectByStationF(process_id = ses.process,
+                station = station,
+                process = process)
 
-        element_quantityF.flatMap { element_quantity =>
-        val step:Double = station match {
-            case Some(station) => station.step.toDouble
-            case _ => element_quantity.toDouble
-        }
-        aroundF.map { around =>
-            val percent = percentDecorator(step, element_quantity)
-            Some(SessionContainer(process.get,
-                List(SessionStatus(percent,
-                  process.get,
-                  ses,
-                  station,
-                  Some(around),
-                  Some(people)))
-            ))
-        }
-        }
+              element_quantityF.flatMap { element_quantity =>
+                val step: Double = station match {
+                  case Some(station) => station.step.toDouble
+                  case _ => element_quantity.toDouble
+                }
+                aroundF.map { around =>
+                  val percent = percentDecorator(step, element_quantity)
+                  Some(SessionContainer(process.get,
+                    List(SessionStatus(percent,
+                      process.get,
+                      ses,
+                      station,
+                      Some(around),
+                      Some(people),
+                      created_at = ses.created_at,
+                      updated_at = ses.updated_at))))
+                }
+              }
+            }
           }
-      }
-      }
+        }
         case _ => Future(None)
       }
     }
   }
-  def findByIds(ids: List[Int]):Future[Seq[SessionContainer]] = {
-    val sessF:Future[Seq[BPSession]] =
+
+  def findByIds(ids: List[Int]): Future[Seq[SessionContainer]] = {
+    val sessF: Future[Seq[BPSession]] =
       db.run(filterQueryByIds(ids).result)
-      //finally println("db.close")//db.close
+    //finally println("db.close")//db.close
     sessF.flatMap { sessSeq =>
-    Future.sequence( sessSeq.map { ses =>
+      Future.sequence(sessSeq.map { ses =>
+        println(s"ses ${ses.created_at}")
         val stationF = BPStationDAOF.findBySessionF(ses.id.get)
         val element_quantityF = SessionProcElementDAOF.findBySessionLength(ses.id.get)
-        val pF:Future[Option[BProcessDTO]] = BPDAOF.get(ses.process)
+        val pF: Future[Option[BProcessDTO]] = BPDAOF.get(ses.process)
         val people = SessionPeoples("not@found.com", List()) // placeholder for peoples
-      pF.flatMap { process =>
+        pF.flatMap { process =>
           stationF.flatMap { station =>
-              val aroundF = AroundProcessElementsBuilder.detectByStationF(process_id = ses.process,
-                                                                          station = station,
-                                                                          process = process)
-              element_quantityF.flatMap { element_quantity =>
-              val step:Double = station match {
-                  case Some(station) => station.step.toDouble
-                  case _ => element_quantity.toDouble
+            val aroundF = AroundProcessElementsBuilder.detectByStationF(process_id = ses.process,
+              station = station,
+              process = process)
+            element_quantityF.flatMap { element_quantity =>
+              val step: Double = station match {
+                case Some(station) => station.step.toDouble
+                case _ => element_quantity.toDouble
               }
-                aroundF.map { around =>
-                    val percent = percentDecorator(step, element_quantity)
-                    SessionContainer(process.get,
-                        List(SessionStatus(percent,
-                          process.get,
-                          ses,
-                          station,
-                          Some(around),
-                          Some(people)))
-                    )
-                }
+              aroundF.map { around =>
+                val percent = percentDecorator(step, element_quantity)
+                SessionContainer(process.get,
+                  List(SessionStatus(percent,
+                    process.get,
+                    ses,
+                    station,
+                    Some(around),
+                    Some(people),
+                    created_at = ses.created_at,
+                    updated_at = ses.updated_at)))
               }
+            }
           }
-      }
-
+        }
 
       })
     }
   }
 
-
-  def percentDecorator(step: Double, element_quantity:Int):Int = {
+  def percentDecorator(step: Double, element_quantity: Int): Int = {
     if (step == 1 && element_quantity == 1) {
-        0
+      0
     } else {
-      ( step / element_quantity.toDouble * 100).toInt
+      (step / element_quantity.toDouble * 100).toInt
     }
   }
 
-
 } // Future Impl
-
-
-
-
 
 object BPSessionDAO {
   import scala.util.Try
@@ -354,70 +352,72 @@ object BPSessionDAO {
   import models.DAO.conversion.Implicits._
   import scala.concurrent.ExecutionContext.Implicits.global
   import scala.concurrent.duration.Duration
-  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
-
+  import scala.concurrent.{ ExecutionContext, Awaitable, Await, Future }
 
   val bpsessions = TableQuery[BPSessions]
 
   def pull_object(s: BPSession) = database withSession {
     implicit session ⇒
-      bpsessions returning bpsessions.map(_.id) += s
+      bpsessions returning bpsessions.map(_.id) += s.copy(created_at = Some(org.joda.time.DateTime.now()))
   }
 
-  def findByBusiness(bid: Int):List[SessionContainer] = database withSession {
+  def findByBusiness(bid: Int): List[SessionContainer] = database withSession {
     implicit session =>
-    val p = BPDAO.findByBusiness(bid)
-    val ids = p.map(_.id.get)
-    val q3 = for { s <- bpsessions if s.process inSetBind ids } yield s
-    val sess = q3.list
+      val p = BPDAO.findByBusiness(bid)
+      val ids = p.map(_.id.get)
+      val q3 = for { s <- bpsessions if s.process inSetBind ids } yield s
+      val sess = q3.list
 
-    p.map { p =>
-      SessionContainer(p,
-      sess.filter(ses => ses.process == p.id.get).map { ses =>
-        val station = BPStationDAO.findBySession(ses.id.get)
-        val element_quantity = SessionProcElementDAO.findBySession(ses.id.get).length //+ SessionSpaceElemDAO.findFlatBySession(ses.id.get).length
-        val step = station match {
-          case Some(station) => station.step.toDouble
-          case _ => element_quantity.toDouble
-        }
-        val percent = percentDecorator(step, element_quantity)
-        SessionStatus(percent, p, ses, station, None)//Some(AroundProcessElementsBuilder.detect(p.id.get, station.get.id.get)))
-      })
-    }
-  }
-  def findById(id: Int):Option[SessionContainer] = database withSession {
-    implicit session =>
-    val q3 = for { s <- bpsessions if s.id === id } yield s
-    val sess = q3.list.headOption
-
-    sess match {
-      case Some(ses) => {
-        val stationF = BPStationDAOF.findBySessionF(ses.id.get)
-        val element_quantity = SessionProcElementDAO.findBySession(ses.id.get).length //+ SessionSpaceElemDAO.findFlatBySession(ses.id.get).length
-        val process = BPDAO.get(ses.process).get
-        val people = SessionPeoples("not@found.com", List()) // placeholder for peoples
-
-        val station = BPStationDAOF.await(stationF)
-        val step = station match {
-          case Some(station) => station.step.toDouble
-          case _ => element_quantity.toDouble
-        }
-        val percent = percentDecorator(step, element_quantity)
-
-      Some(SessionContainer(process,
-        List(SessionStatus(percent,
-          process,
-          ses,
-          station,
-          Some(AroundProcessElementsBuilder.detectByStation(ses.process,
-                                                            station,
-                                                            Some(process))),
-          Some(people)))
-      ))
-
+      p.map { p =>
+        SessionContainer(p,
+          sess.filter(ses => ses.process == p.id.get).map { ses =>
+            val station = BPStationDAO.findBySession(ses.id.get)
+            val element_quantity = SessionProcElementDAO.findBySession(ses.id.get).length //+ SessionSpaceElemDAO.findFlatBySession(ses.id.get).length
+            val step = station match {
+              case Some(station) => station.step.toDouble
+              case _ => element_quantity.toDouble
+            }
+            val percent = percentDecorator(step, element_quantity)
+            SessionStatus(percent, p, ses, station, None,
+              created_at = ses.created_at,
+              updated_at = ses.updated_at) //Some(AroundProcessElementsBuilder.detect(p.id.get, station.get.id.get)))
+          })
       }
-      case _ => None
-    }
+  }
+  def findById(id: Int): Option[SessionContainer] = database withSession {
+    implicit session =>
+      val q3 = for { s <- bpsessions if s.id === id } yield s
+      val sess = q3.list.headOption
+
+      sess match {
+        case Some(ses) => {
+          val stationF = BPStationDAOF.findBySessionF(ses.id.get)
+          val element_quantity = SessionProcElementDAO.findBySession(ses.id.get).length //+ SessionSpaceElemDAO.findFlatBySession(ses.id.get).length
+          val process = BPDAO.get(ses.process).get
+          val people = SessionPeoples("not@found.com", List()) // placeholder for peoples
+
+          val station = BPStationDAOF.await(stationF)
+          val step = station match {
+            case Some(station) => station.step.toDouble
+            case _ => element_quantity.toDouble
+          }
+          val percent = percentDecorator(step, element_quantity)
+
+          Some(SessionContainer(process,
+            List(SessionStatus(percent,
+              process,
+              ses,
+              station,
+              Some(AroundProcessElementsBuilder.detectByStation(ses.process,
+                station,
+                Some(process))),
+              Some(people),
+              created_at = ses.created_at,
+              updated_at = ses.updated_at))))
+
+        }
+        case _ => None
+      }
   }
   /*
   def findByIdF(id: Int):Option[SessionContainer] = {
@@ -446,85 +446,85 @@ object BPSessionDAO {
       case _ => None
   }
   */
-  def findListedByBusiness(bid: Int):List[SessionContainer] = database withSession {
+  def findListedByBusiness(bid: Int): List[SessionContainer] = database withSession {
     implicit session =>
-    val p = BPDAO.findByBusiness(bid)
-    val ids = p.flatMap(_.id)
-    val q3 = for { s <- bpsessions if (s.process inSetBind ids) && s.active_listed === true } yield s
-    val sess = q3.list
-    val people = SessionPeoples("not@found.com", List()) // placeholder for peoples
+      val p = BPDAO.findByBusiness(bid)
+      val ids = p.flatMap(_.id)
+      val q3 = for { s <- bpsessions if (s.process inSetBind ids) && s.active_listed === true } yield s
+      val sess = q3.list
+      val people = SessionPeoples("not@found.com", List()) // placeholder for peoples
 
-    p.map { p =>
-      SessionContainer(p,
-      sess.filter(ses => ses.process == p.id.get).map { ses =>
-        val station = BPStationDAO.findBySession(ses.id.get)
-        val element_quantity = SessionProcElementDAO.findBySession(ses.id.get).length //+ SessionSpaceElemDAO.findFlatBySession(ses.id.get).length
-        val step = station match {
-          case Some(station) => station.step.toDouble
-          case _ => element_quantity.toDouble
-        }
-        val percent = percentDecorator(step, element_quantity)
-        SessionStatus(percent, p, ses, station, None, Some(people))//Some(AroundProcessElementsBuilder.detect(p.id.get, station.get.id.get)))
-      })
-    }
+      p.map { p =>
+        SessionContainer(p,
+          sess.filter(ses => ses.process == p.id.get).map { ses =>
+            val station = BPStationDAO.findBySession(ses.id.get)
+            val element_quantity = SessionProcElementDAO.findBySession(ses.id.get).length //+ SessionSpaceElemDAO.findFlatBySession(ses.id.get).length
+            val step = station match {
+              case Some(station) => station.step.toDouble
+              case _ => element_quantity.toDouble
+            }
+            val percent = percentDecorator(step, element_quantity)
+            SessionStatus(percent, p, ses, station, None, Some(people), created_at = ses.created_at,
+              updated_at = ses.updated_at) //Some(AroundProcessElementsBuilder.detect(p.id.get, station.get.id.get)))
+          })
+      }
   }
   def makeUnlisted(id: Int) = database withSession {
     implicit session =>
-    get(id) match {
-      case Some(session) => {
-        update(id, session.copy(active_listed = false))
-        id
+      get(id) match {
+        case Some(session) => {
+          update(id, session.copy(active_listed = false))
+          id
+        }
+        case _ => -1
       }
-      case _ => -1
-    }
   }
   def makeListed(id: Int) = database withSession {
     implicit session =>
-    get(id) match {
-      case Some(session) => {
-        update(id, session.copy(active_listed = true))
-        id
+      get(id) match {
+        case Some(session) => {
+          update(id, session.copy(active_listed = true))
+          id
+        }
+        case _ => -1
       }
-      case _ => -1
-    }
   }
 
-  def findByProcess(pid: Int):Option[SessionContainer] = database withSession {
+  def findByProcess(pid: Int): Option[SessionContainer] = database withSession {
     implicit session =>
-    val p = BPDAO.get(pid)
-    p match {
-      case Some(process) => {
-      val process_id = process.id.get
-      val q3 = for { s <- bpsessions if s.process === process_id } yield s
-      val sess = q3.list
-      val people = SessionPeoples("iamjacke@gmail.com", List("iamjacke@gmail.com", "tete@gga.ru"))
+      val p = BPDAO.get(pid)
+      p match {
+        case Some(process) => {
+          val process_id = process.id.get
+          val q3 = for { s <- bpsessions if s.process === process_id } yield s
+          val sess = q3.list
+          val people = SessionPeoples("iamjacke@gmail.com", List("iamjacke@gmail.com", "tete@gga.ru"))
 
-
-        Some(
-          SessionContainer(process,
-          sess.filter(ses => ses.process == process_id && ses.id != Some(-1) ).map { ses =>
-          val station = BPStationDAO.findBySession(ses.id.get)
-          val element_quantity = SessionProcElementDAO.findBySession(ses.id.get).length //+ SessionSpaceElemDAO.findFlatBySession(ses.id.get).length
-          val step = station match {
-            case Some(station) => station.step.toDouble
-            case _ => element_quantity.toDouble
-          }
-          val percent = percentDecorator(step, element_quantity)
-          SessionStatus(percent, process, ses, station,
-            Some(AroundProcessElementsBuilder.detect(process_id, station.get.id.get)),
-            Some(people)
-            )
-          })
-        )
+          Some(
+            SessionContainer(process,
+              sess.filter(ses => ses.process == process_id && ses.id != Some(-1)).map { ses =>
+                val station = BPStationDAO.findBySession(ses.id.get)
+                val element_quantity = SessionProcElementDAO.findBySession(ses.id.get).length //+ SessionSpaceElemDAO.findFlatBySession(ses.id.get).length
+                val step = station match {
+                  case Some(station) => station.step.toDouble
+                  case _ => element_quantity.toDouble
+                }
+                val percent = percentDecorator(step, element_quantity)
+                SessionStatus(percent, process, ses, station,
+                  Some(AroundProcessElementsBuilder.detect(process_id, station.get.id.get)),
+                  Some(people),
+                  created_at = ses.created_at,
+                  updated_at = ses.updated_at)
+              }))
+        }
+        case _ => None
       }
-      case _ => None
-    }
   }
 
-  def findByBP(id: Int):List[BPSession] = database withSession {
+  def findByBP(id: Int): List[BPSession] = database withSession {
     implicit session =>
-    val q3 = for { s <- bpsessions if s.process === id } yield s
-    q3.list
+      val q3 = for { s <- bpsessions if s.process === id } yield s
+      q3.list
   }
   def getByProcesses(processes: List[Int]) = database withSession {
     implicit session =>
@@ -532,8 +532,7 @@ object BPSessionDAO {
       q3.list
   }
 
-
-  def get(k: Int):Option[BPSession] = database withSession {
+  def get(k: Int): Option[BPSession] = database withSession {
     implicit session ⇒
       val q3 = for { s ← bpsessions if s.id === k } yield s
       q3.list.headOption
@@ -545,11 +544,11 @@ object BPSessionDAO {
       procOpt match {
         case Some(proc) => {
           CachedRemovedResourcesDAO.makeResourceUpdateEntity(
-          scope = proc.business.toString,
-          action = "updated",
-          resourceTitle = "launches",
-          resourceId = s"$id",
-          updatedEntity = Map("active_listed" -> bpToUpdate.active_listed.toString))
+            scope = proc.business.toString,
+            action = "updated",
+            resourceTitle = "launches",
+            resourceId = s"$id",
+            updatedEntity = Map("active_listed" -> bpToUpdate.active_listed.toString))
           bpsessions.filter(_.id === id).update(bpToUpdate)
         }
         case _ => -1
@@ -557,7 +556,35 @@ object BPSessionDAO {
     }
   }
 
-  def delete(id: Int):Future[Int] = database withSession { implicit session ⇒
+  def updateMeta(id: Int, step: Double) = database withSession { implicit session ⇒
+    get(id) match {
+      case Some(ses) => {
+        val launchToUpdate: BPSession = ses.copy(Option(id),
+          updated_at = Some(org.joda.time.DateTime.now()))
+        val procF = BPDAOF.get(ses.process).map { procOpt =>
+          procOpt match {
+            case Some(proc) => {
+              val element_quantityF = SessionProcElementDAOF.findBySessionLength(ses.id.get)
+              element_quantityF.map { element_quantity =>
+                val percent = BPSessionDAOF.percentDecorator(step, element_quantity)
+                CachedRemovedResourcesDAO.makeResourceUpdateEntity(
+                  scope = proc.business.toString,
+                  action = "updated",
+                  resourceTitle = "launches",
+                  resourceId = s"$id",
+                  updatedEntity = Map("percent" -> percent.toString))
+                bpsessions.filter(_.id === id).update(launchToUpdate)
+              }
+            }
+            case _ => -1
+          }
+        }
+      }
+      case _ => -1
+    }
+  }
+
+  def delete(id: Int, scope: String): Future[Int] = database withSession { implicit session ⇒
     BPSessionDAO.get(id) match {
       case Some(launch) => {
         val procF = BPDAOF.get(launch.process)
@@ -565,7 +592,7 @@ object BPSessionDAO {
           procOpt match {
             case Some(proc) => {
               CachedRemovedResourcesDAO.makeResourceRemoveEntity(
-                scope = "",
+                scope = scope,
                 action = "removed",
                 resourceTitle = "launches",
                 resourceId = s"$id")
@@ -587,13 +614,13 @@ object BPSessionDAO {
   def ddl_create = {
     database withSession {
       implicit session =>
-      bpsessions.ddl.create
+        bpsessions.ddl.create
     }
   }
   def ddl_drop = {
     database withSession {
       implicit session =>
-       bpsessions.ddl.drop
+        bpsessions.ddl.drop
     }
   }
 
@@ -603,11 +630,11 @@ object BPSessionDAO {
       q3.list.sortBy(_.id)
   }
 
-  def percentDecorator(step: Double, element_quantity:Int):Int = {
+  def percentDecorator(step: Double, element_quantity: Int): Int = {
     if (step == 1 && element_quantity == 1) {
-        0
+      0
     } else {
-      ( step / element_quantity.toDouble * 100).toInt
+      (step / element_quantity.toDouble * 100).toInt
     }
   }
 }

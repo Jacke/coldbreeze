@@ -65,16 +65,24 @@ import models.DAO.conversion.DatabaseFuture._
   private def filterQuery(id: Int): Query[ProcessHistoriesF, ProcessHistoryDTO, Seq] =
     proc_historiesf.filter(_.id === id)
 
-  def getByProcessF(proc_id: Int):Future[Seq[ProcessHistoryDTO]] = { 
+  def getByProcessF(proc_id: Int):Future[Seq[ProcessHistoryDTO]] = {
     db.run(filterQueryByProcess(proc_id).result)
     //finally println("db.close")//db.close
   }
   def findById(id: Int): Future[ProcessHistoryDTO] =
     db.run(filterQuery(id).result.head)
     //finally println("db.close")//db.close
+    val create: DBIO[Unit] = proc_historiesf.schema.create
+    val drop: DBIO[Unit] = proc_historiesf.schema.drop
 
+    def ddl_create = db.run(create)
+    def ddl_drop = db.run(drop)
+
+    def pull(s: ProcessHistoryDTO):Future[Int] = {
+    	db.run(proc_historiesf returning proc_historiesf.map(_.id) += s)
+    }
 
   def getAll:Future[Int] = db.run(proc_historiesf.length.result)
   //println("db.close")//db.close
-    
-}    
+
+}

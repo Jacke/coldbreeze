@@ -182,7 +182,7 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
              <div class="session_title">
               <a href="/a#/bprocess/{{ session.process.id }}/elements?launch={{ session.session.id }}">Launch {{ $index + 1 }}
               <!- {{session.station.note }} --></a>
-              <abbr class="session__header__created_at" title="{{ session.station.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="session.station.created_at"></abbr>
+              <abbr class="session__header__created_at" title="{{ session.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="session.created_at"></abbr>
              </div>
         <div class="session__header session__people">
           <div class="launched-by" ng-show="session.peoples.launched_by != 'not@found.com'" ng-init="account = accFetchSessioned(session.peoples.launched_by)">
@@ -240,7 +240,7 @@ _switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.cli
   </div></a>
 
 
-  <span class="dish-label vertical-center left">Started <abbr class="session__header__created_at" title="{{ $parent.session.station.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="$parent.session.station.created_at"></abbr></span>
+  <span class="dish-label vertical-center left">Started <abbr class="session__header__created_at" title="{{ $parent.session.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="$parent.session.created_at"></abbr></span>
 
   <div class="dish-delete right">
     <button class="moicon moicon-cancel-circle" tooltip-placement="left" uib-tooltip="Cancel" tooltip-side="left" ng-click="$parent.cancelSession($parent.session)"></button>

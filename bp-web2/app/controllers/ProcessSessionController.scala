@@ -165,15 +165,15 @@ def all_sessions() = SecuredAction.async { implicit request =>
 
 def all_cached_sessions(timestamp:String) = SecuredAction.async { implicit request =>
 	val email = request.identity.emailFilled
-  val sess_cnsF = BPSessionDAOF.findByBusiness(request.identity.businessFirst, Some(timestamp))
-  //val updated_cns:List[SessionContainer] = sess_cns.map { cn =>
-  //val updatedStatuses:List[SessionStatus] = cn.sessions.map(status => InputLoggerDAO.launchPeopleFetcher(status))
-  //val updatedCN = updatedStatuses.map(status => cn.updateStatus(status))
+  val business = request.identity.businessFirst
+
+  val sess_cnsF = BPSessionDAOF.findByBusiness(business, Some(timestamp))
   sess_cnsF.flatMap { sess_cns =>
     InputLoggerDAOF.fetchPeopleBySessions(sess_cns).flatMap { sess_cns_with_peoples =>
       val jsonSessions = Json.toJson( sess_cns_with_peoples.filter(c => c.sessions.length > 0) )
+      println(s"business first $business")
       val deltasF = CachedRemovedResourcesDAO
-                          .findAllByScope(request.identity.businessFirst.toString,"workbench",
+                          .findAllByScope(business.toString,"workbench",
                               "launches",
                               Some(timestamp)
                           )
@@ -221,7 +221,8 @@ def halt_session(id: Int, session_id: Int) = SecuredAction { implicit request =>
 
     val station_id = BPStationDAO.findBySession(session_id)
     station_id match {
-      case Some(station) => BPStationDAO.haltUpdate(station.id.get);Ok(Json.toJson(Map("success" -> "halted")))
+      case Some(station) => BPStationDAO.haltUpdate(station.id.get,
+        request.identity.businessFirst.toString);Ok(Json.toJson(Map("success" -> "halted")))
       case _ => Ok(Json.toJson(Map("failure" -> "not halted")))
     }
   } else { Forbidden(Json.obj("status" -> "Not found")) }
@@ -245,7 +246,7 @@ def makeListed(id: Int) = SecuredAction { implicit request =>
 // DELETE /session/:session_id/
 def delete_session(session_id: Int) = SecuredAction.async { implicit request =>
     if (security.BRes.sessionSecured(session_id, request.identity.emailFilled, request.identity.businessFirst)) {
-      BPSessionDAO.delete(session_id).map { result =>
+      BPSessionDAO.delete(session_id, request.identity.businessFirst.toString ).map { result =>
         Ok(Json.toJson(result))
       }
     } else { Future.successful( Forbidden(Json.obj("status" -> "Not found")) ) }

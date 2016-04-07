@@ -185,7 +185,8 @@ def all_cached_bprocess(timestamp: String) = SecuredAction.async { implicit requ
       //** Primary manager processes
       val procOut = bprocess.filter(bp => user_services.contains(bp.service))
       val deltasF = CachedRemovedResourcesDAO
-                          .findAllByScope(request.identity.businessFirst.toString,"workbench",
+                          .findAllByScope(business.toString,
+                            "workbench",
                               "processes",
                               Some(timestamp)
                           )
@@ -316,7 +317,7 @@ import ProcHistoryDAO._
 // date: DateTime,
 // what: Option[String] = None)
 private def action(acc: String, process: Option[Int], action: String, what: Option[String]=None, what_id: Option[Int]=None) = {
-  ProcHistoryDAO.pull_object(ProcessHistoryDTO(
+  ProcHistoryDAOF.pull(ProcessHistoryDTO(
     None, acc, action, process, what, what_id, org.joda.time.DateTime.now() ))
 }
 private def haltActiveStations(BPid: Int) = {

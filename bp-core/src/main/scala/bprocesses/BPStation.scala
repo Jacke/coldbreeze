@@ -29,6 +29,9 @@ class BPStation(val bp: BProcess) {
   var inexpands: Boolean = false
   var paused: Boolean = false
 
+  var created_at:Option[org.joda.time.DateTime] = None
+  var updated_at:Option[org.joda.time.DateTime] = None
+
  /**
   * Process information
   */
@@ -103,9 +106,9 @@ class BPStation(val bp: BProcess) {
                         new_incontainer:Boolean,
                         new_inexpands:Boolean,
                         new_paused:Boolean
-                        ) 
+                        )
   {
-                       
+
                         state = new_state
                         step = new_step
                         space = new_space
@@ -118,7 +121,7 @@ class BPStation(val bp: BProcess) {
                         incontainer = new_incontainer
                         inexpands = new_inexpands
                         paused = new_paused
-  } 
+  }
 
   def moveUpFront = {
       if (    (container_step.length < 2 || container_step.isEmpty)
@@ -130,15 +133,15 @@ class BPStation(val bp: BProcess) {
         inSpace(false)
         flush_container_step
         flush_expand_step
-        
+
         flush_container_state
         flush_expand_state
-        
+
         update_space(space - 1)
-        del_space_id(spaces_ids.last) } 
-      else 
-      { 
-        moveUpFrontSpace 
+        del_space_id(spaces_ids.last) }
+      else
+      {
+        moveUpFrontSpace
       }
 
   }
@@ -176,7 +179,7 @@ class BPStation(val bp: BProcess) {
           case "n" => {
                   bp.station.applySwitcher(switcher.fn, switcher.target)
                 } /* For next */
-          case "p" => { 
+          case "p" => {
             bp.station.applySwitcher(switcher.fn, switcher.target)
           } /* For pause */
           case "play" => {
@@ -196,24 +199,24 @@ class BPStation(val bp: BProcess) {
           } /* For in next */
           case "outn" => {
             bp.station.applySwitcher(switcher.fn, switcher.target)
-          } /* For out next */          
-          case _ => 
+          } /* For out next */
+          case _ =>
     */
 
     target match {
       case "step" => {
         fn match {
-          case "inc" => { 
+          case "inc" => {
             println("absoluteStepInc :: absoluteStepInc :: absoluteStepInc()")
             absoluteStepInc()
           }
-          case "dec" => { 
+          case "dec" => {
             if (inspace || container_state.length > 0) {change_container_step(container_step.last - 1)}
-            if (!inspace) {update_step(step - 1)}           
+            if (!inspace) {update_step(step - 1)}
           }
-          case "res" => { 
+          case "res" => {
             if (inspace || container_state.length > 0) {change_container_step(0)}
-            if (!inspace) {update_step(0)}           
+            if (!inspace) {update_step(0)}
           }
         }
       }

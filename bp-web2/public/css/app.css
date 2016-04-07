@@ -130,6 +130,54 @@
     font-stretch: normal;
     unicode-range: U+000D-25CA
 }
+
+
+.jawn {
+  position: relative;
+  background-color: #F8E71C;
+  width: 10px;
+  height: 10px;
+  margin: 0 auto;
+  border-radius: 50%;
+}
+.jawn:after, .jawn:before {
+  content: "";
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+.jawn:after {
+    left: -10px;
+    top: 6px;
+    background-color: #C7C2A6;
+    transform-origin: 15px 10px;
+    animation: axis 1s linear infinite;
+}
+.jawn:before {
+    left: -5px;
+    top: 19px;
+    background-color: #009bff;
+    transform-origin: 30px 20px;
+    animation: axis 2s linear infinite;
+}
+.process-thumb .jawn {
+    margin-left: -24px;
+    margin-top: -4px;
+    width: 40px;
+    height: 37px;
+}
+
+@keyframes axis {
+  0% {
+    transform: rotateZ(0deg) translate3d(0, 0, 0);
+  }
+  100% {
+    transform: rotateZ(360deg) translate3d(0, 0, 0);
+  }
+}
+
+
 .hamburger-menu {
     display: none;
     right: 31px;
