@@ -61,7 +61,17 @@ body.website.loginFlow.animate .logo_title {
     font-weight: 100;
     margin-left: 10px;
 }
-body.website.loginFlow.animate #websiteHeader .headerLogotypeLink {
+body.website.loginFlow.animate #websiteHeader .headerLogotypeLink.primary {
+ display: none;
+}
+body.website.loginFlow #websiteHeader .headerLogotypeLink.loading {
+  display: none;
+}
+body.website.loginFlow.animate #websiteHeader .headerLogotypeLink.loading {
+ display: block;
+}
+
+body.website.loginFlow #websiteHeader .headerLogotypeLink.loading {
     position: absolute !important;
     top: 230%;
     overflow: visible;
