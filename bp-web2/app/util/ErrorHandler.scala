@@ -60,6 +60,24 @@ class ErrorHandler @Inject() (
     }
   }
 
+
+
+  //override def onClientError(request: RequestHeader, statusCode: Int, message: String) = {
+  //  statusCode match {
+  //      case Status.NOT_FOUND => Future.successful(
+  //           NotFound(views.html.auth.msg404("Not found", request)) )
+  //      case _ => Future.successful(Status(statusCode)("A client error occurred: " + message) )
+  //  }
+  // }
+
+  override def onServerError(request: RequestHeader, exception: Throwable) = {
+     Future.successful(
+       InternalServerError(views.html.auth.msg400("", Some(exception)))
+     )
+   }
+
+
+
   private def isJsonRequest(request: RequestHeader):Boolean = {
     request.contentType.isDefined && request.contentType.get == "application/json"
   }
