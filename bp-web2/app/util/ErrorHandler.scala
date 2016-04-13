@@ -62,13 +62,15 @@ class ErrorHandler @Inject() (
 
 
 
-  //override def onClientError(request: RequestHeader, statusCode: Int, message: String) = {
-  //  statusCode match {
-  //      case Status.NOT_FOUND => Future.successful(
-  //           NotFound(views.html.auth.msg404("Not found", request)) )
-  //      case _ => Future.successful(Status(statusCode)("A client error occurred: " + message) )
-  //  }
-  // }
+  override def onClientError(request: RequestHeader, statusCode: Int, message: String) = {
+    statusCode match {
+        case 404 => Future.successful(
+          //   NotFound(views.html.auth.msg404("Not found", request))
+          Status(statusCode)(views.html.auth.msg404("Not found "+message, request))
+           )
+        case _ => Future.successful(Status(statusCode)("A client error occurred: " + message) )
+    }
+   }
 
   override def onServerError(request: RequestHeader, exception: Throwable) = {
      Future.successful(
