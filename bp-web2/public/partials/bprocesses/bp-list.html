@@ -8,9 +8,24 @@
     <span class="magnifyGlass vIco vLoupe vLight2State"></span>
     <input type="text" size="41" ng-model="search.$" data-toggle-class="hidden" class="filterInput tableMinListFilterInput" placeholder="{{ 'SEARCH_PROC' | translate }}">
   </div>
-
+<style>
+.empty-reponse {
+    margin-left: 0px;
+    width: 94.1%;
+}
+.empty-reponse img {
+  width: 48%;
+  height: 277px;
+  display: block;
+  margin: 38px auto;
+  border: solid 1px #d4d4d4;
+  box-shadow: 1px 2px 3px #8f8c8c;
+}</style>
 <div class="panelLike organisationsGridLike">
-<div class="empty-reponse" ng-init="isEmptyProcesses = false;" ng-show="isEmptyProcesses" ng-cloak>You have no process. Create one by describing simple workflow. Then come back here</div>
+<div class="empty-reponse" ng-init="isEmptyProcesses = false;" ng-show="isEmptyProcesses" ng-cloak>
+  You have no process. Create one by describing simple workflow. Then come back here
+<img src="/assets/images/process_create.gif">
+</div>
 
   <ul ul id="tablemin" class="tableMinList processList">
   <div class="process" ng-repeat="bprocess in bprocesses | filter:search">

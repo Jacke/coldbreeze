@@ -85,7 +85,7 @@ class ProcessInputController @Inject() (
   implicit val inLoggerWrites = Json.format[InputLogger]
 
 
-
+// POST         /bprocess/:bpID/invoke
 def invoke(bpID: Int)  = SecuredAction.async { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, bpID)) {
       val userId = request.identity.emailFilled
@@ -116,7 +116,7 @@ def invoke(bpID: Int)  = SecuredAction.async { implicit request =>
 
 
 
-
+// POST         /bprocess/:bpID/invoke_from/:station_id
 def invokeFrom(session_id: Int, bpID: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, bpID)) {
 

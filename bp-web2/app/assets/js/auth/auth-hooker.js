@@ -120,6 +120,7 @@ $(function domReadyLoginFlow () {
     var $requireds;
     e.preventDefault();
     $('body.website.loginFlow').toggleClass('animate');
+    sessionStorage.clear();
     $('p.message').remove();
     e = $(this);
     $requireds = e.find('input[required]').filter(function(){return this.value==="";});
