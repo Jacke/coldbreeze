@@ -43,13 +43,18 @@ case class User2(
     val emailFilled = email.getOrElse("")
 
     permissions = AccountsDAO.getRolesAndLang(emailFilled, businessFirst)
-    val acc_info:AccountInfo = AccountsDAO.getAccountInfo(emailFilled).get
-
-    AccountsDAO.getAccountInfo(emailFilled) match {
-      case Some(acc_info) => created_at = Some(acc_info.created_at)
-      case _ => created_at = Some(org.joda.time.DateTime.now())
+    val acc_info:AccountInfo = AccountsDAO.getAccountInfo(emailFilled) match {
+      case Some(info) => info
+      case _ => AccountInfo( id = None,
+                						 uid = "",
+                             created_at = org.joda.time.DateTime.now(),
+                             ea = false,
+                             pro = false,
+                             currentWorkbench=None
+                           )
     }
 
+    created_at = Some(acc_info.created_at)
     lang = Some(country(acc_info.lang.getOrElse("en") ))
 
     def country(lang: String):Lang = {
@@ -76,11 +81,11 @@ case class User2(
 
     //lazy val
     def firstBusinessId = {
-        Cache.getOrElse[Option[AccountInfo]](s"employee.business.${emailFilled}") {
+        //Cache.getOrElse[Option[AccountInfo]](s"employee.business.${emailFilled}") {
         val acc_info:Option[AccountInfo] = AccountInfosDAOF.await(AccountInfosDAOF.getByInfoByUID(emailFilled))
-        Cache.set(s"employee.business.${emailFilled}", acc_info, 1.minutes)
+        //Cache.set(s"employee.business.${emailFilled}", acc_info, 1.minutes)
         acc_info
-      }
+      //}
     }
     lazy val businessObj = firstBusinessId
 
@@ -94,7 +99,8 @@ case class User2(
        //play.Logger.debug("First business for "+ main.userId + " are: " + firstBusinessId)
        firstBusinessDetected
     }
-
+    println("firstBusinessId"+firstBusinessId)
+    println("businessFirst "+businessFirst)
     def masterFirst: String = {
       val masterFirstDetected = masterFirstId match {
           case Some(tup) => tup.master_acc

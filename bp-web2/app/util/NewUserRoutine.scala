@@ -19,12 +19,14 @@ object NewUserRoutine {
         val cond = isMasterAccAndEmpty(email)
         val isEmpty = cond._2
         val isMaster = cond._1
-        def isArleadyDefined = EmployeeDAO.getByEmployeeUID(email).isDefined
+				def isArleadyDefined = EmployeeDAO.getByEmployeeUID(email).isDefined
         if (isEmpty && !isArleadyDefined) {
-      		val emp_id = EmployeeDAO.pull_object(EmployeeDTO(None, email, email, None, true))
           val partOfEmail = email.split("@").head
-          val biz_id = BusinessDAO.pull_object(BusinessDTO(None, s"${partOfEmail}'s Workbench", country = "", city = "", 
+					println("isArleadyDefined"+isArleadyDefined)
+          val biz_id = BusinessDAO.pull_object(BusinessDTO(None, s"${partOfEmail}'s Workbench", country = "", city = "",
                                        address = None, walkthrough = true, organization = true))
+				 val emp_id = EmployeeDAO.pull_object(EmployeeDTO(None, email, email, None, true, workbench = biz_id ))
+
            defaultService(email, biz_id, isMaster)
           //EmployeesBusinessDAO.pull(emp_id, biz_id)
           AccountInfosDAOF.await(AccountInfosDAOF.updateCurrentWorkbench(email, Some(biz_id) ))
@@ -35,10 +37,10 @@ object NewUserRoutine {
            defaultAnalyticsGroup(email, biz_id, emp_id)
            assignToTrial(email, biz_id)
         }
-        
+
         //request.user.renewPermissions() // Update var's of user
         //var (isEmployee, isManager) = (request.user.isEmployee, request.user.isManager)
-        
+
 	}
   /****
    * Master account is account that paid for app
@@ -57,7 +59,7 @@ object NewUserRoutine {
     private def defaultAnalyticsGroup(uid: String, biz_id: Int, employee_id:Int = -1) = {
       val acc_groups = AccountGroupDAO.getByAccount(uid).distinct.map(_.id.get)
       val someNow = Some(org.joda.time.DateTime.now())
-      val isAnalyticGroupDefined = GroupsDAO.gets(acc_groups).find(_.title == "Analytics").isDefined // TODO: Translation      
+      val isAnalyticGroupDefined = GroupsDAO.gets(acc_groups).find(_.title == "Analytics").isDefined // TODO: Translation
       if (!isAnalyticGroupDefined) {
         val group_id = GroupsDAO.pull_object(GroupDTO(None,
                   title = "Analytics",
@@ -70,8 +72,8 @@ object NewUserRoutine {
             case id => {
                     AccoutGroupDTO(
                         None,
-                        account_id = Some(uid), 
-                        group_id = id, 
+                        account_id = Some(uid),
+                        group_id = id,
                         created_at = someNow,
                         updated_at = someNow,
                         employee_id = employee_id)
@@ -93,13 +95,13 @@ object NewUserRoutine {
     }
 
   def defaultPermsForAnalytics(process_id: Int, business: Int) = {
-      val analyticGroup = GroupsDAO.getsByBusiness(business).find(_.title == "Analytics") 
+      val analyticGroup = GroupsDAO.getsByBusiness(business).find(_.title == "Analytics")
       if (analyticGroup.isDefined) {
-          ActPermissionDAO.pull_object(ActPermission(None, 
-                         uid = None, 
-                         group = analyticGroup.get.id, 
+          ActPermissionDAO.pull_object(ActPermission(None,
+                         uid = None,
+                         group = analyticGroup.get.id,
                          process = process_id,
-                         front_elem_id = None, 
+                         front_elem_id = None,
                          space_elem_id = None,
                          reaction = None,
                          role = "all"))

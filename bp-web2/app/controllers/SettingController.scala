@@ -108,35 +108,46 @@ class SettingController @Inject() (
 
 
  def index() = SecuredAction { implicit request =>
-  val business = request.identity.businessFirst
- 	val cred = models.AccountsDAO.fetchCredentials(request.identity.emailFilled)
-  //val biz0 = fetchBiz(request.identity.emailFilled).get
-  //val biz = BizFormDTO(biz0.title, biz0.phone, biz0.website, biz0.country, biz0.city, biz0.address, biz0.nickname)
-  var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled, business).get
- 	Ok(views.html.settings.index(credForm.fill(cred.get), request.identity, isManager))
+    val business = request.identity.businessFirst
+   	val cred = models.AccountsDAO.fetchCredentials(request.identity.emailFilled)
+    //val biz0 = fetchBiz(request.identity.emailFilled).get
+    //val biz = BizFormDTO(biz0.title, biz0.phone, biz0.website, biz0.country, biz0.city, biz0.address, biz0.nickname)
+    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled, business).get
+   	Ok(views.html.settings.index(credForm.fill(cred.get), request.identity, isManager))
  }
+
+
+
  def workbench() = SecuredAction  { implicit request =>
-  val biz0 = fetchBiz(request.identity.emailFilled)
-  val benchesF = EmployeeDAOF.getAllByEmpByUID(request.identity.emailFilled)
-  val bizFormObj = biz0 match {
-    case Some(biz0) => Some(
-        bizForm.fill(BizFormDTO(biz0.title, biz0.phone, biz0.website, biz0.country, biz0.city, biz0.address, biz0.nickname))
-        )
-    case _ => None
-  }
-  val account_benches = biz0 match {
-    case Some(biz0) => AccountInfosDAOF.await(benchesF).filter(b => b.workbench != biz0.id.get)
-    case _ => AccountInfosDAOF.await(benchesF)
-  }
-  val workbench_id = biz0 match {
-    case Some(w) => w.id.get
-    case _ => -1
-  }
+    val biz0 = fetchBiz(request.identity.emailFilled)
+    println(biz0)
+    val employeesF = EmployeeDAOF.getAllByEmpByUID(request.identity.emailFilled)
+    val bizFormObj = biz0 match {
+      case Some(biz0) => Some(
+          bizForm.fill(BizFormDTO(biz0.title, biz0.phone, biz0.website, biz0.country, biz0.city, biz0.address, biz0.nickname))
+          )
+      case _ => None
+    }
+    val account_benches = biz0 match {
+      case Some(biz0) => AccountInfosDAOF.await(employeesF).filter(b => b.workbench == biz0.id.get)
+      case _ => AccountInfosDAOF.await(employeesF)
+    }
+    val workbench_id = biz0 match {
+      case Some(w) => w.id.get
+      case _ => -1
+    }
 
-  val benches = BusinessDAO.getByIDS(account_benches.map(_.workbench).toList)
+    val benches = BusinessDAO.getByIDS(account_benches.map(_.workbench).toList)
+    println("account_benches "+account_benches)
 
-  var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled, workbench_id).get
-  Ok(views.html.settings.workbench(bizFormObj, request.identity, isManager, biz0, benches ))
+    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled, workbench_id).get
+
+    if (benches.length == 0) {
+      utilities.NewUserRoutine.initiate_env(request.identity.emailFilled)
+      Redirect(routes.SettingController.workbench())
+    } else {
+      Ok(views.html.settings.workbench(bizFormObj, request.identity, isManager, biz0, benches ))
+    }
  }
 
  def resetBench(bench_id: Int) = SecuredAction.async { implicit request =>
