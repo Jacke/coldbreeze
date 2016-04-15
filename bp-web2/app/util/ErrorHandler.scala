@@ -10,6 +10,7 @@ import play.api.mvc.Results._
 import play.api.mvc.{ Result, RequestHeader }
 import play.api.routing.Router
 import play.api.{ OptionalSourceMapper, Configuration }
+import play.api.Logger
 
 import scala.concurrent.Future
 
@@ -73,6 +74,7 @@ class ErrorHandler @Inject() (
    }
 
   override def onServerError(request: RequestHeader, exception: Throwable) = {
+    Logger.error("Server error", exception)
      Future.successful(
        InternalServerError(views.html.auth.msg400("", Some(exception)))
      )

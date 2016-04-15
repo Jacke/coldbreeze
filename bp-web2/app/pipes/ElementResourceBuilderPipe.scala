@@ -25,7 +25,7 @@ object ElementResourceBuilderPipe {
     (pipe: LaunchMapPipe) =>
       {
         val launch_costs = costs.map { cost =>
-          SessionElementResourceDAO.pull_object(SessionElementResourceDTO(
+          SessionElementResourceDAOF.pull(SessionElementResourceDTO(
             None,
             pipe.aditElementPipe.TopologsMap.get(cost.element_id).getOrElse(0), //cost.element_id, // resolve session topologs
             cost.process_id,

@@ -67,7 +67,7 @@ object Dependencies {
   val jacksonbson     = "de.undercouch"             %  "bson4jackson"           % "2.5.0"
   val wcs             = "eu.piotrbuda"              % "scalawebsocket_2.10"     % "0.1.1"
 
-
+  val rollback        = "com.tapstream" % "rollbar-logback" % "0.1.4"
   //val trireme         = "io.apigee.trireme"         % "trireme-core"            % "0.8.5"
   //val triremenode10src= "io.apigee.trireme"         % "trireme-node10src"       % "0.8.5"
   val jsengine        = "com.typesafe"              %% "jse"                    % "1.1.2"
@@ -177,7 +177,7 @@ object Dependencies {
   val guice           = "net.codingwell"            %% "scala-guice"            % "4.0.0"
   val ficus           = "net.ceedubs"               %% "ficus" % "1.1.2"
   val bootstrapplay   = "com.adrianhurt"            %% "play-bootstrap3"     % "0.4.4-P24"
-  val bootstrapplay4  = "com.adrianhurt"            %% "play-bootstrap"      % "1.0-P24-B3-SNAPSHOT"
+  val bootstrapplay4  = "com.adrianhurt"            %% "play-bootstrap"      % "1.1-P24-B3-SNAPSHOT"
   val scalatest0      =  "org.scalatest"            %% "scalatest"           % "2.2.1"
   val playsctest      =  "org.scalatestplus"        %% "play"                % "1.2.0"
   val scalatest       =  "org.specs2"               %% "specs2-core"         % "2.3.13-scalaz-7.1.0-RC1" % "test"

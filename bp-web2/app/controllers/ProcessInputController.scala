@@ -94,14 +94,16 @@ def invoke(bpID: Int)  = SecuredAction.async { implicit request =>
       costsF.flatMap { costs =>
         val costPipeFn = pipes.ElementResourceBuilderPipe.apply(costs.toList)
         val pipesList:List[LaunchMapPipe => ExecutedLaunchCVPipes] = List(costPipeFn)
-        langF.map { langOpt =>
+        langF.flatMap { langOpt =>
           val lang = langOpt.get._3
-          service.Build.run(bpID, Some(lang), invoke = true, pipesList) match {
-            case Some(process) => {
-              action(request.identity.emailFilled, process = Some(bpID), ProcHisCom.processLaunched, None, None)
-              Ok(Json.toJson(Map("success" -> "station_id", "session" -> process.session_id.toString)))
-            }
-            case _ => Ok(Json.toJson(Map("error" -> "Error output")))
+          service.BuildF.run(bpID, Some(lang), invoke = true, pipesList).map { process =>
+             //runned match {
+              //case Some(process) => {
+                action(request.identity.emailFilled, process = Some(bpID), ProcHisCom.processLaunched, None, None)
+                Ok(Json.toJson(Map("success" -> "station_id", "session" -> process.session_id.toString)))
+              //}
+              //case _ => Ok(Json.toJson(Map("error" -> "Error output")))
+              //}
           }
         }
       }
