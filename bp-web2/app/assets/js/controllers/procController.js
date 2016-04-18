@@ -168,7 +168,17 @@ $scope.emptyElemCheck = function(col) {
     });
   };
 $scope.filterForActiveLaunch = function(ses) {
-   if (ses.percent !== 100 && ses.station != undefined && ses.station.finished == false && ses.station.paused == true && ses.station.state == true) {
+/*   if ((ses.percent !== 100 && ses.station != undefined
+     && ses.station.finished == false
+     && ses.station.paused == true
+     && ses.station.state == true) || (
+       ses.percent !== "100"
+     )
+
+   )
+*/
+   if (ses.percent !== "100" && ses.percent !== 100)
+   {
       return ses;
     } else {
       return false;
@@ -294,7 +304,11 @@ $scope.loadLaunchesFromCache = function() {
               });
             });
             function percParse(perc) {
-              return perc.split('percent:')[1].replace(/\s/g, '')
+              return perc.split(/(percent: (\d*) )/)[2]; //"percent: 100 step: 5.0 "
+            }
+            function stepParse(perc) {
+              var re = /(?!step: )(\d).(\d)/g
+              return perc.match(re)[0].split('.')[0];
             }
 
             var finalizedLaunches = oldLaunches.concat(newLaunches)
@@ -303,7 +317,8 @@ $scope.loadLaunchesFromCache = function() {
   **************************************************************************************************************/
             var dates = _.sortBy(resp.data.deltas.u, 'date');
             var newPercents = _.map(dates, function(perc) {
-                return { launchId: parseInt(perc.resourceId), percent: percParse(perc.updatedAttributes) }
+                return { launchId: parseInt(perc.resourceId), step: stepParse(perc.updatedAttributes),
+                  percent: percParse(perc.updatedAttributes) }
               });
 
             _.forEach(finalizedLaunches, function(finLaunchCn) {
@@ -312,6 +327,7 @@ $scope.loadLaunchesFromCache = function() {
                     return d.launchId === sessionStatus.session.id })
                   if (isProcentExist !== undefined) {
                     console.log('update percent', isProcentExist.percent)
+                    sessionStatus.station.step = isProcentExist.step;
                     return sessionStatus.percent = isProcentExist.percent;
                   } else {
                     return sessionStatus;

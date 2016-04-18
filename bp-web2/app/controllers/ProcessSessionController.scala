@@ -46,16 +46,6 @@ import decorators._
 import builders._
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-
-case class StationNoteMsg(msg: String)
-case class LogsContainer(session_loggers: List[BPLoggerDTO],
-                         process_histories: List[ProcessHistoryDTO],
-                         stations: List[BPStationDTO],
-                         input_logs: List[InputLogger] = List.empty,
-                         state_logs: List[SessionStateLog] = List.empty,
-                         procId: Int = 0)
-
-
 import javax.inject.Inject
 
 import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
@@ -66,8 +56,19 @@ import models.User2
 import play.api.i18n.MessagesApi
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-
 import play.api.mvc.{ Action, RequestHeader }
+
+
+case class StationNoteMsg(msg: String)
+case class LogsContainer(session_loggers: List[BPLoggerDTO],
+                         process_histories: List[ProcessHistoryDTO],
+                         stations: List[BPStationDTO],
+                         input_logs: List[InputLogger] = List.empty,
+                         state_logs: List[SessionStateLog] = List.empty,
+                         procId: Int = 0)
+
+
+
 
 class ProcessSessionController @Inject() (
   val messagesApi: MessagesApi,
@@ -75,11 +76,10 @@ class ProcessSessionController @Inject() (
   socialProviderRegistry: SocialProviderRegistry)
   extends Silhouette[User2, CookieAuthenticator] {
 
-implicit val InputLoggerReads = Json.reads[InputLogger]
-implicit val InputLoggerWrites = Json.format[InputLogger]
-implicit val SessionStateLogReads  = Json.reads[SessionStateLog]
-implicit val SessionStateLogWrites  = Json.format[SessionStateLog]
-
+  implicit val InputLoggerReads = Json.reads[InputLogger]
+  implicit val InputLoggerWrites = Json.format[InputLogger]
+  implicit val SessionStateLogReads  = Json.reads[SessionStateLog]
+  implicit val SessionStateLogWrites  = Json.format[SessionStateLog]
   implicit val CompositeVReads = Json.reads[CompositeValues]
   implicit val CompositeVWrites = Json.format[CompositeValues]
   implicit val logReads = Json.reads[BPLoggerDTO]

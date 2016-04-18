@@ -113,8 +113,9 @@ object BuildF {
     val session = BPSession(
                             None,
                             bprocess_dto.id.get,
-                            None,
-                            None)
+                            created_at = Some(org.joda.time.DateTime.now() ),
+                            updated_at = Some(org.joda.time.DateTime.now() )
+                        )
     BPSessionDAOF.pull(session)
   }
 

@@ -268,7 +268,17 @@ minorityApp.factory('NotificationBroadcaster', ['$rootScope','$websocket', '$win
             console.log(message);
             var object = JSON.parse(message.data);
             if (object.type == "message") {
-                toastr.success(message.type, object.msg);
+                if (object.msg == "cache") {
+                  // clean cache
+                  var i = $window.sessionStorage.length;
+                  while(i--) {
+                    var key = $window.sessionStorage.key(i);
+                    if(/angular-cache.caches/.test(key)) {
+                      $window.sessionStorage.removeItem(key);
+                    }
+                  }
+                }
+                //toastr.success(message.type, object.msg);
             }
             // laucnh locker
             if (object.type == "launchLocker") {

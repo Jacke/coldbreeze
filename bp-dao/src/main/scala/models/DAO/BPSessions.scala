@@ -265,7 +265,7 @@ object BPSessionDAO {
     get(id) match {
       case Some(ses) => {
         val launchToUpdate: BPSession = ses.copy(Option(id),
-          updated_at = Some(org.joda.time.DateTime.now()))
+                                                 updated_at = Some(org.joda.time.DateTime.now()))
         val procF = BPDAOF.get(ses.process).map { procOpt =>
           procOpt match {
             case Some(proc) => {
@@ -277,7 +277,10 @@ object BPSessionDAO {
                   action = "updated",
                   resourceTitle = "launches",
                   resourceId = s"$id",
-                  updatedEntity = Map("percent" -> percent.toString))
+                  updatedEntity = Map("percent" -> percent.toString,
+                                      "step" -> step.toString
+                                    )
+                )
                 bpsessions.filter(_.id === id).update(launchToUpdate)
               }
             }
@@ -314,6 +317,10 @@ object BPSessionDAO {
 
   def count: Int = database withSession { implicit session ⇒
     Query(bpsessions.length).first
+  }
+  def countByProcess(p: Int) = database withSession { implicit session ⇒
+    val q3 = for { s ← bpsessions if s.process === p } yield s
+    q3.list.length
   }
 
   def ddl_create = {

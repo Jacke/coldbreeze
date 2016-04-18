@@ -82,14 +82,21 @@ object BPSessionDAOF {
       cnames = "0"
     }
     println("cnames: " + cnames)
-    val s = sql"SELECT * from bpsessions where bpsessions.created_at > to_timestamp(${ts}) AND bpsessions.process_id IN (#${cnames}   )"
-      .as[BPSession]
-    s
+    timestamp match {
+      case Some(t) => {
+        val s = sql"SELECT * from bpsessions where bpsessions.created_at > to_timestamp(${ts}) AND bpsessions.process_id IN (#${cnames}   )"
+          .as[BPSession]
+        s
+      }
+      case _ => {
+        val s = sql"SELECT * from bpsessions where bpsessions.process_id IN (#${cnames}   )"
+          .as[BPSession]
+        s
+      }
+    }
   }
 
   def pull(s: BPSession):Future[Int] = db.run(bpsessions returning bpsessions.map(_.id) += s)
-
-
   private def filterByProcessesAndIdsQuery(processes_ids: List[Int], session_ids: List[Int]): Query[BPSessionsF, BPSession, Seq] =
     bpsessions.filter(c => (c.process inSetBind processes_ids) && (c.id inSetBind session_ids))
 
@@ -99,16 +106,23 @@ object BPSessionDAOF {
       val processIds: List[Int] = processes.map(_.id.get).toList
       val sessF = db.run(filterByProcessesTimestampQuery(processIds, timestamp))
       sessF.flatMap { sess =>
-        println("sess result ")
+        println("sess result "+sess.length)
         val allStationsF = BPStationDAOF.findBySessions(sess.map(s => s.id.get).toList)
         allStationsF.flatMap { stations =>
+          println("stations result "+stations.length)
+
           Future.sequence(processes.map { process =>
-            val sesStatusF = prepareSessionStatusWithStations(process,
-              sess.filter(ses => ses.process == process.id.get),
+            val sessionsForProcess = sess.filter(ses => ses.process == process.id.get)
+            println(s"sessionsForProcess ${process.id.get} - length ${sessionsForProcess.length}")
+            val sesStatusF = prepareSessionStatusWithStations(
+              process,
+              sessionsForProcess,
               stations)
+
             sesStatusF.map { ses_status =>
               SessionContainer(process, ses_status.toList)
             }
+
           })
         }
       }

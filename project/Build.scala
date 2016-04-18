@@ -131,6 +131,10 @@ integrationTest := {
           jdbc4,
           swaggerRoute,
           silhouette,
+          scalatest0,
+          playsctest,
+          selenide,
+
 
           scalamandrill,
           javamandrill,

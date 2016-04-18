@@ -1,32 +1,32 @@
 @import decorators._
 @import models.DAO._
 @(sessions: List[SessionContainer], currentReactionCN: List[CurrentSessionReactionContainer])
-	
+
   <div class="teamChangeBox teamPaddedBox">
     <div class="session_header__top_bar">
 	    <header class="panel-heading head-border">Active launches</header>
     </div>
     <div class="session_list">
-    	@sessions.map { session_cn => 
+    	@sessions.map { session_cn =>
           @if(session_cn.sessions.length > 0) {
           <div class="session_list__session">
     		  <div class="session_list__session__process">
     		  	<a href="/a#/bprocess/@{session_cn.process.id.getOrElse(0)}">@session_cn.process.title</a>
     		  </div>
-          
-            
+
+
                 @session_cn.sessions.filter(status => status.percent < 100).map { session =>
                 <div class="session-container">
                 <div class="active-sessions">
                                                 <div class="info">
-                                                    <div class="desc pull-left"><a href="/a#/bprocess/@{session.process.id.getOrElse(0)}/elements?session=@session.session.id"> 
+                                                    <div class="desc pull-left"><a href="/a#/bprocess/@{session.process.id.getOrElse(0)}/elements?session=@session.session.id">
                                                     @session.station match {
                                                       case Some(station) => {
                                                             @station.note match {
                                                                 case Some(note) => { @{"—" + note} }
                                                                 case _ => {  }
                                                             }
-                                                            <time class="updated" itemprop="dateModified" datetime="@station.created_at"></time></a></div>
+                                                            <time class="updated" itemprop="dateModified" datetime="@session.session.created_at"></time></a></div>
                                                       }
                                                       case _ => {
                                                             <time class="updated" itemprop="dateModified" datetime="station.created_at"></time></a></div>
@@ -56,7 +56,7 @@
 </div>
 }
     	</div>
-      }  
+      }
       }
     </div>
     <a href="/a#/launches" class="single-mail text-center">View All Sessions</a>
@@ -75,7 +75,7 @@
     this.buttonEl = options.buttonEl;
     // Events
     this.onSelect = options.onSelect;
-    //this.buttonEl.addEventListener('click', this.open.bind(this));  
+    //this.buttonEl.addEventListener('click', this.open.bind(this));
     //this.buttonEl[i].disabled = true;
     var fn = this.open.bind(this)
     /*
@@ -98,11 +98,11 @@ for (var i = 0; i < this.buttonEl.length; i++) {
     google.load('picker', '1', { callback: this._pickerApiLoaded.bind(this) });
   }
   FilePicker.prototype = {
-    open: function(launch_id) {    
+    open: function(launch_id) {
       console.log(this);
       // Check if the user has already authenticated
       var token = gapi.auth.getToken();
-      this.launch_id = launch_id; 
+      this.launch_id = launch_id;
       if (token) {
         this._showPicker();
       } else {
@@ -118,7 +118,7 @@ for (var i = 0; i < this.buttonEl.length; i++) {
 
       }
     },
-    
+
     /**
      * Show the file picker once authentication has been done.
      * @@private
@@ -135,7 +135,7 @@ for (var i = 0; i < this.buttonEl.length; i++) {
         build().
         setVisible(true);
     },
-    
+
     /**
      * Called when a file has been selected in the Google Drive file picker.
      * @@private
@@ -147,7 +147,7 @@ for (var i = 0; i < this.buttonEl.length; i++) {
           request = gapi.client.drive.files.get({
             fileId: id
           });
-          
+
         request.execute(this._fileGetCallback.bind(this));
       }
     },
@@ -160,7 +160,7 @@ for (var i = 0; i < this.buttonEl.length; i++) {
         this.onSelect(file, this.launch_id);
       }
     },
-    
+
     /**
      * Called when the Google Drive file picker API has finished loading.
      * @@private
@@ -168,7 +168,7 @@ for (var i = 0; i < this.buttonEl.length; i++) {
     _pickerApiLoaded: function() {
       this.buttonEl.disabled = false;
     },
-    
+
     /**
      * Called when the Google Drive API has finished loading.
      * @@private
@@ -176,13 +176,13 @@ for (var i = 0; i < this.buttonEl.length; i++) {
     _driveApiLoaded: function() {
       this._doAuth(true);
     },
-    
+
     /**
      * Authenticate with Google Drive via the Google JavaScript API.
      * @@private
      */
 
-    _doAuth: function(immediate, callback) {  
+    _doAuth: function(immediate, callback) {
       gapi.auth.authorize({
         client_id: this.clientId + '.apps.googleusercontent.com',
         scope: 'https://www.googleapis.com/auth/drive.readonly',
@@ -211,11 +211,10 @@ for (var i = 0; i < this.buttonEl.length; i++) {
           document.getElementById('instant-input-file-list-'+launch_id).appendChild(
             file_list.appendChild(link)//document.createElement("div")
           );
-          console.log(file);          
+          console.log(file);
         }
-      }); 
+      });
     }
-</script>  
+</script>
   <script src="https://www.google.com/jsapi?key=AIzaSyC_wPVwox46HJlkHVQWgKhy6dnZ0kYfCaA"></script>
-  <script src="https://apis.google.com/js/client.js?onload=initPicker"></script>      
-
+  <script src="https://apis.google.com/js/client.js?onload=initPicker"></script>

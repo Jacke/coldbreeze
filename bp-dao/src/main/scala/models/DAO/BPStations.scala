@@ -141,7 +141,7 @@ object BPStationDAO {
         station.incontainer,
         station.inexpands,
         station.paused,
-        note = None,
+        note = Some("1"),
         created_at = station.created_at,
         updated_at = station.updated_at,
         session = session_id)
@@ -165,23 +165,33 @@ object BPStationDAO {
 
   def pull_object(s: BPStationDTO, lang: Option[String] = Some("en")):Int = database withSession {
     implicit session ⇒
-      bpstations returning bpstations.map(_.id) += s.copy(note = Some(noteFunction(lang.get)),
+      val num = BPSessionDAO.countByProcess(s.process)
+      val pullThis = s.copy(note = Some(s"Launch ${num + 1}"),
       created_at = Some(org.joda.time.DateTime.now()) )
+
+      bpstations returning bpstations.map(_.id) += pullThis
   }
   def saveOrUpdate(s: BPStationDTO, lang: Option[String] = Some("en"), run_proc: Boolean = true):Int = database withSession {
     implicit session ⇒
       findBySession(s.session) match {
         case Some(sess) => {
+          val num = BPSessionDAO.countByProcess(s.process)
           if (run_proc == false) {
             sess.id.get
           } else {
-            if (update(sess.id.get, s.copy(id = sess.id)))
+            if (update(sess.id.get, s.copy(id = sess.id,
+            note = Some(s"Launch ${num + 1}") ))) // TODO: Switch to LaunchCounterDAO
               sess.id.get
             else
               -1
           }
         }
-        case _ =>  pull_object(s)
+        case _ =>  {
+          val num = BPSessionDAO.countByProcess(s.process)
+          val pullThis = s.copy(note = Some(s"Launch ${num + 1}"),
+          created_at = Some(org.joda.time.DateTime.now()) )
+          pull_object(pullThis)
+        }
       }
   }
 

@@ -67,7 +67,10 @@ $scope.reactionElementRoutine = function (interactions) {
               _.forEach(interactions.reactions, function(r) {
                 var data = _.find(d, function(topo) {
               return topo.topo_id === r.reaction.element});
-                if (data !== undefined) { return r.reaction.elem = data; };
+                if (data !== undefined) {
+                  r.reaction.elem_order = _.find($scope.trees, function(t){return t.id === data.element_id });
+                  return r.reaction.elem = data;
+                };
               });
               $scope.firstInput = interactions.reactions[0];
 
@@ -219,6 +222,7 @@ $scope.initiationOfInteraction = function() {
           _.forEach($scope.interactions.reactions, function(r) {
             var el = _.find($scope.element_topologs, function(topo) {
             return topo.topo_id === r.reaction.element});
+            r.reaction.elem_order = _.find($scope.trees, function(t){return t.id === el.element_id });
             console.debug('finded el', el);
             return r.reaction.elem = el;
           });
@@ -1145,6 +1149,16 @@ $scope.selectedClass = function (reaction) {
   } else {
     return '';
   }
+}
+$scope.showByStep = function(step, order) {
+  if (step == 0 && order == 1) {
+    return true;
+  } else if (step == order-1) {
+    return true;
+  } else {
+    return false;
+  }
+
 }
 
 $scope.lastExecuted = function() {

@@ -10581,22 +10581,43 @@ ul.minMenuList.minMenuTexts {
 
 
 @media(max-width: 956px) {
-nav.minMenu.menuCell.menuEntity {
-    min-width: 0%;
-    /* max-width: 0%; */
-    width: 15%;
-    display:none;
-}
+  nav.minMenu.menuCell.menuEntity {
+      min-width: 384px;
+      width: 384px;
+      display: inline-block;
+  }
 ul.minMenuList.minMenuTexts {
     /* margin-left: 190%; */
 }
-
+.minorityMenu .minMenuItem a.menuEntityLink {
+    padding-right: 2px;
+}
+.secondaryNav.switcherWrap.menuCell {
+    display: inline-block;
+    margin-left: -12px;
+}
+.minorityMenu .minorityLogo {
+    width: 10%;
+}
+.menuCell.flexibleSpace {
+  display: none;
+}
+.themeDark .minorityMenu .secondaryNav .switcherToggle {
+    width: 134px;
+}
+.minorityMenu .secondaryNav .gravatar {
+  display: none;
+}
 .minorityMenu .menuRow {
     display: initial;
 }
 header.fullSize {
     height: 289px;
 }
+.menuCell.menuHelp.switcherWrap {
+    display: none;
+}
+
 body.themeGrad.mobileMenu div#container.container-global {
     height: 137px;
     padding-top: 254px;
@@ -10607,7 +10628,9 @@ body.themeGrad.mobileMenu nav.minMenu.menuCell.menuEntity, body.themeGrad.mobile
     margin-left: 14%;
 }
 .themeDark .minorityMenu .secondaryNav .switcherToggle {
-    width: 284px;
-    display:none;
+    width: 182px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 }
