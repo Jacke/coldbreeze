@@ -54,7 +54,7 @@
 </style>
 
 
-<div class="empty-reponse" ng-show="bpelems.length === 0" ng-cloak>
+<div class="empty-reponse" ng-show="bpelems.length === 0 && !(bp.newelemformselected == 1 && !inSession)" ng-cloak>
   You have no elements. Create one by describing simple step of your work.
 <img src="/assets/images/element_create.gif">
 </div>
