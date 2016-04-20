@@ -652,11 +652,13 @@ $scope.interactionContainerPromise.$promise.then(function (d) {
     _.forEach(session_cn.sessions, function(session) { return session.session.station = session.station });
   });
 
-  $scope.bprocesses.$promise.then(function (processes) {
-    _.forEach(processes, function(proc) {
-      proc.sessions = _.filter($scope.sessions, function(ses) { return ses.process.id == proc.id });
-    });
-  });
+  //if ($scope.bprocesses.then !== undefined) { // check if it's promises
+  //  $scope.bprocesses.$promise(function (processes) {
+//      _.forEach(processes, function(proc) {
+//        proc.sessions = _.filter($scope.sessions, function(ses) { return ses.process.id == proc.id });
+//      });
+//    });
+  //}
 
   });
 

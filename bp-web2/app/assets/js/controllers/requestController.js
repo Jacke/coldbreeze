@@ -61,27 +61,29 @@ $scope.isManager();
  * @param  interaction {main interaction object, not an array!!!}
  */
 $scope.reactionElementRoutine = function (interactions) {
-  console.log('reactionElementRoutine', $scope.element_topologsPromise())
-      $scope.element_topologsPromise().then(function(d) {
-        if (interactions) {
-              _.forEach(interactions.reactions, function(r) {
-                var data = _.find(d, function(topo) {
-              return topo.topo_id === r.reaction.element});
-                if (data !== undefined) {
-                  r.reaction.elem_order = _.find($scope.trees, function(t){return t.id === data.element_id });
-                  return r.reaction.elem = data;
-                };
-              });
-              $scope.firstInput = interactions.reactions[0];
+  if ($scope.element_topologsPromise !== undefined) {
+    console.log('reactionElementRoutine', $scope.element_topologsPromise);
+        $scope.element_topologsPromise().then(function(d) {
+          if (interactions) {
+                _.forEach(interactions.reactions, function(r) {
+                  var data = _.find(d, function(topo) {
+                return topo.topo_id === r.reaction.element});
+                  if (data !== undefined) {
+                    r.reaction.elem_order = _.find($scope.trees, function(t){return t.id === data.element_id });
+                    return r.reaction.elem = data;
+                  };
+                });
+                $scope.firstInput = interactions.reactions[0];
 
-            _.forEach(interactions.reactions, function(reaction) {
-               return _.forEach(reaction.outs, function(out) {
-                  return out.state = _.find(interactions.outs_identity, function(iden) {
-                    return iden.origin_state === out.state_ref });
+              _.forEach(interactions.reactions, function(reaction) {
+                 return _.forEach(reaction.outs, function(out) {
+                    return out.state = _.find(interactions.outs_identity, function(iden) {
+                      return iden.origin_state === out.state_ref });
+                });
               });
-            });
-        }
-    });
+          }
+      });
+    }
 };
 
 
@@ -998,6 +1000,9 @@ $scope.runFrom = function (session_id, reaction) {
           // success
           $scope.invoke_res = [response.data];
           //$scope.closeThisDialog();
+          console.log('broadcast');
+          $rootScope.$broadcast('reloadSession', session_id);
+
           $scope.reloadSession(session_id);
           //$location.reload();
           //.path('/a#/bprocess/' + $scope.bpId + 'elements?session=' + parseInt(response.data.session));

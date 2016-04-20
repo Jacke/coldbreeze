@@ -63,6 +63,7 @@ object BPSessionDAO {
 
   def pull_object(s: BPSession) = database withSession {
     implicit session ⇒
+      LaunchCounterDAO.invokeCounterForProcess(process_id = s.process)
       bpsessions returning bpsessions.map(_.id) += s.copy(created_at = Some(org.joda.time.DateTime.now()))
   }
 
@@ -318,9 +319,8 @@ object BPSessionDAO {
   def count: Int = database withSession { implicit session ⇒
     Query(bpsessions.length).first
   }
-  def countByProcess(p: Int) = database withSession { implicit session ⇒
-    val q3 = for { s ← bpsessions if s.process === p } yield s
-    q3.list.length
+  def countByProcess(p: Int) = {
+    LaunchCounterDAO.await( LaunchCounterDAO.getCountByProcess(p) )
   }
 
   def ddl_create = {

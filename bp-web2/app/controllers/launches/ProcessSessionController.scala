@@ -146,16 +146,31 @@ def process_all_session(pid: Int) = SecuredAction { implicit request =>
     } else { Forbidden(Json.obj("status" -> "Not found")) }
 }
 
+
 // GET         /sessions
-def all_sessions() = SecuredAction.async { implicit request =>
+def all_sessions(page: Option[Long], active: Option[Boolean]) = SecuredAction.async { implicit request =>
+  val resourceCountF = BPSessionDAOF.countByBusiness(request.identity.businessFirst, active)
+  val offset = 9
+  val pageSkip = page match {
+    case Some(c) if c == 1 => 0
+    case Some(c) if c > 1 => ( (c - 1) * offset).toInt
+    // 1 -> 0
+    // 2 -> 9
+    // 3 -> 16
+
+    case _ => 0
+  }
+
 	val email = request.identity.emailFilled
-  val sess_cnsF = BPSessionDAOF.findByBusiness(request.identity.businessFirst)
+  val sess_cnsF = BPSessionDAOF.findByBusiness(request.identity.businessFirst, active = active, offset = pageSkip)
   //val updated_cns:List[SessionContainer] = sess_cns.map { cn =>
   //val updatedStatuses:List[SessionStatus] = cn.sessions.map(status => InputLoggerDAO.launchPeopleFetcher(status))
   //val updatedCN = updatedStatuses.map(status => cn.updateStatus(status))
   sess_cnsF.flatMap { sess_cns =>
-    InputLoggerDAOF.fetchPeopleBySessions(sess_cns).map { sess_cns_with_peoples =>
-        Ok(Json.toJson( sess_cns_with_peoples ))
+    resourceCountF.flatMap { resourceCount =>
+      InputLoggerDAOF.fetchPeopleBySessions(sess_cns).map { sess_cns_with_peoples =>
+          Ok(Json.toJson( sess_cns_with_peoples )).withHeaders("Count" -> resourceCount.toString)
+      }
     }
   }
 }

@@ -278,8 +278,8 @@ _.forEach($scope.nestedRequestScopes, function(sc) {
 });
 
   $scope.$broadcast('newInteractionsForLaunch', {session_id: session_id, updatedInteraction: updatedInteraction});
-
   $scope.$broadcast('reloadElementRoutine', session_id);
+
   $scope.lastChecked = true;
    _.forEach(data2, function(d){  // entity
     _.forEach(d.sessions, function(s) { // read session from entity
@@ -351,6 +351,23 @@ $scope.reloadSession = function(session_id) {
 $scope.reloadSession();
 $scope.history_session_id = [];
 $scope.history_entity = [];
+
+
+$scope.$on('launchLocker', function(event, args) {
+  console.log('launchLocker');
+    console.log(event);
+    console.log(args);
+    $scope.reloadSession();
+    // do what you want to do
+});
+$scope.$on('reloadSession', function(event, args) {
+  console.log('launchLocker');
+    console.log(event);
+    console.log(args);
+    $scope.reloadSession();
+    // do what you want to do
+});
+
 
 $scope.history = function(session_id, entity) {
     $scope.historyMode = "launch";

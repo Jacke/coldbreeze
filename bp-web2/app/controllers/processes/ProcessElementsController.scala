@@ -287,7 +287,6 @@ def createFrontElem() = SecuredAction.async(BodyParsers.parse.json) { implicit r
 request.body.validate[RefElemContainer].map {
   case entity => {
          if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, entity.process)) {
-            haltActiveStations(entity.process)
             RefDAOF.retrive(entity.ref,
                            entity.process,
                            entity.business,
@@ -296,7 +295,8 @@ request.body.validate[RefElemContainer].map {
                            entity.desc,
                            space_id = None).map { retrived =>
                               retrived match {//ProcElemDAO.pull_object(entity) match {
-                                case None =>  Ok(Json.toJson(Map("failure" ->  s"Could not create front element ${entity.title}")))
+                                case None =>  Ok(Json.toJson(
+                                                            Map("failure" ->  s"Could not create front element ${entity.title}")))
                                 case ref_resulted =>  {
                                   val element_result = ref_resulted
                                   val elem_id = element_result match {
@@ -322,10 +322,10 @@ def createSpace() = SecuredAction(BodyParsers.parse.json) { implicit request =>
    request.body.validate[BPSpaceDTO].map{
     case entity => {
             if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, entity.bprocess)) {
-            haltActiveStations(entity.bprocess);BPSpaceDAO.pull_object(entity) match {
-            case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not create space ${entity.index}")))
-            case id =>  Ok(Json.toJson(Map("success" ->  id)))
-          }
+            BPSpaceDAO.pull_object(entity) match {
+              case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not create space ${entity.index}")))
+              case id =>  Ok(Json.toJson(Map("success" ->  id)))
+            }
     } else { Forbidden(Json.obj("status" -> "Access denied")) }
     }
     }.recoverTotal{
@@ -334,8 +334,6 @@ def createSpace() = SecuredAction(BodyParsers.parse.json) { implicit request =>
 }
 
 def createSpaceElem() = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
-//RefDAO.retrive(k: Int, entity.bprocess, entity.business, in = "nested", entity.title, entity.desc, space_id: Option[Int] = None)
-//models.DAO.reflect.RefResulted
   val placeResult = request.body.validate[RefElemContainer]
     request.body.validate[RefElemContainer].map{
     case entity => Logger.debug(s"entity are $entity")
@@ -343,7 +341,6 @@ def createSpaceElem() = SecuredAction.async(BodyParsers.parse.json) { implicit r
   request.body.validate[RefElemContainer].map{
       case entity => {
             if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, entity.process)) {
-                haltActiveStations(entity.process);
                  RefDAOF.retrive(entity.ref,
                                  entity.process,
                                  entity.business,
@@ -480,7 +477,7 @@ def deleteFrontElem(bpID: Int, elem_id: Int) = SecuredAction { implicit request 
     if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, bpID)) {
       val elem = ProcElemDAO.findById(elem_id).get
 
-      haltActiveStations(bpID);ProcElemDAO.delete(elem_id) match {
+          ProcElemDAO.delete(elem_id) match {
             case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
             case x =>  {
               deleteOwnedSpace(elem_id = Some(elem_id), spelem_id = None);
@@ -495,7 +492,7 @@ def deleteFrontElem(bpID: Int, elem_id: Int) = SecuredAction { implicit request 
 def deleteSpace(bpID: Int, space_id: Int) = SecuredAction { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, bpID)) {
 
-    haltActiveStations(bpID);BPSpaceDAO.delete(space_id) match {
+      BPSpaceDAO.delete(space_id) match {
         case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
         case x =>  Ok(Json.toJson(Map("success" -> s"Entity has been deleted (deleted $x row(s))")))
       }
@@ -504,7 +501,6 @@ def deleteSpace(bpID: Int, space_id: Int) = SecuredAction { implicit request =>
 def deleteSpaceElem(bpID: Int, spelem_id: Int) = SecuredAction { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, bpID)) {
       val spelem = SpaceElemDAO.findById(spelem_id).get
-      haltActiveStations(bpID)
       SpaceElemDAO.delete(spelem_id) match {
         case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
         case x =>  {

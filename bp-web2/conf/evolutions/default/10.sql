@@ -10,14 +10,14 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 
 --
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner:
 --
 
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner:
 --
 
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
@@ -30,7 +30,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: account_group; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: account_group; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE account_group (
@@ -67,7 +67,7 @@ ALTER SEQUENCE account_group_id_seq OWNED BY account_group.id;
 
 
 --
--- Name: account_infos; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: account_infos; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE account_infos (
@@ -108,7 +108,7 @@ ALTER SEQUENCE account_infos_id_seq OWNED BY account_infos.id;
 
 
 --
--- Name: account_loggers; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: account_loggers; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE account_loggers (
@@ -158,7 +158,7 @@ CREATE SEQUENCE account_plan_history_id_seq
 ALTER TABLE account_plan_history_id_seq OWNER TO postgres;
 
 --
--- Name: account_plan_history; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: account_plan_history; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE account_plan_history (
@@ -173,7 +173,7 @@ CREATE TABLE account_plan_history (
 ALTER TABLE account_plan_history OWNER TO postgres;
 
 --
--- Name: account_plans; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: account_plans; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE account_plans (
@@ -211,7 +211,7 @@ ALTER SEQUENCE account_plans_id_seq OWNED BY account_plans.id;
 
 
 --
--- Name: accounts; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: accounts; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE accounts (
@@ -243,7 +243,7 @@ CREATE TABLE accounts (
 ALTER TABLE accounts OWNER TO postgres;
 
 --
--- Name: billing_infos; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: billing_infos; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE billing_infos (
@@ -282,7 +282,7 @@ ALTER SEQUENCE billing_infos_id_seq OWNED BY billing_infos.id;
 
 
 --
--- Name: bills; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: bills; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE bills (
@@ -321,7 +321,7 @@ ALTER SEQUENCE bills_id_seq OWNED BY bills.id;
 
 
 --
--- Name: bploggers; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: bploggers; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE bploggers (
@@ -364,7 +364,7 @@ ALTER SEQUENCE bploggers_id_seq OWNED BY bploggers.id;
 
 
 --
--- Name: bprocesses; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: bprocesses; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE bprocesses (
@@ -403,7 +403,7 @@ ALTER SEQUENCE bprocesses_id_seq OWNED BY bprocesses.id;
 
 
 --
--- Name: bpsessions; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: bpsessions; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE bpsessions (
@@ -439,7 +439,7 @@ ALTER SEQUENCE bpsessions_id_seq OWNED BY bpsessions.id;
 
 
 --
--- Name: bpspaces; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: bpspaces; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE bpspaces (
@@ -480,7 +480,7 @@ ALTER SEQUENCE bpspaces_id_seq OWNED BY bpspaces.id;
 
 
 --
--- Name: bpstaterefs; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: bpstaterefs; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE bpstaterefs (
@@ -519,7 +519,7 @@ ALTER SEQUENCE bpstaterefs_id_seq OWNED BY bpstaterefs.id;
 
 
 --
--- Name: bpstates; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: bpstates; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE bpstates (
@@ -567,7 +567,7 @@ ALTER SEQUENCE bpstates_id_seq OWNED BY bpstates.id;
 
 
 --
--- Name: bpstation_loggers; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: bpstation_loggers; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE bpstation_loggers (
@@ -615,7 +615,7 @@ ALTER SEQUENCE bpstation_loggers_id_seq OWNED BY bpstation_loggers.id;
 
 
 --
--- Name: bpstations; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: bpstations; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE bpstations (
@@ -666,7 +666,7 @@ ALTER SEQUENCE bpstations_id_seq OWNED BY bpstations.id;
 
 
 --
--- Name: bpswitchers; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: bpswitchers; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE bpswitchers (
@@ -708,7 +708,7 @@ ALTER SEQUENCE bpswitchers_id_seq OWNED BY bpswitchers.id;
 
 
 --
--- Name: business_services; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: business_services; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE business_services (
@@ -743,7 +743,7 @@ ALTER SEQUENCE business_services_id_seq OWNED BY business_services.id;
 
 
 --
--- Name: businesses; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: businesses; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE businesses (
@@ -786,7 +786,7 @@ ALTER SEQUENCE businesses_id_seq OWNED BY businesses.id;
 
 
 --
--- Name: cached_removed_resources; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: cached_removed_resources; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE cached_removed_resources (
@@ -825,7 +825,7 @@ ALTER SEQUENCE cached_removed_resources_id_seq OWNED BY cached_removed_resources
 
 
 --
--- Name: client_observers; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: client_observers; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE client_observers (
@@ -858,7 +858,7 @@ ALTER SEQUENCE client_observers_id_seq OWNED BY client_observers.id;
 
 
 --
--- Name: elem_topologs; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: elem_topologs; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE elem_topologs (
@@ -897,7 +897,7 @@ ALTER SEQUENCE elem_topologs_id_seq OWNED BY elem_topologs.id;
 
 
 --
--- Name: element_resources; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: element_resources; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE element_resources (
@@ -935,7 +935,7 @@ ALTER SEQUENCE element_resources_id_seq OWNED BY element_resources.id;
 
 
 --
--- Name: employees; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: employees; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE employees (
@@ -951,7 +951,7 @@ CREATE TABLE employees (
 ALTER TABLE employees OWNER TO postgres;
 
 --
--- Name: employees_businesses; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: employees_businesses; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE employees_businesses (
@@ -984,7 +984,7 @@ ALTER SEQUENCE employees_id_seq OWNED BY employees.id;
 
 
 --
--- Name: groups; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: groups; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE groups (
@@ -1034,7 +1034,7 @@ CREATE SEQUENCE input_id_seq
 ALTER TABLE input_id_seq OWNER TO postgres;
 
 --
--- Name: input_loggers; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: input_loggers; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE input_loggers (
@@ -1074,7 +1074,7 @@ ALTER SEQUENCE input_loggers_id_seq OWNED BY input_loggers.id;
 
 
 --
--- Name: launch_shares; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: launch_shares; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE launch_shares (
@@ -1109,7 +1109,7 @@ ALTER SEQUENCE launch_shares_id_seq OWNED BY launch_shares.id;
 
 
 --
--- Name: launch_warps; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: launch_warps; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE launch_warps (
@@ -1160,7 +1160,7 @@ CREATE SEQUENCE logininfo_id_seq
 ALTER TABLE logininfo_id_seq OWNER TO postgres;
 
 --
--- Name: logininfo; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: logininfo; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE logininfo (
@@ -1187,7 +1187,7 @@ CREATE SEQUENCE oauth1info_id_seq
 ALTER TABLE oauth1info_id_seq OWNER TO postgres;
 
 --
--- Name: oauth1info; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: oauth1info; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE oauth1info (
@@ -1215,7 +1215,7 @@ CREATE SEQUENCE oauth2info_id_seq
 ALTER TABLE oauth2info_id_seq OWNER TO postgres;
 
 --
--- Name: oauth2info; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: oauth2info; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE oauth2info (
@@ -1231,7 +1231,7 @@ CREATE TABLE oauth2info (
 ALTER TABLE oauth2info OWNER TO postgres;
 
 --
--- Name: observers; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: observers; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE observers (
@@ -1268,7 +1268,7 @@ ALTER SEQUENCE observers_id_seq OWNED BY observers.id;
 
 
 --
--- Name: openidattributes; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: openidattributes; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE openidattributes (
@@ -1281,7 +1281,7 @@ CREATE TABLE openidattributes (
 ALTER TABLE openidattributes OWNER TO postgres;
 
 --
--- Name: openidinfo; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: openidinfo; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE openidinfo (
@@ -1293,7 +1293,7 @@ CREATE TABLE openidinfo (
 ALTER TABLE openidinfo OWNER TO postgres;
 
 --
--- Name: passwordinfo; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: passwordinfo; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE passwordinfo (
@@ -1307,7 +1307,7 @@ CREATE TABLE passwordinfo (
 ALTER TABLE passwordinfo OWNER TO postgres;
 
 --
--- Name: plans; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: plans; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE plans (
@@ -1345,7 +1345,7 @@ ALTER SEQUENCE plans_id_seq OWNED BY plans.id;
 
 
 --
--- Name: proc_element_reflections; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: proc_element_reflections; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE proc_element_reflections (
@@ -1386,7 +1386,7 @@ ALTER SEQUENCE proc_element_reflections_id_seq OWNED BY proc_element_reflections
 
 
 --
--- Name: proc_elements; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: proc_elements; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE proc_elements (
@@ -1428,7 +1428,7 @@ ALTER SEQUENCE proc_elements_id_seq OWNED BY proc_elements.id;
 
 
 --
--- Name: process_histories; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: process_histories; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE process_histories (
@@ -1466,7 +1466,7 @@ ALTER SEQUENCE process_histories_id_seq OWNED BY process_histories.id;
 
 
 --
--- Name: process_permissions; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: process_permissions; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE process_permissions (
@@ -1505,7 +1505,7 @@ ALTER SEQUENCE process_permissions_id_seq OWNED BY process_permissions.id;
 
 
 --
--- Name: reaction_refs; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: reaction_refs; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE reaction_refs (
@@ -1544,7 +1544,7 @@ ALTER SEQUENCE reaction_refs_id_seq OWNED BY reaction_refs.id;
 
 
 --
--- Name: reaction_state_out_refs; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: reaction_state_out_refs; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE reaction_state_out_refs (
@@ -1583,7 +1583,7 @@ ALTER SEQUENCE reaction_state_out_refs_id_seq OWNED BY reaction_state_out_refs.i
 
 
 --
--- Name: reaction_state_outs; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: reaction_state_outs; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE reaction_state_outs (
@@ -1622,7 +1622,7 @@ ALTER SEQUENCE reaction_state_outs_id_seq OWNED BY reaction_state_outs.id;
 
 
 --
--- Name: reactions; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: reactions; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE reactions (
@@ -1661,7 +1661,7 @@ ALTER SEQUENCE reactions_id_seq OWNED BY reactions.id;
 
 
 --
--- Name: reflected_elem_topologs; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: reflected_elem_topologs; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE reflected_elem_topologs (
@@ -1700,7 +1700,7 @@ ALTER SEQUENCE reflected_elem_topologs_id_seq OWNED BY reflected_elem_topologs.i
 
 
 --
--- Name: refs; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: refs; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE refs (
@@ -1739,7 +1739,7 @@ ALTER SEQUENCE refs_id_seq OWNED BY refs.id;
 
 
 --
--- Name: resources; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: resources; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE resources (
@@ -1775,7 +1775,7 @@ ALTER SEQUENCE resources_id_seq OWNED BY resources.id;
 
 
 --
--- Name: session_elem_topologs; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: session_elem_topologs; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE session_elem_topologs (
@@ -1815,7 +1815,7 @@ ALTER SEQUENCE session_elem_topologs_id_seq OWNED BY session_elem_topologs.id;
 
 
 --
--- Name: session_element_resources; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: session_element_resources; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE session_element_resources (
@@ -1854,7 +1854,7 @@ ALTER SEQUENCE session_element_resources_id_seq OWNED BY session_element_resourc
 
 
 --
--- Name: session_initial_states; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: session_initial_states; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE session_initial_states (
@@ -1903,7 +1903,7 @@ ALTER SEQUENCE session_initial_states_id_seq OWNED BY session_initial_states.id;
 
 
 --
--- Name: session_proc_elements; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: session_proc_elements; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE session_proc_elements (
@@ -1946,7 +1946,7 @@ ALTER SEQUENCE session_proc_elements_id_seq OWNED BY session_proc_elements.id;
 
 
 --
--- Name: session_reaction_state_outs; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: session_reaction_state_outs; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE session_reaction_state_outs (
@@ -1985,7 +1985,7 @@ ALTER SEQUENCE session_reaction_state_outs_id_seq OWNED BY session_reaction_stat
 
 
 --
--- Name: session_reactions; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: session_reactions; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE session_reactions (
@@ -2025,7 +2025,7 @@ ALTER SEQUENCE session_reactions_id_seq OWNED BY session_reactions.id;
 
 
 --
--- Name: session_space_elements; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: session_space_elements; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE session_space_elements (
@@ -2070,7 +2070,7 @@ ALTER SEQUENCE session_space_elements_id_seq OWNED BY session_space_elements.id;
 
 
 --
--- Name: session_spaces; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: session_spaces; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE session_spaces (
@@ -2112,7 +2112,7 @@ ALTER SEQUENCE session_spaces_id_seq OWNED BY session_spaces.id;
 
 
 --
--- Name: session_state_logs; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: session_state_logs; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE session_state_logs (
@@ -2151,7 +2151,7 @@ ALTER SEQUENCE session_state_logs_id_seq OWNED BY session_state_logs.id;
 
 
 --
--- Name: session_switchers; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: session_switchers; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE session_switchers (
@@ -2194,7 +2194,7 @@ ALTER SEQUENCE session_switchers_id_seq OWNED BY session_switchers.id;
 
 
 --
--- Name: sessionstates; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: sessionstates; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE sessionstates (
@@ -2247,7 +2247,7 @@ ALTER SEQUENCE sessionstates_id_seq OWNED BY sessionstates.id;
 
 
 --
--- Name: space_element_reflections; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: space_element_reflections; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE space_element_reflections (
@@ -2290,7 +2290,7 @@ ALTER SEQUENCE space_element_reflections_id_seq OWNED BY space_element_reflectio
 
 
 --
--- Name: space_elements; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: space_elements; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE space_elements (
@@ -2334,7 +2334,7 @@ ALTER SEQUENCE space_elements_id_seq OWNED BY space_elements.id;
 
 
 --
--- Name: space_refs; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: space_refs; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE space_refs (
@@ -2375,7 +2375,7 @@ ALTER SEQUENCE space_refs_id_seq OWNED BY space_refs.id;
 
 
 --
--- Name: state_refs; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: state_refs; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE state_refs (
@@ -2423,7 +2423,7 @@ ALTER SEQUENCE state_refs_id_seq OWNED BY state_refs.id;
 
 
 --
--- Name: switcher_refs; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: switcher_refs; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE switcher_refs (
@@ -2464,7 +2464,7 @@ ALTER SEQUENCE switcher_refs_id_seq OWNED BY switcher_refs.id;
 
 
 --
--- Name: tokens; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: tokens; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE tokens (
@@ -2479,7 +2479,7 @@ CREATE TABLE tokens (
 ALTER TABLE tokens OWNER TO postgres;
 
 --
--- Name: user; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: user; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE "user" (
@@ -2495,7 +2495,7 @@ CREATE TABLE "user" (
 ALTER TABLE "user" OWNER TO postgres;
 
 --
--- Name: userlogininfo; Type: TABLE; Schema: public; Owner: postgres; Tablespace: 
+-- Name: userlogininfo; Type: TABLE; Schema: public; Owner: postgres; Tablespace:
 --
 
 CREATE TABLE userlogininfo (
@@ -2892,7 +2892,7 @@ ALTER TABLE ONLY switcher_refs ALTER COLUMN id SET DEFAULT nextval('switcher_ref
 
 
 --
--- Name: account_group_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: account_group_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY account_group
@@ -2900,7 +2900,7 @@ ALTER TABLE ONLY account_group
 
 
 --
--- Name: account_infos_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: account_infos_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY account_infos
@@ -2908,7 +2908,7 @@ ALTER TABLE ONLY account_infos
 
 
 --
--- Name: account_loggers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: account_loggers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY account_loggers
@@ -2916,7 +2916,7 @@ ALTER TABLE ONLY account_loggers
 
 
 --
--- Name: account_plan_history_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: account_plan_history_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY account_plan_history
@@ -2924,7 +2924,7 @@ ALTER TABLE ONLY account_plan_history
 
 
 --
--- Name: account_plans_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: account_plans_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY account_plans
@@ -2932,7 +2932,7 @@ ALTER TABLE ONLY account_plans
 
 
 --
--- Name: accounts_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: accounts_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY accounts
@@ -2940,7 +2940,7 @@ ALTER TABLE ONLY accounts
 
 
 --
--- Name: billing_infos_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: billing_infos_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY billing_infos
@@ -2948,7 +2948,7 @@ ALTER TABLE ONLY billing_infos
 
 
 --
--- Name: bills_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: bills_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY bills
@@ -2956,7 +2956,7 @@ ALTER TABLE ONLY bills
 
 
 --
--- Name: bploggers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: bploggers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY bploggers
@@ -2964,7 +2964,7 @@ ALTER TABLE ONLY bploggers
 
 
 --
--- Name: bprocesses_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: bprocesses_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY bprocesses
@@ -2972,7 +2972,7 @@ ALTER TABLE ONLY bprocesses
 
 
 --
--- Name: bpsessions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: bpsessions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY bpsessions
@@ -2980,7 +2980,7 @@ ALTER TABLE ONLY bpsessions
 
 
 --
--- Name: bpspaces_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: bpspaces_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY bpspaces
@@ -2988,7 +2988,7 @@ ALTER TABLE ONLY bpspaces
 
 
 --
--- Name: bpstaterefs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: bpstaterefs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY bpstaterefs
@@ -2996,7 +2996,7 @@ ALTER TABLE ONLY bpstaterefs
 
 
 --
--- Name: bpstates_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: bpstates_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY bpstates
@@ -3004,7 +3004,7 @@ ALTER TABLE ONLY bpstates
 
 
 --
--- Name: bpstation_loggers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: bpstation_loggers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY bpstation_loggers
@@ -3012,7 +3012,7 @@ ALTER TABLE ONLY bpstation_loggers
 
 
 --
--- Name: bpstations_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: bpstations_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY bpstations
@@ -3020,7 +3020,7 @@ ALTER TABLE ONLY bpstations
 
 
 --
--- Name: bpswitchers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: bpswitchers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY bpswitchers
@@ -3028,7 +3028,7 @@ ALTER TABLE ONLY bpswitchers
 
 
 --
--- Name: business_services_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: business_services_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY business_services
@@ -3036,7 +3036,7 @@ ALTER TABLE ONLY business_services
 
 
 --
--- Name: businesses_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: businesses_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY businesses
@@ -3044,7 +3044,7 @@ ALTER TABLE ONLY businesses
 
 
 --
--- Name: cached_removed_resources_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: cached_removed_resources_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY cached_removed_resources
@@ -3052,7 +3052,7 @@ ALTER TABLE ONLY cached_removed_resources
 
 
 --
--- Name: client_observers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: client_observers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY client_observers
@@ -3060,7 +3060,7 @@ ALTER TABLE ONLY client_observers
 
 
 --
--- Name: elem_topologs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: elem_topologs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY elem_topologs
@@ -3068,7 +3068,7 @@ ALTER TABLE ONLY elem_topologs
 
 
 --
--- Name: element_resources_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: element_resources_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY element_resources
@@ -3076,7 +3076,7 @@ ALTER TABLE ONLY element_resources
 
 
 --
--- Name: employees_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: employees_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY employees
@@ -3084,7 +3084,7 @@ ALTER TABLE ONLY employees
 
 
 --
--- Name: groups_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: groups_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY groups
@@ -3092,7 +3092,7 @@ ALTER TABLE ONLY groups
 
 
 --
--- Name: input_loggers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: input_loggers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY input_loggers
@@ -3100,7 +3100,7 @@ ALTER TABLE ONLY input_loggers
 
 
 --
--- Name: launch_shares_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: launch_shares_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY launch_shares
@@ -3108,7 +3108,7 @@ ALTER TABLE ONLY launch_shares
 
 
 --
--- Name: launch_warps_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: launch_warps_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY launch_warps
@@ -3116,7 +3116,7 @@ ALTER TABLE ONLY launch_warps
 
 
 --
--- Name: logininfo_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: logininfo_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY logininfo
@@ -3124,7 +3124,7 @@ ALTER TABLE ONLY logininfo
 
 
 --
--- Name: oauth1info_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: oauth1info_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY oauth1info
@@ -3132,7 +3132,7 @@ ALTER TABLE ONLY oauth1info
 
 
 --
--- Name: oauth2info_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: oauth2info_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY oauth2info
@@ -3140,7 +3140,7 @@ ALTER TABLE ONLY oauth2info
 
 
 --
--- Name: observers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: observers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY observers
@@ -3148,7 +3148,7 @@ ALTER TABLE ONLY observers
 
 
 --
--- Name: openidinfo_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: openidinfo_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY openidinfo
@@ -3156,7 +3156,7 @@ ALTER TABLE ONLY openidinfo
 
 
 --
--- Name: plans_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: plans_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY plans
@@ -3164,7 +3164,7 @@ ALTER TABLE ONLY plans
 
 
 --
--- Name: proc_element_reflections_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: proc_element_reflections_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY proc_element_reflections
@@ -3172,7 +3172,7 @@ ALTER TABLE ONLY proc_element_reflections
 
 
 --
--- Name: proc_elements_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: proc_elements_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY proc_elements
@@ -3180,7 +3180,7 @@ ALTER TABLE ONLY proc_elements
 
 
 --
--- Name: process_histories_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: process_histories_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY process_histories
@@ -3188,7 +3188,7 @@ ALTER TABLE ONLY process_histories
 
 
 --
--- Name: process_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: process_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY process_permissions
@@ -3196,7 +3196,7 @@ ALTER TABLE ONLY process_permissions
 
 
 --
--- Name: reaction_refs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: reaction_refs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY reaction_refs
@@ -3204,7 +3204,7 @@ ALTER TABLE ONLY reaction_refs
 
 
 --
--- Name: reaction_state_out_refs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: reaction_state_out_refs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY reaction_state_out_refs
@@ -3212,7 +3212,7 @@ ALTER TABLE ONLY reaction_state_out_refs
 
 
 --
--- Name: reaction_state_outs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: reaction_state_outs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY reaction_state_outs
@@ -3220,7 +3220,7 @@ ALTER TABLE ONLY reaction_state_outs
 
 
 --
--- Name: reactions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: reactions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY reactions
@@ -3228,7 +3228,7 @@ ALTER TABLE ONLY reactions
 
 
 --
--- Name: reflected_elem_topologs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: reflected_elem_topologs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY reflected_elem_topologs
@@ -3236,7 +3236,7 @@ ALTER TABLE ONLY reflected_elem_topologs
 
 
 --
--- Name: refs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: refs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY refs
@@ -3244,7 +3244,7 @@ ALTER TABLE ONLY refs
 
 
 --
--- Name: refs_title_key; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: refs_title_key; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY refs
@@ -3252,7 +3252,7 @@ ALTER TABLE ONLY refs
 
 
 --
--- Name: resources_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: resources_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY resources
@@ -3260,7 +3260,7 @@ ALTER TABLE ONLY resources
 
 
 --
--- Name: session_elem_topologs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: session_elem_topologs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY session_elem_topologs
@@ -3268,7 +3268,7 @@ ALTER TABLE ONLY session_elem_topologs
 
 
 --
--- Name: session_element_resources_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: session_element_resources_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY session_element_resources
@@ -3276,7 +3276,7 @@ ALTER TABLE ONLY session_element_resources
 
 
 --
--- Name: session_initial_states_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: session_initial_states_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY session_initial_states
@@ -3284,7 +3284,7 @@ ALTER TABLE ONLY session_initial_states
 
 
 --
--- Name: session_proc_elements_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: session_proc_elements_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY session_proc_elements
@@ -3292,7 +3292,7 @@ ALTER TABLE ONLY session_proc_elements
 
 
 --
--- Name: session_reaction_state_outs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: session_reaction_state_outs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY session_reaction_state_outs
@@ -3300,7 +3300,7 @@ ALTER TABLE ONLY session_reaction_state_outs
 
 
 --
--- Name: session_reactions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: session_reactions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY session_reactions
@@ -3308,7 +3308,7 @@ ALTER TABLE ONLY session_reactions
 
 
 --
--- Name: session_space_elements_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: session_space_elements_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY session_space_elements
@@ -3316,7 +3316,7 @@ ALTER TABLE ONLY session_space_elements
 
 
 --
--- Name: session_spaces_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: session_spaces_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY session_spaces
@@ -3324,7 +3324,7 @@ ALTER TABLE ONLY session_spaces
 
 
 --
--- Name: session_state_logs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: session_state_logs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY session_state_logs
@@ -3332,7 +3332,7 @@ ALTER TABLE ONLY session_state_logs
 
 
 --
--- Name: session_switchers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: session_switchers_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY session_switchers
@@ -3340,7 +3340,7 @@ ALTER TABLE ONLY session_switchers
 
 
 --
--- Name: sessionstates_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: sessionstates_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY sessionstates
@@ -3348,7 +3348,7 @@ ALTER TABLE ONLY sessionstates
 
 
 --
--- Name: space_element_reflections_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: space_element_reflections_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY space_element_reflections
@@ -3356,7 +3356,7 @@ ALTER TABLE ONLY space_element_reflections
 
 
 --
--- Name: space_elements_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: space_elements_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY space_elements
@@ -3364,7 +3364,7 @@ ALTER TABLE ONLY space_elements
 
 
 --
--- Name: space_refs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: space_refs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY space_refs
@@ -3372,7 +3372,7 @@ ALTER TABLE ONLY space_refs
 
 
 --
--- Name: state_refs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: state_refs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY state_refs
@@ -3380,7 +3380,7 @@ ALTER TABLE ONLY state_refs
 
 
 --
--- Name: switcher_refs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: switcher_refs_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY switcher_refs
@@ -3388,7 +3388,7 @@ ALTER TABLE ONLY switcher_refs
 
 
 --
--- Name: user_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace: 
+-- Name: user_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres; Tablespace:
 --
 
 ALTER TABLE ONLY "user"
@@ -4361,3 +4361,18 @@ GRANT ALL ON SCHEMA public TO PUBLIC;
 -- PostgreSQL database dump complete
 --
 
+
+
+
+CREATE TABLE launch_counters
+(
+  id bigserial NOT NULL,
+  process_id integer NOT NULL,
+  count bigint NOT NULL,
+  created_at timestamp without time zone,
+  updated_at timestamp without time zone,
+  CONSTRAINT launch_counters_pkey PRIMARY KEY (id),
+  CONSTRAINT launch_counters_bprocess_fk FOREIGN KEY (process_id)
+      REFERENCES bprocesses (id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE CASCADE
+)

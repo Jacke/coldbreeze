@@ -99,13 +99,26 @@ import models.DAO.conversion.DatabaseFuture._
   private def filterQueryBySessions(session_ids: List[Int]): Query[BPStations, BPStationDTO, Seq] =
     stations.filter(_.session inSetBind session_ids)
 
+  private def filterActiveQueryBySessions(session_ids: List[Int]): Query[BPStations, BPStationDTO, Seq] =
+    stations.filter(s => (s.session inSetBind session_ids) && s.paused === true)
+  private def filterNotActiveQueryBySessions(session_ids: List[Int]): Query[BPStations, BPStationDTO, Seq] =
+    stations.filter(s => (s.session inSetBind session_ids) && s.paused === false)
+
   private def filterQueryBySession(session_id: Int): Query[BPStations, BPStationDTO, Seq] =
     stations.filter(_.session === session_id)
   private def filterQueryByBPIds(bpIds: List[Int]): Query[BPStations, BPStationDTO, Seq] =
     stations.filter(_.process inSetBind bpIds)
 
-  def findBySessions(ids: List[Int]):Future[Seq[BPStationDTO]] =
-    db.run(filterQueryBySessions(ids).result)
+  def findBySessions(ids: List[Int], active: Option[Boolean] = None):Future[Seq[BPStationDTO]] =
+    active match {
+      case Some(bool) => {
+        bool match {
+          case true => db.run(filterActiveQueryBySessions(ids).result)
+          case false => db.run(filterNotActiveQueryBySessions(ids).result)
+        }
+      }
+      case _ => db.run(filterQueryBySessions(ids).result)
+    }
 
   def findBySessionF(id: Int): Future[Option[BPStationDTO]] =
     db.run(filterQueryBySession(id).result.headOption)
@@ -166,7 +179,7 @@ object BPStationDAO {
   def pull_object(s: BPStationDTO, lang: Option[String] = Some("en")):Int = database withSession {
     implicit session ⇒
       val num = BPSessionDAO.countByProcess(s.process)
-      val pullThis = s.copy(note = Some(s"Launch ${num + 1}"),
+      val pullThis = s.copy(note = Some(s"Launch ${num}"),
       created_at = Some(org.joda.time.DateTime.now()) )
 
       bpstations returning bpstations.map(_.id) += pullThis
@@ -180,7 +193,7 @@ object BPStationDAO {
             sess.id.get
           } else {
             if (update(sess.id.get, s.copy(id = sess.id,
-            note = Some(s"Launch ${num + 1}") ))) // TODO: Switch to LaunchCounterDAO
+            note = Some(s"Launch ${num}") ))) // TODO: Switch to LaunchCounterDAO
               sess.id.get
             else
               -1
@@ -188,7 +201,7 @@ object BPStationDAO {
         }
         case _ =>  {
           val num = BPSessionDAO.countByProcess(s.process)
-          val pullThis = s.copy(note = Some(s"Launch ${num + 1}"),
+          val pullThis = s.copy(note = Some(s"Launch ${num}"),
           created_at = Some(org.joda.time.DateTime.now()) )
           pull_object(pullThis)
         }

@@ -66,6 +66,34 @@ object LaunchCounterDAO {
   private def filterByProcessesQuery(ids: List[Int]): Query[LaunchCounters, LaunchCounter, Seq] =
     launch_counters.filter(_.process inSetBind ids)
   def pull(s: LaunchCounter):Future[Long] = db.run(launch_counters returning launch_counters.map(_.id) += s)
+  def update(id: Long, s: LaunchCounter) = {
+    db.run(filterQuery(id).update(s.copy(id = Some(id), updated_at = Some(org.joda.time.DateTime.now()) )))
+  }
+  def getCountByProcess(process_id: Int):Future[Long] =
+    db.run(filterByProcessQuery(process_id).result.headOption).map { cnOpt =>
+      cnOpt match {
+        case Some(cn) => cn.count
+        case _ => 1L
+      }
+    }
 
+  def invokeCounterForProcess(process_id: Int) = {
+    db.run(filterByProcessQuery(process_id).result.headOption).map { cnOpt =>
+      cnOpt match {
+        case Some(cn) => {
+          update(cn.id.get, cn.copy(count = cn.count+1 ))
+        }
+        case _ => {
+          val date = Some(  org.joda.time.DateTime.now() )
+          pull ( LaunchCounter(None, process_id, count = 1, date, date ) )
+        }
+      }
+    }
+  }
 
+  val create: DBIO[Unit] = launch_counters.schema.create
+  val drop: DBIO[Unit] = launch_counters.schema.drop
+
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
 } // Future Impl

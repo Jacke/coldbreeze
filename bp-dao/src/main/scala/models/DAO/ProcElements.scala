@@ -137,42 +137,6 @@ case class KeeprDAO(eltype:String, elname:String, desc:String)
  * Actions
  */
 
-object ProcElemDAOF {
-  import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
-  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
-  //import slick.driver.JdbcProfile
-  import slick.driver.PostgresDriver.api._
-  import slick.jdbc.meta.MTable
-  import scala.concurrent.ExecutionContext.Implicits.global
-  import com.github.tototoshi.slick.JdbcJodaSupport._
-  import scala.concurrent.duration.Duration
-  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
-  import scala.util.Try
-  import models.DAO.conversion.DatabaseFuture._
-
-  //import dbConfig.driver.api._ //
-  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
-  val proc_elements = ProcElemDAO.proc_elements
-
-  private def filterQuery(id: Int): Query[ProcElements, UndefElement, Seq] =
-    proc_elements.filter(_.id === id)
-  private def filterByBPQuery(id: Int): Query[ProcElements, UndefElement, Seq] =
-    proc_elements.filter(_.bprocess === id)
-    private def filterByBPSQuery(ids: List[Int]): Query[ProcElements, UndefElement, Seq] =
-      proc_elements.filter(_.bprocess inSetBind ids)
-
-  def findByBPId(bpId: Int) = db.run(filterByBPQuery(bpId).result)
-  def findByBPSId(bpsId: List[Int]) = db.run(filterByBPSQuery(bpsId).result)
-
-
-  def findByBPIdAndTimestamp(bpId: Int, timestamp: Option[String]) = db.run(filterByBPQuery(bpId).result)
-
-}
-
-
 
 object ProcElemDAO {
   import DatabaseCred.database

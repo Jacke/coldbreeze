@@ -192,39 +192,6 @@ None,
  * Actions
  */
 
-object SpaceElemDAOF {
-  import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
-  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
-  //import slick.driver.JdbcProfile
-  import slick.driver.PostgresDriver.api._
-  import slick.jdbc.meta.MTable
-  import scala.concurrent.ExecutionContext.Implicits.global
-  import com.github.tototoshi.slick.JdbcJodaSupport._
-  import scala.concurrent.duration.Duration
-  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
-  import scala.util.Try
-  import models.DAO.conversion.DatabaseFuture._
-
-  //import dbConfig.driver.api._ //
-  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
-  val space_elements = SpaceElemDAO.space_elements
-
-  private def filterQuery(id: Int): Query[SpaceElements, SpaceElementDTO, Seq] =
-    space_elements.filter(_.id === id)
-  private def filterByBPQuery(id: Int): Query[SpaceElements, SpaceElementDTO, Seq] =
-    space_elements.filter(_.bprocess === id)
-  def findByBPId(bpId: Int) = db.run(filterByBPQuery(bpId).result)
-
-  private def filterByBPSQuery(ids: List[Int]): Query[SpaceElements, SpaceElementDTO, Seq] =
-    space_elements.filter(_.bprocess inSetBind ids)
-  def findByBPSId(bpsId: List[Int]) = db.run(filterByBPSQuery(bpsId).result)
-
-
-
-}
 
 object SpaceElemDAO {
   import DatabaseCred.database

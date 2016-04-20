@@ -71,7 +71,7 @@ object BPSessionDAOF {
   private def filterByProcessesQuery(ids: List[Int]): Query[BPSessionsF, BPSession, Seq] =
     bpsessions.filter(_.process inSetBind ids)
 
-  private def filterByProcessesTimestampQuery(ids: List[Int], timestamp: Option[String]): DBIO[Seq[BPSession]] = {
+  private def filterByProcessesTimestampQuery(ids: List[Int], timestamp: Option[String], offset: Int = 0, limit: Int = 9): DBIO[Seq[BPSession]] = {
     val sInt: String = timestamp.getOrElse("0")
     val datetime = new org.joda.time.DateTime(sInt.toLong)
     val ts = datetime.getMillis() / 1000
@@ -89,30 +89,51 @@ object BPSessionDAOF {
         s
       }
       case _ => {
-        val s = sql"SELECT * from bpsessions where bpsessions.process_id IN (#${cnames}   )"
+        val s = sql"SELECT * from bpsessions where bpsessions.process_id IN (#${cnames}   ) offset #${offset} limit #${limit}"
           .as[BPSession]
         s
       }
     }
   }
 
-  def pull(s: BPSession):Future[Int] = db.run(bpsessions returning bpsessions.map(_.id) += s)
+  def pull(s: BPSession):Future[Int] = {
+    LaunchCounterDAO.invokeCounterForProcess(process_id = s.process)
+    db.run(bpsessions returning bpsessions.map(_.id) += s)
+  }
   private def filterByProcessesAndIdsQuery(processes_ids: List[Int], session_ids: List[Int]): Query[BPSessionsF, BPSession, Seq] =
     bpsessions.filter(c => (c.process inSetBind processes_ids) && (c.id inSetBind session_ids))
 
-  def findByBusiness(bid: Int, timestamp: Option[String] = None): Future[Seq[SessionContainer]] = {
+
+  def countByBusiness(bid: Int, active: Option[Boolean]= None): Future[Int] = {
     val pF = BPDAOF.findByBusiness(bid)
     pF.flatMap { processes =>
       val processIds: List[Int] = processes.map(_.id.get).toList
-      val sessF = db.run(filterByProcessesTimestampQuery(processIds, timestamp))
+      val sessF = db.run(filterByProcessesTimestampQuery(processIds, None, limit = 10000))
       sessF.flatMap { sess =>
         println("sess result "+sess.length)
-        val allStationsF = BPStationDAOF.findBySessions(sess.map(s => s.id.get).toList)
+        val allStationsF = BPStationDAOF.findBySessions(sess.map(s => s.id.get).toList, active)
+        allStationsF.map { stations =>
+          stations.length
+        }
+      }
+    }
+  }
+
+  def findByBusiness(bid: Int, timestamp: Option[String] = None, active: Option[Boolean]= None, offset:Int = 0): Future[Seq[SessionContainer]] = {
+    val pF = BPDAOF.findByBusiness(bid)
+    pF.flatMap { processes =>
+      val processIds: List[Int] = processes.map(_.id.get).toList
+      val sessF = db.run(filterByProcessesTimestampQuery(processIds, timestamp, offset))
+      sessF.flatMap { sess =>
+        println("sess result "+sess.length)
+        val allStationsF = BPStationDAOF.findBySessions(sess.map(s => s.id.get).toList, active)
         allStationsF.flatMap { stations =>
           println("stations result "+stations.length)
 
           Future.sequence(processes.map { process =>
-            val sessionsForProcess = sess.filter(ses => ses.process == process.id.get)
+            val stationSessions = stations.map(_.session)
+            val sessionsForProcess = sess.filter(ses => ses.process == process.id.get && stationSessions.contains(ses.id.get) )
+            val sessionLength = sessionsForProcess.length
             println(s"sessionsForProcess ${process.id.get} - length ${sessionsForProcess.length}")
             val sesStatusF = prepareSessionStatusWithStations(
               process,

@@ -218,7 +218,7 @@ PUT         /bprocess/:id/info                                  @controllers.Bus
 POST        /bprocess/:bpId/copy/:title                         @controllers.BusinessProcessController.copy(bpId: Int, title: String)
 
 # Stations
-GET         /sessions 								   @controllers.ProcessSessionController.all_sessions()
+GET         /sessions 		@controllers.ProcessSessionController.all_sessions(page: Option[Long] ?= None, active: Option[Boolean] ?= None)
 GET         /sessions/cached/:timestamp	 @controllers.ProcessSessionController.all_cached_sessions(timestamp:String)
 
 GET         /sessions/filter                         @controllers.ProcessSessionController.filtered_sessions(ids: List[Int])
@@ -230,7 +230,7 @@ GET         /interactsf                              @controllers.InteractionCon
 
 # Warp
 POST        /warp                                    @controllers.WarpController.warpGenerate(launch_id: Option[String] ?= None, element_id: Option[String] ?= None)
-POST        /warp/send 								 @controllers.WarpController.warpSend()
+POST        /warp/send 								               @controllers.WarpController.warpSend()
 
 
 # Tests
