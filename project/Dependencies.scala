@@ -67,6 +67,8 @@ object Dependencies {
   val jacksonbson     = "de.undercouch"             %  "bson4jackson"           % "2.5.0"
   val wcs             = "eu.piotrbuda"              % "scalawebsocket_2.10"     % "0.1.1"
 
+
+  val azurestorage    = "com.microsoft.azure" % "azure-storage" % "4.0.0"
   val rollback        = "com.tapstream" % "rollbar-logback" % "0.1.4"
   //val trireme         = "io.apigee.trireme"         % "trireme-core"            % "0.8.5"
   //val triremenode10src= "io.apigee.trireme"         % "trireme-node10src"       % "0.8.5"

@@ -1,5 +1,5 @@
 
-@(id: Option[String], form: Form[minority.utils.Entity], user: models.User2, boardId: Option[String], resourceId: Option[Int]=None)
+@(id: Option[String], form: Form[minority.utils.Entity], user: models.User2, boardId: Option[String], resourceId: Option[Int]=None)(implicit request: RequestHeader)
 @entityTitle = {
    @id match {
      case Some(id) => { "Edit an entity" }
@@ -11,9 +11,10 @@
   <div class="span8">
 
   @helper.form(if(!id.isDefined) routes.DataController.create_entity(boardId.get) else routes.DataController.update_entity(id.get)) {
-    @helper.inputText(form("title"), 'class -> "form-control", '_label -> "Title")    
+    @helper.CSRF.formField
+    @helper.inputText(form("title"), 'class -> "form-control", '_label -> "Title")
     @helper.textarea(form("description"), 'class -> "form-control", '_label -> "Description")
-    @helper.select(form("etype"), Seq("number"->"Number", "text"->"Text", "boolean" -> "Boolean"), 'class -> "form-control", '_label -> "Type")      
+    @helper.select(form("etype"), Seq("number"->"Number", "text"->"Text", "boolean" -> "Boolean"), 'class -> "form-control", '_label -> "Type")
     @helper.inputText(form("default"), 'class -> "form-control", '_label -> "Default value")
     <div class="form-actions">
       <input class="btn btn-primary" type="submit">

@@ -1,5 +1,5 @@
 
-@(id: Int, serviceForm: Form[models.DAO.resources.BusinessDTO], user: models.User2)
+@(id: Int, serviceForm: Form[models.DAO.resources.BusinessDTO], user: models.User2)(implicit request: RequestHeader)
 
 @import helper._
 
@@ -17,6 +17,7 @@
 @form(routes.BusinessController.update_make(id)) {
 <fieldset>
 
+  @helper.CSRF.formField
 
 
 @inputText(serviceForm("title"), '_label -> Messages("businesses.name"), 'class -> "form-control")
@@ -25,7 +26,7 @@
 <div class="actions">
 <input type="submit" value="Edit this business" class="btn btn-primary"> Messages("custom.or")
 <a href="@routes.BusinessController.index()" class="btn btn-default">Messages("custom.cancel")</a>
-</div>  
+</div>
 }
 </div>
 

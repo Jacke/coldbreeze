@@ -79,7 +79,6 @@ class ObserverController @Inject() (
   	  val observer:play.api.mvc.Result = ObserverDAO.getByHashCode(hash_code) match {
   	  	case Some(obs) => {
 
-  	      //val biz = fetchBiz(request.identity.emailFilled)
           //val business_info = BizFormDTO(biz.title, biz.phone, biz.website)
 
           val station = BPStationDAO.findById(obs.station_id)
@@ -110,7 +109,7 @@ class ObserverController @Inject() (
      val host = request.host
      val uuid = randomUUID.toString
      val user = request.identity.emailFilled
-     val biz =  models.DAO.resources.EmployeesBusinessDAO.getByUID(user).get._2
+     val biz =  request.identity.businessFirst 
 	  request.body.validate[ObserveSetup].map{
 	    case entity => savePull( entity.observer.copy(hash_code = Some(uuid), created_at = Some(DateTime.now()) ), user ) match {
 	            case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not create observer ${entity.observer.id}")))
@@ -214,10 +213,6 @@ class ObserverController @Inject() (
       // CustomRegistration.handleObserver(email, host, hash_code)
 
     //)
-  }
-
-  private def fetchBiz(email: String) = {
-    BusinessDAO.get(EmployeesBusinessDAO.getByUID(email).get._2).get
   }
 
   /*

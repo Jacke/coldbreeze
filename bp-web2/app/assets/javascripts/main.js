@@ -944,13 +944,13 @@ $('.newResourceForm').on('input', function() {
 
 
 $(".tableMinListFilter.search-process-input.add-resource-field.filterLayer #resourceTitle").focusin(function() {
-  $( ".inlineEntityForm" ).slideDown();
+  $( "#newResourceEntityForm" ).slideDown();
 });
 $(".tableMinListFilter.search-process-input.add-resource-field.filterLayer #resourceTitle").focusout(function() {
   if ($('#resourceTitle').val() != "") {
 
   } else {
-  $( ".inlineEntityForm" ).hide();
+    $( "#newResourceEntityForm" ).hide();
   }
 });
 

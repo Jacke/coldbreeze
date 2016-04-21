@@ -96,8 +96,8 @@ class BusinessServiceController @Inject() (
           val emp = EmployeeDAO.getByUID(uid).isDefined
 
 
-          val biz_id = EmployeesBusinessDAO.getByUID(uid).get._2
-          BusinessServiceDAO.pull_object(entity.copy(business_id = biz_id, master_acc = uid))
+          val biz_id = request.identity.businessFirst
+          BusinessServiceDAO.pull_object(entity.copy(business_id = request.identity.businessFirst, master_acc = uid))
 
 
           Home.flashing("success" -> s"Entity ${entity.title} has been created")

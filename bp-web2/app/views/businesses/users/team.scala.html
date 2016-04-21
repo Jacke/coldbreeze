@@ -5,7 +5,7 @@
 @import models.AccountDAO
 @import models.DAO.resources.GroupDTO
 @import helper._
-@(currentPage: Page[EmployeeDTO], accounts: List[models.daos.DBUser], currentOrderBy: Int, currentFilter: String, businesses: List[BusinessDTO], assignedBiz: List[BusinessDTO],team: Option[BusinessDTO], aval: Int = 0)(user: models.User2)
+@(currentPage: Page[EmployeeDTO], accounts: List[models.daos.DBUser], currentOrderBy: Int, currentFilter: String, businesses: List[BusinessDTO], assignedBiz: List[BusinessDTO],team: Option[BusinessDTO], aval: Int = 0)(user: models.User2)(implicit request: RequestHeader)
 
 @****************************************
 * Helper generating navigation links *

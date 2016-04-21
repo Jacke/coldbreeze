@@ -207,6 +207,7 @@ integrationTest := {
           //trireme,
           //triremenode10src,
           jsengine,
+          azurestorage,
           futiles,
           scalaz,
           scalazstream,

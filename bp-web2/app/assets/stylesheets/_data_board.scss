@@ -212,7 +212,7 @@ ul#tablemin.resourceList {
     height: 19px;
     padding-left: 6px;
     padding-bottom: 2px;
-    
+
 }
 .resources-list .newResourceForm .newResourceFormContainer {
     margin-bottom: 72px;
@@ -260,9 +260,15 @@ ul#tablemin.resourceList {
 button.btn.danger.deleteEntity span.moicon.icon-trash {
     font-size: 17px;
 }
+.inlineEntityForm .form-actions {
+    margin-top: 25px;
+}
+.inlineEntityForm .form-actions .btn {
+    margin-top: 32px;
+}
 button.btn.danger.deleteEntity {
-    margin-left: -15px;
-    margin-top: -4px;
+    margin-left: -31px;
+    margin-top: 21px;
 }
 .inlineEntityFormNewForm {
     width: 95%;

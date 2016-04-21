@@ -1,5 +1,5 @@
 
-@(serviceForm: Form[models.DAO.resources.EmployeeDTO], user: models.User2)
+@(serviceForm: Form[models.DAO.resources.EmployeeDTO], user: models.User2)(implicit request: RequestHeader)
 
 @import helper._
 
@@ -16,6 +16,7 @@
 <div class="col-md-8">
 @form(users.routes.EmployeeController.create_new()) {
 <fieldset>
+  @helper.CSRF.formField
 
 
 

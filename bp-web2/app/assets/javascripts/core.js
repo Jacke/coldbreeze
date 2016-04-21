@@ -68,7 +68,7 @@ require(['jsRoutes','jquery','react','moment','pnotify','mobileDetect','popupove
         }
 
     		$("html").niceScroll({styler:"fb",cursorcolor:"#000", cursorwidth:"10px", scrollspeed: 100});
-        
+
         var now = moment();
         $('time').each(function(i, e) {
             var time = moment($(e).attr('datetime'));
@@ -107,8 +107,8 @@ $('.settings-insert-title').click(function(e) {
 
 // Utils for fast input on dashboard
 if ($('.dashboard_sessions').length > 0) {
-  $('.instant-input button').on('click', function(ev){ 
-    ev.preventDefault; 
+  $('.instant-input button').on('click', function(ev){
+    ev.preventDefault;
     $(this).parent().addClass('loading');
     var data = $( this ).data();
     jsRoutes.controllers.ProcessInputController.invokeFrom(data.sessionId, data.processId).ajax({
@@ -131,11 +131,11 @@ if ($('.dashboard_sessions').length > 0) {
 });
 $('.showServiceForm span.moicon.moicon-plus').first().click(function(event) {
   event.preventDefault();
-  $('.serviceForm').toggle();  
+  $('.serviceForm').toggle();
 });
 
 // Settings
-// 
+//
 $('#select-country').selectize();
 $('#sideTab a').click(function (e) {
   e.preventDefault()
@@ -194,7 +194,7 @@ jsRoutes.controllers.users.EmployeeController.create_new().ajax({
   });
 */
 //var map = Array.prototype.map;
-// map.call(document.querySelectorAll('.inputEmployee input#newUsersForGroup'), function( l ){ return l.value }) 
+// map.call(document.querySelectorAll('.inputEmployee input#newUsersForGroup'), function( l ){ return l.value })
 
 var data = $('.inputEmployee').map(function(c){return [$(this).find('.flatInput').val(), $(this).find('.flatCheckbox input').is(':checked') ] })
 var n = 2;
@@ -210,7 +210,7 @@ console.log(admin);
 console.log("employee");
 console.log(employee);
 
-/** 
+/**
  * Submiting
  */
 var admin_status = false;
@@ -259,7 +259,7 @@ var reload = function(obj) {
   }
 }
 
-} 
+}
 });
 $('#addMembersForm .cancelButton').on('click', function(event) {
     event.preventDefault();
@@ -301,7 +301,7 @@ $(".filterInput.tableMinListFilterInput").keyup(function(){
 });
 //
 // Teams
-// 
+//
 
 //$('#addMembersForm').slideToggle();
 
@@ -324,7 +324,7 @@ var promise = jsRoutes.controllers.GroupController.assign_user(uid, group_id).aj
 promises.push(promise);
 promise.fail(function( jqXHR, textStatus) {
         //$('.loginFlowPage').prepend('<div class="messageBoxWrap"><p class="message">'+ JSON.parse(jqXHR.responseText).error +'</p></div>');
-      });   
+      });
 });
 _.forEach(names_unassign, function(uid) {
 var promise = jsRoutes.controllers.GroupController.unassign_user(uid, group_id).ajax().done(function( data ) { console.log(data);
@@ -332,7 +332,7 @@ var promise = jsRoutes.controllers.GroupController.unassign_user(uid, group_id).
     promises.push(promise);
     promise.fail(function( jqXHR, textStatus) {
         //$('.loginFlowPage').prepend('<div class="messageBoxWrap"><p class="message">'+ JSON.parse(jqXHR.responseText).error +'</p></div>');
-      });   
+      });
 });
 
 $('#addMembersForm').slideToggle();
@@ -401,7 +401,7 @@ $('.pro-submit').on('click', function(event) {
 
   jsRoutes.controllers.Application.subscribePro().ajax({data: JSON.stringify({}),dataType: "json", contentType: "application/json"}).done(function(data) {
       console.log(data);
-      document.location.pathname = "/pro";      
+      document.location.pathname = "/pro";
 });
 
 });
@@ -432,15 +432,15 @@ $('.ea-submit').on('click', function(event) {
                 i++;
                 return false;
         });
-        
-        $('#remScnt').on('click', function() { 
+
+        $('#remScnt').on('click', function() {
                 if( i > 2 ) {
                         $(this).parents('p').remove();
                         i--;
                 }
                 return false;
         });
-        $('.removeMeta').on('click', function(ev) { 
+        $('.removeMeta').on('click', function(ev) {
             ev.preventDefault;
                 if( i > 2 ) {
                         $(this).parents('div.meta_fields').remove();
@@ -452,7 +452,7 @@ $('.ea-submit').on('click', function(event) {
         //        $('#addScnt').data('name')
         }
 // Databoard
-// 
+//
 // case class ResourceAttributeContainer(resource: ResourceDTO, attribute: Entity)
 /*
 Entity
@@ -471,7 +471,7 @@ if ($('#createResourceBtn').length > 0) {
 $('#resourceTitle').change(function() {
   if ($( this ).val() != "") {
   $(".resources-list button#createResourceBtn").removeClass('offed');
-} else {   
+} else {
   $(".resources-list button#createResourceBtn").addClass('offed');
 }
 });
@@ -484,34 +484,35 @@ $('.newResourceForm').on('input', function() {
 
 
 $(".tableMinListFilter.search-process-input.add-resource-field.filterLayer #resourceTitle").focusin(function() {
-  $( ".inlineEntityForm" ).slideDown();
+  $( "#newResourceEntityForm" ).slideDown();
 });
+
 $(".tableMinListFilter.search-process-input.add-resource-field.filterLayer #resourceTitle").focusout(function() {
   if ($('#resourceTitle').val() != "") {
 
   } else {
-  $( ".inlineEntityForm" ).hide();
+  $( "#newResourceEntityForm" ).hide();
   }
 });
 
 
-  $('#createResourceBtn').click(function(ev){ 
-    ev.preventDefault(); 
+  $('#createResourceBtn').click(function(ev){
+    ev.preventDefault();
     $('#createResourceBtn').hide();
     var resource = { title: $('#resourceTitle').val(), business: 0 };
-    
+
 
     var attribute = {
-    title: $('#newInlineAttrTitleField').val(), 
+    title: $('#newInlineAttrTitleField').val(),
     boardId: 'ce6ffac0-df91-4ec6-a1dd-3fa7f7833589', // Random UUID, doesnt make sense, will regenerated
-    description: $('#newInlineAttrDescField').val(), 
-    publisher: '', 
-    etype: $('#newInlineAttrEtypeField').val(), 
+    description: $('#newInlineAttrDescField').val(),
+    publisher: '',
+    etype: $('#newInlineAttrEtypeField').val(),
     default: $('#newInlineAttrDefaultField').val()
     };
 
     jsRoutes.controllers.DataController.api_create_resource().ajax({
-      dataType: 'json',contentType: 'application/json',data: JSON.stringify( { "resource": resource, 
+      dataType: 'json',contentType: 'application/json',data: JSON.stringify( { "resource": resource,
         "attribute": attribute } )
     }).done(function() {
         document.location.reload();
@@ -524,7 +525,7 @@ $(".tableMinListFilter.search-process-input.add-resource-field.filterLayer #reso
     console.log($( this ).data())
   });
 }
-      
+
 
 //
 // Plans
@@ -570,7 +571,7 @@ $.ajax({
     data: JSON.stringify({ body: value }),
     contentType: "application/json; charset=utf-8",
     dataType: "json",
-    success: function(data){  
+    success: function(data){
       $('#result_warp').empty();
       $('#result_warp').append(JSON.stringify(data));
     },
@@ -586,4 +587,3 @@ $.ajax({
 
 
 });
-   
