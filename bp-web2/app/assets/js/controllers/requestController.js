@@ -3,7 +3,7 @@ define(['angular', 'app', 'controllers'], function (angular, minorityApp, minori
 
 
 
-minorityControllers.controller('BPRequestCtrl', ['$timeout','$q','DataCostLaunchAssign',
+minorityControllers.controller('BPRequestCtrl', ['ngDialog', '$timeout','$q','DataCostLaunchAssign',
   'fastResourceCostCreation',
   'DropBoxSettings',
   'lkGoogleSettings',
@@ -29,7 +29,7 @@ minorityControllers.controller('BPRequestCtrl', ['$timeout','$q','DataCostLaunch
   'BPRequestFactory',
   '$location',
   '$http',
-function ($timeout, $q, DataCostLaunchAssign, fastResourceCostCreation, DropBoxSettings, lkGoogleSettings, notificationService, LaunchElementTopologsFactory, LaunchElemsFactory,LaunchSpacesFactory,LaunchSpaceElemsFactory, ElementTopologsFactory, InteractionsFactory, $scope, $window,$routeParams,$route, $rootScope,$filter,BPLogsFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BProcessFactory, BPStationsFactory, BPRequestFactory,  $location, $http) {
+function (ngDialog, $timeout, $q, DataCostLaunchAssign, fastResourceCostCreation, DropBoxSettings, lkGoogleSettings, notificationService, LaunchElementTopologsFactory, LaunchElemsFactory,LaunchSpacesFactory,LaunchSpaceElemsFactory, ElementTopologsFactory, InteractionsFactory, $scope, $window,$routeParams,$route, $rootScope,$filter,BPLogsFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BProcessFactory, BPStationsFactory, BPRequestFactory,  $location, $http) {
 
 
 /**************************************************************************************************************
@@ -1146,6 +1146,15 @@ $scope.dataSelectTab = function(elem) {
   elem.fileSelectTabSelected = false;
   elem.dataSelectTabSelected = true;
   return elem.dataSelectTabSelected;
+}
+
+
+$scope.openModalDataBoard = function(process) {
+  ngDialog.open({
+    template: '/assets/partials/data_boards/dataBoardList.html',
+    controller: 'launchDataController',
+    scope: $scope
+  });
 }
 
 $scope.selectedClass = function (reaction) {

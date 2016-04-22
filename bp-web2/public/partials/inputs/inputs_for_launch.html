@@ -1,76 +1,68 @@
 <div class="request-controller" ng-controller="BPRequestCtrl" ng-init="session=$parent.$parent.session;bpId=$parent.$parent.session.process.id">
 
-<div class="fastInput" ng-hide="$parent.$parent.session.inlineLaunchShow || ($parent.$parent.session.station.paused !== true && $parent.$parent.session.station.finished !== false)">
+	<div class="fastInput" ng-hide="$parent.$parent.session.inlineLaunchShow || ($parent.$parent.session.station.paused !== true && $parent.$parent.session.station.finished !== false)">
+		<span class="element-title">{{ firstInput.reaction.elem.element_title }}</span>
+		<a ng-click="reactionSelect(firstInput);runFrom($parent.session.session.id, firstInput)" class="reaction-title">{{ capitalizeFirstLetter(firstInput.reaction.title) }}</a>
+		<span class="firstInputFiles" ng-repeat="file in firstInput.files">
+			 <span class="firstInputFileName">{{ file.name }}</span>
+			 <button type="button" class="close" ng-click="removeFileFirstInput(file,firstInput)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+		</span>
+		<a href="javascript:;" lk-google-picker on-picked="onPickedFirstInput(firstInput, docs)" ng-show="firstInput.files.length < 1" class="fastInputPicker">
+			<span class="moicon moicon-paste"></span>
+		</a>
+	</div>
 
-<span class="element-title">{{ firstInput.reaction.elem.element_title }}</span>
+	<div class="container" ng-show="$parent.$parent.session.inlineLaunchShow">
+		<div class="empty-notice">
+		</div>
+		<div class="launch-info-details">
+		  <div class="minDate"><div class="launch-info-description">Started at: </div>
+		<abbr class="session__header__created_at" title="{{ lastExecuted().minDate | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="lastExecuted().minDate"></abbr>
+		  </div>
+		  <div class="maxDate" ng-show="interactions.reactions.length > 0"><div class="launch-info-description">Latest action at:</div>
+		<abbr class="session__header__created_at" title="{{ lastExecuted().lastDate | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="lastExecuted().lastDate"></abbr>
+		</div>
+		  <div class="maxDate" ng-show="interactions.reactions === undefined"><div class="launch-info-description">Ended at: </div>
+		<abbr class="session__header__created_at" title="{{ lastExecuted().lastDate | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="lastExecuted().lastDate"></abbr>
+		  </div>
+		</div>
+		<div class="stations input-stations" style="clear: both;">
+			<!-- Completed launch info -->
+			<ul class="reaction_list reaction_list_launched reaction_list_finished">
+			  <li class="reaction_list__reaction reaction_list__reaction_preview" ng-repeat="elem in trees | orderBy:'+order'">
+			      <a>
+			      <h3>{{ elem.title }} <!-- : {{ capitalizeFirstLetter(reaction.reaction.title) }} --></h3></a>
+			      <a ng-click="fileSelectTab(elem);elem.dataSelectTabSelected=false;elem.fileSelectTabSelected=true;" id="fileSelectTabButton"
+						   class="fileSelectTabButton expandLaunchWindowTabButton"
+							 ng-class="elem.fileSelectTabSelected ? 'selected' : ''">Files</a>
 
-<a ng-click="reactionSelect(firstInput);runFrom($parent.session.session.id, firstInput)" class="reaction-title">{{ capitalizeFirstLetter(firstInput.reaction.title) }}</a>
+			      <div class="interaction-input-existence" ng-repeat="reaction in interactions.reactions | filter:filterReactionByElem(elem)">
+			        <a ng-click="reactionSelect(reaction);runFrom($parent.session.session.id, reaction)"
+							id="reactionSelectButton" ng-class="selectedClass(reaction)"
+							class="reactionSelectButton triangle-reaction"
+			        ng-show="showByStep($parent.session.station.step, reaction.reaction.elem_order.order)">
+							{{ capitalizeFirstLetter(reaction.reaction.title) }}</a>
 
-<span class="firstInputFiles" ng-repeat="file in firstInput.files">
-		<span class="firstInputFileName">{{ file.name }}</span>
-	 <button type="button" class="close" ng-click="removeFileFirstInput(file,firstInput)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-</span>
-<a href="javascript:;" lk-google-picker on-picked="onPickedFirstInput(firstInput, docs)" ng-show="firstInput.files.length < 1" class="fastInputPicker">
-	<span class="moicon moicon-paste"></span>
-</a>
+			      </div>
+			      <a ng-click="dataSelectTab(elem);elem.fileSelectTabSelected=false;elem.dataSelectTabSelected=true;" id="dataSelectTabButton"
+						   class="expandLaunchWindowTabButton dataSelectTabButton" ng-class="elem.dataSelectTabSelected ? 'selected' : ''">Data</a>
 
-</div>
+					 <a ng-click="openModalDataBoard($parent.$parent.session.process)" id="modalDataBoardButton"
+						   class="modalDataButton dataSelectTabButton">More</a>
 
-<div class="container" ng-show="$parent.$parent.session.inlineLaunchShow">
-
-<div class="empty-notice">
-</div>
-
-
-<div class="launch-info-details">
-  <div class="minDate"><div class="launch-info-description">Started at: </div>
-<abbr class="session__header__created_at" title="{{ lastExecuted().minDate | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="lastExecuted().minDate"></abbr>
-  </div>
-  <div class="maxDate" ng-show="interactions.reactions.length > 0"><div class="launch-info-description">Latest action at:</div>
-<abbr class="session__header__created_at" title="{{ lastExecuted().lastDate | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="lastExecuted().lastDate"></abbr>
-</div>
-  <div class="maxDate" ng-show="interactions.reactions === undefined"><div class="launch-info-description">Ended at: </div>
-<abbr class="session__header__created_at" title="{{ lastExecuted().lastDate | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="lastExecuted().lastDate"></abbr>
-  </div>
-</div>
-
-<div class="stations input-stations" style="clear: both;">
-
-
-
-<!-- Completed launch info -->
-<ul class="reaction_list reaction_list_launched reaction_list_finished">
-  <li class="reaction_list__reaction reaction_list__reaction_preview" ng-repeat="elem in trees | orderBy:'+order'">
-      <a>
-      <h3>{{ elem.title }} <!-- : {{ capitalizeFirstLetter(reaction.reaction.title) }} --></h3></a>
-      <a ng-click="fileSelectTab(elem)" id="fileSelectTabButton" class="fileSelectTabButton expandLaunchWindowTabButton" ng-class="elem.fileSelectTabSelected ? 'selected' : ''">Files</a>
-      <div class="interaction-input-existence" ng-repeat="reaction in interactions.reactions | filter:filterReactionByElem(elem)">
-        <a ng-click="reactionSelect(reaction);runFrom($parent.session.session.id, reaction)"
-				id="reactionSelectButton" ng-class="selectedClass(reaction)"
-				class="reactionSelectButton triangle-reaction"
-        ng-show="showByStep($parent.session.station.step, reaction.reaction.elem_order.order)">
-				{{ capitalizeFirstLetter(reaction.reaction.title) }}</a>
-      </div>
-      <a ng-click="dataSelectTab(elem)" id="dataSelectTabButton" class="expandLaunchWindowTabButton dataSelectTabButton" ng-class="elem.dataSelectTabSelected ? 'selected' : ''">Data</a>
-
-      <div ng-include src="'assets/partials/inputs/costs.html'" class="cost-view-container" ng-init="costs = elem.costs;" ng-show="elem.dataSelectTabSelected"></div>
-
-      <div ng-include src="'assets/partials/inputs/file_attach.html'" class="file-view-container" ng-init="elem.payload = []; $parent.elem.payloadNew = [];elem.fileSelectTabSelected=true;" ng-show="elem.fileSelectTabSelected"></div>
-
-
-
-  </li>
-</ul>
-
+			      <div ng-include src="'assets/partials/inputs/costs.html'"
+						class="cost-view-container"
+						ng-init="costs = elem.costs;"
+						ng-show="elem.dataSelectTabSelected"></div>
+			      <div ng-include src="'assets/partials/inputs/file_attach.html'"
+								 class="file-view-container" ng-init="elem.payload = []; $parent.elem.payloadNew = [];elem.fileSelectTabSelected=true;"
+								 ng-show="elem.fileSelectTabSelected"></div>
+			  </li>
+			</ul>
+		</div>
 
 
-
-
-
-</div>
-
-
-</div>
+	</div>
 
 
 </div>

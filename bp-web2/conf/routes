@@ -51,7 +51,6 @@ POST        /signUp                          @controllers.SignUpController.signU
 
 # Notification routine
 GET         /notify								    @controllers.NotificationController.socket
-GET         /notify_test/:msg                       @controllers.NotificationController.notify_test(msg: String)
 GET         /popup/:emails_hash/:target             @controllers.NotificationController.popup(emails_hash: String, target: String)
 #GET         /notify2/test_action                    @controllers.NotificationController.tagItem
 GET         /invite/:emails_hash/:invite_link       @controllers.SubscribtionController.sendInvite(emails_hash: String, invite_link: String)
@@ -61,7 +60,9 @@ GET         /subscribers/new                        @controllers.SubscribtionCon
 
 
 
-
+# Test
+GET         /notify_test/:msg                       @controllers.NotificationController.notify_test(msg: String)
+GET         /test_mail                              @controllers.MailController.testMail()
 
 
 # API

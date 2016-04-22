@@ -1,0 +1,165 @@
+<div class="container dataBoardList">
+<h1 class="primary">Data</h1>
+<style>
+.ngdialog.ngdialog-theme-default .ngdialog-content {
+    width: 531px !important;
+}
+.ngdialog-content .container h1 {
+    background: #20222E;
+    color: white;
+    border-bottom: #2A2E42 1px solid;
+    margin-right: -30px;
+}
+
+.ngdialog-content {
+    background: white;
+}
+
+.ngdialog.ngdialog-theme-default .ngdialog-content {
+    background: #262835 !important;
+    color: white !important;
+}
+
+
+
+.data-cost .data-cost-title {
+    display: inline-block;
+    font-size: 19px;
+}
+
+.data-cost .data-cost-type {
+    display: inline-block;
+    background: blue;
+    padding: 4px 15px;
+    margin-right: 5px;
+}
+
+.data-cost .data-cost-default {
+    display: none;
+}
+.data-cost-controls {
+    display: inline-block;
+    width: 3%;
+    text-align: right;
+    font-size: 15px;
+    font-weight: 100;
+}
+</style>
+<ul class="perm-menu">
+  <li><a ng-init="elementShow=true;" ng-click="elementShow=true;processShow=false;">Elements</a></li>
+  <li><a ng-init="processShow=false;" ng-click="processShow=true;elementShow=false;">Process</a></li>
+</ul>
+
+<div class="elements-data" ng-show="elementShow">
+  <div class="elements-data-element">
+    <div class="elements-data-element-title"><h3>Element</h3></div>
+    <div class="element-data-costs">
+      <div class="data-cost">
+        <div class="data-cost-type"><span>Type</span>
+          <div class="data-cost-default">Default value</div>
+        </div>
+        <div class="data-cost-title">Cost</div>
+        <div class="data-cost-value">Value</div>
+        <div class="data-cost-controls"><span class="moicon moicon-menu3"></span></div>
+
+        <div class="data-cost-controlls-expanded">
+          <input type="text" id="inputContentBlankValue" class="form-control" ng-model="entity.newModelValue" required="">
+          <a class="btn btn-small btn-success btn-fill" ng-click="fillValue(cost, entity, entity.newModelValue)">Fill</a>
+          <a class="btn btn-danger btn-success btn-fill" ng-click="fillValue(cost, entity, entity.newModelValue)">Remove</a>
+        </div>
+      </div>
+      <a href="#">Add</a>
+    </div>
+    <div class="element-data-files">
+      <a href="#">Add</a>
+     <div class="data-file">
+       <div class="data-file-title"><a href="#">File title</a></div>
+       <a class="btn btn-danger btn-success btn-fill" ng-click="fillValue(cost, entity, entity.newModelValue)">Remove</a>
+     </div>
+    </div>
+  </div>
+  <div class="elements-data-element">
+    <div class="elements-data-element-title"><h3>Element</h3></div>
+    <div class="element-data-costs">
+      <div class="data-cost">
+        <div class="data-cost-type"><span>Type</span>
+          <div class="data-cost-default">Default value</div>
+        </div>        <div class="data-cost-title">Cost</div>
+        <div class="data-cost-value">Value</div>
+        <input type="text" id="inputContentBlankValue" class="form-control" ng-model="entity.newModelValue" required="">
+        <a class="btn btn-small btn-success btn-fill" ng-click="fillValue(cost, entity, entity.newModelValue)">Fill</a>
+
+        <a class="btn btn-danger btn-success btn-fill" ng-click="fillValue(cost, entity, entity.newModelValue)">Remove</a>
+      </div>
+      <a href="#">Add</a>
+    </div>
+    <div class="element-data-files">
+      <a href="#">Add</a>
+     <div class="data-file">
+       <div class="data-file-title"><a href="#">File title</a></div>
+       <a class="btn btn-danger btn-success btn-fill" ng-click="fillValue(cost, entity, entity.newModelValue)">Remove</a>
+     </div>
+    </div>
+  </div>
+  <div class="elements-data-element">
+    <div class="elements-data-element-title"><h3>Element</h3></div>
+    <div class="element-data-costs">
+      <div class="data-cost">
+        <div class="data-cost-type"><span>Type</span>
+          <div class="data-cost-default">Default value</div>
+        </div>
+        <div class="data-cost-title">Cost</div>
+        <div class="data-cost-value">Value</div>
+        <input type="text" id="inputContentBlankValue" class="form-control" ng-model="entity.newModelValue" required="">
+        <a class="btn btn-small btn-success btn-fill" ng-click="fillValue(cost, entity, entity.newModelValue)">Fill</a>
+
+        <a class="btn btn-danger btn-success btn-fill" ng-click="fillValue(cost, entity, entity.newModelValue)">Remove</a>
+      </div>
+      <a href="#">Add</a>
+    </div>
+    <div class="element-data-files">
+      <a href="#">Add</a>
+     <div class="data-file">
+       <div class="data-file-title"><a href="#">File title</a></div>
+       <a class="btn btn-danger btn-success btn-fill" ng-click="fillValue(cost, entity, entity.newModelValue)">Remove</a>
+     </div>
+    </div>
+  </div>
+
+</div>
+
+
+
+
+
+
+
+<div class="process-data" ng-show="processShow">
+  <div class="process-data-costs">
+    <div class="data-cost">
+      <div class="data-cost-type"><span>Type</span>
+        <div class="data-cost-default">Default value</div>
+      </div>
+      <div class="data-cost-title">Cost</div>
+      <div class="data-cost-value">Value</div>
+      <input type="text" id="inputContentBlankValue" class="form-control" ng-model="entity.newModelValue" required="">
+      <a class="btn btn-small btn-success btn-fill" ng-click="fillValue(cost, entity, entity.newModelValue)">Fill</a>
+
+      <a class="btn btn-danger btn-success btn-fill" ng-click="fillValue(cost, entity, entity.newModelValue)">Remove</a>
+    </div>
+    <a href="#">Add</a>
+  </div>
+  <div class="process-data-files">
+    <a href="#">Add</a>
+   <div class="data-file">
+     <div class="data-file-title"><a href="#">File title</a></div>
+     <a class="btn btn-danger btn-success btn-fill" ng-click="fillValue(cost, entity, entity.newModelValue)">Remove</a>
+   </div>
+  </div>
+
+</div>
+
+
+
+
+</div><!--container-->
