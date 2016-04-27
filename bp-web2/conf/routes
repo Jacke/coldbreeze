@@ -27,6 +27,14 @@ POST        /api/authenticate/credentials    @controllers.RestCredentialsAuthCon
 POST        /signUp                          @controllers.SignUpController.signUp
 
 
+# Upload
+GET      /files                              @controllers.FileUploadController.allFiles
+GET      /downloadFile/:fileName/:urlParams  @controllers.FileUploadController.downloadFile(fileName: String, urlParams: String)
+GET      /launch_files/:launch_id            @controllers.FileUploadController.allFilesForLaunch(launch_id: Int)
+POST     /upload                             @controllers.FileUploadController.upload()
+POST     /uploadLaunchFile/:launch_id        @controllers.FileUploadController.uploadLaunchFile(launch_id: Int, element_id: Option[Int] ?= None)
+POST     /uploadLaunchFile/delete/:launchFileId        @controllers.FileUploadController.deleteLaunchFile(launchFileId: Long)
+
 
 
 # Login page
@@ -334,63 +342,80 @@ POST     /api/v1/data/resources             @controllers.DataController.api_crea
 PUT      /data/resource/:id					@controllers.DataController.update_resource(id: Int)
 POST     /data/resource/:id/delete     		@controllers.DataController.delete_resource(id: Int)
 GET      /data/test                         @controllers.DataController.boardTest()
-#### Cost module
-GET      /data/cost/collection              @controllers.CostFillController.assignResourceCollection
-GET 	 /data/cost/assigns/:process_id  	@controllers.CostFillController.assigns(process_id: Int)
-GET	     /data/cost/launch_assigns/:launch_id @controllers.CostFillController.launch_assigns(launch_id: Int)
+#################
+# Cost module
+#############
 
-POST	 /data/cost/assign/:resource_id		@controllers.CostFillController.assign_element(resource_id: Int)
-POST	 /data/cost/up_assign/:resource_id	@controllers.CostFillController.update_assigned_element(resource_id: Int)
-POST	 /data/cost/del_assign/:resource_id @controllers.CostFillController.delete_assigned_element(resource_id: Int)
-POST     /data/entity/:entity_id/delete     @controllers.CostFillController.removeEntityById(entity_id: String)
+GET      /data/cost/collection                     @controllers.CostFillController.assignResourceCollection
+GET 	   /data/cost/assigns/:process_id  	         @controllers.CostFillController.assigns(process_id: Int)
+GET	     /data/cost/launch_assigns/:launch_id      @controllers.CostFillController.launch_assigns(launch_id: Int)
+GET      /data/cost/elem_launch_assigns/:launch_id @controllers.CostFillController.launch_assigns_for_elements(launch_id: Int)
+
+
+POST	 /data/cost/assign/:resource_id		              @controllers.CostFillController.createCostElement(resource_id: Int)
+POST	 /data/cost/launch_assign/:resource_id/:s       @controllers.CostFillController.createLaunchCostElement(resource_id: Int, s: Int)
+
+POST	 /data/cost/up_assign/:resource_id	            @controllers.CostFillController.update_assigned_element(resource_id: Int)
+
+POST   /data/cost/del_launch_assign/:resource_id      @controllers.CostFillController.delete_launch_assigned_element(resource_id: Int)
+POST	 /data/cost/del_assign/:resource_id             @controllers.CostFillController.delete_assigned_element(resource_id: Int)
+POST   /data/entity/:entity_id/delete                 @controllers.CostFillController.removeEntityById(entity_id: String)
+
+
 ##### ENTITIES
-GET      /data/:resId/:boardId/entity/new   @controllers.DataController.create_entity_form(resId: Int, boardId: String)
-POST	 /data/:boardId/entity/create       @controllers.DataController.create_entity(boardId: String)
-GET      /data/entity/:id/edit  			@controllers.DataController.update_entity_form(id: String)
-POST     /data/entity/:id/update			@controllers.DataController.update_entity(id: String)
-POST     /data/entity/:id/delete        	@controllers.DataController.delete_entity(id: String)
+GET      /data/:resId/:boardId/entity/new     @controllers.DataController.create_entity_form(resId: Int, boardId: String)
+POST	   /data/:boardId/entity/create         @controllers.DataController.create_entity(boardId: String)
+GET      /data/entity/:id/edit  			        @controllers.DataController.update_entity_form(id: String)
+POST     /data/entity/:id/update			        @controllers.DataController.update_entity(id: String)
+POST     /data/entity/:id/delete        	    @controllers.DataController.delete_entity(id: String)
+
 #### SLATS
-GET      /data/ent/:eid/slat/new  	    @controllers.DataController.create_slat_form(eid: String)
-POST	 /data/ent/:eid/slat/create	    @controllers.DataController.create_slat(eid: String)
-GET      /data/ent/:eid/slat/:id/edit	@controllers.DataController.update_slat_form(eid: String, id: String)
-POST     /data/ent/:eid/slat/:id/update	@controllers.DataController.update_slat(eid: String, id: String)
-POST     /data/slat/:id/delete        	@controllers.DataController.delete_slat(id: String)
+GET      /data/ent/:eid/slat/new  	          @controllers.DataController.create_slat_form(eid: String)
+POST	   /data/ent/:eid/slat/create	          @controllers.DataController.create_slat(eid: String)
+GET      /data/ent/:eid/slat/:id/edit	        @controllers.DataController.update_slat_form(eid: String, id: String)
+POST     /data/ent/:eid/slat/:id/update	      @controllers.DataController.update_slat(eid: String, id: String)
+POST     /data/slat/:id/delete        	      @controllers.DataController.delete_slat(id: String)
+
 #### FILL
 POST     /data/fill/ent/:entityId/:launchId/:resourceId  @controllers.DataController.fill_slat(entityId: String, launchId: Int, resourceId: Int)
 POST     /data/refill/ent/:entityId/:launchId/:resourceId/:slatId  @controllers.DataController.refill_slat(entityId: String, launchId: Int, resourceId: Int, slatId: String)
 
 
+
+
+
 ################
 # Reflections
+# are template for elements
 ###
 
-GET  		/refs 							@controllers.ReflectionsController.index()
-POST        /refs							@controllers.ReflectionsController.create()
-PUT     	/ref/:id                        @controllers.ReflectionsController.update(id: Int)
-DELETE  	/ref/:id                        @controllers.ReflectionsController.delete(id: Int)
+GET  		  /refs 							@controllers.ReflectionsController.index()
+POST      /refs							  @controllers.ReflectionsController.create()
+PUT     	/ref/:id            @controllers.ReflectionsController.update(id: Int)
+DELETE  	/ref/:id            @controllers.ReflectionsController.delete(id: Int)
 
-POST		/ref/:id/elems  		   @controllers.ReflectionsController.elem_create(id: Int)
-PUT			/ref/elem/:elem_id         @controllers.ReflectionsController.elem_update(elem_id: Int)
-DELETE		/ref/elem/:elem_id         @controllers.ReflectionsController.elem_delete(elem_id: Int)
-POST		/ref/:id/spaces		       @controllers.ReflectionsController.space_create(id: Int)
-PUT		    /ref/space/:space_id       @controllers.ReflectionsController.space_update(space_id: Int)
-DELETE		/ref/space/:space_id       @controllers.ReflectionsController.space_delete(space_id: Int)
+POST		/ref/:id/elems  		  @controllers.ReflectionsController.elem_create(id: Int)
+PUT			/ref/elem/:elem_id    @controllers.ReflectionsController.elem_update(elem_id: Int)
+DELETE	/ref/elem/:elem_id    @controllers.ReflectionsController.elem_delete(elem_id: Int)
+POST		/ref/:id/spaces		    @controllers.ReflectionsController.space_create(id: Int)
+PUT		  /ref/space/:space_id  @controllers.ReflectionsController.space_update(space_id: Int)
+DELETE	/ref/space/:space_id  @controllers.ReflectionsController.space_delete(space_id: Int)
 
 DELETE		/ref/:id/spaceelems        @controllers.ReflectionsController.spaceelems_create(id: Int)
 
 PUT         /ref/spaceelem/:spelem_id  @controllers.ReflectionsController.spaceelems_update(spelem_id: Int)
-DELETE		/ref/spaceelem/:spelem_id  @controllers.ReflectionsController.spaceelems_delete(spelem_id: Int)
+DELETE		  /ref/spaceelem/:spelem_id  @controllers.ReflectionsController.spaceelems_delete(spelem_id: Int)
 
-POST		/ref/:id/states            @controllers.ReflectionsController.state_create(id: Int)
-PUT			/ref/state/:state_id       @controllers.ReflectionsController.state_update(state_id: Int)
+POST		  /ref/:id/states            @controllers.ReflectionsController.state_create(id: Int)
+PUT			  /ref/state/:state_id       @controllers.ReflectionsController.state_update(state_id: Int)
 DELETE		/ref/state/:state_id       @controllers.ReflectionsController.state_delete(state_id: Int)
 
-POST		/ref/:id/switches          @controllers.ReflectionsController.switche_create(id: Int)
-PUT			/ref/switch/:switch_id     @controllers.ReflectionsController.switche_update(switch_id: Int)
+POST		  /ref/:id/switches          @controllers.ReflectionsController.switche_create(id: Int)
+PUT			  /ref/switch/:switch_id     @controllers.ReflectionsController.switche_update(switch_id: Int)
 DELETE		/ref/switch/:switch_id     @controllers.ReflectionsController.switche_delete(switch_id: Int)
 
-POST		/ref/:id/reactions  	    @controllers.ReflectionsController.reaction_create(id: Int)
-PUT			/ref/reactions/:reaction_id @controllers.ReflectionsController.reaction_update(reaction_id: Int)
+POST		  /ref/:id/reactions  	      @controllers.ReflectionsController.reaction_create(id: Int)
+PUT			  /ref/reactions/:reaction_id @controllers.ReflectionsController.reaction_update(reaction_id: Int)
 DELETE		/ref/reactions/:reaction_id @controllers.ReflectionsController.reaction_delete(reaction_id: Int)
 
 

@@ -287,7 +287,7 @@ $scope.loadLaunchesFromCache = function() {
             // 4. Split C and D and apply C for new created resources
 
             var removedIds = _.map(resp.data.deltas.d, function(d) { return parseInt(d.resourceId) });
-            console.log('removedIds', removedIds)
+            //console.log('removedIds', removedIds)
 
             var oldLaunches = _.forEach(launchesCache.get('launches'), function(d) {
               return d.sessions = _.filter(d.sessions, function(d) {
@@ -340,9 +340,9 @@ $scope.loadLaunchesFromCache = function() {
             // 5. D for resource with ids that need to be removed
             launchesCache.put('launchesRemoved', resp.data.d)
             // 6. Put request to cache and update cursor
-            console.log('old cursor', launchesCursorCache.get('updated'))
+            //console.log('old cursor', launchesCursorCache.get('updated'))
             launchesCursorCache.put('updated', Date.now());
-            console.log('new cursor', launchesCursorCache.get('updated'))
+            //console.log('new cursor', launchesCursorCache.get('updated'))
 
             // 7. Return resource itself
             return launchesCache.get('launches');
@@ -579,10 +579,10 @@ $scope.reloadSessions = function() {
   $scope.allLaunchedElemPromise.$promise.then(function (d) {
       $scope.allLaunchedElem = d;
       //$scope.interactionContainerLaunch = d;
-      console.log("132",$scope.allLaunchedElem);
+    //  console.log("132",$scope.allLaunchedElem);
       deferred.resolve();
-      console.log($scope.interactionContainerLaunch);
-      console.log($scope.sessions);
+    //  console.log($scope.interactionContainerLaunch);
+    //  console.log($scope.sessions);
   });
 
 $scope.interactionContainerPromise =  InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') });

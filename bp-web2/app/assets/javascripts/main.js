@@ -273,6 +273,15 @@
   deps: ['angular', 'app'],
   export: 'restangular'
 },
+'ngFileUploadShim': {
+  deps: ['angular', 'app'],
+  export: 'ngFileUploadShim'
+},
+'ngFileUpload': {
+  deps: ['angular', 'app'],
+  export: 'ngFileUpload'
+
+},
 'angular-tooltips': {
     deps: ['angular', 'app'],
   export: 'angular-tooltips'
@@ -340,8 +349,6 @@
   export: 'dropdown'
 },
 'tether': { deps: [], export: 'tether' },
-'offline': { deps: [], export: 'offline' },
-'offlineSimulator': { deps: ['offline'], export: 'offlineSimulator' },
 'shepherd': { deps: ['tether'], export: 'shepherd' },
 'notie': {deps: [], export: 'notie'},
 
@@ -396,6 +403,10 @@
 'angularformlybootstrap': '../bower_components/angular-formly-templates-bootstrap/dist/angular-formly-templates-bootstrap',
 
   'pnotify': '../bower_components/pnotify/pnotify.core',
+  'ngFileUploadShim': '../bower_components/ng-file-upload/ng-file-upload-shim',
+
+  'ngFileUpload': '../bower_components/ng-file-upload/ng-file-upload-all',
+
   'pnotifyconfirm':'../bower_components/pnotify/pnotify.confirm',
   'pnotifybuttons':'../bower_components/pnotify/pnotify.buttons',
   'angularpnotify':'../bower_components/angular-pnotify/src/angular-pnotify',
@@ -460,8 +471,6 @@
   'tether': '../bower_components/tether/dist/js/tether',
   'shepherd': '../bower_components/tether-shepherd/dist/js/shepherd',
   'tour': '../javascripts/tour',
-  'offline': '../bower_components/offline/offline',
-  'offlineSimulator': '../bower_components/offlinejs-simulate-ui/offline-simulate-ui.min'
   }});
 
   requirejs.onError = function (err) {
@@ -469,9 +478,9 @@
   };
 
   // Load the app. This is kept minimal so it doesn't need much updating.
-require(['requirejs','jsRoutes','jquery', 'react','pnofiy','mobileDetect','popupoverlay','drag-on','jquery.nicescroll','ssl','offline','offlineSimulator','header','tooltip','dropdown','underscore','moment','selectize', 'tether', 'shepherd','tour','notie',
+require(['requirejs','jsRoutes','jquery', 'react','pnofiy','mobileDetect','popupoverlay','drag-on','ngFileUploadShim','jquery.nicescroll','ssl','header','tooltip','dropdown','underscore','moment','selectize', 'tether', 'shepherd','tour','notie',
   ],//'jquery', 'bootstrap'],//, './app'],
-    function (requirejs,jsRoutes,$,react, pnofiy,mobileDetect,popupoverlay,dragOn,niceScroll,ssl,offline,offlineSimulator,header,tooltip,dropdown,underscore,moment,selectize,tether,shepherd,tour,notie) {
+    function (requirejs,jsRoutes,$,react, pnofiy,mobileDetect,popupoverlay,dragOn,ngFileUploadShim,niceScroll,ssl,header,tooltip,dropdown,underscore,moment,selectize,tether,shepherd,tour,notie) {
         document.tour = tour;
 
       $(document).ready(function(){

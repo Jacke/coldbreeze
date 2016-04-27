@@ -13,11 +13,16 @@
       </div>
       <div class="input-resource-block">
            <span class="input-resource-block-title">Resouce</span>
-          <select id="inputResource" ng-init="newBpelem.cost = {};" ng-model="newBpelem.cost.resource" ng-init="newBpelem.cost.resource=resources[0];newBpelem.cost.entity=newBpelem.cost.resource.entities[0]" ng-change="newBpelem.cost.entity=newBpelem.cost.resource.entities[0]" class="forResource" ng-options="res_cn as res_cn.resource.title for res_cn in resources"></select>
+          <select id="inputResource" ng-init="newBpelem.cost = {};" ng-model="newBpelem.cost.resource"
+          ng-init="newBpelem.cost.resource=resources[0];newBpelem.cost.entity=newBpelem.cost.resource.entities[0]"
+          ng-change="newBpelem.cost.entity=newBpelem.cost.resource.entities[0]" 
+          class="forResource"
+          ng-options="res_cn as res_cn.resource.title for res_cn in resources"></select>
       </div>
       <div class="input-entity-block">
            <span class="input-entity-block-title">Entity</span>
-          <select id="inputEntity" ng-model="newBpelem.cost.entities" class="forResource" ng-options="entity.id as entity.title for entity in newBpelem.cost.resource.entities"></select>
+          <select id="inputEntity" ng-model="newBpelem.cost.entities" class="forResource"
+          ng-options="entity.id as entity.title for entity in newBpelem.cost.resource.entities"></select>
       </div>
       <a ng-click="createElementResource(newBpelem.cost, newBpelem.costs)" class="btn btn-small btTxt submit btn lg solid-green btn-add-entity">{{ 'ADD' | translate }}</a>
     </div>

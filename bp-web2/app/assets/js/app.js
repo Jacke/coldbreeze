@@ -195,6 +195,7 @@ var minorityApp =
       'toaster',
       'ngAnimate',
       'toastr',
+      'ngFileUpload',
       'ngWebSocket',
       'angular-underscore',
       'ui.bootstrap',

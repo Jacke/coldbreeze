@@ -26,7 +26,9 @@
     "notie": "*",
     "angular-hovercard": "~1.0.4",
     "angular-tooltips": "~1.0.6",
-    "angular-cache": "^4.5.0"
+    "angular-cache": "^4.5.0",
+    "ng-file-upload": "^12.0.4",
+    "angular-file-upload": "^2.2.0"
   },
   "devDependencies": {
     "angular-mocks": "1.2.0-rc.2",

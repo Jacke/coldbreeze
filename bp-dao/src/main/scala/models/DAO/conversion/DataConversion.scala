@@ -4,6 +4,8 @@ import models.DAO._
 import models.DAO.UndefElement
 import models.DAO.BProcessDTO
 
+import slick.driver.JdbcProfile
+
 
 /**
  * Database Config
@@ -15,13 +17,17 @@ object DatabaseFuture {
 
 object DatabaseCred {
   import slick.driver.PostgresDriver.simple._
-  val dbConfig = slick.backend.DatabaseConfig.forConfig[slick.driver.JdbcProfile]("minoritydbF")//[slick.driver.PostgresDriver]("minoritydb") 
-  val databaseF = dbConfig.db
+  var dbConfigTemp:Option[slick.backend.DatabaseConfig[JdbcProfile]] = None
+  lazy val dbConfig = dbConfigTemp match {
+    case Some(config) => config
+    case _ => slick.backend.DatabaseConfig.forConfig[slick.driver.JdbcProfile]("minoritydbF")
+  }//[slick.driver.PostgresDriver]("minoritydb")
+  var databaseF = dbConfig.db
   var database = Database.forConfig("minoritydb")
 
-  /*Database.forURL("jdbc:postgresql://localhost/minority_bug", 
-    driver = "org.postgresql.Driver", 
-    user = "postgres", 
+  /*Database.forURL("jdbc:postgresql://localhost/minority_bug",
+    driver = "org.postgresql.Driver",
+    user = "postgres",
     password = "12344321")
   database.createSession().conn.getMetaData().getURL()
    */
@@ -29,13 +35,13 @@ object DatabaseCred {
 
   def switchTo(db_type: String) = {
     db_type match {
-    case "test" => /* database = Database.forURL("jdbc:postgresql://ec2-54-163-239-102.compute-1.amazonaws.com/der7jd9tjv79ah?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory", 
-                                               driver = "org.postgresql.Driver", 
-                                               user = "sfskpatnkbtyuz", 
+    case "test" => /* database = Database.forURL("jdbc:postgresql://ec2-54-163-239-102.compute-1.amazonaws.com/der7jd9tjv79ah?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory",
+                                               driver = "org.postgresql.Driver",
+                                               user = "sfskpatnkbtyuz",
                                                password = "pfp6ghCjfD-kVJRchibq_KDWN5") */
-    case "prod" => /* database = Database.forURL("jdbc:postgresql://localhost/minority_bug", 
-                                               driver = "org.postgresql.Driver", 
-                                               user = "postgres", 
+    case "prod" => /* database = Database.forURL("jdbc:postgresql://localhost/minority_bug",
+                                               driver = "org.postgresql.Driver",
+                                               user = "postgres",
                                                password = "12344321") */
     }
   }
@@ -64,7 +70,7 @@ object BPInitiator {
     //save(process, process_dto)
 
 
-  
+
 }
 
 
@@ -85,7 +91,7 @@ object BPInitiator {
    val arrays = els.map(c => c.cast(process)).flatten.toArray
    process.push {
     arrays
-   }   
+   }
     /**
      * push space
      * add to space
@@ -113,9 +119,9 @@ object BPInitiator {
   println(dblogger.get.map(log => println(log.order)))
   val logger_results = dblogger.get.map(log => BPLoggerResult(process1.findObjectByOrder(log.order).get, log.order, None, //log.space
      process1.station, log.invoked, log.expanded, log.container, new java.util.Date(log.date.getTime()))
-) 
+)
   println(logger_results)
-  
+
  // !!!!!!!DCO!!!!!!!!!!! // !!!!!!!DCO!!!!!!!!!!! // !!!!!!!DCO!!!!!!!!!!!
   // stationdb -> station(bp)
   val dbstation = BPStationDTO.from_origin_station(process.station, process_dto)

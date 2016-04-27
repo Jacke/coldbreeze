@@ -99,6 +99,13 @@ minorityAppServices.factory('DataCostLaunchAssign', ['$resource', function ($res
     })
 }]);
 
+minorityAppServices.factory('DataCostElementLaunchAssign', ['$resource', function ($resource) {
+    return $resource(baseUrl + 'data/cost/elem_launch_assigns/:launchId', {}, {
+        query: { method: 'GET', isArray: true }
+    })
+}]);
+
+
 
 
 });

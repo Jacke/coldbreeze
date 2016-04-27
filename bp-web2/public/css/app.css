@@ -130,7 +130,38 @@
     font-stretch: normal;
     unicode-range: U+000D-25CA
 }
+[class^="nicon-"], [class*=" nicon-"] {
+    /* use !important to prevent issues with browser extensions that change fonts */
+    font-family: 'icomoon-dots' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
 
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.nicon-dots-two-vertical:before {
+    content: "\e900";
+}
+.nicon-dots-three-vertical:before {
+    content: "\e901";
+}
+.nicon-dots-three-horizontal:before {
+    content: "\e902";
+}
+a#modalDataBoardButton {
+    position: absolute;
+    left: 46%;
+    font-size: 20px;
+    top: 82px;
+    width: 19px;
+    cursor: pointer;
+}
 
 .jawn {
   position: relative;

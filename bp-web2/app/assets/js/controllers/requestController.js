@@ -62,7 +62,7 @@ $scope.isManager();
  */
 $scope.reactionElementRoutine = function (interactions) {
   if ($scope.element_topologsPromise !== undefined) {
-    console.log('reactionElementRoutine', $scope.element_topologsPromise);
+  //  console.log('reactionElementRoutine', $scope.element_topologsPromise);
         $scope.element_topologsPromise().then(function(d) {
           if (interactions) {
                 _.forEach(interactions.reactions, function(r) {
@@ -262,7 +262,7 @@ $scope.initiationOfInteractionPromise = $scope.initiationOfInteraction();
 $scope.treesDefiner = function() {
   var deferred = $q.defer();
   if (true){//$scope.$parent.reloadSessionsPromise == undefined || $scope.$parent.tree !== undefined) {
-    console.log('from launch', $scope.$parent.allLaunchedElemPromise);
+    //console.log('from launch', $scope.$parent.allLaunchedElemPromise);
     if ($scope.$parent.reloadSessionsPromise == undefined) {
       $scope.$parent.allLaunchedElemPromise.$promise.then(function(d) {
         $scope.allElFetcherPromise().then(function() {
@@ -364,7 +364,13 @@ $scope.$on('reloadElementRoutine', function(event, session_id) {
 /*******************************************************************************************************************
 /*******************************************************************************************************************
 /*******************************************************************************************************************
+
+
+
  * Cost module
+
+
+
 /*******************************************************************************************************************
 /*******************************************************************************************************************
 /*******************************************************************************************************************
@@ -374,387 +380,92 @@ $scope.$on('reloadElementRoutine', function(event, session_id) {
    Warp field impementation
   */
  // { payload: [ { obj_type: "text", obj_title: "Text", obj_content: value } ] }
- $scope.payload = [];
- $scope.sended_payload = [];
- $scope.payload_result = [];
- $scope.removePayload = function(field) {
-   $scope.payload = _.reject($scope.payload, function(el) { return el.$$hashKey === field.$$hashKey; });
- };
-
-
- $scope.removeFromNewPayload = function(field, elem, payload) {
-   _.forEach(payload, function(c) {
-   console.log(c.files.length);
-     return c.files = _.reject(c.files, function(el) { return el.$$hashKey === field.$$hashKey; });
-   console.log(c.files.length);
-   });
-   if (field.entityId) {
-      var entityId = field.entityId;
-      $http({
-       url: '/data/entity/'+entityId+'/delete',
-       method: "POST",
-       data: {},
-       }).then(function(response) {
-         // success
-         console.log(response)
-       },
-       function(response) { // optional
-         // failed
-         console.log(response);
-       });
-   }
- };
-
-
-
- $scope.removeFromPayload = function(field, elem) {
-   elem.payload = _.reject(elem.payload, function(el) { return el.$$hashKey === field.$$hashKey; });
-   if (field.entityId) {
-      var entityId = field.entityId;
-      $http({
-       url: '/data/entity/'+entityId+'/delete',
-       method: "POST",
-       data: {},
-       })
-       .then(function(response) {
-         // success
-         console.log(response)
-       },
-       function(response) { // optional
-         // failed
-         console.log(response);
-       }
-       );
-   }
-   //$scope.$apply();
- };
-
- $scope.setWarpType = function(field, warp_type) {
-   var index = $scope.payload.indexOf(field);
-   if (index !== -1) {
-   //    items[index] = 1010;
-     if (warp_type === 'text') {
-       $scope.payload[index] = { obj_type: "text", obj_title: "Text", obj_content: "" }
-     }
-     if (warp_type === 'file') {
-       $scope.payload[index] = { obj_type: "file", obj_title: "", obj_content: "" }
-     }
-   }
- }
-
- $scope.setWarpTypeForPayload = function(field, warp_type, payload) {
-   var index = payload.indexOf(field);
-   if (index !== -1) {
-   //    items[index] = 1010;
-
-     if (warp_type === 'text') {
-       payload[index] = { obj_type: "text", obj_title: "Text", obj_content: "" }
-     }
-     if (warp_type === 'file') {
-       payload[index] = { obj_type: "file", obj_title: "", obj_content: "" }
-     }
-   }
-   console.log(field);
- }
-
- //$scope.files
- //$scope.dpfiles
- //$scope.boxfiles
- $scope.$watch("files", function(newNames, oldNames) {
-     if (newNames.length > 0) {
-       $scope.prepareFiles();
-     }
- }, true);
- $scope.$watch("dpfiles", function(newNames, oldNames) {
-     if (newNames.length > 0) {
-       $scope.prepareFiles();
-     }
- }, true);
- $scope.$watch("boxfiles", function(newNames, oldNames) {
-     if (newNames.length > 0) {
-       $scope.prepareFiles();
-     };//$log.debug("    ** $watch(..., true)");
- }, true);
-
- $scope.addToPayload = function(payload) {
-   payload.push({});
-   if (payload.length > 0) {
-     $scope.setWarpTypeForPayload(payload[payload.length-1], 'file', payload);
-   }
- }
- $scope.addPayload = function(setType) {
-   $scope.payload.push({});
-   if ($scope.payload.length > 0) {
-     $scope.setWarpType($scope.payload[$scope.payload.length-1], 'file');
-   }
- }
- $scope.onLoaded = function () {
- }
-
- // Callback triggered after selecting files
- $scope.onPicked = function (docs, element) {
-   var data = _.map(docs, function(el) {
-       return { obj_type: "file", obj_content: el.embedUrl, obj_title: el.name };
-   });
-   element.payload = element.payload.slice(0, -1).concat(data);
-   // make element id
-   if (element.reaction != undefined) { element.element_id = element.reaction.elem.element_id; }//reaction
-   else { element.element_id = element.id; } // from tree
-   $scope.sendPayloadForElement($scope.session_id, element, _.filter(element.payload, function(el){return el.obj_content !== "";}))
- };
-
-
- $scope.onNewPicked = function (docs, element, payload) {
-   var data = _.map(docs, function(el) {
-       return { obj_type: "file", obj_content: el.embedUrl, obj_title: el.name };
-   });
-   element.payload = element.payload.slice(0, -1).concat(data);
-   // make element id
-   if (element.reaction != undefined) { element.element_id = element.reaction.elem.element_id; }//reaction
-   else { element.element_id = element.id; } // from tree
-   $scope.sendPayloadForElement($scope.session_id,
-                                element,
-                               _.filter(element.payload, function(el){return el.obj_content !== "";}))
- };
- /*
- $scope.onPicked = function (docs, payload) {
-   angular.forEach(docs, function (file, index) {
-     $scope.files.push(file);
-   });
- };
- */
-
-
- $scope.onPickedFirstInput = function(first_input, docs) {
-     first_input.files = [];
-     angular.forEach(docs, function (file, index) {
-     first_input.files.push(file);
-   });
- }
-
- // Callback triggered after clicking on cancel
- $scope.onCancel = function () {
-
- }
- $scope.files = [];
- $scope.dpfiles = [];
- $scope.boxfiles = [];
-
- $scope.clearFiles = function() {
-   $scope.files = [];
- $scope.dpfiles = [];
- $scope.boxfiles = [];
- }
-
- $scope.removeField = function(ids) {
-   $scope.payload.splice(ids, 1);
- }
- $scope.removeFileFirstInput = function(file, firstInput){
-   firstInput.files.splice(firstInput.files.indexOf(file), 1);
- }
- $scope.remove = function(idx){
-     $scope.dpfiles.splice(idx,1);
- }
- $scope.removeboxfiles = function(idx){
-     $scope.boxfiles.splice(idx,1);
- }
- $scope.removeDriveFile = function(idx) {
-   $scope.files.splice(idx,1);
- }
- $scope.prepareFiles = function() {
-   var data = _.map($scope.files, function(el) {
-       return { obj_type: "file", obj_content: el.embedUrl, obj_title: el.name };
-   }).concat(
-   _.map($scope.dpfiles, function(el) {
-       return { obj_type: "file", obj_content: el.link, obj_title: el.name };
-    })).concat(
-   _.map($scope.boxfiles, function(el) {
-       return { obj_type: "file", obj_content: el.link, obj_title: el.name };
-    }));
-    $scope.clearFiles();
-    $scope.payload =    $scope.payload.concat(data);
-    $scope.sendPayload($scope.session_id,"", _.filter($scope.payload, function(el){return el.obj_content !== "";}));
-    //$scope.sended_payload = $scope.payload.concat(data);
-    //$scope.clearPayloadWithData(data);
- };
- $scope.clearPayloadWithData = function(data) {
-   if ($scope.payload.length > 0) {
-     if ($scope.payload[0].obj_content = "") {
-       $scope.removeField($scope.payload.indefOf($scope.payload[0]));
-       $scope.payload = data;
-     } else { $scope.payload.concat(data); }
-   } else { $scope.payload.concat(data); }
- }
-
- $scope.sendPayloadAction = function(element_id) {
-   if (element_id !== undefined) {
-     $scope.sendPayload($scope.session_id, element_id);
-   } else {
-     $scope.sendPayload($scope.session_id);
-   }
- }
- $scope.sendWarpResult = function() {
-      $http({
-       url: '/warp/send',
-       method: "POST",
-       data: $scope.payload_result.data.message,
-       })
-       .then(function(response) {
-         // success
-         console.log(response)
-       },
-       function(response) { // optional
-         // failed
-         console.log(response);
-       }
-       );
- }
- $scope.sendWarpResultForElement = function(payload_result) {
-      $http({
-       url: '/warp/send',
-       method: "POST",
-       data: payload_result.data.message,
-       })
-       .then(function(response) {
-         // success
-         console.log(response)
-       },
-       function(response) { // optional
-         // failed
-         console.log(response);
-       }
-       );
- }
- $scope.sendPayload = function(launch_id, element_id, existedPayload) {
-      if (existedPayload !== undefined) {
-       var payload = existedPayload;
-      $http({
-       url: '/warp?launch_id=' + launch_id +'&element_id='+element_id,
-       method: "POST",
-       data: { payload: payload },
-       })
-       .then(function(response) {
-         // success
-         $scope.payload_result = response;//console.log(response);
-         //$scope.bpstations = BPStationsFactory.query({ BPid: $scope.bpId });
-       },
-       function(response) { // optional
-         // failed
-         $scope.payload_result = response;//console.log(response);
-       }
-       );
-      } else {
-        var payload = $scope.payload;
-      }
- };
-
-
-
-
- $scope.warpData = {};
-
- $scope.bboardDataPromiseBuilder = function() {
-   var deferred = $q.defer();
-
-
-
-
- var existedBBoardDataPromise = _.find($scope.$parent.bboardDataPromises, function(pr) {
-   return pr.launchId == $scope.session_id;
- });
-
-
- if (existedBBoardDataPromise == undefined) {
-   $scope.bboardDataPromise = DataCostLaunchAssign.query( { launchId: $scope.session_id } );
-   if ($scope.$parent.bboardDataPromises !== undefined) {
-     $scope.$parent.pushBboardDataPromise($scope.session_id, $scope.bboardDataPromise)
-   }
-
- } else {
-   $scope.bboardDataPromise = existedBBoardDataPromise;
- }
-
- return deferred.promise;
- }
- $scope.bboardDataPromiseBuilder();
-
+$scope.payload = [];
+$scope.sended_payload = [];
+$scope.payload_result = [];
+$scope.warpData = {};
 $scope.elemsPayload = [];
 
-$scope.filterPayload = function(elemId) {
-   return function(obj) {
-      if (obj.elementId === elemId) {
-        return obj;
-      } else {
-        return false;
-      }
-  }
-}
+$scope.bboardDataPromiseBuilder = function() {
+   var deferred = $q.defer();
+   var existedBBoardDataPromise = _.find($scope.$parent.bboardDataPromises, function(pr) {
+     return pr.launchId == $scope.session_id;
+   });
 
-
-$scope.fillCosts = function(costs) {
-  _.forEach($scope.trees, function(t) {
-    return t.costs = $scope.filterCostByElementId(t.id, costs);
-  });
+   if (existedBBoardDataPromise == undefined) {
+     $scope.bboardDataPromise = DataCostLaunchAssign.query( { launchId: $scope.session_id } );
+     if ($scope.$parent.bboardDataPromises !== undefined) {
+       $scope.$parent.pushBboardDataPromise($scope.session_id, $scope.bboardDataPromise)
+     }
+   } else {
+     $scope.bboardDataPromise = existedBBoardDataPromise;
+   }
+   $scope.costsPayload = existedBBoardDataPromise;
+   deferred.resolve($scope.costPayload);
+   return deferred.promise;
 }
+console.log('bboardDataPromises', $scope.$parent.bboardDataPromises);
+console.log('bboardDataPromiseBuilder', $scope.bboardDataPromiseBuilder)
+  $scope.bDPB = $scope.bboardDataPromiseBuilder();
 
 
 
 $scope.fillBBoardData = function() {
+  console.log('$scope.bDPB', $scope.bDPB);
 
-$scope.bboardDataPromiseBuilder().then(function(d) {
-$scope.treesDefinerPromise.then(function(d) {
+  if ($scope.bDPB !== undefined) {
+    $scope.bDPB.then(function(d) {
+      console.log('bboardDataPromiseBuilder run');
+      $scope.treesDefinerPromise.then(function(d) {
+        console.log('treesDefinerPromise run');
+        $scope.elemsPayload = _.map($scope.trees, function(tree_elem) {
+          var elem_id = tree_elem.id;
 
+          var payloadResult = _.filter($scope.warpData.slats, function(slat) {
+            return _.filter(slat.meta, function(meta){ return (meta.key === "element_id" && meta.value === elem_id+"")
+          }).length > 0 })
 
-
-
-$scope.elemsPayload = _.map($scope.trees, function(tree_elem) {
-  var elem_id = tree_elem.id;
-
-  var payloadResult = _.filter($scope.warpData.slats, function(slat) {
-    return _.filter(slat.meta, function(meta){ return (meta.key === "element_id" && meta.value === elem_id+"")
-  }).length > 0 })
-
-  if ($scope.interactions !== undefined
-      && $scope.interactions.reactions
-      && $scope.interactions.reactions.length > 0) {
-    $scope.fillCosts($scope.interactions.reactions[0].reaction.costs);
-  }
-  if ($scope.interactions !== undefined) {
-    tree_elem.costs = $scope.filterCostByElementId(elem_id, $scope.interactions.reactions[0].reaction.costs);
-  }
-  var files = _.map(payloadResult, function(presult) {
-      return { obj_type: "file",
-               obj_title: presult.title,
-               obj_content: presult.sval,
-               entityId: presult.entityId }
-  });
- return {elementId: elem_id, files: files};
-});
-
-
-$scope.costsPayload = _.map($scope.trees, function(tree_elem) {
-  var elem_id = tree_elem.id;
-  /**
-   * Optimize Costs
-   *
-  Then implement this
-  var costs = _.filter($scope.processCosts, function(slat) {
-    return _.filter(slat.meta, function(meta){ return (meta.key === "element_id" && meta.value === elem_id+"")
- }).length > 0 })
-*/
-  var costs = $scope.warpData;
- return {elementId: elem_id, costs: costs};
-});
+          if ($scope.interactions !== undefined
+              && $scope.interactions.reactions
+              && $scope.interactions.reactions.length > 0) {
+            $scope.fillCosts($scope.interactions.reactions[0].reaction.costs);
+          }
+          if ($scope.interactions !== undefined) {
+            tree_elem.costs = $scope.filterCostByElementId(elem_id, $scope.interactions.reactions[0].reaction.costs);
+          }
+          var files = _.map(payloadResult, function(presult) {
+              return { obj_type: "file",
+                       obj_title: presult.title,
+                       obj_content: presult.sval,
+                       entityId: presult.entityId }
+          });
+         return {elementId: elem_id, files: files};
+        });
 
 
-});
-});
+        $scope.costsPayload = _.map($scope.trees, function(tree_elem) {
+          var elem_id = tree_elem.id;
+          /**
+           * Optimize Costs
+           *
+          Then implement this
+          var costs = _.filter($scope.processCosts, function(slat) {
+            return _.filter(slat.meta, function(meta){ return (meta.key === "element_id" && meta.value === elem_id+"")
+         }).length > 0 })
+        */
+          var costs = $scope.warpData;
+         return {elementId: elem_id, costs: costs};
+        });
+
+
+          console.log('$scope.costsPayload', $scope.costsPayload);
+
+
+      });
+    });
 }
-
-
-
+}
 $scope.fillBBoardData();
-
 
 if($scope.interactions !== undefined && $scope.interactions.reactions) {
     _.forEach($scope.interactions.reactions, function(reaction) {
@@ -784,6 +495,340 @@ if($scope.interactions !== undefined && $scope.interactions.reactions) {
 
     });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+$scope.filterPayload = function(elemId) {
+   return function(obj) {
+      if (obj.elementId === elemId) {
+        return obj;
+      } else {
+        return false;
+      }
+  }
+}
+
+$scope.fillCosts = function(costs) {
+  _.forEach($scope.trees, function(t) {
+    return t.costs = $scope.filterCostByElementId(t.id, costs);
+  });
+}
+
+$scope.removePayload = function(field) {
+  $scope.payload = _.reject($scope.payload, function(el) { return el.$$hashKey === field.$$hashKey; });
+};
+
+$scope.removeFromNewPayload = function(field, elem, payload) {
+  _.forEach(payload, function(c) {
+  console.log(c.files.length);
+    return c.files = _.reject(c.files, function(el) { return el.$$hashKey === field.$$hashKey; });
+  console.log(c.files.length);
+  });
+  if (field.entityId) {
+     var entityId = field.entityId;
+     $http({
+      url: '/data/entity/'+entityId+'/delete',
+      method: "POST",
+      data: {},
+      }).then(function(response) {
+        // success
+        console.log(response)
+      },
+      function(response) { // optional
+        // failed
+        console.log(response);
+      });
+  }
+};
+
+$scope.removeFromPayload = function(field, elem) {
+  elem.payload = _.reject(elem.payload, function(el) { return el.$$hashKey === field.$$hashKey; });
+  if (field.entityId) {
+     var entityId = field.entityId;
+     $http({
+      url: '/data/entity/'+entityId+'/delete',
+      method: "POST",
+      data: {},
+      })
+      .then(function(response) {
+        // success
+        console.log(response)
+      },
+      function(response) { // optional
+        // failed
+        console.log(response);
+      }
+      );
+  }
+  //$scope.$apply();
+};
+
+$scope.setWarpType = function(field, warp_type) {
+  var index = $scope.payload.indexOf(field);
+  if (index !== -1) {
+  //    items[index] = 1010;
+    if (warp_type === 'text') {
+      $scope.payload[index] = { obj_type: "text", obj_title: "Text", obj_content: "" }
+    }
+    if (warp_type === 'file') {
+      $scope.payload[index] = { obj_type: "file", obj_title: "", obj_content: "" }
+    }
+  }
+}
+
+$scope.setWarpTypeForPayload = function(field, warp_type, payload) {
+  var index = payload.indexOf(field);
+  if (index !== -1) {
+  //    items[index] = 1010;
+
+    if (warp_type === 'text') {
+      payload[index] = { obj_type: "text", obj_title: "Text", obj_content: "" }
+    }
+    if (warp_type === 'file') {
+      payload[index] = { obj_type: "file", obj_title: "", obj_content: "" }
+    }
+  }
+  console.log(field);
+}
+
+//$scope.files
+//$scope.dpfiles
+//$scope.boxfiles
+$scope.$watch("files", function(newNames, oldNames) {
+    if (newNames.length > 0) {
+      $scope.prepareFiles();
+    }
+}, true);
+$scope.$watch("dpfiles", function(newNames, oldNames) {
+    if (newNames.length > 0) {
+      $scope.prepareFiles();
+    }
+}, true);
+$scope.$watch("boxfiles", function(newNames, oldNames) {
+    if (newNames.length > 0) {
+      $scope.prepareFiles();
+    };//$log.debug("    ** $watch(..., true)");
+}, true);
+
+
+$scope.addToPayload = function(payload) {
+  payload.push({});
+  if (payload.length > 0) {
+    $scope.setWarpTypeForPayload(payload[payload.length-1], 'file', payload);
+  }
+}
+
+$scope.addPayload = function(setType) {
+  $scope.payload.push({});
+  if ($scope.payload.length > 0) {
+    $scope.setWarpType($scope.payload[$scope.payload.length-1], 'file');
+  }
+}
+
+$scope.onLoaded = function () {
+
+}
+
+// Callback triggered after selecting files
+$scope.onPicked = function (docs, element) {
+  var data = _.map(docs, function(el) {
+      return { obj_type: "file", obj_content: el.embedUrl, obj_title: el.name };
+  });
+  element.payload = element.payload.slice(0, -1).concat(data);
+  // make element id
+  if (element.reaction != undefined) { element.element_id = element.reaction.elem.element_id; }//reaction
+  else { element.element_id = element.id; } // from tree
+  $scope.sendPayloadForElement($scope.session_id, element, _.filter(element.payload, function(el){return el.obj_content !== "";}))
+};
+
+$scope.onNewPicked = function (docs, element, payload) {
+  var data = _.map(docs, function(el) {
+      return { obj_type: "file", obj_content: el.embedUrl, obj_title: el.name };
+  });
+  element.payload = element.payload.slice(0, -1).concat(data);
+  // make element id
+  if (element.reaction != undefined) { element.element_id = element.reaction.elem.element_id; }//reaction
+  else { element.element_id = element.id; } // from tree
+  $scope.sendPayloadForElement($scope.session_id,
+                               element,
+                              _.filter(element.payload, function(el){return el.obj_content !== "";}))
+};
+/*
+$scope.onPicked = function (docs, payload) {
+  angular.forEach(docs, function (file, index) {
+    $scope.files.push(file);
+  });
+};
+*/
+
+
+$scope.onPickedFirstInput = function(first_input, docs) {
+    first_input.files = [];
+    angular.forEach(docs, function (file, index) {
+    first_input.files.push(file);
+  });
+}
+
+// Callback triggered after clicking on cancel
+$scope.onCancel = function () {
+
+}
+$scope.files = [];
+$scope.dpfiles = [];
+$scope.boxfiles = [];
+
+$scope.clearFiles = function() {
+  $scope.files = [];
+  $scope.dpfiles = [];
+  $scope.boxfiles = [];
+}
+
+$scope.removeField = function(ids) {
+  $scope.payload.splice(ids, 1);
+}
+
+$scope.removeFileFirstInput = function(file, firstInput){
+  firstInput.files.splice(firstInput.files.indexOf(file), 1);
+}
+
+$scope.remove = function(idx){
+    $scope.dpfiles.splice(idx,1);
+}
+
+$scope.removeboxfiles = function(idx){
+    $scope.boxfiles.splice(idx,1);
+}
+
+$scope.removeDriveFile = function(idx) {
+  $scope.files.splice(idx,1);
+}
+
+$scope.prepareFiles = function() {
+  var data = _.map($scope.files, function(el) {
+      return { obj_type: "file", obj_content: el.embedUrl, obj_title: el.name };
+  }).concat(
+  _.map($scope.dpfiles, function(el) {
+      return { obj_type: "file", obj_content: el.link, obj_title: el.name };
+   })).concat(
+  _.map($scope.boxfiles, function(el) {
+      return { obj_type: "file", obj_content: el.link, obj_title: el.name };
+   }));
+   $scope.clearFiles();
+   $scope.payload =    $scope.payload.concat(data);
+   $scope.sendPayload($scope.session_id,"", _.filter($scope.payload, function(el){return el.obj_content !== "";}));
+   //$scope.sended_payload = $scope.payload.concat(data);
+   //$scope.clearPayloadWithData(data);
+};
+
+$scope.clearPayloadWithData = function(data) {
+  if ($scope.payload.length > 0) {
+    if ($scope.payload[0].obj_content = "") {
+      $scope.removeField($scope.payload.indefOf($scope.payload[0]));
+      $scope.payload = data;
+    } else { $scope.payload.concat(data); }
+  } else { $scope.payload.concat(data); }
+}
+
+$scope.sendPayloadAction = function(element_id) {
+  if (element_id !== undefined) {
+    $scope.sendPayload($scope.session_id, element_id);
+  } else {
+    $scope.sendPayload($scope.session_id);
+  }
+}
+
+$scope.sendWarpResult = function() {
+     $http({
+      url: '/warp/send',
+      method: "POST",
+      data: $scope.payload_result.data.message,
+      })
+      .then(function(response) {
+        // success
+        console.log(response)
+      },
+      function(response) { // optional
+        // failed
+        console.log(response);
+      }
+      );
+}
+
+$scope.sendWarpResultForElement = function(payload_result) {
+     $http({
+      url: '/warp/send',
+      method: "POST",
+      data: payload_result.data.message,
+      })
+      .then(function(response) {
+        // success
+        console.log(response)
+      },
+      function(response) { // optional
+        // failed
+        console.log(response);
+      }
+      );
+}
+
+$scope.sendPayload = function(launch_id, element_id, existedPayload) {
+     if (existedPayload !== undefined) {
+      var payload = existedPayload;
+     $http({
+      url: '/warp?launch_id=' + launch_id +'&element_id='+element_id,
+      method: "POST",
+      data: { payload: payload },
+      })
+      .then(function(response) {
+        // success
+        $scope.payload_result = response;//console.log(response);
+        //$scope.bpstations = BPStationsFactory.query({ BPid: $scope.bpId });
+      },
+      function(response) { // optional
+        // failed
+        $scope.payload_result = response;//console.log(response);
+      }
+      );
+     } else {
+       var payload = $scope.payload;
+     }
+};
 
 $scope.sendPayloadForElement = function(launch_id, element, existedPayload) {
      if (existedPayload !== undefined) {
@@ -830,9 +875,11 @@ $scope.entityDecorator = function(entities, resource) {
   publisher: String,
   meta: String,
 */
+
 $scope.slatFilter = function(entity, slats) {
   return _.filter(slats, function(slat){return slat.entityId === entity.id });
 };
+
 $scope.defaultValueParser = function(entity, value) {
   if (entity.etype === "number") {
     return parseInt(value);
@@ -840,6 +887,7 @@ $scope.defaultValueParser = function(entity, value) {
     return value;
   }
 };
+
 $scope.fastResourceCostCreationApply = function() {
 // Add resource
 // Add attribute
@@ -849,7 +897,6 @@ $scope.fastResourceCostCreationApply = function() {
 // Show cost
   console.log(fastResourceCostCreation);
 };
-
 
 $scope.fillValue = function(cost, entity, value) {
   // entityId: String, launchId: Int, resourceId: Int

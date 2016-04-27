@@ -70,14 +70,14 @@ minorityControllers.controller('BPelementListCtrl', ['$timeout','$window','$filt
 
 if ($scope.inSession) {
   DataCostLaunchAssign.query( { launchId: parseInt($location.search().launch) } ).$promise.then(function(data){
-     $scope.sessionCosts = data.costs; 
-      $scope.warpData = { boards: _.filter(data.warp.boards, 
+     $scope.sessionCosts = data.costs;
+      $scope.warpData = { boards: _.filter(data.warp.boards,
         function(obj){ return  $scope.metaExisted(obj.meta, "element_id");
       }),
-      entities: _.filter(data.warp.entities, 
+      entities: _.filter(data.warp.entities,
         function(obj){ return  $scope.metaExisted(obj.meta, "element_id");
       }),
-      slats: _.filter(data.warp.slats, 
+      slats: _.filter(data.warp.slats,
         function(obj){ return  $scope.metaExisted(obj.meta, "element_id");
       })
      }
@@ -94,32 +94,32 @@ $scope.createAssignedResEl = function(cost) {
   // (elementId: Int, resourceId: Int, entityId: String = "*")
   console.log(cost);
   var req = {elementId: cost.element, resourceId: cost.resource.resource.id, entityId: cost.entities};
-  $http.post(jsRoutes.controllers.CostFillController.assign_element(cost.resource.resource.id).absoluteURL(document.ssl_enabled),  
+  $http.post(jsRoutes.controllers.CostFillController.createCostElement(cost.resource.resource.id).absoluteURL(document.ssl_enabled),
                     [req]).then(function (data) {
                       console.log(data);
   });
-};  
+};
 $scope.createAssignedResEls = function(costs, elementId) {
   // (elementId: Int, resourceId: Int, entityId: String = "*")
   console.log(costs);
 
-  var reqs = _.map(costs, function(cost) { return  {elementId: elementId, resourceId: cost.resource.resource.id, 
+  var reqs = _.map(costs, function(cost) { return  {elementId: elementId, resourceId: cost.resource.resource.id,
                                                     entityId: cost.entities}; })
-  $http.post(jsRoutes.controllers.CostFillController.assign_element(0).absoluteURL(document.ssl_enabled),  
+  $http.post(jsRoutes.controllers.CostFillController.createCostElement(0).absoluteURL(document.ssl_enabled),
                     reqs ).then(function (data) {
                       console.log(data);
   });
-}; 
+};
 
 // POST /data/cost/del_assign/:resource_id
 $scope.deleteAsssignedResEl = function(cost) {
   //$('/data/cost/del_assign/:resource_id')
   console.log(cost);
-  $http.post(jsRoutes.controllers.CostFillController.delete_assigned_element(cost.id).absoluteURL(document.ssl_enabled), { 
+  $http.post(jsRoutes.controllers.CostFillController.delete_assigned_element(cost.id).absoluteURL(document.ssl_enabled), {
                     headers:  {'X-Auth-Token': $scope.token, 'Access_Name': 'user'}}).then(function (data) {
                       console.log(data);
   });
-}  
+}
 $scope.entityDecorator = function(entities, resource) {
   if (entities == "*") {
     return "*"
@@ -129,17 +129,17 @@ $scope.entityDecorator = function(entities, resource) {
       if (c != undefined) {
         return c.title
       } else { return "" }
-      
+
     } else {
       return "";
     }
-  
+
   }
 }
 /* Slat
   title: String,
   boardId: UUID,
-  entityId: UUID,  
+  entityId: UUID,
   sval: String,
   publisher: String,
   meta: String,
@@ -163,14 +163,14 @@ $scope.fillValue = function(cost, entity, value) {
   var boardId = entity.boardId;
 
   var req = {title: entity.title, boardId: boardId, entityId: entityId, meta: '', sval: value, publisher: ''};
-  $http.post(jsRoutes.controllers.DataController.fill_slat(entityId, launchId, resourceId).absoluteURL(document.ssl_enabled),  
+  $http.post(jsRoutes.controllers.DataController.fill_slat(entityId, launchId, resourceId).absoluteURL(document.ssl_enabled),
                     req).then(function (data) {
                       console.log(data);
   });
 }
 $scope.removeEntity = function(entity, store) {
   console.log(entity);
-  $http.post(jsRoutes.controllers.CostFillController.removeEntityById(entity.id).absoluteURL(document.ssl_enabled),  
+  $http.post(jsRoutes.controllers.CostFillController.removeEntityById(entity.id).absoluteURL(document.ssl_enabled),
   []).then(function (data) {
       console.log(data);
       $scope.loadCosts();
@@ -185,7 +185,7 @@ $scope.reFillValue = function(cost, entity, slat) {
   var boardId = entity.boardId;
 
   var req = {title: entity.title, boardId: boardId, entityId: entityId, meta: '', sval: slat.sval, publisher: ''};
-  $http.post(jsRoutes.controllers.DataController.refill_slat(entityId, launchId, resourceId, slat.id).absoluteURL(document.ssl_enabled),  
+  $http.post(jsRoutes.controllers.DataController.refill_slat(entityId, launchId, resourceId, slat.id).absoluteURL(document.ssl_enabled),
                     req).then(function (data) {
                       console.log(data);
   });
@@ -212,7 +212,7 @@ $scope.reFillValue = function(cost, entity, slat) {
 
 
 /****
- *  Mionority Action Middleware 
+ *  Mionority Action Middleware
  **/
   $scope.vm = this; // vm stands for "View Model" --> see https://github.com/johnpapa/angular-styleguide#controlleras-with-vm
   //$scope.newBpelem.middleware = {};
@@ -243,10 +243,10 @@ $scope.reFillValue = function(cost, entity, slat) {
       }
     }
   ];
-  
+
   $scope.vm.onSubmit = onSubmit;
-  
-  
+
+
   function onSubmit() {
     console.log('form submitted:', $scope.newBpelem);
   }
@@ -410,7 +410,7 @@ $scope.spaceelems = BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid
           return $scope.topoIdChecker(z.topo_id) == cost.obj.element_id;
       });  return fetchObj(z.costs); });
 
-    });   });   
+    });   });
     /********************/
 
  });
@@ -423,7 +423,7 @@ $scope.spaceelems = BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid
 }
 $scope.metaExisted = function(meta, key) {
     return _.filter(meta, function(meta) {
-          return (meta.key == key && meta.value.length < 1) 
+          return (meta.key == key && meta.value.length < 1)
         }).length < 1;
 }
 $scope.files = [];
@@ -433,12 +433,12 @@ $scope.onPickedFirstInput = function(first_input, docs) {
     angular.forEach(docs, function (file, index) {
     $scope.files.push(file);
   });
-  var data = _.map($scope.files, function(el) { 
-      return { obj_type: "file", obj_content: el.embedUrl, obj_title: el.name };   
+  var data = _.map($scope.files, function(el) {
+      return { obj_type: "file", obj_content: el.embedUrl, obj_title: el.name };
   })
    $scope.files = [];
    $scope.payload = $scope.payload.concat(data);
-   $scope.sendPayload($scope.session_id, "", _.filter($scope.payload, function(el){return el.obj_content != "";})); 
+   $scope.sendPayload($scope.session_id, "", _.filter($scope.payload, function(el){return el.obj_content != "";}));
    $scope.sendWarpResult();
    $scope.payload_result = [];
 }
@@ -458,7 +458,7 @@ $scope.sendWarpResult = function() {
         console.log(response);
       }
       );
-     
+
 }
 $scope.sendPayload = function(launch_id, element_id, existedPayload) {
      if (existedPayload != undefined) {
@@ -479,7 +479,7 @@ $scope.sendPayload = function(launch_id, element_id, existedPayload) {
       }
       );
      } else {
-       var payload = $scope.payload; 
+       var payload = $scope.payload;
      }
 }
 
@@ -531,14 +531,14 @@ $scope.reloadResourcesForSession = function(session) {
                    _.filter($scope.spaces, function(n){
                       return n.brick_nested == v.brick_nested;
                     })
-                  ]})));  
+                  ]})));
     //}*/
 
   });
 
 
     // Fetch resource and entities for that resource
-$scope.loadCosts = function() {    
+$scope.loadCosts = function() {
   DataCostCollection.query().$promise.then(function(res) {
 
       $scope.resources = res;
@@ -546,13 +546,13 @@ $scope.loadCosts = function() {
 
     DataCostLaunchAssign.query( { launchId: session.id } ).$promise.then(function(data) {
       $scope.processCosts = data.costs;
-      $scope.warpData = { boards: _.filter(data.warp.boards, 
+      $scope.warpData = { boards: _.filter(data.warp.boards,
         function(obj){ return  $scope.metaExisted(obj.meta, "element_id");
       }),
-      entities: _.filter(data.warp.entities, 
+      entities: _.filter(data.warp.entities,
         function(obj){ return  $scope.metaExisted(obj.meta, "element_id");
       }),
-      slats: _.filter(data.warp.slats, 
+      slats: _.filter(data.warp.slats,
         function(obj){ return  $scope.metaExisted(obj.meta, "element_id");
       })
      }
@@ -574,12 +574,12 @@ $scope.loadCosts = function() {
           return $scope.topoIdChecker(z.topo_id) == cost.obj.element_id;
       });  return fetchObj(z.costs) });
 
-    });   
-});   
+    });
+});
 }
 $scope.loadCosts();
     /********************/
-      
+
 
 
 
@@ -669,7 +669,7 @@ $scope.loadResources = function() {
     _.forEach(z.states, function(st){ return st.switches = _.filter($scope.switches, function(sw) { return sw.state_ref == st.id }) });
   });
 
-  
+
       /* cost */
   var fetchObj = function(objects) {
     if (objects != undefined) {
@@ -693,7 +693,7 @@ $scope.loadResources = function() {
           return $scope.topoIdChecker(z.topo_id) == cost.obj.element_id;
       });  return fetchObj(z.costs) });
 
-    });   });   
+    });   });
     /********************/
 
   });
@@ -1047,11 +1047,11 @@ $scope.options = {
       }
       perm.process = $scope.BPid;
       perm.role = 'all';
-      
+
       PermissionsFactory.create(perm).$promise.then(function(data) {
         $scope.perms = ProcPermissionsFactory.query({ BPid: $scope.BPid }).$promise.then(function(d) {
         $scope.loadPerm();
-      
+
       });
 
     });
@@ -1451,7 +1451,7 @@ $scope.createSpaceElemFromSpace = function (obj) {
     };
 */                  $scope.cneedit = false;
 
-      $scope.spaceelems =  BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(d){ 
+      $scope.spaceelems =  BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(d){
         //              $scope.cneedit = false;
               $timeout(function(){
                 //$scope.reloadResources();
@@ -1536,7 +1536,7 @@ $scope.createSpaceElem = function (obj, space) {
               }, 120);
               });
 
-    });        
+    });
               $scope.cneedit = false;
 
               //$scope.reloadTree($scope.trees);
@@ -1842,12 +1842,12 @@ $scope.accFetch = function (obj) {
     res.fullName != undefined ? res.tooltip = res.fullName : res.tooltip = res.email;
     if (res.avatarUrl == undefined || res.avatarUrl == "") {
       res.avatarUrl = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iRWJlbmVfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSIxNnB4IiBoZWlnaHQ9IjE2cHgiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTYgMTYiIHhtbDpzcGFjZT0icHJlc2VydmUiPjx0aXRsZT5EZWZhdWx0IEF2YXRhcjwvdGl0bGU+PGRlc2M+RGVmYXVsdCBBdmF0YXIgZm9yIFdDRiAyLjA8L2Rlc2M+IDxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbLnN1cmZhY2UgeyBmaWxsOiAjZmZmOyB9LnNoYWRvdyB7IGZpbGw6ICNiYmI7IH1dXT48L3N0eWxlPjwvZGVmcz48cmVjdCB4PSIwIiBjbGFzcz0ic2hhZG93IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiLz48cGF0aCBjbGFzcz0ic3VyZmFjZSIgZD0iTTMuNTI4LDE2QzMuNzc2LDExLjQ5OSw1LjY4NCw4LDgsOHM0LjIyNCwzLjQ5OSw0LjQ3Myw3Ljk5OCIvPjxjaXJjbGUgY2xhc3M9InN1cmZhY2UiIGN4PSI4IiBjeT0iNiIgcj0iMy41Ii8+PC9zdmc+'
-    }     
+    }
     return res;
   } else if (res == undefined) {
     if (res.avatarUrl == undefined || res.avatarUrl == "") {
       res.avatarUrl = 'data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iRWJlbmVfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSIxNnB4IiBoZWlnaHQ9IjE2cHgiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTYgMTYiIHhtbDpzcGFjZT0icHJlc2VydmUiPjx0aXRsZT5EZWZhdWx0IEF2YXRhcjwvdGl0bGU+PGRlc2M+RGVmYXVsdCBBdmF0YXIgZm9yIFdDRiAyLjA8L2Rlc2M+IDxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbLnN1cmZhY2UgeyBmaWxsOiAjZmZmOyB9LnNoYWRvdyB7IGZpbGw6ICNiYmI7IH1dXT48L3N0eWxlPjwvZGVmcz48cmVjdCB4PSIwIiBjbGFzcz0ic2hhZG93IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiLz48cGF0aCBjbGFzcz0ic3VyZmFjZSIgZD0iTTMuNTI4LDE2QzMuNzc2LDExLjQ5OSw1LjY4NCw4LDgsOHM0LjIyNCwzLjQ5OSw0LjQ3Myw3Ljk5OCIvPjxjaXJjbGUgY2xhc3M9InN1cmZhY2UiIGN4PSI4IiBjeT0iNiIgcj0iMy41Ii8+PC9zdmc+'
-    }     
+    }
     return "Anonymous " + obj.uid;
   }
   } else { // it's group
@@ -1885,7 +1885,7 @@ $scope.turnMinimal = function() {
               $(this).addClass('minimal');
         });
     });
-    
+
 }
 $scope.turnMinimal();
 
@@ -1900,14 +1900,14 @@ $scope.changeSession = function(session) {
  $scope.interactions = InteractionsFactory.query({session_id: $scope.session.session.id});
 
 DataCostLaunchAssign.query( { launchId: parseInt($location.search().launch) } ).$promise.then(function(data) {
- $scope.sessionCosts = data.costs; 
-      $scope.warpData = { boards: _.filter(data.warp.boards, 
+ $scope.sessionCosts = data.costs;
+      $scope.warpData = { boards: _.filter(data.warp.boards,
         function(obj){ return  $scope.metaExisted(obj.meta, "element_id");
       }),
-      entities: _.filter(data.warp.entities, 
+      entities: _.filter(data.warp.entities,
         function(obj){ return  $scope.metaExisted(obj.meta, "element_id");
       }),
-      slats: _.filter(data.warp.slats, 
+      slats: _.filter(data.warp.slats,
         function(obj){ return  $scope.metaExisted(obj.meta, "element_id");
       })
      }
