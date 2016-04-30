@@ -32,31 +32,37 @@
 			  <li class="reaction_list__reaction reaction_list__reaction_preview" ng-repeat="elem in trees | orderBy:'+order'">
 			      <a>
 			      <h3>{{ elem.title }} <!-- : {{ capitalizeFirstLetter(reaction.reaction.title) }} --></h3></a>
-			      <a ng-click="fileSelectTab(elem);elem.dataSelectTabSelected=false;elem.fileSelectTabSelected=true;" id="fileSelectTabButton"
+			      <a ng-click="fileSelectTab(elem)"
+							 id="fileSelectTabButton"
 						   class="fileSelectTabButton expandLaunchWindowTabButton"
 							 ng-class="elem.fileSelectTabSelected ? 'selected' : ''">Files</a>
 
 			      <div class="interaction-input-existence" ng-repeat="reaction in interactions.reactions | filter:filterReactionByElem(elem)">
 			        <a ng-click="reactionSelect(reaction);runFrom($parent.session.session.id, reaction)"
-							id="reactionSelectButton" ng-class="selectedClass(reaction)"
-							class="reactionSelectButton triangle-reaction"
-			        ng-show="showByStep($parent.session.station.step, reaction.reaction.elem_order.order)">
-							{{ capitalizeFirstLetter(reaction.reaction.title) }}</a>
-
+							   id="reactionSelectButton" ng-class="selectedClass(reaction)"
+							   class="reactionSelectButton triangle-reaction"
+			           ng-show="showByStep($parent.session.station.step, reaction.reaction.elem_order.order)">
+							       {{ capitalizeFirstLetter(reaction.reaction.title) }}</a>
 			      </div>
-			      <a ng-click="dataSelectTab(elem);elem.fileSelectTabSelected=false;elem.dataSelectTabSelected=true;" id="dataSelectTabButton"
-						   class="expandLaunchWindowTabButton dataSelectTabButton" ng-class="elem.dataSelectTabSelected ? 'selected' : ''">Data</a>
+						<a ng-click="dataSelectTab(elem)"
+			         id="dataSelectTabButton"
+			         class="expandLaunchWindowTabButton dataSelectTabButton"
+			         ng-class="elem.dataSelectTabSelected ? 'selected' : ''">Data</a>
+			       <a ng-click="openModalDataBoard($parent.$parent.session.process)"
+			          id="modalDataBoardButton"
+			          class="modalDataButton dataSelectTabButton"><span class="nicon nicon-dots-three-horizontal"></span></a>
 
-					 <a ng-click="openModalDataBoard($parent.$parent.session.process)" id="modalDataBoardButton"
-						   class="modalDataButton dataSelectTabButton"><span class="nicon nicon-dots-three-horizontal"></span></a>
 
-			      <div ng-include src="'assets/partials/inputs/costs.html'"
-						class="cost-view-container"
-						ng-init="costs = elem.costs;"
-						ng-show="elem.dataSelectTabSelected"></div>
-			      <div ng-include src="'assets/partials/inputs/file_attach.html'"
-								 class="file-view-container" ng-init="elem.payload = []; $parent.elem.payloadNew = [];elem.fileSelectTabSelected=true;"
-								 ng-show="elem.fileSelectTabSelected"></div>
+			      <div class="data-board-controller" ng-controller="launchDataController as launchData">
+			          <div ng-include src="'assets/partials/inputs/costs.html'"
+			                          class="cost-view-container"
+			                          ng-init="costs = elem.costs;"
+			                          ng-show="elem.dataSelectTabSelected"></div>
+			          <div ng-include src="'assets/partials/inputs/file_attach.html'"
+			               class="file-view-container" ng-init="elem.payload = []; $parent.elem.payloadNew = [];elem.dataSelectTabSelected=true;"
+			               ng-show="elem.fileSelectTabSelected"></div>
+			      </div>
+
 			  </li>
 			</ul>
 		</div>

@@ -214,17 +214,28 @@ select#selectExistedResource, select#selectExistedEntity {
     border-bottom: solid 1px white;
 }
 
+
+
 .ngdialog .dataBoardList .perm-menu li a {
-    color: #6BA1D0;
-    border-bottom: solid 1px #6BA1D0;
+    color: white;
+    text-shadow: none;
+    text-decoration: none;
+    border-bottom: none;
+    font-size: 12px;
+    font-weight: 900;
+    font-family: 'Open Sans';
 }
+.ngdialog .dataBoardList .perm-menu li.active a {
+    color: #9BD1EF;
+}
+
 .elements-data-element {
     clear: both;
     padding-top: 6px;
 }
 ul.perm-menu.element-data-nav {
     display: inline-block;
-    width: 25% !important;
+    width: 30% !important;
     /* margin: 0 auto !important; */
     float: right;
     margin-top: 20px !important;
@@ -245,11 +256,58 @@ ul.perm-menu.element-data-nav {
     color: white;
     border-bottom: solid 1px white;
 }
+.data-file .data-file-type {
+    display: inline-block;
+    background: #393B52;
+    padding: 3px 15px;
+    margin-right: 5px;
+    font-size: 12px;
+    float: left;
+}
+
+.data-file .data-file-title {
+    display: inline-block;
+    font-size: 18px;
+    width: 222px;
+    text-align: left;
+    margin-left: 11px;
+}
+
+.data-file {
+    display: block;
+    margin-bottom: 17px;
+}
+
+.data-file a.btn.btn-danger.btn-success.btn-fill {
+    display: inline-block;
+    float: right;
+}
+
+.data-file-arr {
+    margin-bottom: 30px;
+}
+
+.dataBoardList h6 {
+    font-size: 13px;
+    margin-top: 15px;
+    font-weight: 900;
+    font-family: 'Open Sans';
+    margin-bottom: 15px;
+}
+.ngdialog .dataBoardList ul.perm-menu.element-data-nav li.active a {
+    color: #9BD1EF;
+    text-shadow: none;
+    text-decoration: none;
+    border-bottom: none;
+}
+
+
+
 </style>
 
 <ul class="perm-menu">
-  <li ng-class="{ 'active': elementShow}"><a ng-init="elementShow=true;" ng-click="elementShow=true;processShow=false;">Elements</a></li>
-  <li ng-class="{ 'active': processShow}"><a ng-init="processShow=false;" ng-click="processShow=true;elementShow=false;">Process</a></li>
+  <li ng-class="{ 'active': !elementShow}"><a ng-init="elementShow=true;" ng-click="elementShow=true;processShow=false;">Elements</a></li>
+  <li ng-class="{ 'active': !processShow}"><a ng-init="processShow=false;" ng-click="processShow=true;elementShow=false;">Process</a></li>
 </ul>
 
 <div class="elements-data" ng-init="elementShow=true;processShow=false;" ng-show="elementShow">
@@ -259,9 +317,9 @@ ul.perm-menu.element-data-nav {
 
     <div class="elements-data-element-title"><h3>{{ element.title }}</h3>
       <ul class="perm-menu element-data-nav">
-        <li ng-class="{ 'active': elementShow}"><a ng-init="element.costShow=true;"
-          ng-click="element.costShow=true;element.fileShow=false;">Costs</a></li>
-        <li ng-class="{ 'active': processShow}"><a ng-init="element.fileShow=false;"
+        <li ng-class="{ 'active': !element.costShow}"><a ng-init="element.costShow=true;"
+          ng-click="element.costShow=true;element.fileShow=false;">Indicators</a></li>
+        <li ng-class="{ 'active': !element.fileShow}"><a ng-init="element.fileShow=false;"
           ng-click="element.fileShow=true;element.costShow=false;">Files</a></li>
       </ul>
     </div>
@@ -272,14 +330,14 @@ ul.perm-menu.element-data-nav {
           <div class="data-cost-default">Default value: {{ cost.entity.default }}</div>
         </div>
         <div class="data-cost-title">{{ cost.entity.title }}</div>
-        <div class="data-cost-value">{{ cost.value | json }}</div>
-        <div class="data-cost-controls"><span class="moicon moicon-menu3"></span></div>
+        <div class="data-cost-value">{{ cost.value.sval }}</div>
+        <div class="data-cost-controls"><span class="moicon moicon-menu3" style="cursor:pointer" ng-click="element.controllsExpanded ? element.controllsExpanded=false : element.controllsExpanded=true"></span></div>
 
-        <div class="data-cost-controlls-expanded">
-          <input type="text" id="inputContentBlankValue" class="form-control" ng-model="entity.newModelValue" required="">
+        <div class="data-cost-controlls-expanded" ng-init="cost.value == undefined ? element.controllsExpanded=true : element.controllsExpanded=false" ng-show="element.controllsExpanded">
+          <input type="text" id="inputContentBlankValue" class="form-control" ng-init="cost.value == undefined ? entity.newModelValue=cost.entity.default : entity.newModelValue=cost.value.sval" ng-model="entity.newModelValue" required="">
           <div class="data-cost-controlls-buttons">
-          <a class="btn btn-small btn-success btn-fill" ng-click="fillValue(cost, entity, entity.newModelValue)">Fill</a>
-          <a class="btn btn-danger btn-success btn-fill" ng-click="deleteCost(costObj.obj)">Remove</a>
+          <a class="btn btn-small btn-success btn-fill" ng-click="fillValue(cost, entity.newModelValue, costObj.obj)">Fill</a>
+          <a class="btn btn-danger btn-success btn-fill" ng-click="clearCost(cost, costObj.obj)">Clear</a>
         </div>
       </div>
   </div>
@@ -296,8 +354,8 @@ ul.perm-menu.element-data-nav {
 
 
   <div class="data-cost-add-button" ng-show="(addNewCostForm !== true) && (addExistedCostForm !== true)">
-        <a class="btn btn-small btn-success btn-fill" ng-click="addNewCostForm=true">Add New Cost</a>
-        <a class="btn btn-small btn-success btn-fill" ng-click="addExistedCostForm=true">Assign Cost</a>
+        <a class="btn btn-small btn-success btn-fill" ng-click="addNewCostForm=true">Add New Indicator</a>
+        <a class="btn btn-small btn-success btn-fill" ng-click="addExistedCostForm=true">Assign Indicator</a>
   </div>
 
 </div>
@@ -308,17 +366,17 @@ ul.perm-menu.element-data-nav {
 
 
        <div class="data-file-arr" ng-repeat="fileArr in files">
-       <div class="data-file" ng-repeat="file in fileArr | filter:filesForLaunchElement(element)">
-
-       <div class="data-file-type"><span>Type</span></div>
-       <div class="data-file-title">
-         <a ng-href="{{ file.fileUrl }}">{{ file.file.fileName }}</a>
+         <div class="data-file" ng-repeat="file in fileArr | filter:filesForLaunchElement(element)">
+           <div class="data-file-type"><span>Type</span></div>
+           <div class="data-file-title">
+             <a ng-href="{{ file.fileUrl }}">{{ file.file.fileName }}</a>
+           </div>
+           <a class="btn btn-danger btn-success btn-fill" ng-click="removeFile(file)">Remove</a>
+         </div>
        </div>
-       <a class="btn btn-danger btn-success btn-fill" ng-click="removeFile(file)">Remove</a>
-     </div> </div>
      <div class="data-file-add-button">
        <button ngf-select="uploadFilesForElement($files,element)" class="btn btn-small btn-success btn-fill" multiple
-               accept="image/*">Select Files</button>
+               accept="*">Select Files</button>
      </div>
     </div>
 
@@ -339,6 +397,7 @@ ul.perm-menu.element-data-nav {
 
 
 <div class="process-data" ng-show="processShow">
+<!--
   <h6>Indicators</h6>
 
   <div class="process-data-costs">
@@ -346,7 +405,7 @@ ul.perm-menu.element-data-nav {
       <div class="data-cost-type"><span>Type</span>
         <div class="data-cost-default">Default value</div>
       </div>
-      <div class="data-cost-title">Cost</div>
+      <div class="data-cost-title">Indicator</div>
       <div class="data-cost-value">Value</div>
       <div class="data-cost-controls"><span class="moicon moicon-menu3"></span></div>
 
@@ -359,21 +418,25 @@ ul.perm-menu.element-data-nav {
     </div>
     <div class="data-cost-add-button">
     <a href="#" class="btn btn-small btn-success btn-fill">Add</a></div>
-
-
   </div>
+-->
+
   <div class="process-data-files">
       <h6>Files</h6>
 
   <div class="data-file-arr" ng-repeat="fileArr in files">
    <div class="data-file" ng-repeat="file in fileArr | filter:filesForLaunch">
-     <div class="data-file-title"><a ng-href="{{ file.fileUrl }}">{{ file.file.fileName }}</a></div>
+     <div class="data-file-type"><span>Type</span></div>
+     <div class="data-file-title">
+       <a ng-href="{{ file.fileUrl }}">{{ file.file.fileName }}</a>
+     </div>
      <a class="btn btn-danger btn-success btn-fill" ng-click="removeFile(file)">Remove</a>
+
    </div>
  </div>
    <div class="data-file-add-button">
      <button ngf-select="uploadFiles($files)" class="btn btn-small btn-success btn-fill" multiple
-             accept="image/*">Select Files</button>
+             accept="*">Select Files</button>
    </div>
 
   </div>

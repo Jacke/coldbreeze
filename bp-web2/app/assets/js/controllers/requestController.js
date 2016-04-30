@@ -1185,11 +1185,13 @@ $scope.invoke_res = [];
 $scope.selectedTab = 1;
 
 $scope.fileSelectTab = function(elem) {
+  console.log('fileSelectTab');
   elem.dataSelectTabSelected = false;
   elem.fileSelectTabSelected = true;
   return elem.fileSelectTabSelected;
 }
 $scope.dataSelectTab = function(elem) {
+  console.log('dataSelectTab');
   elem.fileSelectTabSelected = false;
   elem.dataSelectTabSelected = true;
   return elem.dataSelectTabSelected;

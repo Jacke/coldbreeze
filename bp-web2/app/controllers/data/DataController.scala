@@ -505,42 +505,44 @@ def delete_slat(id: String) = SecuredAction { implicit request =>
 
 
 
-def fill_slat(entityId: String, launchId: Int, resourceId: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def fill_slat(entityId: String, launchId: Int, resourceId: Int) = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
     val selected = request.body.validate[Slat]
     selected.fold(
     errors => {
        Logger.error(s"error with $selected")
-      BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toJson(errors)))
+       Future.successful(BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toJson(errors))) )
     },
     slat => {
-    val metaString = List(MetaVal("launchId", s"$launchId"), MetaVal("resourceId", s"$resourceId"))
+    val existedMeta = slat.meta.filter(m => m.key == "elementId")
+    val metaString = List(MetaVal("launchId", s"$launchId"), MetaVal("resourceId", s"$resourceId")) ++ existedMeta
     var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
-          minority.utils.BBoardWrapper().addSlatByEntity(entity_id = entityId,
+    minority.utils.BBoardWrapper().addSlatByEntity(entity_id = entityId,
              slat.copy(title = slat.title.replaceAll("[ \f\t\\v]+$",""), entityId = UUID.fromString(entityId),
-              meta = metaString)) match {
-          case _ => Ok("created")
+              meta = metaString)).map { c =>
+            Ok(c)
         }
 
     })
 
 }
-def refill_slat(entityId: String, launchId: Int, resourceId: Int, slatId: String) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def refill_slat(entityId: String, launchId: Int, resourceId: Int, slatId: String) = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
     val selected = request.body.validate[Slat]
     selected.fold(
     errors => {
        Logger.error(s"error with $selected")
-      BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toJson(errors)))
+       Future.successful(BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toJson(errors))) )
     },
     slat => {
-    val metaString = List(MetaVal("launchId", s"$launchId"), MetaVal("resourceId", s"$resourceId"))
+    val existedMeta = slat.meta.filter(m => m.key == "elementId")
+    val metaString = List(MetaVal("launchId", s"$launchId"), MetaVal("resourceId", s"$resourceId")) ++ existedMeta
     var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
           // updateSlatByEntity(entity_id: String, slat_id: String, slat: Slat)
-          minority.utils.BBoardWrapper().updateSlatByEntity(entity_id = entityId,
+    minority.utils.BBoardWrapper().updateSlatByEntity(entity_id = entityId,
             slat_id = slatId,
              slat.copy(title = slat.title.replaceAll("[ \f\t\\v]+$",""),
                        entityId = UUID.fromString(entityId),
-                       meta = metaString, sval = slat.sval)) match {
-          case _ => Ok("created")
+                       meta = metaString, sval = slat.sval)).map { c =>
+           Ok(c)
         }
 
     })

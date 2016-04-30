@@ -70,7 +70,7 @@ case class WarpData(
                       slats: List[Slat])
 case class DatasContainer(costs: List[SessionElementResourceContainer], warp: WarpData)
 
-case class ElementCosts(inBoard: Board, entity: Entity, value: Option[Slat])
+case class ElementCosts(inBoard: Board, entity: Entity, value: Option[Slat], resource: Option[ResourceDTO])
 case class DatasElementContainer(obj: SessionElementResourceDTO, costs: List[ElementCosts])
 
 case class SessionElementResourceContainer(
@@ -155,12 +155,16 @@ def launch_assigns(launch_id: Int) = SecuredAction { implicit request =>
       val entities_ids = entities.map(o => idGetter(o.id))
       SessionElementResourceContainer(obj, entities, findSlats(entities_ids, launch_id) )
   }
+  val resources = ResourceDAO.findByBusinessId(request.identity.businessFirst)
+
   // Fill by warped datas
   val warpDatas = Await.result(wrapper.getWarpBoardByLaunch(launch_id), Duration(waitSeconds, MILLISECONDS))
   val warpBoards = warpDatas.boards
   val warpEntities = warpDatas.entities
   val warpSlats = warpDatas.slats
-    Ok(Json.toJson(DatasContainer(costs = launch_assigns_cn, WarpData(warpBoards, warpEntities, warpSlats)) ))
+    Ok(Json.toJson(DatasContainer(costs = launch_assigns_cn,
+
+      WarpData(warpBoards, warpEntities, warpSlats)) ))
 
 }
 
@@ -173,6 +177,8 @@ def launch_assigns_for_elements(launch_id: Int) = SecuredAction.async { implicit
   val warpBoards = warpDatas.boards
   val warpEntities = warpDatas.entities
   val warpSlats = warpDatas.slats
+
+  val resources = ResourceDAO.findByBusinessId(request.identity.businessFirst)
 
   println(s"finded assigns ${assigns.length}")
   val launch_assigns_cn = assigns.map { obj =>
@@ -190,8 +196,10 @@ def launch_assigns_for_elements(launch_id: Int) = SecuredAction.async { implicit
 
               idString == entity.boardId
             }
+            println("findResource" + findResource(board.get, entity, resources))
             ElementCosts(
-              board.get, entity, findValue(idGetter(entity.id), launch_id)
+              board.get, entity, findValueForElement(idGetter(entity.id), launch_id, obj.element_id),
+              findResource(board.get, entity, resources)
             )
           }
         )
@@ -365,23 +373,44 @@ private def findEntitiesFromLaunch(launch_id:Int,costs: List[SessionElementResou
   entities.flatten
 }
 private def findSlats(entities_ids: List[String], launchId: Int):List[Slat] = {
-  println("find Slats for costs")
-  entities_ids.foreach(println)
   val ft = wrapper.getSlatByEntitiesIds(entities_ids)
   val result = Await.result(ft, Duration(waitSeconds, MILLISECONDS))
   val finalResult = result.filter(slat => detectMetaLaunch(slat.meta) == launchId)
   println(s"find Slats for costs ${finalResult.length}")
+  finalResult.map(c => println("slat id"+ c.id))
   finalResult
 }
+private def findResource(board:Board, entity: Entity, resources: List[ResourceDTO]):Option[ResourceDTO] = {
+    val resourceID = board.meta.find(meta => meta.key == "resource_id").map(meta => meta.value)
+    resourceID match {
+      case Some(resId) => {
+        resources.find(r => r.id.get == resId.toInt)
+      }
+      case _ => None
+    }
+}
 private def findValue(entity_id:String, launchId: Int):Option[Slat] = {
-  println("find Slats for costs")
   val entities_ids = List(entity_id)
-  entities_ids.foreach(println)
   val ft = wrapper.getSlatByEntitiesIds(entities_ids)
   val result = Await.result(ft, Duration(waitSeconds, MILLISECONDS))
   val finalResult = result.filter(slat => detectMetaLaunch(slat.meta) == launchId)
   println(s"find Slats for costs ${finalResult.length}")
+  finalResult.map(c => println("slat id"+ c.id))
   finalResult.headOption
+}
+private def findValueForElement(entity_id:String, launchId: Int, elementId: Int):Option[Slat] = {
+  val entities_ids = List(entity_id)
+  val ft = wrapper.getSlatByEntitiesIds(entities_ids)
+  val result = Await.result(ft, Duration(waitSeconds, MILLISECONDS))
+  val finalResult = result.filter(slat => detectMetaLaunch(slat.meta) == launchId && detectMetaElement(slat.meta) == elementId)
+  println(s"find Slats for costs ${finalResult.length}")
+  finalResult.map(c => println("slat id"+ c.id))
+  finalResult.headOption
+}
+
+private def detectMetaElement(meta: List[minority.utils.MetaVal]) = meta.find(m => m.key == "elementId") match {
+    case Some(meta) => meta.value.toInt
+    case _ => -1
 }
 private def detectMetaLaunch(meta: List[minority.utils.MetaVal]) = meta.find(m => m.key == "launchId") match {
     case Some(meta) => meta.value.toInt

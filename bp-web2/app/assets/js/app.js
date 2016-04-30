@@ -216,6 +216,18 @@ minorityApp.filter('slice', function() {
   };
 });
 
+minorityApp.filter("toProcessArray", function() {
+   return function(input) {
+       if(!input) return;
+
+       if (input instanceof Array) {
+           return input;
+       }
+
+       return [];
+   };
+});
+
 minorityApp.filter('getExtension', function () {
   return function (url) {
     return url.split('.').pop();

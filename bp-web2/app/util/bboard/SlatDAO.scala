@@ -29,7 +29,7 @@ import akka.util.Timeout
 import com.typesafe.scalalogging.Logger
 import org.slf4j.LoggerFactory
 
-    
+
 
 object SlatDAO {
   import play.api.libs.json.Json
@@ -51,7 +51,7 @@ object SlatDAO {
   implicit val ResourceEntitySelectorReaders = Json.reads[ResourceEntitySelector]
   implicit val SlatSelectorFormat = Json.format[SlatSelector]
   implicit val SlatSelectorReaders = Json.reads[SlatSelector]
-  
+
   val appLogger = Logger(LoggerFactory.getLogger("bboard"))
   def toApplogger(msg: Any, log_type: String = "info") = {
       log_type match {
@@ -71,15 +71,15 @@ object SlatDAO {
           )).slats.headOption
      }.recover{ case c => {
       println(c)
-      empty 
+      empty
       }
       })
         .getOrElse(Future.successful(empty))
-     holder   
-  }  
+     holder
+  }
 
  def getSlatByEntitiesIds(entities_ids: List[String])(connection: BBoardWrapperConnection):Future[List[Slat]] = {
-    val empty:List[Slat] = List() 
+    val empty:List[Slat] = List()
     val data = Json.toJson(SlatSelector(entities_ids))
        val holder = Try(WS.url(s"http://${connection.host}:${connection.port}/api/v1/entities/slats").post(data).map { response =>
        val res = response.json.as[List[Slat]]
@@ -87,15 +87,16 @@ object SlatDAO {
        res
      }.recover{ case c => {
       println(c)
-      empty 
+      empty
       }
       })
         .getOrElse(Future.successful(empty))
-     holder   
-  }    
+     holder
+  }
 
   def addSlatByEntity(entity_id: String, slat: Slat)(connection: BBoardWrapperConnection):Future[String] = {
-     val data = Json.toJson(slat)
+     val slatWithId = slat.copy(id = Some(UUID.randomUUID()) )
+     val data = Json.toJson(slatWithId)
      // find entity, find board id of that entity
      val board_id: String = ""
      val holder = Try(
@@ -105,7 +106,7 @@ object SlatDAO {
         res.toString
         }.recover{ case e => {println("error");println( );println();println();println(e); "false" }})
         .getOrElse(Future.successful("false"))
-      holder  
+      holder
   }
 
 
@@ -125,7 +126,7 @@ object SlatDAO {
         res.toString
         }.recover{ case e => {println("error");println( );println();println();println(e); "false" }})
         .getOrElse(Future.successful("false"))
-      holder  
+      holder
   }
   // /api/v1/slat/:slat_id/fill
   def fillSlat(slat_id: String, sval: String)(connection: BBoardWrapperConnection):Future[String] = {
@@ -140,8 +141,8 @@ object SlatDAO {
         res.toString
         }.recover{ case e => {println("error");println( );println();println();println(e); "false" }})
         .getOrElse(Future.successful("false"))
-      holder  
-  }  
+      holder
+  }
   // /api/v1/slat/:slat_id/refill
   def refillSlat(slat_id: String, sval: String)(connection: BBoardWrapperConnection):Future[String] = {
      val data = Json.toJson(sval)
@@ -155,12 +156,12 @@ object SlatDAO {
         res.toString
         }.recover{ case e => {println("error");println( );println();println();println(e); "false" }})
         .getOrElse(Future.successful("false"))
-      holder  
+      holder
   }
 
 def removeSlatById(slat_id: String)(connection: BBoardWrapperConnection):Future[String] = {
      println("REMOVE SLAT")
-     println(s"slat_id: $slat_id ")    
+     println(s"slat_id: $slat_id ")
      val holder = Try(
       WS.url(s"http://${connection.host}:${connection.port}/api/v1/slat/${slat_id}/remove").post(Map("key" -> Seq("value"))).map { response =>
         val res = response
@@ -170,5 +171,5 @@ def removeSlatById(slat_id: String)(connection: BBoardWrapperConnection):Future[
         .getOrElse(Future.successful("false"))
      holder
   }
-	
+
 }

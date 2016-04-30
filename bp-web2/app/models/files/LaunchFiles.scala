@@ -24,6 +24,10 @@ class LaunchFiles(tag: Tag) extends Table[LaunchFile](tag, "launch_files") {
   def created_at     = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at     = column[Option[org.joda.time.DateTime]]("updated_at")
 
+  def fileFK      = foreignKey("launch_files_file_id_pkey", fileId, models.DAO.FilesDAO.files)(_.id, onDelete = ForeignKeyAction.Cascade)
+
+// launch_files_file_id_pkey
+
   def * = (id.?, fileId, launch, element, created_at, updated_at) <> (LaunchFile.tupled, LaunchFile.unapply _)
 
 //<> (ProcessHistoryDTO.tupled, ProcessHistoryDTO.unapply)

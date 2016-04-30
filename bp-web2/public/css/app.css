@@ -1256,6 +1256,42 @@ span.reaction-icon.minicon.minicon-gear-fill-right {
     margin-left: 0px;
     position: relative;
 }
+.data-board-controller .pipeContentValue {
+    display: inline-block;
+    float: right;
+    margin-right: 9px;
+}
+.launches-bar .data-board-controller .costs .inputCost {
+    width: 173px;
+
+}
+.cost-view-container .costs {
+    height: 127px;
+    overflow-y: scroll;
+    width: 171px;
+    overflow-x: hidden;
+    margin-top: 6px;
+}
+
+.cost-view-container *::-webkit-scrollbar {
+    width: 5px;
+}
+.cost-view-container *::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+.cost-view-container *::-webkit-scrollbar-thumb {
+    background-color: #7076B7;
+}
+.cost-view-container *::-webkit-scrollbar-thumb:hover {
+    background-color: #aaa;
+}
+.new-process-controll label.control-label {
+    margin-top: 0px;
+    padding-top: 0px;
+    font-size: 13px;
+    text-align: left;
+    margin-right: 0px;
+}
 .pipeContent .pipeContentTitle:before {
     width: 6px;
     height: 6px;
@@ -3447,6 +3483,14 @@ h2.tableMinListName {
 
 form.form-new-bpelem {
   text-shadow: none;
+  position: relative;
+}
+.form-new-bpelem a.addElemTab {
+    position: absolute;
+    right: 16px;
+    top: 9px;
+    font-size: 17px;
+    transform: rotate(45deg);
 }
 
 .container_brick .templateButton a.btn.btn-small.btn-primary.container_brick {
@@ -3532,10 +3576,6 @@ form.form-horizontal.element-new-form.form-new-bpelem.form-edit-bpelem.form-new-
 }
 
 
-.process-info .process-control li {
-    padding: 10px 27px 10px 14px;
-    padding-right: 14px;
-}
 
 .process-info.header-frame a {
     text-decoration: none;
@@ -5516,13 +5556,36 @@ display: inline-block;
 }
 
 .element-new-form {
-    width: 45%;
-    margin-top: 15px;
-    background-color: white;
-    padding: 14px 12px 0px 49px;
-    margin: 21px 0px 20px 15px;
-    border-radius: 5px;
+  width: 45%;
+  margin-top: 15px;
+  background-color: white;
+  padding: 14px 12px 0px 49px;
+  margin: 21px 0px 20px 15px;
+  border-radius: 5px;
+  float: right;
+  position: fixed;
+  right: 24px;
+  height: 90%;
+  max-height: 663px;
+  z-index: 4;
+  top: 69px;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
+.element-new-form.primary-element-create-form::-webkit-scrollbar {
+    width: 5px;
+}
+.element-new-form.primary-element-create-form::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+.element-new-form.primary-element-create-form::-webkit-scrollbar-thumb {
+    background-color: #7076B7;
+}
+.element-new-form.primary-element-create-form::-webkit-scrollbar-thumb:hover {
+    background-color: #aaa;
+}
+
+
 .element-new-form h3 {
     font-family: "AvenirNextCyr-Good", "AvenirNextCyr", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
     font-weight: 300;

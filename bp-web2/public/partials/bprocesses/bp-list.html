@@ -6,7 +6,10 @@
   </div>
   <div class="tableMinListFilter search-process-input filterLayer">
     <span class="magnifyGlass vIco vLoupe vLight2State"></span>
-    <input type="text" size="41" ng-model="search.$" data-toggle-class="hidden" class="filterInput tableMinListFilterInput" placeholder="{{ 'SEARCH_PROC' | translate }}">
+    <input type="text" size="41" ng-model="searchValue"
+    data-toggle-class="hidden"
+    class="filterInput tableMinListFilterInput"
+    placeholder="{{ 'SEARCH_PROC' | translate }}">
   </div>
 <style>
 .empty-reponse {
@@ -28,7 +31,7 @@
 </div>
 
   <ul ul id="tablemin" class="tableMinList processList">
-  <div class="process" ng-repeat="bprocess in bprocesses | filter:search">
+  <div class="process" ng-init="bprocesses = [];" ng-repeat="bprocess in bprocesses | toProcessArray | filter:search()">
     <div class="process-status">
     <div class="fastElCreateBtn">
       <a class="fastElFormButton" ng-click="switchFastElementForm(bprocess)" uib-tooltip="Add element" tooltip-side="left">+</a>
@@ -65,7 +68,7 @@
     </li>
     <!-- Fast element form /-->
     </div>
-    <div class="stations"> <!-- ng:show="emptyCheck(process.stations, bprocess.id)">    | filter: { station.paused: true } | slice:2:2 -->
+    <div class="stations">
       <div ng-include src="'assets/partials/bprocesses/launchesBar.html'" class="launches-bar"
            ng-repeat="session in bprocess.sessions[0].sessions | filter: filterForActiveLaunch"></div>
     </div>

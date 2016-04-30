@@ -1,4 +1,10 @@
  <form novalidate="novalidate" ng-init="" ng-submit="createNewElem();" class="form-horizontal form-new-bpelem" ng-class="newBpelem.type_title" id="newFrontElementForm">
+   <a href=""
+     class="addElemTab"
+     ng-show="!inSession"
+     ng-click="bp.newelemformselected ? bp.newelemformselected=false : bp.newelemformselected=true"
+     ng-class="bp.newelemformselected ? 'selected' : ''"><span class="glyphicon glyphicon-plus"></span></a>
+
     <div class="form-group element-form-fields">
     <div class="control-group">
       <h3>Create element</h3>

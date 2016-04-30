@@ -24,11 +24,18 @@
  <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="editProcess()">{{ 'EDIT' | translate }}</a></li>
  <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="perm()">{{ 'PEOPLE' | translate }} </a></li>
  <!--<li><a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" ng-click="modalShare()">{{ 'SHARE' | translate }}</a></li>-->
- <li><a href="" class="addElemTab" ng:show="!inSession" ng:click="$parent.bp.newelemformselected==1 ? $parent.bp.newelemformselected=0 : $parent.bp.newelemformselected=1" ng-class="$parent.bp.newelemformselected==1 ? 'selected' : ''" tooltips tooltip-template="Create element" tooltip-side="left" tooltip="{{bubbleTooltip(session)}}"><span class="glyphicon glyphicon-plus"></span></a></li>
+ <li><a href=""
+   class="addElemTab"
+   ng-show="!inSession"
+   ng-click="bp.newelemformselected ? bp.newelemformselected=false : bp.newelemformselected=true"
+   ng-class="bp.newelemformselected ? 'selected' : ''"
+   tooltips tooltip-template="Create element"
+   tooltip-side="left"
+   tooltip="{{bubbleTooltip(session)}}"><span class="glyphicon glyphicon-plus"></span></a></li>
 </ul>
 </div>
 
-<div ng:show="bp.newelemformselected == 1 && !inSession" class="element-new-form primary-element-create-form fadein fadeout">
+<div ng:show="bp.newelemformselected && !inSession" class="element-new-form primary-element-create-form fadein fadeout">
         <div ng-include src="'assets/partials/bp_elements/element-new.html'"></div>
 </div>
 </div>
@@ -440,22 +447,9 @@
 
 </div>
 
- <!--
-<div class="session-info" ng-show="inSession">
-        <div class="progress">
-          <div class="progress-bar" role="progressbar" aria-valuenow="@{session.percent}" aria-valuemin="0" aria-valuemax="100" style="width: {{ session.percent}}%">
-            <span>{{ session.percent}}%</span>
-          </div>
-        </div>
-        <div class="started_at">
-          Started <abbr class="session__header__created_at" title="{{ session.session.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="session.session.created_at"></abbr>
-        </div>
-        <div class="expand_sessions">
-          <a ng-click="session_bar == 'hiding' ? session_bar='shown' : session_bar='hiding'"><span class="uicon-svg92"></span>Launches</a>
-        </div>
-</div>-->
 
-<div id="proc-sessions" class="proc-sessions" ng-init="inSession ? session_bar='hiding' : session_bar='shown'">
+
+<div id="proc-sessions" class="proc-sessions" ng-hide="bp.newelemformselected" ng-init="inSession ? session_bar='hiding' : session_bar='shown'">
 
 <div class="progress" ng-show="inSession">
     <div class="progress-lines">
@@ -475,6 +469,7 @@
 
 <div class="allSessions"><a href="/a#/launches?process={{ BPid }}">All</a></div>
 </div>
+
 </div>
 
 

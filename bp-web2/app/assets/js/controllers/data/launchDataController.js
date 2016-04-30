@@ -176,9 +176,13 @@ minorityAppServices.factory('DataCostLaunchAssign', ['$resource', function ($res
                 // Stores the token until the user closes the browser window.
                 $scope.files = data;
                 _.forEach($scope.files.files, function(f) {
-                  var fileName = f.fileUrl.split("minority-uploads/")[1].split("+")[0]
-                  var sign = f.fileUrl.split("minority-uploads/")[1].split("+")[1].split("?sig=")[1]
-                  return f.fileUrl = location.origin+"/downloadFile/"+fileName+"/sig="+sign
+                  var fileName = f.fileUrl.split("minority-uploads/")[1].split("+")[0];
+                  if (f.fileUrl.split("minority-uploads/")[1].split("+")[1]) {
+                    var sign = f.fileUrl.split("minority-uploads/")[1].split("+")[1].split("?sig=")[1]
+                    return f.fileUrl = location.origin+"/downloadFile/"+fileName+"/sig="+sign
+                  } else {
+                    return f.fileUrl = "";
+                  }
                 })
                 return data;
             })
@@ -209,14 +213,68 @@ minorityAppServices.factory('DataCostLaunchAssign', ['$resource', function ($res
 
 
 
+      $scope.fillValue = function(cost, newModelValue, obj) {
+        console.log(cost, newModelValue);
+//        POST  /data/launch/:launch_id/values/fill
+          var reqProm = $http.post('/data/launch/'+$scope.$parent.session_id+'/values/fill', {});
+            reqProm.success(function(data){ console.log(data); });
+//        POST  /data/launch/:launch_id/values/refill
 
 
-      $scope.addCostFromBlank = function() {
+            console.log(cost);
+            // entityId: String, launchId: Int, resourceId: Int
+            var resourceId = obj.resource_id;
+            var launchId = $scope.$parent.session_id;
+            var entityId = cost.entity.id;
+            var boardId = cost.entity.boardId;
+            var slat = cost.value;
+
+            var req = {title: cost.entity.title, boardId: boardId, entityId: entityId, meta: [{'key': 'elementId', 'value': obj.element_id.toString() }], sval: newModelValue, publisher: ''};
+            if (cost.value === undefined) {
+              $http.post(jsRoutes.controllers.DataController.fill_slat(entityId, launchId, resourceId).absoluteURL(document.ssl_enabled),
+                                req).then(function (data) {
+                                  console.log(data);
+                                  if ($scope.insideLaunch) {
+                                      $scope.loadData();
+                                  }
+              });
+            } else {
+              $http.post(jsRoutes.controllers.DataController.refill_slat(entityId, launchId, resourceId, slat.id).absoluteURL(document.ssl_enabled),
+                                req).then(function (data) {
+                                  console.log(data);
+                                  if ($scope.insideLaunch) {
+                                      $scope.loadData();
+                                  }
+              });
+            }
 
       }
-      $scope.addCostThatExist = function() {
+
+      $scope.clearCost = function(cost, obj) {
+//        POST  /data/launch/:launch_id/values/clear
+          var reqProm = $http.post('/data/launch/'+$scope.$parent.session_id+'/values/clear', {});
+          reqProm.success(function(data){ console.log(data); });
+          console.log(obj);
+
+          // entityId: String, launchId: Int, resourceId: Int
+          var resourceId = obj.resource_id;
+          var launchId = $scope.$parent.session_id;
+          var entityId = cost.entity.id;
+          var boardId = cost.entity.boardId;
+          var slat = cost.value;
+
+          var req = {title: cost.entity.title, boardId: boardId, entityId: entityId, meta: [{'key': 'elementId', 'value': obj.element_id.toString() }], sval: '', publisher: ''};
+          $http.post(jsRoutes.controllers.DataController.refill_slat(entityId, launchId, resourceId, slat.id).absoluteURL(document.ssl_enabled),
+                            req).then(function (data) {
+                              console.log(data);
+                              if ($scope.insideLaunch) {
+                                  $scope.loadData();
+                              }
+          });
 
       }
+
+
       $scope.editCost = function() {
 
       }
@@ -367,7 +425,6 @@ $scope.byElement = function(element) {
 
 $scope.filesForLaunchElement = function(element) {
   return function(obj) {
-    console.log('obj', obj);
     //console.log('element', element);
     var trueElementId = _.find($scope.launchTopologs,function(t){ return element.id === t.element_id });
 

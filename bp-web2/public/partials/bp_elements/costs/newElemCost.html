@@ -15,12 +15,12 @@
            <span class="input-resource-block-title">Resouce</span>
           <select id="inputResource" ng-init="newBpelem.cost = {};" ng-model="newBpelem.cost.resource"
           ng-init="newBpelem.cost.resource=resources[0];newBpelem.cost.entity=newBpelem.cost.resource.entities[0]"
-          ng-change="newBpelem.cost.entity=newBpelem.cost.resource.entities[0]" 
+          ng-change="newBpelem.cost.entity=newBpelem.cost.resource.entities[0]"
           class="forResource"
           ng-options="res_cn as res_cn.resource.title for res_cn in resources"></select>
       </div>
       <div class="input-entity-block">
-           <span class="input-entity-block-title">Entity</span>
+           <span class="input-entity-block-title">Indicator</span>
           <select id="inputEntity" ng-model="newBpelem.cost.entities" class="forResource"
           ng-options="entity.id as entity.title for entity in newBpelem.cost.resource.entities"></select>
       </div>

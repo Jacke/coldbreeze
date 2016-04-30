@@ -2,7 +2,7 @@
   <h1>{{ 'CREATE_NEW_PROC' | translate }} </h1>
 
   <form novalidate="novalidate" ng-submit="createNewBP();" class="form-horizontal">
-    <div class="control-group form-group">
+    <div class="control-group form-group new-process-controll">
       <label class="control-label col-sm-2" for="inputTitle">{{ 'TITLE' | translate }}</label>
       <div class="controls">
        <div class="col-xs-7">
@@ -10,11 +10,11 @@
        </div>
       </div>
     </div>
-    
+
     <input type="hidden" id="inputBusinessId" ng-model="bprocess.business" ng-init="business == undefined || isNaN(business) ? bprocess.business=0 :bprocess.business=business" placeholder="Business ID"/>
     <input type="hidden" id="inputBusinessId" ng-model="bprocess.state_machine_type" ng-init="bprocess.state_machine_type='base'" placeholder="State machine type" required/>
     <input type="hidden" id="inputBusinessId" ng-model="bprocess.version" ng-init="bprocess.version=1" placeholder="State machine type" required/>
-    <div class="control-group form-group">
+    <div class="control-group form-group new-process-controll">
       <label class="control-label col-sm-2" for="newProcessServiceSelect">{{ 'SERVICE' | translate }}</label>
       <div class="controls">
         <div class="col-xs-7">

@@ -336,12 +336,13 @@ GET      /cards                             @controllers.CardController.index()
 ################
 # Data
 ###
-GET      /data 								@controllers.DataController.index()
-POST     /data/resources					@controllers.DataController.create_resource()
+GET      /data 								              @controllers.DataController.index()
+POST     /data/resources					          @controllers.DataController.create_resource()
 POST     /api/v1/data/resources             @controllers.DataController.api_create_resource()
-PUT      /data/resource/:id					@controllers.DataController.update_resource(id: Int)
-POST     /data/resource/:id/delete     		@controllers.DataController.delete_resource(id: Int)
+PUT      /data/resource/:id					        @controllers.DataController.update_resource(id: Int)
+POST     /data/resource/:id/delete     		  @controllers.DataController.delete_resource(id: Int)
 GET      /data/test                         @controllers.DataController.boardTest()
+
 #################
 # Cost module
 #############
@@ -361,6 +362,11 @@ POST   /data/cost/del_launch_assign/:resource_id      @controllers.CostFillContr
 POST	 /data/cost/del_assign/:resource_id             @controllers.CostFillController.delete_assigned_element(resource_id: Int)
 POST   /data/entity/:entity_id/delete                 @controllers.CostFillController.removeEntityById(entity_id: String)
 
+# Cost values
+
+POST  /data/launch/:launch_id/values/fill    @controllers.CostValuesController.fillLaunchCost(launch_id: Int)
+POST  /data/launch/:launch_id/values/refill  @controllers.CostValuesController.refillLaunchCost(launch_id: Int)
+POST  /data/launch/:launch_id/values/clear   @controllers.CostValuesController.clearLaunchCost(launch_id: Int)
 
 ##### ENTITIES
 GET      /data/:resId/:boardId/entity/new     @controllers.DataController.create_entity_form(resId: Int, boardId: String)

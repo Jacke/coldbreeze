@@ -35,6 +35,22 @@ $scope.changeLanguage = function () {
 };
 $scope.changeLanguage();
 
+$scope.search = function() {
+  return function(obj) {
+    //console.log('obj', obj);
+    //console.log('element', element);
+    if ($scope.searchValue == undefined || $scope.searchValue == "") {
+      return obj
+    } else {
+      if (obj.title.includes($scope.searchValue)) {
+        return obj;
+      } else {
+        return false;
+      }
+    }
+ }
+}
+
 
 $scope.cacheFactory = CacheFactory;
 

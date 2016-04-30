@@ -162,7 +162,7 @@ $scope.fillValue = function(cost, entity, value) {
   var entityId = entity.id;
   var boardId = entity.boardId;
 
-  var req = {title: entity.title, boardId: boardId, entityId: entityId, meta: '', sval: value, publisher: ''};
+  var req = {title: entity.title, boardId: boardId, entityId: entityId, meta: [], sval: value, publisher: ''};
   $http.post(jsRoutes.controllers.DataController.fill_slat(entityId, launchId, resourceId).absoluteURL(document.ssl_enabled),
                     req).then(function (data) {
                       console.log(data);
@@ -184,7 +184,7 @@ $scope.reFillValue = function(cost, entity, slat) {
   var entityId = entity.id;
   var boardId = entity.boardId;
 
-  var req = {title: entity.title, boardId: boardId, entityId: entityId, meta: '', sval: slat.sval, publisher: ''};
+  var req = {title: entity.title, boardId: boardId, entityId: entityId, meta: [], sval: slat.sval, publisher: ''};
   $http.post(jsRoutes.controllers.DataController.refill_slat(entityId, launchId, resourceId, slat.id).absoluteURL(document.ssl_enabled),
                     req).then(function (data) {
                       console.log(data);
