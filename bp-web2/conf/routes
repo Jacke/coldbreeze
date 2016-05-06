@@ -28,11 +28,11 @@ POST        /signUp                          @controllers.SignUpController.signU
 
 
 # Upload
-GET      /files                              @controllers.FileUploadController.allFiles
-GET      /downloadFile/:fileName/:urlParams  @controllers.FileUploadController.downloadFile(fileName: String, urlParams: String)
-GET      /launch_files/:launch_id            @controllers.FileUploadController.allFilesForLaunch(launch_id: Int)
-POST     /upload                             @controllers.FileUploadController.upload()
-POST     /uploadLaunchFile/:launch_id        @controllers.FileUploadController.uploadLaunchFile(launch_id: Int, element_id: Option[Int] ?= None)
+GET      /files                                     @controllers.FileUploadController.allFiles
+GET      /downloadFile/:fileName/:hash/:urlParams   @controllers.FileUploadController.downloadFile(fileName: String, hash: String, urlParams: String)
+GET      /launch_files/:launch_id                   @controllers.FileUploadController.allFilesForLaunch(launch_id: Int)
+POST     /upload                                    @controllers.FileUploadController.upload()
+POST     /uploadLaunchFile/:launch_id               @controllers.FileUploadController.uploadLaunchFile(launch_id: Int, element_id: Option[Int] ?= None)
 POST     /uploadLaunchFile/delete/:launchFileId        @controllers.FileUploadController.deleteLaunchFile(launchFileId: Long)
 
 

@@ -5,60 +5,42 @@
      ng-click="bp.newelemformselected ? bp.newelemformselected=false : bp.newelemformselected=true"
      ng-class="bp.newelemformselected ? 'selected' : ''"><span class="glyphicon glyphicon-plus"></span></a>
 
+
+
+
     <div class="form-group element-form-fields">
     <div class="control-group">
       <h3>Create element</h3>
-    </div>
-    <div class="form-group element-form-fields control-group clearfix">
+
+    <div class="form-new-element-nav" ng-init="newBpelem.showCardElement=false;">
+      <div class="controls">
+        <label class="control-label" for="inputPerm">
+          <a ng-click="setTab(0, newBpelem)">Card</a></label>
+      </div>
       <div class="controls col-xs-2">
-        <label class="control-label col-sm-1" for="inputTitle">Title</label>
+        <label class="control-label col-sm-1" disable-auto-validate="true" for="inputPerm">
+          <a ng-click="setTab(1, newBpelem)">People</a>
+        </label>
       </div>
-      <div class="controls col-xs-6">
-        <input type="text" id="inputTitle" class="form-control newFrontElemFormTitleField" ng-model="newBpelem.title" required/>
-      </div>
-
-    </div>
-    <div class="form-group element-form-fields control-group clearfix">
-      <div class="controls col-xs-2">
-        <label class="control-label col-sm-1" for="inputBusinessId">{{ 'DESC' | translate }}</label>
-      </div>
-      <div class="controls col-xs-6">
-        <textarea type="text" class="form-control newFrontElemFormDescField" id="inputBusinessId" ng-model="newBpelem.desc"/>
+      <div class="controls">
+        <label class="control-label" for="inputPerm">
+          <a ng-click="setTab(2, newBpelem)">Indicators</a></label>
       </div>
     </div>
 
-    <div class="form-group element-form-fields control-group clearfix">
 
-    <div class="controls col-xs-2">
-          <label class="control-label ng-binding" for="inputTitle">Type</label>
     </div>
-      <div class="controls col-xs-6">
-          <span class="selectedRefType">{{ newBpelem.selectedRef.ref.title }}</span>
-            <a ng-click="newBpelem.refSelectHidden=false;" ng-show="newBpelem.refSelectHidden == true;" class="expand-ref-select"><span class="moicon moicon-info expand-ref-select"></span></a>
-      </div>
-    </div><!-- form-group element-form-fields -->
+
+
+    <div ng-show="isSet(0, newBpelem)">
+      <div ng-include src="'assets/partials/bp_elements/new-elem-card.html'"></div>
     </div>
-    <div class="ref-select-container fadein clearfix" ng-hide="newBpelem.refSelectHidden" ng-init="newBpelem.selectedRef != undefined ? newBpelem.refSelectHidden=false : refSelectHidden=true;">
-  <select style="display:none;" name="category" id="categorySelect" ng-model="newBpelem.refCategoryFilter" ng-init="newBpelem.refCategoryFilter = refCategories[0]" ng-options="option for option in refCategories" required="" class="ng-valid ng-valid-required"><option value="0" selected="selected">Base</option></select>
-    <div class="templateButton form-group col-xs-4 clearfix">
-      <div class="ref" ng-repeat="ref in refs | filter: { ref: {category: newBpelem.refCategoryFilter}}" ng-class="{selected: newBpelem.selectedRef.ref.id == ref.ref.id }">
-        <a ng-mouseover="refElem(ref, newBpelem)" ng-click="newBpelem.refSelectHidden=true;" class="btn btn-small btn-primary container_brick newFrontElemFormTypeButton" ng-class="isSelected(ref, newBpelem)">{{ ref.ref.title }}</a>
-      </div>
-    </div>
-    <div class="ref-desc form-group col-xs-8">
-      <h6>{{ newBpelem.selectedRef.ref.title }}</h6>
-      <p>{{ newBpelem.selectedRef.ref.desc }}</p>
-      <ul>
-        <li ng-repeat="state in newBpelem.selectedRef.bpstate"><span>State: {{state.title}}</span></li>
-      </ul>
-    </div>
-    </div><!-- ref-select-container -->
-    <div class="control-group people-control-group">
+
+<div ng-show="isSet(1, newBpelem)">
+  test 1
+      <div class="control-group people-control-group">
       <div class="form-group element-form-fields">
       <div class="form-group control-group clearfix">
-        <div class="controls col-xs-2">
-          <label class="control-label col-sm-1" for="inputPerm"><a ng-click="newBpelem.showPeople ? newBpelem.showPeople=false : newBpelem.showPeople=true">People</a></label>
-        </div>
         <div class="controls col-xs-6" ng-init="newBpelem.perms = [];newBpelem.showPeople=false;" ng-show="newBpelem.showPeople">
           <div class="perms perm-list" ng-repeat="perm in newBpelem.perms" ng-init="perm.account = accFetch(perm)">
             <span class="account-pic" tooltip="{{ perm.account.tooltip }}">
@@ -66,23 +48,29 @@
                 <a ng-click="delPermForForm(perm,newBpelem.perms)" class="btn-delete minicon"></a>
             </span>
           </div>
-          <select id="inputPerm" ng-model="newBpelem.perm" class="forUID" ng-options="employeegroup as credFetch(employeegroup) for employeegroup in employees_groups" multiple></select>
+          <select id="inputPerm" disable-auto-validate="true" ng-model="newBpelem.perm" class="forUID" ng-options="employeegroup as credFetch(employeegroup) for employeegroup in employees_groups" multiple></select>
           <!--<a ng-click="createPermForForm(newBpelem.perm, newBpelem.perms, 'front')" class="btn btn-big btn-success">{{ 'ADD' | translate }}</a>-->
         </div>
       </div>
       </div>
     </div>
-    <div ng-include src="'assets/partials/bp_elements/costs/newElemCost.html'"></div>
+</div>
+
+
+  <div ng-show="isSet(2, newBpelem)">
+      <div ng-include src="'assets/partials/bp_elements/costs/newElemCost.html'"></div>
+  </div>
 
 
 
-    <input type="hidden" name="value" ng-model="newBpelem.business" value="{{ business() }}">
-    <input type="hidden" name="value" ng-model="newBpelem.process" value="{{ BPid }}">
-    <input type="hidden" id="input_b_type" ng-model="newBpelem.b_type"/>
-    <input type="hidden" id="input_type_title" ng-model="newBpelem.type_title"/>
-    <input type="hidden" id="input_space_own" ng-model="newBpelem.space_own"/>
-    <input type="hidden" id="input_order" ng-model="newBpelem.order" value="{{ orderFrontGen(newBpelem) }}"/>
-    <input type="hidden" id="input_ref" ng-model="newBpelem.ref"/>
+
+    <input type="hidden" name="value" disable-auto-validate="true" ng-model="newBpelem.business" value="{{ business() }}">
+    <input type="hidden" name="value" disable-auto-validate="true" ng-model="newBpelem.process" value="{{ BPid }}">
+    <input type="hidden" id="input_b_type" disable-auto-validate="true" ng-model="newBpelem.b_type"/>
+    <input type="hidden" id="input_type_title" disable-auto-validate="true" ng-model="newBpelem.type_title"/>
+    <input type="hidden" id="input_space_own" disable-auto-validate="true" ng-model="newBpelem.space_own"/>
+    <input type="hidden" id="input_order" disable-auto-validate="true" ng-model="newBpelem.order" value="{{ orderFrontGen(newBpelem) }}"/>
+    <input type="hidden" id="input_ref" disable-auto-validate="true" ng-model="newBpelem.ref"/>
 
 <!--
     <formly-form model="newBpelem.middleware" fields="vm.userFields">

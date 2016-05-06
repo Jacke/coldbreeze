@@ -5,7 +5,7 @@ define(['angular', 'app', 'controllers'], function (angular, minorityApp, minori
  * BP Perm
  */
 // INDEX
-minorityControllers.controller('ReflectionCtrl', ['$scope', '$filter', '$rootScope','EmployeesFactory','ProcPermissionsFactory','PermissionsFactory', 'PermissionFactory', 'BProcessesFactory','BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', 
+minorityControllers.controller('ReflectionCtrl', ['$scope', '$filter', '$rootScope','EmployeesFactory','ProcPermissionsFactory','PermissionsFactory', 'PermissionFactory', 'BProcessesFactory','BPElemsFactory','BPSpacesFactory','BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory',
 'RefsFactory',
 'RefFactory',
 'RefElemsFactory',
@@ -15,13 +15,13 @@ minorityControllers.controller('ReflectionCtrl', ['$scope', '$filter', '$rootSco
 'RefSpaceElemsFactory',
 'RefSpaceElemFactory',
 'RefStatesFactory',
-'RefStateFactory', 
+'RefStateFactory',
 'RefSwitchesFactory',
 'RefSwitchFactory',
 'RefReactionsFactory',
 'RefReactionFactory',
 '$location', '$route', '$window',
-  function ($scope, $filter, $rootScope,EmployeesFactory,ProcPermissionsFactory,PermissionsFactory, PermissionFactory, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, 
+  function ($scope, $filter, $rootScope,EmployeesFactory,ProcPermissionsFactory,PermissionsFactory, PermissionFactory, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory,
 RefsFactory,
 RefFactory,
 RefElemsFactory,
@@ -49,46 +49,49 @@ $scope.isManager = function () {
 $scope.isManagerVal = $scope.isManager();
 $scope.isManager();
 
-$scope.reload = function(){ 
-$scope.refs = RefsFactory.query();
-$scope.refs.$promise.then(function(data) {
+$scope.reloadRefs = function(){
+$scope.refsPromise = RefsFactory.query();
+$scope.refsPromise.$promise.then(function(data) {
   console.log(data);
   _.forEach(data.unitelement, function(z) {
     z.states = _.filter(data.bpstate, function(d){ return d.front_elem_id == z.id;});
     z.topo_id = _.find(data.topology, function(d){ return d.front_elem_id == z.id;});
-    z.reactions = _.filter(data.reaction_cn, function(sw) { return sw.reaction.element == z.topo_id }); 
+    z.reactions = _.filter(data.reaction_cn, function(sw) { return sw.reaction.element == z.topo_id });
 
     _.forEach(z.states, function(st){ return st.switches = _.filter(data.unitswitcher, function(sw) { return sw.state_ref == st.id }) });
     if (z.b_type == "brick") {
     	z.spaces = _.filter(data.unitspace, function(s){ return s.brick_front == z.id;});
-        _.forEach(z.spaces, function(sp) { 
-        	    sp.spelems = _.filter(data.unitspaceelement, function(spelem){ 
-        	     return spelem.ref_space_owned == sp.id; 
-        	 }) 
-        }); 
+        _.forEach(z.spaces, function(sp) {
+        	    sp.spelems = _.filter(data.unitspaceelement, function(spelem){
+        	     return spelem.ref_space_owned == sp.id;
+        	 })
+        });
     }
 
   });
   _.forEach(data.unitspaceelement, function(z) {
     z.topo_id = _.find(data.topology, function(d){ return d.space_elem_id == z.id;});
-    z.reactions = _.filter(data.reaction_cn, function(sw) { return sw.reaction.element == z.topo_id }); 
+    z.reactions = _.filter(data.reaction_cn, function(sw) { return sw.reaction.element == z.topo_id });
     z.states = _.filter(data.bpstate, function(d){ return d.space_elem_id == z.id;});
     _.forEach(z.states, function(st){ return st.switches = _.filter(data.unitswitcher, function(sw) { return sw.state_ref == st.id }) });
   });
 
-});
+    return $scope.refs = data;
 
+
+});
 };
-$scope.reload();
+
+$scope.reloadRefs();
 
 
 $scope.type_short = $rootScope.type_short;
-    
-$scope.switcher_options = $rootScope.switcher_conf.switcher_options;    
-$scope.switcher_cmd = $rootScope.switcher_cmd;
-$scope.switcher_target = $rootScope.switcher_target;
+
+//  $scope.switcher_options = $rootScope.switcher_conf.switcher_options;
+//  $scope.switcher_cmd = $rootScope.switcher_cmd;
+//  $scope.switcher_target = $rootScope.switcher_target;
 /*
-TODO: 
+TODO:
 
 RefsFactory
 RefFactory
@@ -164,7 +167,7 @@ $scope.createNewElem = function (obj) {
       $scope.reload();
     });
  $scope.reload();
-}; 
+};
 $scope.updateElem = function (obj){
  console.log(obj);//RefElemFactory
  RefElemFactory.update(obj).$promise.then(function(data) {
@@ -188,14 +191,14 @@ $scope.createSpaceElem = function (obj) {
       $scope.reload();
     });
 
-}; 
+};
 $scope.updateSpaceElem = function (obj){
   console.log(obj);
 RefSpaceElemFactory.update(obj).$promise.then(function(data) {
       $scope.reload();
     });
 }
-	
+
 
 $scope.deleteSpaceElem = function (obj){
   console.log(obj);//RefSpaceElemFactory.delete({id: obj.id})
@@ -220,7 +223,7 @@ $scope.updateState = function (obj) {
 
 };
 $scope.deleteState = function (obj) {
- console.log(obj);//RefStateFactory.delete({id: obj.id})	
+ console.log(obj);//RefStateFactory.delete({id: obj.id})
 RefStateFactory.delete({ id: obj.id }).$promise.then(function(data) {
       $scope.reload();
     });
@@ -279,7 +282,7 @@ $scope.deleteReaction = function (obj) {
 
 
 
-  
+
 
 
   /* Front CUD */
@@ -353,9 +356,30 @@ $scope.deleteReaction = function (obj) {
 
 
 
+$scope.byUnitElement = function(element) {
+  return function(obj) {
+    if (obj.front_elem_id == element.id) {
+      return obj
+    } else {
+      return false;
+    }
 
+  }
+}
 
+$scope.reactionByTopoUnitElement = function(element, refObj) {
+  return function(obj) {
+    var topoId = _.find(refObj.topology, function(topo) {
+      return topo.front_elem_id == element.id
+    });
+    if (topoId != undefined && topoId.id == obj.element) {
+      return obj
+    } else {
+      return false;
+    }
 
+  }
+}
 
 
 

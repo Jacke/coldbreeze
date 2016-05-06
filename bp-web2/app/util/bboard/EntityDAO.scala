@@ -50,7 +50,7 @@ object EntityDAO {
   implicit val ResourceEntitySelectorReaders = Json.reads[ResourceEntitySelector]
   implicit val SlatSelectorFormat = Json.format[SlatSelector]
   implicit val SlatSelectorReaders = Json.reads[SlatSelector]
-  
+
 
  def getEntityByResources(resources: List[ResourceDTO])(connection: BBoardWrapperConnection):Future[List[ResourceEntitySelector]] = {
     val resource_ids = resources.map(_.id.get)
@@ -65,18 +65,18 @@ object EntityDAO {
                           .filter(board => isOnBoardByResource(board, resource_id))
                           .map(b => b.id.get.toString)
           //println("boards_ids")
-          //board_ids.foreach(println)                          
+          //board_ids.foreach(println)
 
           val entities:List[Entity] = ponse.entities.filter(entity => board_ids.contains(entity.boardId.toString))
           ResourceEntitySelector(resource, entities = entities)
         }
      }.recover{ case c => {
       println(c)
-      empty 
+      empty
       }
       })
         .getOrElse(Future.successful(empty))
-     holder   
+     holder
   }
   def getEntityByResource(resource: ResourceDTO)(connection: BBoardWrapperConnection):Future[List[ResourceEntitySelector]] = {
     val resource_ids = List()//resources.map(_.id.get)
@@ -90,19 +90,19 @@ object EntityDAO {
                           .filter(board => isOnBoardByResource(board, resource_id))
                           .map(b => b.id.get.toString)
           //println("boards_ids")
-          //board_ids.foreach(println)                          
+          //board_ids.foreach(println)
 
           val entities:List[Entity] = ponse.entities.filter(entity => board_ids.contains(entity.boardId.toString))
           List(ResourceEntitySelector(resource, entities = entities))
-        
+
      }.recover{ case c => {
       println(c)
-      empty 
+      empty
       }
       })
         .getOrElse(Future.successful(empty))
-     holder   
-  }  
+     holder
+  }
   def getEntityByResourceId(resource_id: Int)(connection: BBoardWrapperConnection):Future[List[Entity]] = {
     val empty = List.empty[Entity]
      val holder = Try(WS.url(s"http://${connection.host}:${connection.port}/api/v1/board").get().map { response =>
@@ -113,17 +113,17 @@ object EntityDAO {
                           .filter(board => isOnBoardByResource(board, resource_id))
                           .map(b => b.id.get.toString)
           //println("boards_ids")
-          //board_ids.foreach(println)                          
+          //board_ids.foreach(println)
           val entities:List[Entity] = ponse.entities.filter(entity => board_ids.contains(entity.boardId.toString))
           entities
      }.recover{ case c => {
       println(c)
-      empty 
+      empty
       }
       })
         .getOrElse(Future.successful(empty))
-     holder   
-  }  
+     holder
+  }
 
 
 
@@ -139,11 +139,11 @@ object EntityDAO {
         res //.copy(boards =          res.boards.filter(b => b.onBusiness(biz)))
      }.recover{ case c => {
       println(c)
-      empty 
+      empty
       }
       })
         .getOrElse(Future.successful(empty))
-     holder   
+     holder
   }
 
   def getEntityById(entity_id: String)(connection: BBoardWrapperConnection):Future[Option[Entity]] = {
@@ -156,11 +156,11 @@ object EntityDAO {
           )).entities.headOption
      }.recover{ case c => {
       println(c)
-      empty 
+      empty
       }
       })
         .getOrElse(Future.successful(empty))
-     holder   
+     holder
   }
 
    def addEntityByResource(resource_id: Int, entity: Entity)(connection: BBoardWrapperConnection):Future[String] = {
@@ -173,10 +173,10 @@ object EntityDAO {
       WS.url(s"http://${connection.host}:${connection.port}/api/v1/board/${boardId}/entities/create").post(data).map { response =>
         val res = response.json
         println(res)
-        res.toString
+        response.toString
         }.recover{ case e => {println("error");println( );println();println();println(e); "false" }})
         .getOrElse(Future.successful("false"))
-      holder  
+      holder
   }
 
 
@@ -193,7 +193,7 @@ object EntityDAO {
         res.toString
         }.recover{ case e => {println("error");println( );println();println();println(e); "false" }})
         .getOrElse(Future.successful("false"))
-      holder  
+      holder
   }
 
 
@@ -219,18 +219,18 @@ object EntityDAO {
         }.recover{ case _ => "" })
         .getOrElse(Future.successful("false"))
      holder
-  }  
+  }
 
 
 
 
   private def isOnBoardByResources(board: Board, resource_ids: List[Int]):Boolean = {
-    board.meta.find(m => m.key == "resource_id" && resource_ids.map(_.toString).contains(m.value)).isDefined 
+    board.meta.find(m => m.key == "resource_id" && resource_ids.map(_.toString).contains(m.value)).isDefined
   }
 
   private def isOnBoardByResource(board: Board, resource_id: Int):Boolean = {
-    board.meta.find(m => m.key == "resource_id" && m.value == resource_id.toString).isDefined 
-  }  
+    board.meta.find(m => m.key == "resource_id" && m.value == resource_id.toString).isDefined
+  }
 
 
 

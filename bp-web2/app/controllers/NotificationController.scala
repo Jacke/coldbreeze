@@ -62,6 +62,10 @@ class NotificationController @Inject() (
     implicit val sumResultFrameFormatter      = FrameFormatter.jsonFrame[SumActor.SumResult]
     implicit val HistMessageFormat            = Json.format[HistMessage]
     implicit val HistMessageFrameFormatter    = FrameFormatter.jsonFrame[HistMessage]
+
+    implicit val ResourceUpdateFormat =  Json.format[ResourceUpdate]
+    implicit val ResourceUpdateFrameFormatter =  FrameFormatter.jsonFrame[ResourceUpdate]
+
     implicit val LaunchLockFormat            = Json.format[LaunchLock]
     implicit val LaunchLockFrameFormatter    = FrameFormatter.jsonFrame[LaunchLock]
     implicit val PopupRequestFormat           = Json.format[PopupRequest]
@@ -311,6 +315,12 @@ class UserActor(uid: String, board: ActorRef, out: ActorRef) extends Actor with 
       play.api.Logger.info(s"Process history update + $target")
       if (targetEmails.contains(email)) { out ! js }
     }
+    case ResourceUpdate(email, target, targetEmails) => {
+      val js = Json.obj("type" -> "resourceUpdate")
+      play.api.Logger.info(s"Process resource update")
+      if (targetEmails.contains(email)) { out ! js }
+    }
+
     case js: JsValue =>
       (js \ "msg").validate[String] map { Utility.escape(_) } foreach { board ! Message(uid, _ ) }
     case other =>
@@ -347,6 +357,24 @@ object UserActor {
     }
     BoardActor() ! LaunchLock(email, lockDef, launchId, targetEmails )
    }
+
+  def updateResource(target: String, email: String, isLock:Boolean=false) = {
+     val targetEmails:List[String] = EmployeesBusinessDAO.getByUID(email) match {
+       case Some(origin_biz) => { EmployeesBusinessDAO.getByBusiness(origin_biz._2).map(emp_biz =>
+                                     EmployeeDAO.get(emp_biz._1)).flatten.map(emp => emp.uid)
+                                }
+       case _ => List()
+     }
+     var lockDef = "unlock"
+     if (isLock) {
+         lockDef = "lock"
+     } else {
+       lockDef = "unlock"
+     }
+     BoardActor() ! ResourceUpdate(email, lockDef, targetEmails )
+  }
+
+
 }
 
 
@@ -373,6 +401,8 @@ class BoardActor extends Actor with ActorLogging {
       users foreach { _ ! hm }
     case launchEv: LaunchLock =>
       users foreach { _ ! launchEv }
+    case resUpdate: ResourceUpdate =>
+      users foreach { _ ! resUpdate }
     case Subscribe =>
       users += sender
       context watch sender
@@ -391,6 +421,8 @@ object BoardActor {
 
 case class HistMessage(email: String, target: String, targetEmails: List[String])
 case class LaunchLock(email: String, target: String, launchId:Int, targetEmails: List[String])
+case class ResourceUpdate(email: String, target: String, targetEmails: List[String])
+
 case class Message(uuid: String, s: String)
 case class PopupMessage(target: String, email: String = "")
 case class PopupRequest(target: String)

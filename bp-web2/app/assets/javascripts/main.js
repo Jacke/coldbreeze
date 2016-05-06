@@ -68,6 +68,14 @@
        deps: ['angular'],
        exports: 'toastr'
       },
+      'angularToasty': {
+       deps: ['angular'],
+       exports: 'angularToasty'
+      },
+      'angularAudio': {
+       deps: ['angular'],
+       exports: 'angularAudio'
+      },
 //
 //      'toastr-tpl': {
 //      deps: ['angular'],
@@ -390,6 +398,8 @@
 
   'angular-websocket': '../bower_components/angular-websocket/angular-websocket',
   'toastr': '../bower_components/angular-toastr/toastr',
+  'angularToasty': '../bower_components/angular-toasty/dist/angular-toasty',
+  'angularAudio': '../bower_components/angular-audio/app/angular.audio',
   //'toastr-tpl': '../bower_components/angular-toastr/toastr.tpl',
   'angular-pageslide-directive': '../bower_components/angular-pageslide-directive/src/angular-pageslide-directive',
   'jcs-auto-validate': '../bower_components/angular-auto-validate/dist/jcs-auto-validate.min',

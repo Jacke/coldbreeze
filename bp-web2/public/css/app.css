@@ -158,7 +158,7 @@ a#modalDataBoardButton {
     position: absolute;
     left: 46%;
     font-size: 20px;
-    top: 82px;
+    top: 65px;
     width: 19px;
     cursor: pointer;
 }
@@ -433,7 +433,7 @@ body.themeDark.themeGrad.dataPage {
 
 ul.perm-menu li {
   display: inline-block;
-  margin-right: 10px;
+  margin-right: 12px;
   margin-left: 10px;
 }
 
@@ -805,6 +805,342 @@ i.uicon-svg142 {
     font-family: "AvenirNextCyr-Good", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
     margin-bottom: 14px;
 }
+/****************
+  Ref page
+********************/
+.ref-page a.btn.btn-small.btn-primary {
+    color: white;
+    margin-left: 13px;
+    border-radius: 3px;
+}
+
+.ref-page .ref-card p.ref-card-header-desc {
+    width: 391px;
+    margin-top: 8px;
+}
+
+.ref-page .ref-card-header span.ref-card-header-host {
+    font-size: 12px;
+    float: right;
+    margin-right: 20px;
+    color: #607D8B;
+}
+
+.ref-page .ref-card .ref-card-controls a {
+    /* display: inline-block; */
+    border: none;
+    display: -webkit-inline-box;
+    display: -webkit-inline-flex;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    height: 2.75rem;
+    padding: 0 1.4rem;
+    outline: none;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 3px;
+    text-decoration: none;
+    cursor: pointer;
+    white-space: nowrap;
+    font-size: 0.8em;
+    font-weight: 700;
+    line-height: 1;
+    vertical-align: bottom;
+    font-family: 'Open Sans';
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-transition: background-color linear .1s,color linear .1s,border-color linear .1s,box-shadow linear .1s;
+    transition: background-color linear .1s,color linear .1s,border-color linear .1s,box-shadow linear .1s;
+}
+
+.ref-page .ref-card .ref-card-controls {
+    float: right;
+    height: 44px;
+    display: inline-block;
+    margin-right: 13px;
+    clear: both;
+}
+
+.ref-page .ref-card .ref-card-info {
+    display: inline-block;
+    margin-bottom: 26px;
+    margin-right: 18px;
+    float: right;
+}
+.ref-page .ref-list-page .ref-card .ref-card-header {
+    display: inline-block;
+}
+.ref-page .ref-list-page.header-frame {
+  margin-left: 12px;
+  padding: 15px 23px 0px 10px;
+  margin-right: 0px;
+  padding-bottom: 17px;
+  margin-right: 16px;
+  border-bottom: solid 1px #D8E3E8;
+  padding-right: 0px;
+  margin-bottom: 20px;
+  box-shadow: none;
+  border: none;
+}
+
+.ref-page .ref-card-info span.ref-card-header-host {
+    font-size: 11px;
+    display: block;
+    margin-right: 20px;
+    width: 100%;
+    color: #85A7B7;
+    margin-top: 0px;
+    text-align: right;
+    margin-left: 1px;
+}
+
+.ref-page .ref-card-info span.ref-card-info-category {
+    float: right;
+}
+
+.ref-page .ref-card-info span.ref-card-info-hidden.moicon-eye.moicon.shown {
+  color: #9E9E9E;
+  text-align: right;
+  margin-left: 22px;
+  margin-right: 10px;
+}
+.ref-page .ref-elements .ref-element span.ref-element-desc {
+    clear: both;
+    overflow: hidden;
+    display: block;
+    margin-left: 30px;
+    margin-bottom: 15px;
+    font-size: 12px;
+    margin-top: -3px;
+}
+
+.ref-page .ref-card .ref-card-controls a:hover {
+    background-color: #797b80;
+    color: #fff;
+}
+.ref-page .ref-element {
+    padding-bottom: 18px;
+}
+.ref-page .tab-content.ref-element {
+    margin-top: 13px;
+    border-radius: 4px;
+    border: solid 1px #EFEFEF;
+    overflow: hidden;
+}
+
+.ref-page .ref-elements .ref-element-header {
+    display: inline-block;
+    float: left;
+    width: 45%;
+}
+
+.ref-page span.ref-card-info-hidden.hidden {
+    display: none;
+}
+.ref-page .ref-element-actions {
+    width: 100%;
+    background: #263238;
+    padding: 7px;
+    color: white;
+    clear: both;
+    display: block;
+}
+
+.ref-page .ref-element-actions .ref-action {
+    background: #37474f;
+    padding: 3px 22px 11px 20px;
+}
+
+.ref-page .ref-element-actions .ref-action h5.ref-action-title {
+    font-size: 22px;
+    display: inline-block;
+}
+
+.ref-page .ref-element-actions .ref-action .ref-action-pipes {
+    display: inline-block;
+    float: right;
+    width: 15%;
+    margin-top: 6px;
+}
+
+.ref-page .ref-element-actions .ref-action .ref-action-pipes .ref-action-inputs {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.ref-page .ref-element-actions .ref-action .ref-action-pipes .ref-action-bases {
+    display: inline-block;
+    margin-right: 14px;
+}
+
+.ref-page .ref-element-actions .ref-action .ref-action-pipes .ref-action-outputs {
+    display: inline-block;
+    margin-right: 0px;
+}
+.ref-page .ref-element-actions .ref-action .ref-action-middleware {
+    text-align: center;
+    display: block;
+    margin: 5px auto;
+    padding: 20px 11px;
+    font-size: 17px;
+    font-weight: 900;
+    font-family: 'Whitney';
+    text-shadow: none;
+    background: #546e7a;
+    margin-top: 14px;
+}
+
+.ref-page .ref-element-actions .ref-action .ref-action-depth .ref-action-strategies .ref-action-strategy-selector {
+    float: right;
+    width: 21px;
+    display: inline-block;
+    text-align: center;
+    padding-top: 8px;
+    background: #b0bec5;
+    position: relative;
+    padding-bottom: 10px;
+    clear: both;
+}
+
+.ref-page .ref-element-actions .ref-action .ref-action-depth .ref-action-strategies .ref-action-strategy-selector span.strategy-select {
+    background: white;
+    border-radius: 115px;
+    height: 8px;
+    display: block;
+    width: 8px;
+    cursor: pointer;
+    text-indent: -9999px;
+    margin-left: 7px;
+    margin-bottom: 7px;
+}
+.ref-page .ref-element-actions .ref-action .ref-action-depth .ref-action-strategies .ref-action-strategy-selector span.strategy-select.strategy-to-select {
+    background: #263238;
+}
+.ref-page .ref-action-strategies .ref-action-strategy {
+    width: 98%;
+    background: #78909c;
+    padding: 2px 0px 15px 23px;
+    display: inline-block;
+    float: left;
+}
+
+.ref-page .ref-action-strategies .ref-action-strategy h5.strategy-title {
+    font-size: 19px;
+    font-family: 'Whitney';
+    text-shadow: none;
+}
+
+.ref-page .ref-element span.ref-element-title {
+    margin-left: 30px;
+    margin-top: 14px;
+    font-size: 18px;
+    display: block;
+    margin-bottom: 16px;
+    display: inline-block;
+}
+
+.ref-page .ref-element {
+    background: white;
+}
+
+.ref-page .ref-element .ref-element-states {
+    display: inline-block;
+    float: right;
+    margin-right: 25px;
+    width: 50%;
+}
+.ref-page .ref-element .ref-element-state {
+    border-bottom: solid 1px #CECECE;
+    margin-bottom: 15px;
+    width: 12%;
+    float: right;
+    display: inline-block;
+    margin-right: 9px;
+}
+
+.ref-page .ref-element .ref-element-states ul.ref-element-state-transitions {
+    list-style: none;
+    font-size: 11px;
+    text-shadow: none;
+    font-family: 'Open Sans';
+    font-weight: 900;
+    color: #929292;
+    text-align: center;
+    width: 100%;
+    margin-left: 0px;
+    padding-left: 0px;
+}
+
+.ref-page .ref-action-strategies .ref-action-strategy-pipes {
+    display: flex;
+    justify-content: space-between;
+    padding-right: 16px;
+}
+.ref-page .ref-action-strategies {
+    clear: both;
+    overflow: hidden;
+}
+
+
+.ref-page .ref-element-state li.finish-state {
+    color: #8BC34A;
+}
+
+.ref-page .ref-element-state li.oposite-state {
+    color: #E91E63;
+}
+
+.ref-page .ref-element-state li.middle-state {
+    color: #FFC107;
+}
+
+
+
+.ref-list-page .ref-card {
+    overflow: visible;
+    clear: both;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .element-new-form btn.btn-big.btn-success {
     display: inline-block;
 }
@@ -942,13 +1278,184 @@ span.selectedRefType {
     font-family: "AvenirNextCyr-Good", "AvenirNextCyr", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
 }
 
-.ref-desc.form-group {
-    height: 165px;
-}
 .element-new-form input#inputTitle, .element-new-form textarea#inputBusinessId {
     box-shadow: none;
     border-radius: 4px;
 }
+.element-new-form .ref-select-container {
+    clear: both;
+    display: block;
+}
+
+.element-new-form .templateButton.form-group {
+    display: inline-block;
+    float: left;
+}
+
+.element-new-form .ref-desc.form-group {
+    display: inline-block;
+    float: left;
+}
+
+
+
+
+.element-new-form .new-elem-ref-actions-selects {}
+
+.element-new-form .new-elem-ref-actions-select {
+    background: #37474f;
+    color: white;
+    padding: 8px 0px 8px 14px;
+    overflow: hidden;
+}
+
+.element-new-form .new-elem-ref-actions-select__action-title {
+    display: inline-block;
+    font-size: 20px;
+}
+
+
+
+.element-new-form .new-elem-ref-actions-select__header {
+    display: inline-block;
+    float: left;
+}
+
+.element-new-form .new-elem-ref-actions-select__action-pipes {
+    display: inline-block;
+    float: right;
+    width: 41%;
+    margin-top: 5px;
+}
+
+.element-new-form .new-elem-ref-actions-select__action-pipes > * {
+    display: inline-block;
+    margin-right: 7px;
+}
+
+.element-new-form .new-elem-action__action-bases {
+    clear: both;
+    margin-top: 60px;
+    display: block;
+    margin-bottom: 16px;
+}
+.element-new-form .new-elem-action__action-bases .form-group.new-elem-action__action-base__action-base-form__field {
+    width: 40%;
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+.element-new-form .new-elem-action__action-bases .form-group.new-elem-action__action-base__action-base-form__field input,  
+ {
+    background: #b0bec5 !important;
+    border-radius: 2px;
+    box-shadow: none;
+    border: none;
+    background-color: #b0bec5 !important;
+}
+
+
+.element-new-form .form-group.new-elem-action__action-base__action-base-form__field select, .element-new-form .form-group.new-elem-action__action-base__action-base-form__field textarea {
+    background: #b0bec5 !important;
+    border-radius: 2px;
+    box-shadow: none;
+    border: none;
+    background-color: #b0bec5 !important;
+}
+.element-new-form .form-group.new-elem-action__action-base__action-base-form__field select {
+    padding: 4px 15px;
+    color: black;
+    font-size:12px;
+}
+
+.element-new-form .new-elem-ref-actions-selected {
+    margin-left: -50px;
+    padding-left: 0px;
+}
+
+.element-new-form .new-elem-ref-actions-selected .new-elem-ref-actions-select {
+    padding-left: 30px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1725,11 +2232,17 @@ div#proc-sessions.hiding {
 .elements-list .control-group.form-submit.form-group {
     margin-left: 15px;
 }
+
 .element-new-form .control-group.form-submit.form-group {
     margin-left: 0px;
     margin-right: -32px;
     padding-top: 23px;
 }
+.element-new-form .control-group.form-submit.form-group .controls {
+    display: flex;
+    justify-content: space-around;
+}
+
 select#categorySelect {
     margin-bottom: 15px;
     margin-top: 10px;
@@ -3611,9 +4124,67 @@ abbr[title], abbr[data-original-title] {
     clear: both;
     margin: 18px 0px 25px 13px;
     border-radius: 5px;
+    border: solid 1px rgb(224, 237, 255);
 }
 
 
+/****
+new process form container
+*/
+.new-process-form-container select#newProcessServiceSelect,
+.new-process-form-container input#inputTitle {
+    width: 59%;
+    margin-left: 19%;
+}
+
+.new-process-form-container label.control-label.col-sm-2 {
+    font-size: 12px;
+    padding-top: 0px;
+    text-align: left;
+}
+
+
+.new-process-form-container form.form-horizontal {
+    width: 75%;
+    margin: 0 auto;
+    margin-top: 25px;
+}
+
+.new-process-form-container button#newProcessCreateBtn {
+    margin-left: 25%;
+    width: 50%;
+}
+.new-process-form-container select#newProcessServiceSelect {
+    padding-left: 5px;
+}
+
+
+.form-group.new-element-form-field-title.element-form-fields.control-group.clearfix input#inputTitle {
+    width: 50%;
+    margin-left: 6%;
+}
+
+.new-element-form-field-title label.control-label {
+    margin-left: 0px;
+    display: inline-block;
+    float: left;
+    width: 47px;
+    margin-right: 42px;
+}
+
+.form-new-bpelem textarea#inputBusinessId {
+    width: 50%;
+}
+
+.form-new-bpelem label.primary-label.control-label {
+    padding-right: 0px;
+    margin-right: 60px;
+    width: 60px;
+    text-align: left;
+    margin-left: 14px;
+}
+
+/*** */
 .progress-lines span.line {
     -webkit-box-flex: 1;
     -webkit-flex: 1;
@@ -5094,6 +5665,8 @@ font-weight:400;
 
 select#inputEntity, select#inputResource {
     width: 122px;
+    margin-top: -6px;
+    margin-bottom: 12px;
 }
 
 .app.container {
@@ -5169,6 +5742,79 @@ ul.process-control li:hover a {
     background-color: #DDDDDD;
     color: black;
 }
+.process-control span.minicon {
+    margin-right: 10px;
+    font-size: 15px;
+    color: black;
+    font-weight: 100;
+    position: absolute;
+    left: 9px;
+    top: 11px;
+}
+.launches-nav {
+    position: relative;
+}
+
+span.data-board-count.data-board-files-count {
+    left: 1px;
+    top: 3px;
+    position: absolute;
+}
+
+span.data-board-count.data-board-costs-count {
+    position: absolute;
+    right: -5px;
+    top: 4px;
+}
+
+.launches-nav a {
+    top: 2px;
+}
+
+span.data-board-count {
+    background: #B7194F;
+    /* padding: 1px 6px 1px 4px; */
+    border-radius: 26px;
+    font-size: 11px;
+    text-align: center;
+    width: 19px;
+    font-weight: 700;
+    height: 18px;
+    line-height: 16px;
+    font-family: 'Open Sans';
+    color: white;
+}
+
+
+
+li.element-data-nav-controll-field {
+    position: relative;
+}
+
+li.element-data-nav-controll-field span.data-board-count.data-board-files-count {
+    left: 66px !important;
+    position: absolute;
+    top: 4px;
+}
+
+li.element-data-nav-controll-field span.data-board-count.data-board-costs-count {
+    right: -27px;
+}
+
+li.element-data-nav-controll-field {
+    margin-right: 14px;
+}
+
+
+
+.process-control a.tableMinControlsLink.ajaxLink.tableMinLinkPeople {
+    position: relative;
+    padding-left: 32px;
+    font-size:13px;
+    font-weight: 700;
+    font-family: 'Open Sans';
+}
+
 
 .process-info.header-frame li:last-child a {
     border-right: none;
@@ -5570,6 +6216,7 @@ display: inline-block;
   z-index: 4;
   top: 69px;
   overflow-y: scroll;
+  box-shadow: #ECECEC 0px 4px 12px;
   overflow-x: hidden;
 }
 .element-new-form.primary-element-create-form::-webkit-scrollbar {
@@ -5622,6 +6269,14 @@ display: inline-block;
     border-radius: 0px;
     font-family: "AvenirNextCyr-Good", "AvenirNextCyr", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
 }
+
+.element-new-form button#createFrontElementFormButton {
+    width: 50%;
+    margin-right: 3px;
+    margin-bottom: 0px;
+    margin-top: 20px;
+}
+
 .btTxt:hover {
     cursor: pointer;
     background: #fff;
@@ -5853,12 +6508,16 @@ tooltip {
     display: block;
     opacity: 1;
     z-index: 999; }
-tooltip tip-tip {
-    font-size: 14px;
-    font-weight: 400;
-    font-family: Open Sans;
-    text-align: center;
-}
+    tooltip tip-tip {
+        font-size: 13px;
+        font-weight: 400;
+        font-family: Whitney;
+        text-align: center;
+        line-height: 1;
+        display: block;
+        text-shadow: none;
+  }
+
     tooltip tip-tip._large {
       font-size: 1.1em; }
     tooltip tip-tip._small {

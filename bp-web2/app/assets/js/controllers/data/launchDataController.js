@@ -122,6 +122,9 @@ minorityAppServices.factory('DataCostLaunchAssign', ['$resource', function ($res
       }
 
 
+      $scope.$on('resourceUpdate', function(event, session_id) {
+        $scope.loadData();
+      });
 
 
       $scope.uploadFiles = function (files) {
@@ -176,10 +179,12 @@ minorityAppServices.factory('DataCostLaunchAssign', ['$resource', function ($res
                 // Stores the token until the user closes the browser window.
                 $scope.files = data;
                 _.forEach($scope.files.files, function(f) {
+                  console.log('f are', f);
                   var fileName = f.fileUrl.split("minority-uploads/")[1].split("+")[0];
+                  var hash = f.fileUrl.split("minority-uploads/")[1].split("+")[1].split("?")[0];
                   if (f.fileUrl.split("minority-uploads/")[1].split("+")[1]) {
                     var sign = f.fileUrl.split("minority-uploads/")[1].split("+")[1].split("?sig=")[1]
-                    return f.fileUrl = location.origin+"/downloadFile/"+fileName+"/sig="+sign
+                    return f.fileUrl = location.origin+"/downloadFile/"+fileName+"/"+hash+"/sig="+sign
                   } else {
                     return f.fileUrl = "";
                   }

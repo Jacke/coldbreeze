@@ -300,7 +300,10 @@ def create_resource() = SecuredAction { implicit request =>
           val resource_id = ResourceDAO.pull_object(entity.copy(business = business))
           val future = createDefaultBoardsForRes(entity.copy(business = business, id = Some(resource_id)))
           Await.result(future, Duration(waitSeconds, MILLISECONDS)) match {
-            case _ => Home
+            case _ => {
+              controllers.UserActor.updateResource(target="lock", email=request.identity.emailFilled, isLock=true)
+              Home
+            }
           }
       })
     }
@@ -334,13 +337,17 @@ def api_create_resource() = SecuredAction(BodyParsers.parse.json) { implicit req
                val boardId = parsedMessage \ "message"
                if (boardId.toString.length > 10) { // valid id
 
-                val future = minority.utils.BBoardWrapper()
-                      .addEntityByResource(resource_id = resource_id,
-                                           entity.attribute.copy(boardId = UUID.fromString(boardId.toString)))
+                //val future = minority.utils.BBoardWrapper()
+                //      .addEntityByResource(resource_id = resource_id,
+                //                           entity.attribute.copy(boardId = UUID.fromString(boardId.toString)))
 
-                Await.result(future, Duration(waitSeconds, MILLISECONDS)) match {
-                  case _ => Home
-                }
+                //Await.result(future, Duration(waitSeconds, MILLISECONDS)) match {
+                //  case _ => {
+                    controllers.UserActor.updateResource(target="lock", email=request.identity.emailFilled, isLock=true)
+
+                    Home
+                //  }
+                //}
                } else {
                   Ok(message)
                }
@@ -378,6 +385,8 @@ def delete_resource(id: Int) = SecuredAction { implicit request =>
     case Some(res) => {
       if (request.identity.businessFirst == res.business) {
         ResourceDAO.delete(res.id.get)
+        controllers.UserActor.updateResource(target="lock", email=request.identity.emailFilled, isLock=true)
+
       }
       Home
     }
@@ -407,7 +416,10 @@ def create_entity(boardId: String) = SecuredAction { implicit request =>
                                      entity.copy(boardId = UUID.fromString(boardId)))
 
           Await.result(future, Duration(waitSeconds, MILLISECONDS)) match {
-            case _ => Home
+            case _ => {
+              controllers.UserActor.updateResource(target="lock", email=request.identity.emailFilled, isLock=true)
+              Home
+            }
           }
       })
 }
@@ -437,7 +449,10 @@ def update_entity(id: String) = SecuredAction { implicit request =>
 def delete_entity(id: String) = SecuredAction { implicit request =>
   	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
     Await.result(minority.utils.BBoardWrapper().removeEntityByBoard("", entity_id = id), Duration(waitSeconds, MILLISECONDS)) match {
-      case _ => Home
+      case _ => {
+        controllers.UserActor.updateResource(target="lock", email=request.identity.emailFilled, isLock=true)
+        Home
+      }
     }
 }
 /**

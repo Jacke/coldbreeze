@@ -185,6 +185,7 @@ var minorityApp =
       'angular-progress-arc',
       'classy',
       //'angular-filepicker',
+      'ngAudio',
       'jlareau.pnotify',
       'yaru22.hovercard',
       '720kb.tooltips',
@@ -198,6 +199,7 @@ var minorityApp =
       'ngFileUpload',
       'ngWebSocket',
       'angular-underscore',
+      'angular-toasty',
       'ui.bootstrap',
       'ui.select',
       'ng-slide-down',
@@ -234,6 +236,13 @@ minorityApp.filter('getExtension', function () {
   };
 })
 
+minorityApp.config(['toastyConfigProvider', function(toastyConfigProvider) {
+    toastyConfigProvider.setConfig({
+        sound: true,
+        shake: false
+    });
+}]);
+
 minorityApp.factory(
   'popupFactory', ['$resource', 'ngDialog',
   function($resource, ngDialog) {
@@ -264,7 +273,8 @@ minorityApp.factory(
 
   }]);
 
-minorityApp.factory('NotificationBroadcaster', ['$rootScope','$websocket', '$window', 'toastr', 'popupFactory', function($rootScope,$websocket, $window, toastr, popupFactory) {
+minorityApp.factory('NotificationBroadcaster', ['$rootScope','$websocket', '$window', 'toastr','toasty','ngAudio', 'popupFactory',
+function($rootScope,$websocket, $window, toastr,toasty, ngAudio, popupFactory) {
       // Open a WebSocket connection
       var baseUrl = $window.location.host;
       if (document.ssl_enabled) {
@@ -290,6 +300,15 @@ minorityApp.factory('NotificationBroadcaster', ['$rootScope','$websocket', '$win
                       $window.sessionStorage.removeItem(key);
                     }
                   }
+                } else {
+                  console.log('object', object);
+                  var sound = ngAudio.load("/assets/audio/notification.mp3");
+                  sound.play();
+
+                  toasty.success({
+                    title: message.type,
+                    msg: object.msg
+                  })
                 }
                 //toastr.success(message.type, object.msg);
             }
@@ -297,6 +316,12 @@ minorityApp.factory('NotificationBroadcaster', ['$rootScope','$websocket', '$win
             if (object.type == "launchLocker") {
                $rootScope.$broadcast('launchLocker', {launchId: object.launchId, lockState: object.state });
             }
+            // laucnh locker
+            if (object.type == "resourceUpdate") {
+               console.log('resource update', object);
+               $rootScope.$broadcast('resourceUpdate', { });
+            }
+
             if (object.type == "popup") {
               popupFactory.pop(object);
             }

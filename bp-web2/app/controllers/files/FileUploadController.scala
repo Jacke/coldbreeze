@@ -107,11 +107,13 @@ def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(a
 val azure = _root_.util.AzureUploadHandler.apply()
 
 
-def downloadFile(fileName: String, urlParams: String) = SecuredAction.async { implicit request =>
+def downloadFile(fileName: String, hash: String, urlParams: String) = SecuredAction.async { implicit request =>
   "http://minorityapp.blob.core.windows.net/minority-uploads/"
 
+// http://127.0.0.1:9000/downloadFile/landing_page.png+61353b95-b825-40b6-97a0-c935b9937911/sig=Va2woPzZ6uup5PNVdxwTCTNPb6LfZjpiB4Y6O9psEbM%3D&se=2016-05-05T11%3A11%3A22Z&sv=2015-04-05&sp=rwdl&sr=b
+// https://minorityapp.blob.core.windows.net/minority-uploads/landing_page.png+61353b95-b825-40b6-97a0-c935b9937911
 
- val resultFuture = ws.url(s"http://minorityapp.blob.core.windows.net/minority-uploads/$urlParams").getStream
+ val resultFuture = ws.url(s"http://minorityapp.blob.core.windows.net/minority-uploads/$fileName+$hash?$urlParams").getStream
 
  //val dataEnumeratorFuture = resultFuture.map(stream => stream._2)
  //dataEnumeratorFuture.map(Ok.chunked(_))

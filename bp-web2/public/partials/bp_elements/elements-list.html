@@ -21,8 +21,12 @@
 <ul class="process-control" ng-show="isManagerVal">
  <!--<li><a href="" role="tab" class="createMin change ajaxLink cacheable" data-toggle="tab" ng:click="editProcess()"> {{ 'EDIT' | translate }} </a></li>-->
 <!-- <li><a class="allStation" href="/a#/bprocess/{{ bp.id }}/stations">{{ 'STATIONS' | translate }}</a></li> -->
- <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="editProcess()">{{ 'EDIT' | translate }}</a></li>
- <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="perm()">{{ 'PEOPLE' | translate }} </a></li>
+ <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="editProcess()">
+   <span class="minicon-pencil-edit minicon"></span>
+   {{ 'EDIT' | translate }}</a></li>
+ <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="perm()">
+   <span class="minicon-users minicon"></span>
+   {{ 'PEOPLE' | translate }} </a></li>
  <!--<li><a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" ng-click="modalShare()">{{ 'SHARE' | translate }}</a></li>-->
  <li><a href=""
    class="addElemTab"
@@ -67,6 +71,7 @@
 </div>
 
 <div class="elements" ng-repeat="bpelem in bpelems | orderBy:'order'">
+  <div class="data-board-controller" ng-controller="launchDataController as launchData">
 <div class="proc-element minimal" ng-attr-id="'frontElem'+bpelem.id" ng-class="'elem-'+bpelem.id">
     <div class="element-header">
     <div class="primary-states">
@@ -236,62 +241,7 @@
     </div>
 </div>
 
- <!--
-<div class="front-blocks" ng-repeat="bpelem in bpelems | orderBy:'order'">
-
-  <div class="tab-content">
-    <div class="block-card tab-pane active" id="show">
-      <div class="card-pipe">
-        <span class="primary">{{ bpelem.order }}: {{ bpelem.title }}</span>
-        <span class="descr">{{ bpelem.desc }}</span>
-        <span class="type">{{ bpelem.b_type }}: {{ bpelem.type_title }}</span>
-        <ul class="elem-control elem-tabs" role="tablist" ng-show="isManagerVal">
-          <li class="active"><a href="" role="tab" data-toggle="tab" ng:click="selected=1"><span class="glyphicon glyphicon-list-alt"></span></a></li>
-          <li><a href="" role="tab" data-toggle="tab" ng:click="selected=2"><span class="glyphicon glyphicon-edit"></span></a></li>
-          <li><a ng-click="deleteElem(bpelem)"><span class="glyphicon glyphicon-remove"></span></a></li>
-          <li><a href="" ng:click="moveUpElem(bpelem)"><span class="glyphicon glyphicon-arrow-up"></span></a></li>
-          <li><a href="" ng:click="moveDownElem(bpelem)"><span class="glyphicon glyphicon-arrow-down"></span></a></li>
-        </ul>
-      </div>
-      <div class="tab-pane active" id="edit" ng:show="selected == 2">
-        <div ng-include src="'assets/partials/bp_elements/element-edit.html'"></div>
-      </div>
-
-      <div ng-include src="'assets/partials/bp_elements/elem_container_tmp.html'"></div>
-    </div>
-  </div>
-</div>-->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+</div>
 
 
 
@@ -306,7 +256,7 @@
 </div>
 </div>
 
-<div class="fastInput launchDataFastInput" ng-show="inSession">
+<div class="fastInput launchDataFastInput" ng-hide="true">
 <!--<span class="firstInputFiles" ng-repeat="file in files">
     <span class="firstInputFileName">{{ file.name }}</span>
    <button type="button" class="close" ng-click="removeFileFirstInput(file,firstInput)"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
@@ -316,7 +266,7 @@
 </a>
 </div>
 
-<div class="dataPipe launchDataPipe" ng-repeat="cost in warpData.boards" ng-show="inSession && warpData.boards.length > 0">
+<div class="dataPipe launchDataPipe" ng-repeat="cost in warpData.boards" ng-hide="true">
     <h4>{{ cost.content }}</h4>
       <div class="pipe">
         <div class="pipeHeader">Launch Data</div>
@@ -341,110 +291,6 @@
         </div>
       </div>
     </div>
-</div>
-
-<div class="elements mocking">
-  <div class="proc-element minimal">
-    <div class="element-header">
-    <div class="primary-states">
-    </div>
-    <div class="info">
-      <div class="type">CF</div>
-      <h4 class="title">Element</h4>
-      <h6 class="desc">Desc with nesting structure</h6>
-    </div>
-    </div>
-    <div class="right-bar">
-      <div class="states-row">
-        <div class="state-row">
-          <div class="row-top">
-            s top <b>Bold </b>
-          </div>
-          <div class="row-bottom">
-            s bottom
-          </div>
-        </div>
-      </div>
-      <div class="row-selector"></div>
-    </div>
-    <div class="proc-element-spaces">
-      <div class="proc-space">
-        <div class="space-subbricks">
-          <div class="space-subbrick">
-            <div class="element-header">
-                  <div class="primary-states">
-                  </div>
-                  <div class="info">
-                    <h4 class="title">Subbrick</h4>
-                  </div>
-                  </div>
-
-          </div>
-        </div>
-        <div class="space-elements">
-            <div class="space-element">
-            <div class="element-header">
-                <div class="primary-states">
-                </div>
-                <div class="info">
-                  <div class="type">CF</div>
-                  <h4 class="title">Element</h4>
-                  <h6 class="desc">On front</h6>
-                </div>
-                </div>
-                <div class="right-bar">
-                  <div class="states-row">
-                    <div class="state-row">
-                      <div class="row-top">
-                        s top <b>Bold </b>
-                      </div>
-                      <div class="row-bottom">
-                        s bottom
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row-selector"></div>
-                </div>
-            </div>
-        </div>
-      </div>
-
-      <div class="proc-space">
-        <div class="space-subbricks">
-        </div>
-        <div class="space-elements">
-            <div class="space-element">
-            <div class="element-header">
-                <div class="primary-states">
-                </div>
-                <div class="info">
-                   <div class="type">CF</div>
-                  <h4 class="title">Element</h4>
-                  <h6 class="desc">On front</h6>
-                </div>
-                </div>
-                <div class="right-bar">
-                  <div class="states-row">
-                    <div class="state-row">
-                      <div class="row-top">
-                        s top <b>Bold </b>
-                      </div>
-                      <div class="row-bottom">
-                        s bottom
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row-selector"></div>
-                </div>
-            </div>
-        </div>
-      </div>
-
-
-
-    </div>
-  </div>
-
 </div>
 
 
@@ -479,15 +325,6 @@
 <style>
 @import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,700,600);
 </style>
-
-
-
-
-
-
-
-
-
 
 
 <script>

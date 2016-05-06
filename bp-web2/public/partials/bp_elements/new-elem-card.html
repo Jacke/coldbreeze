@@ -1,0 +1,168 @@
+<div class="tab-hidden-content">
+
+
+<div class="form-group new-element-form-field-title element-form-fields control-group clearfix">
+<label class="control-label primary-label col-sm-1" for="inputTitle">Title</label>
+<input type="text" id="inputTitle" class="form-control newFrontElemFormTitleField" ng-model="newBpelem.title" required/>
+</div>
+
+<div class="form-group element-form-fields control-group clearfix">
+  <label class="control-label primary-label col-xs-2" for="inputBusinessId">{{ 'DESC' | translate }}</label>
+  <textarea type="text" class="col-xs-6 form-control newFrontElemFormDescField" id="inputBusinessId" ng-model="newBpelem.desc"/>
+</div>
+
+<div class="form-group element-form-fields control-group clearfix">
+
+<div class="controls col-xs-2">
+    <label class="control-label ng-binding" disable-auto-validate="true" for="inputTitle">Type</label>
+</div>
+<div class="controls col-xs-6">
+    <span class="selectedRefType">{{ newBpelem.selectedRef.ref.title }}</span>
+      <a ng-click="newBpelem.refSelectHidden=false;" ng-show="newBpelem.refSelectHidden == true;" class="expand-ref-select">
+        <span class="moicon moicon-info expand-ref-select"></span>
+      </a>
+
+</div>
+</div><!-- form-group element-form-fields -->
+</div>
+<div class="ref-select-container fadein clearfix" ng-hide="newBpelem.refSelectHidden" ng-init="newBpelem.selectedRef != undefined ? newBpelem.refSelectHidden=false : refSelectHidden=true;">
+<select style="display:none;" disable-auto-validate="true" name="category" id="categorySelect" ng-model="newBpelem.refCategoryFilter" ng-init="newBpelem.refCategoryFilter = refCategories[0]" ng-options="option for option in refCategories" required="" class="ng-valid ng-valid-required"><option value="0" selected="selected">Base</option></select>
+<div class="templateButton form-group col-xs-4 clearfix">
+<div class="ref" ng-repeat="ref in refs | filter: { ref: {category: newBpelem.refCategoryFilter}}" ng-class="{selected: newBpelem.selectedRef.ref.id == ref.ref.id }">
+  <a ng-mouseover="refElem(ref, newBpelem)" ng-click="newBpelem.refSelectHidden=true;" class="btn btn-small btn-primary container_brick newFrontElemFormTypeButton" ng-class="isSelected(ref, newBpelem)">{{ ref.ref.title }}</a>
+</div>
+</div>
+
+<div class="ref-desc form-group col-xs-8">
+<h6>{{ newBpelem.selectedRef.ref.title }}</h6>
+<p>{{ newBpelem.selectedRef.ref.desc }}</p>
+<ul>
+  <li ng-repeat="state in newBpelem.selectedRef.bpstate"><span>State: {{state.title}}</span></li>
+</ul>
+<div class="new-elem-ref-actions-selects">
+  <div class="new-elem-ref-actions-select">
+    <div class="new-elem-ref-actions-select__header">
+      <div class="new-elem-ref-actions-select__action-title">
+        Action
+      </div>
+      <div class="new-elem-ref-actions-select__action-desc">
+        Action desc
+      </div>
+    </div>
+
+    <div class="new-elem-ref-actions-select__action-pipes">
+      <div class="new-elem-ref-actions-select__action-pipes__inputs">
+        Inputs
+      </div>
+      <div class="new-elem-ref-actions-select__action-pipes__bases">
+        Bases
+      </div>
+      <div class="new-elem-ref-actions-select__action-pipes__outputs">
+        Outputs
+      </div>
+    </div>
+  </div>
+</div>
+<div class="new-elem-ref-actions-selects">
+  <div class="new-elem-ref-actions-select">
+    <div class="new-elem-ref-actions-select__header">
+      <div class="new-elem-ref-actions-select__action-title">
+        Action
+      </div>
+      <div class="new-elem-ref-actions-select__action-desc">
+        Action desc
+      </div>
+    </div>
+
+    <div class="new-elem-ref-actions-select__action-pipes">
+      <div class="new-elem-ref-actions-select__action-pipes__inputs">
+        Inputs
+      </div>
+      <div class="new-elem-ref-actions-select__action-pipes__bases">
+        Bases
+      </div>
+      <div class="new-elem-ref-actions-select__action-pipes__outputs">
+        Outputs
+      </div>
+    </div>
+  </div>
+</div>
+<div class="new-elem-ref-actions-selects">
+  <div class="new-elem-ref-actions-select">
+    <div class="new-elem-ref-actions-select__header">
+      <div class="new-elem-ref-actions-select__action-title">
+        Action
+      </div>
+      <div class="new-elem-ref-actions-select__action-desc">
+        Action desc
+      </div>
+    </div>
+
+    <div class="new-elem-ref-actions-select__action-pipes">
+      <div class="new-elem-ref-actions-select__action-pipes__inputs">
+        Inputs
+      </div>
+      <div class="new-elem-ref-actions-select__action-pipes__bases">
+        Bases
+      </div>
+      <div class="new-elem-ref-actions-select__action-pipes__outputs">
+        Outputs
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+
+</div><!-- ref-select-container -->
+
+
+
+<div class="new-elem-ref-actions-selected">
+<div class="new-elem-ref-actions-select">
+  <div class="new-elem-ref-actions-select__header">
+    <div class="new-elem-ref-actions-select__action-title">
+      Action
+    </div>
+    <div class="new-elem-ref-actions-select__action-desc">
+      Action desc
+    </div>
+  </div>
+
+  <div class="new-elem-ref-actions-select__action-pipes">
+    <div class="new-elem-ref-actions-select__action-pipes__inputs">
+      Inputs
+    </div>
+    <div class="new-elem-ref-actions-select__action-pipes__bases">
+      Bases
+    </div>
+    <div class="new-elem-ref-actions-select__action-pipes__outputs">
+      Outputs
+    </div>
+  </div>
+
+
+  <div class="new-elem-action__action-bases">
+    <div class="new-elem-action__action-base">
+      <div class="form-horizontal new-elem-action__action-base__action-base-form">
+        <div class="form-group new-elem-action__action-base__action-base-form__field">
+          <input type="text" name="name" class="form-control" value="">
+        </div>
+        <div class="form-group new-elem-action__action-base__action-base-form__field">
+          <textarea name="name" class="form-control" rows="8" cols="40"></textarea>
+        </div>
+        <div class="form-group new-elem-action__action-base__action-base-form__field">
+          <select class="" class="form-control" name="select">
+            <option>0</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+</div>
+</div>
+
+</div>

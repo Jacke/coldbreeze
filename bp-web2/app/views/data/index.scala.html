@@ -38,7 +38,8 @@
 }
 
 </div>
-<div class="inlineEntityForm" id="newResourceEntityForm" style="display: none;">
+<div class="inlineEntityForm" id="newResourceEntityForm" style="display: none !important;">
+  <div class="" style="display:none;">
   <h4>Attribute</h4>
   @helper.form(routes.DataController.create_entity("")) {
     @helper.CSRF.formField
@@ -48,6 +49,7 @@
               @helper.inputText(entityForm("default"), 'class -> "form-control", 'id -> "newInlineAttrDefaultField", '_label -> "Default value")
               <input type="hidden" name="newInlineAttrMetaField" name="@entityForm("meta").name" value='""' >
   }
+  </div>
 </div>
 </div>
 }

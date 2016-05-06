@@ -1,31 +1,29 @@
-<div class="container">
+<div class="container new-process-form-container">
   <h1>{{ 'CREATE_NEW_PROC' | translate }} </h1>
 
+
   <form novalidate="novalidate" ng-submit="createNewBP();" class="form-horizontal">
-    <div class="control-group form-group new-process-controll">
+    <div class="form-group">
       <label class="control-label col-sm-2" for="inputTitle">{{ 'TITLE' | translate }}</label>
-      <div class="controls">
-       <div class="col-xs-7">
-          <input type="text" id="inputTitle" class="form-control" ng-model="bprocess.title" placeholder="Great process" ng-minlength="3" ng-maxlength="30" required/>
-       </div>
-      </div>
+      <input type="text" id="inputTitle" class="form-control col-xs-7" ng-model="bprocess.title" placeholder="Great process" ng-minlength="3" ng-maxlength="30" required/>
+      <input type="hidden" id="inputBusinessId" ng-model="bprocess.business" ng-init="business == undefined || isNaN(business) ? bprocess.business=0 :bprocess.business=business" placeholder="Business ID"/>
+      <input type="hidden" id="inputBusinessId" ng-model="bprocess.state_machine_type" ng-init="bprocess.state_machine_type='base'" placeholder="State machine type" required/>
+      <input type="hidden" id="inputBusinessId" ng-model="bprocess.version" ng-init="bprocess.version=1" placeholder="State machine type" required/>
+
+
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2" for="newProcessServiceSelect">{{ 'SERVICE' | translate }}</label>
+      <select class="form-control col-xs-7" id="newProcessServiceSelect" ng-model="bprocess.service" ng-options="service.id as service.title for service in procServices" required></select><br>
     </div>
 
-    <input type="hidden" id="inputBusinessId" ng-model="bprocess.business" ng-init="business == undefined || isNaN(business) ? bprocess.business=0 :bprocess.business=business" placeholder="Business ID"/>
-    <input type="hidden" id="inputBusinessId" ng-model="bprocess.state_machine_type" ng-init="bprocess.state_machine_type='base'" placeholder="State machine type" required/>
-    <input type="hidden" id="inputBusinessId" ng-model="bprocess.version" ng-init="bprocess.version=1" placeholder="State machine type" required/>
-    <div class="control-group form-group new-process-controll">
-      <label class="control-label col-sm-2" for="newProcessServiceSelect">{{ 'SERVICE' | translate }}</label>
-      <div class="controls">
-        <div class="col-xs-7">
-          <select class="form-control" id="newProcessServiceSelect" ng-model="bprocess.service" ng-options="service.id as service.title for service in procServices" required></select><br>
-        </div>
-      </div>
-    </div>
-    <div class="control-group">
-      <div class="controls">
-        <button type="submit" id="newProcessCreateBtn" class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</button>
-      </div>
-    </div>
+    <button type="submit" id="newProcessCreateBtn" class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</button>
   </form>
+
+
+
+
+
+
+
 </div>

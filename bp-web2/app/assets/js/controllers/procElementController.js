@@ -68,22 +68,7 @@ minorityControllers.controller('BPelementListCtrl', ['$timeout','$window','$filt
     });
   }
 
-if ($scope.inSession) {
-  DataCostLaunchAssign.query( { launchId: parseInt($location.search().launch) } ).$promise.then(function(data){
-     $scope.sessionCosts = data.costs;
-      $scope.warpData = { boards: _.filter(data.warp.boards,
-        function(obj){ return  $scope.metaExisted(obj.meta, "element_id");
-      }),
-      entities: _.filter(data.warp.entities,
-        function(obj){ return  $scope.metaExisted(obj.meta, "element_id");
-      }),
-      slats: _.filter(data.warp.slats,
-        function(obj){ return  $scope.metaExisted(obj.meta, "element_id");
-      })
-     }
 
-  });
-}
 
 // /data/cost/up_assign/:resource_id
 //$scope.updateAsssignedResEl = function() {
@@ -307,7 +292,6 @@ $scope.isManager();
     BPStationsFactory.query({ BPid: $route.current.params.BPid }).$promise.then(function(stations) {
 
     $scope.bp = _.find(data, function(proc) { return proc.id == $route.current.params.BPid});
-    $scope.bp.newelemformselected = 0;
 
     $scope.business = function () {
       if($scope.bp != undefined) {       return $scope.bp.business;
@@ -394,6 +378,7 @@ $scope.spaceelems = BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid
     } else { return undefined }
   };
   // Fetch resource and entities for that resource
+  /*
   DataCostCollection.query().$promise.then(function(res) {
       $scope.resources = res;
       _.forEach($scope.resources, function(r){ r.entities.unshift({title: "All", id:"*"}) });
@@ -411,6 +396,7 @@ $scope.spaceelems = BPSpaceElemsFactory.query({ BPid: $route.current.params.BPid
       });  return fetchObj(z.costs); });
 
     });   });
+    */
     /********************/
 
  });
@@ -1014,6 +1000,16 @@ $scope.options = {
   };
 
 
+  $scope.newBpelem.tab = 0;
+
+  $scope.setTab = function(newTab, newBpelem){
+    newBpelem.tab = newTab;
+  };
+
+  $scope.isSet = function(tabNum, newBpelem){
+    return newBpelem.tab === tabNum;
+  };
+
 
   $scope.updateElem = function (obj) {
     BPElemFactory.update(obj).$promise.then(function(data) {
@@ -1037,7 +1033,7 @@ $scope.options = {
     BPElemsFactory.create($scope.newBpelem).$promise.then(function(data) {
 
     console.log(data);
-    angular.element('.element-new-form').hide();
+    //angular.element('.element-new-form').hide();
     // Add perm
     _.forEach($scope.newBpelem.perms, function(perm) {
       if (perm.uid != undefined) {
@@ -1078,20 +1074,24 @@ $scope.options = {
 
       //$scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
       console.log("lighted");
-      $scope.newBpelem = { middleware: {}, desc: "", process: parseInt($route.current.params.BPid), business: $scope.business() };
       $scope.trees = undefined;
-      $scope.bp.newelemformselected = 0;
       //$scope.reloadTree($scope.trees);
+
+      $scope.reloadResources();
+      $scope.loadResources();
+
+      angular.element('.form-new-bpelem').controller('form').$setPristine();
+      $scope.newBpelem = { middleware: {}, desc: "", process: parseInt($route.current.params.BPid), business: $scope.business() };
+      angular.element('.form-new-bpelem').controller('form').$setPristine();
+
       $timeout(function(){
-        //$scope.reloadResources();
-        //$scope.loadResources();
         $timeout(function () {
           // 0 ms delay to reload the page.
-          $route.reload();
-      }, 0);
+          angular.element('.form-new-bpelem').controller('form').$setPristine();
 
+      //    $route.reload();
+      }, 0);
       }, 2000);
-      $scope.bp.newelemformselected = 0;
 
 
     });
@@ -1409,7 +1409,7 @@ setTimeout(function() {
  */
 $scope.createSpaceElemFromSpace = function (obj) {
   BPSpaceElemsFactory.create(obj).$promise.then(function(elem_data) {
-    angular.element('.element-new-form').hide();
+    //angular.element('.element-new-form').hide();
 
 /*
     if (obj.type_title == "container_brick") {
@@ -1470,7 +1470,7 @@ $scope.createSpaceElem = function (obj, space) {
     space.cneedit = false;
 
     BPSpaceElemsFactory.create(obj).$promise.then(function(elem_data) {
-      angular.element('.element-new-form').hide();
+      //angular.element('.element-new-form').hide();
 
 /*
       if (obj.type_title == "container_brick") {
@@ -1899,19 +1899,6 @@ $scope.changeSession = function(session) {
 
  $scope.interactions = InteractionsFactory.query({session_id: $scope.session.session.id});
 
-DataCostLaunchAssign.query( { launchId: parseInt($location.search().launch) } ).$promise.then(function(data) {
- $scope.sessionCosts = data.costs;
-      $scope.warpData = { boards: _.filter(data.warp.boards,
-        function(obj){ return  $scope.metaExisted(obj.meta, "element_id");
-      }),
-      entities: _.filter(data.warp.entities,
-        function(obj){ return  $scope.metaExisted(obj.meta, "element_id");
-      }),
-      slats: _.filter(data.warp.slats,
-        function(obj){ return  $scope.metaExisted(obj.meta, "element_id");
-      })
-     }
-});
 
  $scope.input_logs = BPInLoggersSessionFactory.query({BPid: $route.current.params.BPid, station_id: $scope.session.id});
  //.$promise.then(function(reaction_array) {

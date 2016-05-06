@@ -66,7 +66,10 @@
 }
 .element-data-costs .data-cost {
     display: block;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
+
 .data-cost .data-cost-default {
     display: none;
 }
@@ -306,8 +309,12 @@ ul.perm-menu.element-data-nav {
 </style>
 
 <ul class="perm-menu">
-  <li ng-class="{ 'active': !elementShow}"><a ng-init="elementShow=true;" ng-click="elementShow=true;processShow=false;">Elements</a></li>
-  <li ng-class="{ 'active': !processShow}"><a ng-init="processShow=false;" ng-click="processShow=true;elementShow=false;">Process</a></li>
+  <li ng-class="{ 'active': !elementShow}">
+    <a ng-init="elementShow=true;" ng-click="elementShow=true;processShow=false;">Elements</a>
+  </li>
+  <li ng-class="{ 'active': !processShow}">
+    <a ng-init="processShow=false;" ng-click="processShow=true;elementShow=false;">Process</a>
+  </li>
 </ul>
 
 <div class="elements-data" ng-init="elementShow=true;processShow=false;" ng-show="elementShow">
@@ -317,9 +324,24 @@ ul.perm-menu.element-data-nav {
 
     <div class="elements-data-element-title"><h3>{{ element.title }}</h3>
       <ul class="perm-menu element-data-nav">
-        <li ng-class="{ 'active': !element.costShow}"><a ng-init="element.costShow=true;"
+
+        <li ng-class="{ 'active': !element.costShow}" class="element-data-nav-controll-field">
+            <span class="data-board-count data-board-files-count">
+              <div ng-repeat="costObj in sessionCosts | filter: byElement(element) as filteredCost">
+              </div>
+              {{filteredCost.length}}
+            </span>
+          <a ng-init="element.costShow=true;"
           ng-click="element.costShow=true;element.fileShow=false;">Indicators</a></li>
-        <li ng-class="{ 'active': !element.fileShow}"><a ng-init="element.fileShow=false;"
+
+        <li ng-class="{ 'active': !element.fileShow}" class="element-data-nav-controll-field">
+          <span class="data-board-count data-board-costs-count">
+            <div ng-repeat="fileArr in files.files | filter:filesForLaunchElement(element) as filteredFiles">
+            </div>
+            {{filteredFiles.length}}
+          </span>
+
+          <a ng-init="element.fileShow=false;"
           ng-click="element.fileShow=true;element.costShow=false;">Files</a></li>
       </ul>
     </div>
@@ -331,9 +353,11 @@ ul.perm-menu.element-data-nav {
         </div>
         <div class="data-cost-title">{{ cost.entity.title }}</div>
         <div class="data-cost-value">{{ cost.value.sval }}</div>
-        <div class="data-cost-controls"><span class="moicon moicon-menu3" style="cursor:pointer" ng-click="element.controllsExpanded ? element.controllsExpanded=false : element.controllsExpanded=true"></span></div>
+        <div class="data-cost-controls"><span class="moicon moicon-menu3" style="cursor:pointer"
+              ng-click="cost.controllsExpanded ? cost.controllsExpanded=false : cost.controllsExpanded=true"></span></div>
 
-        <div class="data-cost-controlls-expanded" ng-init="cost.value == undefined ? element.controllsExpanded=true : element.controllsExpanded=false" ng-show="element.controllsExpanded">
+        <div class="data-cost-controlls-expanded" ng-init="cost.value == undefined ? cost.controllsExpanded=true : cost.controllsExpanded=false"
+             ng-show="cost.controllsExpanded">
           <input type="text" id="inputContentBlankValue" class="form-control" ng-init="cost.value == undefined ? entity.newModelValue=cost.entity.default : entity.newModelValue=cost.value.sval" ng-model="entity.newModelValue" required="">
           <div class="data-cost-controlls-buttons">
           <a class="btn btn-small btn-success btn-fill" ng-click="fillValue(cost, entity.newModelValue, costObj.obj)">Fill</a>

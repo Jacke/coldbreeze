@@ -19,11 +19,20 @@
 <!-- Completed launch info -->
 <ul class="reaction_list reaction_list_launched reaction_list_finished">
   <li class="reaction_list__reaction reaction_list__reaction_preview" ng-repeat="elem in trees | orderBy:'+order'">
+    <div class="data-board-wrapper" ng-controller="launchDataController as launchData">
       <a>
       <h3>{{ elem.title }} <!-- : {{ capitalizeFirstLetter(reaction.reaction.title) }} --></h3></a>
+      <div class="launches-nav">
+        <span class="data-board-count data-board-files-count">
+          <div ng-repeat="fileArr in files.files | filter:filesForLaunchElement(elem) as filteredFiles">
+          </div>
+          {{filteredFiles.length}}
+        </span>
+
       <a ng-click="fileSelectTab(elem)" id="fileSelectTabButton"
          class="fileSelectTabButton expandLaunchWindowTabButton"
          ng-class="elem.fileSelectTabSelected ? 'selected' : ''">Files</a>
+      </div>
 
       <div class="interaction-input-existence" ng-repeat="reaction in interactions.reactions | filter:filterReactionByElem(elem)">
 
@@ -35,16 +44,27 @@
         {{ capitalizeFirstLetter(reaction.reaction.title) }}</a>
 
       </div>
+
+
+
+      <div class="launches-nav">
+        <span class="data-board-count data-board-costs-count">
+          <div ng-repeat="costObj in sessionCosts | filter: byElement(elem) as filteredCost">
+          </div>
+          {{filteredCost.length}}
+        </span>
       <a ng-click="dataSelectTab(elem)"
          id="dataSelectTabButton"
          class="expandLaunchWindowTabButton dataSelectTabButton"
-         ng-class="elem.dataSelectTabSelected ? 'selected' : ''">Data</a>
+         ng-class="elem.dataSelectTabSelected ? 'selected' : ''">
+         Data</a>
+       </div>
        <a ng-click="openModalDataBoard($parent.$parent.session.process)"
           id="modalDataBoardButton"
           class="modalDataButton dataSelectTabButton"><span class="nicon nicon-dots-three-horizontal"></span></a>
 
 
-      <div class="data-board-controller" ng-controller="launchDataController as launchData">
+      <div class="data-board-controller">
           <div ng-include src="'assets/partials/inputs/costs.html'"
                           class="cost-view-container"
                           ng-init="costs = elem.costs;"
@@ -52,6 +72,9 @@
           <div ng-include src="'assets/partials/inputs/file_attach.html'"
                class="file-view-container" ng-init="elem.payload = []; $parent.elem.payloadNew = [];elem.dataSelectTabSelected=true;"
                ng-show="elem.fileSelectTabSelected"></div>
+      </div>
+
+
       </div>
   </li>
 </ul>
