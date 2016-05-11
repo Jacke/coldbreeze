@@ -16,7 +16,7 @@ case class BaseContainer(
   base_req_type: String = "string",
   base_content_string: String = "",
   base_content_number: Long = 0L,
-  base_content_boolean: Boolean
+  base_content_boolean: Boolean = false
 )
 
 case class RefActionContainer(

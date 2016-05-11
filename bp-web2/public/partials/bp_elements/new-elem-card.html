@@ -123,15 +123,17 @@
     <div class="new-elem-strategy__strategy" ng-repeat="strategy in newBpelem.selectedRef.strategies | filter:byMiddleware(middleware)">
     <div class="new-elem-ref-actions-select__strategy-title">
           <a class="new-elem-ref-actions-select__strategy-link"
-             ng-click="selectStrategy(strategy, middleware, action)"
+             ng-click="selectStrategy(strategy, middleware, action, newBpelem.selectedRef.bases)"
              ng-class="isStrategySelected(strategy, action) ? 'selected' : ''">{{ strategy.ident }}</a>
     </div>
 
     <div class="new-elem-action__action-base" ng-show="isStrategySelected(strategy, action)">
       <div class="form-horizontal new-elem-action__action-base__action-base-form">
 
-        <formly-form model="action.selectedStrategy" fields="vm.fieldsForStrategy(strategy, action)">
-        </formly-form>
+        <div class="new-elem-action__action-base-field" ng-repeat="base in action.refStrategySelect.bases | filter:byStrategy(strategy)">
+          <formly-form model="base.selectedStrategy" fields="vm.fieldsForStrategy(strategy, action, base)">
+          </formly-form>
+        </div>
 <!--
         <div class="form-group new-elem-action__action-base__action-base-form__field">
           <input type="text" name="name" class="form-control" value="">

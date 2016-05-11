@@ -1029,6 +1029,35 @@ $scope.options = {
   $scope.createNewElem = function () {
 
 
+    var actionContainer = _.map($scope.newBpelem.selectedRef.reactions, function(action) {
+          /*
+          action_id: Int,
+          middleware_id: Long,
+          strategy_id: Long,
+          bases: List[BaseContainer] = List()
+
+          bases:
+          base_id: Long,
+          base_req_type: String = "string",
+          base_content_string: String = "",
+          base_content_number: Long = 0L,
+          base_content_boolean: Boolean
+          */
+          console.log("action.selectedStrategy", action.selectedStrategy);
+        return {
+          action_id: action.id,
+          middleware_id: action.selectedRefFields.strategy.middleware,
+          strategy_id: action.selectedRefFields.strategy.id,
+          bases: [{
+            base_id: "action.selectedStrategy.base_id",
+            base_req_type: "number",
+            base_content_string: "",
+            base_content_number: 0,
+            base_content_boolean: false
+          }]
+
+        }
+    })
 
     BPElemsFactory.create($scope.newBpelem).$promise.then(function(data) {
 
@@ -1964,49 +1993,98 @@ $scope.byMiddleware = function(middleware) {
      }
  }
 }
+$scope.byStrategy = function(strategy) {
+  return function(obj) {
+     if (obj.strategy === strategy.id) {
+       return obj;
+     } else {
+       return false;
+     }
+ }
+}
+
+
+
+
+
+
+
+/*
+ Action fields
+ Strategy
+ ...
+ */
+
+
+
 
 
 var vm = this;
 
-$scope.setStrategyFields = function(action) {
+$scope.setStrategyFields = function(strategy, action) {
   if ($scope.newBpelem.selectedRef != undefined) {
   if (action.selectedRefFields == undefined) {  // if fields doesnt set
-  action.selectedRefFields = _.map($scope.newBpelem.selectedRef.strategies,function(strategy) {
+  action.selectedRefFields = _.map($scope.newBpelem.selectedRef.strategies,function(strategyL) {
   var bases = _.filter($scope.newBpelem.selectedRef.bases, function(base){
     return base.strategy == strategy.id
   });
 
   return {
     strategy: strategy,
-    fields: _.map(bases, function(base) {
-    if (base.baseType == "duration") {
-      var fieldType = 'number'
-      var placeholder = '';
-      var label = 'Duration';
-    } else if (base.baseType == "datetime") {
-      var fieldType = 'text'
-      var placeholder = 'DD/MM/YEAR HH:MM:SS';
-      var label = 'Schedule';
+    fields: _.flatten(_.map(bases, function(base) {
+        if (base.baseType == "duration") {
+          var fieldType = 'number'
+          var placeholder = '';
+          var label = 'Duration';
+        } else if (base.baseType == "datetime") {
+          var fieldType = 'text'
+          var placeholder = 'DD/MM/YEAR HH:MM:SS';
+          var label = 'Schedule';
 
-    } else {
-      var fieldType = 'text'
-      var placeholder = '';
-      var label = '';
-    }
+        } else {
+          var fieldType = 'text'
+          var placeholder = '';
+          var label = '';
+        }
 
-    return {
-      key: base.key,
-      type: 'input',
-      className: 'new-elem-action__action-base__action-base-form__field',
-      templateOptions: {
+      return [
+        {
+          key: "base_id",
+          type: 'input',
+          className: 'hidden',
+          defaultValue: base.id,
+          templateOptions: {
+            className: 'hidden',
+            type: "text",
+            label: "Base id",
+            placeholder: ""
+          }
+        },
+        {
+          key: "field_type",
+          type: "input",
+          className: 'hidden',
+          defaultValue: fieldType,
+          templateOptions: {
+            className: 'hidden',
+            type: "text",
+            label: "Field type",
+            placeholder: ""
+          }
+
+        },
+        {
+        key: base.key,
+        type: 'input',
         className: 'new-elem-action__action-base__action-base-form__field',
-        type: fieldType,
-        label: label,
-        placeholder: placeholder
-      }
-      }
-    })
-
+        templateOptions: {
+          className: 'new-elem-action__action-base__action-base-form__field',
+          type: fieldType,
+          label: label,
+          placeholder: placeholder
+        }
+        }];
+    }))
   }
 
   });
@@ -2018,27 +2096,27 @@ $scope.setStrategyFields = function(action) {
 }
 
 vm.fieldsForStrategy = function(strategy, action) {
-  console.log('fieldsForStrategy id', strategy.id);
-
-
+  $scope.setStrategyFields(strategy, action);
   var f = _.find(action.selectedRefFields, function(r){ return r.strategy.id == strategy.id });
-  console.log('fieldsForStrategy', f);
   if (f !== undefined) {
     return f.fields;
   } else {
-    return [];
+    return undefined;
   }
 }
 
-$scope.selectStrategy = function(strategy, middleware, action) {
+$scope.selectStrategy = function(strategy, middleware, action, bases) {
      console.log('action.selectedStrategy', action.selectedStrategy);
      action.selectedRefFields = undefined;
      $scope.setStrategyFields(strategy, action);
+     console.log('selectStrategy action.selectedRefFields', action.selectedRefFields);
+     var bases = _.filter(bases, function(base){ return base.strategy === strategy.id });
 
     action.refStrategySelect = {
       action: action,
       middleware: middleware,
-      strategy: strategy
+      strategy: strategy,
+      bases: bases
     };
 }
 $scope.isStrategySelected = function(strategy, action) {
