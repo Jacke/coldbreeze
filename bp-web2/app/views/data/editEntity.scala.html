@@ -11,7 +11,7 @@
   <div class="span8">
 
   @helper.form(if(!id.isDefined) routes.DataController.create_entity(boardId.get) else routes.DataController.update_entity(id.get)) {
-    @helper.CSRF.formField
+    
     @helper.inputText(form("title"), 'class -> "form-control", '_label -> "Title")
     @helper.textarea(form("description"), 'class -> "form-control", '_label -> "Description")
     @helper.select(form("etype"), Seq("number"->"Number", "text"->"Text", "boolean" -> "Boolean"), 'class -> "form-control", '_label -> "Type")

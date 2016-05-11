@@ -138,7 +138,7 @@
               <li role="presentation" class="dropdownListItem onlyMember morphAdmin">
                 <a role="menuitem" tabindex="-1" href="#">
                 @form(users.routes.EmployeeController.destroy(entity.id.get), 'class -> "topRight") {
-                  @helper.CSRF.formField
+                  
                   <input type="submit" value="Delete this employee" class="btn danger">
                 }
                 </a>
@@ -146,7 +146,7 @@
 @if(!entity.manager) {
               <li role="presentation" class="dropdownListItem onlyMember morphAdmin"><a role="menuitem" tabindex="-1" href="#">
                 @form(users.routes.EmployeeController.toManager(entity.id.get), 'class -> "topRight") {
-                  @helper.CSRF.formField
+                  
 
                                   <input type="submit" value='To manager' class="btn">
               }</a>
@@ -155,7 +155,7 @@
 @if(entity.manager) {
               <li role="presentation" class="dropdownListItem onlyMember morphAdmin"><a role="menuitem" tabindex="-1" href="#">
                 @form(users.routes.EmployeeController.toParticipator(entity.id.get), 'class -> "topRight") {
-                  @helper.CSRF.formField
+                  
 
                                   <input type="submit" value='To participator' class="btn">
               }</a>
@@ -194,13 +194,13 @@
           <span class="userCardMenuHandle" role="button" data-toggle="dropdown">&#x2261;</span>
             <ul id="menu1" class="dropdown-menu" role="menu" aria-labelledby="drop4">
               <li role="presentation" class="dropdownListItem onlyMember morphAdmin"><a role="menuitem" tabindex="-1" href="#">@form(users.routes.EmployeeController.destroy(entity.id.get), 'class -> "topRight") {
-                @helper.CSRF.formField
+                
 
                                   <input type="submit" value='@Messages("custom.delete")' class="btn danger">
                               }</a></li>
 @if(!entity.manager) {
               <li role="presentation" class="dropdownListItem onlyMember morphAdmin"><a role="menuitem" tabindex="-1" href="#">@form(users.routes.EmployeeController.toManager(entity.id.get), 'class -> "topRight") {
-                @helper.CSRF.formField
+                
 
                                   <input type="submit" value='To manager' class="btn">
               }</a>
@@ -208,7 +208,7 @@
 }
 @if(entity.manager) {
               <li role="presentation" class="dropdownListItem onlyMember morphAdmin"><a role="menuitem" tabindex="-1" href="#">@form(users.routes.EmployeeController.toParticipator(entity.id.get), 'class -> "topRight") {
-                @helper.CSRF.formField
+                
 
                                   <input type="submit" value='To participator' class="btn">
               }</a>

@@ -15,7 +15,7 @@
 <div class="row">
 <div class="col-md-8">
 @form(routes.BusinessServiceController.create_new()) {
-  @helper.CSRF.formField
+  
 
   <fieldset>
     @inputText(serviceForm("title"), '_label -> Messages("businesses.serviceName"), 'class -> "form-control")

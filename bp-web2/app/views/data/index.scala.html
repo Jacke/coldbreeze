@@ -26,7 +26,7 @@
 <div class="newResourceForm">
 <div class="newResourceFormContainer">
 @form(routes.DataController.create_resource(), 'id -> "createResourceFormObject", 'class -> "createResourceForm") {
-  @helper.CSRF.formField
+  
    <h3>Create resource</h3>
   <button type="submit" id="createResourceBtn" class="createMin ajaxLink cacheable resource-add-btn offed">Create</button>
   <div class="tableMinListFilter search-process-input add-resource-field filterLayer">
@@ -42,7 +42,7 @@
   <div class="" style="display:none;">
   <h4>Attribute</h4>
   @helper.form(routes.DataController.create_entity("")) {
-    @helper.CSRF.formField
+    
               @helper.inputText(entityForm("title"), 'class -> "form-control", 'id -> "newInlineAttrTitleField", '_label -> "Title")
               @helper.textarea(entityForm("description"), 'class -> "form-control", 'id -> "newInlineAttrDescField", '_label -> "Description")
               @helper.select(entityForm("etype"), Seq("number"->"Number", "text"->"Text", "boolean" -> "Boolean"), 'class -> "form-control", 'id -> "newInlineAttrEtypeField",'_label -> "Type")
@@ -86,7 +86,7 @@
                 <!-- entity form -->
                 <div class="inlineEntityForm">
             @helper.form(routes.DataController.update_entity(entity.getId), 'class -> "updateEntityForm") {
-              @helper.CSRF.formField
+              
               @helper.inputText(entityForm("title").copy(value=Some(entity.title)),   'class -> "form-control", '_label -> "Title")
               @helper.textarea(entityForm("description").copy(value=Some(entity.description)),   'class -> "form-control", '_label -> "Description")
               @helper.select(entityForm("etype").copy(value=Some(entity.etype)), Seq("number"->"Number", "text"->"Text", "boolean" -> "Boolean"), 'class -> "form-control", '_label -> "Type")
@@ -100,7 +100,7 @@
             }
             <div class="inlineEntityFormDelete">
             @helper.form(routes.DataController.delete_entity(entity.getId)) {
-              @helper.CSRF.formField
+              
                  <button type="submit" class="btn danger deleteEntity" data-toggle="tooltip" data-placement="right" title="Delete attribute"><span class="moicon icon-trash"></span></button>
             }
             </div>
@@ -120,7 +120,7 @@
                             @slat.sval
                           </a>
                          @helper.form(routes.DataController.delete_slat(slat.getId)) {
-                               @helper.CSRF.formField
+                               
                               <button type="submit" class="btn danger deleteSlat"><span class="moicon icon-trash"></span></button>
                           }
 
@@ -132,7 +132,7 @@
                 <!-- new entity form -->
                 <div class="inlineEntityForm">
             @helper.form(routes.DataController.create_entity(board.getId), 'class -> "inlineEntityFormNewForm") {
-              @helper.CSRF.formField
+              
               @helper.inputText(entityForm("title"), 'class -> "form-control", '_label -> "Title")
               @helper.textarea(entityForm("description"), 'class -> "form-control", '_label -> "Description")
               @helper.select(entityForm("etype"), Seq("number"->"Number", "text"->"Text", "boolean" -> "Boolean"), 'class -> "form-control", '_label -> "Type")
@@ -157,7 +157,7 @@
         <a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" href="/a#/launches?process={{ bprocess.id }}"><span class="uicon-svg372"></span>{{ 'STATIONS' | translate }}</a>-->
 @if(ping) {
         @form(routes.DataController.delete_resource(cn.resource.id.getOrElse(0)), 'class -> "topRight") {
-          @helper.CSRF.formField
+          
           <button type="submit" class="tableMinControlsLink teamSettingsLink tableMinLinkDelete" href="@cn.resource.id.getOrElse(0)"> <span class="minicon-trash"></span></button>
         }
 }

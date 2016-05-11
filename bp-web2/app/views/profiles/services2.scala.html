@@ -70,7 +70,7 @@ isManager:Boolean = false)(implicit request: RequestHeader)
       <!--<a class="btn success" id="add" href="@routes.BusinessServiceController.create()">Add a service</a>-->
         @form(routes.BusinessServiceController.create_new()) {
           <fieldset>
-            @helper.CSRF.formField
+            
 
             @text(serviceForm("title"), '_label -> Messages("page.title"), 'id -> "newServiceFormField",'class -> "form-control", 'placeholder -> Messages("page.title"))
           </fieldset>

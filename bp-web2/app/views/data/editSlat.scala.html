@@ -13,7 +13,7 @@
   <div class="span8">
 
   @helper.form(if(!id.isDefined) routes.DataController.create_slat(entity_id) else routes.DataController.update_slat(entity_id, id.getOrElse("") )) {
-    @helper.CSRF.formField
+    
       @entity match {
         case Some(e) => {
             @helper.inputText(form("title").copy(value=Some(e.title+" ") ), 'class -> "form-control", '_label -> "Title")
