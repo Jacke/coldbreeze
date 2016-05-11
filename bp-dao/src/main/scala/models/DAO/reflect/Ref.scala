@@ -5,12 +5,26 @@ import models.DAO.ProcElemDAO._
 import models.DAO.BPDAO._
 import models.DAO.BPStationDAO._
 import models.DAO.conversion.DatabaseCred
-import main.scala.bprocesses.{BPState, BPSessionState} 
+import main.scala.bprocesses.{BPState, BPSessionState}
 import models.DAO._
 import models.DAO.projections._
 import main.scala.simple_parts.process.Units._
-import main.scala.bprocesses.refs.UnitRefs._  
+import main.scala.bprocesses.refs.UnitRefs._
 
+case class BaseContainer(
+  base_id: Long,
+  base_req_type: String = "string",
+  base_content_string: String = "",
+  base_content_number: Long = 0L,
+  base_content_boolean: Boolean
+)
+
+case class RefActionContainer(
+  action_id: Int,
+  middleware_id: Long,
+  strategy_id: Long,
+  bases: List[BaseContainer] = List()
+)
 
 object RefDAOF {
   import akka.actor.ActorSystem
@@ -25,7 +39,7 @@ object RefDAOF {
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import models.DAO.conversion.DatabaseFuture._  
+  import models.DAO.conversion.DatabaseFuture._
   //import dbConfig.driver.api._ //
 
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
@@ -35,12 +49,14 @@ object RefDAOF {
   private def filterQuery(id: Int): Query[Refs, Ref, Seq] =
     refs.filter(_.id === id)
 
-  def retrive(k: Int, process: Int,
-              business: Int, in: String = "front", 
-              title: String, desc:String = "", 
-              space_id: Option[Int] = None):Future[Option[RefResulted]] = {
+  def retrive(k: Int,
+              process: Int,
+              business: Int, in: String = "front",
+              title: String, desc:String = "",
+              space_id: Option[Int] = None,
+              refActionContainer: List[RefActionContainer] = List() ):Future[Option[RefResulted]] = {
       in match {
-        case "front" => RefProjectorF.projecting(k, process, business, title,desc, "front")
+        case "front" => RefProjectorF.projecting(k, process, business, title,desc, "front", None, refActionContainer)
         case _ => RefProjectorF.projecting(k, process, business, title,desc, "nested", space_id)
       }
   }
@@ -48,7 +64,7 @@ object RefDAOF {
     db.run(filterQuery(k).result.headOption)
   }
 
-}    
+}
 
 
 import models.DAO.driver.MyPostgresDriver.simple._
@@ -57,7 +73,7 @@ import com.github.nscala_time.time.Imports._
 import slick.model.ForeignKeyAction
 
 class Refs(tag: Tag) extends Table[Ref](tag, "refs") {
-  def id      = column[Int]("id", O.PrimaryKey, O.AutoInc) 
+  def id      = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def title   = column[String]("title")
   def host    = column[String]("host")
   def desc    = column[Option[String]]("desc")
@@ -65,25 +81,25 @@ class Refs(tag: Tag) extends Table[Ref](tag, "refs") {
   def hidden  = column[Boolean]("hidden", O.Default(false))
 
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
+  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")
 
   def * = (id.?, title, host, desc,
            created_at, updated_at, category, hidden) <> (Ref.tupled, Ref.unapply)
 
 }
 
-case class Ref(id: Option[Int], 
-              title: String, 
-              host: String = "", 
+case class Ref(id: Option[Int],
+              title: String,
+              host: String = "",
               desc: Option[String] = None,
-              created_at:Option[org.joda.time.DateTime] = None, 
-              updated_at:Option[org.joda.time.DateTime] = None, 
-              category: String = "Base", 
+              created_at:Option[org.joda.time.DateTime] = None,
+              updated_at:Option[org.joda.time.DateTime] = None,
+              category: String = "Base",
               hidden:Boolean = false)
 
 
 case class RetrivedRef(
-  proc_elems: List[UnitElement], 
+  proc_elems: List[UnitElement],
   spaces: List[UnitSpace], // change to DTO
   space_elems: List[UnitSpaceElement], // change to DTO
   states: List[BPState],
@@ -92,18 +108,18 @@ case class RetrivedRef(
   reaction_state_outs: List[UnitReactionStateOut])
 
 case class RefResulted(
-  proc_elems: List[Int], 
-  space_elems: List[Int], 
+  proc_elems: List[Int],
+  space_elems: List[Int],
   spaces:List[Int],
-  states: List[Int], 
-  switches: List[Int], 
-  reactions: List[Int], 
+  states: List[Int],
+  switches: List[Int],
+  reactions: List[Int],
   reaction_state_outs: List[Int],
   topoElem:List[Int]=List.empty,
   topoSpaceElem:List[Int]=List.empty)
 
 
-  
+
 object RefDAO {
   import scala.util.Try
   import DatabaseCred.database
@@ -120,7 +136,7 @@ object RefDAO {
   def get(k: Int):Option[Ref] = database withSession {
     implicit session ⇒
       val q3 = for { s ← refs if s.id === k } yield s
-      q3.list.headOption 
+      q3.list.headOption
   }
   def getByTitle(title: String):List[Ref] = database withSession {
     implicit session ⇒
@@ -138,8 +154,8 @@ object RefDAO {
   * Project ref to existed elements and states
   */
   def retrive(k: Int, process: Int,
-              business: Int, in: String = "front", 
-              title: String, desc:String = "", 
+              business: Int, in: String = "front",
+              title: String, desc:String = "",
               space_id: Option[Int] = None):Option[RefResulted] = database withSession {
     //logger.debug(k, process, business, title, desc, space_id)
     implicit session ⇒

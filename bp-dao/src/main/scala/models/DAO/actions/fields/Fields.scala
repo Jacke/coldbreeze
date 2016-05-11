@@ -8,22 +8,22 @@ import models.DAO.conversion.DatabaseCred
 //import models.DAO.driver.MyPostgresDriver.simple._
 import models.DAO._
 //import models.DAO.driver.MyPostgresDriver.simple._
-import models.DAO.conversion.DatabaseFuture._  
+import models.DAO.conversion.DatabaseFuture._
 import com.github.nscala_time.time.Imports._
 import models.DAO.conversion.DatabaseCred.dbConfig.driver.api._
 import com.github.tototoshi.slick.JdbcJodaSupport._
 
-
+/*
 class Fields(tag: Tag) extends Table[Middleware](tag, "fields") {
-  def id          = column[Long]("id", O.PrimaryKey, O.AutoInc) 
+  def id          = column[Long]("id", O.PrimaryKey, O.AutoInc)
   def ident       = column[String]("ident")
   def reaction    = column[Int]("reaction_id")
   def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")  
+  def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")
 
   def reaction_FK = foreignKey("middleware_reaction_fk", reaction, models.DAO.ReactionDAO.reactions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
-  def * = (id.?, 
+  def * = (id.?,
            ident, reaction,
            created_at, updated_at) <> (Middleware.tupled, Middleware.unapply)
 }
@@ -48,7 +48,7 @@ object FieldsDAOF {
 
   val create: DBIO[Unit] = middlewares.schema.create
   val drop: DBIO[Unit] = middlewares.schema.drop
-  
+
 
   def ddl_create = db.run(create)
   def ddl_drop = db.run(drop)
@@ -57,4 +57,4 @@ object FieldsDAOF {
     middlewares.filter(_.id === id)
 
 }
-
+*/

@@ -9,33 +9,34 @@ import models.DAO.ProcElemDAO._
 import models.DAO.BPDAO._
 import models.DAO.BPStationDAO._
 import models.DAO.conversion.DatabaseCred
-import main.scala.simple_parts.process.Units._  
+import main.scala.simple_parts.process.Units._
 import main.scala.bprocesses.refs.UnitRefs.{UnitReactionRef, UnitReactionStateOutRef}
-  
+
 class ReactionRefs(tag: Tag) extends Table[UnitReactionRef](tag, "reaction_refs") {
-  def id          = column[Int]("id", O.PrimaryKey, O.AutoInc) 
+  def id          = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def reflection  = column[Int]("reflection_id")
   def autostart   = column[Boolean]("autostart")
   def element     = column[Int]("element_id")
   def from_state  = column[Option[Int]]("state_ref_id")
-  def title       = column[String]("title")  
-    
+  def title       = column[String]("title")
+
   def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")  
+  def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")
 
   def elementFK   = foreignKey("react_ref_element_fk", element, models.DAO.reflect.ReflectElemTopologDAO.reflected_elem_topologs)(_.id, onDelete = ForeignKeyAction.Cascade)
   def reflectFK   = foreignKey("react_ref_reflect_fk", reflection, models.DAO.reflect.RefDAO.refs)(_.id, onDelete = ForeignKeyAction.Cascade)
   def stateFK     = foreignKey("react_ref_state_fk", from_state, models.DAO.reflect.BPStateRefDAO.state_refs)(_.id, onDelete = ForeignKeyAction.Cascade)
 
-  def * = (id.?, 
-           reflection, 
-           autostart, 
+  def * = (id.?,
+           reflection,
+           autostart,
            element,
            from_state,
            title,
            created_at, updated_at) <> (UnitReactionRef.tupled, UnitReactionRef.unapply)
 
 }
+
 
 object ReactionRefDAOF {
   import akka.actor.ActorSystem
@@ -50,16 +51,16 @@ object ReactionRefDAOF {
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import models.DAO.conversion.DatabaseFuture._  
+  import models.DAO.conversion.DatabaseFuture._
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
   val reaction_refs = ReactionRefDAO.reaction_refs
 
   private def filterByIdsQuery(ids: List[Int]): Query[ReactionRefs, UnitReactionRef, Seq] =
-    reaction_refs.filter(_.id inSetBind ids) 
+    reaction_refs.filter(_.id inSetBind ids)
   private def filterByReflection(reflection: Int): Query[ReactionRefs, UnitReactionRef, Seq] =
-    reaction_refs.filter(_.reflection === reflection) 
+    reaction_refs.filter(_.reflection === reflection)
 
   def findByRef(reflection: Int):Future[Seq[UnitReactionRef]] = {
     db.run(filterByReflection(reflection).result)
@@ -86,13 +87,13 @@ object ReactionRefDAO {
   def get(k: Int):Option[UnitReactionRef] = database withSession {
     implicit session ⇒
       val q3 = for { s ← reaction_refs if s.id === k } yield s
-      q3.list.headOption 
+      q3.list.headOption
   }
   def findByRef(id: Int) = {
      database withSession { implicit session =>
        val q3 = for { s ← reaction_refs if s.reflection === id } yield s
-       q3.list                   
-    } 
+       q3.list
+    }
   }
   def retrive(k: Int, process: Int, element: Int, from_state: Option[Int]):List[UnitReaction] = database withSession {
     implicit session =>

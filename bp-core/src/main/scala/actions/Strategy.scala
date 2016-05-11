@@ -2,15 +2,19 @@ package us.ority.min.actions
 import main.scala.bprocesses._
 import main.scala.utils._
 import com.github.nscala_time.time.Imports._
-import scala.collection.mutable._  
+import scala.collection.mutable._
 
 case class Strategy(val id: Option[Long],
 				ident: String,
-				middleware: Long = -1L, 
+				middleware: Long = -1L,
+				        isNullStrategy: Boolean = false,
 				created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
 			    updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
 
 }
+
+
+
 
 case class StrategyArgument(argInt: Int = 0, argLong:Long = 0L, argString: String = "")
 
@@ -28,10 +32,10 @@ case class StrategyOut(completed: Boolean = false) {
 }
 case class StrategyStatus() {
 	def makeStatus():Boolean = true
-	def getStatus():String = 
+	def getStatus():String =
 		if (makeStatus())
 		 "Good"
-		else 
+		else
 		 "Error"
 }
 
@@ -40,13 +44,13 @@ case class StrategyStatus() {
 /*
 
 object DeathToStrategy extends App {
- 
+
   def add(a: Int, b: Int) = a + b
   def subtract(a: Int, b: Int) = a - b
   def multiply(a: Int, b: Int) = a * b
-   
+
   def execute(callback:(Int, Int) => Int, x: Int, y: Int) = callback(x, y)
- 
+
   println("Add:      " + execute(add, 3, 4))
   println("Subtract: " + execute(subtract, 3, 4))
   println("Multiply: " + execute(multiply, 3, 4))

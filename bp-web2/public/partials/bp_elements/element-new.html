@@ -13,19 +13,9 @@
       <h3>Create element</h3>
 
     <div class="form-new-element-nav" ng-init="newBpelem.showCardElement=false;">
-      <div class="controls">
-        <label class="control-label" for="inputPerm">
-          <a ng-click="setTab(0, newBpelem)">Card</a></label>
-      </div>
-      <div class="controls col-xs-2">
-        <label class="control-label col-sm-1" disable-auto-validate="true" for="inputPerm">
-          <a ng-click="setTab(1, newBpelem)">People</a>
-        </label>
-      </div>
-      <div class="controls">
-        <label class="control-label" for="inputPerm">
-          <a ng-click="setTab(2, newBpelem)">Indicators</a></label>
-      </div>
+          <a ng-click="setTab(0, newBpelem)" ng-class="isSet(0, newBpelem)? 'active' : ''">Card</a></label>
+          <a ng-click="setTab(1, newBpelem)" ng-class="isSet(1, newBpelem)? 'active' : ''">People</a>
+          <a ng-click="setTab(2, newBpelem)" ng-class="isSet(2, newBpelem)? 'active' : ''">Indicators</a></label>
     </div>
 
 
@@ -37,11 +27,10 @@
     </div>
 
 <div ng-show="isSet(1, newBpelem)">
-  test 1
       <div class="control-group people-control-group">
       <div class="form-group element-form-fields">
       <div class="form-group control-group clearfix">
-        <div class="controls col-xs-6" ng-init="newBpelem.perms = [];newBpelem.showPeople=false;" ng-show="newBpelem.showPeople">
+        <div class="controls col-xs-6" ng-init="newBpelem.perms = [];">
           <div class="perms perm-list" ng-repeat="perm in newBpelem.perms" ng-init="perm.account = accFetch(perm)">
             <span class="account-pic" tooltip="{{ perm.account.tooltip }}">
                 <img ng-src="{{ perm.account.avatarUrl}}" alt="{{ perm.account.tooltip }}">

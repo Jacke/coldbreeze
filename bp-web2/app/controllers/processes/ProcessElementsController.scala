@@ -50,7 +50,7 @@ import play.api.i18n.MessagesApi
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.mvc.{ Action, RequestHeader }
-
+import models.DAO.reflect._
 
 
 
@@ -78,6 +78,13 @@ class ProcessElementsController @Inject() (
   implicit val BProcessDTOWrites = Json.format[BProcessDTO]
   implicit val StationNoteReads = Json.reads[StationNoteMsg]
   implicit val StationNoteWrites = Json.format[StationNoteMsg]
+
+
+  implicit val BaseContainerReads = Json.reads[BaseContainer]
+  implicit val BaseContainerWrites = Json.format[BaseContainer]
+
+  implicit val RefActionContainerReads = Json.reads[RefActionContainer]
+  implicit val RefActionContainerWrites = Json.format[RefActionContainer]
 
   implicit val RefElemContainerReads = Json.reads[RefElemContainer]
   implicit val RefElemContainerWrites = Json.format[RefElemContainer]
@@ -287,13 +294,14 @@ def createFrontElem() = SecuredAction.async(BodyParsers.parse.json) { implicit r
 request.body.validate[RefElemContainer].map {
   case entity => {
          if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, entity.process)) {
-            RefDAOF.retrive(entity.ref,
-                           entity.process,
-                           entity.business,
+            RefDAOF.retrive(k = entity.ref,
+                           process = entity.process,
+                           business = entity.business,
                            in = "front",
-                           entity.title,
-                           entity.desc,
-                           space_id = None).map { retrived =>
+                           title = entity.title,
+                           desc = entity.desc,
+                           space_id = None,
+                           refActionContainer = entity.refActionContainer).map { retrived =>
                               retrived match {//ProcElemDAO.pull_object(entity) match {
                                 case None =>  Ok(Json.toJson(
                                                             Map("failure" ->  s"Could not create front element ${entity.title}")))
@@ -341,13 +349,13 @@ def createSpaceElem() = SecuredAction.async(BodyParsers.parse.json) { implicit r
   request.body.validate[RefElemContainer].map{
       case entity => {
             if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, entity.process)) {
-                 RefDAOF.retrive(entity.ref,
-                                 entity.process,
-                                 entity.business,
+                 RefDAOF.retrive(k = entity.ref,
+                                 process = entity.process,
+                                 business = entity.business,
                                  in = "nested",
-                                 entity.title,
-                                 entity.desc,
-                                 entity.space_id).map { retrived =>
+                                 title = entity.title,
+                                 desc = entity.desc,
+                                 space_id = entity.space_id).map { retrived =>
                                 retrived match { //SpaceElemDAO.pull_object(entity) match {
                                   case None =>  Ok(Json.toJson(Map("failure" ->  s"Could not create space element ${entity.title}")))
                                   case ref_resulted =>   {

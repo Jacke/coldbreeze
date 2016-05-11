@@ -19,38 +19,39 @@ object RefProjectorF extends FrontElemProjectionF
   with ReactionProjectionF
   with ReactionStateOutProjectionF {
 
-  def projecting(k: Int, 
-				process: Int, 
-				business: Int, 
-				title: String, 
-				desc:String = "", 
-				sc: String = "front", 
-				space_id: Option[Int] = None):Future[Option[RefResulted]] = {
+  def projecting(k: Int,
+				process: Int,
+				business: Int,
+				title: String,
+				desc: String = "",
+				sc: String = "front",
+				space_id: Option[Int] = None,
+        refActionContainer: List[RefActionContainer] = List() ):Future[Option[RefResulted]] = {
 
     models.DAO.reflect.RefDAOF.get(k).flatMap { refOpt =>
     refOpt match {
       case Some(ref) => {
         // Front fetching
-        val front_containerF: Future[ElemProjectionContainer] = 
+        val front_containerF: Future[ElemProjectionContainer] =
         		frontElemsProjection(k, process, business, title, desc,sc,space_id)
-		front_containerF.flatMap { front_container =>         		
+		front_containerF.flatMap { front_container =>
 		val idToRefId:Map[Int, Int] = front_container.elements
 		val ref_ids:List[Int] = front_container.elem_ref.map(_.id.get)
 
         // Space fetching
-        val space_containerF: Future[SpaceProjectionContainer] = 
+        val space_containerF: Future[SpaceProjectionContainer] =
         		spacesProjection(k, process, business, title, desc, idToRefId, ref_ids)
-		space_containerF.flatMap { space_container =>         		
+		space_containerF.flatMap { space_container =>
 
 		val conv_spaces:Map[Int, Int] = space_container.spaces_ids
 		val space_refs:List[UnitSpaceRef] = space_container.spaces_refs
 		val last_index:Int = space_container.last_index
 
         // Space elem fetching
-        val space_elem_containerF: Future[SpaceElemProjectionContainer] = 
+        val space_elem_containerF: Future[SpaceElemProjectionContainer] =
     		spaceElemsProjection(k, process, business, title, desc, conv_spaces)
-		
-		space_elem_containerF.flatMap { space_elem_container =>         		
+
+		space_elem_containerF.flatMap { space_elem_container =>
         val conv_sp_elems:Map[Int, Int] = space_elem_container.elements
         val sp_elems_refs:List[UnitSpaceElementRef] = space_elem_container.ref_ids
         /**
@@ -67,14 +68,14 @@ object RefProjectorF extends FrontElemProjectionF
 
 
         // Fetch states
-        val state_containerF: Future[StateProjectionContainer] = 
+        val state_containerF: Future[StateProjectionContainer] =
         	statesProjection(k, process, business, title, desc,idToRefId, conv_spaces, conv_sp_elems, scope=sc)
-        state_containerF.flatMap { state_container => 	
+        state_containerF.flatMap { state_container =>
         val stateIdToRefId = state_container.states_ids
         // Fetch switchers
-        val switcher_containerF: Future[SwitcherProjectionContainer] = 
+        val switcher_containerF: Future[SwitcherProjectionContainer] =
         	switcherProjection(k, process, business, title, desc, stateIdToRefId)
-        switcher_containerF.flatMap { switcher_container =>	
+        switcher_containerF.flatMap { switcher_container =>
         val switcherIdToRefId = switcher_container.switcher_ids
 
 
@@ -83,7 +84,7 @@ object RefProjectorF extends FrontElemProjectionF
         val toposF = ReflectElemTopologDAOF.findByRef(k)
         toposF.flatMap { topos =>
         def onTopo(id: Int, scope: String):Option[Int] = {
-          if (sc == scope && scope == "front")  { Some(id) } 
+          if (sc == scope && scope == "front")  { Some(id) }
           else if (sc == scope && scope == "nested") { Some(id) } else { None }
         }
 
@@ -98,14 +99,14 @@ object RefProjectorF extends FrontElemProjectionF
             front_elem_id=None)
         )
         // TOPOLOGY MAKING
-		val reaction_containerF: Future[ReactionProjectionContainer] = 
+		val reaction_containerF: Future[ReactionProjectionContainer] =
 				reactionsProjection(k, process, business, title, desc, topoElem, topoSpaceElem)
-		reaction_containerF.flatMap { reaction_container => 
+		reaction_containerF.flatMap { reaction_container =>
 		val reactionsIdToRefId:Map[Int, Int] = reaction_container.reaction_ids
 		val reaction_ref:List[UnitReactionRef] = reaction_container.reactions
-		val reaction_sout_containerF: Future[ReactionStateOutProjectionContainer] = 
+		val reaction_sout_containerF: Future[ReactionStateOutProjectionContainer] =
 				reactionStateOutsProjection(k,process,business,title,desc,reaction_ref,reactionsIdToRefId, stateIdToRefId)
-		reaction_sout_containerF.map { reaction_sout_container => 
+		reaction_sout_containerF.map { reaction_sout_container =>
 			val reaction_state_outIdToRefId = reaction_sout_container.outs_ids
 
 	        Some(RefResulted(

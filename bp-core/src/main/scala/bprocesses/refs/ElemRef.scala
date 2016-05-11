@@ -3,12 +3,12 @@ package main.scala.bprocesses.refs
 import main.scala.bprocesses._
 import main.scala.utils._
 import com.github.nscala_time.time.Imports._
-  
-import main.scala.simple_parts.process.Units._  
-  
+
+import main.scala.simple_parts.process.Units._
+
 object UnitRefs {
 
-  
+
  case class UnitElementRef(id: Option[Int],
                         reflection: Int,
                         title:String,
@@ -18,56 +18,56 @@ object UnitRefs {
                         space_own:Option[Int],
                         order:Int,
 created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
-updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) { 
-   def reflect(business:Int, process: Int, space_own:Option[Int] = None):UnitElement = { 
-       UnitElement(id, 
-title, 
-desc, 
-business, 
-process, 
-b_type, 
-type_title, 
+updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
+   def reflect(business:Int, process: Int, space_own:Option[Int] = None):UnitElement = {
+       UnitElement(id,
+title,
+desc,
+business,
+process,
+b_type,
+type_title,
 space_own,
 order,
 created_at,
-updated_at)  
+updated_at)
 
-   } 
+   }
 }
-   
+
  case class UnitSpaceRef(
-   id: Option[Int], 
+   id: Option[Int],
    reflection: Int,
-    index:Int, 
-    container:Boolean, 
-    subbrick:Boolean, 
+    index:Int,
+    container:Boolean,
+    subbrick:Boolean,
     brick_front:Option[Int]=None,
-    brick_nested:Option[Int]=None, 
+    brick_nested:Option[Int]=None,
     nestingLevel: Int = 1,
     created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
     updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
- ) { 
+ ) {
    def reflect(process: Int,
     brick_front:Option[Int]=None,
-    brick_nested:Option[Int]=None):UnitSpace = { 
-           UnitSpace(id, 
-      process, 
+    brick_nested:Option[Int]=None):UnitSpace = {
+           UnitSpace(id,
+      process,
       index,
-      container, 
-      subbrick, 
+      container,
+      subbrick,
       brick_front,
-      brick_nested, 
+      brick_nested,
       nestingLevel,
       created_at,
-      updated_at) 
-} 
-
-   
-   
+      updated_at)
 }
-  
-  
-  
+
+
+
+}
+
+
+
 case class UnitSpaceElementRef(
    id: Option[Int],
     reflection: Int,
@@ -81,8 +81,8 @@ case class UnitSpaceElementRef(
                         order:Int,
 created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
 updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
- ) { 
-  def reflect(business:Int, process: Int,space_own:Option[Int], ref_space_owned: Int):UnitSpaceElement = { 
+ ) {
+  def reflect(business:Int, process: Int,space_own:Option[Int], ref_space_owned: Int):UnitSpaceElement = {
     UnitSpaceElement(id,
                         title,
                         desc,
@@ -95,14 +95,14 @@ updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
                         space_role,
                         order,
 created_at,
-updated_at) 
-  
-} 
+updated_at)
 
 }
-   
-   
-   
+
+}
+
+
+
  case class UnitMarkerRef()
 
 
@@ -112,7 +112,7 @@ updated_at)
                                             "p",
                                             "stp",
                                             "in",
-                                            "out") 
+                                            "out")
   val switcher_cmd: List[String] = List("inc", "dec", "reset")
   val switcher_target: List[String] = List("step", "container_step", "space", "marker", "process")
 
@@ -123,43 +123,43 @@ updated_at)
                                             "inn" -> "move inside and continue",
                                             "outn" -> "move outside and continue")
 }
-   
+
  case class UnitSwitcherRef(id: Option[Int],
 reflection: Int,
-switch_type:String, 
-priority: Int = 2,                            
+switch_type:String,
+priority: Int = 2,
 state_ref:Int,
 fn: String,
 target: String,
 override_group: Int = 0,
 created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
-updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) { 
+updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
 
    def reflect(process: Int, state_ref: Int, session: Option[Int] = None):UnitSwitcher = {
      UnitSwitcher(None,
                   process,
-                  switch_type, 
-                  priority,                            
+                  switch_type,
+                  priority,
                   state_ref,
-                  session_state_ref = session,  
+                  session_state_ref = session,
                   fn,
-                  target,           
-                  override_group,               
+                  target,
+                  override_group,
                   created_at,
                   updated_at)
    }
 }
-   
-   
+
+
  case class UnitTransitionRef()
  case class UnitModelOps()
  case class UnitReactionRef(
     id: Option[Int],
     reflection: Int,
-    autostart:Boolean, 
+    autostart:Boolean,
     element: Int,
-    from_state: Option[Int],  
-    title: String,                          
+    from_state: Option[Int],
+    title: String,
     created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
     updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
 
@@ -200,24 +200,63 @@ updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
 
 case class MiddlewareRef(
     id: Option[Long],
+    title: String,
     ident: String,
+    ifaceIdent: String,
     reflection: Int,
     reaction: Int,
     created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
-      updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)    
+    updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
   )
-  
+
 case class StrategyRef(val id: Option[Long],
         ident: String,
         reflection: Int,
         middleware: Long,
+        isNullStrategy: Boolean = false,
         created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
         updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
 }
 
 
+// INPUT
+case class StrategyInputRef(
+  val id: Option[Long],
+  strategy: Long,
+  op: String,
+  title: String,
+  desc: Option[String],
+  ident: String,
+  targetType: String,
+  created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+  updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now))
+
+// BASE
+case class StrategyBaseRef(
+  val id: Option[Long],
+  strategy: Long,
+  key: String,
+  baseType: String,
+  valueType: String,
+  valueContent: String,
+  validationScheme: Option[String] = None,
+  validationPattern: Option[String] = None,
+  created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+  updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now))
 
 
-  
+// OUTPUT
+case class StrategyOutputRef(
+  val id: Option[Long],
+  strategy: Long,
+  op: String,
+  title: String,
+  desc: Option[String],
+  ident: String,
+  targetType: String,
+  created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+  updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now))
+
+
+
 }
-

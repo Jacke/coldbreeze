@@ -47,7 +47,17 @@ import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 import scala.util.Try
 
 
-case class RefElemContainer(title: String, desc: String = "", business: Int, process: Int, ref: Int, space_id: Option[Int]= None)
+import models.DAO.reflect._
+
+
+case class RefElemContainer(title: String,
+                            desc: String = "",
+                            business: Int,
+                            process: Int,
+                            ref: Int,
+                            space_id: Option[Int]= None,
+                            refActionContainer: List[RefActionContainer] = List()
+                          )
 
 
 case class ReactionCollection(reaction: UnitReaction,
@@ -99,6 +109,13 @@ class BusinessProcessController @Inject() (
   implicit val StationNoteReads = Json.reads[StationNoteMsg]
   implicit val StationNoteWrites = Json.format[StationNoteMsg]
 
+  implicit val BaseContainerReads = Json.reads[BaseContainer]
+  implicit val BaseContainerWrites = Json.format[BaseContainer]
+
+
+
+  implicit val RefActionContainerReads = Json.reads[RefActionContainer]
+  implicit val RefActionContainerWrites = Json.format[RefActionContainer]
   implicit val RefElemContainerReads = Json.reads[RefElemContainer]
   implicit val RefElemContainerWrites = Json.format[RefElemContainer]
   implicit val RefResultedReads = Json.reads[models.DAO.reflect.RefResulted]

@@ -1378,12 +1378,69 @@ span.selectedRefType {
 }
 
 
+.element-new-form .form-new-element-nav {
+    margin-top: -10px;
+    margin-bottom: 30px;
+    width: 95%;
+    text-align: center;
+    font-family: 'Open Sans';
+    font-size: 13px;
+    padding-bottom: 8px;
+}
+
+.element-new-form .form-new-element-nav a {
+    margin-right: 20px;
+    color: #06c;
+    cursor: pointer;
+}
+.element-new-form .form-new-element-nav a.active {
+    color: #607D8B;
+}
+
+.elements-list .formly-field input.form-control {
+    background: #b0bec5 !important;
+    border-radius: 2px;
+    box-shadow: none;
+    border: none;
+    background-color: #b0bec5 !important;
+    border: none !important;
+    box-shadow: none !important;
+    width: 25%;
+    margin-left: 16px;
+    display: inline-block;
+    color: white !important;
+}
+.elements-list .formly-field input.form-control::-webkit-input-placeholder {color:white;}
+.elements-list .formly-field input.form-control::-moz-placeholder          {color:white;}/* Firefox 19+ */
+.elements-list .formly-field input.form-control:-moz-placeholder           {color:white;}/* Firefox 18- */
+.elements-list .formly-field input.form-control:-ms-input-placeholder      {color:white;}
 
 
 
+.new-elem-action__action-base .formly-field.new-elem-action__action-base__action-base-form__field.formly-field-input {
+    margin-top: 35px;
+    text-align: center;
+    width: 100%;
+}
 
+.new-elem-action__action-base .formly-field.new-elem-action__action-base__action-base-form__field.formly-field-input label.control-label {
+    color: white;
+}
 
+.new-elem-strategy__strategy .new-elem-ref-actions-select__strategy-title {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 900;
+    font-family: 'Open Sans';
+}
+.new-elem-strategy__strategy a.new-elem-ref-actions-select__strategy-link {
+    color: #607D8B;
+    cursor: pointer;
+}
 
+.new-elem-strategy__strategy a.new-elem-ref-actions-select__strategy-link.selected {
+    color: white;
+}
 
 
 

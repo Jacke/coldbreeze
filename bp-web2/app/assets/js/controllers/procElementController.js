@@ -1946,7 +1946,108 @@ $scope.resetSession = function () {
 
 
 
+$scope.byReaction = function(action) {
+  return function(obj) {
+     if (obj.reaction === action.id) {
+       return obj;
+     } else {
+       return false;
+     }
+ }
+}
+$scope.byMiddleware = function(middleware) {
+  return function(obj) {
+     if (obj.middleware === middleware.id) {
+       return obj;
+     } else {
+       return false;
+     }
+ }
+}
 
+
+var vm = this;
+
+$scope.setStrategyFields = function(action) {
+  if ($scope.newBpelem.selectedRef != undefined) {
+  if (action.selectedRefFields == undefined) {  // if fields doesnt set
+  action.selectedRefFields = _.map($scope.newBpelem.selectedRef.strategies,function(strategy) {
+  var bases = _.filter($scope.newBpelem.selectedRef.bases, function(base){
+    return base.strategy == strategy.id
+  });
+
+  return {
+    strategy: strategy,
+    fields: _.map(bases, function(base) {
+    if (base.baseType == "duration") {
+      var fieldType = 'number'
+      var placeholder = '';
+      var label = 'Duration';
+    } else if (base.baseType == "datetime") {
+      var fieldType = 'text'
+      var placeholder = 'DD/MM/YEAR HH:MM:SS';
+      var label = 'Schedule';
+
+    } else {
+      var fieldType = 'text'
+      var placeholder = '';
+      var label = '';
+    }
+
+    return {
+      key: base.key,
+      type: 'input',
+      className: 'new-elem-action__action-base__action-base-form__field',
+      templateOptions: {
+        className: 'new-elem-action__action-base__action-base-form__field',
+        type: fieldType,
+        label: label,
+        placeholder: placeholder
+      }
+      }
+    })
+
+  }
+
+  });
+  };
+} else {
+  action.selectedRefFields = {};
+}
+
+}
+
+vm.fieldsForStrategy = function(strategy, action) {
+  console.log('fieldsForStrategy id', strategy.id);
+
+
+  var f = _.find(action.selectedRefFields, function(r){ return r.strategy.id == strategy.id });
+  console.log('fieldsForStrategy', f);
+  if (f !== undefined) {
+    return f.fields;
+  } else {
+    return [];
+  }
+}
+
+$scope.selectStrategy = function(strategy, middleware, action) {
+     console.log('action.selectedStrategy', action.selectedStrategy);
+     action.selectedRefFields = undefined;
+     $scope.setStrategyFields(strategy, action);
+
+    action.refStrategySelect = {
+      action: action,
+      middleware: middleware,
+      strategy: strategy
+    };
+}
+$scope.isStrategySelected = function(strategy, action) {
+  if (action.refStrategySelect != undefined && action.refStrategySelect.strategy.id == strategy.id) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 $scope.unlisted = function (session) {
   $http({

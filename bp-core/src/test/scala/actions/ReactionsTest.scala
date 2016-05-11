@@ -46,15 +46,20 @@ import main.scala.bprocesses.links._
       "With strategy" in {
         val middleware = Middleware(
             id = Some(1L),
-            ident = "delay"    
+            ident = "delay",
+              ifaceIdent = "delay"
         )
         val middleware1 = Middleware(
             id = Some(1L),
-            ident = "delay"    
+            ident = "delay",
+          ifaceIdent = "delay"
+
         )
         val middleware2 = Middleware(
             id = Some(1L),
-            ident = "delay"    
+            ident = "delay",
+          ifaceIdent = "delay"
+
         )                
         val durationStrategy = Strategy(
           id = Some(1L), ident = "durationDelayStrategy")

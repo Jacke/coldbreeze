@@ -1,4 +1,4 @@
-package models.DAO.reflect
+package models.DAO
 
 import us.ority.min.actions._
 
@@ -7,11 +7,12 @@ import models.DAO.conversion.DatabaseCred
 //import models.DAO.driver.MyPostgresDriver.simple._
 import models.DAO._
 //import models.DAO.driver.MyPostgresDriver.simple._
-import models.DAO.conversion.DatabaseFuture._  
+import models.DAO.conversion.DatabaseFuture._
 import com.github.nscala_time.time.Imports._
 import models.DAO.conversion.DatabaseCred.dbConfig.driver.api._
 import com.github.tototoshi.slick.JdbcJodaSupport._
 import main.scala.bprocesses.refs.UnitRefs._
+import main.scala.simple_parts.process.Units._
 
 
 /*
@@ -21,23 +22,35 @@ val id: Option[Long],
 			    updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
 
  */
-class StrategyRefs(tag: Tag) extends Table[StrategyRef](tag, "strategy_refs") {
-  def id          = column[Long]("id", O.PrimaryKey, O.AutoInc) 
-  def ident       = column[String]("ident")
-  def reflection  = column[Int]("reflection_id")
-  def middleware  = column[Long]("middleware_id")
-  def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")  
-  def reflectFK   = foreignKey("strategy_ref_reflect_fk", reflection, models.DAO.reflect.RefDAO.refs)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def middlewareFK= foreignKey("middleware_ref_reflect_fk", middleware, models.DAO.reflect.MiddlewareRefsDAOF.middleware_refs)(_.id, onDelete = ForeignKeyAction.Cascade) 
+class StrategyOutputs(tag: Tag) extends Table[StrategyOutputUnit](tag, "strategy_outputs") {
 
-  def * = (id.?, 
+  def id          = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def strategy    = column[Long]("strategy_id")
+  def op          = column[String]("op")
+  def title       = column[String]("title")
+  def desc        = column[Option[String]]("desc")
+
+  def ident       = column[String]("ident")
+  def targetType  = column[String]("target_type")
+
+  def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
+  def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")
+
+  def strategyFK= foreignKey("strategy_outputs_unit_strategy_fk", strategy, models.DAO.StrategiesDAOF.strategies)(_.id, onDelete = ForeignKeyAction.Cascade)
+
+
+  def * = (id.?,
+           strategy,
+           op,
+           title,
+           desc,
            ident,
-           reflection, middleware,
-           created_at, updated_at) <> (StrategyRef.tupled, StrategyRef.unapply)
+           targetType,
+           created_at, updated_at) <> (StrategyOutputUnit.tupled, StrategyOutputUnit.unapply)
+
 }
 
-object StrategyRefsDAOF {
+object StrategyOutputsDAOF {
   import akka.actor.ActorSystem
   import akka.stream.ActorFlowMaterializer
   import akka.stream.scaladsl.Source
@@ -49,18 +62,15 @@ object StrategyRefsDAOF {
   import scala.util.Try
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
-  val strategy_refs = StrategyRefsDAO.strategy_refs
+  val strategy_outputs = TableQuery[StrategyOutputs]
 
-  private def filterQuery(id: Long): Query[StrategyRefs, StrategyRef, Seq] =
-    strategy_refs.filter(_.id === id)
+  private def filterQuery(id: Long): Query[StrategyOutputs, StrategyOutputUnit, Seq] =
+    strategy_outputs.filter(_.id === id)
 
-  val create: DBIO[Unit] = strategy_refs.schema.create
-  val drop: DBIO[Unit] = strategy_refs.schema.drop
-  
+  val create: DBIO[Unit] = strategy_outputs.schema.create
+  val drop: DBIO[Unit] = strategy_outputs.schema.drop
+
   def ddl_create = db.run(create)
   def ddl_drop = db.run(drop)
 
-}
-object StrategyRefsDAO {
-	  val strategy_refs = TableQuery[StrategyRefs]
 }

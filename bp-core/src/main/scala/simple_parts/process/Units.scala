@@ -3,7 +3,7 @@ package main.scala.simple_parts.process
 import main.scala.bprocesses._
 import main.scala.utils._
 import com.github.nscala_time.time.Imports._
-import scala.collection.mutable.ListBuffer  
+import scala.collection.mutable.ListBuffer
 import us.ority.min.actions._
 
 
@@ -25,11 +25,11 @@ updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) ex
 
   def invoke {
     println("invoke confirm")
-   
+
   }
 
 }
-  
+
 case class UnitSpaceElement(
                         override val id: Option[Int],
                         override val title:String,
@@ -49,13 +49,13 @@ updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
 
   def invoke {
     println("invoke confirm")
-   
+
   }
 
 }
 
 */
-  
+
  case class UnitElement(id: Option[Int],
                         title:String,
                         desc:String,
@@ -66,35 +66,35 @@ updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
                         space_own:Option[Int],
                         order:Int,
 created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
-updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) 
-   
+updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now))
+
  case class UnitSpace(
-  id: Option[Int], 
-                      bprocess: Int, 
-                      index:Int, 
-                      container:Boolean, 
-                      subbrick:Boolean, 
+  id: Option[Int],
+                      bprocess: Int,
+                      index:Int,
+                      container:Boolean,
+                      subbrick:Boolean,
                       brick_front:Option[Int]=None,
-                      brick_nested:Option[Int]=None, 
+                      brick_nested:Option[Int]=None,
                       nestingLevel: Int = 1,
 created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
 updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
  )
-   
+
  case class UnitMarker()
  case class UnitSwitcher(id: Option[Int],
 bprocess: Int,
-switch_type:String, 
-priority: Int = 2,                            
+switch_type:String,
+priority: Int = 2,
 state_ref:Int,
-session_state_ref: Option[Int] = None,                            
+session_state_ref: Option[Int] = None,
 fn: String,
 target: String,
 override_group: Int = 0,
 created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
 updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
 }
-  
+
 case class UnitSpaceElement(
    id: Option[Int],
                         title:String,
@@ -110,26 +110,26 @@ case class UnitSpaceElement(
 created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
 updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
 )
-   
+
  case class UnitTransition()
  case class UnitModelOps()
  case class UnitReaction(id: Option[Int],
 bprocess:Int,
-autostart:Boolean, 
+autostart:Boolean,
 element: Int,
-from_state: Option[Int], 
-title: String,                           
+from_state: Option[Int],
+title: String,
 created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
 updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
 
 
-    var middlewares:ListBuffer[Middleware]                   = ListBuffer() 
-    var reaction_state_ins:ListBuffer[UnitReactionStateIn]   = ListBuffer() 
-    var reaction_state_outs:ListBuffer[UnitReactionStateOut] = ListBuffer() 
+    var middlewares:ListBuffer[Middleware]                   = ListBuffer()
+    var reaction_state_ins:ListBuffer[UnitReactionStateIn]   = ListBuffer()
+    var reaction_state_outs:ListBuffer[UnitReactionStateOut] = ListBuffer()
 
 
-    var reaction_data_ins:ListBuffer[UnitReactionDataIn]     = ListBuffer() 
-    var reaction_data_outs:ListBuffer[UnitReactionDataOut]   = ListBuffer() 
+    var reaction_data_ins:ListBuffer[UnitReactionDataIn]     = ListBuffer()
+    var reaction_data_outs:ListBuffer[UnitReactionDataOut]   = ListBuffer()
 
     def execute(process: BProcess) = {
        if (middlewares.length < 1) {
@@ -138,15 +138,15 @@ updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
          bprocesses.ReactionExecutor.executeWithMiddleware(process, this)
        }
     }
- } 
+ }
 
 
 
-case class ElemTopology(id: Option[Int], 
-  process: Int, 
-  front_elem_id: Option[Int], 
-  space_elem_id: Option[Int], 
-  hash: String = "", 
+case class ElemTopology(id: Option[Int],
+  process: Int,
+  front_elem_id: Option[Int],
+  space_elem_id: Option[Int],
+  hash: String = "",
   created_at: Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
   updated_at: Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
   space_id: Option[Int] = None)
@@ -161,7 +161,7 @@ case class ElemTopology(id: Option[Int],
   on_rate: Int = 0,
   created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
   updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
-) 
+)
  case class UnitReactionStateOut(id: Option[Int],
   state_ref: Int,
   reaction: Int,
@@ -185,7 +185,7 @@ case class ElemTopology(id: Option[Int],
   data_type:String,
   created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
   updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
-) 
+)
 
 
 
@@ -193,6 +193,44 @@ case class ElemTopology(id: Option[Int],
 
 
 
+
+// INPUT
+case class StrategyInputUnit(
+  val id: Option[Long],
+  strategy: Long,
+  op: String,
+  title: String,
+  desc: Option[String],
+  ident: String,
+  targetType: String,
+  created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+  updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now))
+
+// BASE
+case class StrategyBaseUnit(
+  val id: Option[Long],
+  strategy: Long,
+  key: String,
+  baseType: String,
+  valueType: String,
+  valueContent: String,
+  validationScheme: Option[String] = None,
+  validationPattern: Option[String] = None,
+  created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+  updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now))
+
+
+// OUTPUT
+case class StrategyOutputUnit(
+  val id: Option[Long],
+  strategy: Long,
+  op: String,
+  title: String,
+  desc: Option[String],
+  ident: String,
+  targetType: String,
+  created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+  updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now))
 
 
 
@@ -209,32 +247,32 @@ case class ElemTopology(id: Option[Int],
 case class SessionUnitSwitcher(id: Option[Int],
     bprocess: Int,
     session: Int,
-    switch_type:String, 
-    priority: Int = 2,                            
+    switch_type:String,
+    priority: Int = 2,
     state_ref:Int,
-    session_state_ref: Option[Int] = None,                            
+    session_state_ref: Option[Int] = None,
     fn: String,
     target: String,
     override_group: Int = 0,
     created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
     updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
 }
- 
+
  case class SessionUnitReaction(id: Option[Int],
     bprocess:Int,
     session: Int,
-    autostart:Boolean, 
+    autostart:Boolean,
     element: Int,
-    from_state: Option[Int], 
-    title: String,                           
+    from_state: Option[Int],
+    title: String,
     created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
     updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
 
-    var reaction_state_outs:ListBuffer[UnitReactionStateOut] = ListBuffer() 
+    var reaction_state_outs:ListBuffer[UnitReactionStateOut] = ListBuffer()
     def execute(process: BProcess) {
        //bprocesses.ReactionExecutor.execute(process, this)
     }
- } 
+ }
 case class SessionUnitReactionStateOut(id: Option[Int],
   state_ref: Int,
   reaction: Int,
@@ -246,12 +284,12 @@ case class SessionUnitReactionStateOut(id: Option[Int],
   )
 
 
-case class SessionElemTopology(id: Option[Int], 
-    process: Int, 
+case class SessionElemTopology(id: Option[Int],
+    process: Int,
     session: Int,
-    front_elem_id: Option[Int], 
-    space_elem_id: Option[Int], 
-    hash: String = "", 
+    front_elem_id: Option[Int],
+    space_elem_id: Option[Int],
+    hash: String = "",
     created_at: Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
     updated_at: Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
     space_id: Option[Int] = None)

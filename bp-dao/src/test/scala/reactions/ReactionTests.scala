@@ -22,7 +22,7 @@ import main.scala.bprocesses.refs._
 class ActionSpec extends Specification {
 
     var instance:Option[BProcess] = None
-     
+
     def prepare_process:BProcess = {
           val proc2 = new BProcess(new Managment)
           proc2.push {
@@ -38,9 +38,9 @@ class ActionSpec extends Specification {
             //new Brick(proc, 3),
             //new Space(3, 1),new Space(3, 2))
           }
-          
+
           proc2.elements_init // Important!
-          
+
           proc2
     }
 
@@ -51,20 +51,20 @@ class ActionSpec extends Specification {
       "With strategy" in {
         val middleware = Middleware(
             id = Some(1L),
-            ident = "delay"    
+            ident = "delay"
         )
         val middleware1 = Middleware(
             id = Some(1L),
-            ident = "delay"    
+            ident = "delay"
         )
         val middleware2 = Middleware(
             id = Some(1L),
-            ident = "delay"    
-        )                
+            ident = "delay"
+        )
         val durationStrategy = Strategy(
           id = Some(1L), ident = "durationDelayStrategy")
         val scheduleStrategy = Strategy(
-          id = Some(1L), ident = "scheduleDelayStrategy")        
+          id = Some(1L), ident = "scheduleDelayStrategy")
         middleware.pushToStrategies(durationStrategy)
         middleware1.pushToStrategies(scheduleStrategy)
 
@@ -91,10 +91,10 @@ class ActionSpec extends Specification {
 
               val reaction = UnitReaction(id = Some(1),
                                       bprocess = 1,
-                                      autostart = true, 
+                                      autostart = true,
                                       element = 1,
-                                      from_state=None, 
-                                      title="Make delay") 
+                                      from_state=None,
+                                      title="Make delay")
               val out1 = UnitReactionStateOut(id=Some(1),
               state_ref = 1,
               reaction = 1,
@@ -102,7 +102,7 @@ class ActionSpec extends Specification {
               val out2 = UnitReactionStateOut(id=Some(2),
               state_ref = 1,
               reaction = 1,
-              on  = false)  
+              on  = false)
 
 
               reaction.reaction_state_outs += out1
@@ -110,13 +110,13 @@ class ActionSpec extends Specification {
               reaction.middlewares += middleware
               reaction.execute(proc2)
               reactionOpt = Some(reaction)
-              reaction.reaction_state_outs.length > 0              
+              reaction.reaction_state_outs.length > 0
             "Is middleware added?" in {
                   reactionOpt.isDefined && reactionOpt.get.middlewares.length > 0
             }
             "Is middleware executed?" in {
                   reactionOpt.isDefined && reactionOpt.get.middlewares.length > 0
-            }            
+            }
         }
         // Create Delayed Ref
         "`Delayed ref` creation" in {
@@ -134,10 +134,10 @@ val elem = UnitElementRef(id = None,
                         order = 1)
 val refElemId = ProcElemReflectionDAO.pull_object(elem)
 
-val topo = RefElemTopology(id = None, 
-  reflection = refId, 
-  front_elem_id = Some(refElemId), 
-  space_elem_id = None, 
+val topo = RefElemTopology(id = None,
+  reflection = refId,
+  front_elem_id = Some(refElemId),
+  space_elem_id = None,
   hash = "")
 val topoId = ReflectElemTopologDAO.pull_object(topo)
 
@@ -145,7 +145,7 @@ val topoId = ReflectElemTopologDAO.pull_object(topo)
 val state1Id = BPStateRefDAO.pull_object(BPStateRef(
   None,
   reflection = refId,
-  title = "started", 
+  title = "started",
   neutral = "not started",
   process_state = false,
   on = false,
@@ -153,8 +153,8 @@ val state1Id = BPStateRefDAO.pull_object(BPStateRef(
   front_elem_id = Some(refElemId),
   space_elem_id = None,
   space_id = None,
-  created_at = Some(org.joda.time.DateTime.now), 
-  updated_at = Some(org.joda.time.DateTime.now), 
+  created_at = Some(org.joda.time.DateTime.now),
+  updated_at = Some(org.joda.time.DateTime.now),
   lang = "en",
   middle = "",
   middleable = false,
@@ -163,7 +163,7 @@ val state1Id = BPStateRefDAO.pull_object(BPStateRef(
 val state2Id = BPStateRefDAO.pull_object(BPStateRef(
   None,
   reflection = refId,
-  title = "invoked", 
+  title = "invoked",
   neutral = "not invoked",
   process_state = false,
   on = false,
@@ -171,8 +171,8 @@ val state2Id = BPStateRefDAO.pull_object(BPStateRef(
   front_elem_id = Some(refElemId),
   space_elem_id = None,
   space_id = None,
-  created_at = Some(org.joda.time.DateTime.now), 
-  updated_at = Some(org.joda.time.DateTime.now), 
+  created_at = Some(org.joda.time.DateTime.now),
+  updated_at = Some(org.joda.time.DateTime.now),
   lang = "en",
   middle = "",
   middleable = false,
@@ -183,8 +183,8 @@ val state2Id = BPStateRefDAO.pull_object(BPStateRef(
 
 val swId = SwitcherRefDAO.pull_object(UnitSwitcherRef(id = None,
 reflection = refId,
-switch_type = "p", 
-priority = 2,                            
+switch_type = "p",
+priority = 2,
 state_ref = state2Id,
 fn = "paused",
 target = "process",
@@ -193,9 +193,9 @@ override_group = 0))
 val reactionId = ReactionRefDAOF.pull_object(UnitReactionRef(
     id = None,
     reflection = refId,
-    autostart = true, 
+    autostart = true,
     element = topoId,
-    from_state = None,  
+    from_state = None,
     title = "Make delay"))
 
 val reactionOutId = ReactionStateOutRefDAO.pull_object(UnitReactionStateOutRef(id: Option[Int],
@@ -229,13 +229,13 @@ val durationStrategyId = StrategyRefsDAOF.pull_object(StrategyRef(id = None,
         		case _ => {
         			val refId = RefDAO.pull_object(
         				Ref(
-    	     			  None, 
-			              title = "Timer", 
-			              host = "", 
+    	     			  None,
+			              title = "Timer",
+			              host = "",
 			              desc = None,
-			              created_at = None, 
-			              updated_at = None, 
-			              category = "Base", 
+			              created_at = None,
+			              updated_at = None,
+			              category = "Base",
 			              hidden = false
         				))
         			refId > 0
@@ -244,11 +244,11 @@ val durationStrategyId = StrategyRefsDAOF.pull_object(StrategyRef(id = None,
         }
 
       }
-      
+
 
     }
 
-   
+
 
 
 /*
@@ -273,7 +273,7 @@ val durationStrategyId = StrategyRefsDAOF.pull_object(StrategyRef(id = None,
       "contain spaces in container" in {
         proc.spaces.length > 0
       }
-      
+
       "Space elem test" in {
         val proc2 = proc
         true
@@ -283,7 +283,7 @@ val durationStrategyId = StrategyRefsDAOF.pull_object(StrategyRef(id = None,
         //println(proc2.spaces.last.expands) // must be false
         //proc2.spaces.last.expands.length > 0
       }
-      
+
       "Order test" in {
         proc.spaces.head.findByOrder("container", order = 3).get.order == 3
         proc.spaces.head.getOrderNum("container") === 4

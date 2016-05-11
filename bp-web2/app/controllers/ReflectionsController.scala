@@ -78,7 +78,12 @@ case class RefContainer(ref: Ref,
                         unitswitcher:List[UnitSwitcherRef],
                         reactions: List[UnitReactionRef],
                         reaction_state_outs: List[UnitReactionStateOutRef],
-                        reaction_cn: List[ReactionContainer]
+                        reaction_cn: List[ReactionContainer],
+                        middlewares: Seq[MiddlewareRef] = Seq(),
+                        strategies: Seq[StrategyRef] = Seq(),
+                        inputs: Seq[StrategyInputRef] = Seq(),
+                        bases: Seq[StrategyBaseRef] = Seq(),
+                        outputs: Seq[StrategyOutputRef] = Seq()
 	)
 
 case class ReactionContainer(reaction: UnitReactionRef,
@@ -104,6 +109,18 @@ implicit val UnitReactionRefWrites = Json.format[UnitReactionRef]
 implicit val UnitReactionStateOutRefReads = Json.reads[UnitReactionStateOutRef]
 implicit val UnitReactionStateOutRefWrites = Json.format[UnitReactionStateOutRef]
 
+implicit val MiddlewareRefReads = Json.reads[MiddlewareRef]
+implicit val StrategyRefReads = Json.reads[StrategyRef]
+implicit val StrategyInputRefReads = Json.reads[StrategyInputRef]
+implicit val StrategyBaseRefReads = Json.reads[StrategyBaseRef]
+implicit val StrategyOutputRefReads = Json.reads[StrategyOutputRef]
+
+implicit val MiddlewareRefWrites = Json.format[MiddlewareRef]
+implicit val StrategyRefWrites = Json.format[StrategyRef]
+implicit val StrategyInputRefWrites = Json.format[StrategyInputRef]
+implicit val StrategyBaseRefWrites = Json.format[StrategyBaseRef]
+implicit val StrategyOutputRefWrites = Json.format[StrategyOutputRef]
+
 
 
 implicit val ReactionContainerReads = Json.reads[ReactionContainer]
@@ -117,6 +134,15 @@ def index() = SecuredAction { implicit request =>
   val refs_collected = refs.map { ref =>
       val reactions = ReactionRefDAO.findByRef(ref.id.get)
       val reaction_outs = ReactionStateOutRefDAO.findByReactionRefs(reactions.map(_.id.get))
+      val middlewares = MiddlewareRefsDAOF.await( MiddlewareRefsDAOF.getByRef(ref.id.get) )
+      val middlewaresIds = middlewares.map(_.id.get).toList
+      val strategies = MiddlewareRefsDAOF.await( StrategyRefsDAOF.getByMWS(middlewaresIds) )
+      val strategiesIds = strategies.map(_.id.get).toList
+      val bases = StrategyBaseRefsDAOF.await( StrategyBaseRefsDAOF.getByStrategies(strategiesIds) )
+      val inputs = StrategyInputRefsDAOF.await( StrategyInputRefsDAOF.getByStrategies(strategiesIds) )
+      val ouputs = StrategyInputRefsDAOF.await( StrategyOutputRefsDAOF.getByStrategies(strategiesIds) )
+
+
       RefContainer(ref,
         ProcElemReflectionDAO.findByRef(ref.id.get),
         SpaceReflectionDAO.findByRef(ref.id.get),
@@ -125,8 +151,14 @@ def index() = SecuredAction { implicit request =>
         BPStateRefDAO.findByRef(ref.id.get),
         SwitcherRefDAO.findByRef(ref.id.get),
         reactions,
-      reaction_outs,
-      reactions.map( re => ReactionContainer(re, reaction_outs.filter(out => out.reaction == re.id.get )))
+        reaction_outs,
+        reactions.map( re => ReactionContainer(re, reaction_outs.filter(out => out.reaction == re.id.get ))),
+
+        middlewares = middlewares,
+        strategies = strategies,
+        inputs = inputs,
+        bases = bases,
+        outputs = ouputs
 )
 
   }
