@@ -196,7 +196,7 @@
                   <span class="uicon-svg2222"></span>@Messages("nav.settings")  </a>
               </li>
               <li class="secondaryNavItem">
-@form(CSRF(routes.ApplicationController2.signOut()), 'class -> "logoutForm") {
+@form(routes.ApplicationController2.signOut(), 'class -> "logoutForm") {
                 <button class="logoutBtn vIcoIn" type="submit"><span class="uicon-svg522 vLogout vDimmedState"></span>
                   @Messages("page.signout") </button>
 }
