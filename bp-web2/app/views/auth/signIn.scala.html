@@ -116,7 +116,6 @@ body.website.loginFlow.animate .loginPage.loginPage__login.loginPage__active {
               @helper.form(action = routes.CredentialsAuthController.authenticate(),
               'id -> "email-form",
               'class -> "loginInputs form-horizontal") {
-                          @helper.CSRF.formField
 
 
               @b3.email(signInForm("email"),
