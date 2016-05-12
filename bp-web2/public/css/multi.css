@@ -4,7 +4,7 @@
 
 
 /*
-Cards 
+Cards
 */
 
 
@@ -1188,7 +1188,7 @@ body .panelLegacy .githubLogin a {
 
 .panelLike {
     max-width: 1020px;
-    
+
     margin: 0 auto;
 }
 
@@ -1830,10 +1830,11 @@ background: white;
 }
 
 .tableMinListWrap .flatButton:hover, .teamSettingsWrap .flatButton:hover, .tableMinListWrap .createMin:hover, .teamSettingsWrap .createMin:hover, .tableMinListWrap .flatButton:focus, .teamSettingsWrap .flatButton:focus, .tableMinListWrap .createMin:focus, .teamSettingsWrap .createMin:focus {
-background-color: #2fca84;
-color: #fff;
-cursor: pointer;
-text-decoration: none;
+  background-color: #0FB76B;
+  color: #fff;
+  cursor: pointer;
+  text-decoration: none;
+  background-image: linear-gradient(to left bottom, rgba(244,120,120,0) 0%, rgba(53, 158, 110, 0.6) 100%);
 }
 
 .tableMinListWrap .flatButton:hover .vIco,.teamSettingsWrap .flatButton:hover .vIco,.tableMinListWrap .createMin:hover .vIco,.teamSettingsWrap .createMin:hover .vIco,.tableMinListWrap .flatButton:focus .vIco,.teamSettingsWrap .flatButton:focus .vIco,.tableMinListWrap .createMin:focus .vIco,.teamSettingsWrap .createMin:focus .vIco {
@@ -1843,7 +1844,16 @@ text-decoration: none;
 }
 
 .tableMinListWrap .createMin,.teamSettingsWrap .createMin {
-    background-color: #49cc90;
+  background-color: #49cc90;
+  background-image: linear-gradient(to left bottom, rgba(244,120,120,0) 0%, rgba(139, 247, 198, 0.6) 100%);
+  transition-property: all;
+  transition-duration: 1s;
+  transition-timing-function: linear;
+}
+span.plusSign.vIco.vPlusSquare.vShineState {
+    transition-property: all;
+    transition-duration: 1s;
+    transition-timing-function: linear;
 }
 
 .tableMinListWrap .flatGreen,.teamSettingsWrap .flatGreen {
