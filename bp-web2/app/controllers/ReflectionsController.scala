@@ -471,37 +471,39 @@ def switche_delete(switch_id: Int) = SecuredAction { implicit request =>
 
 
 // Action internals
- def create_middleware(reaction_id: Int) = SecuredAction { implicit request =>
-   Ok(Json.toJson("success" -> "Ok"))
+def create_middleware(reaction_id: Int) = SecuredAction { implicit request =>
+   Ok("Ok")
 }
+def create_strategy(reaction_id: Int) = SecuredAction { implicit request =>
+  Ok("Ok")
+}
+
+
  def delete_middleware(reaction_id: Int, middleware_id: Long) = SecuredAction { implicit request =>
-   Ok(Json.toJson("success" -> "Ok"))
-}
- def create_strategy(reaction_id: Int) = SecuredAction { implicit request =>
-   Ok(Json.toJson("success" -> "Ok"))
+   Ok("Ok")
 }
  def delete_strategy(reaction_id: Int, strategy_id: Long) = SecuredAction { implicit request =>
-   Ok(Json.toJson("success" -> "Ok"))
+   Ok("Ok")
 }
 
 // Action pipes
- def create_base(reaction_id: Int) = SecuredAction { implicit request =>
-   Ok(Json.toJson("success" -> "Ok"))
+def create_base(reaction_id: Int) = SecuredAction { implicit request =>
+   Ok("Ok")
+}
+def create_input(reaction_id: Int) = SecuredAction { implicit request =>
+  Ok("Ok")
+}
+def create_output(reaction_id: Int) = SecuredAction { implicit request =>
+  Ok("Ok")
 }
  def delete_base(reaction_id: Int, base_id: Long) = SecuredAction { implicit request =>
-   Ok(Json.toJson("success" -> "Ok"))
-}
- def create_input(reaction_id: Int) = SecuredAction { implicit request =>
-   Ok(Json.toJson("success" -> "Ok"))
+   Ok("Ok")
 }
  def delete_input(reaction_id: Int, input_id: Long) = SecuredAction { implicit request =>
-   Ok(Json.toJson("success" -> "Ok"))
-}
- def create_output(reaction_id: Int) = SecuredAction { implicit request =>
-   Ok(Json.toJson("success" -> "Ok"))
+   Ok("Ok")
 }
  def delete_output(reaction_id: Int, output: Long) = SecuredAction { implicit request =>
-   Ok(Json.toJson("success" -> "Ok"))
+   Ok("Ok")
 }
 
 
