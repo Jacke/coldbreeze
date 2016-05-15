@@ -12,18 +12,14 @@
 </div>
 
 <div class="form-group element-form-fields control-group clearfix">
+  <label class="control-label primary-label col-xs-2 type-label" disable-auto-validate="true" for="inputTitle">Type</label>
 
-<div class="controls col-xs-2">
-    <label class="control-label ng-binding" disable-auto-validate="true" for="inputTitle">Type</label>
-</div>
-<div class="controls col-xs-6">
-    <span class="selectedRefType">{{ newBpelem.selectedRef.ref.title }}</span>
-      <a ng-click="newBpelem.refSelectHidden=false;" ng-show="newBpelem.refSelectHidden == true;" class="expand-ref-select">
-        <span class="moicon moicon-info expand-ref-select"></span>
-      </a>
-
-</div>
+  <span class="selectedRefType col-xs-6 ref-selected-object">{{ newBpelem.selectedRef.ref.title }}</span>
+  <a ng-click="newBpelem.refSelectHidden=false;" ng-show="newBpelem.refSelectHidden == true;" class="expand-ref-select">
+    <span class="moicon moicon-info expand-ref-select"></span>
+  </a>
 </div><!-- form-group element-form-fields -->
+
 </div>
 
 <div class="ref-select-container fadein clearfix"

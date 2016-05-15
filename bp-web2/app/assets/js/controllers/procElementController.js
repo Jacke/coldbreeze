@@ -1026,6 +1026,14 @@ $scope.options = {
     })
   }
 
+  $scope.safeParseInt = function(v) {
+    if (isNaN(parseInt(v))) {
+      return -1;
+    } else {
+      return parseInt(v);
+    }
+  }
+
   $scope.createNewElem = function () {
 
 
@@ -1043,23 +1051,42 @@ $scope.options = {
           base_content_number: Long = 0L,
           base_content_boolean: Boolean
           */
-          console.log("action.selectedStrategy", action.selectedStrategy);
+          // Action
+          // Action 1 -> 1 Middleware
+          // Middleware 1 -> 1 Strategy
+          // Strategy 1 -> many Bases
+          console.log('action.selectedStrategy', action.selectedStrategy);
         return {
           action_id: action.id,
-          middleware_id: action.selectedRefFields.strategy.middleware,
-          strategy_id: action.selectedRefFields.strategy.id,
-          bases: [{
-            base_id: "action.selectedStrategy.base_id",
-            base_req_type: "number",
-            base_content_string: "",
-            base_content_number: 0,
-            base_content_boolean: false
-          }]
+          middleware_id: action.refStrategySelect.middleware.id,
+          strategy_id: action.refStrategySelect.strategy.id,
+          bases: _.map(action.refStrategySelect.bases, function(base){
+            return {
+              base_id: base.id,
+              base_req_type: base.selectedStrategy['field_type'],
+              base_content_string: base.selectedStrategy[base.key].toString(),
+              base_content_number: $scope.safeParseInt( base.selectedStrategy[base.key] ),
+              base_content_boolean: false
+            }
+          })
+
 
         }
-    })
+    });
 
-    BPElemsFactory.create($scope.newBpelem).$promise.then(function(data) {
+    var newElement = {
+      business: $scope.newBpelem.business,
+      comps: [],
+      desc: $scope.newBpelem.desc,
+      order: $scope.newBpelem.order,
+      process: $scope.newBpelem.process,
+      ref: $scope.newBpelem.ref,
+      title: $scope.newBpelem.title,
+      refActionContainer: actionContainer
+    }
+    console.log('newElement is', newElement);
+
+    BPElemsFactory.create(newElement).$promise.then(function(data) {
 
     console.log(data);
     //angular.element('.element-new-form').hide();

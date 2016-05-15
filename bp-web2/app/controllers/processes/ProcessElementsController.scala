@@ -322,7 +322,7 @@ request.body.validate[RefElemContainer].map {
         } else { Future( Forbidden(Json.obj("status" -> "Access denied")) ) }
     }
     }.recoverTotal{
-      e => Future( BadRequest("formWithErrors") )
+      e => Future( BadRequest(e.toString) )
     }
 }
 def createSpace() = SecuredAction(BodyParsers.parse.json) { implicit request =>

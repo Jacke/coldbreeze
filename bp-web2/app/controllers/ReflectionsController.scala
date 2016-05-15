@@ -55,12 +55,7 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import play.api.mvc.{ Action, RequestHeader }
-class ReflectionsController @Inject() (
-  val messagesApi: MessagesApi,
-  val env: Environment[User2, CookieAuthenticator],
-  socialProviderRegistry: SocialProviderRegistry)
-  extends Silhouette[User2, CookieAuthenticator] {
-  // case classes
+// case classes
 /*
 Ref
 UnitElementRef
@@ -70,24 +65,32 @@ BPStateRef
 UnitSwitcherRef
 */
 case class RefContainer(ref: Ref,
-                        unitelement:List[UnitElementRef],
-                        unitspace:List[UnitSpaceRef],
-                        unitspaceelement:List[UnitSpaceElementRef],
-                        topology: List[RefElemTopology],
-                        bpstate:List[BPStateRef],
-                        unitswitcher:List[UnitSwitcherRef],
-                        reactions: List[UnitReactionRef],
-                        reaction_state_outs: List[UnitReactionStateOutRef],
-                        reaction_cn: List[ReactionContainer],
-                        middlewares: Seq[MiddlewareRef] = Seq(),
-                        strategies: Seq[StrategyRef] = Seq(),
-                        inputs: Seq[StrategyInputRef] = Seq(),
-                        bases: Seq[StrategyBaseRef] = Seq(),
-                        outputs: Seq[StrategyOutputRef] = Seq()
-	)
+  unitelement:List[UnitElementRef],
+  unitspace:List[UnitSpaceRef],
+  unitspaceelement:List[UnitSpaceElementRef],
+  topology: List[RefElemTopology],
+  bpstate:List[BPStateRef],
+  unitswitcher:List[UnitSwitcherRef],
+  reactions: List[UnitReactionRef],
+  reaction_state_outs: List[UnitReactionStateOutRef],
+  reaction_cn: List[ReactionContainer],
+  middlewares: Seq[MiddlewareRef] = Seq(),
+  strategies: Seq[StrategyRef] = Seq(),
+  inputs: Seq[StrategyInputRef] = Seq(),
+  bases: Seq[StrategyBaseRef] = Seq(),
+  outputs: Seq[StrategyOutputRef] = Seq()
+)
 
 case class ReactionContainer(reaction: UnitReactionRef,
-                             reaction_state_outs: List[UnitReactionStateOutRef])
+  reaction_state_outs: List[UnitReactionStateOutRef])
+
+
+
+class ReflectionsController @Inject() (
+                                        val messagesApi: MessagesApi,
+                                        val env: Environment[User2, CookieAuthenticator],
+                                        socialProviderRegistry: SocialProviderRegistry)
+                                        extends Silhouette[User2, CookieAuthenticator] {
 
 implicit val RefReads = Json.reads[Ref]
 implicit val RefWrites = Json.format[Ref]
@@ -269,19 +272,7 @@ def switche_create(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit r
       e => BadRequest("formWithErrors")
     }
 }
-def reaction_create(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
-  request.body.validate[ReactionContainer].map{
-    case entity => ReactionRefDAO.pull_object(entity.reaction) match {
-            case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not create ref ${entity.reaction.element}")))
-            case id =>  {
-              entity.reaction_state_outs.foreach(out => ReactionStateOutRefDAO.pull_object(out))
-              Ok(Json.toJson(Map("success" ->  id)))
-            }
-          }
-    }.recoverTotal{
-      e => BadRequest("formWithErrors")
-    }
-}
+
 
 
 /***
@@ -376,27 +367,7 @@ def switche_update(switch_id: Int) = SecuredAction(BodyParsers.parse.json) { imp
 }
 
 
-def reaction_update(reaction_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
-  request.body.validate[ReactionContainer].map{
-    case entity => ReactionRefDAO.update(reaction_id,entity.reaction) match { // ReactionRefDAO ReactionStateOutRefDAO
 
-            case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not update reaction ${entity.reaction.element}")))
-            case _ =>  { val out_ids = ReactionStateOutRefDAO.findByReactionRef(reaction_id).map(_.id.get)
-                         out_ids.foreach { id =>
-                            entity.reaction_state_outs.find(_.id == Some(id)) match {
-                              case Some(state_out) => ReactionStateOutRefDAO.update(id, state_out)
-                              case _ => BadRequest(Json.toJson(Map("error" -> "cat unpdate state out")))
-                            }
-                          }
-                          Ok(Json.toJson(entity.reaction.id))
-
-                        }
-          }
-    }.recoverTotal{
-      e => BadRequest("formWithErrors")
-    }
-
-}
 
 
 
@@ -446,12 +417,101 @@ def switche_delete(switch_id: Int) = SecuredAction { implicit request =>
       }
 }
 
-def reaction_delete(reaction_id: Int) = SecuredAction { implicit request =>
-    ReactionRefDAO.delete(reaction_id) match {
-        case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
-        case x =>  Ok(Json.toJson(Map("success" -> s"Entity has been deleted (deleted $x row(s))")))
-      }
+
+
+
+
+
+/********************************************************************************************************************
+********************************************************************************************************************
+                                                Action reflections
+********************************************************************************************************************
+*********************************************************************************************************************/
+
+ def reaction_create(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+   request.body.validate[ReactionContainer].map{
+     case entity => ReactionRefDAO.pull_object(entity.reaction) match {
+             case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not create ref ${entity.reaction.element}")))
+             case id =>  {
+               entity.reaction_state_outs.foreach(out => ReactionStateOutRefDAO.pull_object(out))
+               Ok(Json.toJson(Map("success" ->  id)))
+             }
+           }
+     }.recoverTotal{
+       e => BadRequest("formWithErrors")
+     }
+ }
+ def reaction_update(reaction_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+   request.body.validate[ReactionContainer].map{
+     case entity => ReactionRefDAO.update(reaction_id,entity.reaction) match { // ReactionRefDAO ReactionStateOutRefDAO
+
+             case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not update reaction ${entity.reaction.element}")))
+             case _ =>  { val out_ids = ReactionStateOutRefDAO.findByReactionRef(reaction_id).map(_.id.get)
+                          out_ids.foreach { id =>
+                             entity.reaction_state_outs.find(_.id == Some(id)) match {
+                               case Some(state_out) => ReactionStateOutRefDAO.update(id, state_out)
+                               case _ => BadRequest(Json.toJson(Map("error" -> "cat unpdate state out")))
+                             }
+                           }
+                           Ok(Json.toJson(entity.reaction.id))
+
+                         }
+           }
+     }.recoverTotal{
+       e => BadRequest("formWithErrors")
+     }
+
+ }
+ def reaction_delete(reaction_id: Int) = SecuredAction { implicit request =>
+     ReactionRefDAO.delete(reaction_id) match {
+         case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
+         case x =>  Ok(Json.toJson(Map("success" -> s"Entity has been deleted (deleted $x row(s))")))
+       }
+ }
+
+
+// Action internals
+ def create_middleware(reaction_id: Int) = SecuredAction { implicit request =>
+   Ok(Json.toJson("success" -> "Ok"))
 }
+ def delete_middleware(reaction_id: Int, middleware_id: Long) = SecuredAction { implicit request =>
+   Ok(Json.toJson("success" -> "Ok"))
+}
+ def create_strategy(reaction_id: Int) = SecuredAction { implicit request =>
+   Ok(Json.toJson("success" -> "Ok"))
+}
+ def delete_strategy(reaction_id: Int, strategy_id: Long) = SecuredAction { implicit request =>
+   Ok(Json.toJson("success" -> "Ok"))
+}
+
+// Action pipes
+ def create_base(reaction_id: Int) = SecuredAction { implicit request =>
+   Ok(Json.toJson("success" -> "Ok"))
+}
+ def delete_base(reaction_id: Int, base_id: Long) = SecuredAction { implicit request =>
+   Ok(Json.toJson("success" -> "Ok"))
+}
+ def create_input(reaction_id: Int) = SecuredAction { implicit request =>
+   Ok(Json.toJson("success" -> "Ok"))
+}
+ def delete_input(reaction_id: Int, input_id: Long) = SecuredAction { implicit request =>
+   Ok(Json.toJson("success" -> "Ok"))
+}
+ def create_output(reaction_id: Int) = SecuredAction { implicit request =>
+   Ok(Json.toJson("success" -> "Ok"))
+}
+ def delete_output(reaction_id: Int, output: Long) = SecuredAction { implicit request =>
+   Ok(Json.toJson("success" -> "Ok"))
+}
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1262,6 +1262,10 @@ span.selectedRefType {
     display: inline-block;
     margin-top: 5px;
 }
+span.selectedRefType.col-xs-6.ref-selected-object {
+    padding-left: 0px;
+}
+
 .ref-desc ul {
     list-style: none;
     margin-left: 0px;
@@ -2820,12 +2824,12 @@ z-index: 20;
     display: none;
 }
 .state-sign {
-width: 10px;
-height: 10px;
-border-radius: 50%;
-display: inline-block;
-margin: 0 10px 0 0;
-background-color: #434554;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 0 10px 0 0;
+  background-color: #434554;
 }
 .state-sign.valid,.state-sign.ready,.state-sign.working,.state-sign.warning,.state-sign.pending,.state-sign.retrieving,.state-sign.valid_credentials,.state-sign.setup {
     background-color: #46cbb4
@@ -2833,6 +2837,10 @@ background-color: #434554;
 
 .state-sign.error,.state-sign.temporary_enavailable,.state-sign.user_action_required,.state-sign.plan_not_enought {
     background: #cc5a5f
+}
+.state-sign.yellow {
+    color: #FFC107;
+    background-color: #FFC107;
 }
 
 .state-sign.blinking {

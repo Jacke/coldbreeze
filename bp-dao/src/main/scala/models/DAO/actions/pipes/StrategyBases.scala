@@ -83,6 +83,10 @@ object StrategyBasesDAOF {
   val create: DBIO[Unit] = strategy_bases.schema.create
   val drop: DBIO[Unit] = strategy_bases.schema.drop
 
+
+  def pull(s: StrategyBaseUnit):Future[Long] = db.run(strategy_bases returning strategy_bases.map(_.id) += s)
+  def get(id: Long) = db.run(filterQuery(id).result.headOption)
+
   def ddl_create = db.run(create)
   def ddl_drop = db.run(drop)
 

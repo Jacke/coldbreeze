@@ -1842,7 +1842,10 @@ background: white;
     -ms-filter: none;
     filter: none;
 }
-
+.tableMinListWrap .flatButton:active, .teamSettingsWrap .flatButton:active, .tableMinListWrap .createMin:active, .teamSettingsWrap .createMin:active, .tableMinListWrap .flatButton:active, .teamSettingsWrap .flatButton:active, .tableMinListWrap .createMin:active, .teamSettingsWrap .createMin:active {
+    box-shadow: 0px 1px 12px rgba(0, 0, 0, 0.35) inset;
+    transition: all 0.1s;
+}
 .tableMinListWrap .createMin,.teamSettingsWrap .createMin {
   background-color: #49cc90;
   background-image: linear-gradient(to left bottom, rgba(244,120,120,0) 0%, rgba(139, 247, 198, 0.6) 100%);

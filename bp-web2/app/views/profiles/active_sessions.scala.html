@@ -45,7 +45,9 @@
 <div class="instant-input">
     <span class="element-thumb">@currentReaction.title</span>
     <button class="confirm-btn reaction_id @{currentReaction.reaction.id.getOrElse(0)}" data-session-id="@session.session.id" data-process-id="@session.process.id" data-reaction-id="@currentReaction.reaction.id.getOrElse(0)">@currentReaction.reaction.title</button>
+<!--
     <div class="instant-input-attachment" data-session-id="@session.session.id" id="pick"><span data-session-id="@session.session.id" class="moicon moicon-paste"></span></div>
+-->
 
 <div class="instant-input-file-list" id="instant-input-file-list-@{session.session.id}"></div>
 

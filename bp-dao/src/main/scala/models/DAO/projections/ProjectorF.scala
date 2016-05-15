@@ -17,7 +17,8 @@ object RefProjectorF extends FrontElemProjectionF
   with StateProjectionF
   with SwitcherProjectionF
   with ReactionProjectionF
-  with ReactionStateOutProjectionF {
+  with ReactionStateOutProjectionF
+  with ActionIternalProjectionF {
 
   def projecting(k: Int,
 				process: Int,
@@ -99,29 +100,39 @@ object RefProjectorF extends FrontElemProjectionF
             front_elem_id=None)
         )
         // TOPOLOGY MAKING
-		val reaction_containerF: Future[ReactionProjectionContainer] =
-				reactionsProjection(k, process, business, title, desc, topoElem, topoSpaceElem)
-		reaction_containerF.flatMap { reaction_container =>
-		val reactionsIdToRefId:Map[Int, Int] = reaction_container.reaction_ids
-		val reaction_ref:List[UnitReactionRef] = reaction_container.reactions
-		val reaction_sout_containerF: Future[ReactionStateOutProjectionContainer] =
-				reactionStateOutsProjection(k,process,business,title,desc,reaction_ref,reactionsIdToRefId, stateIdToRefId)
-		reaction_sout_containerF.map { reaction_sout_container =>
-			val reaction_state_outIdToRefId = reaction_sout_container.outs_ids
+    		val reaction_containerF: Future[ReactionProjectionContainer] =
+          reactionsProjection(k, process, business, title, desc, topoElem, topoSpaceElem)
 
-	        Some(RefResulted(
-	          proc_elems = idToRefId.values.toList,
-	          space_elems = conv_sp_elems.values.toList,
-	          spaces = conv_spaces.values.toList,
-	          states = stateIdToRefId.values.toList,
-	          switches = switcherIdToRefId.values.toList,
-	          reactions = reactionsIdToRefId.values.toList,
-	          reaction_state_outs = reaction_state_outIdToRefId.values.toList,
-	          topoElem = topoElem.values.toList,
-	          topoSpaceElem = topoSpaceElem.values.toList
-	        ))
-          }
-          }
+    reaction_containerF.flatMap { reaction_container =>
+		  val reactionsIdToRefId:Map[Int, Int] = reaction_container.reaction_ids
+		  val reaction_ref:List[UnitReactionRef] = reaction_container.reactions
+		  val reaction_sout_containerF: Future[ReactionStateOutProjectionContainer] =
+        reactionStateOutsProjection(k,process,business,title,desc,reaction_ref,reactionsIdToRefId, stateIdToRefId)
+
+
+
+      // Project middlewares and other stuff..
+      val reactionCompnentsF = projectReactionComponents(reaction_container, refActionContainer )
+
+      reactionCompnentsF.flatMap { reactionCompnents =>
+  		reaction_sout_containerF.map { reaction_sout_container =>
+  			val reaction_state_outIdToRefId = reaction_sout_container.outs_ids
+
+  	        Some(RefResulted(
+  	          proc_elems = idToRefId.values.toList,
+  	          space_elems = conv_sp_elems.values.toList,
+  	          spaces = conv_spaces.values.toList,
+  	          states = stateIdToRefId.values.toList,
+  	          switches = switcherIdToRefId.values.toList,
+  	          reactions = reactionsIdToRefId.values.toList,
+  	          reaction_state_outs = reaction_state_outIdToRefId.values.toList,
+  	          topoElem = topoElem.values.toList,
+  	          topoSpaceElem = topoSpaceElem.values.toList
+  	        ))
+      }
+    }
+    }
+
           }
 	      }
 		  }
@@ -134,6 +145,9 @@ object RefProjectorF extends FrontElemProjectionF
     }
   }
 }
+
+
+
 private def makeTopolog(process: Int, front_elem_id: Option[Int], space_elem_id: Option[Int]):Int = {
 	//println(front_elem_id)
 	ElemTopologDAOF.await(

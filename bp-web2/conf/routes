@@ -420,9 +420,30 @@ POST		  /ref/:id/switches          @controllers.ReflectionsController.switche_cr
 PUT			  /ref/switch/:switch_id     @controllers.ReflectionsController.switche_update(switch_id: Int)
 DELETE		/ref/switch/:switch_id     @controllers.ReflectionsController.switche_delete(switch_id: Int)
 
+
+# Actions
 POST		  /ref/:id/reactions  	      @controllers.ReflectionsController.reaction_create(id: Int)
 PUT			  /ref/reactions/:reaction_id @controllers.ReflectionsController.reaction_update(reaction_id: Int)
 DELETE		/ref/reactions/:reaction_id @controllers.ReflectionsController.reaction_delete(reaction_id: Int)
+
+
+POST      /ref/:reaction_id/middleware            @controllers.ReflectionsController.create_middleware(reaction_id: Int)
+DELETE    /ref/:reaction_id/middleware/:middleware_id   @controllers.ReflectionsController.delete_middleware(reaction_id: Int, middleware_id: Long)
+
+POST      /ref/:reaction_id/strategy            @controllers.ReflectionsController.create_strategy(reaction_id: Int)
+DELETE    /ref/:reaction_id/strategy/:strategy_id   @controllers.ReflectionsController.delete_strategy(reaction_id: Int, strategy_id: Long)
+
+
+POST      /ref/:reaction_id/base                  @controllers.ReflectionsController.create_base(reaction_id: Int)
+DELETE    /ref/:reaction_id/base/:base_id         @controllers.ReflectionsController.delete_base(reaction_id: Int, base_id: Long)
+
+POST      /ref/:reaction_id/input                @controllers.ReflectionsController.create_input(reaction_id: Int)
+DELETE    /ref/:reaction_id/input/:input_id      @controllers.ReflectionsController.delete_input(reaction_id: Int, input_id: Long)
+
+POST      /ref/:reaction_id/output               @controllers.ReflectionsController.create_output(reaction_id: Int)
+DELETE    /ref/:reaction_id/output/:output       @controllers.ReflectionsController.delete_output(reaction_id: Int, output: Long)
+
+
 
 
 PUT  /ref/:id/element/:elem_id/up             @controllers.ReflectionsController.moveUpFrontElem(id: Int, elem_id: Int)

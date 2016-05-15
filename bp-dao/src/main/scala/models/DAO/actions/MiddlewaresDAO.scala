@@ -51,7 +51,9 @@ object MiddlewaresDAOF {
 
   val create: DBIO[Unit] = middlewares.schema.create
   val drop: DBIO[Unit] = middlewares.schema.drop
+  def get(id: Long) = db.run(filterQuery(id).result.headOption)
 
+  def pull(s: Middleware):Future[Long] = db.run(middlewares returning middlewares.map(_.id) += s)
 
   def ddl_create = db.run(create)
   def ddl_drop = db.run(drop)

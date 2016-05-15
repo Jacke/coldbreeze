@@ -61,6 +61,8 @@ object MiddlewareRefsDAOF {
 
 
   def getByRef(refId: Int) = db.run(filterByRefQuery(refId).result)
+  def get(id: Long) = db.run(filterQuery(id).result.headOption)
+
 
   private def filterByRefQuery(id: Int): Query[MiddlewareRefs, MiddlewareRef, Seq] =
     middleware_refs.filter(_.reflection === id)
