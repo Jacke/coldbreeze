@@ -1,0 +1,44 @@
+<div class="new-ref-form-activate" ng-init="$parent.action.showNewMiddlewareForm=false" ng-hide="$parent.action.showNewMiddlewareForm">
+  <a ng-click="$parent.action.showNewMiddlewareForm ? $parent.action.showNewMiddlewareForm=false : $parent.action.showNewMiddlewareForm=true"
+     class="btn btn-small btn-primary">Add Middleware</a>
+</div>
+
+<div class="new-ref-form" ng-show="$parent.action.showNewMiddlewareForm">
+  <form novalidate="novalidate" class="form-horizontal form-new-ref">
+  <div class="control-group form-group">
+    <label class="control-label col-sm-1" for="inputTitle">{{ 'TITLE' | translate }}:</label>
+    <div class="controls col-xs-4">
+      <input type="text" id="inputTitle" class="form-control" ng-model="$parent.action.newActionMiddleware.title"/>
+    </div>
+  </div>
+  <div class="control-group form-group">
+    <label class="control-label col-sm-1" for="inputBusinessId">Host:</label>
+    <div class="controls col-xs-4">
+      <input type="text" class="form-control" id="inputBusinessId" ng-model="$parent.action.newActionMiddleware.host"/>
+    </div>
+  </div>
+
+
+  <div class="control-group form-group">
+    <label class="control-label col-sm-1" for="inputBusinessId">desc:</label>
+    <div class="controls col-xs-4">
+      <textarea type="text" class="form-control" id="inputBusinessId" ng-model="$parent.action.newActionMiddleware.desc"/>
+    </div>
+  </div>
+  <div class="control-group form-group">
+    <label class="control-label col-sm-1" for="inputBusinessId">category:</label>
+    <div class="controls col-xs-4">
+      <select type="text" name="newRefCategory" class="form-control" id="inputBusinessId" ng-model="$parent.action.newActionMiddleware.category">
+        <option value="Base">Base</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="control-group form-group">
+    <div class="controls col-xs-4">
+      <a ng-click="createRefElementState($parent.action.newActionMiddleware)" class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</a>
+      <a ng-click="$parent.action.showNewMiddlewareForm=false" class="btn btn-small btn-primary">Cancel</a>
+    </div>
+  </div>
+  </form>
+</div>

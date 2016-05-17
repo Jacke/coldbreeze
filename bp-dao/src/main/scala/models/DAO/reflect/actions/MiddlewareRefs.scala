@@ -70,4 +70,14 @@ object MiddlewareRefsDAOF {
   private def filterQuery(id: Long): Query[MiddlewareRefs, MiddlewareRef, Seq] =
     middleware_refs.filter(_.id === id)
 
+
+  def delete(id: Long) = {
+      get(id).map { obj =>
+        obj match {
+          case Some(finded) => db.run(middleware_refs.filter(_.id === id).delete)
+          case _ => 0
+        }
+      }
+  }
+
 }

@@ -89,6 +89,14 @@ object StrategyBaseRefsDAOF {
   val create: DBIO[Unit] = strategy_base_refs.schema.create
   val drop: DBIO[Unit] = strategy_base_refs.schema.drop
 
+  def delete(id: Long) = {
+    get(id).map { obj =>
+      obj match {
+        case Some(finded) => db.run(strategy_base_refs.filter(_.id === id).delete)
+        case _ => 0
+      }
+    }
+  }
 
   def get(id: Long) = db.run(filterQuery(id).result.headOption)
 

@@ -1,10 +1,21 @@
 <div class="container ref-page">
 
 <h1>Reflections</h1>
+<div class="tableMinListFilter search-process-input filterLayer">
+    <span class="magnifyGlass vIco vLoupe vLight2State"></span>
+    <input type="text" size="41" ng-model="searchValue"
+    data-toggle-class="hidden"
+    class="filterInput tableMinListFilterInput ng-pristine ng-valid ng-touched"
+    placeholder="Search Reflection" style="">
+  </div>
 
 <hr>
 
-<div class="new-ref-form">
+<div class="new-ref-form-activate" ng-hide="showNewRefForm">
+  <a ng-click="showNewRefForm ? showNewRefForm=false : showNewRefForm=true" class="btn btn-small btn-primary">Add Reflection</a>
+</div>
+
+<div class="new-ref-form" ng-show="showNewRefForm">
   <form novalidate="novalidate" class="form-horizontal form-new-ref">
   <div class="control-group form-group">
     <label class="control-label col-sm-1" for="inputTitle">{{ 'TITLE' | translate }}:</label>
@@ -15,33 +26,37 @@
   <div class="control-group form-group">
     <label class="control-label col-sm-1" for="inputBusinessId">Host:</label>
     <div class="controls col-xs-4">
-      <textarea type="text" class="form-control" id="inputBusinessId" ng-model="newRef.host"/>
+      <input type="text" class="form-control" id="inputBusinessId" ng-model="newRef.host"/>
     </div>
   </div>
 
+
   <div class="control-group form-group">
-    <label class="control-label col-sm-1" for="inputBusinessId">Host:</label>
+    <label class="control-label col-sm-1" for="inputBusinessId">desc:</label>
     <div class="controls col-xs-4">
-      <textarea type="text" class="form-control" id="inputBusinessId" ng-model="newRef.host"/>
+      <textarea type="text" class="form-control" id="inputBusinessId" ng-model="newRef.desc"/>
     </div>
   </div>
   <div class="control-group form-group">
-    <label class="control-label col-sm-1" for="inputBusinessId">Host:</label>
+    <label class="control-label col-sm-1" for="inputBusinessId">category:</label>
     <div class="controls col-xs-4">
-      <textarea type="text" class="form-control" id="inputBusinessId" ng-model="newRef.host"/>
+      <select type="text" name="newRefCategory" class="form-control" id="inputBusinessId" ng-model="newRef.category">
+        <option value="Base">Base</option>
+      </select>
     </div>
   </div>
 
   <div class="control-group form-group">
     <div class="controls col-xs-4">
       <a ng-click="createRef(newRef)" class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</a>
+      <a ng-click="showNewRefForm=false" class="btn btn-small btn-primary">Cancel</a>
     </div>
   </div>
   </form>
 </div>
 
 
-<div class="" ng-repeat="refObj in refs">
+<div class="" ng-repeat="refObj in refs | toProcessArray | filter:search()">
 <div class="tab-content ref-element" ng-repeat="refObj in refs">
 <div class="ref-list-page header-frame">
 
@@ -59,7 +74,9 @@
 
     <div class="ref-card-controls">
     <a ng-click="refObj.exData ? refObj.exData=false : refObj.exData=true">Json</a>
-    <a ng-click="refObj.edit ? refObj.edit=false : refObj.edit=true">Edit</a>
+<!--    <a ng-click="refObj.edit ? refObj.edit=false : refObj.edit=true">Edit</a>-->
+    <a ng-click="deleteRef(refObj)" class="btn btn-small btn-primary btn-red">Remove</a>
+
     </div>
 </div>
 
@@ -67,13 +84,17 @@
   <pre ng-show="refObj.exData">
     {{ refObj | json }}
   </pre>
-  <div ng-include src="'partials/reflections/edit-ref.html'" ng-show="refObj.edit"></div>
+  <div ng-include src="'assets/partials/reflections/edit-ref.html'" ng-show="refObj.edit"></div>
 </div>
 
 
 </div>
 
 <div class="ref-elements">
+
+  <div ng-include src="'assets/partials/reflections/create-ref-element.html'"></div>
+
+
   <div class="ref-element" ng-repeat="element in refObj.unitelement">
     <div class="ref-element-header">
       <span class="ref-element-title">{{ element.title}}</span>
@@ -81,6 +102,8 @@
     </div>
 
     <div class="ref-element-states">
+      <div ng-include src="'assets/partials/reflections/create-ref-element-state.html'"></div>
+
       <div class="ref-element-state" ng-repeat="state in refObj.bpstate | filter: byUnitElement(element)">
         <ul class="ref-element-state-transitions">
           <li class="finish-state">{{ state.title }}</li>
@@ -90,6 +113,9 @@
         </ul>
       </div>
     </div>
+
+
+    <div ng-include src="'assets/partials/reflections/create-ref-element-action.html'"></div>
 
     <div ng-repeat="action in refObj.reactions | filter: reactionByTopoUnitElement(element, refObj) as filteredActions">
     </div>
@@ -110,10 +136,13 @@
           </div>
 
           <div class="ref-action-depth">
-            <div class="ref-action-middleware">
-              Middleware
-            </div>
+            <div ng-include src="'assets/partials/reflections/create-ref-element-middleware.html'"></div>
+
+            <div class="ref-action-middleware" ng-repeat="middleware in refObj.middlewares | filter:byReaction(action)">
+              <span>Middleware {{ middleware.title }}</span> 
             <div class="ref-action-strategies">
+              <div ng-include src="'assets/partials/reflections/create-ref-element-strategy.html'"></div>
+
               <div class="ref-action-strategy-selector">
                 <span class="strategy-select">*</span>
                 <span class="strategy-select strategy-to-select">*</span>
@@ -123,22 +152,30 @@
                 <span class="strategy-select strategy-to-select">*</span>
 
               </div>
-              <div class="ref-action-strategy">
-                <h5 class="strategy-title">Strategy Title</h5>
+              <div class="ref-action-strategy" ng-repeat="strategy in refObj.strategies | filter:byMiddleware(middleware)">
+                <h5 class="strategy-title">{{ strategy.title }}</h5>
                 <div class="ref-action-strategy-pipes">
                   <div class="ref-action-inputs">
-                    Inputs
+
                   </div>
                   <div class="ref-action-bases">
-                    Bases
+                    <div ng-include src="'assets/partials/reflections/create-ref-element-strategy-base.html'"></div>
+
+                    <div class="ref-action-bases-base" ng-repeat="base in refObj.bases | filter:byStrategy(strategy)">
+                      {{ base.key }}
+                    </div>
                   </div>
                   <div class="ref-action-outputs">
-                    Outputs
+
                   </div>
                 </div>
 
               </div>
+
+
             </div>
+            </div>
+
           </div>
       </div>
     </div>
@@ -147,9 +184,6 @@
 
 
 </div>
-
-
-<div ng-include src="'partials/reflections/elems.html'"></div>
 
 
 </div>

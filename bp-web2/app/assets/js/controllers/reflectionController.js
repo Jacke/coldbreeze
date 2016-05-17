@@ -50,7 +50,7 @@ minorityControllers.controller('ReflectionCtrl', [
             RefSwitchFactory,
             RefReactionsFactory,
             RefReactionFactory,$location, $route, $window) {
-              
+
 
 $scope.isManager = function () {
   if ($scope.isManagerVal == undefined && $rootScope.manager != undefined) {
@@ -60,6 +60,52 @@ $scope.isManager = function () {
     return $window.localStorage.manager == "true";
   }
 };
+$scope.search = function() {
+  return function(obj) {
+    //console.log('obj', obj);
+    //console.log('element', element);
+    if ($scope.searchValue == undefined || $scope.searchValue == "") {
+      return obj
+    } else {
+      console.log(obj);
+      if (obj.ref.title.includes($scope.searchValue)) {
+        return obj;
+      } else {
+        return false;
+      }
+    }
+ }
+}
+
+$scope.byReaction = function(action) {
+  return function(obj) {
+     if (obj.reaction === action.id) {
+       return obj;
+     } else {
+       return false;
+     }
+ }
+}
+$scope.byMiddleware = function(middleware) {
+  return function(obj) {
+     if (obj.middleware === middleware.id) {
+       return obj;
+     } else {
+       return false;
+     }
+ }
+}
+$scope.byStrategy = function(strategy) {
+  return function(obj) {
+     if (obj.strategy === strategy.id) {
+       return obj;
+     } else {
+       return false;
+     }
+ }
+}
+
+
 
 $scope.isManagerVal = $scope.isManager();
 $scope.isManager();
@@ -156,22 +202,22 @@ $scope.orderNestedGen = function (obj) {
 
 
 
-  $scope.updateSpace = function (obj) {
-    RefSpaceFactory.update(obj).$promise.then(function(data) {
-      $scope.reload();
-    });
-  }
-  $scope.createNewSpace = function () {
-    RefSpacesFactory.create($scope.newSpace).$promise.then(function(data) {
-      $scope.reload();
-    });
-  }
-  $scope.deleteSpace = function (obj) {
-    RefSpaceFactory.delete({ id: obj.id, BPid: $route.current.params.BPid }).$promise.then(function(data) {
-      $scope.reload();
+$scope.updateSpace = function (obj) {
+  RefSpaceFactory.update(obj).$promise.then(function(data) {
+    $scope.reload();
+  });
+}
+$scope.createNewSpace = function () {
+  RefSpacesFactory.create($scope.newSpace).$promise.then(function(data) {
+    $scope.reload();
+  });
+}
+$scope.deleteSpace = function (obj) {
+  RefSpaceFactory.delete({ id: obj.id, BPid: $route.current.params.BPid }).$promise.then(function(data) {
+    $scope.reload();
 
-    });
-  };
+  });
+};
 
 
 
@@ -293,7 +339,24 @@ $scope.deleteReaction = function (obj) {
 
 
 
+$scope.createMiddleware = function(middleware) {
 
+}
+$scope.removeMiddleware = function(middleware) {
+
+}
+$scope.createStrategy = function(strategy) {
+
+}
+$scope.removeStrategy = function(strategy) {
+
+}
+$scope.createStrategyBase = function(strategy_base) {
+
+}
+$scope.removeStrategyBase = function(strategy_base) {
+
+}
 
 
 

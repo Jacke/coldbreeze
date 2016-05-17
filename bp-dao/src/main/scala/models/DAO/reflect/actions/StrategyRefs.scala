@@ -69,6 +69,15 @@ object StrategyRefsDAOF {
   def ddl_create = db.run(create)
   def ddl_drop = db.run(drop)
 
+  def delete(id: Long) = {
+      get(id).map { obj =>
+        obj match {
+          case Some(finded) => db.run(strategy_refs.filter(_.id === id).delete)
+          case _ => 0
+        }
+      }
+  }
+
 }
 object StrategyRefsDAO {
 	  val strategy_refs = TableQuery[StrategyRefs]

@@ -64,6 +64,7 @@ object StrategyOutputRefsDAOF {
   val strategy_output_refs = TableQuery[StrategyOutputRefs]
 
   def pull(s: StrategyOutputRef):Future[Long] = db.run(strategy_output_refs returning strategy_output_refs.map(_.id) += s)
+  def get(id: Long) = db.run(filterQuery(id).result.headOption)
 
   private def filterByStrategiesQuery(ids: List[Long]): Query[StrategyOutputRefs, StrategyOutputRef, Seq] =
       strategy_output_refs.filter(_.strategy inSetBind ids)
@@ -75,6 +76,15 @@ object StrategyOutputRefsDAOF {
 
   val create: DBIO[Unit] = strategy_output_refs.schema.create
   val drop: DBIO[Unit] = strategy_output_refs.schema.drop
+
+  def delete(id: Long) = {
+    get(id).map { obj =>
+      obj match {
+        case Some(finded) => db.run(strategy_output_refs.filter(_.id === id).delete)
+        case _ => 0
+      }
+    }
+  }
 
   def ddl_create = db.run(create)
   def ddl_drop = db.run(drop)

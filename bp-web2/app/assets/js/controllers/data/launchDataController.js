@@ -308,14 +308,14 @@ minorityAppServices.factory('DataCostLaunchAssign', ['$resource', function ($res
 
 
       $scope.createCostWithAssign = function(costs, elementIdPlain) {
-        if ($scoep.insideLaunch) {
+        if ($scope.insideLaunch) {
           return $scope.createAssignedResEls(costs, elementIdPlain)
         } else {
           return $scope.createLaunchedAssignedResEls(costs, elementIdPlain)
         }
       }
       $scope.deleteCost = function(cost) {
-        if ($scoep.insideLaunch) {
+        if ($scope.insideLaunch) {
           return $scope.deleteLaunchAsssignedResEl(cost)
         } else {
           return $scope.deleteAsssignedResEl(cost)

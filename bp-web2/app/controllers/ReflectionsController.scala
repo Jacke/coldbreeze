@@ -469,41 +469,129 @@ def switche_delete(switch_id: Int) = SecuredAction { implicit request =>
        }
  }
 
-
+/*********************************************************************************************
 // Action internals
-def create_middleware(reaction_id: Int) = SecuredAction { implicit request =>
-   Ok("Ok")
+**********************************************************************************************/
+def create_middleware(reaction_id: Int) = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+  request.body.validate[MiddlewareRef].map{
+    case entity => MiddlewareRefsDAOF.pull(entity).map { obj =>
+      obj match {
+            case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not create ref ${entity}")))
+            case id =>  {
+              Ok(Json.toJson(Map("success" ->  id)))
+            }
+          }
+      }
+    }.recoverTotal{
+      e => Future.successful( BadRequest("formWithErrors") )
+    }
 }
-def create_strategy(reaction_id: Int) = SecuredAction { implicit request =>
-  Ok("Ok")
+def create_strategy(reaction_id: Int) = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+  request.body.validate[StrategyRef].map{
+    case entity => StrategyRefsDAOF.pull(entity).map { obj =>
+        obj match {
+            case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not create ref ${entity}")))
+            case id =>  {
+              Ok(Json.toJson(Map("success" ->  id)))
+            }
+          }
+      }
+    }.recoverTotal{
+      e => Future.successful( BadRequest("formWithErrors") )
+    }
 }
 
 
- def delete_middleware(reaction_id: Int, middleware_id: Long) = SecuredAction { implicit request =>
-   Ok("Ok")
+def delete_middleware(reaction_id: Int, middleware_id: Long) = SecuredAction.async { implicit request =>
+  MiddlewareRefsDAOF.delete(middleware_id).map { res =>
+    res match {
+      case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
+      case x =>  Ok(Json.toJson(Map("success" -> s"Entity has been deleted (deleted $x row(s))")))
+    }
+  }
 }
- def delete_strategy(reaction_id: Int, strategy_id: Long) = SecuredAction { implicit request =>
-   Ok("Ok")
+def delete_strategy(reaction_id: Int, strategy_id: Long) = SecuredAction.async { implicit request =>
+  StrategyRefsDAOF.delete(strategy_id).map { res =>
+    res match {
+      case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
+      case x =>  Ok(Json.toJson(Map("success" -> s"Entity has been deleted (deleted $x row(s))")))
+    }
+  }
 }
+
 
 // Action pipes
-def create_base(reaction_id: Int) = SecuredAction { implicit request =>
-   Ok("Ok")
+def create_base(reaction_id: Int) = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+  request.body.validate[StrategyBaseRef].map{
+    case entity => StrategyBaseRefsDAOF.pull(entity).map { obj =>
+       obj match {
+            case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not create ref ${entity}")))
+            case id =>  {
+              Ok(Json.toJson(Map("success" ->  id)))
+            }
+          }
+        }
+    }.recoverTotal{
+      e => Future.successful( BadRequest("formWithErrors") )
+    }
 }
-def create_input(reaction_id: Int) = SecuredAction { implicit request =>
-  Ok("Ok")
+def create_input(reaction_id: Int) = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+  request.body.validate[StrategyInputRef].map{
+    case entity => StrategyInputRefsDAOF.pull(entity).map { obj =>
+       obj match {
+            case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not create ref ${entity}")))
+            case id =>  {
+              Ok(Json.toJson(Map("success" ->  id)))
+            }
+          }
+        }
+    }.recoverTotal{
+      e => Future.successful( BadRequest("formWithErrors") )
+    }
 }
-def create_output(reaction_id: Int) = SecuredAction { implicit request =>
-  Ok("Ok")
+def create_output(reaction_id: Int) = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+  request.body.validate[StrategyOutputRef].map{
+    case entity => StrategyOutputRefsDAOF.pull(entity).map { obj =>
+       obj match {
+            case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not create ref ${entity}")))
+            case id =>  {
+              Ok(Json.toJson(Map("success" ->  id)))
+            }
+          }
+        }
+    }.recoverTotal{
+      e => Future.successful( BadRequest("formWithErrors") )
+    }
 }
- def delete_base(reaction_id: Int, base_id: Long) = SecuredAction { implicit request =>
-   Ok("Ok")
+
+
+
+
+def delete_base(reaction_id: Int, base_id: Long) = SecuredAction.async { implicit request =>
+   StrategyBaseRefsDAOF.delete(base_id).map { res =>
+     res match {
+       case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
+       case x =>  Ok(Json.toJson(Map("success" -> s"Entity has been deleted (deleted $x row(s))")))
+     }
+   }
 }
- def delete_input(reaction_id: Int, input_id: Long) = SecuredAction { implicit request =>
-   Ok("Ok")
+
+def delete_input(reaction_id: Int, input_id: Long) = SecuredAction.async { implicit request =>
+  StrategyBaseRefsDAOF.delete(input_id).map { res =>
+    res match {
+      case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
+      case x =>  Ok(Json.toJson(Map("success" -> s"Entity has been deleted (deleted $x row(s))")))
+    }
+  }
 }
- def delete_output(reaction_id: Int, output: Long) = SecuredAction { implicit request =>
-   Ok("Ok")
+
+def delete_output(reaction_id: Int, output_id: Long) = SecuredAction.async { implicit request =>
+  StrategyBaseRefsDAOF.delete(output_id).map { res =>
+    res match {
+      case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
+      case x =>  Ok(Json.toJson(Map("success" -> s"Entity has been deleted (deleted $x row(s))")))
+    }
+  }
 }
 
 

@@ -46,7 +46,7 @@ class BBoardPing(pong: ActorRef) extends Actor {
     case StartMessage =>
         //incrementAndPrint
         pong ! PingMessage
-    case x:PongMessage => 
+    case x:PongMessage =>
         //incrementAndPrint
         //if (count > 99) {
         //  sender ! StopMessage
@@ -59,7 +59,7 @@ class BBoardPing(pong: ActorRef) extends Actor {
     case StateMessage => sender ! state
   }
 }
- 
+
 class BBoardPong(connection: BBoardWrapperConnection) extends Actor {
   def receive = {
     case PingMessage =>
@@ -109,15 +109,15 @@ class BBoardWrapper(connection: BBoardWrapperConnection) {
   implicit val timeout = Timeout(5 seconds)
 
   // start them going
-  //pingg ! StartMessage  
+  //pingg ! StartMessage
   def newPing():Boolean = {
-      pingg ! StartMessage  
+      pingg ! StartMessage
       pingg ! StateMessage
       val future2: Future[Boolean] = ask(pingg, StateMessage).mapTo[Boolean]
-      Await.result(future2, 1 second)      
+      Await.result(future2, 1 second)
   }
-  def fetchCSRF():String = {  	
-    val holder = Try(WS.url(s"http://${connection.host}:${connection.port}/signIn").withHeaders("PLAY_SESSION" -> 
+  def fetchCSRF():String = {
+    val holder = Try(WS.url(s"http://${connection.host}:${connection.port}/signIn").withHeaders("PLAY_SESSION" ->
   		"b7c227d8eab90572006fafbf7c653b4e1e0c9e3b-csrfToken=e683f6aa463a9c64d7a73f8e810087f275afe62d-1443650032796-9c1709c7fc0b0ca2b649d305").get().map(response =>
         "response").recover{ case _ => "" })
         .getOrElse(Future.successful("false"))
@@ -142,93 +142,93 @@ class BBoardWrapper(connection: BBoardWrapperConnection) {
   }
   def getWarpBoardByLaunch(launch_id: Int, biz: String = ""):Future[BoardContainer] = {
     bboard.BoardDAO.getBoardByResource(launch_id, biz)(connection)
-  } 
+  }
   def getBoardByResource(resource_id: Int, biz: String):Future[BoardContainer] = {
   	bboard.BoardDAO.getBoardByResource(resource_id,biz)(connection)
   }
   def addBoardForResource(board: Board):Future[String] = {
-    bboard.BoardDAO.addBoardForResource(board)(connection) 
+    bboard.BoardDAO.addBoardForResource(board)(connection)
   }
 
 
   def isOnBoardByResources(board: Board, resource_ids: List[Int]):Boolean = {
-    board.meta.find(m => m.key == "resource_id" && resource_ids.map(_.toString).contains(m.value)).isDefined 
+    board.meta.find(m => m.key == "resource_id" && resource_ids.map(_.toString).contains(m.value)).isDefined
   }
 
   def isOnBoardByResource(board: Board, resource_id: Int):Boolean = {
-    board.meta.find(m => m.key == "resource_id" && m.value == resource_id.toString).isDefined 
-  }  
+    board.meta.find(m => m.key == "resource_id" && m.value == resource_id.toString).isDefined
+  }
 
 
 
 
   def getEntityByResources(resources: List[ResourceDTO]):Future[List[ResourceEntitySelector]] = {
-    bboard.EntityDAO.getEntityByResources(resources)(connection)  
- 
+    bboard.EntityDAO.getEntityByResources(resources)(connection)
+
   }
   def getEntityByResource(resource: ResourceDTO):Future[List[ResourceEntitySelector]] = {
-    bboard.EntityDAO.getEntityByResource(resource)(connection)  
- 
-  }  
+    bboard.EntityDAO.getEntityByResource(resource)(connection)
+
+  }
   def getEntityByResourceId(resource_id: Int):Future[List[Entity]] = {
-    bboard.EntityDAO.getEntityByResourceId(resource_id)(connection)  
-  }  
+    bboard.EntityDAO.getEntityByResourceId(resource_id)(connection)
+  }
   def getEntitiesByBoard(board_id: String, resource_id: Int = 0, biz: String = "") = {
-    bboard.EntityDAO.getEntitiesByBoard(board_id, resource_id, biz)(connection)  
+    bboard.EntityDAO.getEntitiesByBoard(board_id, resource_id, biz)(connection)
   }
   def getEntityById(entity_id: String):Future[Option[Entity]] = {
-    bboard.EntityDAO.getEntityById(entity_id)(connection)  
+    bboard.EntityDAO.getEntityById(entity_id)(connection)
   }
   def getSlatById(slat_id: String):Future[Option[Slat]] = {
-    bboard.SlatDAO.getSlatById(slat_id)(connection) 
-  }  
+    bboard.SlatDAO.getSlatById(slat_id)(connection)
+  }
   // GET     /api/v1/entities/slats
   def getSlatByEntitiesIds(entities_ids: List[String]):Future[List[Slat]] = {
-    bboard.SlatDAO.getSlatByEntitiesIds(entities_ids)(connection) 
-  }    
+    bboard.SlatDAO.getSlatByEntitiesIds(entities_ids)(connection)
+  }
 /*-------------------------------------------
  * Create
- --------------------------------------------*/  
+ --------------------------------------------*/
   def addEntityByResource(resource_id: Int, entity: Entity):Future[String] = {
-    bboard.EntityDAO.addEntityByResource(resource_id, entity)(connection)  
+    bboard.EntityDAO.addEntityByResource(resource_id, entity)(connection)
   }
   def addSlatByEntity(entity_id: String, slat: Slat):Future[String] = {
-    bboard.SlatDAO.addSlatByEntity(entity_id, slat)(connection) 
+    bboard.SlatDAO.addSlatByEntity(entity_id, slat)(connection)
   }
 /*-------------------------------------------
  * Remove
- --------------------------------------------*/  
+ --------------------------------------------*/
   def updateEntity(entity_id: String, entity: Entity):Future[String] = {
-     bboard.EntityDAO.updateEntity(entity_id, entity)(connection)  
+     bboard.EntityDAO.updateEntity(entity_id, entity)(connection)
   }
   def updateSlatByEntity(entity_id: String, slat_id: String, slat: Slat):Future[String] = {
-    bboard.SlatDAO.updateSlatByEntity(entity_id, slat_id, slat)(connection) 
+    bboard.SlatDAO.updateSlatByEntity(entity_id, slat_id, slat)(connection)
   }
   // /api/v1/slat/:slat_id/fill
   def fillSlat(slat_id: String, sval: String):Future[String] = {
-    bboard.SlatDAO.fillSlat(slat_id, sval)(connection)  
-  }  
+    bboard.SlatDAO.fillSlat(slat_id, sval)(connection)
+  }
   // /api/v1/slat/:slat_id/refill
   def refillSlat(slat_id: String, sval: String):Future[String] = {
-    bboard.SlatDAO.refillSlat(slat_id, sval)(connection)  
+    bboard.SlatDAO.refillSlat(slat_id, sval)(connection)
   }
 /*-------------------------------------------
  * Remove
  --------------------------------------------*/
   def removeEntityByBoard(board_id: String, entity_id: String):Future[String] = {
-    bboard.EntityDAO.removeEntityByBoard(board_id, entity_id)(connection)  
+    bboard.EntityDAO.removeEntityByBoard(board_id, entity_id)(connection)
   }
   def removeEntityById(entity_id: String):Future[String] = {
-    bboard.EntityDAO.removeEntityById(entity_id)(connection)  
-  }  
+    bboard.EntityDAO.removeEntityById(entity_id)(connection)
+  }
   def removeSlatById(slat_id: String):Future[String] = {
-   bboard.SlatDAO.removeSlatById(slat_id)(connection)  
+   bboard.SlatDAO.removeSlatById(slat_id)(connection)
   }
 
 }
 
 object BBoardWrapper {
-	lazy val connection = BBoardWrapperConnection("localhost", "9001")
+	lazy val connection = BBoardWrapperConnection("127.0.0.1", "9001")
 	var wrapper:BBoardWrapper = null
 	def apply():BBoardWrapper = {
 		if (wrapper == null) {
@@ -250,10 +250,10 @@ case class Board(
   content: String,
   publisher: String,
   ownership: Ownership,
-  meta: List[MetaVal] = List.empty,  
+  meta: List[MetaVal] = List.empty,
   creationDate: Option[DateTime],
   updateDate: Option[DateTime]) {
-  
+
   def onBusiness(bid: String):Boolean = {
   	meta.filter(m => m.key == "business_id" && m.value == bid).length > 0
   }
@@ -272,10 +272,10 @@ case class Entity(
   publisher: String,
   etype: String,
   default: String = "",
-  meta: List[MetaVal] = List.empty,  
+  meta: List[MetaVal] = List.empty,
   creationDate: Option[DateTime] = None,
   updateDate: Option[DateTime] = None) {
-    
+
   def getId:String = id match {
     case Some(uuid) => uuid.toString
     case _ => ""
@@ -286,13 +286,13 @@ case class Slat(
   id: Option[UUID] = Some(UUID.randomUUID()),
   title: String,
   boardId: UUID,
-  entityId: UUID,  
+  entityId: UUID,
   sval: String,
   publisher: String,
-  meta: List[MetaVal] = List.empty,  
+  meta: List[MetaVal] = List.empty,
   creationDate: Option[DateTime] = None,
   updateDate: Option[DateTime] = None) {
-  
+
   def getId:String = id match {
     case Some(uuid) => uuid.toString
     case _ => ""

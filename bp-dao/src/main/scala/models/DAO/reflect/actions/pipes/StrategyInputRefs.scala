@@ -83,6 +83,16 @@ object StrategyInputRefsDAOF {
   private def filterByStrategiesQuery(ids: List[Long]): Query[StrategyInputRefs, StrategyInputRef, Seq] =
       strategy_input_refs.filter(_.strategy inSetBind ids)
   def getByStrategies(ids: List[Long]) = db.run(filterByStrategiesQuery(ids).result)
+  def get(id: Long) = db.run(filterQuery(id).result.headOption)
+
+  def delete(id: Long) = {
+    get(id).map { obj =>
+      obj match {
+        case Some(finded) => db.run(strategy_input_refs.filter(_.id === id).delete)
+        case _ => 0
+      }
+    }
+  }
 
 
   val create: DBIO[Unit] = strategy_input_refs.schema.create

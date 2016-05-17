@@ -1,0 +1,44 @@
+<div class="new-ref-form-activate" ng-init="$parent.strategy.showNewStrategyBaseForm=false" ng-hide="$parent.strategy.showNewStrategyBaseForm">
+  <a ng-click="$parent.strategy.showNewStrategyBaseForm ? $parent.strategy.showNewStrategyBaseForm=false : $parent.strategy.showNewStrategyBaseForm=true"
+     class="btn btn-small btn-primary">Add Strategy Base</a>
+</div>
+
+<div class="new-ref-form" ng-show="$parent.strategy.showNewStrategyBaseForm">
+  <form novalidate="novalidate" class="form-horizontal form-new-ref">
+  <div class="control-group form-group">
+    <label class="control-label col-sm-1" for="inputTitle">{{ 'TITLE' | translate }}:</label>
+    <div class="controls col-xs-4">
+      <input type="text" id="inputTitle" class="form-control" ng-model="$parent.strategy.NewStrategyBase.title"/>
+    </div>
+  </div>
+  <div class="control-group form-group">
+    <label class="control-label col-sm-1" for="inputBusinessId">Host:</label>
+    <div class="controls col-xs-4">
+      <input type="text" class="form-control" id="inputBusinessId" ng-model="$parent.strategy.NewStrategyBase.host"/>
+    </div>
+  </div>
+
+
+  <div class="control-group form-group">
+    <label class="control-label col-sm-1" for="inputBusinessId">desc:</label>
+    <div class="controls col-xs-4">
+      <textarea type="text" class="form-control" id="inputBusinessId" ng-model="$parent.strategy.NewStrategyBase.desc"/>
+    </div>
+  </div>
+  <div class="control-group form-group">
+    <label class="control-label col-sm-1" for="inputBusinessId">category:</label>
+    <div class="controls col-xs-4">
+      <select type="text" name="newRefCategory" class="form-control" id="inputBusinessId" ng-model="$parent.strategy.NewStrategyBase.category">
+        <option value="Base">Base</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="control-group form-group">
+    <div class="controls col-xs-4">
+      <a ng-click="createMiddlewareStrategy($parent.strategy.NewStrategyBase)" class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</a>
+      <a ng-click="$parent.strategy.showNewStrategyBaseForm=false" class="btn btn-small btn-primary">Cancel</a>
+    </div>
+  </div>
+  </form>
+</div>
