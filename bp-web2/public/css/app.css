@@ -5710,8 +5710,21 @@ color:#fff;
   margin-top: 25px;
 }
 footer .applicationFooterListLink,footer .applicationFooterCopyrightLink {
-color:#959cad;
-font-weight:400;
+  color:#959cad;
+  font-weight:400;
+}
+.ngdialog .dataBoardList .existed-new-data-cost a.resource-links {
+    color: #9BD1EF;
+    font-weight: 900;
+    font-family: 'Open Sans';
+}
+.existed-new-data-cost .entity-empty-message {
+    text-align: center;
+    margin-top: 19px;
+}
+
+.ngdialog .dataBoardList .existed-new-data-cost .entity-empty-message a {
+    color: #607D8B;
 }
 
 

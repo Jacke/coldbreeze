@@ -109,6 +109,13 @@ $scope.showInlineLaunch = function (session) {
     session.inlineLaunchShow = false;
   } else {
     session.inlineLaunchShow = true;
+    var t = _.find($scope.bboardTriggers, function(t) {
+      return session.session.id == t.launchId
+    });
+    if (t) {
+      t.triggerFn();
+    }
+
   }
   return session;
 }
@@ -491,11 +498,14 @@ $scope.loadProcesses();
  *  RequestController data
  */
 $scope.bboardDataPromises = [];
+$scope.bboardTriggers = [];
 
 $scope.pushBboardDataPromise = function(launchId, bboardDataPromise) {
   $scope.bboardDataPromises.push({ launchId, bboardDataPromise });
 }
-
+$scope.pushBboardTRigger = function(launchId, triggerFn) {
+  $scope.bboardTriggers.push({ launchId: launchId, triggerFn: triggerFn });
+}
 
 
 

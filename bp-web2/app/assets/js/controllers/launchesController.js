@@ -60,6 +60,15 @@ $scope.isEmptyLaunchesCheck = function() {
 }
 $scope.sessions = [];
 
+
+$scope.bboardTriggers = [];
+
+$scope.pushBboardTRigger = function(launchId, triggerFn) {
+  $scope.bboardTriggers.push({ launchId: launchId, triggerFn: triggerFn });
+}
+
+
+
 $scope.loadSessions = function (process_id) {
 
 /*
@@ -454,6 +463,13 @@ $scope.showInlineLaunch = function (session) {
     session.inlineLaunchShow = false;
   } else {
     session.inlineLaunchShow = true;
+    var t = _.filter($scope.bboardTriggers, function(t) {
+      return session.session.id == t.launchId
+    });
+    _.forEach(t, function(tt){
+      return tt.triggerFn();
+    })
+
   }
   return session;
 }

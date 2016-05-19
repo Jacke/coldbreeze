@@ -217,14 +217,21 @@ object BPSessionDAO {
                 }
                 val percent = percentDecorator(step, element_quantity)
                 SessionStatus(percent, process, ses, station,
-                  Some(AroundProcessElementsBuilder.detect(process_id, station.get.id.get)),
+                  Some(AroundProcessElementsBuilder.detect(process_id, stationIdDeRef(station) )),
                   Some(people),
                   created_at = ses.created_at,
                   updated_at = ses.updated_at)
+
               }))
         }
         case _ => None
       }
+  }
+  private def stationIdDeRef(station: Option[BPStationDTO]) = {
+    station match {
+      case Some(station) => station.id.get
+      case _ => -1
+    }
   }
 
   def findByBP(id: Int): List[BPSession] = database withSession {

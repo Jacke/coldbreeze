@@ -906,6 +906,23 @@ $('.ea-submit').on('click', function(event) {
 // Databoard
 //
 
+
+
+$('.showEditEntityForm').on('click', function(ev){
+  ev.preventDefault;
+  var id = $(this).attr('id').split('showEditEntityForm-')[1];
+  $(this).toggleClass('plugedin');
+  $('form#entity-'+id).toggle()
+});
+
+$('button.add-entity-toggle').on('click', function(ev){
+  ev.preventDefault;
+  $(this).toggleClass('plugedin');
+  $(this).parent().parent().find('form').toggle();
+});
+
+
+
         var scntDiv = $('#p_scents');
         if (scntDiv != undefined) {
         var i = $('div.meta_fields').size() + 1;

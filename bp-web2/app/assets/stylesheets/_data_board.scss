@@ -43,7 +43,7 @@ a.tableMinControlsLink.ajaxLink.tableMinLinkPeople {
     display: inline-block;
 }
 .resource .tableMinListControls.processListControls {
-    width: 39px;
+    border-radius: 0px;
     margin-left: 0px;
     margin-right: 22px;
     border: none;
@@ -51,7 +51,53 @@ a.tableMinControlsLink.ajaxLink.tableMinLinkPeople {
 .resource button.tableMinControlsLink.teamSettingsLink.tableMinLinkDelete {
     border: none;
     box-shadow: none;
+    background-color: #FF1E1E;
+    background-image: linear-gradient(to left bottom, rgba(244,120,120,0) 0%, rgba(167, 9, 62, 0.6) 100%);
+    transition-property: all;
+    transition-duration: 1s;
+    transition-timing-function: linear;
+    font-weight: 900;
+    border-radius: 3px;
+    padding-left: 20px;
+    font-family: 'Open Sans';
+    color: white;
+    font-size: 12px;
 }
+
+.resource-list .boardEntity form.updateEntityForm, .dataTables .inlineEntityFormNewForm {
+    display: none;
+}
+.resources-list .boardEntity form.updateEntityForm {
+  display: none;
+}
+
+.resource-list .tableMinListFilter.search-resource-input.filterLayer {
+    margin-right: 27px;
+    margin-top: 15px;
+    margin-bottom: -20px;
+}
+
+.dataTables .showEditEntityForm {
+    border: none;
+    box-shadow: none;
+    background-color: #FFC107;
+    background-image: linear-gradient(to left bottom, rgba(244,120,120,0) 0%, rgb(222, 196, 117) 100%);
+    transition-property: all;
+    transition-duration: 1s;
+    transition-timing-function: linear;
+    border-radius: 3px;
+    padding-left: 20px;
+    font-family: 'Open Sans';
+    color: white;
+    font-size: 12px;
+    padding: 10px 27px;
+    margin-bottom: 5px;
+    margin-top: 11px;
+    font-weight: 700;
+}
+
+
+
 ul#tablemin.resourceList {
     background-color: transparent;
 }
@@ -115,12 +161,32 @@ ul#tablemin.resourceList {
     padding-left: 16px;
 }
 .resources-list button#createResourceBtn.offed {
-    display: none;
 }
-.resources-list .boardEntity form {
-    display: inline-block;
+.formNewEntityNav button#createResourceBtn {
+    padding: 7px 12px;
+    font-size: 13px;
 }
 
+.tableMinListFilter.search-resource-input.filterLayer {
+    margin-right: 27px;
+    margin-top: 23px;
+    margin-bottom: -25px;
+}
+.formNewEntityNav button#createResourceBtn.plugedin {
+    box-shadow:1px 1px 8px #797979 inset
+}
+.dataTables .showEditEntityForm.plugedin {
+  box-shadow:1px 1px 8px #797979 inset
+}
+.dataTables button#createResourceBtn:focus {
+    background-color: #49cc90;
+}
+.dataTables .formNewEntityNav {
+    display: block;
+    width: 100%;
+    float: right;
+    margin-right: -21px;
+}
 /***
  Empty placeholder
  */

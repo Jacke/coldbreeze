@@ -67,8 +67,11 @@ $scope.search = function() {
     if ($scope.searchValue == undefined || $scope.searchValue == "") {
       return obj
     } else {
-      console.log(obj);
-      if (obj.ref.title.includes($scope.searchValue)) {
+      console.log(obj.ref.title);
+      console.log(obj.ref.title.indexOf($scope.searchValue) == 0);
+      console.log($scope.searchValue);
+      console.log(">>>>>>>>>>>>>..");
+      if (obj.ref.title.indexOf($scope.searchValue) == 0) {
         return obj;
       } else {
         return false;
@@ -76,6 +79,14 @@ $scope.search = function() {
     }
  }
 }
+
+
+$scope.search1 = function(item){
+   if (!$scope.searchValue || (item.ref.title.toLowerCase().indexOf($scope.searchValue.toLowerCase()) != -1) ){
+       return true;
+   }
+   return false;
+};
 
 $scope.byReaction = function(action) {
   return function(obj) {

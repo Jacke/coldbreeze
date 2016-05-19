@@ -404,9 +404,7 @@ $scope.bboardDataPromiseBuilder = function() {
    deferred.resolve($scope.costPayload);
    return deferred.promise;
 }
-console.log('bboardDataPromises', $scope.$parent.bboardDataPromises);
-console.log('bboardDataPromiseBuilder', $scope.bboardDataPromiseBuilder)
-  $scope.bDPB = $scope.bboardDataPromiseBuilder();
+
 
 
 
@@ -465,6 +463,14 @@ $scope.fillBBoardData = function() {
     });
 }
 }
+
+
+
+$scope.initBboard = function() {
+
+console.log('bboardDataPromises', $scope.$parent.bboardDataPromises);
+console.log('bboardDataPromiseBuilder', $scope.bboardDataPromiseBuilder)
+$scope.bDPB = $scope.bboardDataPromiseBuilder();
 $scope.fillBBoardData();
 
 if($scope.interactions !== undefined && $scope.interactions.reactions) {
@@ -495,7 +501,19 @@ if($scope.interactions !== undefined && $scope.interactions.reactions) {
 
     });
 }
+}
 
+$scope.initBboardTrigger = function() {
+  $scope.initBboard();
+}
+if ($scope.$parent.session.inlineLaunchShow == true) {
+  $scope.initBboardTrigger();
+} else {
+  // put callback to inlineLaunchShow trigger
+  var launchId = $scope.session.session.id;
+
+  $scope.$parent.pushBboardTRigger(launchId, $scope.initBboardTrigger);
+}
 
 
 

@@ -1,7 +1,7 @@
 <div class="data-cost-controlls-expanded select-existed-new-data-cost">
   <form class="existed-new-data-cost form">
     <div class="form-group">
-        <label for="selectExistedResource"><a href="/data">Resource</a></label>
+        <label for="selectExistedResource"><a href="/data" class="resource-links">Resource</a></label>
         <select id="selectExistedResource" class="form-control" ng-init="newCost.cost = {};" ng-model="newCost.resource"
         ng-init="newCost.resource=avalCosts[0];newCost.entity=avalCosts[0].entities[0]"
         class="forResource"
@@ -10,10 +10,16 @@
 
     </div>
     <div class="form-group">
-        <label for="selectExistedEntity">Entity</label>
+        <label
+        for="selectExistedEntity"
+        ng-hide="newCost.resource !== undefined && newCost.resource.entities.length < 1">Entity</label>
         <select id="selectExistedEntity" ng-model="newCost.entities"
         class="form-control"
-        ng-options="entity.id as entity.title for entity in newCost.resource.entities"></select>
+        ng-options="entity.id as entity.title for entity in newCost.resource.entities"
+        ng-hide="newCost.resource !== undefined && newCost.resource.entities.length < 1"></select>
+        <div class="entity-empty-message" ng-show="newCost.resource !== undefined && newCost.resource.entities.length < 1">
+          <span>Please add <a href="/data">entity</a></span>
+        </div>
     </div>
   <div class="data-cost-controlls-buttons">
   <a class="btn btn-small btn-success btn-fill" ng-click="createCostWithAssign(newCost,$parent.element.id);$parent.addExistedCostForm=false;newCost = {};">Add</a>

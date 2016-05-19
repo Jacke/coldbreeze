@@ -56,8 +56,7 @@
 </div>
 
 
-<div class="" ng-repeat="refObj in refs | toProcessArray | filter:search()">
-<div class="tab-content ref-element" ng-repeat="refObj in refs">
+<div class="tab-content ref-element" ng-repeat="refObj in refs | filter: search1">
 <div class="ref-list-page header-frame">
 
 <div class="ref-card" ng-init="refObj.exData=false;refObj.edit=false;">
@@ -139,7 +138,7 @@
             <div ng-include src="'assets/partials/reflections/create-ref-element-middleware.html'"></div>
 
             <div class="ref-action-middleware" ng-repeat="middleware in refObj.middlewares | filter:byReaction(action)">
-              <span>Middleware {{ middleware.title }}</span> 
+              <span>Middleware {{ middleware.title }}</span>
             <div class="ref-action-strategies">
               <div ng-include src="'assets/partials/reflections/create-ref-element-strategy.html'"></div>
 
@@ -186,7 +185,6 @@
 </div>
 
 
-</div>
 </div>
 
 

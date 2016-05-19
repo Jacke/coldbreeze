@@ -17,7 +17,7 @@ import main.scala.bprocesses.links._
  class ActionSpec extends Specification {
 
     var instance:Option[BProcess] = None
-     
+
     def prepare_process:BProcess = {
           val proc2 = new BProcess(new Managment)
           proc2.push {
@@ -33,9 +33,9 @@ import main.scala.bprocesses.links._
             //new Brick(proc, 3),
             //new Space(3, 1),new Space(3, 2))
           }
-          
+
           proc2.elements_init // Important!
-          
+
           proc2
     }
 
@@ -60,11 +60,11 @@ import main.scala.bprocesses.links._
             ident = "delay",
           ifaceIdent = "delay"
 
-        )                
+        )
         val durationStrategy = Strategy(
           id = Some(1L), ident = "durationDelayStrategy")
         val scheduleStrategy = Strategy(
-          id = Some(1L), ident = "scheduleDelayStrategy")        
+          id = Some(1L), ident = "scheduleDelayStrategy")
         middleware.pushToStrategies(durationStrategy)
         middleware1.pushToStrategies(scheduleStrategy)
 
@@ -72,17 +72,17 @@ import main.scala.bprocesses.links._
         "They added?" in {
           middleware.strategies.length > 0
         }
-        "Execute strategy" in {
+        "Execute all strategies" in {
 
-        val resultmiddleware = middleware.executeStrategy()
-        resultmiddleware.isDefined
-        resultmiddleware.get.executed == true && resultmiddleware.get.resultedStrategy == "DurationStrategy"
-        val resultmiddleware1 = middleware1.executeStrategy()
-        resultmiddleware1.isDefined
-        resultmiddleware1.get.executed == true && resultmiddleware1.get.resultedStrategy == "ScheduleStrategy"
-        val resultmiddleware2 = middleware2.executeStrategy()
-        resultmiddleware2.isDefined
-        resultmiddleware2.get.executed == true && resultmiddleware2.get.resultedStrategy == "NullStrategy"
+          val resultmiddleware = middleware.executeStrategy()
+          resultmiddleware.isDefined
+          resultmiddleware.get.executed == true && resultmiddleware.get.resultedStrategy == "DurationStrategy"
+          val resultmiddleware1 = middleware1.executeStrategy()
+          resultmiddleware1.isDefined
+          resultmiddleware1.get.executed == true && resultmiddleware1.get.resultedStrategy == "ScheduleStrategy"
+          val resultmiddleware2 = middleware2.executeStrategy()
+          resultmiddleware2.isDefined
+          resultmiddleware2.get.executed == true && resultmiddleware2.get.resultedStrategy == "NullStrategy"
         }
 
 
@@ -91,9 +91,9 @@ import main.scala.bprocesses.links._
 
               val reaction = UnitReaction(id = Some(1),
                                       bprocess = 1,
-                                      autostart = true, 
+                                      autostart = true,
                                       element = 1,
-                                      from_state=None, 
+                                      from_state=None,
                                       title="Make delay") 
               val out1 = UnitReactionStateOut(id=Some(1),
               state_ref = 1,
@@ -102,7 +102,7 @@ import main.scala.bprocesses.links._
               val out2 = UnitReactionStateOut(id=Some(2),
               state_ref = 1,
               reaction = 1,
-              on  = false)  
+              on  = false)
 
 
               reaction.reaction_state_outs += out1
@@ -110,20 +110,21 @@ import main.scala.bprocesses.links._
               reaction.middlewares += middleware
               reaction.execute(proc2)
               reactionOpt = Some(reaction)
-              reaction.reaction_state_outs.length > 0              
+              reaction.reaction_state_outs.length > 0
             "Is middleware added?" in {
                   reactionOpt.isDefined && reactionOpt.get.middlewares.length > 0
             }
             "Is middleware executed?" in {
                   reactionOpt.isDefined && reactionOpt.get.middlewares.length > 0
-            }            
+            }
+
         }
       }
-      
+
 
     }
 
-   
+
 
 
 /*
@@ -148,7 +149,7 @@ import main.scala.bprocesses.links._
       "contain spaces in container" in {
         proc.spaces.length > 0
       }
-      
+
       "Space elem test" in {
         val proc2 = proc
         true
@@ -158,7 +159,7 @@ import main.scala.bprocesses.links._
         //println(proc2.spaces.last.expands) // must be false
         //proc2.spaces.last.expands.length > 0
       }
-      
+
       "Order test" in {
         proc.spaces.head.findByOrder("container", order = 3).get.order == 3
         proc.spaces.head.getOrderNum("container") === 4
