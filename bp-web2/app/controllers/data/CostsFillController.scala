@@ -223,6 +223,7 @@ def launch_assigns_for_elements(launch_id: Int) = SecuredAction.async { implicit
 def createCostElement(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
 	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
     val selected = request.body.validate[List[ResourceElementSelector]]
+    // V
     selected.fold(
     errors => {
        Logger.error(s"error with $selected")
@@ -230,7 +231,7 @@ def createCostElement(id: Int) = SecuredAction(BodyParsers.parse.json) { implici
     },
     resElSelects => {
     	println(resElSelects)
-    	resElSelects.foreach { resElSelect =>
+    	val results = resElSelects.map { resElSelect =>
 	    	val elem_topology = ElemTopologDAO.get(resElSelect.elementId)
 	    	elem_topology match {
 	    		case Some(topo) => {
@@ -238,13 +239,12 @@ def createCostElement(id: Int) = SecuredAction(BodyParsers.parse.json) { implici
 			  														  process_id       = topo.process,
 			  														  resource_id      = resElSelect.resourceId,
 			  														  entities = resElSelect.entityId))
-			    	//Ok(Json.toJson(Map("message" -> "ok")))
-
+			    	Json.toJson(Map("message" -> "ok"))
 	    		}
-	    		case _ => //BadRequest(Json.obj("status" ->"KO", "message" -> "not found"))
+	    		case _ => Json.obj("status" ->"KO", "message" -> "not created")
 	    	}
     	}
-    	Ok(Json.toJson(Map("message" -> "ok")))
+      Ok(Json.toJson(results))
     }
   )
 }

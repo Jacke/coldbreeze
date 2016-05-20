@@ -309,9 +309,9 @@ minorityAppServices.factory('DataCostLaunchAssign', ['$resource', function ($res
 
       $scope.createCostWithAssign = function(costs, elementIdPlain) {
         if ($scope.insideLaunch) {
-          return $scope.createAssignedResEls(costs, elementIdPlain)
+          return $scope.createLaunchedAssignedResEls(costs, elementIdPlain);
         } else {
-          return $scope.createLaunchedAssignedResEls(costs, elementIdPlain)
+          return $scope.createAssignedResEls(costs, elementIdPlain);
         }
       }
       $scope.deleteCost = function(cost) {
@@ -337,8 +337,9 @@ minorityAppServices.factory('DataCostLaunchAssign', ['$resource', function ($res
         var elementId = _.find($scope.launchTopologs,function(t){ return elementIdPlain === t.element_id });
         // (elementId: Int, resourceId: Int, entityId: String = "*")
         console.log(costs);
-        var reqs = _.map(costs, function(cost) { return  {elementId: elementId, resourceId: costs.resource.resource.id,
-                                                          entityId: cost.entities}; });
+        var reqs = _.map(costs, function(cost) { return  {elementId: elementId.topo_id,
+                                                          resourceId: costs.resource.resource.id,
+                                                          entityId: costs.entities}; });
         $http.post(jsRoutes.controllers.CostFillController.createCostElement(0).absoluteURL(document.ssl_enabled),
                           reqs ).then(function (data) {
                             $scope.loadData();
