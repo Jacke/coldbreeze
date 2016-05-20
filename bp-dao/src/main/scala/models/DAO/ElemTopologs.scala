@@ -7,11 +7,10 @@ import models.DAO.BPStationDAO._
 import models.DAO.conversion.DatabaseCred
 import main.scala.simple_parts.process.Units._
 
-  
+import com.github.tototoshi.slick.JdbcJodaSupport._
+
 object ElemTopologDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.jdbc.meta.MTable
@@ -20,7 +19,7 @@ object ElemTopologDAOF {
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import models.DAO.conversion.DatabaseFuture._  
+  import models.DAO.conversion.DatabaseFuture._
   import dbConfig.driver.api._
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
@@ -34,36 +33,36 @@ object ElemTopologDAOF {
     db.run(insertion)
     //  db.run ( elem_topologs returning elem_topologs.map(_.id) += s )
   }
-}  
+}
 
 
-import models.DAO.driver.MyPostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
 import slick.model.ForeignKeyAction
-case class EitherTypeElement(front: Option[UndefElement] = None, 
+case class EitherTypeElement(front: Option[UndefElement] = None,
                                     nested: Option[SpaceElementDTO] = None,
                                     title: String = "")
-    
+
 class ElemTopologs(tag: Tag) extends Table[ElemTopology](tag, "elem_topologs") {
-  def id            = column[Int]("id", O.PrimaryKey, O.AutoInc) 
+  def id            = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def process       = column[Int]("process_id")
   def hash          = column[String]("hash")
 
   def front_elem_id = column[Option[Int]]("front_elem_id")
   def space_elem_id = column[Option[Int]]("space_elem_id")
-  def space_id      = column[Option[Int]]("space_id")  
-    
-  def created_at = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
+  def space_id      = column[Option[Int]]("space_id")
 
-  def * = (id.?, process, 
+  def created_at = column[Option[org.joda.time.DateTime]]("created_at")
+  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")
+
+  def * = (id.?, process,
           front_elem_id,
           space_elem_id,
           hash,
            created_at, updated_at, space_id) <> (ElemTopology.tupled, ElemTopology.unapply)
 
-  def bpFK        = foreignKey("topo_bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK        = foreignKey("topo_bprocess_fk", process, models.DAO.BPDAOF.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
   def procelemFK  = foreignKey("topo_procelem_fk", front_elem_id, proc_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
   def spaceelemFK = foreignKey("topo_spaceelem_fk", space_elem_id, SpaceElemDAO.space_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
   def spaceFK     = foreignKey("topo_bpspace_fk", space_id, models.DAO.BPSpaceDAO.bpspaces)(_.id, onDelete = ForeignKeyAction.Cascade)
@@ -101,12 +100,12 @@ object ElemTopologDAO {
       case Some(topo) => {
         if (topo.front_elem_id.isDefined) {
           val front_el = ProcElemDAO.findById(topo.front_elem_id.get).get
-          Some(EitherTypeElement(front = Some(front_el), 
+          Some(EitherTypeElement(front = Some(front_el),
                                  nested = None,
                                  title = front_el.title))
         } else if (topo.space_elem_id.isDefined) {
           val nested_el = SpaceElemDAO.findById(topo.space_elem_id.get).get
-          Some(EitherTypeElement(front = None, 
+          Some(EitherTypeElement(front = None,
                                  nested = Some(nested_el),
                                  title = nested_el.title))
         } else {
@@ -121,7 +120,7 @@ object ElemTopologDAO {
   def get(k: Int):Option[ElemTopology] = database withSession {
     implicit session ⇒
       val q3 = for { s ← elem_topologs if s.id === k } yield s
-      q3.list.headOption 
+      q3.list.headOption
   }
   def isFront(k: Int):Boolean = database withSession {
     implicit session ⇒
@@ -173,4 +172,3 @@ object ElemTopologDAO {
       q3.list.sortBy(_.id)
   }
 }
-

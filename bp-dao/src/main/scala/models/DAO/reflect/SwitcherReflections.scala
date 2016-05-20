@@ -2,8 +2,9 @@ package models.DAO.reflect
 
 import main.scala.bprocesses.{BProcess, BPLoggerResult}
 import main.scala.simple_parts.process.ProcElems
-import models.DAO.driver.MyPostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.JdbcJodaSupport._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
 import slick.model.ForeignKeyAction
 
@@ -11,29 +12,29 @@ import models.DAO.ProcElemDAO._
 import models.DAO.BPDAO._
 import models.DAO.BPStationDAO._
 import models.DAO.conversion.DatabaseCred
-import main.scala.simple_parts.process.Units._  
-  
+import main.scala.simple_parts.process.Units._
+
 import main.scala.bprocesses.refs.UnitRefs.{UnitSwitcherRef}
-  
+
 class SwitcherRefs(tag: Tag) extends Table[UnitSwitcherRef](tag, "switcher_refs") {
-  def id          = column[Int]("id", O.PrimaryKey, O.AutoInc) 
+  def id          = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def reflection  = column[Int]("reflection_id")
   def switch_type = column[String]("switch_type")
   def priority    = column[Int]("priority", O.Default(2))
   def state_ref   = column[Int]("state_ref_id")
   def fn          = column[String]("fn")
-  def target      = column[String]("target")  
+  def target      = column[String]("target")
   def override_group = column[Int]("override_group", O.Default(0))
-    
+
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
+  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")
 
   def reflectFK = foreignKey("sw_ref_reflect_fk", reflection, models.DAO.reflect.RefDAO.refs)(_.id, onDelete = ForeignKeyAction.Cascade)
 
-  def * = (id.?, 
-          reflection, 
-          switch_type, 
-          priority,           
+  def * = (id.?,
+          reflection,
+          switch_type,
+          priority,
           state_ref,
           fn,
           target,
@@ -47,8 +48,8 @@ class SwitcherRefs(tag: Tag) extends Table[UnitSwitcherRef](tag, "switcher_refs"
 
 object SwitcherRefDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
+
+
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._
@@ -58,16 +59,16 @@ object SwitcherRefDAOF {
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import models.DAO.conversion.DatabaseFuture._  
+  import models.DAO.conversion.DatabaseFuture._
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
   val switcher_refs = SwitcherRefDAO.switcher_refs
 
   private def filterByIdsQuery(ids: List[Int]): Query[SwitcherRefs, UnitSwitcherRef, Seq] =
-    switcher_refs.filter(_.id inSetBind ids) 
+    switcher_refs.filter(_.id inSetBind ids)
   private def filterByReflection(reflection: Int): Query[SwitcherRefs, UnitSwitcherRef, Seq] =
-    switcher_refs.filter(_.reflection === reflection) 
+    switcher_refs.filter(_.reflection === reflection)
 
   def findByRef(reflection: Int):Future[Seq[UnitSwitcherRef]] = {
     db.run(filterByReflection(reflection).result)
@@ -101,13 +102,13 @@ object SwitcherRefDAO {
   def get(k: Int):Option[UnitSwitcherRef] = database withSession {
     implicit session ⇒
       val q3 = for { s ← switcher_refs if s.id === k } yield s
-      q3.list.headOption 
+      q3.list.headOption
   }
   def findByRef(id: Int) = {
      database withSession { implicit session =>
        val q3 = for { s ← switcher_refs if s.reflection === id } yield s
-       q3.list                   
-    } 
+       q3.list
+    }
   }
   def retrive(k: Int, process: Int, state_ref: Int, sess: Option[Int] = None):List[UnitSwitcher] = database withSession {
     implicit session =>

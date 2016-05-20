@@ -2,7 +2,7 @@ package models.DAO.resources
 
 import slick.driver.PostgresDriver.simple._
 import slick.model.ForeignKeyAction
-//import models.DAO.driver.MyPostgresDriver.simple._
+//import slick.driver.PostgresDriver.api._
 import models.DAO.conversion.DatabaseCred
 
 class Plans(tag: Tag) extends Table[PlanDTO](tag, "plans") {
@@ -31,8 +31,8 @@ case class PlanDTO(var id: Option[Int],
 
 object PlanDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
+   
+    
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._

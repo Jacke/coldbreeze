@@ -1,6 +1,7 @@
 package models.DAO.sessions
-import models.DAO.driver.MyPostgresDriver1.simple._
+import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.JdbcJodaSupport._
 import models.DAO.conversion.DatabaseCred
 import slick.model.ForeignKeyAction
 import main.scala.simple_parts.process.Units._
@@ -25,7 +26,7 @@ class SessionSpaces(tag: Tag) extends Table[SessionSpaceDTO](tag, "session_space
 
   def * = (id.?, bprocess, session, index, container, subbrick, brick_front, brick_nested, nestingLevel,
            created_at, updated_at) <> (SessionSpaceDTO.tupled, SessionSpaceDTO.unapply)
-  def bpFK       = foreignKey("s_sp_bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK       = foreignKey("s_sp_bprocess_fk", bprocess, models.DAO.BPDAOF.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
   def sessionFK  = foreignKey("s_sp_session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }
@@ -104,8 +105,8 @@ object SpaceDCO {
 */
 object SessionSpaceDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
+
+
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._

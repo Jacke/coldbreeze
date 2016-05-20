@@ -5,7 +5,7 @@ import models.DAO.resources.BusinessDTO._
 import securesocial.core.providers._
 import securesocial.core._
 import securesocial.core.services.{UserService, SaveMode}
-//import models.DAO.driver.MyPostgresDriver.simple._
+//import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
 import slick.model.ForeignKeyAction
@@ -17,8 +17,6 @@ import models.DAO.resources._
 object AccountInfosDAOF {
   import scala.util.Try
 import akka.actor.ActorSystem
-import akka.stream.ActorFlowMaterializer
-import akka.stream.scaladsl.Source
 import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
 //import slick.driver.JdbcProfile
 import slick.driver.PostgresDriver.api._
@@ -43,13 +41,13 @@ import models.DAO.conversion.DatabaseFuture._
   private def getAll(): Query[AccountInfos, AccountInfo, Seq] =
     account_infos
 
-  def getByInfoById(id: Int):Future[Seq[AccountInfo]] = { 
+  def getByInfoById(id: Int):Future[Seq[AccountInfo]] = {
     db.run(filterQuery(id).result)
-    
+
   }
-  def getByInfoByUID(uid: String):Future[Option[AccountInfo]] = { 
+  def getByInfoByUID(uid: String):Future[Option[AccountInfo]] = {
     db.run(filterQueryByUID(uid).result.headOption)
-    
+
   }
 // models.AccountInfosDAOF.updateCurrentWorkbenchForAllEmployees
 // models.AccountInfosDAOF.getByInfoByUID
@@ -57,10 +55,10 @@ import models.DAO.conversion.DatabaseFuture._
     val emps:Future[Seq[EmployeeDTO]] = EmployeeDAOF.getAll()
     emps.map { empSeq =>
       empSeq.foreach { emp =>
-      
+
       getByInfoByUID(emp.uid).map { infoF =>
         infoF.map { info =>
-          updateF(info.id.get, info.copy(currentWorkbench = Some(emp.workbench)))          
+          updateF(info.id.get, info.copy(currentWorkbench = Some(emp.workbench)))
         }
         }
       }
@@ -70,21 +68,21 @@ import models.DAO.conversion.DatabaseFuture._
   def updateCurrentWorkbench(uid: String, workbench: Option[Int]):Future[Int] = {
     val empOpt:Future[Option[EmployeeDTO]] = EmployeeDAOF.getByEmpByUID(uid)
     empOpt.flatMap { empReal =>
-      empReal match { 
-      case Some(emp) => {   
+      empReal match {
+      case Some(emp) => {
       val infoF = getByInfoByUID(emp.uid)
       val no:Int = -1
       infoF.flatMap { infoOpt =>
             infoOpt.map { info =>
                   updateF(info.id.get, info.copy(currentWorkbench = workbench))
-                } getOrElse Future.successful(AccountsDAO.createInfo(AccountInfo(None, 
-                                                          uid = emp.uid, 
-                                                          created_at = org.joda.time.DateTime.now(), 
-                                                          ea = false, 
+                } getOrElse Future.successful(AccountsDAO.createInfo(AccountInfo(None,
+                                                          uid = emp.uid,
+                                                          created_at = org.joda.time.DateTime.now(),
+                                                          ea = false,
                                                           pro = false,
                                                           currentWorkbench = workbench)))
             }
-      } 
+      }
       case _ => Future(-1)
       }
     }
@@ -121,8 +119,6 @@ import models.DAO.conversion.DatabaseFuture._
 object AccountsDAOF {
   import scala.util.Try
 import akka.actor.ActorSystem
-import akka.stream.ActorFlowMaterializer
-import akka.stream.scaladsl.Source
 import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
 //import slick.driver.JdbcProfile
 import slick.driver.PostgresDriver.api._
@@ -157,15 +153,15 @@ import models.DAO.conversion.DatabaseFuture._
   }
 
   def getRolesAndLang(email: String, workbench_id: Int = -1): Future[Option[Tuple3[Boolean, Boolean, String]]] ={
-    val employeeF:Future[Option[EmployeeDTO]] = models.DAO.resources.EmployeeDAOF.getByEmployeeUIDAndWorkbench(email, 
+    val employeeF:Future[Option[EmployeeDTO]] = models.DAO.resources.EmployeeDAOF.getByEmployeeUIDAndWorkbench(email,
                                                                                                       workbench_id)
-    val isManagerF:Future[Boolean] = employeeF.map { employee => 
+    val isManagerF:Future[Boolean] = employeeF.map { employee =>
       employee match {
         case Some(emp) => emp.manager
         case _ => false
       }//AccountPlanDAO.getByMasterAcc(email).isDefined
     }
-    val isEmployeeF:Future[Boolean] = employeeF.map { employee => 
+    val isEmployeeF:Future[Boolean] = employeeF.map { employee =>
       employee match {
         case Some(emp) => true
         case _ => false
@@ -223,7 +219,7 @@ object AccountsDAO {
         }
         case _ => false
       }
-    } 
+    }
   }
   def subscribeToEA(account_id: String):Boolean  = { database withSession {
      implicit session =>
@@ -235,7 +231,7 @@ object AccountsDAO {
         }
         case _ => false
       }
-    } 
+    }
   }
   def getAllInfos: List[AccountInfo] = { database withSession {
     implicit session =>
@@ -252,7 +248,7 @@ object AccountsDAO {
                 case -1 => false
                 case _ => true
           }
-        } 
+        }
         case _ => false
       }
   }
@@ -306,7 +302,7 @@ object AccountsDAO {
     implicit session ⇒
       val q3 = for { a ← accounts if a.userId inSetBind emails } yield a
       q3.list
-  }  
+  }
   def getAccountInfo(email: String): Option[AccountInfo] = database withSession {
     implicit session =>
     val q3 = for { a ← account_infos if a.uid === email } yield a
@@ -321,7 +317,7 @@ object AccountsDAO {
     implicit session ⇒
       val q3 = for { a ← accounts if a.userId === email } yield a
       q3.list.headOption match {
-        case Some(account) => accounts.filter(_.email === email).update(account.copy(lang = lang)) 
+        case Some(account) => accounts.filter(_.email === email).update(account.copy(lang = lang))
         case _ => "en"
       }
   }
@@ -356,12 +352,12 @@ import controllers.Credentials
       val result = q3.list.headOption
       result match {
         case Some(origin) => {
-         val toUpdate = origin.copy(firstName = cred.firstName, 
-                                    lastName = cred.lastName, 
-                                    fullName = cred.fullName, 
-                                    lang = cred.lang, 
-                                    country = cred.country, 
-                                    phone = cred.phone, 
+         val toUpdate = origin.copy(firstName = cred.firstName,
+                                    lastName = cred.lastName,
+                                    fullName = cred.fullName,
+                                    lang = cred.lang,
+                                    country = cred.country,
+                                    phone = cred.phone,
                                     nickname = cred.nickname)
            accounts.filter(_.email === email).update(toUpdate)
            true
@@ -373,13 +369,13 @@ import controllers.Credentials
   def fetchCredentials(email: String) = database withSession {
     implicit session =>
     (findByEmailAndProvider(email, "userpass"), getAccount(email)) match {
-      case (Some(user), Some(account)) => { 
-        Some(Credentials(user.firstName, 
-          user.lastName, 
-          user.fullName, 
-          account.lang, 
-          country  = account.country, 
-          phone    = account.phone, 
+      case (Some(user), Some(account)) => {
+        Some(Credentials(user.firstName,
+          user.lastName,
+          user.fullName,
+          account.lang,
+          country  = account.country,
+          phone    = account.phone,
           nickname = account.nickname))
       }
       case _ => None

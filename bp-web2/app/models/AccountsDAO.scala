@@ -5,7 +5,7 @@ import models.DAO.resources.BusinessDTO._
 import securesocial.core.providers._
 import securesocial.core._
 import securesocial.core.services.{UserService, SaveMode}
-//import models.DAO.driver.MyPostgresDriver.simple._
+//import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
 import slick.model.ForeignKeyAction
@@ -17,8 +17,8 @@ import models.DAO.resources._
 object AccountInfosDAOF {
   import scala.util.Try
 import akka.actor.ActorSystem
-import akka.stream.ActorFlowMaterializer
-import akka.stream.scaladsl.Source
+ 
+  
 import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
 //import slick.driver.JdbcProfile
 import slick.driver.PostgresDriver.api._
@@ -121,8 +121,8 @@ import models.DAO.conversion.DatabaseFuture._
 object AccountsDAOF {
   import scala.util.Try
 import akka.actor.ActorSystem
-import akka.stream.ActorFlowMaterializer
-import akka.stream.scaladsl.Source
+ 
+  
 import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
 //import slick.driver.JdbcProfile
 import slick.driver.PostgresDriver.api._

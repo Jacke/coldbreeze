@@ -1,8 +1,11 @@
 package models.DAO.resources
 
-import slick.driver.PostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
+import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.JdbcJodaSupport._
+
 import slick.model.ForeignKeyAction
-//import models.DAO.driver.MyPostgresDriver.simple._
+//import slick.driver.PostgresDriver.api._
 import models.DAO.conversion.DatabaseCred
 
 class BusinessServices(tag: Tag) extends Table[BusinessServiceDTO](tag, "business_services") {
@@ -10,7 +13,7 @@ class BusinessServices(tag: Tag) extends Table[BusinessServiceDTO](tag, "busines
   def title       = column[String]("title")
   def business_id = column[Int]("business_id")
   def master_acc  = column[String]("master_acc")
-   
+
   //def accFK = foreignKey("macc_fk", master_acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
   def business = foreignKey("biz_serv_buss_fk", business_id, models.DAO.resources.BusinessDAO.businesses)(_.id)
 
@@ -25,8 +28,8 @@ case class BusinessServiceDTO(var id: Option[Int], title: String, business_id: I
 
 object BusinessServiceDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
+
+
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._
@@ -36,7 +39,7 @@ object BusinessServiceDAOF {
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import models.DAO.conversion.DatabaseFuture._  
+  import models.DAO.conversion.DatabaseFuture._
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
@@ -47,10 +50,10 @@ object BusinessServiceDAOF {
     business_services.filter(_.id === id)
   private def filterByBusinessQuery(k: Int): Query[BusinessServices, BusinessServiceDTO, Seq] =
     for { s ← business_services
-          b <- s.business if b.id === k } yield s 
+          b <- s.business if b.id === k } yield s
 
   def getAllByBusiness(k: Int):Future[Seq[BusinessServiceDTO]] = {
-      db.run(filterByBusinessQuery(k).result)     
+      db.run(filterByBusinessQuery(k).result)
   }
 
 }
@@ -60,7 +63,7 @@ object BusinessServiceDAO {
   import DatabaseCred.database
 
   val business_services = TableQuery[BusinessServices]
-  
+
 
 
 
@@ -76,31 +79,31 @@ object BusinessServiceDAO {
 
   def get(k: Int) = database withSession {
     implicit session ⇒
-      val q3 = for { s ← business_services if s.id === k } yield s 
+      val q3 = for { s ← business_services if s.id === k } yield s
       q3.list.headOption
   }
   def getBusiness(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← business_services
-                     b <- s.business if s.id === k } yield (s, b) 
+                     b <- s.business if s.id === k } yield (s, b)
       q3.list.headOption
   }
   def getByBusiness(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← business_services
-                     b <- s.business if b.id === k } yield (s) 
+                     b <- s.business if b.id === k } yield (s)
       q3.list.headOption
   }
   def getAllByBusiness(k: Int) = database withSession {
     implicit session ⇒
       val q3 = for { s ← business_services
-                     b <- s.business if b.id === k } yield (s) 
+                     b <- s.business if b.id === k } yield (s)
       q3.list
   }
 
   def getByMaster(email: String) = database withSession {
     implicit session =>
-    val q3 = for { s ← business_services if s.master_acc === email } yield s 
+    val q3 = for { s ← business_services if s.master_acc === email } yield s
     q3.list.sortBy(_.id)
   }
   /**

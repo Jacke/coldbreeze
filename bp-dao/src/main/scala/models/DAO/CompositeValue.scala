@@ -1,5 +1,5 @@
 package models.DAO
-
+/*
 import java.sql.Timestamp
 import java.text.SimpleDateFormat
 
@@ -31,6 +31,7 @@ def dropShit: Unit = {
 }
 
 }
+*/
 
 /*
 trait MyPostgresDriver extends PostgresDriver

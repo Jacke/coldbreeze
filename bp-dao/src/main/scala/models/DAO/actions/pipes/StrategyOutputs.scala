@@ -4,9 +4,9 @@ import us.ority.min.actions._
 
 
 import models.DAO.conversion.DatabaseCred
-//import models.DAO.driver.MyPostgresDriver.simple._
+//import slick.driver.PostgresDriver.api._
 import models.DAO._
-//import models.DAO.driver.MyPostgresDriver.simple._
+//import slick.driver.PostgresDriver.api._
 import models.DAO.conversion.DatabaseFuture._
 import com.github.nscala_time.time.Imports._
 import models.DAO.conversion.DatabaseCred.dbConfig.driver.api._
@@ -52,8 +52,6 @@ class StrategyOutputs(tag: Tag) extends Table[StrategyOutputUnit](tag, "strategy
 
 object StrategyOutputsDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   import slick.jdbc.meta.MTable
   import scala.concurrent.ExecutionContext.Implicits.global

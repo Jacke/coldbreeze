@@ -1,9 +1,10 @@
 package models.DAO.resources
 
-import models.DAO.driver.MyPostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
 import models.DAO.conversion.DatabaseCred
-
 import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.JdbcJodaSupport._
+
 
 case class BizFormDTO(title: String, phone: Option[String] = None, website: Option[String] = None, country: String, city: String, address: Option[String], nickname: Option[String] = None)
 
@@ -19,9 +20,9 @@ class Businesses(tag: Tag) extends Table[BusinessDTO](tag, "businesses") {
 
   def walkthrough = column[Boolean]("walkthrough")
   def organization= column[Boolean]("org", O.Default(false))
- 
+
   def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")  
+  def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")
 
 
   def * = (id.?, title, phone, website, country, city, address, nickname, walkthrough,
@@ -33,13 +34,13 @@ class Businesses(tag: Tag) extends Table[BusinessDTO](tag, "businesses") {
   Case class
  */
 
-case class BusinessDTO(var id: Option[Int], 
-  title: String, 
-  phone: Option[String] = None, 
-  website: Option[String] = None, 
-  country: String, 
-  city: String, 
-  address: Option[String], 
+case class BusinessDTO(var id: Option[Int],
+  title: String,
+  phone: Option[String] = None,
+  website: Option[String] = None,
+  country: String,
+  city: String,
+  address: Option[String],
   nickname: Option[String] = None,
   walkthrough: Boolean = false,
   created_at:Option[org.joda.time.DateTime] = None,
@@ -49,8 +50,8 @@ case class BusinessDTO(var id: Option[Int],
 
 object BusinessDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
+
+
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._
@@ -60,7 +61,7 @@ object BusinessDAOF {
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import models.DAO.conversion.DatabaseFuture._  
+  import models.DAO.conversion.DatabaseFuture._
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
@@ -87,7 +88,7 @@ object BusinessDAO {
   import DatabaseCred.database
 
   val businesses = TableQuery[Businesses]
-  
+
 
 
 
@@ -99,17 +100,17 @@ object BusinessDAO {
   def findByNickname(nickname: String) = database withSession {
     implicit session =>
     val q3 = for { s ← businesses if s.nickname === nickname } yield s
-    q3.list.headOption 
+    q3.list.headOption
   }
   def getByIDS(k: List[Int]):List[BusinessDTO] = database withSession {
     implicit session ⇒
       val q3 = for { s ← businesses if s.id inSetBind k } yield s
-      q3.list 
-  }  
+      q3.list
+  }
   def get(k: Int):Option[BusinessDTO] = database withSession {
     implicit session ⇒
       val q3 = for { s ← businesses if s.id === k } yield s
-      q3.list.headOption 
+      q3.list.headOption
   }
   /**
    * Update a business
@@ -154,7 +155,7 @@ object BusinessDAO {
 
   def getAll() = database withSession {
     implicit session ⇒
-      val q3 = for { s ← businesses } yield s 
+      val q3 = for { s ← businesses } yield s
       q3.list.sortBy(_.id)
     //suppliers foreach {
     //  case (id, title, address, city, state, zip) ⇒

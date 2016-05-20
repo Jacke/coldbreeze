@@ -1,7 +1,9 @@
 package models.DAO
 
 
-import models.DAO.driver.MyPostgresDriver1.simple._
+import models.DAO.driver.MyPostgresDriver.api._
+import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.JdbcJodaSupport._
 import slick.model.ForeignKeyAction
 import models.DAO.BPDAO._
 import models.DAO.resources.BusinessDTO._
@@ -75,8 +77,6 @@ paused: Boolean)
 
 object BPStationLoggeDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._
@@ -86,7 +86,7 @@ object BPStationLoggeDAOF {
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import models.DAO.conversion.DatabaseFuture._  
+  import models.DAO.conversion.DatabaseFuture._
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
@@ -99,7 +99,7 @@ object BPStationLoggeDAOF {
 }
 
 object BPStationLoggeDAO {
-  import models.DAO.BPDAO.bprocesses
+  import models.DAO.BPDAOF.bprocesses
   import main.scala.bprocesses.BPStation
 
   import DatabaseCred.database
@@ -141,7 +141,7 @@ object BPStationLoggeDAO {
     database withSession { implicit session =>
      val q3 = for { st ← bpstationloggers if st.process === id } yield st// <> (BPStationDTO.tupled, BPStationDTO.unapply _)
 
-      q3.list 
+      q3.list
     }
   }
   def getAll = database withSession {
@@ -167,8 +167,8 @@ def update(id: Int, entity: BPStationLoggerDTO):Boolean = {
   }
   def areActiveForBP(id: Int) = {
      database withSession { implicit session =>
-        val q3 = for { st ← bpstationloggers 
-          if st.process === id 
+        val q3 = for { st ← bpstationloggers
+          if st.process === id
           if st.finished === false
           } yield st
 

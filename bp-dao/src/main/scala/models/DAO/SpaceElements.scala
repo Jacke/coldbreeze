@@ -2,7 +2,8 @@ package models.DAO
 
 import main.scala.bprocesses.BProcess
 import main.scala.simple_parts.process.{Block, ProcElems}
-import models.DAO.driver.MyPostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
+import com.github.tototoshi.slick.JdbcJodaSupport._
 import slick.model.ForeignKeyAction
 import models.DAO.conversion.{DatabaseCred, Implicits}
 import com.github.nscala_time.time.Imports._
@@ -39,7 +40,7 @@ class SpaceElements(tag: Tag) extends Table[SpaceElementDTO](tag, "space_element
            created_at, updated_at) <> (SpaceElementDTO.tupled, SpaceElementDTO.unapply)
 
   def businessFK = foreignKey("sp_elem_business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def bpFK       = foreignKey("sp_elem_bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK       = foreignKey("sp_elem_bprocess_fk", bprocess, models.DAO.BPDAOF.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
   def spaceFK    = foreignKey("sp_elem_bpspace_fk", space_owned, models.DAO.BPSpaceDAO.bpspaces)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }
@@ -195,7 +196,7 @@ None,
 
 object SpaceElemDAO {
   import DatabaseCred.database
-  import models.DAO.BPDAO.bprocesses
+  import models.DAO.BPDAOF.bprocesses
 
 
   val space_elements = TableQuery[SpaceElements]

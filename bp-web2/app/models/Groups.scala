@@ -2,7 +2,7 @@ package models.DAO.resources
 
 //import slick.driver.PostgresDriver.simple._
 import models.DAO.conversion.DatabaseCred
-import models.DAO.driver.MyPostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
 
 import com.github.nscala_time.time.Imports._
 
@@ -49,8 +49,8 @@ case class AccoutGroupDTO(
             employee_id: Int = 0)
 object GroupDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
+   
+    
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._
@@ -82,8 +82,8 @@ object GroupDAOF {
 
 object AccountGroupDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
+   
+    
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._

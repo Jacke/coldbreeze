@@ -55,8 +55,6 @@ def session_state_refFK = foreignKey("sw_session_state_fk", session_state, BPSes
 
 object SwitcherDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._

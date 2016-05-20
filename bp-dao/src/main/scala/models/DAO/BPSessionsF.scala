@@ -30,7 +30,7 @@ class BPSessionsF(tag: Tag) extends Table[BPSession](tag, "bpsessions") {
 
   def * = (id.?, process, created_at, updated_at, active_listed) <> (BPSession.tupled, BPSession.unapply)
 
-  def bpFK = foreignKey("sess_bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK = foreignKey("sess_bprocess_fk", process, models.DAO.BPDAOF.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 }
 
 
@@ -41,8 +41,6 @@ import main.scala.utils.InputParamProc
 
 object BPSessionDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
 
   import slick.jdbc.meta.MTable
@@ -98,7 +96,7 @@ object BPSessionDAOF {
 
   def pull(s: BPSession):Future[Int] = {
     LaunchCounterDAO.invokeCounterForProcess(process_id = s.process)
-    db.run(bpsessions returning bpsessions.map(_.id) += s)
+    db.run(bpsessions returning bpsessions.map(_.id) += s.copy(created_at = Some(org.joda.time.DateTime.now())) )
   }
   private def filterByProcessesAndIdsQuery(processes_ids: List[Int], session_ids: List[Int]): Query[BPSessionsF, BPSession, Seq] =
     bpsessions.filter(c => (c.process inSetBind processes_ids) && (c.id inSetBind session_ids))

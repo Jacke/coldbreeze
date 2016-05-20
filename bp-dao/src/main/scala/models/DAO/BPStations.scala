@@ -1,7 +1,9 @@
 package models.DAO
 
 
-import models.DAO.driver.MyPostgresDriver1.simple._
+import models.DAO.driver.MyPostgresDriver.api._
+import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.JdbcJodaSupport._
 import slick.model.ForeignKeyAction
 import models.DAO.BPDAO._
 import models.DAO.resources.BusinessDTO._
@@ -79,18 +81,17 @@ created_at:Option[org.joda.time.DateTime] = None,
 updated_at:Option[org.joda.time.DateTime] = None, session: Int = 1, front: Boolean = true) // Front par for parallels
                                                                                            //  TODO: Avoid default value
 object BPStationDAOF {
+
   import akka.actor.ActorSystem
-import akka.stream.ActorFlowMaterializer
-import akka.stream.scaladsl.Source
-import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
-//import slick.driver.JdbcProfile
-import slick.driver.PostgresDriver.api._
-import slick.jdbc.meta.MTable
-import scala.concurrent.ExecutionContext.Implicits.global
-import com.github.tototoshi.slick.JdbcJodaSupport._
-import scala.concurrent.duration.Duration
-import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
-import models.DAO.conversion.DatabaseFuture._
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import models.DAO.conversion.DatabaseFuture._
 
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
@@ -131,7 +132,7 @@ import models.DAO.conversion.DatabaseFuture._
 }
 
 object BPStationDAO {
-  import models.DAO.BPDAO.bprocesses
+  import models.DAO.BPDAOF.bprocesses
   import main.scala.bprocesses.BPStation
 
   import DatabaseCred.database

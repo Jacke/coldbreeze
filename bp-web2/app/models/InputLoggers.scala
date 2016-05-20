@@ -1,6 +1,6 @@
 package models.DAO
 
-import models.DAO.driver.MyPostgresDriver1.simple._
+import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
 import models.DAO.conversion.DatabaseCred
 import models.DAO._
@@ -36,8 +36,8 @@ case class InputLogger(var id: Option[Int],
 
 object InputLoggerDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
+   
+    
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._

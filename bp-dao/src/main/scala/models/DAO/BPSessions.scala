@@ -2,8 +2,9 @@ package models.DAO
 
 import main.scala.bprocesses.{ BProcess, BPLoggerResult }
 import main.scala.simple_parts.process.ProcElems
-import models.DAO.driver.MyPostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.JdbcJodaSupport._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
 import slick.model.ForeignKeyAction
 
@@ -26,7 +27,7 @@ class BPSessions(tag: Tag) extends Table[BPSession](tag, "bpsessions") {
 
   def * = (id.?, process, created_at, updated_at, active_listed) <> (BPSession.tupled, BPSession.unapply)
 
-  def bpFK = foreignKey("sess_bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK = foreignKey("sess_bprocess_fk", process, models.DAO.BPDAOF.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 }
 
 case class SessionPeoples(launched_by: String, participators: List[String])
@@ -59,14 +60,15 @@ object BPSessionDAO {
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ ExecutionContext, Awaitable, Await, Future }
 
-  val bpsessions = TableQuery[BPSessions]
 
-  def pull_object(s: BPSession) = database withSession {
-    implicit session ⇒
-      LaunchCounterDAO.invokeCounterForProcess(process_id = s.process)
-      bpsessions returning bpsessions.map(_.id) += s.copy(created_at = Some(org.joda.time.DateTime.now()))
+  def pull_object(s: BPSession) = {
+    BPSessionDAOF.await(BPSessionDAOF.pull(s))
   }
 
+
+
+
+/*
   def findByBusiness(bid: Int): List[SessionContainer] = database withSession {
     implicit session =>
       val p = BPDAO.findByBusiness(bid)
@@ -356,4 +358,7 @@ object BPSessionDAO {
       (step / element_quantity.toDouble * 100).toInt
     }
   }
+
+*/
+
 }

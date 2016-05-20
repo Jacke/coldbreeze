@@ -2,8 +2,9 @@ package models.DAO
 
 import main.scala.bprocesses.{BProcess, BPLoggerResult}
 import main.scala.simple_parts.process.ProcElems
-import models.DAO.driver.MyPostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.JdbcJodaSupport._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
 import slick.model.ForeignKeyAction
 
@@ -11,23 +12,23 @@ import models.DAO.ProcElemDAO._
 import models.DAO.BPDAO._
 import models.DAO.BPStationDAO._
 import models.DAO.conversion.DatabaseCred
-import main.scala.simple_parts.process.Units._  
-  
+import main.scala.simple_parts.process.Units._
+
 import main.scala.bprocesses.refs.UnitRefs.{UnitReactionRef, UnitReactionStateOutRef}
-import main.scala.simple_parts.process.Units._  
+import main.scala.simple_parts.process.Units._
 
 
 class ReactionStateOuts(tag: Tag) extends Table[UnitReactionStateOut](tag, "reaction_state_outs") {
-  def id          = column[Int]("id", O.PrimaryKey, O.AutoInc) 
+  def id          = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def reaction    = column[Int]("reaction_id")
   def state       = column[Int]("state_id")
   def on          = column[Boolean]("on")
   def on_rate     = column[Int]("on_rate")
-  def is_input    = column[Boolean]("input", O.Default(false)) 
+  def is_input    = column[Boolean]("input", O.Default(false))
 
-    
+
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
+  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")
 
 
   def * = (id.?,
@@ -58,19 +59,19 @@ object ReactionStateOutDAO {
   def get(k: Int):Option[UnitReactionStateOut] = database withSession {
     implicit session ⇒
       val q3 = for { s ← reaction_state_outs if s.id === k } yield s
-      q3.list.headOption 
+      q3.list.headOption
   }
   def findByReaction(id: Int):List[UnitReactionStateOut] = {
      database withSession { implicit session =>
        val q3 = for { s ← reaction_state_outs if s.reaction === id } yield s
-       q3.list                   
-    } 
+       q3.list
+    }
   }
   def findByReactions(ids: List[Int]):List[UnitReactionStateOut] = {
      database withSession { implicit session =>
        val q3 = for { s ← reaction_state_outs if s.reaction inSetBind ids } yield s
-       q3.list                   
-    } 
+       q3.list
+    }
   }
   def update(id: Int, switcher: UnitReactionStateOut) = database withSession { implicit session ⇒
     val switcherToUpdate: UnitReactionStateOut = switcher.copy(Option(id))

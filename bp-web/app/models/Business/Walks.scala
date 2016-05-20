@@ -2,7 +2,7 @@ package models.DAO.resources
 
 //import slick.driver.PostgresDriver.simple._
 import models.DAO.conversion.DatabaseCred
-import models.DAO.driver.MyPostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
 
 import com.github.nscala_time.time.Imports._
 

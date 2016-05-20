@@ -1,23 +1,24 @@
 package models.DAO.reflect
-  
-import models.DAO.driver.MyPostgresDriver.simple._
+
+import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.JdbcJodaSupport._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
 import slick.model.ForeignKeyAction
 import models.DAO.conversion.DatabaseCred
-    
+
 class ReflectElemTopologs(tag: Tag) extends Table[RefElemTopology](tag, "reflected_elem_topologs") {
-  def id          = column[Int]("id", O.PrimaryKey, O.AutoInc) 
+  def id          = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def reflection  = column[Int]("reflection_id")
   def hash        = column[String]("hash")
 
   def front_elem_id = column[Option[Int]]("front_elem_id")
   def space_elem_id = column[Option[Int]]("space_elem_id")
-  def space_id      = column[Option[Int]]("space_id")  
-  
-    
+  def space_id      = column[Option[Int]]("space_id")
+
+
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
+  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")
 
   def * = (id.?, reflection,
           front_elem_id,
@@ -31,11 +32,11 @@ class ReflectElemTopologs(tag: Tag) extends Table[RefElemTopology](tag, "reflect
   def spaceFK        = foreignKey("ref_topo_space_fk", space_id, SpaceReflectionDAO.space_refs)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }
-case class RefElemTopology(id: Option[Int], 
-  reflection: Int, 
-  front_elem_id: Option[Int], 
-  space_elem_id: Option[Int], 
-  hash: String = "", 
+case class RefElemTopology(id: Option[Int],
+  reflection: Int,
+  front_elem_id: Option[Int],
+  space_elem_id: Option[Int],
+  hash: String = "",
   created_at: Option[org.joda.time.DateTime] = None,
   updated_at: Option[org.joda.time.DateTime] = None,
   space_id: Option[Int] = None)
@@ -43,8 +44,8 @@ case class RefElemTopology(id: Option[Int],
 
 object ReflectElemTopologDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
+
+
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._
@@ -54,16 +55,16 @@ object ReflectElemTopologDAOF {
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import models.DAO.conversion.DatabaseFuture._  
+  import models.DAO.conversion.DatabaseFuture._
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
   val reflected_elem_topologs = ReflectElemTopologDAO.reflected_elem_topologs
 
   private def filterByIdsQuery(ids: List[Int]): Query[ReflectElemTopologs, RefElemTopology, Seq] =
-    reflected_elem_topologs.filter(_.id inSetBind ids) 
+    reflected_elem_topologs.filter(_.id inSetBind ids)
   private def filterByReflection(reflection: Int): Query[ReflectElemTopologs, RefElemTopology, Seq] =
-    reflected_elem_topologs.filter(_.reflection === reflection) 
+    reflected_elem_topologs.filter(_.reflection === reflection)
 
   def findByRef(reflection: Int):Future[Seq[RefElemTopology]] = {
     db.run(filterByReflection(reflection).result)
@@ -103,7 +104,7 @@ object ReflectElemTopologDAO {
   def get(k: Int):Option[RefElemTopology] = database withSession {
     implicit session ⇒
       val q3 = for { s ← reflected_elem_topologs if s.id === k } yield s
-      q3.list.headOption 
+      q3.list.headOption
   }
   def isFront(k: Int):Boolean = database withSession {
     implicit session ⇒
@@ -123,7 +124,7 @@ object ReflectElemTopologDAO {
   }
 
 
-  
+
 
   def update(id: Int, topology: RefElemTopology) = database withSession { implicit session ⇒
     val topologyToUpdate: RefElemTopology = topology.copy(Option(id))
@@ -155,4 +156,3 @@ object ReflectElemTopologDAO {
       q3.list.sortBy(_.id)
   }
 }
-

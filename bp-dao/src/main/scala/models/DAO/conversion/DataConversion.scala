@@ -5,7 +5,7 @@ import models.DAO.UndefElement
 import models.DAO.BProcessDTO
 
 import slick.driver.JdbcProfile
-
+import slick.jdbc.JdbcBackend._
 
 /**
  * Database Config
@@ -16,7 +16,6 @@ object DatabaseFuture {
 }
 
 object DatabaseCred {
-  import slick.driver.PostgresDriver.simple._
   var dbConfigTemp:Option[slick.backend.DatabaseConfig[JdbcProfile]] = None
   lazy val dbConfig = dbConfigTemp match {
     case Some(config) => config

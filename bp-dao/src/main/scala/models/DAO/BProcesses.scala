@@ -1,8 +1,9 @@
 package models.DAO
 
 
-import models.DAO.driver.MyPostgresDriver1.simple._
+import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.JdbcJodaSupport._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
 import slick.model.ForeignKeyAction
 
@@ -50,8 +51,6 @@ object BPDCO {
 
 object BPDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._
@@ -68,7 +67,7 @@ object BPDAOF {
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
-  val bprocesses = BPDAO.bprocesses
+  val bprocesses = TableQuery[BProcesses]
   implicit val getBProcessDTOResult = GetResult(r => BProcessDTO(r.<<, r.<<,r.<<,r.<<))
 
   private def filterByIdsQuery(ids: List[Int]): Query[BProcesses, BProcessDTO, Seq] =
@@ -112,27 +111,27 @@ object BPDAOF {
   def getByServices(services: List[Int], timestamp: Option[String]=None):Future[Seq[BProcessDTO]] = {
     db.run(filterByProcessesTimestampQuery(services, timestamp))
   }
+
+
 }
 
-
 object BPDAO {
-  /**
-   * Actions
-   */
+
   import scala.util.Try
 
   import DatabaseCred.database
   import models.DAO.conversion.Implicits._
 
-
-
-  val bprocesses = TableQuery[BProcesses]
-
-  def pull_object(s: BProcessDTO) = database withSession {
-    implicit session ⇒
-      val process = s.copy(created_at = Some(org.joda.time.DateTime.now()),updated_at = Some(org.joda.time.DateTime.now()) )
-      bprocesses returning bprocesses.map(_.id) += process
+  def get(id: Int):Option[BProcessDTO] = {
+    BPDAOF.await(BPDAO.get(id))
   }
+  def pull_object(s: BProcessDTO) = {
+//    val process = s.copy(created_at = Some(org.joda.time.DateTime.now()),updated_at = Some(org.joda.time.DateTime.now()) )
+//    bprocesses returning bprocesses.map(_.id) += process
+  }
+}
+/*
+
   def findOwnerByBP(BPid: Int) = database withSession {
     implicit session =>
       val q3 = for { bp ← bprocesses
@@ -168,11 +167,7 @@ object BPDAO {
       val q3 = for { s ← bprocesses if s.id === k } yield s
       q3.list.headOption //.map(Supplier.tupled(_))
   }
-  /**
-   * Update a bprocess
-   * @param id
-   * @param bprocess
-   */
+
   def update(id: Int, bprocess: BProcessDTO) = database withSession { implicit session ⇒
     val bpToUpdate: BProcessDTO = bprocess.copy(Option(id))
 
@@ -189,10 +184,7 @@ object BPDAO {
 
     bprocesses.filter(_.id === id).update(bpToUpdate)
   }
-  /**
-   * Delete a bprocess
-   * @param id
-   */
+
   def delete(id: Int) = database withSession { implicit session ⇒
     get(id) match {
       case Some(proc) => {
@@ -206,9 +198,7 @@ object BPDAO {
       case _ => -1
     }
   }
-  /**
-   * Count all bprocesses
-   */
+
   def count: Int = database withSession { implicit session ⇒
     Query(bprocesses.length).first
   }
@@ -236,3 +226,5 @@ object BPDAO {
     //}
   }
 }
+
+*/

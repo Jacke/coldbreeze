@@ -30,7 +30,7 @@ class ElementResourcesF(tag: Tag) extends Table[ElementResourceDTO](tag, "elemen
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")
   def elementFK  = foreignKey("el_res_fk", element, models.DAO.ElemTopologDAO.elem_topologs)(_.id, onDelete = ForeignKeyAction.Cascade)
   def resFK      = foreignKey("res_fk", resource, models.DAO.ResourceDAO.resources)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def bpFK       = foreignKey("el_res_sp_bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK       = foreignKey("el_res_sp_bprocess_fk", process, models.DAO.BPDAOF.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?, element, process, resource,entities,
            created_at,
@@ -47,7 +47,7 @@ class SessionElementResourcesF(tag: Tag) extends Table[SessionElementResourceDTO
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")
   def sesElementFK  = foreignKey("ses_el_res_fk", element, models.DAO.SessionElemTopologDAO.session_elem_topologs)(_.id, onDelete = ForeignKeyAction.Cascade)
   def resFK      = foreignKey("ses_res_fk", resource, models.DAO.ResourceDAO.resources)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def bpFK       = foreignKey("s_res_sp_bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK       = foreignKey("s_res_sp_bprocess_fk", process, models.DAO.BPDAOF.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
   def sessionFK  = foreignKey("s_res_s_sp_session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?, element, process, session, resource,entities,
@@ -59,8 +59,8 @@ class SessionElementResourcesF(tag: Tag) extends Table[SessionElementResourceDTO
 
 object ElementResourceDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
+   
+    
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
 
   import slick.jdbc.meta.MTable
@@ -92,8 +92,8 @@ object ElementResourceDAOF {
 
 object SessionElementResourceDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
+   
+    
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
 
   import slick.jdbc.meta.MTable

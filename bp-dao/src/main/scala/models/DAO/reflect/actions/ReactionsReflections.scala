@@ -2,8 +2,9 @@ package models.DAO.reflect
 
 import main.scala.bprocesses.{BProcess, BPLoggerResult}
 import main.scala.simple_parts.process.ProcElems
-import models.DAO.driver.MyPostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.JdbcJodaSupport._
 import slick.model.ForeignKeyAction
 import models.DAO.ProcElemDAO._
 import models.DAO.BPDAO._
@@ -40,8 +41,6 @@ class ReactionRefs(tag: Tag) extends Table[UnitReactionRef](tag, "reaction_refs"
 
 object ReactionRefDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._

@@ -1,6 +1,6 @@
 package models.DAO
 
-import models.DAO.driver.MyPostgresDriver1.simple._
+import slick.driver.PostgresDriver.api._
 import slick.model.ForeignKeyAction
 import models.DAO.conversion.{DatabaseCred, Implicits}  
 import slick.model.ForeignKeyAction

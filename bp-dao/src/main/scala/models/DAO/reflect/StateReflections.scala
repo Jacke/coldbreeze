@@ -2,8 +2,9 @@ package models.DAO.reflect
 
 import main.scala.bprocesses.{BProcess, BPLoggerResult}
 import main.scala.simple_parts.process.ProcElems
-import models.DAO.driver.MyPostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.JdbcJodaSupport._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
 import slick.model.ForeignKeyAction
 
@@ -11,54 +12,54 @@ import models.DAO.ProcElemDAO._
 import models.DAO.BPDAO._
 import models.DAO.BPStationDAO._
 import models.DAO.conversion.DatabaseCred
-  
-import main.scala.bprocesses.refs.{BPStateRef} 
+
+import main.scala.bprocesses.refs.{BPStateRef}
 import main.scala.bprocesses.refs._
-import main.scala.bprocesses._ 
+import main.scala.bprocesses._
 class StateRefs(tag: Tag) extends Table[BPStateRef](tag, "state_refs") {
-  def id          = column[Int]("id", O.PrimaryKey, O.AutoInc) 
+  def id          = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def reflection  = column[Int]("reflection_id")
   def title       = column[String]("title")
   def neutral     = column[String]("neutral")
   def process_state = column[Boolean]("process_state", O.Default(false))
-  def on          = column[Boolean]("on", O.Default(false)) 
-  def on_rate     = column[Int]("on_rate", O.Default(0))   
-    
-  def space_id      = column[Option[Int]]("ref_space_id")  
+  def on          = column[Boolean]("on", O.Default(false))
+  def on_rate     = column[Int]("on_rate", O.Default(0))
+
+  def space_id      = column[Option[Int]]("ref_space_id")
   def front_elem_id = column[Option[Int]]("ref_front_elem_id")
   def space_elem_id = column[Option[Int]]("ref_space_elem_id")
-    
- 
+
+
   def middle      = column[String]("middle", O.Default(""))
-  def middleable  = column[Boolean]("middleable", O.Default(false))   
+  def middleable  = column[Boolean]("middleable", O.Default(false))
   def oposite     = column[String]("oposite", O.Default(""))
-  def opositable  = column[Boolean]("opositable", O.Default(false))   
+  def opositable  = column[Boolean]("opositable", O.Default(false))
 
   def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")  
+  def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")
 
   def reflectFK       = foreignKey("st_ref_reflect_fk", reflection, models.DAO.reflect.RefDAO.refs)(_.id, onDelete = ForeignKeyAction.Cascade)
   def ref_procelemFK  = foreignKey("st_ref_ref_procelem_fk", front_elem_id, ProcElemReflectionDAO.proc_element_reflections)(_.id, onDelete = ForeignKeyAction.Cascade)
   def ref_spaceelemFK = foreignKey("st_ref_ref_spaceelem_fk", space_elem_id, SpaceElementReflectionDAO.space_element_reflections)(_.id, onDelete = ForeignKeyAction.Cascade)
   def spaceFK         = foreignKey("st_ref_ref_space_fk", space_elem_id, SpaceReflectionDAO.space_refs)(_.id, onDelete = ForeignKeyAction.Cascade)
 
-  def lang        = column[String]("lang", O.Default("en"))  
+  def lang        = column[String]("lang", O.Default("en"))
 /*
 
-var id:Option[Int], 
+var id:Option[Int],
   reflection:   Int,
-  title:        String, 
+  title:        String,
   var neutral: String = "",
   process_state:Boolean = false,
   front_elem_id:Option[Int],
   space_elem_id:Option[Int],
-  created_at:   Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now), 
-  updated_at:   Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now), 
+  created_at:   Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+  updated_at:   Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
   lang:         String = "en"*/
-    
-  def * = (id.?, 
-          reflection, 
-          title, 
+
+  def * = (id.?,
+          reflection,
+          title,
           neutral,
           process_state,
           on,
@@ -66,7 +67,7 @@ var id:Option[Int],
           front_elem_id,
           space_elem_id,
           space_id,
-          created_at, updated_at, 
+          created_at, updated_at,
           lang,
           middle,
           middleable,
@@ -76,8 +77,8 @@ var id:Option[Int],
 
 object BPStateRefDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
+
+
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._
@@ -87,16 +88,16 @@ object BPStateRefDAOF {
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import models.DAO.conversion.DatabaseFuture._  
+  import models.DAO.conversion.DatabaseFuture._
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
   val state_refs = BPStateRefDAO.state_refs
 
   private def filterByIdsQuery(ids: List[Int]): Query[StateRefs, BPStateRef, Seq] =
-    state_refs.filter(_.id inSetBind ids) 
+    state_refs.filter(_.id inSetBind ids)
   private def filterByReflection(reflection: Int): Query[StateRefs, BPStateRef, Seq] =
-    state_refs.filter(_.reflection === reflection) 
+    state_refs.filter(_.reflection === reflection)
 
   def findByRef(reflection: Int):Future[Seq[BPStateRef]] = {
     db.run(filterByReflection(reflection).result)
@@ -129,13 +130,13 @@ object BPStateRefDAO {
   def get(k: Int):Option[BPStateRef] = database withSession {
     implicit session ⇒
       val q3 = for { s ← state_refs if s.id === k } yield s
-      q3.list.headOption 
+      q3.list.headOption
   }
   def findByRef(id: Int) = {
      database withSession { implicit session =>
        val q3 = for { s ← state_refs if s.reflection === id } yield s
-       q3.list                   
-    } 
+       q3.list
+    }
   }
   def findOrCreateForElem(k: List[BPStateRef], front_elem_id:Option[Int], space_elem_id:Option[Int]):List[Int] = database withSession {
     implicit session =>

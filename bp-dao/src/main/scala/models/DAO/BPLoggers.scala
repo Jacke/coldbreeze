@@ -3,8 +3,9 @@ package models.DAO
 
 import main.scala.bprocesses.{BProcess, BPLoggerResult}
 import main.scala.simple_parts.process.ProcElems
-import models.DAO.driver.MyPostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.JdbcJodaSupport._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
 import slick.model.ForeignKeyAction
 
@@ -17,10 +18,10 @@ class BPLoggers(tag: Tag) extends Table[BPLoggerDTO](tag, "bploggers") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def bprocess = column[Int]("process_id")
 
-  def element   = column[Option[Int]]("proc_element_id", O.Nullable)
-  def space_elem= column[Option[Int]]("space_element_id", O.Nullable)
+  def element   = column[Option[Int]]("proc_element_id")
+  def space_elem= column[Option[Int]]("space_element_id")
   def order     = column[Int]("order")
-  def space     = column[Option[Int]]("space_id", O.Nullable)
+  def space     = column[Option[Int]]("space_id")
   def station   = column[Int]("station_id")
   def invoked   = column[Boolean]("invoked")
   def expanded  = column[Boolean]("expanded")
@@ -71,8 +72,6 @@ object BPLoggerDCO {
 }
 object BPLoggerDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._
@@ -82,215 +81,191 @@ object BPLoggerDAOF {
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import models.DAO.conversion.DatabaseFuture._  
+  import models.DAO.conversion.DatabaseFuture._
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
-  val bploggers = BPLoggerDAO.bploggers
+  val bploggers = TableQuery[BPLoggers]
 
   private def filterQuery(id: Int): Query[BPLoggers, BPLoggerDTO, Seq] =
     bploggers.filter(_.id === id)
+    private def filterQueryByProcess(id: Int): Query[BPLoggers, BPLoggerDTO, Seq] =
+      bploggers.filter(_.process === id)
+    private def filterQueryByStation(id: Int): Query[BPLoggers, BPLoggerDTO, Seq] =
+      bploggers.filter(_.station === id)
 
-}
-object BPLoggerDAO {
-  val bploggers = TableQuery[BPLoggers]
 
-  import DatabaseCred.database
-  import models.DAO.BPDAO.bprocesses
-  import main.scala.bprocesses.BPLogger
-  import models.DAO.conversion.Implicits._
 
-  /**
-   * Retrive element(front, space) id from logger
-   * @param logger
-   * @param target
-   * @return
-   */
-  def spElemId(target: ProcElems): Option[Int] = {
-    target.space_id match {
-      case Some(space) => Some(target.id)
-      case _ => None
-    }
-  }
-  def elemId(target: ProcElems, mean: String): Option[Int] = {
-    if (mean == "space") {
-      /*target.space_id match {
-        case Some(space) => {
-          space.id
-        }
+
+    def spElemId(target: ProcElems): Option[Int] = {
+      target.space_id match {
+        case Some(space) => Some(target.id)
         case _ => None
-      }*/
-      target.space_id match {
-        case Some(space) => {
-          Some(target.id)
+      }
+    }
+    def elemId(target: ProcElems, mean: String): Option[Int] = {
+      if (mean == "space") {
+        /*target.space_id match {
+          case Some(space) => {
+            space.id
+          }
+          case _ => None
+        }*/
+        target.space_id match {
+          case Some(space) => {
+            Some(target.id)
+          }
+          case None => None
         }
-        case None => None
+      } else if (mean == "front") {
+
+        target.space_id match {
+          case None => Some(target.id)
+          case _    => None
+        }
+      } else {
+        None
       }
-    } else if (mean == "front") {
+    }
 
-      target.space_id match {
-        case None => Some(target.id)
-        case _    => None
+    /**
+     * OriginLogger to BPLoggerDTO
+     * @param logger
+     * @param bp_dto
+     * @param station_id
+     * @param spaces
+     * @return
+     */
+    def from_origin_lgr(logger: BPLogger, bp_dto: BProcessDTO, station_id:Int = 1, spaces: List[BPSpaceDTO] = List.empty[BPSpaceDTO]):Option[List[BPLoggerDTO]] = {
+
+      val result:List[BPLoggerDTO] = logger.logs.toList.map { lgr =>
+
+            BPLoggerDTO(
+              None, // id
+              bp_dto.id.get, // bprocess
+              element = elemId(lgr.element,"front"), // element
+              space_elem = elemId(lgr.element, "space"), // space_element
+              lgr.element.order, // order
+              lgr.space,  // space
+              station_id, // station
+              lgr.invoked, // invoked
+              lgr.expanded, // expanded
+              lgr.container, // container
+              lgr.date, // date
+              lgr.step) // comps
+
+
       }
-    } else {
-      None 
-    }
-  }
 
-  /**
-   * OriginLogger to BPLoggerDTO
-   * @param logger
-   * @param bp_dto
-   * @param station_id
-   * @param spaces
-   * @return
-   */
-  def from_origin_lgr(logger: BPLogger, bp_dto: BProcessDTO, station_id:Int = 1, spaces: List[BPSpaceDTO] = List.empty[BPSpaceDTO]):Option[List[BPLoggerDTO]] = {
-
-    val result:List[BPLoggerDTO] = logger.logs.toList.map { lgr =>
-
-          BPLoggerDTO(
-            None, // id
-            bp_dto.id.get, // bprocess
-            element = elemId(lgr.element,"front"), // element
-            space_elem = elemId(lgr.element, "space"), // space_element
-            lgr.element.order, // order
-            lgr.space,  // space
-            station_id, // station
-            lgr.invoked, // invoked
-            lgr.expanded, // expanded
-            lgr.container, // container
-            lgr.date, // date
-            lgr.step) // comps
-
-
+      if (result.length == 0) {
+        None
+      } else {
+        Option(result)
+      }
     }
 
-    if (result.length == 0) {
-      None
-    } else {
-      Option(result)
+    import models.DAO.conversion.Implicits
+
+    /**
+     * BPLoggerDTO 2 OriginLogger
+     * @param logger
+     * @param bp_dto
+     * @param bp
+     * @param spaces
+     * @return
+     */
+    def fromDTOtoOrg(logger: List[BPLoggerDTO],
+                     bp_dto: BProcessDTO,
+                     bp: BProcess,
+                     spaces: List[BPSpaceDTO] = List.empty[BPSpaceDTO]
+                    ):List[BPLoggerResult] = {
+
+      val space_indx:Map[Option[Int], Int] = spaces.map(space => (space.id, space.index)) toMap
+
+       logger.map { lgr =>
+
+          BPLoggerResult(
+            element = bp.findEverywhereByOrder(lgr.order, lgr.space).get,
+            order   = lgr.order,
+            space   = space_indx.get(lgr.space),
+
+            // Runtime information
+            station   = bp.station,
+            invoked   = lgr.invoked,
+            expanded  = false,
+            container = lgr.container,
+            date      = lgr.date,
+            composite = None,
+            step      = lgr.step
+          )
+      }
     }
-  }
 
-  import models.DAO.conversion.Implicits
+   /** *************************
+    *  *************************
+     ***************************/
 
-  /**
-   * BPLoggerDTO 2 OriginLogger
-   * @param logger
-   * @param bp_dto
-   * @param bp
-   * @param spaces
-   * @return
-   */
-  def fromDTOtoOrg(logger: List[BPLoggerDTO],
-                   bp_dto: BProcessDTO,
-                   bp: BProcess,
-                   spaces: List[BPSpaceDTO] = List.empty[BPSpaceDTO]
-                  ):List[BPLoggerResult] = {
+    val proc_elements = TableQuery[ProcElements]
 
-    val space_indx:Map[Option[Int], Int] = spaces.map(space => (space.id, space.index)) toMap
 
-     logger.map { lgr =>
+    def pull_object(s: BPLoggerDTO) = database withSession {
+      implicit session ⇒
+        bploggers returning bploggers.map(_.id) += s //BPLoggerDTO.unapply(s).get
+    }
 
-        BPLoggerResult(
-          element = bp.findEverywhereByOrder(lgr.order, lgr.space).get,
-          order   = lgr.order,
-          space   = space_indx.get(lgr.space),
-
-          // Runtime information
-          station   = bp.station,
-          invoked   = lgr.invoked,
-          expanded  = false,
-          container = lgr.container,
-          date      = lgr.date,
-          composite = None,
-          step      = lgr.step
+    def pull_object(s: List[BPLoggerDTO]) = database withSession {
+      implicit session ⇒
+        s.foreach(log =>
+        bploggers returning bploggers.map(_.id) += log //BPLoggerDTO.unapply(log).get
         )
     }
-  }
 
- /** *************************
-  *  *************************
-   ***************************/
+    def lastRunOfBP(id: Int):Option[org.joda.time.DateTime] = database withSession {
+      implicit session ⇒
+      val q3 = (for { logger ← bploggers if logger.bprocess === id } yield logger).take(1)
+      q3.firstOption.foreach {
+        case a:BPLoggerDTO => return Some(a.date)
 
-  val proc_elements = TableQuery[ProcElements]
-
-
-  def pull_object(s: BPLoggerDTO) = database withSession {
-    implicit session ⇒
-      bploggers returning bploggers.map(_.id) += s //BPLoggerDTO.unapply(s).get
-  }
-
-  def pull_object(s: List[BPLoggerDTO]) = database withSession {
-    implicit session ⇒
-      s.foreach(log =>
-      bploggers returning bploggers.map(_.id) += log //BPLoggerDTO.unapply(log).get
-      )
-  }
-
-  def lastRunOfBP(id: Int):Option[org.joda.time.DateTime] = database withSession {
-    implicit session ⇒
-    val q3 = (for { logger ← bploggers if logger.bprocess === id } yield logger).take(1)
-    q3.firstOption.foreach {
-      case a:BPLoggerDTO => return Some(a.date)
-
+      }
+      return None
+       // BPLoggerDTO1.tupled(q3.firstOption) //<> (BPLoggerDTO1.tupled, BPLoggerDTO1.unapply _)
     }
-    return None
 
-     // BPLoggerDTO1.tupled(q3.firstOption) //<> (BPLoggerDTO1.tupled, BPLoggerDTO1.unapply _)
-  }
+    def findById(id: Int):Future[Option[BPLoggerDTO]] = {
+      db.run(filterByQuery(id).result.headOption)
+    }
+    def findByStation(id: Int):List[BPLoggerDTO] = {
+      db.run(filterQueryByStation(id).result)
+    }
+    def pull_new_object(s: BPLoggerDTO, station_id:Int) = {
+     //   ???
+     //   FIND LOGS BY STATION
+     //   ESCAPE THEM AND ADD ONLY NEW
+      db.run(bploggers returning bploggers.map(_.id) += s)
+    }
 
-  def findById(id: Int):Option[BPLoggerDTO] = {
-    database withSession { implicit session =>
-      val q3 = for { logger ← bploggers if logger.id === id } yield logger// <> (BPLoggerDTO.tupled, BPLoggerDTO.unapply _)
-      q3.list.headOption
+    def pull_object_from(station_id: Int, ss:List[BPLoggerDTO]) = {
+        db.run(bploggers.filter(_.station === station_id).delete).map {
+          Future.sequence( ss.map { s =>
+            db.run(bploggers returning bploggers.map(_.id) += s)
+          })
+        }
     }
-  }
-  def findByStation(id: Int):List[BPLoggerDTO] = {
-    database withSession { implicit session =>
-    val q3 = for { logger <- bploggers if logger.station === id } yield logger
-    q3.list
-    }
-  }
-  def pull_new_object(s: BPLoggerDTO, station_id:Int) = database withSession {
-    implicit session ⇒
-   //   ???
-   //   FIND LOGS BY STATION
-   //   ESCAPE THEM AND ADD ONLY NEW
 
-      bploggers returning bploggers.map(_.id) += s //BPLoggerDTO.unapply(s).get
-  }
+    def findByBPId(id: Int):Future[List[BPLoggerDTO]] = {
+      db.run(filterQueryByProcess(id).result)
+    }
 
-  def pull_object_from(station_id: Int, s:List[BPLoggerDTO]) = database withSession {
-    implicit session ⇒
-      val q3 = for { logger <- bploggers if logger.station === station_id } yield logger
-      q3.delete
-      s.foreach(log =>
-        bploggers returning bploggers.map(_.id) += log //BPLoggerDTO.unapply(log).get
-      )
-  }
-  /**
-   * Find a specific entity by id.
-   */
-  def findByBPId(id: Int) = {
-    database withSession { implicit session =>
-     val q3 = for { logger ← bploggers if logger.bprocess === id } yield logger// <> (BPLoggerDTO.tupled, BPLoggerDTO.unapply _)
-      q3.list
-    }
-  }
 
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-        bploggers.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-        bploggers.ddl.drop
-    }
-  }
+
+    val create: DBIO[Unit] = bploggers.schema.create
+    val drop: DBIO[Unit] = bploggers.schema.drop
+
+    def ddl_create = db.run(create)
+    def ddl_drop = db.run(drop)
+
+
+
+
 }

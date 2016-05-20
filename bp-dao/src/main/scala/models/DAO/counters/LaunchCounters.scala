@@ -36,15 +36,13 @@ class LaunchCounters(tag: Tag) extends Table[LaunchCounter](tag, "launch_counter
 
   def * = (id.?, process, count, created_at, updated_at) <> (LaunchCounter.tupled, LaunchCounter.unapply)
 
-  def bpFK = foreignKey("launch_counters_bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK = foreignKey("launch_counters_bprocess_fk", process, models.DAO.BPDAOF.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 }
 
 import main.scala.utils.InputParamProc
 
 object LaunchCounterDAO {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
 
   import slick.jdbc.meta.MTable

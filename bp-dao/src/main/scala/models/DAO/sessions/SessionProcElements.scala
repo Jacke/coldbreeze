@@ -1,8 +1,11 @@
 
 package models.DAO.sessions
-import models.DAO.driver.MyPostgresDriver.simple._
+
 import slick.model.ForeignKeyAction
+import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.JdbcJodaSupport._
+
 import models.DAO.BPDAO._
 import models.DAO.resources.BusinessDTO._
 import models.DAO.conversion.{DatabaseCred, Implicits}
@@ -33,7 +36,7 @@ class SessionProcElements(tag: Tag) extends Table[SessionUndefElement](tag, "ses
            created_at, updated_at) <> (SessionUndefElement.tupled, SessionUndefElement.unapply)
 
   def businessFK = foreignKey("s_proc_el_business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def bpFK       = foreignKey("s_proc_el_bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK       = foreignKey("s_proc_el_bprocess_fk", bprocess, models.DAO.BPDAOF.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
   def sessionFK  = foreignKey("s_proc_el_session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }
@@ -93,8 +96,8 @@ case class SessionUndefElement(id: Option[Int],
 }
 object SessionProcElementDAOF {
 import akka.actor.ActorSystem
-import akka.stream.ActorFlowMaterializer
-import akka.stream.scaladsl.Source
+
+
 import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
 //import slick.driver.JdbcProfile
 import slick.driver.PostgresDriver.api._
@@ -155,7 +158,7 @@ def findById(id: Int):Future[Option[SessionUndefElement]] = {
 
 object SessionProcElementDAO {
   import DatabaseCred.database
-  import models.DAO.BPDAO.bprocesses
+  import models.DAO.BPDAOF.bprocesses
 
 
   val session_proc_elements = TableQuery[SessionProcElements]

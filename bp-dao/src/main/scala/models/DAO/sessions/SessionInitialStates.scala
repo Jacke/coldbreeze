@@ -2,8 +2,9 @@ package models.DAO
 
 import main.scala.bprocesses.{BProcess, BPLoggerResult}
 import main.scala.simple_parts.process.ProcElems
-import models.DAO.driver.MyPostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.JdbcJodaSupport._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
 import slick.model.ForeignKeyAction
 import models.DAO.ProcElemDAO._
@@ -14,30 +15,30 @@ import main.scala.bprocesses._
 import main.scala.bprocesses._
 
 class SessionInitialStates(tag: Tag) extends Table[SessionInitialState](tag, "session_initial_states") {
-  def id            = column[Int]("id", O.PrimaryKey, O.AutoInc) 
+  def id            = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def process       = column[Int]("process_id")
   def session       = column[Int]("session_id")
   def title         = column[String]("title")
   def neutral       = column[String]("neutral")
   def process_state = column[Boolean]("is_process_state", O.Default(false))
-  def on            = column[Boolean]("on", O.Default(false))  
-  def on_rate       = column[Int]("on_rate", O.Default(0))  
-  
-  def space_id      = column[Option[Int]]("ses_space_id")  
+  def on            = column[Boolean]("on", O.Default(false))
+  def on_rate       = column[Int]("on_rate", O.Default(0))
+
+  def space_id      = column[Option[Int]]("ses_space_id")
   def front_elem_id = column[Option[Int]]("ses_front_elem_id")
   def space_elem_id = column[Option[Int]]("ses_space_elem_id")
-    
-    
+
+
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")  
+  def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")
 
 
   def middle      = column[String]("middle", O.Default(""))
   def middleable  = column[Boolean]("middleable", O.Default(false))
   def oposite     = column[String]("oposite", O.Default(""))
-  def opositable  = column[Boolean]("opositable", O.Default(false))   
+  def opositable  = column[Boolean]("opositable", O.Default(false))
 
-  def lang        = column[String]("lang", O.Default("en"))  
+  def lang        = column[String]("lang", O.Default("en"))
   def * = (id.?, process,session, title, neutral,
                                           process_state,
                                           on, on_rate,
@@ -46,7 +47,7 @@ class SessionInitialStates(tag: Tag) extends Table[SessionInitialState](tag, "se
                                           space_id,
            created_at, updated_at, lang, middle, middleable, oposite, opositable) <> (SessionInitialState.tupled, SessionInitialState.unapply)
 
-  def bpFK        = foreignKey("ses_init_state_bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK        = foreignKey("ses_init_state_bprocess_fk", process, models.DAO.BPDAOF.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
   def procelemFK  = foreignKey("ses_init_state_procelem_fk", front_elem_id, models.DAO.sessions.SessionProcElementDAO.session_proc_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
   def spaceelemFK = foreignKey("ses_init_state_spaceelem_fk", space_elem_id, models.DAO.sessions.SessionSpaceElemDAO.space_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
   def spaceFK     = foreignKey("ses_init_state_space_fk", space_id, models.DAO.sessions.SessionSpaceDAO.session_spaces)(_.id, onDelete = ForeignKeyAction.Cascade)
@@ -55,8 +56,8 @@ class SessionInitialStates(tag: Tag) extends Table[SessionInitialState](tag, "se
 
 object SessionInitialStateDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
+
+
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._
@@ -66,7 +67,7 @@ object SessionInitialStateDAOF {
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import models.DAO.conversion.DatabaseFuture._  
+  import models.DAO.conversion.DatabaseFuture._
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
@@ -98,7 +99,7 @@ object SessionInitialStateDAO {
     implicit session =>
     val q3 = for { s <- session_initial_states if s.session === id } yield s
     q3.list
-  }  
+  }
   def getByProcesses(processes: List[Int]) = database withSession {
     implicit session =>
       val q3 = for { s ← session_initial_states if s.process inSetBind processes } yield s
@@ -133,7 +134,7 @@ object SessionInitialStateDAO {
   def get(k: Int):Option[SessionInitialState] = database withSession {
     implicit session ⇒
       val q3 = for { s ← session_initial_states if s.id === k } yield s
-      q3.list.headOption 
+      q3.list.headOption
   }
 
   def update(id: Int, bpsession: SessionInitialState) = database withSession { implicit session ⇒

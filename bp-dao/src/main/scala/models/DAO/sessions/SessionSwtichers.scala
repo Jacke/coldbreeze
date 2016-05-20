@@ -1,9 +1,10 @@
 package models.DAO
-  
+
 import main.scala.bprocesses.{BProcess, BPLoggerResult}
 import main.scala.simple_parts.process.ProcElems
-import models.DAO.driver.MyPostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.JdbcJodaSupport._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
 import slick.model.ForeignKeyAction
 
@@ -11,11 +12,11 @@ import models.DAO.ProcElemDAO._
 import models.DAO.BPDAO._
 import models.DAO.BPStationDAO._
 import models.DAO.conversion.DatabaseCred
-  
+
 import main.scala.simple_parts.process.Units._
-  
+
 class SessionSwitchers(tag: Tag) extends Table[SessionUnitSwitcher](tag, "session_switchers") {
-  def id             = column[Int]("id", O.PrimaryKey, O.AutoInc) 
+  def id             = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def process        = column[Int]("bprocess_id")
   def session        = column[Int]("session_id")
   def switch_type    = column[String]("switch_type")
@@ -25,19 +26,19 @@ class SessionSwitchers(tag: Tag) extends Table[SessionUnitSwitcher](tag, "sessio
   def fn             = column[String]("fn")
   def target         = column[String]("target")
   def override_group = column[Int]("override_group", O.Default(0))
-    
-  def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")  
 
-  def * =(id.?, 
-          process, 
+  def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
+  def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")
+
+  def * =(id.?,
+          process,
           session,
-          switch_type, 
-          priority,           
+          switch_type,
+          priority,
           state_ref,
-          session_state, 
+          session_state,
           fn,
-          target,          
+          target,
           override_group,
           created_at, updated_at) <> (SessionUnitSwitcher.tupled, SessionUnitSwitcher.unapply)
 
@@ -49,8 +50,8 @@ def sessionFK  = foreignKey("sw_s_sp_session_fk", session, models.DAO.BPSessionD
 
 object SessionSwitcherDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
+
+
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._
@@ -60,7 +61,7 @@ object SessionSwitcherDAOF {
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import models.DAO.conversion.DatabaseFuture._  
+  import models.DAO.conversion.DatabaseFuture._
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
@@ -91,7 +92,7 @@ object SessionSwitcherDAO {
   def get(k: Int):Option[SessionUnitSwitcher] = database withSession {
     implicit session ⇒
       val q3 = for { s ← session_switchers if s.id === k } yield s
-      q3.list.headOption 
+      q3.list.headOption
   }
   def findByBPId(id: Int) = {
     database withSession { implicit session =>
@@ -104,7 +105,7 @@ object SessionSwitcherDAO {
      val q3 = for { st ← session_switchers if st.session === id } yield st
       q3.list
     }
-  }  
+  }
   def update(id: Int, switcher: SessionUnitSwitcher) = database withSession { implicit session ⇒
     val switcherToUpdate: SessionUnitSwitcher = switcher.copy(Option(id))
     session_switchers.filter(_.id === id).update(switcherToUpdate)

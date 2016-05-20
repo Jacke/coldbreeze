@@ -1,6 +1,7 @@
 package models.DAO
 
-import models.DAO.driver.MyPostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
+import com.github.tototoshi.slick.JdbcJodaSupport._
 import slick.model.ForeignKeyAction
 import com.github.nscala_time.time.Imports._
 import models.DAO.BPDAO._
@@ -32,7 +33,7 @@ class ProcElements(tag: Tag) extends Table[UndefElement](tag, "proc_elements") {
            created_at, updated_at) <> (UndefElement.tupled, UndefElement.unapply)
 
   def businessFK = foreignKey("pr_elem_business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def bpFK       = foreignKey("pr_elem_bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK       = foreignKey("pr_elem_bprocess_fk", bprocess, models.DAO.BPDAOF.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 }
 
  case class CompositeValues(
@@ -140,7 +141,7 @@ case class KeeprDAO(eltype:String, elname:String, desc:String)
 
 object ProcElemDAO {
   import DatabaseCred.database
-  import models.DAO.BPDAO.bprocesses
+  import models.DAO.BPDAOF.bprocesses
 
 
   val proc_elements = TableQuery[ProcElements]

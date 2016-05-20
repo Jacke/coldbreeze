@@ -1,10 +1,12 @@
 package models.DAO.sessions
 import main.scala.bprocesses.BProcess
 import main.scala.simple_parts.process.{Block, ProcElems}
-import models.DAO.driver.MyPostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
+import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.JdbcJodaSupport._
+
 import slick.model.ForeignKeyAction
 import models.DAO.conversion.{DatabaseCred, Implicits}
-import com.github.nscala_time.time.Imports._
 
 import main.scala.simple_parts.process.data.{Confirm, Note, Constant}
 import main.scala.simple_parts.process.Block
@@ -39,7 +41,7 @@ class SessionSpaceElements(tag: Tag) extends Table[SessionSpaceElementDTO](tag, 
            created_at, updated_at) <> (SessionSpaceElementDTO.tupled, SessionSpaceElementDTO.unapply)
 
   def businessFK = foreignKey("s_sp_el_business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def bpFK       = foreignKey("s_sp_el_bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK       = foreignKey("s_sp_el_bprocess_fk", bprocess, models.DAO.BPDAOF.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
   def spaceFK    = foreignKey("s_sp_el_session_space_fk", space_owned, models.DAO.sessions.SessionSpaceDAO.session_spaces)(_.id, onDelete = ForeignKeyAction.Cascade)
   def sessionFK  = foreignKey("s_sp_el_session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
@@ -151,8 +153,8 @@ case class SessionSpaceElementDTO(id: Option[Int],
 
 object SessionSpaceElemDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
+
+
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._
@@ -191,7 +193,7 @@ object SessionSpaceElemDAOF {
 }
 object SessionSpaceElemDAO {
   import DatabaseCred.database
-  import models.DAO.BPDAO.bprocesses
+  import models.DAO.BPDAOF.bprocesses
 
 
   val space_elements = TableQuery[SessionSpaceElements]

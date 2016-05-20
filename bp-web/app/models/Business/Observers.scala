@@ -2,7 +2,7 @@ package models.DAO.resources
 
 
 import com.github.nscala_time.time.Imports._
-import models.DAO.driver.MyPostgresDriver1.simple._
+import slick.driver.PostgresDriver.api._
 import com.github.tminglei.slickpg.composite._
 import models.DAO.conversion.{DatabaseCred, Implicits}
 import slick.model.ForeignKeyAction
@@ -17,7 +17,7 @@ class Observers(tag: Tag) extends Table[ObserverDTO](tag, "observers") {
   def created_at = column[Option[DateTime]]("created_at")
 
   def stationFK = foreignKey("obs_st_fk", station_id, models.DAO.BPStationDAO.bpstations)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def bpFK      = foreignKey("obs_bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK      = foreignKey("obs_bprocess_fk", bprocess, models.DAO.BPDAOF.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?, station_id, bprocess, hash_code, fullName, created_at) <> (ObserverDTO.tupled, ObserverDTO.unapply)
 }

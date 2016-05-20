@@ -1,12 +1,12 @@
 package models.DAO
 
-//import models.DAO.driver.MyPostgresDriver1.simple._
+//import slick.driver.PostgresDriver.api._
 //import com.github.tminglei.slickpg.composite._
 import models.DAO.conversion.{DatabaseCred, Implicits}
 import org.joda.time.DateTime
 //import slick.driver.PostgresDriver.api._
 import scala.concurrent.Future
-import models.DAO.driver.MyPostgresDriver1.simple._
+import slick.driver.PostgresDriver.api._
 import com.github.tminglei.slickpg.composite._
 //import com.github.tototoshi.slick.PostgresJodaSupport._
 import scala.concurrent._
@@ -21,7 +21,7 @@ class ProcessHistories(tag: Tag) extends Table[ProcessHistoryDTO](tag, "process_
   def what_id  = column[Option[Int]]("what_id")
   def date     = column[org.joda.time.DateTime]("date")
 
-  def bpFK     = foreignKey("pr_hist_bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id)
+  def bpFK     = foreignKey("pr_hist_bprocess_fk", process, models.DAO.BPDAOF.bprocesses)(_.id)
   def accFK    = foreignKey("pr_hist_macc_fk", acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
 
 
@@ -176,7 +176,7 @@ class ProcessCommits(tag: Tag) extends Table[ProcessCommitDTO](tag, "process_com
   def bprocess = column[Int]("process_id")
   def created_at = column[DateTime]("created_at")
 
-  def bpFK = foreignKey("bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK = foreignKey("bprocess_fk", bprocess, models.DAO.BPDAOF.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 
   def * = (id.?, title, bprocess, created_at) <> (ProcessCommitDTO.tupled, ProcessCommitDTO.unapply)

@@ -26,8 +26,8 @@ case class Comment(
 	    				updated_at: Option[org.joda.time.DateTime] = None)
 object CommentsDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
+   
+    
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
 
   import slick.jdbc.meta.MTable

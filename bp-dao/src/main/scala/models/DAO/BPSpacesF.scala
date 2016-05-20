@@ -40,14 +40,12 @@ class BPSpacesF(tag: Tag) extends Table[BPSpaceDTO](tag, "bpspaces") {
 
   def * = (id.?, bprocess, index, container, subbrick, brick_front, brick_nested, nestingLevel,
            created_at, updated_at) <> (BPSpaceDTO.tupled, BPSpaceDTO.unapply)
-  def bpFK = foreignKey("sp_bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK = foreignKey("sp_bprocess_fk", bprocess, models.DAO.BPDAOF.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }
 
 object BPSpaceDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._
@@ -73,6 +71,122 @@ object BPSpaceDAOF {
   private def filterByBPSQuery(ids: List[Int]): Query[BPSpacesF, BPSpaceDTO, Seq] =
     bpspaces.filter(_.bprocess inSetBind ids)
   def findByBPSId(bpsId: List[Int]) = db.run(filterByBPSQuery(bpsId).result)
-  def pull(s: BPSpaceDTO):Future[Int] = db.run(bpspaces returning bpspaces.map(_.id) += s)
+  def pull(s: BPSpaceDTO):Future[Int] = {
+     db.run(bpspaces returning bpspaces.map(_.id) += s).map { id =>
+         models.utils.IdAfterBurner.elSpaceOwn(s.copy(id = Some(id)))
+         id
+     }
+  }
+
+
+  def pull_object(s: BPSpaceDTO, timestamp: Option[String] = None) = {
+    pull(s)
+  }
+
+  def lastIndexOfSpace(id: Int) = {
+      val q3 = for { s ← bpspaces if s.id === id } yield s
+      val xs = q3.list.map(_.index)
+
+      if (xs.isEmpty) 1
+      else xs.max + 1
+  }
+  def get(k: Int) =   {
+
+      val q3 = for { s ← bpspaces if s.id === k } yield s
+      q3.list.headOption //.map(Supplier.tupled(_))
+  }
+  def getAllByFront(k: Int) =   {
+
+      val q3 = for { s ← bpspaces if s.brick_front === k } yield s
+      q3.list //.map(Supplier.tupled(_))
+  }
+  def getAllByNested(k: Int) =   {
+
+      val q3 = for { s ← bpspaces if s.brick_nested === k } yield s
+      q3.list //.map(Supplier.tupled(_))
+  }
+  def findByBPId(id: Int) = {
+      { implicit session =>
+     val q3 = for { sp ← bpspaces if sp.bprocess === id } yield sp// <> (UndefElement.tupled, UndefElement.unapply _)
+      q3.list
+    }
+  }
+  def deleteOwnedSpace(elem_id:Option[Int],spelem_id:Option[Int]) {
+  if (elem_id.isDefined) {
+      getAllByFront(elem_id.get).map(_.id.get).foreach{ id => delete(id) }
+  }
+  if (spelem_id.isDefined) {
+      getAllByNested(spelem_id.get).map(_.id.get).foreach{ id => delete(id) }
+  }
+}
+  /**
+   * Update a bpspace
+   * @param id
+   * @param bpspace
+   */
+  def update(id: Int, bpspace: BPSpaceDTO) =   {
+    val spToUpdate: BPSpaceDTO = bpspace.copy(Option(id))
+    bpspaces.filter(_.id === id).update(spToUpdate)
+  }
+  /**
+   * Delete a bpspace
+   * @param id
+   */
+  def delete(id: Int) = {
+    val sp = get(id)
+    val res = db.run(bpspaces.filter(_.station === station_id).delete)
+    spF.map { sp =>
+      sp match {
+        case Some(space) => renewIndex(space.bprocess, space.index)
+        case _ =>
+      }
+      res.flatMap { r =>
+        r
+      }
+    }
+  }
+
+  def count: Int =   {
+    db.run(bpspaces.length)
+  }
+
+  val create: DBIO[Unit] = bpspaces.schema.create
+  val drop: DBIO[Unit] = bpspaces.schema.drop
+
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
+
+/*
+(1,Some(16))
+(3,Some(17))
+(4,Some(18))
+(6,Some(19))
+.renewIndex(bprocess, 5)
+(1,Some(16))
+(3,Some(17))
+(4,Some(18))
+(5,Some(19))
+*/
+  def renewIndex(bprocess: Int, index_num: Int) = {
+      {
+      val q3 = for { sp ← bpspaces if sp.bprocess === bprocess && sp.index > index_num } yield sp
+      val ordered = q3.list.zipWithIndex.map(sp => sp._1.copy(index = (sp._2 + 1) + (index_num - 1)))
+      //val ordered = q3.list.zipWithIndex.map(sp => sp._1.copy(index = sp._2+index_num))
+      ordered.foreach { sp =>
+         update(sp.id.get, sp)
+      }
+    }
+  }
+
+  def getAll:Future[Seq[BPSpaceDTO]] = {
+    db.run(bpspaces.result)
+  }
+
+
+
+
+
+
+
 
 }
