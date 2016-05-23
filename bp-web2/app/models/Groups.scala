@@ -1,8 +1,10 @@
 package models.DAO.resources
 
-//import slick.driver.PostgresDriver.simple._
+//import slick.driver.PostgresDriver.api._
 import models.DAO.conversion.DatabaseCred
-import models.DAO.driver.MyPostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
+import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 
 import com.github.nscala_time.time.Imports._
 
@@ -49,14 +51,14 @@ case class AccoutGroupDTO(
             employee_id: Int = 0)
 object GroupDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
+
+
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._
   import slick.jdbc.meta.MTable
   import scala.concurrent.ExecutionContext.Implicits.global
-  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import com.github.tototoshi.slick.PostgresJodaSupport._
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
@@ -82,14 +84,14 @@ object GroupDAOF {
 
 object AccountGroupDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
+
+
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._
   import slick.jdbc.meta.MTable
   import scala.concurrent.ExecutionContext.Implicits.global
-  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import com.github.tototoshi.slick.PostgresJodaSupport._
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
@@ -120,83 +122,91 @@ object AccountGroupDAOF {
 
 
 object AccountGroupDAO {
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import DatabaseCred.database
+  import models.DAO.conversion.DatabaseFuture._
+
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+
   val account_group = TableQuery[AccountGroup]
 
-  def pull_object(s: AccoutGroupDTO) = database withSession {
-    implicit session ⇒
-      account_group returning account_group.map(_.id) += s
+  def pull_object(s: AccoutGroupDTO) =   {
+
+      await(db.run(  account_group returning account_group.map(_.id) += s ))
   }
-  def assign(account_id: Option[String], group_id: Int, employee_id: Int = -1) = database withSession {
-  	implicit session =>
+  def assign(account_id: Option[String], group_id: Int, employee_id: Int = -1) =   {
+
   	val now = org.joda.time.DateTime.now()
   	getByEmpAndGroup(employee_id, group_id) match {
   		case Some(group) => -1
   		case _ => pull_object(AccoutGroupDTO(None, account_id, group_id, Some(now), Some(now), employee_id))
   	}
   }
-  def unassign(account_id: Option[String], group_id: Int, employee_id: Int = -1) = database withSession {
-  	implicit session =>
+  def unassign(account_id: Option[String], group_id: Int, employee_id: Int = -1) =   {
+
   	getByEmpAndGroup(employee_id, group_id) match {
   		case Some(group) => delete(group.id.get)
   		case _ => -1
   	}
   }
-  def getAllByGroup(group_id: Int) = database withSession {
-    implicit session ⇒
+  def getAllByGroup(group_id: Int) =   {
+
       val q3 = for { s ← account_group if s.group_id === group_id } yield s
-      q3.list
+      await(db.run(q3.result)).toList
   }
-  def getAllByGroupIDS(group_ids: List[Int]) = database withSession {
-    implicit session ⇒
+  def getAllByGroupIDS(group_ids: List[Int]) =   {
+
       val q3 = for { s ← account_group if s.group_id inSetBind group_ids } yield s
-      q3.list
+      await(db.run(q3.result)).toList
   }
-  def get(k: Int) = database withSession {
-    implicit session ⇒
+  def get(k: Int) =   {
+
       val q3 = for { s ← account_group if s.id === k } yield s
-      q3.list.headOption
+      await(db.run(q3.result.headOption))
   }
-  def getByAccountAndGroup(account_id: String, group_id: Int) = database withSession {
-    implicit session ⇒
+  def getByAccountAndGroup(account_id: String, group_id: Int) =   {
+
       val q3 = for { s ← account_group if (s.account_id === account_id) && (s.group_id === group_id) } yield s
-      q3.list.headOption
+      await(db.run(q3.result.headOption))
   }
-  def getByEmpAndGroup(employee_id: Int, group_id: Int) = database withSession {
-    implicit session ⇒
+  def getByEmpAndGroup(employee_id: Int, group_id: Int) =   {
+
       val q3 = for { s ← account_group if (s.employee_id === employee_id) && (s.group_id === group_id) } yield s
-      q3.list.headOption
+      await(db.run(q3.result.headOption))
   }
-  def getByAccount(account_id: String) = database withSession {
-    implicit session ⇒
+  def getByAccount(account_id: String) =   {
+
       val q3 = for { s ← account_group if s.account_id === account_id } yield s
-      q3.list
+      await(db.run(q3.result)).toList
   }
-  def getByAccounts(account_ids: List[String]) = database withSession {
-    implicit session ⇒
+  def getByAccounts(account_ids: List[String]) =   {
+
       val q3 = for { s ← account_group if s.account_id inSetBind account_ids } yield s
-      GroupsDAO.gets(q3.list.map(_.group_id))
+      GroupsDAO.gets(await(db.run(q3.result)).toList.map(_.group_id))
   }
-  def update(id: Int, group: AccoutGroupDTO) = database withSession { implicit session ⇒
+  def update(id: Int, group: AccoutGroupDTO) =   {
     val walkToUpdate: AccoutGroupDTO = group.copy(Option(id))
-    account_group.filter(_.id === id).update(walkToUpdate)
+    await(db.run(  account_group.filter(_.id === id).update(walkToUpdate) ))
   }
-  def delete(id: Int) = database withSession { implicit session ⇒
-    account_group.filter(_.id === id).delete
+  def delete(id: Int) =   {
+    await(db.run(  account_group.filter(_.id === id).delete ))
   }
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      account_group.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-      account_group.ddl.drop
-    }
-  }
+  val create: DBIO[Unit] = account_group.schema.create
+  val drop: DBIO[Unit] = account_group.schema.drop
+
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
+
 }
 
 case class GroupDTO(var id: Option[Int],
@@ -205,71 +215,68 @@ case class GroupDTO(var id: Option[Int],
                   created_at: Option[org.joda.time.DateTime],
                   updated_at: Option[org.joda.time.DateTime])
 object GroupsDAO {
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import DatabaseCred.database
+  import models.DAO.conversion.DatabaseFuture._
 
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
   val groups = TableQuery[Groups]
 
 
-  def pull_object(s: GroupDTO) = database withSession {
-    implicit session ⇒
-      groups returning groups.map(_.id) += s
+  def pull_object(s: GroupDTO) =   {
+
+      await(db.run(  groups returning groups.map(_.id) += s ))
   }
 
-  def get(k: Int) = database withSession {
-    implicit session ⇒
+  def get(k: Int) =   {
+
       val q3 = for { s ← groups if s.id === k } yield s
-      q3.list.headOption
+      await(db.run(q3.result.headOption))
   }
-  def gets(ids: List[Int]) = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← groups if s.id inSetBind ids } yield s
-      q3.list
-  }
-  def getsByBusiness(business: Int) = database withSession {
-    implicit session =>
-      val q3 = for { s ← groups if s.business === business } yield s
-      q3.list
-  }
-  def getByBusiness(bid: Int) = database withSession {
-    implicit session =>
-     val q3 = for { s ← groups if s.business === bid } yield s
-      q3.list.headOption
-  }
-  def getAllByBusiness(bid: Int) = database withSession {
-    implicit session =>
-     val q3 = for { s ← groups if s.business === bid } yield s
-      q3.list
-  }
-  def update(id: Int, group: GroupDTO) = database withSession { implicit session ⇒
-    val walkToUpdate: GroupDTO = group.copy(Option(id))
-    groups.filter(_.id === id).update(walkToUpdate)
-  }
-  /**
-   * Delete a group
-   * @param id
-   */
-  def delete(id: Int) = database withSession { implicit session ⇒
+  def gets(ids: List[Int]) =   {
 
-    groups.filter(_.id === id).delete
+      val q3 = for { s ← groups if s.id inSetBind ids } yield s
+      await(db.run(q3.result)).toList
   }
-  /**
-   * Count all groups
-   */
-  def count: Int = database withSession { implicit session ⇒
-    Query(groups.length).first
+  def getsByBusiness(business: Int) =   {
+
+      val q3 = for { s ← groups if s.business === business } yield s
+      await(db.run(q3.result)).toList
   }
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      groups.ddl.create
-    }
+  def getByBusiness(bid: Int) =   {
+
+     val q3 = for { s ← groups if s.business === bid } yield s
+      await(db.run(q3.result.headOption))
   }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-      groups.ddl.drop
-    }
+  def getAllByBusiness(bid: Int) =   {
+
+     val q3 = for { s ← groups if s.business === bid } yield s
+      await(db.run(q3.result)).toList
   }
+  def update(id: Int, group: GroupDTO) =   {
+    val walkToUpdate: GroupDTO = group.copy(Option(id))
+    await(db.run(  groups.filter(_.id === id).update(walkToUpdate) ))
+  }
+
+  def delete(id: Int) =   {
+
+    await(db.run(  groups.filter(_.id === id).delete ))
+  }
+  val create: DBIO[Unit] = groups.schema.create
+  val drop: DBIO[Unit] = groups.schema.drop
+
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
+
 
 }

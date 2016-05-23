@@ -1,5 +1,26 @@
 package models.DAO.driver
 
+import com.github.tminglei.slickpg._
+
+trait MyPostgresDriver extends ExPostgresDriver
+                          with PgArraySupport {
+  def pgjson = "jsonb" // jsonb support is in postgres 9.4.0 onward; for 9.3.x use "json"
+
+  // Add back `capabilities.insertOrUpdate` to enable native `upsert` support; for postgres 9.5+
+  //override protected def computeCapabilities: Set[Capability] =
+  //  super.computeCapabilities + JdbcProfile.capabilities.insertOrUpdate
+
+  override val api = MyAPI
+
+  object MyAPI extends API with ArrayImplicits {
+    implicit val strListTypeMapper = new SimpleArrayJdbcType[String]("text").to(_.toList)
+
+  }
+}
+
+object MyPostgresDriver extends MyPostgresDriver
+
+/*
 import slick.driver.PostgresDriver
 import com.github.tminglei.slickpg._
 import com.github.tminglei.slickpg.PgArraySupport
@@ -30,7 +51,7 @@ trait MyCompositeSupport extends PgCommonJdbcTypes
 
       //implicit val compositeTypeMapper = createCompositeJdbcType[CompositeValues]("compositevalues")
       //implicit val compositeArrayTypeMapper = createCompositeListJdbcType[CompositeValues]("compositevalues")
-      
+
 
       //implicit val compositevaluesTypeMapper = new GenericJdbcType[CompositeValues]("compositevalues",
       //  mkCompositeConvFromString[CompositeValues], mkCompositeConvToString[CompositeValues])
@@ -39,11 +60,11 @@ trait MyCompositeSupport extends PgCommonJdbcTypes
     }
   }
 
-trait MyPostgresDriver extends PostgresDriver 
-with MyCompositeSupport 
+trait MyPostgresDriver extends PostgresDriver
+with MyCompositeSupport
 with PgArraySupport
 //with PgDateSupport
-with PgDateSupportJoda 
+with PgDateSupportJoda
  {
   ///
   override lazy val Implicit = new ImplicitsPlus with CompositeImplicts {}
@@ -80,10 +101,10 @@ trait WithMyDriver1 {
 }
 
 
-trait MyPostgresDriver1 extends PostgresDriver 
+trait MyPostgresDriver1 extends PostgresDriver
 with PgArraySupport
 //with PgDateSupport
-with PgDateSupportJoda 
+with PgDateSupportJoda
  {
   ///
    override lazy val Implicit = new ImplicitsPlus {}
@@ -104,3 +125,4 @@ override val simple = new SimpleQLPlus {}
 }
 
 object MyPostgresDriver1 extends MyPostgresDriver1
+*/

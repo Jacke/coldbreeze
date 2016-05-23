@@ -247,7 +247,7 @@ private def makeManagerParamsF(email: String, isManager: Future[Boolean],
 private def makeEmployeeParams(email: String, isEmployee: Boolean, business: BusinessDTO): Option[employeeParams] = {
     if (isEmployee) {
         val bps_ids = ActPermissionDAO.getByUIDprocIDS(email)
-        val bps = BPDAO.getAll.filter(bp => bps_ids.contains(bp.id.get))
+        val bps = BPDAOF.getAll.filter(bp => bps_ids.contains(bp.id.get))
         val perms = profilePerms(email)
 
         val elems_titles = ActPermissionDAO.getByUIDelemTitles(email)

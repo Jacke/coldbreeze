@@ -260,7 +260,7 @@ def fetchAllInteractionF() = Action.async { implicit request =>
       case Some(biz) => biz._2
       case _ => -1
     }
-   val sessionsCn = BPSessionDAO.findByBusiness(business)
+   val sessionsCn = BPSessionDAOF.await( BPSessionDAOF.findByBusiness(business) ).toList
    val sessions = sessionsCn.map { cn => cn.sessions }.flatten
    val combinedSessions:List[Future[SessionInteractionContainer]] = sessions.map { sessionObj =>
 
@@ -273,7 +273,7 @@ def fetchAllInteractionF() = Action.async { implicit request =>
       println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
       println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
       val session_id = sessionObj.session.id.get
-      val session = models.DAO.BPSessionDAO.findById(id = session_id)
+      val session = models.DAO.BPSessionDAOF.await( models.DAO.BPSessionDAOF.findById(id = session_id) )
 
       val process:BProcessDTO = session.get.process
       val reactions:List[SessionUnitReaction] = SessionReactionDAO.findUnapplied(process.id.get, session_id)
@@ -284,7 +284,7 @@ def fetchAllInteractionF() = Action.async { implicit request =>
 
       val costs:List[CostContainer] = reactions.map(reaction => findCost(sessionElemTopoId = reaction.element,
                                                                          launchId=session_id)).flatten
-      val session_states: List[BPSessionState] = BPSessionStateDAO.findByOriginIds(reaction_outs.map(_.state_ref))
+      val session_states: List[BPSessionState] = BPSessionStateDAOF.findByOriginIds(reaction_outs.map(_.state_ref))
 
       Logger.debug("Session state")
       Logger.debug(s"session_states length ${session_states.length}")
@@ -310,7 +310,7 @@ def fetchAllInteraction() = Action.async { implicit request =>
       case Some(biz) => biz._2
       case _ => -1
     }
-   val sessionsCn = BPSessionDAO.findByBusiness(business)
+   val sessionsCn = BPSessionDAOF.await ( BPSessionDAOF.findByBusiness(business) ).toList
    val sessions = sessionsCn.map { cn => cn.sessions }.flatten
    val combinedSessions:List[SessionInteractionContainer] = sessions.map { sessionObj =>
 
@@ -322,7 +322,7 @@ def fetchAllInteraction() = Action.async { implicit request =>
       println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
       println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
       val session_id = sessionObj.session.id.get
-      val session = models.DAO.BPSessionDAO.findById(id = session_id)
+      val session = models.DAO.BPSessionDAOF.await( models.DAO.BPSessionDAOF.findById(id = session_id) )
 
       val process:BProcessDTO = session.get.process
       val reactions:List[SessionUnitReaction] = SessionReactionDAO.findUnapplied(process.id.get, session_id)
@@ -333,7 +333,7 @@ def fetchAllInteraction() = Action.async { implicit request =>
 
       val costs:List[CostContainer] = reactions.map(reaction => findCost(sessionElemTopoId = reaction.element,
                                                                          launchId=session_id)).flatten
-      val session_states: List[BPSessionState] = BPSessionStateDAO.findByOriginIds(reaction_outs.map(_.state_ref))
+      val session_states: List[BPSessionState] = BPSessionStateDAOF.findByOriginIds(reaction_outs.map(_.state_ref))
 
       Logger.debug("Session state")
       Logger.debug(s"session_states length ${session_states.length}")

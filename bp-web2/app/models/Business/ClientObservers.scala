@@ -1,6 +1,8 @@
 package models.DAO.resources
 
-import slick.driver.PostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
+import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import models.DAO.conversion.DatabaseCred
 
 class ClientObservers(tag: Tag) extends Table[ClientObserverDTO](tag, "client_observers") {
@@ -19,74 +21,65 @@ class ClientObservers(tag: Tag) extends Table[ClientObserverDTO](tag, "client_ob
 case class ClientObserverDTO(var id: Option[Int], uid: String)
 
 object ClientObserversDAO {
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import DatabaseCred.database
+  import models.DAO.conversion.DatabaseFuture._
+
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
 
   val client_observers = TableQuery[ClientObservers]
 
 
 
 
-  def pull_object(s: ClientObserverDTO) = database withSession {
-    implicit session ⇒
-     client_observers returning client_observers.map(_.id) += s
+  def pull_object(s: ClientObserverDTO) =   {
+
+     await(db.run( client_observers returning client_observers.map(_.id) += s ))
   }
 
-  def get(k: Int) = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← client_observers if s.id === k } yield s 
-      q3.list.headOption
+  def get(k: Int) =   {
+
+      val q3 = for { s ← client_observers if s.id === k } yield s
+      await(db.run(q3.result.headOption))
   }
 
- 
+
   /**
    * Update a observer_clients
    * @param id
    * @param observer_clients
    */
-  def update(id: Int, observer_clients: ClientObserverDTO) = database withSession { implicit session ⇒
+  def update(id: Int, observer_clients: ClientObserverDTO) =   {
     val observerClientToUpdate: ClientObserverDTO = observer_clients.copy(Option(id))
-    client_observers.filter(_.id === id).update(observerClientToUpdate)
+    await(db.run( client_observers.filter(_.id === id).update(observerClientToUpdate) ))
   }
-  
+
 
   /**
    * Delete a observer_clients
    * @param id
    */
-  def delete(id: Int) = database withSession { implicit session ⇒
-    client_observers.filter(_.id === id).delete
-  }
-
-
-  /**
-   * Count all client_observers
-   */
-  def count: Int = database withSession { implicit session ⇒
-    Query(client_observers.length).first
+  def delete(id: Int) =   {
+    await(db.run( client_observers.filter(_.id === id).delete ))
   }
 
 
 
-  def getAll = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← client_observers } yield s 
-      q3.list.sortBy(_.id)
-  }
+  val create: DBIO[Unit] = client_observers.schema.create
+  val drop: DBIO[Unit] = client_observers.schema.drop
 
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      client_observers.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-        client_observers.ddl.drop
-    }
-  }
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
+
 
 }
-
-

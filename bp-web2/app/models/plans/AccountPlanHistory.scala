@@ -1,6 +1,8 @@
 package models.DAO.resources
 
-import models.DAO.driver.MyPostgresDriver1.simple._
+import slick.driver.PostgresDriver.api._
+import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import com.github.tminglei.slickpg.composite._
 import models.DAO.conversion.{DatabaseCred, Implicits}
 import slick.model.ForeignKeyAction
@@ -19,7 +21,7 @@ class AccountPlanHistory(tag: Tag) extends Table[AccountPlanHistoryDTO](tag, "ac
   def * = (id.?, account_plan, limit_diff, plan_diff, byBill) <> (AccountPlanHistoryDTO.tupled, AccountPlanHistoryDTO.unapply)
 
 }
-case class AccountPlanHistoryDTO(var id: Option[Int], 
+case class AccountPlanHistoryDTO(var id: Option[Int],
   account_plan: Int,
   limit_diff:Int = -1,
   plan_diff:Int = -1,
@@ -28,67 +30,64 @@ case class AccountPlanHistoryDTO(var id: Option[Int],
 
 
 object AccountPlanHistoryDAO {
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import DatabaseCred.database
+  import models.DAO.conversion.DatabaseFuture._
+
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+
 
   val account_plan_history = TableQuery[AccountPlanHistory]
-  
-  def pull_object(s: AccountPlanHistoryDTO) = database withSession {
-    implicit session ⇒
-      account_plan_history returning account_plan_history.map(_.id) += s
+
+  def pull_object(s: AccountPlanHistoryDTO) =   {
+      await(db.run( account_plan_history returning account_plan_history.map(_.id) += s ))
   }
 
-  def get(k: Int):Option[AccountPlanHistoryDTO] = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← account_plan_history if s.id === k } yield s 
-      q3.list.headOption
+  def get(k: Int):Option[AccountPlanHistoryDTO] =   {
+      val q3 = for { s ← account_plan_history if s.id === k } yield s
+      await(db.run(q3.result.headOption))
   }
-  def getByBill(k: Int):Option[AccountPlanHistoryDTO] = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← account_plan_history if s.byBill === k } yield s 
-      q3.list.headOption
+
+  def getByBill(k: Int):Option[AccountPlanHistoryDTO] =   {
+      val q3 = for { s ← account_plan_history if s.byBill === k } yield s
+      await(db.run(q3.result.headOption))
   }
-  def getAllByAccountPlan(k: Int):List[AccountPlanHistoryDTO] = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← account_plan_history if s.account_plan === k } yield s 
-      q3.list
-  }  
+
+  def getAllByAccountPlan(k: Int):List[AccountPlanHistoryDTO] =   {
+      val q3 = for { s ← account_plan_history if s.account_plan === k } yield s
+      await(db.run(q3.result)).toList
+  }
+
   /**
    * Update a business service
    * @param id
    * @param business service
    */
-  def update(id: Int, businessService: AccountPlanHistoryDTO) = database withSession { implicit session ⇒
+  def update(id: Int, businessService: AccountPlanHistoryDTO) =   {
     val bpToUpdate: AccountPlanHistoryDTO = businessService.copy(Option(id))
-    account_plan_history.filter(_.id === id).update(bpToUpdate)
+    await(db.run( account_plan_history.filter(_.id === id).update(bpToUpdate) ))
   } /**
    * Delete a business service
    * @param id
    */
-  def delete(id: Int) = database withSession { implicit session ⇒
-    account_plan_history.filter(_.id === id).delete
+  def delete(id: Int) =   {
+    await(db.run( account_plan_history.filter(_.id === id).delete ))
   }
-  /**
-   * Count all account_plans
-   */
-  def count: Int = database withSession { implicit session ⇒
-    Query(account_plan_history.length).first
-  }
-  def getAll = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← account_plan_history } yield s 
-      q3.list.sortBy(_.id)
-  }
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      account_plan_history.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-        account_plan_history.ddl.drop
-    }
-  }
+
+
+    val create: DBIO[Unit] = account_plan_history.schema.create
+    val drop: DBIO[Unit] = account_plan_history.schema.drop
+
+    def ddl_create = db.run(create)
+    def ddl_drop = db.run(drop)
 }

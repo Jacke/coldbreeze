@@ -1,6 +1,8 @@
 package models.DAO
 
-import models.DAO.driver.MyPostgresDriver1.simple._
+import slick.driver.PostgresDriver.api._
+import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import com.github.tminglei.slickpg.composite._
 import models.DAO.conversion.{DatabaseCred, Implicits}
 import slick.model.ForeignKeyAction
@@ -25,29 +27,35 @@ case class RedemCodeDTO(var id: Option[Int], code: String, force: Int, created_a
 
 
 object RedemCodesDAO {
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import DatabaseCred.database
+  import models.DAO.conversion.DatabaseFuture._
 
-
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
 
   val redem_codes = TableQuery[RedemCodes]
- 
 
 
-  def pull_object(s: RedemCodeDTO) = database withSession {
-    implicit session ⇒
-      redem_codes returning redem_codes.map(_.id) += s
+  def pull_object(s: RedemCodeDTO) =   {
+      await(db.run( redem_codes returning redem_codes.map(_.id) += s ))
   }
-  def get(k: Int) = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← redem_codes if s.id === k } yield s 
-      q3.list.headOption
+  def get(k: Int) =   {
+      val q3 = for { s ← redem_codes if s.id === k } yield s
+      await(db.run(q3.result.headOption))
   }
-  def getByCode(code: String) = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← redem_codes if s.code === code } yield s 
-
-      q3.list.headOption
+  def getByCode(code: String) =   {
+      val q3 = for { s ← redem_codes if s.code === code } yield s
+      await(db.run(q3.result.headOption))
   }
 
   /**
@@ -55,44 +63,25 @@ object RedemCodesDAO {
    * @param id
    * @param business service
    */
-  def update(id: Int, code: RedemCodeDTO) = database withSession { implicit session ⇒
+  def update(id: Int, code: RedemCodeDTO) =   {
     val codeToUpdate: RedemCodeDTO = code.copy(Option(id))
-    redem_codes.filter(_.id === id).update(codeToUpdate)
-  } 
+    await(db.run( redem_codes.filter(_.id === id).update(codeToUpdate) ))
+  }
   /**
    * Delete a redem code
    * @param id
    */
-  def delete(id: Int) = database withSession { implicit session ⇒
-
-    redem_codes.filter(_.id === id).delete
-  }
-  /**
-   * Count all business_services
-   */
-  def count: Int = database withSession { implicit session ⇒
-    Query(redem_codes.length).first
+  def delete(id: Int) =   {
+    await(db.run( redem_codes.filter(_.id === id).delete ))
   }
 
 
 
-  def getAll = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← redem_codes } yield s 
-      q3.list.sortBy(_.id)
+  val create: DBIO[Unit] = redem_codes.schema.create
+  val drop: DBIO[Unit] = redem_codes.schema.drop
 
-  }
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
 
-   def ddl_create = {
-    database withSession {
-      implicit session =>
-      redem_codes.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-        redem_codes.ddl.drop
-    }
-  }
+
 }

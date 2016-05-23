@@ -5,11 +5,11 @@ import models.DAO.conversion.DatabaseCred
 import securesocial.core.providers._
 import securesocial.core._
 import securesocial.core.services.{UserService, SaveMode}
-//import models.DAO.driver.MyPostgresDriver.simple._
+//import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
 import slick.model.ForeignKeyAction
-import slick.driver.PostgresDriver.simple._
+import models.DAO.conversion.DatabaseCred.dbConfig.driver.api._
 import com.github.tototoshi.slick.PostgresJodaSupport._
 import service.DemoUser
 

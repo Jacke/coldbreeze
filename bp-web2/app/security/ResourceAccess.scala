@@ -29,15 +29,15 @@ object BRes {
     // CONSTANTS
     // Processes
     // * CRUD
-    
+
     // Front elements, space, space elements
     // * CRUD
 def procIsOwnedByBiz(business: Int, process_id: Int):Boolean = {
     BPDAO.get(process_id) match {
-      case Some(bprocess) => { 
+      case Some(bprocess) => {
         //println(s"procIsOwnedByBiz ${business}:${process_id}")
         if (bprocess.business == business) {
-          true 
+          true
         }
         else {
           false
@@ -60,9 +60,9 @@ def processesIdsIsOwnedByBiz(business: Int, processes_ids: List[Int]):Future[Lis
 def launchIsOwnedByBiz(business: Int, launch_id: Int):Boolean = {
     val launch = BPSessionDAO.get(launch_id).get
     BPDAO.get(launch.process) match {
-      case Some(bprocess) => { 
+      case Some(bprocess) => {
         if (bprocess.business == business) {
-          true 
+          true
         }
         else {
           false

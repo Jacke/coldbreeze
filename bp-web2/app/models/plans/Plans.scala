@@ -1,8 +1,10 @@
 package models.DAO.resources
 
-import slick.driver.PostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
+import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import slick.model.ForeignKeyAction
-//import models.DAO.driver.MyPostgresDriver.simple._
+//import slick.driver.PostgresDriver.api._
 import models.DAO.conversion.DatabaseCred
 
 class Plans(tag: Tag) extends Table[PlanDTO](tag, "plans") {
@@ -21,35 +23,35 @@ class Plans(tag: Tag) extends Table[PlanDTO](tag, "plans") {
 /*
   Case class
  */
-case class PlanDTO(var id: Option[Int], 
-                    title: String, 
-                    price: BigDecimal, 
-                    description:Option[String] = None, 
+case class PlanDTO(var id: Option[Int],
+                    title: String,
+                    price: BigDecimal,
+                    description:Option[String] = None,
                     slotIncluded: Int=5,
                     order: Int = 1,
                     hidden: Boolean = false)
 
 object PlanDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
+
+
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._
   import slick.jdbc.meta.MTable
   import scala.concurrent.ExecutionContext.Implicits.global
-  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import com.github.tototoshi.slick.PostgresJodaSupport._
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import models.DAO.conversion.DatabaseFuture._  
+  import models.DAO.conversion.DatabaseFuture._
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
   val plans = PlanDAO.plans
 
   private def filterQuery(id: Int): Query[Plans, PlanDTO, Seq] =
-    plans.filter(_.id === id) 
+    plans.filter(_.id === id)
   def get(id: Int):Future[Option[PlanDTO]] = {
      db.run(filterQuery(id).result.headOption)
   }
@@ -58,69 +60,57 @@ object PlanDAOF {
 
 
 object PlanDAO {
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import DatabaseCred.database
+  import models.DAO.conversion.DatabaseFuture._
+
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
 
   val plans = TableQuery[Plans]
- 
-  def pull_object(s: PlanDTO) = database withSession {
-    implicit session ⇒
-      plans returning plans.map(_.id) += s
+
+  def pull_object(s: PlanDTO) =   {
+
+      await(db.run( plans returning plans.map(_.id) += s ))
   }
-  def get(k: Int) = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← plans if s.id === k } yield s 
-      q3.list.headOption
+  def get(k: Int) =   {
+      val q3 = for { s ← plans if s.id === k } yield s
+      await(db.run(q3.result.headOption))
+  }
+
+  def getAll =   {
+      await(db.run(plans.result)).toList
   }
     /**
    * Update a business service
    * @param id
    * @param business service
    */
-  def update(id: Int, plan: PlanDTO) = database withSession { implicit session ⇒
+  def update(id: Int, plan: PlanDTO) =   {
     val planToUpdate: PlanDTO = plan.copy(Option(id))
-    plans.filter(_.id === id).update(planToUpdate)
-  } 
+    await(db.run( plans.filter(_.id === id).update(planToUpdate) ))
+  }
 
   /**
    * Delete a business service
    * @param id
    */
-  def delete(id: Int) = database withSession { implicit session ⇒
-    plans.filter(_.id === id).delete
-  }
-  
-  /**
-   * Count all business_services
-   */
-  def count: Int = database withSession { implicit session ⇒
-    Query(plans.length).first
+  def delete(id: Int) =   {
+    await(db.run( plans.filter(_.id === id).delete ))
   }
 
+  val create: DBIO[Unit] = plans.schema.create
+  val drop: DBIO[Unit] = plans.schema.drop
 
-
-  def getAll = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← plans } yield s 
-      q3.list.sortBy(_.id)
-
-  }
-
-   def ddl_create = {
-    database withSession {
-      implicit session =>
-      plans.ddl.create
-      // Add default plan
-      pull_object(PlanDTO(None, "Trial", 0))
-      pull_object(PlanDTO(None, "Startup", 50.0))
-      pull_object(PlanDTO(None, "Company", 160.0))
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-        plans.ddl.drop
-
-    }
-  }
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
 }

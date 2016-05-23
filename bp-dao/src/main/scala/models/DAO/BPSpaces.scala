@@ -1,8 +1,8 @@
 package models.DAO
 
 //import slick.driver.PostgresDriver.simple._
-import models.DAO.driver.MyPostgresDriver1.simple._
-
+import slick.driver.PostgresDriver.api._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import com.github.nscala_time.time.Imports._
 import models.DAO.conversion.DatabaseCred
 import slick.model.ForeignKeyAction
@@ -27,7 +27,7 @@ class BPSpaces(tag: Tag) extends Table[BPSpaceDTO](tag, "bpspaces") {
 
   def * = (id.?, bprocess, index, container, subbrick, brick_front, brick_nested, nestingLevel,
            created_at, updated_at) <> (BPSpaceDTO.tupled, BPSpaceDTO.unapply)
-  def bpFK = foreignKey("sp_bprocess_fk", bprocess, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK = foreignKey("sp_bprocess_fk", bprocess, models.DAO.BPDAOF.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }
 case class BPSpaceDTO(id: Option[Int],
@@ -103,124 +103,5 @@ object BPSpaceDAO {
   import models.DAO.conversion.DatabaseCred._
   val bpspaces = TableQuery[BPSpaces]
 
-  def pull_object(s: BPSpaceDTO, timestamp: Option[String] = None) = database withSession {
-    implicit session ⇒
-      val id = bpspaces returning bpspaces.map(_.id) += s
-      models.utils.IdAfterBurner.elSpaceOwn(s.copy(id = Some(id)))
-      id
-  }
 
-  def lastIndexOfSpace(id: Int) = database withSession {
-    implicit session =>
-      val q3 = for { s ← bpspaces if s.id === id } yield s
-      val xs = q3.list.map(_.index)
-
-      if (xs.isEmpty) 1
-      else xs.max + 1
-  }
-  def get(k: Int) = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← bpspaces if s.id === k } yield s
-      q3.list.headOption //.map(Supplier.tupled(_))
-  }
-  def getAllByFront(k: Int) = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← bpspaces if s.brick_front === k } yield s
-      q3.list //.map(Supplier.tupled(_))
-  }
-  def getAllByNested(k: Int) = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← bpspaces if s.brick_nested === k } yield s
-      q3.list //.map(Supplier.tupled(_))
-  }
-  def findByBPId(id: Int) = {
-    database withSession { implicit session =>
-     val q3 = for { sp ← bpspaces if sp.bprocess === id } yield sp// <> (UndefElement.tupled, UndefElement.unapply _)
-      q3.list
-    }
-  }
-  def deleteOwnedSpace(elem_id:Option[Int],spelem_id:Option[Int]) {
-  if (elem_id.isDefined) {
-      getAllByFront(elem_id.get).map(_.id.get).foreach{ id => delete(id) }
-  }
-  if (spelem_id.isDefined) {
-      getAllByNested(spelem_id.get).map(_.id.get).foreach{ id => delete(id) }
-  }
-}
-  /**
-   * Update a bpspace
-   * @param id
-   * @param bpspace
-   */
-  def update(id: Int, bpspace: BPSpaceDTO) = database withSession { implicit session ⇒
-    val spToUpdate: BPSpaceDTO = bpspace.copy(Option(id))
-    bpspaces.filter(_.id === id).update(spToUpdate)
-  }
-  /**
-   * Delete a bpspace
-   * @param id
-   */
-  def delete(id: Int) = {
-   database withSession { implicit session ⇒
-
-    val sp = get(id)
-    val res = bpspaces.filter(_.id === id).delete
-    sp match {
-       case Some(space) => renewIndex(space.bprocess, space.index)
-       case _ =>
-    }
-    res
-  }
-
-  }
-  /**
-   * Count all bpspaces
-   */
-  def count: Int = database withSession { implicit session ⇒
-    Query(bpspaces.length).first
-  }
-
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      bpspaces.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-        bpspaces.ddl.drop
-    }
-  }
-/*
-(1,Some(16))
-(3,Some(17))
-(4,Some(18))
-(6,Some(19))
-.renewIndex(bprocess, 5)
-(1,Some(16))
-(3,Some(17))
-(4,Some(18))
-(5,Some(19))
-*/
-  def renewIndex(bprocess: Int, index_num: Int) = {
-    database withSession { implicit session ⇒
-      val q3 = for { sp ← bpspaces if sp.bprocess === bprocess && sp.index > index_num } yield sp
-      val ordered = q3.list.zipWithIndex.map(sp => sp._1.copy(index = (sp._2 + 1) + (index_num - 1)))
-      //val ordered = q3.list.zipWithIndex.map(sp => sp._1.copy(index = sp._2+index_num))
-      ordered.foreach { sp =>
-         update(sp.id.get, sp)
-      }
-    }
-  }
-
-  def getAll = database withSession {
-    implicit session ⇒ // TODO: s.service === 1 CHANGE DAT
-      val q3 = for { s ← bpspaces } yield s
-      q3.list.sortBy(_.id)
-    //suppliers foreach {
-    //  case (id, title, address, city, state, zip) ⇒
-    //    Supplier(id, title, address, city, state, zip)
-    //}
-  }
 }

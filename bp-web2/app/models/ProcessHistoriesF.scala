@@ -1,8 +1,8 @@
 package models.DAO
 
 import akka.actor.ActorSystem
-import akka.stream.ActorFlowMaterializer
-import akka.stream.scaladsl.Source
+ 
+  
 import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
 //import slick.driver.JdbcProfile
 import slick.driver.PostgresDriver.api._
@@ -10,7 +10,7 @@ import slick.driver.PostgresDriver.api._
 import slick.jdbc.meta.MTable
 import scala.concurrent.ExecutionContext.Implicits.global
 
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 
@@ -25,7 +25,7 @@ class ProcessHistoriesF(tag: Tag) extends Table[ProcessHistoryDTO](tag, "process
   def date     = column[org.joda.time.DateTime]("date")
 
 
-  def bpFK     = foreignKey("pr_hist_bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id)
+  def bpFK     = foreignKey("pr_hist_bprocess_fk", process, models.DAO.BPDAOF.bprocesses)(_.id)
   def accFK    = foreignKey("pr_hist_macc_fk", acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
 
 
@@ -39,14 +39,14 @@ class ProcessHistoriesF(tag: Tag) extends Table[ProcessHistoryDTO](tag, "process
 object ProcHistoryDAOF {
   import scala.util.Try
 import akka.actor.ActorSystem
-import akka.stream.ActorFlowMaterializer
-import akka.stream.scaladsl.Source
+ 
+  
 import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
 //import slick.driver.JdbcProfile
 import slick.driver.PostgresDriver.api._
 import slick.jdbc.meta.MTable
 import scala.concurrent.ExecutionContext.Implicits.global
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 import scala.util.Try

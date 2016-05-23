@@ -2,10 +2,14 @@ package models.DAO
 
 import main.scala.bprocesses.{ BProcess, BPLoggerResult }
 import main.scala.simple_parts.process.ProcElems
-import models.DAO.driver.MyPostgresDriver.simple._
+
+import models.DAO.conversion.DatabaseCred
+import models.DAO._
+import models.DAO.conversion.DatabaseFuture._
 import com.github.nscala_time.time.Imports._
-//import com.github.tminglei.slickpg.date.PgDateJdbcTypes
-import slick.model.ForeignKeyAction
+import models.DAO.conversion.DatabaseCred.dbConfig.driver.api._
+import com.github.tototoshi.slick.PostgresJodaSupport._
+
 
 import models.DAO.ProcElemDAO._
 import models.DAO.BPDAO._
@@ -26,7 +30,7 @@ class BPSessions(tag: Tag) extends Table[BPSession](tag, "bpsessions") {
 
   def * = (id.?, process, created_at, updated_at, active_listed) <> (BPSession.tupled, BPSession.unapply)
 
-  def bpFK = foreignKey("sess_bprocess_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def bpFK = foreignKey("sess_bprocess_fk", process, models.DAO.BPDAOF.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 }
 
 case class SessionPeoples(launched_by: String, participators: List[String])
@@ -52,23 +56,102 @@ import main.scala.utils.InputParamProc
 
 
 object BPSessionDAO {
-  import scala.util.Try
-  import DatabaseCred.database
-  import models.DAO.conversion.Implicits._
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+
+  import slick.jdbc.meta.MTable
   import scala.concurrent.ExecutionContext.Implicits.global
   import scala.concurrent.duration.Duration
-  import scala.concurrent.{ ExecutionContext, Awaitable, Await, Future }
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
 
+
+
+  import slick.jdbc._
+
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   val bpsessions = TableQuery[BPSessions]
 
-  def pull_object(s: BPSession) = database withSession {
-    implicit session ⇒
-      LaunchCounterDAO.invokeCounterForProcess(process_id = s.process)
-      bpsessions returning bpsessions.map(_.id) += s.copy(created_at = Some(org.joda.time.DateTime.now()))
+
+  private def filterQuery(id: Int): Query[BPSessions, BPSession, Seq] =
+    bpsessions.filter(_.id === id)
+
+
+  private def filterQueryProcesses(ids: List[Int]): Query[BPSessions, BPSession, Seq] =
+    bpsessions.filter(_.process inSetBind ids)
+
+
+  def pull_object(s: BPSession) = {
+    BPSessionDAOF.await(BPSessionDAOF.pull(s))
+  }
+  def countByProcess(p: Int) = {
+    LaunchCounterDAO.await( LaunchCounterDAO.getCountByProcess(p) )
+  }
+  def updateMeta(id: Int, step: Double) = {
+    val obj = get(id)
+     obj match {
+      case Some(ses) => {
+        val launchToUpdate: BPSession = ses.copy(Option(id),
+                                                 updated_at = Some(org.joda.time.DateTime.now()))
+        val procF = BPDAOF.get(ses.process).map { procOpt =>
+          procOpt match {
+            case Some(proc) => {
+              val element_quantityF = SessionProcElementDAOF.findBySessionLength(ses.id.get)
+              element_quantityF.map { element_quantity =>
+                val percent = BPSessionDAOF.percentDecorator(step, element_quantity)
+                CachedRemovedResourcesDAO.makeResourceUpdateEntity(
+                  scope = proc.business.toString,
+                  action = "updated",
+                  resourceTitle = "launches",
+                  resourceId = s"$id",
+                  updatedEntity = Map("percent" -> percent.toString,
+                                      "step" -> step.toString
+                                    )
+                )
+                BPSessionDAOF.await( db.run( bpsessions.filter(_.id === id).update(launchToUpdate) ) )
+              }
+            }
+            case _ => -1
+          }
+        }
+      }
+      case _ => -1
+    }
+  }
+  def getByProcesses(processes: List[Int]) = {
+    await(db.run(filterQueryProcesses(processes).result) )
   }
 
-  def findByBusiness(bid: Int): List[SessionContainer] = database withSession {
-    implicit session =>
+  def get(k: Int): Option[BPSession] = {
+    await(db.run(filterQuery(k).result.headOption) )
+  }
+
+  def delete(id: Int, scope: String): Future[Int] = {
+    BPSessionDAO.get(id) match {
+      case Some(launch) => {
+        val procF = BPDAOF.get(launch.process)
+        procF.map { procOpt =>
+          procOpt match {
+            case Some(proc) => {
+              CachedRemovedResourcesDAO.makeResourceRemoveEntity(
+                scope = scope,
+                action = "removed",
+                resourceTitle = "launches",
+                resourceId = s"$id")
+              bpsessions.filter(_.id === id).delete
+              id
+            }
+            case _ => -1
+          }
+        }
+      }
+      case _ => Future.successful(-1)
+    }
+  }
+
+/*
+  def findByBusiness(bid: Int): List[SessionContainer] =   {
+
       val p = BPDAO.findByBusiness(bid)
       val ids = p.map(_.id.get)
       val q3 = for { s <- bpsessions if s.process inSetBind ids } yield s
@@ -90,8 +173,8 @@ object BPSessionDAO {
           })
       }
   }
-  def findById(id: Int): Option[SessionContainer] = database withSession {
-    implicit session =>
+  def findById(id: Int): Option[SessionContainer] =   {
+
       val q3 = for { s <- bpsessions if s.id === id } yield s
       val sess = q3.list.headOption
 
@@ -152,8 +235,8 @@ object BPSessionDAO {
       case _ => None
   }
   */
-  def findListedByBusiness(bid: Int): List[SessionContainer] = database withSession {
-    implicit session =>
+  def findListedByBusiness(bid: Int): List[SessionContainer] =   {
+
       val p = BPDAO.findByBusiness(bid)
       val ids = p.flatMap(_.id)
       val q3 = for { s <- bpsessions if (s.process inSetBind ids) && s.active_listed === true } yield s
@@ -175,8 +258,7 @@ object BPSessionDAO {
           })
       }
   }
-  def makeUnlisted(id: Int) = database withSession {
-    implicit session =>
+  def makeUnlisted(id: Int) =   {
       get(id) match {
         case Some(session) => {
           update(id, session.copy(active_listed = false))
@@ -185,8 +267,8 @@ object BPSessionDAO {
         case _ => -1
       }
   }
-  def makeListed(id: Int) = database withSession {
-    implicit session =>
+  def makeListed(id: Int) =   {
+
       get(id) match {
         case Some(session) => {
           update(id, session.copy(active_listed = true))
@@ -196,8 +278,8 @@ object BPSessionDAO {
       }
   }
 
-  def findByProcess(pid: Int): Option[SessionContainer] = database withSession {
-    implicit session =>
+  def findByProcess(pid: Int): Option[SessionContainer] =   {
+
       val p = BPDAO.get(pid)
       p match {
         case Some(process) => {
@@ -234,24 +316,24 @@ object BPSessionDAO {
     }
   }
 
-  def findByBP(id: Int): List[BPSession] = database withSession {
-    implicit session =>
+  def findByBP(id: Int): List[BPSession] =   {
+
       val q3 = for { s <- bpsessions if s.process === id } yield s
       q3.list
   }
-  def getByProcesses(processes: List[Int]) = database withSession {
-    implicit session =>
+  def getByProcesses(processes: List[Int]) =   {
+
       val q3 = for { s ← bpsessions if s.process inSetBind processes } yield s
       q3.list
   }
 
-  def get(k: Int): Option[BPSession] = database withSession {
-    implicit session ⇒
+  def get(k: Int): Option[BPSession] =   {
+
       val q3 = for { s ← bpsessions if s.id === k } yield s
       q3.list.headOption
   }
 
-  def update(id: Int, bpsession: BPSession) = database withSession { implicit session ⇒
+  def update(id: Int, bpsession: BPSession) =   {
     val bpToUpdate: BPSession = bpsession.copy(Option(id))
     val procF = BPDAOF.get(bpsession.process).map { procOpt =>
       procOpt match {
@@ -269,7 +351,7 @@ object BPSessionDAO {
     }
   }
 
-  def updateMeta(id: Int, step: Double) = database withSession { implicit session ⇒
+  def updateMeta(id: Int, step: Double) =   {
     get(id) match {
       case Some(ses) => {
         val launchToUpdate: BPSession = ses.copy(Option(id),
@@ -300,7 +382,7 @@ object BPSessionDAO {
     }
   }
 
-  def delete(id: Int, scope: String): Future[Int] = database withSession { implicit session ⇒
+  def delete(id: Int, scope: String): Future[Int] =   {
     BPSessionDAO.get(id) match {
       case Some(launch) => {
         val procF = BPDAOF.get(launch.process)
@@ -323,28 +405,22 @@ object BPSessionDAO {
     }
   }
 
-  def count: Int = database withSession { implicit session ⇒
+  def count: Int =   {
     Query(bpsessions.length).first
   }
   def countByProcess(p: Int) = {
     LaunchCounterDAO.await( LaunchCounterDAO.getCountByProcess(p) )
   }
 
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-        bpsessions.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-        bpsessions.ddl.drop
-    }
-  }
+  val create: DBIO[Unit] = bpsessions.schema.create
+  val drop: DBIO[Unit] = bpsessions.schema.drop
 
-  def getAll = database withSession {
-    implicit session ⇒
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
+
+
+  def getAll =   {
+
       val q3 = for { s ← bpsessions } yield s
       q3.list.sortBy(_.id)
   }
@@ -356,4 +432,7 @@ object BPSessionDAO {
       (step / element_quantity.toDouble * 100).toInt
     }
   }
+
+*/
+
 }

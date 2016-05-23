@@ -4,13 +4,13 @@ import us.ority.min.actions._
 
 
 import models.DAO.conversion.DatabaseCred
-//import models.DAO.driver.MyPostgresDriver.simple._
+//import slick.driver.PostgresDriver.api._
 import models.DAO._
-//import models.DAO.driver.MyPostgresDriver.simple._
+//import slick.driver.PostgresDriver.api._
 import models.DAO.conversion.DatabaseFuture._
+import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
-import models.DAO.conversion.DatabaseCred.dbConfig.driver.api._
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import main.scala.bprocesses.refs.UnitRefs._
 
 
@@ -40,8 +40,6 @@ class StrategyRefs(tag: Tag) extends Table[StrategyRef](tag, "strategy_refs") {
 
 object StrategyRefsDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   import slick.jdbc.meta.MTable
   import scala.concurrent.ExecutionContext.Implicits.global
@@ -50,7 +48,7 @@ object StrategyRefsDAOF {
   import scala.util.Try
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
-  val strategy_refs = StrategyRefsDAO.strategy_refs
+  val strategy_refs = TableQuery[StrategyRefs]
 
   private def filterQuery(id: Long): Query[StrategyRefs, StrategyRef, Seq] =
     strategy_refs.filter(_.id === id)
@@ -77,8 +75,8 @@ object StrategyRefsDAOF {
         }
       }
   }
-
 }
+
 object StrategyRefsDAO {
 	  val strategy_refs = TableQuery[StrategyRefs]
 }

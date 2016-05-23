@@ -1,6 +1,8 @@
 package models.DAO
 
-import models.DAO.driver.MyPostgresDriver1.simple._
+import slick.driver.PostgresDriver.api._
+import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import slick.model.ForeignKeyAction
 import models.DAO.conversion.{DatabaseCred, Implicits}
 import slick.model.ForeignKeyAction
@@ -29,54 +31,55 @@ case class ResourceDTO(
   updated_at: Option[org.joda.time.DateTime] = None )
 
 object ResourceDAO {
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import DatabaseCred.database
+  import models.DAO.conversion.DatabaseFuture._
+
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
 
   val resources = TableQuery[Resources]
 
 
-  def pull_object(s: ResourceDTO) = database withSession {
-    implicit session ⇒
-      resources returning resources.map(_.id) += s.copy(created_at=Some(org.joda.time.DateTime.now),updated_at = Some(org.joda.time.DateTime.now))
+  def pull_object(s: ResourceDTO) =   {
+
+      await(db.run(
+        resources returning resources.map(_.id) += s.copy(created_at=Some(org.joda.time.DateTime.now),updated_at = Some(org.joda.time.DateTime.now)) ))
   }
-  def get(k: Int) = database withSession {
-    implicit session ⇒
+  def get(k: Int) =   {
       val q3 = for { s ← resources if s.id === k } yield s
-      q3.list.headOption
+      await(db.run(q3.result.headOption))
   }
-  def findByBusinessId(id: Int) = database withSession {
-    implicit session ⇒
+
+  def findByBusinessId(id: Int) =   {
       val q3 = for { s ← resources if s.business === id } yield s
-      q3.list
+      await(db.run(q3.result)).toList
   }
-  def update(id: Int, annotation: ResourceDTO) = database withSession { implicit session ⇒
+
+  def update(id: Int, annotation: ResourceDTO) =   {
     val resourcesUpdate: ResourceDTO = annotation.copy(id = Option(id), updated_at = Some(org.joda.time.DateTime.now))
-    resources.filter(_.id === id).update(resourcesUpdate)
+    await(db.run(  resources.filter(_.id === id).update(resourcesUpdate) ))
   }
 
 
-  def delete(id: Int) = database withSession { implicit session ⇒
-    resources.filter(_.id === id).delete
+  def delete(id: Int) =   {
+    await(db.run(  resources.filter(_.id === id).delete ))
   }
-  def count: Int = database withSession { implicit session ⇒
-    Query(resources.length).first
-  }
-  def getAll = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← resources } yield s
-      q3.list.sortBy(_.id)
-  }
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      resources.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-        resources.ddl.drop
-    }
-  }
+
+
+  val create: DBIO[Unit] = resources.schema.create
+  val drop: DBIO[Unit] = resources.schema.drop
+
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
 
 }

@@ -6,6 +6,7 @@ object Dependencies {
               "spray repo" at "http://repo.spray.io/",
     "spray nightlies repo" at "http://nightlies.spray.io",
      "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/",
+     "Typesafe Snapshots" at "http://repo.typesafe.com/typesafe/snapshots/",
     "Maven Central Server" at "http://repo1.maven.org/maven2",
     "MVN" at "http://repo.typesafe.com/typesafe/releases/",
     "Sonatype snapshots"   at "https://oss.sonatype.org/content/repositories/snapshots/",
@@ -29,7 +30,7 @@ object Dependencies {
 
   )
 
-  val akkaVersion     = "2.3.2"
+  val akkaVersion     = "2.4.6"
   val sprayVersion    = "1.3.1-20140423"
   val javaasist       = "org.javassist" % "javassist" % "3.20.0-GA"
   val heroku          = "com.heroku"                % "sbt-heroku"              % "0.1.4"
@@ -40,10 +41,11 @@ object Dependencies {
   val scalaz          = "org.scalaz"                %% "scalaz-core"            % "7.1.0"
   val scalazstream    = "org.scalaz.stream" %% "scalaz-stream" % "0.7.2a"
   // DATABASES
-  val slick           = "com.typesafe.slick"        %% "slick"                  % "3.0.3"
-  val slickpg         = "com.github.tminglei"       %% "slick-pg"               % "0.9.0"
+  val slick           = "com.typesafe.slick"        %% "slick"                  % "3.1.1"
+  val slickhikari     = "com.typesafe.slick"        %% "slick-hikaricp"         % "3.1.1"
+  val slickpg         = "com.github.tminglei"       %% "slick-pg"               % "0.14.1"
+
   val slick_migrate   = "io.github.nafg"            %% "slick-migration-api"    % "0.1.1"
-  val slickpgcore     = "com.github.tminglei"       %  "slick-pg_core_2.11"     % "0.9.0"
   val scalikejdbc     = "org.scalikejdbc"           %% "scalikejdbc"                  % "2.2.9"
   val scalikejdbcconf = "org.scalikejdbc"           %% "scalikejdbc-config"           % "2.2.9"
   //val scalikejdbcplay = "org.scalikejdbc"           %% "scalikejdbc-play-initializer" % "2.4.3"
@@ -53,7 +55,7 @@ object Dependencies {
   val json4sNative    = "org.json4s"                %% "json4s-native"          % "3.2.10"
   val json4sJackson   = "org.json4s"                %% "json4s-jackson"         % "3.2.10"
   val autoschema      = "org.coursera"              %% "autoschema"             % "0.1"
-  val postgres        = "postgresql"                %   "postgresql"            % "9.1-901.jdbc4"
+  val postgres        =  "org.postgresql"           % "postgresql"              % "9.4-1201-jdbc41"
 //val mongodb         = "org.mongodb"               %% "casbah"                % "2.7.0-RC0"
   val reactivemongo   = "org.reactivemongo"         %% "reactivemongo"          % "0.10.5.0.akka23"
   val playreactmongo  = "org.reactivemongo"         %% "play2-reactivemongo"    % "0.10.5.0.akka23"
@@ -68,8 +70,8 @@ object Dependencies {
   val wcs             = "eu.piotrbuda"              % "scalawebsocket_2.10"     % "0.1.1"
 
 
-  val azurestorage    = "com.microsoft.azure" % "azure-storage" % "4.0.0"
-  val rollback        = "com.tapstream" % "rollbar-logback" % "0.1.4"
+  val azurestorage    = "com.microsoft.azure"       % "azure-storage"           % "4.0.0"
+  val rollback        = "com.tapstream"             % "rollbar-logback"         % "0.1.4"
   //val trireme         = "io.apigee.trireme"         % "trireme-core"            % "0.8.5"
   //val triremenode10src= "io.apigee.trireme"         % "trireme-node10src"       % "0.8.5"
   val jsengine        = "com.typesafe"              %% "jse"                    % "1.1.2"
@@ -95,7 +97,7 @@ object Dependencies {
   val play2oauth2     = "com.nulab-inc"             %% "play2-oauth2-provider"  % "0.14.0"
   val play4           = "com.typesafe.play"         %% "play"                   % "2.4.3"
   val slackapi        = "com.github.gilbertw1"      %% "slack-scala-client"     % "0.1.3"
-  val playslick       = "com.typesafe.play"         %  "play-slick_2.11"        % "1.0.1"
+  val playslick       = "com.typesafe.play"         %  "play-slick_2.11"        % "1.1.1"
   val playauth        = "jp.t2v"                    %% "play2-auth"             % "0.12.0"
   val formtag         = "com.loicdescotte.coffeebean"% "html5tags_2.11"         % "1.2.1"
   val formtag4        = "com.loicdescotte.coffeebean"% "html5tags_2.11"         % "1.2.2"
@@ -157,15 +159,13 @@ object Dependencies {
 
   val jodatime        = "joda-time"                 % "joda-time"               % "2.7"
   val jodaconvert     = "org.joda"                  % "joda-convert"            % "1.7"
-  val jodamapper      = "com.github.tototoshi"      %% "slick-joda-mapper"      % "2.0.0"
+  val jodamapper      = "com.github.tototoshi"      %% "slick-joda-mapper"      % "2.2.0"
 
   val akkaActor       = "com.typesafe.akka"         %%  "akka-actor"            % akkaVersion
   val akkaSlf4j       = "com.typesafe.akka"         %%  "akka-slf4j"            % akkaVersion
   val akkaTestKit     = "com.typesafe.akka"         %%  "akka-testkit"          % akkaVersion
-  val akkastreams     = "com.typesafe.akka"         % "akka-stream-experimental_2.11" % "1.0-M5"
-  val akkaQuartz      = "com.enragedginger"         %% "akka-quartz-scheduler"  % "1.3.0-akka-2.3.x"
+  val akkaQuartz      = "com.enragedginger"         %%  "akka-quartz-scheduler" % "1.5.0-akka-2.4.x"
 
-  val logback         = "ch.qos.logback"            %   "logback-classic"       % "1.0.13"
   val reflect         = "com.taig"                  %%  "reflect"               % "0.9.3-BETA"
   val nscala          = "com.github.nscala-time"    %%  "nscala-time"           % "2.0.0"
   //val slickjoda       = "com.github.tminglei"       %%  "slick-pg_joda-time"    % "0.9.1"
@@ -192,9 +192,9 @@ object Dependencies {
   val webserviceclient =   "com.typesafe.play"      %% "play-ws"         % "2.4.6"
 
 
-  val scalaLog        = "com.typesafe.scala-logging"%%  "scala-logging"         % "3.1.0"
+  val scalaLog        = "com.typesafe.scala-logging"%%  "scala-logging"         % "3.4.0"
   val snakeYaml       = "org.yaml"                  %   "snakeyaml"             % "1.13"
-  val logbackClassic  = "ch.qos.logback"            % "logback-classic"         % "1.0.13"
+  val logbackClassic  = "ch.qos.logback"            % "logback-classic"         % "1.1.7"
 
   def compile   (deps: ModuleID*): Seq[ModuleID] = deps map (_ % "compile")
   def provided  (deps: ModuleID*): Seq[ModuleID] = deps map (_ % "provided")

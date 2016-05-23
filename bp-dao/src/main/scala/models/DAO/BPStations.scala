@@ -1,7 +1,9 @@
 package models.DAO
 
 
-import models.DAO.driver.MyPostgresDriver1.simple._
+import models.DAO.driver.MyPostgresDriver.api._
+import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import slick.model.ForeignKeyAction
 import models.DAO.BPDAO._
 import models.DAO.resources.BusinessDTO._
@@ -33,7 +35,7 @@ class BPStations(tag: Tag) extends Table[BPStationDTO](tag, "bpstations") {
   def updated_at    = column[Option[org.joda.time.DateTime]]("updated_at")
   def session       = column[Int]("session_id")
   def front         = column[Boolean]("front")
-  def sesFK         = foreignKey("station_session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def sesFK         = foreignKey("station_session_fk", session,  models.DAO.BPSessionDAOF.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?,
     process,
@@ -79,18 +81,17 @@ created_at:Option[org.joda.time.DateTime] = None,
 updated_at:Option[org.joda.time.DateTime] = None, session: Int = 1, front: Boolean = true) // Front par for parallels
                                                                                            //  TODO: Avoid default value
 object BPStationDAOF {
+
   import akka.actor.ActorSystem
-import akka.stream.ActorFlowMaterializer
-import akka.stream.scaladsl.Source
-import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
-//import slick.driver.JdbcProfile
-import slick.driver.PostgresDriver.api._
-import slick.jdbc.meta.MTable
-import scala.concurrent.ExecutionContext.Implicits.global
-import com.github.tototoshi.slick.JdbcJodaSupport._
-import scala.concurrent.duration.Duration
-import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
-import models.DAO.conversion.DatabaseFuture._
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import models.DAO.conversion.DatabaseFuture._
 
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
@@ -109,7 +110,12 @@ import models.DAO.conversion.DatabaseFuture._
   private def filterQueryByBPIds(bpIds: List[Int]): Query[BPStations, BPStationDTO, Seq] =
     stations.filter(_.process inSetBind bpIds)
 
-  def findBySessions(ids: List[Int], active: Option[Boolean] = None):Future[Seq[BPStationDTO]] =
+  private def areActiveForBPQuery(id: Int):Query[BPStations, BPStationDTO, Seq] =
+    stations.filter(st => (st.process === id) && (st.finished === false))
+  private def findActiveByBPIdsQuery(ids: List[Int]):Query[BPStations, BPStationDTO, Seq] =
+      stations.filter(st => (st.process inSetBind ids) && (st.paused === true) )
+
+  def findBySessions(ids: List[Int], active: Option[Boolean] = None):Future[Seq[BPStationDTO]] = {
     active match {
       case Some(bool) => {
         bool match {
@@ -119,6 +125,7 @@ import models.DAO.conversion.DatabaseFuture._
       }
       case _ => db.run(filterQueryBySessions(ids).result)
     }
+  }
 
   def findBySessionF(id: Int): Future[Option[BPStationDTO]] =
     db.run(filterQueryBySession(id).result.headOption)
@@ -131,12 +138,43 @@ import models.DAO.conversion.DatabaseFuture._
 }
 
 object BPStationDAO {
-  import models.DAO.BPDAO.bprocesses
+  import models.DAO.BPDAOF.bprocesses
   import main.scala.bprocesses.BPStation
 
-  import DatabaseCred.database
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import models.DAO.conversion.DatabaseFuture._
+
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
 
   val bpstations = TableQuery[BPStations]
+
+  private def filterQuerySession(id: Int): Query[BPStations, BPStationDTO, Seq] =
+    bpstations.filter(_.session === id)
+  private def filterQueryProcess(id: Int): Query[BPStations, BPStationDTO, Seq] =
+    bpstations.filter(_.process === id)
+  private def filterQuery(id: Int): Query[BPStations, BPStationDTO, Seq] =
+    bpstations.filter(_.id === id)
+  private def filterQuerys(ids: List[Int]): Query[BPStations, BPStationDTO, Seq] =
+    bpstations.filter(_.id inSetBind ids)
+  private def findActiveByBPIdsQuery(ids: List[Int]):Query[BPStations, BPStationDTO, Seq] =
+    bpstations.filter(st => (st.process inSetBind ids) && (st.paused === true) )
+
+
+  private def filterQuerysProcesses(ids: List[Int]): Query[BPStations, BPStationDTO, Seq] =
+    bpstations.filter(_.process inSetBind ids)
+  private def haltByBPIdQuery(id: Int): Query[BPStations, BPStationDTO, Seq] =
+    bpstations.filter(st => (st.process === id) && (st.paused === true) && (st.state === true) )
+  private def areActiveForBPQuery(id: Int):Query[BPStations, BPStationDTO, Seq] =
+    bpstations.filter(st => (st.process === id) && (st.finished === false))
 
   def from_origin_station(station: BPStation, bp_dto: BProcessDTO, session_id: Int = 1, front: Boolean = true):BPStationDTO = {
     BPStationDTO(
@@ -176,16 +214,14 @@ object BPStationDAO {
     noteFunction = fn
   }
 
-  def pull_object(s: BPStationDTO, lang: Option[String] = Some("en")):Int = database withSession {
-    implicit session ⇒
+  def pull_object(s: BPStationDTO, lang: Option[String] = Some("en")):Int =   {
       val num = BPSessionDAO.countByProcess(s.process)
       val pullThis = s.copy(note = Some(s"Launch ${num}"),
       created_at = Some(org.joda.time.DateTime.now()) )
 
-      bpstations returning bpstations.map(_.id) += pullThis
+      await( db.run(bpstations returning bpstations.map(_.id) += pullThis) )
   }
-  def saveOrUpdate(s: BPStationDTO, lang: Option[String] = Some("en"), run_proc: Boolean = true):Int = database withSession {
-    implicit session ⇒
+  def saveOrUpdate(s: BPStationDTO, lang: Option[String] = Some("en"), run_proc: Boolean = true):Int =   {
       findBySession(s.session) match {
         case Some(sess) => {
           val num = BPSessionDAO.countByProcess(s.process)
@@ -209,127 +245,75 @@ object BPStationDAO {
   }
 
 
-  def updateNote(id: Int, msg: String) = { database withSession { implicit session =>
-      findById(id) match {
+  def updateNote(id: Int, msg: String) = {
+      val obj = findById(id)
+      obj match {
         case Some(station) => update(id, station.copy(note = Some(msg)))
         case _ => -1
       }
-    }
   }
 
-  def findBySession(id: Int) = {
-    database withSession { implicit session =>
-     val q3 = for { st ← bpstations if st.session === id } yield st
-      q3.list.headOption
-    }
-  }
+def findBySession(id: Int) = {
+  await( db.run(filterQuerySession(id).result.headOption) )
+}
 
-  def findByBPId(id: Int) = {
-    database withSession { implicit session =>
-     val q3 = for { st ← bpstations if st.process === id } yield st
-      q3.list
-    }
-  }
-  def haltByBPId(id: Int) = {
-    database withSession { implicit session =>
-      val q3 = for { st ← bpstations if st.process === id && st.paused === true && st.state === true } yield st
-      q3.list.map(station => update(station.id.get, station.copy(state = false, paused = false)))
-    }
-  }
+def findByBPId(id: Int) = {
+  await(db.run( filterQueryProcess(id).result) )
+}
+def haltByBPId(id: Int) = {
+    val obj = await( db.run(haltByBPIdQuery(id).result) )
+    obj.map(station => update(station.id.get, station.copy(state = false, paused = false)))
+}
 
-def getAll = database withSession {
-    implicit session ⇒ // TODO: s.service === 1 CHANGE DAT
-      val q3 = for { s ← bpstations } yield s
-      q3.list.sortBy(_.id)
-    //suppliers foreach {
-    //  case (id, title, address, city, state, zip) ⇒
-    //    Supplier(id, title, address, city, state, zip)
-    //}
+def getAll = {
+    await( db.run(bpstations.result) )
 }
 
 def update(id: Int, entity: BPStationDTO):Boolean = {
-    database withSession { implicit session =>
       findById(id) match {
       case Some(e) => {
-        bpstations.filter(_.id === id).update(entity.copy(id = Some(id), updated_at = Some(org.joda.time.DateTime.now()) ))
+        await( db.run(
+          bpstations.filter(_.id === id).update(entity.copy(id = Some(id), updated_at = Some(org.joda.time.DateTime.now()) ))
+        ) )
         BPSessionDAO.updateMeta(entity.session, entity.step)
         true
       }
       case None => false
       }
-    }
 }
 
-def areActiveForBP(id: Int) = {
-     database withSession { implicit session =>
-        val q3 = for { st ← bpstations
-          if st.process === id
-          if st.finished === false
-          } yield st// <> (BPStationDTO.tupled, BPStationDTO.unapply _)
+def areActiveForBP(id: Int):List[BPStationDTO] =
+      await( db.run(areActiveForBPQuery(id).result) ).toList
 
-        q3.list
-     }
-}
+def findActiveByBPIds(ids: List[Int]):List[BPStationDTO] =
+    await( db.run(findActiveByBPIdsQuery(ids).result ) ).toList
 
-def findActiveByBPIds(ids: List[Int]) = database withSession {
-    implicit session =>
-    val q3 = for { st ← bpstations if (st.process inSetBind ids) && st.paused === true } yield st// <> (BPStationDTO.tupled, BPStationDTO.unapply _)
 
-      q3.list
+def findById(id: Int):Option[BPStationDTO] =
+    await( db.run(filterQuery(id).result.headOption) )
 
-}
+def findByIds(ids: List[Int]):List[BPStationDTO] =
+    await( db.run(filterQuerys(ids).result) ).toList
 
-def findById(id: Int):Option[BPStationDTO] = {
-    database withSession {
-    implicit session =>
-      val q3 = for { s <- bpstations if s.id === id } yield s// <> (BPStationDTO.tupled, BPStationDTO.unapply _)
+def findByBPIds(ids: List[Int]):List[BPStationDTO] =
+    await(db.run(filterQuerysProcesses(ids).result)).toList
 
-      q3.list.headOption //.map(Supplier.tupled(_))
-    }
-}
-
-def findByIds(ids: List[Int]):List[BPStationDTO] = {
-    database withSession {
-    implicit session =>
-      val q3 = for { s <- bpstations if s.id inSetBind ids } yield s// <> (BPStationDTO.tupled, BPStationDTO.unapply _)
-
-      q3.list //.map(Supplier.tupled(_))
-    }
-}
-
-def findByBPIds(ids: List[Int]):List[BPStationDTO] = {
-    database withSession {
-    implicit session =>
-      val q3 = for { s <- bpstations if s.process inSetBind ids } yield s// <> (BPStationDTO.tupled, BPStationDTO.unapply _)
-
-      q3.list //.map(Supplier.tupled(_))
-    }
-}
 
 def haltUpdate(id: Int, scope:String):Boolean = {
-    database withSession { implicit session =>
       findById(id) match {
       case Some(e) => {
         BPSessionDAO.delete(e.session, scope)
-        //bpstations.filter(_.id === id).update(e.copy(state = false, finished = true, paused = false, canceled = true))
         true
       }
       case None => false
       }
-    }
 }
 
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-        bpstations.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-        bpstations.ddl.drop
-    }
-  }
+val create: DBIO[Unit] = bpstations.schema.create
+val drop: DBIO[Unit] = bpstations.schema.drop
+
+def ddl_create = db.run(create)
+def ddl_drop = db.run(drop)
+
 
 }

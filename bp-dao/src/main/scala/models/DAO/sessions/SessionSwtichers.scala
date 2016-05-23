@@ -1,9 +1,10 @@
 package models.DAO
-  
+
 import main.scala.bprocesses.{BProcess, BPLoggerResult}
 import main.scala.simple_parts.process.ProcElems
-import models.DAO.driver.MyPostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
 import slick.model.ForeignKeyAction
 
@@ -11,11 +12,11 @@ import models.DAO.ProcElemDAO._
 import models.DAO.BPDAO._
 import models.DAO.BPStationDAO._
 import models.DAO.conversion.DatabaseCred
-  
+
 import main.scala.simple_parts.process.Units._
-  
+
 class SessionSwitchers(tag: Tag) extends Table[SessionUnitSwitcher](tag, "session_switchers") {
-  def id             = column[Int]("id", O.PrimaryKey, O.AutoInc) 
+  def id             = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def process        = column[Int]("bprocess_id")
   def session        = column[Int]("session_id")
   def switch_type    = column[String]("switch_type")
@@ -25,113 +26,113 @@ class SessionSwitchers(tag: Tag) extends Table[SessionUnitSwitcher](tag, "sessio
   def fn             = column[String]("fn")
   def target         = column[String]("target")
   def override_group = column[Int]("override_group", O.Default(0))
-    
-  def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")  
 
-  def * =(id.?, 
-          process, 
+  def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
+  def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")
+
+  def * =(id.?,
+          process,
           session,
-          switch_type, 
-          priority,           
+          switch_type,
+          priority,
           state_ref,
-          session_state, 
+          session_state,
           fn,
-          target,          
+          target,
           override_group,
           created_at, updated_at) <> (SessionUnitSwitcher.tupled, SessionUnitSwitcher.unapply)
 
 def stateFK             = foreignKey("sw_statefk", state_ref, models.DAO.SessionInitialStateDAO.session_initial_states)(_.id, onDelete = ForeignKeyAction.Cascade)
-def session_state_refFK = foreignKey("sw_session_state_fk", session_state, BPSessionStateDAO.sessionstates)(_.id, onDelete = ForeignKeyAction.Cascade)
-def sessionFK  = foreignKey("sw_s_sp_session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
+def session_state_refFK = foreignKey("sw_session_state_fk", session_state, BPSessionStateDAOF.sessionstates)(_.id, onDelete = ForeignKeyAction.Cascade)
+def sessionFK  = foreignKey("sw_s_sp_session_fk", session,  models.DAO.BPSessionDAOF.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }
 
 object SessionSwitcherDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
+
+
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._
   import slick.jdbc.meta.MTable
   import scala.concurrent.ExecutionContext.Implicits.global
-  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import com.github.tototoshi.slick.PostgresJodaSupport._
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import models.DAO.conversion.DatabaseFuture._  
+  import models.DAO.conversion.DatabaseFuture._
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
-  val session_switchers = SessionSwitcherDAO.session_switchers
+  val session_switchers = TableQuery[SessionSwitchers]
 
   private def filterQuery(id: Int): Query[SessionSwitchers, SessionUnitSwitcher, Seq] =
     session_switchers.filter(_.id === id)
 
 }
 object SessionSwitcherDAO {
-  /**
-   * Actions
-   */
+  import akka.actor.ActorSystem
+
+
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._
 
-  import DatabaseCred.database
-  import models.DAO.conversion.Implicits._
-
-
-
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
   val session_switchers = TableQuery[SessionSwitchers]
 
-  def pull_object(s: SessionUnitSwitcher) = database withSession {
-    implicit session ⇒
-      session_switchers returning session_switchers.map(_.id) += s
+  private def filterQuery(id: Int): Query[SessionSwitchers, SessionUnitSwitcher, Seq] =
+    session_switchers.filter(_.id === id)
+  private def filterProcessQuery(id: Int): Query[SessionSwitchers, SessionUnitSwitcher, Seq] =
+    session_switchers.filter(_.process === id)
+  private def filterSessionQuery(id: Int): Query[SessionSwitchers, SessionUnitSwitcher, Seq] =
+    session_switchers.filter(_.session === id)
+
+
+
+
+  def pull_object(s: SessionUnitSwitcher) =   {
+      await( db.run(session_switchers returning session_switchers.map(_.id) += s))
   }
-  def get(k: Int):Option[SessionUnitSwitcher] = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← session_switchers if s.id === k } yield s
-      q3.list.headOption 
+
+  def get(k: Int):Option[SessionUnitSwitcher] =   {
+      await(db.run(filterQuery(k).result.headOption))
   }
+
   def findByBPId(id: Int) = {
-    database withSession { implicit session =>
-     val q3 = for { st ← session_switchers if st.process === id } yield st// <> (BPStationDTO.tupled, BPStationDTO.unapply _)\
-      q3.list
-    }
+     await(db.run(filterProcessQuery(id).result)).toList
   }
+
   def findBySession(id: Int) = {
-    database withSession { implicit session =>
-     val q3 = for { st ← session_switchers if st.session === id } yield st
-      q3.list
-    }
-  }  
-  def update(id: Int, switcher: SessionUnitSwitcher) = database withSession { implicit session ⇒
+      await(db.run(filterSessionQuery(id).result)).toList
+  }
+
+  def update(id: Int, switcher: SessionUnitSwitcher) =   {
     val switcherToUpdate: SessionUnitSwitcher = switcher.copy(Option(id))
-    session_switchers.filter(_.id === id).update(switcherToUpdate)
-  }
-  def delete(id: Int) = database withSession { implicit session ⇒
-    session_switchers.filter(_.id === id).delete
-  }
-  def count: Int = database withSession { implicit session ⇒
-    Query(session_switchers.length).first
+    await( db.run(session_switchers.filter(_.id === id).update(switcherToUpdate)))
   }
 
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      session_switchers.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-       session_switchers.ddl.drop
-    }
+  def delete(id: Int) =   {
+    await( db.run(session_switchers.filter(_.id === id).delete))
   }
 
-  def getAll = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← session_switchers } yield s
-      q3.list.sortBy(_.id)
-  }
+
+
+  val create: DBIO[Unit] = session_switchers.schema.create
+  val drop: DBIO[Unit] = session_switchers.schema.drop
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
+
+
 }

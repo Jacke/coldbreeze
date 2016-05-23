@@ -5,11 +5,11 @@ import models.DAO.resources.BusinessDTO._
 import securesocial.core.providers._
 import securesocial.core._
 import securesocial.core.services.{UserService, SaveMode}
-//import models.DAO.driver.MyPostgresDriver.simple._
+//import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
 import slick.model.ForeignKeyAction
-//import slick.driver.PostgresDriver.simple._
+//import slick.driver.PostgresDriver.api._
 import com.github.tototoshi.slick.PostgresJodaSupport._
 import service.DemoUser
 import models.DAO.resources._
@@ -17,14 +17,19 @@ import models.DAO.resources._
 object AccountInfosDAOF {
   import scala.util.Try
 import akka.actor.ActorSystem
-import akka.stream.ActorFlowMaterializer
-import akka.stream.scaladsl.Source
+
+
+import slick.driver.PostgresDriver.api._
+import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.PostgresJodaSupport._
+
+
 import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
 //import slick.driver.JdbcProfile
 import slick.driver.PostgresDriver.api._
 import slick.jdbc.meta.MTable
 import scala.concurrent.ExecutionContext.Implicits.global
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 import scala.util.Try
@@ -121,14 +126,14 @@ import models.DAO.conversion.DatabaseFuture._
 object AccountsDAOF {
   import scala.util.Try
 import akka.actor.ActorSystem
-import akka.stream.ActorFlowMaterializer
-import akka.stream.scaladsl.Source
+
+
 import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
 //import slick.driver.JdbcProfile
 import slick.driver.PostgresDriver.api._
 import slick.jdbc.meta.MTable
 import scala.concurrent.ExecutionContext.Implicits.global
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 import scala.util.Try
@@ -197,9 +202,19 @@ import models.DAO.conversion.DatabaseFuture._
 }
 
 object AccountsDAO {
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import slick.driver.PostgresDriver.simple._
-  import models.DAO.conversion.DatabaseCred._
+  import models.DAO.conversion.DatabaseFuture._
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
 
 
   val accounts = TableQuery[Accounts]
@@ -247,41 +262,44 @@ object AccountsDAO {
   val userlogininfo =  TableQuery[UserLoginInfosTable]
   val passwordinfo =  TableQuery[PasswordInfosTable]
 
-  def pull_user_object(s: DBUser) = database withSession {
-    implicit session ⇒
-      users returning users.map(_.id) += s
+  def pull_user_object(s: DBUser) = {
+      await(db.run( users returning users.map(_.id) += s ))
   }
 
 
-  def pull_loginInfo_object(s: DBLoginInfo) = database withSession {
-    implicit session ⇒
-      logininfo returning logininfo.map(_.id) += s
+  def pull_loginInfo_object(s: DBLoginInfo) = {
+      await(db.run( logininfo returning logininfo.map(_.id) += s ))
   }
-  def pull_userInfo_object(s: DBUserLoginInfo) = database withSession {
-    implicit session ⇒
-      userlogininfo returning userlogininfo.map(_.userID) += s
+  def pull_userInfo_object(s: DBUserLoginInfo) = {
+      await(db.run( userlogininfo returning userlogininfo.map(_.userID) += s ))
   }
-  def pull_passwordInfo_object(s: DBPasswordInfo) = database withSession {
-    implicit session ⇒
-      passwordinfo returning passwordinfo.map(_.loginInfoId) += s
+  def pull_passwordInfo_object(s: DBPasswordInfo) = {
+      await(db.run(  passwordinfo returning passwordinfo.map(_.loginInfoId) += s ))
   }
 
 
 
+  val create1: DBIO[Unit] = account_infos.schema.create
+  //val drop1: DBIO[Unit] = account_infos.schema.drop
+
+  def infos_ddl = db.run(create1)
+  //def infos_ddl = db.run(drop1)
+/*
   def ddl {
-    database withSession {
-      implicit session ⇒
+      {
+
         (accounts.ddl ++ TokensDAO.tokens.ddl).create
     }
   }
   def infos_ddl {
-    database withSession {
-       implicit session ⇒
+      {
+
        account_infos.ddl.create
     }
   }
-  def subscribeToPro(account_id: String):Boolean = { database withSession {
-     implicit session =>
+*/
+  def subscribeToPro(account_id: String):Boolean = {   {
+
       getAccountInfo(account_id) match {
         case Some(acc_info) => {
             val accInfoToUpdate: AccountInfo = acc_info.copy(pro = true)
@@ -292,8 +310,8 @@ object AccountsDAO {
       }
     }
   }
-  def subscribeToEA(account_id: String):Boolean  = { database withSession {
-     implicit session =>
+  def subscribeToEA(account_id: String):Boolean  = {   {
+
       getAccountInfo(account_id) match {
         case Some(acc_info) => {
             val accInfoToUpdate: AccountInfo = acc_info.copy(ea = true)
@@ -304,18 +322,18 @@ object AccountsDAO {
       }
     }
   }
-  def getAllInfos: List[AccountInfo] = { database withSession {
-    implicit session =>
+  def getAllInfos: List[AccountInfo] = {   {
+
       val q3 = for { s ← account_infos } yield s
-      q3.list.sortBy(_.id)
+      await(db.run(q3.result)).toList.sortBy(_.id)
     }
   }
-  def updateEmail(email: String, newEmail: String): Boolean = database withSession {
-    implicit session =>
+  def updateEmail(email: String, newEmail: String): Boolean =   {
+
     val q3 = for { a ← accounts if a.userId === email } yield a
-      q3.list.headOption match {
+      await(db.run(q3.result.headOption)) match {
         case Some(account) => {
-          accounts.filter(_.email === email).update(account.copy(userId = newEmail, email = Some(newEmail))) match {
+          await(db.run( accounts.filter(_.email === email).update(account.copy(userId = newEmail, email = Some(newEmail))) )) match {
                 case -1 => false
                 case _ => true
           }
@@ -324,14 +342,14 @@ object AccountsDAO {
       }
   }
   def updateProfilePassword(user: BasicProfile, entry: Option[securesocial.core.BasicProfile]) = {
-	database withSession {
-    implicit session =>
+	  {
+
     val q3 = for { a ← accounts if a.userId === user.userId } yield a
-      q3.list.headOption match {
+      await(db.run(q3.result.headOption)) match {
         case Some(account) => {
           val newPassword = user.passwordInfo match { case Some(info) => info.password; case _ => "" }
 
-          accounts.filter(_.email === user.email.getOrElse("")).update(account.copy(password = newPassword)) match {
+          await(db.run( accounts.filter(_.email === user.email.getOrElse("")).update(account.copy(password = newPassword)) )) match {
                 case -1 => false
                 case _ => true
           }
@@ -356,43 +374,43 @@ object AccountsDAO {
     Some((isManager, isEmployee, lang))
   }
 
-  def getLang(email: String) = database withSession {
-    implicit session ⇒
+  def getLang(email: String) =   {
+
       val q3 = for { a ← accounts if a.userId === email } yield a
-      q3.list.headOption match {
+      await(db.run(q3.result.headOption)) match {
         case Some(account) => account.lang
         case _ => "en"
       }
   }
-  def getAccount(email: String):Option[models.daos.DBUser] = database withSession {
-    implicit session ⇒
+  def getAccount(email: String):Option[models.daos.DBUser] =   {
+
       val q3 = for { a ← users if a.email === email } yield a
-      q3.list.headOption
+      await(db.run(q3.result.headOption))
   }
-  def getAccounts(emails: List[String]):List[AccountDAO] = database withSession {
-    implicit session ⇒
+  def getAccounts(emails: List[String]):List[AccountDAO] =   {
+
       val q3 = for { a ← accounts if a.userId inSetBind emails } yield a
-      q3.list
+      await(db.run(q3.result)).toList
   }
-  def getAll():List[AccountDAO] = database withSession {
-    implicit session ⇒
+  def getAll():List[AccountDAO] =   {
+
       val q3 = for { a ← accounts } yield a
-      q3.list
+      await(db.run(q3.result)).toList
   }
-  def getAccountInfo(email: String): Option[AccountInfo] = database withSession {
-    implicit session =>
+  def getAccountInfo(email: String): Option[AccountInfo] =   {
+
     val q3 = for { a ← account_infos if a.uid === email } yield a
-    q3.list.headOption
+    await(db.run(q3.result.headOption))
   }
-  def findByNickname(nickname: String):Option[AccountDAO] = database withSession {
-    implicit session =>
+  def findByNickname(nickname: String):Option[AccountDAO] =   {
+
       val q3 = for { a ← accounts if a.nickname === nickname } yield a
-      q3.list.headOption
+      await(db.run(q3.result.headOption))
   }
-  def updateLang(email: String, lang: String) = database withSession {
-    implicit session ⇒
+  def updateLang(email: String, lang: String) =   {
+
       val q3 = for { a ← accounts if a.userId === email } yield a
-      q3.list.headOption match {
+      await(db.run(q3.result.headOption)) match {
         case Some(account) => accounts.filter(_.email === email).update(account.copy(lang = lang))
         case _ => "en"
       }
@@ -400,37 +418,37 @@ object AccountsDAO {
 
 
 
-  def findAllByEmails(emails: List[String]) = database withSession {
-    implicit session ⇒
+  def findAllByEmails(emails: List[String]) =   {
+
       val q3 = for { a ← users if a.email inSetBind emails } yield a
-      q3.list
+      await(db.run(q3.result)).toList
   }
 
-  def find(providerId: String, userId: String):Option[BasicProfile] = database withSession {
-    implicit session ⇒
+  def find(providerId: String, userId: String):Option[BasicProfile] =   {
+
       val q3 = for { a ← accounts if a.providerId === providerId && a.userId === userId } yield a
-      val result = q3.list.map(s => BasicProfile.tupled(Account.unapply(s.toAccount).get))
+      val result = await(db.run(q3.result)).toList.map(s => BasicProfile.tupled(Account.unapply(s.toAccount).get))
       result.headOption
   }
 
-  def deleteUser(uuid: String) = database withSession {
-    implicit session ⇒
+  def deleteUser(uuid: String) =   {
+
       val tok = findAllByEmails(List(uuid)).head
       //accounts.filter(_.userId === tok.userId).delete
   }
 
-  def findByEmailAndProvider(email: String, providerId: String): Option[BasicProfile] = database withSession {
-    implicit session ⇒
+  def findByEmailAndProvider(email: String, providerId: String): Option[BasicProfile] =   {
+
       val q3 = for { a ← accounts if a.providerId === providerId && a.email === email } yield a
-      val result = q3.list.map(s => BasicProfile.tupled(Account.unapply(s.toAccount).get))
+      val result = await(db.run(q3.result)).toList.map(s => BasicProfile.tupled(Account.unapply(s.toAccount).get))
       result.headOption
   }
 
   import controllers.Credentials
-  def updateCredentials(email: String, cred: Credentials) = database withSession {
-    implicit session =>
+  def updateCredentials(email: String, cred: Credentials) =   {
+
     val q3 = for { a ← users if a.email === email } yield a
-      val result = q3.list.headOption
+      val result = await(db.run(q3.result.headOption))
       result match {
         case Some(origin) => {
          val toUpdate = origin.copy(firstName = cred.firstName,
@@ -442,10 +460,10 @@ object AccountsDAO {
         case _ => false
       }
   }
-  def fetchCredentials(email: String) = database withSession {
-    implicit session =>
+  def fetchCredentials(email: String) =   {
+
     val q3 = for { a ← users if a.email === email } yield a
-      val result = q3.list.headOption
+      val result = await(db.run(q3.result.headOption))
       result match {
       case Some(origin) => {
         Some(Credentials(origin.firstName,
@@ -460,24 +478,23 @@ object AccountsDAO {
     }
 }
 
-  def save(user: BasicProfile):DemoUser =  database withSession {
-    implicit session ⇒
+  def save(user: BasicProfile):DemoUser =    {
+
       val acc = Account.tupled(BasicProfile.unapply(user).get)
-      accounts += acc.toDTO
-      account_infos += AccountInfo(None, acc.toDTO.userId, org.joda.time.DateTime.now())
+      await(db.run(  accounts += acc.toDTO ))
+      await(db.run(  account_infos += AccountInfo(None, acc.toDTO.userId, org.joda.time.DateTime.now()) ))
       val accTupled = BasicProfile.tupled(Account.unapply(acc).get)
       DemoUser(accTupled, List(accTupled))
   }
-  def createInfo(a: AccountInfo) = database withSession {
-    implicit session =>
-    account_infos += a
+  def createInfo(a: AccountInfo) =   {
+    await(db.run(  account_infos += a ))
   }
 
   // TODO: def link(current: UserAccount, to: BasicProfile): UserAccount =  ???
-  def updatePasswordInfo(user: DemoUser, info: PasswordInfo): Option[BasicProfile] = database withSession {
-    implicit session ⇒
+  def updatePasswordInfo(user: DemoUser, info: PasswordInfo): Option[BasicProfile] =   {
+
       val q3 = for { a ← accounts  } yield a
-      val accs = q3.list.map { s =>
+      val accs = await(db.run(q3.result)).toList.map { s =>
         val acc = BasicProfile.tupled(Account.unapply(s.toAccount).get)
         DemoUser(acc, List(acc))
       }
@@ -495,10 +512,10 @@ object AccountsDAO {
       }
 
   }
-  def passwordInfoFor(user: DemoUser): Option[PasswordInfo] = database withSession {
-    implicit session ⇒
+  def passwordInfoFor(user: DemoUser): Option[PasswordInfo] =   {
+
       val q3 = for { a ← accounts  } yield a
-      val accs = q3.list.map { s =>
+      val accs = await(db.run(q3.result)).toList.map { s =>
         val acc = BasicProfile.tupled(Account.unapply(s.toAccount).get)
         DemoUser(acc, List(acc))
       }
@@ -510,16 +527,10 @@ object AccountsDAO {
       }
 
   }
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      accounts.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-        accounts.ddl.drop
-    }
-  }
+  val create: DBIO[Unit] = accounts.schema.create
+  val drop: DBIO[Unit] = accounts.schema.drop
+
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
+
 }

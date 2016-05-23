@@ -15,10 +15,10 @@ object ProcessCloner {
     BPDAO.get(bpId) match {
       case Some(bprocess) => {
         val newBpId = BPDAO.pull_object(bprocess.copy(id = None, title = title))
-        val spaces = BPSpaceDAO.findByBPId(bpId)
+        val spaces = BPSpaceDAOF.findByBPIdB(bpId)
         val space_elems = SpaceElemDAO.findByBPId(bpId)
         val proc_elems = ProcElemDAO.findByBPId(bpId)
-        val states = BPStateDAO.findByBP(bpId)
+        val states = BPStateDAOF.findByBP(bpId)
         val topologs = ElemTopologDAO.findByBP(bpId)
         val switchers = SwitcherDAO.findByBPId(bpId)
         val reactions = ReactionDAO.findByBP(bpId)
@@ -61,7 +61,7 @@ object ProcessCloner {
         var new_spaces_ids = scala.collection.mutable.Map.empty[Int, Int]
         val nes_spaces = spaces.foreach { space => 
           oldNewIdMap(space.id.get,
-                      BPSpaceDAO.pull_object(BPSpaceDTO(None, 
+                      BPSpaceDAOF.pull_object(BPSpaceDTO(None, 
                                                         newBpId, 
                                                         space.index, 
                                                         space.container, 
@@ -84,7 +84,7 @@ object ProcessCloner {
         var new_states_ids = scala.collection.mutable.Map.empty[Int, Int]
         states.foreach { state =>
             oldNewIdMap(state.id.get,
-             BPStateDAO.pull_object(BPState(
+             BPStateDAOF.pull_object(BPState(
                       None, 
                       process = newBpId,
                       state.title, 

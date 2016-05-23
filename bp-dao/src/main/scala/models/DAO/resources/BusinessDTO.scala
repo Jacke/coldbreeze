@@ -1,9 +1,10 @@
 package models.DAO.resources
 
-import models.DAO.driver.MyPostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
 import models.DAO.conversion.DatabaseCred
-
 import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.PostgresJodaSupport._
+
 
 case class BizFormDTO(title: String, phone: Option[String] = None, website: Option[String] = None, country: String, city: String, address: Option[String], nickname: Option[String] = None)
 
@@ -19,9 +20,9 @@ class Businesses(tag: Tag) extends Table[BusinessDTO](tag, "businesses") {
 
   def walkthrough = column[Boolean]("walkthrough")
   def organization= column[Boolean]("org", O.Default(false))
- 
+
   def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
-  def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")  
+  def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")
 
 
   def * = (id.?, title, phone, website, country, city, address, nickname, walkthrough,
@@ -33,13 +34,13 @@ class Businesses(tag: Tag) extends Table[BusinessDTO](tag, "businesses") {
   Case class
  */
 
-case class BusinessDTO(var id: Option[Int], 
-  title: String, 
-  phone: Option[String] = None, 
-  website: Option[String] = None, 
-  country: String, 
-  city: String, 
-  address: Option[String], 
+case class BusinessDTO(var id: Option[Int],
+  title: String,
+  phone: Option[String] = None,
+  website: Option[String] = None,
+  country: String,
+  city: String,
+  address: Option[String],
   nickname: Option[String] = None,
   walkthrough: Boolean = false,
   created_at:Option[org.joda.time.DateTime] = None,
@@ -49,22 +50,20 @@ case class BusinessDTO(var id: Option[Int],
 
 object BusinessDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._
   import slick.jdbc.meta.MTable
   import scala.concurrent.ExecutionContext.Implicits.global
-  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import com.github.tototoshi.slick.PostgresJodaSupport._
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import models.DAO.conversion.DatabaseFuture._  
+  import models.DAO.conversion.DatabaseFuture._
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
-  val businesses = BusinessDAO.businesses
+  val businesses = TableQuery[Businesses]
 
   //private def filterQueryByProcess(process: Int): Query[ProcessHistoriesF, ProcessHistoryDTO, Seq] =
   //  bpsessions.filter(_.process === process)
@@ -83,89 +82,78 @@ object BusinessDAOF {
 
 
 object BusinessDAO {
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import DatabaseCred.database
-
+  import models.DAO.conversion.DatabaseFuture._
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
   val businesses = TableQuery[Businesses]
-  
+
+  //private def filterQueryByProcess(process: Int): Query[ProcessHistoriesF, ProcessHistoryDTO, Seq] =
+  //  bpsessions.filter(_.process === process)
+  private def filterQuery(id: Int): Query[Businesses, BusinessDTO, Seq] =
+    businesses.filter(_.id === id)
+  private def filterQueryNickName(nickname: String): Query[Businesses, BusinessDTO, Seq] =
+    businesses.filter(_.nickname === nickname)
+  private def filterQuerys(ids: List[Int]): Query[Businesses, BusinessDTO, Seq] =
+    businesses.filter(b => b.id inSetBind ids)
 
 
-
-  def pull_object(s: BusinessDTO) = database withSession {
-    implicit session ⇒
-      businesses returning businesses.map(_.id) += s
+  def pull_object(s: BusinessDTO) =   {
+      await(db.run( businesses returning businesses.map(_.id) += s ))
   }
 
-  def findByNickname(nickname: String) = database withSession {
-    implicit session =>
-    val q3 = for { s ← businesses if s.nickname === nickname } yield s
-    q3.list.headOption 
+  def findByNickname(nickname: String) =   {
+    await(db.run (filterQueryNickName(nickname).result.headOption))
   }
-  def getByIDS(k: List[Int]):List[BusinessDTO] = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← businesses if s.id inSetBind k } yield s
-      q3.list 
-  }  
-  def get(k: Int):Option[BusinessDTO] = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← businesses if s.id === k } yield s
-      q3.list.headOption 
+
+  def getByIDS(k: List[Int]):List[BusinessDTO] =   {
+      await(db.run(filterQuerys(k).result)).toList
   }
-  /**
-   * Update a business
-   * @param id
-   * @param business
-   */
-  def update(id: Int, business: BusinessDTO) = database withSession { implicit session ⇒
+
+  def get(k: Int):Option[BusinessDTO] =   {
+      await(db.run (filterQuery(k).result.headOption))
+  }
+
+  def getAll:List[BusinessDTO] =   {
+      await(db.run (businesses.result)).toList
+  }
+
+  def update(id: Int, business: BusinessDTO) =   {
     val bpToUpdate: BusinessDTO = business.copy(Option(id))
-    businesses.filter(_.id === id).update(bpToUpdate)
+    await(db.run( businesses.filter(_.id === id).update(bpToUpdate) ))
   }
 
 
-  def updateCredentials(id: Int, cred: BizFormDTO) = database withSession {
-    implicit session =>
-    val q3 = for { a ← businesses if a.id === id } yield a
-      val result = q3.list.headOption
+  def updateCredentials(id: Int, cred: BizFormDTO) =   {
+      val result = get(id)
       result match {
         case Some(origin) => {
          val toUpdate = origin.copy(title = cred.title, phone = cred.phone, website = cred.website, country = cred.country, city = cred.city, address = cred.address, nickname = cred.nickname)
-           businesses.filter(_.id === id).update(toUpdate)
+           await(db.run(businesses.filter(_.id === id).update(toUpdate) ))
            true
         }
         case _ => false
       }
 
   }
-  /**
-   * Delete a business
-   * @param id
-   */
-  def delete(id: Int) = database withSession { implicit session ⇒
-    businesses.filter(_.id === id).delete
-  }
-  /**
-   * Count all businesses
-   */
-  def count: Int = database withSession { implicit session ⇒
-    Query(businesses.length).first
+
+  def delete(id: Int) =   {
+    await(db.run( businesses.filter(_.id === id).delete ))
   }
 
 
-
-  def getAll() = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← businesses } yield s 
-      q3.list.sortBy(_.id)
-    //suppliers foreach {
-    //  case (id, title, address, city, state, zip) ⇒
-    //    Supplier(id, title, address, city, state, zip)
-    //}
-  }
-
-   def ddl_create = {
-    database withSession {
-      implicit session =>
-      businesses.ddl.create
-    }
-  }
+  val create: DBIO[Unit] = businesses.schema.create
+  val drop: DBIO[Unit] = businesses.schema.drop
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
 }

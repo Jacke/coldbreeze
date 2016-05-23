@@ -1,6 +1,8 @@
 package models.DAO.resources
 
-import slick.driver.PostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
+import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import models.DAO.conversion.DatabaseCred
 import models.DAO._
 
@@ -35,12 +37,12 @@ class SessionActPermissions(tag: Tag) extends Table[SessionActPermission](tag, "
   def reaction      = column[Option[Int]]("reaction_id")
 
   def maccFK  = foreignKey("pr_perm_acc_fk", uid, models.AccountsDAO.users)(_.email, onDelete = ForeignKeyAction.Cascade, onUpdate = ForeignKeyAction.Cascade)
-  def procFK  = foreignKey("pr_perm_process_fk", process, models.DAO.BPDAO.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def procFK  = foreignKey("pr_perm_process_fk", process, models.DAO.BPDAOF.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
   def fElemFK = foreignKey("pr_perm_fElemPermFK", front_elem_id, models.DAO.ProcElemDAO.proc_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
   def spElemFK= foreignKey("pr_perm_spElemPermFK", space_elem_id, models.DAO.SpaceElemDAO.space_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
   def groupFK = foreignKey("pr_perm_groupFK", group, models.DAO.resources.GroupsDAO.groups)(_.id, onDelete = ForeignKeyAction.Cascade)
   def reactFK = foreignKey("pr_perm_reactionFK", reaction, models.DAO.ReactionDAO.reactions)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def sesActFK= foreignKey("session_act_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def sesActFK= foreignKey("session_act_fk", session, models.DAO.BPSessionDAOF.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?, uid, group, process, session, front_elem_id, space_elem_id, reaction, role) <> (SessionActPermission.tupled, SessionActPermission.unapply)
 
@@ -61,16 +63,30 @@ case class SessionResAct(bprocess_id: Int, bprocess_title: String, elem_title: S
 
 
 object SessionActPermissionDAO {
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import DatabaseCred.database
+  import models.DAO.conversion.DatabaseFuture._
+
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+
 
    val session_act_permissions = TableQuery[SessionActPermissions]
 
- def pull_object(perm: SessionActPermission) = database withSession {
-    implicit session ⇒
+ def pull_object(perm: SessionActPermission) =   {
+
       def creation(perm: SessionActPermission) = {
         if (PermissionRole.roles.contains(perm.role))
-          session_act_permissions returning session_act_permissions.map(_.id) += perm
+          await(db.run( session_act_permissions returning session_act_permissions.map(_.id) += perm ))
         else
           -1
       }
@@ -89,33 +105,31 @@ object SessionActPermissionDAO {
         }
       }
   }
-  def get(k: Int) = database withSession {
-    implicit session ⇒
+
+  def get(k: Int) =   {
       val q3 = for { s ← session_act_permissions if s.id === k } yield s
-      q3.list.headOption
+      await(db.run(q3.result.headOption))
   }
-  def getByUID(uid: String) = database withSession {
-    implicit session =>
+  def getByUID(uid: String) =   {
     val q3 = for { s ← session_act_permissions if s.uid === uid } yield s
-      q3.list
+      await(db.run(q3.result)).toList
   }
-  def getByProcessesIDS(proc_ids: List[Int]) = database withSession {
-     implicit session =>
+  def getByProcessesIDS(proc_ids: List[Int]) =   {
     val q3 = for { s ← session_act_permissions if s.process inSetBind proc_ids } yield s
-      q3.list
+      await(db.run(q3.result)).toList
   }
-  def getByProcessId(process_id: Int) = database withSession {
-    implicit session =>
+
+  def getByProcessId(process_id: Int) =   {
     val q3 = for { s ← session_act_permissions if s.process === process_id } yield s
-      q3.list
+      await(db.run(q3.result)).toList
   }
 
   def getByUIDprocIDS(uid: String):List[Int] = {
     val z = {
-    database withSession {
-    implicit session =>
+      {
+
     val q3 = for { s ← session_act_permissions if s.uid === uid } yield s
-      q3.list
+      await(db.run(q3.result)).toList
   }
   }
   val u = {
@@ -137,10 +151,10 @@ object SessionActPermissionDAO {
 def getByUIDelemTitles(uid: String) = {
     // TODO: Refactor that shit above and below
     val z = {
-    database withSession {
-      implicit session =>
+      {
+
       val q3 = for { s ← session_act_permissions if s.uid === uid } yield s
-        q3.list
+        await(db.run(q3.result)).toList
     }
   }
   def prepareElements(perms: List[SessionActPermission]):Map[Int, String] = {
@@ -176,7 +190,7 @@ def getByUIDelemTitles(uid: String) = {
   u
 }
   def getActsByUID(email: String) = {
-    val processes = BPDAO.getAll
+    val processes = BPDAOF.getAll
     val bpIds = SessionActPermissionDAO.getByUIDprocIDS(email)
     val active_stations = BPStationDAO.findActiveByBPIds(bpIds)
 
@@ -200,38 +214,25 @@ def getByUIDelemTitles(uid: String) = {
 
 
 
-
-
-  def update(id: Int, obj: SessionActPermission) = database withSession { implicit session ⇒
+  def update(id: Int, obj: SessionActPermission) =   {
     val toUpdate: SessionActPermission = obj.copy(Option(id))
-    session_act_permissions.filter(_.id === id).update(toUpdate)
+    await(db.run( session_act_permissions.filter(_.id === id).update(toUpdate) ))
   }
 
-  def delete(id: Int) = database withSession { implicit session ⇒
+  def delete(id: Int) =   {
+    await(db.run( session_act_permissions.filter(_.id === id).delete ))
+  }
 
-    session_act_permissions.filter(_.id === id).delete
-  }
-  def count: Int = database withSession { implicit session ⇒
-    Query(session_act_permissions.length).first
-  }
-  def getAll = database withSession {
-    implicit session ⇒
+  def getAll =   {
       val q3 = for { s ← session_act_permissions } yield s
-      q3.list.sortBy(_.id)
+      await(db.run(q3.result)).toList.sortBy(_.id)
 
   }
 
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      session_act_permissions.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-        session_act_permissions.ddl.drop
-    }
-  }
+  val create: DBIO[Unit] = session_act_permissions.schema.create
+  val drop: DBIO[Unit] = session_act_permissions.schema.drop
+
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
 
 }

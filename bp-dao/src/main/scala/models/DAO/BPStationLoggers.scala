@@ -1,7 +1,9 @@
 package models.DAO
 
 
-import models.DAO.driver.MyPostgresDriver1.simple._
+import models.DAO.driver.MyPostgresDriver.api._
+import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import slick.model.ForeignKeyAction
 import models.DAO.BPDAO._
 import models.DAO.resources.BusinessDTO._
@@ -75,36 +77,30 @@ paused: Boolean)
 
 object BPStationLoggeDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._
   import slick.jdbc.meta.MTable
   import scala.concurrent.ExecutionContext.Implicits.global
-  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import com.github.tototoshi.slick.PostgresJodaSupport._
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import models.DAO.conversion.DatabaseFuture._  
+  import models.DAO.conversion.DatabaseFuture._
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
-  val bpstationloggers = BPStationLoggeDAO.bpstationloggers
+  val bpstationloggers = TableQuery[BPStationLoggers]
 
   private def filterQuery(id: Int): Query[BPStationLoggers, BPStationLoggerDTO, Seq] =
     bpstationloggers.filter(_.id === id)
+  private def filterQueryProcess(id: Int): Query[BPStationLoggers, BPStationLoggerDTO, Seq] =
+    bpstationloggers.filter(_.process === id)
+  private def areActiveForBPQuery(id: Int): Query[BPStationLoggers, BPStationLoggerDTO, Seq] =
+    bpstationloggers.filter(st => st.process === id && st.finished === false)
 
-}
 
-object BPStationLoggeDAO {
-  import models.DAO.BPDAO.bprocesses
-  import main.scala.bprocesses.BPStation
-
-  import DatabaseCred.database
-
-  val bpstationloggers = TableQuery[BPStationLoggers]
 
   def from_origin_station(process_id: Int, station_id: Int, stlogger: BPStationLoggerResult):BPStationLoggerDTO = {
     val station = stlogger.state
@@ -132,59 +128,31 @@ object BPStationLoggeDAO {
 
   //}
 
-  def pull_object(s: BPStationLoggerDTO) = database withSession {
-    implicit session ⇒
-      bpstationloggers returning bpstationloggers.map(_.id) += s //BPStationDTO.unapply(s).get
+  def pull_object(s: BPStationLoggerDTO) = {
+      await ( db.run( bpstationloggers returning bpstationloggers.map(_.id) += s ))
   }
 
   def findByBPId(id: Int) = {
-    database withSession { implicit session =>
-     val q3 = for { st ← bpstationloggers if st.process === id } yield st// <> (BPStationDTO.tupled, BPStationDTO.unapply _)
+    await ( db.run(filterQueryProcess(id).result) )
+  }
 
-      q3.list 
-    }
-  }
-  def getAll = database withSession {
-    implicit session ⇒ // TODO: s.service === 1 CHANGE DAT
-      val q3 = for { s ← bpstationloggers } yield s
-      q3.list.sortBy(_.id)
-    //suppliers foreach {
-    //  case (id, title, address, city, state, zip) ⇒
-    //    Supplier(id, title, address, city, state, zip)
-    //}
-  }
-def update(id: Int, entity: BPStationLoggerDTO):Boolean = {
-    database withSession { implicit session =>
+  def update(id: Int, entity: BPStationLoggerDTO):Boolean = {
       findById(id) match {
       case Some(e) => {
-
         bpstationloggers.filter(_.id === id).update(entity.copy(id = Some(id)))
         true
       }
       case None => false
       }
-    }
   }
   def areActiveForBP(id: Int) = {
-     database withSession { implicit session =>
-        val q3 = for { st ← bpstationloggers 
-          if st.process === id 
-          if st.finished === false
-          } yield st
-
-        q3.list
-     }
+        await ( db.run(areActiveForBPQuery(id).result) )
   }
   def findById(id: Int):Option[BPStationLoggerDTO] = {
-    database withSession {
-    implicit session =>
-      val q3 = for { s <- bpstationloggers if s.id === id } yield s
-
-      q3.list.headOption //.map(Supplier.tupled(_))
-    }
+    await ( db.run(filterQuery(id).result.headOption) )
   }
   def haltUpdate(id: Int):Boolean = {
-    database withSession { implicit session =>
+
       findById(id) match {
       case Some(e) => {
         bpstationloggers.filter(_.id === id).update(e.copy(state = false, finished = true))
@@ -192,19 +160,14 @@ def update(id: Int, entity: BPStationLoggerDTO):Boolean = {
       }
       case None => false
       }
-    }
+
   }
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-        bpstationloggers.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-        bpstationloggers.ddl.drop
-    }
-  }
+
+
+  val create: DBIO[Unit] = bpstationloggers.schema.create
+  val drop: DBIO[Unit] = bpstationloggers.schema.drop
+
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
 
 }

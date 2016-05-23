@@ -87,7 +87,7 @@ class ObserverController @Inject() (
              case Some(st) => {
                 val proc = BPDAO.get(st.process)
 
-                val last_log = BPLoggerDAO.findByStation(st.id.get).last
+                val last_log = BPLoggerDAOF.findByStation(st.id.get).last
                 val active_elem:Map[String, Int] = if (last_log.element.isDefined) Map("front" -> last_log.element.get) else Map("nested" -> last_log.space_elem.get)
 
 
@@ -109,7 +109,7 @@ class ObserverController @Inject() (
      val host = request.host
      val uuid = randomUUID.toString
      val user = request.identity.emailFilled
-     val biz =  request.identity.businessFirst 
+     val biz =  request.identity.businessFirst
 	  request.body.validate[ObserveSetup].map{
 	    case entity => savePull( entity.observer.copy(hash_code = Some(uuid), created_at = Some(DateTime.now()) ), user ) match {
 	            case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not create observer ${entity.observer.id}")))
@@ -153,7 +153,7 @@ class ObserverController @Inject() (
 
   private def makeTree(bp: Int, active_elem: Map[String, Int]):List[TreeLeaf] = {
       val procelem = ProcElemDAO.findByBPId(bp)
-      val spaces = BPSpaceDAO.findByBPId(bp)
+      val spaces = BPSpaceDAOF.findByBPIdB(bp)
       val spaceelem = SpaceElemDAO.findByBPId(bp)
 
       def isActive(id: Int, eltype: String):Boolean = {

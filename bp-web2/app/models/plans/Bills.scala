@@ -1,6 +1,8 @@
 package models.DAO.resources
 
-import models.DAO.driver.MyPostgresDriver1.simple._
+import slick.driver.PostgresDriver.api._
+import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import com.github.tminglei.slickpg.composite._
 import models.DAO.conversion.{DatabaseCred, Implicits}
 import slick.model.ForeignKeyAction
@@ -26,39 +28,52 @@ class Bills(tag: Tag) extends Table[BillDTO](tag, "bills") {
 /*
   Case class
  */
-case class BillDTO(var id: Option[Int], 
-  title: String, 
-  master_acc: String, 
-  assigned: DateTime = DateTime.now(), 
+case class BillDTO(var id: Option[Int],
+  title: String,
+  master_acc: String,
+  assigned: DateTime = DateTime.now(),
   approved: Boolean = false,
   expired: DateTime = DateTime.now(),
   sum: BigDecimal = BigDecimal("0.0"),
   workbench: Int)
 
 object BillDAO {
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import DatabaseCred.database
+  import models.DAO.conversion.DatabaseFuture._
+
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
 
   val bills = TableQuery[Bills]
- 
-  def pull_object(s: BillDTO) = database withSession {
-    implicit session ⇒
-      bills returning bills.map(_.id) += s
+
+  def pull_object(s: BillDTO) =   {
+
+      await(db.run( bills returning bills.map(_.id) += s ))
   }
-  def get(k: Int) = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← bills if s.id === k } yield s 
-      q3.list.headOption
+  def get(k: Int) =   {
+
+      val q3 = for { s ← bills if s.id === k } yield s
+      await(db.run(q3.result.headOption))
   }
-  def getAllByMasterAcc(email: String) = database withSession {
-    implicit session =>
-    val q3 = for { s ← bills if s.master_acc === email } yield s 
-      q3.list
+  def getAllByMasterAcc(email: String) =   {
+
+    val q3 = for { s ← bills if s.master_acc === email } yield s
+      await(db.run(q3.result)).toList
   }
-  def getAllByWorkbench(workbench_id: Int) = database withSession {
-    implicit session =>
-    val q3 = for { s ← bills if s.workbench === workbench_id } yield s 
-      q3.list
+  def getAllByWorkbench(workbench_id: Int) =   {
+
+    val q3 = for { s ← bills if s.workbench === workbench_id } yield s
+      await(db.run(q3.result)).toList
   }
 
   /**
@@ -66,43 +81,19 @@ object BillDAO {
    * @param id
    * @param business service
    */
-  def update(id: Int, bill: BillDTO) = database withSession { implicit session ⇒
+  def update(id: Int, bill: BillDTO) =   {
     val billToUpdate: BillDTO = bill.copy(Option(id))
-    bills.filter(_.id === id).update(billToUpdate)
+    await(db.run( bills.filter(_.id === id).update(billToUpdate) ))
   } /**
    * Delete a business service
    * @param id
    */
-  def delete(id: Int) = database withSession { implicit session ⇒
-
-    bills.filter(_.id === id).delete
+  def delete(id: Int) =   {
+    await(db.run( bills.filter(_.id === id).delete ))
   }
-  /**
-   * Count all business_services
-   */
-  def count: Int = database withSession { implicit session ⇒
-    Query(bills.length).first
-  }
+  val create: DBIO[Unit] = bills.schema.create
+  val drop: DBIO[Unit] = bills.schema.drop
 
-
-
-  def getAll = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← bills } yield s 
-      q3.list.sortBy(_.id)
-
-  }
-
-   def ddl_create = {
-    database withSession {
-      implicit session =>
-      bills.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-        bills.ddl.drop
-    }
-  }
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
 }

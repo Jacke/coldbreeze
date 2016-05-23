@@ -164,7 +164,7 @@ object AutoTracer {
 				  created_at = Some(org.joda.time.DateTime.now), 
 				  updated_at = Some(org.joda.time.DateTime.now)))
 
-		val state_ids = BPStateDAO.findOrCreateForProcess(states, process_id)
+		val state_ids = BPStateDAOF.findOrCreateForProcess(states, process_id)
 		states.zip(state_ids).map(st => st._1.copy(id = Some(st._2)))
   }
 

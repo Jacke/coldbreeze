@@ -136,18 +136,19 @@ class InMemoryUserService extends UserService[DemoUser] {
     Future.successful {
       tokens += (token.uuid -> token)
       token
-      TokensDAO.saveToken(token)
+      //TokensDAO.saveToken(token)
     }
   }
 
   def findToken(token: String): Future[Option[MailToken]] = {
-    Future.successful { TokensDAO.findToken(token) } //tokens.get(token) }
+    Future.successful { None } //tokens.get(token) }
   }
 
   def deleteToken(uuid: String): Future[Option[MailToken]] = {
-    TokensDAO.deleteToken(uuid)
+    //TokensDAO.deleteToken(uuid)
     Future.successful {
-      TokensDAO.deleteToken(uuid)
+      None
+      //TokensDAO.deleteToken(uuid)
       /*tokens.get(uuid) match {
         case Some(token) =>
           tokens -= uuid
@@ -159,12 +160,13 @@ class InMemoryUserService extends UserService[DemoUser] {
 
   def deleteTokens(): Future[List[MailToken]] = {
     Future.successful {
-      TokensDAO.deleteTokens()
+      //TokensDAO.deleteTokens()
+      List()
     }
   }
 
   def deleteExpiredTokens() {
-    tokens = tokens.filter(!_._2.isExpired)
+    //tokens = tokens.filter(!_._2.isExpired)
   }
 
   override def updatePasswordInfo(user: DemoUser, info: PasswordInfo): Future[Option[BasicProfile]] = {

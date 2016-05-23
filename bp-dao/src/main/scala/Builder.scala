@@ -143,7 +143,7 @@ object Build {
                         spaceMap: scala.collection.mutable.Map[Int,Int]    = scala.collection.mutable.Map().empty,
                         spaceElsMap: scala.collection.mutable.Map[Int,Int] = scala.collection.mutable.Map().empty,
                         initialStateMap: scala.collection.mutable.Map[Int,Int] = scala.collection.mutable.Map().empty) = {
-    val origin_states = BPStateDAO.findByBP(bprocess_dto.id.get)
+    val origin_states = BPStateDAOF.findByBP(bprocess_dto.id.get)
     play.api.Logger.debug("saveSessionStates")
         play.api.Logger.debug("elemMap")
     elemMap.foreach { el => play.api.Logger.debug(s"${el._1}, ${el._2}") }
@@ -179,12 +179,12 @@ object Build {
 
     var ids:List[Int] = List()
     if (pulling) {
-        var ids:List[Int] = session_states.map(session_state => BPSessionStateDAO.pull_new_object(session_state)).filter(id => id != -1)
+        var ids:List[Int] = session_states.map(session_state => BPSessionStateDAOF.pull_new_object(session_state)).filter(id => id != -1)
     }
     SessionStatesContainer(session_states, ids)
 }
 def saveOrUpdateSessionStates(bprocess: BProcess, bprocess_dto: BProcessDTO, session_id: Int, pulling: Boolean = false) = {
-    val origin_states = BPStateDAO.findByBP(bprocess_dto.id.get)
+    val origin_states = BPStateDAOF.findByBP(bprocess_dto.id.get)
     val session_states_initial = SessionInitialStateDAO.findBySession(session_id).map(in => ExperimentalSessionBuilder.fromInitialState(in))
     //BPSessionStateDAO.findByOriginIds(origin_states.map(_.id.get))
     val session_states:List[BPSessionState] = (bprocess.allElements.map(_.session_states.toList)).flatten ++ bprocess.session_states.toList
@@ -199,7 +199,7 @@ def saveOrUpdateSessionStates(bprocess: BProcess, bprocess_dto: BProcessDTO, ses
     }
     var ids:List[Int] = List()
     if (pulling) {
-      var ids:List[Int] = deltas.map(session_state => BPSessionStateDAO.update(session_state.id.get, session_state))
+      var ids:List[Int] = deltas.map(session_state => BPSessionStateDAOF.updateB(session_state.id.get, session_state))
     }
 
       SessionStatesContainer(session_states, ids)
@@ -211,15 +211,15 @@ def saveOrUpdateSessionStates(bprocess: BProcess, bprocess_dto: BProcessDTO, ses
     station_id
   }
   def saveLogsInit(bprocess: BProcess, bprocess_dto: BProcessDTO, station_id: Int, spacesDTO: List[BPSpaceDTO]) = {
-    val dblogger = BPLoggerDAO.from_origin_lgr(bprocess.logger, bprocess_dto, station_id, spacesDTO)
-    dblogger.foreach(log => BPLoggerDAO.pull_object(log))
+    val dblogger = BPLoggerDAOF.from_origin_lgr(bprocess.logger, bprocess_dto, station_id, spacesDTO)
+    dblogger.foreach(log => BPLoggerDAOF.pull_object(log))
   }
   def saveSessionStateLogs(bprocess: BProcess, bprocess_dto: BProcessDTO) = {
     bprocess.station.station_logger.session_state_logs.foreach(obj => SessionStateLogDAO.pull_object(obj))
   }
   def saveStationLog(process_id: Int, station_id: Int, bprocess: BProcess) = {
-    val station_loggers = bprocess.station.station_logger.logs.map(s => BPStationLoggeDAO.from_origin_station(process_id, station_id, s))
-    station_loggers.foreach(s => BPStationLoggeDAO.pull_object(s))
+    val station_loggers = bprocess.station.station_logger.logs.map(s => BPStationLoggeDAOF.from_origin_station(process_id, station_id, s))
+    station_loggers.foreach(s => BPStationLoggeDAOF.pull_object(s))
   }
 
   /** ***
@@ -378,7 +378,7 @@ def initiateWithElements2F(bpID: Int,
     //val session_states_ids = saveSessionStates(processRunned, bpDTO, session_id)
 
 
-    saveLogsInit(processRunned, bpDTO, station_id, BPSpaceDAO.findByBPId(bpID))
+    saveLogsInit(processRunned, bpDTO, station_id, BPSpaceDAOF.findByBPIdB(bpID))
     saveStationLog(bpID, station_id, processRunned)
 
 
@@ -408,7 +408,7 @@ def initiateWithElements2F(bpID: Int,
 /*************************************************************************************************************************/
     var states:List[BPState] = List()
     if (!minimal) {
-    states = BPStateDAO.findByBP(bpID)
+    states = BPStateDAOF.findByBP(bpID)
     }
     /**
      * Session state
@@ -438,7 +438,7 @@ def initiateWithElements2F(bpID: Int,
         sessionReactions = SessionReactionDAO.findBySession(session_id)
         sessionReactOuts = SessionReactionStateOutDAO.findByReactions(sessionReactions.map(react => react.id.get))
 
-        val existedSesStates = BPSessionStateDAO.findByBPAndSession(bpID, session_id)
+        val existedSesStates = BPSessionStateDAOF.await( BPSessionStateDAOF.findByBPAndSession(bpID, session_id) ).toList
         session_states = SessionStatesContainer(existedSesStates, existedSesStates.map(o => o.id.getOrElse(0))).session_states
     } else if( !minimal ) { // Run from plain
         states = states.map { state =>
@@ -450,7 +450,7 @@ def initiateWithElements2F(bpID: Int,
         if (with_pulling) {
         //} else {
           session_states = Build.saveSessionStates(processRunned, bpDTO, session_id, pulling = true, elemMap, spaceMap, spaceElsMap, initialStateMap).session_states
-          val existedSesStates = BPSessionStateDAO.findByBPAndSession(bpID, session_id)
+          val existedSesStates = BPSessionStateDAOF.await( BPSessionStateDAOF.findByBPAndSession(bpID, session_id) ).toList
           session_states = SessionStatesContainer(existedSesStates, existedSesStates.map(o => o.id.getOrElse(0))).session_states
         }
 
@@ -792,7 +792,7 @@ def initiate2F(bpID: Int,
     //val session_states_ids = saveSessionStates(processRunned, bpDTO, session_id)
 
 
-    saveLogsInit(processRunned, bpDTO, station_id, BPSpaceDAO.findByBPId(bpID))
+    saveLogsInit(processRunned, bpDTO, station_id, BPSpaceDAOF.findByBPIdB(bpID))
     saveStationLog(bpID, station_id, processRunned)
 
 
@@ -822,7 +822,7 @@ def initiate2F(bpID: Int,
 /*************************************************************************************************************************/
     var states:List[BPState] = List()
     if (!minimal) {
-    states = BPStateDAO.findByBP(bpID)
+    states = BPStateDAOF.findByBP(bpID)
     }
     /**
      * Session state
@@ -852,7 +852,7 @@ def initiate2F(bpID: Int,
         sessionReactions = SessionReactionDAO.findBySession(session_id)
         sessionReactOuts = SessionReactionStateOutDAO.findByReactions(sessionReactions.map(react => react.id.get))
 
-        val existedSesStates = BPSessionStateDAO.findByBPAndSession(bpID, session_id)
+        val existedSesStates = BPSessionStateDAOF.await( BPSessionStateDAOF.findByBPAndSession(bpID, session_id) ).toList
         session_states = SessionStatesContainer(existedSesStates, existedSesStates.map(o => o.id.getOrElse(0))).session_states
     } else if( !minimal ) { // Run from plain
         states = states.map { state =>
@@ -864,7 +864,7 @@ def initiate2F(bpID: Int,
         if (with_pulling) {
         //} else {
           session_states = Build.saveSessionStates(processRunned, bpDTO, session_id, pulling = true, elemMap, spaceMap, spaceElsMap, initialStateMap).session_states
-          val existedSesStates = BPSessionStateDAO.findByBPAndSession(bpID, session_id)
+          val existedSesStates = BPSessionStateDAOF.await( BPSessionStateDAOF.findByBPAndSession(bpID, session_id) ).toList
           session_states = SessionStatesContainer(existedSesStates, existedSesStates.map(o => o.id.getOrElse(0))).session_states
         }
 
@@ -1104,10 +1104,10 @@ def runFrom(station_id:Int, bpID:Int, params: List[InputParamProc], session_id: 
   process.push {
     arrays.sortWith(_.order < _.order)
   }
-  val logger_db = BPLoggerDAO.findByStation(station_id)
+  val logger_db = BPLoggerDAOF.findByStation(station_id)
   val db_station = BPStationDAO.findById(station_id).get
 
-    val test_space = BPSpaceDAO.findByBPId(bpID)
+    val test_space = BPSpaceDAOF.findByBPIdB(bpID)
     val space_elems = SpaceElemDAO.findByBPId(bpID)
     val front_bricks = process.findFrontBrick()
 
@@ -1124,8 +1124,8 @@ def runFrom(station_id:Int, bpID:Int, params: List[InputParamProc], session_id: 
 
 
 
-    val states:List[BPState] = BPStateDAO.findByBP(bpID)
-    val session_states:List[BPSessionState] = BPSessionStateDAO.findByBPAndSession(bpID, session_id)
+    val states:List[BPState] = BPStateDAOF.findByBP(bpID)
+    val session_states:List[BPSessionState] = BPSessionStateDAOF.await( BPSessionStateDAOF.findByBPAndSession(bpID, session_id) ).toList
     val switches:List[UnitSwitcher] = SwitcherDAO.findByBPId(bpID)
     val reactions:List[UnitReaction] = ReactionDAO.findByBP(bpID)
     val reaction_state_out:List[UnitReactionStateOut] = ReactionStateOutDAO.findByReactions(reactions.map(react => react.id.get))
@@ -1199,10 +1199,10 @@ def runFrom(station_id:Int, bpID:Int, params: List[InputParamProc], session_id: 
 
     /* LOGS UPDATE */
 
-    val logger_db_after = BPLoggerDAO.from_origin_lgr(process.logger, process_dto, station_id, test_space)
+    val logger_db_after = BPLoggerDAOF.from_origin_lgr(process.logger, process_dto, station_id, test_space)
     toApplogger(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 
-    logger_db_after.foreach(log => BPLoggerDAO.pull_object_from(station_id, log))
+    logger_db_after.foreach(log => BPLoggerDAOF.pull_object_from(station_id, log))
 
     //saveStationLog(bpID, station_id, process)
 
@@ -1319,9 +1319,9 @@ def runFrom(station_id:Int, bpID:Int, params: List[InputParamProc], session_id: 
     process.push {
       arrays.sortWith(_.order < _.order)
     }
-    val logger_db = BPLoggerDAO.findByStation(station_id)
+    val logger_db = BPLoggerDAOF.findByStation(station_id)
 
-    val test_space = BPSpaceDAO.findByBPId(bpID)
+    val test_space = BPSpaceDAOF.findByBPIdB(bpID)
     val space_elems = SpaceElemDAO.findByBPId(bpID)
     val front_bricks = process.findFrontBrick()
 
@@ -1593,7 +1593,7 @@ def runFrom(station_id:Int, bpID:Int, params: List[InputParamProc], session_id: 
     process.push {
       arrays.sortWith(_.order < _.order)
     }
-    val test_space = BPSpaceDAO.findByBPId(bpID)
+    val test_space = BPSpaceDAOF.findByBPIdB(bpID)
     val space_elems = SpaceElemDAO.findByBPId(bpID)
     val front_bricks = process.findFrontBrick()
 
@@ -1636,7 +1636,7 @@ def runFrom(station_id:Int, bpID:Int, params: List[InputParamProc], session_id: 
     val bpDTO = BPDAO.get(bpID).get
 
     val station_id = saveState(processRunned, bpDTO, lang)
-    saveLogsInit(processRunned, bpDTO, station_id, BPSpaceDAO.findByBPId(bpID))
+    saveLogsInit(processRunned, bpDTO, station_id, BPSpaceDAOF.findByBPIdB(bpID))
     saveStationLog(bpID, station_id, processRunned)
     Some(station_id)
   }
@@ -1647,13 +1647,13 @@ def runFrom(station_id:Int, bpID:Int, params: List[InputParamProc], session_id: 
     station_id
   }
   def saveLogsInit(bprocess: BProcess, bprocess_dto: BProcessDTO, station_id: Int, spacesDTO: List[BPSpaceDTO]) = {
-    val dblogger = BPLoggerDAO.from_origin_lgr(bprocess.logger, bprocess_dto, station_id, spacesDTO)
+    val dblogger = BPLoggerDAOF.from_origin_lgr(bprocess.logger, bprocess_dto, station_id, spacesDTO)
     println(dblogger)
-    dblogger.foreach(log => BPLoggerDAO.pull_object(log))
+    dblogger.foreach(log => BPLoggerDAOF.pull_object(log))
   }
   def saveStationLog(process_id: Int, station_id: Int, bprocess: BProcess) = {
-    //val station_loggers = bprocess.station.station_logger.logs.map(s => BPStationLoggeDAO.from_origin_station(process_id, station_id, s))
-    //station_loggers.foreach(s => BPStationLoggeDAO.pull_object(s))
+    //val station_loggers = bprocess.station.station_logger.logs.map(s => BPStationLoggeDAOF.from_origin_station(process_id, station_id, s))
+    //station_loggers.foreach(s => BPStationLoggeDAOF.pull_object(s))
   }
 
   /****************************************
@@ -1674,10 +1674,10 @@ def runFrom(station_id:Int, bpID:Int, params: List[InputParamProc], session_id: 
   process.push {
     arrays.sortWith(_.order < _.order)
   }
-  val logger_db = BPLoggerDAO.findByStation(station_id)
+  val logger_db = BPLoggerDAOF.findByStation(station_id)
   val db_station = BPStationDAO.findById(station_id).get
 
-    val test_space = BPSpaceDAO.findByBPId(bpID)
+    val test_space = BPSpaceDAOF.findByBPIdB(bpID)
     val space_elems = SpaceElemDAO.findByBPId(bpID)
     val front_bricks = process.findFrontBrick()
 
@@ -1780,10 +1780,10 @@ Builder ->  InvokeTracer.run_proc(process)
 
     /* LOGS UPDATE */
 
-    val logger_db_after = BPLoggerDAO.from_origin_lgr(process.logger, process_dto, station_id, test_space)
+    val logger_db_after = BPLoggerDAOF.from_origin_lgr(process.logger, process_dto, station_id, test_space)
     println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
 
-    logger_db_after.foreach(log => BPLoggerDAO.pull_object_from(station_id, log))
+    logger_db_after.foreach(log => BPLoggerDAOF.pull_object_from(station_id, log))
 
     //saveStationLog(bpID, station_id, process)
 
@@ -1832,9 +1832,9 @@ Builder ->  InvokeTracer.run_proc(process)
   process.push {
     arrays.sortWith(_.order < _.order)
   }
-  val logger_db = BPLoggerDAO.findByStation(station_id)
+  val logger_db = BPLoggerDAOF.findByStation(station_id)
   val db_station = BPStationDAO.findById(station_id).get
-    val test_space = BPSpaceDAO.findByBPId(bpID)
+    val test_space = BPSpaceDAOF.findByBPId(bpID)
     val space_elems = SpaceElemDAO.findByBPId(bpID)
     val front_bricks = process.findFrontBrick()
     /*
@@ -1965,7 +1965,7 @@ object FixBug //extends App {
     arrays.sortWith(_.order < _.order)
   }
 
-  val logger_db = BPLoggerDAO.findByStation(station_id)
+  val logger_db = BPLoggerDAOF.findByStation(station_id)
   val db_station = BPStationDAO.findById(station_id).get
 
   val logger_results = logger_db.map(log =>

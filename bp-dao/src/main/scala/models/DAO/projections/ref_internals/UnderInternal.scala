@@ -41,16 +41,16 @@ trait StateProjection {
 
     val stateIdToRefId:Map[Int, Int] = ((idToRefId.map { m =>
       states.filter(pred => pred.front_elem_id == Some(m._1)).map { el =>
-        el.id.get -> BPStateDAO.pull_object(el.reflect(process, front_elem_id = forFront(Some(m._2), scope), space_elem_id = forNested(Some(m._2), scope), space_id = None))
+        el.id.get -> BPStateDAOF.pull_object(el.reflect(process, front_elem_id = forFront(Some(m._2), scope), space_elem_id = forNested(Some(m._2), scope), space_id = None))
       }
 
     }) ++ (conv_spaces.map { m =>
       states.filter(pred => pred.space_id == Some(m._1)).map { el =>
-        el.id.get -> BPStateDAO.pull_object(el.reflect(process, space_id = Some(m._2), space_elem_id = None, front_elem_id = None))
+        el.id.get -> BPStateDAOF.pull_object(el.reflect(process, space_id = Some(m._2), space_elem_id = None, front_elem_id = None))
       }
     }) ++ (conv_sp_elems.map { m =>
       states.filter(pred => pred.space_elem_id == Some(m._1)).map { el =>
-        el.id.get -> BPStateDAO.pull_object(el.reflect(process, space_elem_id = Some(m._2), space_id = None, front_elem_id = None))
+        el.id.get -> BPStateDAOF.pull_object(el.reflect(process, space_elem_id = Some(m._2), space_id = None, front_elem_id = None))
       }
     })).flatten.toMap
 

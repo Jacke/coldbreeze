@@ -1,6 +1,8 @@
 package models.DAO.resources
 
-import slick.driver.PostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
+import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import models.DAO.conversion.DatabaseCred
 
 class Clients(tag: Tag) extends Table[(Option[Int], String)](tag, "clients") {
@@ -19,93 +21,72 @@ class Clients(tag: Tag) extends Table[(Option[Int], String)](tag, "clients") {
 case class ClientDTO(var id: Option[Int], uid: String)
 
 object ClientDAO {
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import DatabaseCred.database
+  import models.DAO.conversion.DatabaseFuture._
+
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
 
   val clients = TableQuery[Clients]
 
 
 
-  def pull_new_object(s: ClientDTO):Option[Int] = database withSession {
-    implicit session ⇒
-      if (!getByUID(s.uid).isDefined) {
-        val tuple = ClientDTO.unapply(s).get
-        val z = clients returning clients.map(_.id) += (value = (None, s.uid))//(BusinessDTO.unapply(s).get._2, BusinessDTO.unapply(s).get._3)
-        Some(z)
-      } else {
-        None
-      }
-  }
-  def pull_object(s: ClientDTO) = database withSession {
-    implicit session ⇒
+  def pull_new_object(s: ClientDTO) =   {
       val tuple = ClientDTO.unapply(s).get
-      clients returning clients.map(_.id) += (value = (None, s.uid))//(BusinessDTO.unapply(s).get._2, BusinessDTO.unapply(s).get._3)
+      await(db.run( clients returning clients.map(_.id) += (value = (None, s.uid)) ))
   }
 
-  def pull(id: Option[Int] = None, uid: String) = Try(database withSession {
-    implicit session ⇒
+  def pull_object(s: ClientDTO) =   {
+      val tuple = ClientDTO.unapply(s).get
+      await(db.run( clients returning clients.map(_.id) += (value = (None, s.uid)) ))
+  }
 
-      clients += (id, uid)
+  def pull(id: Option[Int] = None, uid: String) = Try(  {
+      await(db.run( clients += (id, uid) ))
   }).isSuccess
 
-  def get(k: Int) = database withSession {
-    implicit session ⇒
+  def get(k: Int) =   {
       val q3 = for { s ← clients if s.id === k } yield s <> (ClientDTO.tupled, ClientDTO.unapply _)
-      println(q3.selectStatement)
-      println(q3.list)
-      q3.list.headOption //.map(Supplier.tupled(_))
+      await(db.run(q3.result.headOption)) //.map(Supplier.tupled(_))
   }
-  def getByUID(uid: String) = database withSession {
-    implicit session ⇒
+  def getByUID(uid: String) =   {
       val q3 = for { s ← clients if s.uid === uid } yield s <> (ClientDTO.tupled, ClientDTO.unapply _)
-      println(q3.selectStatement)
-      println(q3.list)
-      q3.list.headOption //.map(Supplier.tupled(_))
+      await(db.run(q3.result.headOption)) //.map(Supplier.tupled(_))
   }
- 
+
   /**
    * Update a client
    * @param id
    * @param client
    */
-  def update(id: Int, client: ClientDTO) = database withSession { implicit session ⇒
+  def update(id: Int, client: ClientDTO) =   {
     val bpToUpdate: ClientDTO = client.copy(Option(id))
-    clients.filter(_.id === id).update(ClientDTO.unapply(bpToUpdate).get)
+    await(db.run( clients.filter(_.id === id).update(ClientDTO.unapply(bpToUpdate).get) ))
   }
   /**
    * Delete a client
    * @param id
    */
-  def delete(id: Int) = database withSession { implicit session ⇒
-
-    clients.filter(_.id === id).delete
-  }
-  /**
-   * Count all clients
-   */
-  def count: Int = database withSession { implicit session ⇒
-    Query(clients.length).first
+  def delete(id: Int) =   {
+    await(db.run( clients.filter(_.id === id).delete  ))
   }
 
 
 
-  def getAll = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← clients } yield s <> (ClientDTO.tupled, ClientDTO.unapply _)
-      q3.list.sortBy(_.id)
-    //suppliers foreach {
-    //  case (id, uid, address, city, state, zip) ⇒
-    //    Supplier(id, uid, address, city, state, zip)
-    //}
-  }
+    val create: DBIO[Unit] = clients.schema.create
+    val drop: DBIO[Unit] = clients.schema.drop
 
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      clients.ddl.create
-    }
-  }
+    def ddl_create = db.run(create)
+    def ddl_drop = db.run(drop)
 
 }
-
-

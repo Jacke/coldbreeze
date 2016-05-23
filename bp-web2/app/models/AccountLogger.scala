@@ -1,6 +1,8 @@
 package models.DAO
 
-import models.DAO.driver.MyPostgresDriver1.simple._
+import slick.driver.PostgresDriver.api._
+import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import com.github.nscala_time.time.Imports._
 import models.DAO.conversion.DatabaseCred
 
@@ -16,63 +18,56 @@ class AccountLoggers(tag: Tag) extends Table[AccountLogger](tag, "account_logger
   //def eb = EmployeesBusinessDAO.employees_businesses.filter(_.employee_id === id).flatMap(_.businessFK)
 }
 
-case class AccountLogger(var id: Option[Int], 
-  ip:String, 
-  user_agent:String, 
+case class AccountLogger(var id: Option[Int],
+  ip:String,
+  user_agent:String,
   email: Option[String] = None,
   date: org.joda.time.DateTime = org.joda.time.DateTime.now
 )
 
 
 object AccountLoggerDAO {
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import DatabaseCred.database
+  import models.DAO.conversion.DatabaseFuture._
+
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
 
  val account_loggers = TableQuery[AccountLoggers]
 
- def pull_object(s: AccountLogger) = database withSession {
-    implicit session ⇒
-      account_loggers returning account_loggers.map(_.id) += s
-  }
-  def get(k: Int) = database withSession {
-    implicit session ⇒
+ def pull_object(s: AccountLogger) =   {
+      await(db.run(  account_loggers returning account_loggers.map(_.id) += s ))
+ }
+
+  def get(k: Int) =   {
+
       val q3 = for { s ← account_loggers if s.id === k } yield s
-      q3.list.headOption 
+      await(db.run(q3.result.headOption))
   }
-  def update(id: Int, obj: AccountLogger) = database withSession { implicit session ⇒
+  def update(id: Int, obj: AccountLogger) =   {
     val toUpdate: AccountLogger = obj.copy(Option(id))
-    account_loggers.filter(_.id === id).update(toUpdate)
+    await(db.run(  account_loggers.filter(_.id === id).update(toUpdate) ))
   }
 
-  def delete(id: Int) = database withSession { implicit session ⇒
-
-    account_loggers.filter(_.id === id).delete
-  }
-  def count: Int = database withSession { implicit session ⇒
-    Query(account_loggers.length).first
-  }  
-  def getAll = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← account_loggers } yield s 
-      q3.list.sortBy(_.id)
-  
+  def delete(id: Int) =   {
+    await(db.run(  account_loggers.filter(_.id === id).delete ))
   }
 
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      account_loggers.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-        account_loggers.ddl.drop
-    }
-  }
+
+  val create: DBIO[Unit] = account_loggers.schema.create
+  val drop: DBIO[Unit] = account_loggers.schema.drop
+
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
 
 }
-
-
-
-

@@ -2,15 +2,15 @@ package models
 
 
 
-//import slick.driver.PostgresDriver.simple._
+//import slick.driver.PostgresDriver.api._
 import models.DAO.conversion.DatabaseCred
-//import models.DAO.driver.MyPostgresDriver.simple._
+//import slick.driver.PostgresDriver.api._
 import models.DAO._
-//import models.DAO.driver.MyPostgresDriver.simple._
+//import slick.driver.PostgresDriver.api._
 import models.DAO.conversion.DatabaseFuture._  
 import com.github.nscala_time.time.Imports._
 import models.DAO.conversion.DatabaseCred.dbConfig.driver.api._
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 
 class LaunchWarps(tag: Tag) extends Table[LaunchWarpDTO](tag, "launch_warps") {
   def id             = column[Int]("id", O.PrimaryKey, O.AutoInc)
@@ -21,7 +21,7 @@ class LaunchWarps(tag: Tag) extends Table[LaunchWarpDTO](tag, "launch_warps") {
   def updated_at     = column[Option[org.joda.time.DateTime]]("updated_at")
 
 
-  def launchFK  = foreignKey("launch_warps_launch_fk", launch, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def launchFK  = foreignKey("launch_warps_launch_fk", launch, models.DAO.BPSessionDAOF.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
   def launchelementFK  = foreignKey("launch_warps_launch_elem_fk", launch_element, models.DAO.SessionElemTopologDAO.session_elem_topologs)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?, launch, launch_element,  board, created_at, updated_at) <> (LaunchWarpDTO.tupled, LaunchWarpDTO.unapply)
@@ -35,8 +35,8 @@ case class LaunchWarpDTO(
     				updated_at: Option[org.joda.time.DateTime] = None)
 object LaunchWarpDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
+   
+    
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   //import slick.driver.PostgresDriver.api._

@@ -2,8 +2,9 @@ package models.DAO.reflect
 
 import main.scala.bprocesses.{BProcess, BPLoggerResult}
 import main.scala.simple_parts.process.ProcElems
-import models.DAO.driver.MyPostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import slick.model.ForeignKeyAction
 import models.DAO.ProcElemDAO._
 import models.DAO.BPDAO._
@@ -40,14 +41,12 @@ class ReactionRefs(tag: Tag) extends Table[UnitReactionRef](tag, "reaction_refs"
 
 object ReactionRefDAOF {
   import akka.actor.ActorSystem
-  import akka.stream.ActorFlowMaterializer
-  import akka.stream.scaladsl.Source
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._
   import slick.jdbc.meta.MTable
   import scala.concurrent.ExecutionContext.Implicits.global
-  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import com.github.tototoshi.slick.PostgresJodaSupport._
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
@@ -55,7 +54,7 @@ object ReactionRefDAOF {
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
-  val reaction_refs = ReactionRefDAO.reaction_refs
+  val reaction_refs = TableQuery[ReactionRefs]
 
   private def filterByIdsQuery(ids: List[Int]): Query[ReactionRefs, UnitReactionRef, Seq] =
     reaction_refs.filter(_.id inSetBind ids)
@@ -75,57 +74,58 @@ object ReactionRefDAOF {
 
 
 object ReactionRefDAO {
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import DatabaseCred.database
-  import models.DAO.conversion.Implicits._
+  import models.DAO.conversion.DatabaseFuture._
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
   val reaction_refs = TableQuery[ReactionRefs]
 
-  def pull_object(s: UnitReactionRef) = database withSession {
-    implicit session ⇒
-      reaction_refs returning reaction_refs.map(_.id) += s
+  private def filterByIdsQuery(ids: List[Int]): Query[ReactionRefs, UnitReactionRef, Seq] =
+    reaction_refs.filter(_.id inSetBind ids)
+  private def filterByReflection(reflection: Int): Query[ReactionRefs, UnitReactionRef, Seq] =
+    reaction_refs.filter(_.reflection === reflection)
+  private def filterQuery(k: Int): Query[ReactionRefs, UnitReactionRef, Seq] =
+    reaction_refs.filter(_.id === k)
+
+
+  def pull_object(s: UnitReactionRef) =   {
+      await(db.run( reaction_refs returning reaction_refs.map(_.id) += s ))
   }
-  def get(k: Int):Option[UnitReactionRef] = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← reaction_refs if s.id === k } yield s
-      q3.list.headOption
+
+
+  def get(k: Int):Option[UnitReactionRef] =   {
+     await(db.run(filterQuery(k).result.headOption))
   }
   def findByRef(id: Int) = {
-     database withSession { implicit session =>
-       val q3 = for { s ← reaction_refs if s.reflection === id } yield s
-       q3.list
-    }
+    await(db.run(filterByReflection(id).result)).toList
   }
-  def retrive(k: Int, process: Int, element: Int, from_state: Option[Int]):List[UnitReaction] = database withSession {
-    implicit session =>
+  def retrive(k: Int, process: Int, element: Int, from_state: Option[Int]):List[UnitReaction] =   {
       findByRef(k).map(e => e.reflect(process, element, from_state))
-
   }
-  def update(id: Int, switcher: UnitReactionRef) = database withSession { implicit session ⇒
+
+  def update(id: Int, switcher: UnitReactionRef) =   {
     val switcherToUpdate: UnitReactionRef = switcher.copy(Option(id))
-    reaction_refs.filter(_.id === id).update(switcherToUpdate)
-  }
-  def delete(id: Int) = database withSession { implicit session ⇒
-    reaction_refs.filter(_.id === id).delete
-  }
-  def count: Int = database withSession { implicit session ⇒
-    Query(reaction_refs.length).first
+    await(db.run( reaction_refs.filter(_.id === id).update(switcherToUpdate) ))
   }
 
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      reaction_refs.ddl.create
-    }
+  def delete(id: Int) =   {
+    await(db.run( reaction_refs.filter(_.id === id).delete ))
   }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-       reaction_refs.ddl.drop
-    }
-  }
-  def getAll = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← reaction_refs } yield s
-      q3.list.sortBy(_.id)
-  }
+
+  val create: DBIO[Unit] = reaction_refs.schema.create
+  val drop: DBIO[Unit] = reaction_refs.schema.drop
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
+
+
 }

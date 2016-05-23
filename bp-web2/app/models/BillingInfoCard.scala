@@ -1,6 +1,8 @@
 package models.DAO
 
-import models.DAO.driver.MyPostgresDriver1.simple._
+import slick.driver.PostgresDriver.api._
+import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import com.github.tminglei.slickpg.composite._
 import models.DAO.conversion.{DatabaseCred, Implicits}
 import slick.model.ForeignKeyAction
@@ -44,57 +46,52 @@ case class BillingInfoCardDTO(var id: Option[Int] = None,
 
 
 object BillingInfoCardsDAO {
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import DatabaseCred.database
+  import models.DAO.conversion.DatabaseFuture._
 
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
 
 
   val billing_info_cards = TableQuery[BillingInfoCard]
 
 
 
-  def pull_object(s: BillingInfoCardDTO) = database withSession {
-    implicit session ⇒
-      billing_info_cards returning billing_info_cards.map(_.id) += s.copy(created_at = Some(org.joda.time.DateTime.now()) )
+  def pull_object(s: BillingInfoCardDTO) =   {
+
+      await(db.run(  billing_info_cards returning billing_info_cards.map(_.id) += s.copy(created_at = Some(org.joda.time.DateTime.now()) ) ))
   }
-  def get(k: Int) = database withSession {
-    implicit session ⇒
+  def get(k: Int) =   {
+
       val q3 = for { s ← billing_info_cards if s.id === k } yield s
-      q3.list.headOption
+      await(db.run(q3.result.headOption))
   }
 
-  def update(id: Int, code: BillingInfoCardDTO) = database withSession { implicit session ⇒
+  def update(id: Int, code: BillingInfoCardDTO) =   {
     val codeToUpdate: BillingInfoCardDTO = code.copy(Option(id), updated_at = Some(org.joda.time.DateTime.now()) )
-    billing_info_cards.filter(_.id === id).update(codeToUpdate)
+    await(db.run(  billing_info_cards.filter(_.id === id).update(codeToUpdate) ))
   }
 
-  def delete(id: Int) = database withSession { implicit session ⇒
+  def delete(id: Int) =   {
 
-    billing_info_cards.filter(_.id === id).delete
-  }
-  def count: Int = database withSession { implicit session ⇒
-    Query(billing_info_cards.length).first
+    await(db.run(  billing_info_cards.filter(_.id === id).delete ))
   }
 
+  val create: DBIO[Unit] = billing_info_cards.schema.create
+  val drop: DBIO[Unit] = billing_info_cards.schema.drop
+
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
 
 
-  def getAll = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← billing_info_cards } yield s
-      q3.list.sortBy(_.id)
-
-  }
-
-   def ddl_create = {
-    database withSession {
-      implicit session =>
-      billing_info_cards.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-        billing_info_cards.ddl.drop
-    }
-  }
 }

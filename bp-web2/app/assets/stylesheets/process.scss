@@ -129,8 +129,9 @@
     margin: 20px 10px 0;
 }
 .dishes-list .dish-presentation .dish-details .dish-summary .linking_dots-container {
-    margin: 34px 10px 0;
+    margin: 33px auto;
     position: relative;
+    margin-left: -21px;
 }
 .dishes-list .dish-presentation .dish-details .dish-summary .linking_dots-container .linking_dots, .dishes-list .dish-presentation .dish-details .dish-summary .linking_dots-container .linking_dots:before, .dishes-list .dish-presentation .dish-details .dish-summary .linking_dots-container .linking_dots:after {
     background-color: #fff;

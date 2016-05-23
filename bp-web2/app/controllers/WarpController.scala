@@ -38,7 +38,7 @@ import models.DAO.CompositeValues
 import play.api.Play.current
 import models.DAO.resources.web.BizFormDTO
 import scala.concurrent.ExecutionContext.Implicits.global
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 import minority.utils._
