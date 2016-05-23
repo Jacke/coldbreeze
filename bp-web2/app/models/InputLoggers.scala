@@ -1,8 +1,14 @@
 package models.DAO
 
-import slick.driver.PostgresDriver.api._
+import models.DAO.driver.MyPostgresDriver.api._
 import com.github.nscala_time.time.Imports._
-import models.DAO.conversion.DatabaseCred
+import com.github.tototoshi.slick.PostgresJodaSupport._
+import slick.model.ForeignKeyAction
+import models.DAO.BPDAO._
+import models.DAO.resources.BusinessDTO._
+import com.github.tminglei.slickpg.composite._
+import models.DAO.conversion.{DatabaseCred, Implicits}
+
 import models.DAO._
 import models.DAO.resources._
 
@@ -18,7 +24,7 @@ class InputLoggers(tag: Tag) extends Table[InputLogger](tag, "input_loggers") {
 
   def maccFK          = foreignKey("in_log_macc_fk", uid, models.AccountsDAO.users)(_.email, onDelete = ForeignKeyAction.Cascade, onUpdate = ForeignKeyAction.Cascade)
   def fReactionFK     = foreignKey("in_log_fReactionFK", reaction, models.DAO.SessionReactionDAO.session_reactions)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def sessionFK       = foreignKey("in_log_sessionFK", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def sessionFK       = foreignKey("in_log_sessionFK", session, models.DAO.BPSessionDAOF.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?, uid, action, arguments, reaction, input.?, date, session) <> (InputLogger.tupled, InputLogger.unapply)
 
@@ -36,14 +42,14 @@ case class InputLogger(var id: Option[Int],
 
 object InputLoggerDAOF {
   import akka.actor.ActorSystem
-   
-    
+
+
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._
   import slick.jdbc.meta.MTable
   import scala.concurrent.ExecutionContext.Implicits.global
-  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import com.github.tototoshi.slick.PostgresJodaSupport._
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
@@ -58,8 +64,8 @@ object InputLoggerDAOF {
     input_loggers.filter(_.id === id)
   private def filterByBPQuery(id: Int): Query[InputLoggers, InputLogger, Seq] =
     (for {
-      ((inlogger, session), bprocesses) <- input_loggers leftJoin
-      models.DAO.BPSessionDAO.bpsessions on (_.session === _.id) leftJoin BPDAO.bprocesses on (_._2.process === _.id)
+      ((inlogger, session), bprocesses) <- input_loggers joinLeft
+      models.DAO.BPSessionDAOF.bpsessions on (_.session === _.id) joinLeft BPDAO.bprocesses on (_._2.map(_.process) === _.id)
     } yield (inlogger))
   private def filterBySessionQuery(id: Int): Query[InputLoggers, InputLogger, Seq] =
     input_loggers.filter(_.session === id)
@@ -123,13 +129,27 @@ def fetchPeopleBySessions(sessionContainers: Seq[SessionContainer]):Future[Seq[S
 }
 
 object InputLoggerDAO {
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import DatabaseCred.database
+  import models.DAO.conversion.DatabaseFuture._
+
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+
 
  val input_loggers = TableQuery[InputLoggers]
 
- def pull_for_input(s: List[InputLogger]) = database withSession {
-  implicit session =>
+ def pull_for_input(s: List[InputLogger]) =   {
+
     val first_one_id = s.headOption match {
       case Some(first_one) => Some(pull_object(first_one))
       case _ => None
@@ -152,52 +172,45 @@ object InputLoggerDAO {
     }
  }
 
- def pull_object(s: InputLogger) = database withSession {
-    implicit session ⇒
-
-      input_loggers returning input_loggers.map(_.id) += s
+ def pull_object(s: InputLogger) =   {
+      await(db.run(  input_loggers returning input_loggers.map(_.id) += s ))
   }
-  def get(k: Int) = database withSession {
-    implicit session ⇒
+  def get(k: Int) =   {
       val q3 = for { s ← input_loggers if s.id === k } yield s
-      q3.list.headOption
+      await(db.run(q3.result.headOption))
   }
 
 
-  def getByBP(BPid:Int) = database withSession {
-    implicit session =>
+  def getByBP(BPid:Int) =   {
     val q3 = (for {
-      ((inlogger, session), bprocesses) <- input_loggers leftJoin models.DAO.BPSessionDAO.bpsessions on (_.session === _.id) leftJoin BPDAO.bprocesses on (_._2.process === _.id)
+      ((inlogger,
+        session),
+        bprocesses) <-
+        input_loggers joinLeft models.DAO.BPSessionDAOF.bpsessions on (_.session === _.id) joinLeft BPDAO.bprocesses on (_._2.map(_.process) === _.id)
     } yield (inlogger))
-    q3.list
+    await(db.run(q3.result)).toList
   }
-  def getBySession(session_id: Int) = database withSession {
-    implicit session =>
+  def getBySession(session_id: Int) =   {
     val q3 = for { s <- input_loggers if s.session === session_id } yield s
-    q3.list
+    await(db.run(q3.result)).toList
   }
-  def getBySessions(ids: List[Int]) = database withSession {
-    implicit session =>
+  def getBySessions(ids: List[Int]) =   {
     val q3 = for { s <- input_loggers if s.session inSetBind ids } yield s
-    q3.list
+    await(db.run(q3.result)).toList
   }
 
-  def update(id: Int, obj: InputLogger) = database withSession { implicit session ⇒
+  def update(id: Int, obj: InputLogger) =   {
     val toUpdate: InputLogger = obj.copy(Option(id))
-    input_loggers.filter(_.id === id).update(toUpdate)
+    await(db.run(  input_loggers.filter(_.id === id).update(toUpdate) ))
   }
 
-  def delete(id: Int) = database withSession { implicit session ⇒
+  def delete(id: Int) =   {
+    await(db.run(  input_loggers.filter(_.id === id).delete ))
+  }
 
-    input_loggers.filter(_.id === id).delete
-  }
-  def count: Int = database withSession { implicit session ⇒
-    Query(input_loggers.length).first
-  }
-  def getAll = database withSession {
-    implicit session ⇒
+  def getAll =   {
       val q3 = for { s ← input_loggers } yield s
-      q3.list.sortBy(_.id)
+      await(db.run(q3.result)).toList.sortBy(_.id)
   }
 
 
@@ -225,17 +238,10 @@ object InputLoggerDAO {
   }
 
 
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      input_loggers.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-        input_loggers.ddl.drop
-    }
-  }
+  val create: DBIO[Unit] = input_loggers.schema.create
+  val drop: DBIO[Unit] = input_loggers.schema.drop
+
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
 
 }

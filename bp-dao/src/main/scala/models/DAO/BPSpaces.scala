@@ -2,7 +2,7 @@ package models.DAO
 
 //import slick.driver.PostgresDriver.simple._
 import slick.driver.PostgresDriver.api._
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import com.github.nscala_time.time.Imports._
 import models.DAO.conversion.DatabaseCred
 import slick.model.ForeignKeyAction

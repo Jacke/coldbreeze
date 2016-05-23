@@ -135,7 +135,7 @@ def allElements(process_ids: List[Int]) = SecuredAction.async { implicit request
       }
       AllProcessElementsContainer(processId = processId,
         elements = ProcElemDAO.findByBPId(processId),
-        spaces = BPSpaceDAO.findByBPId(processId) ,
+        spaces = BPSpaceDAOF.findByBPIdB(processId) ,
         space_elements = SpaceElemDAO.findByBPId(processId),
         element_topos = topologs_dto
       )
@@ -194,7 +194,7 @@ def show_elem_length(id: Int):Int = { ProcElemDAO.findLengthByBPId(id) }
 
 // /bprocess/elems_length
 def bpElemLength() = SecuredAction { implicit request =>
-    val bps = BPDAO.getAll // TODO: Weak perm
+    val bps = BPDAOF.getAll // TODO: Weak perm
     val elms = ProcElemDAO.getAll
     val spelms = SpaceElemDAO.getAll
     def all_length(id: Int):Int = elms.filter(_.bprocess == id).length + spelms.filter(_.bprocess == id).length
@@ -206,7 +206,7 @@ def bpElemLength() = SecuredAction { implicit request =>
 // /bprocess/:id/spaces
 def spaces(id: Int) = SecuredAction { implicit request =>
       if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, id)) {
-            Ok(Json.toJson(BPSpaceDAO.findByBPId(id)))
+            Ok(Json.toJson(BPSpaceDAOF.findByBPIdB(id)))
       } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
 // /bprocess/:id/space_elems
@@ -330,7 +330,7 @@ def createSpace() = SecuredAction(BodyParsers.parse.json) { implicit request =>
    request.body.validate[BPSpaceDTO].map{
     case entity => {
             if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, entity.bprocess)) {
-            BPSpaceDAO.pull_object(entity) match {
+            BPSpaceDAOF.pull_object(entity) match {
               case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not create space ${entity.index}")))
               case id =>  Ok(Json.toJson(Map("success" ->  id)))
             }
@@ -406,7 +406,7 @@ def updateSpace(id: Int, space_id: Int) = SecuredAction(BodyParsers.parse.json) 
     case entity => {
         if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, entity.bprocess)) {
 
-           BPSpaceDAO.update(space_id,entity) match {
+           BPSpaceDAOF.await( BPSpaceDAOF.update(space_id,entity) ) match {
             case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not update space ${entity.id}")))
             case _@x =>  Ok(Json.toJson(entity.id))
           }
@@ -500,7 +500,7 @@ def deleteFrontElem(bpID: Int, elem_id: Int) = SecuredAction { implicit request 
 def deleteSpace(bpID: Int, space_id: Int) = SecuredAction { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, bpID)) {
 
-      BPSpaceDAO.delete(space_id) match {
+      BPSpaceDAOF.await( BPSpaceDAOF.delete(space_id) ) match {
         case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
         case x =>  Ok(Json.toJson(Map("success" -> s"Entity has been deleted (deleted $x row(s))")))
       }
@@ -556,12 +556,12 @@ def element_topos(id: Int) = SecuredAction { implicit request =>
  **/
 def state_index(BPid: Int) = SecuredAction { implicit request =>
   if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, BPid)) {
-    Ok(Json.toJson(BPStateDAO.findByBP(BPid)))
+    Ok(Json.toJson(BPStateDAOF.findByBP(BPid)))
   } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
 def state_session_index(BPid: Int, session_id: Int) = SecuredAction { implicit request =>
   if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, BPid)) {
-    Ok(Json.toJson(BPSessionStateDAO.findByBPAndSession(BPid, session_id)))
+    Ok(Json.toJson( BPSessionStateDAOF.await( BPSessionStateDAOF.findByBPAndSession(BPid, session_id) ) ))
   } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
 def update_session_state(BPid: Int, session_id: Int, state_id: Int) = SecuredAction { implicit request =>
@@ -642,10 +642,10 @@ private def haltActiveStations(BPid: Int) = {
 
 private def deleteOwnedSpace(elem_id:Option[Int],spelem_id:Option[Int]) {
   if (elem_id.isDefined) {
-    BPSpaceDAO.deleteOwnedSpace(elem_id,spelem_id)
+    BPSpaceDAOF.deleteOwnedSpace(elem_id,spelem_id)
   }
   if (spelem_id.isDefined) {
-    BPSpaceDAO.deleteOwnedSpace(elem_id,spelem_id)
+    BPSpaceDAOF.deleteOwnedSpace(elem_id,spelem_id)
   }
 }
 

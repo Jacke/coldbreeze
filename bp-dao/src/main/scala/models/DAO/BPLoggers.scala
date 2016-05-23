@@ -3,16 +3,35 @@ package models.DAO
 
 import main.scala.bprocesses.{BProcess, BPLoggerResult}
 import main.scala.simple_parts.process.ProcElems
-import slick.driver.PostgresDriver.api._
-import com.github.nscala_time.time.Imports._
-import com.github.tototoshi.slick.JdbcJodaSupport._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
 import slick.model.ForeignKeyAction
 
 import models.DAO.ProcElemDAO._
 import models.DAO.BPDAO._
 import models.DAO.BPStationDAO._
+import main.scala.bprocesses.{ BProcess, BPLoggerResult }
+import main.scala.simple_parts.process.ProcElems
+
 import models.DAO.conversion.DatabaseCred
+import models.DAO._
+import models.DAO.conversion.DatabaseFuture._
+import com.github.nscala_time.time.Imports._
+import models.DAO.conversion.DatabaseCred.dbConfig.driver.api._
+import com.github.tototoshi.slick.PostgresJodaSupport._
+import main.scala.bprocesses._
+
+import models.DAO.ProcElemDAO._
+import models.DAO.BPDAO._
+import models.DAO.BPStationDAO._
+import models.DAO._
+import models.DAO.sessions._
+import builders._
+import main.scala.bprocesses.BPSession
+import main.scala.simple_parts.process.Units._
+
+import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process.data.{Confirm, Constant}
+
 
 class BPLoggers(tag: Tag) extends Table[BPLoggerDTO](tag, "bploggers") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
@@ -43,8 +62,8 @@ class BPLoggers(tag: Tag) extends Table[BPLoggerDTO](tag, "bploggers") {
            step
           ) <> (BPLoggerDTO.tupled, BPLoggerDTO.unapply)
 
-def bpFK       = foreignKey("lg_bprocess_fk", bprocess, bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
-def procelemFK = foreignKey("lg_procelem_fk", element, proc_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
+def bpFK       = foreignKey("lg_bprocess_fk", bprocess, BPDAOF.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
+def procelemFK = foreignKey("lg_procelem_fk", element, ProcElemDAO.proc_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
 def spaceelemFK= foreignKey("lg_spaceelem_fk", space_elem, SpaceElemDAO.space_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
 def stationFK  = foreignKey("lg_b_fk", station, bpstations)(_.id, onDelete = ForeignKeyAction.Cascade)
 def spaceFK    = foreignKey("lg_sp_fk", space, models.DAO.BPSpaceDAO.bpspaces)(_.id, onDelete = ForeignKeyAction.Cascade)
@@ -70,6 +89,9 @@ case class BPLoggerDTO(
 object BPLoggerDCO {
 
 }
+
+
+
 object BPLoggerDAOF {
   import akka.actor.ActorSystem
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
@@ -77,7 +99,7 @@ object BPLoggerDAOF {
   import slick.driver.PostgresDriver.api._
   import slick.jdbc.meta.MTable
   import scala.concurrent.ExecutionContext.Implicits.global
-  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import com.github.tototoshi.slick.PostgresJodaSupport._
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
@@ -90,21 +112,22 @@ object BPLoggerDAOF {
 
   private def filterQuery(id: Int): Query[BPLoggers, BPLoggerDTO, Seq] =
     bploggers.filter(_.id === id)
-    private def filterQueryByProcess(id: Int): Query[BPLoggers, BPLoggerDTO, Seq] =
-      bploggers.filter(_.process === id)
-    private def filterQueryByStation(id: Int): Query[BPLoggers, BPLoggerDTO, Seq] =
-      bploggers.filter(_.station === id)
+  private def filterQueryByProcess(id: Int): Query[BPLoggers, BPLoggerDTO, Seq] =
+    bploggers.filter(_.bprocess === id)
+  private def filterQueryByStation(id: Int): Query[BPLoggers, BPLoggerDTO, Seq] =
+    bploggers.filter(_.station === id)
 
 
 
 
-    def spElemId(target: ProcElems): Option[Int] = {
-      target.space_id match {
-        case Some(space) => Some(target.id)
-        case _ => None
-      }
+  def spElemId(target: ProcElems): Option[Int] = {
+    target.space_id match {
+      case Some(space) => Some(target.id)
+      case _ => None
     }
-    def elemId(target: ProcElems, mean: String): Option[Int] = {
+  }
+
+  def elemId(target: ProcElems, mean: String): Option[Int] = {
       if (mean == "space") {
         /*target.space_id match {
           case Some(space) => {
@@ -140,7 +163,6 @@ object BPLoggerDAOF {
     def from_origin_lgr(logger: BPLogger, bp_dto: BProcessDTO, station_id:Int = 1, spaces: List[BPSpaceDTO] = List.empty[BPSpaceDTO]):Option[List[BPLoggerDTO]] = {
 
       val result:List[BPLoggerDTO] = logger.logs.toList.map { lgr =>
-
             BPLoggerDTO(
               None, // id
               bp_dto.id.get, // bprocess
@@ -154,8 +176,6 @@ object BPLoggerDAOF {
               lgr.container, // container
               lgr.date, // date
               lgr.step) // comps
-
-
       }
 
       if (result.length == 0) {
@@ -206,37 +226,32 @@ object BPLoggerDAOF {
     *  *************************
      ***************************/
 
-    val proc_elements = TableQuery[ProcElements]
 
 
-    def pull_object(s: BPLoggerDTO) = database withSession {
-      implicit session ⇒
-        bploggers returning bploggers.map(_.id) += s //BPLoggerDTO.unapply(s).get
+    def pull_object(s: BPLoggerDTO) = {
+      await(db.run(  bploggers returning bploggers.map(_.id) += s))
     }
 
-    def pull_object(s: List[BPLoggerDTO]) = database withSession {
-      implicit session ⇒
-        s.foreach(log =>
-        bploggers returning bploggers.map(_.id) += log //BPLoggerDTO.unapply(log).get
-        )
+    def pull_object(s: List[BPLoggerDTO]) = {
+      val op = s.map(log =>
+       db.run(bploggers returning bploggers.map(_.id) += log)
+      )
+      await( Future.sequence(op) )
     }
 
-    def lastRunOfBP(id: Int):Option[org.joda.time.DateTime] = database withSession {
-      implicit session ⇒
-      val q3 = (for { logger ← bploggers if logger.bprocess === id } yield logger).take(1)
-      q3.firstOption.foreach {
-        case a:BPLoggerDTO => return Some(a.date)
-
+    def lastRunOfBP(id: Int):Option[org.joda.time.DateTime] = {
+      val q3 = await(db.run(filterQueryByProcess(id).take(1).result.headOption))
+      q3 match {
+        case Some(a) => return Some(a.date)
+        case _ => return None
       }
-      return None
-       // BPLoggerDTO1.tupled(q3.firstOption) //<> (BPLoggerDTO1.tupled, BPLoggerDTO1.unapply _)
     }
 
     def findById(id: Int):Future[Option[BPLoggerDTO]] = {
-      db.run(filterByQuery(id).result.headOption)
+      db.run(filterQuery(id).result.headOption)
     }
     def findByStation(id: Int):List[BPLoggerDTO] = {
-      db.run(filterQueryByStation(id).result)
+      await( db.run(filterQueryByStation(id).result) ).toList
     }
     def pull_new_object(s: BPLoggerDTO, station_id:Int) = {
      //   ???
@@ -246,15 +261,16 @@ object BPLoggerDAOF {
     }
 
     def pull_object_from(station_id: Int, ss:List[BPLoggerDTO]) = {
-        db.run(bploggers.filter(_.station === station_id).delete).map {
-          Future.sequence( ss.map { s =>
+        db.run(bploggers.filter(_.station === station_id).delete).map { l =>
+          val obj = ss.map { s =>
             db.run(bploggers returning bploggers.map(_.id) += s)
-          })
+          }
+          await( Future.sequence(obj) )
         }
     }
 
-    def findByBPId(id: Int):Future[List[BPLoggerDTO]] = {
-      db.run(filterQueryByProcess(id).result)
+    def findByBPId(id: Int):List[BPLoggerDTO] = {
+      await( db.run(filterQueryByProcess(id).result) ).toList
     }
 
 

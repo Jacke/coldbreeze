@@ -1,6 +1,8 @@
 package models.DAO.resources
 
 import slick.driver.PostgresDriver.api._
+import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import com.github.tminglei.slickpg.composite._
 import models.DAO.conversion.{DatabaseCred, Implicits}
 import slick.model.ForeignKeyAction
@@ -11,7 +13,7 @@ class AccountPlans(tag: Tag) extends Table[AccountPlanDTO](tag, "account_plans")
   def id          = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def workbench   = column[Int]("business_id")
   def master_acc  = column[String]("master_acc")
-  def plan        = column[Int]("plan_id") 
+  def plan        = column[Int]("plan_id")
   def expired_at  = column[DateTime]("expired_at")
   def active      = column[Boolean]("active")
   def limit       = column[Int]("limit")
@@ -27,10 +29,10 @@ class AccountPlans(tag: Tag) extends Table[AccountPlanDTO](tag, "account_plans")
 /*
   Case class
  */
-case class AccountPlanDTO(var id: Option[Int], 
-  business_id: Int, 
-  master_acc: String, 
-  plan: Int = -1, 
+case class AccountPlanDTO(var id: Option[Int],
+  business_id: Int,
+  master_acc: String,
+  plan: Int = -1,
   expired_at: DateTime = DateTime.now().plusDays(5),
   active: Boolean = false,
   limit: Int = 5) {
@@ -50,18 +52,18 @@ case class AccountPlanDTO(var id: Option[Int],
 
 object AccountPlanDAOF {
   import akka.actor.ActorSystem
-   
-    
+
+
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._
   import slick.jdbc.meta.MTable
   import scala.concurrent.ExecutionContext.Implicits.global
-  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import com.github.tototoshi.slick.PostgresJodaSupport._
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import models.DAO.conversion.DatabaseFuture._  
+  import models.DAO.conversion.DatabaseFuture._
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
@@ -70,17 +72,17 @@ object AccountPlanDAOF {
   private def filterQuery(id: Int): Query[AccountPlans, AccountPlanDTO, Seq] =
     account_plans.filter(_.id === id)
   private def filterByWorkbenchQuery(workbench: Int): Query[AccountPlans, AccountPlanDTO, Seq] =
-    account_plans.filter(_.workbench === workbench)    
+    account_plans.filter(_.workbench === workbench)
   def get(id: Int):Future[Option[AccountPlanDTO]] = {
      db.run(filterQuery(id).result.headOption)
   }
 
   def getByWorkbenchAcc(workbench_id: Int):Future[Option[AccountPlanDTO]] = {
       assignPlan(db.run(filterByWorkbenchQuery(workbench_id).result.headOption))
-  }  
+  }
 
   def assignPlan(s: Future[Option[AccountPlanDTO]]):Future[Option[AccountPlanDTO]] = {
-    s.map { v => 
+    s.map { v =>
       v match {
       case Some(account_plan) => {
         account_plan.assignPlan(PlanDAO.get(account_plan.plan).get)
@@ -96,18 +98,31 @@ object AccountPlanDAOF {
 
 
 object AccountPlanDAO {
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import DatabaseCred.database
+  import models.DAO.conversion.DatabaseFuture._
+
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
 
   val account_plans = TableQuery[AccountPlans]
-  
-  def generateDefaultAccountPlans() = database withSession {
-    implicit session =>
+
+  def generateDefaultAccountPlans() =   {
+
         val employees = EmployeeDAO.getAll
         val workbenches_ids = employees.map { employee =>
           employee.workbench
         }.distinct
-        // Now we must create plans that doesnt exist 
+        // Now we must create plans that doesnt exist
         val allAc = AccountPlanDAO.getAll
         val allAcWorkbenchIds = allAc.map(_.business_id)
         val emptyBenchesIds = workbenches_ids.filter(ac => !allAcWorkbenchIds.contains(ac) )
@@ -120,10 +135,10 @@ object AccountPlanDAO {
         }
   }
 
-  def pull_object(s: AccountPlanDTO) = database withSession {
-    implicit session ⇒
-      account_plans returning account_plans.map(_.id) += s
+  def pull_object(s: AccountPlanDTO) =   {
+      await(db.run( account_plans returning account_plans.map(_.id) += s ))
   }
+
   def assignPlan(s: Option[AccountPlanDTO]):Option[AccountPlanDTO] = {
     s match {
       case Some(account_plan) => {
@@ -134,68 +149,49 @@ object AccountPlanDAO {
       case _ => None
     }
   }
-  def get(k: Int):Option[AccountPlanDTO] = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← account_plans if s.id === k } yield s 
-      assignPlan(q3.list.headOption)
+
+  def get(k: Int):Option[AccountPlanDTO] =   {
+      val q3 = for { s ← account_plans if s.id === k } yield s
+      assignPlan(await(db.run(q3.result.headOption)))
   }
-  def getByWorkbenchAcc(workbench_id: Int):Option[AccountPlanDTO] = database withSession {
-    implicit session =>
-    val q3 = for { pl <- account_plans if pl.workbench === workbench_id } yield pl 
-      assignPlan(q3.list.headOption) // Fetch planObject!!!
-  }  
-  def getByMasterAcc(email: String):Option[AccountPlanDTO] = database withSession {
-    implicit session =>
-    val q3 = for { s ← account_plans if s.master_acc === email } yield s 
-      assignPlan(q3.list.headOption)
+  
+  def getAll:List[AccountPlanDTO] =   {
+      val q3 = for { s ← account_plans } yield s
+      await(db.run(q3.result)).toList
   }
-  def getPlanByMasterAcc(email: String):Tuple2[DateTime, PlanDTO] = { database withSession {
-    implicit session =>
+
+  def getByWorkbenchAcc(workbench_id: Int):Option[AccountPlanDTO] =   {
+    val q3 = for { pl <- account_plans if pl.workbench === workbench_id } yield pl
+      assignPlan(await(db.run(q3.result.headOption))) // Fetch planObject!!!
+  }
+  def getByMasterAcc(email: String):Option[AccountPlanDTO] =   {
+    val q3 = for { s ← account_plans if s.master_acc === email } yield s
+      assignPlan(await(db.run(q3.result.headOption)))
+  }
+
+  def getPlanByMasterAcc(email: String):Tuple2[DateTime, PlanDTO] = {   {
        val q1 = (for {
       s <- account_plans
       p <- s.planJoin
     } yield ((s.expired_at, p)))
-      q1.list.headOption.get
+      await(db.run( q1.result.headOption)).get
     }
   }
-  /**
-   * Update a business service
-   * @param id
-   * @param business service
-   */
-  def update(id: Int, businessService: AccountPlanDTO) = database withSession { implicit session ⇒
+
+
+  def update(id: Int, businessService: AccountPlanDTO) =   {
     val bpToUpdate: AccountPlanDTO = businessService.copy(Option(id))
-    account_plans.filter(_.id === id).update(bpToUpdate)
-  } /**
-   * Delete a business service
-   * @param id
-   */
-  def delete(id: Int) = database withSession { implicit session ⇒
-    account_plans.filter(_.id === id).delete
+    await(db.run( account_plans.filter(_.id === id).update(bpToUpdate) ))
   }
-  /**
-   * Count all account_plans
-   */
-  def count: Int = database withSession { implicit session ⇒
-    Query(account_plans.length).first
+
+
+  def delete(id: Int) =   {
+    await(db.run( account_plans.filter(_.id === id).delete ))
   }
-  def getAll = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← account_plans } yield s 
-      q3.list.sortBy(_.id)
-  }
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      account_plans.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-        account_plans.ddl.drop
-    }
-  }
+
+  val create: DBIO[Unit] = account_plans.schema.create
+  val drop: DBIO[Unit] = account_plans.schema.drop
+
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
 }
-
-

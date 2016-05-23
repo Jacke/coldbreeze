@@ -10,7 +10,7 @@ import models.DAO._
 import models.DAO.conversion.DatabaseFuture._
 import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import main.scala.bprocesses.refs.UnitRefs._
 
 
@@ -48,7 +48,7 @@ object StrategyRefsDAOF {
   import scala.util.Try
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
-  val strategy_refs = StrategyRefsDAO.strategy_refs
+  val strategy_refs = TableQuery[StrategyRefs]
 
   private def filterQuery(id: Long): Query[StrategyRefs, StrategyRef, Seq] =
     strategy_refs.filter(_.id === id)
@@ -75,8 +75,8 @@ object StrategyRefsDAOF {
         }
       }
   }
-
 }
+
 object StrategyRefsDAO {
 	  val strategy_refs = TableQuery[StrategyRefs]
 }

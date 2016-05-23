@@ -1,7 +1,7 @@
 package models.DAO.sessions
 import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import models.DAO.conversion.DatabaseCred
 import slick.model.ForeignKeyAction
 import main.scala.simple_parts.process.Units._
@@ -27,7 +27,7 @@ class SessionSpaces(tag: Tag) extends Table[SessionSpaceDTO](tag, "session_space
   def * = (id.?, bprocess, session, index, container, subbrick, brick_front, brick_nested, nestingLevel,
            created_at, updated_at) <> (SessionSpaceDTO.tupled, SessionSpaceDTO.unapply)
   def bpFK       = foreignKey("s_sp_bprocess_fk", bprocess, models.DAO.BPDAOF.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def sessionFK  = foreignKey("s_sp_session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def sessionFK  = foreignKey("s_sp_session_fk", session,  models.DAO.BPSessionDAOF.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }
 case class SessionSpaceDTO(id: Option[Int],
@@ -105,14 +105,44 @@ object SpaceDCO {
 */
 object SessionSpaceDAOF {
   import akka.actor.ActorSystem
-
-
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._
   import slick.jdbc.meta.MTable
   import scala.concurrent.ExecutionContext.Implicits.global
-  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  val session_spaces = TableQuery[SessionSpaces]
+
+
+  private def filterQuery(id: Int): Query[SessionSpaces, SessionSpaceDTO, Seq] =
+    session_spaces.filter(_.id === id)
+  private def filterQueryBySession(id: Int): Query[SessionSpaces, SessionSpaceDTO, Seq] =
+    session_spaces.filter(_.session === id)
+  private def filterByLaunchesQuery(ids: List[Int]): Query[SessionSpaces, SessionSpaceDTO, Seq] =
+    session_spaces.filter(_.session inSetBind ids)
+
+  def findByLaunchesIds(bpsId: List[Int]) = db.run(filterByLaunchesQuery(bpsId).result)
+
+  def findBySession(k: Int):Future[Seq[SessionSpaceDTO]] =  {
+      db.run(filterQueryBySession(k).result)
+  }
+
+}
+object SessionSpaceDAO {
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
@@ -121,95 +151,79 @@ object SessionSpaceDAOF {
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
-  val session_spaces = SessionSpaceDAO.session_spaces
-
+  val session_spaces = TableQuery[SessionSpaces]
   private def filterQuery(id: Int): Query[SessionSpaces, SessionSpaceDTO, Seq] =
     session_spaces.filter(_.id === id)
-  private def filterQueryBySession(id: Int): Query[SessionSpaces, SessionSpaceDTO, Seq] =
+
+  private def filterSessionQuery(id: Int): Query[SessionSpaces, SessionSpaceDTO, Seq] =
     session_spaces.filter(_.session === id)
+  private def filterBrickFrontQuery(id: Int): Query[SessionSpaces, SessionSpaceDTO, Seq] =
+    session_spaces.filter(_.brick_front === id)
+  private def filterBrickNestedQuery(id: Int): Query[SessionSpaces, SessionSpaceDTO, Seq] =
+    session_spaces.filter(_.brick_nested === id)
+  private def filterProcessQuery(id: Int): Query[SessionSpaces, SessionSpaceDTO, Seq] =
+    session_spaces.filter(_.bprocess === id)
+  private def filterProcessSessionQuery(id: Int, session_id: Int): Query[SessionSpaces, SessionSpaceDTO, Seq] =
+    session_spaces.filter(sp => sp.bprocess === id && sp.session === session_id)
 
-    private def filterByLaunchesQuery(ids: List[Int]): Query[SessionSpaces, SessionSpaceDTO, Seq] =
-      session_spaces.filter(_.session inSetBind ids)
-    def findByLaunchesIds(bpsId: List[Int]) = db.run(filterByLaunchesQuery(bpsId).result)
+  private def renewIndexQuery(bprocess: Int, index_num: Int): Query[SessionSpaces, SessionSpaceDTO, Seq] =
+    session_spaces.filter(sp => sp.bprocess === bprocess && sp.index > index_num)
 
-  def findBySession(k: Int):Future[Seq[SessionSpaceDTO]] =  {
-      db.run(filterQueryBySession(k).result)
+
+
+
+  def pull_object(s: SessionSpaceDTO) =   {
+      await( db.run(session_spaces returning session_spaces.map(_.id) += s))
   }
 
-}
-object SessionSpaceDAO {
-  import models.DAO.conversion.DatabaseCred._
-  val session_spaces = TableQuery[SessionSpaces]
 
-  def pull_object(s: SessionSpaceDTO) = database withSession {
-    implicit session ⇒
-      session_spaces returning session_spaces.map(_.id) += s
-  }
-
-  def lastIndexOfSpace(id: Int) = database withSession {
-    implicit session =>
-      val q3 = for { s ← session_spaces if s.id === id } yield s
-      val xs = q3.list.map(_.index)
-
+  def lastIndexOfSpace(id: Int) =   {
+      val q3 = await(db.run(filterQuery(id).result)).toList
+      val xs = q3.map(_.index)
       if (xs.isEmpty) 1
       else xs.max + 1
   }
-  def get(k: Int) = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← session_spaces if s.id === k } yield s
-      q3.list.headOption
+  def get(k: Int) =   {
+      await(db.run(filterQuery(k).result.headOption))
   }
-  def findBySession(k: Int) = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← session_spaces if s.session === k } yield s
-      q3.list
-  }
-  def getAllByFront(k: Int) = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← session_spaces if s.brick_front === k } yield s
-      q3.list
-  }
-  def getAllByNested(k: Int) = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← session_spaces if s.brick_nested === k } yield s
-      q3.list
-  }
-  def findByBPId(id: Int) = {
-    database withSession { implicit session =>
-     val q3 = for { sp ← session_spaces if sp.bprocess === id } yield sp// <> (UndefElement.tupled, UndefElement.unapply _)
-      q3.list
-    }
-  }
-  def findByBPSessionId(id: Int, session_id: Int) = {
-    database withSession { implicit session =>
-     val q3 = for { sp ← session_spaces if sp.bprocess === id && sp.session === session_id } yield sp// <> (UndefElement.tupled, UndefElement.unapply _)
-      q3.list
-    }
-  }
-  def deleteOwnedSpace(elem_id:Option[Int],spelem_id:Option[Int]) {
-  if (elem_id.isDefined) {
-      getAllByFront(elem_id.get).map(_.id.get).foreach{ id => delete(id) }
-  }
-  if (spelem_id.isDefined) {
-      getAllByNested(spelem_id.get).map(_.id.get).foreach{ id => delete(id) }
-  }
-}
-  /**
-   * Update a bpspace
-   * @param id
-   * @param bpspace
-   */
-  def update(id: Int, bpspace: SessionSpaceDTO) = database withSession { implicit session ⇒
-    val spToUpdate: SessionSpaceDTO = bpspace.copy(Option(id))
-    session_spaces.filter(_.id === id).update(spToUpdate)
-  }
-  /**
-   * Delete a bpspace
-   * @param id
-   */
-  def delete(id: Int) = {
-   database withSession { implicit session ⇒
 
+  def findBySession(k: Int) =   {
+      await(db.run(filterSessionQuery(k).result)).toList
+  }
+
+  def getAllByFront(k: Int) =   {
+      await(db.run(filterBrickFrontQuery(k).result)).toList
+  }
+
+  def getAllByNested(k: Int) =   {
+      await(db.run(filterBrickNestedQuery(k).result)).toList
+  }
+
+  def findByBPId(id: Int) = {
+     await(db.run(filterProcessQuery(id).result)).toList
+  }
+
+  def findByBPSessionId(id: Int, session_id: Int) = {
+    await(db.run(filterProcessSessionQuery(id, session_id).result)).toList
+  }
+
+  def deleteOwnedSpace(elem_id:Option[Int],spelem_id:Option[Int]) = {
+    if (elem_id.isDefined) {
+        getAllByFront(elem_id.get).map(_.id.get).foreach{ id => delete(id) }
+    }
+    if (spelem_id.isDefined) {
+        getAllByNested(spelem_id.get).map(_.id.get).foreach{ id => delete(id) }
+    }
+  }
+
+
+  def update(id: Int, bpspace: SessionSpaceDTO) = {
+      val spToUpdate: SessionSpaceDTO = bpspace.copy(Option(id))
+      await( db.run(session_spaces.filter(_.id === id).update(spToUpdate) ))
+  }
+
+
+  def delete(id: Int) = {
     val sp = get(id)
     val res = session_spaces.filter(_.id === id).delete
     sp match {
@@ -219,46 +233,22 @@ object SessionSpaceDAO {
     res
   }
 
-  }
-  /**
-   * Count all session_spaces
-   */
-  def count: Int = database withSession { implicit session ⇒
-    Query(session_spaces.length).first
-  }
 
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      session_spaces.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-        session_spaces.ddl.drop
-    }
-  }
+  val create: DBIO[Unit] = session_spaces.schema.create
+  val drop: DBIO[Unit] = session_spaces.schema.drop
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
+
 
   def renewIndex(bprocess: Int, index_num: Int) = {
-    database withSession { implicit session ⇒
-      val q3 = for { sp ← session_spaces if sp.bprocess === bprocess && sp.index > index_num } yield sp
-      val ordered = q3.list.zipWithIndex.map(sp => sp._1.copy(index = (sp._2 + 1) + (index_num - 1)))
+      val q3 = await(db.run(renewIndexQuery(bprocess, index_num).result)).toList
+      val ordered = q3.zipWithIndex.map(sp => sp._1.copy(index = (sp._2 + 1) + (index_num - 1)))
       //val ordered = q3.list.zipWithIndex.map(sp => sp._1.copy(index = sp._2+index_num))
       ordered.foreach { sp =>
          update(sp.id.get, sp)
       }
-    }
   }
 
-  def getAll = database withSession {
-    implicit session ⇒ // TODO: s.service === 1 CHANGE DAT
-      val q3 = for { s ← session_spaces } yield s
-      q3.list.sortBy(_.id)
-    //suppliers foreach {
-    //  case (id, title, address, city, state, zip) ⇒
-    //    Supplier(id, title, address, city, state, zip)
-    //}
-  }
+
 
 }

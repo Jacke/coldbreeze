@@ -8,7 +8,7 @@ import models.DAO._
 import models.DAO.conversion.DatabaseFuture._
 import com.github.nscala_time.time.Imports._
 import models.DAO.conversion.DatabaseCred.dbConfig.driver.api._
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 
 
 import models.DAO.ProcElemDAO._
@@ -115,6 +115,100 @@ object BPSessionDAOF {
         }
       }
     }
+  }
+
+
+  def findByProcess(pid: Int): Option[SessionContainer] =   {
+      val p = BPDAO.get(pid)
+      p match {
+        case Some(process) => {
+          val process_id = process.id.get
+          val q3 = for { s <- bpsessions if s.process === process_id } yield s
+          val sess = await(db.run(q3.result)).toList
+          val people = SessionPeoples("iamjacke@gmail.com", List("iamjacke@gmail.com", "tete@gga.ru"))
+
+          Some(
+            SessionContainer(process,
+              sess.filter(ses => ses.process == process_id && ses.id != Some(-1)).map { ses =>
+                val station = BPStationDAO.findBySession(ses.id.get)
+                val element_quantity = SessionProcElementDAO.findBySession(ses.id.get).length //+ SessionSpaceElemDAO.findFlatBySession(ses.id.get).length
+                val step = station match {
+                  case Some(station) => station.step.toDouble
+                  case _ => element_quantity.toDouble
+                }
+                val percent = percentDecorator(step, element_quantity)
+                SessionStatus(percent, process, ses, station,
+                  Some(AroundProcessElementsBuilder.detect(process_id, stationIdDeRef(station) )),
+                  Some(people),
+                  created_at = ses.created_at,
+                  updated_at = ses.updated_at)
+
+              }))
+        }
+        case _ => None
+      }
+  }
+  def get(k: Int): Option[BPSession] = {
+    await(db.run(filterQuery(k).result.headOption) )
+  }
+  def update(id: Int, bpsession: BPSession) =   {
+    val bpToUpdate: BPSession = bpsession.copy(Option(id))
+    val procF = BPDAOF.get(bpsession.process).map { procOpt =>
+      procOpt match {
+        case Some(proc) => {
+          CachedRemovedResourcesDAO.makeResourceUpdateEntity(
+            scope = proc.business.toString,
+            action = "updated",
+            resourceTitle = "launches",
+            resourceId = s"$id",
+            updatedEntity = Map("active_listed" -> bpToUpdate.active_listed.toString))
+          await(db.run( bpsessions.filter(_.id === id).update(bpToUpdate) ))
+        }
+        case _ => -1
+      }
+    }
+  }
+
+  def delete(id: Int, scope: String): Future[Int] =   {
+    BPSessionDAO.get(id) match {
+      case Some(launch) => {
+        val procF = BPDAOF.get(launch.process)
+        procF.map { procOpt =>
+          procOpt match {
+            case Some(proc) => {
+              CachedRemovedResourcesDAO.makeResourceRemoveEntity(
+                scope = scope,
+                action = "removed",
+                resourceTitle = "launches",
+                resourceId = s"$id")
+              await(db.run( bpsessions.filter(_.id === id).delete ))
+              id
+            }
+            case _ => -1
+          }
+        }
+      }
+      case _ => Future.successful(-1)
+    }
+  }
+
+  def makeUnlisted(id: Int) =   {
+      get(id) match {
+        case Some(session) => {
+          update(id, session.copy(active_listed = false))
+          id
+        }
+        case _ => -1
+      }
+  }
+  def makeListed(id: Int) =   {
+      get(id) match {
+        case Some(session) => {
+          update(id, session.copy(active_listed = true))
+          id
+        }
+        case _ => -1
+      }
   }
 
   def findByBusiness(bid: Int, timestamp: Option[String] = None, active: Option[Boolean]= None, offset:Int = 0): Future[Seq[SessionContainer]] = {
@@ -361,6 +455,13 @@ object BPSessionDAOF {
         }
 
       })
+    }
+  }
+
+  private def stationIdDeRef(station: Option[BPStationDTO]) = {
+    station match {
+      case Some(station) => station.id.get
+      case _ => -1
     }
   }
 

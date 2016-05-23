@@ -19,13 +19,13 @@ object CVDAO {
   import slick.driver.PostgresDriver.simple._
   import DatabaseCred.database
 def createShit: Unit = {
-    database withSession { implicit session: Session =>
+      { implicit session: Session =>
       (Q[Int] + "create type compositevalues as (a_string text, b_string text, a_int int8, b_int int8, a_bool boolean, b_bool boolean)").first
       //new MyPostgresDriver1.TableDDLBuilder(CompositeTests.baseTableRow).buildDDL create
     }
   }
 def dropShit: Unit = {
-  database withSession { implicit  session: Session =>
+    { implicit  session: Session =>
     (Q[Int] + "drop type compositevalues").first
   }
 }

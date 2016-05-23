@@ -13,36 +13,35 @@ object DLL_Initiator {
     models.DAO.resources.web.BusinessDAO.ddl_create
     BusinessServiceDAO.ddl_create
     BPDAO.ddl_create
-    CVDAO.createShit
-    BPSessionDAO.ddl_create
+//    BPSessionDAOF.ddl_create
     BPStationDAO.ddl_create
-    BPSpaceDAO.ddl_create
+    BPSpaceDAOF.ddl_create
     ProcElemDAO.ddl_create
     SpaceElemDAO.ddl_create
     ElemTopologDAO.ddl_create
 
-    BPStateDAO.ddl_create
+//    BPStateDAO.ddl_create
     // Session elements
     SessionProcElementDAO.ddl_create
     SessionSpaceDAO.ddl_create
     SessionSpaceElemDAO.ddl_create
     SessionInitialStateDAO.ddl_create
-    BPSessionStateDAO.ddl_create
+//    BPSessionStateDAO.ddl_create
     SessionElemTopologDAO.ddl_create
     SessionSwitcherDAO.ddl_create
     SessionReactionDAO.ddl_create
     SessionReactionStateOutDAO.ddl_create
 
 
-    BPLoggerDAO.ddl_create
-    BPStationLoggeDAO.ddl_create
+//    BPLoggerDAO.ddl_create
+//    BPStationLoggeDAO.ddl_create
     SwitcherDAO.ddl_create
-      
-    // 23.03.15  
+
+    // 23.03.15
     RefDAO.ddl_create
     ProcElemReflectionDAO.ddl_create
     SpaceReflectionDAO.ddl_create
-    SpaceElementReflectionDAO.ddl_create      
+    SpaceElementReflectionDAO.ddl_create
     BPStateRefDAO.ddl_create
     SwitcherRefDAO.ddl_create
     ReflectElemTopologDAO.ddl_create
@@ -88,7 +87,7 @@ object DLL_Initiator {
     RedemCodesDAO.ddl_create
     BillingInfosDAO.ddl_create
     BillingInfoCardsDAO.ddl_create
-      
+
     WalksDAO.ddl_create
     GroupsDAO.ddl_create
     ActPermissionDAO.ddl_create
@@ -115,15 +114,14 @@ object DLL_Initiator {
     models.DAO.resources.web.BusinessDAO.ddl_drop
     BusinessServiceDAO.ddl_drop
     BPDAO.ddl_drop
-    CVDAO.dropShit
-    BPSessionDAO.ddl_drop
+//    BPSessionDAOF.ddl_drop
     BPStationDAO.ddl_drop
-    BPSpaceDAO.ddl_drop
+    BPSpaceDAOF.ddl_drop
     ProcElemDAO.ddl_drop
     SpaceElemDAO.ddl_drop
     ElemTopologDAO.ddl_drop
-    BPStateDAO.ddl_drop
-    
+//    BPStateDAO.ddl_drop
+
 
     SessionReactionStateOutDAO.ddl_drop
     SessionReactionDAO.ddl_drop
@@ -133,27 +131,27 @@ object DLL_Initiator {
     SessionProcElementDAO.ddl_drop
     SessionSpaceDAO.ddl_drop
     SessionSpaceElemDAO.ddl_drop
-    BPLoggerDAO.ddl_drop
+//    BPLoggerDAO.ddl_drop
 
     SessionInitialStateDAO.ddl_drop
-    BPSessionStateDAO.ddl_drop
-    BPStationLoggeDAO.ddl_drop
+//    BPSessionStateDAO.ddl_drop
+//    BPStationLoggeDAO.ddl_drop
     SwitcherDAO.ddl_drop
-    
-    // 23.03.15  
-    ProcElemReflectionDAO.ddl_drop  
-    SpaceReflectionDAO.ddl_drop
-SpaceElementReflectionDAO.ddl_drop  
-BPStateRefDAO.ddl_drop
-SwitcherRefDAO.ddl_drop      
-ReflectElemTopologDAO.ddl_drop
-    RefDAO.ddl_drop        
-ReactionRefDAO.ddl_drop
-ReactionStateOutRefDAO.ddl_drop
-ReactionDAO.ddl_drop
-ReactionStateOutDAO.ddl_drop
 
-SessionStateLogDAO.ddl_drop
+    // 23.03.15
+    ProcElemReflectionDAO.ddl_drop
+    SpaceReflectionDAO.ddl_drop
+    SpaceElementReflectionDAO.ddl_drop
+    BPStateRefDAO.ddl_drop
+    SwitcherRefDAO.ddl_drop
+    ReflectElemTopologDAO.ddl_drop
+        RefDAO.ddl_drop
+    ReactionRefDAO.ddl_drop
+    ReactionStateOutRefDAO.ddl_drop
+    ReactionDAO.ddl_drop
+    ReactionStateOutDAO.ddl_drop
+
+    SessionStateLogDAO.ddl_drop
 
     // Resources
     TokensDAO.ddl_drop
@@ -173,8 +171,8 @@ SessionStateLogDAO.ddl_drop
     RedemCodesDAO.ddl_drop
     BillingInfosDAO.ddl_drop
     BillingInfoCardsDAO.ddl_create
-    
-      
+
+
     WalksDAO.ddl_drop
     GroupsDAO.ddl_drop
     AccountGroupDAO.ddl_drop

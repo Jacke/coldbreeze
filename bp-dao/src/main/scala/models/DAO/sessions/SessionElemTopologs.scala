@@ -5,7 +5,7 @@ import main.scala.bprocesses.{BProcess, BPLoggerResult}
 import main.scala.simple_parts.process.ProcElems
 import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
 import slick.model.ForeignKeyAction
 
@@ -42,19 +42,17 @@ class SessionTopologs(tag: Tag) extends Table[SessionElemTopology](tag, "session
   def procelemFK  = foreignKey("topo_procelem_fk", front_elem_id, models.DAO.sessions.SessionProcElementDAO.session_proc_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
   def spaceelemFK = foreignKey("topo_spaceelem_fk", space_elem_id, models.DAO.sessions.SessionSpaceElemDAO.space_elements)(_.id, onDelete = ForeignKeyAction.Cascade)
   def spaceFK     = foreignKey("topo_bpspace_fk", space_id, models.DAO.sessions.SessionSpaceDAO.session_spaces)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def sessionFK   = foreignKey("topo_s_sp_session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def sessionFK   = foreignKey("topo_s_sp_session_fk", session,  models.DAO.BPSessionDAOF.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }
 object SessionElemTopologDAOF {
   import akka.actor.ActorSystem
-
-
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._
   import slick.jdbc.meta.MTable
   import scala.concurrent.ExecutionContext.Implicits.global
-  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import com.github.tototoshi.slick.PostgresJodaSupport._
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
@@ -63,7 +61,7 @@ object SessionElemTopologDAOF {
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
-  val session_elem_topologs = SessionElemTopologDAO.session_elem_topologs
+  val session_elem_topologs = TableQuery[SessionTopologs]
 
   private def filterQuery(id: Int): Query[SessionTopologs, SessionElemTopology, Seq] =
     session_elem_topologs.filter(_.id === id)
@@ -142,33 +140,49 @@ object SessionElemTopologDAOF {
 }
 
 object SessionElemTopologDAO {
-  /**
-   * Actions
-   */
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._
 
-  import DatabaseCred.database
-  import models.DAO.conversion.Implicits._
-
-
-
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
   val session_elem_topologs = TableQuery[SessionTopologs]
 
-  def pull_object(s: SessionElemTopology) = database withSession {
-    implicit session ⇒
-      session_elem_topologs returning session_elem_topologs.map(_.id) += s
+  private def filterQuery(id: Int): Query[SessionTopologs, SessionElemTopology, Seq] =
+    session_elem_topologs.filter(_.id === id)
+  private def filterProcessQuery(id: Int): Query[SessionTopologs, SessionElemTopology, Seq] =
+    session_elem_topologs.filter(_.process === id)
+
+  private def filterQueryByIds(ids: List[Int]): Query[SessionTopologs, SessionElemTopology, Seq] =
+    session_elem_topologs.filter(_.id inSetBind ids)
+  private def filterBySession(session: Int): Query[SessionTopologs, SessionElemTopology, Seq] =
+    session_elem_topologs.filter(_.session === session)
+  private def filterBySessionIds(sessions: List[Int]): Query[SessionTopologs, SessionElemTopology, Seq] =
+    session_elem_topologs.filter(_.session inSetBind sessions)
+
+
+
+
+  def pull_object(s: SessionElemTopology) =   {
+    await( db.run( session_elem_topologs returning session_elem_topologs.map(_.id) += s ))
   }
 
-  def findByBP(id: Int):List[SessionElemTopology] = database withSession {
-    implicit session =>
-    val q3 = for { s <- session_elem_topologs if s.process === id } yield s
-    q3.list
+  def findByBP(id: Int):List[SessionElemTopology] =   {
+    await(db.run(filterProcessQuery(id).result)).toList
   }
-  def findBySession(id: Int):List[SessionElemTopology] = database withSession {
-    implicit session =>
-    val q3 = for { s <- session_elem_topologs if s.session === id } yield s
-    q3.list
+
+  def findBySession(id: Int):List[SessionElemTopology] =   {
+    await(db.run(filterBySession(id).result)).toList
   }
+
   def getIdentityById(k: Int):Option[SessionEitherTypeElement] = {
     get(k) match {
       case Some(topo) => {
@@ -191,23 +205,19 @@ object SessionElemTopologDAO {
     }
   }
 
-  def get(k: Int):Option[SessionElemTopology] = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← session_elem_topologs if s.id === k } yield s
-      q3.list.headOption
+  def get(k: Int):Option[SessionElemTopology] =   {
+    await(db.run(filterQuery(k).result.headOption))
   }
-  def isFront(k: Int):Boolean = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← session_elem_topologs if s.id === k } yield s
-      q3.list.headOption match {
+
+  def isFront(k: Int):Boolean =   {
+      get(k) match {
         case Some(el) => el.front_elem_id.isDefined
         case _ => false
       }
   }
-  def isNested(k: Int):Boolean = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← session_elem_topologs if s.id === k } yield s
-      q3.list.headOption match {
+
+  def isNested(k: Int):Boolean =   {
+      get(k)match {
         case Some(el) => el.space_elem_id.isDefined
         case _ => false
       }
@@ -216,33 +226,19 @@ object SessionElemTopologDAO {
 
 
 
-  def update(id: Int, topology: SessionElemTopology) = database withSession { implicit session ⇒
+  def update(id: Int, topology: SessionElemTopology) =   {
     val topologyToUpdate: SessionElemTopology = topology.copy(Option(id))
-    session_elem_topologs.filter(_.id === id).update(topologyToUpdate)
+    await( db.run( session_elem_topologs.filter(_.id === id).update(topologyToUpdate) ))
   }
-  def delete(id: Int) = database withSession { implicit session ⇒
-    session_elem_topologs.filter(_.id === id).delete
-  }
-  def count: Int = database withSession { implicit session ⇒
-    Query(session_elem_topologs.length).first
+  def delete(id: Int) =   {
+    await( db.run( session_elem_topologs.filter(_.id === id).delete ))
   }
 
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      session_elem_topologs.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-       session_elem_topologs.ddl.drop
-    }
-  }
 
-  def getAll = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← session_elem_topologs } yield s
-      q3.list.sortBy(_.id)
-  }
+  val create: DBIO[Unit] = session_elem_topologs.schema.create
+  val drop: DBIO[Unit] = session_elem_topologs.schema.drop
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
+
+
 }

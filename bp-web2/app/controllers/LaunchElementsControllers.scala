@@ -116,7 +116,7 @@ def frontElems(launch_id: Int) = SecuredAction { implicit request =>
 def show_elem_length(launch_id: Int):Int = { SessionProcElementDAO.findLengthByBPId(launch_id) }
 
 def bpElemLength() = SecuredAction { implicit request =>
-    val bps    = BPDAO.getAll // TODO: Weak perm
+    val bps    = BPDAOF.getAll // TODO: Weak perm
     val elms   = SessionProcElementDAO.getAll
     val spelms = SessionProcElementDAO.getAll
     def all_length(id: Int):Int = elms.filter(_.bprocess == id).length + spelms.filter(_.bprocess == id).length
@@ -170,7 +170,7 @@ def state_index(launch_id: Int) = SecuredAction { implicit request =>
 
 def state_session_index(launch_id: Int) = SecuredAction { implicit request =>
   if (security.BRes.launchIsOwnedByBiz(request.identity.businessFirst, launch_id)) {
-    Ok(Json.toJson(BPSessionStateDAO.findBySession(launch_id)))
+    Ok(Json.toJson(BPSessionStateDAOF.findBySession(launch_id)))
   } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
 
@@ -369,7 +369,7 @@ def createSpace() = SecuredAction(BodyParsers.parse.json) { implicit request =>
    request.body.validate[BPSpaceDTO].map{
     case entity => {
             if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, entity.bprocess)) {
-            haltActiveStations(entity.bprocess);BPSpaceDAO.pull_object(entity) match {
+            haltActiveStations(entity.bprocess);BPSpaceDAOF.pull_object(entity) match {
             case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not create space ${entity.index}")))
             case id =>  Ok(Json.toJson(Map("success" ->  id)))
           }

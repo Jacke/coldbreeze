@@ -1,8 +1,9 @@
 package models.DAO.resources
 
 
-import com.github.nscala_time.time.Imports._
 import slick.driver.PostgresDriver.api._
+import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import com.github.tminglei.slickpg.composite._
 import models.DAO.conversion.{DatabaseCred, Implicits}
 import slick.model.ForeignKeyAction
@@ -11,7 +12,7 @@ import org.joda.time.DateTime
 class Observers(tag: Tag) extends Table[ObserverDTO](tag, "observers") {
   def id         = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def station_id = column[Int]("station_id")
-  def bprocess   = column[Int]("bprocess_id")   
+  def bprocess   = column[Int]("bprocess_id")
   def hash_code  = column[Option[String]]("hash_code")
   def fullName   = column[String]("fullName")
   def created_at = column[Option[DateTime]]("created_at")
@@ -25,55 +26,62 @@ class Observers(tag: Tag) extends Table[ObserverDTO](tag, "observers") {
 case class ObserverDTO(var id: Option[Int], station_id: Int, bprocess: Int, hash_code: Option[String], fullName: String, created_at: Option[DateTime] = Some(DateTime.now()))
 
 object ObserverDAO {
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import DatabaseCred.database
+  import models.DAO.conversion.DatabaseFuture._
+
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
 
   val observers = TableQuery[Observers]
 
 
 
 
-  def pull_object(s: ObserverDTO) = database withSession {
-    implicit session ⇒
-     observers returning observers.map(_.id) += s
+  def pull_object(s: ObserverDTO) =   {
+     await(db.run( observers returning observers.map(_.id) += s ))
   }
 
-  def get(k: Int) = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← observers if s.id === k } yield s 
-      q3.list.headOption
+  def get(k: Int) =   {
+      val q3 = for { s ← observers if s.id === k } yield s
+      await(db.run(q3.result.headOption))
   }
-  def getAllByBP(k: Int) = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← observers if s.bprocess === k } yield s 
-      q3.list
+  def getAllByBP(k: Int) =   {
+      val q3 = for { s ← observers if s.bprocess === k } yield s
+      await(db.run(q3.result)).toList
   }
 
-  def getByBP(k: Int) = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← observers if s.bprocess === k } yield s 
-      q3.list.headOption
+  def getByBP(k: Int) =   {
+      val q3 = for { s ← observers if s.bprocess === k } yield s
+      await(db.run(q3.result.headOption))
   }
-  def getByBpAndStation(process: Int, station: Int) = database withSession {
-    implicit session =>
-    val q3 = for { s ← observers if s.station_id === station && s.bprocess === process } yield s 
-    q3.list
+  def getByBpAndStation(process: Int, station: Int) =   {
+    val q3 = for { s ← observers if s.station_id === station && s.bprocess === process } yield s
+    await(db.run(q3.result)).toList
   }
-  def getByHashCode(hash_code: String) = database withSession {
-    implicit session =>
+  def getByHashCode(hash_code: String) =   {
     val opt_hash = Option(hash_code)
-    val q3 = for { s ← observers if s.hash_code === opt_hash } yield s 
-    q3.list.headOption
+    val q3 = for { s ← observers if s.hash_code === opt_hash } yield s
+    await(db.run(q3.result.headOption))
   }
- 
+
   /**
    * Update a observer
    * @param id
    * @param observer
    */
-  def update(id: Int, observer: ObserverDTO) = database withSession { implicit session ⇒
+  def update(id: Int, observer: ObserverDTO) =   {
     val observerToUpdate: ObserverDTO = observer.copy(Option(id))
-    observers.filter(_.id === id).update(observerToUpdate)
+    await(db.run( observers.filter(_.id === id).update(observerToUpdate) ))
   }
 
 
@@ -81,38 +89,14 @@ object ObserverDAO {
    * Delete a observer
    * @param id
    */
-  def delete(id: Int) = database withSession { implicit session ⇒
-    observers.filter(_.id === id).delete
+  def delete(id: Int) =   {
+    await(db.run( observers.filter(_.id === id).delete ))
   }
 
 
-  /**
-   * Count all observers
-   */
-  def count: Int = database withSession { implicit session ⇒
-    Query(observers.length).first
-  }
+  val create: DBIO[Unit] = observers.schema.create
+  val drop: DBIO[Unit] = observers.schema.drop
 
-
-  def getAll = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← observers } yield s 
-      q3.list.sortBy(_.id)
-  }
-
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      observers.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-        observers.ddl.drop
-    }
-  }
-
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
 }
-
-

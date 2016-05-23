@@ -4,7 +4,7 @@ import main.scala.bprocesses.{BProcess, BPLoggerResult}
 import main.scala.simple_parts.process.ProcElems
 import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
 import slick.model.ForeignKeyAction
 
@@ -84,7 +84,7 @@ object BPStateRefDAOF {
   import slick.driver.PostgresDriver.api._
   import slick.jdbc.meta.MTable
   import scala.concurrent.ExecutionContext.Implicits.global
-  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import com.github.tototoshi.slick.PostgresJodaSupport._
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
@@ -92,7 +92,7 @@ object BPStateRefDAOF {
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
-  val state_refs = BPStateRefDAO.state_refs
+  val state_refs = TableQuery[StateRefs]
 
   private def filterByIdsQuery(ids: List[Int]): Query[StateRefs, BPStateRef, Seq] =
     state_refs.filter(_.id inSetBind ids)
@@ -111,82 +111,82 @@ object BPStateRefDAOF {
 }
 
 object BPStateRefDAO {
-  /**
-   * Actions
-   */
+  import akka.actor.ActorSystem
+
+
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
 
-  import DatabaseCred.database
-  import models.DAO.conversion.Implicits._
+  private def filterByIdsQuery(ids: List[Int]): Query[StateRefs, BPStateRef, Seq] =
+    state_refs.filter(_.id inSetBind ids)
+  private def filterByReflection(reflection: Int): Query[StateRefs, BPStateRef, Seq] =
+    state_refs.filter(_.reflection === reflection)
+  private def filterQuery(id: Int): Query[StateRefs, BPStateRef, Seq] =
+    state_refs.filter(_.id === id)
 
+  private def findOrCreateForElemQuery(titles:List[String], k: List[BPStateRef], front_elem_id:Option[Int], space_elem_id:Option[Int]): Query[StateRefs, BPStateRef, Seq] =
+    state_refs.filter(s => (s.title inSetBind titles) && (s.front_elem_id === front_elem_id) && (s.space_elem_id === space_elem_id) )
 
+  private def findOrCreateForSpaceQuery(titles:List[String], k: List[BPStateRef], space_id:Int): Query[StateRefs, BPStateRef, Seq] =
+    state_refs.filter(s => (s.title inSetBind titles) && (s.space_id === space_id) )
 
   val state_refs = TableQuery[StateRefs]
 
-  def pull_object(s: BPStateRef) = database withSession {
-    implicit session ⇒
-      state_refs returning state_refs.map(_.id) += s
+  def pull_object(s: BPStateRef) =   {
+    await(db.run( state_refs returning state_refs.map(_.id) += s ))
   }
-  def get(k: Int):Option[BPStateRef] = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← state_refs if s.id === k } yield s
-      q3.list.headOption
+
+  def get(k: Int):Option[BPStateRef] =   {
+    await(db.run(filterQuery(k).result.headOption))
   }
+
   def findByRef(id: Int) = {
-     database withSession { implicit session =>
-       val q3 = for { s ← state_refs if s.reflection === id } yield s
-       q3.list
-    }
+    await(db.run(filterByReflection(id).result)).toList
   }
-  def findOrCreateForElem(k: List[BPStateRef], front_elem_id:Option[Int], space_elem_id:Option[Int]):List[Int] = database withSession {
-    implicit session =>
+
+  def findOrCreateForElem(k: List[BPStateRef], front_elem_id:Option[Int], space_elem_id:Option[Int]):List[Int] =   {
      val titles = k.map(state => state.title)
-     val q3 = for { s <- state_refs if (s.title inSetBind titles) && (s.front_elem_id === front_elem_id) && (s.space_elem_id === space_elem_id) } yield s
-     val existed = q3.list
+     val existed = await(db.run(findOrCreateForElemQuery(titles,k,front_elem_id, space_elem_id).result )).toList
      val filtereds = k.filter(state => existed.map(_.title).contains(state.title) )
      filtereds.map(filtered => pull_object(filtered))
   }
-  def findOrCreateForSpace(k: List[BPStateRef], space_id:Int):List[Int] = database withSession {
-    implicit session =>
+
+  def findOrCreateForSpace(k: List[BPStateRef], space_id:Int):List[Int] =   {
      val titles = k.map(state => state.title)
-     val q3 = for { s <- state_refs if (s.title inSetBind titles) && (s.space_id === space_id) } yield s
-     val existed = q3.list
+     val existed = await(db.run(findOrCreateForSpaceQuery(titles,k, space_id).result ) ).toList
      val filtereds = k.filter(state => existed.map(_.title).contains(state.title) )
      filtereds.map(filtered => pull_object(filtered))
   }
+
   def retrive(k: Int, process: Int, front_elem_id:Option[Int],
-  space_elem_id:Option[Int], state_id:Option[Int]):List[BPState] = database withSession {
-    implicit session =>
+    space_elem_id:Option[Int], state_id:Option[Int]):List[BPState] =   {
       findByRef(k).map(e => e.reflect(process, front_elem_id, space_elem_id, state_id))
-
   }
-  def update(id: Int, bpsession: BPStateRef) = database withSession { implicit session ⇒
+
+  def update(id: Int, bpsession: BPStateRef) =   {
     val bpToUpdate: BPStateRef = bpsession.copy(Option(id))
-    state_refs.filter(_.id === id).update(bpToUpdate)
-  }
-  def delete(id: Int) = database withSession { implicit session ⇒
-    state_refs.filter(_.id === id).delete
-  }
-  def count: Int = database withSession { implicit session ⇒
-    Query(state_refs.length).first
+    await(db.run( state_refs.filter(_.id === id).update(bpToUpdate) ))
   }
 
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      state_refs.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-       state_refs.ddl.drop
-    }
+  def delete(id: Int) =   {
+    await(db.run( state_refs.filter(_.id === id).delete ))
   }
 
-  def getAll = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← state_refs } yield s
-      q3.list.sortBy(_.id)
-  }
+
+  val create: DBIO[Unit] = state_refs.schema.create
+  val drop: DBIO[Unit] = state_refs.schema.drop
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
+
 }

@@ -91,7 +91,7 @@ integrationTest := {
   initialCommands in console := "ammonite.repl.Repl.main(null)"
 
   lazy val root = Project("root", file("."))
-    .aggregate(bpCore, bpDao, bpWeb)
+    .aggregate(bpCore, bpDao, bpWeb2)
     .settings(basicSettings: _*)
     .settings(commonSettings: _*)
     //.settings(formatSettings: _*)
@@ -238,8 +238,10 @@ integrationTest := {
           //akkaSlf4j,
           paypal,
           slick,
+          slickhikari,
+
           slick_migrate,
-          hikari_core,
+          //hikari_core,
           jacksonbson,
           junit,
           jodatime,
@@ -264,194 +266,6 @@ integrationTest := {
         //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
         //test(scalatest, akkaTestKit, sprayTestkit))
     .dependsOn(bpCore)
-
-  lazy val bpWeb = Project("bp-web", file("bp-web"))
-//    .enablePlugins(SbtLiquibase)
-    .enablePlugins(_root_.play.PlayScala)
-    .enablePlugins(SbtWeb)
-    //.enablePlugins(ScalaJSPlugin)
-    .settings(basicSettings: _*)
-    //.settings(pipelineStages in Assets := Seq(rjs))
-    //.settings(RjsKeys.baseUrl := "javascripts")
-    //.settings(RjsKeys.paths := Map.empty)
-    //.settings(RjsKeys.mainModule := "main")
-    .settings((WebKeys.public in Assets) := (classDirectory in Compile).value / "public")
-    //.settings(formatSettings: _*)(WebKeys.public in Assets) := (classDirectory in Compile).value / "public",
-    .settings(revolverSettings: _*)
-    .settings(jsSettings : _*)
-   .settings(sassOptions in Assets ++= Seq("--compass", "-r", "compass"))
-    .settings(sassSettings : _*)
-    //.settings(liquibaseUsername := "postgres")
-    //.settings(liquibasePassword := "12344321")
-    //.settings(liquibaseDriver   := "org.postgresql.Driver")
-    //.settings(liquibaseUrl      := "jdbc:postgresql://localhost/minority1?createDatabaseIfNotExist=true")
-    //.settings((compile in Compile) <<= (compile in Compile).dependsOn(WebKeys.assets in Assets))
-    //.settings(sassOptions in Assets ++= Seq("--compass", "-r", "compass"))
-/*.settings(
-    sassOptions := Seq("--compass")
-)*/
-    .settings(includeFilter in(Assets, LessKeys.less) := "*.less")
-    .settings(excludeFilter in(Assets, LessKeys.less) := "_*.less")
-    .settings(mainClass in Compile := Some("ProdNettyServer"))
-    .settings(mainClass in (Compile, run) := Some("DevNettyServer"))
-    .settings(helloTask)
-    .settings(testJsTask <<= testJs)
-    //.settings(test2Task)
-    .settings(
-      libraryDependencies ++=
-        List(
-          async,
-          akkaActor,
-          slick,
-          playsctest,
-          play,
-          play2oauth2,
-          requirejs,
-          slf4j,
-          selenium,
-          selenide,
-          fluentlenium,
-          fluentleniumasj,
-          underscore,
-          jquery,
-          bootstrap,
-          angular,
-          angular,
-          //swagger,
-          scalamandrill,
-          javamandrill,
-          javamandrill2,
-          //scalamandril2,
-          angulartoastr,
-          mailchimp,
-          apamailer,
-          logentries,
-          playauth,
-          securesocialold,
-          deadbolt,
-          scalacheck,
-          compressor,
-          mockito,
-          formtag,
-          ptest,
-          scaldiplay,
-          jsonvariants,
-          playflyway,
-          playctrl,
-          cache,
-          filter,
-//          hicaricp,
-          scalikejdbc,
-          scalikejdbcconf,
-          //scalikejdbcplay,
-          jdbc,
-          anorm,
-          shapeless,
-          mailer,
-          mailerses,
-          scalatest0,
-          scalatest,
-          scalatest2,
-          scalatest3,
-          reflect,
-          bcrypt,
-          postgres,
-          logbackClassic,
-          scalaLog,
-          hdrHistogram))
-    .settings(libraryDependencies ~= { _.map(_.exclude("org.slf4j", "slf4j-simple")) })
-
-
-        //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
-        //test(scalatest, akkaTestKit, sprayTestkit))
-    .dependsOn(bpCore, bpDao)
-    /*
-  lazy val main = withProfile(Project("cms", file(".")).enablePlugins(com.typesafe.sbt.web.SbtWeb, play.PlayScala).settings(buildSettings ++ Seq(
-    libraryDependencies ++= appDependencies,
-    allDependencies := allDependencies.value.map(_.exclude("com.typesafe.play", "play-docs_2.10")),
-    // Put all assets in the public classes directory
-    (WebKeys.public in Assets) := (classDirectory in Compile).value / "public",
-    // Ensure that assets are compiled when compile is done
-    (compile in Compile) <<= (compile in Compile).dependsOn(WebKeys.assets in Assets),
-    includeFilter in(Assets, LessKeys.less) := "*.less",
-    excludeFilter in(Assets, LessKeys.less) := "_*.less",
-    mainClass in Compile := Some("ProdNettyServer"),
-    mainClass in (Compile, run) := Some("DevNettyServer"),
-    //workaround for gen-idea
-    sourceGenerators in Compile += task {
-      val dir: File = (sourceManaged in Compile).value / "controllers"
-      val dirs = Seq(dir / "ref", dir / "javascript")
-      dirs.foreach(_.mkdirs)
-      Seq[File]()
-    }
-  ): _*))
-*/
-/*
-  lazy val reactivedocs = Project("databoard", file("databoard"))
-    .enablePlugins(PlayScala)
-    .enablePlugins(SbtWeb)
-    .settings(basicSettings: _*)
-    //.settings(pipelineStages in Assets := Seq(uglify))
-    .settings((WebKeys.public in Assets) := (classDirectory in Compile).value / "public")
-    //.settings(formatSettings: _*)(WebKeys.public in Assets) := (classDirectory in Compile).value / "public",
-    .settings(revolverSettings: _*)
-    .settings(jsSettings : _*)
-    .settings(sassSettings : _*)
-    //.settings((compile in Compile) <<= (compile in Compile).dependsOn(WebKeys.assets in Assets))
-    .settings(sassOptions in Assets ++= Seq("--compass", "-r", "compass"))
-/*.settings(
-    sassOptions := Seq("--compass")
-)*/
-    .settings(includeFilter in(Assets, LessKeys.less) := "*.less")
-    .settings(excludeFilter in(Assets, LessKeys.less) := "_*.less")
-    .settings(mainClass in Compile := Some("ProdNettyServer"))
-    .settings(mainClass in (Compile, run) := Some("DevNettyServer"))
-    .settings(
-      libraryDependencies ++=
-        List(
-          // async,
-          // akkaActor,
-          // akkaSlf4j,
-          // reactivemongo,
-          // playreactmongo,
-          // jshemavalid,
-          // jacksonbson,
-          // wcs,
-          // simplereacmongo,
-          // reactivemongoext,
-          play4,
-          // requirejs,
-          // underscore,
-          // jquery,
-          bootstrap,
-          // angular,
-          // playauth,
-          guice,
-          ficus,
-          silhouette,
-          silhouettetest,
-          // jsonvariants,
-          // playflyway,
-          // playctrl,
-          // cache,
-          // scaldiplay,
-          // salat,
-          // filter,
-          // jdbc,
-          // anorm,
-          // shapeless,
-          // mailer,
-          // scalatest,
-          // reflect,
-          // bcrypt,
-          // postgres,
-          // logbackClassic,
-          // scalaLog,
-          hdrHistogram))
-        //compile(akkaActor, sprayCan, sprayClient, sprayRouting) ++
-        //test(scalatest, akkaTestKit, sprayTestkit))
-    //.dependsOn(bpCore, bpDao)
-*/
 
 
 

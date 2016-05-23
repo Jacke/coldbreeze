@@ -7,7 +7,7 @@ import models.DAO.BPStationDAO._
 import models.DAO.conversion.DatabaseCred
 import main.scala.simple_parts.process.Units._
 
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 
 object ElemTopologDAOF {
   import akka.actor.ActorSystem
@@ -15,7 +15,7 @@ object ElemTopologDAOF {
   //import slick.driver.JdbcProfile
   import slick.jdbc.meta.MTable
   import scala.concurrent.ExecutionContext.Implicits.global
-  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import com.github.tototoshi.slick.PostgresJodaSupport._
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
@@ -23,7 +23,7 @@ object ElemTopologDAOF {
   import dbConfig.driver.api._
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
-  val elem_topologs = ElemTopologDAO.elem_topologs
+  val elem_topologs = TableQuery[ElemTopologs]
 
   private def filterQuery(id: Int): Query[ElemTopologs, ElemTopology, Seq] =
     elem_topologs.filter(_.id === id)
@@ -72,27 +72,32 @@ class ElemTopologs(tag: Tag) extends Table[ElemTopology](tag, "elem_topologs") {
 
 
 object ElemTopologDAO {
-  /**
-   * Actions
-   */
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-
-  import DatabaseCred.database
-  import models.DAO.conversion.Implicits._
-
-
-
+  import models.DAO.conversion.DatabaseFuture._
+  import dbConfig.driver.api._
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
   val elem_topologs = TableQuery[ElemTopologs]
 
-  def pull_object(s: ElemTopology) = database withSession {
-    implicit session ⇒
-      elem_topologs returning elem_topologs.map(_.id) += s
+  private def filterQuery(id: Int): Query[ElemTopologs, ElemTopology, Seq] =
+    elem_topologs.filter(_.id === id)
+  private def filterQueryProcess(id: Int): Query[ElemTopologs, ElemTopology, Seq] =
+    elem_topologs.filter(_.process === id)
+
+  def pull_object(s: ElemTopology) =   {
+      await(db.run( elem_topologs returning elem_topologs.map(_.id) += s))
   }
 
-  def findByBP(id: Int):List[ElemTopology] = database withSession {
-    implicit session =>
-    val q3 = for { s <- elem_topologs if s.process === id } yield s
-    q3.list
+  def findByBP(id: Int):List[ElemTopology] =   {
+    await( db.run(filterQueryProcess(id).result) ).toList
   }
 
   def getIdentityById(k: Int):Option[EitherTypeElement] = {
@@ -117,23 +122,19 @@ object ElemTopologDAO {
     }
   }
 
-  def get(k: Int):Option[ElemTopology] = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← elem_topologs if s.id === k } yield s
-      q3.list.headOption
+  def get(id: Int):Option[ElemTopology] =   {
+    await( db.run(filterQuery(id).result.headOption) )
   }
-  def isFront(k: Int):Boolean = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← elem_topologs if s.id === k } yield s
-      q3.list.headOption match {
+
+
+  def isFront(k: Int):Boolean = {
+    get(k) match {
         case Some(el) => el.front_elem_id.isDefined
         case _ => false
       }
   }
-  def isNested(k: Int):Boolean = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← elem_topologs if s.id === k } yield s
-      q3.list.headOption match {
+  def isNested(k: Int):Boolean = {
+        get(k) match {
         case Some(el) => el.space_elem_id.isDefined
         case _ => false
       }
@@ -142,33 +143,20 @@ object ElemTopologDAO {
 
 
 
-  def update(id: Int, topology: ElemTopology) = database withSession { implicit session ⇒
+  def update(id: Int, topology: ElemTopology) =   {
     val topologyToUpdate: ElemTopology = topology.copy(Option(id))
-    elem_topologs.filter(_.id === id).update(topologyToUpdate)
+    await( db.run( elem_topologs.filter(_.id === id).update(topologyToUpdate) ))
   }
-  def delete(id: Int) = database withSession { implicit session ⇒
-    elem_topologs.filter(_.id === id).delete
-  }
-  def count: Int = database withSession { implicit session ⇒
-    Query(elem_topologs.length).first
+  def delete(id: Int) =   {
+    await( db.run( elem_topologs.filter(_.id === id).delete ))
   }
 
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      elem_topologs.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-       elem_topologs.ddl.drop
-    }
-  }
 
-  def getAll = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← elem_topologs } yield s
-      q3.list.sortBy(_.id)
-  }
+
+    val create: DBIO[Unit] = elem_topologs.schema.create
+    val drop: DBIO[Unit] = elem_topologs.schema.drop
+
+    def ddl_create = db.run(create)
+    def ddl_drop = db.run(drop)
+
 }

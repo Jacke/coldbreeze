@@ -5,7 +5,7 @@ import slick.driver.PostgresDriver.api._
 import slick.model.ForeignKeyAction
 import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import models.DAO.BPDAO._
 import models.DAO.resources.BusinessDTO._
 import com.github.tminglei.slickpg.composite._
@@ -63,7 +63,7 @@ object SpaceElementReflectionDAOF {
   import slick.driver.PostgresDriver.api._
   import slick.jdbc.meta.MTable
   import scala.concurrent.ExecutionContext.Implicits.global
-  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import com.github.tototoshi.slick.PostgresJodaSupport._
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
@@ -71,7 +71,7 @@ object SpaceElementReflectionDAOF {
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
-  val space_element_reflections = SpaceElementReflectionDAO.space_element_reflections
+  val space_element_reflections = TableQuery[SpaceElementReflections]
 
   private def filterByIdsQuery(ids: List[Int]): Query[SpaceElementReflections, UnitSpaceElementRef, Seq] =
     space_element_reflections.filter(_.id inSetBind ids)
@@ -106,126 +106,120 @@ object SpaceElementReflectionDAOF {
  * Actions
  */
 object SpaceElementReflectionDAO {
-  import DatabaseCred.database
-  import models.DAO.BPDAOF.bprocesses
-
-
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
   val space_element_reflections = TableQuery[SpaceElementReflections]
 
+  private def filterByIdsQuery(ids: List[Int]): Query[SpaceElementReflections, UnitSpaceElementRef, Seq] =
+    space_element_reflections.filter(_.id inSetBind ids)
+  private def filterByReflection(reflection: Int): Query[SpaceElementReflections, UnitSpaceElementRef, Seq] =
+    space_element_reflections.filter(_.reflection === reflection)
+  private def filterByReflections(reflections: List[Int]): Query[SpaceElementReflections, UnitSpaceElementRef, Seq] =
+    space_element_reflections.filter(_.reflection inSetBind reflections)
+  private def filterQuery(id: Int): Query[SpaceElementReflections, UnitSpaceElementRef, Seq] =
+    space_element_reflections.filter(_.id === id)
+
+  private def findBySpaceQuery(id: Int): Query[SpaceElementReflections, UnitSpaceElementRef, Seq] =
+    space_element_reflections.filter(_.ref_space_owned === id)
+
+  private def lastOrderOfSpaceQuery(reflection: Int, space_id: Int): Query[SpaceElementReflections, UnitSpaceElementRef, Seq] =
+    space_element_reflections.filter(r => r.reflection === reflection && r.ref_space_owned === space_id)
+
   def lastOrderOfSpace(reflection: Int, space_id: Int):Int = {
-    database withSession { implicit session =>
-       val q3 = for { el ← space_element_reflections if el.reflection === reflection && el.ref_space_owned === space_id } yield el
-       val xs = q3.list.map(_.order)
-      if (xs.isEmpty) 1
-      else xs.max + 1
-    }
+    val q3 = await(db.run(lastOrderOfSpaceQuery(reflection, space_id).result)).toList
+    val xs = q3.map(_.order)
+    if (xs.isEmpty) 1
+    else xs.max + 1
   }
 
-  def pull_object(s: UnitSpaceElementRef) = database withSession {
-    implicit session ⇒
-      space_element_reflections returning space_element_reflections.map(_.id) += s
+  def pull_object(s: UnitSpaceElementRef) =   {
+    await(db.run( space_element_reflections returning space_element_reflections.map(_.id) += s ))
   }
+
   def findById(id: Int) = {
-     database withSession { implicit session =>
-       val q3 = for { s ← space_element_reflections if s.id === id } yield s
-       q3.list.headOption
-    }
+    await(db.run(filterQuery(id).result.headOption))
   }
-  def findBySpace(space_id: Int) = {
-     database withSession { implicit session =>
-       val q3 = for { s ← space_element_reflections if s.ref_space_owned === space_id } yield s
-       q3.list
-    }
-  }
-  def findByRef(id: Int) = {
-     database withSession { implicit session =>
-       val q3 = for { s ← space_element_reflections if s.reflection === id } yield s
-       q3.list
-    }
-  }
-  def findByElemRefs(ids: List[Int]) = {
-     database withSession { implicit session =>
-       val q3 = for { s ← space_element_reflections if s.ref_space_owned inSetBind ids } yield s
-       q3.list
-    }
-  }
-  def retrive(k: Int, business: Int, process: Int,space_own:Option[Int],ref_space_owned: Int):List[UnitSpaceElement] = database withSession {
-    implicit session =>
-      findByRef(k).map(e => e.reflect(business, process, space_own, ref_space_owned))
 
+  def findBySpace(space_id: Int) = {
+    await(db.run(findBySpaceQuery(space_id).result)).toList
   }
+
+  def findByRef(id: Int) = {
+    await(db.run(filterByReflection(id).result)).toList
+  }
+
+  def findByElemRefs(ids: List[Int]) = {
+    await(db.run(filterByReflections(ids).result)).toList
+  }
+
+  def retrive(k: Int, business: Int, process: Int,space_own:Option[Int],ref_space_owned: Int):List[UnitSpaceElement] =   {
+    findByRef(k).map(e => e.reflect(business, process, space_own, ref_space_owned))
+  }
+
   def update(id: Int, entity: UnitSpaceElementRef):Boolean = {
-    database withSession { implicit session =>
       findById(id) match {
       case Some(e) => {
-        space_element_reflections.filter(_.id === id).update(entity)
+        await(db.run( space_element_reflections.filter(_.id === id).update(entity) ))
         true
       }
       case None => false
       }
-    }
   }
-  def getAll = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← space_element_reflections } yield s
-      q3.list.sortBy(_.id)
-  }
+
   def delete(id: Int) = {
-    database withSession { implicit session ⇒
-
     val elem = findById(id)
-    space_element_reflections.filter(_.id === id).delete
-    }
+    await(db.run(space_element_reflections.filter(_.id === id).delete))
   }
 
-def moveUp(reflection: Int, element_id: Int, space_id: Int) = {
-    database withSession { implicit session =>
+  def moveUp(reflection: Int, element_id: Int, space_id: Int) = {
       val minimum = findByRef(reflection).sortBy(_.order)
       findById(element_id) match {
         case Some(e) => {
           if (e.order > 1 && e.order != minimum.head.order) {
-            space_element_reflections
-              .filter(_.id === element_id).update(e.copy(order = e.order - 1))
+            await(db.run( space_element_reflections
+              .filter(_.id === element_id).update(e.copy(order = e.order - 1)) ))
             val ch = findById(minimum.find(_.order == (e.order - 1)).get.id.get).get
-            space_element_reflections
-              .filter(_.id === minimum.find(_.order == (e.order - 1)).get.id.get).update(ch.copy(order = ch.order + 1))
+            await(db.run( space_element_reflections
+              .filter(_.id === minimum.find(_.order == (e.order - 1)).get.id.get).update(ch.copy(order = ch.order + 1)) ))
           }
           true
         }
         case None => false
       }
-    }
   }
+
   def moveDown(reflection: Int, element_id: Int, space_id: Int) = {
-    database withSession { implicit session =>
       val maximum = findBySpace(space_id).sortBy(_.order)
       findById(element_id) match {
         case Some(e) => {
           if (e.order < maximum.last.order && e.order != maximum.last.order) {
-            space_element_reflections
-              .filter(_.id === element_id).update(e.copy(order = e.order + 1))
+            await(db.run( space_element_reflections
+              .filter(r => r.id === element_id).update(e.copy(order = e.order + 1)) ))
             val ch = findById(maximum.find(_.order == (e.order + 1)).get.id.get).get
-            space_element_reflections
-              .filter(_.id === maximum.find(_.order == (e.order + 1)).get.id.get).update(ch.copy(order = ch.order - 1))
+            await(db.run( space_element_reflections
+              .filter(r => r.id === maximum.find(_.order == (e.order + 1)).get.id.get).update(ch.copy(order = ch.order - 1)) ))
           }
           true
         }
         case None => false
       }
-    }
   }
 
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      space_element_reflections.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-        space_element_reflections.ddl.drop
-    }
-  }
+  val create: DBIO[Unit] = space_element_reflections.schema.create
+  val drop: DBIO[Unit] = space_element_reflections.schema.drop
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
 
 }

@@ -8,7 +8,7 @@ import models.DAO._
 import models.DAO.conversion.DatabaseFuture._
 import com.github.nscala_time.time.Imports._
 import models.DAO.conversion.DatabaseCred.dbConfig.driver.api._
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 
 
 import models.DAO.ProcElemDAO._
@@ -51,7 +51,7 @@ object BPSpaceDAOF {
   import slick.driver.PostgresDriver.api._
   import slick.jdbc.meta.MTable
   import scala.concurrent.ExecutionContext.Implicits.global
-  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import com.github.tototoshi.slick.PostgresJodaSupport._
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
@@ -66,6 +66,16 @@ object BPSpaceDAOF {
     bpspaces.filter(_.id === id)
   private def filterByBPQuery(id: Int): Query[BPSpacesF, BPSpaceDTO, Seq] =
     bpspaces.filter(_.bprocess === id)
+
+
+  private def filterByFront(id: Int): Query[BPSpacesF, BPSpaceDTO, Seq] =
+    bpspaces.filter(_.brick_front === id)
+  private def filterByNested(id: Int): Query[BPSpacesF, BPSpaceDTO, Seq] =
+      bpspaces.filter(_.brick_nested === id)
+
+
+  def findByBPIdB(bpId: Int) = await( db.run(filterByBPQuery(bpId).result) ).toList
+
   def findByBPId(bpId: Int) = db.run(filterByBPQuery(bpId).result)
 
   private def filterByBPSQuery(ids: List[Int]): Query[BPSpacesF, BPSpaceDTO, Seq] =
@@ -80,45 +90,36 @@ object BPSpaceDAOF {
 
 
   def pull_object(s: BPSpaceDTO, timestamp: Option[String] = None) = {
-    pull(s)
+    await(pull(s))
   }
 
   def lastIndexOfSpace(id: Int) = {
-      val q3 = for { s ← bpspaces if s.id === id } yield s
-      val xs = q3.list.map(_.index)
-
+      val q3 = await( db.run(filterQuery(id).result) )
+      val xs = q3.map(_.index)
       if (xs.isEmpty) 1
       else xs.max + 1
   }
-  def get(k: Int) =   {
+  def get(k: Int):Future[Option[BPSpaceDTO]] =
+    db.run(filterQuery(k).result.headOption)
 
-      val q3 = for { s ← bpspaces if s.id === k } yield s
-      q3.list.headOption //.map(Supplier.tupled(_))
-  }
-  def getAllByFront(k: Int) =   {
+  def getAllByFront(k: Int):Future[Seq[BPSpaceDTO]] =
+      db.run(filterByFront(k).result)
 
-      val q3 = for { s ← bpspaces if s.brick_front === k } yield s
-      q3.list //.map(Supplier.tupled(_))
-  }
-  def getAllByNested(k: Int) =   {
+  def getAllByNested(k: Int):Future[Seq[BPSpaceDTO]] =
+      db.run(filterByNested(k).result)
 
-      val q3 = for { s ← bpspaces if s.brick_nested === k } yield s
-      q3.list //.map(Supplier.tupled(_))
-  }
-  def findByBPId(id: Int) = {
-      { implicit session =>
-     val q3 = for { sp ← bpspaces if sp.bprocess === id } yield sp// <> (UndefElement.tupled, UndefElement.unapply _)
-      q3.list
+
+
+  def deleteOwnedSpace(elem_id:Option[Int],spelem_id:Option[Int]) = {
+    if (elem_id.isDefined) {
+        val res = await( getAllByFront(elem_id.get) )
+        res.map(_.id.get).foreach{ id => await( delete(id) ) }
+    }
+    if (spelem_id.isDefined) {
+        val res = await( getAllByNested(spelem_id.get) )
+        res.map(_.id.get).foreach{ id => await( delete(id) ) }
     }
   }
-  def deleteOwnedSpace(elem_id:Option[Int],spelem_id:Option[Int]) {
-  if (elem_id.isDefined) {
-      getAllByFront(elem_id.get).map(_.id.get).foreach{ id => delete(id) }
-  }
-  if (spelem_id.isDefined) {
-      getAllByNested(spelem_id.get).map(_.id.get).foreach{ id => delete(id) }
-  }
-}
   /**
    * Update a bpspace
    * @param id
@@ -126,28 +127,28 @@ object BPSpaceDAOF {
    */
   def update(id: Int, bpspace: BPSpaceDTO) =   {
     val spToUpdate: BPSpaceDTO = bpspace.copy(Option(id))
-    bpspaces.filter(_.id === id).update(spToUpdate)
+    db.run( bpspaces.filter(_.id === id).update(spToUpdate) )
   }
   /**
    * Delete a bpspace
    * @param id
    */
   def delete(id: Int) = {
-    val sp = get(id)
-    val res = db.run(bpspaces.filter(_.station === station_id).delete)
-    spF.map { sp =>
+    val spF = get(id)
+    val res = db.run(bpspaces.filter(_.id === id).delete)
+    spF.flatMap { sp =>
       sp match {
         case Some(space) => renewIndex(space.bprocess, space.index)
         case _ =>
       }
-      res.flatMap { r =>
+      res.map { r =>
         r
       }
     }
   }
 
-  def count: Int =   {
-    db.run(bpspaces.length)
+  def count: Future[Int] = {
+    db.run(bpspaces.length.result)
   }
 
   val create: DBIO[Unit] = bpspaces.schema.create
@@ -168,13 +169,11 @@ object BPSpaceDAOF {
 (5,Some(19))
 */
   def renewIndex(bprocess: Int, index_num: Int) = {
-      {
-      val q3 = for { sp ← bpspaces if sp.bprocess === bprocess && sp.index > index_num } yield sp
-      val ordered = q3.list.zipWithIndex.map(sp => sp._1.copy(index = (sp._2 + 1) + (index_num - 1)))
-      //val ordered = q3.list.zipWithIndex.map(sp => sp._1.copy(index = sp._2+index_num))
-      ordered.foreach { sp =>
-         update(sp.id.get, sp)
-      }
+    val q3 = await( db.run(bpspaces.filter(sp => sp.bprocess === bprocess && sp.index > index_num ).result) )
+    val ordered = q3.zipWithIndex.map(sp => sp._1.copy(index = (sp._2 + 1) + (index_num - 1)))
+    //val ordered = q3.list.zipWithIndex.map(sp => sp._1.copy(index = sp._2+index_num))
+    ordered.foreach { sp =>
+       update(sp.id.get, sp)
     }
   }
 

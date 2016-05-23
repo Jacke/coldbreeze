@@ -1,16 +1,19 @@
 package models.DAO.resources
+import slick.driver.PostgresDriver.api._
+import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 
 object EmployeesBusinessDAOF {
   import scala.util.Try
 import akka.actor.ActorSystem
- 
-  
+
+
 import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
 //import slick.driver.JdbcProfile
 import slick.driver.PostgresDriver.api._
 import slick.jdbc.meta.MTable
 import scala.concurrent.ExecutionContext.Implicits.global
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 import scala.util.Try
@@ -37,14 +40,14 @@ import models.DAO.conversion.DatabaseFuture._
 object EmployeeDAOF {
   import scala.util.Try
 import akka.actor.ActorSystem
- 
-  
+
+
 import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
 //import slick.driver.JdbcProfile
 import slick.driver.PostgresDriver.api._
 import slick.jdbc.meta.MTable
 import scala.concurrent.ExecutionContext.Implicits.global
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 import scala.util.Try
@@ -114,7 +117,7 @@ import models.DAO.conversion.DatabaseFuture._
 }
 
 
-import slick.driver.PostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
 import models.DAO.conversion.DatabaseCred
 
 class Employees(tag: Tag) extends Table[EmployeeDTO](tag, "employees") {
@@ -144,37 +147,52 @@ case class EmployeeDTO(var id: Option[Int],
 
 
 object EmployeeDAO {
- import scala.util.Try
- import DatabaseCred.database
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._
+
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+
  val employees = TableQuery[Employees]
 
- def pull_object(s: EmployeeDTO) = database withSession {
-    implicit session ⇒
-
-      employees returning employees.map(_.id) += s
+ def pull_object(s: EmployeeDTO) =   {
+      await(db.run(employees returning employees.map(_.id) += s))
   }
-def pull_object_for(s: EmployeeDTO, email: String):Int = database withSession {
-  implicit session ⇒
+def pull_object_for(s: EmployeeDTO, email: String):Int =   {
     if (!getAllByMaster(email).map(_.uid).contains(s.uid)) {
-      employees returning employees.map(_.id) += s
+      await(db.run( employees returning employees.map(_.id) += s ))
     } else {
       -1
     }
  }
-  def get(k: Int) = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← employees if s.id === k } yield s// <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)
-      q3.list.headOption
+
+ def getAll =   {
+     val q3 = for { s ← employees } yield s
+     await(db.run(q3.result)).toList
+ }
+
+  def get(k: Int) =   {
+      val q3 = for { s ← employees if s.id === k } yield s
+      await(db.run(q3.result.headOption))
   }
-  def getAllByMaster(email: String) = database withSession {
-    implicit session =>
+  def getAllByMaster(email: String) =   {
       val q3 = for { s <- employees if s.master_acc === email } yield s
-      q3.list
+      await(db.run(q3.result)).toList
   }
-  def updateBusinessForAllEmployees() = database withSession {
-    implicit session =>
+  def updateBusinessForAllEmployees() =   {
+
     val q3 = for { s ← employees } yield s// <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)
-      q3.list.foreach { emp =>
+      await(db.run(q3.result)).toList.foreach { emp =>
         val empbiz = EmployeesBusinessDAO.getByID(emp.id.get)
 
         val biz = empbiz match {
@@ -184,8 +202,7 @@ def pull_object_for(s: EmployeeDTO, email: String):Int = database withSession {
         update(emp.id.get, employee = emp.copy(workbench = biz))
       }
   }
-  def getMasterByAccount(email: String) = database withSession {
-    implicit session =>
+  def getMasterByAccount(email: String) =   {
       getByUID(email) match {
       case Some(acc) => {
         models.AccountsDAO.getAccount(acc.master_acc)
@@ -193,78 +210,56 @@ def pull_object_for(s: EmployeeDTO, email: String):Int = database withSession {
       case _ => None
     }
   }
-  def getByEmployeeUID(uid: String) = database withSession {
-    implicit session =>
+  def getByEmployeeUID(uid: String) =   {
     val q3 = for { s ← employees if s.uid === uid } yield s// <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)
-      q3.list.headOption
+      await(db.run(q3.result.headOption))
   }
-  def getByEmployeeUIDAndWorkbench(uid: String, workbench_id: Int) = database withSession {
-    implicit session =>
+  def getByEmployeeUIDAndWorkbench(uid: String, workbench_id: Int) =   {
+
     val q3 = for { s ← employees if s.uid === uid && s.workbench === workbench_id } yield s// <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)
-      q3.list.headOption
+      await(db.run(q3.result.headOption))
   }
-  def getAllByEmployeeUID(uid: String) = database withSession {
-    implicit session =>
+  def getAllByEmployeeUID(uid: String) =   {
+
     val q3 = for { s ← employees if s.uid === uid } yield s// <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)
-      q3.list
+      await(db.run(q3.result)).toList
   }
-  def getByUID(uid: String) = database withSession {
-    implicit session =>
+  def getByUID(uid: String) =   {
+
     val q3 = for { s ← employees if s.uid === uid && s.master_acc === uid } yield s// <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)
-      q3.list.headOption
+      await(db.run(q3.result.headOption))
   }
-  def getAllByWorkbench(workbench: Int) = database withSession {
-    implicit session =>
+  def getAllByWorkbench(workbench: Int) =   {
+
     val q3 = for { s ← employees if s.workbench === workbench } yield s// <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)
-      q3.list
+      await(db.run(q3.result)).toList
   }
-  def getLengthByWorkbench(workbench: Int) = database withSession {
-    implicit session =>
+  def getLengthByWorkbench(workbench: Int) =   {
+
     val q3 = for { s ← employees if s.workbench === workbench } yield s// <> (EmployeeDTO.tupled, EmployeeDTO.unapply _)
-      q3.list.length
+      await(db.run(q3.result)).toList.length
   }
   /**
    * Update a employee
    * @param id
    * @param employee
    */
-  def update(id: Int, employee: EmployeeDTO) = database withSession { implicit session ⇒
+  def update(id: Int, employee: EmployeeDTO) =   {
     val bpToUpdate: EmployeeDTO = employee.copy(Option(id))
-    employees.filter(_.id === id).update(bpToUpdate)
+    await(db.run(employees.filter(_.id === id).update(bpToUpdate) ))
   }
   /**
    * Delete a employee
    * @param id
    */
-  def delete(id: Int) = database withSession { implicit session ⇒
-
-    employees.filter(_.id === id).delete
-  }
-  /**
-   * Count all employees
-   */
-  def count: Int = database withSession { implicit session ⇒
-    Query(employees.length).first
+  def delete(id: Int) =   {
+    await(db.run( employees.filter(_.id === id).delete ))
   }
 
+  val create: DBIO[Unit] = employees.schema.create
+  val drop: DBIO[Unit] = employees.schema.drop
 
-
-  def getAll = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← employees } yield s
-      q3.list.sortBy(_.id)
-  }
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      employees.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-        employees.ddl.drop
-    }
-  }
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
 
 }

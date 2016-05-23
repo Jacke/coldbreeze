@@ -10,7 +10,7 @@ import slick.driver.PostgresDriver.api._
 import slick.jdbc.meta.MTable
 import scala.concurrent.ExecutionContext.Implicits.global
 
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 
@@ -46,7 +46,7 @@ import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
 import slick.driver.PostgresDriver.api._
 import slick.jdbc.meta.MTable
 import scala.concurrent.ExecutionContext.Implicits.global
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 import scala.util.Try

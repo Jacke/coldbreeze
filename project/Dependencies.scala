@@ -41,8 +41,10 @@ object Dependencies {
   val scalaz          = "org.scalaz"                %% "scalaz-core"            % "7.1.0"
   val scalazstream    = "org.scalaz.stream" %% "scalaz-stream" % "0.7.2a"
   // DATABASES
-  val slick           = "com.typesafe.slick"        %% "slick"                  % "3.0.3"
-  val slickpg         = "com.github.tminglei"       %% "slick-pg"               % "0.14.0"
+  val slick           = "com.typesafe.slick"        %% "slick"                  % "3.1.1"
+  val slickhikari     = "com.typesafe.slick"        %% "slick-hikaricp"         % "3.1.1"
+  val slickpg         = "com.github.tminglei"       %% "slick-pg"               % "0.14.1"
+
   val slick_migrate   = "io.github.nafg"            %% "slick-migration-api"    % "0.1.1"
   val scalikejdbc     = "org.scalikejdbc"           %% "scalikejdbc"                  % "2.2.9"
   val scalikejdbcconf = "org.scalikejdbc"           %% "scalikejdbc-config"           % "2.2.9"
@@ -95,7 +97,7 @@ object Dependencies {
   val play2oauth2     = "com.nulab-inc"             %% "play2-oauth2-provider"  % "0.14.0"
   val play4           = "com.typesafe.play"         %% "play"                   % "2.4.3"
   val slackapi        = "com.github.gilbertw1"      %% "slack-scala-client"     % "0.1.3"
-  val playslick       = "com.typesafe.play"         %  "play-slick_2.11"        % "1.0.1"
+  val playslick       = "com.typesafe.play"         %  "play-slick_2.11"        % "1.1.1"
   val playauth        = "jp.t2v"                    %% "play2-auth"             % "0.12.0"
   val formtag         = "com.loicdescotte.coffeebean"% "html5tags_2.11"         % "1.2.1"
   val formtag4        = "com.loicdescotte.coffeebean"% "html5tags_2.11"         % "1.2.2"
@@ -157,7 +159,7 @@ object Dependencies {
 
   val jodatime        = "joda-time"                 % "joda-time"               % "2.7"
   val jodaconvert     = "org.joda"                  % "joda-convert"            % "1.7"
-  val jodamapper      = "com.github.tototoshi"      %% "slick-joda-mapper"      % "2.0.0"
+  val jodamapper      = "com.github.tototoshi"      %% "slick-joda-mapper"      % "2.2.0"
 
   val akkaActor       = "com.typesafe.akka"         %%  "akka-actor"            % akkaVersion
   val akkaSlf4j       = "com.typesafe.akka"         %%  "akka-slf4j"            % akkaVersion

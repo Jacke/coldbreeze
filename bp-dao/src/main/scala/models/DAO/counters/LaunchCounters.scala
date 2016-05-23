@@ -8,7 +8,7 @@ import models.DAO._
 import models.DAO.conversion.DatabaseFuture._
 import com.github.nscala_time.time.Imports._
 import models.DAO.conversion.DatabaseCred.dbConfig.driver.api._
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 
 
 import models.DAO.ProcElemDAO._

@@ -4,7 +4,7 @@ import main.scala.bprocesses.{BProcess, BPLoggerResult}
 import main.scala.simple_parts.process.ProcElems
 import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import slick.model.ForeignKeyAction
 import models.DAO.ProcElemDAO._
 import models.DAO.BPDAO._
@@ -46,7 +46,7 @@ object ReactionStateOutRefDAOF {
   import slick.driver.PostgresDriver.api._
   import slick.jdbc.meta.MTable
   import scala.concurrent.ExecutionContext.Implicits.global
-  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import com.github.tototoshi.slick.PostgresJodaSupport._
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
@@ -54,7 +54,7 @@ object ReactionStateOutRefDAOF {
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
-  val reaction_state_out_refs = ReactionStateOutRefDAO.reaction_state_out_refs
+  val reaction_state_out_refs = TableQuery[ReactionStateOutRefs]
 
   private def filterByIdsQuery(ids: List[Int]): Query[ReactionStateOutRefs, UnitReactionStateOutRef, Seq] =
     reaction_state_out_refs.filter(_.id inSetBind ids)
@@ -86,62 +86,65 @@ object ReactionStateOutRefDAOF {
 
 
 object ReactionStateOutRefDAO {
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import DatabaseCred.database
-  import models.DAO.conversion.Implicits._
+  import models.DAO.conversion.DatabaseFuture._
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
   val reaction_state_out_refs = TableQuery[ReactionStateOutRefs]
 
-  def pull_object(s: UnitReactionStateOutRef) = database withSession {
-    implicit session ⇒
-      reaction_state_out_refs returning reaction_state_out_refs.map(_.id) += s
+  private def filterByIdsQuery(ids: List[Int]): Query[ReactionStateOutRefs, UnitReactionStateOutRef, Seq] =
+    reaction_state_out_refs.filter(_.id inSetBind ids)
+  private def filterQuery(id: Int): Query[ReactionStateOutRefs, UnitReactionStateOutRef, Seq] =
+    reaction_state_out_refs.filter(_.id === id)
+
+  private def filterByReactionsQuery(ids: List[Int]): Query[ReactionStateOutRefs, UnitReactionStateOutRef, Seq] =
+    reaction_state_out_refs.filter(_.reaction inSetBind ids)
+  private def filterByReactionQuery(id: Int): Query[ReactionStateOutRefs, UnitReactionStateOutRef, Seq] =
+    reaction_state_out_refs.filter(_.reaction === id)
+
+  def pull_object(s: UnitReactionStateOutRef) =   {
+      await(db.run( reaction_state_out_refs returning reaction_state_out_refs.map(_.id) += s ))
   }
-  def get(k: Int):Option[UnitReactionStateOutRef] = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← reaction_state_out_refs if s.id === k } yield s
-      q3.list.headOption
-  }
-  def findByReactionRef(id: Int) = {
-     database withSession { implicit session =>
-       val q3 = for { s ← reaction_state_out_refs if s.reaction === id } yield s
-       q3.list
-    }
-  }
-  def findByReactionRefs(ids: List[Int]) = {
-     database withSession { implicit session =>
-       val q3 = for { s ← reaction_state_out_refs if s.reaction inSetBind ids } yield s
-       q3.list
-    }
-  }
-  def retrive(k: Int, state_ref: Int, reaction: Int):List[UnitReactionStateOut] = database withSession {
-    implicit session =>
-      findByReactionRef(k).map(e => e.reflect(state_ref, reaction))
-  }
-  def update(id: Int, switcher: UnitReactionStateOutRef) = database withSession { implicit session ⇒
-    val switcherToUpdate: UnitReactionStateOutRef = switcher.copy(Option(id))
-    reaction_state_out_refs.filter(_.id === id).update(switcherToUpdate)
-  }
-  def delete(id: Int) = database withSession { implicit session ⇒
-    reaction_state_out_refs.filter(_.id === id).delete
-  }
-  def count: Int = database withSession { implicit session ⇒
-    Query(reaction_state_out_refs.length).first
+  
+  def get(k: Int):Option[UnitReactionStateOutRef] =   {
+      await(db.run(filterQuery(k).result.headOption))
   }
 
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      reaction_state_out_refs.ddl.create
-    }
+  def findByReactionRef(id: Int) = {
+    await(db.run(filterByReactionQuery(id).result)).toList
   }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-       reaction_state_out_refs.ddl.drop
-    }
+
+  def findByReactionRefs(ids: List[Int]) = {
+    await(db.run(filterByReactionsQuery(ids).result)).toList
   }
-  def getAll = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← reaction_state_out_refs } yield s
-      q3.list.sortBy(_.id)
+
+  def retrive(k: Int, state_ref: Int, reaction: Int):List[UnitReactionStateOut] =   {
+      findByReactionRef(k).map(e => e.reflect(state_ref, reaction))
   }
+
+  def update(id: Int, switcher: UnitReactionStateOutRef) =   {
+    val switcherToUpdate: UnitReactionStateOutRef = switcher.copy(Option(id))
+    await(db.run( reaction_state_out_refs.filter(_.id === id).update(switcherToUpdate) ))
+  }
+  def delete(id: Int) =   {
+    await(db.run( reaction_state_out_refs.filter(_.id === id).delete ))
+  }
+
+
+  val create: DBIO[Unit] = reaction_state_out_refs.schema.create
+  val drop: DBIO[Unit] = reaction_state_out_refs.schema.drop
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
+
+
 }

@@ -7,6 +7,8 @@ import org.joda.time.DateTime
 //import slick.driver.PostgresDriver.api._
 import scala.concurrent.Future
 import slick.driver.PostgresDriver.api._
+import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import com.github.tminglei.slickpg.composite._
 //import com.github.tototoshi.slick.PostgresJodaSupport._
 import scala.concurrent._
@@ -35,22 +37,22 @@ class ProcessHistories(tag: Tag) extends Table[ProcessHistoryDTO](tag, "process_
 /*
   Process Histories
  */
-case class ProcessHistoryDTO(var id: Option[Int], 
-  acc: String, 
+case class ProcessHistoryDTO(var id: Option[Int],
+  acc: String,
   action: String,
-  process: Option[Int], 
+  process: Option[Int],
   what: Option[String] = None,
   what_id: Option[Int] = None,
   date: DateTime) {
-   
+
 }
 object ProcHisCom {
-  def apply(id: Option[Int], 
-    acc: String, 
-    action: String, 
-    process: Option[Int], 
-    what: Option[String] = None, 
-    what_id: Option[Int] = None, 
+  def apply(id: Option[Int],
+    acc: String,
+    action: String,
+    process: Option[Int],
+    what: Option[String] = None,
+    what_id: Option[Int] = None,
     date: DateTime = org.joda.time.DateTime.now()):ProcessHistoryDTO = {
     new ProcessHistoryDTO(id, acc, action, process, what, what_id, date)
   }
@@ -68,16 +70,28 @@ object ProcHisCom {
   def spaceElementRenamed      = "space_element_renamed"
   def spaceElementDeleted      = "space_element_deleted"
   def spaceElementMovedUp      = "space_element_up"
-  def spaceElementMovedDown    = "element_down"  
+  def spaceElementMovedDown    = "element_down"
   def permCreated              = "perm_created"
   def permDeleted              = "perm_deleted"
 }
-                           
-object ProcHistoryDAO {
-  import scala.util.Try
-  import DatabaseCred.database
 
-  
+object ProcHistoryDAO {
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._
+
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+
 
   case object ProcCreated
   case object ProcUpdated
@@ -93,78 +107,40 @@ object ProcHistoryDAO {
 
 
   */
-  //def pull_async(s: ProcessHistoryDTO):Future[Int] = {
-  //  try database.run(proc_histories += s)
-  //  finally database.close
-  //}
-  def pull_object(s: ProcessHistoryDTO) = database withSession {
-    implicit session ⇒
+
+  def pull_object(s: ProcessHistoryDTO) =   {
+
       Future {
         controllers.UserActor.updateNotifiy(s.action, s.acc)
       }
-      proc_histories returning proc_histories.map(_.id) += s
+      await(db.run(  proc_histories returning proc_histories.map(_.id) += s ))
   }
-  def getByProcess(proc_id: Int):List[models.DAO.ProcessHistoryDTO] = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← proc_histories if s.process === proc_id } yield s 
-      q3.list//.headOption
+  def getByProcess(proc_id: Int):List[models.DAO.ProcessHistoryDTO] =   {
+
+      val q3 = for { s ← proc_histories if s.process === proc_id } yield s
+      await(db.run(q3.result)).toList//.headOption
   }
   def getByProcessF(proc_id: Int):Future[Seq[models.DAO.ProcessHistoryDTO]] = ProcHistoryDAOF.getByProcessF(proc_id)
-  
 
-  /*
-  def get(k: Int) = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← proc_histories if s.id === k } yield s 
-      q3.list.headOption
-  }
-    /**
-   * Update a business service
-   * @param id
-   * @param business service
-   */
-  def update(id: Int, history: ProcessHistoryDTO) = database withSession { implicit session ⇒
+
+  def update(id: Int, history: ProcessHistoryDTO) =   {
     val historyToUpdate: ProcessHistoryDTO = history.copy(Option(id))
-    proc_histories.filter(_.id === id).update(historyToUpdate)
-  } /**
-   * Delete a business service
-   * @param id
-   */
-  def delete(id: Int) = database withSession { implicit session ⇒
-
-    proc_histories.filter(_.id === id).delete
+    await(db.run(  proc_histories.filter(_.id === id).update(historyToUpdate) ))
   }
-  /**
-   * Count all business_services
-   */
-  def count: Int = database withSession { implicit session ⇒
-    Query(proc_histories.length).first
+  def delete(id: Int) =   {
+    await(db.run(  proc_histories.filter(_.id === id).delete ))
   }
 
 
 
-  def getAll = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← proc_histories } yield s 
-      q3.list.sortBy(_.id)
 
-  }*/
+    val create: DBIO[Unit] = proc_histories.schema.create
+    val drop: DBIO[Unit] = proc_histories.schema.drop
 
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      proc_histories.schema.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-        proc_histories.schema.drop
-    }
-  }
+    def ddl_create = db.run(create)
+    def ddl_drop = db.run(drop)
+
 }
-
-
 /*
   Process commits
 
@@ -191,14 +167,14 @@ object ProcCommitDAO {
   import DatabaseCred.database
   val proc_commits = TableQuery[ProcessCommits]
   def ddl_create = {
-    database withSession {
-      implicit session =>
+      {
+
         proc_commits.schema.create
     }
   }
   def ddl_drop = {
-    database withSession {
-      implicit session =>
+      {
+
         proc_commits.schema.drop
     }
   }

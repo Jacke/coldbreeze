@@ -192,7 +192,7 @@ def schemes(BPid: Int, station_id: Int) = SecuredAction { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, BPid)) {
 
 
-    val logs = BPLoggerDAO.findByStation(station_id)
+    val logs = BPLoggerDAOF.findByStation(station_id)
     val elem_logs_ids = logs.diff(List(logs.last)).filter(log => log.element.isDefined).map(_.element)
     val space_logs_ids = logs.diff(List(logs.last)).filter(log => log.space_elem.isDefined).map(_.space_elem)
     // USER PERM IF ACTOR

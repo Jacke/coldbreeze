@@ -2,6 +2,8 @@
 package models.DAO
 
 import slick.driver.PostgresDriver.api._
+import com.github.nscala_time.time.Imports._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import slick.model.ForeignKeyAction
 import models.DAO.conversion.{DatabaseCred, Implicits}
 import slick.model.ForeignKeyAction
@@ -29,50 +31,48 @@ case class LaunchElementSlatDTO(
   updated_at: Option[org.joda.time.DateTime] = None )
 
 object LaunchElementSlatDAO {
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import DatabaseCred.database
+  import models.DAO.conversion.DatabaseFuture._
+
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
 
   val launch_element_slats = TableQuery[LaunchElementSlats]
 
 
-  def pull_object(s: LaunchElementSlatDTO) = database withSession {
-    implicit session ⇒
-      launch_element_slats returning launch_element_slats.map(_.id) += s.copy(created_at = Some(org.joda.time.DateTime.now),
-                                                                              updated_at = Some(org.joda.time.DateTime.now))
+  def pull_object(s: LaunchElementSlatDTO) =   {
+
+      await(db.run(  launch_element_slats returning launch_element_slats.map(_.id) += s.copy(created_at = Some(org.joda.time.DateTime.now),
+                                                                              updated_at = Some(org.joda.time.DateTime.now)) ))
   }
-  def get(k: Int) = database withSession {
-    implicit session ⇒
+  def get(k: Int) =   {
+
       val q3 = for { s ← launch_element_slats if s.id === k } yield s
-      q3.list.headOption
+      await(db.run(q3.result.headOption))
   }
-  def update(id: Int, annotation: LaunchElementSlatDTO) = database withSession { implicit session ⇒
+  def update(id: Int, annotation: LaunchElementSlatDTO) =   {
     val launch_element_slatsUpdate: LaunchElementSlatDTO = annotation.copy(Option(id))
-    launch_element_slats.filter(_.id === id).update(launch_element_slatsUpdate)
+    await(db.run(  launch_element_slats.filter(_.id === id).update(launch_element_slatsUpdate) ))
   }
 
 
-  def delete(id: Int) = database withSession { implicit session ⇒
-    launch_element_slats.filter(_.id === id).delete
+  def delete(id: Int) =   {
+    await(db.run(  launch_element_slats.filter(_.id === id).delete ))
   }
-  def count: Int = database withSession { implicit session ⇒
-    Query(launch_element_slats.length).first
-  }
-  def getAll = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← launch_element_slats } yield s
-      q3.list.sortBy(_.id)
-  }
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      launch_element_slats.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-        launch_element_slats.ddl.drop
-    }
-  }
+  val create: DBIO[Unit] = launch_element_slats.schema.create
+  val drop: DBIO[Unit] = launch_element_slats.schema.drop
+
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
 
 }

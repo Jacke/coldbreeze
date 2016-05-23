@@ -4,7 +4,7 @@ import main.scala.bprocesses.{BProcess, BPLoggerResult}
 import main.scala.simple_parts.process.ProcElems
 import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
 import slick.model.ForeignKeyAction
 
@@ -40,7 +40,7 @@ class SessionReactionRefs(tag: Tag) extends Table[SessionUnitReaction](tag, "ses
   def elementFK   = foreignKey("ses_react_element_fk", element, SessionElemTopologDAO.session_elem_topologs)(_.id, onDelete = ForeignKeyAction.Cascade)
   def bpFK        = foreignKey("ses_react_bprocess_fk", bprocess, bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
   def state_FK    = foreignKey("ses_react_state_fk", from_state, models.DAO.SessionInitialStateDAO.session_initial_states)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def sessionFK  = foreignKey("react_topo_s_sp_session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def sessionFK  = foreignKey("react_topo_s_sp_session_fk", session,  models.DAO.BPSessionDAOF.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?,
            bprocess,
@@ -64,21 +64,19 @@ case class SessionUnitReactionContainer(units: Future[Seq[SessionUnitReaction]],
 
 object SessionReactionDAOF {
   import akka.actor.ActorSystem
-
-
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._
   import slick.jdbc.meta.MTable
   import scala.concurrent.ExecutionContext.Implicits.global
-  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import com.github.tototoshi.slick.PostgresJodaSupport._
   import scala.concurrent.duration.Duration
   import scala.util.Try
   import models.DAO.conversion.DatabaseFuture._
     //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
-  val session_reactions = SessionReactionDAO.session_reactions
+  val session_reactions = TableQuery[SessionReactionRefs]
 
   //private def filterQueryByProcess(process: Int): Query[ProcessHistoriesF, ProcessHistoryDTO, Seq] =
   //  bpsessions.filter(_.process === process)
@@ -276,39 +274,56 @@ def findUnapplied(id: Int, session_id: Int):Future[SessionUnitFutureContainer] =
 
 
 object SessionReactionDAO {
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
   import scala.util.Try
-  import DatabaseCred.database
-  import models.DAO.conversion.Implicits._
+  import models.DAO.conversion.DatabaseFuture._
+    //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
   val session_reactions = TableQuery[SessionReactionRefs]
 
-  def pull_object(s: SessionUnitReaction) = database withSession {
-    implicit session ⇒
-      session_reactions returning session_reactions.map(_.id) += s
+  //private def filterQueryByProcess(process: Int): Query[ProcessHistoriesF, ProcessHistoryDTO, Seq] =
+  //  bpsessions.filter(_.process === process)
+  private def filterQuery(id: Int): Query[SessionReactionRefs, SessionUnitReaction, Seq] =
+    session_reactions.filter(_.id === id)
+  private def filterBySessionQuery(id: Int): Query[SessionReactionRefs, SessionUnitReaction, Seq] =
+    session_reactions.filter(_.session === id)
+  private def filterByProcessQuery(id: Int): Query[SessionReactionRefs, SessionUnitReaction, Seq] =
+    session_reactions.filter(_.bprocess === id)
+  private def filterByProcessesQuery(id: List[Int]): Query[SessionReactionRefs, SessionUnitReaction, Seq] =
+    session_reactions.filter(_.bprocess inSetBind id)
+
+  def pull_object(s: SessionUnitReaction) =   {
+      await( db.run( session_reactions returning session_reactions.map(_.id) += s ))
   }
-  def get(k: Int):Option[SessionUnitReaction] = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← session_reactions if s.id === k } yield s
-      q3.list.headOption
+
+  def get(k: Int):Option[SessionUnitReaction] =   {
+      await(db.run(filterQuery(k).result.headOption))
   }
+
   def findByBP(id: Int):List[SessionUnitReaction] = {
-     database withSession { implicit session =>
-       val q3 = for { s ← session_reactions if s.bprocess === id } yield s
-       q3.list
-    }
+    await(db.run(filterByProcessQuery(id).result)).toList
+
   }
+
   def findBySession(id: Int):List[SessionUnitReaction] = {
-     database withSession { implicit session =>
-       val q3 = for { s ← session_reactions if s.session === id } yield s
-       q3.list
-    }
+    await(db.run(filterBySessionQuery(id).result)).toList
+
   }
+
   /**
    * Find session_reactions that are not executed in specific session(they may have executed,
    * but state out cant be equeal to session state)
    */
   def findUnapplied(id: Int, session_id: Int):List[SessionUnitReaction] = {
-     database withSession { implicit session =>
-       val session_states = BPSessionStateDAO.findByBPAndSession(id, session_id)
+       val session_states = await(BPSessionStateDAOF.findByBPAndSession(id, session_id) )
        val session_reactions:List[SessionUnitReaction] = findBySession(session_id)
        val state_outs = SessionReactionStateOutDAO.findByReactions(session_reactions.flatMap(_.id))
 
@@ -329,11 +344,10 @@ object SessionReactionDAO {
 
        }
        unapplied_reactions
-    }
   }
+
   def findCurrentUnappliedContainer(id: Int, session_id: Int):Option[CurrentSessionReactionContainer] = {
-     database withSession { implicit session =>
-       val session_states = BPSessionStateDAO.findByBPAndSession(id, session_id)
+       val session_states = await(BPSessionStateDAOF.findByBPAndSession(id, session_id))
        val session_reactions:List[SessionUnitReaction] = findByBP(id)
        val state_outs = SessionReactionStateOutDAO.findByReactions(session_reactions.flatMap(_.id))
 
@@ -366,37 +380,21 @@ object SessionReactionDAO {
         }
         case _ => None
        }
-
-    }
   }
 
 
-  def update(id: Int, switcher: SessionUnitReaction) = database withSession { implicit session ⇒
+  def update(id: Int, switcher: SessionUnitReaction) =   {
     val switcherToUpdate: SessionUnitReaction = switcher.copy(Option(id))
-    session_reactions.filter(_.id === id).update(switcherToUpdate)
+    await( db.run(session_reactions.filter(_.id === id).update(switcherToUpdate) ))
   }
-  def delete(id: Int) = database withSession { implicit session ⇒
-    session_reactions.filter(_.id === id).delete
-  }
-  def count: Int = database withSession { implicit session ⇒
-    Query(session_reactions.length).first
+  def delete(id: Int) =   {
+    await( db.run(session_reactions.filter(_.id === id).delete ))
   }
 
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      session_reactions.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-       session_reactions.ddl.drop
-    }
-  }
-  def getAll = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← session_reactions } yield s
-      q3.list.sortBy(_.id)
-  }
+
+  val create: DBIO[Unit] = session_reactions.schema.create
+  val drop: DBIO[Unit] = session_reactions.schema.drop
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
+
 }

@@ -4,7 +4,7 @@ import models.DAO._
 import models.DAO.conversion.DatabaseFuture._  
 import com.github.nscala_time.time.Imports._
 import models.DAO.conversion.DatabaseCred.dbConfig.driver.api._
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 
 class Comments(tag: Tag) extends Table[Comment](tag, "comments") {
   def id             = column[Long]("id", O.PrimaryKey, O.AutoInc)
@@ -15,7 +15,7 @@ class Comments(tag: Tag) extends Table[Comment](tag, "comments") {
 
   def maccFK      = foreignKey("commentAuthor_macc_fk", author, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
 
-//  def launchFK  = foreignKey("launch_warps_launch_fk", launch, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)  
+//  def launchFK  = foreignKey("launch_warps_launch_fk", launch, models.DAO.BPSessionDAOF.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)  
 
   def * = (id.?, body, created_at, updated_at) <> (Comment.tupled, Comment.unapply)
 }

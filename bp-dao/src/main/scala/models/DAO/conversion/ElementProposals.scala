@@ -12,7 +12,7 @@ import main.scala.simple_parts.process.Units._
  * process elements
  **/
 object ElementProposals {
-  
+
 def dropRefElements() = {
       // PH
       RefDAO.deleteByTitle("Placeholder")
@@ -26,12 +26,12 @@ def dropRefElements() = {
 def addRefElements() = {
 /**
 *******************************
-******************************** * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  
+******************************** * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 *******************************
-**/    	
+**/
 // PH
-val ph_ref = RefDAO.pull_object(Ref(None, 
-	"Placeholder", "", 
+val ph_ref = RefDAO.pull_object(Ref(None,
+	"Placeholder", "",
 	Some("Element used for fill the hole betwen other elements. When it's launch, nothing happens and it will be skipped.")))
 
 
@@ -43,17 +43,17 @@ val ph_el = ProcElemReflectionDAO.pull_object(UnitElementRef(id = None,
                         type_title = "placeholder",
                         space_own = None,
                         order = 1,
-created_at = None,
-updated_at = None) )
+                        created_at = None,
+                        updated_at = None) )
 
 val ph_topo = makeTopolog(ref = ph_ref, 
-	front_elem_id = Some(ph_el), 
+	front_elem_id = Some(ph_el),
 	space_elem_id = None)
 
 val ph_el_state = BPStateRefDAO.pull_object(BPStateRef(
-  None, 
+  None,
   reflection = ph_ref,
-  title = "invoked", 
+  title = "invoked",
   neutral = "uninvoked",
   process_state = false,
   on= false,
@@ -68,8 +68,8 @@ val ph_el_state = BPStateRefDAO.pull_object(BPStateRef(
   ))
 
 /*
-reflection, 
-title, 
+reflection,
+title,
 neutral,
 process_state,
 on,
@@ -77,7 +77,7 @@ on_rate,
 front_elem_id,
 space_elem_id,
 space_elem_id,
-created_at, updated_at, 
+created_at, updated_at,
 lang,
 middle,
 middleable*/
@@ -86,8 +86,8 @@ middleable*/
 
 SwitcherRefDAO.pull_object(UnitSwitcherRef(None,
 reflection = ph_ref,
-switch_type = "n", 
-priority = 2,                            
+switch_type = "n",
+priority = 2,
 state_ref = ph_el_state,
 fn = "inc",
 target = "step",
@@ -99,12 +99,12 @@ override_group = 0))
 
 /**
 *******************************
-******************************** * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  
+******************************** * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 *******************************
 */
 // CF
-val cf_ref = RefDAO.pull_object(Ref(None, 
-	"Confirmation", "", 
+val cf_ref = RefDAO.pull_object(Ref(None,
+	"Confirmation", "",
 	Some("Element used for confirming action. When it's launch, and it's not confirmed, process will be paused until confirmed reaction was executed.")))
 
 
@@ -116,14 +116,14 @@ val cf_el_id = ProcElemReflectionDAO.pull_object(UnitElementRef(None,
                         type_title = "confirm",
                         space_own = None,
                         order = 1) )
-val cf_elem_topo = makeTopolog(ref = cf_ref, 
-	front_elem_id = Some(cf_el_id), 
+val cf_elem_topo = makeTopolog(ref = cf_ref,
+	front_elem_id = Some(cf_el_id),
 	space_elem_id = None)
 
 val cf_el_state_id_inv = BPStateRefDAO.pull_object(BPStateRef(
-  None, 
+  None,
   reflection = cf_ref,
-  title = "invoked", 
+  title = "invoked",
     middle = "invoking",
   middleable = true,
   neutral=  "uninvoked",
@@ -134,9 +134,9 @@ val cf_el_state_id_inv = BPStateRefDAO.pull_object(BPStateRef(
   space_elem_id = None,
   space_id = None))
 val cf_el_state_id_cf = BPStateRefDAO.pull_object(BPStateRef(
-  None, 
+  None,
   reflection = cf_ref,
-  title = "confirmed", 
+  title = "confirmed",
   middle = "confirming",
   middleable = true,
   neutral=  "unconfirmed",
@@ -149,16 +149,16 @@ val cf_el_state_id_cf = BPStateRefDAO.pull_object(BPStateRef(
 
 val first_sw = SwitcherRefDAO.pull_object(UnitSwitcherRef(None,
 reflection = cf_ref,
-switch_type = "p", 
-priority= 2,                            
+switch_type = "p",
+priority= 2,
 state_ref = cf_el_state_id_inv,
 fn = "paused",
 target = "process",
 override_group = 1))
 val second_sw = SwitcherRefDAO.pull_object(UnitSwitcherRef(None,
 reflection = cf_ref,
-switch_type = "n", 
-priority= 2,                            
+switch_type = "n",
+priority= 2,
 state_ref = cf_el_state_id_cf,
 fn = "inc",
 target = "step",
@@ -167,7 +167,7 @@ override_group = 1))
 val cf_reaction = ReactionRefDAO.pull_object(UnitReactionRef(
     None,
     reflection = cf_ref,
-    autostart = false, 
+    autostart = false,
     title = "Confirm",
     element = cf_elem_topo,
     from_state = None))
@@ -192,12 +192,12 @@ val cf_reaction_out = ReactionStateOutRefDAO.pull_object(UnitReactionStateOutRef
 
 /**
 *******************************
-******************************** * * * * * * * * * * * * * * * * * * * * * * * * * * * * *  
+******************************** * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 *******************************
 */
 // CN
- val cn_ref = RefDAO.pull_object(Ref(None, 
-	"Container", "", 
+ val cn_ref = RefDAO.pull_object(Ref(None,
+	"Container", "",
 	Some("Element used for storing other elements by decomposing hard action to easy one. May have containers too inside.")))
 
 
@@ -210,14 +210,14 @@ val cn_elem_id = ProcElemReflectionDAO.pull_object(UnitElementRef(None,
                         space_own = None,
                         order = 1) )
 
-makeTopolog(ref = cn_ref, 
-	front_elem_id = Some(cn_elem_id), 
+makeTopolog(ref = cn_ref,
+	front_elem_id = Some(cn_elem_id),
 	space_elem_id = None)
 
 val cn_el_state_id_inv = BPStateRefDAO.pull_object(BPStateRef(
-  None, 
+  None,
   reflection = cn_ref,
-  title = "invoked", 
+  title = "invoked",
     middle = "invoking",
   middleable = true,
   neutral=  "uninvoked",
@@ -231,27 +231,27 @@ val cn_el_state_id_inv = BPStateRefDAO.pull_object(BPStateRef(
 
 val cn_first_sw = SwitcherRefDAO.pull_object(UnitSwitcherRef(None,
 reflection = cn_ref,
-switch_type = "inn", 
-priority= 2,                            
+switch_type = "inn",
+priority= 2,
 state_ref = cn_el_state_id_inv,
 fn = "inn",
 target = "space",
 override_group = 0))
 
 val cn_space = SpaceReflectionDAO.pull_object(UnitSpaceRef(
-   None, 
+   None,
    reflection = cn_ref,
-    index = 1, 
-    container = true, 
-    subbrick = false, 
+    index = 1,
+    container = true,
+    subbrick = false,
     brick_front = Some(cn_elem_id),
-    brick_nested = None, 
+    brick_nested = None,
     nestingLevel = 1
  ))
 val cn_space_state = BPStateRefDAO.pull_object(BPStateRef(
-  None, 
+  None,
   reflection = cn_ref,
-  title = "lap", 
+  title = "lap",
   neutral=  "",
   process_state= false,
   on= false,
@@ -261,8 +261,8 @@ val cn_space_state = BPStateRefDAO.pull_object(BPStateRef(
   space_id = Some(cn_space)))
 val cn_space_sw = SwitcherRefDAO.pull_object(UnitSwitcherRef(None,
 reflection = cn_ref,
-switch_type = "outn", 
-priority= 2,                            
+switch_type = "outn",
+priority= 2,
 state_ref = cn_space_state,
 fn = "outn",
 target = "space",
@@ -294,14 +294,14 @@ updated_at:Option[org.joda.time.DateTime] = None
 
 
 
-private def makeTopolog(ref: Int, 
-	front_elem_id: Option[Int], 
+private def makeTopolog(ref: Int,
+	front_elem_id: Option[Int],
 	space_elem_id: Option[Int]):Int = {
-    ReflectElemTopologDAO.pull_object(RefElemTopology(None, 
-  ref, 
-  front_elem_id, 
-  space_elem_id, 
-  "", 
+    ReflectElemTopologDAO.pull_object(RefElemTopology(None,
+  ref,
+  front_elem_id,
+  space_elem_id,
+  "",
   None))
 }
 

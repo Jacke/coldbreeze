@@ -2,7 +2,7 @@ package models
 
 
 
-//import slick.driver.PostgresDriver.simple._
+//import slick.driver.PostgresDriver.api._
 import models.DAO.conversion.DatabaseCred
 //import slick.driver.PostgresDriver.api._
 import models.DAO._
@@ -10,7 +10,7 @@ import models.DAO._
 import models.DAO.conversion.DatabaseFuture._  
 import com.github.nscala_time.time.Imports._
 import models.DAO.conversion.DatabaseCred.dbConfig.driver.api._
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 
 class LaunchShares(tag: Tag) extends Table[LaunchShareDTO](tag, "launch_shares") {
   def id    = column[Long]("id", O.PrimaryKey, O.AutoInc)
@@ -22,7 +22,7 @@ class LaunchShares(tag: Tag) extends Table[LaunchShareDTO](tag, "launch_shares")
 			workbench_id,
 			share_hash) <> (LaunchShareDTO.tupled, LaunchShareDTO.unapply)
   def wbFK  = foreignKey("launch_shares_biz_business_fk", workbench_id, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def sessionFK   = foreignKey("launch_shares_sp_session_fk", launch_id, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def sessionFK   = foreignKey("launch_shares_sp_session_fk", launch_id, models.DAO.BPSessionDAOF.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }
 

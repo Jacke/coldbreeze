@@ -3,7 +3,7 @@ package models.DAO
 
 import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
 import slick.model.ForeignKeyAction
 
@@ -56,7 +56,7 @@ object BPDAOF {
   import slick.driver.PostgresDriver.api._
   import slick.jdbc.meta.MTable
   import scala.concurrent.ExecutionContext.Implicits.global
-  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import com.github.tototoshi.slick.PostgresJodaSupport._
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
@@ -96,6 +96,9 @@ object BPDAOF {
           s
   }
 
+  def getAll = {
+    await(db.run(bprocesses.result)).toList
+  }
 
   def findByBusiness(business: Int):Future[Seq[BProcessDTO]] = {
     db.run(filterByWorkbenchQuery(business).result)
@@ -116,61 +119,77 @@ object BPDAOF {
 }
 
 object BPDAO {
-
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._
+  import slick.jdbc._
 
-  import DatabaseCred.database
-  import models.DAO.conversion.Implicits._
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+
+  val bprocesses = TableQuery[BProcesses]
 
   def get(id: Int):Option[BProcessDTO] = {
-    BPDAOF.await(BPDAO.get(id))
+    BPDAOF.await(BPDAOF.get(id))
+  }
+  def getAll = {
+    BPDAOF.await(db.run(bprocesses.result)).toList
   }
   def pull_object(s: BProcessDTO) = {
-//    val process = s.copy(created_at = Some(org.joda.time.DateTime.now()),updated_at = Some(org.joda.time.DateTime.now()) )
-//    bprocesses returning bprocesses.map(_.id) += process
+     val process = s.copy(created_at = Some(org.joda.time.DateTime.now()),updated_at = Some(org.joda.time.DateTime.now()) )
+     BPDAOF.await(db.run( bprocesses returning bprocesses.map(_.id) += process ))
   }
-}
-/*
 
-  def findOwnerByBP(BPid: Int) = database withSession {
-    implicit session =>
+  def delete(id: Int) =   {
+    get(id) match {
+      case Some(proc) => {
+        CachedRemovedResourcesDAO.makeResourceRemoveEntity(
+        scope = proc.business.toString,
+        action = "removed",
+        resourceTitle = "processes",
+        resourceId = s"$id")
+        await(db.run(bprocesses.filter(_.id === id).delete ))
+      }
+      case _ => -1
+    }
+  }
+
+
+  def findOwnerByBP(BPid: Int) =   {
       val q3 = for { bp ← bprocesses
                      srv <- models.DAO.resources.BusinessServiceDAO.business_services
         if bp.id === BPid && srv.id === bp.service  } yield srv
-      q3.list.headOption.get.master_acc
+      await(db.run(q3.result.headOption)).get.master_acc
 
   }
-  def findByBusiness(business: Int):List[BProcessDTO] = database withSession {
-    implicit session =>
+  def findByBusiness(business: Int):List[BProcessDTO] =   {
     val q3 = for { s ← bprocesses if s.business === business } yield s
-    q3.list
+    await(db.run(q3.result)).toList
   }
-  def getByServices(services: List[Int]) = database withSession {
-    implicit session =>
+  def getByServices(services: List[Int]) =   {
       val q3 = for { s ← bprocesses if s.service inSetBind services } yield s
-      q3.list
+      await(db.run(q3.result)).toList
   }
-  def checkTitle(title: String) = database withSession {
-    implicit service =>
+  def checkTitle(title: String) = {
      val q3 = for { s ← bprocesses if s.title === title } yield s
-      q3.list.headOption
+     await(db.run(q3.result.headOption))
   }
 
-  def pull(id: Option[Int] = None, title: String, service: Int, business: Int) = Try(database withSession {
-    implicit session ⇒
-
+  def pull(id: Option[Int] = None, title: String, service: Int, business: Int) = Try(  {
       bprocesses += BProcessDTO(id, title, service, business)
   }).isSuccess
 
-  def get(k: Int) = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← bprocesses if s.id === k } yield s
-      q3.list.headOption //.map(Supplier.tupled(_))
-  }
 
-  def update(id: Int, bprocess: BProcessDTO) = database withSession { implicit session ⇒
+  def update(id: Int, bprocess: BProcessDTO) =   {
     val bpToUpdate: BProcessDTO = bprocess.copy(Option(id))
-
     CachedRemovedResourcesDAO.makeResourceUpdateEntity(
     scope = bpToUpdate.business.toString,
     action = "updated",
@@ -182,49 +201,16 @@ object BPDAO {
       "state_machine_type" -> bprocess.state_machine_type.toString
     ))
 
-    bprocesses.filter(_.id === id).update(bpToUpdate)
+    await(db.run( bprocesses.filter(_.id === id).update(bpToUpdate) ))
   }
 
-  def delete(id: Int) = database withSession { implicit session ⇒
-    get(id) match {
-      case Some(proc) => {
-        CachedRemovedResourcesDAO.makeResourceRemoveEntity(
-        scope = proc.business.toString,
-        action = "removed",
-        resourceTitle = "processes",
-        resourceId = s"$id")
-        bprocesses.filter(_.id === id).delete
-      }
-      case _ => -1
-    }
-  }
 
-  def count: Int = database withSession { implicit session ⇒
-    Query(bprocesses.length).first
-  }
 
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      bprocesses.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-       bprocesses.ddl.drop
-    }
-  }
+  val create: DBIO[Unit] = bprocesses.schema.create
+  val drop: DBIO[Unit] = bprocesses.schema.drop
 
-  def getAll = database withSession {
-    implicit session ⇒ // TODO: s.service === 1 CHANGE DAT
-      val q3 = for { s ← bprocesses } yield s
-      q3.list.sortBy(_.id)
-    //suppliers foreach {
-    //  case (id, title, address, city, state, zip) ⇒
-    //    Supplier(id, title, address, city, state, zip)
-    //}
-  }
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
+
+
 }
-
-*/

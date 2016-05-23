@@ -2,7 +2,7 @@ package models.DAO.resources
 
 import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 
 import slick.model.ForeignKeyAction
 //import slick.driver.PostgresDriver.api._
@@ -35,7 +35,7 @@ object BusinessServiceDAOF {
   import slick.driver.PostgresDriver.api._
   import slick.jdbc.meta.MTable
   import scala.concurrent.ExecutionContext.Implicits.global
-  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import com.github.tototoshi.slick.PostgresJodaSupport._
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
@@ -44,7 +44,7 @@ object BusinessServiceDAOF {
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
-  val business_services = BusinessServiceDAO.business_services
+  val business_services = TableQuery[BusinessServices]
 
   private def filterQuery(id: Int): Query[BusinessServices, BusinessServiceDTO, Seq] =
     business_services.filter(_.id === id)
@@ -59,96 +59,83 @@ object BusinessServiceDAOF {
 }
 
 object BusinessServiceDAO {
-  import scala.util.Try
-  import DatabaseCred.database
+  import akka.actor.ActorSystem
 
+
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._
+
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
   val business_services = TableQuery[BusinessServices]
 
+  private def filterQuery(id: Int): Query[BusinessServices, BusinessServiceDTO, Seq] =
+    business_services.filter(_.id === id)
+  private def filterByBusinessQuery(k: Int): Query[BusinessServices, BusinessServiceDTO, Seq] =
+    for { s ← business_services
+          b <- s.business if b.id === k } yield s
+  private def filterBusinessesQuery(k: Int) =
+    for { s ← business_services
+          b <- s.business if b.id === k } yield (s, b)
+
+  private def filterQueryEmail(email: String): Query[BusinessServices, BusinessServiceDTO, Seq] =
+      business_services.filter(_.master_acc === email)
 
 
 
-  def pull_object(s: BusinessServiceDTO) = database withSession {
-    implicit session ⇒
-      business_services returning business_services.map(_.id) += s
+  def pull_object(s: BusinessServiceDTO) =   {
+      await(db.run( business_services returning business_services.map(_.id) += s ))
   }
 
-  def pull(id: Option[Int] = None, title: String, business_id: Int, master_acc:String) = Try(database withSession {
-    implicit session ⇒
-      business_services += BusinessServiceDTO(id, title, business_id, master_acc)
-  }).isSuccess
-
-  def get(k: Int) = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← business_services if s.id === k } yield s
-      q3.list.headOption
+  def get(k: Int) =   {
+    await(db.run(filterQuery(k).result.headOption))
   }
-  def getBusiness(k: Int) = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← business_services
-                     b <- s.business if s.id === k } yield (s, b)
-      q3.list.headOption
-  }
-  def getByBusiness(k: Int) = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← business_services
-                     b <- s.business if b.id === k } yield (s)
-      q3.list.headOption
-  }
-  def getAllByBusiness(k: Int) = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← business_services
-                     b <- s.business if b.id === k } yield (s)
-      q3.list
+  def getAll =   {
+    await(db.run(business_services.result)).toList
   }
 
-  def getByMaster(email: String) = database withSession {
-    implicit session =>
-    val q3 = for { s ← business_services if s.master_acc === email } yield s
-    q3.list.sortBy(_.id)
+  def getBusiness(k: Int) =   {
+      await(db.run(filterBusinessesQuery(k).result.headOption))
   }
-  /**
-   * Update a business service
-   * @param id
-   * @param business service
-   */
-  def update(id: Int, businessService: BusinessServiceDTO) = database withSession { implicit session ⇒
+  def getByBusiness(k: Int) =   {
+    await(db.run(filterByBusinessQuery(k).result.headOption))
+  }
+
+  def getAllByBusiness(k: Int) =   {
+    await(db.run(filterByBusinessQuery(k).result)).toList
+  }
+
+
+  def getByMaster(email: String) =   {
+    await(db.run(filterQueryEmail(email).result)).toList.sortBy(_.id)
+  }
+
+
+  def update(id: Int, businessService: BusinessServiceDTO) =   {
     val bpToUpdate: BusinessServiceDTO = businessService.copy(Option(id))
-    business_services.filter(_.id === id).update(bpToUpdate)
-  } /**
-   * Delete a business service
-   * @param id
-   */
-  def delete(id: Int) = database withSession { implicit session ⇒
-    business_services.filter(_.id === id).delete
+    await(db.run( business_services.filter(_.id === id).update(bpToUpdate) ))
   }
-  /**
-   * Count all business_services
-   */
-  def count: Int = database withSession { implicit session ⇒
-    Query(business_services.length).first
+
+  def delete(id: Int) =   {
+    await(db.run( business_services.filter(_.id === id).delete ))
   }
 
 
-  def getAll = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← business_services } yield s //<> (BusinessService.tupled, BusinessService.unapply _)
-      q3.list.sortBy(_.id)
-    //suppliers foreach {
-    //  case (id, title, address, city, state, zip) ⇒
-    //    Supplier(id, title, address, city, state, zip)
-    //}
-  }
 
-   def ddl_create = {
-    database withSession {
-      implicit session =>
-      business_services.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-        business_services.ddl.drop
-    }
-  }
+  val create: DBIO[Unit] = business_services.schema.create
+  val drop: DBIO[Unit] = business_services.schema.drop
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
+
+
+
 }

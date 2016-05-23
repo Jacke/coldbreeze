@@ -4,7 +4,7 @@ package models.DAO.sessions
 import slick.model.ForeignKeyAction
 import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 
 import models.DAO.BPDAO._
 import models.DAO.resources.BusinessDTO._
@@ -37,7 +37,7 @@ class SessionProcElements(tag: Tag) extends Table[SessionUndefElement](tag, "ses
 
   def businessFK = foreignKey("s_proc_el_business_fk", business, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
   def bpFK       = foreignKey("s_proc_el_bprocess_fk", bprocess, models.DAO.BPDAOF.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def sessionFK  = foreignKey("s_proc_el_session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def sessionFK  = foreignKey("s_proc_el_session_fk", session,  models.DAO.BPSessionDAOF.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }
 
@@ -96,14 +96,12 @@ case class SessionUndefElement(id: Option[Int],
 }
 object SessionProcElementDAOF {
 import akka.actor.ActorSystem
-
-
 import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
 //import slick.driver.JdbcProfile
 import slick.driver.PostgresDriver.api._
 import slick.jdbc.meta.MTable
 import scala.concurrent.ExecutionContext.Implicits.global
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 import scala.util.Try
@@ -112,8 +110,7 @@ import models.DAO.conversion.DatabaseFuture._
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
-  val session_proc_elements = SessionProcElementDAO.session_proc_elements
-
+  val session_proc_elements = TableQuery[SessionProcElements]
   //private def filterQueryByProcess(process: Int): Query[ProcessHistoriesF, ProcessHistoryDTO, Seq] =
   //  bpsessions.filter(_.process === process)
   private def filterQuery(id: Int): Query[SessionProcElements, SessionUndefElement, Seq] =
@@ -123,9 +120,10 @@ import models.DAO.conversion.DatabaseFuture._
   private def filterBySessionsQuery(ids: List[Int]): Query[SessionProcElements, SessionUndefElement, Seq] =
     session_proc_elements.filter(_.session inSetBind ids)
 
-    private def filterByLaunchesQuery(ids: List[Int]): Query[SessionProcElements, SessionUndefElement, Seq] =
-      session_proc_elements.filter(_.session inSetBind ids)
-    def findByLaunchesIds(bpsId: List[Int]) = db.run(filterByLaunchesQuery(bpsId).result)
+  private def filterByLaunchesQuery(ids: List[Int]): Query[SessionProcElements, SessionUndefElement, Seq] =
+    session_proc_elements.filter(_.session inSetBind ids)
+
+  def findByLaunchesIds(bpsId: List[Int]) = db.run(filterByLaunchesQuery(bpsId).result)
 
 
   def findBySessionLength(session_id: Int):Future[Int] = {
@@ -157,133 +155,146 @@ def findById(id: Int):Future[Option[SessionUndefElement]] = {
 }
 
 object SessionProcElementDAO {
-  import DatabaseCred.database
-  import models.DAO.BPDAOF.bprocesses
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._
 
-
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
   val session_proc_elements = TableQuery[SessionProcElements]
-  /**
-   * Find a specific entity by id.
-   */
+
+  //private def filterQueryByProcess(process: Int): Query[ProcessHistoriesF, ProcessHistoryDTO, Seq] =
+  //  bpsessions.filter(_.process === process)
+  private def filterQuery(id: Int): Query[SessionProcElements, SessionUndefElement, Seq] =
+    session_proc_elements.filter(_.id === id)
+  private def filterBySessionQuery(id: Int): Query[SessionProcElements, SessionUndefElement, Seq] =
+    session_proc_elements.filter(_.session === id)
+  private def filterByBPQuery(id: Int): Query[SessionProcElements, SessionUndefElement, Seq] =
+    session_proc_elements.filter(_.bprocess === id)
+  private def filterByBPSessionQuery(id: Int, session_id: Int): Query[SessionProcElements, SessionUndefElement, Seq] =
+    session_proc_elements.filter(e => (e.bprocess === id) && (e.session === session_id ))
+
+  private def filterBySessionsQuery(ids: List[Int]): Query[SessionProcElements, SessionUndefElement, Seq] =
+    session_proc_elements.filter(_.session inSetBind ids)
+  private def filterByLaunchesQuery(ids: List[Int]): Query[SessionProcElements, SessionUndefElement, Seq] =
+      session_proc_elements.filter(_.session inSetBind ids)
+  private def findByBPanOrderQuery(id: Int, order: Int): Query[SessionProcElements, SessionUndefElement, Seq] =
+    session_proc_elements.filter(el => el.bprocess === id && el.order === order)
+
+  private def renewOrderQuery(bprocess: Int, order_num: Int): Query[SessionProcElements, SessionUndefElement, Seq] =
+    session_proc_elements.filter(el => el.bprocess === bprocess && el.order > order_num)
+
   def findByBPId(id: Int) = {
-    database withSession { implicit session =>
-     val q3 = for { el ← session_proc_elements if el.bprocess === id } yield el
-      q3.list
-    }
+     await(db.run(filterByBPQuery(id).result)).toList
   }
+
   def findByBPSessionId(id: Int, session_id: Int) = {
-    database withSession { implicit session =>
-     val q3 = for { el ← session_proc_elements if el.bprocess === id && el.session === session_id } yield el
-      q3.list
-    }
+    await(db.run(filterByBPSessionQuery(id,session_id).result)).toList
   }
+
   def findBySession(session_id: Int) = {
-    database withSession { implicit session =>
-     val q3 = for { el ← session_proc_elements if el.session === session_id } yield el
-      q3.list
-    }
+    await(db.run(filterBySessionQuery(session_id).result)).toList
   }
+
+  def getAll = {
+    await(db.run(session_proc_elements.result)).toList
+  }
+
   def lastOrderOfBP(id: Int):Int = {
-    database withSession { implicit session =>
-       val q3 = for { el ← session_proc_elements if el.bprocess === id } yield el
-       val xs = q3.list.map(_.order)
+      val xs = findByBPId(id).map(_.order)
       if (xs.isEmpty) 1
       else xs.max + 1
-    }
   }
   def findLengthByBPId(id: Int):Int = {
-    database withSession { implicit session =>
-       val q3 = for { el ← session_proc_elements if el.bprocess === id } yield el
-      Query(q3.length).first
-    }
+      val q3 = findByBPId(id)
+      q3.length
   }
-  def findById(id: Int):Option[SessionUndefElement] = {
-    database withSession { implicit session =>
-     val q3 = for { el ← session_proc_elements if el.id === id } yield el
-      q3.list.headOption
-    }
-  }
-  def findByBPanOrder(id: Int, order: Int) = {
-    database withSession { implicit session =>
-     val q3 = for { el ← session_proc_elements if el.bprocess === id; if el.order === order } yield el
-      q3.list.headOption
-    }
-  }
-  def pull_object(s: SessionUndefElement) = database withSession {
-    implicit session ⇒
-      session_proc_elements returning session_proc_elements.map(_.id) += s
-  }
-  def update(id: Int, entity: SessionUndefElement):Boolean = {
-    database withSession { implicit session =>
-      findById(id) match {
-      case Some(e) => {
-        session_proc_elements.filter(_.id === id).update(entity)
-        true
-      }
-      case None => false
-      }
-    }
-  }
-  def updateSpaceOwn(id: Int, space_own:Int):Boolean = {
-    database withSession { implicit session =>
-      findById(id) match {
-      case Some(e) => {
-        session_proc_elements.filter(_.id === id).update(e.copy(space_own = Some(space_own)))
-        true
-      }
-      case None => false
-      }
-    }
-  }
-  def getAll = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← session_proc_elements } yield s
-      q3.list.sortBy(_.id)
-  }
-  def delete(id: Int) = {
-    database withSession { implicit session ⇒
 
+  def findById(id: Int):Option[SessionUndefElement] = {
+     await(db.run(filterQuery(id).result.headOption))
+  }
+
+  def findByBPanOrder(id: Int, order: Int) = {
+     await(db.run(findByBPanOrderQuery(id, order).result.headOption))
+  }
+
+  def pull_object(s: SessionUndefElement) =   {
+      await( db.run(session_proc_elements returning session_proc_elements.map(_.id) += s))
+  }
+
+  def update(id: Int, entity: SessionUndefElement):Boolean = {
+      findById(id) match {
+      case Some(e) => {
+        await( db.run(session_proc_elements.filter(_.id === id).update(entity) ))
+        true
+      }
+      case None => false
+      }
+  }
+
+  def updateSpaceOwn(id: Int, space_own:Int):Boolean = {
+      findById(id) match {
+      case Some(e) => {
+        await( db.run(session_proc_elements.filter(_.id === id).update(e.copy(space_own = Some(space_own))) ))
+        true
+      }
+      case None => false
+      }
+  }
+
+
+  def delete(id: Int) = {
     val elem = findById(id)
-    val res = session_proc_elements.filter(_.id === id).delete
+    val res = await( db.run(session_proc_elements.filter(_.id === id).delete))
     elem match {
        case Some(el) => renewOrder(el.bprocess, el.order)
        case _ =>
     }
     res
-    }
   }
+
   def moveUp(bprocess: Int, element_id: Int) = {
-    database withSession { implicit session =>
       val minimum = findByBPId(bprocess).sortBy(_.order)
       findById(element_id) match {
         case Some(e) => {
           if (e.order > 1 && e.order != minimum.head.order) {
-            session_proc_elements.filter(_.id === element_id).update(e.copy(order = e.order - 1))
+            await( db.run(
+              session_proc_elements.filter(_.id === element_id).update(e.copy(order = e.order - 1))
+            ))
             val ch = findById(minimum.find(_.order == (e.order - 1)).get.id.get).get
-            session_proc_elements.filter(_.id === minimum.find(_.order == (e.order - 1)).get.id.get).update(ch.copy(order = ch.order + 1))
+            await( db.run(
+              session_proc_elements.filter(_.id === minimum.find(_.order == (e.order - 1)).get.id.get).update(ch.copy(order = ch.order + 1))
+            ))
           }
           true
         }
         case None => false
       }
-    }
   }
   def moveDown(bprocess: Int, element_id: Int) = {
-    database withSession { implicit session =>
       val maximum = findByBPId(bprocess).sortBy(_.order)
       findById(element_id) match {
         case Some(e) => {
           if (e.order < maximum.last.order && e.order != maximum.last.order) {
-            session_proc_elements.filter(_.id === element_id).update(e.copy(order = e.order + 1))
+            await( db.run(session_proc_elements.filter(_.id === element_id).update(e.copy(order = e.order + 1)) ))
             val ch = findById(maximum.find(_.order == (e.order + 1)).get.id.get).get
-            session_proc_elements.filter(_.id === maximum.find(_.order == (e.order + 1)).get.id.get).update(ch.copy(order = ch.order - 1))
+            await( db.run(session_proc_elements.filter(_.id === maximum.find(_.order == (e.order + 1)).get.id.get).update(ch.copy(order = ch.order - 1)) ))
           }
           true
         }
         case None => false
       }
-    }
   }
+
 /*
 (1,Some(16))
 (3,Some(17))
@@ -296,14 +307,11 @@ object SessionProcElementDAO {
 (5,Some(19))
 */
   def renewOrder(bprocess: Int, order_num: Int) = {
-    database withSession { implicit session ⇒
-      val q3 = for { el ← session_proc_elements if el.bprocess === bprocess && el.order > order_num } yield el
-      val ordered = q3.list.zipWithIndex.map(el => el._1.copy(order = (el._2 + 1) + (order_num - 1)))
+      val q3 = await(db.run(renewOrderQuery(bprocess, order_num).result)).toList
+      val ordered = q3.zipWithIndex.map(el => el._1.copy(order = (el._2 + 1) + (order_num - 1)))
       ordered.foreach { el =>
          update(el.id.get, el)
       }
-    }
-
 /*
 
     session_proc_elements.filter(_.bprocess === bprocess && _.order > order_num)
@@ -314,23 +322,15 @@ object SessionProcElementDAO {
   }
 
 
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      session_proc_elements.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-        session_proc_elements.ddl.drop
-    }
-  }
+  val create: DBIO[Unit] = session_proc_elements.schema.create
+  val drop: DBIO[Unit] = session_proc_elements.schema.drop
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
   /**
    * Delete a specific entity by id. If successfully completed return true, else false
    */
   //def delete(id: Int):Boolean =
-  //  database withSession { implicit session =>
+  //    {
   //  findById(id) match {
   //    case Some(entity) => { session_proc_elements.filter(_.id === id).delete; true }
   //    case None => false
@@ -341,7 +341,7 @@ object SessionProcElementDAO {
    * Update a specific entity by id. If successfully completed return true, else false
    */
   //def update(id: Int, entity: (Option[Int], String, String, Int, Int, String, String, Int)):Boolean = {
-  //  database withSession { implicit session =>
+  //    {
   //    findById(id) match {
   //    case Some(e) => { session_proc_elements.filter(_.id === id).update(entity); true }
   //    case None => false

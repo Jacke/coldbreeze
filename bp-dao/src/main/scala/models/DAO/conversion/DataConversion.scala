@@ -61,7 +61,7 @@ object BPInitiator {
     val sp_elem = 1                         //****** find space elems
 
 // instanciate
- val process = instance(process_dto, target)
+ val process = instance(process_dto, target.toList)
 
 // invoke
     //InvokeTracer.run_proc(process)
@@ -150,9 +150,9 @@ object BPInitiator {
     val station_id = BPStationDAO.pull_object(dbstation)
 
     // logger -> loggerdb
-    val dblogger = BPLoggerDAO.from_origin_lgr(process.logger, process_dto, station_id)
+    val dblogger = BPLoggerDAOF.from_origin_lgr(process.logger, process_dto, station_id)
 
-    dblogger.foreach(log => BPLoggerDAO.pull_object(log))
+    dblogger.foreach(log => BPLoggerDAOF.pull_object(log))
 
     true
   }

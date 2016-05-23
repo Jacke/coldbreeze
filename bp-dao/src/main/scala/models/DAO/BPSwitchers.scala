@@ -1,18 +1,24 @@
 package models.DAO
 
-import main.scala.bprocesses.{BProcess, BPLoggerResult}
+import main.scala.bprocesses.{ BProcess, BPLoggerResult }
 import main.scala.simple_parts.process.ProcElems
-import slick.driver.PostgresDriver.api._
+
+import models.DAO.conversion.DatabaseCred
+import models.DAO._
+import models.DAO.conversion.DatabaseFuture._
 import com.github.nscala_time.time.Imports._
-import com.github.tototoshi.slick.JdbcJodaSupport._
-//import com.github.tminglei.slickpg.date.PgDateJdbcTypes
-import slick.model.ForeignKeyAction
+import models.DAO.conversion.DatabaseCred.dbConfig.driver.api._
+import com.github.tototoshi.slick.PostgresJodaSupport._
+
 
 import models.DAO.ProcElemDAO._
 import models.DAO.BPDAO._
 import models.DAO.BPStationDAO._
 import models.DAO.conversion.DatabaseCred
-
+import models.DAO._
+import models.DAO.sessions._
+import builders._
+import main.scala.bprocesses.BPSession
 import main.scala.simple_parts.process.Units._
 
 class BPSwitchers(tag: Tag) extends Table[UnitSwitcher](tag, "bpswitchers") {
@@ -40,67 +46,62 @@ class BPSwitchers(tag: Tag) extends Table[UnitSwitcher](tag, "bpswitchers") {
           override_group,
           created_at, updated_at) <> (UnitSwitcher.tupled, UnitSwitcher.unapply)
 
-def stateFK             = foreignKey("sw_statefk", state, models.DAO.BPStateDAO.bpstates)(_.id, onDelete = ForeignKeyAction.Cascade)
-def session_state_refFK = foreignKey("sw_session_state_fk", session_state, BPSessionStateDAO.sessionstates)(_.id, onDelete = ForeignKeyAction.Cascade)
+def stateFK             = foreignKey("sw_statefk", state, models.DAO.BPStateDAOF.bpstates)(_.id, onDelete = ForeignKeyAction.Cascade)
+def session_state_refFK = foreignKey("sw_session_state_fk", session_state, BPSessionStateDAOF.sessionstates)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }
 
 object SwitcherDAO {
-  /**
-   * Actions
-   */
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
 
-  import DatabaseCred.database
-  import models.DAO.conversion.Implicits._
 
 
+  import slick.jdbc._
 
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   val switchers = TableQuery[BPSwitchers]
 
-  def pull_object(s: UnitSwitcher) = database withSession {
-    implicit session ⇒
-      switchers returning switchers.map(_.id) += s
+
+  private def filterQuery(id: Int): Query[BPSwitchers, UnitSwitcher, Seq] =
+    switchers.filter(_.id === id)
+  private def filterQueryProcesses(ids: List[Int]): Query[BPSwitchers, UnitSwitcher, Seq] =
+    switchers.filter(_.process inSetBind ids)
+  private def filterQueryProcess(id: Int): Query[BPSwitchers, UnitSwitcher, Seq] =
+    switchers.filter(_.process === id)
+
+
+
+
+
+  def pull_object(s: UnitSwitcher) = {
+      await(db.run( switchers returning switchers.map(_.id) += s ) )
   }
-  def get(k: Int):Option[UnitSwitcher] = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← switchers if s.id === k } yield s
-      q3.list.headOption
+  def get(k: Int):Option[UnitSwitcher] = {
+    await(db.run(filterQuery(k).result.headOption) )
   }
   def findByBPId(id: Int) = {
-    database withSession { implicit session =>
-     val q3 = for { st ← switchers if st.process === id } yield st// <> (BPStationDTO.tupled, BPStationDTO.unapply _)
-
-      q3.list
-    }
+    await(db.run(filterQueryProcess(id).result) ).toList
   }
-  def update(id: Int, switcher: UnitSwitcher) = database withSession { implicit session ⇒
+  def update(id: Int, switcher: UnitSwitcher) = {
     val switcherToUpdate: UnitSwitcher = switcher.copy(Option(id))
-    switchers.filter(_.id === id).update(switcherToUpdate)
+    await( db.run( switchers.filter(_.id === id).update(switcherToUpdate) ) )
   }
-  def delete(id: Int) = database withSession { implicit session ⇒
-    switchers.filter(_.id === id).delete
-  }
-  def count: Int = database withSession { implicit session ⇒
-    Query(switchers.length).first
+  def delete(id: Int) = {
+    await( db.run( switchers.filter(_.id === id).delete ))
   }
 
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      switchers.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-       switchers.ddl.drop
-    }
-  }
 
-  def getAll = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← switchers } yield s
-      q3.list.sortBy(_.id)
-  }
+  val create: DBIO[Unit] = switchers.schema.create
+  val drop: DBIO[Unit] = switchers.schema.drop
+
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
+
 }

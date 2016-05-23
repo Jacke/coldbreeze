@@ -85,12 +85,12 @@ trait SpaceProjection {
                       desc:String = "",
                       idToRefId: Map[Int,Int],
                       ref_ids: List[Int]): SpaceProjectionContainer = {
-    val last_index = BPSpaceDAO.lastIndexOfSpace(process)
+    val last_index = BPSpaceDAOF.lastIndexOfSpace(process)
     val spaces: List[UnitSpaceRef] = SpaceReflectionDAO.findByElemRefs(ref_ids)
     val conv_spaces:Map[Int,Int] = spaces.map { space =>
       val brick_front_id = idToRefId.find(idmap => space.brick_front.get == idmap._1).get._2
       val sp = SpaceDCO.conv(space, business, process, index = last_index, brick_front_id)
-      space.id.get -> BPSpaceDAO.pull_object(sp)
+      space.id.get -> BPSpaceDAOF.pull_object(sp)
     }.toMap
     SpaceProjectionContainer(conv_spaces, spaces, last_index)
   }

@@ -74,7 +74,7 @@ trait SpaceProjectionF {
                       desc:String = "",
                       idToRefId: Map[Int,Int],
                       ref_ids: List[Int]): Future[SpaceProjectionContainer] = {
-    val last_index = BPSpaceDAO.lastIndexOfSpace(process)
+    val last_index = BPSpaceDAOF.lastIndexOfSpace(process)
     val spacesF: Future[Seq[UnitSpaceRef]] = SpaceReflectionDAOF.findByElemRefs(ref_ids)
     spacesF.map { spaces =>
       val conv_spaces:Map[Int,Int] = spaces.toList.map { space =>

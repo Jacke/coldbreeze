@@ -292,7 +292,7 @@ def update_bprocess(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit 
         },
         bprocess => {
           if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, id)) {
-              BPDAO.update(id, bprocess.copy(business = business))
+               BPDAO.update(id, bprocess.copy(business = business))
 
               action(request.identity.emailFilled, process = Some(id),
                  action = ProcHisCom.processUpdated, what = Some(ProcHisCom.processUpdated), what_id = Some(id))

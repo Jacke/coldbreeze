@@ -14,7 +14,7 @@ import com.github.nscala_time.time.Imports._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
 import slick.model.ForeignKeyAction
 
-import slick.driver.PostgresDriver.simple._
+import slick.driver.PostgresDriver.api._
 import com.github.tototoshi.slick.PostgresJodaSupport._
 import service.DemoUser
 
@@ -34,31 +34,43 @@ class Tokens(tag: Tag) extends Table[MailToken](tag, "tokens") {
 
 
 object TokensDAO {
-
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import slick.driver.PostgresDriver.simple._
-  import DatabaseCred.database
+  import models.DAO.conversion.DatabaseFuture._
+
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+
 
   val tokens = TableQuery[Tokens]
+/*
+  def saveToken(token: MailToken): MailToken =   {
 
-  def saveToken(token: MailToken): MailToken = database withSession {
-    implicit session ⇒
       tokens += token
       token
   }
 
-  def findToken(token: String): Option[MailToken] = database withSession {
-    implicit session ⇒
+  def findToken(token: String): Option[MailToken] =   {
+
       val q3 = for { a ← tokens if a.uuid === token } yield a
-      q3.list.headOption
+      await(db.run(q3.result.headOption))
   }
-  def findTokenByEmail(email: String): Option[MailToken] = database withSession {
-    implicit session ⇒
+  def findTokenByEmail(email: String): Option[MailToken] =   {
+
       val q3 = for { a ← tokens if a.email === email } yield a
-      q3.list.headOption
-  }  
-  def deleteToken(uuid: String): Option[MailToken] = database withSession {
-    implicit session ⇒
+      await(db.run(q3.result.headOption))
+  }
+  def deleteToken(uuid: String): Option[MailToken] =   {
+
       val tok = findToken(uuid)
       tok match {
         case Some(token) =>
@@ -67,22 +79,18 @@ object TokensDAO {
         case None => None
       }
   }
-  def deleteTokens() = database withSession {
-    implicit session ⇒
+  def deleteTokens() =   {
+
     val q3 = for { s ← tokens } yield s
-    q3.list.map(token => deleteToken(token.uuid)).flatten
+    await(db.run(q3.result)).toList.map(token => deleteToken(token.uuid)).flatten
 
   }
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      tokens.ddl.create
-    }
-  }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-        tokens.ddl.drop
-    }
-  }
+  */
+
+  val create: DBIO[Unit] = tokens.schema.create
+  val drop: DBIO[Unit] = tokens.schema.drop
+
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
+
 }

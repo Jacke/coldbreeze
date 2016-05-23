@@ -1,11 +1,20 @@
 package models.DAO
 
+import main.scala.bprocesses.{BProcess, BPLoggerResult}
+import main.scala.simple_parts.process.ProcElems
+//import com.github.tminglei.slickpg.date.PgDateJdbcTypes
+import slick.model.ForeignKeyAction
+import models.DAO.ProcElemDAO._
+import models.DAO.BPDAO._
+import models.DAO.BPStationDAO._
 import models.DAO.conversion.DatabaseCred
-import models.DAO._
+import main.scala.bprocesses._
+import main.scala.bprocesses.{BPState, BPSessionState}
+
 import models.DAO.conversion.DatabaseFuture._
 import com.github.nscala_time.time.Imports._
 import models.DAO.conversion.DatabaseCred.dbConfig.driver.api._
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 
 
 /*
@@ -48,7 +57,7 @@ class SessionElementResourcesF(tag: Tag) extends Table[SessionElementResourceDTO
   def sesElementFK  = foreignKey("ses_el_res_fk", element, models.DAO.SessionElemTopologDAO.session_elem_topologs)(_.id, onDelete = ForeignKeyAction.Cascade)
   def resFK      = foreignKey("ses_res_fk", resource, models.DAO.ResourceDAO.resources)(_.id, onDelete = ForeignKeyAction.Cascade)
   def bpFK       = foreignKey("s_res_sp_bprocess_fk", process, models.DAO.BPDAOF.bprocesses)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def sessionFK  = foreignKey("s_res_s_sp_session_fk", session, models.DAO.BPSessionDAO.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def sessionFK  = foreignKey("s_res_s_sp_session_fk", session, models.DAO.BPSessionDAOF.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?, element, process, session, resource,entities,
            created_at,
@@ -59,16 +68,18 @@ class SessionElementResourcesF(tag: Tag) extends Table[SessionElementResourceDTO
 
 object ElementResourceDAOF {
   import akka.actor.ActorSystem
-   
-    
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
-
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
   import slick.jdbc.meta.MTable
   import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  //import dbConfig.driver.api._ //
+  import models.DAO.conversion.DatabaseFuture._
+  import slick.jdbc._
+
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
 
@@ -92,8 +103,8 @@ object ElementResourceDAOF {
 
 object SessionElementResourceDAOF {
   import akka.actor.ActorSystem
-   
-    
+
+
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
 
   import slick.jdbc.meta.MTable
@@ -118,4 +129,6 @@ object SessionElementResourceDAOF {
   def ddl_create = db.run(create)
   def ddl_drop = db.run(drop)
   def pull(s: SessionElementResourceDTO):Future[Int] = db.run(session_element_resources returning session_element_resources.map(_.id) += s)
+
+
 }

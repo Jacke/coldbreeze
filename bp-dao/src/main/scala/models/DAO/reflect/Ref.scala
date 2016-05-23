@@ -33,7 +33,7 @@ object RefDAOF {
   import slick.driver.PostgresDriver.api._
   import slick.jdbc.meta.MTable
   import scala.concurrent.ExecutionContext.Implicits.global
-  import com.github.tototoshi.slick.JdbcJodaSupport._
+  import com.github.tototoshi.slick.PostgresJodaSupport._
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
@@ -67,7 +67,7 @@ object RefDAOF {
 
 import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
-import com.github.tototoshi.slick.JdbcJodaSupport._
+import com.github.tototoshi.slick.PostgresJodaSupport._
 //import com.github.tminglei.slickpg.date.PgDateJdbcTypes
 import slick.model.ForeignKeyAction
 
@@ -120,30 +120,42 @@ case class RefResulted(
 
 
 object RefDAO {
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
-  import DatabaseCred.database
-  import models.DAO.conversion.Implicits._
-  //val logger = Logger(LoggerFactory.getLogger("name"))
+  import models.DAO.conversion.DatabaseFuture._
 
+  //import dbConfig.driver.api._ //
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
   val refs = TableQuery[Refs]
+  private def filterQuery(id: Int): Query[Refs, Ref, Seq] =
+    refs.filter(_.id === id)
+  private def filterQueryTitle(title: String): Query[Refs, Ref, Seq] =
+    refs.filter(_.title === title)
+  private def getAllVisibleQuery(): Query[Refs, Ref, Seq] =
+    refs.filter(_.hidden === false)
 
-  def pull_object(s: Ref) = database withSession {
-    implicit session ⇒
-      refs returning refs.map(_.id) += s
+
+  def pull_object(s: Ref) =   {
+     await(db.run(refs returning refs.map(_.id) += s))
   }
 
-  def get(k: Int):Option[Ref] = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← refs if s.id === k } yield s
-      q3.list.headOption
+  def get(k: Int):Option[Ref] =   {
+    await(db.run(filterQuery(k).result.headOption) )
   }
-  def getByTitle(title: String):List[Ref] = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← refs if s.title === title } yield s
-      q3.list
+
+  def getByTitle(title: String):List[Ref] =   {
+    await(db.run(filterQueryTitle(title).result)).toList
   }
-  def deleteByTitle(title: String) = database withSession {
-    implicit session =>
+  def deleteByTitle(title: String) =   {
     getByTitle(title).map(el => el.id.get).foreach { id =>
       delete(id)
     }
@@ -155,9 +167,9 @@ object RefDAO {
   def retrive(k: Int, process: Int,
               business: Int, in: String = "front",
               title: String, desc:String = "",
-              space_id: Option[Int] = None):Option[RefResulted] = database withSession {
+              space_id: Option[Int] = None):Option[RefResulted] =   {
     //logger.debug(k, process, business, title, desc, space_id)
-    implicit session ⇒
+
       in match {
         case "front" => RefProjector.projecting(k, process, business, title,desc, "front")
         case _ => RefProjector.projecting(k, process, business, title,desc, "nested", space_id)
@@ -165,37 +177,21 @@ object RefDAO {
   }
 
 
-  def update(id: Int, ref: Ref) = database withSession { implicit session ⇒
+  def update(id: Int, ref: Ref) =   {
     val refToUpdate: Ref = ref.copy(Option(id))
-    refs.filter(_.id === id).update(refToUpdate)
+    await(db.run(refs.filter(_.id === id).update(refToUpdate)))
   }
-  def delete(id: Int) = database withSession { implicit session ⇒
-    refs.filter(_.id === id).delete
-  }
-  def count: Int = database withSession { implicit session ⇒
-    Query(refs.length).first
+  def delete(id: Int) =   {
+    await(db.run(refs.filter(_.id === id).delete))
   }
 
-  def ddl_create = {
-    database withSession {
-      implicit session =>
-      refs.ddl.create
-    }
+  val create: DBIO[Unit] = refs.schema.create
+  val drop: DBIO[Unit] = refs.schema.drop
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
+
+  def getAllVisible =   {
+      await(db.run(getAllVisibleQuery().result) ).sortBy(_.id)
   }
-  def ddl_drop = {
-    database withSession {
-      implicit session =>
-       refs.ddl.drop
-    }
-  }
-  def getAllVisible = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← refs if s.hidden === false } yield s
-      q3.list.sortBy(_.id)
-  }
-  def getAll = database withSession {
-    implicit session ⇒
-      val q3 = for { s ← refs } yield s
-      q3.list.sortBy(_.id)
-  }
+
 }
