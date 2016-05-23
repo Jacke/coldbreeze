@@ -179,7 +179,7 @@ minorityAppServices.factory('DataCostLaunchAssign', ['$resource', function ($res
                 // Stores the token until the user closes the browser window.
                 $scope.files = data;
                 _.forEach($scope.files.files, function(f) {
-                  console.log('f are', f);
+                  //console.log('f are', f);
                   var fileName = f.fileUrl.split("minority-uploads/")[1].split("+")[0];
                   var hash = f.fileUrl.split("minority-uploads/")[1].split("+")[1].split("?")[0];
                   if (f.fileUrl.split("minority-uploads/")[1].split("+")[1]) {
@@ -419,13 +419,14 @@ $scope.byElement = function(element) {
   return function(obj) {
     //console.log('obj', obj);
     //console.log('element', element);
-
+    if (element) {
     var trueElementId = _.find($scope.launchTopologs,function(t){ return element.id === t.element_id });
      if (trueElementId !== undefined && obj.obj.element_id === trueElementId.topo_id) {
        return obj;
      } else {
        return false;
      }
+   } else { return false; }
  }
 }
 
