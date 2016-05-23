@@ -374,9 +374,13 @@ ul.perm-menu.element-data-nav {
 
         <div class="data-cost-controlls-expanded" ng-init="cost.value == undefined ? cost.controllsExpanded=true : cost.controllsExpanded=false"
              ng-show="cost.controllsExpanded">
-          <input type="text" id="inputContentBlankValue" class="form-control" ng-init="cost.value == undefined ? entity.newModelValue=cost.entity.default : entity.newModelValue=cost.value.sval" ng-model="entity.newModelValue" required="">
+          <input type="text"
+          id="inputContentBlankValue"
+          class="form-control"
+          ng-init="cost.value == undefined ? entity.newModelValue=cost.entity.default : entity.newModelValue=cost.value.sval"
+          ng-model="cost.newModelValue" required="">
           <div class="data-cost-controlls-buttons">
-          <a class="btn btn-small btn-success btn-fill" ng-click="fillValue(cost, entity.newModelValue, costObj.obj)">Fill</a>
+          <a class="btn btn-small btn-success btn-fill" ng-click="fillValue(cost, cost.newModelValue, costObj.obj)">Fill</a>
           <a class="btn btn-danger btn-success btn-fill" ng-click="clearCost(cost, costObj.obj)">Clear</a>
         </div>
       </div>
