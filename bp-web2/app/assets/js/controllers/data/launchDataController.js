@@ -164,6 +164,7 @@ filePromise.success(function (data) {
 
 
     if ($scope.inlineLaunchShow) {
+      console.log("load counter", this);
       if ($scope.insideLaunch) {
         $scope.loadData(false);
       } else {
@@ -466,10 +467,8 @@ $scope.byElement = function(element) {
 $scope.filesForLaunchElement = function(element) {
   return function(obj) {
     //console.log('element', element);
-    console.log('throw ', $scope.launchTopologs);
 
     var trueElementId = _.find($scope.launchTopologs,function(t){ return element.id === t.element_id });
-
     if (obj.launchFile !== undefined && trueElementId !== undefined && obj.launchFile.element == trueElementId.topo_id) {
        return obj;
      } else {

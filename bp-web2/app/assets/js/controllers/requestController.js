@@ -1217,6 +1217,7 @@ $scope.dataSelectTab = function(elem) {
 
 
 $scope.openModalDataBoard = function(process) {
+  $scope.$parent.session.inlineLaunchShow = false;
   ngDialog.open({
     template: '/assets/partials/data_boards/dataBoardList.html',
     controller: 'launchDataController',
