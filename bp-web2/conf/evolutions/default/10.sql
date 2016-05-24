@@ -4376,3 +4376,331 @@ CREATE TABLE launch_counters
       REFERENCES bprocesses (id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE CASCADE
 )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- Table: files
+
+-- DROP TABLE files;
+
+CREATE TABLE files
+(
+  id bigserial NOT NULL,
+  workbench integer NOT NULL,
+  file_name character varying NOT NULL,
+  "azureId" character varying NOT NULL,
+  description character varying NOT NULL,
+  external boolean NOT NULL,
+  external_url character varying,
+  created_at timestamp without time zone,
+  updated_at timestamp without time zone,
+  CONSTRAINT files_pkey PRIMARY KEY (id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE files
+  OWNER TO postgres;
+
+
+  -- Table: launch_files
+
+  -- DROP TABLE launch_files;
+
+  CREATE TABLE launch_files
+  (
+    id bigserial NOT NULL,
+    file_id bigint NOT NULL,
+    launch_id integer NOT NULL,
+    element_id integer,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    CONSTRAINT launch_files_pkey PRIMARY KEY (id),
+    CONSTRAINT launch_files_file_id_pkey FOREIGN KEY (file_id)
+        REFERENCES files (id) MATCH SIMPLE
+        ON UPDATE NO ACTION ON DELETE NO ACTION
+  )
+  WITH (
+    OIDS=FALSE
+  );
+  ALTER TABLE launch_files
+    OWNER TO postgres;
+
+
+
+
+    CREATE TABLE middlewares
+    (
+      id bigserial NOT NULL,
+      ident character varying NOT NULL,
+      iface_ident character varying NOT NULL,
+      reaction_id integer NOT NULL,
+      created_at timestamp without time zone,
+      updated_at timestamp without time zone,
+      CONSTRAINT middlewares_pkey PRIMARY KEY (id),
+      CONSTRAINT middleware_reaction_fk FOREIGN KEY (reaction_id)
+          REFERENCES reactions (id) MATCH SIMPLE
+          ON UPDATE NO ACTION ON DELETE CASCADE
+    )
+    WITH (
+      OIDS=FALSE
+    );
+    ALTER TABLE middlewares
+      OWNER TO postgres;
+
+
+      -- Table: middleware_refs
+
+      -- DROP TABLE middleware_refs;
+
+      CREATE TABLE middleware_refs
+      (
+        id bigserial NOT NULL,
+        title character varying NOT NULL,
+        ident character varying NOT NULL,
+        iface_ident character varying NOT NULL,
+        reflection_id integer NOT NULL,
+        reaction_id integer NOT NULL,
+        created_at timestamp without time zone,
+        updated_at timestamp without time zone,
+        CONSTRAINT middleware_refs_pkey PRIMARY KEY (id),
+        CONSTRAINT middleware_ref_reaction_ref_fk FOREIGN KEY (reaction_id)
+            REFERENCES reaction_refs (id) MATCH SIMPLE
+            ON UPDATE NO ACTION ON DELETE CASCADE,
+        CONSTRAINT middleware_ref_reflect_fk FOREIGN KEY (reflection_id)
+            REFERENCES refs (id) MATCH SIMPLE
+            ON UPDATE NO ACTION ON DELETE CASCADE
+      )
+      WITH (
+        OIDS=FALSE
+      );
+      ALTER TABLE middleware_refs
+        OWNER TO postgres;
+
+
+        -- Table: strategy_refs
+
+        -- DROP TABLE strategy_refs;
+
+        CREATE TABLE strategy_refs
+        (
+          id bigserial NOT NULL,
+          ident character varying NOT NULL,
+          reflection_id integer NOT NULL,
+          middleware_id bigint NOT NULL,
+          is_null_strategy boolean NOT NULL,
+          created_at timestamp without time zone,
+          updated_at timestamp without time zone,
+          CONSTRAINT strategy_refs_pkey PRIMARY KEY (id),
+          CONSTRAINT middleware_ref_reflect_fk FOREIGN KEY (middleware_id)
+              REFERENCES middleware_refs (id) MATCH SIMPLE
+              ON UPDATE NO ACTION ON DELETE CASCADE,
+          CONSTRAINT strategy_ref_reflect_fk FOREIGN KEY (reflection_id)
+              REFERENCES refs (id) MATCH SIMPLE
+              ON UPDATE NO ACTION ON DELETE CASCADE
+        )
+        WITH (
+          OIDS=FALSE
+        );
+        ALTER TABLE strategy_refs
+          OWNER TO postgres;
+          -- Table: strategies
+
+          -- DROP TABLE strategies;
+
+          CREATE TABLE strategies
+          (
+            id bigserial NOT NULL,
+            ident character varying NOT NULL,
+            middleware_id bigint NOT NULL,
+            is_null_strategy boolean NOT NULL,
+            created_at timestamp without time zone,
+            updated_at timestamp without time zone,
+            CONSTRAINT strategies_pkey PRIMARY KEY (id),
+            CONSTRAINT strategy_middleware_fk FOREIGN KEY (middleware_id)
+                REFERENCES middlewares (id) MATCH SIMPLE
+                ON UPDATE NO ACTION ON DELETE CASCADE
+          )
+          WITH (
+            OIDS=FALSE
+          );
+          ALTER TABLE strategies
+            OWNER TO postgres;
+            -- Table: strategy_base_refs
+
+            -- DROP TABLE strategy_base_refs;
+
+            CREATE TABLE strategy_base_refs
+            (
+              id bigserial NOT NULL,
+              strategy_id bigint NOT NULL,
+              key character varying NOT NULL,
+              base_type character varying NOT NULL,
+              value_type character varying NOT NULL,
+              value_content character varying NOT NULL,
+              validation_scheme character varying,
+              validation_pattern character varying,
+              created_at timestamp without time zone,
+              updated_at timestamp without time zone,
+              CONSTRAINT strategy_base_refs_pkey PRIMARY KEY (id),
+              CONSTRAINT strategy_base_refs_strategy_fk FOREIGN KEY (strategy_id)
+                  REFERENCES strategy_refs (id) MATCH SIMPLE
+                  ON UPDATE NO ACTION ON DELETE CASCADE
+            )
+            WITH (
+              OIDS=FALSE
+            );
+            ALTER TABLE strategy_base_refs
+              OWNER TO postgres;
+
+              -- Table: strategy_bases
+
+              -- DROP TABLE strategy_bases;
+
+              CREATE TABLE strategy_bases
+              (
+                id bigserial NOT NULL,
+                strategy_id bigint NOT NULL,
+                key character varying NOT NULL,
+                base_type character varying NOT NULL,
+                value_type character varying NOT NULL,
+                value_content character varying NOT NULL,
+                validation_scheme character varying,
+                validation_pattern character varying,
+                created_at timestamp without time zone,
+                updated_at timestamp without time zone,
+                CONSTRAINT strategy_bases_pkey PRIMARY KEY (id),
+                CONSTRAINT strategy_bases_unit_strategy_fk FOREIGN KEY (strategy_id)
+                    REFERENCES strategies (id) MATCH SIMPLE
+                    ON UPDATE NO ACTION ON DELETE CASCADE
+              )
+              WITH (
+                OIDS=FALSE
+              );
+              ALTER TABLE strategy_bases
+                OWNER TO postgres;
+                -- Table: strategy_input_refs
+
+                -- DROP TABLE strategy_input_refs;
+
+                CREATE TABLE strategy_input_refs
+                (
+                  id bigserial NOT NULL,
+                  strategy_id bigint NOT NULL,
+                  op character varying NOT NULL,
+                  title character varying NOT NULL,
+                  "desc" character varying,
+                  ident character varying NOT NULL,
+                  target_type character varying NOT NULL,
+                  created_at timestamp without time zone,
+                  updated_at timestamp without time zone,
+                  CONSTRAINT strategy_input_refs_pkey PRIMARY KEY (id),
+                  CONSTRAINT strategy_input_refs_strategy_fk FOREIGN KEY (strategy_id)
+                      REFERENCES strategy_refs (id) MATCH SIMPLE
+                      ON UPDATE NO ACTION ON DELETE CASCADE
+                )
+                WITH (
+                  OIDS=FALSE
+                );
+                ALTER TABLE strategy_input_refs
+                  OWNER TO postgres;
+                  -- Table: strategy_inputs
+
+                  -- DROP TABLE strategy_inputs;
+
+                  CREATE TABLE strategy_inputs
+                  (
+                    id bigserial NOT NULL,
+                    strategy_id bigint NOT NULL,
+                    op character varying NOT NULL,
+                    title character varying NOT NULL,
+                    "desc" character varying,
+                    ident character varying NOT NULL,
+                    target_type character varying NOT NULL,
+                    created_at timestamp without time zone,
+                    updated_at timestamp without time zone,
+                    CONSTRAINT strategy_inputs_pkey PRIMARY KEY (id),
+                    CONSTRAINT strategy_inputs_unit_strategy_fk FOREIGN KEY (strategy_id)
+                        REFERENCES strategies (id) MATCH SIMPLE
+                        ON UPDATE NO ACTION ON DELETE CASCADE
+                  )
+                  WITH (
+                    OIDS=FALSE
+                  );
+                  ALTER TABLE strategy_inputs
+                    OWNER TO postgres;
+
+                    -- Table: strategy_output_refs
+
+                    -- DROP TABLE strategy_output_refs;
+
+                    CREATE TABLE strategy_output_refs
+                    (
+                      id bigserial NOT NULL,
+                      strategy_id bigint NOT NULL,
+                      op character varying NOT NULL,
+                      title character varying NOT NULL,
+                      "desc" character varying,
+                      ident character varying NOT NULL,
+                      target_type character varying NOT NULL,
+                      created_at timestamp without time zone,
+                      updated_at timestamp without time zone,
+                      CONSTRAINT strategy_output_refs_pkey PRIMARY KEY (id),
+                      CONSTRAINT strategy_output_refs_strategy_fk FOREIGN KEY (strategy_id)
+                          REFERENCES strategy_refs (id) MATCH SIMPLE
+                          ON UPDATE NO ACTION ON DELETE CASCADE
+                    )
+                    WITH (
+                      OIDS=FALSE
+                    );
+                    ALTER TABLE strategy_output_refs
+                      OWNER TO postgres;
+
+                      -- Table: strategy_outputs
+
+                      -- DROP TABLE strategy_outputs;
+
+                      CREATE TABLE strategy_outputs
+                      (
+                        id bigserial NOT NULL,
+                        strategy_id bigint NOT NULL,
+                        op character varying NOT NULL,
+                        title character varying NOT NULL,
+                        "desc" character varying,
+                        ident character varying NOT NULL,
+                        target_type character varying NOT NULL,
+                        created_at timestamp without time zone,
+                        updated_at timestamp without time zone,
+                        CONSTRAINT strategy_outputs_pkey PRIMARY KEY (id),
+                        CONSTRAINT strategy_outputs_unit_strategy_fk FOREIGN KEY (strategy_id)
+                            REFERENCES strategies (id) MATCH SIMPLE
+                            ON UPDATE NO ACTION ON DELETE CASCADE
+                      )
+                      WITH (
+                        OIDS=FALSE
+                      );
+                      ALTER TABLE strategy_outputs
+                        OWNER TO postgres;
