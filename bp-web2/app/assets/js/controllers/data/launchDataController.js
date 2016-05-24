@@ -52,6 +52,7 @@ return minorityControllers.controller('launchDataController', ['$q','$rootScope'
 
       $scope.insideLaunch = false;
       $scope.insideProcess = false;
+      $scope.inlineLaunchShow = $scope.$parent.session.inlineLaunchShow;
 
       if ($scope.$parent.session_id !== undefined) {
         $scope.insideLaunch = true;
@@ -75,8 +76,25 @@ minorityAppServices.factory('DataCostLaunchAssign', ['$resource', function ($res
         query: { method: 'GET', isArray: false }
     })
 **/
-    $scope.loadData = function() {
+    $scope.topoLoading = function() {
+      return $scope.launchTopologsP = LaunchElementTopologsFactory.query({ launch_id: $scope.$parent.session_id }).$promise.then(function(data) {
+        $scope.launchTopologs = data;
+        console.log('$$scope.launchTopologs', $scope.launchTopologs);
+      });
+    };
+
+    $scope.loadData = function(onlyTopologs) {
       var deferred = $q.defer();
+
+      if (onlyTopologs) {
+        $scope.topoLoading();
+
+        $scope.dataCostElementLaunchAssign = undefined;
+        $scope.dataCostAssignP = undefined;
+        $scope.dataCostCollectionP = undefined;
+      } else {
+
+      $scope.topoLoading();
 
       $scope.dataCostElementLaunchAssignP = DataCostElementLaunchAssign.query( { launchId: $scope.$parent.session_id } ).$promise.then(function(data){
          $scope.sessionCosts = data;
@@ -86,16 +104,12 @@ minorityAppServices.factory('DataCostLaunchAssign', ['$resource', function ($res
         $scope.processCosts = data;
         console.log('$scope.processCosts', $scope.processCosts);
       });
-      $scope.launchTopologsP = LaunchElementTopologsFactory.query({ launch_id: $scope.$parent.session_id }).$promise.then(function(data) {
-        $scope.launchTopologs = data;
-        console.log('$$scope.launchTopologs', $scope.launchTopologs);
-
-      });
       $scope.dataCostCollectionP = DataCostCollection.query().$promise.then(function(data) {
         $scope.avalCosts = data;
         console.log('$$scope.avalCosts', $scope.avalCosts);
       });
 
+      }
       //$scope.dataCostElementLaunchAssignP.then(function(a){
       //  $scope.dataCostAssignP.then(function(b){
       //    $scope.launchTopologsP.then(function(c){
@@ -117,9 +131,19 @@ minorityAppServices.factory('DataCostLaunchAssign', ['$resource', function ($res
 
     }
 
+
+    if ($scope.inlineLaunchShow) {
       if ($scope.insideLaunch) {
-          $scope.loadData();
+        $scope.loadData(false);
+      } else {
+        $scope.loadData(true);
+
+        $scope.$parent.pushBboardTRigger($scope.$parent.session_id, function(){ return $scope.loadData(); });
       }
+
+    }
+
+
 
 
       $scope.$on('resourceUpdate', function(event, session_id) {
@@ -179,7 +203,7 @@ minorityAppServices.factory('DataCostLaunchAssign', ['$resource', function ($res
                 // Stores the token until the user closes the browser window.
                 $scope.files = data;
                 _.forEach($scope.files.files, function(f) {
-                  console.log('f are', f);
+                  //console.log('f are', f);
                   var fileName = f.fileUrl.split("minority-uploads/")[1].split("+")[0];
                   var hash = f.fileUrl.split("minority-uploads/")[1].split("+")[1].split("?")[0];
                   if (f.fileUrl.split("minority-uploads/")[1].split("+")[1]) {
@@ -356,7 +380,8 @@ minorityAppServices.factory('DataCostLaunchAssign', ['$resource', function ($res
         //                                                  entityId: costs.entities}; });
 
         var newReqs = [{elementId: elementId.topo_id, resourceId: costs.resource.resource.id,
-                                                          entityId: costs.entities}]
+                                                          entityId: costs.entities}];
+
         $http.post(jsRoutes.controllers.CostFillController.createLaunchCostElement(costs.resource.resource.id,
                                                                                  $scope.$parent.session_id).absoluteURL(document.ssl_enabled),
                           newReqs ).then(function (data) {
@@ -419,22 +444,25 @@ $scope.byElement = function(element) {
   return function(obj) {
     //console.log('obj', obj);
     //console.log('element', element);
-
+    if (element) {
     var trueElementId = _.find($scope.launchTopologs,function(t){ return element.id === t.element_id });
-     if (trueElementId !== undefined && obj.obj.element_id === trueElementId.topo_id) {
+     if (trueElementId !== undefined && trueElementId !== undefined && obj.obj.element_id === trueElementId.topo_id) {
        return obj;
      } else {
        return false;
      }
+   } else { return false; }
  }
 }
 
 $scope.filesForLaunchElement = function(element) {
   return function(obj) {
     //console.log('element', element);
+    console.log('throw ', $scope.launchTopologs);
+
     var trueElementId = _.find($scope.launchTopologs,function(t){ return element.id === t.element_id });
 
-    if (obj.launchFile !== undefined && obj.launchFile.element == trueElementId.topo_id) {
+    if (obj.launchFile !== undefined && trueElementId !== undefined && obj.launchFile.element == trueElementId.topo_id) {
        return obj;
      } else {
        return false;

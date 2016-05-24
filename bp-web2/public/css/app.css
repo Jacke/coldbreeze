@@ -5850,17 +5850,16 @@ span.data-board-count.data-board-costs-count {
 }
 
 span.data-board-count {
-    background: #B7194F;
-    /* padding: 1px 6px 1px 4px; */
-    border-radius: 26px;
-    font-size: 11px;
-    text-align: center;
-    width: 19px;
-    font-weight: 700;
-    height: 18px;
-    line-height: 16px;
-    font-family: 'Open Sans';
-    color: white;
+      background: #A21D4B;
+      /* padding: 1px 6px 1px 4px; */
+      border-radius: 26px;
+      font-size: 9px;
+      text-align: center;
+      width: 18px;
+      font-weight: 800;
+      height: 16px;
+      line-height: 16px;
+      font-family: 'Open Sans';
 }
 
 

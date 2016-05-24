@@ -41,6 +41,7 @@
     width: 222px;
     text-align: left;
     margin-left: 11px;
+    float: left;
 }
 .data-cost .data-cost-type {
     display: inline-block;
@@ -49,36 +50,51 @@
     margin-right: 5px;
     font-size: 12px;
     float: left;
+    border-radius: 3px;
+
 }
 .data-cost .data-cost-value {
-    display: inline-block;
-    width: 25%;
-    text-align: center;
-    background: #3C3D50;
-    padding: 5px 6px;
-    margin-right: 19px;
+  display: inline-block;
+  max-width: 25%;
+  text-align: center;
+  background: #3C3D50;
+  padding: 5px 11px;
+  margin-right: 19px;
+  border-radius: 3px;
+  text-overflow: ellipsis;
+  min-width: 10%;
+  white-space: nowrap;
+  float: right;
+  overflow: hidden;
 }
 .data-cost .data-cost-controlls-expanded {
-    margin-top: 17px;
-    display: block;
-    width: 100%;
-    height: 49px;
+  margin-top: 17px;
+  display: block;
+  width: 100%;
+  height: 49px;
+  padding-top: 27px;
+  margin-bottom: 9px;
 }
 .element-data-costs .data-cost {
-    display: block;
-    padding-top: 10px;
-    padding-bottom: 10px;
+  display: block;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      width: 100%;
+      clear: both;
+      margin-bottom: 10px;
 }
 
 .data-cost .data-cost-default {
     display: none;
 }
 .data-cost-controls {
-    display: inline-block;
-    width: 3%;
-    text-align: right;
-    font-size: 15px;
-    font-weight: 100;
+  display: inline-block;
+  width: 3%;
+  text-align: right;
+  font-size: 15px;
+  float: right;
+  margin-top: 4px;
+  font-weight: 100;
 }
 .data-cost input#inputContentBlankValue:focus {
     box-shadow: none;
@@ -352,15 +368,19 @@ ul.perm-menu.element-data-nav {
           <div class="data-cost-default">Default value: {{ cost.entity.default }}</div>
         </div>
         <div class="data-cost-title">{{ cost.entity.title }}</div>
-        <div class="data-cost-value">{{ cost.value.sval }}</div>
         <div class="data-cost-controls"><span class="moicon moicon-menu3" style="cursor:pointer"
               ng-click="cost.controllsExpanded ? cost.controllsExpanded=false : cost.controllsExpanded=true"></span></div>
+        <div class="data-cost-value">{{ cost.value.sval }}</div>
 
         <div class="data-cost-controlls-expanded" ng-init="cost.value == undefined ? cost.controllsExpanded=true : cost.controllsExpanded=false"
              ng-show="cost.controllsExpanded">
-          <input type="text" id="inputContentBlankValue" class="form-control" ng-init="cost.value == undefined ? entity.newModelValue=cost.entity.default : entity.newModelValue=cost.value.sval" ng-model="entity.newModelValue" required="">
+          <input type="text"
+          id="inputContentBlankValue"
+          class="form-control"
+          ng-init="cost.value == undefined ? entity.newModelValue=cost.entity.default : entity.newModelValue=cost.value.sval"
+          ng-model="cost.newModelValue" required="">
           <div class="data-cost-controlls-buttons">
-          <a class="btn btn-small btn-success btn-fill" ng-click="fillValue(cost, entity.newModelValue, costObj.obj)">Fill</a>
+          <a class="btn btn-small btn-success btn-fill" ng-click="fillValue(cost, cost.newModelValue, costObj.obj)">Fill</a>
           <a class="btn btn-danger btn-success btn-fill" ng-click="clearCost(cost, costObj.obj)">Clear</a>
         </div>
       </div>
