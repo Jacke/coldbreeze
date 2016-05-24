@@ -503,6 +503,7 @@ $scope.bboardTriggers = [];
 $scope.pushBboardDataPromise = function(launchId, bboardDataPromise) {
   $scope.bboardDataPromises.push({ launchId, bboardDataPromise });
 }
+
 $scope.pushBboardTRigger = function(launchId, triggerFn) {
   $scope.bboardTriggers.push({ launchId: launchId, triggerFn: triggerFn });
 }
