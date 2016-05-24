@@ -106,7 +106,7 @@ class BBoardWrapper(connection: BBoardWrapperConnection) {
   val system = ActorSystem("PingPongSystem")
   val pongg = system.actorOf(Props(new BBoardPong(connection)), name = "pongg")
   val pingg = system.actorOf(Props(new BBoardPing(pongg)), name = "pingg")
-  implicit val timeout = Timeout(5 seconds)
+  implicit val timeout = Timeout(35 seconds)
 
   // start them going
   //pingg ! StartMessage
@@ -114,7 +114,7 @@ class BBoardWrapper(connection: BBoardWrapperConnection) {
       pingg ! StartMessage
       pingg ! StateMessage
       val future2: Future[Boolean] = ask(pingg, StateMessage).mapTo[Boolean]
-      Await.result(future2, 1 second)
+      Await.result(future2, 10 second)
   }
   def fetchCSRF():String = {
     val holder = Try(WS.url(s"http://${connection.host}:${connection.port}/signIn").withHeaders("PLAY_SESSION" ->

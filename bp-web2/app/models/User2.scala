@@ -99,8 +99,7 @@ case class User2(
        //play.Logger.debug("First business for "+ main.userId + " are: " + firstBusinessId)
        firstBusinessDetected
     }
-    println("firstBusinessId"+firstBusinessId)
-    println("businessFirst "+businessFirst)
+
     def masterFirst: String = {
       val masterFirstDetected = masterFirstId match {
           case Some(tup) => tup.master_acc
