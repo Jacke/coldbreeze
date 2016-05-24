@@ -76,6 +76,35 @@ minorityAppServices.factory('DataCostLaunchAssign', ['$resource', function ($res
         query: { method: 'GET', isArray: false }
     })
 **/
+
+$scope.loadFiles = function() {
+  console.log('load files');
+// GET     /launch_files/launch_id
+var filePromise = $http.get('/launch_files/'+$scope.$parent.session_id);
+filePromise.success(function (data) {
+          // Stores the token until the user closes the browser window.
+          $scope.files = data;
+          _.forEach($scope.files.files, function(f) {
+            //console.log('f are', f);
+            var fileName = f.fileUrl.split("minority-uploads/")[1].split("+")[0];
+            var hash = f.fileUrl.split("minority-uploads/")[1].split("+")[1].split("?")[0];
+            if (f.fileUrl.split("minority-uploads/")[1].split("+")[1]) {
+              var sign = f.fileUrl.split("minority-uploads/")[1].split("+")[1].split("?sig=")[1]
+              return f.fileUrl = location.origin+"/downloadFile/"+fileName+"/"+hash+"/sig="+sign
+            } else {
+              return f.fileUrl = "";
+            }
+          })
+          return data;
+      })
+      .error(function () {
+      });
+      return filePromise;
+}
+
+//$scope.loadFiles();
+
+
     $scope.topoLoading = function() {
       return $scope.launchTopologsP = LaunchElementTopologsFactory.query({ launch_id: $scope.$parent.session_id }).$promise.then(function(data) {
         $scope.launchTopologs = data;
@@ -108,6 +137,8 @@ minorityAppServices.factory('DataCostLaunchAssign', ['$resource', function ($res
         $scope.avalCosts = data;
         console.log('$$scope.avalCosts', $scope.avalCosts);
       });
+      $scope.loadFiles();
+
 
       }
       //$scope.dataCostElementLaunchAssignP.then(function(a){
@@ -137,10 +168,10 @@ minorityAppServices.factory('DataCostLaunchAssign', ['$resource', function ($res
         $scope.loadData(false);
       } else {
         $scope.loadData(true);
-
-        $scope.$parent.pushBboardTRigger($scope.$parent.session_id, function(){ return $scope.loadData(); });
       }
 
+    } else {
+      $scope.$parent.pushBboardTRigger($scope.$parent.session_id, function(){ return $scope.loadData(); }, 'launchDataTrigger');
     }
 
 
@@ -196,30 +227,7 @@ minorityAppServices.factory('DataCostLaunchAssign', ['$resource', function ($res
           }
       };
 
-      $scope.loadFiles = function() {
-      // GET     /launch_files/launch_id
-      var filePromise = $http.get('/launch_files/'+$scope.$parent.session_id);
-      filePromise.success(function (data) {
-                // Stores the token until the user closes the browser window.
-                $scope.files = data;
-                _.forEach($scope.files.files, function(f) {
-                  //console.log('f are', f);
-                  var fileName = f.fileUrl.split("minority-uploads/")[1].split("+")[0];
-                  var hash = f.fileUrl.split("minority-uploads/")[1].split("+")[1].split("?")[0];
-                  if (f.fileUrl.split("minority-uploads/")[1].split("+")[1]) {
-                    var sign = f.fileUrl.split("minority-uploads/")[1].split("+")[1].split("?sig=")[1]
-                    return f.fileUrl = location.origin+"/downloadFile/"+fileName+"/"+hash+"/sig="+sign
-                  } else {
-                    return f.fileUrl = "";
-                  }
-                })
-                return data;
-            })
-            .error(function () {
-            });
-            return filePromise;
-      }
-      $scope.loadFiles();
+
 
       $scope.addFile = function() {
 
