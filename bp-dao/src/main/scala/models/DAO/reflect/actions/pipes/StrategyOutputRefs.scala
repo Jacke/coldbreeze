@@ -67,6 +67,7 @@ object StrategyOutputRefsDAOF {
   private def filterByStrategiesQuery(ids: List[Long]): Query[StrategyOutputRefs, StrategyOutputRef, Seq] =
       strategy_output_refs.filter(_.strategy inSetBind ids)
   def getByStrategies(ids: List[Long]) = db.run(filterByStrategiesQuery(ids).result)
+  def getByStrategy(id: Long) = db.run(filterByStrategiesQuery(List(id) ).result)
 
 
   private def filterQuery(id: Long): Query[StrategyOutputRefs, StrategyOutputRef, Seq] =

@@ -239,6 +239,8 @@ case class StrategyOutputUnit(
 
 
 
+
+
 /***********************************************************
  * Session Units
  *
@@ -293,5 +295,50 @@ case class SessionElemTopology(id: Option[Int],
     created_at: Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
     updated_at: Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
     space_id: Option[Int] = None)
+
+
+
+    // INPUT
+    case class LaunchStrategyInputUnit(
+      val id: Option[Long],
+      strategy: Long,
+      op: String,
+      title: String,
+      desc: Option[String],
+      ident: String,
+      targetType: String,
+      created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+      updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now))
+
+    // BASE
+    case class LaunchStrategyBaseUnit(
+      val id: Option[Long],
+      strategy: Long,
+      key: String,
+      baseType: String,
+      valueType: String,
+      valueContent: String,
+      validationScheme: Option[String] = None,
+      validationPattern: Option[String] = None,
+      created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+      updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now))
+
+
+    // OUTPUT
+    case class LaunchStrategyOutputUnit(
+      val id: Option[Long],
+      strategy: Long,
+      op: String,
+      title: String,
+      desc: Option[String],
+      ident: String,
+      targetType: String,
+      created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+      updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now))
+
+
+
+
+
 
 }

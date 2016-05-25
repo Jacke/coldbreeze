@@ -14,6 +14,9 @@ import main.scala.simple_parts.process.Units._
 
 import main.scala.bprocesses.links._
 
+import com.typesafe.scalalogging.Logger
+import org.slf4j.LoggerFactory
+
  class ActionSpec extends Specification {
 
     var instance:Option[BProcess] = None
@@ -44,6 +47,16 @@ import main.scala.bprocesses.links._
       var reactionOpt:Option[UnitReaction] = None
 
       "With strategy" in {
+
+        val appLogger: Logger = Logger(LoggerFactory.getLogger("build"))
+        for( a <- 1 to 30){
+             println( "a: " + a );
+        }
+        for( a <- 1 to 30){
+             appLogger.info( "a: " + a)
+        }
+
+
         val middleware = Middleware(
             id = Some(1L),
             ident = "delay",
@@ -94,7 +107,7 @@ import main.scala.bprocesses.links._
                                       autostart = true,
                                       element = 1,
                                       from_state=None,
-                                      title="Make delay") 
+                                      title="Make delay")
               val out1 = UnitReactionStateOut(id=Some(1),
               state_ref = 1,
               reaction = 1,

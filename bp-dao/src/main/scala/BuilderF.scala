@@ -25,15 +25,35 @@ import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 import scala.util.Try
 import com.typesafe.scalalogging.Logger
 import org.slf4j.LoggerFactory
+import us.ority.min.actions._
+
+
 
 object BuildF {
-  val appLogger = Logger(LoggerFactory.getLogger("build"))
-  def toApplogger(msg: Any, log_type: String = "info") = {
+  protected lazy val appLogger: Logger = Logger(LoggerFactory.getLogger("build"))
+  def toApplogger(msg: Any, log_type: String = "info")(implicit line: sourcecode.Line, file: sourcecode.File) = {
       log_type match {
-        case "debug" => appLogger.info(msg.toString)
-        case "info" => appLogger.info(msg.toString)
-        case "error" => appLogger.info(msg.toString)
+        //case "debug" => appLogger.info(msg.toString)
+        case _ => {
+          //Future { println(s"${file.value}:${line.value} ${msg.toString}") }
+          //Future { appLogger.info(msg.toString) }
+          println(s"${file.value}:${line.value} ${msg.toString}")
+          //appLogger.info(msg.toString)
+        }
+        //case "error" => appLogger.info(msg.toString)
       }
+  }
+
+  def testLogger = {
+    for( a <- 1 to 30){
+         println( "a: " + a );
+    }
+    for( a <- 1 to 30){
+         appLogger.info( "a: " + a)
+    }
+    for( a <- 1 to 10){
+        play.api.Logger.info( "a: " + a)
+    }
   }
 
   /**
@@ -70,6 +90,10 @@ object BuildF {
           toApplogger("Title :   " + state.title)
         }
         toApplogger("elements length" + processRunned1.allElements.length)
+        toApplogger("************************************************")
+        toApplogger("************************************************")
+        println("------------------------------------------------------")
+
         processRunned1
     }
   }
@@ -383,6 +407,12 @@ def initiateWithElements2F(bpID: Int,
     var sessionReactions: List[SessionUnitReaction]         = List()
     var sessionReactOuts: List[SessionUnitReactionStateOut] = List()
 
+    var sessionMiddlewares:List[LaunchMiddleware] = List()
+    var sessionStrategies:List[LaunchStrategy] = List()
+    var sessionStBases:List[LaunchStrategyBaseUnit] = List()
+    var sessionStInputs:List[LaunchStrategyInputUnit] = List()
+    var sessionStOuts:List[LaunchStrategyOutputUnit] = List()
+
     // Maps Origin to Session
     var initialStateMap:scala.collection.mutable.Map[Int, Int]    = scala.collection.mutable.Map().empty
     var TopologsMap:scala.collection.mutable.Map[Int, Int]        = scala.collection.mutable.Map().empty
@@ -390,6 +420,11 @@ def initiateWithElements2F(bpID: Int,
     var ReactionsMap:scala.collection.mutable.Map[Int,Int]        = scala.collection.mutable.Map().empty
     var ReactOutsMap:scala.collection.mutable.Map[Int,Int]        = scala.collection.mutable.Map().empty
 
+    var MiddlewaresMap:scala.collection.mutable.Map[Long,Long]        = scala.collection.mutable.Map().empty
+    var StrategiesMap:scala.collection.mutable.Map[Long,Long]        = scala.collection.mutable.Map().empty
+    var StBasesMap:scala.collection.mutable.Map[Long,Long]        = scala.collection.mutable.Map().empty
+    var StInputsMap:scala.collection.mutable.Map[Long,Long]        = scala.collection.mutable.Map().empty
+    var StOutsMap:scala.collection.mutable.Map[Long,Long]        = scala.collection.mutable.Map().empty
 
     if (runFrom && !minimal) { // Run from session
         initialStates    = SessionInitialStateDAO.findBySession(session_id)
@@ -399,9 +434,25 @@ def initiateWithElements2F(bpID: Int,
         sessionReactions = SessionReactionDAO.findBySession(session_id)
         sessionReactOuts = SessionReactionStateOutDAO.findByReactions(sessionReactions.map(react => react.id.get))
 
+        sessionMiddlewares = LaunchMiddlewaresDAOF.await(LaunchMiddlewaresDAOF.findByReactions(sessionReactions.map(react => react.id.get)) ).toList
+        sessionStrategies = LaunchStrategiesDAOF.await(LaunchStrategiesDAOF.findByMiddlewares(
+          sessionMiddlewares.map(l => l.id.get).toList
+        )).toList
+        sessionStBases  = LaunchStrategyBasesDAOF.await( LaunchStrategyBasesDAOF.getByStrategies(sessionStrategies.map(l =>
+          l.id.get
+        ).toList) ).toList
+        sessionStInputs = LaunchStrategyInputsDAOF.await(LaunchStrategyInputsDAOF.getByStrategies(sessionStrategies.map(l =>
+          l.id.get
+        ).toList) ).toList
+        sessionStOuts   = LaunchStrategyOutputsDAOF.await(LaunchStrategyOutputsDAOF.getByStrategies(sessionStrategies.map(l =>
+          l.id.get
+        ).toList) ).toList
+
         val existedSesStates = BPSessionStateDAOF.await( BPSessionStateDAOF.findByBPAndSession(bpID, session_id) ).toList
         session_states = SessionStatesContainer(existedSesStates, existedSesStates.map(o => o.id.getOrElse(0))).session_states
     } else if( !minimal ) { // Run from plain
+
+
         states = states.map { state =>
             val ogState = ExperimentalSessionBuilder.fromOriginState(state, session_id, elemMap,spaceMap,spaceElsMap)
             initialStateMap += state.id.get -> ogState.id.get
@@ -422,31 +473,59 @@ def initiateWithElements2F(bpID: Int,
             TopologsMap += el.id.get -> obj.id.get
             obj
         }
-      sessionSwitchers = SwitcherDAO.findByBPId(bpID).map { el =>
-        val obj: SessionUnitSwitcher = ExperimentalSessionBuilder.fromOriginSwitcher(el, session_id, initialStateMap)
-        SwitchersMap += el.id.get -> obj.id.get
-        obj
-      }
+        sessionSwitchers = SwitcherDAO.findByBPId(bpID).map { el =>
+          val obj: SessionUnitSwitcher = ExperimentalSessionBuilder.fromOriginSwitcher(el, session_id, initialStateMap)
+          SwitchersMap += el.id.get -> obj.id.get
+          obj
+        }
 
-      sessionReactions = ReactionDAO.findByBP(bpID).map { el =>
-        val obj = ExperimentalSessionBuilder.fromOriginReaction(el, session_id, TopologsMap, initialStateMap)
-        ReactionsMap += el.id.get -> obj.id.get
-        obj
-      }
-      sessionReactOuts = ReactionStateOutDAO.findByReactions(ReactionsMap.keys.toList).map { el =>
-        val obj = ExperimentalSessionBuilder.fromOriginReactionStateOut(el, session_id, ReactionsMap, initialStateMap)
-        ReactOutsMap += el.id.get -> obj.id.get
-        obj
-      }
-      toApplogger("[RED Initial Run Cast result: RESET]")
-      toApplogger(s"states ${states.length}")
-      toApplogger(s"sessionTopologs ${sessionTopologs.length}")
-      toApplogger(s"sessionSwitchers ${sessionSwitchers.length}")
-      toApplogger(s"sessionReactions ${sessionReactions.length}")
-      toApplogger(s"sessionReactOuts ${sessionReactOuts.length}")
-      toApplogger("REACT OUT FROM PLAIN RUN")
-      ReactionsMap.values.toList.foreach { l => toApplogger(l)}
-      toApplogger(s"${ReactionsMap.values.toList.length}")
+        sessionReactions = ReactionDAO.findByBP(bpID).map { el =>
+          val obj = ExperimentalSessionBuilder.fromOriginReaction(el, session_id, TopologsMap, initialStateMap)
+          ReactionsMap += el.id.get -> obj.id.get
+          obj
+        }
+        sessionReactOuts = ReactionStateOutDAO.findByReactions(ReactionsMap.keys.toList).map { el =>
+          val obj = ExperimentalSessionBuilder.fromOriginReactionStateOut(el, session_id, ReactionsMap, initialStateMap)
+          ReactOutsMap += el.id.get -> obj.id.get
+          obj
+        }
+        sessionMiddlewares = MiddlewaresDAOF.await(MiddlewaresDAOF.findByReactions(ReactionsMap.keys.toList) ).map { el =>
+          val obj = ExperimentalSessionBuilder.fromOriginMiddlewares(el, session_id, ReactionsMap)
+          MiddlewaresMap += el.id.get -> obj.id.get
+          obj
+        }.toList
+        sessionStrategies = StrategiesDAOF.await(StrategiesDAOF.findByMiddlewares(MiddlewaresMap.keys.toList)).map { el =>
+          val obj = ExperimentalSessionBuilder.fromOriginStrategies(el, session_id, MiddlewaresMap)
+          StrategiesMap += el.id.get -> obj.id.get
+          obj
+        }.toList
+        sessionStBases = StrategyBasesDAOF.await( StrategyBasesDAOF.getByStrategies(StrategiesMap.keys.toList) ).map  { el =>
+          val obj = ExperimentalSessionBuilder.fromOriginStBases(el, StrategiesMap)
+          StBasesMap += el.id.get -> obj.id.get
+          obj
+        }.toList
+        sessionStInputs = StrategyInputsDAOF.await( StrategyInputsDAOF.getByStrategies(StrategiesMap.keys.toList) ).map { el =>
+          val obj = ExperimentalSessionBuilder.fromOriginStInputs(el, StrategiesMap)
+          StInputsMap += el.id.get -> obj.id.get
+          obj
+        }.toList
+        sessionStOuts = StrategyOutputsDAOF.await( StrategyOutputsDAOF.getByStrategies(StrategiesMap.keys.toList) ).map { el =>
+          val obj = ExperimentalSessionBuilder.fromOriginStOuts(el, StrategiesMap)
+          StOutsMap += el.id.get -> obj.id.get
+          obj
+        }.toList
+
+
+
+        toApplogger("[RED Initial Run Cast result: RESET]")
+        toApplogger(s"states ${states.length}")
+        toApplogger(s"sessionTopologs ${sessionTopologs.length}")
+        toApplogger(s"sessionSwitchers ${sessionSwitchers.length}")
+        toApplogger(s"sessionReactions ${sessionReactions.length}")
+        toApplogger(s"sessionReactOuts ${sessionReactOuts.length}")
+        toApplogger("REACT OUT FROM PLAIN RUN")
+        ReactionsMap.values.toList.foreach { l => toApplogger(l)}
+        toApplogger(s"${ReactionsMap.values.toList.length}")
     }
 
 

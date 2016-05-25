@@ -20,8 +20,10 @@ val id: Option[Long],
 			    updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
 
  */
-class Strategies(tag: Tag) extends Table[Strategy](tag, "strategies") {
+class LaunchStrategies(tag: Tag) extends Table[LaunchStrategy](tag, "launch_strategies") {
   def id          = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def session     = column[Int]("session_id")
+
   def ident       = column[String]("ident")
   def middleware  = column[Long]("middleware_id")
   def isNullStrategy = column[Boolean]("is_null_strategy")
@@ -29,15 +31,15 @@ class Strategies(tag: Tag) extends Table[Strategy](tag, "strategies") {
   def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")
 
+  def sessionFK  = foreignKey("middleware_reaction_session_fk", session,  models.DAO.BPSessionDAOF.bpsessions)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def middleware_FK = foreignKey("launch_strategy_middleware_fk", middleware, models.DAO.LaunchMiddlewaresDAOF.launch_middlewares)(_.id, onDelete = ForeignKeyAction.Cascade)
 
-  def middleware_FK = foreignKey("strategy_middleware_fk", middleware, models.DAO.MiddlewaresDAOF.middlewares)(_.id, onDelete = ForeignKeyAction.Cascade)
-
-  def * = (id.?,
+  def * = (id.?,session,
            ident, middleware,isNullStrategy,
-           created_at, updated_at) <> (Strategy.tupled, Strategy.unapply)
+           created_at, updated_at) <> (LaunchStrategy.tupled, LaunchStrategy.unapply)
 }
 
-object StrategiesDAOF {
+object LaunchStrategiesDAOF {
   import akka.actor.ActorSystem
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
@@ -51,28 +53,24 @@ object StrategiesDAOF {
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
-  val strategies = StrategiesDAO.strategies
+  val launch_strategies = TableQuery[LaunchStrategies]
 
-  private def filterQuery(id: Long): Query[Strategies, Strategy, Seq] =
-    strategies.filter(_.id === id)
+  private def filterQuery(id: Long): Query[LaunchStrategies, LaunchStrategy, Seq] =
+    launch_strategies.filter(_.id === id)
 
-  val create: DBIO[Unit] = strategies.schema.create
-  val drop: DBIO[Unit] = strategies.schema.drop
+  val create: DBIO[Unit] = launch_strategies.schema.create
+  val drop: DBIO[Unit] = launch_strategies.schema.drop
 
   def findByMiddlewares(middlewares: List[Long]) = db.run(filterMiddlewaresQuery(middlewares).result)
 
-  private def filterMiddlewaresQuery(ids: List[Long]): Query[Strategies, Strategy, Seq] =
-    strategies.filter(c => c.middleware inSetBind ids)
+  private def filterMiddlewaresQuery(ids: List[Long]): Query[LaunchStrategies, LaunchStrategy, Seq] =
+    launch_strategies.filter(c => c.middleware inSetBind ids)
 
-
-  def pull(s: Strategy):Future[Long] = db.run(strategies returning strategies.map(_.id) += s)
+  def pull(s: LaunchStrategy):Future[Long] = db.run(launch_strategies returning launch_strategies.map(_.id) += s)
   def get(id: Long) = db.run(filterQuery(id).result.headOption)
 
 
   def ddl_create = db.run(create)
   def ddl_drop = db.run(drop)
 
-}
-object StrategiesDAO {
-	  val strategies = TableQuery[Strategies]
 }

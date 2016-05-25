@@ -193,6 +193,7 @@ object Dependencies {
 
 
   val scalaLog        = "com.typesafe.scala-logging"%%  "scala-logging"         % "3.4.0"
+  val sourcecode      = "com.lihaoyi"               %%  "sourcecode"            % "0.1.1"
   val snakeYaml       = "org.yaml"                  %   "snakeyaml"             % "1.13"
   val logbackClassic  = "ch.qos.logback"            % "logback-classic"         % "1.1.7"
 

@@ -48,79 +48,127 @@ trait ActionIternalProjectionF {
       refActionContainer.map { reactionComp =>
         reaction_container.reaction_ids.get(reactionComp.action_id) match {
         case Some(trueActionId) => {
-          // Create middleware from ref
-          MiddlewareRefsDAOF.get(reactionComp.middleware_id).flatMap { middlewareRefOpt =>
-            middlewareRefOpt match {
-              case Some(middlewareRef) => {
-                MiddlewaresDAOF.pull(
-                  Middleware(
-                    None,
-                    middlewareRef.ident,
-                    middlewareRef.ifaceIdent,
-                    trueActionId
-                  )
-                ).flatMap { trueMiddlewareId =>
-                  // Create strategy from ref
-                  StrategyRefsDAOF.get(reactionComp.strategy_id).flatMap { strategyRefOpt =>
-                    strategyRefOpt match {
-                      case Some(strategyRef) => {
-                          StrategiesDAOF.pull(
-                            Strategy(
-                              None, strategyRef.ident, trueMiddlewareId, strategyRef.isNullStrategy
-                            )
-                          ).flatMap { trueStrategyId =>
-                            Future.sequence ( reactionComp.bases.map { base =>
-                              // Create bases from refs
-                              StrategyBaseRefsDAOF.get(base.base_id).flatMap { refOfBaseUnitOpt =>
-                                refOfBaseUnitOpt match {
-                                  case Some(refOfBaseUnit) => {
-                                  StrategyBasesDAOF.pull(
-                                             StrategyBaseUnit(None,
-                                             trueStrategyId,
-                                             refOfBaseUnit.key,
-                                             refOfBaseUnit.baseType,
-                                             refOfBaseUnit.valueType,
-                                             base.base_content_string,
-                                             validationScheme = Some( base.base_req_type ),
-                                             validationPattern = None)
-                                  ).map { baseId =>
-                                    None
-                                  }
-
-                                  }
-                                  case _ => Future.successful(None)
-                                }
-
-                              }
-                            } ).map { c =>
-                              None
-                            }
-
-
-                            }
-                      }
-                      case _ => Future.successful(None)
-                    }
-
-                  }
-
-
-                }
-            }
-            case _ => Future.successful(None)
-          }
-        }
-
+            prepareMiddleware(reactionComp, trueActionId)
         }
         case _ => Future.successful(None)
 
         }
-
       }
-
 
       scala.concurrent.Future.sequence( components )
       //components
+}
+
+// Create middleware from ref
+def prepareMiddleware(reactionComp: RefActionContainer, trueActionId: Int):Future[Option[Long]] =  {
+  MiddlewareRefsDAOF.get(reactionComp.middleware_id).flatMap { middlewareRefOpt =>
+    middlewareRefOpt match {
+      case Some(middlewareRef) => {
+        MiddlewaresDAOF.pull(
+          Middleware(
+            None,
+            middlewareRef.ident,
+            middlewareRef.ifaceIdent,
+            trueActionId
+          )
+        ).flatMap { trueMiddlewareId =>
+          prepareStrategy(reactionComp, trueMiddlewareId)
+        }
+      }
+      case _ => Future.successful(None)
+    }
+  }
+}
+
+// Create strategy from ref
+def prepareStrategy(reactionComp: RefActionContainer, trueMiddlewareId: Long):Future[Option[Long]] = {
+  StrategyRefsDAOF.get(reactionComp.strategy_id).flatMap { strategyRefOpt =>
+    strategyRefOpt match {
+      case Some(strategyRef) => {
+          StrategiesDAOF.pull(
+            Strategy(
+              None, strategyRef.ident, trueMiddlewareId, strategyRef.isNullStrategy
+            )
+          ).flatMap { trueStrategyId =>
+              prepareInputs(reactionComp, trueStrategyId).flatMap { a =>
+                prepareOutputs(reactionComp, trueStrategyId).flatMap { b =>
+                  prepareBases(reactionComp, trueStrategyId)
+                }
+              }
+          }
+      }
+      case _ => Future.successful(None)
+    }
+  }
+}
+
+
+/*****
+ * Action pipes
+ */
+def prepareBases(reactionComp: RefActionContainer, trueStrategyId: Long):Future[Option[Long]] = {
+  Future.sequence ( reactionComp.bases.map { base =>
+    // Create bases from refs
+    StrategyBaseRefsDAOF.get(base.base_id).flatMap { refOfBaseUnitOpt =>
+      refOfBaseUnitOpt match {
+        case Some(refOfBaseUnit) => {
+        StrategyBasesDAOF.pull(
+                   StrategyBaseUnit(None,
+                   trueStrategyId,
+                   refOfBaseUnit.key,
+                   refOfBaseUnit.baseType,
+                   refOfBaseUnit.valueType,
+                   base.base_content_string,
+                   validationScheme = Some( base.base_req_type ),
+                   validationPattern = None)
+        ).map { baseId =>
+          None
+        }
+
+        }
+        case _ => Future.successful(None)
+      }
+
+    }
+  } ).map { c =>
+    None
+  }
+}
+
+def prepareInputs(reactionComp: RefActionContainer, trueStrategyId: Long):Future[Seq[Long]] = {
+    // Create bases from refs
+    StrategyInputRefsDAOF.getByStrategy(trueStrategyId).flatMap { units =>
+      val now = org.joda.time.DateTime.now()
+      Future.sequence( units.map { unit =>
+        StrategyInputsDAOF.pull(
+          StrategyInputUnit(None,
+            trueStrategyId,
+            unit.op,
+            unit.title,
+            unit.desc,
+            unit.ident,
+            unit.targetType, Some(now), Some(now) )
+          )
+      })
+    }
+}
+
+def prepareOutputs(reactionComp: RefActionContainer, trueStrategyId: Long):Future[Seq[Long]] = {
+    // Create bases from refs
+    StrategyOutputRefsDAOF.getByStrategy(trueStrategyId).flatMap { units =>
+         val now = org.joda.time.DateTime.now()
+         Future.sequence( units.map { unit =>
+           StrategyOutputsDAOF.pull(
+             StrategyOutputUnit(None,
+               trueStrategyId,
+               unit.op,
+               unit.title,
+               unit.desc,
+               unit.ident,
+               unit.targetType, Some(now), Some(now) )
+             )
+         } )
+    }
 }
 
 }

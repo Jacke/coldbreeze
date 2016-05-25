@@ -1,4 +1,4 @@
-package models.DAO.reflect
+package models.DAO
 
 import us.ority.min.actions._
 
@@ -12,6 +12,7 @@ import com.github.nscala_time.time.Imports._
 import models.DAO.conversion.DatabaseCred.dbConfig.driver.api._
 import com.github.tototoshi.slick.PostgresJodaSupport._
 import main.scala.bprocesses.refs.UnitRefs._
+import main.scala.simple_parts.process.Units._
 
 
 /*
@@ -21,7 +22,7 @@ val id: Option[Long],
 			    updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
 
  */
-class StrategyInputRefs(tag: Tag) extends Table[StrategyInputRef](tag, "strategy_input_refs") {
+class LaunchStrategyInputs(tag: Tag) extends Table[LaunchStrategyInputUnit](tag, "launch_strategy_inputs") {
   def id          = column[Long]("id", O.PrimaryKey, O.AutoInc)
   def strategy    = column[Long]("strategy_id")
   def op          = column[String]("op")
@@ -35,7 +36,7 @@ class StrategyInputRefs(tag: Tag) extends Table[StrategyInputRef](tag, "strategy
   def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")
 
 
-  def strategyFK= foreignKey("strategy_input_refs_strategy_fk", strategy, models.DAO.reflect.StrategyRefsDAOF.strategy_refs)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def strategyFK= foreignKey("launch_strategy_inputs_unit_strategy_fk", strategy, models.DAO.LaunchStrategiesDAOF.launch_strategies)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 
   def * = (id.?,
@@ -45,7 +46,7 @@ class StrategyInputRefs(tag: Tag) extends Table[StrategyInputRef](tag, "strategy
            desc,
            ident,
            targetType,
-           created_at, updated_at) <> (StrategyInputRef.tupled, StrategyInputRef.unapply)
+           created_at, updated_at) <> (LaunchStrategyInputUnit.tupled, LaunchStrategyInputUnit.unapply)
 }
 
 /*
@@ -60,7 +61,7 @@ created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
 updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now))
 */
 
-object StrategyInputRefsDAOF {
+object LaunchStrategyInputsDAOF {
   import akka.actor.ActorSystem
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   import slick.jdbc.meta.MTable
@@ -70,33 +71,19 @@ object StrategyInputRefsDAOF {
   import scala.util.Try
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
-  val strategy_input_refs = TableQuery[StrategyInputRefs]
+  val strategy_inputs = TableQuery[LaunchStrategyInputs]
 
-  private def filterQuery(id: Long): Query[StrategyInputRefs, StrategyInputRef, Seq] =
-    strategy_input_refs.filter(_.id === id)
+  private def filterQuery(id: Long): Query[LaunchStrategyInputs, LaunchStrategyInputUnit, Seq] =
+    strategy_inputs.filter(_.id === id)
 
+  val create: DBIO[Unit] = strategy_inputs.schema.create
+  val drop: DBIO[Unit] = strategy_inputs.schema.drop
+  private def filterStrategiesQuery(ids: List[Long]): Query[LaunchStrategyInputs, LaunchStrategyInputUnit, Seq] =
+    strategy_inputs.filter(_.strategy inSetBind ids)
 
-  def pull(s: StrategyInputRef):Future[Long] = db.run(strategy_input_refs returning strategy_input_refs.map(_.id) += s)
-
-  private def filterByStrategiesQuery(ids: List[Long]): Query[StrategyInputRefs, StrategyInputRef, Seq] =
-      strategy_input_refs.filter(_.strategy inSetBind ids)
-  def getByStrategies(ids: List[Long]) = db.run(filterByStrategiesQuery(ids).result)
-  def getByStrategy(id: Long) = db.run(filterByStrategiesQuery(List(id) ).result)
-
+  def pull(s: LaunchStrategyInputUnit):Future[Long] = db.run(strategy_inputs returning strategy_inputs.map(_.id) += s)
   def get(id: Long) = db.run(filterQuery(id).result.headOption)
-
-  def delete(id: Long) = {
-    get(id).map { obj =>
-      obj match {
-        case Some(finded) => db.run(strategy_input_refs.filter(_.id === id).delete)
-        case _ => 0
-      }
-    }
-  }
-
-
-  val create: DBIO[Unit] = strategy_input_refs.schema.create
-  val drop: DBIO[Unit] = strategy_input_refs.schema.drop
+  def getByStrategies(ids: List[Long]) = db.run(filterStrategiesQuery(ids).result)
 
   def ddl_create = db.run(create)
   def ddl_drop = db.run(drop)

@@ -13,7 +13,7 @@ Minority platform is a cloud-enabled, language-agnostic platform for workflow ma
   - Events/Reaction
 
 ### Version
-1.2.0
+1.3.0
 
 
 ### Action abstraction
@@ -103,7 +103,7 @@ $ karma start
 # License
 
 Minority Platform released under [Empia proprietary license](LICENSE).
-
+Handwriten by Stanislav through pain and passion meditation.
 
 # Contacts
 
