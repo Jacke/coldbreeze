@@ -60,7 +60,7 @@
 
 						<div class="launches-nav">
 			        <span class="data-board-count data-board-costs-count">
-			          <div ng-repeat="costObj in sessionCosts | filter: byElement(element) as filteredCost">
+			          <div ng-repeat="costObj in $parent.sessionCosts | filter: byElement(elem) as filteredCost">
 			          </div>
 			          {{filteredCost.length}}
 			        </span>
