@@ -82,6 +82,10 @@ object SessionElemTopologDAOF {
   def getBySessions(k: List[Int]):Future[Seq[SessionElemTopology]] = {
     db.run(filterBySessionIds(k).result)
   }
+  def getAllBySession(k: Int):Future[Seq[SessionElemTopology]] = {
+    db.run(filterBySession(k).result)
+  }
+
   def getByIds(k: List[Int]):Future[Seq[SessionElemTopology]] =
      db.run(filterQueryByIds(k).result)
 

@@ -28,9 +28,9 @@
 		</div>
 		<div class="stations input-stations" style="clear: both;">
 			<!-- Completed launch info -->
-			<ul class="reaction_list reaction_list_launched reaction_list_finished">
+			<ul class="reaction_list reaction_list_launched reaction_list_finished" ng-controller="launchDataController as launchData">
 			  <li class="reaction_list__reaction reaction_list__reaction_preview" ng-repeat="elem in trees | orderBy:'+order'">
-					<div class="data-board-wrapper" ng-controller="launchDataController as launchData">
+					<div class="data-board-wrapper">
 
 			      <a>
 			      <h3>{{ elem.title }} <!-- : {{ capitalizeFirstLetter(reaction.reaction.title) }} --></h3></a>
@@ -60,7 +60,7 @@
 
 						<div class="launches-nav">
 			        <span class="data-board-count data-board-costs-count">
-			          <div ng-repeat="costObj in sessionCosts | filter: byElement(element) as filteredCost">
+			          <div ng-repeat="costObj in $parent.sessionCosts | filter: byElement(elem) as filteredCost">
 			          </div>
 			          {{filteredCost.length}}
 			        </span>

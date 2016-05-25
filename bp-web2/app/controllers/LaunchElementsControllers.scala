@@ -137,28 +137,37 @@ def spaceElems(launch_id: Int) = SecuredAction { implicit request =>
 /**
  * Element topology
  */
-def element_topos(launch_id: Int) = SecuredAction { implicit request =>
+def element_topos(launch_id: Int) = SecuredAction.async { implicit request =>
   if (security.BRes.launchIsOwnedByBiz(request.identity.businessFirst, launch_id)) {
-      val topologs_dto = SessionElemTopologDAO.findBySession(launch_id)
-      Logger.debug(s"topos quantity are $topologs_dto.length")
-      val topologs:List[SessionElementTopologyWrapper] = topologs_dto.filter(topo => topo.front_elem_id.isDefined).map { topolog =>
-          val element = SessionProcElementDAO.findById(topolog.front_elem_id.get).get
-          SessionElementTopologyWrapper(
-           topo_id = topolog.id.get,
-           element_id = element.id.get,
-           element_title = element.title,
-           space_element = false)
-        } ++ topologs_dto.filter(topo => topo.space_elem_id.isDefined).map { topolog =>
-          val element = SessionSpaceElemDAO.findById(topolog.space_elem_id.get).get
-          SessionElementTopologyWrapper(
-           topo_id = topolog.id.get,
-           element_id = element.id.get,
-           element_title = element.title,
-           space_element = true)
+      val topologs_dtoF = SessionElemTopologDAOF.getAllBySession(launch_id)
+      topologs_dtoF.flatMap { topologs_dto =>
+        Logger.debug(s"topos quantity are $topologs_dto.length")
+        val topologsF:Future[List[SessionElementTopologyWrapper]] = Future.sequence(topologs_dto.filter(topo => topo.front_elem_id.isDefined).map { topolog =>
+            SessionProcElementDAOF.findById(topolog.front_elem_id.get).map { elementOpt =>
+              val element = elementOpt.get
+              SessionElementTopologyWrapper(
+               topo_id = topolog.id.get,
+               element_id = element.id.get,
+               element_title = element.title,
+               space_element = false)
+             }
+          }.toList ++ topologs_dto.filter(topo => topo.space_elem_id.isDefined).map { topolog =>
+            SessionSpaceElemDAOF.findById(topolog.space_elem_id.get).map { elementOpt =>
+              val element = elementOpt.get
+              SessionElementTopologyWrapper(
+                topo_id = topolog.id.get,
+                element_id = element.id.get,
+                element_title = element.title,
+                space_element = true)
+            }
+          }.toList)
+          topologsF.map { topologs =>
+            Ok(Json.toJson(topologs))
+          }
         }
-      Ok(Json.toJson(topologs))
-  } else { Forbidden(Json.obj("status" -> "Access denied")) }
+  } else { Future.successful( Forbidden(Json.obj("status" -> "Access denied")) ) }
 }
+
 /**
  * State, reactions, switchers
  **/

@@ -500,14 +500,11 @@ $scope.loadProcesses();
 $scope.bboardDataPromises = [];
 $scope.bboardTriggers = [];
 
-$scope.pushBboardDataPromise = function(launchId, bboardDataPromise) {
-  $scope.bboardDataPromises.push({ launchId, bboardDataPromise });
+$scope.bboardTriggers = [];
+$scope.pushBboardTRigger = function(launchId, triggerFn, ident) {
+  console.log('add trigger', ident + ' ' + launchId);
+  $scope.bboardTriggers.push({ launchId: launchId, triggerFn: triggerFn, ident: ident });
 }
-
-$scope.pushBboardTRigger = function(launchId, triggerFn) {
-  $scope.bboardTriggers.push({ launchId: launchId, triggerFn: triggerFn });
-}
-
 
 
 

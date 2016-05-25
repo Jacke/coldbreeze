@@ -62,9 +62,9 @@ $scope.sessions = [];
 
 
 $scope.bboardTriggers = [];
-
-$scope.pushBboardTRigger = function(launchId, triggerFn) {
-  $scope.bboardTriggers.push({ launchId: launchId, triggerFn: triggerFn });
+$scope.pushBboardTRigger = function(launchId, triggerFn, ident) {
+  console.log('add trigger', ident + ' ' + launchId);
+  $scope.bboardTriggers.push({ launchId: launchId, triggerFn: triggerFn, ident: ident });
 }
 
 
@@ -463,9 +463,11 @@ $scope.showInlineLaunch = function (session) {
     session.inlineLaunchShow = false;
   } else {
     session.inlineLaunchShow = true;
+    console.log('launch trigger');
     var t = _.filter($scope.bboardTriggers, function(t) {
       return session.session.id == t.launchId
     });
+    console.log('triggers', t);
     _.forEach(t, function(tt){
       return tt.triggerFn();
     })
