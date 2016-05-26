@@ -280,25 +280,56 @@ object ExperimentalSessionBuilder {
 
 
 
-/*
-		def fromsessionMiddlewares():Middleware = {
-
+		def fromSessionMiddlewares(el: LaunchMiddleware):Middleware = {
+         Middleware(
+					 el.id,
+					 el.ident,
+					 el.ifaceIdent,
+					 el.reaction
+				 )
 		}
-		def fromSessionStrategies():Strategy = {
-
+		def fromSessionStrategies(el: LaunchStrategy):Strategy = {
+         Strategy(
+					 el.id,
+					 el.ident,
+					 el.middleware,
+					 el.isNullStrategy
+				 )
 		}
-		def fromSessionStBases():StrategyBaseUnit = {
-
+		def fromSessionStBases(el: LaunchStrategyBaseUnit):StrategyBaseUnit = {
+         StrategyBaseUnit(
+					 el.id,
+					 el.strategy,
+					 el.key,
+					 el.baseType,
+					 el.valueType,
+					 el.valueContent,
+					 el.validationScheme,
+					 el.validationPattern
+				 )
 		}
-		def fromSessionStInputs():StrategyInputUnit = {
-
+		def fromSessionStInputs(el: LaunchStrategyInputUnit):StrategyInputUnit = {
+         StrategyInputUnit(
+					 el.id,
+					 el.strategy,
+					 el.op,
+					 el.title,
+					 el.desc,
+					 el.ident,
+					 el.targetType
+				 )
 		}
-		def fromSessionStOuts():StrategyOutputUnit = {
-
+		def fromSessionStOuts(el: LaunchStrategyOutputUnit):StrategyOutputUnit = {
+         StrategyOutputUnit(
+					 el.id,
+					 el.strategy,
+					 el.op,
+					 el.title,
+					 el.desc,
+					 el.ident,
+					 el.targetType
+				 )
 		}
-
-*/
-
 
 
 
