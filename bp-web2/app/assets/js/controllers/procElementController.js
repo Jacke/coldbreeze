@@ -2022,7 +2022,8 @@ $scope.byMiddleware = function(middleware) {
 }
 $scope.byStrategy = function(strategy) {
   return function(obj) {
-     if (obj.strategy === strategy.id) {
+     if (obj.strategy === strategy.id && strategy.isNullStrategy != true) {
+       // null strategy
        return obj;
      } else {
        return false;

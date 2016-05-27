@@ -104,19 +104,32 @@ $scope.allElFetcherPromise = function() {
   var deferred = $q.defer();
   $scope.allLaunchedElemPromise = $scope.$parent.allLaunchedElemPromise;
   $scope.allLaunchedElemPromise.$promise.then(function(data) {
+    console.log('allElFetcherPromise DATA: ', data);
     var currentContainer = _.find(data, function(d) { return d.launchId == $scope.session_id});
 
+
+    if (currentContainer) {
     $scope.bpelems = currentContainer.elements;
     $scope.spaces = currentContainer.spaces;
     $scope.spaceelems = currentContainer.space_elements;
     $scope.elemsHash = _.object(_.map($scope.bpelems, function(x){return [x.id, x]}));
     $scope.spaceElemHash = _.object(_.map($scope.spaceelems, function(x){return [x.id, x]}));
+    $scope.element_topologsPromise = function() {
+      var deferred = $q.defer();
+        deferred.resolve(currentContainer.element_topos);
+      return deferred.promise;
+    }
 
-  $scope.element_topologsPromise = function() {
-    var deferred = $q.defer();
-      deferred.resolve(currentContainer.element_topos);
-    return deferred.promise;
+  } else { // fill 100% launch from tree
+    $scope.bpelems = $scope.$parent.tree.trees;
+    $scope.element_topologsPromise = function() { // empty topos WARNING!!
+      var deferred = $q.defer();
+        deferred.resolve([]);
+      return deferred.promise;
+    }
   }
+
+
     deferred.resolve();
   });
 
