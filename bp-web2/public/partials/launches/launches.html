@@ -169,7 +169,7 @@
           </div>
           </div>
                <div class="session_title">
-                <a href="/a#/bprocess/{{ session.process.id }}/elements?launch={{ session.session.id }}">Launch {{ $index + 1 }}
+                <a href="/a#/bprocess/{{ session.process.id }}/elements?launch={{ session.session.id }}">{{ session.station.note }}
                 <!- {{session.station.note }} --></a>
                 <abbr class="session__header__created_at" title="{{ session.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="session.created_at"></abbr>
                </div>
