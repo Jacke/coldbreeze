@@ -12,13 +12,13 @@ import models.DAO.conversion.BPInitiator
 
 trait ProcessSample {
   val process_dto = BPDAO.get(1).get
-  val target = ProcElemDAO.findByBPId(1)
-   
-  val process = BPInitiator.instance(process_dto, target)
+  ////////////val target = ProcElemDAO.findByBPId(1)
 
-  val dbstation = BPStationDAO.from_origin_station(process.station, process_dto)
-  val station_id = BPStationDAO.pull_object(dbstation)
-  lazy val dblogger = BPLoggerDAO.from_origin_lgr(process.logger, process_dto, station_id)//, station:Int = 1)
+  ////////////val process = BPInitiator.instance(process_dto, target)
+
+  ////////////val dbstation = BPStationDAO.from_origin_station(process.station, process_dto)
+  ////////////val station_id = BPStationDAO.pull_object(dbstation)
+  ////////////lazy val dblogger = BPLoggerDAO.from_origin_lgr(process.logger, process_dto, station_id)//, station:Int = 1)
 
 }
 /*

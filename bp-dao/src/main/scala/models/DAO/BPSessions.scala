@@ -82,7 +82,7 @@ object BPSessionDAO {
 
 
   def pull_object(s: BPSession) = {
-    BPSessionDAOF.await(BPSessionDAOF.pull(s))
+    BPSessionDAOF.await(BPSessionDAOF.pull(s.copy( created_at = Some(org.joda.time.DateTime.now()  ) )) )
   }
   def countByProcess(p: Int) = {
     LaunchCounterDAO.await( LaunchCounterDAO.getCountByProcess(p) )

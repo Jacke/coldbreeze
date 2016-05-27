@@ -68,6 +68,11 @@ object StrategyOutputsDAOF {
   def pull(s: StrategyOutputUnit):Future[Long] = db.run(strategy_outputs returning strategy_outputs.map(_.id) += s)
   def get(id: Long) = db.run(filterQuery(id).result.headOption)
 
+
+  private def filterStrategiesQuery(ids: List[Long]): Query[StrategyOutputs, StrategyOutputUnit, Seq] =
+    strategy_outputs.filter(_.strategy inSetBind ids)
+  def getByStrategies(ids: List[Long]) = db.run(filterStrategiesQuery(ids).result)
+
   val create: DBIO[Unit] = strategy_outputs.schema.create
   val drop: DBIO[Unit] = strategy_outputs.schema.drop
 

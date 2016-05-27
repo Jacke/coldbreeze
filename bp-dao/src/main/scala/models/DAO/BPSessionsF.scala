@@ -57,7 +57,7 @@ object BPSessionDAOF {
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   val bpsessions = TableQuery[BPSessionsF]
 
-  implicit val getBPSessionResult = GetResult(r => BPSession(r.<<, r.<<))
+  implicit val getBPSessionResult = GetResult(r => BPSession(r.<<, r.<<, r.<<, r.<<, r.<<))
   //private def filterQueryByProcess(process: Int): Query[ProcessHistoriesF, ProcessHistoryDTO, Seq] =
   //  bpsessions.filter(_.process === process)
   private def filterQuery(id: Int): Query[BPSessionsF, BPSession, Seq] =
@@ -217,6 +217,7 @@ object BPSessionDAOF {
       val processIds: List[Int] = processes.map(_.id.get).toList
       val sessF = db.run(filterByProcessesTimestampQuery(processIds, timestamp, offset))
       sessF.flatMap { sess =>
+        sess.foreach(ses => println(ses.created_at))
         println("sess result "+sess.length)
         val allStationsF = BPStationDAOF.findBySessions(sess.map(s => s.id.get).toList, active)
         allStationsF.flatMap { stations =>

@@ -19,6 +19,10 @@ import models.DAO.reflect._
 import main.scala.bprocesses.refs.UnitRefs._
 import main.scala.bprocesses.refs._
 
+import com.typesafe.scalalogging.Logger
+import org.slf4j.LoggerFactory
+
+
 class ActionSpec extends Specification {
 
     var instance:Option[BProcess] = None
@@ -47,7 +51,18 @@ class ActionSpec extends Specification {
 
     "Create delaymiddleware" in {
       var reactionOpt:Option[UnitReaction] = None
+      val appLogger: Logger = Logger(LoggerFactory.getLogger("build"))
 
+      for( a <- 1 to 3000){
+           println( "a: " + a );
+      }
+      for( a <- 1 to 3000){
+           appLogger.info( "a: " + a)
+      }
+      true
+}
+}
+/*
       "With strategy" in {
         val middleware = Middleware(
             id = Some(1L),
@@ -251,47 +266,9 @@ val durationStrategyId = StrategyRefsDAOF.pull_object(StrategyRef(id = None,
 
 
 
-/*
 
-    def add_space_elem_cnt(proc2: BProcess) {
-      println(proc2.spaces.head + "sdsdsdsdsds")
-      proc2.spaces.head.addToSpace(new Constant[Boolean](1, true,proc2, 1), "container")
-      proc2.spaces.head.addToSpace(new Constant[Boolean](2, true,proc2, 1), "container")
-      proc2.spaces.head.addToSpace(new Constant[Boolean](3, true,proc2, 1), "container")
-    }
-    def add_space_elem_exp(proc2: BProcess) {
-      proc2.spaces.last.addToSpace(new Constant[Boolean](1, true,proc2, 1), "expands")
-      proc2.spaces.last.addToSpace(new Constant[Boolean](1, true,proc2, 1), "expands")
-      proc2.spaces.last.addToSpace(new Constant[Boolean](1, true,proc2, 1), "expands")
-    }
-
-    "BProcess space" should {
-      val proc = prepare_process
-      add_space_elem_exp(proc)
-      add_space_elem_cnt(proc)
-
-      "contain spaces in container" in {
-        proc.spaces.length > 0
-      }
-
-      "Space elem test" in {
-        val proc2 = proc
-        true
-        //println(proc2.spaces.last.expands.length)
-        //proc2.spaces.last.expands.length > 0
-        //InvokeTracer.run_proc(proc2)
-        //println(proc2.spaces.last.expands) // must be false
-        //proc2.spaces.last.expands.length > 0
-      }
-
-      "Order test" in {
-        proc.spaces.head.findByOrder("container", order = 3).get.order == 3
-        proc.spaces.head.getOrderNum("container") === 4
-      }
-    }
- */
 
 
 
 }
-
+*/

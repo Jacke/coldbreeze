@@ -4185,11 +4185,10 @@ abbr[title], abbr[data-original-title] {
     border-bottom: 1px dotted rgba(165, 165, 165, 0.25);
 }
 .process-info {
-    padding: 22px 15px 22px 26px;
-    clear: both;
-    margin: 18px 0px 25px 13px;
-    border-radius: 5px;
-    border: solid 1px rgb(224, 237, 255);
+  padding: 24px 25px 31px 34px;
+  clear: both;
+  margin: 8px 0px 25px 0px;
+  border-radius: 0px;
 }
 
 
@@ -5850,16 +5849,17 @@ span.data-board-count.data-board-costs-count {
 }
 
 span.data-board-count {
-      background: #A21D4B;
-      /* padding: 1px 6px 1px 4px; */
-      border-radius: 26px;
-      font-size: 9px;
-      text-align: center;
-      width: 18px;
-      font-weight: 800;
-      height: 16px;
-      line-height: 16px;
-      font-family: 'Open Sans';
+  background: #3F5CA4;
+  padding: 0px 4px 0px 3px;
+  border-radius: 26px;
+  font-size: 9px;
+  text-align: center;
+  width: auto;
+  min-width: 16px;
+  font-weight: 800;
+  height: 16px;
+  line-height: 16px;
+  font-family: 'Open Sans';
 }
 
 
@@ -10237,7 +10237,7 @@ button.close {}
 }
 .dataSelectTabButton {
     position: absolute;
-    right: 16px;
+    right: 21px;
     font-weight: 100;
     top: 86px;
 }

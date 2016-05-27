@@ -22,7 +22,8 @@ import models.DAO.conversion.Implicits.fetch_cv
 import models.DAO.sessions._
 import main.scala.bprocesses._
 import main.scala.simple_parts.process.Units._
-
+import us.ority.min.actions._
+import scala.concurrent.ExecutionContext.Implicits.global
 /******************************************************************************
 
 	Convert launched object to original and original to launched
@@ -37,7 +38,7 @@ object ExperimentalSessionBuilder {
 	// session elements topology
 	// session states to that
 	// session reactions
-	// session reactions outs	
+	// session reactions outs
 
 
 
@@ -46,7 +47,7 @@ object ExperimentalSessionBuilder {
 	// session elements
 	def fromOriginEl(el: UndefElement, session: Int, burnMap: scala.collection.mutable.Map[Int, Int]):SessionUndefElement = {
       val obj = SessionUndefElement(
-      					el.id,
+				      					None,
                         el.title,
                         el.desc,
                         el.business,
@@ -65,21 +66,21 @@ object ExperimentalSessionBuilder {
 	  copied
     }
 	// session spaces
-	def fromOriginSp(p: BPSpaceDTO, session: Int, 
+	def fromOriginSp(p: BPSpaceDTO, session: Int,
 					 elemMap: scala.collection.mutable.Map[Int, Int] = scala.collection.mutable.Map().empty,
 					 spaceElsMap: scala.collection.mutable.Map[Int, Int] = scala.collection.mutable.Map().empty):SessionSpaceDTO = {
       val obj = SessionSpaceDTO(
-					  p.id, 
-                      p.bprocess,    
-                      session,   
-                      p.index,   
-                      p.container,   
-                      p.subbrick,   
+										  None,
+                      p.bprocess,
+                      session,
+                      p.index,
+                      p.container,
+                      p.subbrick,
                       elemMap.get(p.brick_front.getOrElse(0)),
-                      spaceElsMap.get(p.brick_nested.getOrElse(0)), 
+                      spaceElsMap.get(p.brick_nested.getOrElse(0)),
                       p.nestingLevel,
                       p.created_at,
-                      p.updated_at      	
+                      p.updated_at
       	)
 	  obj.copy(id = Some(SessionSpaceDAO.pull_object(obj)))
     }
@@ -87,7 +88,7 @@ object ExperimentalSessionBuilder {
 	def fromOriginSpElem(p: SpaceElementDTO, session: Int,
 				spaceMap: scala.collection.mutable.Map[Int, Int]):SessionSpaceElementDTO = {
       val obj = SessionSpaceElementDTO(
-						p.id,
+						None,
                         p.title,
                         p.desc,
                         p.business,
@@ -100,7 +101,7 @@ object ExperimentalSessionBuilder {
                         p.space_role,
                         p.order,
                         p.created_at,
-                        p.updated_at  	
+                        p.updated_at
       	)
 	  obj.copy(id = Some(SessionSpaceElemDAO.pull_object(obj)))
     }
@@ -111,7 +112,7 @@ object ExperimentalSessionBuilder {
 		spaceElsMap: scala.collection.mutable.Map[Int, Int]
 	 ): SessionElemTopology = {
       val obj = SessionElemTopology(
-						p.id,
+						None,
 						p.process,
 						session,
 						elemMap.get(p.front_elem_id.getOrElse(-1)),
@@ -119,7 +120,7 @@ object ExperimentalSessionBuilder {
 						p.hash,
 						p.created_at,
 						p.updated_at,
-						spaceMap.get(p.space_id.getOrElse(-1)) 		
+						spaceMap.get(p.space_id.getOrElse(-1))
       	)
 	  obj.copy(id = Some(SessionElemTopologDAO.pull_object(obj)))
     }
@@ -133,10 +134,10 @@ object ExperimentalSessionBuilder {
 		spaceMap: scala.collection.mutable.Map[Int, Int],
 		spaceElementMap: scala.collection.mutable.Map[Int, Int]):SessionInitialState = {
     	      val obj = SessionInitialState(
-						None, 
+						None,
 					  p.process,
 					  session,
-					  p.title, 
+					  p.title,
 					  p.neutral,
 					  p.process_state,
 					  p.on,
@@ -144,58 +145,58 @@ object ExperimentalSessionBuilder {
 					  elementMap.get(p.front_elem_id.getOrElse(-1)),
 					  spaceElementMap.get(p.space_elem_id.getOrElse(-1)),
 					  spaceMap.get(p.space_id.getOrElse(-1)),
-					  p.created_at, 
-					  p.updated_at, 
+					  p.created_at,
+					  p.updated_at,
 					  p.lang,
 					  p.middle,
 					  p.middleable,
 					  p.oposite,
-					  p.opositable 		
+					  p.opositable
       	)
 	  obj.copy(id = Some(SessionInitialStateDAO.pull_object(obj)))
     }
     // switchers
 	def fromOriginSwitcher(p: UnitSwitcher, session: Int, initialState: scala.collection.mutable.Map[Int, Int]): SessionUnitSwitcher = {
       val obj = SessionUnitSwitcher(
-      							p.id,
+						None,
 						p.bprocess,
 						session,
-						p.switch_type, 
-						p.priority,                            
+						p.switch_type,
+						p.priority,
 						initialState.get(p.state_ref).getOrElse(0),
-						p.session_state_ref,                            
+						p.session_state_ref,
 						p.fn,
 						p.target,
 						p.override_group,
 						p.created_at,
-						p.updated_at	
+						p.updated_at
       	)
 	  obj.copy(id = Some(SessionSwitcherDAO.pull_object(obj)))
     }
 	// session reactions
-	def fromOriginReaction(p: UnitReaction, session: Int, 
+	def fromOriginReaction(p: UnitReaction, session: Int,
 		elementMap: scala.collection.mutable.Map[Int, Int],
 		initialState: scala.collection.mutable.Map[Int, Int]): SessionUnitReaction = {
       val obj = SessionUnitReaction(
-			p.id,
+			None,
 			p.bprocess,
 			session,
 			p.autostart,
 			elementMap.get(p.element).getOrElse(0),
 			initialState.get(p.from_state.getOrElse(0)),
-			p.title,              
+			p.title,
 			p.created_at,
-			p.updated_at	
-				  	
+			p.updated_at
+
       	)
 	  obj.copy(id = Some(SessionReactionDAO.pull_object(obj)))
     }
-	// session reactions outs	
-	def fromOriginReactionStateOut(p: UnitReactionStateOut, session: Int, 
+	// session reactions outs
+	def fromOriginReactionStateOut(p: UnitReactionStateOut, session: Int,
 		ReactionsMap:scala.collection.mutable.Map[Int,Int],
 		initialState: scala.collection.mutable.Map[Int, Int]): SessionUnitReactionStateOut = {
       val obj = SessionUnitReactionStateOut(
-					p.id,
+					None,
 					initialState.get(p.state_ref).getOrElse(-1),
 					ReactionsMap.get(p.reaction).getOrElse(-1),
 					p.on,
@@ -209,6 +210,126 @@ object ExperimentalSessionBuilder {
 
 
 
+
+
+
+
+
+
+		def fromOriginMiddlewares(p: Middleware, session_id: Int, reactionsMap:scala.collection.mutable.Map[Int, Int]):LaunchMiddleware = {
+			val obj = LaunchMiddleware(
+								None,
+								session_id,
+								p.ident,
+		            p.ifaceIdent,
+		            reactionsMap.get(p.reaction).getOrElse(-1)
+			)
+			obj.copy(id = Some( LaunchMiddlewaresDAOF.await(LaunchMiddlewaresDAOF.pull(obj))  ))
+		}
+
+		def fromOriginStrategies(p: Strategy, session_id: Int, middlewaresMap:scala.collection.mutable.Map[Long, Long]):LaunchStrategy = {
+			val obj = LaunchStrategy(
+								None,
+								session_id,
+								p.ident,
+								middlewaresMap.get(p.middleware).getOrElse(-1),
+								p.isNullStrategy
+			)
+			obj.copy(id = Some( LaunchStrategiesDAOF.await(LaunchStrategiesDAOF.pull(obj))  ))
+		}
+
+		def fromOriginStBases(p: StrategyBaseUnit, strategiesMap:scala.collection.mutable.Map[Long, Long]):LaunchStrategyBaseUnit = {
+			val obj = LaunchStrategyBaseUnit(
+								None,
+								strategiesMap.get(p.strategy).getOrElse(-1),
+		            p.key,
+		            p.baseType,
+		            p.valueType,
+		            p.valueContent,
+		            p.validationScheme,
+		            p.validationPattern
+			)
+			obj.copy(id = Some( LaunchStrategyBasesDAOF.await(LaunchStrategyBasesDAOF.pull(obj))  ))
+		}
+
+		def fromOriginStInputs(p: StrategyInputUnit, strategiesMap:scala.collection.mutable.Map[Long, Long]):LaunchStrategyInputUnit = {
+			val obj = LaunchStrategyInputUnit(
+								None,
+								strategiesMap.get(p.strategy).getOrElse(-1),
+		            p.op,
+		            p.title,
+		            p.desc,
+		            p.ident,
+		            p.targetType
+			)
+			obj.copy(id = Some( LaunchStrategyInputsDAOF.await(LaunchStrategyInputsDAOF.pull(obj))  ))
+		}
+
+		def fromOriginStOuts(p: StrategyOutputUnit, strategiesMap:scala.collection.mutable.Map[Long, Long]):LaunchStrategyOutputUnit = {
+			val obj = LaunchStrategyOutputUnit(
+								None,
+								strategiesMap.get(p.strategy).getOrElse(-1),
+		            p.op,
+		            p.title,
+		            p.desc,
+		            p.ident,
+		            p.targetType
+			)
+			obj.copy(id = Some( LaunchStrategyOutputsDAOF.await(LaunchStrategyOutputsDAOF.pull(obj))  ))
+		}
+
+
+
+		def fromSessionMiddlewares(el: LaunchMiddleware):Middleware = {
+         Middleware(
+					 el.id,
+					 el.ident,
+					 el.ifaceIdent,
+					 el.reaction
+				 )
+		}
+		def fromSessionStrategies(el: LaunchStrategy):Strategy = {
+         Strategy(
+					 el.id,
+					 el.ident,
+					 el.middleware,
+					 el.isNullStrategy
+				 )
+		}
+		def fromSessionStBases(el: LaunchStrategyBaseUnit):StrategyBaseUnit = {
+         StrategyBaseUnit(
+					 el.id,
+					 el.strategy,
+					 el.key,
+					 el.baseType,
+					 el.valueType,
+					 el.valueContent,
+					 el.validationScheme,
+					 el.validationPattern
+				 )
+		}
+		def fromSessionStInputs(el: LaunchStrategyInputUnit):StrategyInputUnit = {
+         StrategyInputUnit(
+					 el.id,
+					 el.strategy,
+					 el.op,
+					 el.title,
+					 el.desc,
+					 el.ident,
+					 el.targetType
+				 )
+		}
+		def fromSessionStOuts(el: LaunchStrategyOutputUnit):StrategyOutputUnit = {
+         StrategyOutputUnit(
+					 el.id,
+					 el.strategy,
+					 el.op,
+					 el.title,
+					 el.desc,
+					 el.ident,
+					 el.targetType
+				 )
+		}
 
 
 
@@ -246,7 +367,7 @@ object ExperimentalSessionBuilder {
 					p.brick_nested,
 					p.nestingLevel,
 					p.created_at,
-					p.updated_at 
+					p.updated_at
       	)
     }
 	// session space elements
@@ -265,7 +386,7 @@ object ExperimentalSessionBuilder {
 					p.order,
 					p.created_at,
 					p.updated_at
-     		
+
       	)
     }
 	// session elements topology
@@ -283,9 +404,9 @@ object ExperimentalSessionBuilder {
     }
 
     def fromInitialState(p: SessionInitialState):BPState = {
-    	       BPState(  p.id, 
+    	       BPState(  p.id,
   p.process,
-  p.title, 
+  p.title,
   p.neutral,
   p.process_state,
   p.on,
@@ -293,16 +414,16 @@ object ExperimentalSessionBuilder {
   p.front_elem_id,
   p.space_elem_id,
   p.space_id,
-  p.created_at, 
-  p.updated_at, 
+  p.created_at,
+  p.updated_at,
   p.lang ,
   p.middle,
   p.middleable,
   p.oposite,
   p.opositable
-  
+
       	)
-    }    
+    }
 	// session states to that
 	//def fromOriginSp(p: BPSpaces) {
     //  val obj = BPSessionState()
@@ -311,17 +432,17 @@ object ExperimentalSessionBuilder {
 	def fromSessionSwitcher(p: SessionUnitSwitcher):UnitSwitcher = {
  		   UnitSwitcher(p.id,
 						p.bprocess,
-						p.switch_type, 
-						p.priority,                            
+						p.switch_type,
+						p.priority,
 						p.state_ref,
-						p.session_state_ref,                            
+						p.session_state_ref,
 						p.fn,
 						p.target,
 						p.override_group,
 						p.created_at,
-						p.updated_at	
+						p.updated_at
       	)
-    }    
+    }
 	// session reactions
 	def fromSessionReaction(p: SessionUnitReaction):UnitReaction = {
       UnitReaction(
@@ -335,7 +456,7 @@ object ExperimentalSessionBuilder {
 				p.updated_at
       	)
     }
-	// session reactions outs	
+	// session reactions outs
 	def fromSessionReactionStateOut(p: SessionUnitReactionStateOut):UnitReactionStateOut = {
       UnitReactionStateOut(
 				p.id,
@@ -345,7 +466,7 @@ object ExperimentalSessionBuilder {
 				p.on_rate,
 				p.is_input,
 				p.created_at,
-				p.updated_at     	
+				p.updated_at
       	)
     }
 

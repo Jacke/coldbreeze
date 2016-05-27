@@ -21,7 +21,7 @@ val id: Option[Long],
 			    updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
 
  */
-class StrategyBases(tag: Tag) extends Table[StrategyBaseUnit](tag, "strategy_bases") {
+class LaunchStrategyBases(tag: Tag) extends Table[LaunchStrategyBaseUnit](tag, "launch_strategy_bases") {
   def id               = column[Long]("id", O.PrimaryKey, O.AutoInc)
   def strategy         = column[Long]("strategy_id")
   def key              = column[String]("key")
@@ -35,7 +35,7 @@ class StrategyBases(tag: Tag) extends Table[StrategyBaseUnit](tag, "strategy_bas
   def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")
 
-  def strategyFK= foreignKey("strategy_bases_unit_strategy_fk", strategy, models.DAO.StrategiesDAOF.strategies)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def strategyFK= foreignKey("launch_strategy_bases_unit_strategy_fk", strategy, models.DAO.LaunchStrategiesDAOF.launch_strategies)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?,
            strategy,
@@ -46,7 +46,7 @@ class StrategyBases(tag: Tag) extends Table[StrategyBaseUnit](tag, "strategy_bas
 
            validationScheme,
            validationPattern,
-           created_at, updated_at) <> (StrategyBaseUnit.tupled, StrategyBaseUnit.unapply)
+           created_at, updated_at) <> (LaunchStrategyBaseUnit.tupled, LaunchStrategyBaseUnit.unapply)
 
 }
 /*
@@ -63,7 +63,7 @@ case class StrategyBaseUnit(
   updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now))
 */
 
-object StrategyBasesDAOF {
+object LaunchStrategyBasesDAOF {
   import akka.actor.ActorSystem
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   import slick.jdbc.meta.MTable
@@ -73,20 +73,21 @@ object StrategyBasesDAOF {
   import scala.util.Try
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
-  val strategy_bases = TableQuery[StrategyBases]
+  val strategy_bases = TableQuery[LaunchStrategyBases]
 
-  private def filterQuery(id: Long): Query[StrategyBases, StrategyBaseUnit, Seq] =
+  private def filterQuery(id: Long): Query[LaunchStrategyBases, LaunchStrategyBaseUnit, Seq] =
     strategy_bases.filter(_.id === id)
+
+  private def filterStrategiesQuery(ids: List[Long]): Query[LaunchStrategyBases, LaunchStrategyBaseUnit, Seq] =
+    strategy_bases.filter(_.strategy inSetBind ids)
 
   val create: DBIO[Unit] = strategy_bases.schema.create
   val drop: DBIO[Unit] = strategy_bases.schema.drop
 
-  private def filterStrategiesQuery(ids: List[Long]): Query[StrategyBases, StrategyBaseUnit, Seq] =
-    strategy_bases.filter(_.strategy inSetBind ids)
   def getByStrategies(ids: List[Long]) = db.run(filterStrategiesQuery(ids).result)
 
 
-  def pull(s: StrategyBaseUnit):Future[Long] = db.run(strategy_bases returning strategy_bases.map(_.id) += s)
+  def pull(s: LaunchStrategyBaseUnit):Future[Long] = db.run(strategy_bases returning strategy_bases.map(_.id) += s)
   def get(id: Long) = db.run(filterQuery(id).result.headOption)
 
   def ddl_create = db.run(create)

@@ -42,10 +42,15 @@
             <pattern>%date{yyyy-MM-dd HH:mm:ss ZZZZ} %message%n</pattern>
         </encoder>
     </appender>
-     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+
+<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
       <pattern>%d{HH:mm:ss}[%thread][%-5p] %class{0}.%method:%L - %m%n</pattern>
         </encoder>
+</appender>
+
+<appender name="STDOUTASYNC" class="ch.qos.logback.classic.AsyncAppender">
+  <appender-ref ref="STDOUT" />
 </appender>
 
     <!-- additivity=false ensures access log data only goes to the access log
@@ -56,6 +61,9 @@
 
 
 
+<logger name="build" level="INFO">
+     <appender-ref ref="STDOUTASYNC" />
+</logger>
  <logger name="play" level="ERROR">
     <appender-ref ref="STDOUT" />
     <appender-ref ref="loggly" />

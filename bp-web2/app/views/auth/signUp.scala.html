@@ -10,16 +10,6 @@
  <h1 class="loginHeading">@Messages("custom.signIn")</h1>
 </div>
 
-@request.flash.get("success").map { msg =>
-<div class="alert alert-info">
-@msg
-</div>
-}
-@request.flash.get("error").map { msg =>
-<div class="alert alert-error">
-@msg
-</div>
-}
 
 
 
@@ -29,6 +19,24 @@
 
 <div class="loginPage loginPage__register loginPage__active">
   <div class="loginView">
+
+
+    @request.flash.get("success").map { msg =>
+    <div class="alert alert-info">
+    @msg
+    </div>
+    }
+    @request.flash.get("error").map { msg =>
+    <div class="alert alert-error">
+    @msg
+    @if(msg == "You are already registered") {
+      Please <a href='/signIn'>login</a>
+    }
+    </div>
+    }
+
+
+
   <h1 class="loginHeading">@Messages("custom.signUp")</h1>
 
   @helper.form(action = routes.SignUpController.signUp(), 'id -> "email-form", 'class -> "loginInputs") {

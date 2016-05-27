@@ -52,8 +52,12 @@ return minorityControllers.controller('launchDataController', ['$q','$rootScope'
 
       $scope.insideLaunch = false;
       $scope.insideProcess = false;
+      if ($scope.$parent.session !== undefined) {
+        $scope.inlineLaunchShow = $scope.$parent.session.inlineLaunchShow;
+      } else {
+        $scope.inlineLaunchShow = true;
+      }
 
-      $scope.inlineLaunchShow = $scope.$parent.session.inlineLaunchShow;
       if ($scope.launchId !== undefined) {
         $scope.insideLaunch = true;
       }

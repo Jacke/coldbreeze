@@ -742,7 +742,13 @@ minorityApp.config(['$locationProvider','$routeProvider', '$httpProvider', funct
 }]).run(['$q','$window','$http' ,'$rootScope', '$injector', function($q, $window, $http, $rootScope,$injector) {
     var token = $window.sessionStorage.getItem('token');
 
-    $rootScope.type_short = {"container_brick":"CN", "confirm":"CF", "positive":"PH", "placeholder":"PH" }; // Letters for element types
+    $rootScope.type_short = {
+      "container_brick":"CN",
+      "confirm":"CF",
+      "positive":"PH",
+      "placeholder":"PH",
+      "delay": "DE" 
+    }; // Letters for element types
     $rootScope.switcher_conf2 = $http({
       url: 'configuration/',
       method: "PUT",

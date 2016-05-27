@@ -39,6 +39,43 @@ case class Middleware(
 
 }
 
+case class LaunchMiddleware(
+		id: Option[Long],
+		session: Int,
+		ident: String,
+		ifaceIdent: String,
+		reaction: Int = -1,
+		created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
+    updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
+	) {
+
+
+	var strategies:MutableList[Strategy] = MutableList()
+	val nullStrategy = new NullStrategy()
+
+	def pushToStrategies(s: Strategy) = {
+	  strategies += s
+	}
+
+	def executeStrategy(stateInputs:List[UnitReactionStateIn] = List(),
+						dataInputs: List[UnitReactionDataIn] = List()):Option[StrategyResult] = {
+		ident match {
+			case "delay" => {
+				strategies match {
+					case MutableList(head, _*) => Some( DelayMiddleware.execute(head, StrategyArgument()) )
+					case _ if strategies.length < 1 => Some( DelayMiddleware.execute(nullStrategy.asStrategy, StrategyArgument()) )
+				}
+
+			}
+			case _ => None
+		}
+	}
+
+
+}
+
+
+
 
 /*
  case class SessionUnitReaction(id: Option[Int],
