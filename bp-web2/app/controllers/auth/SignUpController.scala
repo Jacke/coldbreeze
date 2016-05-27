@@ -50,7 +50,7 @@ class SignUpController @Inject() (
         val loginInfo = LoginInfo(CredentialsProvider.ID, data.email)
         userService.retrieve(loginInfo).flatMap {
           case Some(user) =>
-            Future.successful(Redirect(routes.ApplicationController2.signUp()).flashing("error" -> Messages("user.exists")))
+            Future.successful(Redirect(routes.ApplicationController2.signUp()).flashing("error" -> "You are already registered")) //Messages("user.exists")))
           case None =>
             val authInfo = passwordHasher.hash(data.password)
             val user = User2(
