@@ -62,6 +62,9 @@ class SignUpController @Inject() (
               email = Some(data.email),
               avatarURL = None
             )
+            mailers.Mailer.sendInvite(subject = "Welcome | Minority Platform",
+                     emails = List(data.email),
+                     invite_link = "")
             for {
               avatar <- avatarService.retrieveURL(data.email)
               user <- userService.save(user.copy(avatarURL = avatar))

@@ -203,7 +203,7 @@ integrationTest := {
           akkaActor,
           akkaSlf4j,
           rollback,
-      //    akkaQuartz,
+          akkaQuartz,
           dispatch,
           //trireme,
           //triremenode10src,

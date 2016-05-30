@@ -55,7 +55,7 @@ class ExampleSpec extends PlaySpec with OneServerPerSuite with OneBrowserPerSuit
       //browser.$("#confirm_password").text(confirm_password)
       //browser.$("#submit").click()
       click on id("l_submit")
-      Thread.sleep(10000)
+      Thread.sleep(20000)
       //assertThat(pageTitle).contains("Profile")
       pageTitle.contains("Profile") mustBe true
       // Check auth token
@@ -71,12 +71,12 @@ class ExampleSpec extends PlaySpec with OneServerPerSuite with OneBrowserPerSuit
       open (s"http://localhost:$port/")
       val t = $(".minMenuTexts").$(".minMenuItem").getText()
       println(t)
-      Thread.sleep(20000)
+      //Thread.sleep(20000)
 
-      click on (findAll(className("logoutBtn")).toIndexedSeq.head) //class("logoutBtn")
+      //click on (findAll(className("logoutBtn")).toIndexedSeq.head) //class("logoutBtn")
 
 
-      pageTitle.contains("Sign In") mustBe true
+      //pageTitle.contains("Sign In") mustBe true
 
     }
 

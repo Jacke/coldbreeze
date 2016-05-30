@@ -15,6 +15,8 @@ import com.github.tototoshi.slick.PostgresJodaSupport._
 
 class Middlewares(tag: Tag) extends Table[Middleware](tag, "middlewares") {
   def id          = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def title       = column[String]("title")
+
   def ident       = column[String]("ident")
   def ifaceIdent  = column[String]("iface_ident")
   def reaction    = column[Int]("reaction_id")
@@ -25,6 +27,7 @@ class Middlewares(tag: Tag) extends Table[Middleware](tag, "middlewares") {
   def reaction_FK = foreignKey("middleware_reaction_fk", reaction, models.DAO.ReactionDAO.reactions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?,
+           title,
            ident,
            ifaceIdent,
            reaction,

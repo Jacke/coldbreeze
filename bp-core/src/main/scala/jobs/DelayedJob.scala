@@ -3,12 +3,12 @@ package us.ority.min.jobs
 import com.typesafe.config.ConfigFactory
 import akka.actor.ActorSystem
 import java.util.{Calendar, GregorianCalendar, Date, TimeZone}
-//import org.quartz.impl.calendar._
-//import org.quartz.impl.triggers.CronTriggerImpl
-//import org.quartz.TriggerUtils
+import org.quartz.impl.calendar._
+import org.quartz.impl.triggers.CronTriggerImpl
+import org.quartz.TriggerUtils
 import scala.collection.JavaConverters._
-//import com.typesafe.akka.extension.quartz._
-//import com.typesafe.akka.extension.quartz.QuartzSchedulerExtension._
+import com.typesafe.akka.extension.quartz._
+import com.typesafe.akka.extension.quartz.QuartzSchedulerExtension._
 import akka.actor._
 
 case class NewProbe(probe: ActorRef)
@@ -16,13 +16,13 @@ case object Tick
 case object Tock
 
 case class HelloActor() extends Actor {
-  val ref = self 
+  val ref = self
   def receive = {
     case "hello" => println("hello back at you")
     case _       => println("huh?")
   }
 }
- 
+
 
 class ScheduleTestReceiver extends Actor with ActorLogging {
 var probe: ActorRef = _
@@ -43,20 +43,20 @@ def receive = {
 object DelayedJob {
 
   val _system = ActorSystem("MinorityCoreSystem")
-  //              val scheduler = QuartzSchedulerExtension(_system)
-  //              val cleaner = _system.actorOf(Props[HelloActor])  
-  //              val s = scheduler.schedule("Every59Seconds", cleaner, "hello") //.asInstanceOf[QuartzCronSchedule]
+                val scheduler = QuartzSchedulerExtension(_system)
+                val cleaner = _system.actorOf(Props[HelloActor])
+                val s = scheduler.schedule("Every5Seconds", cleaner, "hello") //.asInstanceOf[QuartzCronSchedule]
   //val _t = s.buildTrigger("parseCronScheduleTest")
   //val t = _t.asInstanceOf[CronTriggerImpl]
 
 
-  //val receiver = _system.actorOf(Props(new ScheduleTestReceiver))
-  //val probe = new HelloActor()
-  //receiver ! NewProbe(probe.ref)
-  //val jobDt = QuartzSchedulerExtension(_system).schedule("Every59Seconds", receiver, Tick)
+  val receiver = _system.actorOf(Props(new ScheduleTestReceiver))
+  val probe = _system.actorOf(Props(new HelloActor))
+  receiver ! NewProbe(probe.ref)
+  val jobDt = QuartzSchedulerExtension(_system).schedule("Every5Seconds", receiver, Tick)
 
 
-  
+
 
   // By Duration
   def byDuration() = ???
@@ -85,7 +85,7 @@ case class MinorityJob(id: Option[Long], owner: String, operations: List[Minorit
 	def check() = {
 		if (!scheduleMilis.isDefined)
 			true
-		else 
+		else
 			org.joda.time.DateTime.now().getMillis() < scheduleMilis.get
 	}
 }
@@ -93,7 +93,7 @@ case class MinorityJob(id: Option[Long], owner: String, operations: List[Minorit
 object MinorityJobs {
   var jobs:Seq[MinorityJob] = Seq.empty[MinorityJob]
   def recheck():Seq[Boolean] = {
-  	jobs.map(job => job.check())	
+  	jobs.map(job => job.check())
   }
 
 }

@@ -86,6 +86,18 @@ object StrategyBasesDAOF {
   def getByStrategies(ids: List[Long]) = db.run(filterStrategiesQuery(ids).result)
 
 
+  def updateValue(pipe_id: Long, newValueContent: String) = {
+    get(pipe_id).flatMap { p =>
+      p match {
+        case Some(base) => {
+          val newBase = base.copy(valueContent = newValueContent)
+          db.run( strategy_bases.filter(_.id === pipe_id).update(newBase) )
+        }
+        case _ => Future.successful(-1)
+      }
+    }
+  }
+
   def pull(s: StrategyBaseUnit):Future[Long] = db.run(strategy_bases returning strategy_bases.map(_.id) += s)
   def get(id: Long) = db.run(filterQuery(id).result.headOption)
 

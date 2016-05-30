@@ -8114,8 +8114,14 @@ order:1;
 
 
 
-
-
+/***
+   Actions
+ */
+ .form-edit-bpelem .edit-elem-ref-actions-selected {
+     display: block;
+     clear: both;
+     margin-bottom: 20px;
+ }
 
 
 
