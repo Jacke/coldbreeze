@@ -41,7 +41,7 @@ resolvers += Resolver.url("untyped", url("http://ivy.untyped.com"))(Resolver.ivy
 
 //addCompilerPlugin("com.foursquare.lint" %% "linter" % "0.1.9")
 
-addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "0.6.0")
+addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "0.8.0")
 
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-atmos" % "0.3.2")
