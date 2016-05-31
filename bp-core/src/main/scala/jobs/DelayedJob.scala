@@ -52,8 +52,8 @@ object DelayedJob {
 
   val receiver = _system.actorOf(Props(new ScheduleTestReceiver))
   val probe = _system.actorOf(Props(new HelloActor))
-  receiver ! NewProbe(probe.ref)
-  val jobDt = QuartzSchedulerExtension(_system).schedule("Every5Seconds", receiver, Tick)
+  receiver ! NewProbe(probe)
+  val jobDt = QuartzSchedulerExtension(_system).schedule("Every15Seconds", receiver, Tick)
 
 
 

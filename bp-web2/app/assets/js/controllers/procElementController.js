@@ -2019,7 +2019,7 @@ $scope.byReaction = function(action) {
 }
 $scope.byMiddleware = function(middleware) {
   return function(obj) {
-     if (obj.middleware === middleware.id) {
+     if (obj.middleware === middleware.id && obj.isNullStrategy != true) {
        return obj;
      } else {
        return false;

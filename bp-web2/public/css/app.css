@@ -8126,7 +8126,58 @@ order:1;
 
 
 
+ .form-edit-bpelem .edit-elem-ref-actions-select.ng-scope {
+     background: #37474f;
+     color: white;
+     padding: 8px 0px 8px 14px;
+     overflow: hidden;
+ }
 
+.form-edit-bpelem .edit-elem-ref-actions-select__action-title {
+     display: inline-block;
+     font-size: 20px;
+ }
+
+.form-edit-bpelem .edit-elem-action__action-base {
+     /* background: red; */
+ }
+
+.form-edit-bpelem .form-horizontal.edit-elem-action__action-base__action-base-form {
+     background: #37474F !important;
+ }
+
+ .form-edit-bpelem .formly-field.new-elem-action__action-base__action-base-form__field.formly-field-input {
+     width: 81px;
+     border-radius: 2px !important;
+     box-shadow: none;
+ }
+
+.form-edit-bpelem a.edit-elem-action__action-base-update-button {
+     background: white;
+     padding: 11px 12px;
+     font-size: 14px;
+     width: 20%;
+     margin: 0 63px auto;
+     /* margin-left: -49px; */
+     margin-top: -40px;
+     margin-bottom: -15px;
+     border-top-right-radius: 0px;
+     border-radius: 0px;
+     font-family: "AvenirNextCyr-Good", "AvenirNextCyr", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+     text-decoration: none;
+     display: inline-block;
+     text-align: center;
+     float: right;
+     color: black;
+ }
+
+.form-edit-bpelem .formly-field.new-elem-action__action-base__action-base-form__field.formly-field-input input {
+     box-shadow: none;
+     border-radius: 2px;
+     border: none;
+     padding: 10px 8px 10px;
+     height: 26px;
+}
 
 
 
