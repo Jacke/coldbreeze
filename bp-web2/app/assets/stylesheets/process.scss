@@ -358,7 +358,7 @@ a#reactionSelectButton {
     display: block;
     clear: both;
     color: #FFF;
-    background-color: rgba(40, 43, 53, 0.78);
+    background-color: rgba(40,43,53,0.78);
     border-radius: 3px;
     font-family: "Open Sans",Helvetica,sans-serif;
     font-weight: 400;
@@ -368,10 +368,10 @@ a#reactionSelectButton {
     text-decoration: none;
     padding: 4px;
     float: none;
-    width: 50%;
+    width: 125px;
     margin: 0px auto;
     bottom: 13px;
-    left: 27%;
+    right: 26px;
     position: absolute;
     z-index: 9999;
 }
@@ -414,6 +414,24 @@ li.reaction_list__reaction a {
 li.reaction_list__reaction a:hover {
     text-decoration: none;
 }
+li.reaction_list__reaction.reaction_list__reaction_preview a.reaction_list__reaction_element_title {
+    float: left;
+    display: inline-block;
+    width: 15%;
+    margin-top: -22px;
+}
+li.reaction_list__reaction .reaction_list__reaction_element_launch_nav.launches-nav {
+    display: inline-block;
+    float: left;
+    width: 20%;
+}
+
+
+
+
+
+
+
 
 @media (min-width:376px) {
     .tableMinListControls.processListControls {

@@ -68,7 +68,7 @@ object BPDAOF {
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
   val bprocesses = TableQuery[BProcesses]
-  implicit val getBProcessDTOResult = GetResult(r => BProcessDTO(r.<<, r.<<,r.<<,r.<<))
+  implicit val getBProcessDTOResult = GetResult(r => BProcessDTO(r.<<, r.<<,r.<<,r.<<,r.<<,r.<<,r.<<,r.<< ))
 
   private def filterByIdsQuery(ids: List[Int]): Query[BProcesses, BProcessDTO, Seq] =
     bprocesses.filter(_.id inSetBind ids)
@@ -184,7 +184,7 @@ object BPDAO {
   }
 
   def pull(id: Option[Int] = None, title: String, service: Int, business: Int) = Try(  {
-      bprocesses += BProcessDTO(id, title, service, business)
+      bprocesses += BProcessDTO(id, title, service, business, created_at = Some(org.joda.time.DateTime.now()) )
   }).isSuccess
 
 

@@ -32,7 +32,7 @@
 </div>
 
   <ul ul id="tablemin" class="tableMinList processList">
-  <div class="process" ng-init="bprocesses = [];" ng-repeat="bprocess in bprocesses | toProcessArray | filter:search()">
+  <div class="process" ng-init="bprocesses = [];" ng-repeat="bprocess in bprocesses | toProcessArray | orderBy: '-created_at' | filter:search()">
     <div class="process-status">
     <div class="fastElCreateBtn">
       <a class="fastElFormButton" ng-click="switchFastElementForm(bprocess)" uib-tooltip="Add element" tooltip-side="left">+</a>
@@ -46,12 +46,17 @@
         <div ng-include src="'assets/partials/treeThumb.html'"></div>
       </div>
       <div class="tableMinListControls processListControls" ng-show="isManagerVal">
+        <!--
         <a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="perm(bprocess.id)"><span class="uicon-svg98"></span> {{ 'PEOPLE' | translate }} </a>
-        <!--<a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" ng-click="modalShare(bprocess.id)"><span class="minicon-share"></span> {{ 'SHARE' | translate }}</a>-->
+        <a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" ng-click="modalShare(bprocess.id)">
+        <span class="minicon-share"></span> {{ 'SHARE' | translate }}</a>
         <!--
           <a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" href="/a#/launches?process={{ bprocess.id }}"><span class="uicon-svg372"></span>{{ 'STATIONS' | translate }}</a>
+        <a class="tableMinControlsLink teamSettingsLink tableMinLinkDelete"
+        id="processDeleteButton"
+        ng-click="deleteBP(bprocess.id)"> <span class="minicon-trash"></span> {{ 'DELETE' | translate }} </a>
         -->
-        <a class="tableMinControlsLink teamSettingsLink tableMinLinkDelete" id="processDeleteButton" ng-click="deleteBP(bprocess.id)"> <span class="minicon-trash"></span> {{ 'DELETE' | translate }} </a>
+
       </div>
       <div class="process-thumb" ng:show="emptyElemCheck(bprocess.trees)" ng-init="bprocess.loading=false;">
         <p class="tableMinListGithub">
@@ -59,6 +64,14 @@
           <div class="jawn" ng-show="bprocess.loading"></div>
         </p>
       </div>
+
+      <div class="process-remove-aside-button">
+        <a class="tableMinControlsLink teamSettingsLink tableMinLinkDelete"
+        id="processDeleteButton"
+        ng-click="deleteBP(bprocess.id)"> <span class="minicon-trash"></span></a>
+      </div>
+
+
     </li>
     <!-- Fast element form -->
     <li class="tableMinListItem fastElementForm nga-fast nga-stagger-fast nga-squash-right" ng-show="bprocess.fastElForm">
@@ -69,10 +82,14 @@
     </li>
     <!-- Fast element form /-->
     </div>
+
+    <!--
     <div class="stations">
       <div ng-include src="'assets/partials/bprocesses/launchesBar.html'" class="launches-bar"
            ng-repeat="session in bprocess.sessions[0].sessions | filter: filterForActiveLaunch"></div>
-    </div>
+    </div> -->
+
+
   </div>
   </ul>
 </div>

@@ -1,7 +1,7 @@
-package security
+  package security
 
 import models.User
-import service.DemoUser
+
 import securesocial.core._
 import models.DAO.BProcessDTO
 import models.DAO.BPDAO

@@ -13,7 +13,7 @@ GET         /uptime                                             @controllers.App
 
 
 # Auth
-GET         /migrate                         @controllers.LegacyAuthController.migrate
+#GET         /migrate                         @controllers.LegacyAuthController.migrate
 GET         /signIn                          @controllers.ApplicationController2.signIn
 GET         /auth/login                      @controllers.ApplicationController2.signIn
 GET         /signUp                          @controllers.ApplicationController2.signUp
@@ -35,27 +35,6 @@ POST     /upload                                    @controllers.FileUploadContr
 POST     /uploadLaunchFile/:launch_id               @controllers.FileUploadController.uploadLaunchFile(launch_id: Int, element_id: Option[Int] ?= None)
 POST     /uploadLaunchFile/delete/:launchFileId        @controllers.FileUploadController.deleteLaunchFile(launchFileId: Long)
 
-
-
-# Login page
-#GET     /login                      securesocial.controllers.LoginPage.login
-#GET     /logout                     securesocial.controllers.LoginPage.logout
-
-# User Registration and password handling
-#GET     /signup                     securesocial.controllers.Registration.startSignUp
-#POST    /signup                     securesocial.controllers.Registration.handleStartSignUp
-#GET     /signup/:token              securesocial.controllers.Registration.signUp(token)
-#GET     /reset                      securesocial.controllers.Registration.startResetPassword
-#POST    /reset                      securesocial.controllers.Registration.handleStartResetPassword
-#GET     /reset/:token               securesocial.controllers.Registration.resetPassword(token)
-#POST    /reset/:token               securesocial.controllers.Registration.handleResetPassword(token)
-#GET     /password                   securesocial.controllers.PasswordChange.page
-#POST    /password                   securesocial.controllers.PasswordChange.handlePasswordChange
-
-# Providers entry points
-#GET     /authenticate/:provider     securesocial.controllers.ProviderController.authenticate(provider)
-#POST    /authenticate/:provider     securesocial.controllers.ProviderController.authenticateByPost(provider)
-#GET     /not-authorized             securesocial.controllers.ProviderController.notAuthorized
 
 # Notification routine
 GET         /notify								    @controllers.NotificationController.socket
@@ -395,59 +374,59 @@ POST     /data/refill/ent/:entityId/:launchId/:resourceId/:slatId  @controllers.
 # are template for elements
 ###
 
-GET  		  /refs 							@controllers.ReflectionsController.index()
-POST      /refs							  @controllers.ReflectionsController.create()
+GET      /refs 			  @controllers.ReflectionsController.index()
+POST     /refs			  @controllers.ReflectionsController.create()
 PUT     	/ref/:id            @controllers.ReflectionsController.update(id: Int)
 DELETE  	/ref/:id            @controllers.ReflectionsController.delete(id: Int)
 
-POST		/ref/:id/elems  		  @controllers.ReflectionsController.elem_create(id: Int)
-PUT			/ref/elem/:elem_id    @controllers.ReflectionsController.elem_update(elem_id: Int)
+POST		/ref/elems  	        @controllers.ReflectionsController.elem_create()
+PUT	    /ref/elem/:elem_id    @controllers.ReflectionsController.elem_update(elem_id: Int)
 DELETE	/ref/elem/:elem_id    @controllers.ReflectionsController.elem_delete(elem_id: Int)
-POST		/ref/:id/spaces		    @controllers.ReflectionsController.space_create(id: Int)
-PUT		  /ref/space/:space_id  @controllers.ReflectionsController.space_update(space_id: Int)
+
+POST		/ref/spaces		    @controllers.ReflectionsController.space_create()
+PUT		/ref/space/:space_id  @controllers.ReflectionsController.space_update(space_id: Int)
 DELETE	/ref/space/:space_id  @controllers.ReflectionsController.space_delete(space_id: Int)
 
-DELETE		/ref/:id/spaceelems        @controllers.ReflectionsController.spaceelems_create(id: Int)
+DELETE	/ref/spaceelems            @controllers.ReflectionsController.spaceelems_create()
+PUT      /ref/spaceelem/:spelem_id  @controllers.ReflectionsController.spaceelems_update(spelem_id: Int)
+DELETE   /ref/spaceelem/:spelem_id  @controllers.ReflectionsController.spaceelems_delete(spelem_id: Int)
 
-PUT         /ref/spaceelem/:spelem_id  @controllers.ReflectionsController.spaceelems_update(spelem_id: Int)
-DELETE		  /ref/spaceelem/:spelem_id  @controllers.ReflectionsController.spaceelems_delete(spelem_id: Int)
+POST	    /ref/states                @controllers.ReflectionsController.state_create()
+PUT	    /ref/state/:state_id       @controllers.ReflectionsController.state_update(state_id: Int)
+DELETE  /ref/state/:state_id       @controllers.ReflectionsController.state_delete(state_id: Int)
 
-POST		  /ref/:id/states            @controllers.ReflectionsController.state_create(id: Int)
-PUT			  /ref/state/:state_id       @controllers.ReflectionsController.state_update(state_id: Int)
-DELETE		/ref/state/:state_id       @controllers.ReflectionsController.state_delete(state_id: Int)
-
-POST		  /ref/:id/switches          @controllers.ReflectionsController.switche_create(id: Int)
-PUT			  /ref/switch/:switch_id     @controllers.ReflectionsController.switche_update(switch_id: Int)
-DELETE		/ref/switch/:switch_id     @controllers.ReflectionsController.switche_delete(switch_id: Int)
+POST		  /ref/switches              @controllers.ReflectionsController.switche_create()
+PUT		  /ref/switch/:switch_id     @controllers.ReflectionsController.switche_update(switch_id: Int)
+DELETE	  /ref/switch/:switch_id     @controllers.ReflectionsController.switche_delete(switch_id: Int)
 
 
 # Actions
-POST		  /ref/:id/reactions  	      @controllers.ReflectionsController.reaction_create(id: Int)
-PUT			  /ref/reactions/:reaction_id @controllers.ReflectionsController.reaction_update(reaction_id: Int)
-DELETE		/ref/reactions/:reaction_id @controllers.ReflectionsController.reaction_delete(reaction_id: Int)
+POST		  /ref/reactions  	        @controllers.ReflectionsController.reaction_create()
+PUT		  /ref/reactions/:reaction_id @controllers.ReflectionsController.reaction_update(reaction_id: Int)
+DELETE	  /ref/reactions/:reaction_id @controllers.ReflectionsController.reaction_delete(reaction_id: Int)
 
 
-POST      /ref/:reaction_id/middleware            @controllers.ReflectionsController.create_middleware(reaction_id: Int)
+POST      /ref/middleware                               @controllers.ReflectionsController.create_middleware()
 DELETE    /ref/:reaction_id/middleware/:middleware_id   @controllers.ReflectionsController.delete_middleware(reaction_id: Int, middleware_id: Long)
 
-POST      /ref/:reaction_id/strategy            @controllers.ReflectionsController.create_strategy(reaction_id: Int)
+POST      /ref/strategy                             @controllers.ReflectionsController.create_strategy()
 DELETE    /ref/:reaction_id/strategy/:strategy_id   @controllers.ReflectionsController.delete_strategy(reaction_id: Int, strategy_id: Long)
 
 
-POST      /ref/:reaction_id/base                  @controllers.ReflectionsController.create_base(reaction_id: Int)
+POST      /ref/base                               @controllers.ReflectionsController.create_base()
 DELETE    /ref/:reaction_id/base/:base_id         @controllers.ReflectionsController.delete_base(reaction_id: Int, base_id: Long)
 
-POST      /ref/:reaction_id/input                @controllers.ReflectionsController.create_input(reaction_id: Int)
+POST      /ref/input                             @controllers.ReflectionsController.create_input()
 DELETE    /ref/:reaction_id/input/:input_id      @controllers.ReflectionsController.delete_input(reaction_id: Int, input_id: Long)
 
-POST      /ref/:reaction_id/output               @controllers.ReflectionsController.create_output(reaction_id: Int)
+POST      /ref/output                            @controllers.ReflectionsController.create_output()
 DELETE    /ref/:reaction_id/output/:output       @controllers.ReflectionsController.delete_output(reaction_id: Int, output: Long)
 
 
 
 
-PUT  /ref/:id/element/:elem_id/up             @controllers.ReflectionsController.moveUpFrontElem(id: Int, elem_id: Int)
-PUT  /ref/:id/element/:elem_id/down           @controllers.ReflectionsController.moveDownFrontElem(id: Int, elem_id: Int)
+PUT  /ref/:id/element/:elem_id/up                  @controllers.ReflectionsController.moveUpFrontElem(id: Int, elem_id: Int)
+PUT  /ref/:id/element/:elem_id/down                @controllers.ReflectionsController.moveDownFrontElem(id: Int, elem_id: Int)
 PUT  /ref/:id/space_elem/:spelem_id/:space_id/up   @controllers.ReflectionsController.moveUpSpaceElem(id: Int, spelem_id: Int, space_id: Int)
 PUT  /ref/:id/space_elem/:spelem_id/:space_id/down @controllers.ReflectionsController.moveDownSpaceElem(id: Int, spelem_id: Int, space_id: Int)
 
@@ -472,7 +451,7 @@ GET         /interacts/                              @controllers.InteractionCon
 GET         /bprocess/elems_length                   @controllers.ProcessElementsController.bpElemLength()
 # Elements
 GET         /bprocess/:id/elements                   @controllers.ProcessElementsController.frontElems(id: Int)
-GET         /bprocess/:id/element_topos			         @controllers.ProcessElementsController.element_topos(id: Int)
+GET         /bprocess/:id/element_topos			    @controllers.ProcessElementsController.element_topos(id: Int)
 GET         /bprocess/:id/spaces                     @controllers.ProcessElementsController.spaces(id: Int)
 GET         /bprocess/:id/space_elems                @controllers.ProcessElementsController.spaceElems(id: Int)
 

@@ -34,6 +34,9 @@ minorityControllers.controller('ReflectionCtrl', [
   'RefSwitchFactory',
   'RefReactionsFactory',
   'RefReactionFactory',
+  'RefMiddlewaresFactory',
+'RefStrategiesFactory',
+'RefStrategyBasesFactory',
   '$location', '$route', '$window',
   function ($scope, $filter, $rootScope,EmployeesFactory,ProcPermissionsFactory,PermissionsFactory, PermissionFactory, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory,
             RefsFactory,
@@ -49,7 +52,11 @@ minorityControllers.controller('ReflectionCtrl', [
             RefSwitchesFactory,
             RefSwitchFactory,
             RefReactionsFactory,
-            RefReactionFactory,$location, $route, $window) {
+            RefReactionFactory,
+            RefMiddlewaresFactory,
+            RefStrategiesFactory,
+            RefStrategyBasesFactory,
+            $location, $route, $window) {
 
 
 $scope.isManager = function () {
@@ -60,6 +67,7 @@ $scope.isManager = function () {
     return $window.localStorage.manager == "true";
   }
 };
+
 $scope.search = function() {
   return function(obj) {
     //console.log('obj', obj);
@@ -78,7 +86,7 @@ $scope.search = function() {
       }
     }
  }
-}
+};
 
 
 $scope.search1 = function(item){
@@ -96,7 +104,8 @@ $scope.byReaction = function(action) {
        return false;
      }
  }
-}
+};
+
 $scope.byMiddleware = function(middleware) {
   return function(obj) {
      if (obj.middleware === middleware.id) {
@@ -105,7 +114,8 @@ $scope.byMiddleware = function(middleware) {
        return false;
      }
  }
-}
+};
+
 $scope.byStrategy = function(strategy) {
   return function(obj) {
      if (obj.strategy === strategy.id) {
@@ -114,7 +124,7 @@ $scope.byStrategy = function(strategy) {
        return false;
      }
  }
-}
+};
 
 
 
@@ -182,20 +192,28 @@ RefReactionFactory
 
 */
 $scope.createRef = function (obj) {
+  if (obj.hidden == undefined) {
+    obj.hidden = false;
+  }
   RefsFactory.create(obj).$promise.then(function(c) {
-    $scope.reload();
+     $scope.reloadRefs();
   });
 };
+
+
 $scope.updateRef = function (obj) {
   RefFactory.update({id: obj.id}, obj).$promise.then(function(c) {
-    $scope.reload();
+     $scope.reloadRefs();
   });
 };
 $scope.deleteRef = function (obj) {
   RefFactory.delete({id: obj.id}).$promise.then(function(c) {
-    $scope.reload();
+     $scope.reloadRefs();
   });
 };
+
+
+
 
 
 $scope.orderFrontGen = function (obj) {
@@ -215,17 +233,17 @@ $scope.orderNestedGen = function (obj) {
 
 $scope.updateSpace = function (obj) {
   RefSpaceFactory.update(obj).$promise.then(function(data) {
-    $scope.reload();
+    $scope.reloadRefs() ;
   });
 }
 $scope.createNewSpace = function () {
   RefSpacesFactory.create($scope.newSpace).$promise.then(function(data) {
-    $scope.reload();
+    $scope.reloadRefs() ;
   });
 }
 $scope.deleteSpace = function (obj) {
   RefSpaceFactory.delete({ id: obj.id, BPid: $route.current.params.BPid }).$promise.then(function(data) {
-    $scope.reload();
+    $scope.reloadRefs() ;
 
   });
 };
@@ -233,71 +251,90 @@ $scope.deleteSpace = function (obj) {
 
 
 
-$scope.createNewElem = function (obj) {
+$scope.createRefElement = function (obj, refId) {
  console.log(obj);//RefElemsFactory
+
+ // formWithErrors JsError(List((/reflection,List(ValidationError(List(error.path.missing),WrappedArray()))), 
+ //(/type_title,List(ValidationError(List(error.path.missing),WrappedArray()))), 
+ //(/order,List(ValidationError(List(error.path.missing),WrappedArray()))), 
+ //(/b_type,List(ValidationError(List(error.path.missing),WrappedArray())))))
+
+
  RefElemsFactory.create(obj).$promise.then(function(data) {
-      $scope.reload();
+      $scope.reloadRefs() ;
     });
- $scope.reload();
 };
-$scope.updateElem = function (obj){
+
+$scope.updateRefElem = function (obj){
  console.log(obj);//RefElemFactory
  RefElemFactory.update(obj).$promise.then(function(data) {
-      $scope.reload();
+      $scope.reloadRefs() ;
     });
- $scope.reload();
 }
 
 $scope.deleteElem = function (obj){
   console.log(obj);
   RefElemFactory.delete({ id: obj.id }).$promise.then(function(data) {
-      $scope.reload();
-
+      $scope.reloadRefs() ;
     });
-  $scope.reload();
 }
 
-$scope.createSpaceElem = function (obj) {
+
+$scope.createRefSpaceElem = function (obj) {
  console.log(obj);
  RefSpaceElemsFactory.create(obj).$promise.then(function(data) {
-      $scope.reload();
+      $scope.reloadRefs() ;
     });
 
 };
 $scope.updateSpaceElem = function (obj){
   console.log(obj);
-RefSpaceElemFactory.update(obj).$promise.then(function(data) {
-      $scope.reload();
+    RefSpaceElemFactory.update(obj).$promise.then(function(data) {
+      $scope.reloadRefs() ;
     });
 }
 
 
 $scope.deleteSpaceElem = function (obj){
   console.log(obj);//RefSpaceElemFactory.delete({id: obj.id})
-RefSpaceElemFactory.delete({ id: obj.id }).$promise.then(function(data) {
-      $scope.reload();
+    RefSpaceElemFactory.delete({ id: obj.id }).$promise.then(function(data) {
+      $scope.reloadRefs() ;
     });
 }
 
 
-$scope.createNewState = function (obj) {
+$scope.createRefElementState = function (obj) {
+  /*
+    formWithErrors 
+    JsError(List(
+    (/neutral,List(ValidationError(List(error.path.missing),WrappedArray()))), 
+    (/lang,List(ValidationError(List(error.path.missing),WrappedArray()))), 
+    (/middleable,List(ValidationError(List(error.path.missing),WrappedArray()))), 
+    (/oposite,List(ValidationError(List(error.path.missing),WrappedArray()))), 
+    (/reflection,List(ValidationError(List(error.path.missing),WrappedArray()))), 
+    (/on_rate,List(ValidationError(List(error.path.missing),WrappedArray()))), 
+    (/on,List(ValidationError(List(error.path.missing),WrappedArray()))),
+    (/opositable,List(ValidationError(List(error.path.missing),WrappedArray()))), 
+    (/process_state,List(ValidationError(List(error.path.missing),WrappedArray()))), 
+    (/middle,List(ValidationError(List(error.path.missing),WrappedArray())))))
+  */
  console.log(obj);//RefStatesFactory
   RefStatesFactory.create(obj).$promise.then(function(data) {
-      $scope.reload();
+      $scope.reloadRefs() ;
     });
 
 };
-$scope.updateState = function (obj) {
+$scope.updateRefElementState = function (obj) {
  console.log(obj);//RefStateFactory
  RefStateFactory.update(obj).$promise.then(function(data) {
-      $scope.reload();
+      $scope.reloadRefs() ;
     });
 
 };
-$scope.deleteState = function (obj) {
+$scope.deleteRefElementState = function (obj) {
  console.log(obj);//RefStateFactory.delete({id: obj.id})
-RefStateFactory.delete({ id: obj.id }).$promise.then(function(data) {
-      $scope.reload();
+RefStateFactory.delete({ params: {id: obj.id}, data: obj }).$promise.then(function(data) {
+      $scope.reloadRefs() ;
     });
 };
 
@@ -305,40 +342,49 @@ RefStateFactory.delete({ id: obj.id }).$promise.then(function(data) {
 $scope.createNewSwitcher = function (obj) {
  console.log(obj);//RefSwitchesFactory
   RefSwitchesFactory.create(obj).$promise.then(function(data) {
-      $scope.reload();
+      $scope.reloadRefs() ;
     });
 };
 $scope.updateSwitcher = function (obj) {
  console.log(obj);//RefSwitchFactory
 RefSwitchFactory.update(obj).$promise.then(function(data) {
-      $scope.reload();
+      $scope.reloadRefs() ;
     });
 };
 $scope.deleteSwitcher = function (obj) {
  console.log(obj);//RefSwitchFactory.delete({id: obj.id})
 RefSwitchFactory.delete({ id: obj.id }).$promise.then(function(data) {
-      $scope.reload();
+      $scope.reloadRefs() ;
     });
 };
 
-$scope.createReaction = function (obj) {
+$scope.createRefAction = function (obj, element, refObj) {
  console.log(obj);//RefReactionsFactory
+ //formWithErrors JsError(List((/reaction,List(ValidationError(List(error.path.missing),WrappedArray())))))
+  obj.element = _.find(refObj.topology, function(topo) { return topo.front_elem_id == element.id }).id;
+  // TODO: Only for front element
+  obj.reflection = refObj.ref.id;
+
   obj.reaction_state_outs = [];
   RefReactionsFactory.create(obj).$promise.then(function(data) {
-      $scope.reload();
+      $scope.reloadRefs() ;
     });
 
 };
+
+
+
+
 $scope.updateReaction = function (obj) {
  console.log(obj);//RefReactionFactory
 RefReactionFactory.update(obj).$promise.then(function(data) {
-      $scope.reload();
+      $scope.reloadRefs() ;
     });
 };
 $scope.deleteReaction = function (obj) {
  console.log(obj);//RefReactionFactory.delete({id: obj.id})
  RefReactionFactory.delete({ id: obj.id }).$promise.then(function(data) {
-      $scope.reload();
+      $scope.reloadRefs() ;
     });
 };
 
@@ -350,21 +396,81 @@ $scope.deleteReaction = function (obj) {
 
 
 
-$scope.createMiddleware = function(middleware) {
+$scope.createRefElementMiddleware = function(middleware, action) {
+    console.log(middleware);
+    /*
+  def id          = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def title       = column[String]("title")
 
+  def ident       = column[String]("ident")
+  def ifaceIdent  = column[String]("iface_ident")
+
+  def reaction    = column[Int]("reaction_id")
+  def reflection  = column[Int]("reflection_id")
+
+  def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
+  def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")
+
+  formWithErrors JsError(List
+    (/ident,List(ValidationError(List(error.path.missing),WrappedArray()))), 
+    (/ifaceIdent,List(ValidationError(List(error.path.missing),WrappedArray())))))
+  */
+
+  middleware.reflection = action.reflection;
+  middleware.reaction = action.id;
+    RefMiddlewaresFactory.create(middleware).$promise.then(function(data) {
+      $scope.reloadRefs() ;
+    });
 }
 $scope.removeMiddleware = function(middleware) {
 
 }
-$scope.createStrategy = function(strategy) {
 
+$scope.createMiddlewareStrategy = function(strategy, middleware) {
+    console.log(strategy);
+/*
+  def id          = column[Long]("id", O.PrimaryKey, O.AutoInc)
+  def ident       = column[String]("ident")
+  def reflection  = column[Int]("reflection_id")
+  def middleware  = column[Long]("middleware_id")
+  def isNullStrategy = column[Boolean]("is_null_strategy")
+  def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
+  def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")
+  */
+  strategy.reflection = middleware.reflection;
+  strategy.middleware = middleware.id;
+  if (strategy.isNullStrategy == undefined) {
+    strategy.isNullStrategy = false;
+  }
+
+    RefStrategiesFactory.create(strategy).$promise.then(function(data) {
+      $scope.reloadRefs() ;
+    });
 }
+
 $scope.removeStrategy = function(strategy) {
 
 }
-$scope.createStrategyBase = function(strategy_base) {
 
+$scope.createMiddlewareStrategyBase = function(strategy_base, strategy) {
+    console.log(strategy_base);
+    /*
+    def id               = column[Long]("id", O.PrimaryKey, O.AutoInc)
+    def strategy         = column[Long]("strategy_id")
+    def key              = column[String]("key")
+    def baseType         = column[String]("base_type")
+    def valueType        = column[String]("value_type")
+    def valueContent     = column[String]("value_content")
+    def validationScheme       = column[Option[String]]("validation_scheme")
+    def validationPattern      = column[Option[String]]("validation_pattern")
+    */
+    strategy_base.strategy = strategy.id;
+
+    RefStrategyBasesFactory.create(strategy_base).$promise.then(function(data) {
+      $scope.reloadRefs() ;
+    });
 }
+
 $scope.removeStrategyBase = function(strategy_base) {
 
 }
@@ -382,7 +488,7 @@ $scope.removeStrategyBase = function(strategy_base) {
       data: {  }
       })
       .then(function(response) {
-             $scope.reload();
+             $scope.reloadRefs() ;
 
       },
       function(response) { // optional
@@ -398,7 +504,7 @@ $scope.removeStrategyBase = function(strategy_base) {
       data: {  }
       })
       .then(function(response) {
-           $scope.reload();
+           $scope.reloadRefs() ;
 
       },
       function(response) { // optional
@@ -417,7 +523,7 @@ $scope.removeStrategyBase = function(strategy_base) {
       data: {  }
       })
       .then(function(response) {
-            $scope.reload();
+            $scope.reloadRefs() ;
 
       },
       function(response) { // optional
@@ -432,7 +538,7 @@ $scope.removeStrategyBase = function(strategy_base) {
       data: {  }
       })
       .then(function(response) {
-          $scope.reload();
+          $scope.reloadRefs() ;
 
       },
       function(response) { // optional

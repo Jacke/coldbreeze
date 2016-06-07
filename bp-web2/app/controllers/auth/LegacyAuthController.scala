@@ -26,6 +26,7 @@ import scala.concurrent.Future
  * @param authInfoRepository The auth info service implementation.
  * @param socialProviderRegistry The social provider registry.
  */
+ /*
 class LegacyAuthController @Inject() (
   val messagesApi: MessagesApi,
   val env: Environment[User2, CookieAuthenticator],
@@ -80,3 +81,4 @@ class LegacyAuthController @Inject() (
     }
 
 }
+*/

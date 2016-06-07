@@ -99,7 +99,8 @@ object ReactionRefDAO {
 
 
   def pull_object(s: UnitReactionRef) =   {
-      await(db.run( reaction_refs returning reaction_refs.map(_.id) += s ))
+    val date = Some(org.joda.time.DateTime.now)
+    await(db.run( reaction_refs returning reaction_refs.map(_.id) += s.copy(created_at = date, updated_at = date) ))
   }
 
 

@@ -68,6 +68,51 @@ $scope.pushBboardTRigger = function(launchId, triggerFn, ident) {
 }
 
 
+  
+
+
+$scope.convertTo = function (arr, key, dayWise) {
+  var groups = {};
+  console.log('arr', arr);
+  for (var i=0;l= arr.length, i<l;i++) {
+    if (dayWise) {
+      arr[i][key] = new Date(arr[i][key]).toLocaleDateString();
+      console.log('dayWise', arr[i][key]);
+    }
+    else {
+      arr[i][key] = new Date(arr[i][key]).toTimeString();
+    }
+    groups[arr[i][key]] = groups[arr[i][key]] || [];
+    groups[arr[i][key]].push(arr[i]);
+  }
+  console.log('groups', groups);
+  return groups;
+
+  // { date, dated_sessions }
+};
+  
+
+
+$scope.decorateLaunchesByDate = function(launches_container) {
+  var groupByDate = function(arr) {
+    //arr = _.map(arr, function(key,values) {
+    //  return {key: values};
+    //})
+    return arr;
+  }
+
+  // -> launchesCOntainer(process, launches) 
+  // <- launchesCOntainer(process, launches, launchesByDate(date: launches) ) 
+  return _.map(launches_container, function(cn) {
+    return {
+      process: cn.process,
+      sessions: cn.sessions,
+      launchesByDate: groupByDate( $scope.convertTo(cn.sessions, 'created_at', true) )
+    }
+  });
+ //return launches_container
+}
+
 
 $scope.loadSessions = function (process_id) {
 
@@ -159,12 +204,12 @@ $scope.interactionContainerPromise.$promise.then(function (d) {
     // polyfill ended
      if (process_id != undefined) {
         console.log(process_id);
-        $scope.sessions = _.filter(data2, function(dat) {
+        var newSessions = _.filter(data2, function(dat) {
           return dat.process.id === process_id
-
         });
+        $scope.sessions = $scope.decorateLaunchesByDate(newSessions);
      } else {
-      $scope.sessions = data2;
+      $scope.sessions = $scope.decorateLaunchesByDate(data2);
    }
     $scope.lastChecked = true;
 
@@ -311,7 +356,7 @@ $scope.updateSessionInCollection = function(session, collection) {
   var process = session.process.id;
   var updatedSession = session.sessions[0];
   // Iterate over container for process
-  $scope.sessions = _.map($scope.sessions, function(sessionContainer) {
+  var newSessions = _.map($scope.sessions, function(sessionContainer) {
     if (sessionContainer.process.id === process) {
   // Iterate over process session for updated session
   //sessionContainer.sessions = _.without(sessionContainer.sessions, _.find(sessionContainer.sessions, function(s) {
@@ -339,6 +384,8 @@ $scope.updateSessionInCollection = function(session, collection) {
     }
     return sessionContainer;
   });
+
+  $scope.sessions = $scope.decorateLaunchesByDate(newSessions);
   console.log($scope.sessions);
 }
 

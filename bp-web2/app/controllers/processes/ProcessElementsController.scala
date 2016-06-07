@@ -16,7 +16,7 @@ import play.api.data.FormError
 import play.api.Logger
 import views._
 import models.User
-import service.DemoUser
+
 import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
@@ -205,11 +205,26 @@ def allElementsCached(process_ids: List[Int],timestamp:String) = SecuredAction.a
 // /bprocess/:id/elements
 def frontElems(id: Int) = SecuredAction { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, id)) {
-        Ok(Json.toJson(ProcElemDAO.findByBPId(id)))
+      val frontElements = ProcElemDAO.findByBPId(id)
+      val frontElementsWithTopos = decorateProcElementsToJson(frontElements)
+        Ok(Json.toJson( frontElementsWithTopos) )
     } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
 
-def show_elem_length(id: Int):Int = { ProcElemDAO.findLengthByBPId(id) }
+
+private def decorateProcElementsToJson(elements: List[UndefElement]) = {
+  val elemIds:List[Int] = elements.map(_.id.get)
+  val topos:List[ElemTopology] = ElemTopologDAO.findByFrontElements(elemIds)
+  val elemJson = Json.toJson( elements )
+  val elemJsonObj = elemJson.as[List[JsObject]]
+  val objWithTopos = elemJsonObj.map { obj =>
+    val elemId = (obj \ "id").validate[Int].get
+    obj + ("topo_id" -> Json.toJson(topos.find(topo => topo.front_elem_id.get == elemId ).get  ))
+  }
+  objWithTopos
+}
+
+def show_elem_length(id: Int):Int = ProcElemDAO.findLengthByBPId(id)
 
 // /bprocess/elems_length
 def bpElemLength() = SecuredAction { implicit request =>

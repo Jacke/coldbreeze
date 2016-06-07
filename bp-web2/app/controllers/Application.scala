@@ -14,7 +14,7 @@ import play.api.Logger
 
 import views._
 import models.{AccountsDAO, User}
-import service.DemoUser
+
 import controllers.users._
 import models.DAO.resources._
 
@@ -106,6 +106,7 @@ class Application @Inject() (
         Ok(views.html.app(request.identity))
       //}
   }
+
   def app2() = SecuredAction { implicit request =>
         Ok(views.html.app2(request.identity))
   }
@@ -114,6 +115,7 @@ class Application @Inject() (
     val test_error = 1 / 0
     Ok(Json.toJson(test_error))
   }
+  
   def proPage() = SecuredAction { implicit request =>
       AccountsDAO.getAccountInfo(request.identity.emailFilled) match {
         case Some(infos) => {

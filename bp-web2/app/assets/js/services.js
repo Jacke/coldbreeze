@@ -355,6 +355,55 @@ minorityAppServices.factory('RefReactionFactory', ['$resource', function ($resou
 }]);
 
 
+// Middlewares  
+minorityAppServices.factory('RefMiddlewaresFactory', ['$resource', function ($resource) {
+    return $resource(baseUrl + 'ref/middleware', {}, {
+        query: { method: 'GET', isArray: true },
+        create: { method: 'POST' }
+
+    })
+}]);
+minorityAppServices.factory('RefMiddlewareFactory', ['$resource', function ($resource) {
+    return $resource(baseUrl + 'ref/middleware/:id', {}, {
+        update: { method: 'PUT', params: {id: '@id'} },
+        delete: { method: 'DELETE', params: {id: '@id'} }
+    })
+}]);
+
+
+
+// Strategies  
+minorityAppServices.factory('RefStrategiesFactory', ['$resource', function ($resource) {
+    return $resource(baseUrl + 'ref/strategy', {}, {
+        query: { method: 'GET', isArray: true },
+        create: { method: 'POST' }
+
+    })
+}]);
+minorityAppServices.factory('RefStrategyFactory', ['$resource', function ($resource) {
+    return $resource(baseUrl + 'ref/strategy/:id', {}, {
+        update: { method: 'PUT', params: {id: '@id'} },
+        delete: { method: 'DELETE', params: {id: '@id'} }
+    })
+}]);
+
+
+// Strategy Bases  
+minorityAppServices.factory('RefStrategyBasesFactory', ['$resource', function ($resource) {
+    return $resource(baseUrl + 'ref/base', {}, {
+        query: { method: 'GET', isArray: true },
+        create: { method: 'POST' }
+
+    })
+}]);
+minorityAppServices.factory('RefStrategyBaseFactory', ['$resource', function ($resource) {
+    return $resource(baseUrl + 'ref/base/:id', {}, {
+        update: { method: 'PUT', params: {id: '@id'} },
+        delete: { method: 'DELETE', params: {id: '@id'} }
+    })
+}]);
+
+
 
 
 

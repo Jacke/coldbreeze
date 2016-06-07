@@ -19,7 +19,7 @@ class AccountPlans(tag: Tag) extends Table[AccountPlanDTO](tag, "account_plans")
   def limit       = column[Int]("limit")
 
   def planFK      = foreignKey("acc_plan_plan_fk", plan, models.DAO.resources.PlanDAO.plans)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def accFK       = foreignKey("acc_plan_macc_fk", master_acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
+  //def accFK       = foreignKey("acc_plan_macc_fk", master_acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
   def business    = foreignKey("acc_plan_buss_fk", workbench, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def planJoin    = models.DAO.resources.PlanDAO.plans.filter(_.id === plan)

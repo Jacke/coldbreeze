@@ -12,27 +12,35 @@
     </div>
   </div>
   <div class="control-group form-group">
-    <label class="control-label col-sm-1" for="inputBusinessId">Host:</label>
+    <label class="control-label col-sm-1" for="inputBusinessId">type_title:</label>
     <div class="controls col-xs-4">
-      <input type="text" class="form-control" id="inputBusinessId" ng-model="$parent.refObj.newRefElement.host"/>
+      <input type="text" class="form-control" id="inputBusinessId" ng-model="$parent.refObj.newRefElement.type_title"/>
     </div>
   </div>
-
-
+  <div class="control-group form-group">
+    <label class="control-label col-sm-1" for="inputBusinessId">order:</label>
+    <div class="controls col-xs-4">
+      <input type="number" class="form-control" id="inputBusinessId" ng-model="$parent.refObj.newRefElement.order"/>
+    </div>
+  </div>
+  <div class="control-group form-group">
+    <label class="control-label col-sm-1" for="inputBusinessId">b_type:</label>
+    <div class="controls col-xs-4">
+      <input type="text" class="form-control" id="inputBusinessId" ng-model="$parent.refObj.newRefElement.b_type"/>
+    </div>
+  </div>  
   <div class="control-group form-group">
     <label class="control-label col-sm-1" for="inputBusinessId">desc:</label>
     <div class="controls col-xs-4">
-      <textarea type="text" class="form-control" id="inputBusinessId" ng-model="$parent.refObj.newRefElement.desc"/>
+      <textarea type="text" 
+      class="form-control" 
+      id="inputBusinessId" 
+      ng-init="$parent.refObj.newRefElement.reflection = $parent.refObj.ref.id"
+      ng-model="$parent.refObj.newRefElement.desc"/>
     </div>
   </div>
-  <div class="control-group form-group">
-    <label class="control-label col-sm-1" for="inputBusinessId">category:</label>
-    <div class="controls col-xs-4">
-      <select type="text" name="newRefCategory" class="form-control" id="inputBusinessId" ng-model="$parent.refObj.newRefElement.category">
-        <option value="Base">Base</option>
-      </select>
-    </div>
-  </div>
+  <input type="number" class="form-control" id="inputBusinessId" ng-model="$parent.refObj.newRefElement.reflection"/>
+
 
   <div class="control-group form-group">
     <div class="controls col-xs-4">

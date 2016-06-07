@@ -28,15 +28,16 @@
     margin-top: 10px;
 }
 .session-process .progress {
-	width: 100%;
-	display: inline-block;
-	margin-bottom: -8px;
-	position: absolute;
-	left: 0px;
-	top: -2px;
-	opacity: 0.3;
-	min-height: 4px;
+    width: 100%;
+    display: inline-block;
+    margin-bottom: -8px;
+    position: absolute;
+    left: 0px;
+    top: 77px;
+    opacity: 0.3;
+    min-height: 4px;
 }
+
 .session-process .progress:hover {
 	opacity: 0.9;
 }
@@ -49,8 +50,12 @@
 	font-family: 'Open Sans';
 }
 .session-process abbr.session__header__created_at {
-	margin-left: 5px;
-	display: inline-block;
+    margin-left: 5px;
+    display: inline;
+    border: none;
+    border-bottom: solid 1px #999BA9;
+    margin-right: 20px;
+    margin-left: 8px;
 }
 .session-process .stations .session__header {
 	padding-bottom: 10px;
@@ -98,7 +103,7 @@
     margin-left: 0px;
     padding-left: 0px;
     padding-top: 1px;
-    padding-bottom: 50px;
+    padding-bottom: 0px;
     position: relative;
     margin-bottom: 0px;
     overflow: hidden;

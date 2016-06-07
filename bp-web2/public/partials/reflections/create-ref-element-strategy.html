@@ -5,38 +5,23 @@
 
 <div class="new-ref-form" ng-show="$parent.middleware.showNewStrategyForm">
   <form novalidate="novalidate" class="form-horizontal form-new-ref">
-  <div class="control-group form-group">
-    <label class="control-label col-sm-1" for="inputTitle">{{ 'TITLE' | translate }}:</label>
-    <div class="controls col-xs-4">
-      <input type="text" id="inputTitle" class="form-control" ng-model="$parent.middleware.NewMiddlewareStrategy.title"/>
-    </div>
-  </div>
-  <div class="control-group form-group">
-    <label class="control-label col-sm-1" for="inputBusinessId">Host:</label>
-    <div class="controls col-xs-4">
-      <input type="text" class="form-control" id="inputBusinessId" ng-model="$parent.middleware.NewMiddlewareStrategy.host"/>
-    </div>
-  </div>
-
 
   <div class="control-group form-group">
-    <label class="control-label col-sm-1" for="inputBusinessId">desc:</label>
+    <label class="control-label col-sm-1" for="inputBusinessId">ident:</label>
     <div class="controls col-xs-4">
-      <textarea type="text" class="form-control" id="inputBusinessId" ng-model="$parent.middleware.NewMiddlewareStrategy.desc"/>
+      <input type="text" class="form-control" id="inputBusinessId" ng-model="$parent.middleware.NewMiddlewareStrategy.ident"/>
     </div>
   </div>
   <div class="control-group form-group">
-    <label class="control-label col-sm-1" for="inputBusinessId">category:</label>
+    <label class="control-label col-sm-1" for="inputBusinessId">isNullStrategy:</label>
     <div class="controls col-xs-4">
-      <select type="text" name="newRefCategory" class="form-control" id="inputBusinessId" ng-model="$parent.middleware.NewMiddlewareStrategy.category">
-        <option value="Base">Base</option>
-      </select>
+      <input type="checkbox" ng-model="$parent.middleware.NewMiddlewareStrategy.isNullStrategy">
     </div>
   </div>
 
   <div class="control-group form-group">
     <div class="controls col-xs-4">
-      <a ng-click="createMiddlewareStrategy($parent.middleware.NewMiddlewareStrategy)" class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</a>
+      <a ng-click="createMiddlewareStrategy($parent.middleware.NewMiddlewareStrategy, $parent.middleware)" class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</a>
       <a ng-click="$parent.middleware.showNewStrategyForm=false" class="btn btn-small btn-primary">Cancel</a>
     </div>
   </div>

@@ -18,7 +18,7 @@ class Bills(tag: Tag) extends Table[BillDTO](tag, "bills") {
   def sum         = column[BigDecimal]("sum")
   def workbench   = column[Int]("workbench_id")
 
-  def accFK = foreignKey("bill_macc_fk", master_acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
+  //def accFK = foreignKey("bill_macc_fk", master_acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
   def wbFK  = foreignKey("bills_current_biz_business_fk", workbench, models.DAO.resources.BusinessDAO.businesses)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?, title, master_acc, assigned, approved, expired, sum, workbench) <> (BillDTO.tupled, BillDTO.unapply)

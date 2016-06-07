@@ -15,8 +15,8 @@ class Messages(tag: Tag) extends Table[Message](tag, "messages") {
   def created_at     = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at     = column[Option[org.joda.time.DateTime]]("updated_at")
 
-  def fromMsgFK   = foreignKey("msgFrom_macc_fk", from, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
-  def toMsgFK     = foreignKey("msgTo_macc_fk", to, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
+  //def fromMsgFK   = foreignKey("msgFrom_macc_fk", from, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
+  //def toMsgFK     = foreignKey("msgTo_macc_fk", to, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?, body, created_at, updated_at) <> (Message.tupled, Message.unapply)
 }

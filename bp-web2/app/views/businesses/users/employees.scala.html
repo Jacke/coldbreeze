@@ -1,8 +1,6 @@
 @import models.DAO.resources.BusinessServiceDTO
 @import models.DAO.resources.EmployeeDTO
-
 @import models.DAO.resources.BusinessDTO
-@import models.AccountDAO
 @import models.DAO.resources.GroupDTO
 @import helper._
 @(currentPage: Page[EmployeeDTO], accounts: List[models.daos.DBUser], currentOrderBy: Int, currentFilter: String, businesses: List[BusinessDTO], assignedBiz: List[BusinessDTO], groups: List[GroupDTO], aval: Int = 0)(user: models.User2)(implicit request: RequestHeader)

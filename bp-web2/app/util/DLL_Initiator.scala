@@ -54,8 +54,6 @@ object DLL_Initiator {
 
 
     // Resources
-    TokensDAO.ddl_create
-    AccountsDAO.ddl_create
     AccountsDAO.infos_ddl
 
     EmployeeDAO.ddl_create
@@ -154,8 +152,7 @@ object DLL_Initiator {
     SessionStateLogDAO.ddl_drop
 
     // Resources
-    TokensDAO.ddl_drop
-    AccountsDAO.ddl_drop
+
     EmployeeDAO.ddl_drop
     EmployeesBusinessDAO.ddl_drop
     InputLoggerDAO.ddl_drop

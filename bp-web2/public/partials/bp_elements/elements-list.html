@@ -79,7 +79,7 @@
     <div class="info">
       <div class="type" ng-class="bpelem.type_title">{{ type_short[bpelem.type_title] }}
          <ul class="type-tabs" ng-init="bpelem.hovered=false" role="tablist" ng-mouseover="bpelem.hovered == true ? bpelem.hovered=false : bpelem.hovered=true" ng-show="(isManagerVal && !inSession && selected == 2) || (bpelem.hovered == true && !inSession)">
-           <li><a role="tab" data-toggle="tab" ng:init="selected=1" ng:click="selected == 1 ? selected=2 : selected=1">
+           <li><a role="tab" data-toggle="tab" ng:init="bpelem.selected=1" ng:click="bpelem.selected == 1 ? bpelem.selected=2 : bpelem.selected=1">
            <span class="glyphicon glyphicon-edit"></span></a></li>
            <li><a id="frontElementDeleteButton" ng-click="deleteElem(bpelem)"><span class="glyphicon glyphicon-remove"></span></a></li>
            <li><a id="frontElementUpButton" ng:click="moveUpElem(bpelem)"><span class="glyphicon glyphicon-arrow-up"></span></a></li>
@@ -114,7 +114,7 @@
       <li ng-repeat="ilog in bpelem.ilogs">{{ ilog.uid }}</li>
     </ul>
     </div>
-    <div class="tab-pane active" id="edit" class="proc-element-edit" ng:show="selected == 2">
+    <div class="tab-pane active" id="edit" class="proc-element-edit" ng:show="bpelem.selected == 2">
         <div ng-include src="'assets/partials/bp_elements/element-edit.html'"></div>
     </div>
     <div class="right-bar" ng:init="exp=false" ng-class="stateClass(masterState(bpelem))" ng-class="exp == active ? 'exp-active' : 'exp-disabled'">

@@ -1,4 +1,17 @@
- <form novalidate="novalidate" ng-submit="fastCreateNewElem($parent.bprocess.newBpelem, $parent.bprocess);" class="form-horizontal form-fast-element-create">
+<div class="fast-element-aside">
+<div class="fast-element-form-close">
+  <a ng-click="$parent.switchFastElementForm(bprocess)">X</a>
+</div>
+<div class="fast-element-show-model">
+  <a href="/a#/bprocess/{{ $parent.bprocess.id }}/elements">Model</a>
+</div>
+<div class="fast-element-tree">
+  <div ng-include src="'assets/partials/treeThumb.html'"></div>
+</div>
+
+</div>
+
+<form novalidate="novalidate" ng-submit="fastCreateNewElem($parent.bprocess.newBpelem, $parent.bprocess);" class="form-horizontal form-fast-element-create">
     <div class="form-group element-form-fields">
     <div class="control-group">
       <h3>Add element in {{ $parent.bprocess.title }} process</h3>
@@ -8,7 +21,7 @@
       <div class="controls col-xs-2">
         <label class="control-label col-sm-1" for="fastElemTitle">Title</label>
       </div>
-      <div class="controls col-xs-4">      
+      <div class="controls col-xs-4">
         <input type="text" id="fastElemTitle" class="form-control" ng-model="$parent.bprocess.newBpelem.title"/>
       </div>
 
@@ -29,7 +42,7 @@
       <div class="controls col-xs-2">
           <span class="selectedRefType">{{ $parent.bprocess.newBpelem.selectedRef.ref.title }}</span>
             <a ng-click="$parent.bprocess.newBpelem.refSelectHidden=false;" ng-show="$parent.bprocess.newBpelem.refSelectHidden == true;" class="expand-ref-select"><span class="moicon moicon-info expand-ref-select"></span></a>
-      </div>      
+      </div>
     </div><!-- form-group element-form-fields -->
     </div>
     <div class="ref-select-container clearfix" ng-hide="$parent.bprocess.newBpelem.refSelectHidden" ng-init="$parent.bprocess.newBpelem.selectedRef != undefined ? $parent.bprocess.newBpelem.refSelectHidden=false : refSelectHidden=true;">
@@ -47,11 +60,11 @@
         <li ng-repeat="state in newBpelem.selectedRef.bpstate"><span>State: {{state.title}}</span></li>
       </ul>
     </div>   -->
-    </div>    
+    </div>
     </div>
 
 
-<!-- ref-select-container --> 
+<!-- ref-select-container -->
     <!--
     <div class="control-group people-control-group">
       <div class="form-group element-form-fields">
@@ -59,40 +72,40 @@
         <div class="controls col-xs-2">
           <label class="control-label col-sm-1" for="inputPerm">People</label>
         </div>
-        <div class="controls col-xs-6" ng-init="newBpelem.perms = [];">  
+        <div class="controls col-xs-6" ng-init="newBpelem.perms = [];">
           <div class="perms perm-list" ng-repeat="perm in newBpelem.perms" ng-init="perm.account = accFetch(perm)">
             <span class="account-pic" tooltip="{{ perm.account.tooltip }}">
                 <img ng-src="{{ perm.account.avatarUrl}}" alt="{{ perm.account.tooltip }}">
                 <a ng-click="delPermForForm(perm,newBpelem.perms)" class="btn-delete minicon"></a>
             </span>
-          </div>   
+          </div>
           <select id="inputPerm" ng-model="newBpelem.perm" class="forUID" ng-options="employeegroup as credFetch(employeegroup) for employeegroup in employees_groups"></select>
           <a ng-click="createPermForForm(newBpelem.perm, newBpelem.perms, 'front')" class="btn btn-big btn-success">{{ 'ADD' | translate }}</a>
         </div>
       </div>
       </div>
-    </div>    
+    </div>
     <div class="control-group cost-control-group">
       <div class="form-group element-form-fields">
       <div class="form-group control-group clearfix">
         <div class="controls col-xs-2">
           <label class="control-label col-sm-1" for="inputPerm">Cost</label>
         </div>
-        <div class="controls col-xs-6" ng-init="newBpelem.costs = [];">  
+        <div class="controls col-xs-6" ng-init="newBpelem.costs = [];">
           <div class="costs cost-list" ng-repeat="cost in newBpelem.costs">
             <span class="resource-block" tooltip="{{ cost.resource.title }}">
                 {{ cost.resource.resource.title }} — {{ entityDecorator(cost.entities, cost.resource) }}
                 <a ng-click="delElementResource(cost, newBpelem.costs)" class="btn-delete minicon"></a>
             </span>
-          </div>   
+          </div>
           <div class="input-resource-block">
                <span class="input-resource-block-title">Resouce</span>
               <select id="inputResource" ng-init="newBpelem.cost = {};" ng-model="newBpelem.cost.resource" ng-init="newBpelem.cost.resource=resources[0];newBpelem.cost.entity=newBpelem.cost.resource.entities[0]" ng-change="newBpelem.cost.entity=newBpelem.cost.resource.entities[0]" class="forResource" ng-options="res_cn as res_cn.resource.title for res_cn in resources"></select>
           </div>
           <div class="input-entity-block">
                <span class="input-entity-block-title">Entity</span>
-              <select id="inputEntity" ng-model="newBpelem.cost.entities" class="forResource" ng-options="entity.id as entity.title for entity in newBpelem.cost.resource.entities"></select>      
-          </div>    
+              <select id="inputEntity" ng-model="newBpelem.cost.entities" class="forResource" ng-options="entity.id as entity.title for entity in newBpelem.cost.resource.entities"></select>
+          </div>
           <a ng-click="createElementResource(newBpelem.cost, newBpelem.costs)" class="btn btn-big btn-success">{{ 'ADD' | translate }}</a>
         </div>
       </div>

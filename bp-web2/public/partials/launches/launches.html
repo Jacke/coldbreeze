@@ -111,29 +111,58 @@
 
   <div class="empty-reponse" ng-show="isEmptyLaunches" ng-cloak>You have no launches. Run <a href="/a">process</a> and come back here</div>
 
-  <div class="session-process" ng-repeat="entity in sessions" ng-hide="isSessionsOnlyActive(entity.sessions)">
 
-  <div class="session-process-header"><h2><a id="launchProcessTitle" href="/a#/bprocess/{{ entity.process.id }}/elements">{{ entity.process.title }}</a></h2>
-  <div class="session_controls">
-    <ul>
-      <!--
-      <li class="process-history-btn" tooltip-placement="left" uib-tooltip="Process history" tooltip-side="bottom"  ng-click="processHistory(entity)"><span class="moicon moicon-book"></span></li>
-      -->
-    </ul>
+<!--
+
+  <div class="quick-session">
+      <div class="primary-quick-session">100%</div>
+    <div class="primary-quick-expand">
+      <div class="primary-quick-expand-element">Element</div>
+      <div class="primary-quick-expand-button">Confirming</div>
+    </div>
   </div>
 
+
+<div class="flat-launches">
+  <div class="flat-launch-process">
+    <a class="flat-launch-process-title">Process</a>
+    <a class="flat-launch-process-date">Date</a>
+  </div>
+</div>
+-->
+
+<!--  
+  <div class="session-process-dates" ng-repeat="(date, session_cn) in sessions">
+-->
+
+
+<div class="session-process" ng-repeat="entity in sessions" ng-hide="isSessionsOnlyActive(entity.sessions)">
+  <div class="session-process-header">
+    <h2 class="session-process-header-title">
+      <a id="launchProcessTitle" href="/a#/bprocess/{{ entity.process.id }}/elements">{{ entity.process.title }}</a>
+    </h2>
+    <div class="session_controls">
+      <ul>
+        <!--
+        <li class="process-history-btn" tooltip-placement="left" uib-tooltip="Process history" tooltip-side="bottom"  ng-click="processHistory(entity)"><span class="moicon moicon-book"></span></li>
+        -->
+      </ul>
+    </div>
   </div>
 
-  <!--
-  <div class="process_content" ng-init="bprocess=entity.process">
-            <div ng-include src="'assets/partials/treeThumb.html'"></div>
-  </div>-->
-  <div class="stations minimal-stations" ng-init="session.lineDescShow=false;" ng-class="{'lineDescShowed': session.lineDescShow == true }" ng-repeat="session in entity.sessions | orderBy:'station.paused':true | limitTo: 10 | filter:isOnlyActive" style="clear: both;">
+  <div ng-repeat="(key, sessions) in entity.launchesByDate">
+       <div class="launch-date"><span>{{ key | amDateFormat:'MMMM Do YYYY' }}</span></div>
+
+  <div class="stations minimal-stations" 
+       ng-init="session.lineDescShow=false;" 
+       ng-class="{'lineDescShowed': session.lineDescShow == true }" 
+       ng-repeat="session in sessions | orderBy:'station.paused':true | limitTo: 10 | filter:isOnlyActive">
+       
 
   <div class="session__buttonInput" ng-click="showInlineLaunch(session);session.lineDescShow==true ? session.lineDescShow=false : session.lineDescShow=true;">
     <button class="svg-button-input">
-
-  <svg class="inline-svg" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="21px" height="24px" fill="white" viewBox="0 0 32 22.5" enable-background="new 0 0 32 22.5" xml:space="preserve">
+      <svg class="inline-svg" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"      y="0px" width="21px" height="24px" fill="white" viewBox="0 0 32 22.5" 
+            enable-background="new 0 0 32 22.5" xml:space="preserve">
             <title>Mobile Menu</title>
             <g class="svg-menu-toggle">
 
@@ -150,29 +179,28 @@
 
             </rect>
             </g>
-
       </svg>
-
-
     </button>
   </div>
 
-          <div class="session__header">
-                <div class="progress-button loading" ng-class="bubbleClass(session)" tooltip-placement="left" uib-tooltip="{{bubbleTooltip(session)}}" tooltip-side="left">
-          <div class="round-progress-container">
+  <div class="session__header">
+          <div class="progress-button loading" ng-class="bubbleClass(session)" tooltip-placement="left" uib-tooltip="{{bubbleTooltip(session)}}" tooltip-side="left">
+            <div class="round-progress-container">
                  <progress-arc stroke="#3080E8"
                                 background="#eee"
                                 size="60"
                                 stroke-width="2"
                                 complete="session.percent / 100">
                   </progress-arc><span class="round-percent">{{ session.percent }}</span>
-          </div>
+            </div>
           </div>
                <div class="session_title">
                 <a href="/a#/bprocess/{{ session.process.id }}/elements?launch={{ session.session.id }}">{{ session.station.note }}
                 <!- {{session.station.note }} --></a>
                 <abbr class="session__header__created_at" title="{{ session.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="session.created_at"></abbr>
                </div>
+
+           <!--    
           <div class="session__header session__people">
             <div class="launched-by" ng-show="session.peoples.launched_by != 'not@found.com'" ng-init="account = accFetchSessioned(session.peoples.launched_by)">
                 <span class="account-pic" tooltip-placement="right" uib-tooltip="{{ account.tooltip }}" tooltip-side="left">
@@ -186,7 +214,9 @@
                       </span>
                     </div>
             </div>
-          </div>
+          </div>-->
+
+
   </div>
 
 
@@ -265,6 +295,10 @@
 
 
   </div>
+
+
+</div>
+
 
 
   </div>

@@ -3,18 +3,18 @@ import play.api.mvc._
 import play.api.i18n.Lang
 
 package helpers {
-  import service.DemoUser
+  
 
   object LangDet {
-  def getLang(user: DemoUser) = {
-    user.lang.getOrElse(Lang("en", "US"))
+  def getLang() = {
+    Lang("en", "US")//user.lang.getOrElse(Lang("en", "US"))
   }
 }
 }
 
 package views.html.helper {
 
-import service.DemoUser
+
 
 object linkWithSubdomain {
   def apply(path: play.api.mvc.Call, ssl: Boolean = false)(implicit subdomain: String, request: RequestHeader): String = {
@@ -33,8 +33,8 @@ object linkToSubdomain {
   }
 }
 object LangDet {
-  def getLang(user: DemoUser) = {
-    user.lang.getOrElse(Lang("en", "US"))
+  def getLang() = {
+    Lang("en", "US")//user.lang.getOrElse(Lang("en", "US"))
   }
 }
 

@@ -3,7 +3,7 @@ import play.api.GlobalSettings
 import play.api.mvc.WithFilters
 import play.filters.gzip.GzipFilter
 import java.lang.reflect.Constructor
-import controllers.plugin._
+//import controllers.plugin._
 import controllers.Default
 import play.api.Logger
 import play.api.mvc.{RequestHeader, Filter, Result}
