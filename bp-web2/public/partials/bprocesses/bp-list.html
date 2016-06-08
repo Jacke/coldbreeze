@@ -58,6 +58,8 @@
         -->
 
       </div>
+      <div class="process-launch-thumb" ng-show="bprocess.executedOnce"><a href="/a#/launches/"><div class="red-indicator"></div></a></div>
+
       <div class="process-thumb" ng:show="emptyElemCheck(bprocess.trees)" ng-init="bprocess.loading=false;">
         <p class="tableMinListGithub">
           <a class="redButton" ng-show="!bprocess.loading" id="launchProcessButton" ng-click="run(bprocess)" tooltip-placement="left" uib-tooltip="Launch process" tooltip-side="left"></a>

@@ -731,7 +731,7 @@ minorityApp.config(['$locationProvider','$routeProvider', '$httpProvider', funct
      // Inputs
 /*C*/$routeProvider.when('/bprocess/:BPid/input', {templateUrl: '/assets/partials/inputs/inputs.html', controller: 'BPRequestCtrl'});
      // Reflections
-/*I*/$routeProvider.when('/ref', {templateUrl: '/assets/partials/reflections/ref-list.html', controller: 'ReflectionCtrl'});
+/*I*/$routeProvider.when('/ref', {templateUrl: '/assets/partials/reflections/ref-list.html', reloadOnSearch: false, controller: 'ReflectionCtrl'});
 /*C*/$routeProvider.when('/ref/new', {templateUrl: '/assets/partials/reflections/ref-list.html', controller: 'ReflectionCtrl'});
 
 

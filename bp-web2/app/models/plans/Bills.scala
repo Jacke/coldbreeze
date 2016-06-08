@@ -84,7 +84,8 @@ object BillDAO {
   def update(id: Int, bill: BillDTO) =   {
     val billToUpdate: BillDTO = bill.copy(Option(id))
     await(db.run( bills.filter(_.id === id).update(billToUpdate) ))
-  } /**
+  } 
+  /**
    * Delete a business service
    * @param id
    */

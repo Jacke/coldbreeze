@@ -62,13 +62,23 @@ object CommentsDAOF {
 
   private def filterQuery(id: Long): Query[Comments, Comment, Seq] =
     comments.filter(_.id === id)
+  private def filterQueryIds(ids: Seq[Long]): Query[Comments, Comment, Seq] =
+    comments.filter(_.id inSetBind ids)
 
   val create: DBIO[Unit] = comments.schema.create
   val drop: DBIO[Unit] = comments.schema.drop
 
+  def getAllByIds(ids: Seq[Long]):Future[Seq[Comment]] = {
+     db.run(filterQueryIds(ids).result)
+  }
   def get(id: Long):Future[Option[Comment]] = {
      db.run(filterQuery(id).result.headOption)
   }
+  def update(id: Long, comment: Comment) =   {
+    val commentToUpdate: Comment = comment.copy(Option(id))
+    db.run( comments.filter(_.id === id).update(commentToUpdate) )
+  } 
+
   def getAll =  {
     val q3 = for { s ← comments } yield s
     db.run(q3.result)

@@ -105,7 +105,9 @@
       <span class="ref-element-title">{{ element.title}}</span>
       <span class="ref-element-desc">{{ element.desc }}</span>
     </div>
-
+    <div class="ref-element-control">
+      <a ng-click="deleteElem(element)" class="ref-obj-delete-button">Delete</a>
+    </div>
     <div class="ref-element-states">
       <div ng-include src="'assets/partials/reflections/create-ref-element-state.html'"></div>
 
@@ -117,6 +119,7 @@
           <li class="oposite-state">{{ state.oposite }}</li>
         </ul>
       </div>
+      <a ng-click="deleteRefElementState(state)" class="ref-obj-delete-button">Delete state</a>
     </div>
 
 
@@ -128,6 +131,8 @@
     <div class="ref-element-actions" ng-show="filteredActions.length > 0">
       <div class="ref-action" ng-repeat="action in refObj.reactions | filter: reactionByTopoUnitElement(element, refObj)">
           <h5 class="ref-action-title">{{ action.title }}</h5>
+          <a ng-click="deleteReaction(action)" class="ref-obj-delete-button">Delete action</a>
+
           <div class="ref-action-pipes">
             <div class="ref-action-inputs">
               Inputs
@@ -145,6 +150,8 @@
 
             <div class="ref-action-middleware" ng-repeat="middleware in refObj.middlewares | filter:byReaction(action)">
               <span>Middleware {{ middleware.title }}</span>
+              <a ng-click="removeMiddleware(middleware)" class="ref-obj-delete-button">Delete middleware</a>
+
             <div class="ref-action-strategies">
               <div ng-include src="'assets/partials/reflections/create-ref-element-strategy.html'"></div>
 
@@ -159,6 +166,8 @@
               </div>
               <div class="ref-action-strategy" ng-repeat="strategy in refObj.strategies | filter:byMiddleware(middleware)">
                 <h5 class="strategy-title">{{ strategy.title }}</h5>
+              <a ng-click="removeStrategy(strategy)" class="ref-obj-delete-button">Delete strategy</a>
+                
                 <div class="ref-action-strategy-pipes">
                   <div class="ref-action-inputs">
 
@@ -168,6 +177,7 @@
 
                     <div class="ref-action-bases-base" ng-repeat="base in refObj.bases | filter:byStrategy(strategy)">
                       {{ base.key }}
+                      <a ng-click="removeStrategyBase(base, strategy)" class="ref-obj-delete-button">Delete base</a>
                     </div>
                   </div>
                   <div class="ref-action-outputs">

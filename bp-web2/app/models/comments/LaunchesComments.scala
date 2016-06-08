@@ -47,6 +47,8 @@ object LaunchCommentDAOF {
   //  bpsessions.filter(_.process === process)
   private def filterQuery(id: Long): Query[LaunchesComments, LaunchComment, Seq] =
     launches_comments.filter(_.id === id)
+  private def filterLaunchQuery(id: Int): Query[LaunchesComments, LaunchComment, Seq] =
+    launches_comments.filter(_.launch === id)
 
   val create: DBIO[Unit] = launches_comments.schema.create
   val drop: DBIO[Unit] = launches_comments.schema.drop
@@ -60,8 +62,19 @@ object LaunchCommentDAOF {
   def get(id: Long):Future[Option[LaunchComment]] = {
      db.run(filterQuery(id).result.headOption)
   }
+
+  def getAllByLaunch(id: Int):Future[Seq[LaunchComment]] = {
+     db.run(filterLaunchQuery(id).result)
+  }
+  def update(id: Long, launches_comment: LaunchComment) =   {
+    val commentToUpdate: LaunchComment = launches_comment.copy(Option(id))
+    db.run( launches_comments.filter(_.id === id).update(commentToUpdate) )
+  } 
+
   def ddl_create = db.run(create)
   def ddl_drop = db.run(drop)
+
+  def delete(id: Long) = db.run( launches_comments.filter(_.id === id).delete )
 
   def pull(s: LaunchComment) = {
   	db.run(launches_comments returning launches_comments.map(_.id) += s)

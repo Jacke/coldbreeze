@@ -586,6 +586,25 @@ minorityAppServices.factory('ObserverFactory', ['$resource', function ($resource
 
 
 
+
+
+
+minorityAppServices.factory('LaunchCommentsFactory', ['$resource', function ($resource) {
+    return $resource(baseUrl + 'launch_comments/:launchId', {}, {
+        query: { method: 'GET', params: {launchId: '@launchId'}, isArray: true },
+        create: { method: 'POST' }
+    })
+}]);
+
+
+minorityAppServices.factory('LaunchCommentFactory', ['$resource', function ($resource) {
+    return $resource(baseUrl + 'launch_comment/:id', {}, {
+        update: { method: 'POST' },
+        delete: { method: 'DELETE', params: {id: '@id'} }
+    })
+}]);
+
+
 // Demonstrate how to register services
 // In this case it is a simple value service.
 //angular.module('minorityApp.services', []).

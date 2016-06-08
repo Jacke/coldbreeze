@@ -502,7 +502,7 @@ def create_strategy() = SecuredAction.async(BodyParsers.parse.json) { implicit r
 }
 
 
-def delete_middleware(reaction_id: Int, middleware_id: Long) = SecuredAction.async { implicit request =>
+def delete_middleware(middleware_id: Long) = SecuredAction.async { implicit request =>
   MiddlewareRefsDAOF.delete(middleware_id).map { res =>
     res match {
       case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
@@ -510,7 +510,7 @@ def delete_middleware(reaction_id: Int, middleware_id: Long) = SecuredAction.asy
     }
   }
 }
-def delete_strategy(reaction_id: Int, strategy_id: Long) = SecuredAction.async { implicit request =>
+def delete_strategy(strategy_id: Long) = SecuredAction.async { implicit request =>
   StrategyRefsDAOF.delete(strategy_id).map { res =>
     res match {
       case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
@@ -567,7 +567,7 @@ def create_output() = SecuredAction.async(BodyParsers.parse.json) { implicit req
 
 
 
-def delete_base(reaction_id: Int, base_id: Long) = SecuredAction.async { implicit request =>
+def delete_base(base_id: Long) = SecuredAction.async { implicit request =>
    StrategyBaseRefsDAOF.delete(base_id).map { res =>
      res match {
        case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
@@ -576,7 +576,7 @@ def delete_base(reaction_id: Int, base_id: Long) = SecuredAction.async { implici
    }
 }
 
-def delete_input(reaction_id: Int, input_id: Long) = SecuredAction.async { implicit request =>
+def delete_input(input_id: Long) = SecuredAction.async { implicit request =>
   StrategyBaseRefsDAOF.delete(input_id).map { res =>
     res match {
       case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
@@ -585,7 +585,7 @@ def delete_input(reaction_id: Int, input_id: Long) = SecuredAction.async { impli
   }
 }
 
-def delete_output(reaction_id: Int, output_id: Long) = SecuredAction.async { implicit request =>
+def delete_output(output_id: Long) = SecuredAction.async { implicit request =>
   StrategyBaseRefsDAOF.delete(output_id).map { res =>
     res match {
       case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))

@@ -35,9 +35,12 @@ minorityControllers.controller('ReflectionCtrl', [
   'RefReactionsFactory',
   'RefReactionFactory',
   'RefMiddlewaresFactory',
-'RefStrategiesFactory',
-'RefStrategyBasesFactory',
-  '$location', '$route', '$window',
+  'RefMiddlewareFactory',
+  'RefStrategiesFactory',
+  'RefStrategyFactory',
+  'RefStrategyBasesFactory',
+  'RefStrategyBaseFactory',
+  '$location', '$route', '$routeParams', '$window',
   function ($scope, $filter, $rootScope,EmployeesFactory,ProcPermissionsFactory,PermissionsFactory, PermissionFactory, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory,
             RefsFactory,
             RefFactory,
@@ -54,9 +57,12 @@ minorityControllers.controller('ReflectionCtrl', [
             RefReactionsFactory,
             RefReactionFactory,
             RefMiddlewaresFactory,
+            RefMiddlewareFactory,
             RefStrategiesFactory,
+            RefStrategyFactory,
             RefStrategyBasesFactory,
-            $location, $route, $window) {
+            RefStrategyBaseFactory,
+            $location, $route, $routeParams, $window) {
 
 
 $scope.isManager = function () {
@@ -67,6 +73,11 @@ $scope.isManager = function () {
     return $window.localStorage.manager == "true";
   }
 };
+
+if ($routeParams.search !== undefined) {
+  $scope.searchValue = $routeParams.search; 
+}
+
 
 $scope.search = function() {
   return function(obj) {
@@ -79,6 +90,8 @@ $scope.search = function() {
       console.log(obj.ref.title.indexOf($scope.searchValue) == 0);
       console.log($scope.searchValue);
       console.log(">>>>>>>>>>>>>..");
+      $route.updateParams({search:$scope.searchValue});
+
       if (obj.ref.title.indexOf($scope.searchValue) == 0) {
         return obj;
       } else {
@@ -91,6 +104,8 @@ $scope.search = function() {
 
 $scope.search1 = function(item){
    if (!$scope.searchValue || (item.ref.title.toLowerCase().indexOf($scope.searchValue.toLowerCase()) != -1) ){
+        //$location.path = {search:$scope.searchValue};
+        $location.search('search', $scope.searchValue);
        return true;
    }
    return false;
@@ -360,9 +375,11 @@ RefSwitchFactory.delete({ id: obj.id }).$promise.then(function(data) {
 
 $scope.createRefAction = function (obj, element, refObj) {
  console.log(obj);//RefReactionsFactory
+
  //formWithErrors JsError(List((/reaction,List(ValidationError(List(error.path.missing),WrappedArray())))))
   obj.element = _.find(refObj.topology, function(topo) { return topo.front_elem_id == element.id }).id;
   // TODO: Only for front element
+  if (obj.autostart == undefined) { obj.autostart = false };
   obj.reflection = refObj.ref.id;
 
   obj.reaction_state_outs = [];
@@ -423,7 +440,9 @@ $scope.createRefElementMiddleware = function(middleware, action) {
     });
 }
 $scope.removeMiddleware = function(middleware) {
-
+    RefMiddlewareFactory.delete({id: middleware.id}).$promise.then(function(data) {
+      $scope.reloadRefs() ;
+    });
 }
 
 $scope.createMiddlewareStrategy = function(strategy, middleware) {
@@ -449,7 +468,9 @@ $scope.createMiddlewareStrategy = function(strategy, middleware) {
 }
 
 $scope.removeStrategy = function(strategy) {
-
+  RefStrategyFactory.delete({id: strategy.id}).$promise.then(function(data) {
+      $scope.reloadRefs() ;
+    });
 }
 
 $scope.createMiddlewareStrategyBase = function(strategy_base, strategy) {
@@ -472,7 +493,9 @@ $scope.createMiddlewareStrategyBase = function(strategy_base, strategy) {
 }
 
 $scope.removeStrategyBase = function(strategy_base) {
-
+RefStrategyBaseFactory.delete({id: strategy_base.id}).$promise.then(function(data) {
+      $scope.reloadRefs() ;
+    });
 }
 
 
