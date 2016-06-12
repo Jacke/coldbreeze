@@ -3683,6 +3683,10 @@ animation: redGlowIt 7s infinite;
     border-bottom: 1px solid #607D8B;
 }
 
+.process-info.header-frame li:last-child a {
+    border: none;
+}
+
 .edit-in-place.active span.edit {
     display: none;
 }

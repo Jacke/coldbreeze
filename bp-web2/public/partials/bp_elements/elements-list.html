@@ -24,9 +24,6 @@
  <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="editProcess()">
    <span class="minicon-pencil-edit minicon"></span>
    {{ 'EDIT' | translate }}</a></li>
- <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="perm()">
-   <span class="minicon-users minicon"></span>
-   {{ 'PEOPLE' | translate }} </a></li>
  <!--<li><a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" ng-click="modalShare()">{{ 'SHARE' | translate }}</a></li>-->
  <li><a href=""
    class="addElemTab"
@@ -35,7 +32,11 @@
    ng-class="bp.newelemformselected ? 'selected' : ''"
    tooltips tooltip-template="Create element"
    tooltip-side="left"
-   tooltip="{{bubbleTooltip(session)}}"><span class="glyphicon glyphicon-plus"></span></a></li>
+   tooltip="{{bubbleTooltip(session)}}"><span class="glyphicon glyphicon-plus"></span>
+   {{ 'CREATE' | translate }}</a></li>
+ <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="perm()">
+   <span class="minicon-users minicon"></span>
+   {{ 'PEOPLE' | translate }} </a></li>
 </ul>
 </div>
 
