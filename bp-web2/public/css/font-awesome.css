@@ -7289,25 +7289,14 @@ ul.icons li [class*=" icon-"] {
     color: #f16b50
 }
 
-.minicon-warning-right:after,.minicon-warning:before {
-    color: #f79849
-}
+
 
 .minicon-error-badge-right.minicon-filled:after,.minicon-error-badge.minicon-filled:after,.minicon-error-badge.minicon-interactive.hover:after,.minicon-error-badge.minicon-interactive:hover:after,.minicon-filled.riq-tab.error-badge:after,.minicon-important-right.minicon-filled:after,.minicon-important.minicon-filled:after,.minicon-important.minicon-interactive.hover:after,.minicon-important.minicon-interactive:hover:after,.minicon-interactive.hover.riq-tab.error-badge:after,.minicon-interactive.riq-tab.error-badge:hover:after {
     color: rgba(241,107,80,.2)
 }
 
-.minicon-add-new-right:after,.minicon-add-new:before,.minicon-auto-shared-right:after,.minicon-auto-shared:before {
-    color: #f79849
-}
 
-.minicon-go-to-right:after,.minicon-go-to:before {
-    color: #67bbaa
-}
 
-.minicon-create-right:before,.minicon-create:before {
-    color: #f79849
-}
 
 .minicon-gear.minicon-fill-on-hover.hover:before,.minicon-gear.minicon-fill-on-hover:hover:before {
     content: ""

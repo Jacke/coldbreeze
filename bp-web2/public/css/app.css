@@ -5957,6 +5957,25 @@ ul.process-control li:hover a {
     left: 9px;
     top: 11px;
 }
+.process-control span.minicon-add-new.minicon {
+    left: 0px;
+    display: inline-block;
+    position: relative;
+    margin-right: 2px;
+    top: 1px;
+    font-weight: 100;
+    margin-left: -2px;
+    font-size: 13px;
+    color: #070F1F;
+}
+.process-control a.addElemTab {
+    font-size: 13px;
+    line-height: 19px;
+    margin-bottom: -1px;
+}
+
+
+
 .launches-nav {
     position: relative;
 }
