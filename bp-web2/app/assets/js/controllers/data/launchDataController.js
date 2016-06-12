@@ -115,344 +115,366 @@ filePromise.success(function (data) {
       return filePromise;
 }
 
-//$scope.loadFiles();
+$scope.loadFiles();
 
 
-    $scope.topoLoading = function() {
-      return $scope.launchTopologsP = LaunchElementTopologsFactory.query({ launch_id: $scope.launchId }).$promise.then(function(data) {
-        $scope.launchTopologs = data;
-        console.log('$$scope.launchTopologs', $scope.launchTopologs);
-      });
-    };
-
-    $scope.loadData = function(onlyTopologs) {
-      var deferred = $q.defer();
-
-      if (onlyTopologs) {
-        $scope.topoLoading();
-
-        $scope.dataCostElementLaunchAssign = undefined;
-        $scope.dataCostAssignP = undefined;
-        $scope.dataCostCollectionP = undefined;
-      } else {
-
-      $scope.topoLoading();
-
-      $scope.dataCostElementLaunchAssignP = DataCostElementLaunchAssign.query( { launchId: $scope.launchId } ).$promise.then(function(data){
-         $scope.sessionCosts = data;
-         console.log('$scope.sessionCosts', $scope.sessionCosts);
-      });
-      $scope.dataCostAssignP = DataCostAssign.query({BPid: $scope.processId }).$promise.then(function(data){
-        $scope.processCosts = data;
-        console.log('$scope.processCosts', $scope.processCosts);
-      });
-      $scope.dataCostCollectionP = DataCostCollection.query().$promise.then(function(data) {
-        $scope.avalCosts = data;
-        console.log('$$scope.avalCosts', $scope.avalCosts);
-      });
-      $scope.loadFiles();
+$scope.topoLoading = function() {
+  return $scope.launchTopologsP = LaunchElementTopologsFactory.query({ launch_id: $scope.launchId }).$promise.then(function(data) {
+    $scope.launchTopologs = data;
+    console.log('$$scope.launchTopologs', $scope.launchTopologs);
+  });
+};
 
 
-      }
-      //$scope.dataCostElementLaunchAssignP.then(function(a){
-      //  $scope.dataCostAssignP.then(function(b){
-      //    $scope.launchTopologsP.then(function(c){
-      //      $scope.dataCostCollectionP.then(function(d){
-      //        deferred.resolve();
-      //      });
-      //    });
-    //    });
-      //});
-      deferred.resolve({
-        dataCostElementLaunchAssignP: $scope.dataCostElementLaunchAssignP,
-        dataCostAssignP: $scope.dataCostAssignP,
-        launchTopologsP: $scope.launchTopologsP,
-        dataCostCollectionP: $scope.dataCostCollectionP
-      });
+$scope.loadData = function(onlyTopologs) {
+  var deferred = $q.defer();
+
+/*
+  if (onlyTopologs) {
+    //$scope.topoLoading();
+
+    $scope.dataCostElementLaunchAssign = undefined;
+    $scope.dataCostAssignP = undefined;
+    $scope.dataCostCollectionP = undefined;
+  } else {
+*/
+  //$scope.topoLoading();
+
+  $scope.dataCostElementLaunchAssignP = DataCostElementLaunchAssign.query( { launchId: $scope.launchId } ).$promise.then(function(data){
+     $scope.sessionCosts  = data;
+     $scope.sessionCosts1 = data;
+
+     console.log('$scope.sessionCosts', $scope.sessionCosts);
+  });
+  $scope.dataCostAssignP = DataCostAssign.query({BPid: $scope.processId }).$promise.then(function(data){
+    $scope.processCosts = data;
+    console.log('$scope.processCosts', $scope.processCosts);
+  });
+  $scope.dataCostCollectionP = DataCostCollection.query().$promise.then(function(data) {
+    $scope.avalCosts = data;
+    console.log('$$scope.avalCosts', $scope.avalCosts);
+  });
+  $scope.loadFiles();
 
 
-      return deferred.promise;
+  /*}*/
+  //$scope.dataCostElementLaunchAssignP.then(function(a){
+  //  $scope.dataCostAssignP.then(function(b){
+  //    $scope.launchTopologsP.then(function(c){
+  //      $scope.dataCostCollectionP.then(function(d){
+  //        deferred.resolve();
+  //      });
+  //    });
+//    });
+  //});
+  deferred.resolve({
+    dataCostElementLaunchAssignP: $scope.dataCostElementLaunchAssignP,
+    dataCostAssignP: $scope.dataCostAssignP,
+    //launchTopologsP: $scope.launchTopologsP,
+    dataCostCollectionP: $scope.dataCostCollectionP
+  });
 
+
+  return deferred.promise;
+}
+
+
+
+
+
+
+/***
+ * Execute loading
+ */
+if ($scope.inlineLaunchShow) {
+  console.log("load counter", this);
+  if ($scope.insideLaunch) {
+    console.log('we are inside the launch page');
+    $scope.loadData(false);
+  } else {
+    console.log('we are not inside the launch page');
+    $scope.loadData(true);
+  }
+
+} else {
+  console.log('we are outside')
+  $scope.loadData(true);
+  $scope.$parent.pushBboardTRigger($scope.launchId, function(){ return $scope.loadData(); }, 'launchDataTrigger');
+}
+
+
+
+
+
+$scope.$on('resourceUpdate', function(event, session_id) {
+  $scope.loadData();
+});
+
+
+$scope.uploadFiles = function (files) {
+    $scope.files = files;
+    if (files && files.length) {
+        Upload.upload({
+            url: 'uploadLaunchFile/'+$scope.launchId,
+            data: {
+                files: files
+            }
+        }).then(function (response) {
+            $scope.loadFiles();
+
+        }, function (response) {
+            if (response.status > 0) {
+                $scope.errorMsg = response.status + ': ' + response.data;
+            }
+        }, function (evt) {
+            $scope.progress =
+                Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+        });
     }
+};
 
 
-    if ($scope.inlineLaunchShow) {
-      console.log("load counter", this);
-      if ($scope.insideLaunch) {
-        $scope.loadData(false);
-      } else {
-        $scope.loadData(true);
-      }
+$scope.uploadFilesForElement = function (files,element) {
+    //var trueElementId = _.find($scope.launchTopologs,function(t){ return element.id === t.element_id });
+    $scope.files = files;
+    if (files && files.length) {
+        Upload.upload({
+            url: 'uploadLaunchFile/'+$scope.launchId+'?element_id='+element.topo_id.id,
+            data: {
+                files: files
+            }
+        }).then(function (response) {
+            $scope.loadFiles();
 
-    } else {
-      $scope.$parent.pushBboardTRigger($scope.launchId, function(){ return $scope.loadData(); }, 'launchDataTrigger');
+        }, function (response) {
+            if (response.status > 0) {
+                $scope.errorMsg = response.status + ': ' + response.data;
+            }
+        }, function (evt) {
+            $scope.progress =
+                Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
+        });
     }
+};
 
 
 
+$scope.addFile = function() {
 
-      $scope.$on('resourceUpdate', function(event, session_id) {
-        $scope.loadData();
-      });
-
-
-      $scope.uploadFiles = function (files) {
-          $scope.files = files;
-          if (files && files.length) {
-              Upload.upload({
-                  url: 'uploadLaunchFile/'+$scope.launchId,
-                  data: {
-                      files: files
-                  }
-              }).then(function (response) {
-                  $scope.loadFiles();
-
-              }, function (response) {
-                  if (response.status > 0) {
-                      $scope.errorMsg = response.status + ': ' + response.data;
-                  }
-              }, function (evt) {
-                  $scope.progress =
-                      Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
-              });
-          }
-      };
-
-      $scope.uploadFilesForElement = function (files,element) {
-          var trueElementId = _.find($scope.launchTopologs,function(t){ return element.id === t.element_id });
-          $scope.files = files;
-          if (files && files.length) {
-              Upload.upload({
-                  url: 'uploadLaunchFile/'+$scope.launchId+'?element_id='+trueElementId.topo_id,
-                  data: {
-                      files: files
-                  }
-              }).then(function (response) {
-                  $scope.loadFiles();
-
-              }, function (response) {
-                  if (response.status > 0) {
-                      $scope.errorMsg = response.status + ': ' + response.data;
-                  }
-              }, function (evt) {
-                  $scope.progress =
-                      Math.min(100, parseInt(100.0 * evt.loaded / evt.total));
-              });
-          }
-      };
-
-
-
-      $scope.addFile = function() {
-
-      }
-      $scope.removeFile = function(file) {
-        console.log(file);
-        var filePromise = $http.post('/uploadLaunchFile/delete/'+file.launchFile.id);
-        filePromise.success(function (data) {
-                  // Stores the token until the user closes the browser window.
-                  $scope.loadFiles();
-                  return data;
-              })
-              .error(function () {
-              });
-              return filePromise;
-        // POST     /uploadLaunchFile/delete/:launchFileId
-      }
+}
+$scope.removeFile = function(file) {
+  console.log(file);
+  var filePromise = $http.post('/uploadLaunchFile/delete/'+file.launchFile.id);
+  filePromise.success(function (data) {
+            // Stores the token until the user closes the browser window.
+            $scope.loadFiles();
+            return data;
+        })
+        .error(function () {
+        });
+        return filePromise;
+  // POST     /uploadLaunchFile/delete/:launchFileId
+}
 
 
 
 
 
-      $scope.fillValue = function(cost, newModelValue, obj) {
-        console.log(cost, newModelValue);
+$scope.fillValue = function(cost, newModelValue, obj) {
+  console.log(cost, newModelValue);
 //        POST  /data/launch/:launch_id/values/fill
-          var reqProm = $http.post('/data/launch/'+$scope.launchId+'/values/fill', {});
-            reqProm.success(function(data){ console.log(data); });
+    var reqProm = $http.post('/data/launch/'+$scope.launchId+'/values/fill', {});
+      reqProm.success(function(data){ console.log(data); });
 //        POST  /data/launch/:launch_id/values/refill
 
 
-            console.log(cost);
-            // entityId: String, launchId: Int, resourceId: Int
-            var resourceId = obj.resource_id;
-            var launchId = $scope.launchId;
-            var entityId = cost.entity.id;
-            var boardId = cost.entity.boardId;
-            var slat = cost.value;
+      console.log(cost);
+      // entityId: String, launchId: Int, resourceId: Int
+      var resourceId = obj.resource_id;
+      var launchId = $scope.launchId;
+      var entityId = cost.entity.id;
+      var boardId = cost.entity.boardId;
+      var slat = cost.value;
 
-            var req = {title: cost.entity.title, boardId: boardId, entityId: entityId, meta: [{'key': 'elementId', 'value': obj.element_id.toString() }], sval: newModelValue, publisher: ''};
-            if (cost.value === undefined) {
-              $http.post(jsRoutes.controllers.DataController.fill_slat(entityId, launchId, resourceId).absoluteURL(document.ssl_enabled),
-                                req).then(function (data) {
-                                  console.log(data);
-                                  if ($scope.insideLaunch) {
-                                      $scope.loadData();
-                                  }
-              });
-            } else {
-              $http.post(jsRoutes.controllers.DataController.refill_slat(entityId, launchId, resourceId, slat.id).absoluteURL(document.ssl_enabled),
-                                req).then(function (data) {
-                                  console.log(data);
-                                  if ($scope.insideLaunch) {
-                                      $scope.loadData();
-                                  }
-              });
-            }
-
+      var req = {title: cost.entity.title, boardId: boardId, entityId: entityId, meta: [{'key': 'elementId', 'value': obj.element_id.toString() }], sval: newModelValue, publisher: ''};
+      if (cost.value === undefined) {
+        $http.post(jsRoutes.controllers.DataController.fill_slat(entityId, launchId, resourceId).absoluteURL(document.ssl_enabled),
+                          req).then(function (data) {
+                            console.log(data);
+                            if ($scope.insideLaunch) {
+                                $scope.loadData();
+                            }
+        });
+      } else {
+        $http.post(jsRoutes.controllers.DataController.refill_slat(entityId, launchId, resourceId, slat.id).absoluteURL(document.ssl_enabled),
+                          req).then(function (data) {
+                            console.log(data);
+                            if ($scope.insideLaunch) {
+                                $scope.loadData();
+                            }
+        });
       }
 
-      $scope.clearCost = function(cost, obj) {
+}
+
+$scope.clearCost = function(cost, obj) {
 //        POST  /data/launch/:launch_id/values/clear
-          var reqProm = $http.post('/data/launch/'+$scope.launchId+'/values/clear', {});
-          reqProm.success(function(data){ console.log(data); });
-          console.log(obj);
+    var reqProm = $http.post('/data/launch/'+$scope.launchId+'/values/clear', {});
+    reqProm.success(function(data){ console.log(data); });
+    console.log(obj);
 
-          // entityId: String, launchId: Int, resourceId: Int
-          var resourceId = obj.resource_id;
-          var launchId = $scope.launchId;
-          var entityId = cost.entity.id;
-          var boardId = cost.entity.boardId;
-          var slat = cost.value;
+    // entityId: String, launchId: Int, resourceId: Int
+    var resourceId = obj.resource_id;
+    var launchId = $scope.launchId;
+    var entityId = cost.entity.id;
+    var boardId = cost.entity.boardId;
+    var slat = cost.value;
 
-          var req = {title: cost.entity.title, boardId: boardId, entityId: entityId, meta: [{'key': 'elementId', 'value': obj.element_id.toString() }], sval: '', publisher: ''};
-          $http.post(jsRoutes.controllers.DataController.refill_slat(entityId, launchId, resourceId, slat.id).absoluteURL(document.ssl_enabled),
-                            req).then(function (data) {
-                              console.log(data);
-                              if ($scope.insideLaunch) {
-                                  $scope.loadData();
-                              }
-          });
-
-      }
-
-
-      $scope.editCost = function() {
-
-      }
-      $scope.removeCost = function() {
-
-      }
-
-
-
-
-
-      $scope.editCostForLaunch = function() {
-
-      }
-      $scope.editCostForProcess = function() {
-
-      }
-
-
-      $scope.pullValueForCost = function() {
-
-      };
-
-      $scope.token = $window.sessionStorage.getItem('token');
-
-
-
-      $scope.createCostWithAssign = function(costs, elementIdPlain) {
-        if ($scope.insideLaunch) {
-          return $scope.createLaunchedAssignedResEls(costs, elementIdPlain);
-        } else {
-          return $scope.createAssignedResEls(costs, elementIdPlain);
-        }
-      }
-      $scope.deleteCost = function(cost) {
-        if ($scope.insideLaunch) {
-          return $scope.deleteLaunchAsssignedResEl(cost)
-        } else {
-          return $scope.deleteAsssignedResEl(cost)
-        }
-      }
-
-
-      $scope.createAssignedResEl = function(cost) {
-        // (elementId: Int, resourceId: Int, entityId: String = "*")
-        console.log(cost);
-        var req = {elementId: cost.element, resourceId: cost.resource.resource.id, entityId: cost.entities};
-        $http.post(jsRoutes.controllers.CostFillController.createCostElement(cost.resource.resource.id).absoluteURL(document.ssl_enabled),
-                          [req]).then(function (data) {
-                            console.log(data);
-        });
-      };
-
-      $scope.createAssignedResEls = function(costs, elementIdPlain) {
-        var elementId = _.find($scope.launchTopologs,function(t){ return elementIdPlain === t.element_id });
-        // (elementId: Int, resourceId: Int, entityId: String = "*")
-        console.log(costs);
-        var reqs = _.map(costs, function(cost) { return  {elementId: elementId.topo_id,
-                                                          resourceId: costs.resource.resource.id,
-                                                          entityId: costs.entities}; });
-        $http.post(jsRoutes.controllers.CostFillController.createCostElement(0).absoluteURL(document.ssl_enabled),
-                          reqs ).then(function (data) {
+    var req = {title: cost.entity.title, boardId: boardId, entityId: entityId, meta: [{'key': 'elementId', 'value': obj.element_id.toString() }], sval: '', publisher: ''};
+    $http.post(jsRoutes.controllers.DataController.refill_slat(entityId, launchId, resourceId, slat.id).absoluteURL(document.ssl_enabled),
+                      req).then(function (data) {
+                        console.log(data);
+                        if ($scope.insideLaunch) {
                             $scope.loadData();
-                            console.log(data);
-        });
-      };
+                        }
+    });
+
+}
 
 
-      $scope.createLaunchedAssignedResEls = function(costs, elementIdPlain) {
-        var elementId = _.find($scope.launchTopologs,function(t){ return elementIdPlain === t.element_id });
-        // (elementId: Int, resourceId: Int, entityId: String = "*")
-        console.log(costs);
-        //var reqs = _.map(costs, function(cost) { return  {elementId: elementId, resourceId: costs.resource.resource.id,
-        //                                                  entityId: costs.entities}; });
+$scope.editCost = function() {
 
-        var newReqs = [{elementId: elementId.topo_id, resourceId: costs.resource.resource.id,
-                                                          entityId: costs.entities}];
+}
+$scope.removeCost = function() {
 
-        $http.post(jsRoutes.controllers.CostFillController.createLaunchCostElement(costs.resource.resource.id,
-                                                                                 $scope.launchId).absoluteURL(document.ssl_enabled),
-                          newReqs ).then(function (data) {
-                            $scope.loadData();
-                            console.log(data);
-        });
-      };
-
-
-      // POST /data/cost/del_assign/:resource_id
-      $scope.deleteAsssignedResEl = function(cost) {
-        //$('/data/cost/del_assign/:resource_id')
-        console.log(cost);
-        $http.post(jsRoutes.controllers.CostFillController.delete_assigned_element(cost.id).absoluteURL(document.ssl_enabled), {
-                          headers:  {'X-Auth-Token': $scope.token, 'Access_Name': 'user'}}).then(function (data) {
-                            $scope.loadData();
-                            console.log(data);
-        });
-      };
-
-      // POST /data/cost/del_launch_assign/:resource_id
-      $scope.deleteLaunchAsssignedResEl = function(cost) {
-        //$('/data/cost/del_launch_assign/:resource_id')
-        console.log(cost);
-        $http.post(jsRoutes.controllers.CostFillController.delete_launch_assigned_element(cost.id, $scope.launchId).absoluteURL(document.ssl_enabled), {
-                          headers:  {'X-Auth-Token': $scope.token, 'Access_Name': 'user'}}).then(function (data) {
-                            $scope.loadData();
-                            console.log(data);
-        });
-      };
+}
 
 
 
-      $scope.entityDecorator = function(entities, resource) {
-        if (entities == "*") {
-          return "*"
-        } else {
-          if (entities != "*") {
-            var c = _.find(resource.entities, function(ent){return ent.id == entities});
-            if (c != undefined) {
-              return c.title
-            } else { return "" }
 
-          } else {
-            return "";
-          }
 
-        }
-      }
+$scope.editCostForLaunch = function() {
+
+}
+$scope.editCostForProcess = function() {
+
+}
+
+
+$scope.pullValueForCost = function() {
+
+};
+
+$scope.token = $window.sessionStorage.getItem('token');
+
+
+
+$scope.createCostWithAssign = function(costs, element) {
+  if ($scope.insideLaunch) {
+    return $scope.createLaunchedAssignedResEls(costs, element);
+  } else {
+    return $scope.createAssignedResEls(costs, element);
+  }
+}
+$scope.deleteCost = function(cost) {
+  if ($scope.insideLaunch) {
+    return $scope.deleteLaunchAsssignedResEl(cost)
+  } else {
+    return $scope.deleteAsssignedResEl(cost)
+  }
+}
+
+
+$scope.createAssignedResEl = function(cost) {
+  // (elementId: Int, resourceId: Int, entityId: String = "*")
+  console.log(cost);
+  var req = {elementId: cost.element, resourceId: cost.resource.resource.id, entityId: cost.entities};
+  $http.post(jsRoutes.controllers.CostFillController.createCostElement(cost.resource.resource.id).absoluteURL(document.ssl_enabled),
+                    [req]).then(function (data) {
+                      console.log(data);
+  });
+};
+
+$scope.createAssignedResEls = function(costs, element) {
+  var elementId = element.topo_id.id;
+  //_.find($scope.launchTopologs,function(t){ return elementIdPlain === t.element_id });
+  // (elementId: Int, resourceId: Int, entityId: String = "*")
+  console.log(costs);
+  var reqs = _.map(costs, function(cost) { return  {elementId: elementId,
+                                                    resourceId: costs.resource.resource.id,
+                                                    entityId: costs.entities}; });
+  $http.post(jsRoutes.controllers.CostFillController.createCostElement(0).absoluteURL(document.ssl_enabled),
+                    reqs ).then(function (data) {
+                      $scope.loadData();
+                      console.log(data);
+  });
+};
+
+
+$scope.createLaunchedAssignedResEls = function(costs, element) {
+  var elementId = element.topo_id.id;
+  //var elementId = _.find($scope.launchTopologs,function(t){ return elementIdPlain === t.element_id });
+  // (elementId: Int, resourceId: Int, entityId: String = "*")
+  console.log(costs);
+  //var reqs = _.map(costs, function(cost) { return  {elementId: elementId, resourceId: costs.resource.resource.id,
+  //                                                  entityId: costs.entities}; });
+
+  var newReqs = [{elementId: elementId, resourceId: costs.resource.resource.id,
+                                                    entityId: costs.entities}];
+
+  $http.post(jsRoutes.controllers.CostFillController.createLaunchCostElement(costs.resource.resource.id,
+                                                                           $scope.launchId).absoluteURL(document.ssl_enabled),
+                    newReqs ).then(function (data) {
+                      $scope.loadData();
+                      console.log(data);
+  });
+};
+
+
+// POST /data/cost/del_assign/:resource_id
+$scope.deleteAsssignedResEl = function(cost) {
+  //$('/data/cost/del_assign/:resource_id')
+  console.log(cost);
+  $http.post(jsRoutes.controllers.CostFillController.delete_assigned_element(cost.id).absoluteURL(document.ssl_enabled), {
+                    headers:  {'X-Auth-Token': $scope.token, 'Access_Name': 'user'}}).then(function (data) {
+                      $scope.loadData();
+                      console.log(data);
+  });
+};
+
+// POST /data/cost/del_launch_assign/:resource_id
+$scope.deleteLaunchAsssignedResEl = function(cost) {
+  //$('/data/cost/del_launch_assign/:resource_id')
+  console.log(cost);
+  $http.post(jsRoutes.controllers.CostFillController.delete_launch_assigned_element(cost.id, $scope.launchId).absoluteURL(document.ssl_enabled), {
+                    headers:  {'X-Auth-Token': $scope.token, 'Access_Name': 'user'}}).then(function (data) {
+                      $scope.loadData();
+                      console.log(data);
+  });
+};
+
+
+
+$scope.entityDecorator = function(entities, resource) {
+  if (resource == undefined) {
+    //resource = {};
+    //resource.entity = [];
+  }
+  if (entities == "*") {
+    return "*"
+  } else {
+    if (entities != "*") {
+      var c = _.find(resource.entities, function(ent){return ent.id == entities});
+      if (c != undefined) {
+        return c.title
+      } else { return "" }
+
+    } else {
+      return "";
+    }
+
+  }
+}
 
 
 // Private
@@ -467,8 +489,8 @@ $scope.byElement = function(element) {
     //console.log('obj', obj);
     //console.log('element', element);
     if (element) {
-    var trueElementId = _.find($scope.launchTopologs,function(t){ return element.id === t.element_id });
-     if (trueElementId !== undefined && trueElementId !== undefined && obj.obj.element_id === trueElementId.topo_id) {
+    var trueElementId = element.topo_id.id;//_.find($scope.launchTopologs,function(t){ return element.id === t.element_id });
+     if (trueElementId !== undefined && trueElementId !== undefined && obj.obj.element_id === trueElementId) {
        return obj;
      } else {
        return false;
@@ -481,12 +503,12 @@ $scope.filesForLaunchElement = function(element) {
   return function(obj) {
     //console.log('element', element);
 
-    var trueElementId = _.find($scope.launchTopologs,function(t){ return element.id === t.element_id });
-    if (obj.launchFile !== undefined && trueElementId !== undefined && obj.launchFile.element == trueElementId.topo_id) {
+    var trueElementId = element.topo_id.id;//_.find($scope.launchTopologs,function(t){ return element.id === t.element_id });
+    if (obj.launchFile !== undefined && trueElementId !== undefined && obj.launchFile.element == trueElementId) {
        return obj;
-     } else {
+    } else {
        return false;
-     }
+    }
  }
 }
 $scope.filesForLaunch = function() {

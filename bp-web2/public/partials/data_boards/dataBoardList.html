@@ -319,8 +319,14 @@ ul.perm-menu.element-data-nav {
     text-decoration: none;
     border-bottom: none;
 }
-
-
+.ngdialog .data-file-add-button button.btn {
+    font-size: 11px;
+    text-shadow: none;
+    clear: both;
+    display: block;
+    margin-top: 20px;
+    margin-bottom: -5px;
+}
 
 </style>
 
@@ -343,7 +349,7 @@ ul.perm-menu.element-data-nav {
 
         <li ng-class="{ 'active': !element.costShow}" class="element-data-nav-controll-field">
             <span class="data-board-count data-board-files-count">
-              <div ng-repeat="costObj in sessionCosts | filter: byElement(element) as filteredCost">
+              <div ng-repeat="costObj in sessionCosts1 | filter: byElement(element) as filteredCost">
               </div>
               {{filteredCost.length}}
             </span>
@@ -362,7 +368,7 @@ ul.perm-menu.element-data-nav {
       </ul>
     </div>
     <div class="element-data-costs" ng-show="element.costShow">
-      <div class="element-data-cost-object" ng-repeat="costObj in sessionCosts | filter: byElement(element) ">
+      <div class="element-data-cost-object" ng-repeat="costObj in sessionCosts1 | filter: byElement(element) ">
       <div class="data-cost" ng-repeat="cost in costObj.costs">
         <div class="data-cost-type"><span>{{ cost.entity.etype }}</span>
           <div class="data-cost-default">Default value: {{ cost.entity.default }}</div>

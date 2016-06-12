@@ -1,7 +1,6 @@
 <div class="edit-element-card-container">
   <a href=""
     class="addElemTab"
-    ng-show="!inSession"
     ng-click="bpelem.selected == 1 ? bpelem.selected=2 : bpelem.selected=1"
     ng-class="bpelem.selected == 1 ? 'selected' : ''"><span class="glyphicon glyphicon-plus"></span></a>
 
@@ -18,7 +17,7 @@
    </div>
 
 
-   <div ng-init="setTab(0, bpelem)" ng-show="isSet(0, bpelem)">
+   <div ng-init="setTab(0, bpelem)" class="edit-element-card-container" ng-show="isSet(0, bpelem)">
      <form novalidate="novalidate" ng-submit="updateElem(bpelem);" class="form-horizontal form-new-bpelem form-edit-bpelem">
 
 
@@ -148,10 +147,10 @@
       <input type="hidden" id="inputBusinessId" ng-model="bpelem.order"/>
       <input type="hidden" id="inputBusinessId" ng-model="bpelem.space_own"/>
 
-    <div class="control-group form-submit form-group" style="clear:both;" ng-show="isManagerVal">
+    <div class="control-group form-submit form-group" style="clear:both;" ng-show="!inSession && isManagerVal">
       <div class="controls">
-        <button type="submit" class="btn btn-small btTxt submit btn lg solid-green ng-binding">Update</button>
-        <a ng-click="deleteElem(bpelem)" class="btn btn-small btn btn-danger btTxt btn lg solid-green ng-binding">Delete</a>
+        <button type="submit" class="edit-element-card-update-btn btn btn-small btTxt submit btn lg solid-green ng-binding">Update</button>
+        <a ng-click="deleteElem(bpelem)" class="edit-element-card-delete-btn btn btn-small btn btn-danger btTxt btn lg solid-green ng-binding">Delete</a>
       </div>
     </div>
   </form>

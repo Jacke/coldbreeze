@@ -269,17 +269,17 @@ DELETE 		/bprocess/reaction/:id            @controllers.ProcessElementsControlle
 ################
 # Launches
 ####
-GET     /launch/:launch_id/initial_state		@controllers.LaunchElementsControllers.state_index(launch_id: Int)
-GET    	/launch/:launch_id/element_topos		@controllers.LaunchElementsControllers.element_topos(launch_id: Int)
-GET    	/launch/:launch_id/elements 				@controllers.LaunchElementsControllers.frontElems(launch_id: Int)
-GET    	/launch/:launch_id/spaces  				  @controllers.LaunchElementsControllers.spaces(launch_id: Int)
-GET  	  /launch/:launch_id/space_elems  		@controllers.LaunchElementsControllers.spaceElems(launch_id: Int)
-GET     /launch/:launch_id/switchers 				@controllers.LaunchElementsControllers.switches_index(launch_id: Int)
-GET     /launch/:launch_id/reactions 				@controllers.LaunchElementsControllers.reactions_index(launch_id: Int)
+GET     /launch/:launch_id/initial_state @controllers.LaunchElementsControllers.state_index(launch_id: Int)
+GET    	/launch/:launch_id/element_topos @controllers.LaunchElementsControllers.element_topos(launch_id: Int)
+GET    	/launch/:launch_id/elements	   @controllers.LaunchElementsControllers.frontElems(launch_id: Int)
+GET    	/launch/:launch_id/spaces      @controllers.LaunchElementsControllers.spaces(launch_id: Int)
+GET  	/launch/:launch_id/space_elems @controllers.LaunchElementsControllers.spaceElems(launch_id: Int)
+GET     /launch/:launch_id/switchers   @controllers.LaunchElementsControllers.switches_index(launch_id: Int)
+GET     /launch/:launch_id/reactions   @controllers.LaunchElementsControllers.reactions_index(launch_id: Int)
 
 
-POST    /share/launch/:launch_id				    @controllers.LaunchShareController.makeShare(launch_id: Int)
-GET     /shared/launch/:launch_hash				  @controllers.LaunchShareController.index(launch_hash: String)
+POST    /share/launch/:launch_id	   @controllers.LaunchShareController.makeShare(launch_id: Int)
+GET     /shared/launch/:launch_hash	   @controllers.LaunchShareController.index(launch_hash: String)
 
 #POST   	launch/:launch_id/elements 					# @controllers.LaunchElementsControllers
 #GET    	launch/:launch_id/element/:id 				# @controllers.LaunchElementsControllers
@@ -453,20 +453,20 @@ DELETE /launch_comment/:id 		    @controllers.comments.CommentsController.delete
 GET         /interacts/                              @controllers.InteractionController.fetchInteractions(ids: List[Int])
 
 
-GET         /bprocess/elems_length                   @controllers.ProcessElementsController.bpElemLength()
+GET         /bprocess/elems_length               @controllers.ProcessElementsController.bpElemLength()
 # Elements
-GET         /bprocess/:id/elements                   @controllers.ProcessElementsController.frontElems(id: Int)
-GET         /bprocess/:id/element_topos			    @controllers.ProcessElementsController.element_topos(id: Int)
-GET         /bprocess/:id/spaces                     @controllers.ProcessElementsController.spaces(id: Int)
-GET         /bprocess/:id/space_elems                @controllers.ProcessElementsController.spaceElems(id: Int)
+GET         /bprocess/:id/elements               @controllers.ProcessElementsController.frontElems(id: Int)
+GET         /bprocess/:id/element_topos			 @controllers.ProcessElementsController.element_topos(id: Int)
+GET         /bprocess/:id/spaces                 @controllers.ProcessElementsController.spaces(id: Int)
+GET         /bprocess/:id/space_elems            @controllers.ProcessElementsController.spaceElems(id: Int)
 
 
 # All elements
 GET   /processes/elements/	       @controllers.ProcessElementsController.allElements(ids: List[Int])
-GET   /processes/elements/cached   @controllers.LaunchElementsControllers.allElementsCached(ids: List[Int],timestamp: String)
+GET   /processes/elements/cached   @controllers.LaunchBulkElementsController.allElementsCached(ids: List[Int],timestamp: String)
 
-GET   /launches/allElements/       @controllers.LaunchElementsControllers.allElements(ids: List[Int])
-GET   /launches/allElements/cached @controllers.LaunchElementsControllers.allElements(ids: List[Int])
+GET   /launches/allElements/       @controllers.LaunchBulkElementsController.allElements(ids: List[Int])
+GET   /launches/allElements/cached @controllers.LaunchBulkElementsController.allElements(ids: List[Int])
 
 
 

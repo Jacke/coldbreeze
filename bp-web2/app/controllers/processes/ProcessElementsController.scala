@@ -212,17 +212,7 @@ def frontElems(id: Int) = SecuredAction { implicit request =>
 }
 
 
-private def decorateProcElementsToJson(elements: List[UndefElement]) = {
-  val elemIds:List[Int] = elements.map(_.id.get)
-  val topos:List[ElemTopology] = ElemTopologDAO.findByFrontElements(elemIds)
-  val elemJson = Json.toJson( elements )
-  val elemJsonObj = elemJson.as[List[JsObject]]
-  val objWithTopos = elemJsonObj.map { obj =>
-    val elemId = (obj \ "id").validate[Int].get
-    obj + ("topo_id" -> Json.toJson(topos.find(topo => topo.front_elem_id.get == elemId ).get  ))
-  }
-  objWithTopos
-}
+
 
 def show_elem_length(id: Int):Int = ProcElemDAO.findLengthByBPId(id)
 
@@ -687,10 +677,24 @@ def delete_reaction(id: Int) = SecuredAction { implicit request =>
 
 
 
-/*
-  Histories methods
- */
+/*******************
+ * Histories methods
+ *******************/
 import ProcHistoryDAO._
+
+
+private def decorateProcElementsToJson(elements: List[UndefElement]) = {
+  val elemIds:List[Int] = elements.map(_.id.get)
+  val topos:List[ElemTopology] = ElemTopologDAO.findByFrontElements(elemIds)
+  val elemJson = Json.toJson( elements )
+  val elemJsonObj = elemJson.as[List[JsObject]]
+  val objWithTopos = elemJsonObj.map { obj =>
+    val elemId = (obj \ "id").validate[Int].get
+    obj + ("topo_id" -> Json.toJson(topos.find(topo => topo.front_elem_id.get == elemId ).get  ))
+  }
+  objWithTopos
+}
+
 
 // ProcessHistoryDTO(var id: Option[Int],
 // acc: String,

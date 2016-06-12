@@ -23,6 +23,29 @@
 
 
 @font-face {
+    font-family: 'Atlas Grotesk Web';
+    src: url('/assets/fonts/Atlas Grotesk Web-Regular.eot');
+    src: url('/assets/fonts/Atlas Grotesk Web-Regular.eot?#iefix') format('embedded-opentype'),
+      url('/assets/fonts/Atlas Grotesk Web-Regular.woff') format('woff'),
+      url('/assets/fonts/Atlas Grotesk Web-Regular.ttf') format('truetype'),
+      url('/assets/fonts/Atlas Grotesk Web-Regular.svg#Atlas Grotesk Web') format('svg');
+    font-weight: 400;
+    font-style: normal;
+    font-stretch: normal;
+}
+@font-face {
+    font-family: 'Atlas Grotesk Web';
+    src: url('/assets/fonts/Atlas Grotesk Web-Bold.eot');
+    src: url('/assets/fonts/Atlas Grotesk Web-Bold.eot?#iefix') format('embedded-opentype'),
+      url('/assets/fonts/Atlas Grotesk Web-Bold.woff') format('woff'),
+      url('/assets/fonts/Atlas Grotesk Web-Bold.ttf') format('truetype'),
+      url('/assets/fonts/Atlas Grotesk Web-Bold.svg#Atlas Grotesk Web') format('svg');
+    font-weight: bold;
+    font-style: normal;
+}
+
+
+@font-face {
     font-family: 'icomoon-dots';
     src:    url('/assets/fonts/icomoon.eot?30tie9');
     src:    url('/assets/fonts/icomoon.eot?30tie9#iefix') format('embedded-opentype'),

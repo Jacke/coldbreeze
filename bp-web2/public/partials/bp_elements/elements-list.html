@@ -81,7 +81,7 @@
     <div class="info">
       <div class="element-vert-dots-expand">
       <a role="tab" data-toggle="tab" ng:init="bpelem.selected=1" ng:click="bpelem.selected == 1 ? bpelem.selected=2 : bpelem.selected=1">
-           <span class="moicon moicon-info"></span></a>
+           <span class="nicon nicon-dots-three-horizontal"></span></a>
       </div>
       <div class="type" ng-class="bpelem.type_title">{{ type_short[bpelem.type_title] }}
          <ul class="type-tabs" ng-init="bpelem.hovered=false" role="tablist" ng-mouseover="bpelem.hovered == true ? bpelem.hovered=false : bpelem.hovered=true" ng-show="(isManagerVal && !inSession && selected == 2) || (bpelem.hovered == true && !inSession)">
@@ -103,17 +103,15 @@
          </div>
       </div>
     </div>
-    <!--<ul class="elem-control elem-tabs" role="tablist" ng-show="isManagerVal && !inSession">
-      <li><a role="tab" data-toggle="tab" ng:init="selected=1" ng:click="selected == 1 ? selected=2 : selected=1"><span class="glyphicon glyphicon-edit"></span></a></li>
-      <li><a ng-click="deleteElem(bpelem)"><span class="glyphicon glyphicon-remove"></span></a></li>
-      <li><a ng:click="moveUpElem(bpelem)"><span class="glyphicon glyphicon-arrow-up"></span></a></li>
-      <li><a ng:click="moveDownElem(bpelem)"><span class="glyphicon glyphicon-arrow-down"></span></a></li>
-    </ul>-->
-    <ul class="elem-control elem-tabs" role="tablist" ng-show="inSession">
+
+<!--
+    <ul class="elem-control elem-tabs state-activated" role="tablist" ng-show="inSession">
       <p ng-show="bpelem.states.length > 0">
         <abbr class="session__header__created_at" title="{{ bpelem.states[0].updated_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="bpelem.states[0].updated_at"></abbr>
       </p>
     </ul>
+-->
+
     <ul class="elem-control elem-tabs input-logs" ng-show="inSession && bpelem.ilogs.length > 0">
       <li ng-repeat="ilog in bpelem.ilogs">{{ ilog.uid }}</li>
     </ul>

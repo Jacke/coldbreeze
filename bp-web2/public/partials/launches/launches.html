@@ -240,6 +240,7 @@
       <div class="progress-lines" ng-init="tree=session.session">
         <div ng-include src="'assets/partials/treeLiner.html'"></div>
       </div>
+      <div class="tree-liner-dotted" aria-valuenow="{{session.percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{session.percent}}%;"></div>
      <div class="progress-bar" role="progressbar" aria-valuenow="{{session.percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{session.percent}}%;">
       <!--<span>{{session.percent}}%</span>-->
      </div>

@@ -1831,6 +1831,21 @@ span.reaction-icon.minicon.minicon-gear-fill-right {
     margin-left: 0px;
     position: relative;
 }
+
+
+.reaction_list__reaction.reaction_list__reaction_preview .pipeContent .pipeContentTitle {
+    font-size: 11px;
+    display: inline-block;
+    margin-right: 17px;
+    margin-bottom: 2px;
+    margin-left: 0px;
+    position: relative;
+    font-family: 'museo';
+    font-weight: 100;
+    text-shadow: none;
+}
+
+
 .data-board-controller .pipeContentValue {
     display: inline-block;
     float: right;
@@ -1841,7 +1856,6 @@ span.reaction-icon.minicon.minicon-gear-fill-right {
 
 }
 .cost-view-container .costs {
-    height: 127px;
     overflow-y: scroll;
     width: 171px;
     overflow-x: hidden;
@@ -2432,13 +2446,12 @@ a.current-proc-session-info.session-link.proc-session.selected {
 
 
 .proc-element ul.elem-control.elem-tabs {
-  display: inline-block;
-  position: absolute;
-  top: 20%;
-  right: 4%;
+    display: inline-block;
+    position: absolute;
+    top: 20%;
+    right: 4%;
+    z-index: 3;
 }
-
-
 
 
 /*
@@ -3347,7 +3360,7 @@ form {
   border-radius: 3px;
 }
 .progress-lines .elem-card.confirm {
-    background: #e67e22;
+    background: rgb(177, 93, 20);
 }
 .progress-lines .elem-card.container_brick {
     background: #27ae60;
@@ -3667,7 +3680,7 @@ animation: redGlowIt 7s infinite;
 
 .edit-in-place span.edit {
     display: inline-block;
-    border-bottom: 1px dotted black;
+    border-bottom: 1px solid #607D8B;
 }
 
 .edit-in-place.active span.edit {
@@ -3992,7 +4005,7 @@ background-color: gray !important;
 }
 .allStations .stations.minimal-stations .session_controls {
     margin-top: 8px;
-    margin-right: 128px;
+    margin-right: 16px;
 }
 .allStations .stations.minimal-stations .session_controls {
     margin-top: 8px;
@@ -4001,6 +4014,7 @@ background-color: gray !important;
     display: inline-block;
     left: -27px;
     position: absolute;
+    z-index: 999;
     padding: 23px 3px 27px 8px;
     background: #45475D;
     color: white;
@@ -4382,9 +4396,11 @@ new process form container
     width: 9%;
 }
 .session-process .session_controls ul li {
-    /* border: solid 1px #DCDCDC; */
+    border: solid 1px #DCDCDC;
     border-radius: 24px;
     width: 44px;
+    color: #E0DADD;
+    text-shadow: none;
     height: 43px;
     padding: 11px 10px 5px 13px;
     margin: 0px 2px 5px 5px;
@@ -4408,6 +4424,8 @@ new process form container
 .session-process .session_controls ul {
     margin-left: 0px;
     padding-left: 0px;
+    float: right;
+    display: inline-block;
 }
 .session-process .session_controls span.moicon.icon-trash {
     width: 16px;
@@ -4423,11 +4441,10 @@ new process form container
     color: #64749C;
 }
 .session-process .session_controls ul li:hover {
-    background-color: #B7B7B7;
-    color: #757575;
+    background-color: #BDBDBD;
+    color: white;
     transition: all .3s ease-in-out;
 }
-
 
 .session-process .progress {
     z-index: 400;
@@ -4452,10 +4469,31 @@ new process form container
 }
 
 .stations .progress .progress-bar {
-    z-index: 99;
-    height: 2px;
-    border-top: dashed 1px white;
-    background: gray !important;
+    z-index: -2;
+    height: 20px;
+    top: -18px;
+    position: absolute;
+    border-radius: 2px;
+    background: linear-gradient(to right, #000000 0%,rgb(255, 255, 255) 100%);
+}
+.stations .progress .tree-liner-dotted {
+    height: 1px;
+    top: -20px;
+    position: absolute;
+    left: -2px;
+    border: dotted 1px gray;
+    z-index: 2;
+}
+.progress-lines .elem-card.confirm span.tree-liner-text {
+    position: absolute;
+    top: -15px;
+    text-shadow: none;
+    left: 46%;
+    color: white;
+    z-index: 10000;
+    display: block;
+    line-height: 14px;
+    font-weight: 700;
 }
 
 .progress-lines span.line {
@@ -4485,11 +4523,14 @@ new process form container
     text-align: center;
     width: 100%;
     background: #F44336;
-    color:white;
+    box-shadow: 1px 1px 2px #B9B9B9;    
+    color: rgba(255, 255, 255, 0);
+    text-shadow: none;
+    font-weight: 700;
 }
 
-.progress-lines .elem-card.confirm  span.description {
-    background: #e67e22;
+.progress-lines .elem-card.confirm span.description {
+    background: rgba(230, 126, 34, 0.86);
 }
 .progress-lines .elem-card.container_brick span.description  {
     background: #27ae60;
@@ -6517,6 +6558,10 @@ a.btn.btn-small.btTxt.submit.btn.lg.solid-green.btn-add-entity:hover {
     font-weight: 100;
     cursor: pointer;
     z-index: 6;
+    transform: rotate(90deg);
+}
+.proc-element.minimal .element-vert-dots-expand a {
+    color: black;
 }
 .proc-element.minimal .element-vert-dots-expand:hover {
     color: black;
@@ -10075,10 +10120,9 @@ height: 40px;
 .warp-field {
     height: 100%;
     display: block;
-    overflow: hidden;
 }
 .warp-field .warp-show {
-    margin-top: 4px;
+    margin-top: 7px;
 }
 
 
@@ -10111,6 +10155,17 @@ h4.file_title_full {
     font-size: 11px;
     margin-top: 0px;
 }
+.reaction_list__reaction_element_launch_nav.reaction_list__reaction_element_launch_files_nav .warp_field h4.file_title_full {
+    font-size: 11px;
+    margin-top: 0px;
+    font-size: 11px;
+    font-family: 'museo';
+    font-weight: 100;
+    text-shadow: none;
+}
+
+
+
 .file_control {
     position: absolute;
     top: 11px;
@@ -10150,15 +10205,15 @@ h4.file_title_full {
 .launch-info-details {
     width: 50%;
     padding-bottom: 8px;
-    margin-top: 8px;
+    margin-top: 0px;
     margin-left: 5px;
     font-family: 'Open Sans';
     font-weight: 800;
-    padding-top: 12px;
+    padding-top: 9px;
     text-shadow: none;
     font-size: 11px;
     margin: -4px auto;
-    margin-bottom: -16px;
+    margin-bottom: 0px;
 }
 .launch-info-details .minDate {
     display: inline-block;
@@ -10426,29 +10481,17 @@ button.close {}
     display: block;
 }
 .file-view-container {
-    top: 111px;
-    position: absolute;
 }
 .dataSelectTabButton {
-    position: absolute;
-    right: 0px;
 }
 .dataSelectTabButton {
-    position: absolute;
-    right: 21px;
     font-weight: 100;
-    top: 86px;
 }
 .fileSelectTabButton {
-    position: absolute;
-    left: 22px;
     font-weight: 100;
-    top: 86px;
     overflow: visible;
 }
 .cost-view-container {
-    top: 111px;
-    position: absolute;
 }
 .expandLaunchWindowTabButton.selected {
     color: white !important;
@@ -11774,11 +11817,12 @@ body.themeGrad.mobileMenu nav.minMenu.menuCell.menuEntity, body.themeGrad.mobile
     border-bottom-left-radius: 4px;
     position: absolute;
     width: 100%;
-    background: -webkit-linear-gradient(left, rgba(255, 204, 159, 0.19) 0%, rgba(255, 248, 242, 0.17) 54%, rgba(255, 242, 231, 0.1) 94%, rgb(255, 253, 251) 100%);
+    background: linear-gradient(to right, rgba(255, 204, 159, 0.19) 0%, rgba(255, 248, 242, 0.17) 54%, rgba(255, 242, 231, 0.1) 94%, rgb(255, 253, 251) 100%);
     z-index: 1;
     color: transparent;
     text-shadow: none;
     border: none;
+    left: 0px;
 }
 
 .proc-element .info h4.title {
@@ -11857,10 +11901,11 @@ body.themeGrad.mobileMenu nav.minMenu.menuCell.menuEntity, body.themeGrad.mobile
 
 .edit-element-card-container {
     right: 24px;
-    width: 45%;
+    width: 42%;
     top: 100px;
     padding-top: 5px;
     min-height: 200px;
+    max-height: 600px;
     height: 100%;
     overflow-x: hidden;
     padding-bottom: 25px;
@@ -11870,6 +11915,23 @@ body.themeGrad.mobileMenu nav.minMenu.menuCell.menuEntity, body.themeGrad.mobile
     box-shadow: #ECECEC 0px 4px 12px;
     position: fixed;
 }
+form.form-horizontal.form-new-bpelem.form-edit-bpelem {
+    height: 100%;
+}
+.edit-element-card-container .edit-element-card-container {
+  height: 100%;
+}
+button.edit-element-card-update-btn.btn.btn-small.btTxt.submit.btn.lg.solid-green {
+    position: absolute;
+    bottom: 0px;
+}
+
+a.edit-element-card-delete-btn.btn.btn-small.btn.btn-danger.btTxt.btn.lg.solid-green {
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+}
+
 .edit-element-card-container::-webkit-scrollbar {
     width: 5px;
 }
@@ -11922,8 +11984,8 @@ body.themeGrad.mobileMenu nav.minMenu.menuCell.menuEntity, body.themeGrad.mobile
     top: 9px;
     font-size: 17px;
     transform: rotate(45deg);
+    z-index: 9;
 }
-
 
 
 /** 

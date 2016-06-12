@@ -36,16 +36,21 @@
 			      </a>
 
 				 <div class="reaction_list__reaction_element_launch_nav reaction_list__reaction_element_launch_files_nav launches-nav">
+			         <div class="reaction_list__reaction_element_launch_files_nav_menu">
 			         <span class="data-board-count data-board-files-count">
 			           <div ng-repeat="fileArr in files.files | filter:filesForLaunchElement(elem) as filteredFiles">
 			           </div>{{filteredFiles.length}}
 			         </span>
 				     <a ng-click="fileSelectTab(elem)"
 					    id="fileSelectTabButton"
-					    class="fileSelectTabButton expandLaunchWindowTabButton"
-						ng-class="elem.fileSelectTabSelected ? 'selected' : ''">Files</a>
+					    class="fileSelectTabButton expandLaunchWindowTabButton">Files</a>
+					  </div>
+			          <div ng-include src="'assets/partials/inputs/file_attach.html'"
+			               class="file-view-container" ng-init="elem.payload = []; $parent.elem.payloadNew = [];elem.dataSelectTabSelected=true;"></div>		         
 		         </div>
-		    		<div class="reaction_list__reaction_element_launch_nav reaction_list__reaction_element_launch_data_nav launches-nav">
+
+		    	 <div class="reaction_list__reaction_element_launch_nav reaction_list__reaction_element_launch_data_nav launches-nav">
+		    	 	<div class="reaction_list__reaction_element_launch_nav reaction_list__reaction_element_launch_data_nav_menu">
 			        <span class="data-board-count data-board-costs-count">
 			          <div ng-repeat="costObj in $parent.sessionCosts | filter: byElement(elem) as filteredCost">
 			          </div>
@@ -53,9 +58,16 @@
 			        </span>
 				    <a ng-click="dataSelectTab(elem)"
 				       id="dataSelectTabButton"
-				       class="expandLaunchWindowTabButton dataSelectTabButton"
-				       ng-class="elem.dataSelectTabSelected ? 'selected' : ''">Data</a>
+				       class="expandLaunchWindowTabButton dataSelectTabButton">Data</a>
+				    </div>
+		            <div ng-include src="'assets/partials/inputs/costs.html'"
+			                        class="cost-view-container"
+			                        ng-init="costs = elem.costs;"></div>
 			     </div>
+				 <div class="reaction_list__reaction_element_launch_databoard_expand">	
+				    <a ng-click="openModalDataBoard($parent.$parent.session.process)"
+				       class="modalDataButton dataSelectTabButtonNew"><span class="nicon nicon-dots-three-horizontal"></span></a>
+				  </div>
 
 			     <div class="interaction-input-existence" ng-repeat="reaction in interactions.reactions | filter:filterReactionByElem(elem)">
 			        <a ng-click="reactionSelect(reaction);runFrom($parent.session.session.id, reaction)"
@@ -68,20 +80,6 @@
 
 
 
-			       <a ng-click="openModalDataBoard($parent.$parent.session.process)"
-			          id="modalDataBoardButton"
-			          class="modalDataButton dataSelectTabButton"><span class="nicon nicon-dots-three-horizontal"></span></a>
-
-
-			      <div class="data-board-controller">
-			          <div ng-include src="'assets/partials/inputs/costs.html'"
-			                          class="cost-view-container"
-			                          ng-init="costs = elem.costs;"
-			                          ng-show="elem.dataSelectTabSelected"></div>
-			          <div ng-include src="'assets/partials/inputs/file_attach.html'"
-			               class="file-view-container" ng-init="elem.payload = []; $parent.elem.payloadNew = [];elem.dataSelectTabSelected=true;"
-			               ng-show="elem.fileSelectTabSelected"></div>
-			      </div>
 
 
 				</div>

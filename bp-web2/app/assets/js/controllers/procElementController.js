@@ -252,6 +252,18 @@ $scope.reFillValue = function(cost, entity, slat) {
 
 
 
+/***************
+ *  RequestController data
+ */
+$scope.bboardDataPromises = [];
+$scope.bboardTriggers = [];
+
+$scope.bboardTriggers = [];
+$scope.pushBboardTRigger = function(launchId, triggerFn, ident) {
+  console.log('add trigger', ident + ' ' + launchId);
+  $scope.bboardTriggers.push({ launchId: launchId, triggerFn: triggerFn, ident: ident });
+}
+
 
 
 

@@ -52,12 +52,6 @@ case class SessionElementTopologyWrapper(topo_id: Int, element_id: Int, element_
 case class SessionReactionCollection(reaction: SessionUnitReaction, reaction_state_outs: List[SessionUnitReactionStateOut])
 
 
-case class AllLaunchedElementsContainer(launchId: Int,
-  elements: List[SessionUndefElement],
-  spaces: List[SessionSpaceDTO],
-  space_elements: List[SessionSpaceElementDTO],
-  element_topos: List[SessionElementTopologyWrapper]
-)
 
 import javax.inject.Inject
 
@@ -104,13 +98,13 @@ implicit val SessionElementTopologyWrapperReads = Json.reads[SessionElementTopol
 implicit val SessionElementTopologyWrapperWrites = Json.format[SessionElementTopologyWrapper]
 implicit val SessionReactionCollectionReads = Json.reads[SessionReactionCollection]
 implicit val SessionReactionCollectionWrites = Json.format[SessionReactionCollection]
-implicit val AllLaunchedElementsContainerReads = Json.reads[AllLaunchedElementsContainer]
-implicit val AllLaunchedElementsContainerWrites = Json.format[AllLaunchedElementsContainer]
 
 /* Index */
 def frontElems(launch_id: Int) = SecuredAction { implicit request =>
     if (security.BRes.launchIsOwnedByBiz(request.identity.businessFirst, launch_id)) {
-        Ok(Json.toJson(SessionProcElementDAO.findBySession(launch_id)))
+      val frontLaunchElements = SessionProcElementDAO.findBySession(launch_id)
+      val frontLaunchElementsWithTopos = decorateProcElementsToJson(frontLaunchElements)
+        Ok(Json.toJson( frontLaunchElementsWithTopos) )
     } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
 def show_elem_length(launch_id: Int):Int = { SessionProcElementDAO.findLengthByBPId(launch_id) }
@@ -198,106 +192,6 @@ def reactions_index(launch_id: Int) = SecuredAction { implicit request =>
 
 
 
-
-
-
-
-
-
-
-def allElements(launchIds: List[Int]) = SecuredAction.async { implicit request =>
-  val secured_ids = launchIds.filter( launchId =>
-        security.BRes.sessionSecured(launchId, request.identity.emailFilled, request.identity.businessFirst))
-  val elementsAllF = SessionProcElementDAOF.findByLaunchesIds(secured_ids)
-  val spacesAllF = SessionSpaceDAOF.findByLaunchesIds(secured_ids)
-  val spaceElementsAllF = SessionSpaceElemDAOF.findByLaunchesIds(secured_ids)
-
-    elementsAllF.flatMap { elementsAll =>
-      spacesAllF.flatMap { spacesAll =>
-        spaceElementsAllF.map { spaceElementsAll =>
-
-    val allElemCn = secured_ids.map { launchId =>
-    val topologs_dto = SessionElemTopologDAO.findBySession(launchId)
-    Logger.debug(s"topos quantity are $topologs_dto.length")
-    val topologs:List[SessionElementTopologyWrapper] = topologs_dto.filter(topo => topo.front_elem_id.isDefined).map { topolog =>
-        val element = SessionProcElementDAO.findById(topolog.front_elem_id.get).get
-        SessionElementTopologyWrapper(
-         topo_id = topolog.id.get,
-         element_id = element.id.get,
-         element_title = element.title,
-         space_element = false)
-    } ++ topologs_dto.filter(topo => topo.space_elem_id.isDefined).map { topolog =>
-        val element = SessionSpaceElemDAO.findById(topolog.space_elem_id.get).get
-        SessionElementTopologyWrapper(
-         topo_id = topolog.id.get,
-         element_id = element.id.get,
-         element_title = element.title,
-         space_element = true)
-    }
-
-    AllLaunchedElementsContainer(
-      launchId = launchId,
-      elements = elementsAll.filter(c => c.session == launchId).toList,
-      spaces = spacesAll.filter(c => c.session == launchId).toList,
-      space_elements = spaceElementsAll.filter(c => c.session == launchId).toList,
-      element_topos = topologs
-    )
-    }
-    Ok(Json.toJson( allElemCn ) )
-
-  }
-  }
-  }
-
-
-}
-
-
-def allElementsCached(launchIds: List[Int], timestamp: String) = SecuredAction.async { implicit request =>
-  val secured_ids = launchIds.filter( launchId =>
-        security.BRes.sessionSecured(launchId, request.identity.emailFilled, request.identity.businessFirst))
-  val elementsAllF = SessionProcElementDAOF.findByLaunchesIds(secured_ids)
-  val spacesAllF = SessionSpaceDAOF.findByLaunchesIds(secured_ids)
-  val spaceElementsAllF = SessionSpaceElemDAOF.findByLaunchesIds(secured_ids)
-
-    elementsAllF.flatMap { elementsAll =>
-      spacesAllF.flatMap { spacesAll =>
-        spaceElementsAllF.map { spaceElementsAll =>
-
-    val allElemCn = secured_ids.map { launchId =>
-    val topologs_dto = SessionElemTopologDAO.findBySession(launchId)
-    Logger.debug(s"topos quantity are $topologs_dto.length")
-    val topologs:List[SessionElementTopologyWrapper] = topologs_dto.filter(topo => topo.front_elem_id.isDefined).map { topolog =>
-        val element = SessionProcElementDAO.findById(topolog.front_elem_id.get).get
-        SessionElementTopologyWrapper(
-         topo_id = topolog.id.get,
-         element_id = element.id.get,
-         element_title = element.title,
-         space_element = false)
-    } ++ topologs_dto.filter(topo => topo.space_elem_id.isDefined).map { topolog =>
-        val element = SessionSpaceElemDAO.findById(topolog.space_elem_id.get).get
-        SessionElementTopologyWrapper(
-         topo_id = topolog.id.get,
-         element_id = element.id.get,
-         element_title = element.title,
-         space_element = true)
-    }
-
-    AllLaunchedElementsContainer(
-      launchId = launchId,
-      elements = elementsAll.filter(c => c.session == launchId).toList,
-      spaces = spacesAll.filter(c => c.session == launchId).toList,
-      space_elements = spaceElementsAll.filter(c => c.session == launchId).toList,
-      element_topos = topologs
-    )
-    }
-    Ok(Json.toJson( allElemCn ) )
-
-  }
-  }
-  }
-
-}
 
 
 
@@ -550,6 +444,22 @@ def delete_state(launch_id: Int, state_id: Int) = SecuredAction { implicit reque
      Ok(Json.toJson("Ok"))
   } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
+
+
+
+private def decorateProcElementsToJson(elements: List[SessionUndefElement]) = {
+  val elemIds:List[Int] = elements.map(_.id.get)
+  val topos:List[SessionElemTopology] = SessionElemTopologDAO.findByFrontElements(elemIds)
+  val elemJson = Json.toJson( elements )
+  val elemJsonObj = elemJson.as[List[JsObject]]
+  val objWithTopos = elemJsonObj.map { obj =>
+    val elemId = (obj \ "id").validate[Int].get
+    obj + ("topo_id" -> Json.toJson(topos.find(topo => topo.front_elem_id.get == elemId ).get  ))
+  }
+  objWithTopos
+}
+
+
 
 
 private def action(acc: String, process: Option[Int], action: String, what: Option[String]=None, what_id: Option[Int]=None) = {
