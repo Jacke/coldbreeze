@@ -5349,13 +5349,7 @@ td.visible-print {
   padding: 0 0 0.5em;
 }
 
-.menu:before {
-  content: "[";
-}
 
-.menu:after {
-  content: "]";
-}
 
 .menu > li {
   display: inline;

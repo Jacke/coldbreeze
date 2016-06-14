@@ -10,7 +10,8 @@ GET         /                                                   @controllers.Pro
 GET         /dashboard  										@controllers.ProfileController.dashboardScreen()
 GET         /uptime                                             @controllers.Application.uptime()
 
-
+GET         /motivation                                         @controllers.MotivationController.index()
+GET         /motivation/socket                                  @controllers.MotivationController.socketTest
 
 # Auth
 #GET         /migrate                         @controllers.LegacyAuthController.migrate

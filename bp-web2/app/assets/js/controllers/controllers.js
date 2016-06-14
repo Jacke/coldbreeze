@@ -16,6 +16,9 @@ angular.module('minorityApp.controllers', []).
   .controller('UserController', [function () {
 
   }])
+  .controller('PlaygroundController', [function () {
+    
+  }])
   .controller('BProcessDetailCtrl', [function () {
 
   }])

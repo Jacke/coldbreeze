@@ -734,6 +734,14 @@ minorityApp.config(['$locationProvider','$routeProvider', '$httpProvider', funct
 /*I*/$routeProvider.when('/ref', {templateUrl: '/assets/partials/reflections/ref-list.html', reloadOnSearch: false, controller: 'ReflectionCtrl'});
 /*C*/$routeProvider.when('/ref/new', {templateUrl: '/assets/partials/reflections/ref-list.html', controller: 'ReflectionCtrl'});
 
+/*I*/$routeProvider.when('/playground', {
+ templateUrl: '/assets/partials/motivation.html',
+ controller: 'PlaygroundController',
+ resolve: { Auth: ['$http', '$q', '$window', '$rootScope', 'NotificationBroadcaster', function($http, $q, $window, $rootScope, NotificationBroadcaster) {
+
+    }]
+  }
+});
 
      $routeProvider.otherwise({redirectTo: '/bprocesses'});
 
