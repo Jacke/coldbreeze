@@ -4,8 +4,6 @@ resolvers += "sonatype-releases" at "https://oss.sonatype.org/content/repositori
 
 resolvers += "Madoushi sbt-plugins" at "https://dl.bintray.com/madoushi/sbt-plugins/"
 
-resolvers += "bintray-sbt-plugin-releases" at "http://dl.bintray.com/content/sbt/sbt-plugin-releases"
-
 
 resolvers += Resolver.url(
   "bintray-sbt-plugin-releases",
@@ -43,7 +41,7 @@ resolvers += Resolver.url("untyped", url("http://ivy.untyped.com"))(Resolver.ivy
 
 //addCompilerPlugin("com.foursquare.lint" %% "linter" % "0.1.9")
 
-addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "0.6.0")
+addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "0.8.0")
 
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-atmos" % "0.3.2")
@@ -74,8 +72,6 @@ addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.4.6" exclude("org.slf4j", "
 //addSbtPlugin("com.github.mmizutani" % "sbt-play-gulp" % "0.0.6")
 
 //addSbtPlugin("io.spray" % "sbt-twirl" % "0.7.0")
-
-addSbtPlugin("org.scalastyle" %% "scalastyle-sbt-plugin" % "0.4.0")
 
 //addSbtPlugin("com.typesafe.sbt" % "sbt-jshint" % "1.0.1")
 

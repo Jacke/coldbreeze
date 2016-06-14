@@ -28,12 +28,9 @@ minorityControllers.controller('LaunchesCtrl', ['$q','$controller','$timeout','$
 
 $scope.isEmptyLaunchesCheck = function() {
   //$rootScope.$on('cfpLoadingBar:completed', function(event, data){
-  console.log("$scope.isEmptyLaunchesStart")
-  console.log($scope.isEmptyLaunches);
-   $scope.isEmptyLaunches = false;
-   console.log(($scope.sessions));
-   var AllSessions = _.flatten(_.map($scope.sessions, function(ses) { return ses.sessions }));
-   console.log(AllSessions);
+  $scope.isEmptyLaunches = false;
+  var AllSessions = _.flatten(_.map($scope.sessions, function(ses) { return ses.sessions }));
+
 
   if ($scope.sessions != undefined && AllSessions.length > 0) {
     var vals = _.map($scope.sessions, function(ses) {
@@ -54,8 +51,6 @@ $scope.isEmptyLaunchesCheck = function() {
     //} else {
       $scope.isEmptyLaunches = true//; }
   }
-  console.log("$scope.isEmptyLaunches")
-  console.log($scope.isEmptyLaunches)
   //});
 }
 $scope.sessions = [];
@@ -67,6 +62,50 @@ $scope.pushBboardTRigger = function(launchId, triggerFn, ident) {
   $scope.bboardTriggers.push({ launchId: launchId, triggerFn: triggerFn, ident: ident });
 }
 
+
+  
+
+
+$scope.convertTo = function (arr, key, dayWise) {
+  var groups = {};
+  for (var i=0;l= arr.length, i<l;i++) {
+    if (dayWise) {
+      arr[i][key] = new Date(arr[i][key]).toLocaleDateString();
+      console.log('dayWise', arr[i][key]);
+    }
+    else {
+      arr[i][key] = new Date(arr[i][key]).toTimeString();
+    }
+    groups[arr[i][key]] = groups[arr[i][key]] || [];
+    groups[arr[i][key]].push(arr[i]);
+  }
+  console.log('groups', groups);
+  return groups;
+
+  // { date, dated_sessions }
+};
+  
+
+
+$scope.decorateLaunchesByDate = function(launches_container) {
+  var groupByDate = function(arr) {
+    //arr = _.map(arr, function(key,values) {
+    //  return {key: values};
+    //})
+    return arr;
+  }
+
+  // -> launchesCOntainer(process, launches) 
+  // <- launchesCOntainer(process, launches, launchesByDate(date: launches) ) 
+  return _.map(launches_container, function(cn) {
+    return {
+      process: cn.process,
+      sessions: cn.sessions,
+      launchesByDate: groupByDate( $scope.convertTo(cn.sessions, 'created_at', true) )
+    }
+  });
+ //return launches_container
+}
 
 
 $scope.loadSessions = function (process_id) {
@@ -140,12 +179,10 @@ SessionsFactory.query().$promise.then(function (data2) {
 $scope.allLaunchedElemPromise = AllLaunchedElementsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') });
 $scope.allLaunchedElemPromise.$promise.then(function (d) {
     $scope.allLaunchedElem = d;
-    console.log("132",$scope.allLaunchedElem);
 });
 $scope.interactionContainerPromise = InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') });
 $scope.interactionContainerPromise.$promise.then(function (d) {
     $scope.interactionContainerLaunch = d;
-    console.log("137",$scope.interactionContainerLaunch);
 });
 
 /*
@@ -158,25 +195,23 @@ $scope.interactionContainerPromise.$promise.then(function (d) {
 
     // polyfill ended
      if (process_id != undefined) {
-        console.log(process_id);
-        $scope.sessions = _.filter(data2, function(dat) {
+        var newSessions = _.filter(data2, function(dat) {
           return dat.process.id === process_id
-
         });
+        $scope.sessions = $scope.decorateLaunchesByDate(newSessions);
      } else {
-      $scope.sessions = data2;
+      $scope.sessions = $scope.decorateLaunchesByDate(data2);
    }
     $scope.lastChecked = true;
 
     $scope.treePromises = $scope.buildTree(data2, $scope.allLaunchedElemPromise)
     $scope.isEmptyLaunchesCheck();
     });
-    } //else { $scope.lastChecked = true; console.log("else");$scope.isEmptyLaunchesCheck() }
+    } //else { $scope.lastChecked = true; $scope.isEmptyLaunchesCheck() }
   } else { $scope.lastChecked = true; $scope.isEmptyLaunches = true; }
 /*
 BProcessesFactory.query().$promise.then(function (proc) {
     if (proc.length > 0) {
-      console.log('loadPerm');
       $scope.loadPerm(proc[0].id);
     };
     $scope.bprocesses = proc;
@@ -247,15 +282,13 @@ var session_ids = _.map(data2, function(d){
 
 InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') }).$promise.then(function(updatedInteraction) {
 
-  console.log("219",$scope.interactionContainerLaunch);
-  console.log("219", updatedInteraction);
+
 
   // Update interaction container
 
   //$scope.interactionContainerLaunch = _.map($scope.interactionContainerLaunch, function(icon) {
   //  if (icon.session_container.sessions[0].session.id === session_id) {
   //    icon = d[0]; // Take first element(first is interaction container for updated session)
-  //    console.log("icon finded",icon);
   //    return icon;
   //  } else {
   //    return icon;
@@ -267,8 +300,6 @@ InteractionsBulkFactory.queryAll({ids: (session_ids + '').split(',').join('') })
     //$scope.$broadcast('reloadSession', session_id);
 _.forEach($scope.nestedRequestScopes, function(sc) {
   if (sc.session_id === session_id) {
-    console.log('scope before', sc.scope.interactions);
-    console.log('scope before', $scope.interactionContainerLaunch);
 /*
   _.map(updatedInteraction, function(icon) {
     if (icon !== undefined && icon.session_container.sessions[0].session.id === session_id) {
@@ -305,13 +336,10 @@ _.forEach($scope.nestedRequestScopes, function(sc) {
 }
 
 $scope.updateSessionInCollection = function(session, collection) {
-  console.log('updateSessionInCollection');
-  console.log(session);
-  console.log($scope.sessions);
   var process = session.process.id;
   var updatedSession = session.sessions[0];
   // Iterate over container for process
-  $scope.sessions = _.map($scope.sessions, function(sessionContainer) {
+  var newSessions = _.map($scope.sessions, function(sessionContainer) {
     if (sessionContainer.process.id === process) {
   // Iterate over process session for updated session
   //sessionContainer.sessions = _.without(sessionContainer.sessions, _.find(sessionContainer.sessions, function(s) {
@@ -319,10 +347,7 @@ $scope.updateSessionInCollection = function(session, collection) {
   //sessionContainer.sessions.push(updatedSession);
   _.forEach(sessionContainer.sessions, function(session) {
     if (session.session.id === updatedSession.session.id) {
-      console.log('update session attr', session);
       var updated = _.reduce(session, function(obj, val, key) {
-          console.log('obj[key]', obj[key]);
-          console.log('updatedSession[key]', updatedSession[key]);
           obj[key] = updatedSession[key]//val;
           return obj;
       }, {});
@@ -339,7 +364,8 @@ $scope.updateSessionInCollection = function(session, collection) {
     }
     return sessionContainer;
   });
-  console.log($scope.sessions);
+
+  $scope.sessions = $scope.decorateLaunchesByDate(newSessions);
 }
 
 $scope.reloadSession = function(session_id) {
@@ -347,7 +373,6 @@ $scope.reloadSession = function(session_id) {
     $scope.loadSessions($routeParams.process);
   }
   if (session_id) {
-    console.log('reload session from request controller');
     $scope.reloadSessionFn(session_id);
 
   } else { // Load all process

@@ -19,7 +19,7 @@ import play.api.cache._
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 import play.api.Logger
-import service.DemoUser
+
 import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry

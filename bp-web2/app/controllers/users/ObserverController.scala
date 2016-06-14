@@ -10,7 +10,6 @@ import play.api.cache._
 
 import views._
 import models.User
-import service.DemoUser
 import java.util.UUID._
 import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator

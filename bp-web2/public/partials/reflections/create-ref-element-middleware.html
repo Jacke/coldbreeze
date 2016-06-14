@@ -12,31 +12,24 @@
     </div>
   </div>
   <div class="control-group form-group">
-    <label class="control-label col-sm-1" for="inputBusinessId">Host:</label>
+    <label class="control-label col-sm-1" for="inputBusinessId">ident:</label>
     <div class="controls col-xs-4">
-      <input type="text" class="form-control" id="inputBusinessId" ng-model="$parent.action.newActionMiddleware.host"/>
+      <input type="text" class="form-control" id="inputBusinessId" ng-model="$parent.action.newActionMiddleware.ident"/>
     </div>
   </div>
 
 
   <div class="control-group form-group">
-    <label class="control-label col-sm-1" for="inputBusinessId">desc:</label>
+    <label class="control-label col-sm-1" for="inputBusinessId">ifaceIdent:</label>
     <div class="controls col-xs-4">
-      <textarea type="text" class="form-control" id="inputBusinessId" ng-model="$parent.action.newActionMiddleware.desc"/>
-    </div>
-  </div>
-  <div class="control-group form-group">
-    <label class="control-label col-sm-1" for="inputBusinessId">category:</label>
-    <div class="controls col-xs-4">
-      <select type="text" name="newRefCategory" class="form-control" id="inputBusinessId" ng-model="$parent.action.newActionMiddleware.category">
-        <option value="Base">Base</option>
-      </select>
+      <textarea type="text" class="form-control" id="inputBusinessId" ng-model="$parent.action.newActionMiddleware.ifaceIdent"/>
     </div>
   </div>
 
+
   <div class="control-group form-group">
     <div class="controls col-xs-4">
-      <a ng-click="createRefElementState($parent.action.newActionMiddleware)" class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</a>
+      <a ng-click="createRefElementMiddleware($parent.action.newActionMiddleware, $parent.action)" class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</a>
       <a ng-click="$parent.action.showNewMiddlewareForm=false" class="btn btn-small btn-primary">Cancel</a>
     </div>
   </div>

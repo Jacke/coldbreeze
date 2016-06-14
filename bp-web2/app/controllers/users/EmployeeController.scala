@@ -19,7 +19,6 @@ import views._
 import controllers._
 import models.Page
 import models.User
-import service.DemoUser
 import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
@@ -61,7 +60,6 @@ class EmployeeController @Inject() (
   socialProviderRegistry: SocialProviderRegistry)
   extends Silhouette[User2, CookieAuthenticator] {
    import play.api.Play.current
-   import models.AccImplicits._
   val Home = Redirect(routes.EmployeeController.index())
 
   case class UIDS(emails: List[String], manager: Boolean)

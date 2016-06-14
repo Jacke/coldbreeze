@@ -16,6 +16,8 @@ import com.github.tototoshi.slick.PostgresJodaSupport._
 class LaunchMiddlewares(tag: Tag) extends Table[LaunchMiddleware](tag, "launch_middlewares") {
   def id          = column[Long]("id", O.PrimaryKey, O.AutoInc)
   def session     = column[Int]("session_id")
+  def title       = column[String]("title")
+
   def ident       = column[String]("ident")
   def ifaceIdent  = column[String]("iface_ident")
   def reaction    = column[Int]("reaction_id")
@@ -28,6 +30,7 @@ class LaunchMiddlewares(tag: Tag) extends Table[LaunchMiddleware](tag, "launch_m
 
   def * = (id.?,
            session,
+           title,
            ident,
            ifaceIdent,
            reaction,

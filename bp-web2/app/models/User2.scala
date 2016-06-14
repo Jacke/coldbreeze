@@ -5,13 +5,9 @@ import java.util.UUID
 import com.mohiva.play.silhouette.api.{ Identity, LoginInfo }
 import play.api.Logger
 import play.api.i18n.Lang
-import securesocial.core._
-import securesocial.core.providers.{UsernamePasswordProvider, MailToken}
 import scala.concurrent.Future
-import securesocial.core.services.{UserService, SaveMode}
 import scala.concurrent.ExecutionContext.Implicits.global
 import models.AccountsDAO
-import models.TokensDAO
 import models._
 import play.api.cache._
 import play.api.Play.current

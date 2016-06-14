@@ -212,6 +212,10 @@
   deps: ['angular', 'toastr', 'toaster', 'roundProgress'],
   export: 'app'
 },
+'app2': {
+  deps: ['angular'],
+  export: 'app2'
+},
 //'lkgooglepicker': {
 //  deps: ['angular', 'app'],
 //  export: 'lkgooglepicker'
@@ -245,6 +249,16 @@
   deps: ['angular', 'app', 'toastr', 'toaster'],
   export: 'controllers'
 },
+'controllers2': {
+  deps: ['angular', 'app2'],
+  export: 'controllers2'
+},
+
+'playgroundController': {
+  deps: ['angular', 'app2', 'controllers2'],
+  export: 'playgroundController'
+},
+
 'launchDataController': {
   deps: ['angular', 'app', 'controllers', 'toastr'],
   export: 'launchDataController'
@@ -453,6 +467,8 @@
     "text": "../bower_components/requirejs-text/text",
 
   'app': '../js/app',
+  'app2': '../js/app2',
+
   'reactapp': '../js/reactapp',
   'filters': '../js/filters',
   'services': '../js/services',
@@ -461,6 +477,9 @@
  // 'popupService': '../js/popupService',
   'treebuilder': '../js/treebuilder',
   'controllers': '../js/controllers/controllers',
+  'controllers2': '../js/controllers/controllers2',
+
+  'playgroundController': '../js/controllers/playgroundController',
   'launchDataController':'../js/controllers/data/launchDataController',
   'procPermController': '../js/controllers/procPermController',
   'procController': '../js/controllers/procController',

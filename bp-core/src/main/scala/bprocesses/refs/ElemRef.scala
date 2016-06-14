@@ -160,8 +160,8 @@ updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
     element: Int,
     from_state: Option[Int],
     title: String,
-    created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
-    updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
+    created_at:Option[org.joda.time.DateTime] = None,
+    updated_at:Option[org.joda.time.DateTime] = None) {
 
  def reflect(process: Int, element: Int, from_state: Option[Int]):UnitReaction = {
     UnitReaction(None,

@@ -185,11 +185,15 @@ ul.type-tabs li a:hover {
   margin-bottom: 0px;
   background: white;
 }
+
 .processList .process_content {
-  margin-left: 8%;
-  margin-top: 46px;
-  max-width: 42%;
+    margin-left: 180px;
+    float: left;
+    display: inline-block;
+    margin-bottom: -50px;
 }
+
+
 .process .process-status h2.tableMinListName {
   width: 13%;
 }
@@ -269,9 +273,55 @@ label.control-label {
   width: 55%;
 }
 .form-fast-element-create .ref-select-container {
-  display: inline-block;
-  width: 49%;
+    /* display: inline-block; */
+    width: 49%;
+    margin-left: 12px;
 }
+.form-fast-element-create .fast-element-aside {
+    display: inline-block;
+    float: right;
+    margin-right: 28px;
+}
+
+.fast-element-aside {
+    float: right;
+    margin-right: 19px;
+}
+.fast-element-aside .tree-thumb.process-tree {
+    width: 100%;
+    /* margin-right: -5px; */
+    /* margin-left: 28px; */
+    display: block;
+    overflow: hidden;
+    height: 46px;
+}
+.fast-element-aside .elem-card {
+    padding-right: 9px;
+}
+
+.fast-element-aside .fast-element-form-close {
+    text-align: right;
+    font-weight: 100;
+}
+.fast-element-aside .fast-element-form-close a, .fast-element-aside .fast-element-show-model a {
+    font-weight: 100;
+    font-size: 12px;
+    cursor: pointer;
+
+}
+.fast-element-aside .fast-element-tree {
+    margin-right: 100px
+}
+
+.fast-element-aside ol.ng-pristine.ng-untouched.ng-valid.ng-scope.angular-ui-tree-nodes {
+    display: block;
+    margin-top: 5px;
+}
+
+.fast-element-aside .fast-element-show-model {
+    text-align: right;
+}
+
 .form-fast-element-create label.control-label.type-label {
   margin-left: 16px;
   margin-top: -8px;

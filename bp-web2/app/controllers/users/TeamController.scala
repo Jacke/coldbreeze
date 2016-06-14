@@ -18,7 +18,6 @@ import java.util.UUID
 import views._
 import models.Page
 import models.User
-import service.DemoUser
 import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
@@ -29,7 +28,6 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.resources.ClientBusinessDAO
 import models.DAO.resources.web._
-import models.AccountDAO
   import scala.concurrent.ExecutionContext.Implicits.global
   import scala.concurrent.duration.Duration
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}

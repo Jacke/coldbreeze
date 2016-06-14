@@ -2,7 +2,6 @@ package controllers
 import scala.util.{Try, Success, Failure}
 
 import models.{AccountsDAO, User, Page}
-import service.DemoUser
 import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
@@ -93,12 +92,12 @@ def fetchSubscribers() = Action { implicit request =>
 def newSubscribers() = Action { implicit request =>
    type Email = String
    val emails: List[String] = mailers.Mailer.fetchMembers()
-   val filtered = AccountsDAO.getAccounts(emails).map(_.userId)
+   val filtered = List()//AccountsDAO.getAccounts(emails).map(_.userId)
    Ok(Json.toJson(emails.filter(e => !filtered.contains(e)).map(Subscriber(_))))
 }
 def sendToNew() = Action { implicit request =>
    type Email = String
-   val emails: List[String] =  AccountsDAO.getAccounts(mailers.Mailer.fetchMembers()).map(_.userId)
+   val emails: List[String] =  List() //AccountsDAO.getAccounts(mailers.Mailer.fetchMembers()).map(_.userId)
    emails.foreach { email =>
    val invite_link:String = "invite_link"
     mailers.Mailer.sendInvite(subject = "Minority Platform Invite",

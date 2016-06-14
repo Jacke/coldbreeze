@@ -2,7 +2,6 @@ package controllers
 import scala.util.{Try, Success, Failure}
 
 import models.{AccountsDAO, User, Page}
-import service.DemoUser
 import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
@@ -205,7 +204,7 @@ object SumActor {
 
   var actors:List[Props] = List()
 
-  def props(out: ActorRef, user: Option[DemoUser]) = {
+  def props(out: ActorRef, user: Option[Any]) = {
     val props = Props(new SumActor(out, user))
     val actor_prop = system.actorOf(props)
     //actors = actors ++ List(prop)
@@ -247,7 +246,7 @@ object SumActor {
 /**
  * An actor that sums sequences of numbers
  */
-class SumActor(out: ActorRef, user: Option[DemoUser]) extends Actor {
+class SumActor(out: ActorRef, user: Option[Any]) extends Actor {
   import SumActor._
   override def postStop() = {
     println("close")
@@ -257,7 +256,7 @@ class SumActor(out: ActorRef, user: Option[DemoUser]) extends Actor {
   }
   def receive = {
     case Sum(values) => {
-      out ! SumResult(values.fold(0)(_ + _ + 100), color = SumResult.color_rand, user.get.main.email)
+      out ! SumResult(values.fold(0)(_ + _ + 100), color = SumResult.color_rand, Some("") )
       /*
       for( a <- 1 to 10){
          out ! SumResult(values.fold(0)(_ + _))

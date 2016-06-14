@@ -89,6 +89,26 @@ object ElemTopologDAO {
 
   private def filterQuery(id: Int): Query[ElemTopologs, ElemTopology, Seq] =
     elem_topologs.filter(_.id === id)
+  private def filterQueryByFrontElements(ids: List[Int]): Query[ElemTopologs, ElemTopology, Seq] =
+    elem_topologs.filter(_.front_elem_id inSetBind ids)
+  private def filterQueryBySpaceElements(ids: List[Int]): Query[ElemTopologs, ElemTopology, Seq] =
+    elem_topologs.filter(_.space_elem_id inSetBind ids)
+  private def filterQueryBySpaces(ids: List[Int]): Query[ElemTopologs, ElemTopology, Seq] =
+    elem_topologs.filter(_.space_id inSetBind ids)
+
+  def findByFrontElements(ids: List[Int]):List[ElemTopology] =   {
+    await( db.run(filterQueryByFrontElements(ids).result) ).toList
+  }
+  def findBySpaceElements(ids: List[Int]):List[ElemTopology] =   {
+    await( db.run(filterQueryBySpaceElements(ids).result) ).toList
+  }
+  def findBySpaces(ids: List[Int]):List[ElemTopology] =   {
+    await( db.run(filterQueryBySpaces(ids).result) ).toList
+  }    
+
+
+
+
   private def filterQueryProcess(id: Int): Query[ElemTopologs, ElemTopology, Seq] =
     elem_topologs.filter(_.process === id)
 

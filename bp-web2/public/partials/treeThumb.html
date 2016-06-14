@@ -2,9 +2,9 @@
   <ol ui-tree-nodes="" ng-model="bprocess.trees">
 
     <li ng-repeat="trr in bprocess.trees | orderBy:'order'" ui-tree-node>
-        <div class="elem-card {{ trr.type_title }} {{ $parent.highlightActive(station, trr) }}">
+        <a href="/a#/bprocess/{{ $parent.bprocess.id }}/elements?f_element={{trr.id}}"><div class="elem-card {{ trr.type_title }} {{ $parent.highlightActive(station, trr) }}">
          {{trr.title}}
-        </div>
+       </div></a>
       <ol ui-tree-nodes="" ng-model="trr.nodes">
         <li ng-repeat="node in trr.nodes" ui-tree-node class="space-container">
             Space: #{{node.index}}
@@ -64,7 +64,7 @@
                                                                                                             </li>
                                                                                                           </ol>
                                                                                                         </li>
-                                                                                                </ol>                                                                                                 
+                                                                                                </ol>
                                                                                               </li>
                                                                                             </ol>
                                                                                           </li>
@@ -72,7 +72,7 @@
                                                                           </li>
                                                                         </ol>
                                                                       </li>
-                                                                </ol>                                                                 
+                                                                </ol>
                                                               </li>
                                                             </ol>
                                                           </li>

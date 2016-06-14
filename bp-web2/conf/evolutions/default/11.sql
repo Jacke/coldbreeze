@@ -135,3 +135,15 @@ WITH (
 );
 ALTER TABLE launch_strategy_outputs
   OWNER TO postgres;
+
+
+
+
+-- DROP SECURESOCIAL CONSTRAINTS
+ALTER TABLE bills DROP CONSTRAINT bills_master_acc_fkey;
+ALTER TABLE process_histories DROP CONSTRAINT process_histories_master_acc_fkey;
+ALTER TABLE account_plan_history DROP CONSTRAINT acc_plan_his_fk;
+ALTER TABLE  account_group DROP CONSTRAINT account_group_account_id_fkey;
+
+
+

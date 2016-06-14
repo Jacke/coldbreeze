@@ -220,6 +220,7 @@ object ExperimentalSessionBuilder {
 			val obj = LaunchMiddleware(
 								None,
 								session_id,
+								p.title,
 								p.ident,
 		            p.ifaceIdent,
 		            reactionsMap.get(p.reaction).getOrElse(-1)
@@ -283,6 +284,7 @@ object ExperimentalSessionBuilder {
 		def fromSessionMiddlewares(el: LaunchMiddleware):Middleware = {
          Middleware(
 					 el.id,
+					 el.title,
 					 el.ident,
 					 el.ifaceIdent,
 					 el.reaction

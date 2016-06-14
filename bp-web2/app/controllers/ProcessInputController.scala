@@ -25,7 +25,7 @@ import play.api.data.FormError
 
 import views._
 import models.User
-import service.DemoUser
+
 import service._
 import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator

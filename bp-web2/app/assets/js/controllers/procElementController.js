@@ -67,7 +67,13 @@ minorityControllers.controller('BPelementListCtrl', ['$timeout','$window','$filt
       toaster.pop('error', "Operation fail", "Please try something else");
     });
   }
-
+$scope.elementsLoaded = false;
+$rootScope.$on('cfpLoadingBar:completed', function(d){
+  $scope.elementsLoaded = true;
+});
+$rootScope.$on('cfpLoadingBar:loading', function(d){
+  $scope.elementsLoaded = false;
+});
 
 
 // /data/cost/up_assign/:resource_id
@@ -245,6 +251,18 @@ $scope.reFillValue = function(cost, entity, slat) {
 
 
 
+
+/***************
+ *  RequestController data
+ */
+$scope.bboardDataPromises = [];
+$scope.bboardTriggers = [];
+
+$scope.bboardTriggers = [];
+$scope.pushBboardTRigger = function(launchId, triggerFn, ident) {
+  console.log('add trigger', ident + ' ' + launchId);
+  $scope.bboardTriggers.push({ launchId: launchId, triggerFn: triggerFn, ident: ident });
+}
 
 
 
@@ -2013,7 +2031,7 @@ $scope.byReaction = function(action) {
 }
 $scope.byMiddleware = function(middleware) {
   return function(obj) {
-     if (obj.middleware === middleware.id) {
+     if (obj.middleware === middleware.id && obj.isNullStrategy != true) {
        return obj;
      } else {
        return false;
@@ -2123,6 +2141,9 @@ $scope.setStrategyFields = function(strategy, action) {
 
 }
 
+/*****
+ * Fields for strategy in new element form
+ */
 vm.fieldsForStrategy = function(strategy, action) {
   $scope.setStrategyFields(strategy, action);
   var f = _.find(action.selectedRefFields, function(r){ return r.strategy.id == strategy.id });
@@ -2132,6 +2153,187 @@ vm.fieldsForStrategy = function(strategy, action) {
     return undefined;
   }
 }
+
+
+
+
+
+$scope.setStrategyEditFields = function(strategy, action) {
+  if (action.selectedRefFields == undefined) {  // if fields doesnt set
+  action.selectedRefFields = _.map([strategy], function(strategyL) {
+  var bases = _.filter(action.strategy_bases, function(base){
+    return base.strategy == strategy.id
+  });
+
+  return {
+    strategy: strategy,
+    fields: _.flatten(_.map(bases, function(base) {
+        if (base.baseType == "duration") {
+          var fieldType = 'number'
+          var placeholder = '';
+          var label = 'Duration';
+        } else if (base.baseType == "datetime") {
+          var fieldType = 'text'
+          var placeholder = 'DD/MM/YEAR HH:MM:SS';
+          var label = 'Schedule';
+
+        } else {
+          var fieldType = 'text'
+          var placeholder = '';
+          var label = '';
+        }
+
+      return [
+        {
+          key: "base_id",
+          type: 'input',
+          className: 'hidden',
+          defaultValue: base.id,
+          templateOptions: {
+            className: 'hidden',
+            type: "text",
+            label: "Base id",
+            placeholder: ""
+          }
+        },
+        {
+          key: "field_type",
+          type: "input",
+          className: 'hidden',
+          defaultValue: fieldType,
+          templateOptions: {
+            className: 'hidden',
+            type: "text",
+            label: "Field type",
+            placeholder: ""
+          }
+
+        },
+        {
+        key: base.key,
+        type: 'input',
+        className: 'new-elem-action__action-base__action-base-form__field',
+        templateOptions: {
+          className: 'new-elem-action__action-base__action-base-form__field',
+          type: fieldType,
+          label: label,
+          placeholder: placeholder
+        }
+        }];
+    }))
+  }
+
+  });
+  };
+
+}
+/*****
+ * Fields for strategy in edit form
+ */
+vm.editFieldsForStrategy = function(strategy, action, bases) {
+  if (action.selectedRefFields == undefined || action.selec) {  // if fields doesnt set
+
+  console.log('editFieldsForStrategy: ', bases);
+  var f = _.flatten(_.map([bases], function(base) {
+      if (base.baseType == "duration") {
+        var fieldType = 'number'
+        var placeholder = '';
+        var label = 'Duration';
+        var defaultValue = parseInt(base.valueContent)
+      } else if (base.baseType == "datetime") {
+        var fieldType = 'text'
+        var placeholder = 'DD/MM/YEAR HH:MM:SS';
+        var label = 'Schedule';
+        var defaultValue = base.valueContent;
+
+
+      } else {
+        var fieldType = 'text'
+        var placeholder = '';
+        var label = '';
+        var defaultValue = base.valueContent;
+
+      }
+
+    return [
+      {
+        key: "base_id",
+        type: 'input',
+        defaultValue: base.id,
+        className: 'hidden',
+        templateOptions: {
+          type: "text",
+            className: 'hidden',
+          label: "Base id",
+          placeholder: ""
+        }
+      },
+      {
+        key: "field_type",
+        type: "input",
+        defaultValue: fieldType,
+        className: 'hidden',
+        templateOptions: {
+          type: "text",
+            className: 'hidden',
+          label: "Field type",
+          placeholder: ""
+        }
+
+      },
+      {
+      key: base.key,
+      type: 'input',
+      className: 'new-elem-action__action-base__action-base-form__field',
+      defaultValue: defaultValue,
+      templateOptions: {
+        className: 'new-elem-action__action-base__action-base-form__field',
+        type: fieldType,
+        label: label,
+        placeholder: placeholder
+      }
+      }];
+    }));
+
+  console.log('f', f);
+  action.selectedRefFields = f;
+  return f;
+
+} else {
+  return undefined;
+}
+
+}
+
+$scope.updateBase = function(base) {
+  // POST /process/:bpId/base/:base_id
+  var bpId = $scope.BPid;
+  var key = base.key;
+  var base_id = base.updatedStrategy.base_id;
+  var baseNewValue = base.updatedStrategy[key];
+  console.log(base);
+
+  $http({
+      url: '/process/'+bpId+'/base/'+base_id,
+      method: "POST",
+      data: { baseNewValue: baseNewValue.toString() }
+      })
+      .then(function(response) {
+        // success
+        //$scope.stationsRefresh(); // Not for session controller
+        //$scope.loadSessions();
+        $route.reload();
+        //$scope.invoke_res = [response];
+      },
+      function(response) { // optional
+        // failed
+      }
+      );
+
+}
+
+
+
 
 $scope.selectStrategy = function(strategy, middleware, action, bases) {
      console.log('action.selectedStrategy', action.selectedStrategy);

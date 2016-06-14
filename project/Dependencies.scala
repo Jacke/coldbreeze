@@ -15,19 +15,14 @@ object Dependencies {
     "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases",
     "bintray-naftoligug-maven" at "http://dl.bintray.com/naftoligug/maven",
     "Rhinofly Internal Release Repository" at "http://maven-repository.rhinofly.net:8081/artifactory/libs-release-local",
-"google-sedis-fix" at "http://pk11-scratch.googlecode.com/svn/trunk",
-
+    "google-sedis-fix" at "http://pk11-scratch.googlecode.com/svn/trunk",
     "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots/",
-
     "softprops-maven" at "http://dl.bintray.com/content/softprops/maven",
      Resolver.url( "Reflect GitHub Repository", url( "http://taig.github.io/Reflect/release/" ) )( Resolver.ivyStylePatterns ),
      Resolver.url("heroku-sbt-plugin-releases", url("http://dl.bintray.com/heroku/sbt-plugins/"))(Resolver.ivyStylePatterns),
      Resolver.url("Edulify Repository", url("http://edulify.github.io/modules/releases/"))(Resolver.ivyStylePatterns),
      Resolver.url("github repo for html5tags", url("http://loicdescotte.github.io/Play2-HTML5Tags/releases/"))(Resolver.ivyStylePatterns),
-
      Resolver.jcenterRepo
-
-
   )
 
   val akkaVersion     = "2.4.6"

@@ -16,7 +16,7 @@ import play.api.data.FormError
 import play.api.Logger
 import views._
 import models.User
-import service.DemoUser
+
 import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
@@ -52,7 +52,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.mvc.{ Action, RequestHeader }
 import models.DAO.reflect._
 
+import us.ority.min.actions._
+import main.scala.simple_parts.process.Units._
 
+case class BaseNewValue(baseNewValue: String)
 
 class ProcessElementsController @Inject() (
   val messagesApi: MessagesApi,
@@ -60,6 +63,8 @@ class ProcessElementsController @Inject() (
   socialProviderRegistry: SocialProviderRegistry)
   extends Silhouette[User2, CookieAuthenticator] {
 
+implicit val BaseNewValueReads = Json.reads[BaseNewValue]
+implicit val BaseNewValueWrites = Json.format[BaseNewValue]
 
   implicit val stationReads = Json.reads[BPStationDTO]
   implicit val stationWrites = Json.format[BPStationDTO]
@@ -102,6 +107,21 @@ class ProcessElementsController @Inject() (
   implicit val UnitReactionWrites = Json.format[UnitReaction]
   implicit val UnitReactionStateOutReads = Json.reads[UnitReactionStateOut]
   implicit val UnitReactionStateOutWrites = Json.format[UnitReactionStateOut]
+
+
+  implicit val rMiddlewareReads = Json.reads[Middleware]
+  implicit val rStrategyReads = Json.reads[Strategy]
+  implicit val rStrategyBaseUnitReads = Json.reads[StrategyBaseUnit]
+  implicit val rStrategyInputUnitReads = Json.reads[StrategyInputUnit]
+  implicit val rStrategyOutputUnitReads = Json.reads[StrategyOutputUnit]
+  implicit val wMiddlewareWrites = Json.format[Middleware]
+  implicit val wStrategyWrites = Json.format[Strategy]
+  implicit val wStrategyBaseUnitWrites = Json.format[StrategyBaseUnit]
+  implicit val wStrategyInputUnitWrites = Json.format[StrategyInputUnit]
+  implicit val wStrategyOutputUnitWrites = Json.format[StrategyOutputUnit]
+
+
+
   implicit val ReactionCollectionReads = Json.reads[ReactionCollection]
   implicit val ReactionCollectionWrites = Json.format[ReactionCollection]
   implicit val ElementTopologyReads = Json.reads[ElemTopology]
@@ -115,7 +135,6 @@ class ProcessElementsController @Inject() (
   implicit val CachedRemovedResourceDTOWrites = Json.format[CachedRemovedResourceDTO]
   implicit val DeltasContainerReads = Json.reads[DeltasContainer]
   implicit val DeltasContainerWrites = Json.format[DeltasContainer]
-
 
 
 // GET   /processes/elements/
@@ -186,11 +205,16 @@ def allElementsCached(process_ids: List[Int],timestamp:String) = SecuredAction.a
 // /bprocess/:id/elements
 def frontElems(id: Int) = SecuredAction { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, id)) {
-        Ok(Json.toJson(ProcElemDAO.findByBPId(id)))
+      val frontElements = ProcElemDAO.findByBPId(id)
+      val frontElementsWithTopos = decorateProcElementsToJson(frontElements)
+        Ok(Json.toJson( frontElementsWithTopos) )
     } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
 
-def show_elem_length(id: Int):Int = { ProcElemDAO.findLengthByBPId(id) }
+
+
+
+def show_elem_length(id: Int):Int = ProcElemDAO.findLengthByBPId(id)
 
 // /bprocess/elems_length
 def bpElemLength() = SecuredAction { implicit request =>
@@ -379,6 +403,22 @@ def createSpaceElem() = SecuredAction.async(BodyParsers.parse.json) { implicit r
     }
 }
 
+
+
+/* Update */
+def updateBase(bpId: Int, base_id: Long) = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+  request.body.validate[BaseNewValue].map{
+    case entity => {
+          if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, bpId)) {
+            StrategyBasesDAOF.updateValue(base_id, newValueContent = entity.baseNewValue).map { result =>
+              Ok(Json.toJson(result) )
+            }
+          } else { Future.successful( Forbidden(Json.obj("status" -> "Access denied")) ) }
+    }
+    }.recoverTotal{
+      e => Future.successful( BadRequest("formWithErrors") )
+    }
+}
 
 
 /* Update */
@@ -596,12 +636,33 @@ def update_switcher(id: Int) = SecuredAction { implicit request =>
 def delete_switcher(id: Int) = SecuredAction { implicit request =>
   Ok(Json.toJson("Ok"))
 }
+
+// GET 			/bprocess/:BPid/reactions		      @controllers.ProcessElementsController.reactions_index(BPid: Int)
 def reactions_index(BPid: Int) = SecuredAction { implicit request =>
   if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, BPid)) {
-    Ok(Json.toJson(ReactionDAO.findByBP(BPid).map(react => ReactionCollection(react, ReactionStateOutDAO
-    findByReaction(react.id.get)))))
+    Ok(Json.toJson(ReactionDAO.findByBP(BPid).map { react =>
+
+       val act_ids = List(react.id.get) // react.map(c => c.id.get)
+       val middlewares = MiddlewaresDAOF.await(MiddlewaresDAOF.findByReactions(act_ids) )
+       val mids_ids = middlewares.map(c => c.id.get).toList
+       val strategies = StrategiesDAOF.await(StrategiesDAOF.findByMiddlewares(mids_ids))
+       val strat_ids = strategies.map(c => c.id.get).toList
+       val strategy_bases = StrategyBasesDAOF.await( StrategyBasesDAOF.getByStrategies(strat_ids) )
+       val strategy_inputs = StrategyInputsDAOF.await( StrategyInputsDAOF.getByStrategies(strat_ids) )
+       val strategy_outputs = StrategyOutputsDAOF.await( StrategyOutputsDAOF.getByStrategies(strat_ids) )
+
+
+      ReactionCollection(react,
+        ReactionStateOutDAO.findByReaction(react.id.get),
+        middlewares = middlewares,
+        strategies = strategies,
+        strategy_bases = strategy_bases,
+        strategy_inputs = strategy_inputs,
+        strategy_outputs = strategy_outputs)
+       } ))
   } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
+
 def update_reaction(id: Int) = SecuredAction { implicit request =>
   Ok(Json.toJson("Ok"))
 }
@@ -616,10 +677,24 @@ def delete_reaction(id: Int) = SecuredAction { implicit request =>
 
 
 
-/*
-  Histories methods
- */
+/*******************
+ * Histories methods
+ *******************/
 import ProcHistoryDAO._
+
+
+private def decorateProcElementsToJson(elements: List[UndefElement]) = {
+  val elemIds:List[Int] = elements.map(_.id.get)
+  val topos:List[ElemTopology] = ElemTopologDAO.findByFrontElements(elemIds)
+  val elemJson = Json.toJson( elements )
+  val elemJsonObj = elemJson.as[List[JsObject]]
+  val objWithTopos = elemJsonObj.map { obj =>
+    val elemId = (obj \ "id").validate[Int].get
+    obj + ("topo_id" -> Json.toJson(topos.find(topo => topo.front_elem_id.get == elemId ).get  ))
+  }
+  objWithTopos
+}
+
 
 // ProcessHistoryDTO(var id: Option[Int],
 // acc: String,

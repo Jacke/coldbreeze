@@ -1,0 +1,640 @@
+<style>
+.playground-container {
+    display: block;
+    padding-top: 50px;
+}
+.proc-element.minimal.playground-element {
+    background: white;
+    height: 65px;
+}
+
+.proc-element.minimal.playground-element .element-header {
+	box-shadow: none;
+	margin-top: 3px;
+	border-radius: 4px;
+	display: block;
+	height: 100%;
+	border-bottom: 1px solid #EAEAEA;
+}
+
+
+.proc-element.playground-element .right-bar {
+    background: white;
+}
+
+.proc-element.playground-element .reaction {
+    background: #37474f;
+    color: white;
+    padding: 8px 0px 8px 14px;
+    overflow: hidden;
+    width: 100%;
+    display: block;
+    border-radius: 0px 0px 4px 5px;
+    color: white;
+}
+
+.proc-element.playground-element .expanded-element {
+    margin: 0px 0px 0px 0px;
+    padding: 0px 0px 0px 0px;
+}
+
+.proc-element.playground-element .reactions {
+    padding: 0px 0px 0px 0px;
+    border: none;
+}
+
+.proc-element.playground-element span.reaction-icon.minicon.minicon-gear-fill-right {
+    color: white;
+}
+.proc-element.minimal.playground-element .right-bar {
+    display: block;
+    margin-top: 10px;
+    padding: 2px 0px 0px 0px;
+    width: 510px;
+    border-top: solid 1px #E4E4E4;
+    border-radius: 3px;
+    border-left: 0px;
+}
+.playground-element .state-thumbnail {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    color: black;
+}
+.playground-element .state {
+    padding: 7px 4px 8px 4px;
+    display: block;
+}
+
+.playground-element .state-thumbnail > div {
+    position: relative;
+}
+.playground-element .state-thumbnail > div.state-value:before {
+    content: ' ';
+    width: 11px;
+    height: 11px;
+    background: #F44336;
+    display: inline;
+    position: absolute;
+    left: -17px;
+    border-radius: 14px;
+    top: 5px;
+}
+
+.playground-element .state-thumbnail > div.neutral:before {
+    background: #9E9E9E;
+}
+.playground-element .state-thumbnail > div.middleable:before {
+    background: #FFC107;
+}
+.playground-element .state-thumbnail > div.ended:before {
+    background: #8BC34A;
+}
+
+
+
+.playground-element .state-thumbnail {
+    width: 100%;
+    display: block;
+    color: black;
+    height: 23px;
+}
+
+
+
+
+.playground-element .state-value {
+    margin-left: 24px;
+    display: inline-block;
+    float: left;
+    font-family: 'Open Sans';
+    font-weight: 900;
+    font-size: 11px;
+    text-shadow: none;
+    line-height: 20px;
+    border-bottom: solid 3px gray;
+    margin-right: 16px;
+    width: 84px;
+}
+.playground-element .state-separator {
+    width: 3px;
+    height: 14px;
+    background: #607D8B;
+    display: inline-block;
+    border-radius: 0px;
+    margin-right: 4px;
+    margin-bottom: -3px;
+    float: left;
+}
+.playground-element .state-thumbnail .state-separators {
+    float: left;
+    display: inline-block;
+    position: absolute;
+    left: 65px;
+    width: 22px;
+    height: 10px;
+    top: 3px;
+}
+.playground-element .reaction-title {
+    display: inline-block;
+    float: left;
+}
+
+.playground-element .reaction-pipes {
+    float: right;
+    padding-bottom: 35px;
+    width: 206px;
+    font-size: 12px;
+    margin-right: 15px;
+}
+
+.playground-element .reaction-pipes .reaction-bases {
+    text-align: center;
+    display: inline-block;
+    float: left;
+    overflow: hidden;
+    width: 50%;
+    text-align: center;
+}
+
+.playground-element .reaction-pipes .reaction-outputs {
+    display: inline-block;
+    float: left;
+    text-align: center;
+    width: 50%;
+}
+.playground-element .reaction-bases-title {
+    font-family: 'Open Sans';
+    font-weight: 900;
+    text-shadow: none;
+    display: block;
+}
+
+.playground-element .reaction-outputs-title {
+    font-family: 'Open Sans';
+    font-weight: 900;
+    text-shadow: none;
+    display: block;
+}
+.chatbox-container {
+    display: inline-block;
+    float: left;
+}
+
+.proc-element.minimal.playground-element {
+    display: inline-block;
+    float: left;
+    margin-right: 26%;
+}
+
+</style>
+<div class="playground-container">
+
+<div class="proc-element minimal playground-element" ng-attr-id="'frontElem'+bpelem.id" ng-class="'elem-'+bpelem.id">
+    <div class="element-header">
+    <div class="primary-states">
+    </div>
+    <div class="info">
+      <div class="type" ng-class="bpelem.type_title">{{ type_short[bpelem.type_title] }}</div>
+      <h4 class="title">{{ element.title }}</h4>
+      <h6 class="desc">{{ element.desc }}</h6>
+    </div>
+    </div>
+
+
+    <div class="right-bar" ng:init="exp=false" ng-class="stateClass(masterState(bpelem))" ng-class="exp == active ? 'exp-active' : 'exp-disabled'">
+      <div class="states-row">
+        <div class="state-row">
+          <div class="row-top">
+            <div class="state">
+              <div class="state-thumbnail" ng-class="stateActiveClass(masterState(bpelem))">
+                  <div class="neutral state-value" ng-class="className(state)" ng-repeat="state in element.states">{{ state.state_title }}
+                  <div class="state-separators" ng-hide="state.state_position == 'ended'">
+	                  <div class="state-separator"></div>
+	                  <div class="state-separator"></div>
+	                  <div class="state-separator"></div>
+				  </div>
+                  </div>
+
+
+              </div>
+            </div>
+
+          </div>
+          <div class="row-bottom">
+
+          </div>
+        </div>
+      </div>
+      <div class="expanded-element">
+            <div class="reactions">
+              <div class="reaction" repeat="reaction in bpelem.reactions">
+                <div class="reaction-title">Action</div>
+                <div class="reaction-pipes">
+	                <div class="reaction-bases">
+			                <div class="reaction-bases-title">Base</div>
+						<div class="reaction-base">
+							<p>Base</p>
+						</div>
+	                </div>
+	                <div class="reaction-outputs">
+		                <div class="reaction-outputs-title">Out</div>
+	                	<div class="reaction-out">
+	                		<p>Out</p>
+	                	</div>
+	                </div>
+                </div>
+
+              </div>
+            </div>
+      </div>
+    </div>
+  </div>
+
+
+<div class="chatbox-container">
+<div class="menu">
+  
+<div class="back"><img src="http://i.imgur.com/DY6gND0.png" draggable="false"/></div>
+  
+<div class="name">Lil Elem</div>
+  
+<div class="last"></div>
+  
+</div>
+<ol class="chat" scroll-glue>
+	  <li ng-class="msg.who" ng-repeat="msg in messages">
+	  	<div class="avatar">
+	  		<img ng-show="msg.who == 'self'" src="http://i.imgur.com/DY6gND0.png" draggable="false"/>
+	  		<img ng-show="msg.who == 'other'" src="&#10;&#10;  data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iRWJlbmVfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSIxNnB4IiBoZWlnaHQ9IjE2cHgiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTYgMTYiIHhtbDpzcGFjZT0icHJlc2VydmUiPjx0aXRsZT5EZWZhdWx0IEF2YXRhcjwvdGl0bGU+PGRlc2M+RGVmYXVsdCBBdmF0YXIgZm9yIFdDRiAyLjA8L2Rlc2M+IDxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbLnN1cmZhY2UgeyBmaWxsOiAjZmZmOyB9LnNoYWRvdyB7IGZpbGw6ICNiYmI7IH1dXT48L3N0eWxlPjwvZGVmcz48cmVjdCB4PSIwIiBjbGFzcz0ic2hhZG93IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiLz48cGF0aCBjbGFzcz0ic3VyZmFjZSIgZD0iTTMuNTI4LDE2QzMuNzc2LDExLjQ5OSw1LjY4NCw4LDgsOHM0LjIyNCwzLjQ5OSw0LjQ3Myw3Ljk5OCIvPjxjaXJjbGUgY2xhc3M9InN1cmZhY2UiIGN4PSI4IiBjeT0iNiIgcj0iMy41Ii8+PC9zdmc+&#10;">
+	  	</div>
+		<div class="msg">
+			{{ msg.content }}
+		<div>
+	  </li>
+</ol>
+</div>
+<div class="chatbox-input">
+	<input class="textarea" type="text" placeholder="Type here!" ng-model="chatPost.msg"/>
+	<a ng-click="postToChat(chatPost)">Post</a>
+</div>
+
+<style>
+/* M E N U */
+
+.menu {
+    clear: both;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    width: 100%;
+    height: 50px;
+    background: rgba(82,179,217,0.9);
+    z-index: 100;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.back {
+    position: absolute;
+    width: 90px;
+    height: 50px;
+    top: 0px;
+    left: 0px;
+    color: #fff;
+    line-height: 50px;
+    font-size: 30px;
+    padding-left: 10px;
+    cursor: pointer;
+}
+.back img {
+    position: absolute;
+    top: 5px;
+    left: 30px;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255,255,255,0.98);
+    border-radius: 100%;
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+    -ms-border-radius: 100%;
+    margin-left: 15px;
+    }
+.back:active {
+    background: rgba(255,255,255,0.2);
+}
+.name{
+    position: absolute;
+    top: 3px;
+    left: 110px;
+    font-family: 'Lato';
+    font-size: 25px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.98);
+    cursor: default;
+}
+.last{
+    position: absolute;
+    top: 30px;
+    left: 115px;
+    font-family: 'Lato';
+    font-size: 11px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.6);
+    cursor: default;
+}
+
+/* M E S S A G E S */
+
+.chat {
+    list-style: none;
+    background: none;
+    margin: 0;
+    padding: 0 0 50px 0;
+    margin-top: 60px;
+    margin-bottom: 10px;
+    overflow-y: scroll;
+    height: 100%;
+}
+.chat li {
+    padding: 0.5rem;
+    overflow: hidden;
+    display: flex;
+}
+.chat .avatar {
+    width: 40px;
+    height: 40px;
+    position: relative;
+    display: block;
+    z-index: 2;
+    border-radius: 100%;
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+    -ms-border-radius: 100%;
+    background-color: rgba(255,255,255,0.9);
+}
+.chat .avatar img {
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+    -ms-border-radius: 100%;
+    background-color: rgba(255,255,255,0.9);
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+.chat .day {
+    position: relative;
+    display: block;
+    text-align: center;
+    color: #c0c0c0;
+    height: 20px;
+    text-shadow: 7px 0px 0px #e5e5e5, 6px 0px 0px #e5e5e5, 5px 0px 0px #e5e5e5, 4px 0px 0px #e5e5e5, 3px 0px 0px #e5e5e5, 2px 0px 0px #e5e5e5, 1px 0px 0px #e5e5e5, 1px 0px 0px #e5e5e5, 0px 0px 0px #e5e5e5, -1px 0px 0px #e5e5e5, -2px 0px 0px #e5e5e5, -3px 0px 0px #e5e5e5, -4px 0px 0px #e5e5e5, -5px 0px 0px #e5e5e5, -6px 0px 0px #e5e5e5, -7px 0px 0px #e5e5e5;
+    box-shadow: inset 20px 0px 0px #e5e5e5, inset -20px 0px 0px #e5e5e5, inset 0px -2px 0px #d7d7d7;
+    line-height: 38px;
+    margin-top: 5px;
+    margin-bottom: 20px;
+    cursor: default;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.other .msg {
+    order: 1;
+    border-top-left-radius: 0px;
+    box-shadow: -1px 2px 0px #D4D4D4;
+}
+.other:before {
+    content: "";
+    position: relative;
+    top: 0px;
+    right: 0px;
+    left: 40px;
+    width: 0px;
+    height: 0px;
+    border: 5px solid #fff;
+    border-left-color: transparent;
+    border-bottom-color: transparent;
+}
+
+.self {
+    justify-content: flex-end;
+    align-items: flex-end;
+}
+.self .msg {
+    order: 1;
+    border-bottom-right-radius: 0px;
+    box-shadow: 1px 2px 0px #D4D4D4;
+}
+.self .avatar {
+    order: 2;
+}
+.self .avatar:after {
+    content: "";
+    position: relative;
+    display: inline-block;
+    bottom: 19px;
+    right: 0px;
+    width: 0px;
+    height: 0px;
+    border: 5px solid #fff;
+    border-right-color: transparent;
+    border-top-color: transparent;
+    box-shadow: 0px 2px 0px #D4D4D4;
+}
+
+.msg {
+    background: white;
+    min-width: 50px;
+    padding: 10px;
+    border-radius: 2px;
+    box-shadow: 0px 2px 0px rgba(0, 0, 0, 0.07);
+}
+.msg p {
+    font-size: 14px;
+    margin: 0 0 0.2rem 0;
+    color: #777;
+}
+.msg img {
+    position: relative;
+    display: block;
+    width: 450px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 3px #eee;
+    transition: all .4s cubic-bezier(0.565, -0.260, 0.255, 1.410);
+    cursor: default;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+@media screen and (max-width: 800px) {
+    .msg img {
+    width: 300px;
+}
+}
+@media screen and (max-width: 550px) {
+    .msg img {
+    width: 200px;
+}
+}
+
+.msg time {
+	display: none;
+    font-size: 0.7rem;
+    color: #ccc;
+    margin-top: 3px;
+    float: right;
+    cursor: default;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+.msg time:before{
+	display: none;	
+    content:"\f017";
+    color: #ddd;
+    font-family: FontAwesome;
+    display: inline-block;
+    margin-right: 4px;
+}
+
+emoji{
+    display: inline-block;
+    height: 18px;
+    width: 18px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    margin-top: -7px;
+    margin-right: 2px;
+    transform: translate3d(0px, 3px, 0px);
+}
+emoji.please{background-image: url(http://imgur.com/ftowh0s.png);}
+emoji.lmao{background-image: url(http://i.imgur.com/MllSy5N.png);}
+emoji.happy{background-image: url(http://imgur.com/5WUpcPZ.png);}
+emoji.pizza{background-image: url(http://imgur.com/voEvJld.png);}
+emoji.cryalot{background-image: url(http://i.imgur.com/UUrRRo6.png);}
+emoji.books{background-image: url(http://i.imgur.com/UjZLf1R.png);}
+emoji.moai{background-image: url(http://imgur.com/uSpaYy8.png);}
+emoji.suffocated{background-image: url(http://i.imgur.com/jfTyB5F.png);}
+emoji.scream{background-image: url(http://i.imgur.com/tOLNJgg.png);}
+emoji.hearth_blue{background-image: url(http://i.imgur.com/gR9juts.png);}
+emoji.funny{background-image: url(http://i.imgur.com/qKia58V.png);}
+
+@-webikt-keyframes pulse {
+  from { opacity: 0; }
+  to { opacity: 0.5; }
+}
+
+::-webkit-scrollbar {
+    min-width: 12px;
+    width: 12px;
+    max-width: 12px;
+    min-height: 12px;
+    height: 12px;
+    max-height: 12px;
+    background: #e5e5e5;
+    box-shadow: inset 0px 50px 0px rgba(82,179,217,0.9), inset 0px -52px 0px #fafafa;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #bbb;
+    border: none;
+    border-radius: 100px;
+    border: solid 3px #e5e5e5;
+    box-shadow: inset 0px 0px 3px #999;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #b0b0b0;
+  box-shadow: inset 0px 0px 3px #888;
+}
+
+::-webkit-scrollbar-thumb:active {
+    background: #aaa;
+  box-shadow: inset 0px 0px 3px #7f7f7f;
+}
+
+::-webkit-scrollbar-button {
+    display: block;
+    height: 26px;
+}
+
+/* T Y P E */
+
+input.textarea {
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    width: 100%;
+    height: 50px;
+    z-index: 99;
+    background: #fafafa;
+    border: none;
+    outline: none;
+    padding-left: 55px;
+    padding-right: 55px;
+    color: #666;
+    font-weight: 400;
+}
+.emojis {
+    position: fixed;
+    display: block;
+    bottom: 8px;
+    left: 7px;
+    width: 34px;
+    height: 34px;
+    background-image: url(http://i.imgur.com/5WUpcPZ.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: 100;
+    cursor: pointer;
+}
+.emojis:active {
+    opacity: 0.9;
+}	
+.chatbox-container {
+    display: inline-block;
+    float: left;
+    background: #F7F7F7;
+    position: relative !important;
+    overflow-x: hidden;
+    height: 269px;
+    overflow-y: hidden;
+    width: 47%;
+}
+.proc-element.minimal.playground-element {
+    display: inline-block;
+    float: left;
+    margin-right: 26%;
+}
+
+
+.chatbox-input {
+    float: right;
+    width: 46%;
+    display: block;
+    border: solid 1px gainsboro;
+    border-radius: 3px;
+    font-family: 'Open Sans';
+    text-shadow: none;
+    margin-right: 29px;
+}
+.chatbox-input input.textarea {
+    position: relative;
+}
+</style>
+
+
+
+</div>  

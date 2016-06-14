@@ -1,13 +1,9 @@
 package models
-
+/*
 
 import models.DAO.resources.{EmployeesBusinessDAO, AccountPlanDAO}
 import models.DAO.resources.BusinessDTO._
 import models.DAO.conversion.DatabaseCred
-
-import securesocial.core.providers._
-import securesocial.core._
-import securesocial.core.services.{UserService, SaveMode}
 
 //import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
@@ -16,7 +12,6 @@ import slick.model.ForeignKeyAction
 
 import slick.driver.PostgresDriver.api._
 import com.github.tototoshi.slick.PostgresJodaSupport._
-import service.DemoUser
 
 
 
@@ -94,3 +89,5 @@ object TokensDAO {
   def ddl_drop = db.run(drop)
 
 }
+
+*/

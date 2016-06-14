@@ -19,7 +19,6 @@ import models.User
 import models.Page
 import models.DAO.resources._
 import models.DAO._
-import service.DemoUser
 import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
@@ -28,7 +27,6 @@ import models.User2
 import play.api.i18n.MessagesApi
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-import models.AccountDAO
 
 
 /**
@@ -74,8 +72,8 @@ implicit val DbUserformat = Json.format[models.daos.DBUser]
 
   implicit val EmployeeDTOReads = Json.reads[EmployeeDTO]
   implicit val EmployeeDTOWrites = Json.format[EmployeeDTO]
-  implicit val AccountDAOReads = Json.reads[AccountDAO]
-  implicit val AccountDAOWrites = Json.format[AccountDAO]
+//  implicit val AccountDAOReads = Json.reads[AccountDAO]
+//  implicit val AccountDAOWrites = Json.format[AccountDAO]
   implicit val GroupDTOReads = Json.reads[GroupDTO]
   implicit val GroupDTOWrites = Json.format[GroupDTO]
   //implicit val PermiReads = Json.reads[ActPermission]

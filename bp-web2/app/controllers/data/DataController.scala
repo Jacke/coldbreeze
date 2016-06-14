@@ -26,7 +26,7 @@ import scala.concurrent._
 import scala.concurrent.duration._
 import views._
 import models.User
-import service.DemoUser
+
 import scala.concurrent._
 import scala.concurrent.duration._
 import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }

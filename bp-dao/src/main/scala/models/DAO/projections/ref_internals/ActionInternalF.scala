@@ -67,6 +67,7 @@ def prepareMiddleware(reactionComp: RefActionContainer, trueActionId: Int):Futur
         MiddlewaresDAOF.pull(
           Middleware(
             None,
+            middlewareRef.title,
             middlewareRef.ident,
             middlewareRef.ifaceIdent,
             trueActionId

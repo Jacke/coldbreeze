@@ -3,6 +3,7 @@ import main.scala.bprocesses._
 import main.scala.utils._
 import com.github.nscala_time.time.Imports._
 import scala.collection.mutable._
+import main.scala.simple_parts.process.Units._
 
 case class Strategy(val id: Option[Long],
 										ident: String,
@@ -10,6 +11,22 @@ case class Strategy(val id: Option[Long],
 										isNullStrategy: Boolean = false,
 										created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
 										updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
+
+		// Pipes
+		var strategyInputUnit:MutableList[StrategyInputUnit] = MutableList()
+		var strategyBaseUnit:MutableList[StrategyBaseUnit] = MutableList()
+		var strategyOutputUnit:MutableList[StrategyOutputUnit] = MutableList()
+
+
+		def pushToStrategyInputUnit(s: StrategyInputUnit) = {
+		  strategyInputUnit += s
+		}
+		def pushToStrategyBaseUnit(s: StrategyBaseUnit) = {
+		  strategyBaseUnit += s
+		}
+		def pushToStrategyOutputUnit(s: StrategyOutputUnit) = {
+		  strategyOutputUnit += s
+		}
 
 }
 
@@ -20,6 +37,23 @@ case class LaunchStrategy(val id: Option[Long],
 										isNullStrategy: Boolean = false,
 										created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
 										updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
+
+
+		// Pipes
+		var strategyInputUnit:MutableList[LaunchStrategyInputUnit] = MutableList()
+		var strategyBaseUnit:MutableList[LaunchStrategyBaseUnit] = MutableList()
+		var strategyOutputUnit:MutableList[LaunchStrategyOutputUnit] = MutableList()
+
+
+		def pushToStrategyInputUnit(s: LaunchStrategyInputUnit) = {
+		  strategyInputUnit += s
+		}
+		def pushToStrategyBaseUnit(s: LaunchStrategyBaseUnit) = {
+		  strategyBaseUnit += s
+		}
+		def pushToStrategyOutputUnit(s: LaunchStrategyOutputUnit) = {
+		  strategyOutputUnit += s
+		}
 
 }
 

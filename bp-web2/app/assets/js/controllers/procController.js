@@ -729,6 +729,7 @@ $scope.run = function (process) {
         //$location.path('/a#/bprocess/' + process.id + 'elements?session=' + parseInt(response.data.session));
         //$scope.loadLaunchesFromCache()
         $scope.reloadSessions();
+        process.executedOnce = true;
       },
       function(response) { // optional
         // failed

@@ -20,7 +20,7 @@ import play.api.libs.ws._
 import scala.concurrent._
 import scala.concurrent.duration._
 object Mailer {
-    def api:MandrillApi = new MandrillApi("lzbqtT4PxFu4hSMzkdfh0w")
+    def api:MandrillApi = new MandrillApi("t6kee7jRRARaB_6R3Cjtzg")
     def users = api.users()
     def ping = api.users().ping
 	def getTemplate(invite_link: String = "https://min.ority.us",
@@ -75,7 +75,7 @@ object Mailer {
 
 
 
-	def sendInvite(subject: String = "Minority App Invite",
+	def sendInvite(subject: String = "Welcome | Minority Platform",
            emails: List[String] = List(),
            invite_link: String) = {
 	    ping

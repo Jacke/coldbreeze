@@ -20,7 +20,7 @@ import play.api.Logger
 
 import views._
 import models.User
-import service.DemoUser
+
 import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
@@ -46,6 +46,8 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 import scala.util.Try
 
+import us.ority.min.actions._
+import main.scala.simple_parts.process.Units._
 
 import models.DAO.reflect._
 
@@ -60,8 +62,15 @@ case class RefElemContainer(title: String,
                           )
 
 
+// Reaction collection used for passing reaction and its deps
 case class ReactionCollection(reaction: UnitReaction,
-reaction_state_outs: List[UnitReactionStateOut])
+                              reaction_state_outs: List[UnitReactionStateOut],
+                              middlewares: Seq[Middleware] = Seq(),
+                              strategies: Seq[Strategy] = Seq(),
+                              strategy_bases: Seq[StrategyBaseUnit] = Seq(),
+                              strategy_inputs: Seq[StrategyInputUnit] = Seq(),
+                              strategy_outputs: Seq[StrategyOutputUnit] = Seq() )
+
 case class ElementTopologyWrapper(topo_id: Int, element_id: Int, element_title: String, space_element: Boolean = false)
 
 case class AllProcessElementsContainer(processId: Int,
@@ -111,6 +120,20 @@ class BusinessProcessController @Inject() (
 
   implicit val BaseContainerReads = Json.reads[BaseContainer]
   implicit val BaseContainerWrites = Json.format[BaseContainer]
+
+
+
+  implicit val rMiddlewareReads = Json.reads[Middleware]
+  implicit val rStrategyReads = Json.reads[Strategy]
+  implicit val rStrategyBaseUnitReads = Json.reads[StrategyBaseUnit]
+  implicit val rStrategyInputUnitReads = Json.reads[StrategyInputUnit]
+  implicit val rStrategyOutputUnitReads = Json.reads[StrategyOutputUnit]
+  implicit val wMiddlewareWrites = Json.format[Middleware]
+  implicit val wStrategyWrites = Json.format[Strategy]
+  implicit val wStrategyBaseUnitWrites = Json.format[StrategyBaseUnit]
+  implicit val wStrategyInputUnitWrites = Json.format[StrategyInputUnit]
+  implicit val wStrategyOutputUnitWrites = Json.format[StrategyOutputUnit]
+
 
 
 

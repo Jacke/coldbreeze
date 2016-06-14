@@ -575,6 +575,9 @@ val strategiy_outputs:List[StrategyOutputUnit] = sessionStOuts.map(el =>   Exper
         //strategy.strategiy_bases
         //strategy.strategiy_inputs
         //strategy.strategiy_outputs
+        strategiy_inputs.filter(l => l.strategy == strategy.id.get).foreach { a => strategy.pushToStrategyInputUnit(a) }
+        strategiy_bases.filter(l => l.strategy == strategy.id.get).foreach { a => strategy.pushToStrategyBaseUnit(a) }
+        strategiy_outputs.filter(l => l.strategy == strategy.id.get).foreach { a => strategy.pushToStrategyOutputUnit(a) }
 
         middlewares.foreach { middleware =>
           if (strategy.middleware == middleware.id.get) {
@@ -1076,6 +1079,10 @@ def initiate2F(bpID: Int,
         //strategy.strategiy_bases
         //strategy.strategiy_inputs
         //strategy.strategiy_outputs
+        strategiy_inputs.filter(l => l.strategy == strategy.id.get).foreach { a => strategy.pushToStrategyInputUnit(a) }
+        strategiy_bases.filter(l => l.strategy == strategy.id.get).foreach { a => strategy.pushToStrategyBaseUnit(a) }
+        strategiy_outputs.filter(l => l.strategy == strategy.id.get).foreach { a => strategy.pushToStrategyOutputUnit(a) }
+
 
         middlewares.foreach { middleware =>
           if (strategy.middleware == middleware.id.get) {

@@ -24,9 +24,6 @@
  <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="editProcess()">
    <span class="minicon-pencil-edit minicon"></span>
    {{ 'EDIT' | translate }}</a></li>
- <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="perm()">
-   <span class="minicon-users minicon"></span>
-   {{ 'PEOPLE' | translate }} </a></li>
  <!--<li><a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" ng-click="modalShare()">{{ 'SHARE' | translate }}</a></li>-->
  <li><a href=""
    class="addElemTab"
@@ -35,7 +32,11 @@
    ng-class="bp.newelemformselected ? 'selected' : ''"
    tooltips tooltip-template="Create element"
    tooltip-side="left"
-   tooltip="{{bubbleTooltip(session)}}"><span class="glyphicon glyphicon-plus"></span></a></li>
+   tooltip="{{bubbleTooltip(session)}}"><span class="minicon minicon-add-new"></span>
+   {{ 'CREATE' | translate }}</a></li>
+ <li><a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="perm()">
+   <span class="minicon-users minicon"></span>
+   {{ 'PEOPLE' | translate }} </a></li>
 </ul>
 </div>
 
@@ -65,7 +66,7 @@
 </style>
 
 
-<div class="empty-reponse" ng-show="bpelems.length === 0 && !(bp.newelemformselected == 1 && !inSession)" ng-cloak>
+<div class="empty-reponse" ng-show="elementsLoaded == true && bpelems.length === 0 && !(bp.newelemformselected == 1 && !inSession)" ng-cloak>
   You have no elements. Create one by describing simple step of your work.
 <img src="/assets/images/element_create.gif">
 </div>
@@ -73,14 +74,18 @@
 <div class="elements" ng-repeat="bpelem in bpelems | orderBy:'order'">
   <div class="data-board-controller" ng-controller="launchDataController as launchData">
 <div class="proc-element minimal" ng-attr-id="'frontElem'+bpelem.id" ng-class="'elem-'+bpelem.id">
+
+
     <div class="element-header">
     <div class="primary-states">
     </div>
     <div class="info">
+      <div class="element-vert-dots-expand">
+      <a role="tab" data-toggle="tab" ng:init="bpelem.selected=1" ng:click="bpelem.selected == 1 ? bpelem.selected=2 : bpelem.selected=1">
+           <span class="nicon nicon-dots-three-horizontal"></span></a>
+      </div>
       <div class="type" ng-class="bpelem.type_title">{{ type_short[bpelem.type_title] }}
          <ul class="type-tabs" ng-init="bpelem.hovered=false" role="tablist" ng-mouseover="bpelem.hovered == true ? bpelem.hovered=false : bpelem.hovered=true" ng-show="(isManagerVal && !inSession && selected == 2) || (bpelem.hovered == true && !inSession)">
-           <li><a role="tab" data-toggle="tab" ng:init="selected=1" ng:click="selected == 1 ? selected=2 : selected=1">
-           <span class="glyphicon glyphicon-edit"></span></a></li>
            <li><a id="frontElementDeleteButton" ng-click="deleteElem(bpelem)"><span class="glyphicon glyphicon-remove"></span></a></li>
            <li><a id="frontElementUpButton" ng:click="moveUpElem(bpelem)"><span class="glyphicon glyphicon-arrow-up"></span></a></li>
            <li><a id="frontElementDownButton" ng:click="moveDownElem(bpelem)"><span class="glyphicon glyphicon-arrow-down"></span></a></li>
@@ -99,22 +104,20 @@
          </div>
       </div>
     </div>
-    <!--<ul class="elem-control elem-tabs" role="tablist" ng-show="isManagerVal && !inSession">
-      <li><a role="tab" data-toggle="tab" ng:init="selected=1" ng:click="selected == 1 ? selected=2 : selected=1"><span class="glyphicon glyphicon-edit"></span></a></li>
-      <li><a ng-click="deleteElem(bpelem)"><span class="glyphicon glyphicon-remove"></span></a></li>
-      <li><a ng:click="moveUpElem(bpelem)"><span class="glyphicon glyphicon-arrow-up"></span></a></li>
-      <li><a ng:click="moveDownElem(bpelem)"><span class="glyphicon glyphicon-arrow-down"></span></a></li>
-    </ul>-->
-    <ul class="elem-control elem-tabs" role="tablist" ng-show="inSession">
+
+<!--
+    <ul class="elem-control elem-tabs state-activated" role="tablist" ng-show="inSession">
       <p ng-show="bpelem.states.length > 0">
         <abbr class="session__header__created_at" title="{{ bpelem.states[0].updated_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="bpelem.states[0].updated_at"></abbr>
       </p>
     </ul>
+-->
+
     <ul class="elem-control elem-tabs input-logs" ng-show="inSession && bpelem.ilogs.length > 0">
       <li ng-repeat="ilog in bpelem.ilogs">{{ ilog.uid }}</li>
     </ul>
     </div>
-    <div class="tab-pane active" id="edit" class="proc-element-edit" ng:show="selected == 2">
+    <div class="tab-pane active" id="edit" class="proc-element-edit" ng:show="bpelem.selected == 2">
         <div ng-include src="'assets/partials/bp_elements/element-edit.html'"></div>
     </div>
     <div class="right-bar" ng:init="exp=false" ng-class="stateClass(masterState(bpelem))" ng-class="exp == active ? 'exp-active' : 'exp-disabled'">
@@ -216,6 +219,7 @@
   </div>
 
 
+<!--
     <div class="dataPipe" ng-repeat="cost in bpelem.costs" ng-show="bpelem.costs.length > 0">
       <div class="pipe">
         <div class="pipeHeader"> {{ cost.resource.resource.title }}</div>
@@ -239,6 +243,7 @@
         </div>
       </div>
     </div>
+    -->
 </div>
 
 </div>

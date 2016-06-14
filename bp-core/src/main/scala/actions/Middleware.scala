@@ -7,6 +7,7 @@ import main.scala.simple_parts.process.Units._
 
 case class Middleware(
 		id: Option[Long],
+		title: String,
 		ident: String,
 		ifaceIdent: String,
 		reaction: Int = -1,
@@ -42,6 +43,7 @@ case class Middleware(
 case class LaunchMiddleware(
 		id: Option[Long],
 		session: Int,
+		title: String,
 		ident: String,
 		ifaceIdent: String,
 		reaction: Int = -1,

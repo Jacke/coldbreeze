@@ -24,7 +24,7 @@ class ProcessHistories(tag: Tag) extends Table[ProcessHistoryDTO](tag, "process_
   def date     = column[org.joda.time.DateTime]("date")
 
   def bpFK     = foreignKey("pr_hist_bprocess_fk", process, models.DAO.BPDAOF.bprocesses)(_.id)
-  def accFK    = foreignKey("pr_hist_macc_fk", acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
+  //def accFK    = foreignKey("pr_hist_macc_fk", acc, models.AccountsDAO.accounts)(_.userId, onDelete = ForeignKeyAction.Cascade)
 
 
   def * = (id.?, acc, action, process, what, what_id, date) <> (ProcessHistoryDTO.tupled, ProcessHistoryDTO.unapply)
@@ -109,7 +109,6 @@ object ProcHistoryDAO {
   */
 
   def pull_object(s: ProcessHistoryDTO) =   {
-
       Future {
         controllers.UserActor.updateNotifiy(s.action, s.acc)
       }
@@ -131,14 +130,11 @@ object ProcHistoryDAO {
     await(db.run(  proc_histories.filter(_.id === id).delete ))
   }
 
+  val create: DBIO[Unit] = proc_histories.schema.create
+  val drop: DBIO[Unit] = proc_histories.schema.drop
 
-
-
-    val create: DBIO[Unit] = proc_histories.schema.create
-    val drop: DBIO[Unit] = proc_histories.schema.drop
-
-    def ddl_create = db.run(create)
-    def ddl_drop = db.run(drop)
+  def ddl_create = db.run(create)
+  def ddl_drop = db.run(drop)
 
 }
 /*
