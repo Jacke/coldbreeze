@@ -93,8 +93,8 @@
       </div>
       <h4 class="title">{{ bpelem.title }}</h4>
       <h6 class="desc">{{ bpelem.desc }}</h6>
-      <!--<div class="session__header session__people">
-         <div class="participators">
+      <div class="session__header session__people">
+         <div class="participators" style="display: none;">
           <ul class="perms perm-list" ng-repeat="perm in bpelem.perms | limitTo:6" ng-init="perm.account = accFetch(perm)">
             <span class="account-pic" tooltips tooltip-template="{{ perm.account.tooltip }}" tooltip-side="left" tooltip="{{bubbleTooltip(session)}}" tooltip="{{ perm.account.tooltip }}">
                 <img ng-src="{{ perm.account.avatarUrl}}" alt="{{ perm.account.tooltip }}">
@@ -102,7 +102,7 @@
             </span>
           </ul>
          </div>
-      </div>-->
+      </div>
 
 
     </div>
