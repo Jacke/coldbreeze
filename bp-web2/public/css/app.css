@@ -4478,14 +4478,15 @@ new process form container
     top: -18px;
     position: absolute;
     border-radius: 2px;
-    background: linear-gradient(to right, #000000 0%,rgb(255, 255, 255) 100%);
+    background: linear-gradient(to right, #000000 0%,rgb(0, 0, 0) 100%);
 }
 .stations .progress .tree-liner-dotted {
     height: 1px;
     top: -20px;
     position: absolute;
     left: -2px;
-    border: dotted 1px gray;
+    /*
+    border: dotted 1px gray;*/
     z-index: 2;
 }
 .progress-lines .elem-card.confirm span.tree-liner-text {
@@ -4524,13 +4525,30 @@ new process form container
     position: absolute;
     margin-top: -17px;
     padding-top: 2px;
-    text-align: center;
+    margin-left: 0px;
     width: 100%;
     background: #F44336;
-    box-shadow: 1px 1px 2px #B9B9B9;    
+    box-shadow: 1px 1px 2px #B9B9B9;
     color: rgba(255, 255, 255, 0);
     text-shadow: none;
     font-weight: 700;
+    margin-left: 1px;
+    z-index: 4;
+}
+
+.progress-lines span.line:before {
+    content: ' ';
+    width: 2px;
+    height: 20px;
+    background: white;
+    position: absolute;
+    left: 0px;
+    display: block;
+    top: -16px;
+    z-index: 3;
+}
+.allStations .progress-lines .line span.description {
+    text-indent: -9999999px;
 }
 
 .progress-lines .elem-card.confirm span.description {
