@@ -207,8 +207,34 @@ object EchoWebScoketActor {
 class EchoWebScoketActor(out: ActorRef) extends Actor {
     def receive = {
       case msg: String => { 
-      	out ! msg
-  		out ! msg+"11111"
+      out ! msg
+      out ! MessagePreparer.prepare(msg)
+  		//out ! msg+"11111"
       }
     }
+}
+
+
+
+object MessagePreparer {
+  import sys.process._
+    implicit val MsgFormat = Json.format[Msg]
+    implicit val MsgFrameFormatter = FrameFormatter.jsonFrame[Msg]
+
+  def prepare(msg: String):String = {
+    val json = Json.parse(msg).asOpt[Msg]
+    val s = json match {
+      case Some(j) => {
+        j.msg match {
+          case "uptime" => "uptime" !!
+          case "ls" => "ls -al" !!
+          case _ => "Эй епта только uptime и ls доступны"
+
+        }        
+      }
+      case _ => "Эй епта только uptime и ls доступны"
+    }
+
+    (Json.toJson(Msg(s))).toString
+  }
 }

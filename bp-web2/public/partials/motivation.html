@@ -274,10 +274,10 @@
 	  </li>
 </ol>
 </div>
-<div class="chatbox-input">
+<form class="chatbox-input">
 	<input class="textarea" type="text" placeholder="Type here!" ng-model="chatPost.msg"/>
-	<a ng-click="postToChat(chatPost)">Post</a>
-</div>
+	<button type="submit" ng-click="postToChat(chatPost)">Post</button>
+</form>
 
 <style>
 /* M E N U */
