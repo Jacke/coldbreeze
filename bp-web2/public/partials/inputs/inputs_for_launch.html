@@ -46,7 +46,13 @@
 					    class="fileSelectTabButton expandLaunchWindowTabButton">Files</a>
 					  </div>
 			          <div ng-include src="'assets/partials/inputs/file_attach.html'"
-			               class="file-view-container" ng-init="elem.payload = []; $parent.elem.payloadNew = [];elem.dataSelectTabSelected=true;"></div>		         
+			               class="file-view-container" ng-init="elem.payload = []; $parent.elem.payloadNew = [];elem.dataSelectTabSelected=true;"></div>	
+
+<div class="newFileButton">
+<button ngf-select="uploadFilesForElement($files,elem)" class="btn btn-small btn-success btn-fill" multiple
+accept="*">Select Files</button>
+</div>
+	
 		         </div>
 
 		    	 <div class="reaction_list__reaction_element_launch_nav reaction_list__reaction_element_launch_data_nav launches-nav">
@@ -63,6 +69,19 @@
 		            <div ng-include src="'assets/partials/inputs/costs.html'"
 			                        class="cost-view-container"
 			                        ng-init="costs = elem.costs;"></div>
+			        <div class="newIncicatorButton">
+	        	        <a class="btn btn-small btn-success btn-fill" ng-click="addExistedCostForm ? addExistedCostForm=false : addExistedCostForm=true">Assign Indicator</a>
+
+
+
+ <div ng-init="addNewCostForm=false;addExistedCostForm=false;"ng-include src="'assets/partials/data_boards/createNewDataCost.html'"
+          class="createNewDataCost" ng-show="addNewCostForm == true"></div>
+  <div ng-include src="'assets/partials/data_boards/selectExistedNewDataCost.html'"
+          class="selectExistedNewDataCost" ng-show="addExistedCostForm == true"></div>
+
+
+
+			        </div>
 			     </div>
 				 <div class="reaction_list__reaction_element_launch_databoard_expand">	
 				    <a ng-click="openModalDataBoard($parent.$parent.session.process)"

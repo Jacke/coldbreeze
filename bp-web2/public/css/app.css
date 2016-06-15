@@ -1997,6 +1997,56 @@ li.reaction_list__reaction {
     padding-bottom: 18px;
     padding-top: 15px;
 }
+.request-controller li.reaction_list__reaction .newIncicatorButton a.btn {
+    color: white;
+    background: none;
+    border: none;
+    font-size: 11px;
+    border-bottom: solid 1px #68A5C4;
+    border-radius: 0px;
+    font-family: 'Open Sans';
+}
+
+.request-controller .newFileButton button.btn.btn-small.btn-success.btn-fill {
+    color: white;
+    background: none;
+    border: none;
+    font-size: 11px;
+    border-bottom: solid 1px #68A5C4;
+    border-radius: 0px;
+    font-family: 'Open Sans';
+}
+
+
+.request-controller form.existed-new-data-cost.form {
+    font-size: 11px;
+    margin-top: 13px;
+    font-family: 'Open Sans';
+}
+
+.request-controller form.existed-new-data-cost.form select#selectExistedResource {
+    background: #2C2F3C;
+    border: none;
+    border-bottom: solid 1px #474A58;
+    border-radius: 2px;
+    height: 30px;
+    margin-top: 8px;
+    width: 73%;
+}
+
+.request-controller form.existed-new-data-cost.form select#selectExistedEntity {
+        background: #2C2F3C;
+    border: none;
+    border-bottom: solid 1px #474A58;
+    border-radius: 2px;
+    height: 30px;
+    margin-top: 8px;
+    width: 73%;
+}
+.request-controller form.existed-new-data-cost.form select:focus {
+    box-shadow: none;
+}
+
 
 .proc-element-spaces .proc-space {
     margin-left: 20px;
