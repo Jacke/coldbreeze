@@ -115,8 +115,9 @@ filePromise.success(function (data) {
       return filePromise;
 }
 
-$scope.loadFiles();
-
+if ($scope.$parent.inSession == undefined || $scope.$parent.inSession == true) {
+  $scope.loadFiles();
+}
 
 $scope.topoLoading = function() {
   return $scope.launchTopologsP = LaunchElementTopologsFactory.query({ launch_id: $scope.launchId }).$promise.then(function(data) {
@@ -182,6 +183,7 @@ $scope.loadData = function(onlyTopologs) {
 
 
 
+if ($scope.$parent.inSession == undefined || $scope.$parent.inSession == true) {
 
 /***
  * Execute loading
@@ -202,7 +204,7 @@ if ($scope.inlineLaunchShow) {
   $scope.$parent.pushBboardTRigger($scope.launchId, function(){ return $scope.loadData(); }, 'launchDataTrigger');
 }
 
-
+}
 
 
 
