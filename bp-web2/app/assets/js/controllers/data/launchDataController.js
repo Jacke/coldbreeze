@@ -459,9 +459,10 @@ $scope.deleteLaunchAsssignedResEl = function(cost) {
 
 $scope.entityDecorator = function(entities, resource) {
   if (resource == undefined) {
-    //resource = {};
-    //resource.entity = [];
+    resource = {};
+    resource.entity = [];
   }
+
   if (entities == "*") {
     return "*"
   } else {

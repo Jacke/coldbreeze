@@ -6509,6 +6509,10 @@ display: inline-block;
     width: 21%;
     margin-right: 11%;
 }
+.edit-element-card-container .edit-element-data-tab p {
+    margin-left: 27px;
+}
+
 .btTxt.solid-green {
     background: #6bbe98;
     border-color: #6bbe98;

@@ -4,7 +4,11 @@
     ng-click="bpelem.selected == 1 ? bpelem.selected=2 : bpelem.selected=1"
     ng-class="bpelem.selected == 1 ? 'selected' : ''"><span class="glyphicon glyphicon-plus"></span></a>
 
-   <div class="control-group">
+
+
+   <div ng-init="setTab(0, bpelem)" class="edit-element-card-container" ng-show="isSet(0, bpelem)">
+
+<div class="control-group">
      <h3>Edit element {{ bpelem.title }}</h3>
 
    <div class="form-new-element-nav" ng-init="bpelem.showCardElement=false;">
@@ -12,12 +16,8 @@
          <a ng-click="setTab(1, bpelem)" ng-class="isSet(1, bpelem)? 'active' : ''">Data</a>
          <!-- <a ng-click="setTab(2, bpelem)" ng-class="isSet(2, bpelem)? 'active' : ''">Indicators</a></label>-->
    </div>
+</div>
 
-
-   </div>
-
-
-   <div ng-init="setTab(0, bpelem)" class="edit-element-card-container" ng-show="isSet(0, bpelem)">
      <form novalidate="novalidate" ng-submit="updateElem(bpelem);" class="form-horizontal form-new-bpelem form-edit-bpelem">
 
 
@@ -157,8 +157,17 @@
 
 </div>
 
-<div ng-show="isSet(1, bpelem)">
-  <h3>Data</h3>
+<div ng-show="isSet(1, bpelem)" class="edit-element-data-tab">
+<div class="control-group">
+  <h3>Data for {{ bpelem.title }}</h3>
+   <div class="form-new-element-nav" ng-init="bpelem.showCardElement=false;">
+         <a ng-click="setTab(0, bpelem)" ng-class="isSet(0, bpelem)? 'active' : ''">Card</a></label>
+         <a ng-click="setTab(1, bpelem)" ng-class="isSet(1, bpelem)? 'active' : ''">Data</a>
+         <!-- <a ng-click="setTab(2, bpelem)" ng-class="isSet(2, bpelem)? 'active' : ''">Indicators</a></label>-->
+   </div>
+  <p>In progress</p>
+
+</div>
 
 </div>
 </div>
