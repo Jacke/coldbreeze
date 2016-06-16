@@ -2362,7 +2362,12 @@ div#proc-sessions.hiding {
 .allSessions {
     position: absolute;
     right: 17%;
-    top: 43%;
+    top: 29%;
+}
+.allSessionsPage {
+    position: absolute;
+    right: 17%;
+    top: 52%;
 }
 
 .elements-list .control-group.form-submit.form-group {
@@ -2398,23 +2403,79 @@ select#categorySelect {
     padding-top: 15px;
 }
 #proc-sessions {
-  transition: all 0.2s cubic-bezier(0, 0, 0, 1.4);
-  width: 100%;
-  margin: 50px auto;
-  position: fixed;
-  left: 0;
-  bottom: -50px;
-  background-color: #e6e6e6;
-  font-family: 'Open Sans', sans-serif;
-  padding-left: 73px;
-  padding-top: 21px;
-  z-index: 90;
-  opacity: 0.8;
-  padding-bottom: 9px;
-  border-radius: 6px 6px 0px 0px;
+    transition: all 0.2s cubic-bezier(0, 0, 0, 1.4);
+    width: 100%;
+    margin: 50px auto;
+    position: fixed;
+    left: 0;
+    bottom: -50px;
+    background-color: #e6e6e6;
+    font-family: 'Open Sans', sans-serif;
+    padding-left: 73px;
+    padding-top: 33px;
+    z-index: 90;
+    opacity: 0.8;
+    padding-bottom: 9px;
+    border-radius: 6px 6px 0px 0px;
+}
+#proc-sessions.expanded {
+    margin: 50px auto;
+    height: 241px;
+}
+.thumb-session-table .thumb-session-table-title {
+    display: inline-block;
+    float: left;
+    margin-right: 30px;
+}
+
+.thumb-session-table {
+    justify-content: space-between;
+    width: 70%;
+    margin: 0 auto;
+    overflow: hidden;
+    height: 170px;
+    clear: both;
+    display: block;
+    overflow-y: scroll;
+}
+
+.thumb-session-table::-webkit-scrollbar {
+    width: 5px;
+}
+.thumb-session-table::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+.thumb-session-table::-webkit-scrollbar-thumb {
+    background-color: #7076B7;
+}
+.thumb-session-table::-webkit-scrollbar-thumb:hover {
+    background-color: #aaa;
 }
 
 
+.thumb-session-table .thumb-session-table-session {
+    width: 340px;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+.thumb-session {
+    clear: both;
+    overflow: hidden;
+    display: block;
+}
+
+.progress-percent-value {
+      width: 100%;
+    background: #E0E0E0;
+    display: block;
+    text-align: center;
+    clear: both;
+    font-size: 10px;
+    font-weight: 900;
+    text-shadow: none;
+    border-radius: 3px;
+}
 
 
 .proc-session {
@@ -3441,7 +3502,7 @@ form {
 
 .proc-sessions .progress .progress-bar span {
     width: auto;
-    color: #E6E6E6;
+    color: #000000;
     height: 3px;
     text-indent: -9999px;
     box-shadow: none;

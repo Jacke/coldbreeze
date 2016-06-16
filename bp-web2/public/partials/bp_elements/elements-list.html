@@ -302,25 +302,43 @@
 
 
 
-<div id="proc-sessions" class="proc-sessions" ng-hide="bp.newelemformselected" ng-init="inSession ? session_bar='hiding' : session_bar='shown'">
+<div id="proc-sessions" class="proc-sessions expanded" ng-class="toolbar_more ? 'expanded' : ''"ng-hide="bp.newelemformselected" ng-init="inSession ? session_bar='hiding' : session_bar='shown'">
 
 <div class="progress" ng-show="inSession">
     <div class="progress-lines">
                 <div ng-include src="'assets/partials/treeLiner.html'"></div>
     </div>
    <div class="progress-bar" role="progressbar" aria-valuenow="{{session.percent}}" aria-valuemin="0" aria-valuemax="100" style="width: {{session.percent}}%;">
-    <span>{{session.percent}}%</span>
    </div>
+    <span class="progress-percent-value">{{session.percent}}%</span>
 </div>
 
+<div class="thumb-session-table" ng-show="toolbar_more">
+<div class="thumb-session-table-session" ng-repeat="session in sessions">
+  <div class="thumb-session-table-title">
+  <a href="a#/bprocess/{{session.process.id}}/elements?launch={{session.session.id}}" ng-click="changeSession(session)" class="thumb-session-table-session-link"  data-desc="{{ session.station.note }} - {{ session.percent}}%" ng-class="isSelected(session.session.id)">
+  {{ session.station.note }} - {{ session.percent}}
+  </a>
+  </div>
+  <div class="thumb-session-table-date">
+    <abbr class="session__header__created_at" title="{{ session.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="session.created_at"></abbr>
+  </div>
+</div>  
+
+</div>
+
+<div class="thumb-session" ng-hide="toolbar_more">
     <div class="proc-session active" ng-click="resetSession()" data-desc="Model">
     </div>
 <a href="a#/bprocess/{{session.process.id}}/elements?launch={{session.session.id}}" ng-click="changeSession(session)" ng-repeat="session in sessions | limitTo: 5" class="current-proc-session-info session-link proc-session"  data-desc="Launch {{$index+1 }} - {{ session.percent}}%" ng-class="isSelected(session.session.id)">
    <span class="unpin moicon moicon-pushpin" ng-click="unlisted(session.session)"></span>
 </a>
+</div>
 
 
-<div class="allSessions"><a href="/a#/launches?process={{ BPid }}">All</a></div>
+<div class="allSessions"><a 
+   ng-click="toolbar_more == true ? toolbar_more=false : toolbar_more=true ">More</a></div>
+<div class="allSessionsPage"><a href="/a#/launches?process={{ BPid }}">All</a></div>
 </div>
 
 </div>
