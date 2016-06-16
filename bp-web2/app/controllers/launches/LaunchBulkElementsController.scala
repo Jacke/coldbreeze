@@ -233,7 +233,7 @@ private def decorateProcElementsToJson(elements: List[SessionUndefElement],
   val elemJsonObj = elemJson.as[List[JsObject]]
   val objWithTopos = elemJsonObj.map { obj =>
     val elemId = (obj \ "id").validate[Int].get
-    val topoIdOpt = topos.find(topo => topo.front_elem_id.get == elemId )
+    val topoIdOpt = topos.find(topo => topo.front_elem_id.getOrElse(0) == elemId )
     topoIdOpt match {
       case Some(topoIdObj) => {
         obj + ("topo_id" -> Json.toJson( topoIdObj ))
