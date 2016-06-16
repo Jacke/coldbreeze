@@ -1054,8 +1054,8 @@ $scope.options = {
 
   $scope.createNewElem = function () {
 
-    if (action.refStrategySelect) {
     var actionContainer = _.map($scope.newBpelem.selectedRef.reactions, function(action) {
+      if (action.refStrategySelect) {
           /*
           action_id: Int,
           middleware_id: Long,
@@ -1087,13 +1087,10 @@ $scope.options = {
               base_content_boolean: false
             }
           })
-
-
+          }
         }
     });
-  } else {
-    var actionContainer = [];
-  }
+
     var newElement = {
       business: $scope.newBpelem.business,
       comps: [],
@@ -1102,8 +1099,11 @@ $scope.options = {
       process: $scope.newBpelem.process,
       ref: $scope.newBpelem.ref,
       title: $scope.newBpelem.title,
-      refActionContainer: actionContainer
     }
+    if (_.without(actionContainer, undefined, null).length > 0 )  {
+          newElement.refActionContainer = actionContainer;
+    } else { newElement.refActionContainer = []; } // Backward compatibility with elements without middlewares
+
     console.log('newElement is', newElement);
 
     BPElemsFactory.create(newElement).$promise.then(function(data) {
