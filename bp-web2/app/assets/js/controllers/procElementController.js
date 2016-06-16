@@ -1054,7 +1054,7 @@ $scope.options = {
 
   $scope.createNewElem = function () {
 
-
+    if (action.refStrategySelect) {
     var actionContainer = _.map($scope.newBpelem.selectedRef.reactions, function(action) {
           /*
           action_id: Int,
@@ -1091,7 +1091,9 @@ $scope.options = {
 
         }
     });
-
+  } else {
+    var actionContainer = [];
+  }
     var newElement = {
       business: $scope.newBpelem.business,
       comps: [],

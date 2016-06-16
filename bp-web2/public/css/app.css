@@ -12142,3 +12142,166 @@ a.edit-element-card-delete-btn.btn.btn-small.btn.btn-danger.btTxt.btn.lg.solid-g
  * Table input request
  */
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+ Welcome
+*/
+
+.onboarding-close {
+    color: white;
+    position: absolute;
+    width: 50px;
+    right: 0;
+    z-index: 50;
+    padding: 15px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    font-size: 30px;
+    cursor: pointer;
+}
+.fa {
+    display: inline-block;
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.fa-times::before {
+    content: "\f00d";
+}
+.onboarding {
+    z-index: 45;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    background-color: rgba(46, 92, 131, 0.96);
+}
+.onboarding-content {
+    width: 80%;
+    text-align: center;
+    margin-top: -35px;
+}
+.onboarding-content h1 {
+    color: white;
+    padding-bottom: 25px;
+}
+.onboarding-content {
+    text-align: center;
+}
+.onboarding-slideHeader {
+    color: white;
+    position: relative;
+    top: 0%;
+    height: 72px;
+}
+.onboarding-slideHeader h1 {
+    color: #2D4864;
+    width: 370px;
+    background-color: #F2F4F6;
+    height: 24px;
+    font-size: 20px;
+    padding: 25px;
+}
+.center-center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+}
+.onboarding-body {
+    height: 300px;
+}
+.onboarding-slidesContainer img {
+    height: auto;
+    width: 420px;
+}
+.onboarding-slideFooter {
+    color: white;
+    position: relative;
+    top: 100%;
+    height: 60px;
+}
+.onboarding-slideFooter p {
+    color: white;
+    width: 370px;
+    height: 30px;
+    padding: 25px;
+    background-color: #2D4864;
+}
+.onboarding-stages {
+    height: 25px;
+    top: 105%;
+    width: 115px;
+}
+.onboarding-stageMarker {
+    width: 15px;
+    border-radius: 15px;
+    border-color: white;
+    border-width: 1px;
+    border-style: solid;
+    height: 15px;
+    float: left;
+    margin: 6px;
+    cursor: pointer;
+}
+.onboarding-stageMarker-complete {
+    border-color: #54B85E;
+    background-color: #54B85E;
+}
+.onboarding-stageMarker-viewing {
+    border-color: #34843C;
+    background-color: #34843C;
+}
+.onboarding-previous {
+    float: left;
+    font-size: 70px;
+    left: 0;
+    padding-top: 50px;
+    cursor: pointer;
+}
+.fa-angle-left::before {
+    content: "\f104";
+}
+.onboarding-next {
+    float: right;
+    font-size: 70px;
+    left: 100%;
+    padding-top: 50px;
+    cursor: pointer;
+}
+.fa-angle-right::before {
+    content: "\f105";
+}
