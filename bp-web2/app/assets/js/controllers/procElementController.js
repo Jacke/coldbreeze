@@ -1158,6 +1158,7 @@ $scope.options = {
 
       angular.element('.form-new-bpelem').controller('form').$setPristine();
       $scope.newBpelem = { middleware: {}, desc: "", process: parseInt($route.current.params.BPid), business: $scope.business() };
+      $scope.setTab(0, $scope.newBpelem);
       angular.element('.form-new-bpelem').controller('form').$setPristine();
 
       $timeout(function(){

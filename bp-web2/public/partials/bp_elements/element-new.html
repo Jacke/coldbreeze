@@ -1,4 +1,4 @@
- <form novalidate="novalidate" ng-init="" ng-submit="createNewElem();" class="form-horizontal form-new-bpelem" ng-class="newBpelem.type_title" id="newFrontElementForm">
+ <form novalidate="novalidate" ng-init="" class="form-horizontal form-new-bpelem" ng-class="newBpelem.type_title" id="newFrontElementForm">
    <a href=""
      class="addElemTab"
      ng-show="!inSession"
@@ -68,7 +68,7 @@
 
     <div class="control-group form-submit form-group" style="clear:both;" ng-show="isManagerVal">
       <div class="controls">
-        <button type="submit" id="createFrontElementFormButton" class="btn btn-small btTxt submit btn lg solid-green ng-binding">{{ 'CREATE' | translate }}</button>
+        <button type="submit" id="createFrontElementFormButton" ng-click="createNewElem()" class="btn btn-small btTxt submit btn lg solid-green ng-binding">{{ 'CREATE' | translate }}</button>
       </div>
     </div>
 
