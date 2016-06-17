@@ -18,7 +18,7 @@
    </div>
 </div>
 
-     <form novalidate="novalidate" ng-submit="updateElem(bpelem);" class="form-horizontal form-new-bpelem form-edit-bpelem">
+     <form novalidate="novalidate" class="form-horizontal form-new-bpelem form-edit-bpelem">
 
 
 
@@ -149,7 +149,7 @@
 
     <div class="control-group form-submit form-group" style="clear:both;" ng-show="!inSession && isManagerVal">
       <div class="controls">
-        <button type="submit" class="edit-element-card-update-btn btn btn-small btTxt submit btn lg solid-green ng-binding">Update</button>
+        <button type="submit" ng-click="updateElem(bpelem)" class="edit-element-card-update-btn btn btn-small btTxt submit btn lg solid-green ng-binding">Update</button>
         <a ng-click="deleteElem(bpelem)" class="edit-element-card-delete-btn btn btn-small btn btn-danger btTxt btn lg solid-green ng-binding">Delete</a>
       </div>
     </div>
