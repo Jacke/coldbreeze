@@ -772,6 +772,8 @@ $scope.createNewElem = function (elem,process) {
     if (elem.desc == undefined) { // Allow empty description
       elem.desc = ""
     }
+    elem.refActionContainer = []; // Backward compatibility with elements without middlewares
+
     BPElemsFactory.create(elem).$promise.then(function(data) {
       //$scope.bpelems = BPElemsFactory.query({ BPid: $route.current.params.BPid });
       console.log("lighted");

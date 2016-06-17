@@ -4632,19 +4632,17 @@ new process form container
     opacity: 0.9;
     position: relative;
 }
-.progress-lines .line span.description {
+.progress-lines .elem-card span.tree-liner-text {
     position: absolute;
-    margin-top: -17px;
-    padding-top: 2px;
-    margin-left: 0px;
-    width: 100%;
-    background: #F44336;
-    box-shadow: 1px 1px 2px #B9B9B9;
-    color: rgba(255, 255, 255, 0);
+    top: -15px;
     text-shadow: none;
+    left: 11px;
+    font-size: 11px;
+    color: white;
+    z-index: 10000;
+    display: block;
+    line-height: 14px;
     font-weight: 700;
-    margin-left: 1px;
-    z-index: 4;
 }
 
 .progress-lines span.line:before {

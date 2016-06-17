@@ -11,7 +11,7 @@
 
 </div>
 
-<form novalidate="novalidate" ng-submit="fastCreateNewElem($parent.bprocess.newBpelem, $parent.bprocess);" class="form-horizontal form-fast-element-create">
+<form novalidate="novalidate" class="form-horizontal form-fast-element-create">
     <div class="form-group element-form-fields">
     <div class="control-group">
       <h3>Add element in {{ $parent.bprocess.title }} process</h3>
@@ -121,7 +121,7 @@
     <input type="hidden" id="input_ref" ng-model="$parent.bprocess.newBpelem.ref"/>
     <div class="control-group form-submit form-group" style="clear:both;" ng-show="isManagerVal">
       <div class="controls">
-        <button type="submit" class="btn btn-small btTxt submit btn lg solid-green ng-binding">{{ 'CREATE' | translate }}</button>
+        <button type="submit" ng-click="fastCreateNewElem($parent.bprocess.newBpelem, $parent.bprocess)" class="btn btn-small btTxt submit btn lg solid-green ng-binding">{{ 'CREATE' | translate }}</button>
       </div>
     </div>
   </form>
