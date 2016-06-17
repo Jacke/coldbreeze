@@ -27,3 +27,23 @@ class Filters @Inject() (dbConfigProvider: DatabaseConfigProvider,
     Seq(securityHeadersFilter, corsFilter)
   }
 }
+
+
+import scala.concurrent.Future
+import javax.inject._
+import play.api.inject.ApplicationLifecycle
+
+@Singleton
+class MessageQueueConnection @Inject() (lifecycle: ApplicationLifecycle) {
+  //val connection = connectToMessageQueue()
+  lifecycle.addStopHook { () =>
+  	println("stop hook dbs")
+  	println("models.DAO.conversion.DatabaseCred.database.close ")
+  	models.DAO.conversion.DatabaseCred.database.close 
+  	println("models.DAO.conversion.DatabaseFuture.db.close ")
+  	Future.successful(
+    models.DAO.conversion.DatabaseFuture.db.close)//connection.stop())
+  }
+
+  //...
+}

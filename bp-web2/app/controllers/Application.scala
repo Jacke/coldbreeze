@@ -36,6 +36,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class Application @Inject() (
   val messagesApi: MessagesApi,
   val env: Environment[User2, CookieAuthenticator],
+  hook: utils.MessageQueueConnection,
   socialProviderRegistry: SocialProviderRegistry)
   extends Silhouette[User2, CookieAuthenticator] {
   import play.api.Play.current
