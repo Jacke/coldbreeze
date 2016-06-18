@@ -125,12 +125,15 @@ object BPSessionDAOF {
           val process_id = process.id.get
           val q3 = for { s <- bpsessions if s.process === process_id } yield s
           val sess = await(db.run(q3.result)).toList
+          val active = None
           val people = SessionPeoples("iamjacke@gmail.com", List("iamjacke@gmail.com", "tete@gga.ru"))
-
+          val allStationsF = BPStationDAOF.findBySessions(sess.map(s => s.id.get).toList, active)
+          val allStations = await(allStationsF)
           Some(
             SessionContainer(process,
               sess.filter(ses => ses.process == process_id && ses.id != Some(-1)).map { ses =>
-                val station = BPStationDAO.findBySession(ses.id.get)
+                val station = allStations.find(s => s.session == ses.id.get)
+                //BPStationDAO.findBySession(ses.id.get)
                 val element_quantity = SessionProcElementDAO.findBySession(ses.id.get).length //+ SessionSpaceElemDAO.findFlatBySession(ses.id.get).length
                 val step = station match {
                   case Some(station) => station.step.toDouble
@@ -138,7 +141,13 @@ object BPSessionDAOF {
                 }
                 val percent = percentDecorator(step, element_quantity)
                 SessionStatus(percent, process, ses, station,
-                  Some(AroundProcessElementsBuilder.detect(process_id, stationIdDeRef(station) )),
+                  Some(
+                    await(AroundProcessElementsBuilder.detectByStationF(
+                      process_id = ses.process,
+                      station = station,
+                      process = Some( process) ) )
+                    ),
+                  //None,//Some(AroundProcessElementsBuilder.detect(process_id, stationIdDeRef(station) )),
                   Some(people),
                   created_at = ses.created_at,
                   updated_at = ses.updated_at)
@@ -148,6 +157,7 @@ object BPSessionDAOF {
         case _ => None
       }
   }
+
   def get(k: Int): Option[BPSession] = {
     await(db.run(filterQuery(k).result.headOption) )
   }

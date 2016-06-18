@@ -4666,7 +4666,13 @@ new process form container
 .progress-lines .elem-card.container_brick span.description  {
     background: #27ae60;
 }
-
+.allStations .progress-lines .line span.description {
+    text-indent: -9999999px;
+    width: 100%;
+    height: 17px;
+    margin-top: -17px;
+    margin-left: 2px;
+}
 
 
 .history-layout ul.history-list li * {

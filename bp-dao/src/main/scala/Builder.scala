@@ -45,9 +45,10 @@ object Build {
   val appLogger = Logger(LoggerFactory.getLogger("build"))
   def toApplogger(msg: Any, log_type: String = "info") = {
       log_type match {
-        case "debug" => appLogger.info(msg.toString)
-        case "info" => appLogger.info(msg.toString)
-        case "error" => appLogger.info(msg.toString)
+        case "debug" => //appLogger.info(msg.toString)
+        case "info" => //appLogger.info(msg.toString)
+        case "error" => //appLogger.info(msg.toString)
+        // TODO: OPtimize that shit
       }
   }
 

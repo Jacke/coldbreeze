@@ -125,10 +125,12 @@ def station_index(id: Int) = SecuredAction { implicit request =>
 
   } else { Forbidden(Json.obj("status" -> "Not found")) }
 }
+
 // GET         /bprocess/stations
 def all_stations() = SecuredAction { implicit request =>
   Ok(Json.toJson(BPStationDAO.getAll))
 }
+
 // GET          /bprocess/:BPid/sessions
 def process_all_session(pid: Int) = SecuredAction { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, pid)) {
