@@ -66,7 +66,7 @@
     </formly-form>
 -->
 
-    <div class="control-group form-submit form-group" style="clear:both;" ng-show="isManagerVal">
+    <div class="control-group form-submit form-group" style="clear:both;" ng-show="isManagerVal && newBpelem.refSelectHidden" >
       <div class="controls">
         <button type="submit" id="createFrontElementFormButton" ng-click="createNewElem()" class="btn btn-small btTxt submit btn lg solid-green ng-binding">{{ 'CREATE' | translate }}</button>
       </div>

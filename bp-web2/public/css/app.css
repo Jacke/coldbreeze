@@ -1298,6 +1298,25 @@ span.selectedRefType.col-xs-6.ref-selected-object {
     display: block;
 }
 
+.ref-desc.ref-desc-select-container {
+    clear: both;
+    background: rgba(255, 253, 243, 0.54);
+    width: 100%;
+    padding: 8px 17px;
+    border-radius: 6px;
+}
+
+.ref-desc.ref-desc-select-container a.ref-desc-select-container-link {
+    cursor: pointer;
+    text-decoration: none;
+}
+.ref-desc.ref-desc-select-container a.ref-desc-select-container-link h6 {
+    color: black;
+}
+.ref-desc.ref-desc-select-container a.ref-desc-select-container-link p {
+    color: black;
+}
+
 .element-new-form .templateButton.form-group {
     display: inline-block;
     float: left;
