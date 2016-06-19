@@ -37,13 +37,16 @@
 
 				 <div class="reaction_list__reaction_element_launch_nav reaction_list__reaction_element_launch_files_nav launches-nav">
 			         <div class="reaction_list__reaction_element_launch_files_nav_menu">
+				     <!--
 			         <span class="data-board-count data-board-files-count">
 			           <div ng-repeat="fileArr in files.files | filter:filesForLaunchElement(elem) as filteredFiles">
 			           </div>{{filteredFiles.length}}
 			         </span>
+
 				     <a ng-click="fileSelectTab(elem)"
 					    id="fileSelectTabButton"
 					    class="fileSelectTabButton expandLaunchWindowTabButton">Files</a>
+					    -->
 					  </div>
 			          <div ng-include src="'assets/partials/inputs/file_attach.html'"
 			               class="file-view-container" ng-init="elem.payload = []; $parent.elem.payloadNew = [];elem.dataSelectTabSelected=true;"></div>	
@@ -57,6 +60,7 @@ accept="*">Select Files</button>
 
 		    	 <div class="reaction_list__reaction_element_launch_nav reaction_list__reaction_element_launch_data_nav launches-nav">
 		    	 	<div class="reaction_list__reaction_element_launch_nav reaction_list__reaction_element_launch_data_nav_menu">
+				    <!--
 			        <span class="data-board-count data-board-costs-count">
 			          <div ng-repeat="costObj in $parent.sessionCosts | filter: byElement(elem) as filteredCost">
 			          </div>
@@ -65,6 +69,7 @@ accept="*">Select Files</button>
 				    <a ng-click="dataSelectTab(elem)"
 				       id="dataSelectTabButton"
 				       class="expandLaunchWindowTabButton dataSelectTabButton">Data</a>
+				       -->
 				    </div>
 		            <div ng-include src="'assets/partials/inputs/costs.html'"
 			                        class="cost-view-container"

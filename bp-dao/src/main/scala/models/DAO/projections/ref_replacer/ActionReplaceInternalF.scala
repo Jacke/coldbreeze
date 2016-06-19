@@ -55,6 +55,7 @@ trait ActionReplaceInternalF {
                 MiddlewaresDAOF.pull(
                   Middleware(
                     None,
+                    middlewareRef.title,
                     middlewareRef.ident,
                     middlewareRef.ifaceIdent,
                     trueActionId

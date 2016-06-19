@@ -2051,6 +2051,9 @@ li.reaction_list__reaction {
     height: 30px;
     margin-top: 8px;
     width: 73%;
+    color: white;
+    font-weight: 900;
+    font-size: 12px;
 }
 
 .request-controller form.existed-new-data-cost.form select#selectExistedEntity {
