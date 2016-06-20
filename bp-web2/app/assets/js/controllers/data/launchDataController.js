@@ -50,7 +50,7 @@ return minorityControllers.controller('launchDataController', ['$q','$rootScope'
 
       console.log('launchDataController');
 
-      $scope.insideLaunch = false;
+
       $scope.insideProcess = false;
       if ($scope.$parent.session !== undefined) {
         $scope.inlineLaunchShow = $scope.$parent.session.inlineLaunchShow;
@@ -58,9 +58,7 @@ return minorityControllers.controller('launchDataController', ['$q','$rootScope'
         $scope.inlineLaunchShow = true;
       }
 
-      if ($scope.launchId !== undefined) {
-        $scope.insideLaunch = true;
-      }
+
 
     if ($scope.launchId !== undefined) {
           $scope.launchId = $scope.$parent.session_id;
@@ -70,7 +68,13 @@ return minorityControllers.controller('launchDataController', ['$q','$rootScope'
       $scope.bpId ? $scope.processId = $scope.bpId :  $scope.processId = $scope.BPid;
       //$scope.processId = $scope.bpId;
     }
-    console.log('$scope.launchId are',$scope.launchId);
+    if ($scope.launchId == undefined) {
+      $scope.insideLaunch = false;
+    } else {
+      $scope.insideLaunch = true;
+    }
+
+    console.log('$scope.launchId are',$scope.launchId, $scope.insideLaunch, $scope.launchId == undefined);
     console.log('$scope.processId are',$scope.processId);
 
 /*
@@ -423,12 +427,14 @@ $scope.createLaunchedAssignedResEls = function(costs, element) {
   //                                                  entityId: costs.entities}; });
 
   var newReqs = [{elementId: elementId, resourceId: costs.resource.resource.id,
-                                                    entityId: costs.entities,
+                                                    entityId: costs.entities.id,
                                                     value: costs.value }];
 
   $http.post(jsRoutes.controllers.CostFillController.createLaunchCostElement(costs.resource.resource.id,
                                                                            $scope.launchId).absoluteURL(document.ssl_enabled),
                     newReqs ).then(function (data) {
+
+
                       $scope.loadData();
                       console.log(data);
   });

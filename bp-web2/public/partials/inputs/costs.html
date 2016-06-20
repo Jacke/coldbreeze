@@ -5,7 +5,7 @@
 <div class="costs_fields" ng-repeat="costObj in $parent.sessionCosts | filter: $parent.byElement($parent.elem)">
 	<div class="inputCost" ng-repeat="cost in costObj.costs">
 		<div class="pipeContent">
-			<div class="pipeContentTitle">{{ cost.entity.title }}</div>
+			<div class="pipeContentTitle">{{ cost.resource.title }}</div>
 			<div class="pipeContentValue">
 				<a><span>{{ cost.value.sval }}</span></a>
 				<!--
