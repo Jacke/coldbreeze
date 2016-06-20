@@ -27,11 +27,11 @@
 <div class="newResourceFormContainer">
 @form(routes.DataController.create_resource(), 'id -> "createResourceFormObject", 'class -> "createResourceForm") {
 
-   <h3>Create resource</h3>
+   <h3>Create indicator</h3>
   <button type="submit" id="createResourceBtn" class="createMin ajaxLink cacheable resource-add-btn offed">Create</button>
   <div class="tableMinListFilter search-process-input add-resource-field filterLayer">
     <!-- <span class="magnifyGlass vIco vLoupe vLight2State"></span>-->
-    <label for="resourceTitle">Resource name</label>
+    <label for="resourceTitle">Indicator name</label>
     <input type="text" id="resourceTitle" name="title" value="" class="filterInput tableMinListFilterInput">
     <!-- <input type="text" size="71" data-toggle-class="hidden" class="filterInput tableMinListFilterInput" placeholder="Name"> -->
   </div>
@@ -57,7 +57,7 @@
 @if(resContainer.length < 1) {
   <div class="dataEmptyPlaceholder">
         <span class="uicon-svg62222"></span>
-        <p class="primary">Start adding resources</p>
+        <p class="primary">Start adding indicators</p>
         <p class="small">As an example they may be time or expendable materials</p>
   </div>
 } else {
@@ -65,7 +65,7 @@
     <span class="magnifyGlass vIco vLoupe vLight2State"></span>
     <input type="text" size="41"
     data-toggle-class="hidden"
-    class="filterInput tableMinListFilterInput" placeholder="Search resources" style="">
+    class="filterInput tableMinListFilterInput" placeholder="Search indicators" style="">
   </div>
 }
 <div class="panelLike organisationsGridLike redDataGrid">

@@ -1000,7 +1000,7 @@ $(".tableMinListFilter.search-process-input.add-resource-field.filterLayer #reso
 });
 
 
-  $('#createResourceBtn').click(function(ev){
+  $('#createResourceBtn1').click(function(ev){
     ev.preventDefault();
     $('#createResourceBtn').hide();
     var resource = { title: $('#resourceTitle').val(), business: 0 };

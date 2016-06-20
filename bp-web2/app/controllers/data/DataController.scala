@@ -283,24 +283,28 @@ def index() = SecuredAction.async { implicit request =>
  * Resources
  ****************************/
 //POST     /data/resources          @controllers.DataController.create_resource()
-def create_resource() = SecuredAction { implicit request =>
+def create_resource() = SecuredAction.async { implicit request =>
   	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
     val business = request.identity.businessFirst
     if (request.identity.businessFirst < 1) {
-      Redirect(controllers.routes.SettingController.workbench())
+      Future.successful( Redirect(controllers.routes.SettingController.workbench()) )
     } else {
 
     ResourceForms.resourceForm.bindFromRequest.fold(
       formWithErrors => {
         println(formWithErrors)
-        Redirect(controllers.routes.DataController.index())
+        Future.successful( Redirect(controllers.routes.DataController.index()) )
         },
       entity => {
           println(entity)
           val resource_id = ResourceDAO.pull_object(entity.copy(business = business))
-          val future = createDefaultBoardsForRes(entity.copy(business = business, id = Some(resource_id)))
-          Await.result(future, Duration(waitSeconds, MILLISECONDS)) match {
-            case _ => {
+          val boardIdF = createDefaultBoardsForRes(entity.copy(business = business, id = Some(resource_id)))
+          boardIdF.flatMap { boardIdJson =>
+            println(boardIdJson)
+            val boardId = (Json.parse(boardIdJson) \ "message").as[String]
+            println(s"createDefaultEntityValue from action $boardId")
+            val entityId = createDefaultEntityValue(resource_id, boardId)
+            entityId.map { l =>
               controllers.UserActor.updateResource(target="lock", email=request.identity.emailFilled, isLock=true)
               Home
             }
@@ -597,6 +601,26 @@ private def createDefaultBoardsForRes(res: ResourceDTO):Future[String] = {
                                     MetaVal("business_id", s"${res.business}")), None,None)
     minority.utils.BBoardWrapper().addBoardForResource(board)
 }
+private def createDefaultEntityValue(resource_id: Int, boardId: String):Future[String] = {
+  println("createDefaultEntityValue")
+  // Default entity creation
+  val entity = Entity(
+  id = Some(UUID.randomUUID()),
+  title = "Value",
+  boardId = UUID.fromString(boardId),
+  description="",
+  publisher="",
+  etype = "text",
+  default = "",
+  meta = List.empty)
+  
+  minority.utils.BBoardWrapper()
+                .addEntityByResource(resource_id,
+                                     entity)
+
+}
+
+
 
 
 }
