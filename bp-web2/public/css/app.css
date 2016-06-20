@@ -2026,6 +2026,17 @@ li.reaction_list__reaction {
     font-family: 'Open Sans';
 }
 
+.request-controller li.reaction_list__reaction .newIncicatorButton a.btn.btn-success {
+    border-bottom: 1px solid #6A9A6D;
+}
+.request-controller li.reaction_list__reaction .newIncicatorButton a.btn.btn-success.btn-danger {
+    border-bottom: 1px solid #B52117;
+}
+.request-controller li.reaction_list__reaction .newIncicatorButton a.btn {
+    margin-right: 9%;
+}
+
+
 .request-controller .newFileButton button.btn.btn-small.btn-success.btn-fill {
     color: white;
     background: none;
@@ -2054,6 +2065,19 @@ li.reaction_list__reaction {
     color: white;
     font-weight: 900;
     font-size: 12px;
+}
+
+input.form-control.indicator-value-entry {
+    width: 62%;
+    padding: 2px 4px;
+    height: 26px;
+    background: #54566D;
+    color: white;
+    border: solid 1px transparent;
+    margin-top: 5px;
+    font-weight: 900;
+    clear: both;
+    padding-left: 11px;
 }
 
 .request-controller form.existed-new-data-cost.form select#selectExistedEntity {

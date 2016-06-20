@@ -1,22 +1,39 @@
 <div class="data-cost-controlls-expanded select-existed-new-data-cost">
   <form class="existed-new-data-cost form">
     <div class="form-group">
-        <label for="selectExistedResource"><a href="/data" class="resource-links">Resource</a></label>
+        <label for="selectExistedResource"><a href="/data" class="resource-links">Indicator</a></label>
         <select id="selectExistedResource" class="form-control" ng-init="newCost.cost = {};" ng-model="newCost.resource"
         ng-init="newCost.resource=avalCosts[0];newCost.entity=avalCosts[0].entities[0]"
         class="forResource"
-        ng-options="res_cn as res_cn.resource.title for res_cn in avalCosts"></select>
+        ng-options="res_cn as res_cn.resource.title for res_cn in avalCosts"
+        ng-change="newCost.entities = newCost.resource.entities[0]"></select>
 
 
     </div>
     <div class="form-group">
         <label
         for="selectExistedEntity"
-        ng-hide="newCost.resource !== undefined && newCost.resource.entities.length < 1">Entity</label>
-        <select id="selectExistedEntity" ng-model="newCost.entities"
+        ng-hide="newCost.resource !== undefined && newCost.resource.entities.length < 1">Value</label>
+        <!--
+        <select id="selectExistedEntity" 
+        ng-model="newCost.entities"
         class="form-control"
+        ng-init="newCost.entities = newCost.resource.entities[0]"
         ng-options="entity.id as entity.title for entity in newCost.resource.entities"
-        ng-hide="newCost.resource !== undefined && newCost.resource.entities.length < 1"></select>
+        ng-hide="newCost.resource !== undefined && newCost.resource.entities.length < 1">
+        </select>
+        -->
+        <input type="text" class="form-control indicator-value-entry">
+
+<select id="selectExistedEntity" 
+        ng-model="newCost.entities"
+        class="form-control hidden"
+        ng-init="newCost.entities = newCost.resource.entities[0]"
+        ng-hide="newCost.resource !== undefined && newCost.resource.entities.length < 1">
+   <option data-ng-repeat="entity in newCost.resource.entities" 
+            value="{{entity.id}}" ng-selected="entity == newCost.resource.entities[0]">{{entity.title}}</option>
+</select>
+
         <div class="entity-empty-message" ng-show="newCost.resource !== undefined && newCost.resource.entities.length < 1">
           <span>Please add <a href="/data">entity</a></span>
         </div>
