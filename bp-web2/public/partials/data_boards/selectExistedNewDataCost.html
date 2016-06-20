@@ -2,11 +2,24 @@
   <form class="existed-new-data-cost form">
     <div class="form-group">
         <label for="selectExistedResource"><a href="/data" class="resource-links">Indicator</a></label>
-        <select id="selectExistedResource" class="form-control" ng-init="newCost.cost = {};" ng-model="newCost.resource"
+        <select id="selectExistedResource" class="form-control" ng-init="newCost.cost = {};" 
+        ng-model="newCost.resource"
         ng-init="newCost.resource=avalCosts[0];newCost.entity=avalCosts[0].entities[0]"
         class="forResource"
         ng-options="res_cn as res_cn.resource.title for res_cn in avalCosts"
         ng-change="newCost.entities = newCost.resource.entities[0]"></select>
+
+<!--
+<ui-select ng-model="newCost.resource" reset-search-input="false" required="true" ng-maxlength="40">
+  <ui-select-match placeholder="Select indicator or add new one...">
+    <span>{{$select.selected.resource.title || $select.search}}</span>
+
+  </ui-select-match>
+  <ui-select-choices repeat="res_cn in (avalCosts | filter: { description: $select.search })" refresh="launchData.refreshResults($select)" refresh-delay="0">
+    <span>{{res_cn.resource.title}}</span>
+  </ui-select-choices>
+</ui-select>
+-->
 
 
     </div>
@@ -23,7 +36,7 @@
         ng-hide="newCost.resource !== undefined && newCost.resource.entities.length < 1">
         </select>
         -->
-        <input type="text" class="form-control indicator-value-entry">
+        <input type="text" ng-model="newCost.value" class="form-control indicator-value-entry">
 
 <select id="selectExistedEntity" 
         ng-model="newCost.entities"
@@ -33,6 +46,9 @@
    <option data-ng-repeat="entity in newCost.resource.entities" 
             value="{{entity.id}}" ng-selected="entity == newCost.resource.entities[0]">{{entity.title}}</option>
 </select>
+
+
+
 
         <div class="entity-empty-message" ng-show="newCost.resource !== undefined && newCost.resource.entities.length < 1">
           <span>Please add <a href="/data">entity</a></span>

@@ -2068,7 +2068,7 @@ li.reaction_list__reaction {
 }
 
 input.form-control.indicator-value-entry {
-    width: 62%;
+    width: 73%;
     padding: 2px 4px;
     height: 26px;
     background: #54566D;
@@ -2078,6 +2078,40 @@ input.form-control.indicator-value-entry {
     font-weight: 900;
     clear: both;
     padding-left: 11px;
+}
+
+
+button.btn.btn-default.form-control.ui-select-match {
+    background: #2C2F3C;
+    border: #474A58;
+    /* width: 74%; */
+    color: white;
+    font-weight: 900;
+    font-size: 12px;
+}
+.ui-select-bootstrap.dropdown.ng-invalid.ng-dirty.ng-valid-parse {
+    width: 74%;
+}
+ul.ui-select-choices.ui-select-choices-content.dropdown-menu {
+    background: #3B3C4A;
+    margin-top: -1px;
+    border-radius: 3px;
+}
+a.ui-select-choices-row-inner {
+    background-color: #54566D !important;
+    font-weight: 900 !important;
+    font-size: 12px;
+    padding-left: 12px !important;
+}
+
+
+input.form-control.ui-select-search {
+    background: #2C2F3C;
+    border: solid 1px #474A58;
+    border-radius: 2px;
+    color: white;
+    font-weight: 900;
+    font-size: 12px;
 }
 
 .request-controller form.existed-new-data-cost.form select#selectExistedEntity {
@@ -6728,7 +6762,17 @@ a.btn.btn-small.btTxt.submit.btn.lg.solid-green.btn-add-entity:hover {
 .form-edit-bpelem .form-control {
     padding: 4px 8px;
     height: 25px;
+    box-shadow: none;
+    border: solid 1px #DDE3EC;
 }
+.form-edit-bpelem input#inputTitle {
+    padding-top: 2px;
+}
+
+.form-edit-bpelem textarea#inputEditElemDesc {
+    padding-top: 5px;
+}
+
 .form-edit-bpelem label.control-label {
     font-family: "AvenirNextCyr-Good", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
     font-size: 16px;

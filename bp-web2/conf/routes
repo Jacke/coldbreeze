@@ -336,6 +336,7 @@ GET      /data/cost/elem_launch_assigns/:launch_id @controllers.CostFillControll
 POST	 /data/cost/assign/:resource_id		              @controllers.CostFillController.createCostElement(resource_id: Int)
 POST	 /data/cost/launch_assign/:resource_id/:s       @controllers.CostFillController.createLaunchCostElement(resource_id: Int, s: Int)
 
+
 POST	 /data/cost/up_assign/:resource_id	            @controllers.CostFillController.update_assigned_element(resource_id: Int)
 
 POST   /data/cost/del_launch_assign/:resource_id      @controllers.CostFillController.delete_launch_assigned_element(resource_id: Int)

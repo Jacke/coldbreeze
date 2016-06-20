@@ -199,6 +199,7 @@
        exports: 'angular-daterangepicker'
       },
 
+
 "react": {
       "exports": "React"
     },
@@ -392,7 +393,6 @@
       //'angular-route': '../lib/angularjs/angular-route',
       //'angular-cookies': '../lib/angularjs/angular-cookies',
       //'bootstrap': '../lib/bootstrap/js/bootstrap',
-
   'angularanimate': '../bower_components/angular-animate/angular-animate',
   'angular': '../bower_components/angular/angular',
   'react': '../bower_components/react/react-with-addons',

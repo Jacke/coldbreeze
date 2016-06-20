@@ -269,12 +269,15 @@ def createLaunchCostElement(id: Int, session_id: Int) = SecuredAction.async(Body
 	    		case Some(topo) => {
             // 1. Create or find board
             // 2. Create Entity
-			    	SessionElementResourceDAO.pull_object(SessionElementResourceDTO(None, element_id = topo.id.get,
-			  														  process_id       = topo.process,
-			  														  resource_id      = resElSelect.resourceId,
+            val resourceId = SessionElementResourceDAO.pull_object(
+            SessionElementResourceDTO(None, element_id = topo.id.get,
+                                      process_id       = topo.process,
+                                      resource_id      = resElSelect.resourceId,
                                       session_id = session_id,
-			  														  entities = resElSelect.entityId))
-			    	Ok(Json.toJson(Map("message" -> "ok")))
+                                      entities = resElSelect.entityId))
+            // Add value
+
+            Ok(Json.toJson(Map("message" -> "ok", "resource_id" -> resourceId)))
 	    		}
 	    		case _ => BadRequest(Json.obj("status" ->"KO", "message" -> "not found"))
 	    	}
