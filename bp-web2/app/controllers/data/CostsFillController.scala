@@ -277,7 +277,7 @@ def createLaunchCostElement(id: Int, session_id: Int) = SecuredAction.async(Body
                                       entities = resElSelect.entityId))
             // Add value
 
-            Ok(Json.toJson(Map("message" -> "ok", "resource_id" -> resourceId)))
+            Ok(Json.toJson(Map("message" -> "ok", "resource_id" -> resourceId.toString )))
 	    		}
 	    		case _ => BadRequest(Json.obj("status" ->"KO", "message" -> "not found"))
 	    	}
