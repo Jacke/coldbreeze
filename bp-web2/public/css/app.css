@@ -4175,7 +4175,7 @@ background-color: gray !important;
 
 .allStations .stations.minimal-stations {
     padding: 0px 10px 0px 3px;
-    margin-bottom: 8px;
+    margin-bottom: 16px;
 }
 
 .stations.minimal-stations .session-launches-bar {
@@ -4189,9 +4189,9 @@ background-color: gray !important;
 .allStations .stations.minimal-stations .session__header {
     padding-bottom: 0px;
     margin-bottom: 13px;
-    margin-left: 32px;
+    margin-left: 45px;
+    margin-top: 6px;
 }
-
 .allStations .stations.minimal-stations progress-arc {
     display: none;
 }
@@ -4217,17 +4217,36 @@ background-color: gray !important;
 }
 .stations.minimal-stations .session__buttonInput {
     display: inline-block;
-    left: 13px;
+    left: 12px;
     position: absolute;
     z-index: 999;
     padding: 0px 2px 1px 8px;
     background: #45475D;
     color: white;
     cursor: pointer;
+    transition: all .3s ease-in-out;
     font-size: 15px;
-    top: 15px;
-    border-radius: 40px;
+    top: 7px;
+    border-radius: 90px;
+    width: 43px;
+    height: 42px;
 }
+.stations.minimal-stations .session__buttonInput:hover {
+    background: #999CC3;
+}
+.stations.minimal-stations .session__buttonInput:active {
+    background: #6A70B1;
+    box-shadow: 1px 2px 9px #3F4152 inset;
+}
+.stations.lineDescShowed.minimal-stations .session__buttonInput {
+    background: #6A70B1;
+    box-shadow: 1px 2px 9px #3F4152 inset;
+}
+.stations.minimal-stations .session__buttonInput .svg-button-input {
+margin-left: 6px;
+    margin-top: 5px;
+}
+
 .session__buttonInput .moicon-eject:before {
     color: white;
     opacity: 1;
@@ -4853,7 +4872,7 @@ new process form container
 }
 .allStations .stations {
     background: white;
-    margin: 20px 14px 0px -20px;
+    margin: 20px 14px 0px -27px;
     padding: 0px 25px 0px 21px;
 }
 .empty-reponse {

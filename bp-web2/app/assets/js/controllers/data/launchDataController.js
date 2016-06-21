@@ -324,6 +324,48 @@ $scope.fillValue = function(cost, newModelValue, obj) {
 
 }
 
+$scope.fillValueNew = function(cost, newModelValue, resource_id, element_id) {
+  console.log(cost, newModelValue);
+//        POST  /data/launch/:launch_id/values/fill
+    var reqProm = $http.post('/data/launch/'+$scope.launchId+'/values/fill', {});
+      reqProm.success(function(data){ console.log(data); });
+//        POST  /data/launch/:launch_id/values/refill
+
+
+      console.log(cost);
+      // entityId: String, launchId: Int, resourceId: Int
+      var resourceId = resource_id;
+      var launchId = $scope.launchId;
+      var entityId = cost.entities.id;
+      var boardId = cost.entities.boardId;
+      var slat = newModelValue;
+      var etitle = cost.entities.title
+
+      var req = {title: etitle, boardId: boardId, entityId: entityId, 
+        meta: [{'key': 'elementId', 'value': element_id.toString() }], 
+        sval: newModelValue, publisher: ''};
+
+      if (true){//(cost.value === undefined) {
+        $http.post(jsRoutes.controllers.DataController.fill_slat(entityId, 
+                                              launchId, resourceId).absoluteURL(document.ssl_enabled),
+                          req).then(function (data) {
+                            console.log(data);
+                            if ($scope.insideLaunch) {
+                                $scope.loadData();
+                            }
+        });
+      } else {
+        $http.post(jsRoutes.controllers.DataController.refill_slat(entityId, launchId, resourceId, slat.id).absoluteURL(document.ssl_enabled),
+                          req).then(function (data) {
+                            console.log(data);
+                            if ($scope.insideLaunch) {
+                                $scope.loadData();
+                            }
+        });
+      }
+
+}
+
 $scope.clearCost = function(cost, obj) {
 //        POST  /data/launch/:launch_id/values/clear
     var reqProm = $http.post('/data/launch/'+$scope.launchId+'/values/clear', {});
@@ -430,7 +472,7 @@ $scope.createAssignedResEls = function(costs, element) {
 };
 
 
-$scope.createLaunchedAssignedResEls = function(costs, element) {
+$scope.createLaunchedAssignedResEls = function(costs, element, costObj) {
   var elementId = element.topo_id.id;
   //var elementId = _.find($scope.launchTopologs,function(t){ return elementIdPlain === t.element_id });
   // (elementId: Int, resourceId: Int, entityId: String = "*")
@@ -446,8 +488,12 @@ $scope.createLaunchedAssignedResEls = function(costs, element) {
                                                                            $scope.launchId).absoluteURL(document.ssl_enabled),
                     newReqs ).then(function (data) {
 
-
-                      $scope.loadData();
+                      // Fill value
+                      $scope.fillValueNew(costs, 
+                                          costs.value, 
+                                          costs.resource.resource.id,
+                                          elementId);
+                      //$scope.loadData();
                       console.log(data);
   });
 };
