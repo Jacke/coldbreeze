@@ -352,7 +352,7 @@ $scope.clearCost = function(cost, obj) {
 $scope.editCost = function() {
 
 }
-$scope.removeCost = function() {
+$scope.removeCostWithValue = function() {
 
 }
 
