@@ -78,7 +78,8 @@ class Application @Inject() (
             routes.javascript.CostFillController.removeEntityById,
             routes.javascript.DataController.refill_slat,
             routes.javascript.DataController.fill_slat,
-            routes.javascript.DataController.api_create_resource
+            routes.javascript.DataController.api_create_resource,
+            routes.javascript.DataController.delete_resource
 
           // TODO Add your routes here
         )

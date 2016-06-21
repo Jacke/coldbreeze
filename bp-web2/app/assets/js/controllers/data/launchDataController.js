@@ -352,8 +352,19 @@ $scope.clearCost = function(cost, obj) {
 $scope.editCost = function() {
 
 }
-$scope.removeCostWithValue = function() {
 
+
+$scope.removeCostWithValue = function(cost) {
+   // delete_resource
+   var resourceId = 0;
+   var req = {};
+    $http.post(jsRoutes.controllers.DataController.delete_resource(resourceId).absoluteURL(document.ssl_enabled),
+                      req).then(function (data) {
+                        console.log(data);
+                        if ($scope.insideLaunch) {
+                            $scope.loadData();
+                        }
+    });   
 }
 
 
