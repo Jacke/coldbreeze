@@ -349,7 +349,7 @@ def delete_launch_assigned_element(id: Int) = SecuredAction(BodyParsers.parse.js
   // 1. Remove values
   // 2. Remove entities
   SessionElementResourceDAO.delete(id) match {
-  	case _ => Ok(Json.toJson(Map("message" -> "ok")))
+  	case a => Ok(Json.toJson(Map("message" -> a.toString)))
   }
 }
 

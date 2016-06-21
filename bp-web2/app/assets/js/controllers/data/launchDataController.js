@@ -355,6 +355,7 @@ $scope.editCost = function() {
 
 
 $scope.removeCostWithValue = function(cost) {
+  console.log(cost);
    // delete_resource
    var resourceId = 0;
    var req = {};
@@ -467,7 +468,7 @@ $scope.deleteAsssignedResEl = function(cost) {
 $scope.deleteLaunchAsssignedResEl = function(cost) {
   //$('/data/cost/del_launch_assign/:resource_id')
   console.log(cost);
-  $http.post(jsRoutes.controllers.CostFillController.delete_launch_assigned_element(cost.id, $scope.launchId).absoluteURL(document.ssl_enabled), {
+  $http.post(jsRoutes.controllers.CostFillController.delete_launch_assigned_element(cost.obj.id).absoluteURL(document.ssl_enabled), {
                     headers:  {'X-Auth-Token': $scope.token, 'Access_Name': 'user'}}).then(function (data) {
                       $scope.loadData();
                       console.log(data);

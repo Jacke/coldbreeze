@@ -1930,6 +1930,15 @@ span.reaction-icon.minicon.minicon-gear-fill-right {
     font-size: 13px;
     text-align: center;
 }
+.stations .pipeContent .pipeContentValue {
+    display: inline-block;
+    float: right;
+}
+
+.stations .pipeContent .pipeContentValue button.close {
+    color:white;
+}
+
 
 .pipeContent {
     display: block;
