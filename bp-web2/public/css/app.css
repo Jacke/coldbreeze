@@ -1303,6 +1303,7 @@ span.selectedRefType.col-xs-6.ref-selected-object {
     background: rgba(255, 253, 243, 0.54);
     width: 100%;
     padding: 8px 17px;
+    border: solid 1px #E6E6E6;
     border-radius: 6px;
 }
 
