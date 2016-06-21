@@ -44,7 +44,8 @@
         ng-init="newCost.entities = newCost.resource.entities[0]"
         ng-hide="newCost.resource !== undefined && newCost.resource.entities.length < 1">
    <option data-ng-repeat="entity in newCost.resource.entities" 
-            value="{{entity.id}}" ng-selected="entity == newCost.resource.entities[0]">{{entity.title}}</option>
+           value="{{entity.id}}" 
+           ng-selected="entity == newCost.resource.entities[0]">{{entity.title}}</option>
 </select>
 
 
@@ -55,8 +56,8 @@
         </div>
     </div>
   <div class="data-cost-controlls-buttons">
-  <a class="btn btn-small btn-success btn-fill" ng-click="createCostWithAssign(newCost,$parent.elem, costObj);$parent.addExistedCostForm=false;newCost = {};">Add</a>
-  <a class="btn btn-danger btn-success btn-fill" ng-click="$parent.addExistedCostForm=false">Cancel</a>
-</div>
+    <a class="btn btn-small btn-success btn-fill" ng-click="createCostWithAssign(newCost,$parent.elem, costObj);$parent.addExistedCostForm=false;newCost = {};">Add</a>
+    <a class="btn btn-danger btn-success btn-fill" ng-click="$parent.addExistedCostForm=false">Cancel</a>
+  </div>
 </form>
 </div>

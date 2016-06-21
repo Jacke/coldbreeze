@@ -7,15 +7,19 @@
 		<div class="pipeContent">
 			<div class="pipeContentTitle">{{ cost.resource.title }}</div>
 			<div class="pipeContentValue">
-				<a><span>{{ cost.value.sval }}</span></a>
-				<div class="pipeContentValueRefill" ng-init="slat.refill=false">
-					<!--
-					<input type="text" id="inputContentBlankValue" class="form-control" ng-model="slat.sval" required="">
-					<a class="btn btn-small btn-success" ng-click="reFillValue(cost, entity, slat)">ReFill</a>-->
+				<a class="pipeContentValueRefill" ng-click="cost.refill=true;"><span>{{ cost.value.sval }}</span></a>
+				<div class="pipeContentValueRefill" ng-show="cost.refill" ng-init="cost.refill=false">
+					<input type="text" 
+						   id="inputContentBlankValue" 
+						   class="form-control" 
+						   ng-model="cost.newValue" 
+						   required="">
+					<a class="btn btn-small btn-success" 
+					   ng-click="fillLaunchAssignedRefValue(cost, $parent.elem, costObj)">Update</a>
+				</div>
 				<button type="button" class="close" ng-click="deleteLaunchAsssignedResEl(costObj)">
                   <span aria-hidden="true">×</span><span class="sr-only">Close</span>
                 </button>
-			</div>
 			</div>
 			<!--
 			<div class="pipeContentBlankValue" ng-show="slatFilter(entity, cost.slats).length < 1">

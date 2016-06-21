@@ -324,8 +324,9 @@ $scope.fillValue = function(cost, newModelValue, obj) {
 
 }
 
-$scope.fillValueNew = function(cost, newModelValue, resource_id, element_id) {
-  console.log(cost, newModelValue);
+$scope.fillValueNew = function(cost, newModelValue, resource_id, element_id, refill) {
+  console.log(cost);
+  console.log('newModelValue', newModelValue);
 //        POST  /data/launch/:launch_id/values/fill
     var reqProm = $http.post('/data/launch/'+$scope.launchId+'/values/fill', {});
       reqProm.success(function(data){ console.log(data); });
@@ -336,16 +337,16 @@ $scope.fillValueNew = function(cost, newModelValue, resource_id, element_id) {
       // entityId: String, launchId: Int, resourceId: Int
       var resourceId = resource_id;
       var launchId = $scope.launchId;
-      var entityId = cost.entities.id;
-      var boardId = cost.entities.boardId;
+      var entityId = cost.entity.id;
+      var boardId = cost.entity.boardId;
       var slat = newModelValue;
-      var etitle = cost.entities.title
+      var etitle = cost.entity.title
 
       var req = {title: etitle, boardId: boardId, entityId: entityId, 
         meta: [{'key': 'elementId', 'value': element_id.toString() }], 
         sval: newModelValue, publisher: ''};
 
-      if (true){//(cost.value === undefined) {
+      if (refill == undefined){//(cost.value === undefined) {
         $http.post(jsRoutes.controllers.DataController.fill_slat(entityId, 
                                               launchId, resourceId).absoluteURL(document.ssl_enabled),
                           req).then(function (data) {
@@ -355,7 +356,7 @@ $scope.fillValueNew = function(cost, newModelValue, resource_id, element_id) {
                             }
         });
       } else {
-        $http.post(jsRoutes.controllers.DataController.refill_slat(entityId, launchId, resourceId, slat.id).absoluteURL(document.ssl_enabled),
+        $http.post(jsRoutes.controllers.DataController.refill_slat(entityId, launchId, resourceId, cost.value.id).absoluteURL(document.ssl_enabled),
                           req).then(function (data) {
                             console.log(data);
                             if ($scope.insideLaunch) {
@@ -496,6 +497,26 @@ $scope.createLaunchedAssignedResEls = function(costs, element, costObj) {
                       //$scope.loadData();
                       console.log(data);
   });
+};
+
+
+$scope.fillLaunchAssignedRefValue = function(costs, element, costObj) {
+  var elementId = element.topo_id.id;
+  //var elementId = _.find($scope.launchTopologs,function(t){ return elementIdPlain === t.element_id });
+  // (elementId: Int, resourceId: Int, entityId: String = "*")
+  console.log(costs);
+  //var reqs = _.map(costs, function(cost) { return  {elementId: elementId, resourceId: costs.resource.resource.id,
+  //                                                  entityId: costs.entities}; });
+
+  // Fill value
+                    $scope.fillValueNew(costs, 
+                                          costs.newValue, 
+                                          costs.resource.id,
+                                          elementId,
+                                          true);
+                      //$scope.loadData();
+                      console.log(data);
+
 };
 
 
