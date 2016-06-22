@@ -117,6 +117,9 @@ object BPSessionStateDAOF {
 
   private def filterQuery(id: Int): Query[BPSessionStates, BPSessionState, Seq] =
     sessionstates.filter(_.id === id)
+  private def filterQuerys(ids: List[Int]): Query[BPSessionStates, BPSessionState, Seq] =
+    sessionstates.filter(_.id inSetBind ids)   
+
   private def filterQuerySession(id: Int): Query[BPSessionStates, BPSessionState, Seq] =
     sessionstates.filter(_.session === id)
   private def filterQueryProcess(id: Int): Query[BPSessionStates, BPSessionState, Seq] =
@@ -196,6 +199,9 @@ object BPSessionStateDAOF {
 
   def get(k: Int):Future[Option[BPSessionState]] =
       db.run(filterQuery(k).result.headOption)
+
+  def gets(k: List[Int]):Future[Seq[BPSessionState]] = 
+      db.run(filterQuerys(k).result)
 
   def update(id: Int, bpsession: BPSessionState) = {
     val bpToUpdate: BPSessionState = bpsession.copy(Option(id))

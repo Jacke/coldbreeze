@@ -98,6 +98,15 @@ class LaunchShareController @Inject() (
   val env: Environment[User2, CookieAuthenticator],
   socialProviderRegistry: SocialProviderRegistry)
   extends Silhouette[User2, CookieAuthenticator] {
+
+implicit val SessionElementsReads = Json.reads[SessionElements]
+implicit val SessionElementsWrites = Json.format[SessionElements]
+implicit val BPSessionStateReads = Json.reads[BPSessionState]
+implicit val BPSessionStateWrites = Json.format[BPSessionState]
+implicit val LaunchStateObjectsReads = Json.reads[LaunchStateObjects]
+implicit val LaunchStateObjectsWrites = Json.format[LaunchStateObjects]
+
+
 implicit val InputLoggerReads = Json.reads[InputLogger]
 implicit val InputLoggerWrites = Json.format[InputLogger]
 implicit val SessionStateLogReads  = Json.reads[SessionStateLog]

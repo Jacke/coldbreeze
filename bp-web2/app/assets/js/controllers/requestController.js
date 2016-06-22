@@ -1278,6 +1278,32 @@ $scope.lastExecuted = function() {
     }
   }
 };
+
+$scope.lastExecutionOfElement = function(element) {
+  var session = element.session;
+  var states = _.find($scope.logs.state_logs_objects, function(s){return s.launchId == session });
+  console.log('states', states);
+  if (states !== undefined) {
+
+  var element_states = _.filter(states.states, function(state) { return state.front_elem_id == element.id })
+  console.log('element_states', element_states, element.id);
+
+  var lastState = _.find(element_states,function(elstate) {
+    return elstate.title == "invoked"
+  });
+  console.log('lastState', lastState);
+
+  if (lastState !== undefined) {
+    var finalStateLog = _.find($scope.logs.state_logs, function(d){ return d.state_id == lastState.id })
+    return finalStateLog.created_at;
+  } else {
+    return undefined;
+  }
+} else {
+  return undefined
+}
+}
+
 $scope.byObjId = function(elem) {
   return function(obj) {
     if (obj.f_elem !== undefined) {

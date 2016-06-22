@@ -60,12 +60,17 @@ import play.api.mvc.{ Action, RequestHeader }
 
 
 case class StationNoteMsg(msg: String)
+case class LaunchStateObjects(
+    launchId: Int,
+    states: List[BPSessionState]
+)
 case class LogsContainer(session_loggers: List[BPLoggerDTO],
                          process_histories: List[ProcessHistoryDTO],
                          stations: List[BPStationDTO],
                          input_logs: List[InputLogger] = List.empty,
                          state_logs: List[SessionStateLog] = List.empty,
-                         procId: Int = 0)
+                         procId: Int = 0,
+                         state_logs_objects: List[LaunchStateObjects] = List.empty)
 
 
 
@@ -75,6 +80,14 @@ class ProcessSessionController @Inject() (
   val env: Environment[User2, CookieAuthenticator],
   socialProviderRegistry: SocialProviderRegistry)
   extends Silhouette[User2, CookieAuthenticator] {
+
+implicit val SessionElementsReads = Json.reads[SessionElements]
+implicit val SessionElementsWrites = Json.format[SessionElements]
+implicit val BPSessionStateReads = Json.reads[BPSessionState]
+implicit val BPSessionStateWrites = Json.format[BPSessionState]
+implicit val LaunchStateObjectsReads = Json.reads[LaunchStateObjects]
+implicit val LaunchStateObjectsWrites = Json.format[LaunchStateObjects]
+
 
   implicit val InputLoggerReads = Json.reads[InputLogger]
   implicit val InputLoggerWrites = Json.format[InputLogger]
@@ -295,19 +308,31 @@ def logs_index(id: Int) = SecuredAction.async { implicit request =>
       val input_logs = InputLoggerDAO.getBySessions(session_ids).toList
       val session_log = SessionStateLogDAO.getAllBySessions(session_ids).toList
 
+
+val allStatesIds = session_log.map(_.state_id).distinct
+val allStatesF = BPSessionStateDAOF.gets(allStatesIds)
+val state_logs_objectsF = allStatesF.map { allStates =>
+  session_ids.map(session =>
+    LaunchStateObjects(session, allStates.filter(st => st.session == session).toList)
+  ).toList
+}
+
     for {
       maybeHistory <- processHistoriesF
+      state_logs_objects <- state_logs_objectsF
       result <- Future(Ok(Json.toJson(LogsContainer(session_loggers,
         maybeHistory.toList,
         stations,input_logs,
         session_log,
-        id
+        id,
+        state_logs_objects
         ))))
     } yield result
 
       //Ok(Json.toJson(LogsContainer(session_loggers, processHistories, stations,input_logs,session_log)))
   } else { Future(Forbidden(Json.obj("status" -> "Not found"))) }
 }
+
 
 
 

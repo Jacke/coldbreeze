@@ -68,6 +68,12 @@ class APIController @Inject() (
   extends Silhouette[User2, JWTAuthenticator] {
 
 
+implicit val SessionElementsReads = Json.reads[SessionElements]
+implicit val SessionElementsWrites = Json.format[SessionElements]
+implicit val BPSessionStateReads = Json.reads[BPSessionState]
+implicit val BPSessionStateWrites = Json.format[BPSessionState]
+implicit val LaunchStateObjectsReads = Json.reads[LaunchStateObjects]
+implicit val LaunchStateObjectsWrites = Json.format[LaunchStateObjects]
 
 implicit val InputLoggerReads = Json.reads[InputLogger]
 implicit val InputLoggerWrites = Json.format[InputLogger]
