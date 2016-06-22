@@ -581,20 +581,7 @@ $scope.metaExisted = function(meta, key) {
         }).length < 1;
 }
 
-$scope.byElement = function(element) {
-  return function(obj) {
-    //console.log('obj', obj);
-    //console.log('element', element);
-    if (element) {
-    var trueElementId = element.topo_id.id;//_.find($scope.launchTopologs,function(t){ return element.id === t.element_id });
-     if (trueElementId !== undefined && trueElementId !== undefined && obj.obj.element_id === trueElementId) {
-       return obj;
-     } else {
-       return false;
-     }
-   } else { return false; }
- }
-}
+
 
 $scope.filesForLaunchElement = function(element) {
   return function(obj) {
@@ -683,10 +670,52 @@ $scope.filesForLaunch = function() {
 
 
 
+$scope.notSelectedIndicator = function(costObj, element) {
+  return function(obj) {
+    //var costForEl = _.filter(costObj, function(d){ 
+    //  console.log('costForElMap',d,element);
+    //  return indicatorByElement(element,d) });    
+    //console.log('costForEl', costForEl);
+    //var costs = _.flatten(_.map(costForEl, function(d) { 
+    //  return d.costs }));
+    //console.log('notSelectedIndicator', costObj, obj);
 
+    var c = _.find(costObj, function(c) { return c.obj.resource_id == obj.resource.id });
+    if ( c == undefined ) {
+      return obj;
+    } else {
+      return false
+    }
+  }
+}
 
+$scope.indicatorByElement = function(element, obj) {
+      //console.log('obj', obj);
+    //console.log('element', element);
+    if (element) {
+    var trueElementId = element.topo_id.id;//_.find($scope.launchTopologs,function(t){ return element.id === t.element_id });
+     if (trueElementId !== undefined && trueElementId !== undefined && obj.obj.element_id === trueElementId) {
+       return obj;
+     } else {
+       return false;
+     }
+   } else { return false; }
+}
 
-
+$scope.byElement = function(element) {
+  return function(obj) {
+    //console.log('obj', obj);
+    //console.log('element', element);
+    if (element) {
+    var trueElementId = element.topo_id.id;//_.find($scope.launchTopologs,function(t){ return element.id === t.element_id });
+     if (trueElementId !== undefined && trueElementId !== undefined && obj.obj.element_id === trueElementId) {
+       return obj;
+     } else {
+       return false;
+     }
+   } else { return false; }
+ }
+}
 
 
 }]);

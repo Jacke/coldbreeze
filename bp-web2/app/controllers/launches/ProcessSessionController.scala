@@ -310,7 +310,7 @@ def logs_index(id: Int) = SecuredAction.async { implicit request =>
 
 
 val allStatesIds = session_log.map(_.state_id).distinct
-val allStatesF = BPSessionStateDAOF.gets(allStatesIds)
+val allStatesF = BPSessionStateDAOF.getsBySessions(session_ids)
 val state_logs_objectsF = allStatesF.map { allStates =>
   session_ids.map(session =>
     LaunchStateObjects(session, allStates.filter(st => st.session == session).toList)

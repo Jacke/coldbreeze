@@ -6,7 +6,7 @@
         ng-model="newCost.resource"
         ng-init="newCost.resource=avalCosts[0];newCost.entity=avalCosts[0].entities[0]"
         class="forResource"
-        ng-options="res_cn as res_cn.resource.title for res_cn in avalCosts"
+        ng-options="res_cn as res_cn.resource.title for res_cn in avalCosts | filter:notSelectedIndicator(filteredCostItems)"
         ng-change="newCost.entities = newCost.resource.entities[0]"></select>
 
 <!--
