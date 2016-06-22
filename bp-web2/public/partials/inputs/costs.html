@@ -6,20 +6,22 @@
 	<div class="inputCost" ng-repeat="cost in costObj.costs">
 		<div class="pipeContent">
 			<div class="pipeContentTitle">{{ cost.resource.title }}</div>
+			<a class="pipeContentValueRefill" ng-click="cost.refill ? cost.refill=false : cost.refill=true;"><span>{{ cost.value.sval }}</span></a>
 			<div class="pipeContentValue">
-				<a class="pipeContentValueRefill" ng-click="cost.refill=true;"><span>{{ cost.value.sval }}</span></a>
 				<div class="pipeContentValueRefill" ng-show="cost.refill" ng-init="cost.refill=false">
 					<input type="text" 
 						   id="inputContentBlankValue" 
 						   class="form-control" 
 						   ng-model="cost.newValue" 
+						   ng-init="cost.newValue=cost.value.sval"
 						   required="">
-					<a class="btn btn-small btn-success" 
-					   ng-click="fillLaunchAssignedRefValue(cost, $parent.elem, costObj)">Update</a>
+					<div class="indicator-controls">
+						<a class="btn btn-small btn-success update-indicator-btn" 
+						   ng-click="fillLaunchAssignedRefValue(cost, $parent.elem, costObj)">Update</a>
+						<a class="btn btn-small btn-success remove-indicator-btn" 
+						   ng-click="deleteLaunchAsssignedResEl(costObj)">Delete</a>
+					</div>
 				</div>
-				<button type="button" class="close" ng-click="deleteLaunchAsssignedResEl(costObj)">
-                  <span aria-hidden="true">×</span><span class="sr-only">Close</span>
-                </button>
 			</div>
 			<!--
 			<div class="pipeContentBlankValue" ng-show="slatFilter(entity, cost.slats).length < 1">

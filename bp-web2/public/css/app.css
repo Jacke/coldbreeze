@@ -1914,13 +1914,16 @@ span.reaction-icon.minicon.minicon-gear-fill-right {
     top: 7px;
 }
 .pipeContent a.btn.btn-small.btn-success {
-    color: white;
     padding: 3px 9px;
-    border-radius: 2px;
-    font-size: 14px;
     font-family: 'Open Sans', Helvetica;
     font-weight: 600;
-    background-color: #27ae60;
+    color: white;
+    background: none;
+    border: none;
+    font-size: 11px;
+    border-bottom: solid 1px #68A5C4;
+    border-radius: 0px;
+    margin-top: 3px;
 }
 .pipeContentBlankValue input:focus {
     box-shadow: none;
@@ -1944,7 +1947,13 @@ span.reaction-icon.minicon.minicon-gear-fill-right {
     display: block;
     width: 100%;
 }
-
+.pipeContent a.pipeContentValueRefill {
+    display: inline-block;
+    float: right;
+    font-size: 13px;
+    font-weight: 900;
+    margin-top: 5px;
+}
 .dataPipe .pipe {
     width: 122px;
 }
@@ -2088,7 +2097,24 @@ input.form-control.indicator-value-entry {
     clear: both;
     padding-left: 11px;
 }
-
+input#inputContentBlankValue {
+    width: 55%;
+    padding: 2px 4px;
+    height: 26px;
+    background: #54566D;
+    color: white;
+    border: solid 1px transparent;
+    margin-top: 1px;
+    font-weight: 900;
+    clear: both;
+    padding-left: 11px;
+    float: left;
+    display: inline-block;
+}
+.pipeContentValue .indicator-controls {
+    clear: both;
+    margin-bottom: 10px;
+}
 
 button.btn.btn-default.form-control.ui-select-match {
     background: #2C2F3C;
