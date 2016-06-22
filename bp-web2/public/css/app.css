@@ -2108,15 +2108,15 @@ input.form-control.indicator-value-entry {
     padding-left: 11px;
 }
 input#inputContentBlankValue {
-    width: 55%;
     padding: 2px 4px;
     height: 26px;
     background: #54566D;
     color: white;
     border: solid 1px transparent;
-    margin-top: 1px;
+    margin: 7px 0px 4px 0px;
     font-weight: 900;
     clear: both;
+    font-size: 13px;
     padding-left: 11px;
     float: left;
     display: inline-block;
