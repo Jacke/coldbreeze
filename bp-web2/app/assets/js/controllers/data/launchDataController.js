@@ -337,10 +337,16 @@ $scope.fillValueNew = function(cost, newModelValue, resource_id, element_id, ref
       // entityId: String, launchId: Int, resourceId: Int
       var resourceId = resource_id;
       var launchId = $scope.launchId;
+      if (cost.entity !== undefined) {
       var entityId = cost.entity.id;
       var boardId = cost.entity.boardId;
-      var slat = newModelValue;
       var etitle = cost.entity.title
+    } else {
+      var entityId = cost.entities.id;
+      var boardId = cost.entities.boardId;
+      var etitle = cost.entities.title     
+    }
+      var slat = newModelValue;
 
       var req = {title: etitle, boardId: boardId, entityId: entityId, 
         meta: [{'key': 'elementId', 'value': element_id.toString() }], 
@@ -356,7 +362,8 @@ $scope.fillValueNew = function(cost, newModelValue, resource_id, element_id, ref
                             }
         });
       } else {
-        $http.post(jsRoutes.controllers.DataController.refill_slat(entityId, launchId, resourceId, cost.value.id).absoluteURL(document.ssl_enabled),
+        $http.post(jsRoutes.controllers.DataController.refill_slat(entityId, launchId, resourceId, 
+          cost.value.id).absoluteURL(document.ssl_enabled),
                           req).then(function (data) {
                             console.log(data);
                             if ($scope.insideLaunch) {
