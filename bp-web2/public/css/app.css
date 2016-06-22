@@ -1300,12 +1300,12 @@ span.selectedRefType.col-xs-6.ref-selected-object {
 .ref-desc.ref-desc-select-container {
     clear: both;
     background: rgba(255, 253, 243, 0.54);
-    width: 100%;
+    width: 95%;
     padding: 8px 17px;
     border: solid 1px #E6E6E6;
     border-radius: 6px;
+    margin: 8px auto !important;
 }
-
 .ref-desc.ref-desc-select-container a.ref-desc-select-container-link {
     cursor: pointer;
     text-decoration: none;
@@ -1558,7 +1558,7 @@ span.moicon.expand-ref-select {
     color: gray;
     margin-left: 3px;
     position: absolute;
-    top: 4px;
+    top: 9px;
     left: -2px;
 }
 button.expand-ref-select {

@@ -12,10 +12,10 @@
     <div class="control-group">
       <h3>Create element</h3>
 
-    <div class="form-new-element-nav" ng-init="newBpelem.showCardElement=false;">
+    <div class="form-new-element-nav" style="display: none;" ng-init="newBpelem.showCardElement=false;">
           <a ng-click="setTab(0, newBpelem)" ng-class="isSet(0, newBpelem)? 'active' : ''">Card</a></label>
           <a ng-click="setTab(1, newBpelem)" ng-class="isSet(1, newBpelem)? 'active' : ''">People</a>
-          <a ng-click="setTab(2, newBpelem)" ng-class="isSet(2, newBpelem)? 'active' : ''">Indicators</a></label>
+          <a ng-click="setTab(2, newBpelem)" style="display:none;" ng-class="isSet(2, newBpelem)? 'active' : ''">Indicators</a></label>
     </div>
 
 
@@ -68,7 +68,9 @@
 
     <div class="control-group form-submit form-group" style="clear:both;" ng-show="isManagerVal && newBpelem.refSelectHidden" >
       <div class="controls">
-        <button type="submit" id="createFrontElementFormButton" ng-click="createNewElem()" class="btn btn-small btTxt submit btn lg solid-green ng-binding">{{ 'CREATE' | translate }}</button>
+        <button type="submit" id="createFrontElementFormButton" ng-click="setTab(1, newBpelem)" class="btn btn-small btTxt submit btn lg solid-green ng-binding" ng-show="isSet(0, newBpelem)">People</button>
+
+        <button type="submit" id="createFrontElementFormButton" ng-show="isSet(1, newBpelem)" ng-click="createNewElem()" class="btn btn-small btTxt submit btn lg solid-green ng-binding">{{ 'CREATE' | translate }}</button>
       </div>
     </div>
 
