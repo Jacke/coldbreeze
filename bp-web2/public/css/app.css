@@ -1946,6 +1946,7 @@ span.reaction-icon.minicon.minicon-gear-fill-right {
 .pipeContent {
     display: block;
     width: 100%;
+    clear: both;
 }
 .pipeContent a.pipeContentValueRefill {
     display: inline-block;
