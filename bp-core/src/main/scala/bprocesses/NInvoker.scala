@@ -104,7 +104,7 @@ trait NISygnals {
   }
 
 }
-trait NIMoves extends StateLigher {
+trait NIMoves extends StateLigher with PredefSwitchersLighter {
   var station:BPStation
   val bp:BProcess
   def toStation(bp: BProcess): BPStation
@@ -178,10 +178,12 @@ def move:Unit = {
       if (bp.collisionCounter > maxLoop) { // check for states && switchers
 
       } else { // Collision free work
-        commonBottomLine(elem)
-      }
-     
+        elementInvokationStage(bp, elem)
+        
+        //commonBottomLine(elem)
 
+      }
+      
       if (!(bp.collisionCounter > maxLoop) || (station.isInFront | station.inspace) ) {
         move //  NInvoker.toApplogger("station")
              //  NInvoker.toApplogger(station.isInFront)

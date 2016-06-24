@@ -6518,6 +6518,10 @@ ul.elem-control.elem-tabs {
   width: 20%;
   margin-left: 17%;
 }
+.settings-page .teamSettings {
+    overflow: visible;
+}
+
 dd {
     margin-bottom: 3px;
 }

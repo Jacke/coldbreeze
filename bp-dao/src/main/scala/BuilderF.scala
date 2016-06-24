@@ -27,7 +27,19 @@ import com.typesafe.scalalogging.Logger
 import org.slf4j.LoggerFactory
 import us.ority.min.actions._
 
+object TestBuilder2 extends App {
+  println("test")
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
 
+  val processF = BuildF.run(97, invoke = true)
+  val process = await(processF)
+  println(process)
+  //NInvoker.toApplogger("Launched " + process.get.session_id + " session")
+  //Build.newRunFrom(bpID = 46, session_id = process.get.session_id, params = List(
+  //  ReactionActivator(reaction_id = 1),
+  //  ReactionActivator(reaction_id = 2)
+  //))
+}
 
 object BuildF {
   protected lazy val appLogger: Logger = Logger(LoggerFactory.getLogger("build"))
@@ -87,9 +99,11 @@ object BuildF {
         processRunned1.session_states.foreach {
           state =>
           //println()
-          toApplogger("Status:   " + state.on)
           toApplogger("Title :   " + state.title)
+          toApplogger("Status:   " + state.on)
         }
+        toApplogger("Title :   " + "Paused")
+        toApplogger("Status:   " + processRunned1.station.paused)        
         toApplogger("elements length" + processRunned1.allElements.length)
         toApplogger("************************************************")
         toApplogger("************************************************")
@@ -200,7 +214,7 @@ def saveOrUpdateSessionStates(bprocess: BProcess, bprocess_dto: BProcessDTO, ses
 
     toApplogger("session states FOR UPDATE: ")
     session_states.foreach { state =>
-        toApplogger(s"session state ${state.id} ${state.title} ${state.on}-${state.on_rate} ")
+        toApplogger(s"session state ${state.id} ${state.title} ${state.on} :: ${state.on_rate} ")
     }
     val deltas = session_states.filter { state =>
       session_states_initial.find(initialState => initialState.id == state.origin_state &&

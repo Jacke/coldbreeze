@@ -59,17 +59,20 @@ import org.slf4j.LoggerFactory
 
         val middleware = Middleware(
             id = Some(1L),
+          title = "title",
             ident = "delay",
               ifaceIdent = "delay"
         )
         val middleware1 = Middleware(
             id = Some(1L),
+          title = "title",
             ident = "delay",
           ifaceIdent = "delay"
 
         )
         val middleware2 = Middleware(
             id = Some(1L),
+          title = "title",
             ident = "delay",
           ifaceIdent = "delay"
 

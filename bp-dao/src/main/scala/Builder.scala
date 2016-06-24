@@ -28,7 +28,7 @@ import scala.util.Try
 case class ProcessExecutionResult(process: BProcess, variety:List[UndefElement] = List(),spaces:List[BPSpaceDTO] = List(),
   var varietySpaces: List[SpaceElementDTO] = List())
 
-object TestBuilder extends App {
+object TestBuilder {//extends App {
   val process = Build.run(10, invoke = true)
   NInvoker.toApplogger("Launched " + process.get.session_id + " session")
   //Build.newRunFrom(bpID = 46, session_id = process.get.session_id, params = List(
