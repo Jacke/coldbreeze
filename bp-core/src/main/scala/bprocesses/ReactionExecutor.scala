@@ -40,30 +40,45 @@ object ReactionExecutor {
 
   }
 
-	def execute(process: BProcess, reaction: UnitReaction) {
+	def execute(process: BProcess, reaction: UnitReaction) = {
       /**
        * TODO: Add logic and expressions execution
        */
-      // find element by topolog
-      val topo = process.topology.find(topo => topo.id == Some(reaction.element))
+      val topo = retriveActionElementByTopology(process, reaction)
       if (topo.isDefined) {
-      val element = retriveElementByTopo(topo.get, process)
-      toApplogger(s"Found ${reaction.reaction_state_outs.length} state outs for ${reaction.title} action")
-        reaction.reaction_state_outs.foreach { out => 
-          element.session_states.find(st => st.origin_state.getOrElse(0) == out.state_ref) match {
-            case Some(state) => {
-              // update state with
-              println(s"execute state ${state.title} by ${out.on}")
-              state.on = out.on
-              state.on_rate = out.on_rate
-            }
-            case _ => {
-              println("not found")
-            }
-          }
-        }
+        val element = retriveElementByTopo(topo.get, process)
+        toApplogger(
+s"""Found ${reaction.reaction_state_outs.length} state outs for ${reaction.title} action"""
+        )
+        plainOldAction(reaction, element)
+
       }
   }
+
+  /**
+   * Plain old action used for execution simple states
+   * example: Confirm action -> will light confirmed state
+   */
+  def plainOldAction(reaction: UnitReaction, element: ProcElems) = {
+    reaction.reaction_state_outs.foreach { out => 
+      element.session_states.find(st => st.origin_state.getOrElse(0) == out.state_ref) match {
+        case Some(state) => {
+          // update state with
+          println(s"execute state ${state.title} by ${out.on}")
+          state.on = out.on
+          state.on_rate = out.on_rate
+        }
+        case _ => {
+          println("not found")
+        }
+      }
+    }
+  }
+
+
+  // find element by topolog
+  def retriveActionElementByTopology(process: BProcess, reaction: UnitReaction) = 
+    process.topology.find(topo => topo.id == Some(reaction.element))
 
   def retriveElementByTopo(topo: ElemTopology, bp: BProcess):ProcElems = {
     topo.front_elem_id match {

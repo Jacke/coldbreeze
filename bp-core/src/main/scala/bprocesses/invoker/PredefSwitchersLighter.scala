@@ -32,11 +32,11 @@ val FINISH_STATE = "finished"
 val CANCEL_STATE = "canceled"
 
 val COMMON_STATES = List(
-INIT_STATE,
-INVOKE_STATE,
-FINISH_STATE,
-CANCEL_STATE
-)
+						INIT_STATE,
+						INVOKE_STATE,
+						FINISH_STATE,
+						CANCEL_STATE
+						)
 
 def elementInvokationStage(bp: BProcess, elem: ProcElems) = {
 	println(s" ")
@@ -63,23 +63,25 @@ def elementInvokationStage(bp: BProcess, elem: ProcElems) = {
 	  println("state: "+state.title + " "+state.switchers.length)
 	}
 
-
- 	/***************************************************************************************
- 	 * Main execution																	   *
+ 	/***************************************************************************************/
+ 	/***************************************************************************************/
+ 	/***************************************************************************************/
+ 	/* Main execution																	   *
  	 */
 	// init state 				// invoking state  			 // finished/canceled state
     elemInitStage(bp, elem);    elemInvokingStage(bp, elem); elemFinishCancelStage(bp, elem)
 
-
 	println(s" ")
 	println(s"************************************************")
+ 	/***************************************************************************************/
+ 	/***************************************************************************************/
 }
 
 
 /***
  * Stages
  */
-// init state
+// 1) init stage
 def elemInitStage(bp: BProcess, elem: ProcElems) = {
 	if (!skipState(elem, INIT_STATE) && !stateValue(elem, INVOKE_STATE)) {
 	  pushToStationLogger(bp,"initiating")
@@ -88,7 +90,7 @@ def elemInitStage(bp: BProcess, elem: ProcElems) = {
 	}
 }
 
-// invoking state   
+// 2) invoking stage   
 def elemInvokingStage(bp: BProcess, elem: ProcElems) = {
 	if (!skipState(elem, INVOKE_STATE)) {
       pushToStationLogger(bp,"invoking")
@@ -106,7 +108,7 @@ def elemInvokingStage(bp: BProcess, elem: ProcElems) = {
     }
 }
 
-// common state executor 
+// 3) common stage executor 
 def elemCommonStage(bp: BProcess, elem: ProcElems) = {
   // that will block execution when common states not complete
   // by lighting pause on launch   
@@ -149,6 +151,7 @@ def elemFinishCancelStage(bp: BProcess, elem: ProcElems) = {
 /***
  * Element control methods
  */
+ // state.on == false -> state.on == true
 def elemNewLigher(bp: BProcess, elem: ProcElems, state: String) = {
 	val rate: Int = 100 
 	val reason: String = "flow"
@@ -162,6 +165,7 @@ def elemNewLigher(bp: BProcess, elem: ProcElems, state: String) = {
 		case _ =>
 	}
 }
+// state.on_rate == rate && state.on == false (rate)-> state.on_rate == rate && state.on == false
 def elemNewPartialLigher(bp: BProcess, elem: ProcElems, state: String, rate: Int) = {
 	val reason: String = "flow"
 	println(s"Light ${elem.title} with State ${state} to ${rate}") 
@@ -175,11 +179,16 @@ def elemNewPartialLigher(bp: BProcess, elem: ProcElems, state: String, rate: Int
 	}
 }
 
-
+// get state value
 def stateValue(elem: ProcElems, stateInitialId: String): Boolean = 
 	elem.session_states.find(st => st.title == stateInitialId) match {
 		case Some(state) => state.on
 		case _ => false
+	}
+def stateValueRate(elem: ProcElems, stateInitialId: String): Int = 
+	elem.session_states.find(st => st.title == stateInitialId) match {
+		case Some(state) => state.on_rate
+		case _ => 0
 	}
 
 // If state already lighed then we need to skip it
@@ -197,7 +206,9 @@ def skipState(elem: ProcElems, stateInitialId: String):Boolean = {
 
 trait ActionAutostart {
 	def executeActions(bp: BProcess, actions: List[UnitReaction]) = {
-		actions.map(action => action.execute(bp))
+		actions.map { action => 
+			action.execute(bp)
+	    }
 	}
 }
 

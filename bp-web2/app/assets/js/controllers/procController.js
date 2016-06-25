@@ -283,7 +283,7 @@ $scope.createNewBP = function () {
 
 
 
-  $scope.services = BPServicesFactory.query();
+$scope.services = BPServicesFactory.query();
 
 
 $scope.loadLaunchesFromCache = function() {
@@ -397,8 +397,15 @@ $scope.loadProcessesFromCache = function() {
           .then(function (resp) {
             // 4. Split C and D and apply C for new created resources
             var removedIds = _.map(resp.data.deltas.d, function(d) { return parseInt(d.resourceId) });
-            var concatedProcess = processesCache.get('processes').concat(resp.data.c);
-            var finalizedProcess = _.filter(concatedProcess, function(c){ return !_.contains(removedIds, c.id) });
+            var existedProcessIds = _.map(processesCache.get('processes'), function(d){return d.id});
+            var cleanCreatedProcess = _.filter(resp.data.c, function(p){ 
+              return !(_.contains(existedProcessIds, p.id)); 
+            });
+
+            var concatedProcess = processesCache.get('processes').concat(cleanCreatedProcess);
+            var finalizedProcess = _.filter(concatedProcess, function(c){ 
+              return !_.contains(removedIds, c.id) 
+            });
             processesCache.put('processes', finalizedProcess);
             // 5. D for resource with ids that need to be removed
             processesCache.put('processesRemoved', resp.data.deltas.d)

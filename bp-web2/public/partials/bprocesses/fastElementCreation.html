@@ -10,46 +10,41 @@
 </div>
 
 </div>
+<style>
+  .fastNewElemFormContainer .new-elem-ref-actions-selected {
+    display: inline-block;
+    float: left;
+}
 
+.fastNewElemFormContainer .form-group.element-form-fields.primary-fields {
+    display: inline-block;
+    float: left;
+    width: 50%;
+}
+</style>
+
+<div class="fastNewElemFormContainer" ng-controller="BPelementListCtrl" ng-init="bp=$parent.bprocess;BPid=$parent.bprocess.id">
 <form novalidate="novalidate" class="form-horizontal form-fast-element-create">
-    <div class="form-group element-form-fields">
+    <div class="form-group element-form-fields primary-fields">
     <div class="control-group">
       <h3>Add element in {{ $parent.bprocess.title }} process</h3>
     </div>
-    <div class="head-fields">
-    <div class="form-group element-form-fields control-group clearfix">
-      <div class="controls col-xs-2">
-        <label class="control-label col-sm-1" for="fastElemTitle">Title</label>
-      </div>
-      <div class="controls col-xs-4">
-        <input type="text" id="fastElemTitle" class="form-control" ng-model="$parent.bprocess.newBpelem.title"/>
-      </div>
 
-    </div>
-    <div class="form-group element-form-fields control-group clearfix">
-      <div class="controls col-xs-2">
-        <label class="control-label col-sm-1" for="fastElemDesc">{{ 'DESC' | translate }}</label>
-      </div>
-      <div class="controls col-xs-4">
-        <textarea type="text" class="form-control" id="fastElemDesc" ng-model="$parent.bprocess.newBpelem.desc"/>
-      </div>
-    </div>
 
-    <div class="form-group element-form-fields control-group clearfix">
-    <div class="controls col-xs-2">
-          <label class="control-label ng-binding type-label" for="inputElType">Type</label>
-    </div>
-      <div class="controls col-xs-2">
-          <span class="selectedRefType">{{ $parent.bprocess.newBpelem.selectedRef.ref.title }}</span>
-            <a ng-click="$parent.bprocess.newBpelem.refSelectHidden=false;" ng-show="$parent.bprocess.newBpelem.refSelectHidden == true;" class="expand-ref-select"><span class="moicon moicon-info expand-ref-select"></span></a>
-      </div>
-    </div><!-- form-group element-form-fields -->
-    </div>
-    <div class="ref-select-container clearfix" ng-hide="$parent.bprocess.newBpelem.refSelectHidden" ng-init="$parent.bprocess.newBpelem.selectedRef != undefined ? $parent.bprocess.newBpelem.refSelectHidden=false : refSelectHidden=true;">
-  <select style="display:none;" name="category" id="categorySelect" ng-model="$parent.bprocess.newBpelem.refCategoryFilter" ng-init="$parent.bprocess.newBpelem.refCategoryFilter = refCategories[0]" ng-options="option for option in refCategories"><option value="0" selected="selected">Base</option></select>
+    <div class="ref-select-container clearfix" 
+    ng-hide="newBpelem.refSelectHidden" 
+    ng-init="newBpelem.selectedRef != undefined ? newBpelem.refSelectHidden=false : refSelectHidden=true;">
+      <select style="display:none;" 
+              name="category" 
+              id="categorySelect" 
+              ng-model="newBpelem.refCategoryFilter" 
+              ng-init="newBpelem.refCategoryFilter = refCategories[0]" 
+              ng-options="option for option in refCategories">
+              <option value="0" selected="selected">Base</option>
+      </select>
     <div class="templateButton form-group clearfix">
-      <div class="ref col-xs-5" ng-repeat="ref in $parent.$parent.refs" ng-class="{selected: $parent.bprocess.newBpelem.selectedRef.ref.id == ref.ref.id }">
-        <a ng-mouseover="$parent.$parent.refElem(ref, $parent.bprocess.newBpelem)" ng-click="$parent.bprocess.newBpelem.refSelectHidden=true;" class="btn btn-small btn-primary container_brick" ng-class="isSelected(ref, $parent.bprocess.newBpelem.elem)">{{ ref.ref.title }}</a>
+      <div class="ref col-xs-5" ng-repeat="ref in $parent.$parent.refs | filter: ref.hide == false" ng-class="{selected: newBpelem.selectedRef.ref.id == ref.ref.id }">
+        <a ng-mouseover="$parent.$parent.refElem(ref, newBpelem)" ng-click="newBpelem.refSelectHidden=true;" class="btn btn-small btn-primary container_brick" ng-class="isSelected(ref, newBpelem.elem)">{{ ref.ref.title }}</a>
       </div>
     </div>
     <!--
@@ -61,7 +56,124 @@
       </ul>
     </div>   -->
     </div>
+
+
+    <div class="head-fields" ng-show="newBpelem.refSelectHidden == true;">
+    <div class="form-group element-form-fields control-group clearfix">
+      <div class="controls col-xs-2">
+        <label class="control-label col-sm-1" for="fastElemTitle">Title</label>
+      </div>
+      <div class="controls col-xs-4">
+        <input type="text" id="fastElemTitle" class="form-control" ng-model="newBpelem.title"/>
+      </div>
+
     </div>
+    <div class="form-group element-form-fields control-group clearfix">
+      <div class="controls col-xs-2">
+        <label class="control-label col-sm-1" for="fastElemDesc">{{ 'DESC' | translate }}</label>
+      </div>
+      <div class="controls col-xs-4">
+        <textarea type="text" class="form-control" id="fastElemDesc" ng-model="newBpelem.desc"/>
+      </div>
+    </div>
+
+    <div class="form-group element-form-fields control-group clearfix">
+    <div class="controls col-xs-2">
+          <label class="control-label ng-binding type-label" for="inputElType">Type</label>
+    </div>
+      <div class="controls col-xs-2">
+          <span class="selectedRefType">{{ newBpelem.selectedRef.ref.title }}</span>
+            <a ng-click="newBpelem.refSelectHidden=false;" ng-show="newBpelem.refSelectHidden == true;" class="expand-ref-select"><span class="moicon moicon-info expand-ref-select"></span></a>
+      </div>
+    </div><!-- form-group element-form-fields -->
+      <div class="control-group people-control-group">
+      <div class="form-group element-form-fields">
+      <div class="form-group control-group clearfix">
+        <div class="controls col-xs-6" ng-init="newBpelem.perms = [];">
+          <div class="perms perm-list" ng-repeat="perm in newBpelem.perms" ng-init="perm.account = accFetch(perm)">
+            <span class="account-pic" tooltip="{{ perm.account.tooltip }}">
+                <img ng-src="{{ perm.account.avatarUrl}}" alt="{{ perm.account.tooltip }}">
+                <a ng-click="delPermForForm(perm,newBpelem.perms)" class="btn-delete minicon"></a>
+            </span>
+          </div>
+          <select id="inputPerm" disable-auto-validate="true" ng-model="newBpelem.perm" class="forUID" ng-options="employeegroup as credFetch(employeegroup) for employeegroup in employees_groups" multiple></select>
+          <!--<a ng-click="createPermForForm(newBpelem.perm, newBpelem.perms, 'front')" class="btn btn-big btn-success">{{ 'ADD' | translate }}</a>-->
+        </div>
+      </div>
+      </div>
+    </div>
+
+
+</div>
+
+</div>
+<div class="new-elem-ref-actions-selected">
+<div class="new-elem-ref-actions-select" ng-repeat="action in newBpelem.selectedRef.reactions">
+  <div class="new-elem-ref-actions-select__header">
+    <div class="new-elem-ref-actions-select__action-title">
+      {{ action.title }}
+    </div>
+
+  </div>
+
+  <div class="new-elem-ref-actions-select__action-pipes">
+    <div class="new-elem-ref-actions-select__action-pipes__inputs">
+      Inputs
+    </div>
+    <div class="new-elem-ref-actions-select__action-pipes__bases">
+      Bases
+    </div>
+    <div class="new-elem-ref-actions-select__action-pipes__outputs">
+      Outputs
+    </div>
+  </div>
+
+
+<div class="new-elem-action__action-bases" ng-repeat="middleware in newBpelem.selectedRef.middlewares | filter:byReaction(action)">
+  <div class="new-elem-ref-actions-select__middleware-title">
+      {{ middleware.title }}
+  </div>
+
+    <div class="new-elem-strategy__strategy" ng-repeat="strategy in newBpelem.selectedRef.strategies | filter:byMiddleware(middleware)">
+    <div class="new-elem-ref-actions-select__strategy-title">
+          <a class="new-elem-ref-actions-select__strategy-link"
+             ng-click="selectStrategy(strategy, middleware, action, newBpelem.selectedRef.bases)"
+             ng-class="isStrategySelected(strategy, action) ? 'selected' : ''">{{ strategy.ident }}</a>
+    </div>
+
+    <div class="new-elem-action__action-base" ng-show="isStrategySelected(strategy, action)">
+      <div class="form-horizontal new-elem-action__action-base__action-base-form">
+
+        <div class="new-elem-action__action-base-field" ng-repeat="base in action.refStrategySelect.bases | filter:byStrategy(strategy)">
+          <formly-form model="base.selectedStrategy" fields="fieldsForStrategy(strategy, action, base)">
+          </formly-form>
+        </div>
+<!--
+        <div class="form-group new-elem-action__action-base__action-base-form__field">
+          <input type="text" name="name" class="form-control" value="">
+        </div>
+        <div class="form-group new-elem-action__action-base__action-base-form__field">
+          <textarea name="name" class="form-control" rows="8" cols="40"></textarea>
+        </div>
+        <div class="form-group new-elem-action__action-base__action-base-form__field">
+          <select class="" class="form-control" name="select">
+            <option>0</option>
+          </select>
+        </div>
+-->
+      </div>
+    </div>
+  </div>
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
 
 
 <!-- ref-select-container -->
@@ -112,16 +224,18 @@
       </div>
     </div> -->
 
-    <input type="hidden" name="value" ng-init="$parent.bprocess.newBpelem.business=$parent.bprocess.business" ng-model="$parent.bprocess.newBpelem.business" value="{{ $parent.bprocess.business }}">
-    <input type="hidden" name="value" ng-init="$parent.bprocess.newBpelem.process=$parent.bprocess.id" ng-model="$parent.bprocess.newBpelem.process" value="{{ $parent.bprocess.id }}">
-    <input type="hidden" id="input_b_type" ng-model="$parent.bprocess.newBpelem.b_type"/>
-    <input type="hidden" id="input_type_title" ng-model="$parent.bprocess.newBpelem.type_title"/>
-    <input type="hidden" id="input_space_own" ng-model="$parent.bprocess.newBpelem.space_own"/>
-    <input type="hidden" id="input_order" ng-init="$parent.bprocess.newBpelem.order" ng-model="$parent.bprocess.newBpelem.order" value="{{ orderFrontGen($parent.bprocess.newBpelem) }}"/>
-    <input type="hidden" id="input_ref" ng-model="$parent.bprocess.newBpelem.ref"/>
+    <input type="hidden" name="value" ng-init="newBpelem.business=$parent.bprocess.business" ng-model="newBpelem.business" value="{{ $parent.bprocess.business }}">
+    <input type="hidden" name="value" ng-init="newBpelem.process=$parent.bprocess.id" ng-model="newBpelem.process" value="{{ $parent.bprocess.id }}">
+    <input type="hidden" id="input_b_type" ng-model="newBpelem.b_type"/>
+    <input type="hidden" id="input_type_title" ng-model="newBpelem.type_title"/>
+    <input type="hidden" id="input_space_own" ng-model="newBpelem.space_own"/>
+    <input type="hidden" id="input_order" ng-init="newBpelem.order" ng-model="newBpelem.order" value="{{ orderFrontGen(newBpelem) }}"/>
+    <input type="hidden" id="input_ref" ng-model="newBpelem.ref"/>
     <div class="control-group form-submit form-group" style="clear:both;" ng-show="isManagerVal">
       <div class="controls">
-        <button type="submit" ng-click="fastCreateNewElem($parent.bprocess.newBpelem, $parent.bprocess)" class="btn btn-small btTxt submit btn lg solid-green ng-binding">{{ 'CREATE' | translate }}</button>
+        <button type="submit" ng-click="fastCreateNewElem(newBpelem, $parent.bprocess)" class="btn btn-small btTxt submit btn lg solid-green ng-binding">{{ 'CREATE' | translate }}</button>
       </div>
     </div>
   </form>
+</div>
+

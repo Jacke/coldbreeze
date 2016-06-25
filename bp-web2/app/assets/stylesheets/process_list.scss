@@ -289,11 +289,10 @@ label.control-label {
 }
 .fast-element-aside .tree-thumb.process-tree {
     width: 100%;
-    /* margin-right: -5px; */
-    /* margin-left: 28px; */
     display: block;
-    overflow: hidden;
-    height: 46px;
+    overflow-y: scroll;
+    min-height: 176px;
+    padding-right: 5px;
 }
 .fast-element-aside .elem-card {
     padding-right: 9px;
