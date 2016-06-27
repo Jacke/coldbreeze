@@ -23,7 +23,6 @@ object NInvoker {
   }
 
   def run_proc(proc: BProcess) {
-    us.ority.min.jobs.LaunchStackFactory().stack.+=(proc)
     if (proc.station.inspace) {
       proc.nimarker.start_from
     }

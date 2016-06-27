@@ -26,6 +26,7 @@ import scala.util.Try
 import com.typesafe.scalalogging.Logger
 import org.slf4j.LoggerFactory
 import us.ority.min.actions._
+import us.ority.min.jobs._
 
 object TestBuilder2 extends App {
   println("test")
@@ -42,6 +43,19 @@ object TestBuilder2 extends App {
 }
 
 object BuildF {
+  // Resume hoook for launchStack
+  def resumeProcess(bpID:Int,
+                    session_id: Int, reaction_id: Int):Future[BProcess] = {
+    newRunFrom(bpID, session_id, params = List(ReactionActivator(reaction_id, Some("delay") ) ))
+  } 
+  // Add to launchStack
+  def addToLaunchStack(process: BProcess) = {
+    LaunchStackFactory.addE(LaunchStackElement(
+      process,
+      resumeProcess
+    ))
+  }
+
   protected lazy val appLogger: Logger = Logger(LoggerFactory.getLogger("build"))
   def toApplogger(msg: Any, log_type: String = "info")(implicit line: sourcecode.Line, file: sourcecode.File) = {
       log_type match {
@@ -120,7 +134,7 @@ object BuildF {
    **/
   def newRunFrom(bpID:Int,
                  session_id: Int,
-                 params: List[ReactionActivator],
+                 params: List[ReactionActivator] = List(),
                  invoke:Boolean = true,
                  process_dto:Option[BProcessDTO]=None,
                  station_dto:Option[BPStationDTO]=None,
@@ -633,6 +647,7 @@ val strategiy_outputs:List[StrategyOutputUnit] = sessionStOuts.map(el =>   Exper
       space.session_states ++=  session_states.filter(state => state.space_id == space.id)
     }
 
+    addToLaunchStack(process)
 
     /**
     * Activate reaction by params
@@ -642,7 +657,18 @@ val strategiy_outputs:List[StrategyOutputUnit] = sessionStOuts.map(el =>   Exper
       val reaction = process.allElements.map(el => el.reactions).flatten
         reaction.find(reaction => reaction.id == Some(param.reaction_id)) match {
         case Some(target_reaction) => {
-          target_reaction.execute(process)
+          if (param.target.isDefined && param.target == "delay") {
+            val el = bprocesses.ReactionExecutor.retriveElementByAction(process, target_reaction)
+            el.get.session_states.find(s => s.title == "delayed") match {
+              case Some(s) => { 
+                s.on = true
+                s.on_rate = 100
+              }
+              case _ =>
+            }
+          } else { // TODO: Refactor this
+            target_reaction.execute(process)
+          }
         }
         case _ =>
       }
@@ -669,6 +695,9 @@ val strategiy_outputs:List[StrategyOutputUnit] = sessionStOuts.map(el =>   Exper
                                     ReactOutsMap)
     )
     val executedPipes:List[ExecutedLaunchCVPipes] = pipes.map(pipe => pipe(launchPipe))
+
+    // TO STACK
+
 /************************************************************************************************/
 /************************************************************************************************/
 /************************************************************************************************/
@@ -1135,15 +1164,28 @@ def initiate2F(bpID: Int,
       space.session_states ++=  session_states.filter(state => state.space_id == space.id)
     }
 
+    addToLaunchStack(process)
 
     /**
     * Activate reaction by params
     **/
     params.foreach { param =>
+      println(s"param detected ${param.toString}")
       val reaction = process.allElements.map(el => el.reactions).flatten
         reaction.find(reaction => reaction.id == Some(param.reaction_id)) match {
         case Some(target_reaction) => {
-          target_reaction.execute(process)
+          if (param.target.isDefined && param.target == "delay") {
+            val el = bprocesses.ReactionExecutor.retriveElementByAction(process, target_reaction)
+            el.get.session_states.find(s => s.title == "delayed") match {
+              case Some(s) => { 
+                s.on = true
+                s.on_rate = 100
+              }
+              case _ =>
+            }
+          } else { // TODO: Refactor this
+            target_reaction.execute(process)
+          }
         }
         case _ =>
       }

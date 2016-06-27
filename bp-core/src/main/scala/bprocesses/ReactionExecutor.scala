@@ -87,7 +87,7 @@ s"""Found ${reaction.reaction_state_outs.length} state outs for ${reaction.title
 
 
   // find element by topolog
-  def retriveActionElementByTopology(process: BProcess, reaction: UnitReaction) = 
+  def retriveActionElementByTopology(process: BProcess, reaction: UnitReaction):Option[ElemTopology] = 
     process.topology.find(topo => topo.id == Some(reaction.element))
 
   def retriveElementByTopo(topo: ElemTopology, bp: BProcess):ProcElems = {
@@ -95,6 +95,17 @@ s"""Found ${reaction.reaction_state_outs.length} state outs for ${reaction.title
       case Some(elem_id) => bp.variety.find(el => elem_id == el.id).get
       case None => bp.spacesElements.find(el => topo.space_elem_id.getOrElse(-1) == el.id).get
     }
+  }
+
+  def retriveElementByAction(process: BProcess, action: UnitReaction):Option[ProcElems] = {
+    retriveActionElementByTopology(process, action) match {
+      case Some(topo) => {
+          val element = retriveElementByTopo(topo, process)
+          Some(element)
+      }
+      case _ => None
+    }
+
   }
 
 }

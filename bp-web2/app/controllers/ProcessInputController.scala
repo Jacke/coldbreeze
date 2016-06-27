@@ -162,15 +162,18 @@ def invokeFrom(session_id: Int, bpID: Int) = SecuredAction(BodyParsers.parse.jso
                 }
           }
         }*/
-    service.Build.newRunFrom(session_id = session_id,bpID = bpID, params = pmsResult.get, invoke = true) match {
-      case Some(process) => {
-       action(request.identity.emailFilled, process = Some(bpID), ProcHisCom.processResumed, None, None)
-       controlles.launches.LaunchStack.pop(launchId = session_id)
-       controllers.UserActor.updateLaunchLock(target="lock", email=request.identity.emailFilled, isLock=true, launchId=session_id)
+    service.Build.newRunFrom(session_id = session_id,
+      bpID = bpID, 
+      params = pmsResult.get, 
+      invoke = true) match {    
+        case Some(process) => {
+         action(request.identity.emailFilled, process = Some(bpID), ProcHisCom.processResumed, None, None)
+         controlles.launches.LaunchStack.pop(launchId = session_id)
+         controllers.UserActor.updateLaunchLock(target="lock", email=request.identity.emailFilled, isLock=true, launchId=session_id)
 
-       Ok(Json.toJson(Map("success" -> process.session_id)))
-      }
-      case _ => BadRequest(Json.toJson(Map("error" -> "Error output")))
+         Ok(Json.toJson(Map("success" -> process.session_id)))
+        }
+        case _ => BadRequest(Json.toJson(Map("error" -> "Error output")))
     }
    } else { // already launching
       BadRequest(Json.toJson(Map("error" -> "Already launching")))

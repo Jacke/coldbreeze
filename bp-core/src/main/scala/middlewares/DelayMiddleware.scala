@@ -18,8 +18,13 @@ object DelayMiddleware {
     	stateInputs:List[UnitReactionStateIn] = List(), dataInputs: List[UnitReactionDataIn] = List()
     	):StrategyResult = {
     	s.ident match {
-    		case "Duration" => DurationStrategy.execute( 
-    			retriveDataForDelay(stategyTitle = "Duration", dataInputs) )
+    		case "Duration" => { 
+    			delayRequest(parts, org.joda.time.DateTime.now().plusSeconds(20).getMillis() )
+
+    			DurationStrategy.execute( 
+	    			retriveDataForDelay(stategyTitle = "Duration", dataInputs) 
+	    		)
+    		}
     		case "scheduleDelayStrategy" => ScheduleStrategy.execute( 
     			retriveDataForDelay(stategyTitle = "scheduleDelayStrategy", dataInputs) )
     		case _ =>						NullStrategy.execute( StrategyArgument() )
@@ -79,12 +84,12 @@ object DelayMiddleware {
 							)
 		val job = MinorityJob(
 					   id = None, 
-                       owner = "", 
+                       owner = parts.action.id.get.toString, 
                        operations = List(op), 
                        scheduleMilis = Some(time)
 		)
 
-		MinorityJobs.jobs.+:(job)
+		MinorityJobs.addJob(job)
 
 	}
 
