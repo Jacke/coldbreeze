@@ -1,6 +1,6 @@
 package main.scala.bprocesses
 
-import main.scala.bprocesses.{BPStationState, BPStationLogger}
+import main.scala.bprocesses._
 import com.github.nscala_time.time.Imports._
 
 

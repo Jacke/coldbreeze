@@ -157,8 +157,8 @@ class BProcess(scope: Scope,
 /**
  *  Owners
  */
-  def owners(b: ResAct)     = ownerships.collect { case link: Ownership ⇒ link.res == b }
-  def res_acts(r: Resource) = ownerships.collect { case link: Ownership ⇒ link.resact   == r }
+  def owners(b: ResAct)     = ownerships.collect { case link: Ownership ⇒  false }//link.res == b }
+  def res_acts(r: Resource) = ownerships.collect { case link: Ownership ⇒  false }//link.resact   == r }
 
 
 /**
@@ -268,43 +268,10 @@ class BProcess(scope: Scope,
     
     //for ((id, param) <- params)
   }
-  /**
-   * Composite values restore
-   */
- // Deprecated: Composite values restore
-@deprecated("Composite values are deprecated")
-  def restoreCVOfElems {
-    val target = allElements.filter(elem => logger.valChanged(elem))
-    println(target)
-    // update CV
-    target.foreach {
-      elem =>
-      val changer = logger.valChanger(elem)
-      elem.values.get.update(
-      n_a_string = changer.a_string,
-      n_b_string = changer.a_string,
-      n_a_int = changer.a_int,
-      n_b_int = changer.b_int,
-      n_a_bool = changer.a_bool,
-      n_b_bool = changer.b_bool
-      )
 
-    }
 
-  }
 
-  /**
-   * Copy CompositeValues in heap
-   * So all values stay mutable
-   * @param values
-   * @return copied CV
-   */
-  def copyCV(values: Option[CompositeValues]):Option[CompositeValues] = {
-    values match {
-      case None           => None
-      case Some(defvalue) => Option(defvalue.copy())
-    }
-  }
+
 
 /**
  * Process returning

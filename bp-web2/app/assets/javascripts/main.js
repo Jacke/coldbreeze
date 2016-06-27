@@ -281,6 +281,10 @@
   deps: ['angular', 'app', 'controllers', 'toastr'],
   export: 'stationController'
 },
+'ngsanitize': {
+    deps: ['angular', 'app'],
+  export: 'ngsanitize'
+},
 'restangular': {
   deps: ['angular', 'app'],
   export: 'restangular'

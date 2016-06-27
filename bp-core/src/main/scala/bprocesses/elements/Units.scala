@@ -131,10 +131,10 @@ updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
     var reaction_data_ins:ListBuffer[UnitReactionDataIn]     = ListBuffer()
     var reaction_data_outs:ListBuffer[UnitReactionDataOut]   = ListBuffer()
 
-    def execute(process: BProcess) = {
+    def execute(process: BProcess, elemOpt: Option[ProcElems]=None) = {
        bprocesses.ReactionExecutor.execute(process, this)
        if (middlewares.length > 0) { 
-         bprocesses.ReactionExecutor.executeWithMiddleware(process, this)
+         bprocesses.ReactionExecutor.executeWithMiddleware(process, elemOpt, this)
        }
     }
  }

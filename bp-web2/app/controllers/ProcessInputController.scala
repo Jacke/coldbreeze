@@ -179,6 +179,14 @@ def invokeFrom(session_id: Int, bpID: Int) = SecuredAction(BodyParsers.parse.jso
   } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
 
+
+
+
+
+
+
+
+
 def inputLogs(BPid: Int) = Action { implicit request =>
     Ok(Json.toJson(InputLoggerDAO.getByBP(BPid)))
 }

@@ -189,6 +189,7 @@ var minorityApp =
       'jlareau.pnotify',
       'yaru22.hovercard',
       '720kb.tooltips',
+      'ngSanitize',
       'ngAngularError',
       'restangular',
       'ui.select',

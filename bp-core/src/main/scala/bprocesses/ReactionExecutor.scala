@@ -8,6 +8,12 @@ import scala.collection.mutable.ListBuffer
 import com.typesafe.scalalogging.Logger
 import org.slf4j.LoggerFactory
 
+case class ActionParts(
+  process: BProcess,
+  elem: ProcElems,
+  action: UnitReaction
+)
+
 object ReactionExecutor {
 
   val appLogger = Logger(LoggerFactory.getLogger("ReactionExecutor"))
@@ -27,23 +33,28 @@ object ReactionExecutor {
    * 4. Change state
    * 5. Resume process launch
    */
-  def executeWithMiddleware(process: BProcess, reaction: UnitReaction) {
+  def executeWithMiddleware(process: BProcess, elemOpt: Option[ProcElems], reaction: UnitReaction) {
       toApplogger(s"Found ${reaction.middlewares.length} middlewares for ${reaction.title} action")
       val middleware = reaction.middlewares.head
+
+      val elem = elemOpt.get // MUST ALLWAYS BE VISIBLE
 
       //    * 1. Check inputs
       val stateInputs = reaction.reaction_state_ins
       val dataInputs  = reaction.reaction_data_ins
       // MinorityJobOp("TURNON_STATE", 1, "100")
       // MinorityJobOp("RESUME_LAUNCH", 1)
-
-
-  }
-
-	def execute(process: BProcess, reaction: UnitReaction) = {
       /**
        * TODO: Add logic and expressions execution
        */
+
+
+       // project middleware and its relatives 
+       // invoke them
+       println( middleware.executeStrategy(ActionParts(process, elem, reaction) ) )
+  }
+
+  def execute(process: BProcess, reaction: UnitReaction) = {
       val topo = retriveActionElementByTopology(process, reaction)
       if (topo.isDefined) {
         val element = retriveElementByTopo(topo.get, process)
@@ -51,7 +62,6 @@ object ReactionExecutor {
 s"""Found ${reaction.reaction_state_outs.length} state outs for ${reaction.title} action"""
         )
         plainOldAction(reaction, element)
-
       }
   }
 

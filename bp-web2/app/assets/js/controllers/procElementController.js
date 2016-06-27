@@ -1916,6 +1916,7 @@ $scope.credFetch = function (obj) {
     //}
   }
 };
+
 $scope.accFetch = function (obj) {
   if (obj.uid != undefined) { // it's employee
 
@@ -1943,9 +1944,11 @@ $scope.accFetch = function (obj) {
     } else { return }
   }
 };
+
 $scope.createPermForForm = function (perm, perms, position) {
   perms.push(angular.copy(perm));
 }
+
 $scope.delPermForForm = function (perm,perms) {
   var ind = perms.indexOf(perm);
   perms.splice(ind, 1);

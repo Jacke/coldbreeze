@@ -424,7 +424,7 @@ proc1234.spaces.last.addToSpace(new PrintValue[Boolean](3, true, proc1234, 3, sp
     """.stripMargin)
 
   println(proc1234.spaces.last.container.find(_.id == 3).get.values.get.a_string)
-  proc1234.restoreCVOfElems
+//  proc1234.restoreCVOfElems
   println(proc1234.spaces.last.container.find(_.id == 3).get.values.get.a_string)
   println(proc1234.logger.logs_before.length)
   println(proc1234.logger.logs.length)

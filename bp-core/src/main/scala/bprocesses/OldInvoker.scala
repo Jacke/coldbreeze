@@ -162,7 +162,7 @@ def move:Unit = {
 
       toLoggerBefore(bp, BPLoggerResult(
         elem,
-        composite = bp.copyCV(elem.values),
+        composite = None,
         order     = elem.order,
         space     = None,
         station   = toStation(bp),
@@ -180,7 +180,7 @@ def move:Unit = {
       println(elem.getClass)
       toLogger(bp, BPLoggerResult(
                                   elem,
-                                  composite = bp.copyCV(elem.values),
+                                  composite = None,
                                   order     = elem.order,
                                   space     = None,
                                   station   = toStation(bp),
@@ -217,7 +217,7 @@ def move:Unit = {
       if (station.state) {
 
         if (bp.spaces.indexOf(space)+1 == station.space) {
-          toLoggerBefore(station.bp, BPLoggerResult(el, order = counter + 1, space = space.id, composite=bp.copyCV(el.values), station = toStation(station.bp), invoked = true, expanded = false, container = true))
+          toLoggerBefore(station.bp, BPLoggerResult(el, order = counter + 1, space = space.id, composite=None, station = toStation(station.bp), invoked = true, expanded = false, container = true))
           println("Invoking the: " + el);
         station.change_container_step(station.container_step.last + 1)
         toStationLogger("prepareinvokinginspace")
@@ -225,7 +225,7 @@ def move:Unit = {
         toStationLogger("invokinginspace")
         // TODO: Elem invoked sygnal?
 
-        toLogger(station.bp, BPLoggerResult(el, order = counter + 1, space = space.id, composite=bp.copyCV(el.values), station = toStation(station.bp), invoked = true, expanded = false, container = true))
+        toLogger(station.bp, BPLoggerResult(el, order = counter + 1, space = space.id, composite=None, station = toStation(station.bp), invoked = true, expanded = false, container = true))
         }
         println(station.step)
       } else {

@@ -57,7 +57,7 @@ trait BottomLine extends StateLigher {
   	reactions
   }
   def applyReactions(el: ProcElems, reactions: List[UnitReaction]) = {
-  		reactions.foreach(reaction => reaction.execute(bp))
+  		reactions.foreach(reaction => reaction.execute(bp, Some( el ) ))
   }
 /**
 *  TODO: Decision queue
@@ -79,7 +79,7 @@ def commonBottomLine(elem: ProcElems) = { // Collision fixes
   } else {
  toLoggerBefore(bp, BPLoggerResult(
         elem,
-        composite = bp.copyCV(elem.values),
+        composite = None,
         order     = elem.order,
         space     = None,
         station   = toStation(bp),
@@ -104,7 +104,7 @@ def commonBottomLine(elem: ProcElems) = { // Collision fixes
       NInvoker.toApplogger(elem.getClass)
       toLogger(bp, BPLoggerResult(
                                   elem,
-                                  composite = bp.copyCV(elem.values),
+                                  composite = None,
                                   order     = elem.order,
                                   space     = None,
                                   station   = toStation(bp),
@@ -125,7 +125,7 @@ def commonSpaceBottomLine(space: Space) = {
   toLoggerBefore(bp, BPLoggerResult(
 
     elem,
-    composite = bp.copyCV(elem.values),
+    composite = None,
     order     = elem.order,
     space     = None,
     station   = toStation(bp),
@@ -151,7 +151,7 @@ def commonSpaceBottomLine(space: Space) = {
   NInvoker.toApplogger(elem.getClass)
   toLogger(bp, BPLoggerResult(
     elem,
-    composite = bp.copyCV(elem.values),
+    composite = None,
     order     = elem.order,
     space     = None,
     station   = toStation(bp),

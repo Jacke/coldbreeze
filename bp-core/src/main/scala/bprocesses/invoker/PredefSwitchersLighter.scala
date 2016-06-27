@@ -46,7 +46,7 @@ def elementInvokationStage(bp: BProcess, elem: ProcElems) = {
 
 	pushToLoggerBefore(bp, BPLoggerResult(
         elem,
-        composite = bp.copyCV(elem.values),
+        composite = None,
         order     = elem.order,
         space     = None,
         station   = getStation(bp),
@@ -97,7 +97,7 @@ def elemInvokingStage(bp: BProcess, elem: ProcElems) = {
   	  elemNewPartialLigher(bp, elem = elem, state = INVOKE_STATE, 50)
   	  // autostart
   	  val autoStartActions = elem.reactions.filter(r => r.autostart == true)
-  	  val autoStartActionsResults = executeActions(bp, autoStartActions.toList)
+  	  val autoStartActionsResults = executeActions(bp, elem, autoStartActions.toList)
       // common states
       elemCommonStage(bp, elem)
 
@@ -205,9 +205,9 @@ def skipState(elem: ProcElems, stateInitialId: String):Boolean = {
 }
 
 trait ActionAutostart {
-	def executeActions(bp: BProcess, actions: List[UnitReaction]) = {
+	def executeActions(bp: BProcess, elem: ProcElems, actions: List[UnitReaction]) = {
 		actions.map { action => 
-			action.execute(bp)
+			action.execute(bp, Some( elem) )
 	    }
 	}
 }

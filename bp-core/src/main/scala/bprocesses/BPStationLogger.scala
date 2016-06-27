@@ -1,9 +1,8 @@
 package main.scala.bprocesses
 
-import main.scala.bprocesses.BPStation
+import main.scala.bprocesses._
 import main.scala.simple_parts.process.ProcElems
 import org.joda.time.DateTime
-import main.scala.bprocesses._
 
 class BPStationLogger {
   var logs: Array[BPStationLoggerResult] = Array.empty[BPStationLoggerResult]

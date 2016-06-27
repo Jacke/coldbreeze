@@ -10,6 +10,7 @@ import scala.collection.JavaConverters._
 import com.typesafe.akka.extension.quartz._
 import com.typesafe.akka.extension.quartz.QuartzSchedulerExtension._
 import akka.actor._
+import scala.collection.mutable._
 
 case class NewProbe(probe: ActorRef)
 case object Tick
@@ -81,18 +82,41 @@ case class MinorityJobOp(
 // MinorityJobOp("TURNON_STATE", 1, "100")
 // MinorityJobOp("TURNOFF_STATE", 1, "0")
 // MinorityJobOp("DISABLE_STATE", 1, "-100")
-case class MinorityJob(id: Option[Long], owner: String, operations: List[MinorityJobOp], scheduleMilis:Option[Long]= None) {
+case class MinorityJob(id: Option[Long], 
+                       owner: String, 
+                       operations: List[MinorityJobOp], 
+                       scheduleMilis:Option[Long]= None) {
 	def check() = {
-		if (!scheduleMilis.isDefined)
+		if (!scheduleMilis.isDefined) {
 			true
-		else
+    } else {
 			org.joda.time.DateTime.now().getMillis() < scheduleMilis.get
-	}
+    }
+	
+  }
 }
 
+/*
+ +-----------------+      +---------------+
+ |  Strategy   1)  |      | LaunchStack   +---------+
+ |  projection     |      | resum/delta fn++        |
+ +--------+--------+      +-------+-------+         |
+          |                       |                 |
+          |Time(in delay)         |                 |
+          |LaunchId               |find()           |
+          |                       |                 v
++---------+----------+    +-------+-------+         +------------------------+
+|  JobDelayer  2)    |    | checkReady()  |         | Execute launch with    |
+|                    +----+               |         | Delayed op             |
++--------------------+    +---------------+         | (e.g. highlight state) |
+                                                    |                        |
+                                                    +------------------------+
+
+*/
+
 object MinorityJobs {
-  var jobs:Seq[MinorityJob] = Seq.empty[MinorityJob]
-  def recheck():Seq[Boolean] = {
+  var jobs:ListBuffer[MinorityJob] = ListBuffer.empty[MinorityJob]
+  def recheck():ListBuffer[Boolean] = {
   	jobs.map(job => job.check())
   }
 
