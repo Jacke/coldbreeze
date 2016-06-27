@@ -3,7 +3,9 @@
    - "2.11.3"
  jdk:
    - oraclejdk8
-   - openjdk8
+ script:
+   - sbt bp-core/compile
+   - sbt bp-core/test
 notifications:
   webhooks:
     urls:
