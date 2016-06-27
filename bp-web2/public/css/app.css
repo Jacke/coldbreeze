@@ -6944,6 +6944,21 @@ a.btn.btn-small.btTxt.submit.btn.lg.solid-green.btn-add-entity:hover {
     padding-top: 0px;
     padding-bottom: 20px;
 }
+.elements-list form label.control-label, .elements-list form.form-new-bpelem input.ui-select-search.input-xs {
+    padding-bottom: 0px;
+    border: none;
+    margin-top: 0px;
+    padding-top: 0px;
+    font-size: 14px;
+    background: none;
+}
+.elements-list form.form-new-bpelem a.ui-select-choices-row-inner {
+    color: white !important;
+}
+.elements-list form.form-new-bpelem a.ui-select-choices-row-inner:hover {
+    background: #535F76 !important;
+}
+
 .elements-list textarea.form-control {
     padding-top: 8px;
 }
@@ -10511,7 +10526,7 @@ h4.file_title_full {
     top: 0px;
     right: 0px;
     background: #3D3F55;
-    width: 156px;
+    width: 215px;
     height: 60px;
 }
 .launch-info-details {
@@ -10608,16 +10623,22 @@ span.firstInputFileName {
     padding: 4px 4px 5px 2px;
     border-radius: 3px;
     display: inline-block;
-    margin: 11px 5px;
+    margin: 11px 10px;
     font-family: 'Open Sans', Helvetica, Sans-serif;
     font-weight: 400;
     text-align: center;
-    float: left;
-    width: 75px;
+    float: right;
+    width: 83px;
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+.inline-launch .fastInput a:hover {
+    text-decoration: none;
+    color: #E8E8E8;
+    transition: all .3s ease-in-out;
+    box-shadow: rgb(36, 37, 58) 1px 1px 3px inset;
 }
 span.firstInputFiles {
     display: inline-block;
@@ -10633,14 +10654,17 @@ span.firstInputFiles {
 span.element-title {
     display: inline-block;
     float: left;
-    margin-top: 14px;
+    margin-top: 15px;
     margin-left: 8px;
-    width: 45px;
+    width: 100px;
     text-align: center;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     font-family: 'Open Sans', Helvetica, Sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    text-shadow: none;
 }
 .fastInput a.fastInputPicker {
     border: none;

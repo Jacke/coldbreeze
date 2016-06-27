@@ -37,8 +37,9 @@
                 <a ng-click="delPermForForm(perm,newBpelem.perms)" class="btn-delete minicon"></a>
             </span>
           </div>
+          <!--
           <select id="inputPerm" disable-auto-validate="true" ng-model="newBpelem.perm" class="forUID" ng-options="employeegroup as credFetch(employeegroup) for employeegroup in employees_groups" multiple></select>
-          
+          -->
   <div class="people-select-container">
   <ui-select multiple close-on-select="false" disable-auto-validate="true" ng-init="newBpelem.perm=[];"ng-model="newBpelem.perm" style="min-width: 300px;" title="Choose a persons">
     <ui-select-match placeholder="Select a person in the list or search his name...">{{ credFetch($item) }}</ui-select-match>
