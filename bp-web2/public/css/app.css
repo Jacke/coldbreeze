@@ -4258,7 +4258,7 @@ background-color: gray !important;
     position: absolute;
     z-index: 999;
     padding: 0px 2px 1px 8px;
-    background: #45475D;
+    background: white;
     color: white;
     cursor: pointer;
     transition: all .3s ease-in-out;
@@ -4267,7 +4267,9 @@ background-color: gray !important;
     border-radius: 90px;
     width: 43px;
     height: 42px;
+    border: solid 1px #999CC3;
 }
+
 .stations.minimal-stations .session__buttonInput:hover {
     background: #999CC3;
 }
@@ -4280,8 +4282,14 @@ background-color: gray !important;
     box-shadow: 1px 2px 9px #3F4152 inset;
 }
 .stations.minimal-stations .session__buttonInput .svg-button-input {
-margin-left: 6px;
+    margin-left: 5px;
     margin-top: 5px;
+}
+.svg-button-input svg.inline-svg {
+    fill: black;
+}
+.stations.lineDescShowed.minimal-stations .session__buttonInput svg.inline-svg {
+    fill: white;
 }
 
 .session__buttonInput .moicon-eject:before {
@@ -12596,7 +12604,7 @@ a.edit-element-card-delete-btn.btn.btn-small.btn.btn-danger.btTxt.btn.lg.solid-g
     -moz-user-select: none;
     -ms-user-select: none;
     box-shadow: none;
-    background-color: #5eb95e;
+    background-color: #7EA7D8;
     border: none;
     color: #FFF;
     cursor: default;
@@ -12606,6 +12614,22 @@ a.edit-element-card-delete-btn.btn.btn-small.btn.btn-danger.btTxt.btn.lg.solid-g
     max-width: 100%;
     font-family: 'Open Sans', sans-serif;
     text-shadow: none;
+}
+
+.cg-notify-message.ngn-error {
+    background-color: #F6989D
+}
+
+.cg-notify-message.ngn-success {
+    background-color: #82CA9D
+}
+
+.cg-notify-message.ngn-warn {
+    background-color: #FDC68A
+}
+
+.cg-notify-message.ngn-grimace {
+    background-color: #A187BE
 }
 
 button.cg-notify-close {
