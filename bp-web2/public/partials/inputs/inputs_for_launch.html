@@ -83,12 +83,14 @@ accept="*">Select Files</button>
 
 
 
-				 <div class="reaction_list__reaction_element_launch_databoard_expand" style="display: none;">	
+				 <div class="reaction_list__reaction_element_launch_databoard_expand" 
+				 	  style="display: none;">	
 				    <a ng-click="openModalDataBoard($parent.$parent.session.process)"
 				       class="modalDataButton dataSelectTabButtonNew"><span class="nicon nicon-dots-three-horizontal"></span></a>
 				  </div>
 
-			     <div class="interaction-input-existence" ng-repeat="reaction in interactions.reactions | filter:filterReactionByElem(elem)">
+			     <div class="interaction-input-existence" 
+			     	  ng-repeat="reaction in interactions.reactions | filter:filterReactionByElem(elem)">
 			        <a ng-click="reactionSelect(reaction);runFrom($parent.session.session.id, reaction)"
 							   id="reactionSelectButton" ng-class="selectedClass(reaction)"
 							   class="reactionSelectButton triangle-reaction"

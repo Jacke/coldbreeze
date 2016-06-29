@@ -4291,6 +4291,10 @@ background-color: gray !important;
 .stations.lineDescShowed.minimal-stations .session__buttonInput svg.inline-svg {
     fill: white;
 }
+.stations.minimal-stations .session__buttonInput:hover .svg-button-input svg.inline-svg {
+    fill:white;
+}
+
 
 .session__buttonInput .moicon-eject:before {
     color: white;

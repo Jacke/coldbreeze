@@ -51,8 +51,7 @@ minorityControllers.controller('BPelementListCtrl', ['$timeout','$window','$filt
   } else {
     $scope.BPid = $scope.$parent.bprocess.id;
   }
-  console.log($scope.BPid);
-  console.log($scope.$parent);
+
 
   $scope.route = jsRoutes.controllers.BusinessProcessController;
   $scope.businessSet = $rootScope.business;

@@ -1283,21 +1283,23 @@ $scope.lastExecutionOfElement = function(element) {
   var session = element.session;
   var states = _.find($scope.logs.state_logs_objects, function(s){return s.launchId == session });
   if (states !== undefined) {
+    // state for element
+    var element_states = _.filter(states.states, function(state) { return state.front_elem_id == element.id })
 
-  var element_states = _.filter(states.states, function(state) { return state.front_elem_id == element.id })
-
-  var lastState = _.find(element_states,function(elstate) {
-    return elstate.title == "confirmed"
-  });
-  //console.log('lastState', lastState, states);
-  if (lastState !== undefined) {
-    var finalStateLog = _.find($scope.logs.state_logs, function(d){ return d.state_id == lastState.id })
-    if (finalStateLog !== undefined) {
-      return finalStateLog.created_at;
-    } else { return undefined }
-  } else {
-    return undefined;
-  }
+    var lastState = _.find(element_states,function(elstate) {
+      return elstate.title == "finished"
+    });
+    console.log('lastState', lastState, states);
+    if (lastState !== undefined) {
+      var finalStateLog = _.find($scope.logs.state_logs, function(d){ 
+                                return d.state_id == lastState.id });
+      console.log('final state log', finalStateLog);
+      if (finalStateLog !== undefined) {
+        return finalStateLog.created_at;
+      } else { return undefined }
+    } else {
+      return undefined;
+    }
 } else {
   return undefined
 }
