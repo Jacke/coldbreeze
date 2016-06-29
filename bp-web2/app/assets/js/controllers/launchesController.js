@@ -690,6 +690,39 @@ $scope.isOnlyActive = function(session) {
     }
 }
 
+$scope.isElementExecuted = function(step, index) {
+  if (step > index) {
+    return 'executed'
+  } else {
+    return ''
+  }
+}
+$scope.isExecutionOfElement = function(element, sessionId) {
+  var states = _.find($scope.allLogs.state_logs_objects, function(s){return s.launchId == sessionId });
+  if (states !== undefined) {
+    // state for element
+    var element_states = _.filter(states.states, function(state) { return state.front_elem_id == element.id })
+
+    var lastState = _.find(element_states,function(elstate) {
+      return elstate.title == "finished"
+    });
+    //console.log('lastState', lastState, states);
+    if (lastState !== undefined) {
+      var finalStateLog = _.find($scope.allLogs.state_logs, function(d){ 
+                                return d.state_id == lastState.id });
+      //console.log('final state log', finalStateLog);
+      if (finalStateLog !== undefined) {
+        return 'executed';
+      } else { return '' }
+    } else {
+      return '';
+    }
+} else {
+  return ''
+}
+}
+
+
 $scope.isSessionsOnlyActive = function(sessions) {
    return _.filter(sessions, function(session){ return $scope.isOnlyActive(session) }).length < 1;
 }

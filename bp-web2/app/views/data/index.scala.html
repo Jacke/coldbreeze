@@ -16,9 +16,23 @@
 @import helper._
 
 @main(Messages("page.data"), user) {
+<script src='/jsroutes.js'></script>
 
 <div class="app-container">
+
+<div class="container app" ng-app="app" data-ng-view>
+
+  <div>
+     Loading...
+   </div>
+
+</div>
+
+
 <div class="container app">
+
+
+
 <div id="main" class="container dataTables resources-list">
 <div class="tableMinListWrap dataTablesTable">
 
@@ -215,5 +229,14 @@
 </div>
 </div>
 
+<link rel="stylesheet" href="https://rawgit.com/esvit/ng-table/master/dist/ng-table.min.css">
+<script src="http://localhost:8080/app2.bundle.js"></script>
+<style>
+.ng-table-pager {
+    display: none !important;
+}</style>
+<!--
+<script src="/assets/js/app2.js"></script>
+-->
 
 }

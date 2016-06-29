@@ -207,6 +207,9 @@ if ($scope.$parent.allLogs !== undefined) {
   };
 } else {
   $scope.logs = BPLogsFactory.query({  BPid: $scope.bpId });
+  $scope.$parent.allLogs = $scope.logs;
+  $scope.$parent.$parent.allLogs = $scope.logs;
+
 }
 
 
@@ -1289,11 +1292,11 @@ $scope.lastExecutionOfElement = function(element) {
     var lastState = _.find(element_states,function(elstate) {
       return elstate.title == "finished"
     });
-    console.log('lastState', lastState, states);
+    //console.log('lastState', lastState, states);
     if (lastState !== undefined) {
       var finalStateLog = _.find($scope.logs.state_logs, function(d){ 
                                 return d.state_id == lastState.id });
-      console.log('final state log', finalStateLog);
+      //console.log('final state log', finalStateLog);
       if (finalStateLog !== undefined) {
         return finalStateLog.created_at;
       } else { return undefined }

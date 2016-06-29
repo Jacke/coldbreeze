@@ -1,0 +1,15 @@
+Indicators
+
+<div class="process-indicator-data-table">
+<div class="process-indicator-data-table-title">Process</div>
+
+<div class="indicator-data-table-container">
+<table ng-table-dynamic="tableParams with cols" 
+     class="table table-condensed table-bordered table-striped">
+<tr ng-repeat="row in $data">
+  <td ng-repeat="col in $columns">{{row[col.field]}}</td>
+</tr>
+</table>
+</div>
+
+</div>

@@ -4221,6 +4221,7 @@ background-color: gray !important;
 .stations.minimal-stations .session-launches-bar .automations_connected {
     margin-left: -13px;
     margin-right: 16px;
+    margin-top: 5px;
 }
 
 .allStations .stations.minimal-stations .session__header {
@@ -4804,12 +4805,12 @@ new process form container
 .progress-lines span.line:before {
     content: ' ';
     width: 2px;
-    height: 20px;
+    height: 21px;
     background: white;
     position: absolute;
     left: 0px;
     display: block;
-    top: -16px;
+    top: -18px;
     z-index: 3;
 }
 .allStations .progress-lines .line span.description {
@@ -4829,6 +4830,38 @@ new process form container
     margin-top: -17px;
     margin-left: 2px;
 }
+
+
+
+
+
+
+span.line.elem-card.executed {
+    background: linear-gradient(to right, #000000 0%,rgb(0, 0, 0) 100%);
+}
+
+.progress-lines span.line.executed:after {
+    content: ' ';
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 20px;
+    background: rgba(121, 121, 121, 0.38);
+    left: 0px;
+    top: -18px;
+}
+.stations .progress .progress-bar {
+    display:none;
+}
+
+
+
+
+
+
+
+
+
 
 
 .history-layout ul.history-list li * {
@@ -12652,4 +12685,38 @@ position: absolute;
     text-shadow: 1px 1px 5px #000;
     top: 21px;
     width: 30px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/***
+  Data table
+ */
+
+ .process-indicator-data-table {
+    width: 665px;
+    overflow-x: scroll;
+    margin: 0 auto;
+}
+
+.process-indicator-data-table .indicator-data-table-container table {
+    width: 100%;
+}
+
+.process-indicator-data-table .indicator-data-table-container table th.header {
+    min-width: 150px;
 }
