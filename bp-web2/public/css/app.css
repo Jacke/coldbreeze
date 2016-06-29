@@ -4286,7 +4286,7 @@ background-color: gray !important;
     margin-top: 5px;
 }
 .svg-button-input svg.inline-svg {
-    fill: black;
+    fill: #999CC3;
 }
 .stations.lineDescShowed.minimal-stations .session__buttonInput svg.inline-svg {
     fill: white;
