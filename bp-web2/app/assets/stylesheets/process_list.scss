@@ -358,6 +358,13 @@ label.control-label {
 .form-fast-element-create a.expand-ref-select span.moicon.moicon-info.expand-ref-select {
     top: 1px;
 }
+.form-fast-element-create label.control-label.type-label {
+    margin-top: -4px !important;
+}
+.form-fast-element-create input#fastElemTitle {
+    padding-bottom: 8px;
+    height: 100%;
+}
 
 .cardTablesTable .cardBoardHeader {
   margin-top: 60px;

@@ -150,9 +150,12 @@ object MinorityJobs {
       c.process.session_id == launchId
     )
     procInStackOpt match {
-      case Some(procInStack) => procInStack.processResume(procInStack.process.id.get, 
+      case Some(procInStack) => {
+        println("in stack") 
+        procInStack.processResume(procInStack.process.id.get, 
                                                           launchId, reaction_id)
-      case _ =>
+      }
+      case _ => println("not in stack")
     }
   }
 

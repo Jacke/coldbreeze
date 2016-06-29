@@ -9,8 +9,8 @@ import main.scala.simple_parts.process.Units._
 	+----------+             +---------------+       +--------------------+
 	|          |             |               |       |                    |
 	| Init     +-------------+  Invoke       +--+NP+-+  Finish            |
-	|          |             |               |       | (invoke Not paused)|
-	|          |             |               |       |                    |
+	|          |             |austart|       |       | (invoke Not paused)|
+	|          |             |       |       |       |                    |
 	+----------+             +------+--------+       +----------+---------+
                                 |                           |
                                 |                           |
@@ -94,10 +94,13 @@ def elemInitStage(bp: BProcess, elem: ProcElems) = {
 def elemInvokingStage(bp: BProcess, elem: ProcElems) = {
 	if (!skipState(elem, INVOKE_STATE)) {
       pushToStationLogger(bp,"invoking")
+  	  // autostart run only once per full invokation element(therefore we use partial invokation rate)
+  	  if (stateValueRate(elem, INVOKE_STATE) < 49) {
+		  val autoStartActions = elem.reactions.filter(r => r.autostart == true)
+	  	  val autoStartActionsResults = executeActions(bp, elem, autoStartActions.toList)
+  	  }
+  	  // partial invokation of element
   	  elemNewPartialLigher(bp, elem = elem, state = INVOKE_STATE, 50)
-  	  // autostart
-  	  val autoStartActions = elem.reactions.filter(r => r.autostart == true)
-  	  val autoStartActionsResults = executeActions(bp, elem, autoStartActions.toList)
       // common states
       elemCommonStage(bp, elem)
 
@@ -123,7 +126,7 @@ def elemCommonStage(bp: BProcess, elem: ProcElems) = {
 	  	case true =>
 	  	case _ => {
 		  // if they all completed then move to finished through main flow
-		  // otherwise pause launch
+		  println("otherwise pause launch")
 		  bp.station.applySwitcher("paused", "process", "switch_type",elem)  		
 	  	}
 	  }

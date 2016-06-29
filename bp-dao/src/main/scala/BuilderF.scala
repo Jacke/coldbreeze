@@ -46,7 +46,9 @@ object BuildF {
   // Resume hoook for launchStack
   def resumeProcess(bpID:Int,
                     session_id: Int, reaction_id: Int):Future[BProcess] = {
-    newRunFrom(bpID, session_id, params = List(ReactionActivator(reaction_id, Some("delay") ) ))
+    println("resume process hook called")
+    val activator = ReactionActivator(reaction_id, Some("delay") )
+    newRunFrom(bpID, session_id, invoke = true, params = List(activator))
   } 
   // Add to launchStack
   def addToLaunchStack(process: BProcess) = {
@@ -139,6 +141,9 @@ object BuildF {
                  process_dto:Option[BProcessDTO]=None,
                  station_dto:Option[BPStationDTO]=None,
                  minimal: Boolean = false):Future[BProcess]  = {
+    println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+    println(s"NEW RUN FROM (pid: ${bpID}, session_id: ${session_id} ${params} invoke:${invoke})")
+    println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
       val bpDTO = process_dto match {
         case Some(dto) => dto
         case _ => BPDAO.get(bpID).get
@@ -657,10 +662,11 @@ val strategiy_outputs:List[StrategyOutputUnit] = sessionStOuts.map(el =>   Exper
       val reaction = process.allElements.map(el => el.reactions).flatten
         reaction.find(reaction => reaction.id == Some(param.reaction_id)) match {
         case Some(target_reaction) => {
-          if (param.target.isDefined && param.target == "delay") {
+          if (param.target.isDefined && param.target == Some( "delay") ) {
             val el = bprocesses.ReactionExecutor.retriveElementByAction(process, target_reaction)
             el.get.session_states.find(s => s.title == "delayed") match {
               case Some(s) => { 
+                println("finded delayed action")
                 s.on = true
                 s.on_rate = 100
               }
@@ -673,7 +679,7 @@ val strategiy_outputs:List[StrategyOutputUnit] = sessionStOuts.map(el =>   Exper
         case _ =>
       }
     }
-
+    println("params are executed")
 
   /************************************************************************************************/
   /*************************** BEFORE LAUNCH ******************************************************/
@@ -705,6 +711,7 @@ val strategiy_outputs:List[StrategyOutputUnit] = sessionStOuts.map(el =>   Exper
 /************************************************************************************************/
 /************************************************************************************************/
 /************************************************************************************************/
+    println("start invoking process with NInvoker")
     if (validateElements(procElements.toList, test_space, space_elems) && run_proc)
       NInvoker.run_proc(process)
     else
@@ -1174,10 +1181,11 @@ def initiate2F(bpID: Int,
       val reaction = process.allElements.map(el => el.reactions).flatten
         reaction.find(reaction => reaction.id == Some(param.reaction_id)) match {
         case Some(target_reaction) => {
-          if (param.target.isDefined && param.target == "delay") {
+          if (param.target.isDefined && param.target == Some( "delay") ) {
             val el = bprocesses.ReactionExecutor.retriveElementByAction(process, target_reaction)
             el.get.session_states.find(s => s.title == "delayed") match {
               case Some(s) => { 
+                println("finded delayed action")
                 s.on = true
                 s.on_rate = 100
               }
@@ -1190,6 +1198,7 @@ def initiate2F(bpID: Int,
         case _ =>
       }
     }
+    println("params are executed")
 
 
   /************************************************************************************************/

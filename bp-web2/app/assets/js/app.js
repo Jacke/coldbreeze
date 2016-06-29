@@ -181,6 +181,7 @@ var minorityApp =
       'jcs-autoValidate',
       'chieffancypants.loadingBar',
       'ngCookies',
+      'cgNotify',
       'angularLocalStorage',
       'angular-progress-arc',
       'classy',
@@ -274,15 +275,18 @@ minorityApp.factory(
 
   }]);
 
-minorityApp.factory('NotificationBroadcaster', ['$rootScope','$websocket', '$window', 'toastr','toasty','ngAudio', 'popupFactory',
-function($rootScope,$websocket, $window, toastr,toasty, ngAudio, popupFactory) {
+minorityApp.factory('NotificationBroadcaster', ['$rootScope','$websocket', 'notify','$window', 'toastr','toasty','ngAudio', 'popupFactory',
+function($rootScope,$websocket, notify,$window, toastr,toasty, ngAudio, popupFactory) {
       // Open a WebSocket connection
       var baseUrl = $window.location.host;
       if (document.ssl_enabled) {
          var ws_type = "wss://";
       } else { var ws_type = "ws://" }
 
-
+      notify.config({
+        duration: 10000,
+        position: 'right'
+      })
       var collection = [];
       var isError = false;
       var socketLoad = function (isError) {
@@ -291,6 +295,12 @@ function($rootScope,$websocket, $window, toastr,toasty, ngAudio, popupFactory) {
           dataStream.onMessage(function(message) {
             console.log(message);
             var object = JSON.parse(message.data);
+            notify({ message: message.data, duration: 10000});
+            toasty.success({
+              title: message.type,
+              msg: object.msg
+            });
+                                    
             if (object.type == "message") {
                 if (object.msg == "cache") {
                   // clean cache

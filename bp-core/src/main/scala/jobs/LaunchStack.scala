@@ -18,7 +18,10 @@ object LaunchStackFactory {
 
   def addE(job: LaunchStackElement) = {
     println(s"Added LaunchStackElement $job")
-    s.stack.+=(job)
+    s.stack.find(s => s.process.id == job.process.id) match {
+    	case Some(s) =>
+		case _ => s.stack.+=(job)
+    }
   }
   def delE(job: LaunchStackElement) = {
     println(s"Remove LaunchStackElement $job")

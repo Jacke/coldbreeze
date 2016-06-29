@@ -236,7 +236,7 @@ def initiate(bpID: Int,
              params: List[ReactionActivator] = List(),
              pipes: List[LaunchMapPipe => ExecutedLaunchCVPipes]=List(),
              minimal: Boolean = false ):BProcess = {
-
+  println("coreLaunch initiate function")
 ElementRegistrator.apply
 // caster
 //val process_dto = BPDAO.get(bpID).get
@@ -1004,6 +1004,7 @@ def initiate2F(bpID: Int,
 /************************************************************************************************/
 /************************************************************************************************/
 /************************************************************************************************/
+    println("start invoking process with NInvoker")
     if (validateElements(procElements.toList, test_space, space_elems) && run_proc)
       NInvoker.run_proc(process)
     else

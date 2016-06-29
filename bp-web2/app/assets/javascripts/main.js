@@ -289,6 +289,10 @@
   deps: ['angular', 'app'],
   export: 'restangular'
 },
+'cgNotify': {
+  deps: ['angular', 'app'],
+  export: 'cgNotify'
+},
 'ngFileUploadShim': {
   deps: ['angular', 'app'],
   export: 'ngFileUploadShim'
@@ -428,6 +432,7 @@
   'pnotifybuttons':'../bower_components/pnotify/pnotify.buttons',
   'angularpnotify':'../bower_components/angular-pnotify/src/angular-pnotify',
 'restangular':'../bower_components/restangular/dist/restangular',
+'cgNotify': '../bower_components/angular-notify/dist/angular-notify',
 'angular-cache':'../bower_components/angular-cache/dist/angular-cache',
 'angular-hovercard':'../bower_components/angular-hovercard/dist/angular-hovercard',
 'angular-tooltips':'../bower_components/angular-tooltips/dist/angular-tooltips.min',
