@@ -412,7 +412,10 @@ $scope.loadProcessesFromCache = function() {
             // title:.(\S+\s+\S+|\S+).service:
 
             var updatedTitles = _.map(resp.data.deltas.u, function(d) {
-              return {id: parseInt(d.resourceId), title: d.updatedAttributes.split(/title:.(\S+\s+\S+|\S+).service:/)[1] }
+              return {id: parseInt(d.resourceId), 
+                    title: d.updatedAttributes.split(/title:.(\S+\s+\S+|\S+).service:/)[1], 
+                    service: parseInt(d.updatedAttributes.split(/service:.(\S+\s+\S+|\S+).version:/)[1])
+                  }
             });
             if (updatedTitles.length > 0){
               var concatedProcess = _.forEach(processesCache.get('processes'), function(proc) {
