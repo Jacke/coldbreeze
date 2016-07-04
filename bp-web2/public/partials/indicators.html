@@ -1,11 +1,108 @@
-Indicators
+
+
+<div class="act-data-table">
+	<div class="act-object">
+		<div class="act-header">
+		<div class="act-icon">
+		<svg width="45" height="43" xmlns="http://www.w3.org/2000/svg">
+		 <g>
+		  <title>background</title>
+		 </g>
+		 <g>
+		  <title>Layer 1</title>
+		  <path stroke="#000" id="svg_3" d="m5.16413,19.910958c0,-8.003891 6.238545,-14.415326 14.557101,-14.487045c8.318556,-0.071719 14.557096,6.483154 14.557096,14.487045c0,8.003896 -5.548631,14.48705 -14.557096,14.48705c-9.00847,0 -14.557101,-6.483154 -14.557101,-14.48705z" stroke-opacity="null" shape-rendering="auto" stroke-linecap="null" stroke-linejoin="null" stroke-width="0" fill-opacity="null" fill="#fff"/>
+		  
+		  <path shape-rendering="auto" d="m20.499914,36.828959c4.373481,0 8.746962,-1.591958 12.076296,-4.775875c0.511601,-0.488755 0.511601,-1.281479 0,-1.770234s-1.340007,-0.489256 -1.851084,0c-5.639131,5.391326 -14.81234,5.390825 -20.450423,0c-5.638083,-5.392327 -5.638083,-14.165376 0,-19.557703c5.638607,-5.391326 14.811816,-5.391326 20.450423,0c0.511601,0.489256 1.340007,0.489256 1.851084,0s0.511601,-1.28198 0,-1.770234c-6.659191,-6.368335 -17.493925,-6.368335 -24.152592,0c-6.659191,6.368335 -6.659191,16.729836 0,23.098171c3.329334,3.183917 7.702815,4.775875 12.076296,4.775875z" stroke-width="1px" stroke="black" id="svg_101"/>
+
+		  <path stroke="null" shape-rendering="auto" d="m42.31135,19.702715c-0.000998,-0.00097 -0.001497,-0.00097 -0.002495,-0.001941l-5.308327,-5.161894c-0.487428,-0.473982 -1.276692,-0.473982 -1.763622,0s-0.487428,1.241474 0,1.714971l3.183,3.095196l-14.721127,0c-0.51387,-1.408362 -1.89184,-2.418425 -3.516267,-2.418425c-2.062464,0 -3.734288,1.625705 -3.734288,3.631276c0,2.00557 1.671824,3.631276 3.734288,3.631276c1.624428,0 3.002397,-1.010062 3.516267,-2.418425l14.720628,0l-3.183,3.095196c-0.487428,0.473982 -0.487428,1.241474 0,1.714971c0.243465,0.236749 0.562762,0.355123 0.88206,0.355123s0.638097,-0.118374 0.88206,-0.355123l6.193879,-6.023018l-0.880564,-0.856273c-0.000998,-0.00097 -0.001497,-0.001941 -0.002495,-0.002911z" id="svg_2"/>
+		  <path id="svg_4" d="m52,26.662354" opacity="0.5" fill-opacity="null" stroke-opacity="null" stroke-width="0" stroke="#000" fill="#fff"/>
+		 </g>
+		 <g>
+		  <title>background</title>
+		  <rect fill="none" id="canvas_background" height="45" width="47" y="-1" x="-1"/>
+		 </g>
+		</svg>
+
+
+		</div>
+		<div class="act-title">
+			Act
+		</div>
+		<div class="act-process">
+			Process
+		</div>
+		</div>
+
+		<div class="act-acted">Acted</div>
+		<div class="act-essentials">
+			<div class="act-input">
+				Input
+			</div>
+			<div class="act-base">
+				Base
+			</div>
+			<div class="act-outputs">
+				Output
+			</div>	
+		</div>
+	</div>
+
+	<div class="act-object">
+		<div class="act-header">
+		<div class="act-title">
+			Act
+		</div>
+		<div class="act-process">
+			Process
+		</div>
+		</div>
+		
+		<div class="act-acted">Acted</div>
+		<div class="act-essentials">
+			<div class="act-input">
+				Input
+			</div>
+			<div class="act-base">
+				Base
+			</div>
+			<div class="act-outputs">
+				Output
+			</div>	
+		</div>
+	</div>
+
+	<div class="act-object">
+		<div class="act-header">
+		<div class="act-title">
+			Act
+		</div>
+		<div class="act-process">
+			Process
+		</div>
+		</div>
+		
+		<div class="act-acted">Acted</div>
+		<div class="act-essentials">
+			<div class="act-input">
+				Input
+			</div>
+			<div class="act-base">
+				Base
+			</div>
+			<div class="act-outputs">
+				Output
+			</div>	
+		</div>
+	</div>		
+
+</div>
 
 <div class="process-indicator-data-table">
 <div class="process-indicator-data-table-title">Process</div>
 
 <div class="indicator-data-table-container">
 <table ng-table-dynamic="tableParams with cols" 
-     class="table table-condensed table-bordered table-striped">
+     class="table table-with-indicators">
 <tr ng-repeat="row in $data">
   <td ng-repeat="col in $columns">{{row[col.field]}}</td>
 </tr>

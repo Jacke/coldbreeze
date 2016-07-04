@@ -296,7 +296,6 @@ header.fullSize {
     right: 0;
     background: rgba(250,251,252,0.001);
     min-width: 99%;
-    height: 80px;
     -webkit-backface-visibility: hidden;
     -moz-backface-visibility: hidden;
     -ms-backface-visibility: hidden;
@@ -330,6 +329,7 @@ header.fullSize {
     min-width: 100%;
     width: 100%;
     margin: 0 auto;
+
     background: #fafbfc;
     z-index: 10000;
     display: block;

@@ -501,15 +501,14 @@
   };
 
   // Load the app. This is kept minimal so it doesn't need much updating.
-require(['requirejs','jsRoutes','jquery', 'react','pnofiy','mobileDetect','popupoverlay','drag-on','ngFileUploadShim','jquery.nicescroll','ssl','header','tooltip','dropdown','underscore','moment','selectize', 'tether', 'shepherd','tour','notie',
+require(['requirejs','jsRoutes','jquery','pnofiy','mobileDetect','popupoverlay','drag-on','ngFileUploadShim','jquery.nicescroll','ssl','header','tooltip','dropdown','underscore','moment','selectize', 'tether', 'shepherd','tour','notie',
   ],//'jquery', 'bootstrap'],//, './app'],
-    function (requirejs,jsRoutes,$,react, pnofiy,mobileDetect,popupoverlay,dragOn,ngFileUploadShim,niceScroll,ssl,header,tooltip,dropdown,underscore,moment,selectize,tether,shepherd,tour,notie) {
+    function (requirejs,jsRoutes,$, pnofiy,mobileDetect,popupoverlay,dragOn,ngFileUploadShim,niceScroll,ssl,header,tooltip,dropdown,underscore,moment,selectize,tether,shepherd,tour,notie) {
         document.tour = tour;
 
       $(document).ready(function(){
         document.mobileDetect = new mobileDetect(window.navigator.userAgent);
         document.isMobile = (document.mobileDetect.phone() != null) ? true : false;
-        document.react = react;
         $('[data-toggle="tooltip"]').tooltip();
 
 
@@ -1077,7 +1076,12 @@ $(window).on('hashchange', function(e){
 
 
 
-
+function AdjustHeight() {
+    var height = document.getElementsByTagName('header')[0].offsetHeight;
+    document.getElementsByClassName("app-container")[0].style.marginTop = height + 'px';
+}    
+$(document).ready(AdjustHeight);
+$(window).resize(AdjustHeight);    
 
 
 });

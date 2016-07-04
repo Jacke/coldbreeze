@@ -140,8 +140,18 @@ def station_index(id: Int) = SecuredAction { implicit request =>
 }
 
 // GET         /bprocess/stations
-def all_stations() = SecuredAction { implicit request =>
-  Ok(Json.toJson(BPStationDAO.getAll))
+def all_stations() = SecuredAction.async { implicit request =>
+  val business = request.identity.businessFirst
+  val user_services = BusinessServiceDAO.getAllByBusiness(business).map(_.id.getOrElse(-1))
+  // processes ->
+  val bprocessF = BPDAOF.getByServices(user_services) // TODO: Not safe
+
+  bprocessF.flatMap { processes =>
+    val stationsF = BPStationDAOF.findByBPIds(processes.map(p => p.id.get).toList)
+    stationsF.map { stations =>
+      Ok(Json.toJson(stations))
+    }
+  }
 }
 
 // GET          /bprocess/:BPid/sessions
@@ -162,7 +172,7 @@ def process_all_session(pid: Int) = SecuredAction { implicit request =>
 }
 
 
-// GET         /sessions
+// GET   /sessions
 def all_sessions(page: Option[Long], active: Option[Boolean]) = SecuredAction.async { implicit request =>
   val resourceCountF = BPSessionDAOF.countByBusiness(request.identity.businessFirst, active)
   val offset = 9

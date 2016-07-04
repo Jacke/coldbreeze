@@ -327,10 +327,13 @@ GET      /data/test                         @controllers.DataController.boardTes
 # Cost module
 #############
 
-GET      /data/cost/collection                     @controllers.CostFillController.assignResourceCollection
-GET 	   /data/cost/assigns/:process_id  	         @controllers.CostFillController.assigns(process_id: Int)
-GET	     /data/cost/launch_assigns/:launch_id      @controllers.CostFillController.launch_assigns(launch_id: Int)
-GET      /data/cost/elem_launch_assigns/:launch_id @controllers.CostFillController.launch_assigns_for_elements(launch_id: Int)
+GET      /data/indicators_table @controllers.CostFillController.indicatorsTable()
+GET      /data/acts_table       @controllers.CostFillController.actsTable()
+
+GET      /data/cost/collection           @controllers.CostFillController.assignResourceCollection
+GET 	 /data/cost/assigns/:proc_id  	 @controllers.CostFillController.assigns(proc_id: Int)
+GET	     /data/cost/launch_assigns/:l_id @controllers.CostFillController.launch_assigns(l_id: Int)
+GET      /data/cost/elem_launch_assigns/:l_id @controllers.CostFillController.launch_assigns_for_elements(l_id: Int)
 
 
 POST	 /data/cost/assign/:resource_id		              @controllers.CostFillController.createCostElement(resource_id: Int)

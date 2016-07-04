@@ -278,6 +278,9 @@ object BPSessionDAOF {
     }
   }
 
+  def findByProcesses(pids: Seq[Int]): Future[Seq[BPSession]] = 
+    db.run(filterByProcessesQuery(pids.toList).result)
+
   def findListedByBusiness(bid: Int): Future[Seq[SessionContainer]] = {
     val pF: Future[Seq[BProcessDTO]] = BPDAOF.findByBusiness(bid)
 
