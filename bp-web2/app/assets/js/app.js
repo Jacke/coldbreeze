@@ -413,18 +413,13 @@ minorityApp.provider('lkGoogleSettings', function () {
       link: function (scope, element, attrs) {
         var accessToken = null;
 
-        /**
-         * Load required modules
-         */
+/*
         function instanciate () {
-          gapi.load('auth', { 'callback': onApiAuthLoad });
-          gapi.load('picker');
+          // gapi.load('auth', { 'callback': onApiAuthLoad });
+          // gapi.load('picker');
         }
 
-        /**
-         * OAuth autorization
-         * If user is already logged in, then open the Picker modal
-         */
+
         function onApiAuthLoad () {
           var authToken = gapi.auth.getToken();
 
@@ -439,9 +434,6 @@ minorityApp.provider('lkGoogleSettings', function () {
           }
         }
 
-        /**
-         * Google API OAuth response
-         */
         function handleAuthResult (result) {
           if (result && !result.error) {
             accessToken = result.access_token;
@@ -449,9 +441,7 @@ minorityApp.provider('lkGoogleSettings', function () {
           }
         }
 
-        /**
-         * Everything is good, open the files picker
-         */
+
         function openDialog () {
           var picker = new google.picker.PickerBuilder()
                                  .setLocale(lkGoogleSettings.locale)
@@ -475,10 +465,6 @@ minorityApp.provider('lkGoogleSettings', function () {
           picker.build().setVisible(true);
         }
 
-        /**
-         * Callback invoked when interacting with the Picker
-         * data: Object returned by the API
-         */
         function pickerResponse (data) {
           gapi.client.load('drive', 'v2', function () {
             if (data.action == google.picker.Action.LOADED && scope.onLoaded) {
@@ -500,6 +486,7 @@ minorityApp.provider('lkGoogleSettings', function () {
         element.bind('click', function (e) {
           instanciate();
         });
+        */
       }
     }
   }]);

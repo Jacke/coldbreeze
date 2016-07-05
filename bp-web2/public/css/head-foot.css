@@ -1570,6 +1570,9 @@ background: #455064;
 .themeDark .minorityMenu .secondaryNav .secondaryNavItem a {
     color: #fff;
 }
+.themeDark .minorityMenu .secondaryNav .secondaryNavItem a:focus {
+    text-decoration: none;
+}
 
 .themeDark .minorityMenu .secondaryNav .secondaryNavItem .logoutBtn {
     color: #fff;

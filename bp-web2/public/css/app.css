@@ -1640,7 +1640,17 @@ a.expand-ref-select {
   position: relative;
 }
 
+.people-select-container .people-select-avatar img {
+    width: 32px;
+    border-radius: 92px;
+    border: solid 1px #4d4f69;
+}
 
+.people-select-container .people-select-avatar {
+    display: inline-block;
+    margin-right: 8px;
+    float: left;
+}
 
 .tutorial-step {
     margin-left: 25px;
@@ -1768,7 +1778,9 @@ span.reaction-icon.minicon.minicon-gear-fill-right {
     position: relative;
     background: #fff;
     border-radius: 3px;
-    box-shadow: 0 1px 2px rgba(0,0,0,.1),0 0 0 1px rgba(63,63,68,.1);
+    /*box-shadow: 0 1px 2px rgba(0,0,0,.1),0 0 0 1px rgba(63,63,68,.1);
+    */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05),0 0 0 1px rgba(63, 63, 68, 0);
     cursor: auto;
 }
 

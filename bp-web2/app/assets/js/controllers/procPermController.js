@@ -60,7 +60,7 @@ $scope.isManager();
   $scope.credFetch = function (obj) {
     if (obj !== undefined && obj.uid !== undefined) { // it's employee
 
-    var res = _.find($scope.creds, function(cr){ return cr.userId == obj.uid});
+    var res = _.find($scope.creds, function(cr){ return cr.email == obj.uid});
     if (res != undefined) {
       return res.fullName + " " + obj.uid;
     } else if (res == undefined) {
@@ -76,7 +76,7 @@ $scope.isManager();
 $scope.accFetch = function (obj) {
   if (obj.uid != undefined) { // it's employee
 
-  var res = _.find($scope.accounts, function(cr){ return cr.userId == obj.uid});
+  var res = _.find($scope.accounts, function(cr){ return cr.email == obj.uid});
   if (res != undefined) { // it's account
                           // anonumous checking
     res.fullName != undefined ? res.tooltip = res.fullName : res.tooltip = res.email;
@@ -87,7 +87,7 @@ $scope.accFetch = function (obj) {
   } else { // it's group
     var res = _.find($scope.groups, function(gr) { return gr.id == obj.id });
     if (res != undefined) {
-      res.avatarUrl = '/assets/images/group.png'
+      res.avatarURL = '/assets/images/group.png'
       res.tooltip = "Group " + res.title;
       return res;
     } else { return }
