@@ -26,6 +26,10 @@ minorityControllers.controller('LaunchesCtrl', ['$q','$controller','$timeout','$
   'BPSpaceElemsFactory','BPStationsFactory','BPStationFactory', 'BPLogsFactory', '$location', '$route',
   function ($q, $controller, $timeout, $http, $window, $translate, $scope, $filter, $routeParams, $rootScope,Restangular, ngDialog, FilteredSessionsFactory, InteractionsBulkFactory, AllLaunchedElementsBulkFactory, ProcPermissionsFactory, TreeBuilder, BPStationsFactory, SessionsFactory, BProcessesFactory, BProcessFactory, ObserversFactory, ObserverFactory, BProcessesFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory, $location, $route) {
 
+angular.element(document).ready(function () {
+//  document.coolButtons();
+});
+
 $scope.isEmptyLaunchesCheck = function() {
   //$rootScope.$on('cfpLoadingBar:completed', function(event, data){
   $scope.isEmptyLaunches = false;

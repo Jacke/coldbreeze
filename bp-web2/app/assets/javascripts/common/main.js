@@ -77,6 +77,8 @@ define(['angularAMD', 'angular',
   'use strict';
   console.log(angular);
   console.log(app);
+
+
   return angularAMD.bootstrap(app);
   //.module('yourprefix.common', ['common.helper', 'common.playRoutes', 'common.filters','common.directives.example']);
 });

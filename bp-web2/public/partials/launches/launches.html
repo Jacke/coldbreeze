@@ -136,6 +136,9 @@
 -->
 
 
+    
+
+
 <div class="session-process" ng-repeat="entity in sessions" ng-hide="isSessionsOnlyActive(entity.sessions)">
   <div class="session-process-header">
     <h2 class="session-process-header-title">
@@ -160,7 +163,24 @@
        
 
   <div class="session__buttonInput" ng-click="showInlineLaunch(session);session.lineDescShow==true ? session.lineDescShow=false : session.lineDescShow=true;">
+  <div class="content">
+    <div class="device device--alt">
+      <div class="device__screen">
+        <div id="menu-icon-wrapper2" class="menu-icon-wrapper" style="visibility: hidden">
+          <svg width="1000px" height="1000px">
+            <path id="pathD" d="M 300 400 L 700 400 C 900 400 900 750 600 850 A 400 400 0 0 1 200 200 L 800 800"></path>
+            <path id="pathE" d="M 300 500 L 700 500"></path>
+            <path id="pathF" d="M 700 600 L 300 600 C 100 600 100 200 400 150 A 400 380 0 1 1 200 800 L 800 200"></path>
+          </svg>
+          <button id="menu-icon-trigger2" class="menu-icon-trigger"></button>
+        </div> 
+      </div>
+    </div>
+  </div>
+  
     <button class="svg-button-input">
+
+    <!--    
       <svg class="inline-svg" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"      y="0px" width="21px" height="24px" fill="white" viewBox="0 0 32 22.5" 
             enable-background="new 0 0 32 22.5" xml:space="preserve">
             <title>Mobile Menu</title>
@@ -174,14 +194,16 @@
             <path class="bar" d="M20.969,21.25c0,0.689-0.5,1.25-1.117,1.25H3.164c-0.617,0-1.118-0.561-1.118-1.25l0,0
               c0-0.689,0.5-1.25,1.118-1.25h16.688C20.469,20,20.969,20.561,20.969,21.25L20.969,21.25z">
             </path>
-            <!-- needs to be here as a 'hit area' -->
             <rect width="21" height="24" fill="none">
-
             </rect>
             </g>
-      </svg>
+      </svg>-->
     </button>
   </div>
+
+
+
+
 
   <div class="session__header">
           <div class="progress-button loading" ng-class="bubbleClass(session)" tooltip-placement="left" uib-tooltip="{{bubbleTooltip(session)}}" tooltip-side="left">
