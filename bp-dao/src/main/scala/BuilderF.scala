@@ -263,6 +263,14 @@ def saveOrUpdateSessionStates(bprocess: BProcess, bprocess_dto: BProcessDTO, ses
     val station_loggers = bprocess.station.station_logger.logs.map(s => BPStationLoggeDAOF.from_origin_station(process_id, station_id, s))
     station_loggers.foreach(s => BPStationLoggeDAOF.pull_object(s))
   }
+  def saveLaunchAct(bprocess: BProcess, bprocess_dto: BProcessDTO) = {
+    bprocess.acts.foreach(act => 
+      val actId = ActionActsDAOF.pull(act)
+      act.results.foreach(ar =>
+        ActionActResultsDAOF.pull(ar.copy(act = actId))
+      )
+    )
+  }
 
   /** ***
     * Core launch
@@ -732,11 +740,14 @@ val strategiy_outputs:List[StrategyOutputUnit] = sessionStOuts.map(el =>   Exper
       saveSessionStateLogs(process, bpDTO)
       saveOrUpdateState(process, bpDTO, session_id, lang)
       saveStationLog(bpID, station_id, process)
+      saveLaunchAct(process, bpDTO)
     }
 
-    Future( ProcessExecutionResult( process, procElementsObj.toList,
-test_spaceObj.toList,
-space_elemsObj.toList ) )
+    Future( ProcessExecutionResult( 
+              process, 
+              procElementsObj.toList,
+              test_spaceObj.toList,
+              space_elemsObj.toList ) )
     }
     }
   }
@@ -1248,6 +1259,7 @@ def initiate2F(bpID: Int,
       saveSessionStateLogs(process, bpDTO)
       saveOrUpdateState(process, bpDTO, session_id, lang)
       saveStationLog(bpID, station_id, process)
+      saveLaunchAct(process, bpDTO)
     }
 
     Future( process )

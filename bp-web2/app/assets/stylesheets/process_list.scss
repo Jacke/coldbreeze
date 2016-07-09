@@ -140,16 +140,19 @@ span.state-percent.vertical-center {
   display: inline-block;
 }
 ul.type-tabs {
-  width: 59px;
-  margin-top: -56px;
-  margin-left: -8px;
-  padding-left: 0px;
-  height: 57px;
-  border-radius: 0px;
-  display: block;
-  background: rgba(166, 166, 166, 0.67);
-  z-index: 2;
-  display: none;
+    width: 59px;
+    margin-top: 0px;
+    margin-left: -8px;
+    padding-left: 0px;
+    height: 57px;
+    border-radius: 0px;
+    display: block;
+    background: rgba(166,166,166,0.67);
+    z-index: 2;
+    display: none;
+    position: absolute;
+    display: none;
+    top: 0px;
 }
 ul.type-tabs li {
   display: inline-block;

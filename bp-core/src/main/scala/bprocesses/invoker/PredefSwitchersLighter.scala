@@ -38,10 +38,10 @@ val COMMON_STATES = List(
 						CANCEL_STATE
 						)
 
-def elementInvokationStage(bp: BProcess, elem: ProcElems) = {
+def elementStartInvokationStage(bp: BProcess, elem: ProcElems) = {
 	println(s" ")
 	println(s"************************************************")
-	println(s"elementInvokationStage for $elem.title")
+	println(s"elementStartInvokationStage for $elem.title")
 	//elem.bprocess.station.update_state(false)
 
 	pushToLoggerBefore(bp, BPLoggerResult(

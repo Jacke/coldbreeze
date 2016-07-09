@@ -1246,7 +1246,9 @@ $(window).on('hashchange', function(e){
 
 function AdjustHeight() {
     var height = document.getElementsByTagName('header')[0].offsetHeight;
-    document.getElementsByClassName("app-container")[0].style.marginTop = height + 'px';
+    if (height > 81) { // for extra big nav
+      document.getElementsByClassName("app-container")[0].style.marginTop = height + 'px';
+    }
 }    
 $(document).ready(AdjustHeight);
 $(window).resize(AdjustHeight);    

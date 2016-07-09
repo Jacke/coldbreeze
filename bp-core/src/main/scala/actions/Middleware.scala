@@ -43,6 +43,17 @@ case class Middleware(
 						)
 				}
 			}
+			case "RestMiddleware" => {
+				strategies match {
+					case MutableList(head, _*) => Some( 
+						  RESTMiddleware.execute(parts, head) 
+						)
+					case _ if strategies.length < 1 => Some( 
+						  RESTMiddleware.execute(parts, 
+						  						  nullStrategy.asStrategy)
+						)
+				}				
+			}
 			case _ => None
 		}
 	}
@@ -58,7 +69,7 @@ case class LaunchMiddleware(
 		ifaceIdent: String,
 		reaction: Int = -1,
 		created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
-    updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
+	    updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
 	) {
 
 

@@ -11,25 +11,26 @@ import models.DAO.conversion.DatabaseCred.dbConfig.driver.api._
 import com.github.tototoshi.slick.PostgresJodaSupport._
 
 
-class ActionActResults(tag: Tag) extends Table[Middleware](tag, "action_act_results") {
+class ActionActResults(tag: Tag) extends Table[ActionResult](tag, "action_act_results") {
   def id          = column[Long]("id", O.PrimaryKey, O.AutoInc)
-  def title       = column[String]("title")
-
-  def ident       = column[String]("ident")
-  def ifaceIdent  = column[String]("iface_ident")
-  def reaction    = column[Int]("reaction_id")
+  def in          = column[Boolean]("in")
+  def out         = column[Boolean]("out")
+  def base        = column[Boolean]("base")
+  def content     = column[String]("content")
+  def act         = column[Long]("act_id")
 
   def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")
 
-  def reaction_FK = foreignKey("middleware_reaction_fk", reaction, models.DAO.ReactionDAO.reactions)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def act_FK = foreignKey("act_reaction_fk", reaction, models.DAO.ActionActsDAOF.action_acts)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?,
-           title,
-           ident,
-           ifaceIdent,
-           reaction,
-           created_at, updated_at) <> (Middleware.tupled, Middleware.unapply)
+           in,
+           out,
+           base,
+           content,
+           act,
+           created_at, updated_at) <> (ActionResult.tupled, ActionResult.unapply)
 }
 
 object ActionActResultsDAOF {
@@ -52,17 +53,17 @@ object ActionActResultsDAOF {
   val drop: DBIO[Unit] = action_act_results.schema.drop
   def get(id: Long) = db.run(filterQuery(id).result.headOption)
 
-  def pull(s: Middleware):Future[Long] = db.run(action_act_results returning action_act_results.map(_.id) += s)
+  def pull(s: ActionResult):Future[Long] = db.run(action_act_results returning action_act_results.map(_.id) += s)
 
   def ddl_create = db.run(create)
   def ddl_drop = db.run(drop)
 
-  private def filterReactionsQuery(ids: List[Int]): Query[ActionActResults, Middleware, Seq] =
+  private def filterReactionsQuery(ids: List[Int]): Query[ActionActResults, ActionResult, Seq] =
     action_act_results.filter(_.reaction inSetBind ids)
 
   def findByReactions(reaction: List[Int]) = db.run(filterReactionsQuery(reaction).result)
 
-  private def filterQuery(id: Long): Query[ActionActResults, Middleware, Seq] =
+  private def filterQuery(id: Long): Query[ActionActResults, ActionResult, Seq] =
     action_act_results.filter(_.id === id)
 
 }

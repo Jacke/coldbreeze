@@ -59,7 +59,7 @@ case class LaunchStrategy(val id: Option[Long],
 
 
 
-case class StrategyArgument(argInt: Int = 0, argLong:Long = 0L, argString: String = "")
+case class StrategyArgument(argInt: Int = 0, argLong:Long = 0L, argString: String = "", argKey: String="")
 
 case class StrategyResult(
 	resultedStrategy: String,

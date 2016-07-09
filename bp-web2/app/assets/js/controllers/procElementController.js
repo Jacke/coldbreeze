@@ -2104,7 +2104,10 @@ $scope.setStrategyFields = function(strategy, action) {
           var fieldType = 'text'
           var placeholder = 'DD/MM/YEAR HH:MM:SS';
           var label = 'Schedule';
-
+        } else if (base.baseType == "url") { 
+          var fieldType = 'url'
+          var label = 'URL';                  
+          var placeholder = 'http://example.com/api/v1/resource';
         } else {
           var fieldType = 'text'
           var placeholder = '';
@@ -2205,7 +2208,10 @@ $scope.setStrategyEditFields = function(strategy, action) {
           var fieldType = 'text'
           var placeholder = 'DD/MM/YEAR HH:MM:SS';
           var label = 'Schedule';
-
+        } else if (base.baseType == "url") { 
+          var fieldType = 'url'
+          var label = 'URL';                  
+          var placeholder = 'http://example.com/api/v1/resource';
         } else {
           var fieldType = 'text'
           var placeholder = '';
@@ -2274,8 +2280,10 @@ vm.editFieldsForStrategy = function(strategy, action, bases) {
         var placeholder = 'DD/MM/YEAR HH:MM:SS';
         var label = 'Schedule';
         var defaultValue = base.valueContent;
-
-
+      } else if (base.baseType == "url") { 
+          var fieldType = 'url'
+          var label = 'URL';        
+          var placeholder = 'http://example.com/api/v1/resource';
       } else {
         var fieldType = 'text'
         var placeholder = '';
