@@ -65,6 +65,37 @@ minorityControllers.controller('ReflectionCtrl', [
             $location, $route, $routeParams, $window) {
 
 
+console.log('routeParams', $routeParams);
+
+
+$scope.switchToRefPage = function(refId) {
+   $location.search('ref='+refId);
+}
+$scope.resetRefPage = function() {
+   $location.search('');
+}
+
+
+$scope.isInRefPage = function(refId) {
+  if ($routeParams.ref !== undefined && parseInt($routeParams.ref) == refId) {
+    return true;
+  } else {
+    if ($routeParams.ref == undefined) { // on main ref page
+      return true;
+    } else {
+      return false;
+    }
+  }
+}
+
+$scope.showElementForRef = function(refId) {
+  if (parseInt($routeParams.ref) == refId) {
+    return true;
+  } else {
+    return false;
+  }
+} 
+
 $scope.isManager = function () {
   if ($scope.isManagerVal == undefined && $rootScope.manager != undefined) {
     $scope.isManagerVal = $rootScope.manager;
@@ -211,18 +242,24 @@ $scope.createRef = function (obj) {
     obj.hidden = false;
   }
   RefsFactory.create(obj).$promise.then(function(c) {
+     obj.title = "";
+     obj.host = "";
+     obj.desc = "";
+     obj.hidden = false;
+     $scope.showNewRefForm = false;
+
      $scope.reloadRefs();
   });
 };
 
 
 $scope.updateRef = function (obj) {
-  RefFactory.update({id: obj.id}, obj).$promise.then(function(c) {
+  RefFactory.update({id: obj.ref.id}, obj).$promise.then(function(c) {
      $scope.reloadRefs();
   });
 };
 $scope.deleteRef = function (obj) {
-  RefFactory.delete({id: obj.id}).$promise.then(function(c) {
+  RefFactory.delete({id: obj.ref.id}).$promise.then(function(c) {
      $scope.reloadRefs();
   });
 };

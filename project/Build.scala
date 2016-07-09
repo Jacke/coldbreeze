@@ -141,7 +141,6 @@ integrationTest := {
           javamandrill,
           javamandrill2,
 
-          webserviceclient,
           bootstrapplay4
         //  securesocial
         ))
@@ -220,6 +219,13 @@ integrationTest := {
           syslog,
 	        scaldi,
           sprayClient,
+
+// PLAY STUFF
+          playjson,
+          wiremock,
+          webserviceclient,
+
+
           hdrHistogram))
     .settings(libraryDependencies ~= { _.map(_.exclude("org.slf4j", "slf4j-simple")) })
 

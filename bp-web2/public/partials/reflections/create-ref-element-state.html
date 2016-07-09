@@ -15,7 +15,8 @@
   <div class="control-group form-group">
     <label class="control-label col-sm-1" for="inputBusinessId">desc:</label>
     <div class="controls col-xs-4">
-      <textarea type="text" class="form-control" id="inputBusinessId" ng-model="$parent.refObj.newRefElementState.desc"/>
+      <textarea type="text" class="form-control" id="inputBusinessId" 
+      ng-model="$parent.refObj.newRefElementState.desc"/>
     </div>
   </div>
 
@@ -25,42 +26,109 @@
   <div class="control-group form-group">
     <label class="control-label col-sm-1" for="inputBusinessId">neutral:</label>
     <div class="controls col-xs-4">
-      <input type="text" class="form-control" id="inputBusinessId" ng-model="$parent.refObj.newRefElementState.neutral"/>
+      <input type="text" class="form-control" id="inputBusinessId" 
+      ng-init="$parent.refObj.newRefElementState.neutral=''"      
+      ng-model="$parent.refObj.newRefElementState.neutral"/>
     </div>
   </div>
 
-  <div class="control-group form-group">
-    <label class="control-label col-sm-1" for="inputBusinessId">lang:</label>
-    <div class="controls col-xs-4">
-      <input type="text" class="form-control" id="inputBusinessId" ng-model="$parent.refObj.newRefElementState.lang"/>
-    </div>
-  </div>
 
   <div class="control-group form-group">
     <label class="control-label col-sm-1" for="inputBusinessId">middleable:</label>
     <div class="controls col-xs-4">
-      <input type="checkbox" ng-model="$parent.refObj.newRefElementState.middleable">
+      <input type="checkbox" 
+      ng-init="$parent.refObj.newRefElementState.middleable=false"
+      ng-model="$parent.refObj.newRefElementState.middleable">
     </div>
   </div>
 
   <div class="control-group form-group">
     <label class="control-label col-sm-1" for="inputBusinessId">oposite:</label>
     <div class="controls col-xs-4">
-      <input type="text" class="form-control" id="inputBusinessId" ng-model="$parent.refObj.newRefElementState.oposite"/>
+      <input type="text" class="form-control" id="inputBusinessId" 
+      ng-init="$parent.refObj.newRefElementState.oposite=''"
+      ng-model="$parent.refObj.newRefElementState.oposite"/>
     </div>
   </div>
 
   <div class="control-group form-group">
-    <label class="control-label col-sm-1" for="inputBusinessId">reflection:</label>
+    <label class="control-label col-sm-1" for="inputBusinessId">opositable:</label>
     <div class="controls col-xs-4">
-      <input type="number" class="form-control" id="inputBusinessId" ng-init="$parent.refObj.newRefElementState.reflection = $parent.refObj.ref.id" ng-model="$parent.refObj.newRefElementState.reflection"/>
+      <input type="checkbox" class="form-control" id="inputBusinessId" 
+      ng-init="$parent.refObj.newRefElementState.opositable=false"
+      ng-model="$parent.refObj.newRefElementState.opositable"/>
     </div>
   </div>
+
+  <div class="control-group form-group">
+    <label class="control-label col-sm-1" for="inputBusinessId">middle:</label>
+    <div class="controls col-xs-4">
+      <input type="text" class="form-control" id="inputBusinessId" 
+      ng-init="$parent.refObj.newRefElementState.middle=''"
+      ng-model="$parent.refObj.newRefElementState.middle"/>
+    </div>
+  </div>
+
+
+
+
+  <input type="hidden" 
+         class="form-control" 
+         id="inputBusinessId" 
+         ng-init="$parent.refObj.newRefElementState.reflection = $parent.refObj.ref.id" 
+         ng-model="$parent.refObj.newRefElementState.reflection"/>
+
+  <input type="hidden" 
+         class="form-control" 
+         id="inputBusinessId" 
+         ng-init="$parent.refObj.newRefElementState.on_rate=0"      
+         ng-model="$parent.refObj.newRefElementState.on_rate"/>
+
+  <input type="number" 
+        class="form-control" 
+        id="inputBusinessId" 
+        ng-init="$parent.refObj.newRefElementState.front_elem_id=$parent.element.id"        
+        ng-model="$parent.refObj.newRefElementState.front_elem_id"/>
+
+  <input type="hidden" 
+         ng-init="$parent.refObj.newRefElementState.process_state=false"
+         ng-model="$parent.refObj.newRefElementState.process_state">
+
+  <input type="hidden" 
+         ng-init="$parent.refObj.newRefElementState.on=false"
+         ng-model="$parent.refObj.newRefElementState.on">
+
+  <input type="hidden" class="form-control" id="inputBusinessId" 
+         ng-init="$parent.refObj.newRefElementState.on_rate=0"      
+         ng-model="$parent.refObj.newRefElementState.on_rate"/>
+
+  <input type="hidden" class="form-control" id="inputBusinessId" 
+         ng-init="$parent.refObj.newRefElementState.lang='en'"
+         ng-model="$parent.refObj.newRefElementState.lang"/>
+
+<!--
+  <div class="control-group form-group">
+    <label class="control-label col-sm-1" for="inputBusinessId">reflection:</label>
+    <div class="controls col-xs-4">
+    </div>
+  </div>
+
 
   <div class="control-group form-group">
     <label class="control-label col-sm-1" for="inputBusinessId">on_rate:</label>
     <div class="controls col-xs-4">
-      <input type="number" class="form-control" id="inputBusinessId" ng-model="$parent.refObj.newRefElementState.on_rate"/>
+      <input type="hidden" class="form-control" id="inputBusinessId" 
+      ng-init="$parent.refObj.newRefElementState.on_rate=0"      
+      ng-model="$parent.refObj.newRefElementState.on_rate"/>
+    </div>
+  </div>
+
+  <div class="control-group form-group">
+    <label class="control-label col-sm-1" for="inputBusinessId">lang:</label>
+    <div class="controls col-xs-4">
+      <input type="hidden" class="form-control" id="inputBusinessId" 
+      ng-init="$parent.refObj.newRefElementState.lang='en'"
+      ng-model="$parent.refObj.newRefElementState.lang"/>
     </div>
   </div>
 
@@ -71,6 +139,13 @@
 
     </div>
   </div>
+  <div class="control-group form-group">
+    <label class="control-label col-sm-1" for="inputBusinessId">process_state:</label>
+    <div class="controls col-xs-4">
+      <input type="checkbox" ng-model="$parent.refObj.newRefElementState.process_state">
+    </div>
+  </div>
+
   <div class="control-group form-group">
     <label class="control-label col-sm-1" for="inputBusinessId">space_id:</label>
     <div class="controls col-xs-4">
@@ -84,37 +159,19 @@
       <input type="number" class="form-control" id="inputBusinessId" ng-model="$parent.refObj.newRefElementState.space_elem_id"/>
     </div>
   </div>
-
-
-
   <div class="control-group form-group">
     <label class="control-label col-sm-1" for="inputBusinessId">on:</label>
     <div class="controls col-xs-4">
-      <input type="checkbox" ng-model="$parent.refObj.newRefElementState.on">
+      <input type="hidden" 
+      ng-init="$parent.refObj.newRefElementState.on=false"
+      ng-model="$parent.refObj.newRefElementState.on">
     </div>
   </div>
-
-  <div class="control-group form-group">
-    <label class="control-label col-sm-1" for="inputBusinessId">opositable:</label>
-    <div class="controls col-xs-4">
-      <input type="checkbox" class="form-control" id="inputBusinessId" ng-model="$parent.refObj.newRefElementState.opositable"/>
-    </div>
-  </div>
-
-  <div class="control-group form-group">
-    <label class="control-label col-sm-1" for="inputBusinessId">process_state:</label>
-    <div class="controls col-xs-4">
-      <input type="checkbox" ng-model="$parent.refObj.newRefElementState.process_state">
-    </div>
-  </div>
+-->
 
 
-  <div class="control-group form-group">
-    <label class="control-label col-sm-1" for="inputBusinessId">middle:</label>
-    <div class="controls col-xs-4">
-      <input type="text" class="form-control" id="inputBusinessId" ng-model="$parent.refObj.newRefElementState.middle"/>
-    </div>
-  </div>
+
+
 
   <div class="control-group form-group">
     <div class="controls col-xs-4">

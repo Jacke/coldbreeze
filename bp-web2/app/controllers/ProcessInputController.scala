@@ -119,13 +119,11 @@ def invoke(bpID: Int)  = SecuredAction.async { implicit request =>
 
 
 // POST         /bprocess/:bpID/invoke_from/:station_id
-def invokeFrom(session_id: Int, bpID: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def invokeFrom(session_id: Int, bpID: Int) = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, bpID)) {
 
 
-
-      val pmsResult = request.body.validate[List[ReactionActivator]]
-
+    val pmsResult = request.body.validate[List[ReactionActivator]]
     /*
     case class InputLogger(var id: Option[Int],
       uid:Option[String]=None,
@@ -162,24 +160,24 @@ def invokeFrom(session_id: Int, bpID: Int) = SecuredAction(BodyParsers.parse.jso
                 }
           }
         }*/
-    service.Build.newRunFrom(session_id = session_id,
+    val resumedProcF = service.BuildF.newRunFrom(session_id = session_id,
       bpID = bpID, 
       params = pmsResult.get, 
-      invoke = true) match {    
-        case Some(process) => {
-         action(request.identity.emailFilled, process = Some(bpID), ProcHisCom.processResumed, None, None)
-         controlles.launches.LaunchStack.pop(launchId = session_id)
-         controllers.UserActor.updateLaunchLock(target="lock", email=request.identity.emailFilled, isLock=true, launchId=session_id)
-
-         Ok(Json.toJson(Map("success" -> process.session_id)))
-        }
-        case _ => BadRequest(Json.toJson(Map("error" -> "Error output")))
+      invoke = true)
+    resumedProcF.map { process =>
+     action(request.identity.emailFilled, process = Some(bpID), ProcHisCom.processResumed, None, None)
+     controlles.launches.LaunchStack.pop(launchId = session_id)
+     controllers.UserActor.updateLaunchLock(target="lock", 
+                                            email= request.identity.emailFilled, 
+                                            isLock=true, 
+                                            launchId= session_id)
+     Ok(Json.toJson(Map("success" -> process.session_id)))
     }
    } else { // already launching
-      BadRequest(Json.toJson(Map("error" -> "Already launching")))
+      Future.successful( BadRequest(Json.toJson(Map("error" -> "Already launching"))) )
    }
 
-  } else { Forbidden(Json.obj("status" -> "Access denied")) }
+  } else { Future.successful( Forbidden(Json.obj("status" -> "Access denied")) ) }
 }
 
 

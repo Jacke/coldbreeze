@@ -137,18 +137,18 @@ object Dependencies {
 
   val mailerses       = "nl.rhinofly"               %% "play-mailer"            % "3.0.0"
   val apamailer       = "org.apache.commons"        %  "commons-email"          % "1.3.1"
-  val filter          = "com.typesafe.play"         %% "filters-helpers"        % "2.3.7"
+  val filter          = "com.typesafe.play"         %% "filters-helpers"        % "2.4.6"
   val filter4         = "com.typesafe.play"         %% "filters-helpers"        % "2.4.6"
-  val cache           = "com.typesafe.play"         %% "play-cache"             % "2.3.7"
+  val cache           = "com.typesafe.play"         %% "play-cache"             % "2.4.6"
   val cache4           = "com.typesafe.play.modules" %% "play-modules-redis" % "2.4.1"
 
   val rediscache      = "com.typesafe.play.plugins" %% "play-plugins-redis"     % "2.3.1"
-  val ptest           = "com.typesafe.play"         %% "play-test"              % "2.3.7"
+  val ptest           = "com.typesafe.play"         %% "play-test"              % "2.4.6"
   val jdbc4            = "com.typesafe.play"         %% "play-jdbc"              % "2.4.6"
-  val jdbc            = "com.typesafe.play"         %% "play-jdbc"              % "2.3.7"
-  val playjson        = "com.typesafe.play"         %% "play-json"              % "2.3.7"
+  val jdbc            = "com.typesafe.play"         %% "play-jdbc"              % "2.4.6"
+  val playjson        = "com.typesafe.play"         %% "play-json"              % "2.4.6"
   val junit           = "com.novocode"              % "junit-interface"         % "0.10" % "test"
-  val anorm           = "com.typesafe.play"         %% "anorm"                  % "2.3.7"
+  val anorm           = "com.typesafe.play"         %% "anorm"                  % "2.4.6"
   val anorm4          =  "com.typesafe.play"        %% "anorm"                  % "2.4.0"
 
 
@@ -175,10 +175,11 @@ object Dependencies {
   val ficus           = "net.ceedubs"               %% "ficus" % "1.1.2"
   val bootstrapplay   = "com.adrianhurt"            %% "play-bootstrap3"     % "0.4.4-P24"
   val bootstrapplay4  = "com.adrianhurt"            %% "play-bootstrap"      % "1.1-P24-B3-SNAPSHOT"
-  val scalatest0      =  "org.scalatest"            %% "scalatest"           % "2.2.6"
-  val playsctest      =  "org.scalatestplus"        %  "play_2.11"           % "1.4.0"
-  val scalatest       =  "org.specs2"               %% "specs2-core"         % "2.3.13-scalaz-7.1.0-RC1" % "test"
-  val scalatest2      =  "org.specs2"               %% "specs2-junit"        % "2.3.13-scalaz-7.1.0-RC1" % "test"
+  val scalatest0      = "org.scalatest"             %% "scalatest"           % "2.2.6"
+  val wiremock        = "com.github.tomakehurst"    % "wiremock"             % "1.33"
+  val playsctest      = "org.scalatestplus"         %  "play_2.11"           % "1.4.0"
+  val scalatest       = "org.specs2"                %% "specs2-core"         % "2.3.13-scalaz-7.1.0-RC1" % "test"
+  val scalatest2      = "org.specs2"                %% "specs2-junit"        % "2.3.13-scalaz-7.1.0-RC1" % "test"
   val scalatest3      = "org.specs2"                %% "specs2-mock"         % "2.3.13-scalaz-7.1.0-RC1" % "test"
 
 

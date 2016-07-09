@@ -551,6 +551,8 @@ minorityApp.directive("dropBoxPicker", ["DropBoxSettings",
         }
     }
 }]);
+
+
 minorityApp.directive("boxPicker", ["DropBoxSettings",
             function(DropBoxSettings) {
     return {

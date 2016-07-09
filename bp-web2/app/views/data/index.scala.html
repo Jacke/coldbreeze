@@ -24,9 +24,14 @@
 
 
 
+<div class="data-container-nav">
+  <a ng-click="setTab(0)" ng-class="isSet(0)? 'active' : ''">Indicators</a></label>
+  <a ng-click="setTab(1)" ng-class="isSet(1)? 'active' : ''">Acts</a>
+</div>
 
 
-<div class="act-data-table">
+
+<div class="act-data-table" ng-show="isSet(1)">
   <div class="act-object inprogress">
     <div class="act-icon">
     <svg width="45" height="43" xmlns="http://www.w3.org/2000/svg">
@@ -277,7 +282,7 @@
 
 
 
-<div id="main" class="container dataTables resources-list">
+<div id="main" class="container dataTables resources-list" ng-init="isSet(0)" ng-show="isSet(0)">
 <div class="tableMinListWrap dataTablesTable">
 
 @if(ping) {
@@ -505,10 +510,10 @@
 .ng-table-pager {
     display: none !important;
 }</style>
-<!--
-<script src="http://localhost:8080/app2.bundle.js"></script>
 
--->
+<script src="http://localhost:8080/app2.bundle.js"></script>
+<!--
 <script src="/assets/js/app2.js"></script>
+-->
 
 }

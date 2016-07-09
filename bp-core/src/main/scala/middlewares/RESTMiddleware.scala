@@ -4,9 +4,34 @@ import main.scala.utils._
 import com.github.nscala_time.time.Imports._
 import scala.collection.mutable._  
 import main.scala.simple_parts.process.Units._
-
+import play.api.libs.ws._
+import play.api.libs.ws.ning.NingAsyncHttpClientConfigBuilder
+import scala.concurrent.Future
+import java.util.UUID
+import scala.concurrent._
+import scala.concurrent.duration._
+import org.jboss.netty.buffer._
+import org.joda.time.DateTime
+import play.api.data._
+import play.api.data.Forms._
+import play.api.data.format.Formats._
+import play.api.data.validation.Constraints._
+import play.api.data.format._
+import play.api.libs.concurrent.Execution.Implicits.defaultContext
+import play.api.libs.json._
+import play.api.Play.current
+import scala.util.{Success, Failure}
+import scala.util.Try
+import play.api.libs.ws._
+import play.api.libs.ws.ning._
+import com.ning.http.client._
 
 object RESTMiddleware {
+
+  val config = new NingAsyncHttpClientConfigBuilder(WSClientConfig()).build
+  val builder = new AsyncHttpClientConfig.Builder(config)
+  val client = new NingWSClient(builder.build)
+  
 
     def execute(s: Strategy, strategyArgument: StrategyArgument,
     	stateInputs:List[UnitReactionStateIn] = List(), dataInputs: List[UnitReactionDataIn] = List()

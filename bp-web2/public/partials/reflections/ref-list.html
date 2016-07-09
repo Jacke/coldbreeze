@@ -1,6 +1,11 @@
 <div class="container ref-page">
 
-<h1>Reflections</h1>
+<h1>
+  <a ng-click="resetRefPage()">
+    Reflections
+  </a>
+</h1>
+
 <div class="tableMinListFilter search-process-input filterLayer">
     <span class="magnifyGlass vIco vLoupe vLight2State"></span>
     <input type="text" size="41" ng-model="searchValue"
@@ -62,13 +67,17 @@
 </div>
 
 
-<div class="tab-content ref-element" ng-repeat="refObj in refs | filter: search1">
+<div class="tab-content ref-element" ng-show="isInRefPage(refObj.ref.id)" ng-repeat="refObj in refs | filter: search1">
 <div class="ref-list-page header-frame">
 
 <div class="ref-card" ng-init="refObj.exData=false;refObj.edit=false;">
 
     <div class="ref-card-header">
-      <h3>{{ refObj.ref.title }}</h3>
+      <h3>
+        <a ng-click="switchToRefPage(refObj.ref.id)">
+          {{ refObj.ref.title }}
+        </a>
+      </h3>
       <p class="ref-card-header-desc">{{ refObj.ref.desc }}</p>
     </div>
     <div class="ref-card-info">
@@ -95,7 +104,7 @@
 
 </div>
 
-<div class="ref-elements">
+<div class="ref-elements" ng-show="showElementForRef(refObj.ref.id)">
 
   <div ng-include src="'assets/partials/reflections/create-ref-element.html'"></div>
 
@@ -118,8 +127,8 @@
           <li class="middle-state">{{ state.middle }}</li>
           <li class="oposite-state">{{ state.oposite }}</li>
         </ul>
+        <a ng-click="deleteRefElementState(state)" class="ref-obj-delete-button">Delete state</a>
       </div>
-      <a ng-click="deleteRefElementState(state)" class="ref-obj-delete-button">Delete state</a>
     </div>
 
 
@@ -127,73 +136,7 @@
 
     <div ng-repeat="action in refObj.reactions | filter: reactionByTopoUnitElement(element, refObj) as filteredActions">
     </div>
-
-    <div class="ref-element-actions" ng-show="filteredActions.length > 0">
-      <div class="ref-action" ng-repeat="action in refObj.reactions | filter: reactionByTopoUnitElement(element, refObj)">
-          <h5 class="ref-action-title">{{ action.title }}</h5>
-          <a ng-click="deleteReaction(action)" class="ref-obj-delete-button">Delete action</a>
-
-          <div class="ref-action-pipes">
-            <div class="ref-action-inputs">
-              Inputs
-            </div>
-            <div class="ref-action-bases">
-              Bases
-            </div>
-            <div class="ref-action-outputs">
-              Outputs
-            </div>
-          </div>
-
-          <div class="ref-action-depth">
-            <div ng-include src="'assets/partials/reflections/create-ref-element-middleware.html'"></div>
-
-            <div class="ref-action-middleware" ng-repeat="middleware in refObj.middlewares | filter:byReaction(action)">
-              <span>Middleware {{ middleware.title }}</span>
-              <a ng-click="removeMiddleware(middleware)" class="ref-obj-delete-button">Delete middleware</a>
-
-            <div class="ref-action-strategies">
-              <div ng-include src="'assets/partials/reflections/create-ref-element-strategy.html'"></div>
-
-              <div class="ref-action-strategy-selector">
-                <span class="strategy-select">*</span>
-                <span class="strategy-select strategy-to-select">*</span>
-                <span class="strategy-select strategy-to-select">*</span>
-                <span class="strategy-select strategy-to-select">*</span>
-                <span class="strategy-select strategy-to-select">*</span>
-                <span class="strategy-select strategy-to-select">*</span>
-
-              </div>
-              <div class="ref-action-strategy" ng-repeat="strategy in refObj.strategies | filter:byMiddleware(middleware)">
-                <h5 class="strategy-title">{{ strategy.title }}</h5>
-              <a ng-click="removeStrategy(strategy)" class="ref-obj-delete-button">Delete strategy</a>
-                
-                <div class="ref-action-strategy-pipes">
-                  <div class="ref-action-inputs">
-
-                  </div>
-                  <div class="ref-action-bases">
-                    <div ng-include src="'assets/partials/reflections/create-ref-element-strategy-base.html'"></div>
-
-                    <div class="ref-action-bases-base" ng-repeat="base in refObj.bases | filter:byStrategy(strategy)">
-                      {{ base.key }}
-                      <a ng-click="removeStrategyBase(base, strategy)" class="ref-obj-delete-button">Delete base</a>
-                    </div>
-                  </div>
-                  <div class="ref-action-outputs">
-
-                  </div>
-                </div>
-
-              </div>
-
-
-            </div>
-            </div>
-
-          </div>
-      </div>
-    </div>
+        <div ng-include src="'assets/partials/reflections/elem_actions.html'"></div>
   </div>
 
 
