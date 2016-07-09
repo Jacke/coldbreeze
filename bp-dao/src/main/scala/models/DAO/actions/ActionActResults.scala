@@ -1,14 +1,26 @@
 package models.DAO
 
 import us.ority.min.actions._
+import main.scala.bprocesses.{ BProcess, BPLoggerResult }
+import main.scala.simple_parts.process.ProcElems
+
 import models.DAO.conversion.DatabaseCred
-//import slick.driver.PostgresDriver.api._
 import models.DAO._
-//import slick.driver.PostgresDriver.api._
 import models.DAO.conversion.DatabaseFuture._
 import com.github.nscala_time.time.Imports._
 import models.DAO.conversion.DatabaseCred.dbConfig.driver.api._
 import com.github.tototoshi.slick.PostgresJodaSupport._
+
+
+import models.DAO.ProcElemDAO._
+import models.DAO.BPDAO._
+import models.DAO.BPStationDAO._
+import models.DAO.conversion.DatabaseCred
+import models.DAO._
+import models.DAO.sessions._
+import builders._
+import main.scala.bprocesses.BPSession
+import main.scala.simple_parts.process.Units._
 
 
 class ActionActResults(tag: Tag) extends Table[ActionResult](tag, "action_act_results") {
@@ -22,7 +34,7 @@ class ActionActResults(tag: Tag) extends Table[ActionResult](tag, "action_act_re
   def created_at  = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at  = column[Option[org.joda.time.DateTime]]("updated_at")
 
-  def act_FK = foreignKey("act_reaction_fk", reaction, models.DAO.ActionActsDAOF.action_acts)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def act_FK = foreignKey("act_reaction_fk", act, models.DAO.ActionActsDAOF.action_acts)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?,
            in,
@@ -58,10 +70,7 @@ object ActionActResultsDAOF {
   def ddl_create = db.run(create)
   def ddl_drop = db.run(drop)
 
-  private def filterReactionsQuery(ids: List[Int]): Query[ActionActResults, ActionResult, Seq] =
-    action_act_results.filter(_.reaction inSetBind ids)
 
-  def findByReactions(reaction: List[Int]) = db.run(filterReactionsQuery(reaction).result)
 
   private def filterQuery(id: Long): Query[ActionActResults, ActionResult, Seq] =
     action_act_results.filter(_.id === id)

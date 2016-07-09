@@ -264,12 +264,12 @@ def saveOrUpdateSessionStates(bprocess: BProcess, bprocess_dto: BProcessDTO, ses
     station_loggers.foreach(s => BPStationLoggeDAOF.pull_object(s))
   }
   def saveLaunchAct(bprocess: BProcess, bprocess_dto: BProcessDTO) = {
-    bprocess.acts.foreach(act => 
-      val actId = ActionActsDAOF.pull(act)
-      act.results.foreach(ar =>
-        ActionActResultsDAOF.pull(ar.copy(act = actId))
-      )
-    )
+    bprocess.acts.foreach { act => 
+      val actIdF = ActionActsDAOF.pull(act)
+      act.results.foreach { ar =>
+        ActionActResultsDAOF.pull(ar.copy(act = 0))
+      }
+    }
   }
 
   /** ***

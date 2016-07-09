@@ -14,6 +14,7 @@ import scala.util.Try
 import main.scala.utils.InputParamProc
 import scala.collection.mutable.ListBuffer  
 import main.scala.simple_parts.process.Units._
+import us.ority.min.actions._
 
 class BProcess(scope: Scope, 
                val id: Option[Int] = None, 
@@ -53,6 +54,8 @@ class BProcess(scope: Scope,
   var states:ListBuffer[BPState] = ListBuffer() 
   var session_states:ListBuffer[BPSessionState] = ListBuffer() 
 
+  // Acts
+  var acts:ListBuffer[ActionAct] = ListBuffer()
 
 /**
  *  In-Process collection methods
