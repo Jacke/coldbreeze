@@ -4239,7 +4239,7 @@ background-color: gray !important;
 .allStations .stations.minimal-stations .session__header {
     padding-bottom: 0px;
     margin-bottom: 13px;
-    margin-left: 45px;
+    margin-left: -10px;
     margin-top: 6px;
 }
 .allStations .stations.minimal-stations progress-arc {
@@ -4267,10 +4267,8 @@ background-color: gray !important;
 }
 .stations.minimal-stations .session__buttonInput {
     display: inline-block;
-    left: 8px;
-    position: absolute;
     z-index: 999;
-    padding: 0px 1px 1px 9px;
+    padding: 7px;
     background: white;
     color: white;
     cursor: pointer;
@@ -4278,19 +4276,30 @@ background-color: gray !important;
     font-size: 15px;
     top: 8px;
     border-radius: 90px;
-    height: 43px;
-    padding-top: 0px;
+    float: left;
+    overflow: hidden;
+    height: 37px;
+    margin-top: 9px;
+    width: 49px;
+    margin-left: 6px;
+    margin-right: 0px;
 }
 svgbuttondirective {
     width: 49px;
-    height: 58px;
+    height: 37px;
     display: block;
-    margin-left: -9px;
+    margin-left: -10px;
     padding-left: 6px;
     padding-top: 1px;
     padding-bottom: 10px;
     z-index: 999;
 }
+.stations.minimal-stations .session__buttonInput:hover .tcon-grid .tcon-grid__item, 
+.stations.lineDescShowed.minimal-stations .session__buttonInput .tcon-grid .tcon-grid__item {
+    background: white;
+    color: white;
+}
+
 
 .stations.minimal-stations .session__buttonInput:hover {
     background: #999CC3;
@@ -13209,7 +13218,7 @@ position: absolute;
   -webkit-align-items: center;
   -ms-flex-align: center;
   align-items: center;
-  height: 40px;
+  height: 45px;
   transition: 0.3s;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -13219,7 +13228,9 @@ position: absolute;
   background: transparent;
   outline: none;
   -webkit-tap-highlight-color: transparent;
-  -webkit-tap-highlight-color: transparent; }
+  -webkit-tap-highlight-color: transparent;
+  margin-top: -12px;
+}
   .tcon > * {
     display: block; }
   .tcon:hover, .tcon:focus {
