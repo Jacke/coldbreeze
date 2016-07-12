@@ -32,7 +32,7 @@
 
 
 <div class="act-data-table" ng-show="isSet(1)">
-  <div class="act-object inprogress" ng-repeat="act in acts">
+  <div class="act-object finished" ng-repeat="act in acts">
     <div class="act-icon">
     <svg width="45" height="43" xmlns="http://www.w3.org/2000/svg">
      <g>
@@ -65,7 +65,9 @@
     </div>
     </div>
 
-    <div class="act-acted"><abbr class="session__header__created_at" title="Tuesday, July 5th 2016, 12:00:00 am" am-time-ago="session.created_at">July 5th 2016, 12:00 am</abbr></div>
+    <div class="act-acted">
+      <abbr class="session__header__created_at" title="{{ act.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="act.created_at"></abbr>
+    </div>
     <div class="act-essentials">
       <div class="act-input empty">
         Input
@@ -110,8 +112,8 @@
   </div>
 
 
-
-  <div class="act-object finished">
+<!--
+  <div class="act-object finished inprogress">
     <div class="act-icon">
     <svg width="45" height="43" xmlns="http://www.w3.org/2000/svg">
      <g>
@@ -196,7 +198,7 @@
       </div>  
     </div>
   </div>
-
+--><!--
   <div class="act-object canceled">
     <div class="act-icon">
     <svg width="45" height="43" xmlns="http://www.w3.org/2000/svg">
@@ -273,7 +275,7 @@
       </div>  
     </div>
 
-  </div>    
+  </div>    -->
 
 </div>
 

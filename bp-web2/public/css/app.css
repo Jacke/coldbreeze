@@ -13279,3 +13279,42 @@ position: absolute;
 
 .tcon-grid--rearrange.tcon-transform .tcon-grid__item {
   box-shadow: 0 -0.5rem, 0 -1rem, 0.5rem 0, -1rem 0, 1rem 0, -0.5rem 0, 0 1rem, 0 0.5rem; }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.data-container-nav {
+    text-align: center;
+    margin-top: 9px;
+    margin-bottom: 25px;
+    background: white;
+    padding: 12px 0px;
+    border-radius: 0px 0px 6px 6px;
+}
+
+.data-container-nav a {
+    margin-right: 27px;
+    display: inline-block;
+    cursor: pointer;
+}
