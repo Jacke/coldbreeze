@@ -13317,4 +13317,8 @@ position: absolute;
     margin-right: 27px;
     display: inline-block;
     cursor: pointer;
+    color: #5cb5d8;
+}
+.data-container-nav a.active {
+    color: #737373;
 }
