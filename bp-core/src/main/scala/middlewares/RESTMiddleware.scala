@@ -56,15 +56,23 @@ object RESTMiddleware {
     def execute(parts: ActionParts, s: Strategy,
         stateInputs:List[UnitReactionStateIn] = List(), dataInputs: List[UnitReactionDataIn] = List()
         ):StrategyResult = {
+        parts.process.addAct(ActionAct(
+          id = None,
+          uid = java.util.UUID.randomUUID.toString,
+          session = parts.process.session_id,
+          reaction = parts.action.id.getOrElse(-1),
+          Some( org.joda.time.DateTime.now() ),
+          Some( org.joda.time.DateTime.now() )
+        ))
         println("RESTMiddleware BASE"+ s.strategyBaseUnit.length)
         s.ident match {
             case "GETStrategy" => GETStrategy.execute( retriveDataForDelay(stategyTitle = "GETStrategy", 
                                                                       dataInputs,
-                                                                      s.strategyBaseUnit) )
+                                                                      s.strategyBaseUnit), parts )
             case "POSTStrategy" => POSTStrategy.execute( retriveDataForDelay(stategyTitle = "POSTStrategy", 
                                                                       dataInputs,
-                                                                      s.strategyBaseUnit) )
-            case _ => NullStrategy.execute()
+                                                                      s.strategyBaseUnit), parts )
+            case _ => NullStrategy.execute(parts = parts)
         }
     }
 
@@ -88,30 +96,70 @@ object RESTMiddleware {
     }
 
 	object GETStrategy {
-		def execute(argument: Seq[StrategyArgument]):StrategyResult = {
+		def execute(argument: Seq[StrategyArgument], parts: ActionParts):StrategyResult = {
 			println("GETStrategy Strategy executed")
             val url:String = argument.find(c => c.argKey == "URL") match {
                 case Some(arg) => arg.argString
                 case _ => DEFAULT_URL
             }
             val res = await( client.url(url).withHeaders("Content-Type" -> "application/xml").get() )
+            parts.process.getActs(parts.action.id.get).headOption match {
+              case Some(act) => {
+                val status = ActionStatus(id = None,
+                            content = "Request called",
+                            act = 0L,
+                            Some( org.joda.time.DateTime.now() ),
+                            Some( org.joda.time.DateTime.now() ) )
+                val actResult = ActionResult(
+                            id = None,
+                            in = false,
+                            out = true,
+                            base = false,
+                            content = res.body,
+                            act = 0L,
+                            Some( org.joda.time.DateTime.now() ),
+                            Some( org.joda.time.DateTime.now() ))                
+                act.makeStatus(status)
+                act.makeResult(actResult)
+              }
+            }
             println("API Strategy "+res.body)
 
 			StrategyResult("DurationStrategy", true)
 		}
 	}
 	object POSTStrategy {
-		def execute(argument: Seq[StrategyArgument]):StrategyResult = {
+		def execute(argument: Seq[StrategyArgument], parts: ActionParts):StrategyResult = {
 			println("POSTStrategy executed")
 			StrategyResult("ScheduleStrategy", true)
 		}		
 	}
 	object NullStrategy {
-		def execute(argument: Seq[StrategyArgument]=Seq()):StrategyResult = {
+		def execute(argument: Seq[StrategyArgument]=Seq(), parts: ActionParts):StrategyResult = {
 			println("NullStrategy executed")
-            val url = DEFAULT_URL
-            val res = await( client.url(url).withHeaders("Content-Type" -> "application/xml").get() )
-            println("API Strategy "+res.body)
+      val url = DEFAULT_URL
+      val res = await( client.url(url).withHeaders("Content-Type" -> "application/xml").get() )
+      parts.process.getActs(parts.action.id.get).headOption match {
+        case Some(act) => {
+          val status = ActionStatus(id = None,
+                      content = "Request called",
+                      act = 0L,
+                      Some( org.joda.time.DateTime.now() ),
+                      Some( org.joda.time.DateTime.now() ) )
+          val actResult = ActionResult(
+                      id = None,
+                      in = false,
+                      out = true,
+                      base = false,
+                      content = res.body,
+                      act = 0L,
+                      Some( org.joda.time.DateTime.now() ),
+                      Some( org.joda.time.DateTime.now() ))                
+          act.makeStatus(status)
+          act.makeResult(actResult)
+        }
+      }            
+      println("API Strategy "+res.body)
 			StrategyResult("NullStrategy", true)
 		}
 	}

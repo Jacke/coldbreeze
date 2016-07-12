@@ -5,6 +5,8 @@ import models.DAO._
 import models.DAO.resources._
 import models.DAO.reflect._
 import models.DAO.sessions._
+import scala.concurrent.ExecutionContext.Implicits.global
+
 
 object DLL_Initiator {
   def initiate:Boolean = {
@@ -105,6 +107,12 @@ object DLL_Initiator {
     ResourceDAO.ddl_create
     ElementResourceDAO.ddl_create
     SessionElementResourceDAO.ddl_create
+
+
+    models.DAO.ActionActsDAOF.await(models.DAO.ActionActsDAOF.ddl_create)
+    models.DAO.ActionActResultsDAOF.ddl_create
+    models.DAO.ActionStatusesDAOF.ddl_create
+    ReflectElementMappingsDAO.ddl_create
 
     true
   }

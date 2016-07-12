@@ -23,11 +23,8 @@ import main.scala.bprocesses.BPSession
 import main.scala.simple_parts.process.Units._
 
 
-class ActionActResults(tag: Tag) extends Table[ActionResult](tag, "action_act_results") {
+class ActionStatuses(tag: Tag) extends Table[ActionStatus](tag, "action_statuses") {
   def id          = column[Long]("id", O.PrimaryKey, O.AutoInc)
-  def in          = column[Boolean]("in")
-  def out         = column[Boolean]("out")
-  def base        = column[Boolean]("base")
   def content     = column[String]("content")
   def act         = column[Long]("act_id")
 
@@ -37,15 +34,12 @@ class ActionActResults(tag: Tag) extends Table[ActionResult](tag, "action_act_re
   def act_FK = foreignKey("act_reaction_fk", act, models.DAO.ActionActsDAOF.action_acts)(_.id, onDelete = ForeignKeyAction.Cascade)
 
   def * = (id.?,
-           in,
-           out,
-           base,
            content,
            act,
-           created_at, updated_at) <> (ActionResult.tupled, ActionResult.unapply)
+           created_at, updated_at) <> (ActionStatus.tupled, ActionStatus.unapply)
 }
 
-object ActionActResultsDAOF {
+object ActionStatusesDAOF {
   import akka.actor.ActorSystem
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
@@ -58,27 +52,31 @@ object ActionActResultsDAOF {
 
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
-  val action_act_results = TableQuery[ActionActResults]
+  val action_statuses = TableQuery[ActionStatuses]
 
 
-  val create: DBIO[Unit] = action_act_results.schema.create
-  val drop: DBIO[Unit] = action_act_results.schema.drop
+  val create: DBIO[Unit] = action_statuses.schema.create
+  val drop: DBIO[Unit] = action_statuses.schema.drop
   def get(id: Long) = db.run(filterQuery(id).result.headOption)
 
-  def getsByAct(ids: Seq[Long]) = db.run(filterQuerysByAct(ids).result)
-
-  def pull(s: ActionResult):Future[Long] = db.run(action_act_results returning action_act_results.map(_.id) += s)
+  def pull(s: ActionStatus):Future[Long] = db.run(action_statuses returning action_statuses.map(_.id) += s)
 
   def ddl_create = db.run(create)
   def ddl_drop = db.run(drop)
 
+  def getsByAct(ids: Seq[Long]):Future[Seq[ActionStatus]] = 
+    db.run(filterQuerysByAct(ids).result)
+
+  def getByAct(id: Long):Future[Option[ActionStatus]] = 
+    db.run(filterQuerysByAct(Seq(id)).result.headOption)
+
+  private def filterQuerysByAct(ids: Seq[Long]): Query[ActionStatuses, ActionStatus, Seq] =
+    action_statuses.filter(_.act inSetBind ids)
 
 
-  private def filterQuery(id: Long): Query[ActionActResults, ActionResult, Seq] =
-    action_act_results.filter(_.id === id)
-  private def filterQuerysByAct(ids: Seq[Long]): Query[ActionActResults, ActionResult, Seq] =
-    action_act_results.filter(_.act inSetBind ids)
-
+  private def filterQuery(id: Long): Query[ActionStatuses, ActionStatus, Seq] =
+    action_statuses.filter(_.id === id)
 
 }
+
 

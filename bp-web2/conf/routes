@@ -451,6 +451,8 @@ DELETE /launch_comment/:id 		    @controllers.comments.CommentsController.delete
 
 
 
+# Acts
+GET   /acts      @controllers.ActionController.acts()
 
 
 

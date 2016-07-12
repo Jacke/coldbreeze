@@ -84,6 +84,8 @@ object SessionReactionDAOF {
     session_reactions.filter(_.id === id)
   private def filterBySessionQuery(id: Int): Query[SessionReactionRefs, SessionUnitReaction, Seq] =
     session_reactions.filter(_.session === id)
+  private def filterBySessionsQuery(ids: Seq[Int]): Query[SessionReactionRefs, SessionUnitReaction, Seq] =
+    session_reactions.filter(_.session inSetBind ids)    
   private def filterByProcessQuery(id: Int): Query[SessionReactionRefs, SessionUnitReaction, Seq] =
     session_reactions.filter(_.bprocess === id)
   private def filterByProcessesQuery(id: List[Int]): Query[SessionReactionRefs, SessionUnitReaction, Seq] =
@@ -93,6 +95,10 @@ object SessionReactionDAOF {
      db.run(filterBySessionQuery(session_id).result)
      //finally println("")//db.close
   }
+  def findBySessions(session_ids: Seq[Int]):Future[Seq[SessionUnitReaction]] = {
+     db.run(filterBySessionsQuery(session_ids).result)
+     //finally println("")//db.close
+  }  
   def findByBP(id: Int):Future[Option[SessionUnitReaction]] =
     db.run(filterByProcessQuery(id).result.headOption)
   def findAllByBP(id: Int):Future[Seq[SessionUnitReaction]] =

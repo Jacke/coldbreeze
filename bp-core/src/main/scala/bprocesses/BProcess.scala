@@ -57,6 +57,13 @@ class BProcess(scope: Scope,
   // Acts
   var acts:ListBuffer[ActionAct] = ListBuffer()
 
+  def addAct(act: ActionAct) = {
+    acts += act    
+  }
+  def getActs(actionId: Int) = {
+    acts.find(act => act.reaction == actionId)
+  }
+
 /**
  *  In-Process collection methods
  */

@@ -9,12 +9,26 @@ case class ActionAct(
 					uid: String,
 					session: Int,
 					reaction: Int,
-					created_at: Option[org.joda.time.DateTime],
-					updated_at: Option[org.joda.time.DateTime]
+					created_at: Option[org.joda.time.DateTime] = None,
+					updated_at: Option[org.joda.time.DateTime] = None
 ) {
 
 	var results:MutableList[ActionResult] = MutableList()
+	var statuses:MutableList[ActionStatus] = MutableList()
+
+	def makeResult(result: ActionResult) =
+	  results += result
+	def makeStatus(status: ActionStatus) =
+	  statuses += status
+
 }
+
+case class ActionStatus(id: Option[Long],
+						content: String,
+						act: Long,
+						created_at: Option[org.joda.time.DateTime] = None,
+						updated_at: Option[org.joda.time.DateTime] = None
+)
 
 case class ActionResult(
 						id: Option[Long],
@@ -23,6 +37,6 @@ case class ActionResult(
 						base: Boolean,
 						content: String,
 						act: Long,
-						created_at: Option[org.joda.time.DateTime],
-						updated_at: Option[org.joda.time.DateTime]
+						created_at: Option[org.joda.time.DateTime] = None,
+						updated_at: Option[org.joda.time.DateTime] = None
 )
