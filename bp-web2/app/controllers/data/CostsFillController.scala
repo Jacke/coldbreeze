@@ -223,12 +223,21 @@ def indicatorsTable = SecuredAction.async { implicit request =>
             LaunchIndicator(
               launch,
               allElements.filter(el => el.session == launch.id.get).map { element =>
-                    LaunchIndicatorElement(
-                      element = element,
-                      topology = allTopos.find(topo => topo.front_elem_id == element.id).get,
-                      indicators = launch_assigns_cn
-                    )
-              }
+                    val cOpt = allTopos.find(topo => topo.front_elem_id == element.id)
+                    val r:Option[LaunchIndicatorElement] = cOpt match {
+                      case Some(c) => {
+                        Some(
+                          LaunchIndicatorElement(
+                          element = element,
+                          topology = c,
+                          indicators = launch_assigns_cn
+                          )    
+                        )                    
+                      }
+                      case _ => None
+                    }
+                    r
+              }.flatMap(o => o)
             )
 
             }
