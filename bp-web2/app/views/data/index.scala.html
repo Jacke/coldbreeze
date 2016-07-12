@@ -32,7 +32,7 @@
 
 
 <div class="act-data-table" ng-show="isSet(1)">
-  <div class="act-object inprogress">
+  <div class="act-object inprogress" ng-repeat="act in acts">
     <div class="act-icon">
     <svg width="45" height="43" xmlns="http://www.w3.org/2000/svg">
      <g>
@@ -61,7 +61,7 @@
       Act
     </div>
     <div class="act-process">
-      Process
+      {{ act.act.session }}
     </div>
     </div>
 
@@ -99,15 +99,17 @@
               Duration
             </div>
           </div>
-          <div class="act-output-object-pair pair-response">
+          <div class="act-output-object-pair pair-response" ng-repeat="result in act.results">
             <div class="act-output-object-key">            
-              Response
+              {{ result.content }}
             </div>
           </div>
         </div>
       </div>  
     </div>
   </div>
+
+
 
   <div class="act-object finished">
     <div class="act-icon">
