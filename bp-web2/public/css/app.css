@@ -4868,7 +4868,8 @@ new process form container
 
 
 span.line.elem-card.executed {
-    background: linear-gradient(to right, #000000 0%,rgb(0, 0, 0) 100%);
+    background: linear-gradient(to right, rgba(0, 0, 0, 0.38) 0%,rgba(0, 0, 0, 0.55) 100%);
+    background-color: rgb(177, 93, 20);
 }
 
 .progress-lines span.line.executed:after {
