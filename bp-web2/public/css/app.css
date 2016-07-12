@@ -4270,17 +4270,26 @@ background-color: gray !important;
     left: 8px;
     position: absolute;
     z-index: 999;
-    padding: 0px 2px 1px 8px;
+    padding: 0px 1px 1px 9px;
     background: white;
     color: white;
     cursor: pointer;
     transition: all .3s ease-in-out;
     font-size: 15px;
-    top: 5px;
+    top: 8px;
     border-radius: 90px;
-    width: 51px;
-    height: 48px;
-    border: solid 1px #999CC3;
+    height: 43px;
+    padding-top: 0px;
+}
+svgbuttondirective {
+    width: 49px;
+    height: 58px;
+    display: block;
+    margin-left: -9px;
+    padding-left: 6px;
+    padding-top: 1px;
+    padding-bottom: 10px;
+    z-index: 999;
 }
 
 .stations.minimal-stations .session__buttonInput:hover {
@@ -13168,3 +13177,94 @@ position: absolute;
 
 .device--alt .device__screen {
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.tcon {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: none;
+  cursor: pointer;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  height: 40px;
+  transition: 0.3s;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  width: 40px;
+  background: transparent;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: transparent; }
+  .tcon > * {
+    display: block; }
+  .tcon:hover, .tcon:focus {
+    outline: none; }
+  .tcon::-moz-focus-inner {
+    border: 0; }
+
+.tcon-grid {
+  padding: 1rem; }
+  .tcon-grid .tcon-grid__item {
+    width: 0.5rem;
+    height: 0.5rem;
+    background: black;
+    color: black;
+    transition: 0.3s; }
+
+.tcon-grid.tcon-transform .tcon-grid__item {
+  -webkit-transform: rotate3d(0, 0, 1, -45deg) scale3d(0.8, 0.8, 0.8);
+  transform: rotate3d(0, 0, 1, -45deg) scale3d(0.8, 0.8, 0.8); }
+
+.tcon-grid--collapse .tcon-grid__item {
+  box-shadow: -0.625rem 0, -0.625rem 0.625rem, 0.625rem 0, 0.625rem -0.625rem, 0 -0.625rem, -0.625rem -0.625rem, 0 0.625rem, 0.625rem 0.625rem; }
+
+.tcon-grid--collapse.tcon-transform .tcon-grid__item {
+  box-shadow: -0.5rem 0, 0 0 transparent, 0.5rem 0, 0 0 transparent, 0 -0.5rem, 0 0 transparent, 0 0.5rem, 0 0 transparent; }
+
+.tcon-visuallyhidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px; }
+  .tcon-visuallyhidden:active, .tcon-visuallyhidden:focus {
+    clip: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    position: static;
+    width: auto; }
+
+.tcon-grid--rearrange .tcon-grid__item {
+  box-shadow: -0.625rem -0.625rem, 0 -0.625rem, 0.625rem -0.625rem, -0.625rem 0, 0.625rem 0, -0.625rem 0.625rem, 0 0.625rem, 0.625rem 0.625rem; }
+
+.tcon-grid--rearrange.tcon-transform .tcon-grid__item {
+  box-shadow: 0 -0.5rem, 0 -1rem, 0.5rem 0, -1rem 0, 1rem 0, -0.5rem 0, 0 1rem, 0 0.5rem; }
