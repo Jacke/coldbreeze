@@ -10603,10 +10603,13 @@ h4.file_title_full {
 .inline-launch .fastInput {
     position: absolute;
     top: 0px;
-    right: 0px;
+    right: 1px;
     background: #3D3F55;
     width: 215px;
     height: 60px;
+    border-radius: 0px 3px 0px 0px;
+    border-left: 1px solid #535569;
+    box-shadow: 1px 0px 16px rgb(35, 37, 53) inset;
 }
 .launch-info-details {
     width: 50%;
@@ -10638,10 +10641,8 @@ h4.file_title_full {
     display: inline-block;
     float: left;
 }
-.inline-launch .fastInput:hover {
-    height: 100%;
-    z-index: 1;
-}
+
+
 .inline-launch .fastInput.ng-hide-add         { animation:0.5s lightSpeedOutY ease; }
 /* when showing the picture */
 .inline-launch .fastInput.ng-hide-remove      { animation:0.5s flipInXY ease; }
