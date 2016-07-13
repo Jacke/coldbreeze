@@ -8,19 +8,21 @@ a.redButton {
   border: #e74c3c;
 }
 a.fastElFormButton {
-    height: 26px;
-    width: 16px;
+    height: 19px;
+    width: 13px;
     display: block;
     background: #49CC90;
     position: absolute;
     border-radius: 3px 0px 0px 3px;
     border: #7CBB1C;
-    top: 17px;
+    top: 22px;
     cursor: pointer;
-    left: -48px;
+    left: -45px;
+    font-weight: 100;
     color: white;
     opacity: 0.4;
-    padding: 0px 4px;
+    padding: 0px 2px;
+    line-height: 19px;
 }
 a.fastElFormButton:hover {
   opacity: 1;

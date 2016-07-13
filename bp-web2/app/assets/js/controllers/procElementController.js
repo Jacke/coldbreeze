@@ -1058,7 +1058,8 @@ $scope.options = {
     }
   }
 
-  $scope.createNewElem = function () {
+$scope.createNewElem = function (el, process) {
+  console.log('createNewElem', process);
 
     var actionContainer = _.map($scope.newBpelem.selectedRef.reactions, function(action) {
       if (action.refStrategySelect) {
@@ -1162,6 +1163,11 @@ $scope.options = {
       $scope.reloadResources();
       $scope.loadResources();
 
+  process.fastElForm == true ? process.fastElForm=false : process.fastElForm=true;
+  if (process.fastElForm == undefined) {
+    process.fastElForm = true;
+  }
+
       angular.element('.form-new-bpelem').controller('form').$setPristine();
       $scope.newBpelem = { middleware: {}, desc: "", process: parseInt($scope.BPid), business: $scope.business() };
       $scope.setTab(0, $scope.newBpelem);
@@ -1179,7 +1185,7 @@ $scope.options = {
 
     });
 
-  };
+};
 
 _.findDeep = function(items, attrs) {
 

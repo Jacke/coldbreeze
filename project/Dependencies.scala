@@ -100,6 +100,7 @@ object Dependencies {
   val playctrl        = "jp.t2v"                    %% "stackable-controller"   % "0.4.0"
   val paypal          = "com.paypal.sdk"            %  "rest-api-sdk"           % "1.2.3"
   val logentries      = "com.logentries"            %  "logentries-appender"    % "1.1.21"
+  val logfmt          = "com.heroku"                %  "logfmt"                 % "0.1"
   val loggly          = "org.logback-extensions"    %  "logback-ext-loggly"     % "0.1.2"
   val syslog   	      = "com.papertrailapp"   	    %  "logback-syslog4j"       % "1.0.0"
   val compressor      = "com.mohiva"                %% "play-html-compressor"   % "0.3.1"

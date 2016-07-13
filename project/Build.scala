@@ -135,6 +135,7 @@ integrationTest := {
           scalatest0,
           playsctest,
           selenide,
+          logfmt,
 
 
           scalamandrill,

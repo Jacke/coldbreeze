@@ -759,7 +759,7 @@ $scope.run = function (process) {
    */
 $scope.fastCreateNewElem = function(elem,process) {
   console.log(elem);
-  $scope.createNewElem(elem, process);
+  $scope.createNewElem1(elem, process);
 }
 $scope.refs = [];
 $scope.switchFastElementForm = function(process) {
@@ -778,7 +778,7 @@ $scope.refElem = function (ref, elem) {
     elem.ref = ref.ref.id;
     elem.selectedRef = ref;
 }
-$scope.createNewElem = function (elem,process) {
+$scope.createNewElem1 = function (elem,process) {
     if (elem.desc == undefined) { // Allow empty description
       elem.desc = ""
     }

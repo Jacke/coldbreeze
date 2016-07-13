@@ -25,12 +25,33 @@ import org.scalatest.{FlatSpec, BeforeAndAfter}
 import org.openqa.selenium.By
 import org.scalatest.Matchers
 import com.codeborne.selenide.WebDriverRunner
+import java.net.URL;
+import org.openqa.selenium.WebDriver;
+
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
+
 
 class ExampleSpec extends PlaySpec with OneServerPerSuite with OneBrowserPerSuite with ChromeFactory  {
 
+
+  val KEY = "81ccae44c24f4849d9b6ab6a523557f3";
+  val SECRET = "caa0238e8ef31c6e3da9d966a0708a8c";
+  val Url = "http://" + KEY + ":" + SECRET + "@hub.testingbot.com/wd/hub";
+
+  val caps:DesiredCapabilities = new DesiredCapabilities();
+caps.setCapability("platform", "CAPITAN");
+caps.setCapability("version", "beta");
+caps.setCapability("browserName", "chrome")
+
+  val driver:WebDriver = new RemoteWebDriver(new URL(Url), caps);
+  driver.get("http://www.google.com/ncr");
+
+
   System.setProperty("webdriver.chrome.driver", "/usr/games/chromedriver");
   System.setProperty("selenide.browser", "Chrome");
-  WebDriverRunner.setWebDriver(webDriver)
+  
+  WebDriverRunner.setWebDriver(driver)
 
   // Override app if you need a FakeApplication with other than
   // default parameters.
