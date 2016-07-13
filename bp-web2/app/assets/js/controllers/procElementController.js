@@ -1058,7 +1058,7 @@ $scope.options = {
     }
   }
 
-$scope.createNewElem = function (el, process) {
+$scope.createNewElem = function (el, process, callback) {
   console.log('createNewElem', process);
 
     var actionContainer = _.map($scope.newBpelem.selectedRef.reactions, function(action) {
@@ -1163,20 +1163,24 @@ $scope.createNewElem = function (el, process) {
       $scope.reloadResources();
       $scope.loadResources();
 
+  
   process.fastElForm == true ? process.fastElForm=false : process.fastElForm=true;
   if (process.fastElForm == undefined) {
     process.fastElForm = true;
   }
+  if (callback !== undefined) {
+    callback(process)
+  }
 
-      angular.element('.form-new-bpelem').controller('form').$setPristine();
+      $scope.setPristineForNewElem();
       $scope.newBpelem = { middleware: {}, desc: "", process: parseInt($scope.BPid), business: $scope.business() };
       $scope.setTab(0, $scope.newBpelem);
-      angular.element('.form-new-bpelem').controller('form').$setPristine();
+      $scope.setPristineForNewElem();
 
       $timeout(function(){
         $timeout(function () {
           // 0 ms delay to reload the page.
-          angular.element('.form-new-bpelem').controller('form').$setPristine();
+          $scope.setPristineForNewElem();
 
       //    $route.reload();
       }, 0);
@@ -1185,6 +1189,17 @@ $scope.createNewElem = function (el, process) {
 
     });
 
+};
+
+$scope.setPristineForNewElem = function() {
+  var elem = angular.element('.form-new-bpelem').controller('form');
+  var elem2 = angular.element('.form-fast-element-create').controller('form');
+  if (elem) {
+    elem.$setPristine();
+  }
+  if (elem2) {
+   elem2.$setPristine(); 
+  }
 };
 
 _.findDeep = function(items, attrs) {

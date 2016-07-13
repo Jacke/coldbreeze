@@ -246,7 +246,7 @@
     <input type="hidden" id="input_ref" ng-model="newBpelem.ref"/>
     <div class="control-group form-submit form-group" style="clear:both;" ng-show="isManagerVal">
       <div class="controls">
-        <button type="submit" ng-click="createNewElem(newBpelem, $parent.bprocess)" class="btn btn-small btTxt submit btn lg solid-green ng-binding">{{ 'CREATE' | translate }}</button>
+        <button type="submit" ng-click="createNewElem(newBpelem, $parent.bprocess, loadProcesses)" class="btn btn-small btTxt submit btn lg solid-green ng-binding">{{ 'CREATE' | translate }}</button>
       </div>
     </div>
   </form>
