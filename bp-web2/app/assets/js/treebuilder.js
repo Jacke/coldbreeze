@@ -134,7 +134,7 @@ var builderFetch = function (bp, cnPromise, onSuccess) {
     spaces =  currentContainer.spaces;//LaunchSpacesFactory.query({ launch_id: launch.id });
     spaceelems = currentContainer.space_elements;//LaunchSpaceElemsFactory.query({ launch_id: launch.id });
 
-        builder(bp, bpelems, spaces, spaceelems);
+    builder(bp, bpelems, spaces, spaceelems);
 
         bp.frontSpaces = _.object(_.uniq(_.map(spaces, function(v) {
           return [v.brick_front,

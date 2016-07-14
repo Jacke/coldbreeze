@@ -37,9 +37,7 @@
   <ul ul id="tablemin" class="tableMinList processList">
   <div class="process" ng-init="bprocesses = [];" ng-repeat="bprocess in bprocesses | toProcessArray | orderBy: '-created_at' | filter:search()">
     <div class="process-status">
-    <div class="fastElCreateBtn">
-      <a class="fastElFormButton" ng-click="switchFastElementForm(bprocess)" uib-tooltip="Add element" tooltip-side="left">+</a>
-    </div>
+
     <li class="tableMinListItem frontProcessInfo" ng-hide="bprocess.fastElForm">
       <h2 class="tableMinListName">
         <a class="tableMinName vIcoIn" href="/a#/bprocess/{{ bprocess.id }}/elements" id="processTitle">{{ bprocess.title }}</a>
@@ -48,6 +46,12 @@
       <div class="process_content" ng:show="emptyElemCheck(bprocess.trees)">
         <div ng-include src="'assets/partials/treeThumb.html'"></div>
       </div>
+      <div class="fastElCreateBtn">
+        <a class="fastElFormButton" 
+           ng-click="switchFastElementForm(bprocess)" 
+           uib-tooltip="Add element" tooltip-side="left">+</a>
+      </div>
+
       <div class="tableMinListControls processListControls" ng-show="isManagerVal">
         <!--
         <a class="tableMinControlsLink ajaxLink tableMinLinkPeople" ng-click="perm(bprocess.id)"><span class="uicon-svg98"></span> {{ 'PEOPLE' | translate }} </a>
@@ -81,7 +85,7 @@
     <!-- Fast element form -->
     <li class="tableMinListItem fastElementForm nga-fast nga-stagger-fast nga-squash-right" ng-show="bprocess.fastElForm">
       <div ng-include src="'assets/partials/bprocesses/fastElementCreation.html'"></div>
-          <div class="fastElCreateBtn">
+          <div class="fastElCreateBtn fastElCreateCloseBtn">
             <a class="fastElFormButton" ng-click="switchFastElementForm(bprocess)" uib-tooltip="Close form" tooltip-side="left">-</a>
           </div>
     </li>

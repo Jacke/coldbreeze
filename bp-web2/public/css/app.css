@@ -8740,8 +8740,21 @@ order:1;
      display: inline-block;
      text-align: center;
      float: right;
+     cursor: pointer;
      color: black;
+     transition: all .3s ease-in-out;
  }
+.form-edit-bpelem a.edit-elem-action__action-base-update-button:hover {
+    color: white;
+    background: gray;
+    box-shadow: 1px 1px 19px rgba(0, 0, 0, 0.24) inset;
+}
+ .form-edit-bpelem a.edit-elem-action__action-base-update-button:active {
+     box-shadow: 1px 1px 45px rgba(0, 0, 0, 0.46) inset;
+     background: gray;
+     color: white;
+ }
+
 
 .form-edit-bpelem .formly-field.new-elem-action__action-base__action-base-form__field.formly-field-input input {
      box-shadow: none;

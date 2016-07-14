@@ -2363,6 +2363,21 @@ vm.editFieldsForStrategy = function(strategy, action, bases) {
 
 }
 
+$scope.openElemDetail = function(elem, elems) {
+  if (elem.selected == 1) {
+   $scope.resetEditView(elems);
+   elem.selected=2  
+  } else {
+    elem.selected=1
+  }
+ }
+
+$scope.resetEditView = function(elems) {
+  _.forEach(elems, function(e) {
+    return e.selected = 1;
+  })
+}
+
 $scope.updateBase = function(base) {
   // POST /process/:bpId/base/:base_id
   var bpId = $scope.BPid;

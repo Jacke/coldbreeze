@@ -471,7 +471,7 @@ return  $scope.bprocesses.then(function(processes) {
                                               ids: (process_ids + '').split(',').join('') });
         $scope.allElementsPromise.$promise.then(function (d) {
           $scope.allElements = d;
-          console.log("132",$scope.allElements);
+          console.log("allElements "+(process_ids + '').split(',').join(''), $scope.allElements);
         });
         _.forEach(processes, function(proc) {
               // Add bulk process elements loading
@@ -907,7 +907,7 @@ $scope.filterInputs = function(elem) {
 
 /*
  * Embeded
- **/
+
 minorityControllers.controller('BPEmbededCtrl', ['$rootScope', '$scope', '$q', '$http', '$routeParams', 'ngDialog', 'BPElemsFactory','BPElemFactory', 'BPSpacesFactory', 'BPSpaceFactory', 'BPSpaceElemsFactory', 'BPSpaceElemFactory', '$location', '$route',
   function ($rootScope, $scope, $q,$http, $routeParams, ngDialog, BPElemsFactory, BPElemFactory, BPSpacesFactory, BPSpaceFactory, BPSpaceElemsFactory, BPSpaceElemFactory, $location, $route) {
 
@@ -925,7 +925,6 @@ minorityControllers.controller('BPEmbededCtrl', ['$rootScope', '$scope', '$q', '
     ngDialog.open({ template: 'partials/modals/newFrontElem.html' });
   };
 
-  /* TREE BUILDER */
   $scope.bpelems.$promise.then(function(data) {
     $scope.spaces.$promise.then(function(data2) {
       $scope.spaceelems.$promise.then(function(data3) {
@@ -990,11 +989,7 @@ minorityControllers.controller('BPEmbededCtrl', ['$rootScope', '$scope', '$q', '
       spaceFetch();
     });
 }
-
-
-
-
-
 }]);
+ **/
 
 });

@@ -152,12 +152,17 @@ def allElements(process_ids: List[Int]) = SecuredAction.async { implicit request
           val element = SpaceElemDAO.findById(topolog.space_elem_id.get).get
           ElementTopologyWrapper(topo_id = topolog.id.get, element_id = element.id.get, element_title = element.title, space_element = true)
       }
-      AllProcessElementsContainer(processId = processId,
-        elements = ProcElemDAO.findByBPId(processId),
+      val elements = ProcElemDAO.findByBPId(processId)
+      
+      val json = Json.toJson(AllProcessElementsContainer(processId = processId,
+        elements = List(),
         spaces = BPSpaceDAOF.findByBPIdB(processId) ,
         space_elements = SpaceElemDAO.findByBPId(processId),
         element_topos = topologs_dto
-      )
+      ))
+      // replace elements with
+      val elementsJson = decorateProcElementsWithExistedToposToJson(elements, topologs_dto)
+      json.as[JsObject] ++ Json.obj("elements" -> elementsJson)
     }
     Ok(Json.toJson(allElementCn) )
   }
@@ -695,6 +700,17 @@ private def decorateProcElementsToJson(elements: List[UndefElement]) = {
   objWithTopos
 }
 
+private def decorateProcElementsWithExistedToposToJson(elements: List[UndefElement], 
+                                                       topos:List[ElemTopology]) = {
+  val elemIds:List[Int] = elements.map(_.id.get)
+  val elemJson = Json.toJson( elements )
+  val elemJsonObj = elemJson.as[List[JsObject]]
+  val objWithTopos = elemJsonObj.map { obj =>
+    val elemId = (obj \ "id").validate[Int].get
+    obj + ("topo_id" -> Json.toJson(topos.find(topo => topo.front_elem_id.get == elemId ).get  ))
+  }
+  objWithTopos
+}
 
 // ProcessHistoryDTO(var id: Option[Int],
 // acc: String,

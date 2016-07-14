@@ -81,7 +81,7 @@
     </div>
     <div class="info">
       <div class="element-vert-dots-expand">
-      <a role="tab" data-toggle="tab" ng:init="bpelem.selected=1" ng:click="bpelem.selected == 1 ? bpelem.selected=2 : bpelem.selected=1">
+      <a role="tab" data-toggle="tab" ng:init="bpelem.selected=1" ng:click="openElemDetail(bpelem,bpelems)">
            <span class="nicon nicon-dots-three-horizontal"></span></a>
       </div>
       <div class="type" ng-class="bpelem.type_title">{{ type_short[bpelem.type_title] }}
@@ -328,7 +328,7 @@
 </div>
 
 <div class="thumb-session" ng-hide="toolbar_more">
-    <div class="proc-session active" ng-click="resetSession()" data-desc="Model">
+    <div class="proc-session active" ng-click="resetSession()" data-desc="Draft">
     </div>
 <a href="a#/bprocess/{{session.process.id}}/elements?launch={{session.session.id}}" ng-click="changeSession(session)" ng-repeat="session in sessions | limitTo: 5" class="current-proc-session-info session-link proc-session"  data-desc="Launch {{$index+1 }} - {{ session.percent}}%" ng-class="isSelected(session.session.id)">
    <span class="unpin moicon moicon-pushpin" ng-click="unlisted(session.session)"></span>

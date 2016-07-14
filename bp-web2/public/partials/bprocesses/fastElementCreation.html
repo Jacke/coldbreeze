@@ -1,10 +1,18 @@
 <div class="fast-element-aside">
 <div class="fast-element-form-close">
-  <a ng-click="$parent.switchFastElementForm(bprocess)">X</a>
+  <!--
+  <a ng-click="$parent.switchFastElementForm(bprocess)">X</a>-->
+
 </div>
-<div class="fast-element-show-model">
-  <a href="/a#/bprocess/{{ $parent.bprocess.id }}/elements">Model</a>
-</div>
+
+<a href="/a#/bprocess/{{ $parent.bprocess.id }}/elements">
+  <div class="fast-element-show-model">
+    <a>
+      <span class="fast-element-show-model-title">Draft</span>
+    </a>
+  </div>
+</a>
+
 <div class="fast-element-tree">
   <div ng-include src="'assets/partials/treeThumb.html'"></div>
 </div>
