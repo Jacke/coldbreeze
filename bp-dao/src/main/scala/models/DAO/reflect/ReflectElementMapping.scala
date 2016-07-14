@@ -70,7 +70,9 @@ object ReflectElementMappingsDAO {
   def pull_object(s: ReflectElementMap) =   {
       await(db.run( reflect_element_mappings returning reflect_element_mappings.map(_.id) += s ))
   }
-
+  def pull(s: ReflectElementMap) = 
+	  db.run( reflect_element_mappings returning reflect_element_mappings.map(_.id) += s )
+	  
   def findByRef(id: Int):List[ReflectElementMap] =   {
     await(db.run(filterByReflection(id).result)).toList
   }

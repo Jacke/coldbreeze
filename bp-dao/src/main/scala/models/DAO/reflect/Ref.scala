@@ -47,17 +47,51 @@ object RefDAOF {
   private def filterQuery(id: Int): Query[Refs, Ref, Seq] =
     refs.filter(_.id === id)
 
-  def retrive(k: Int,
+  /**
+   *  Search for ref
+   *  If ref existed create element
+   *  @return In success return RefResulted otherwise return Nothing
+   */
+  def retriveAndCreateElement(refId: Int,
               process: Int,
               business: Int, in: String = "front",
               title: String, desc:String = "",
               space_id: Option[Int] = None,
               refActionContainer: List[RefActionContainer] = List() ):Future[Option[RefResulted]] = {
-      in match {
-        case "front" => RefProjectorF.projecting(k, process, business, title,desc, "front", None, refActionContainer)
-        case _ => RefProjectorF.projecting(k, process, business, title,desc, "nested", space_id)
+      val refResultOptF = in match {
+        // Creating front element
+        case "front" => 
+          RefProjectorF.projecting(refId, process, business, 
+                                   title,desc, "front", None, refActionContainer)
+        // Creating nested element
+        case _ => 
+          RefProjectorF.projecting(refId, process, business, 
+                                   title,desc, "nested", space_id)
       }
+      // Record mapping operation for element based on RefResult topology ids
+      refResultOptF.map { refResultOpt =>
+        refResultOpt match {
+          case Some(refResult) => {
+            Future.sequence( 
+              refResult.topoElem.map { topo =>
+                ReflectElementMappingsDAO.pull(
+                                                      ReflectElementMap(None,
+                                                        reflection = refId,
+                                                        topology_element = topo,
+                                                        created_at = Some(org.joda.time.DateTime.now()),
+                                                        updated_at = Some(org.joda.time.DateTime.now()))
+                                                    )
+                })
+          }
+          case _ => Future.successful(List())
+        }
+      }
+
+      refResultOptF
   }
+
+
+
   def get(k: Int):Future[Option[Ref]] = {
     db.run(filterQuery(k).result.headOption)
   }

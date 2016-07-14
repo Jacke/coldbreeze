@@ -318,7 +318,7 @@ def createFrontElem() = SecuredAction.async(BodyParsers.parse.json) { implicit r
 request.body.validate[RefElemContainer].map {
   case entity => {
          if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, entity.process)) {
-            RefDAOF.retrive(k = entity.ref,
+            RefDAOF.retriveAndCreateElement(refId = entity.ref,
                            process = entity.process,
                            business = entity.business,
                            in = "front",
@@ -373,7 +373,7 @@ def createSpaceElem() = SecuredAction.async(BodyParsers.parse.json) { implicit r
   request.body.validate[RefElemContainer].map{
       case entity => {
             if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, entity.process)) {
-                 RefDAOF.retrive(k = entity.ref,
+                 RefDAOF.retriveAndCreateElement(refId = entity.ref,
                                  process = entity.process,
                                  business = entity.business,
                                  in = "nested",
