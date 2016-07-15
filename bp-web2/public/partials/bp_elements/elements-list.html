@@ -71,9 +71,31 @@
 <img src="/assets/images/element_create.gif">
 </div>
 
-<div class="elements" ng-repeat="bpelem in bpelems | orderBy:'order'">
+
+
+<ul class="elements-list">
+
+<!-- dnd-list="bpelems"> 
+<li class="elements" 
+  ng-repeat="bpelem in bpelems"
+  dnd-draggable="bpelem"
+  dnd-moved="moveElement(bpelem)"
+  dnd-effect-allowed="move"
+  dnd-selected="selected = bpelem"
+  ng-class="{'selected': selected === bpelem}">
+  
+  <dnd-nodrag>
+  <div dnd-handle class="handle">:::</div>
+</dnd-nodrag>
+
+-->
+
+
+<li class="elements" 
+  ng-repeat="bpelem in bpelems | orderBy:'order'"">
+
   <div class="data-board-controller" ng-controller="launchDataController as launchData">
-<div class="proc-element minimal" ng-attr-id="'frontElem'+bpelem.id" ng-class="'elem-'+bpelem.id">
+  <div class="proc-element minimal" ng-attr-id="'frontElem'+bpelem.id" ng-class="'elem-'+bpelem.id">
 
 
     <div class="element-header">
@@ -248,8 +270,9 @@
     -->
 </div>
 
-</div>
 
+</li>
+</ul>
 
 
 

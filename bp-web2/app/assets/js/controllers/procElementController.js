@@ -2305,6 +2305,8 @@ vm.editFieldsForStrategy = function(strategy, action, bases) {
           var fieldType = 'url'
           var label = 'URL';        
           var placeholder = 'http://example.com/api/v1/resource';
+          var defaultValue = base.valueContent;
+          
       } else {
         var fieldType = 'text'
         var placeholder = '';
@@ -2452,7 +2454,19 @@ $scope.unlisted = function (session) {
 
 
 
+$scope.selected = null;
 
+$scope.models = {
+    selected: null,
+    lists: [{label: "Item A"}, {label: "Item B"}]
+};
+
+$scope.moveElement = function(elem) {
+  var index = $scope.bpelems.indexOf(
+    _.filter($scope.bpelems, function(el) { return elem.id == el.id })[1]);
+  console.log('moveElement', index);
+  $scope.bpelems.splice(index, 1)
+}
 
 
 

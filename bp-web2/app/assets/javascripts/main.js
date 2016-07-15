@@ -298,6 +298,11 @@
   deps: ['angular', 'app'],
   export: 'restangular'
 },
+'angularDragAndDropLists': {
+  deps: ['angular', 'app'],
+  export: 'angularDragAndDropLists'
+},
+
 'cgNotify': {
   deps: ['angular', 'app'],
   export: 'cgNotify'
@@ -444,6 +449,7 @@
   'pnotifybuttons':'../bower_components/pnotify/pnotify.buttons',
   'angularpnotify':'../bower_components/angular-pnotify/src/angular-pnotify',
 'restangular':'../bower_components/restangular/dist/restangular',
+'angularDragAndDropLists':'../bower_components/angular-drag-and-drop-lists/angular-drag-and-drop-lists',
 'cgNotify': '../bower_components/angular-notify/dist/angular-notify',
 'angular-cache':'../bower_components/angular-cache/dist/angular-cache',
 'angular-hovercard':'../bower_components/angular-hovercard/dist/angular-hovercard',

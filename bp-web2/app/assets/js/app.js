@@ -189,6 +189,7 @@ var minorityApp =
       'ngAudio',
       'jlareau.pnotify',
       'yaru22.hovercard',
+      'dndLists',
       '720kb.tooltips',
       'ngSanitize',
       'ngAngularError',
