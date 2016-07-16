@@ -2306,7 +2306,7 @@ vm.editFieldsForStrategy = function(strategy, action, bases) {
           var label = 'URL';        
           var placeholder = 'http://example.com/api/v1/resource';
           var defaultValue = base.valueContent;
-          
+
       } else {
         var fieldType = 'text'
         var placeholder = '';
@@ -2451,6 +2451,14 @@ $scope.unlisted = function (session) {
       );
 }
 
+/**
+ * Test action execution
+ */
+$scope.textExec = function(action, middleware, strategy) {
+  console.log('textExec', action, middleware, strategy);
+}
+
+
 
 
 
@@ -2467,6 +2475,21 @@ $scope.moveElement = function(elem) {
   console.log('moveElement', index);
   $scope.bpelems.splice(index, 1)
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -43,7 +43,8 @@ a.fastElFormButton:hover {
     display: inline-block;
     float: left;
     margin-top: -67px;
-    margin-left: -2px;
+    clear: both;
+    margin-left: 208px;
 }
 .process-thumb p.tableMinListGithub {
   left: 2px;
@@ -207,12 +208,11 @@ ul.type-tabs li a:hover {
 }
 
 .processList .process_content {
-    margin-left: 180px;
+    margin-left: 235px;
     float: left;
     display: inline-block;
     margin-bottom: -50px;
 }
-
 
 .process .process-status h2.tableMinListName {
   width: 13%;

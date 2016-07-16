@@ -43,13 +43,13 @@
         <a class="tableMinName vIcoIn" href="/a#/bprocess/{{ bprocess.id }}/elements" id="processTitle">{{ bprocess.title }}</a>
         <span class="tableMinVanity">{{ filterService(bprocess.service) }}</span>
       </h2>
-      <div class="process_content" ng:show="emptyElemCheck(bprocess.trees)">
-        <div ng-include src="'assets/partials/treeThumb.html'"></div>
-      </div>
       <div class="fastElCreateBtn">
         <a class="fastElFormButton" 
            ng-click="switchFastElementForm(bprocess)" 
            uib-tooltip="Add element" tooltip-side="left">+</a>
+      </div>
+      <div class="process_content" ng:show="emptyElemCheck(bprocess.trees)">
+        <div ng-include src="'assets/partials/treeThumb.html'"></div>
       </div>
 
       <div class="tableMinListControls processListControls" ng-show="isManagerVal">
