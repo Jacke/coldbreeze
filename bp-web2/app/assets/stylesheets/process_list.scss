@@ -9,7 +9,7 @@ a.redButton {
 }
 a.fastElFormButton {
     height: 37px;
-    width: 27px;
+    width: 26px;
     display: block;
     border-radius: 3px;
     border: #7CBB1C;
@@ -21,6 +21,7 @@ a.fastElFormButton {
     padding: 7px 6px;
     line-height: 19px;
     border: solid 1px #9E9E9E;
+    transition: all 1s;
 }
 a.fastElFormButton:hover {
   opacity: 1;
