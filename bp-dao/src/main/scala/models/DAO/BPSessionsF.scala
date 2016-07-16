@@ -480,8 +480,8 @@ object BPSessionDAOF {
   }
 
   def percentDecorator(step: Double, element_quantity: Int): Int = {
-    if (step == 1 && element_quantity == 1) {
-      0
+    if (step == 1 && element_quantity == 1) { // Temp fix for process with ONE finished  element
+      100
     } else {
       (step / element_quantity.toDouble * 100).toInt
     }

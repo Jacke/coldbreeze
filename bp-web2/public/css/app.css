@@ -3916,6 +3916,9 @@ animation: redGlowIt 7s infinite;
 }
 .edit-in-place.active input {
     display: inline-block;
+    border-radius: 3px;
+    border: 1px solid rgba(128, 128, 128, 0.17);
+    padding: 4px 8px;
 }
 .edit-in-place span {
   display: none;

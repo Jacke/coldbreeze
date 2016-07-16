@@ -23,7 +23,7 @@
                                                     @session.station match {
                                                       case Some(station) => {
                                                             @station.note match {
-                                                                case Some(note) => { @{"—" + note} }
+                                                                case Some(note) => { @{note} }
                                                                 case _ => {  }
                                                             }
                                                             <time class="updated" itemprop="dateModified" datetime="@session.session.created_at"></time></a></div>
