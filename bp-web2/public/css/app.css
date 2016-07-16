@@ -12307,14 +12307,14 @@ body.themeGrad.mobileMenu nav.minMenu.menuCell.menuEntity, body.themeGrad.mobile
 .process_content .tree-thumb.process-tree {
     height: 45px;
     width: 270px;
-    max-width: 727px !important;
+    max-width: 687px !important;
 }
 
 @media (max-width: 1200px) {
   .process_content .tree-thumb.process-tree {
       height: 45px;
       width: 270px;
-      max-width: 657px !important;
+      max-width: 572px !important;
   }
 }
 
