@@ -28,10 +28,10 @@ a.fastElFormButton:hover {
 }
 .fastElCreateBtn.fastElCreateCloseBtn {
     position: absolute;
-    right: 50px;
-    top: 68px;
+    left: 4px;
+    top: 72px;
+    margin-left: 0px;
 }
-
 .fastElCreateBtn.fastElCreateCloseBtn a.fastElFormButton {
     width: 28px;
     padding: 7px 10px;
@@ -242,11 +242,12 @@ span.number.true.finished {
  Fast element creation
 */
 .form-fast-element-create h3 {
-  font-family: "AvenirNextCyr-Good", "AvenirNextCyr", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
-  font-weight: 300;
-  margin-bottom: 30px;
-  margin-top: 12px;
-  text-align: left;
+    font-family: "AvenirNextCyr-Good", "AvenirNextCyr", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+    font-weight: 300;
+    margin-left: 20px;
+    margin-bottom: 30px;
+    margin-top: 12px;
+    text-align: left;
 }
 li.tableMinListItem.fastElementForm {
   padding-top: 0px;
