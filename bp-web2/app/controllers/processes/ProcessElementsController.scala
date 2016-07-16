@@ -707,7 +707,12 @@ private def decorateProcElementsWithExistedToposToJson(elements: List[UndefEleme
   val elemJsonObj = elemJson.as[List[JsObject]]
   val objWithTopos = elemJsonObj.map { obj =>
     val elemId = (obj \ "id").validate[Int].get
-    obj + ("topo_id" -> Json.toJson(topos.find(topo => topo.front_elem_id.get == elemId ).get  ))
+    topos.find(topo => topo.front_elem_id.get == elemId ) match {
+      case Some(el) => {
+        obj + ("topo_id" -> Json.toJson( el ))
+      }
+      case _ => obj
+    }
   }
   objWithTopos
 }

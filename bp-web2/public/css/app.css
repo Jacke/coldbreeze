@@ -2665,7 +2665,7 @@ a.current-proc-session-info.session-link.proc-session.selected {
 }
 
 .proc-session:first-child:after {
-  transform: translate(-55px, -1px);
+    transform: translate(-59px, -1px);
 }
 
 .proc-session.active {
