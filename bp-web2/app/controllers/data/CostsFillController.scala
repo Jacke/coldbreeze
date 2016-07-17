@@ -84,19 +84,7 @@ case class SessionElementResourceContainer(
                       slats: List[Slat])
 
 
-case class DataTableIndicators(
-  processes: Seq[BProcessDTO],
-  launches_indicators: Seq[LaunchIndicator]
-)
-  case class LaunchIndicator(
-    launch:BPSession,
-    elements: Seq[LaunchIndicatorElement]
-  )
-    case class LaunchIndicatorElement(
-      element: SessionUndefElement,
-      topology: SessionElemTopology,
-      indicators: List[DatasElementContainer] = List()
-    )
+
 
 class CostFillController @Inject() (
   val messagesApi: MessagesApi,
@@ -163,105 +151,6 @@ implicit val SessionElemTopologyJformat = Json.format[SessionElemTopology]
   implicit val DatasContainerFormat = Json.format[DatasContainer]
   implicit val DatasContainerReaders = Json.reads[DatasContainer]
 
-/****
- * Primary datatables of all indicators assigned to launch assigned to processes
- */
-def indicatorsTable = SecuredAction.async { implicit request =>
-  val business = request.identity.businessFirst
-  val user_services = BusinessServiceDAO.getAllByBusiness(business).map(_.id.getOrElse(-1))
-  // processes ->
-  val bprocessF = BPDAOF.getByServices(user_services) // TODO: Not safe
-
-  bprocessF.flatMap { processes =>
-    // launches ->
-    val launchesF = BPSessionDAOF.findByProcesses(processes.map(p => p.id.get))
-
-
-    launchesF.flatMap { launches =>
-      val launchesIds = launches.map(l => l.id.get).toList
-      val allToposF = SessionElemTopologDAOF.getBySessions(launchesIds)
-      val allElementsF = SessionProcElementDAOF.findByLaunchesIds(launchesIds)
-      allToposF.flatMap { allTopos =>
-        allElementsF.map { allElements =>
-        // indicator values[resource,entity,value]
-        val tables = DataTableIndicators(
-          processes = processes,
-          launches_indicators = launches.map { launch =>
-            val launch_id = launch.id.get
-            val assigns = SessionElementResourceDAO.getBySession(launch_id)
-            val warpDatas = Await.result(wrapper.getWarpBoardByLaunch(launch_id), 
-                                          Duration(waitSeconds, MILLISECONDS))
-            val warpBoards = warpDatas.boards
-            val warpEntities = warpDatas.entities
-            val warpSlats = warpDatas.slats
-            val resources = ResourceDAO.findByBusinessId(request.identity.businessFirst)
-            println(s"finded assigns ${assigns.length}")
-            val launch_assigns_cn = assigns.map { obj =>
-              val entities:List[Entity] = findEntitiesFromLaunch(launch_id, List(obj))
-              //val entities_ids = entities.map(o => idGetter(o.id))
-              //SessionElementResourceContainer(obj, entities, findSlats(entities_ids, launch_id) )
-                DatasElementContainer(
-                  obj,
-                  entities.map { entity =>
-                    val board = warpBoards.find { b =>
-                      val idString = b.id.get
-                      println("board id:"+idString)
-                      println("entity.boardId id:"+entity.boardId)
-                      println("idString == entity.boardId:"+ idString == entity.boardId)
-
-                      idString == entity.boardId
-                    }
-                    println("findResource" + findResource(board.get, entity, resources))
-                    ElementCosts(
-                      board.get, entity, findValueForElement(idGetter(entity.id), launch_id, obj.element_id),
-                      findResource(board.get, entity, resources)
-                    )
-                  }
-                )
-            }
-
-            LaunchIndicator(
-              launch,
-              allElements.filter(el => el.session == launch.id.get).map { element =>
-                    val cOpt = allTopos.find(topo => topo.front_elem_id == element.id)
-                    val r:Option[LaunchIndicatorElement] = cOpt match {
-                      case Some(c) => {
-                        Some(
-                          LaunchIndicatorElement(
-                          element = element,
-                          topology = c,
-                          indicators = launch_assigns_cn
-                          )    
-                        )                    
-                      }
-                      case _ => None
-                    }
-                    r
-              }.flatMap(o => o)
-            )
-
-            }
-          )
-          Ok(Json.toJson(tables))
-        }
-      }  
-      
-
-    }
-  }
-}
-
-/****
- * Primary datatables of all indicators assigned to launch assigned to processes
- */
-def actsTable = SecuredAction.async { implicit request =>
-  // processes ->
-  // launches ->
-  // acts -> outputs
-  Future.successful(
-    Ok(Json.toJson("good"))
-  )
-}
 
 
 /****

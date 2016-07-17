@@ -108,9 +108,10 @@ $(function () {
                     	t.top = t.top -Stoo[0].scrollTop;
                     	t.left= t.left-Stoo[0].scrollLeft;
                     };
-                            
-                    return p.top+(h<0?0:h) >= t.top && p.top+(h>0?0:h) <= t.top &&
-                           p.left+(w<0?0:w) >= t.left && p.left+(w>0?0:w) <= t.left || Sto.css('position')=='fixed';
+                    if (p !== undefined && t !== undefined) {
+                        return p.top+(h<0?0:h) >= t.top && p.top+(h>0?0:h) <= t.top &&
+                               p.left+(w<0?0:w) >= t.left && p.left+(w>0?0:w) <= t.left || Sto.css('position')=='fixed';                        
+                    }        
 				},
                 onWhell: function (e, delta) { 
                 	if (_this.bypass) return (_this.bypass=false,true);

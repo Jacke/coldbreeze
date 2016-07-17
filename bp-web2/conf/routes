@@ -323,12 +323,19 @@ PUT      /data/resource/:id					        @controllers.DataController.update_resou
 POST     /data/resource/:id/delete     		  @controllers.DataController.delete_resource(id: Int)
 GET      /data/test                         @controllers.DataController.boardTest()
 
+GET      /data/indicators_table @controllers.DataIndicatorController.indicatorsTable()
+GET      /data/acts_table       @controllers.DataIndicatorController.actsTable()
+
+# Acts
+GET   /acts      @controllers.ActionController.acts()
+
+
+
 #################
 # Cost module
 #############
 
-GET      /data/indicators_table @controllers.CostFillController.indicatorsTable()
-GET      /data/acts_table       @controllers.CostFillController.actsTable()
+
 
 GET      /data/cost/collection           @controllers.CostFillController.assignResourceCollection
 GET 	 /data/cost/assigns/:proc_id  	 @controllers.CostFillController.assigns(proc_id: Int)

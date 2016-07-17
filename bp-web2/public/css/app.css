@@ -6234,7 +6234,16 @@ padding-bottom: 225px;
 margin-top: -9px;
 position:relative;
 }
-
+.app-container .app.data-app.container {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    margin-top: -9px;
+}
+.app-container .app.data-app.container .act-data-table {
+    width: 70%;
+    margin: 0 auto;
+}
 .front-blocks, .front-blocks:before, .front-blocks:after {
   box-sizing: initial;
 }
@@ -13331,7 +13340,7 @@ position: absolute;
     margin-bottom: 25px;
     background: white;
     padding: 12px 0px;
-    border-radius: 0px 0px 6px 6px;
+    border-bottom: solid 1px #ecefda;
 }
 
 .data-container-nav a {

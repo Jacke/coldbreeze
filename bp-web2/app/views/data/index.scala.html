@@ -20,7 +20,7 @@
 
 <div class="app-container">
 
-<div class="container app" ng-app="app" ng-controller="DataTableController">
+<div class="container app data-app" ng-app="app" ng-controller="DataTableController">
 
 
 
@@ -462,6 +462,56 @@
   ng-class="process.showIndicators?'expanded':' '">
     <span class="minicon minicon-line-graph"></span>
   </div>
+
+
+  <table 
+    class="table table-with-indicators">
+<thead>
+    <!-- ngIf: params.hasGroup() -->
+    <tr class="ng-table-sort-header">
+              <th class="header">
+            Launch</th>
+            <th>Elements</th>
+    </tr>
+</thead>    
+<tbody>
+  <tr ng-repeat="indy in indicators.launches_indicators | filter:indicatorsByProcessRes(process, @{cn.resource.id.getOrElse(0)})">
+    <td>
+      Launch {{indy.launch.id}} process: {{indy.launch.process}}
+    </td>
+    <td>
+
+
+<!-- Nested table with indicators -->
+  <table 
+    class="table table-with-indicators">
+<thead>
+    <!-- ngIf: params.hasGroup() -->
+    <tr class="ng-table-sort-header">
+            <th ng-repeat="el in indy.elements">
+              {{el.element.title}}
+            </th>
+    </tr>
+</thead>    
+<tbody>
+  <tr>
+    <td ng-repeat="el in indy.elements">
+        <li ng-repeat="indicator in el.indicators | filter:byTopoElement(el, @{cn.resource.id.getOrElse(0)} )">
+          {{ indicator | json}}
+        </li>
+    </td>           
+  </tr>
+</tbody>
+
+</table>
+      
+</td>
+         
+  </tr>
+</tbody>
+
+</table>
+
 
   <div class="indicator-data-table-container" ng-show="process.showIndicators">
   <table 
