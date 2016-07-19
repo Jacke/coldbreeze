@@ -2,20 +2,53 @@ a.redButton {
     height: 31px;
     width: 50px;
     display: block;
-    background: transparent;
+    background: white;
     position: absolute;
     border-radius: 3px;
-    transition: all 1s;
+    transition: all .5s;
     border: solid 2px #8BC34A;
     color: #8BC34A;
     padding: 4px 11px;
     font-size: 12px;
     text-shadow: none;
+    border-color: transparent;
 }
 a.redButton:hover {
-    text-decoration: none;
-    background: white;
+text-decoration: none;
+    background: rgb(139, 195, 74);
+    color: white;
 }
+a.redButton:hover:active {
+    background: #406f0a;
+    border-color: #325805;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.16) inset;
+}
+
+a.redButton:before {
+    position: absolute;
+    width: 54px;
+    height: 35px;
+    content: ' ';
+    z-index: -1;
+    top: -4px;
+    left: -4px;
+    background: linear-gradient(to right, rgb(200, 228, 166) 0%, rgba(145,232,66,1) 100%);
+    border-radius: 4px;
+}
+
+a.redButton:hover:before {
+    background: linear-gradient(to right, rgb(147, 171, 118) 0%, rgb(107, 183, 21) 100%);
+}
+
+a.redButton:active:hover:before {
+    background: linear-gradient(to right, rgb(78, 93, 61) 0%, rgb(48, 78, 12) 100%);
+}
+
+
+a#launchProcessButton:focus {
+    background: #406f0a;
+}
+
 a.fastElFormButton {
     height: 37px;
     width: 26px;
@@ -68,7 +101,7 @@ a.fastElFormButton:hover {
   opacity: 1;
 }
 .process-thumb:active p.tableMinListGithub a.redButton {
-  background: #c0392b;
+
 }
 button.redButton {
   height: 37px;
@@ -79,6 +112,7 @@ button.redButton {
   border-radius: 35px;
   border: #e74c3c;
 }
+
 .process-thumb p.tableMinListGithub {
   left: 2px;
   top: 10px;

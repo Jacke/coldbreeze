@@ -5595,6 +5595,17 @@ font-family: 'Proxima Nova','Helvetica',sans-serif;
 #tablemin .process:last-child {
     border: none;
 }
+ul#tablemin.processList {
+    margin: 0;
+    padding: 0;
+}
+
+ul#tablemin.processList .process {
+    background: white;
+    padding: 33px 30px 6px 15px;
+    margin: 0;
+    border-bottom: 1px solid rgba(232, 232, 232, 0.42);
+}
 
 @media (min-width: 1200px) {
   .hidden-md.hidden-lg,
