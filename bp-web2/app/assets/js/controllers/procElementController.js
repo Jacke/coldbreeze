@@ -2456,6 +2456,11 @@ $scope.unlisted = function (session) {
  */
 $scope.textExec = function(action, middleware, strategy) {
   console.log('textExec', action, middleware, strategy);
+      ngDialog.open({
+      template: '/assets/partials/actions/action-test.html',
+      controller: 'actionController',
+      scope: $scope
+    });
 }
 
 

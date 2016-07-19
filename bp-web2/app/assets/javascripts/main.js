@@ -257,7 +257,10 @@
   export: 'controllers'
 },
 
-
+'actionController': {
+  deps: ['angular', 'app', 'controllers'],
+export: 'actionController'
+},
 'launchDataController': {
   deps: ['angular', 'app', 'controllers', 'toastr'],
   export: 'launchDataController'
@@ -492,6 +495,7 @@
  // 'popupService': '../js/popupService',
   'treebuilder': '../js/treebuilder',
   'controllers': '../js/controllers/controllers',
+  'actionController':'../js/controllers/actions/actionController',
   'launchDataController':'../js/controllers/data/launchDataController',
   'procPermController': '../js/controllers/procPermController',
   'procController': '../js/controllers/procController',

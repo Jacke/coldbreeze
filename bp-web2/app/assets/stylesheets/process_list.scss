@@ -1,11 +1,20 @@
 a.redButton {
-  height: 37px;
-  width: 38px;
-  display: block;
-  background: #e74c3c;
-  position: absolute;
-  border-radius: 35px;
-  border: #e74c3c;
+    height: 31px;
+    width: 50px;
+    display: block;
+    background: transparent;
+    position: absolute;
+    border-radius: 3px;
+    transition: all 1s;
+    border: solid 2px #8BC34A;
+    color: #8BC34A;
+    padding: 4px 11px;
+    font-size: 12px;
+    text-shadow: none;
+}
+a.redButton:hover {
+    text-decoration: none;
+    background: white;
 }
 a.fastElFormButton {
     height: 37px;
@@ -142,7 +151,8 @@ span.state-percent.vertical-center {
   display: inline-block;
 }
 .process-status .tableMinListControls {
-  margin-right: 70px;
+    margin-right: 70px;
+    border: none;
 }
 .process_content li.angular-ui-tree-node {
   display: inline-block;
