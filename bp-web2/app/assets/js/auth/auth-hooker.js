@@ -54,12 +54,16 @@ $(function domReadyLoginFlow () {
 
 
   if (getUrlParameter('demo') != undefined && getUrlParameter('demo') == "ycombinator") {
-
     $('input#name-11').val('testing@minorityapp.com');
     $('input#name-12').val('12344321');
     $('button#l_submit').text('PRESS TO ENTER');
-
   }
+  if (getUrlParameter('demo') != undefined && getUrlParameter('demo') == "test2") {
+    $('input#name-11').val('testing2@minorityapp.com');
+    $('input#name-12').val('12344321');
+    $('button#l_submit').text('PRESS TO ENTER');
+  }
+
 
   $('.loginView a.switchView2').on('click', function clickViewSwitch(e) {
     var nextPage;
