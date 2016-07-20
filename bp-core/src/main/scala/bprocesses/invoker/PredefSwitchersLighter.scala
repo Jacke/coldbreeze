@@ -41,7 +41,7 @@ val COMMON_STATES = List(
 def elementStartInvokationStage(bp: BProcess, elem: ProcElems) = {
 	println(s" ")
 	println(s"************************************************")
-	println(s"elementStartInvokationStage for $elem.title")
+	println(s"elementStartInvokationStage for ${elem.title}")
 	//elem.bprocess.station.update_state(false)
 
 	pushToLoggerBefore(bp, BPLoggerResult(
@@ -94,10 +94,12 @@ def elemInitStage(bp: BProcess, elem: ProcElems) = {
 def elemInvokingStage(bp: BProcess, elem: ProcElems) = {
 	if (!skipState(elem, INVOKE_STATE)) {
       pushToStationLogger(bp,"invoking")
-  	  // autostart run only once per full invokation element(therefore we use partial invokation rate)
+  	  // autostart run only once per 
+  	  // full invokation element(therefore we use partial invokation rate)
   	  if (stateValueRate(elem, INVOKE_STATE) < 49) {
 		  val autoStartActions = elem.reactions.filter(r => r.autostart == true)
 	  	  val autoStartActionsResults = executeActions(bp, elem, autoStartActions.toList)
+//	  	  bp.station.absoluteStepInc()
   	  }
   	  // partial invokation of element
   	  elemNewPartialLigher(bp, elem = elem, state = INVOKE_STATE, 50)
@@ -139,6 +141,7 @@ def elemFinishCancelStage(bp: BProcess, elem: ProcElems) = {
 	  pushToStationLogger(bp,"finishing")
 	  elemNewLigher(bp, elem = elem, state = FINISH_STATE)
 	  pushToStationLogger(bp,"finished")
+	  println("step increment 111111111111111>>>>>>>>>>>>>>")
       bp.station.applySwitcher("inc", "step", "switch_type",elem)
 	}
 	// Cancel only when cancel state exist and lighed

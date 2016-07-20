@@ -899,6 +899,7 @@ def initiate2F(bpID: Int,
         //}
         //}
         //}
+        getStationToProcess(processRunned, session_id)
       }
       case _ => { // launch from empty session
         session_id = models.DAO.sessions.SessionProcElementDAOF.await(
@@ -1300,9 +1301,22 @@ def initiate2F(bpID: Int,
 
 
 
-  /*
+ /*
   * Helpers
   */
+  // Ovveride station when Run From
+  def getStationToProcess(process: BProcess, sessionId: Int) = {
+    // find station
+    val stationDTOOpt = BPStationDAOF.await(BPStationDAOF.findBySessionF(sessionId))
+    // apply station to process station and override it
+    stationDTOOpt match {
+      case Some(stationDTO) => {
+        process.station.step = stationDTO.step
+      }
+      case _ =>
+    }
+  }
+
   def makeFrontSpaces(process: BProcess, spacesDTO:List[BPSpaceDTO], bricks: Array[Brick], spaceElems: List[SpaceElementDTO]) = {
     val frontSpaces:List[BPSpaceDTO] = spacesDTO.filter(spaceDTO => spaceDTO.brick_front.isDefined )
     val frontSpacesElems = spaceElems.filter(spaceElem => frontSpaces.map(_.id.get).contains(spaceElem.space_owned))

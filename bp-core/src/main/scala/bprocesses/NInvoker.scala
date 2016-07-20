@@ -173,6 +173,8 @@ def move:Unit = {
       /**
        * Front launch
        */
+      println("front-launch step"+toStation(bp).step)
+      println("el"+bp.variety(toStation(bp).step))
       val elem = bp.variety(toStation(bp).step)
       NInvoker.toApplogger(s"collisionCounter check ${bp.collisionCounter}")
       if (bp.collisionCounter > maxLoop) { // check for states && switchers
