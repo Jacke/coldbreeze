@@ -413,7 +413,7 @@ $scope.loadProcessesFromCache = function() {
 
             var updatedTitles = _.map(resp.data.deltas.u, function(d) {
               return {id: parseInt(d.resourceId), 
-                    title: d.updatedAttributes.split(/title:.(\S+\s+\S+|\S+).service:/)[1], 
+                    title: d.updatedAttributes.split(/title:(.*?) service:/)[1], 
                     service: parseInt(d.updatedAttributes.split(/service:.(\S+\s+\S+|\S+).version:/)[1])
                   }
             });
