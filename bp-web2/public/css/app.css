@@ -4683,7 +4683,7 @@ new process form container
 }
 
 .progress-lines span.line:first-child {
-    margin-left: 0px;
+    margin-left: -2px;
 }
 .progress-lines {
     z-index: -1;
@@ -4991,6 +4991,7 @@ span.line.elem-card.executed {
     margin-right: 13px;
 }
 .allStations .stations {
+    box-shadow: 0px 0px 9px rgba(128, 128, 128, 0.12);
     background: white;
     margin: 20px 14px 0px -27px;
     padding: 0px 25px 0px 21px;
