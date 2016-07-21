@@ -8,6 +8,7 @@ define(['angular', 'app', 'controllers'], function (angular, minorityApp, minori
 minorityControllers.controller('ReflectionCtrl', [
   '$scope',
   '$filter',
+  'ngDialog',
   '$rootScope',
   'EmployeesFactory',
   'ProcPermissionsFactory',
@@ -41,7 +42,7 @@ minorityControllers.controller('ReflectionCtrl', [
   'RefStrategyBasesFactory',
   'RefStrategyBaseFactory',
   '$location', '$route', '$routeParams', '$window',
-  function ($scope, $filter, $rootScope,EmployeesFactory,ProcPermissionsFactory,PermissionsFactory, PermissionFactory, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory,
+  function ($scope, $filter, ngDialog, $rootScope,EmployeesFactory,ProcPermissionsFactory,PermissionsFactory, PermissionFactory, BProcessesFactory, BPElemsFactory,BPSpacesFactory,BPSpaceElemsFactory, BPStationsFactory, BPStationFactory, BPLogsFactory,
             RefsFactory,
             RefFactory,
             RefElemsFactory,
@@ -607,6 +608,16 @@ RefStrategyBaseFactory.delete({id: strategy_base.id}).$promise.then(function(dat
       );
   };
 
+
+
+$scope.textExec = function(action, middleware, strategy) {
+  console.log('textExec', action, middleware, strategy);
+      ngDialog.open({
+      template: '/assets/partials/actions/action-test.html',
+      controller: 'actionController',
+      scope: $scope
+    });
+}
 
 
 

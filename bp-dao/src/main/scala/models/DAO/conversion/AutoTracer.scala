@@ -7,8 +7,8 @@ import models.DAO._
 import models.DAO.resources._
 import models.DAO.reflect._
 import models.DAO.resources._
-import main.scala.bprocesses.refs.UnitRefs._
-import main.scala.simple_parts.process.Units._
+import main.scala.bprocesses.refs._
+import main.scala.simple_parts.process._
 /**
  * Default states for
  * Process elements

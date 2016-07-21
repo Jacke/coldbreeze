@@ -60,7 +60,7 @@ import play.api.libs.json.Json
 import models.DAO._
 import main.scala.bprocesses.BPSession
 import models.DAO.sessions._
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 
 
 // ResourceEntitySelector for assign resource form

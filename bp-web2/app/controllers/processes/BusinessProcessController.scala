@@ -37,7 +37,7 @@ import models.DAO.CompositeValues
 import play.api.Play.current
 
 import main.scala.bprocesses._
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 import models.DAO.reflect._
 import models.DAO.conversion._
 import cloner.util._
@@ -47,7 +47,7 @@ import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 import scala.util.Try
 
 import us.ority.min.actions._
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 
 import models.DAO.reflect._
 

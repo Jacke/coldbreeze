@@ -12,9 +12,9 @@ import models.DAO.ProcElemDAO._
 import models.DAO.BPDAO._
 import models.DAO.BPStationDAO._
 import models.DAO.conversion.DatabaseCred
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 
-import main.scala.bprocesses.refs.UnitRefs.{UnitSwitcherRef}
+import main.scala.bprocesses.refs._
 
 class SwitcherRefs(tag: Tag) extends Table[UnitSwitcherRef](tag, "switcher_refs") {
   def id          = column[Int]("id", O.PrimaryKey, O.AutoInc)

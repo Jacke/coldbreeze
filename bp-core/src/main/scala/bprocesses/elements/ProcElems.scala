@@ -5,7 +5,7 @@ import main.scala.bprocesses.BProcess
 import scala.util.{Try, Success, Failure}
 import scala.collection.mutable.ListBuffer  
 import main.scala.bprocesses._
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 
 
 /**

@@ -4,7 +4,7 @@ import com.typesafe.scalalogging.Logger
 import main.scala.simple_parts.process._
 import main.scala.utils.Space
 import main.scala.bprocesses._
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 /*
 	+----------+             +---------------+       +--------------------+
 	|          |             |               |       |                    |
@@ -89,8 +89,9 @@ def elemInitStage(bp: BProcess, elem: ProcElems) = {
 	  pushToStationLogger(bp,"initiated")
 	}
 }
-
-// 2) invoking stage   
+/****************************************
+    2) invoking stage   
+*/
 def elemInvokingStage(bp: BProcess, elem: ProcElems) = {
 	if (!skipState(elem, INVOKE_STATE)) {
       pushToStationLogger(bp,"invoking")
@@ -112,8 +113,9 @@ def elemInvokingStage(bp: BProcess, elem: ProcElems) = {
 	  }
     }
 }
-
-// 3) common stage executor 
+/****************************************
+     3) common stage executor 
+*/
 def elemCommonStage(bp: BProcess, elem: ProcElems) = {
   // that will block execution when common states not complete
   // by lighting pause on launch   
@@ -214,7 +216,7 @@ trait ActionAutostart {
 	def executeActions(bp: BProcess, elem: ProcElems, actions: List[UnitReaction]) = {
 		actions.map { action => 
 			action.execute(bp, Some( elem) )
-	    }
+    }
 	}
 }
 

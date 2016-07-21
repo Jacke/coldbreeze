@@ -10,8 +10,8 @@ import models.DAO.ProcElemDAO._
 import models.DAO.BPDAO._
 import models.DAO.BPStationDAO._
 import models.DAO.conversion.DatabaseCred
-import main.scala.simple_parts.process.Units._
-import main.scala.bprocesses.refs.UnitRefs.{UnitReactionRef, UnitReactionStateOutRef}
+import main.scala.simple_parts.process._
+import main.scala.bprocesses.refs._
 
 class ReactionStateOutRefs(tag: Tag) extends Table[UnitReactionStateOutRef](tag, "reaction_state_out_refs") {
   def id          = column[Int]("id", O.PrimaryKey, O.AutoInc)

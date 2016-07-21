@@ -3,7 +3,7 @@ package cloner.util
 import models.DAO._
 import models.DAO.reflect._
 import main.scala.simple_parts.process._
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 import main.scala.bprocesses._
 
 object ProcessCloner {

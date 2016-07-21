@@ -1,6 +1,6 @@
 package bprocesses
 import main.scala.simple_parts.process._
-import main.scala.simple_parts.process.Units._
+import us.ority.min.actions._
 import main.scala.bprocesses._
 import main.scala.utils._
 import com.github.nscala_time.time.Imports._
@@ -14,9 +14,9 @@ case class ActionParts(
   action: UnitReaction
 )
 
-object ReactionExecutor {
+object ActionExecutor {
 
-  val appLogger = Logger(LoggerFactory.getLogger("ReactionExecutor"))
+  val appLogger = Logger(LoggerFactory.getLogger("ActionExecutor"))
   def toApplogger(msg: Any, log_type: String = "info") = {
       log_type match {
         case "debug" => appLogger.info(msg.toString)
@@ -33,7 +33,11 @@ object ReactionExecutor {
    * 4. Change state
    * 5. Resume process launch
    */
-  def executeWithMiddleware(process: BProcess, elemOpt: Option[ProcElems], reaction: UnitReaction) {
+  def executeWithMiddleware(
+    process: BProcess, 
+    elemOpt: Option[ProcElems], 
+    reaction: UnitReaction):Option[StrategyResult] = {
+
       toApplogger(s"Found ${reaction.middlewares.length} middlewares for ${reaction.title} action")
       val middleware = reaction.middlewares.head
 
@@ -51,15 +55,25 @@ object ReactionExecutor {
 
        // project middleware and its relatives 
        // invoke them
-       println( middleware.executeStrategy(ActionParts(process, elem, reaction) ) )
+       val result:Option[StrategyResult] = 
+          middleware.executeStrategy( ActionParts(process, elem, reaction) )
+
+       println( result )
+       result
   }
 
+  /** 
+    * Legacy action exec
+    * @param process 
+    * @param reaction 
+    * @return -
+    */
   def execute(process: BProcess, reaction: UnitReaction) = {
       val topo = retriveActionElementByTopology(process, reaction)
       if (topo.isDefined) {
         val element = retriveElementByTopo(topo.get, process)
         toApplogger(
-s"""Found ${reaction.reaction_state_outs.length} state outs for ${reaction.title} action"""
+          s"""Found ${reaction.reaction_state_outs.length} state outs for ${reaction.title} action"""
         )
         plainOldAction(reaction, element)
       }

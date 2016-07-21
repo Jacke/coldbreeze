@@ -4,7 +4,7 @@ import com.typesafe.scalalogging.Logger
 import main.scala.simple_parts.process._
 import main.scala.utils.Space
 import main.scala.bprocesses._
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 
 trait InvokeLogger {
   def getStation(bp: BProcess): BPStation = { bp.station }

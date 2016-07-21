@@ -19,9 +19,9 @@ import models.DAO._
 import models.DAO.sessions._
 import builders._
 import main.scala.bprocesses.BPSession
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 import main.scala.simple_parts.process.data.{Confirm, Constant}
 case class CompositeValues(
                               a_string: Option[String] = None,

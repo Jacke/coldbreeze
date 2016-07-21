@@ -19,7 +19,7 @@ import models.DAO._
 import models.DAO.sessions._
 import builders._
 import main.scala.bprocesses.BPSession
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 
 class ReactionRefsF(tag: Tag) extends Table[UnitReaction](tag, "reactions") {
   def id          = column[Int]("id", O.PrimaryKey, O.AutoInc)
@@ -92,6 +92,15 @@ object ReactionDAOF {
 
   private def filterQuery(id: Int): Query[ReactionRefsF, UnitReaction, Seq] =
     reactions.filter(_.id === id)
+
+  private def filterQueryByProcess(id: Int): Query[ReactionRefsF, UnitReaction, Seq] =
+    reactions.filter(_.bprocess === id)
+  private def filterQueryByProcesses(ids: Seq[Int]): Query[ReactionRefsF, UnitReaction, Seq] =
+    reactions.filter(_.bprocess inSetBind ids)    
+
+
+  def findByProcess(id: Int) = db.run(filterQueryByProcess(id).result)
+  def findByProcesses(ids: Seq[Int]) = db.run(filterQueryByProcesses(ids).result)    
 
   def pull(s: UnitReaction):Future[Int] = db.run(reactions returning reactions.map(_.id) += s)
 

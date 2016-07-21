@@ -13,7 +13,7 @@ import main.scala.simple_parts.process.resource.ResAct
 import scala.util.Try
 import main.scala.utils.InputParamProc
 import scala.collection.mutable.ListBuffer  
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 import us.ority.min.actions._
 
 class BProcess(scope: Scope, 
@@ -204,6 +204,10 @@ class BProcess(scope: Scope,
 /**
  * Push elements to process
  */
+
+  def addElementUpFront(target: ProcElems) = {
+    variety = variety :+ target
+  }
 
   def pushit(target: Array[ProcElems]) = {
     variety = variety ++ target

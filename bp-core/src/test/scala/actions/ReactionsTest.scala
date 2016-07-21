@@ -10,7 +10,7 @@ import main.scala.simple_parts.process.data._
 import main.scala.utils._
 import main.scala.resources.scopes._
 import us.ority.min.actions._
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 
 import main.scala.bprocesses.links._
 
@@ -88,18 +88,7 @@ import org.slf4j.LoggerFactory
         "They added?" in {
           middleware.strategies.length > 0
         }
-        "Execute all strategies" in {
 
-          val resultmiddleware = middleware.executeStrategy()
-          resultmiddleware.isDefined
-          resultmiddleware.get.executed == true && resultmiddleware.get.resultedStrategy == "DurationStrategy"
-          val resultmiddleware1 = middleware1.executeStrategy()
-          resultmiddleware1.isDefined
-          resultmiddleware1.get.executed == true && resultmiddleware1.get.resultedStrategy == "ScheduleStrategy"
-          val resultmiddleware2 = middleware2.executeStrategy()
-          resultmiddleware2.isDefined
-          resultmiddleware2.get.executed == true && resultmiddleware2.get.resultedStrategy == "NullStrategy"
-        }
 
 
         "Add reaction" in {

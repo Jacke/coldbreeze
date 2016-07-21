@@ -5,8 +5,8 @@ import main.scala.bprocesses.refs._
 import main.scala.bprocesses._
 import models.DAO._
 import models.DAO.reflect._
-import main.scala.bprocesses.refs.UnitRefs._
-import main.scala.simple_parts.process.Units._
+import main.scala.bprocesses.refs._
+import main.scala.simple_parts.process._
 /**
  * Any kind of
  * process elements

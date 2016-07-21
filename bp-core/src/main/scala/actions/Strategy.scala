@@ -3,7 +3,7 @@ import main.scala.bprocesses._
 import main.scala.utils._
 import com.github.nscala_time.time.Imports._
 import scala.collection.mutable._
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 
 case class Strategy(val id: Option[Long],
 										ident: String,
@@ -60,19 +60,11 @@ case class LaunchStrategy(val id: Option[Long],
 
 
 case class StrategyArgument(argInt: Int = 0, argLong:Long = 0L, argString: String = "", argKey: String="")
-
-case class StrategyResult(
-	resultedStrategy: String,
-	executed: Boolean = false,
-	exec_time:org.joda.time.DateTime = org.joda.time.DateTime.now
-
-)
-
 case class StrategyIn()
-
 case class StrategyOut(completed: Boolean = false) {
 	val status = new StrategyStatus()
 }
+
 case class StrategyStatus() {
 	def makeStatus():Boolean = true
 	def getStatus():String =

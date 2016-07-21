@@ -1,8 +1,8 @@
 package models.DAO.projections.ref
 
 import main.scala.bprocesses.refs.BPStateRef
-import main.scala.bprocesses.refs.UnitRefs.{UnitReactionStateOutRef, UnitSwitcherRef, UnitReactionRef, UnitSpaceRef}
-import main.scala.simple_parts.process.Units.UnitElement
+import main.scala.bprocesses.refs._
+import main.scala.simple_parts.process._
 import models.DAO._
 import models.DAO.reflect._
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -10,8 +10,8 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 import scala.util.Try
 import us.ority.min.actions._
-import main.scala.bprocesses.refs.UnitRefs._
-import main.scala.simple_parts.process.Units._
+import main.scala.bprocesses.refs._
+import main.scala.simple_parts.process._
 
 
 

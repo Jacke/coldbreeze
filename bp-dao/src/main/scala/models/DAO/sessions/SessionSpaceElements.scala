@@ -12,7 +12,7 @@ import main.scala.simple_parts.process.data.{Confirm, Note, Constant}
 import main.scala.simple_parts.process.Block
 import main.scala.simple_parts.process.ContainerBrick
 import main.scala.utils.Space
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 
 class SessionSpaceElements(tag: Tag) extends Table[SessionSpaceElementDTO](tag, "session_space_elements") {
   def id        = column[Int]("id", O.PrimaryKey, O.AutoInc) // This is the primary key column

@@ -4,8 +4,8 @@ import com.github.nscala_time.time.Imports._
 import com.github.tototoshi.slick.PostgresJodaSupport._
 import models.DAO.conversion.DatabaseCred
 import slick.model.ForeignKeyAction
-import main.scala.simple_parts.process.Units._
-import main.scala.bprocesses.refs.UnitRefs._
+import main.scala.simple_parts.process._
+import main.scala.bprocesses.refs._
 
 class SessionSpaces(tag: Tag) extends Table[SessionSpaceDTO](tag, "session_spaces") {
   def id        = column[Int]("id", O.PrimaryKey, O.AutoInc)

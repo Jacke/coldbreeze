@@ -4,7 +4,7 @@ import main.scala.bprocesses.InvokeTracer
 import main.scala.bprocesses.links._
 import main.scala.simple_parts.process.Brick
 import main.scala.bprocesses._
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 import scala.collection.mutable.ListBuffer  
 
 class Space(val index: Int, val brick_owner: Brick, val id: Option[Int] = None) {

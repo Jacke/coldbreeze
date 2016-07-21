@@ -12,7 +12,7 @@ import slick.model.ForeignKeyAction
 import models.DAO._
 import models.DAO.sessions._
 import models.DAO.conversion.DatabaseCred
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 
 case class SessionEitherTypeElement(front: Option[SessionUndefElement] = None,
                                     nested: Option[SessionSpaceElementDTO] = None,

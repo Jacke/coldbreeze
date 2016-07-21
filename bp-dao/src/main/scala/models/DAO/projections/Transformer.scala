@@ -1,7 +1,7 @@
 package models.DAO.projections
 
-import main.scala.bprocesses.refs.UnitRefs.{UnitReactionRef, UnitSpaceElementRef, UnitSpaceRef}
-import main.scala.simple_parts.process.Units.{ElemTopology, UnitElement}
+import main.scala.bprocesses.refs._
+import main.scala.simple_parts.process._
 import models.DAO.reflect._
 import models.DAO._
 

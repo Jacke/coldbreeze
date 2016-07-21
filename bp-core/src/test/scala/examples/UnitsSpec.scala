@@ -8,7 +8,7 @@ import main.scala.simple_parts.process.control._
 import main.scala.simple_parts.process.data._
 import main.scala.utils._
 import main.scala.resources.scopes._
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 import main.scala.bprocesses.links._
 
  class UnitsSpec extends Specification {

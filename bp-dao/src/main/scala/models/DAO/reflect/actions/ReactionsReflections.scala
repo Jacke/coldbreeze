@@ -10,8 +10,8 @@ import models.DAO.ProcElemDAO._
 import models.DAO.BPDAO._
 import models.DAO.BPStationDAO._
 import models.DAO.conversion.DatabaseCred
-import main.scala.simple_parts.process.Units._
-import main.scala.bprocesses.refs.UnitRefs.{UnitReactionRef, UnitReactionStateOutRef}
+import main.scala.simple_parts.process._
+import main.scala.bprocesses.refs._
 
 class ReactionRefs(tag: Tag) extends Table[UnitReactionRef](tag, "reaction_refs") {
   def id          = column[Int]("id", O.PrimaryKey, O.AutoInc)
@@ -60,6 +60,13 @@ object ReactionRefDAOF {
     reaction_refs.filter(_.id inSetBind ids)
   private def filterByReflection(reflection: Int): Query[ReactionRefs, UnitReactionRef, Seq] =
     reaction_refs.filter(_.reflection === reflection)
+  private def filterById(id: Int): Query[ReactionRefs, UnitReactionRef, Seq] =
+    reaction_refs.filter(_.id === id)
+
+
+  def findById(id: Int):Future[Option[UnitReactionRef]] = {
+    db.run(filterById(id).result.headOption)
+  }
 
   def findByRef(reflection: Int):Future[Seq[UnitReactionRef]] = {
     db.run(filterByReflection(reflection).result)

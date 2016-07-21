@@ -18,13 +18,13 @@ import models.DAO._
 import models.DAO.sessions._
 import builders._
 import main.scala.bprocesses.BPSession
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 import main.scala.simple_parts.process.{Block, ProcElems}
 import main.scala.simple_parts.process.data.{Confirm, Note, Constant}
 import main.scala.simple_parts.process.Block
 import main.scala.simple_parts.process.ContainerBrick
 import main.scala.utils.Space
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 
 class SpaceElements(tag: Tag) extends Table[SpaceElementDTO](tag, "space_elements") {
   def id        = column[Int]("id", O.PrimaryKey, O.AutoInc) // This is the primary key column
@@ -164,7 +164,7 @@ updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)) {
  */
 object SpaceElemDCO {
 
-  def conv(el: main.scala.bprocesses.refs.UnitRefs.UnitSpaceElementRef, business: Int, process: Int, space_own:Option[Int], space_owned: Int): UnitSpaceElement = {
+  def conv(el: main.scala.bprocesses.refs.UnitSpaceElementRef, business: Int, process: Int, space_own:Option[Int], space_owned: Int): UnitSpaceElement = {
     UnitSpaceElement(
 None,
                         el.title,
@@ -181,7 +181,7 @@ None,
                         el.updated_at
                         )
   }
-  def conv2(el: main.scala.bprocesses.refs.UnitRefs.UnitSpaceElementRef, business: Int, process: Int, space_own:Option[Int], space_owned: Int): SpaceElementDTO = {
+  def conv2(el: main.scala.bprocesses.refs.UnitSpaceElementRef, business: Int, process: Int, space_own:Option[Int], space_owned: Int): SpaceElementDTO = {
     SpaceElementDTO(
 None,
                         el.title,

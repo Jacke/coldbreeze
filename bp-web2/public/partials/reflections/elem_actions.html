@@ -37,7 +37,7 @@
               <div class="ref-action-strategy" ng-repeat="strategy in refObj.strategies | filter:byMiddleware(middleware)">
                 <h5 class="strategy-title">{{ strategy.title }}::{{ strategy.ident }}</h5>
               <a ng-click="removeStrategy(strategy)" class="ref-obj-delete-button">Delete strategy</a>
-                
+                <a ng-click="textExec(action, middleware, strategy)">Test action</a>
                 <div class="ref-action-strategy-pipes">
                   <div class="ref-action-inputs">
 

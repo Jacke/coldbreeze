@@ -12,11 +12,11 @@ import main.scala.simple_parts.process.data._
 import main.scala.utils._
 import main.scala.resources.scopes._
 import us.ority.min.actions._
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 
 import main.scala.bprocesses.links._
 import models.DAO.reflect._
-import main.scala.bprocesses.refs.UnitRefs._
+import main.scala.bprocesses.refs._
 import main.scala.bprocesses.refs._
 
 import com.typesafe.scalalogging.Logger

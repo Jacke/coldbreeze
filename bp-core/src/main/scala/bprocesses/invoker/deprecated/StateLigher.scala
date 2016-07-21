@@ -5,7 +5,7 @@ import main.scala.simple_parts.process._
 import main.scala.utils.Space
 import org.slf4j.LoggerFactory
 import main.scala.bprocesses._
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 /****
  *** Rude State Machine
  *** © Stanislav iamjacke@gmail.com 2014-2015

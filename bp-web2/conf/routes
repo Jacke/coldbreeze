@@ -329,7 +329,11 @@ GET      /data/acts_table       @controllers.DataIndicatorController.actsTable()
 # Acts
 GET   /acts      @controllers.ActionController.acts()
 
-
+# Test action
+GET /actions/refs         @controllers.ActionController.actionsRefs()
+GET /actions/processes    @controllers.ActionController.actionsProcesses()
+POST /action/ref/:reaction/test @controllers.ActionController.testActionRef(reaction: Int)
+POST /action/process/:reaction/test @controllers.ActionController.testActionProcess(reaction: Int)
 
 #################
 # Cost module

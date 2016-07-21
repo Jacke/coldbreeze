@@ -4,7 +4,8 @@ import main.scala.bprocesses._
 import main.scala.utils._
 import com.github.nscala_time.time.Imports._
 import scala.collection.mutable._
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
+import us.ority.min.actions.middlewares._
 
 case class Middleware(
 		id: Option[Long],
@@ -13,65 +14,8 @@ case class Middleware(
 		ifaceIdent: String,
 		reaction: Int = -1,
 		created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
-        updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
+    updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
 	) {
-
-
-	var strategies:MutableList[Strategy] = MutableList()
-	val nullStrategy = new NullStrategy()
-
-	def pushToStrategies(s: Strategy) = {
-	  strategies += s
-	}
-	/**** 
-	 * Primary strategy execution
-	 */
-
-	def executeStrategy(parts: ActionParts,
-						stateInputs:List[UnitReactionStateIn] = List(),
-						dataInputs: List[UnitReactionDataIn] = List()):Option[StrategyResult] = {
-		ident match {
-			case "Delaying" => {
-				strategies match {
-					case MutableList(head, _*) => Some( 
-						  DelayMiddleware.execute(parts, head, StrategyArgument()) 
-						)
-					case _ if strategies.length < 1 => Some( 
-						  DelayMiddleware.execute(parts, 
-						  						  nullStrategy.asStrategy, 
-						  						  StrategyArgument()) 
-						)
-				}
-			}
-			case "RestMiddleware" => {
-				strategies match {
-					case MutableList(head, _*) => Some( 
-						  RESTMiddleware.execute(parts, head) 
-						)
-					case _ if strategies.length < 1 => Some( 
-						  RESTMiddleware.execute(parts, 
-						  						  nullStrategy.asStrategy)
-						)
-				}				
-			}
-			case _ => None
-		}
-	}
-
-
-}
-
-case class LaunchMiddleware(
-		id: Option[Long],
-		session: Int,
-		title: String,
-		ident: String,
-		ifaceIdent: String,
-		reaction: Int = -1,
-		created_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now),
-	    updated_at:Option[org.joda.time.DateTime] = Some(org.joda.time.DateTime.now)
-	) {
-
 
 	var strategies:MutableList[Strategy] = MutableList()
 	val nullStrategy = new NullStrategy()
@@ -80,24 +24,20 @@ case class LaunchMiddleware(
 	  strategies += s
 	}
 
+  /** 
+    * Exec by strategy 
+    * @param parts Action components with process
+    * @param stateInputs
+    * @param dataInputs
+    * @return strategyResult
+    */
 	def executeStrategy(parts: ActionParts,
 						stateInputs:List[UnitReactionStateIn] = List(),
 						dataInputs: List[UnitReactionDataIn] = List()):Option[StrategyResult] = {
-		ident match {
-			case "delay" => {
-				strategies match {
-					case MutableList(head, _*) => Some( DelayMiddleware.execute(parts, head, StrategyArgument()) )
-					case _ if strategies.length < 1 => Some( DelayMiddleware.execute(parts, nullStrategy.asStrategy, StrategyArgument()) )
-				}
-
-			}
-			case _ => None
-		}
+    MiddlewareLinker(parts, this, stateInputs, dataInputs)
 	}
 
-
 }
-
 
 
 

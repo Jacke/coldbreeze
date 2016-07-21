@@ -3,7 +3,7 @@ package main.scala.bprocesses
 import main.scala.bprocesses._
 import com.github.nscala_time.time.Imports._
 import scala.collection.mutable.ListBuffer  
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 
 case class SessionElements(s_front_elem_id: Option[Int] = None,
   s_space_id:      Option[Int] = None,

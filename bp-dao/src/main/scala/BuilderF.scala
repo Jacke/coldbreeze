@@ -17,7 +17,7 @@ import main.scala.utils.Space
 import main.scala.utils.{InputParamProc, ReactionActivator}
 import models.DAO.conversion.Implicits.fetch_cv
 import main.scala.bprocesses._
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 import models.DAO.sessions._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
@@ -27,6 +27,17 @@ import com.typesafe.scalalogging.Logger
 import org.slf4j.LoggerFactory
 import us.ority.min.actions._
 import us.ority.min.jobs._
+
+
+
+/*****
+ * By default all elements of process goes from RUN:     plain -> launch -> plain OR
+ *                                              RUNFROM: launch -> plain
+ */
+
+
+
+
 
 object TestBuilder2 extends App {
   println("test")

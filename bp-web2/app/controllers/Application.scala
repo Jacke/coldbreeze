@@ -165,10 +165,10 @@ class Application @Inject() (
 
   def configuration() = Action { implicit request =>
     Ok(Json.toJson(ConfigurationWrapper(
-      main.scala.bprocesses.refs.UnitRefs.SwitcherConfiguration.switcher_options,
-      main.scala.bprocesses.refs.UnitRefs.SwitcherConfiguration.switcher_cmd,
-      main.scala.bprocesses.refs.UnitRefs.SwitcherConfiguration.switcher_target,
-      main.scala.bprocesses.refs.UnitRefs.SwitcherConfiguration.switcher_desc)))
+      main.scala.bprocesses.refs.SwitcherConfiguration.switcher_options,
+      main.scala.bprocesses.refs.SwitcherConfiguration.switcher_cmd,
+      main.scala.bprocesses.refs.SwitcherConfiguration.switcher_target,
+      main.scala.bprocesses.refs.SwitcherConfiguration.switcher_desc)))
   }
 
 

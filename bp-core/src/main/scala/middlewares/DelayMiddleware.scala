@@ -1,16 +1,17 @@
-package us.ority.min.actions
+package us.ority.min.actions.middlewares
 import bprocesses._
 import main.scala.bprocesses._
 import main.scala.utils._
 import com.github.nscala_time.time.Imports._
 import scala.collection.mutable._  
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 
 import main.scala.simple_parts.process._
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 import main.scala.bprocesses._
 import main.scala.utils._
 import us.ority.min.jobs._
+import us.ority.min.actions._
 
 object DelayMiddleware {
 
@@ -38,8 +39,8 @@ object DelayMiddleware {
     	stategyTitle match {
     		case "Duration" => 
     			StrategyArgument(argLong = org.joda.time.DateTime.now().plusSeconds(20).getMillis())
-			case "scheduleDelayStrategy" => 
-				StrategyArgument(argLong = org.joda.time.DateTime.now().plusHours(1).getMillis())
+			  case "scheduleDelayStrategy" => 
+				  StrategyArgument(argLong = org.joda.time.DateTime.now().plusHours(1).getMillis())
     	}
     }
 

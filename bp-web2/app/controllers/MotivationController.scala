@@ -80,7 +80,7 @@ import models.DAO.resources._
 import models.DAO.CompositeValues
 import play.api.Play.current
 import main.scala.bprocesses._
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 import models.DAO.reflect._
 import models.DAO.conversion._
 import cloner.util._
@@ -114,7 +114,7 @@ import play.api.libs.ws._
 import play.api.mvc._
 
 import us.ority.min.actions._
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 
 class MotivationController @Inject() (
   val messagesApi: MessagesApi,

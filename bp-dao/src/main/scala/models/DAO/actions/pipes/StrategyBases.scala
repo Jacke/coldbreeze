@@ -11,8 +11,8 @@ import models.DAO.conversion.DatabaseFuture._
 import com.github.nscala_time.time.Imports._
 import models.DAO.conversion.DatabaseCred.dbConfig.driver.api._
 import com.github.tototoshi.slick.PostgresJodaSupport._
-import main.scala.bprocesses.refs.UnitRefs._
-import main.scala.simple_parts.process.Units._
+import main.scala.bprocesses.refs._
+import main.scala.simple_parts.process._
 
 /*
 val id: Option[Long],

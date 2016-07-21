@@ -8,8 +8,8 @@ import models.DAO.conversion.DatabaseCred
 import main.scala.bprocesses.{BPState, BPSessionState}
 import models.DAO._
 import models.DAO.projections._
-import main.scala.simple_parts.process.Units._
-import main.scala.bprocesses.refs.UnitRefs._
+import main.scala.simple_parts.process._
+import main.scala.bprocesses.refs._
 
 case class BaseContainer(
   base_id: Long,

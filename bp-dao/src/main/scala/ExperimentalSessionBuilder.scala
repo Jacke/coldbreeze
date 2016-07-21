@@ -21,7 +21,7 @@ import main.scala.utils.{InputParamProc, ReactionActivator}
 import models.DAO.conversion.Implicits.fetch_cv
 import models.DAO.sessions._
 import main.scala.bprocesses._
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 import us.ority.min.actions._
 import scala.concurrent.ExecutionContext.Implicits.global
 /******************************************************************************

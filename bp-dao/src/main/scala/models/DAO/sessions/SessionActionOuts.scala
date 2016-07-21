@@ -12,10 +12,10 @@ import models.DAO.ProcElemDAO._
 import models.DAO.BPDAO._
 import models.DAO.BPStationDAO._
 import models.DAO.conversion.DatabaseCred
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 import models.DAO.sessions._
-import main.scala.bprocesses.refs.UnitRefs.{UnitReactionRef, UnitReactionStateOutRef}
-import main.scala.simple_parts.process.Units._
+import main.scala.bprocesses.refs._
+import main.scala.simple_parts.process._
 import main.scala.bprocesses.{BPState, BPSessionState}
 
 class SessionReactionStateOuts(tag: Tag) extends Table[SessionUnitReactionStateOut](tag, "session_reaction_state_outs") {

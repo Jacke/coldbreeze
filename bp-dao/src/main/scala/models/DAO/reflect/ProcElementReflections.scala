@@ -9,8 +9,8 @@ import models.DAO.BPDAO._
 import models.DAO.resources.BusinessDTO._
 import com.github.tminglei.slickpg.composite._
 import models.DAO.conversion.{DatabaseCred, Implicits}
-import main.scala.bprocesses.refs.UnitRefs._
-import main.scala.simple_parts.process.Units._
+import main.scala.bprocesses.refs._
+import main.scala.simple_parts.process._
 import models.DAO._
 
 

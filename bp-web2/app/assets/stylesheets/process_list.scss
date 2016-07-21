@@ -10,13 +10,15 @@ a.redButton {
     color: #8BC34A;
     padding: 4px 11px;
     font-size: 12px;
+    font-family: 'Open Sans', sans-serif;
     text-shadow: none;
     border-color: transparent;
 }
 a.redButton:hover {
-text-decoration: none;
-    background: rgb(139, 195, 74);
+    text-decoration: none;
+    background: linear-gradient(to bottom,#c6e4a3,rgba(145, 232, 67, 0.64));
     color: white;
+    background-size: -50px 109%;
 }
 a.redButton:hover:active {
     background: #406f0a;
@@ -37,13 +39,14 @@ a.redButton:before {
 }
 
 a.redButton:hover:before {
-    background: linear-gradient(to right, rgb(147, 171, 118) 0%, rgb(107, 183, 21) 100%);
+    background: linear-gradient(to right, #bad897 0%, #6bb715 100%);
 }
 
-a.redButton:active:hover:before {
-    background: linear-gradient(to right, rgb(78, 93, 61) 0%, rgb(48, 78, 12) 100%);
+a.redButton:hover:active {
+    background: #406f0a;
+    border-color: rgba(74, 113, 27, 0);
+    box-shadow: 1px 1px 6px rgba(115, 115, 115, 0.4) inset;
 }
-
 
 a#launchProcessButton:focus {
     background: #406f0a;

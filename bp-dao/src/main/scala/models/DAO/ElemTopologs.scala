@@ -5,7 +5,7 @@ import models.DAO.ProcElemDAO._
 import models.DAO.BPDAO._
 import models.DAO.BPStationDAO._
 import models.DAO.conversion.DatabaseCred
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 
 import com.github.tototoshi.slick.PostgresJodaSupport._
 

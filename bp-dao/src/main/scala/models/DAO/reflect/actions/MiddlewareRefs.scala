@@ -11,7 +11,7 @@ import models.DAO.conversion.DatabaseFuture._
 import com.github.nscala_time.time.Imports._
 import models.DAO.conversion.DatabaseCred.dbConfig.driver.api._
 import com.github.tototoshi.slick.PostgresJodaSupport._
-import main.scala.bprocesses.refs.UnitRefs._
+import main.scala.bprocesses.refs._
 
 class MiddlewareRefs(tag: Tag) extends Table[MiddlewareRef](tag, "middleware_refs") {
   def id          = column[Long]("id", O.PrimaryKey, O.AutoInc)
@@ -59,11 +59,16 @@ object MiddlewareRefsDAOF {
 
 
   def getByRef(refId: Int) = db.run(filterByRefQuery(refId).result)
+  def getAllByReaction(id: Int) = db.run(filterQueryReaction(id).result)
+
   def get(id: Long) = db.run(filterQuery(id).result.headOption)
 
 
   private def filterByRefQuery(id: Int): Query[MiddlewareRefs, MiddlewareRef, Seq] =
     middleware_refs.filter(_.reflection === id)
+
+  private def filterQueryReaction(id: Int): Query[MiddlewareRefs, MiddlewareRef, Seq] =
+    middleware_refs.filter(_.reaction === id)
 
   private def filterQuery(id: Long): Query[MiddlewareRefs, MiddlewareRef, Seq] =
     middleware_refs.filter(_.id === id)

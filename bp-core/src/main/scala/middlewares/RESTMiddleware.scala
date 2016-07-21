@@ -1,9 +1,9 @@
-package us.ority.min.actions
+package us.ority.min.actions.middlewares
 import main.scala.bprocesses._
 import main.scala.utils._
 import com.github.nscala_time.time.Imports._
 import scala.collection.mutable._  
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 import play.api.libs.ws._
 import play.api.libs.ws.ning.NingAsyncHttpClientConfigBuilder
 import scala.concurrent.Future
@@ -17,9 +17,9 @@ import main.scala.bprocesses._
 import main.scala.utils._
 import com.github.nscala_time.time.Imports._
 import scala.collection.mutable._  
-import main.scala.simple_parts.process.Units._
 import main.scala.simple_parts.process._
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
+import main.scala.simple_parts.process._
 import main.scala.bprocesses._
 import main.scala.utils._
 import us.ority.min.jobs._
@@ -40,7 +40,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 import scala.collection.mutable._
-
+import us.ority.min.actions._
 
 
 object RESTMiddleware {
@@ -56,6 +56,7 @@ object RESTMiddleware {
     def execute(parts: ActionParts, s: Strategy,
         stateInputs:List[UnitReactionStateIn] = List(), dataInputs: List[UnitReactionDataIn] = List()
         ):StrategyResult = {
+
         parts.process.addAct(ActionAct(
           id = None,
           uid = java.util.UUID.randomUUID.toString,
@@ -64,6 +65,7 @@ object RESTMiddleware {
           Some( org.joda.time.DateTime.now() ),
           Some( org.joda.time.DateTime.now() )
         ))
+      
         println("RESTMiddleware BASE"+ s.strategyBaseUnit.length)
         s.ident match {
             case "GETStrategy" => GETStrategy.execute( retriveDataForDelay(stategyTitle = "GETStrategy", 
@@ -91,7 +93,7 @@ object RESTMiddleware {
     		case "GETStrategy" => 
     			Seq(StrategyArgument(argString = urlBase, argKey="URL") )
 			case "POSTStrategy" => 
-				Seq(StrategyArgument(argString = urlBase, argKey="URL") )
+				  Seq(StrategyArgument(argString = urlBase, argKey="URL") )
     	}
     }
 
@@ -125,13 +127,13 @@ object RESTMiddleware {
             }
             println("API Strategy "+res.body)
 
-			StrategyResult("DurationStrategy", true)
+			StrategyResult("GETStrategy", true)
 		}
 	}
 	object POSTStrategy {
 		def execute(argument: Seq[StrategyArgument], parts: ActionParts):StrategyResult = {
 			println("POSTStrategy executed")
-			StrategyResult("ScheduleStrategy", true)
+			StrategyResult("POSTStrategy", true)
 		}		
 	}
 	object NullStrategy {
@@ -160,7 +162,7 @@ object RESTMiddleware {
         }
       }            
       println("API Strategy "+res.body)
-			StrategyResult("NullStrategy", true)
+			StrategyResult("GETStrategy NullStrategy", true)
 		}
 	}
 

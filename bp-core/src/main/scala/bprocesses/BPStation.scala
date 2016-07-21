@@ -3,7 +3,7 @@ package main.scala.bprocesses
 import main.scala.simple_parts.process._
 import main.scala.utils.Space
 import main.scala.bprocesses._
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 
 class BPStation(val bp: BProcess) {
   /**

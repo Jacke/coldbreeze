@@ -21,7 +21,7 @@ import main.scala.utils.{InputParamProc, ReactionActivator}
 import models.DAO.conversion.Implicits.fetch_cv
 
 import main.scala.bprocesses._
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 
 import service._
 

@@ -38,7 +38,7 @@ import play.api.Play.current
 import main.scala.bprocesses.BPSession
 
 import models.DAO.reflect._
-import main.scala.bprocesses.refs.UnitRefs._
+import main.scala.bprocesses.refs._
 import main.scala.bprocesses.refs.{BPStateRef}
 import models.DAO.conversion._
 

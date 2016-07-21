@@ -43,7 +43,7 @@ import models.DAO.conversion._
 import ProcHistoryDAO._
 import helpers._
 import decorators._
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 import main.scala.bprocesses._
 import builders._
 import minority.utils._

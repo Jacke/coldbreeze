@@ -19,7 +19,7 @@ import models.DAO._
 import models.DAO.sessions._
 import builders._
 import main.scala.bprocesses.BPSession
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 
 class BPStatesF(tag: Tag) extends Table[BPState](tag, "bpstates") {
   def id = column[Int]("id", O.PrimaryKey, O.AutoInc)

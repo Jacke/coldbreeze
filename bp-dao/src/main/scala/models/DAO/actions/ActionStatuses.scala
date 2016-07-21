@@ -20,7 +20,7 @@ import models.DAO._
 import models.DAO.sessions._
 import builders._
 import main.scala.bprocesses.BPSession
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 
 
 class ActionStatuses(tag: Tag) extends Table[ActionStatus](tag, "action_statuses") {

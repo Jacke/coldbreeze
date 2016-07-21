@@ -9,7 +9,7 @@ import com.github.tototoshi.slick.PostgresJodaSupport._
 import models.DAO.BPDAO._
 import models.DAO.resources.BusinessDTO._
 import models.DAO.conversion.{DatabaseCred, Implicits}
-import main.scala.simple_parts.process.Units._
+import main.scala.simple_parts.process._
 
 import main.scala.simple_parts.process.data.{Confirm, Constant}
 
