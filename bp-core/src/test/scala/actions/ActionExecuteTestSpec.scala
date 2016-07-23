@@ -77,15 +77,15 @@ class ActionExecuteTestSpec extends Specification {
     targetType = ""
     ))
 
+  us.ority.min.actions.tester.ActionTester(
+    action,
+    middlewares,
+    strategies,
+    strategyInputs,
+    strategyBases,
+    strategyOutputs
+  ).isDefined
 
-        us.ority.min.actions.tester.ActionTester(
-          action,
-          middlewares,
-          strategies,
-          strategyInputs,
-          strategyBases,
-          strategyOutputs
-        )
-      }
+  }
 
 }

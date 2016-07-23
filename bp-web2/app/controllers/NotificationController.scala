@@ -53,7 +53,7 @@ import play.api.mvc.{ Action, RequestHeader }
 class NotificationController @Inject() (
   val messagesApi: MessagesApi,
   val env: Environment[User2, CookieAuthenticator],
-  socialProviderRegistry: SocialProviderRegistry)
+  socialProviderRegistry: SocialProviderRegistry)(implicit val mat: akka.stream.Materializer) 
   extends Silhouette[User2, CookieAuthenticator] {
     implicit val sumFormat                    = Json.format[SumActor.Sum]
     implicit val sumFrameFormatter            = FrameFormatter.jsonFrame[SumActor.Sum]

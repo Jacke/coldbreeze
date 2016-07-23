@@ -11,10 +11,11 @@ object MiddlewareLinker {
   def apply(parts: ActionParts,
             middleware: Middleware,
             stateInputs:List[UnitReactionStateIn] = List(),
-            dataInputs: List[UnitReactionDataIn] = List()):Option[StrategyResult] = {
+            dataInputs: List[UnitReactionDataIn] = List()):Option[ActionAct] = {
 
     middleware.ident match {
       case "Delaying" => {
+        pushAct(parts)
         middleware.strategies match {
           case MutableList(head, _*) => Some( 
               DelayMiddleware.execute(parts, head, StrategyArgument()) 
@@ -27,6 +28,7 @@ object MiddlewareLinker {
         }
       }
       case "RestMiddleware" => {
+        pushAct(parts)
         middleware.strategies match {
           case MutableList(head, _*) => Some( 
               RESTMiddleware.execute(parts, head) 
@@ -39,6 +41,15 @@ object MiddlewareLinker {
       }
       case _ => None
     }    
-
   }
+
+  def pushAct(parts: ActionParts) = 
+        parts.process.addAct(ActionAct(
+          id = None,
+          uid = java.util.UUID.randomUUID.toString,
+          session = parts.process.session_id,
+          reaction = parts.action.id.getOrElse(-1),
+          Some( org.joda.time.DateTime.now() ),
+          Some( org.joda.time.DateTime.now() )
+        ))
 }

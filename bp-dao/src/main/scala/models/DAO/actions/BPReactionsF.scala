@@ -98,6 +98,7 @@ object ReactionDAOF {
   private def filterQueryByProcesses(ids: Seq[Int]): Query[ReactionRefsF, UnitReaction, Seq] =
     reactions.filter(_.bprocess inSetBind ids)    
 
+  def findById(id: Int) = db.run(filterQuery(id).result.headOption)
 
   def findByProcess(id: Int) = db.run(filterQueryByProcess(id).result)
   def findByProcesses(ids: Seq[Int]) = db.run(filterQueryByProcesses(ids).result)    

@@ -18,7 +18,7 @@ import play.api.mvc.WithFilters
 
 import java.lang.reflect.Constructor
 
-object AccessLoggingFilter extends Filter {
+class AccessLoggingFilter(implicit val mat: akka.stream.Materializer) extends Filter {
   def apply(next: (RequestHeader) => Future[Result])(request: RequestHeader): Future[Result] = {
     val result = next(request)
     val msg = s"method=${request.method} uri=${request.uri} remote-address=${request.remoteAddress} " +
@@ -39,7 +39,7 @@ object Global extends play.api.GlobalSettings {
 
 
 
-case class AccessLog() extends Filter {
+case class AccessLog()(implicit val mat: akka.stream.Materializer)  extends Filter {
 
   def apply(f: (RequestHeader) => Future[Result])(request: RequestHeader): Future[Result] = {
     val msg = s"method=${request.method} uri=${request.uri} remote-address=${request.remoteAddress} " +

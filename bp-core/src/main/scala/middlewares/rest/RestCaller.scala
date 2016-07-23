@@ -33,15 +33,64 @@ import play.api.libs.json._
 import play.api.Play.current
 import scala.util.{Success, Failure}
 import scala.util.Try
-import play.api.libs.ws._
-import play.api.libs.ws.ning._
-import com.ning.http.client._
+
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 import scala.collection.mutable._
+import us.ority.min.actions._
+
+object GETStrategy {
+  val DEFAULT_URL = "https://api.ipify.org?format=json"
+
+import play.api.libs.ws.ahc.AhcWSClient
+import akka.stream.ActorMaterializer
+import akka.actor.ActorSystem
+
+implicit val system = ActorSystem()
+implicit val materializer = ActorMaterializer()
+val client = AhcWSClient()
 
 
-class RestCaller {
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
 
-}
+
+    def execute(argument: StrategyArguments, 
+                parts: ActionParts):ActionAct = {
+      println("GETStrategy Strategy executed")
+      val url:String = argument.takeArg("URL", StrategyArgument(argString=DEFAULT_URL)).argString
+
+      val res = await( client.url(url).withHeaders("Content-Type" -> "application/xml").get() )
+      parts.process.getActs(parts.action.id.get).headOption match {
+        case Some(act) => {
+          val status = ActionStatus(id = None,
+                      content = "Request called",
+                      act = 0L,
+                      Some( org.joda.time.DateTime.now() ),
+                      Some( org.joda.time.DateTime.now() ) )
+          val actResult = ActionResult(
+                      id = None,
+                      in = false,
+                      out = true,
+                      base = false,
+                      content = res.body,
+                      act = 0L,
+                      Some( org.joda.time.DateTime.now() ),
+                      Some( org.joda.time.DateTime.now() ))                
+          act.makeStatus(status)
+          act.makeResult(actResult)
+        }
+        act
+      }
+    }
+  }
+
+  object POSTStrategy {
+    def execute(argument: StrategyArguments, 
+                parts: ActionParts):ActionAct = {
+      println("POSTStrategy executed")
+      parts.process.getActs(parts.action.id.get).head
+    }   
+  }

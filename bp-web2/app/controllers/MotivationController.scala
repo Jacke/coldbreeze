@@ -120,7 +120,7 @@ class MotivationController @Inject() (
   val messagesApi: MessagesApi,
   val motivationEl: MotivationElement,
   val env: Environment[User2, CookieAuthenticator],
-  socialProviderRegistry: SocialProviderRegistry)
+  socialProviderRegistry: SocialProviderRegistry)(implicit val mat: akka.stream.Materializer) 
   extends Silhouette[User2, CookieAuthenticator] {
   import Formatters._
 

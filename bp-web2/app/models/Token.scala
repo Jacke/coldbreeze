@@ -1,7 +1,7 @@
 package models
 
-import play.api.db._
-import play.api.Play.current
+//import play.api.db._
+//import play.api.Play.current
 
 import anorm._
 import anorm.SqlParser._
@@ -11,6 +11,7 @@ import java.util.Date
 case class Token(token: String, email: String, action: String, created: Date)
 
 object Token {
+  /*
   val simple = {
     get[String]("token.token") ~
     get[String]("token.email") ~
@@ -46,5 +47,6 @@ object Token {
   def all(): List[Token] = DB.withConnection { implicit c =>
     SQL("select * from token").as(simple *)
   }
+  */
 }
 

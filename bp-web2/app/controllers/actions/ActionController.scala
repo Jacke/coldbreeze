@@ -69,9 +69,18 @@ import models.DAO.conversion._
 import play.api.mvc.{ Action, RequestHeader }
 
 case class ActionActContainer(
-act: ActionAct,
-statuses: Seq[ActionStatus],
-results: Seq[ActionResult]
+  act: ActionAct,
+  statuses: Seq[ActionStatus],
+  results: Seq[ActionResult]
+)
+
+
+case class TestActionPayload(
+  middleware: Middleware,
+  strategy: Option[Strategy],
+  strategy_bases: Seq[StrategyBaseUnit],
+  strategy_inputs: Seq[StrategyInputUnit],
+  strategy_outputs: Seq[StrategyOutputUnit]
 )
 
 class ActionController @Inject() (
@@ -80,19 +89,16 @@ class ActionController @Inject() (
   socialProviderRegistry: SocialProviderRegistry)
   extends Silhouette[User2, CookieAuthenticator] {
 
-
-implicit val SessionElementsReads = Json.reads[SessionElements]
-implicit val SessionElementsWrites = Json.format[SessionElements]
-implicit val BPSessionStateReads = Json.reads[BPSessionState]
-implicit val BPSessionStateWrites = Json.format[BPSessionState]
-implicit val LaunchStateObjectsReads = Json.reads[LaunchStateObjects]
-implicit val LaunchStateObjectsWrites = Json.format[LaunchStateObjects]
-
-implicit val InputLoggerReads = Json.reads[InputLogger]
-implicit val InputLoggerWrites = Json.format[InputLogger]
-implicit val SessionStateLogReads  = Json.reads[SessionStateLog]
-implicit val SessionStateLogWrites  = Json.format[SessionStateLog]
-
+  implicit val SessionElementsReads = Json.reads[SessionElements]
+  implicit val SessionElementsWrites = Json.format[SessionElements]
+  implicit val BPSessionStateReads = Json.reads[BPSessionState]
+  implicit val BPSessionStateWrites = Json.format[BPSessionState]
+  implicit val LaunchStateObjectsReads = Json.reads[LaunchStateObjects]
+  implicit val LaunchStateObjectsWrites = Json.format[LaunchStateObjects]
+  implicit val InputLoggerReads = Json.reads[InputLogger]
+  implicit val InputLoggerWrites = Json.format[InputLogger]
+  implicit val SessionStateLogReads  = Json.reads[SessionStateLog]
+  implicit val SessionStateLogWrites  = Json.format[SessionStateLog]
   implicit val CompositeVReads = Json.reads[CompositeValues]
   implicit val CompositeVWrites = Json.format[CompositeValues]
   implicit val logReads = Json.reads[BPLoggerDTO]
@@ -121,66 +127,50 @@ implicit val SessionStateLogWrites  = Json.format[SessionStateLog]
   implicit val SessionStatusWrites = Json.format[SessionStatus]
   implicit val SessionContainerReads = Json.reads[SessionContainer]
   implicit val SessionContainerWrites = Json.format[SessionContainer]
-
-
-implicit val ActionActReads = Json.reads[ActionAct]
-implicit val ActionActWrites = Json.format[ActionAct]
-implicit val ActionStatusReads = Json.reads[ActionStatus]
-implicit val ActionStatusWrites = Json.format[ActionStatus]
-implicit val ActionResultReads = Json.reads[ActionResult]
-implicit val ActionResultWrites = Json.format[ActionResult]
-implicit val ActionActContainerReads = Json.reads[ActionActContainer]
-implicit val ActionActContainerWrites = Json.format[ActionActContainer]
-
-
-
-implicit val RefReads = Json.reads[Ref]
-implicit val RefWrites = Json.format[Ref]
-implicit val UnitElementRefReads = Json.reads[UnitElementRef]
-implicit val UnitElementRefWrites = Json.format[UnitElementRef]
-implicit val UnitSpaceRefReads = Json.reads[UnitSpaceRef]
-implicit val UnitSpaceRefWrites = Json.format[UnitSpaceRef]
-implicit val UnitSpaceElementRefReads = Json.reads[UnitSpaceElementRef]
-implicit val UnitSpaceElementRefWrites = Json.format[UnitSpaceElementRef]
-implicit val BPStateRefReads = Json.reads[BPStateRef]
-implicit val BPStateRefWrites = Json.format[BPStateRef]
-implicit val UnitSwitcherRefReads = Json.reads[UnitSwitcherRef]
-implicit val UnitSwitcherRefWrites = Json.format[UnitSwitcherRef]
-implicit val RefElemTopologyReads = Json.reads[RefElemTopology]
-implicit val RefElemTopologyWrites = Json.format[RefElemTopology]
-
-implicit val UnitReactionRefReads = Json.reads[UnitReactionRef]
-implicit val UnitReactionRefWrites = Json.format[UnitReactionRef]
-implicit val UnitReactionStateOutRefReads = Json.reads[UnitReactionStateOutRef]
-implicit val UnitReactionStateOutRefWrites = Json.format[UnitReactionStateOutRef]
-
-implicit val MiddlewareRefReads = Json.reads[MiddlewareRef]
-implicit val StrategyRefReads = Json.reads[StrategyRef]
-implicit val StrategyInputRefReads = Json.reads[StrategyInputRef]
-implicit val StrategyBaseRefReads = Json.reads[StrategyBaseRef]
-implicit val StrategyOutputRefReads = Json.reads[StrategyOutputRef]
-
-implicit val MiddlewareRefWrites = Json.format[MiddlewareRef]
-implicit val StrategyRefWrites = Json.format[StrategyRef]
-implicit val StrategyInputRefWrites = Json.format[StrategyInputRef]
-implicit val StrategyBaseRefWrites = Json.format[StrategyBaseRef]
-implicit val StrategyOutputRefWrites = Json.format[StrategyOutputRef]
-
-
-
-implicit val ReactionContainerReads = Json.reads[ReactionContainer]
-implicit val ReactionContainerWrites = Json.format[ReactionContainer]
-
-implicit val RefContainerReads = Json.reads[RefContainer]
-implicit val RefContainerWrites = Json.format[RefContainer]
-
-
+  implicit val ActionActReads = Json.reads[ActionAct]
+  implicit val ActionActWrites = Json.format[ActionAct]
+  implicit val ActionStatusReads = Json.reads[ActionStatus]
+  implicit val ActionStatusWrites = Json.format[ActionStatus]
+  implicit val ActionResultReads = Json.reads[ActionResult]
+  implicit val ActionResultWrites = Json.format[ActionResult]
+  implicit val ActionActContainerReads = Json.reads[ActionActContainer]
+  implicit val ActionActContainerWrites = Json.format[ActionActContainer]
+  implicit val RefReads = Json.reads[Ref]
+  implicit val RefWrites = Json.format[Ref]
+  implicit val UnitElementRefReads = Json.reads[UnitElementRef]
+  implicit val UnitElementRefWrites = Json.format[UnitElementRef]
+  implicit val UnitSpaceRefReads = Json.reads[UnitSpaceRef]
+  implicit val UnitSpaceRefWrites = Json.format[UnitSpaceRef]
+  implicit val UnitSpaceElementRefReads = Json.reads[UnitSpaceElementRef]
+  implicit val UnitSpaceElementRefWrites = Json.format[UnitSpaceElementRef]
+  implicit val BPStateRefReads = Json.reads[BPStateRef]
+  implicit val BPStateRefWrites = Json.format[BPStateRef]
+  implicit val UnitSwitcherRefReads = Json.reads[UnitSwitcherRef]
+  implicit val UnitSwitcherRefWrites = Json.format[UnitSwitcherRef]
+  implicit val RefElemTopologyReads = Json.reads[RefElemTopology]
+  implicit val RefElemTopologyWrites = Json.format[RefElemTopology]
+  implicit val UnitReactionRefReads = Json.reads[UnitReactionRef]
+  implicit val UnitReactionRefWrites = Json.format[UnitReactionRef]
+  implicit val UnitReactionStateOutRefReads = Json.reads[UnitReactionStateOutRef]
+  implicit val UnitReactionStateOutRefWrites = Json.format[UnitReactionStateOutRef]
+  implicit val MiddlewareRefReads = Json.reads[MiddlewareRef]
+  implicit val StrategyRefReads = Json.reads[StrategyRef]
+  implicit val StrategyInputRefReads = Json.reads[StrategyInputRef]
+  implicit val StrategyBaseRefReads = Json.reads[StrategyBaseRef]
+  implicit val StrategyOutputRefReads = Json.reads[StrategyOutputRef]
+  implicit val MiddlewareRefWrites = Json.format[MiddlewareRef]
+  implicit val StrategyRefWrites = Json.format[StrategyRef]
+  implicit val StrategyInputRefWrites = Json.format[StrategyInputRef]
+  implicit val StrategyBaseRefWrites = Json.format[StrategyBaseRef]
+  implicit val StrategyOutputRefWrites = Json.format[StrategyOutputRef]
+  implicit val ReactionContainerReads = Json.reads[ReactionContainer]
+  implicit val ReactionContainerWrites = Json.format[ReactionContainer]
+  implicit val RefContainerReads = Json.reads[RefContainer]
+  implicit val RefContainerWrites = Json.format[RefContainer]
   implicit val UnitReactionReads = Json.reads[UnitReaction]
   implicit val UnitReactionWrites = Json.format[UnitReaction]
   implicit val UnitReactionStateOutReads = Json.reads[UnitReactionStateOut]
   implicit val UnitReactionStateOutWrites = Json.format[UnitReactionStateOut]
-
-
   implicit val rMiddlewareReads = Json.reads[Middleware]
   implicit val rStrategyReads = Json.reads[Strategy]
   implicit val rStrategyBaseUnitReads = Json.reads[StrategyBaseUnit]
@@ -191,12 +181,11 @@ implicit val RefContainerWrites = Json.format[RefContainer]
   implicit val wStrategyBaseUnitWrites = Json.format[StrategyBaseUnit]
   implicit val wStrategyInputUnitWrites = Json.format[StrategyInputUnit]
   implicit val wStrategyOutputUnitWrites = Json.format[StrategyOutputUnit]
-
-
-
   implicit val ReactionCollectionReads = Json.reads[ReactionCollection]
   implicit val ReactionCollectionWrites = Json.format[ReactionCollection]
 
+  implicit val TestActionPayloadReads = Json.reads[TestActionPayload]
+  implicit val TestActionPayloadWrites = Json.format[TestActionPayload]
 
 // GET         /acts
 def acts() = SecuredAction.async { implicit request =>
@@ -326,8 +315,93 @@ def testActionRef(reactionId: Int) = SecuredAction.async { implicit request =>
 
 }
 // POST /action/process/:reaction/test
-def testActionProcess(reactionId: Int) = SecuredAction.async { implicit request =>
-	Future.successful(Ok(Json.toJson("ok")))
+def testActionProcess(reactionId: Int) = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+
+  val actionOpt = ReactionDAOF.await(ReactionDAOF.findById(reactionId))
+  actionOpt match {
+    case Some(action) => {
+      val act_ids = List(action.id.get) 
+      applyTestActionPayload(act_ids.head, request) match {
+        case Some(payload) => {
+
+          val middlewares = Seq(payload.middleware)
+          val strategies = Seq(payload.strategy.get)
+          val strategyBases = payload.strategy_bases
+          val strategyInputs = payload.strategy_inputs
+          val strategyOutputs = payload.strategy_outputs
+          println("middlewares length: "+middlewares.length)
+          println("strategies length: "+strategies.length)
+          println("strategyInputs length: "+strategyInputs.length)
+          println("strategyBases length: "+strategyBases.length)
+          println("strategyOutputs length: "+strategyOutputs.length)
+          val result = us.ority.min.actions.tester.ActionTester(
+            action,
+            middlewares,
+            strategies,
+            strategyInputs,
+            strategyBases,
+            strategyOutputs
+          )
+          result match {
+            case Some(r) => Future.successful(Ok(Json.toJson( ActionActContainer(r, 
+                                                                                 r.statuses.toSeq, 
+                                                                                 r.results.toSeq) )))
+            case _ => Future.successful(Ok(Json.toJson(Map("status" -> "action execution is failed"))))
+          }
+        }
+
+        case _ => {
+          val middlewares = MiddlewaresDAOF.await(MiddlewaresDAOF.findByReactions(act_ids) )
+          val mids_ids = middlewares.map(c => c.id.get).toList
+          val strategies = StrategiesDAOF.await(StrategiesDAOF.findByMiddlewares(mids_ids))
+          val strat_ids = strategies.map(c => c.id.get).toList
+          val strategyBases = StrategyBasesDAOF.await( StrategyBasesDAOF.getByStrategies(strat_ids) )
+          val strategyInputs = StrategyInputsDAOF.await( StrategyInputsDAOF.getByStrategies(strat_ids) )
+          val strategyOutputs = StrategyOutputsDAOF.await( StrategyOutputsDAOF.getByStrategies(strat_ids) )
+          println("middlewares length: "+middlewares.length)
+          println("strategies length: "+strategies.length)
+          println("strategyInputs length: "+strategyInputs.length)
+          println("strategyBases length: "+strategyBases.length)
+          println("strategyOutputs length: "+strategyOutputs.length)
+          val result = us.ority.min.actions.tester.ActionTester(
+            action,
+            middlewares,
+            strategies,
+            strategyInputs,
+            strategyBases,
+            strategyOutputs
+          )
+          result match {
+            case Some(r) => Future.successful(Ok(Json.toJson( ActionActContainer(r, 
+                                                                                 r.statuses.toSeq, 
+                                                                                 r.results.toSeq) )))
+            case _ => Future.successful(Ok(Json.toJson(Map("status" -> "action execution is failed"))))
+          }
+          
+        }
+      }
+    }
+    case _ => Future.successful(Ok(Json.toJson(Map("status" -> "action not found"))))
+  }
+}
+
+
+/** 
+  * Construct payload for action test
+  * @param actionId
+  * @param request with payload 
+  * @return payload for action that ready to pass into tester
+  */
+def applyTestActionPayload(actionId: Int, 
+                           request: SecuredRequest[play.api.libs.json.JsValue]):Option[TestActionPayload] = {
+  request.body.validate[TestActionPayload].map{
+      case payload => { 
+        val correctPayload = payload.copy(middleware = payload.middleware.copy(reaction = actionId))
+        Some(correctPayload)
+      }
+    }.recoverTotal{
+      e => None
+    }
 }
 
 }

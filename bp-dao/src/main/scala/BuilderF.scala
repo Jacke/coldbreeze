@@ -687,7 +687,7 @@ val strategiy_outputs:List[StrategyOutputUnit] = sessionStOuts.map(el =>   Exper
         reaction.find(reaction => reaction.id == Some(param.reaction_id)) match {
         case Some(target_reaction) => {
           if (param.target.isDefined && param.target == Some( "delay") ) {
-            val el = bprocesses.ReactionExecutor.retriveElementByAction(process, target_reaction)
+            val el = bprocesses.ActionExecutor.retriveElementByAction(process, target_reaction)
             el.get.session_states.find(s => s.title == "delayed") match {
               case Some(s) => { 
                 println("finded delayed action")
@@ -1210,7 +1210,7 @@ def initiate2F(bpID: Int,
         reaction.find(reaction => reaction.id == Some(param.reaction_id)) match {
         case Some(target_reaction) => {
           if (param.target.isDefined && param.target == Some( "delay") ) {
-            val el = bprocesses.ReactionExecutor.retriveElementByAction(process, target_reaction)
+            val el = bprocesses.ActionExecutor.retriveElementByAction(process, target_reaction)
             el.get.session_states.find(s => s.title == "delayed") match {
               case Some(s) => { 
                 println("finded delayed action")

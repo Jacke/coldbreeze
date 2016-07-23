@@ -33,7 +33,7 @@ case class Middleware(
     */
 	def executeStrategy(parts: ActionParts,
 						stateInputs:List[UnitReactionStateIn] = List(),
-						dataInputs: List[UnitReactionDataIn] = List()):Option[StrategyResult] = {
+						dataInputs: List[UnitReactionDataIn] = List()):Option[ActionAct] = {
     MiddlewareLinker(parts, this, stateInputs, dataInputs)
 	}
 

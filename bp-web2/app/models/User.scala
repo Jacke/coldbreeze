@@ -1,7 +1,5 @@
 package models
 
-import play.api.db._
-import play.api.Play.current
 
 import anorm._
 import anorm.SqlParser._
@@ -9,10 +7,11 @@ import anorm.SqlParser._
 import com.github.t3hnar.bcrypt._
 import java.util.Date
 
-case class User(id: Pk[Long], email: String, name: String, password: String, token: String, token_created: Date)
+case class User(id: Option[Long], email: String, name: String, password: String, token: String, token_created: Date)
 
 
 object User {
+/*
   val simple = {
     get[Pk[Long]]("user.id") ~
     get[String]("user.email") ~
@@ -144,5 +143,6 @@ object User {
       }
     }
   }
+  */
 }
 

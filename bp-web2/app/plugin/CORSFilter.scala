@@ -4,7 +4,7 @@ import controllers.Default
 import play.api.Logger
 import play.api.mvc.{Result, RequestHeader, Filter}
  
-case class CORSFilter() extends Filter{
+case class CORSFilter()(implicit val mat: akka.stream.Materializer) extends Filter{
 import scala.concurrent._
 import ExecutionContext.Implicits.global
 lazy val allowedDomain = play.api.Play.current.configuration.getString("cors.allowed.domain")
@@ -68,6 +68,7 @@ import play.api.libs.iteratee._
  * @param duration Cache duration (in seconds, 0 means eternity)
  * @param action Action to cache
  */
+ /*
 case class Cached2(key: RequestHeader => String, duration: Int)(action: EssentialAction)(implicit app: Application) extends EssentialAction {
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
  
@@ -79,7 +80,7 @@ case class Cached2(key: RequestHeader => String, duration: Int)(action: Essentia
       case _ => throw new Exception("Unexpected body: " + body)
     }
   }
-
+/*
   def apply(request: RequestHeader): Iteratee[Array[Byte], Result] = {
 
     val resultKey = key(request)
@@ -150,7 +151,7 @@ await( Iteratee.flatten(result.body.apply(bodyAsString)).run.map { arrOfBytes =>
       }
     }
   }
-
+*/
 }
 
 object Cached2 {
@@ -187,3 +188,4 @@ object Cached2 {
   }
 
 }
+*/

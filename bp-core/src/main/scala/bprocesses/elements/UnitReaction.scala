@@ -32,7 +32,7 @@ case class UnitReaction(
     * @param elemOpt 
     * @return actionResultOpt
     */
-    def execute(process: BProcess, elemOpt: Option[ProcElems] = None):Option[StrategyResult] = {
+    def execute(process: BProcess, elemOpt: Option[ProcElems] = None):Option[ActionAct] = {
        bprocesses.ActionExecutor.execute(process, this)
        (middlewares.length > 0) match {
          case true => bprocesses.ActionExecutor.executeWithMiddleware(process, elemOpt, this)

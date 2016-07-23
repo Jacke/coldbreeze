@@ -14,20 +14,13 @@ object ActionTester {
     strategyInputs: Seq[StrategyInputUnit]=Seq(),
     strategyBases: Seq[StrategyBaseUnit]=Seq(),
     strategyOutputs: Seq[StrategyOutputUnit]=Seq()
-    ) = {
+    ):Option[ActionAct] = {
   // generate test process
   val testProcess = getProcess()
   // build action with action components
-   val action = UnitReaction(id = Some(0),
-                bprocess = 0,
-                autostart = false,
-                element = 0,
-                from_state = None,
-                title = "testAction")
-
-// Middlewares
-// Delaying::com.minorityapp.core
-// RestMiddleware::RestMiddleware 
+  // Middlewares
+  // Delaying::com.minorityapp.core
+  // RestMiddleware::RestMiddleware 
   val mws = middlewares.filter(t => t.reaction == action.id.get)
   mws.map { middleware =>
     strategies.map { strategy => 
@@ -62,9 +55,10 @@ object ActionTester {
     testProcess.addElementUpFront(el)
 
   // execute action
-    action.execute(testProcess, Some( el ) )
+    val result = action.execute(testProcess, Some( el ) )
   // retrive action result
-    true
+    println(result)
+    result
   }
 
 

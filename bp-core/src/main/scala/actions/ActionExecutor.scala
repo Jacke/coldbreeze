@@ -36,9 +36,10 @@ object ActionExecutor {
   def executeWithMiddleware(
     process: BProcess, 
     elemOpt: Option[ProcElems], 
-    reaction: UnitReaction):Option[StrategyResult] = {
+    reaction: UnitReaction):Option[ActionAct] = {
 
       toApplogger(s"Found ${reaction.middlewares.length} middlewares for ${reaction.title} action")
+      // EXECUTE ONLY HEAD MIDDLEWARE
       val middleware = reaction.middlewares.head
 
       val elem = elemOpt.get // MUST ALLWAYS BE VISIBLE
@@ -55,10 +56,11 @@ object ActionExecutor {
 
        // project middleware and its relatives 
        // invoke them
-       val result:Option[StrategyResult] = 
+       val result:Option[ActionAct] = 
           middleware.executeStrategy( ActionParts(process, elem, reaction) )
 
        println( result )
+       result.map { r => r.results.foreach(result => println(result.content) )}
        result
   }
 

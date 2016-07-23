@@ -25,7 +25,7 @@ object Dependencies {
      Resolver.jcenterRepo
   )
 
-  val akkaVersion     = "2.4.6"
+  val akkaVersion     = "2.4.8"
   val sprayVersion    = "1.3.1-20140423"
   val javaasist       = "org.javassist" % "javassist" % "3.20.0-GA"
   val heroku          = "com.heroku"                % "sbt-heroku"              % "0.1.4"
@@ -43,7 +43,7 @@ object Dependencies {
   val slick_migrate   = "io.github.nafg"            %% "slick-migration-api"    % "0.1.1"
   val scalikejdbc     = "org.scalikejdbc"           %% "scalikejdbc"                  % "2.2.9"
   val scalikejdbcconf = "org.scalikejdbc"           %% "scalikejdbc-config"           % "2.2.9"
-  //val scalikejdbcplay = "org.scalikejdbc"           %% "scalikejdbc-play-initializer" % "2.4.3"
+  //val scalikejdbcplay = "org.scalikejdbc"           %% "scalikejdbc-play-initializer" % "2.5.4"
   //val slickpgplay     = "com.github.tminglei"       %% "slick-pg_play-json"     % "0.9.0"
   //val slf4j           = "org.slf4j"                 %  "slf4j-nop"              % "1.7.3"
   val slf4j           = "org.slf4j"                 % "slf4j-simple"            % "1.7.12"
@@ -65,6 +65,7 @@ object Dependencies {
   val wcs             = "eu.piotrbuda"              % "scalawebsocket_2.10"     % "0.1.1"
 
 
+  val captcha         = "com.nappin"                %% "play-recaptcha"         % "2.0"
   val azurestorage    = "com.microsoft.azure"       % "azure-storage"           % "4.0.0"
   val rollback        = "com.tapstream"             % "rollbar-logback"         % "0.1.4"
   //val trireme         = "io.apigee.trireme"         % "trireme-core"            % "0.8.5"
@@ -90,11 +91,10 @@ object Dependencies {
 
   val play            = "com.typesafe.play"         % "play_2.11"               % "2.3.10"
   val play2oauth2     = "com.nulab-inc"             %% "play2-oauth2-provider"  % "0.14.0"
-  val play4           = "com.typesafe.play"         %% "play"                   % "2.4.3"
+  val play4           = "com.typesafe.play"         %% "play"                   % "2.5.4"
   val slackapi        = "com.github.gilbertw1"      %% "slack-scala-client"     % "0.1.3"
-  val playslick       = "com.typesafe.play"         %  "play-slick_2.11"        % "1.1.1"
+  val playslick       = "com.typesafe.play"         %  "play-slick_2.11"        % "2.0.0"
   val playauth        = "jp.t2v"                    %% "play2-auth"             % "0.12.0"
-  val formtag         = "com.loicdescotte.coffeebean"% "html5tags_2.11"         % "1.2.1"
   val formtag4        = "com.loicdescotte.coffeebean"% "html5tags_2.11"         % "1.2.2"
 
   val playctrl        = "jp.t2v"                    %% "stackable-controller"   % "0.4.0"
@@ -121,8 +121,8 @@ object Dependencies {
   val securesocialmas = "ws.securesocial"           %% "securesocial"           % "master-SNAPSHOT"
   val jwtCore         = "com.atlassian.jwt"         % "jwt-core"                % "1.2.4"
   val jwtApi          = "com.atlassian.jwt"         % "jwt-api"                 % "1.2.4"
-  val silhouette      = "com.mohiva"                %% "play-silhouette"        % "3.0.0"
-  val silhouettetest  = "com.mohiva"                %% "play-silhouette-testkit"% "3.0.0"   % "test"
+  val silhouette      = "com.mohiva"                %% "play-silhouette"        % "4.0.0"
+  val silhouettetest  = "com.mohiva"                %% "play-silhouette-testkit"% "4.0.0"   % "test"
 
   val amonite         = "com.lihaoyi"               %% "ammonite-repl"          % "0.2.4" % "test"
 
@@ -134,22 +134,22 @@ object Dependencies {
   val mockito         = "org.mockito"               % "mockito-all"             % "1.9.5"
   val mailer          = "com.typesafe"              % "play-plugins-mailer_2.10"% "2.2.0"
 
-  val mailer4         = "com.typesafe.play" %% "play-mailer" % "4.0.0"
+  val mailer4         = "com.typesafe.play"         %% "play-mailer"            % "5.0.0"
 
   val mailerses       = "nl.rhinofly"               %% "play-mailer"            % "3.0.0"
   val apamailer       = "org.apache.commons"        %  "commons-email"          % "1.3.1"
-  val filter          = "com.typesafe.play"         %% "filters-helpers"        % "2.4.6"
-  val filter4         = "com.typesafe.play"         %% "filters-helpers"        % "2.4.6"
-  val cache           = "com.typesafe.play"         %% "play-cache"             % "2.4.6"
-  val cache4           = "com.typesafe.play.modules" %% "play-modules-redis" % "2.4.1"
+  val filter          = "com.typesafe.play"         %% "filters-helpers"        % "2.5.4"
+  val filter4         = "com.typesafe.play"         %% "filters-helpers"        % "2.5.4"
+  val cache           = "com.typesafe.play"         %% "play-cache"             % "2.5.4"
+  val cache4           = "com.typesafe.play.modules" %% "play-modules-redis"    % "2.5.0"
 
   val rediscache      = "com.typesafe.play.plugins" %% "play-plugins-redis"     % "2.3.1"
-  val ptest           = "com.typesafe.play"         %% "play-test"              % "2.4.6"
-  val jdbc4            = "com.typesafe.play"         %% "play-jdbc"              % "2.4.6"
-  val jdbc            = "com.typesafe.play"         %% "play-jdbc"              % "2.4.6"
-  val playjson        = "com.typesafe.play"         %% "play-json"              % "2.4.6"
+  val ptest           = "com.typesafe.play"         %% "play-test"              % "2.5.4"
+  val jdbc4            = "com.typesafe.play"        %% "play-jdbc"              % "2.5.4"
+  val jdbc            = "com.typesafe.play"         %% "play-jdbc"              % "2.5.4"
+  val playjson        = "com.typesafe.play"         %% "play-json"              % "2.5.4"
   val junit           = "com.novocode"              % "junit-interface"         % "0.10" % "test"
-  val anorm           = "com.typesafe.play"         %% "anorm"                  % "2.4.6"
+  val anorm           = "com.typesafe.play"         %% "anorm"                  % "2.5.2"
   val anorm4          =  "com.typesafe.play"        %% "anorm"                  % "2.4.0"
 
 
@@ -172,10 +172,10 @@ object Dependencies {
   val sprayJson       = "io.spray"                  %%  "spray-json"            % "1.2.6"
   val sprayJsonLenses = "net.virtual-void"          %%  "json-lenses"           % "0.5.5-SNAPSHOT"
   val sprayClient     = "io.spray"                  %%  "spray-client"          % sprayVersion
-  val guice           = "net.codingwell"            %% "scala-guice"            % "4.0.0"
-  val ficus           = "net.ceedubs"               %% "ficus" % "1.1.2"
+  val guice           = "net.codingwell"            %%  "scala-guice"           % "4.0.1"
+  val ficus           = "net.ceedubs"               %%  "ficus"                 % "1.1.2"
   val bootstrapplay   = "com.adrianhurt"            %% "play-bootstrap3"     % "0.4.4-P24"
-  val bootstrapplay4  = "com.adrianhurt"            %% "play-bootstrap"      % "1.1-P24-B3-SNAPSHOT"
+  val bootstrapplay4  = "com.adrianhurt"            %% "play-bootstrap"      % "1.1-P25-B3-SNAPSHOT"
   val scalatest0      = "org.scalatest"             %% "scalatest"           % "2.2.6"
   val wiremock        = "com.github.tomakehurst"    % "wiremock"             % "1.33"
   val playsctest      = "org.scalatestplus"         %  "play_2.11"           % "1.4.0"
@@ -186,7 +186,7 @@ object Dependencies {
 
 
 
-  val webserviceclient =   "com.typesafe.play"      %% "play-ws"         % "2.4.6"
+  val webserviceclient =   "com.typesafe.play"      %% "play-ws"         % "2.5.4"
 
 
   val scalaLog        = "com.typesafe.scala-logging"%%  "scala-logging"         % "3.4.0"

@@ -28,7 +28,7 @@ import akka.actor._
 import akka.pattern.ask
 import akka.util.Timeout
 
-case class DelayedRequest(request: WSRequestHolder)
+case class DelayedRequest(request: WSRequest)
 object BBoardInMemoryStorage {
 	var boards:ListBuffer[Board] = ListBuffer.empty
 	var entities:ListBuffer[Entity] = ListBuffer.empty

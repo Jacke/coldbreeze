@@ -15,48 +15,50 @@ import us.ority.min.actions._
 
 object DelayMiddleware {
 
-    def execute(parts: ActionParts, s: Strategy, strategyArgument: StrategyArgument,
-    	stateInputs:List[UnitReactionStateIn] = List(), dataInputs: List[UnitReactionDataIn] = List()
-    	):StrategyResult = {
+  def execute(
+    parts: ActionParts, 
+    s: Strategy, 
+    strategyArgument: StrategyArgument,
+  	stateInputs: List[UnitReactionStateIn] = List(), 
+    dataInputs: List[UnitReactionDataIn] = List() ):ActionAct = {
     	s.ident match {
     		case "Duration" => { 
     			delayRequest(parts, org.joda.time.DateTime.now().plusSeconds(20).getMillis() )
-
     			DurationStrategy.execute( 
-	    			retriveDataForDelay(stategyTitle = "Duration", dataInputs) 
+            parts, retriveDataForDelay(stategyTitle = "Duration", dataInputs) 
 	    		)
     		}
     		case "scheduleDelayStrategy" => ScheduleStrategy.execute( 
-    			retriveDataForDelay(stategyTitle = "scheduleDelayStrategy", dataInputs) )
-    		case _ =>						NullStrategy.execute( StrategyArgument() )
+          parts, retriveDataForDelay(stategyTitle = "scheduleDelayStrategy", dataInputs) )
+    		case _ => NullStrategy.execute(parts, StrategyArgument() )
     	}
-    }
+  }
 
-    def retriveDataForDelay(stategyTitle: String, dataInputs: List[UnitReactionDataIn]):StrategyArgument = {
-    	// Find input duration or schedule
-    	// or
-    	//StrategyArgument(argInt: Int = 0, argLong:Long = 0L, argString: String = "")
-    	stategyTitle match {
-    		case "Duration" => 
-    			StrategyArgument(argLong = org.joda.time.DateTime.now().plusSeconds(20).getMillis())
-			  case "scheduleDelayStrategy" => 
-				  StrategyArgument(argLong = org.joda.time.DateTime.now().plusHours(1).getMillis())
-    	}
-    }
+  def retriveDataForDelay(stategyTitle: String, dataInputs: List[UnitReactionDataIn]):StrategyArgument = {
+  	// Find input duration or schedule
+  	// or
+  	//StrategyArgument(argInt: Int = 0, argLong:Long = 0L, argString: String = "")
+  	stategyTitle match {
+  		case "Duration" => 
+  			StrategyArgument(argLong = org.joda.time.DateTime.now().plusSeconds(20).getMillis())
+		  case "scheduleDelayStrategy" => 
+			  StrategyArgument(argLong = org.joda.time.DateTime.now().plusHours(1).getMillis())
+  	}
+  }
 
 	object DurationStrategy {
-		def execute(argument: StrategyArgument):StrategyResult = {
+		def execute(parts: ActionParts, argument: StrategyArgument):ActionAct = {
 			println("DurationStrategy Strategy executed")
-			StrategyResult("DurationStrategy", true)
+      parts.process.getActs(parts.action.id.get).head
 			// put process in stack
 			// resume after seconds
 			// highlight default delayed state
 		}
 	}
 	object NullStrategy {
-		def execute(argument: StrategyArgument):StrategyResult = {
+		def execute(parts: ActionParts, argument: StrategyArgument):ActionAct = {
 			println("NullStrategy executed")
-			StrategyResult("NullStrategy", true)
+      parts.process.getActs(parts.action.id.get).head
 			// put process in stack
 			// resume after seconds
 			// highlight default delayed state
@@ -66,15 +68,15 @@ object DelayMiddleware {
 
 
 	object ScheduleStrategy {
-		def execute(argument: StrategyArgument):StrategyResult = {
+		def execute(parts: ActionParts, argument: StrategyArgument):ActionAct = {
 			println("ScheduleStrategy executed")
-			StrategyResult("ScheduleStrategy", true)
+      parts.process.getActs(parts.action.id.get).head
 		}		
 	}
 
 
 
-	def delayRequest(parts: ActionParts, time: Long) {
+	def delayRequest(parts: ActionParts, time: Long) = {
 		//delayRequest(
 		//	el, time, fnState: Unit => Unit, fnProcResume: Unit => Unit 
 		//)
@@ -89,9 +91,7 @@ object DelayMiddleware {
                        operations = List(op), 
                        scheduleMilis = Some(time)
 		)
-
 		MinorityJobs.addJob(job)
-
 	}
 
 

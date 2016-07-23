@@ -31,7 +31,7 @@ import models.User2
 import play.api.i18n.MessagesApi
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
-
+import play.api.routing._
 
 class Application @Inject() (
   val messagesApi: MessagesApi,
@@ -51,7 +51,7 @@ class Application @Inject() (
   def jsRoutes(varName: String = "jsRoutes") = //Cached(_ => "jsRoutes", duration = 86400) {
     Action { implicit request =>
       Ok(
-        Routes.javascriptRouter(varName)(
+        JavaScriptReverseRouter(varName)(
           routes.javascript.ApplicationController2.signIn,
             routes.javascript.ProcessElementsController.frontElems,
             routes.javascript.ProcessElementsController.spaces,

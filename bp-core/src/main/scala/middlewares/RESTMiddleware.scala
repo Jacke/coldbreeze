@@ -33,38 +33,37 @@ import play.api.libs.json._
 import play.api.Play.current
 import scala.util.{Success, Failure}
 import scala.util.Try
-import play.api.libs.ws._
-import play.api.libs.ws.ning._
-import com.ning.http.client._
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 import scala.collection.mutable._
 import us.ority.min.actions._
+import us.ority.min.actions.middlewares.rest._
+
 
 
 object RESTMiddleware {
   val DEFAULT_URL = "https://api.ipify.org?format=json"
 
-  val config = new NingAsyncHttpClientConfigBuilder(WSClientConfig()).build
-  val builder = new AsyncHttpClientConfig.Builder(config)
-  val client = new NingWSClient(builder.build)
+
+import play.api.libs.ws.ahc.AhcWSClient
+import akka.stream.ActorMaterializer
+import akka.actor.ActorSystem
+
+implicit val system = ActorSystem()
+implicit val materializer = ActorMaterializer()
+val client = AhcWSClient()
+
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
 
 
-    def execute(parts: ActionParts, s: Strategy,
-        stateInputs:List[UnitReactionStateIn] = List(), dataInputs: List[UnitReactionDataIn] = List()
-        ):StrategyResult = {
-
-        parts.process.addAct(ActionAct(
-          id = None,
-          uid = java.util.UUID.randomUUID.toString,
-          session = parts.process.session_id,
-          reaction = parts.action.id.getOrElse(-1),
-          Some( org.joda.time.DateTime.now() ),
-          Some( org.joda.time.DateTime.now() )
-        ))
+    def execute(
+        parts: ActionParts, s: Strategy,
+        stateInputs:List[UnitReactionStateIn] = List(), 
+        dataInputs: List[UnitReactionDataIn] = List()
+        ):ActionAct = {
       
         println("RESTMiddleware BASE"+ s.strategyBaseUnit.length)
         s.ident match {
@@ -79,9 +78,10 @@ object RESTMiddleware {
     }
 
 
-    def retriveDataForDelay(stategyTitle: String, 
-                            dataInputs: List[UnitReactionDataIn],
-                            bases: MutableList[StrategyBaseUnit]=MutableList()):Seq[StrategyArgument] = {
+    def retriveDataForDelay(
+      stategyTitle: String, 
+      dataInputs: List[UnitReactionDataIn],
+      bases: MutableList[StrategyBaseUnit] = MutableList()):StrategyArguments = {
     	// Find input duration or schedule
     	// or
     	//StrategyArgument(argInt: Int = 0, argLong:Long = 0L, argString: String = "")
@@ -91,53 +91,18 @@ object RESTMiddleware {
         }
     	stategyTitle match {
     		case "GETStrategy" => 
-    			Seq(StrategyArgument(argString = urlBase, argKey="URL") )
-			case "POSTStrategy" => 
-				  Seq(StrategyArgument(argString = urlBase, argKey="URL") )
+    			StrategyArguments(
+            Seq(StrategyArgument(argString = urlBase, argKey="URL") ) )
+			  case "POSTStrategy" => 
+				  StrategyArguments(
+            Seq(StrategyArgument(argString = urlBase, argKey="URL") ) )
     	}
     }
 
-	object GETStrategy {
-		def execute(argument: Seq[StrategyArgument], parts: ActionParts):StrategyResult = {
-			println("GETStrategy Strategy executed")
-            val url:String = argument.find(c => c.argKey == "URL") match {
-                case Some(arg) => arg.argString
-                case _ => DEFAULT_URL
-            }
-            val res = await( client.url(url).withHeaders("Content-Type" -> "application/xml").get() )
-            parts.process.getActs(parts.action.id.get).headOption match {
-              case Some(act) => {
-                val status = ActionStatus(id = None,
-                            content = "Request called",
-                            act = 0L,
-                            Some( org.joda.time.DateTime.now() ),
-                            Some( org.joda.time.DateTime.now() ) )
-                val actResult = ActionResult(
-                            id = None,
-                            in = false,
-                            out = true,
-                            base = false,
-                            content = res.body,
-                            act = 0L,
-                            Some( org.joda.time.DateTime.now() ),
-                            Some( org.joda.time.DateTime.now() ))                
-                act.makeStatus(status)
-                act.makeResult(actResult)
-              }
-            }
-            println("API Strategy "+res.body)
 
-			StrategyResult("GETStrategy", true)
-		}
-	}
-	object POSTStrategy {
-		def execute(argument: Seq[StrategyArgument], parts: ActionParts):StrategyResult = {
-			println("POSTStrategy executed")
-			StrategyResult("POSTStrategy", true)
-		}		
-	}
 	object NullStrategy {
-		def execute(argument: Seq[StrategyArgument]=Seq(), parts: ActionParts):StrategyResult = {
+		def execute(argument: StrategyArguments = StrategyArguments(), 
+                parts: ActionParts):ActionAct = {
 			println("NullStrategy executed")
       val url = DEFAULT_URL
       val res = await( client.url(url).withHeaders("Content-Type" -> "application/xml").get() )
@@ -159,10 +124,10 @@ object RESTMiddleware {
                       Some( org.joda.time.DateTime.now() ))                
           act.makeStatus(status)
           act.makeResult(actResult)
+          println("API Strategy "+res.body)
+          act
         }
       }            
-      println("API Strategy "+res.body)
-			StrategyResult("GETStrategy NullStrategy", true)
 		}
 	}
 

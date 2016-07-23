@@ -61,7 +61,10 @@ import scala.concurrent.Future
 
 import play.api.mvc._
 import play.api.libs.ws._
-
+import play.api.http.{ HttpEntity, LazyHttpErrorHandler, HttpErrorHandler, ContentTypes }
+import akka.stream.scaladsl._
+import play.api.libs.streams._
+import akka.util._
 
 case class FileInstance(fileName: String, fileUrl: String,
   file: Option[models.DAO.File] = None,
@@ -75,7 +78,7 @@ class FileUploadController @Inject() (
   ws: WSClient,
   val messagesApi: MessagesApi,
   val env: Environment[User2, CookieAuthenticator],
-  socialProviderRegistry: SocialProviderRegistry)
+  socialProviderRegistry: SocialProviderRegistry)(implicit val mat: akka.stream.Materializer) 
   extends Silhouette[User2, CookieAuthenticator] {
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -120,17 +123,24 @@ def downloadFile(fileName: String, hash: String, urlParams: String) = SecuredAct
 
  //OR
  resultFuture.map {
-   case (rs, stream) =>
+   case (rs, streamm) => {
+     val stream = streamm.map(c => ByteString.fromArray(c))
+     val source = Source.fromPublisher(Streams.enumeratorToPublisher(stream))
+     val length = rs.headers.get("Content-Length").map(_.head).get
+     val cType = rs.headers.get("Content-Type").map(_.head).getOrElse("binary/octet-stream")
+     val streamed = HttpEntity.Streamed(source, Some(length.toLong), Some(cType) )
+
      Result(
        header = ResponseHeader(
          status = OK,
          headers = Map(
-           CONTENT_LENGTH -> rs.headers.get("Content-Length").map(_.head).get,
+           CONTENT_LENGTH -> length,
            CONTENT_DISPOSITION -> s"""attachment; filename="$fileName"""",
-           CONTENT_TYPE -> rs.headers.get("Content-Type").map(_.head).getOrElse("binary/octet-stream"))
+           CONTENT_TYPE -> cType)
        ),
-       body = stream
+       body = streamed
      )
+    } 
  }
 
 

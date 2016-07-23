@@ -154,7 +154,6 @@ class WarpController @Inject() (
 //*/ Future(Ok("ok"))
 }
  def warpGenerate(launch_idOpt: Option[String], element_idOpt: Option[String]) =
-	 Cached2(req => "profile." + req.host, 1000 * 60) {
 		 SecuredAction.async(BodyParsers.parse.json) { implicit request =>
 		val launch_id = parseParam(launch_idOpt)
 		val element_id = parseParam(element_idOpt)
@@ -184,8 +183,8 @@ class WarpController @Inject() (
 					}
 				}
 				)
-		   }
-		 }
+ }
+
  def parseWarps(payload: List[WarpObjRequest], userId: String = "",
  				launch_id: Option[Int], element_id: Option[Int], workbench_id: String = ""):Future[WarpResult] = {
 	 	val entityId = Some(UUID.randomUUID())

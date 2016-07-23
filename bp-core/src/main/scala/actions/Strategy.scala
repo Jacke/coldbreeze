@@ -30,6 +30,13 @@ case class Strategy(val id: Option[Long],
 
 }
 
+
+
+/******************************************************************
+ * Session Units
+ * Used only in CONVERSION BETWEN PLAIN
+ * DO NOT USE IN REGULAR INVOKATION!!!!!! ONLY FOR CONVERSION!!!
+ *****************************************************************/
 case class LaunchStrategy(val id: Option[Long],
 										session: Int,
 										ident: String,
@@ -44,7 +51,6 @@ case class LaunchStrategy(val id: Option[Long],
 		var strategyBaseUnit:MutableList[LaunchStrategyBaseUnit] = MutableList()
 		var strategyOutputUnit:MutableList[LaunchStrategyOutputUnit] = MutableList()
 
-
 		def pushToStrategyInputUnit(s: LaunchStrategyInputUnit) = {
 		  strategyInputUnit += s
 		}
@@ -54,25 +60,11 @@ case class LaunchStrategy(val id: Option[Long],
 		def pushToStrategyOutputUnit(s: LaunchStrategyOutputUnit) = {
 		  strategyOutputUnit += s
 		}
-
 }
 
 
 
-case class StrategyArgument(argInt: Int = 0, argLong:Long = 0L, argString: String = "", argKey: String="")
-case class StrategyIn()
-case class StrategyOut(completed: Boolean = false) {
-	val status = new StrategyStatus()
-}
 
-case class StrategyStatus() {
-	def makeStatus():Boolean = true
-	def getStatus():String =
-		if (makeStatus())
-		 "Good"
-		else
-		 "Error"
-}
 
 
 

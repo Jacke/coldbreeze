@@ -127,8 +127,9 @@ integrationTest := {
           cache4,
           mailer4,
           ficus,
-          anorm4,
+          anorm,
           jdbc4,
+          
           swaggerRoute,
           sourcecode,
           silhouette,
@@ -136,6 +137,7 @@ integrationTest := {
           playsctest,
           selenide,
           logfmt,
+          captcha,
 
 
           scalamandrill,
@@ -249,7 +251,7 @@ integrationTest := {
           slick,
           slickhikari,
 
-          slick_migrate,
+          //slick_migrate,
           //hikari_core,
           jacksonbson,
           junit,
