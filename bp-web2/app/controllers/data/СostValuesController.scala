@@ -1,4 +1,5 @@
 package controllers
+import utils.auth.DefaultEnv
 import java.util.UUID
 import models.DAO.resources.{BusinessDAO, BusinessDTO}
 import models.DAO._
@@ -32,7 +33,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.BProcessDTO
@@ -54,7 +55,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.mvc.{ Action, RequestHeader }
@@ -62,9 +63,9 @@ import play.api.mvc.{ Action, RequestHeader }
 
 class CostValuesController @Inject() (
   val messagesApi: MessagesApi,
-  val env: Environment[User2, CookieAuthenticator],
+  silhouette: Silhouette[DefaultEnv],
   socialProviderRegistry: SocialProviderRegistry)
-  extends Silhouette[User2, CookieAuthenticator] {
+  extends Controller with I18nSupport {
 
   implicit val MetaValFormat = Json.format[MetaVal]
   implicit val MetaValReader = Json.reads[MetaVal]
@@ -78,13 +79,13 @@ class CostValuesController @Inject() (
   implicit val ResourceAttributeContainerReaders = Json.reads[ResourceAttributeContainer]
 
 
-  def fillLaunchCost(launch_id: Int) = SecuredAction.async { implicit request =>
+  def fillLaunchCost(launch_id: Int) = silhouette.SecuredAction.async { implicit request =>
     Future.successful(Ok("c") )
   }
-  def refillLaunchCost(launch_id: Int) = SecuredAction.async { implicit request =>
+  def refillLaunchCost(launch_id: Int) = silhouette.SecuredAction.async { implicit request =>
     Future.successful(Ok("c") )
   }
-  def clearLaunchCost(launch_id: Int) = SecuredAction.async { implicit request =>
+  def clearLaunchCost(launch_id: Int) = silhouette.SecuredAction.async { implicit request =>
         Future.successful(Ok("c") )
   }
 

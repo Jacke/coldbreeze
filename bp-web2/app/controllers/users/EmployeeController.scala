@@ -1,4 +1,5 @@
 package controllers.users
+import utils.auth.DefaultEnv
 
 import models.DAO.resources.{EmployeeDTO, EmployeeDAO}
 import models.DAO.resources.EmployeesBusinessDAO
@@ -24,7 +25,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.resources.{AccoutGroupDTO,AccountGroupDAO,GroupDTO,GroupsDAO}
@@ -49,16 +50,16 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import play.api.mvc.{ Action, RequestHeader }
 class EmployeeController @Inject() (
   val messagesApi: MessagesApi,
-  val env: Environment[User2, CookieAuthenticator],
+  silhouette: Silhouette[DefaultEnv],
   socialProviderRegistry: SocialProviderRegistry)
-  extends Silhouette[User2, CookieAuthenticator] {
+  extends Controller with I18nSupport {
    import play.api.Play.current
   val Home = Redirect(routes.EmployeeController.index())
 
@@ -83,7 +84,7 @@ class EmployeeController @Inject() (
       "manager" -> boolean,
       "workbench_id" -> number)(EmployeeDTO.apply)(EmployeeDTO.unapply))
 
- def index() = SecuredAction.async { implicit request =>
+ def index() = silhouette.SecuredAction.async { implicit request =>
       val business = request.identity.businessFirst
       if (business < 1) {
         Future(Redirect(controllers.routes.SettingController.workbench()))
@@ -125,7 +126,7 @@ class EmployeeController @Inject() (
       }
       }
 }
- def team() = SecuredAction.async { implicit request =>
+ def team() = silhouette.SecuredAction.async { implicit request =>
       val business = request.identity.businessFirst
       if (business < 1) {
         Future(Redirect(controllers.routes.SettingController.workbench()))
@@ -152,7 +153,7 @@ class EmployeeController @Inject() (
       }
   }
 }
-  def index_group(group_id: Int) = SecuredAction.async { implicit request =>
+  def index_group(group_id: Int) = silhouette.SecuredAction.async { implicit request =>
       val business = request.identity.businessFirst
       if (business < 1) {
         Future(Redirect(controllers.routes.SettingController.workbench()))
@@ -183,7 +184,7 @@ class EmployeeController @Inject() (
   }
 }
 //GET         /actors      @controllers.users.EmployeeController.actors()
-def actors() = SecuredAction.async { implicit request =>
+def actors() = silhouette.SecuredAction.async { implicit request =>
      val user                        = request.identity.emailFilled
      val business                    = request.identity.businessFirst
 
@@ -198,10 +199,10 @@ def actors() = SecuredAction.async { implicit request =>
 }
 
 
-def create() = SecuredAction { implicit request =>
+def create() = silhouette.SecuredAction { implicit request =>
         Ok(views.html.businesses.users.employee_form(employeeForm, request.identity))
 }
-def create_new() = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def create_new() = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
   val workbench = request.identity.businessFirst
   if (isEmployeeOwned(request.identity.emailFilled, workbench)) {
     request.body.validate[UIDS].map{
@@ -221,7 +222,7 @@ def create_new() = SecuredAction(BodyParsers.parse.json) { implicit request =>
     }
   } else { Home }
 }
-def update(id: Int) = SecuredAction { implicit request =>
+def update(id: Int) = silhouette.SecuredAction { implicit request =>
       val employee = EmployeeDAO.get(id)
       employee match {
         case Some(employee) =>
@@ -229,7 +230,7 @@ def update(id: Int) = SecuredAction { implicit request =>
         case None => Ok("not found")
       }
 }
-def update_make(id: Int) = SecuredAction { implicit request =>
+def update_make(id: Int) = silhouette.SecuredAction { implicit request =>
     if (isEmployeeOwned(request.identity.emailFilled, request.identity.businessFirst)) {
 
       employeeForm.bindFromRequest.fold(
@@ -242,7 +243,7 @@ def update_make(id: Int) = SecuredAction { implicit request =>
         })
     } else { Home }
 }
-def assign_business(employee_id: Int, business_id: Int) = SecuredAction { implicit request =>
+def assign_business(employee_id: Int, business_id: Int) = silhouette.SecuredAction { implicit request =>
       if (isEmployeeOwned(request.identity.emailFilled, request.identity.businessFirst)) {
         val business = BusinessDAO.get(business_id)
         business match {
@@ -253,7 +254,7 @@ def assign_business(employee_id: Int, business_id: Int) = SecuredAction { implic
         }
       } else { Home }
 }
-def unassign_business(employee_id: Int, business_id: Int) = SecuredAction { implicit request =>
+def unassign_business(employee_id: Int, business_id: Int) = silhouette.SecuredAction { implicit request =>
       if (isEmployeeOwned(request.identity.emailFilled, request.identity.businessFirst)) {
       val business = BusinessDAO.get(business_id)
       business match {
@@ -266,7 +267,7 @@ def unassign_business(employee_id: Int, business_id: Int) = SecuredAction { impl
 }
 
 
-def toManager(id: Int) = SecuredAction { implicit request =>
+def toManager(id: Int) = silhouette.SecuredAction { implicit request =>
     if (isEmployeeOwned(request.identity.emailFilled, request.identity.businessFirst)) {
       EmployeeDAO.get(id) match {
         case Some(emp) =>
@@ -280,7 +281,7 @@ def toManager(id: Int) = SecuredAction { implicit request =>
       }
     } else { Home }
 }
-def toParticipator(id: Int) = SecuredAction { implicit request =>
+def toParticipator(id: Int) = silhouette.SecuredAction { implicit request =>
     if (isEmployeeOwned(request.identity.emailFilled, request.identity.businessFirst)) {
       EmployeeDAO.get(id) match {
         case Some(emp) =>
@@ -294,7 +295,7 @@ def toParticipator(id: Int) = SecuredAction { implicit request =>
       }
     } else { Home }
 }
-def destroy(id: Int) = SecuredAction { implicit request =>
+def destroy(id: Int) = silhouette.SecuredAction { implicit request =>
     if (isEmployeeOwned(request.identity.emailFilled, request.identity.businessFirst)) {
       val emp = EmployeeDAO.get(id)
       val employeeCount = emp match {

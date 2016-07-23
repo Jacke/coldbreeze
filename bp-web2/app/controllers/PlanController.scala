@@ -1,4 +1,5 @@
 package controllers
+import utils.auth.DefaultEnv
 
 import models.DAO.resources.{BusinessDAO, BusinessDTO}
 import models.DAO._
@@ -25,7 +26,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.BProcessDTO
@@ -61,7 +62,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -69,9 +70,9 @@ import play.api.mvc.{ Action, RequestHeader }
 
 class PlanController @Inject() (
   val messagesApi: MessagesApi,
-  val env: Environment[User2, CookieAuthenticator],
+  silhouette: Silhouette[DefaultEnv],
   socialProviderRegistry: SocialProviderRegistry)
-  extends Silhouette[User2, CookieAuthenticator] {
+  extends Controller with I18nSupport {
 
 
 
@@ -108,14 +109,14 @@ val LimitForm = Form(mapping(
  *  Main plan page
  */
 
-def redirect_url() = SecuredAction { implicit request =>
+def redirect_url() = silhouette.SecuredAction { implicit request =>
   Redirect(routes.PlanController.index)
 }
-def cancel_url() = SecuredAction { implicit request =>
+def cancel_url() = silhouette.SecuredAction { implicit request =>
   Redirect(routes.PlanController.index)
 }
 
-def index() = SecuredAction { implicit request =>
+def index() = silhouette.SecuredAction { implicit request =>
   val business = request.identity.businessFirst
   if (business < 1) {
     Redirect(controllers.routes.SettingController.workbench())
@@ -138,7 +139,7 @@ def index() = SecuredAction { implicit request =>
 
 
 
-def update_billinginfos() = SecuredAction { implicit request =>
+def update_billinginfos() = silhouette.SecuredAction { implicit request =>
   //TODO: Business checking
   BillingInfoForm.bindFromRequest.fold(
         formWithErrors => Redirect(routes.PlanController.index),
@@ -151,7 +152,7 @@ def update_billinginfos() = SecuredAction { implicit request =>
  /**
   * Switch method
   */
-def switch(plan_id: Int) = SecuredAction { implicit request =>
+def switch(plan_id: Int) = silhouette.SecuredAction { implicit request =>
   val business = request.identity.businessFirst
   if (business < 1) {
     Redirect(controllers.routes.SettingController.workbench())
@@ -183,7 +184,7 @@ def switch(plan_id: Int) = SecuredAction { implicit request =>
 }
 }
 
-def delete_bill(billId: Int) = SecuredAction { implicit request =>
+def delete_bill(billId: Int) = silhouette.SecuredAction { implicit request =>
   val business = request.identity.businessFirst
   if (business < 1) {
     Redirect(controllers.routes.SettingController.workbench())
@@ -204,7 +205,7 @@ def delete_bill(billId: Int) = SecuredAction { implicit request =>
 /**
  * Switch limit
  */
-def switchLimit(plan_id: Int) = SecuredAction { implicit request =>
+def switchLimit(plan_id: Int) = silhouette.SecuredAction { implicit request =>
   val business = request.identity.businessFirst
   if (business < 1) {
     Redirect(controllers.routes.SettingController.workbench())
@@ -251,10 +252,10 @@ def switchLimit(plan_id: Int) = SecuredAction { implicit request =>
   }
 }
 
-def status() = SecuredAction { implicit request =>
+def status() = silhouette.SecuredAction { implicit request =>
   Ok("test")
 }
-def test_pay() = SecuredAction.async { implicit request =>
+def test_pay() = silhouette.SecuredAction.async { implicit request =>
  val item = Item(1, "ff", BigDecimal(1),"RUB",Some("001"))
 val card = CreditCard(
                         id = None,
@@ -278,7 +279,7 @@ CheckoutUtil.checkout_proceed(item, Some(card)).map { result =>
 /**
  * Checkout action
  */
-def checkout(bill_id: Int) = SecuredAction { implicit request =>
+def checkout(bill_id: Int) = silhouette.SecuredAction { implicit request =>
   val business = request.identity.businessFirst
   if (business < 1) {
     Redirect(controllers.routes.SettingController.workbench())

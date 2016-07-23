@@ -1,4 +1,5 @@
 package controllers
+import utils.auth.DefaultEnv
 
 import play.api.Play.current
 import play.api.libs.mailer._
@@ -24,7 +25,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import models._
 import models.daos._
 
@@ -77,9 +78,9 @@ class FileUploadController @Inject() (
   mailerClient: MailerClient,
   ws: WSClient,
   val messagesApi: MessagesApi,
-  val env: Environment[User2, CookieAuthenticator],
+  silhouette: Silhouette[DefaultEnv],
   socialProviderRegistry: SocialProviderRegistry)(implicit val mat: akka.stream.Materializer) 
-  extends Silhouette[User2, CookieAuthenticator] {
+  extends Controller with I18nSupport {
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
@@ -110,7 +111,7 @@ def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(a
 val azure = _root_.util.AzureUploadHandler.apply()
 
 
-def downloadFile(fileName: String, hash: String, urlParams: String) = SecuredAction.async { implicit request =>
+def downloadFile(fileName: String, hash: String, urlParams: String) = silhouette.SecuredAction.async { implicit request =>
   "http://minorityapp.blob.core.windows.net/minority-uploads/"
 
 // http://127.0.0.1:9000/downloadFile/landing_page.png+61353b95-b825-40b6-97a0-c935b9937911/sig=Va2woPzZ6uup5PNVdxwTCTNPb6LfZjpiB4Y6O9psEbM%3D&se=2016-05-05T11%3A11%3A22Z&sv=2015-04-05&sp=rwdl&sr=b
@@ -148,7 +149,7 @@ def downloadFile(fileName: String, hash: String, urlParams: String) = SecuredAct
 
 
 
-def allFiles = SecuredAction.async { implicit request =>
+def allFiles = silhouette.SecuredAction.async { implicit request =>
   models.DAO.FilesDAO.getAll.flatMap { files =>
     val filesUrlF: Future[Seq[FileInstance]] = azure.getAll()//Seq(FileInstance("fileName", "url" ) )
     filesUrlF.map { filesUrl =>
@@ -157,7 +158,7 @@ def allFiles = SecuredAction.async { implicit request =>
   }
 }
 
-def allFilesForLaunch(launch_id: Int)  = SecuredAction.async { implicit request =>
+def allFilesForLaunch(launch_id: Int)  = silhouette.SecuredAction.async { implicit request =>
   val launchFilesF = models.DAO.LaunchFilesDAO.findByLaunchId(launch_id)
   launchFilesF.flatMap { launchFiles =>
     val ids = launchFiles.map(_.fileId)
@@ -174,7 +175,7 @@ def allFilesForLaunch(launch_id: Int)  = SecuredAction.async { implicit request 
   }
 }
 
-def allFilesForLaunchElement(launch_id: Int, element_id: Int)  = SecuredAction.async { implicit request =>
+def allFilesForLaunchElement(launch_id: Int, element_id: Int)  = silhouette.SecuredAction.async { implicit request =>
   val launchFilesF = models.DAO.LaunchFilesDAO.findByLaunchElementId(launch_id, element_id)
   launchFilesF.flatMap { launchFiles =>
     val ids = launchFiles.map(_.fileId)
@@ -191,7 +192,7 @@ def allFilesForLaunchElement(launch_id: Int, element_id: Int)  = SecuredAction.a
 
 
 
-def upload = SecuredAction(parse.maxLength(10 * 1024 * 1024, parse.multipartFormData)) { request =>
+def upload = silhouette.SecuredAction(parse.maxLength(10 * 1024 * 1024, parse.multipartFormData)) { request =>
   val workbench = 0
   val description = ""
   request.body match {
@@ -214,7 +215,7 @@ def upload = SecuredAction(parse.maxLength(10 * 1024 * 1024, parse.multipartForm
 
 
 
-def uploadLaunchFile(launch_id: Int, element_id: Option[Int]) = SecuredAction(parse.maxLength(10 * 1024 * 1024, parse.multipartFormData)) { request =>
+def uploadLaunchFile(launch_id: Int, element_id: Option[Int]) = silhouette.SecuredAction(parse.maxLength(10 * 1024 * 1024, parse.multipartFormData)) { request =>
   val workbench = 0
   val description = ""
   request.body match {
@@ -234,7 +235,7 @@ def uploadLaunchFile(launch_id: Int, element_id: Option[Int]) = SecuredAction(pa
 }
 
 
-def deleteLaunchFile(launchFileId: Long) = SecuredAction.async { request =>
+def deleteLaunchFile(launchFileId: Long) = silhouette.SecuredAction.async { request =>
   models.DAO.LaunchFilesDAO.findById(launchFileId).flatMap { launchFileOpt =>
     launchFileOpt match {
       case Some(l) => {

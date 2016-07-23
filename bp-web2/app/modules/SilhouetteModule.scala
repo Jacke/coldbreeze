@@ -34,7 +34,7 @@ import play.api.Configuration
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.openid.OpenIdClient
 import play.api.libs.ws.WSClient
-import utils.auth.{ CustomSecuredErrorHandler, CustomUnsecuredErrorHandler, DefaultEnv }
+import utils.auth._
 
 /**
  * The Guice module which wires all Silhouette dependencies.
@@ -46,8 +46,8 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
    */
   def configure() {
     bind[Silhouette[DefaultEnv]].to[SilhouetteProvider[DefaultEnv]]
-    bind[UnsecuredErrorHandler].to[CustomUnsecuredErrorHandler]
-    bind[SecuredErrorHandler].to[CustomSecuredErrorHandler]
+  //  bind[UnsecuredErrorHandler].to[CustomUnsecuredErrorHandler]
+  //  bind[SecuredErrorHandler].to[CustomSecuredErrorHandler]
 
     bind[MotivationElement].to[MotivationElementImpl]
 

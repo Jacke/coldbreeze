@@ -1,4 +1,5 @@
 package controllers
+import utils.auth.DefaultEnv
 
 import models.DAO.resources._
 import models.DAO.resources.EmployeesBusinessDAO
@@ -23,7 +24,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.resources.ClientBusinessDAO
@@ -39,7 +40,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -50,9 +51,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
  */
 class GroupController @Inject() (
   val messagesApi: MessagesApi,
-  val env: Environment[User2, CookieAuthenticator],
+  silhouette: Silhouette[DefaultEnv],
   socialProviderRegistry: SocialProviderRegistry)
-  extends Silhouette[User2, CookieAuthenticator] {
+  extends Controller with I18nSupport {
   import play.api.Play.current
 
    val Home = Redirect(users.routes.EmployeeController.index())
@@ -67,7 +68,7 @@ class GroupController @Inject() (
       "created_at" -> optional(jodaDate),
       "created_at" -> optional(jodaDate))(GroupDTO.apply)(GroupDTO.unapply))
 
- def index() = SecuredAction { implicit request =>
+ def index() = silhouette.SecuredAction { implicit request =>
       val user = request.identity
       //val employees = EmployeeDAO.getAllByMaster(user.main.email.get)
       //val accounts = models.AccountsDAO.findAllByEmails(employees.map(emp => emp.uid))
@@ -80,10 +81,10 @@ class GroupController @Inject() (
       //  Page(employees, 1, 1, employees.length), accounts, 1, "%", assign, assigned)(user))
 
   }
-  def create() = SecuredAction { implicit request =>
+  def create() = silhouette.SecuredAction { implicit request =>
         Home//Ok(views.html.businesses.users.employee_form(groupForm, request.identity))
   }
-  def create_new() = SecuredAction(BodyParsers.parse.json) { implicit request =>
+  def create_new() = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
     val business = request.identity.businessFirst
       if (business < 1) {
         Redirect(controllers.routes.SettingController.workbench())
@@ -106,7 +107,7 @@ class GroupController @Inject() (
     }
 }
 
-  def update(id: Int) = SecuredAction { implicit request =>
+  def update(id: Int) = silhouette.SecuredAction { implicit request =>
       val employee = EmployeeDAO.get(id)
       employee match {
         case Some(group) =>
@@ -114,7 +115,7 @@ class GroupController @Inject() (
         case None => Ok("not found")
       }
   }
-  def update_make(id: Int) = SecuredAction { implicit request =>
+  def update_make(id: Int) = silhouette.SecuredAction { implicit request =>
       groupForm.bindFromRequest.fold(
         formWithErrors => Home,//BadRequest(views.html.businesses.users.employee_edit_form(id, formWithErrors, request.identity)),
         entity => {
@@ -125,7 +126,7 @@ class GroupController @Inject() (
         })
 
   }
-  def assign_user(account_id: String, group_id: Int) = SecuredAction.async { implicit request =>
+  def assign_user(account_id: String, group_id: Int) = silhouette.SecuredAction.async { implicit request =>
     val business = request.identity.businessFirst
       if (business < 1) {
         Future(Redirect(controllers.routes.SettingController.workbench()) )
@@ -145,7 +146,7 @@ class GroupController @Inject() (
     }
 }
 
-  def unassign_user(account_id: String, group_id: Int) = SecuredAction.async { implicit request =>
+  def unassign_user(account_id: String, group_id: Int) = silhouette.SecuredAction.async { implicit request =>
     val business = request.identity.businessFirst
       if (business < 1) {
         Future(Redirect(controllers.routes.SettingController.workbench()) )
@@ -164,7 +165,7 @@ class GroupController @Inject() (
     }
   }
 }
-  def destroy(id: Int) = SecuredAction { implicit request =>
+  def destroy(id: Int) = silhouette.SecuredAction { implicit request =>
       Home.flashing(GroupsDAO.delete(id) match {
         case 0 => "failure" -> "Entity has Not been deleted"
         case x => "success" -> s"Entity has been deleted (deleted $x row(s))"

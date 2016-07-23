@@ -1,4 +1,5 @@
 package controllers
+import utils.auth.DefaultEnv
 import play.api._
 import play.api.mvc._
 import play.twirl.api.Html
@@ -16,7 +17,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.resources._
@@ -41,7 +42,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -49,9 +50,9 @@ import play.api.mvc.{ Action, RequestHeader }
 
 class ObserverController @Inject() (
   val messagesApi: MessagesApi,
-  val env: Environment[User2, CookieAuthenticator],
+  silhouette: Silhouette[DefaultEnv],
   socialProviderRegistry: SocialProviderRegistry)
-  extends Silhouette[User2, CookieAuthenticator] {
+  extends Controller with I18nSupport {
   import play.api.Play.current
   implicit val ObserverDTOReads = Json.reads[ObserverDTO]
   implicit val ObserverDTOWrites = Json.format[ObserverDTO]
@@ -61,11 +62,11 @@ class ObserverController @Inject() (
   implicit val ObserveSetupWrites = Json.format[ObserveSetup]
 
 
-  def index(process: Int) = SecuredAction { implicit request =>
+  def index(process: Int) = silhouette.SecuredAction { implicit request =>
         val observers = ObserverDAO.getAllByBP(process)
         Ok(Json.toJson(observers))
   }
-  def indexStation(process: Int, station: Int) = SecuredAction { implicit request =>
+  def indexStation(process: Int, station: Int) = silhouette.SecuredAction { implicit request =>
 
         val observers = ObserverDAO.getByBpAndStation(process, station)
         Ok(Json.toJson(observers))
@@ -104,7 +105,7 @@ class ObserverController @Inject() (
       observer
   }
 
-  def create() = SecuredAction(BodyParsers.parse.json) { implicit request =>
+  def create() = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
      val host = request.host
      val uuid = randomUUID.toString
      val user = request.identity.emailFilled
@@ -123,7 +124,7 @@ class ObserverController @Inject() (
 	    }
   }
 
-  def destroy(observe_id: Int) = SecuredAction { implicit request =>
+  def destroy(observe_id: Int) = silhouette.SecuredAction { implicit request =>
 
       // Access check
       val user = request.identity.emailFilled

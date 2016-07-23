@@ -1,4 +1,5 @@
 package controllers
+import utils.auth.DefaultEnv
 
 import models.DAO.resources.{BusinessDAO, BusinessDTO}
 import models.DAO._
@@ -26,7 +27,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.BProcessDTO
@@ -54,7 +55,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
@@ -63,9 +64,9 @@ import play.api.mvc.{ Action, RequestHeader }
 
 class APIController @Inject() (
   val messagesApi: MessagesApi,
-  val env: Environment[User2, JWTAuthenticator],
+  silhouette: Silhouette[DefaultEnv],
   socialProviderRegistry: SocialProviderRegistry)
-  extends Silhouette[User2, JWTAuthenticator] {
+  extends Controller with I18nSupport {
 
 
 implicit val SessionElementsReads = Json.reads[SessionElements]
@@ -111,7 +112,7 @@ implicit val SessionStateLogWrites  = Json.format[SessionStateLog]
 
 
   // GET         /api/v1/sessions
-  def all_sessions_v1() = SecuredAction.async { implicit request =>
+  def all_sessions_v1() = silhouette.SecuredAction.async { implicit request =>
   	val email = request.identity.emailFilled
     val sess_cnsF = BPSessionDAOF.findByBusiness(request.identity.businessFirst)
     //val updated_cns:List[SessionContainer] = sess_cns.map { cn =>

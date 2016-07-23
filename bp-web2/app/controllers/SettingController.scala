@@ -1,4 +1,5 @@
 package controllers
+import utils.auth.DefaultEnv
 
 import models.DAO.resources.{BusinessDAO, BusinessDTO}
 import models.DAO._
@@ -25,7 +26,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.BProcessDTO
@@ -68,16 +69,16 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import play.api.mvc.{ Action, RequestHeader }
 class SettingController @Inject() (
   val messagesApi: MessagesApi,
-  val env: Environment[User2, CookieAuthenticator],
+  silhouette: Silhouette[DefaultEnv],
   socialProviderRegistry: SocialProviderRegistry)
-  extends Silhouette[User2, CookieAuthenticator] {
+  extends Controller with I18nSupport {
 
 
   val Home = Redirect(routes.SettingController.index())
@@ -107,7 +108,7 @@ class SettingController @Inject() (
 
 
 
- def index() = SecuredAction { implicit request =>
+ def index() = silhouette.SecuredAction { implicit request =>
     val business = request.identity.businessFirst
    	val cred = models.AccountsDAO.fetchCredentials(request.identity.emailFilled)
     //val biz0 = fetchBiz(request.identity.emailFilled).get
@@ -118,7 +119,7 @@ class SettingController @Inject() (
 
 
 
- def workbench() = SecuredAction  { implicit request =>
+ def workbench() = silhouette.SecuredAction  { implicit request =>
     val biz0 = fetchBiz(request.identity.emailFilled)
     println(biz0)
     val employeesF = EmployeeDAOF.getAllByEmpByUID(request.identity.emailFilled)
@@ -150,7 +151,7 @@ class SettingController @Inject() (
     }
  }
 
- def resetBench(bench_id: Int) = SecuredAction.async { implicit request =>
+ def resetBench(bench_id: Int) = silhouette.SecuredAction.async { implicit request =>
     bench_id match {
       case -1 => AccountInfosDAOF.updateCurrentWorkbench(request.identity.emailFilled, None).map { r =>
                  Cache.remove(s"employee.business.${request.identity.emailFilled}")
@@ -164,7 +165,7 @@ class SettingController @Inject() (
 }
 
 
- def update_credentials() = SecuredAction { implicit request =>
+ def update_credentials() = silhouette.SecuredAction { implicit request =>
     val cred = Credentials(request.identity.firstName, request.identity.lastName,
       request.identity.fullName)
     credForm.bindFromRequest.fold(
@@ -183,7 +184,7 @@ class SettingController @Inject() (
  }
 
 
- def update_biz_credentials() = SecuredAction { implicit request =>
+ def update_biz_credentials() = silhouette.SecuredAction { implicit request =>
 
   val founded_biz = fetchBiz(request.identity.emailFilled).get
   val biz = BizFormDTO(founded_biz.title, founded_biz.phone, founded_biz.website, founded_biz.country, founded_biz.city, founded_biz.address)
@@ -199,7 +200,7 @@ class SettingController @Inject() (
 
  }
 
- def update_email() = SecuredAction { implicit request =>
+ def update_email() = silhouette.SecuredAction { implicit request =>
    	Redirect(routes.SettingController.index)
     ???
  }

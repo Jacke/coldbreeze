@@ -1,4 +1,5 @@
 package controllers
+import utils.auth.DefaultEnv
 import play.api._
 import play.api.mvc._
 import play.twirl.api.Html
@@ -24,7 +25,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -43,16 +44,16 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import play.api.mvc.{ Action, RequestHeader }
 class PermissionController @Inject() (
   val messagesApi: MessagesApi,
-  val env: Environment[User2, CookieAuthenticator],
+  silhouette: Silhouette[DefaultEnv],
   socialProviderRegistry: SocialProviderRegistry)
-  extends Silhouette[User2, CookieAuthenticator] {
+  extends Controller with I18nSupport {
 
 
 
@@ -119,7 +120,7 @@ val elemPermForm = Form(
                          reaction: Option[Int])
                          role: String = "interact",
                           */
- def index() = SecuredAction { implicit request =>
+ def index() = silhouette.SecuredAction { implicit request =>
       val user_services = BusinessServiceDAO.getByMaster(request.identity.masterFirst).map(_.id)
       var proc_ids:List[Int] = BPDAO.getByServices(user_services.flatten).map(_.id).flatten
       if (request.identity.isEmployee) {
@@ -144,7 +145,7 @@ val elemPermForm = Form(
         Page(elemperms, 1, 1, elemperms.length), 1, "%")(Some(request.identity.emailFilled)))*/
   }
 //GET         /bprocess/:BPid/elemperms           @controllers.PermissionController.proc_index(BPid: Int)
-def proc_index(BPid: Int) = SecuredAction.async { implicit request =>
+def proc_index(BPid: Int) = silhouette.SecuredAction.async { implicit request =>
   val elemperms = ActPermissionDAO.getAll
   val elms = ProcElemDAO.findByBPId(BPid).map(_.id)
   val spelms = SpaceElemDAO.findByBPId(BPid).map(_.id)
@@ -166,7 +167,7 @@ def proc_index(BPid: Int) = SecuredAction.async { implicit request =>
         )))
   }
 }
-def permsOnly(BPid: Int) = SecuredAction { implicit request =>
+def permsOnly(BPid: Int) = silhouette.SecuredAction { implicit request =>
     val elemperms = ActPermissionDAO.getAll
     //val elms = ProcElemDAO.findByBPId(BPid).map(_.id)
     //val spelms = SpaceElemDAO.findByBPId(BPid).map(_.id)
@@ -178,7 +179,7 @@ def permsOnly(BPid: Int) = SecuredAction { implicit request =>
         elemperms.filter(perm => perm.process == BPid )
         )))
   }
-  def peoplesOnly = SecuredAction { implicit request =>
+  def peoplesOnly = silhouette.SecuredAction { implicit request =>
     //val elemperms = ActPermissionDAO.getAll
     //val elms = ProcElemDAO.findByBPId(BPid).map(_.id)
     //val spelms = SpaceElemDAO.findByBPId(BPid).map(_.id)
@@ -193,11 +194,11 @@ def permsOnly(BPid: Int) = SecuredAction { implicit request =>
         )))
   }
 
-  def create() = SecuredAction { implicit request =>
+  def create() = silhouette.SecuredAction { implicit request =>
         Ok("x")//views.html.permissions.element.elemperm_form(elemPermForm)(Some(request.identity.emailFilled)))
   }
 
-  def create_new() = SecuredAction(BodyParsers.parse.json) { request =>
+  def create_new() = silhouette.SecuredAction(BodyParsers.parse.json) { request =>
     val business = request.identity.businessFirst
 
     val permResult = request.body.validate[ActPermission]
@@ -226,7 +227,7 @@ def permsOnly(BPid: Int) = SecuredAction { implicit request =>
   }
 
 
-def update(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def update(id: Int) = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
     val permResult = request.body.validate[ActPermission]
       permResult.fold(
         errors => {
@@ -240,7 +241,7 @@ def update(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =
 }
 
 
-def destroy(id: Int) = SecuredAction { implicit request =>
+def destroy(id: Int) = silhouette.SecuredAction { implicit request =>
     ActPermissionDAO.get(id) match {
       case Some(permission) => {
 

@@ -1,4 +1,5 @@
 package controllers
+import utils.auth.DefaultEnv
 
 import models.DAO.resources.{BusinessDAO, BusinessDTO}
 import models.DAO._
@@ -26,7 +27,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.BProcessDTO
@@ -54,7 +55,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
@@ -85,9 +86,9 @@ case class TestActionPayload(
 
 class ActionController @Inject() (
   val messagesApi: MessagesApi,
-  val env: Environment[User2, CookieAuthenticator],
+  silhouette: Silhouette[DefaultEnv],
   socialProviderRegistry: SocialProviderRegistry)
-  extends Silhouette[User2, CookieAuthenticator] {
+  extends Controller with I18nSupport {
 
   implicit val SessionElementsReads = Json.reads[SessionElements]
   implicit val SessionElementsWrites = Json.format[SessionElements]
@@ -188,7 +189,7 @@ class ActionController @Inject() (
   implicit val TestActionPayloadWrites = Json.format[TestActionPayload]
 
 // GET         /acts
-def acts() = SecuredAction.async { implicit request =>
+def acts() = silhouette.SecuredAction.async { implicit request =>
   	val email = request.identity.emailFilled
     val launchesCn = BPSessionDAOF.await(
     	BPSessionDAOF.findByBusiness(request.identity.businessFirst)    )
@@ -214,7 +215,7 @@ def acts() = SecuredAction.async { implicit request =>
 
 // GET /actions/refs
 // Action that exist only in refs and not created in processes 
-def actionsRefs() = SecuredAction.async { implicit request =>
+def actionsRefs() = silhouette.SecuredAction.async { implicit request =>
 	val refs = RefDAO.getAllVisible
   val refs_collected = refs.map { ref =>
       val reactions = ReactionRefDAO.findByRef(ref.id.get)
@@ -254,7 +255,7 @@ def actionsRefs() = SecuredAction.async { implicit request =>
 
 // GET /actions/processes
 // Actions that already created in processes
-def actionsProcesses() = SecuredAction.async { implicit request =>
+def actionsProcesses() = silhouette.SecuredAction.async { implicit request =>
     val business = request.identity.businessFirst
     val user_services = BusinessServiceDAO.getAllByBusiness(business).map(_.id.getOrElse(-1))
     val bprocess = BPDAO.getByServices(user_services).map(p => p.id.get).toSeq 
@@ -292,7 +293,7 @@ def actionsProcesses() = SecuredAction.async { implicit request =>
 
 
 // POST /action/ref/:reaction/test
-def testActionRef(reactionId: Int) = SecuredAction.async { implicit request =>
+def testActionRef(reactionId: Int) = silhouette.SecuredAction.async { implicit request =>
   
   val reactionsFOpt= ReactionRefDAOF.findById(reactionId)
   reactionsFOpt.map { reactionsOpt => 
@@ -315,7 +316,7 @@ def testActionRef(reactionId: Int) = SecuredAction.async { implicit request =>
 
 }
 // POST /action/process/:reaction/test
-def testActionProcess(reactionId: Int) = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+def testActionProcess(reactionId: Int) = silhouette.SecuredAction.async(BodyParsers.parse.json) { implicit request =>
 
   val actionOpt = ReactionDAOF.await(ReactionDAOF.findById(reactionId))
   actionOpt match {
@@ -393,7 +394,7 @@ def testActionProcess(reactionId: Int) = SecuredAction.async(BodyParsers.parse.j
   * @return payload for action that ready to pass into tester
   */
 def applyTestActionPayload(actionId: Int, 
-                           request: SecuredRequest[play.api.libs.json.JsValue]):Option[TestActionPayload] = {
+                           request: com.mohiva.play.silhouette.api.actions.SecuredRequest[DefaultEnv, play.api.libs.json.JsValue]):Option[TestActionPayload] = {
   request.body.validate[TestActionPayload].map{
       case payload => { 
         val correctPayload = payload.copy(middleware = payload.middleware.copy(reaction = actionId))

@@ -1,7 +1,9 @@
 package controllers
+import utils.auth.DefaultEnv
 
 import java.util.UUID
 import javax.inject.Inject
+import play.api.mvc.Controller
 
 import com.mohiva.play.silhouette.api._
 import com.mohiva.play.silhouette.api.repositories.AuthInfoRepository
@@ -12,7 +14,7 @@ import com.mohiva.play.silhouette.impl.providers._
 import forms.SignUpForm
 import models.User2
 import models.services.UserService
-import play.api.i18n.{ MessagesApi, Messages }
+import play.api.i18n._
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.mvc.Action
 
@@ -30,12 +32,12 @@ import scala.concurrent.Future
  */
 class SignUpController @Inject() (
   val messagesApi: MessagesApi,
-  val env: Environment[User2, CookieAuthenticator],
+  silhouette: Silhouette[DefaultEnv],
   userService: UserService,
   authInfoRepository: AuthInfoRepository,
   avatarService: AvatarService,
   passwordHasher: PasswordHasher)
-  extends Silhouette[User2, CookieAuthenticator] {
+  extends Controller with I18nSupport {
 
 
   /**
@@ -69,12 +71,12 @@ class SignUpController @Inject() (
               avatar <- avatarService.retrieveURL(data.email)
               user <- userService.save(user.copy(avatarURL = avatar))
               authInfo <- authInfoRepository.add(loginInfo, authInfo)
-              authenticator <- env.authenticatorService.create(loginInfo)
-              value <- env.authenticatorService.init(authenticator)
-              result <- env.authenticatorService.embed(value, Redirect(routes.ProfileController.dashboard()))
+              authenticator <- silhouette.env.authenticatorService.create(loginInfo)
+              value <- silhouette.env.authenticatorService.init(authenticator)
+              result <- silhouette.env.authenticatorService.embed(value, Redirect(routes.ProfileController.dashboard()))
             } yield {
-              env.eventBus.publish(SignUpEvent(user, request, request2Messages))
-              env.eventBus.publish(LoginEvent(user, request, request2Messages))
+              silhouette.env.eventBus.publish(SignUpEvent(user, request))
+              silhouette.env.eventBus.publish(LoginEvent(user, request))
               result
             }
         }

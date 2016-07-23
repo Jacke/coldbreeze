@@ -1,4 +1,5 @@
 package controllers
+import utils.auth.DefaultEnv
 import scala.util.{Try, Success, Failure}
 
 import models.{AccountsDAO, User, Page}
@@ -7,7 +8,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import controllers.users._
@@ -32,7 +33,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -43,7 +44,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -52,9 +53,9 @@ import play.api.mvc.{ Action, RequestHeader }
 
 class NotificationController @Inject() (
   val messagesApi: MessagesApi,
-  val env: Environment[User2, CookieAuthenticator],
+  silhouette: Silhouette[DefaultEnv],
   socialProviderRegistry: SocialProviderRegistry)(implicit val mat: akka.stream.Materializer) 
-  extends Silhouette[User2, CookieAuthenticator] {
+  extends Controller with I18nSupport {
     implicit val sumFormat                    = Json.format[SumActor.Sum]
     implicit val sumFrameFormatter            = FrameFormatter.jsonFrame[SumActor.Sum]
     implicit val sumResultFormat              = Json.format[SumActor.SumResult]
@@ -95,11 +96,11 @@ def socket = WebSocket.tryAcceptWithActor[JsValue, JsValue] { request => //[SumA
     */
 
         implicit val req = Request(request, AnyContentAsEmpty)
-        SecuredRequestHandler { securedRequest =>
-          Future.successful(HandlerResult(Ok, Some(securedRequest.identity)))
+        silhouette.SecuredRequestHandler { securedRequest =>
+          Future.successful(com.mohiva.play.silhouette.api.HandlerResult(Ok, Some(securedRequest.identity)))
         }.map {
-          case HandlerResult(r, Some(user)) => Right(UserActor.props(user.email.getOrElse("")) _)
-          case HandlerResult(r, None) => Left(r)
+          case com.mohiva.play.silhouette.api.HandlerResult(r, Some(user)) => Right(UserActor.props(user.email.getOrElse("")) _)
+          case com.mohiva.play.silhouette.api.HandlerResult(r, None) => Left(r)
         }
 
 //    Future.successful(Left(Forbidden))
@@ -151,7 +152,7 @@ def popup(emails_hash: String, target: String) = Action { request =>
   Ok("sended")
 }
 
-def notify_test(msg: String) = SecuredAction { implicit request =>
+def notify_test(msg: String) = silhouette.SecuredAction { implicit request =>
           val system = SumActor.system
           /* SumActor.actors.foreach { actor =>
             val actor = system.actorOf(Props[SumActor])
@@ -186,7 +187,7 @@ def UserItemAction = new ActionRefiner[SecuredRequest[A, env.U], ItemRequest] {
   }
 }
 
-def tagItem = (SecuredAction andThen UserItemAction) { request =>
+def tagItem = (silhouette.SecuredAction andThen UserItemAction) { request =>
     //request.item.addTag(tag)
     Ok("User " + request.identityname.toString + " tagged ")
 }

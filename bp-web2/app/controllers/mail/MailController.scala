@@ -1,4 +1,5 @@
 package controllers
+import utils.auth.DefaultEnv
 
 import play.api.Play.current
 import play.api.libs.mailer._
@@ -24,7 +25,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import models._
 import models.daos._
 
@@ -59,9 +60,9 @@ import scala.concurrent.Future
 class MailController @Inject() (
   mailerClient: MailerClient,
   val messagesApi: MessagesApi,
-  val env: Environment[User2, CookieAuthenticator],
+  silhouette: Silhouette[DefaultEnv],
   socialProviderRegistry: SocialProviderRegistry)
-  extends Silhouette[User2, CookieAuthenticator] {
+  extends Controller with I18nSupport {
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
@@ -76,7 +77,7 @@ import sys.process._
 
 
 
-def testMail() = SecuredAction.async { implicit request =>
+def testMail() = silhouette.SecuredAction.async { implicit request =>
 //	Mailer.sendEmail(mailerClient)
 
 val token = Seq(s"python", "gmail_oauth2.py", "--refresh_token=1/EPAe0BTWz87_N4or6fZhoHbJMZb5DsTufprSnokVrfo",

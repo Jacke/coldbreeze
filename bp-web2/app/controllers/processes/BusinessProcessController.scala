@@ -1,4 +1,5 @@
 package controllers
+import utils.auth.DefaultEnv
 
 import models.DAO.resources.{BusinessDAO, BusinessDTO}
 import models.DAO._
@@ -26,7 +27,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.BProcessDTO
@@ -87,7 +88,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -95,9 +96,9 @@ import play.api.mvc.{ Action, RequestHeader }
 
 class BusinessProcessController @Inject() (
   val messagesApi: MessagesApi,
-  val env: Environment[User2, CookieAuthenticator],
+  silhouette: Silhouette[DefaultEnv],
   socialProviderRegistry: SocialProviderRegistry)
-  extends Silhouette[User2, CookieAuthenticator] {
+  extends Controller with I18nSupport {
 
 
   implicit val stationReads = Json.reads[BPStationDTO]
@@ -170,7 +171,7 @@ class BusinessProcessController @Inject() (
   implicit val DeltasContainerWrites = Json.format[DeltasContainer]
 
 
-def bprocess = SecuredAction { implicit request =>
+def bprocess = silhouette.SecuredAction { implicit request =>
     val business = request.identity.businessFirst
     val user_services = BusinessServiceDAO.getAllByBusiness(business).map(_.id.getOrElse(-1))
 
@@ -202,7 +203,7 @@ def bprocess = SecuredAction { implicit request =>
 }
 
 
-def all_cached_bprocess(timestamp: String) = SecuredAction.async { implicit request =>
+def all_cached_bprocess(timestamp: String) = silhouette.SecuredAction.async { implicit request =>
     val business = request.identity.businessFirst
     val user_services = BusinessServiceDAO.getAllByBusiness(business).map(_.id.getOrElse(-1))
 
@@ -251,7 +252,7 @@ def all_cached_bprocess(timestamp: String) = SecuredAction.async { implicit requ
 
 
 
-def copy(bpId: Int, orig_title: String) = SecuredAction { implicit request =>
+def copy(bpId: Int, orig_title: String) = silhouette.SecuredAction { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, bpId)) {
        val cloned:Int = cloner.util.ProcessCloner.clone(bpId, orig_title)
        cloned match {
@@ -264,7 +265,7 @@ def copy(bpId: Int, orig_title: String) = SecuredAction { implicit request =>
 }
 
 
-def show_bprocess(id: Int) = SecuredAction { implicit request =>
+def show_bprocess(id: Int) = silhouette.SecuredAction { implicit request =>
     val business:Int = request.identity.businessFirst
     BPDAO.get(id) match {
       case Some(bprocess) => {
@@ -280,7 +281,7 @@ def show_bprocess(id: Int) = SecuredAction { implicit request =>
 
 
 
-def create_bprocess = SecuredAction(BodyParsers.parse.json) { request =>
+def create_bprocess = silhouette.SecuredAction(BodyParsers.parse.json) { request =>
   val bpResult = request.body.validate[BProcessDTO]
   val business:Int = request.identity.businessFirst
     Logger.debug(s"trying create process with $bpResult")
@@ -306,7 +307,7 @@ def create_bprocess = SecuredAction(BodyParsers.parse.json) { request =>
     }
   )
 }
-def update_bprocess(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def update_bprocess(id: Int) = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
     val bpResult = request.body.validate[BProcessDTO]
     val business:Int = request.identity.businessFirst
       bpResult.fold(
@@ -328,7 +329,7 @@ def update_bprocess(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit 
       )
 }
 
-def delete_bprocess(id: Int) = SecuredAction { implicit request =>
+def delete_bprocess(id: Int) = silhouette.SecuredAction { implicit request =>
      val business:Int = request.identity.businessFirst
      BPDAO.get(id) match {
       case Some(bprocess) => {

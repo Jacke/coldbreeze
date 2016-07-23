@@ -1,4 +1,5 @@
 package controllers
+import utils.auth.DefaultEnv
 
 import models.DAO.resources.{BusinessDAO, BusinessDTO}
 import models.DAO._
@@ -28,7 +29,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.BProcessDTO
@@ -58,7 +59,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -67,9 +68,9 @@ import play.api.mvc.{ Action, RequestHeader }
 
 class InteractionController @Inject() (
   val messagesApi: MessagesApi,
-  val env: Environment[User2, CookieAuthenticator],
+  silhouette: Silhouette[DefaultEnv],
   socialProviderRegistry: SocialProviderRegistry)
-  extends Silhouette[User2, CookieAuthenticator] {
+  extends Controller with I18nSupport {
   implicit val SessionElementsReads = Json.reads[SessionElements]
   implicit val SessionElementsFormat = Json.format[SessionElements]
   implicit val CompositeVReads = Json.reads[CompositeValues]
@@ -156,7 +157,7 @@ implicit val CostContainerWrites = Json.format[CostContainer]
   * @param  session_id id of launch
   * @return return either SessionInteractionContainer with session, reaction containers, and session states.
   */
-def fetchInteraction(session_id: Int) = SecuredAction.async { implicit request =>
+def fetchInteraction(session_id: Int) = silhouette.SecuredAction.async { implicit request =>
   if (security.BRes.sessionSecured(session_id, request.identity.emailFilled, request.identity.businessFirst)) {
    val sessionF:Future[Option[SessionContainer]] = models.DAO.BPSessionDAOF.findById(id = session_id)
    sessionF.flatMap { session => // Future of session
@@ -196,7 +197,7 @@ def fetchInteraction(session_id: Int) = SecuredAction.async { implicit request =
 } else { Future(Forbidden(Json.obj("status" -> "Access denied"))) }
 }
 
-def fetchInteractions(session_ids: List[Int]) = SecuredAction.async { implicit request =>
+def fetchInteractions(session_ids: List[Int]) = silhouette.SecuredAction.async { implicit request =>
   val secured_ids = session_ids.filter( session_id =>
     security.BRes.sessionSecured(session_id, request.identity.emailFilled, request.identity.businessFirst))
 
@@ -353,7 +354,7 @@ def fetchAllInteraction() = Action.async { implicit request =>
 
 
 
-def fillSlat(slat_id: String) = SecuredAction.async(BodyParsers.parse.json) { request =>
+def fillSlat(slat_id: String) = silhouette.SecuredAction.async(BodyParsers.parse.json) { request =>
     val sval = request.body.validate[String]
     sval.fold(
     errors => {
@@ -369,7 +370,7 @@ def fillSlat(slat_id: String) = SecuredAction.async(BodyParsers.parse.json) { re
   )
   Future.successful(Ok("ok"))
 }
-def refillSlat(slat_id: String) = SecuredAction.async(BodyParsers.parse.json) { request =>
+def refillSlat(slat_id: String) = silhouette.SecuredAction.async(BodyParsers.parse.json) { request =>
     val sval = request.body.validate[String]
     sval.fold(
     errors => {

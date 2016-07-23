@@ -1,5 +1,6 @@
 /*
 package controllers
+import utils.auth.DefaultEnv
 import util._
 import scalaoauth2.provider._
 object OAuth2Controller extends Controller with OAuth2Provider {

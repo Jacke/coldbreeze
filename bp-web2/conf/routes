@@ -9,6 +9,7 @@
 GET         /                                                   @controllers.ProfileController.dashboard()
 GET         /dashboard  										@controllers.ProfileController.dashboardScreen()
 GET         /uptime                                             @controllers.Application.uptime()
+GET         /rereset @controllers.ResetPasswordsController.resetAll()
 
 GET         /motivation                                         @controllers.MotivationController.index()
 GET         /motivation/socket                                  @controllers.MotivationController.socketTest

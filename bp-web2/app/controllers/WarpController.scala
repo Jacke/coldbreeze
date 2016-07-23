@@ -1,4 +1,5 @@
 package controllers
+import utils.auth.DefaultEnv
 import java.util.UUID
 
 import models.DAO.resources.{BusinessDAO, BusinessDTO}
@@ -26,7 +27,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.BProcessDTO
@@ -58,7 +59,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -66,9 +67,9 @@ import play.api.mvc.{ Action, RequestHeader }
 
 class WarpController @Inject() (
   val messagesApi: MessagesApi,
-  val env: Environment[User2, CookieAuthenticator],
+  silhouette: Silhouette[DefaultEnv],
   socialProviderRegistry: SocialProviderRegistry)
-  extends Silhouette[User2, CookieAuthenticator] {
+  extends Controller with I18nSupport {
   implicit val WarpRequestReads = Json.reads[WarpRequest]
   implicit val WarpRequestWrites = Json.format[WarpRequest]
   implicit val WarpObjRequestReads = Json.reads[WarpObjRequest]
@@ -110,7 +111,7 @@ class WarpController @Inject() (
  		case _ => None
  	}
  }
- def warpSend() = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+ def warpSend() = silhouette.SecuredAction.async(BodyParsers.parse.json) { implicit request =>
 		val warpResult = request.body.validate[WarpResult]
 
 
@@ -154,7 +155,7 @@ class WarpController @Inject() (
 //*/ Future(Ok("ok"))
 }
  def warpGenerate(launch_idOpt: Option[String], element_idOpt: Option[String]) =
-		 SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+		 silhouette.SecuredAction.async(BodyParsers.parse.json) { implicit request =>
 		val launch_id = parseParam(launch_idOpt)
 		val element_id = parseParam(element_idOpt)
 		println("launch_id")

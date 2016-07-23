@@ -1,4 +1,5 @@
 package controllers
+import utils.auth.DefaultEnv
 
 import models.DAO.resources.{BusinessDAO, BusinessDTO}
 import models.DAO._
@@ -22,7 +23,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.BProcessDTO
@@ -46,7 +47,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.mvc.{ Action, RequestHeader }
@@ -59,9 +60,9 @@ case class BaseNewValue(baseNewValue: String)
 
 class ProcessElementsController @Inject() (
   val messagesApi: MessagesApi,
-  val env: Environment[User2, CookieAuthenticator],
+  silhouette: Silhouette[DefaultEnv],
   socialProviderRegistry: SocialProviderRegistry)
-  extends Silhouette[User2, CookieAuthenticator] {
+  extends Controller with I18nSupport {
 
 implicit val BaseNewValueReads = Json.reads[BaseNewValue]
 implicit val BaseNewValueWrites = Json.format[BaseNewValue]
@@ -138,7 +139,7 @@ implicit val BaseNewValueWrites = Json.format[BaseNewValue]
 
 
 // GET   /processes/elements/
-def allElements(process_ids: List[Int]) = SecuredAction.async { implicit request =>
+def allElements(process_ids: List[Int]) = silhouette.SecuredAction.async { implicit request =>
   val securedProcessIdsF = security.BRes.processesIdsIsOwnedByBiz(request.identity.businessFirst, process_ids)
 
   securedProcessIdsF.map { securedProcessIds =>
@@ -169,7 +170,7 @@ def allElements(process_ids: List[Int]) = SecuredAction.async { implicit request
 }
 
 // GET   /processes/elements/cached
-def allElementsCached(process_ids: List[Int],timestamp:String) = SecuredAction.async { implicit request =>
+def allElementsCached(process_ids: List[Int],timestamp:String) = silhouette.SecuredAction.async { implicit request =>
 
   val securedProcessIdsF = security.BRes.processesIdsIsOwnedByBiz(request.identity.businessFirst, process_ids)
   securedProcessIdsF.flatMap { securedProcessIds =>
@@ -208,7 +209,7 @@ def allElementsCached(process_ids: List[Int],timestamp:String) = SecuredAction.a
 
 
 // /bprocess/:id/elements
-def frontElems(id: Int) = SecuredAction { implicit request =>
+def frontElems(id: Int) = silhouette.SecuredAction { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, id)) {
       val frontElements = ProcElemDAO.findByBPId(id)
       val frontElementsWithTopos = decorateProcElementsToJson(frontElements)
@@ -222,7 +223,7 @@ def frontElems(id: Int) = SecuredAction { implicit request =>
 def show_elem_length(id: Int):Int = ProcElemDAO.findLengthByBPId(id)
 
 // /bprocess/elems_length
-def bpElemLength() = SecuredAction { implicit request =>
+def bpElemLength() = silhouette.SecuredAction { implicit request =>
     val bps = BPDAOF.getAll // TODO: Weak perm
     val elms = ProcElemDAO.getAll
     val spelms = SpaceElemDAO.getAll
@@ -233,13 +234,13 @@ def bpElemLength() = SecuredAction { implicit request =>
 }
 
 // /bprocess/:id/spaces
-def spaces(id: Int) = SecuredAction { implicit request =>
+def spaces(id: Int) = silhouette.SecuredAction { implicit request =>
       if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, id)) {
             Ok(Json.toJson(BPSpaceDAOF.findByBPIdB(id)))
       } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
 // /bprocess/:id/space_elems
-def spaceElems(id: Int) = SecuredAction { implicit request =>
+def spaceElems(id: Int) = silhouette.SecuredAction { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, id)) {
           Ok(Json.toJson(SpaceElemDAO.findByBPId(id)))
     } else { Forbidden(Json.obj("status" -> "Access denied")) }
@@ -318,7 +319,7 @@ val SpaceElementForm = Form(
 
 
 
-def createFrontElem() = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+def createFrontElem() = silhouette.SecuredAction.async(BodyParsers.parse.json) { implicit request =>
 
 request.body.validate[RefElemContainer].map {
   case entity => {
@@ -354,7 +355,7 @@ request.body.validate[RefElemContainer].map {
       e => Future( BadRequest(e.toString) )
     }
 }
-def createSpace() = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def createSpace() = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
   val placeResult = request.body.validate[BPSpaceDTO]
    request.body.validate[BPSpaceDTO].map{
     case entity => {
@@ -370,7 +371,7 @@ def createSpace() = SecuredAction(BodyParsers.parse.json) { implicit request =>
     }
 }
 
-def createSpaceElem() = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+def createSpaceElem() = silhouette.SecuredAction.async(BodyParsers.parse.json) { implicit request =>
   val placeResult = request.body.validate[RefElemContainer]
     request.body.validate[RefElemContainer].map{
     case entity => Logger.debug(s"entity are $entity")
@@ -411,7 +412,7 @@ def createSpaceElem() = SecuredAction.async(BodyParsers.parse.json) { implicit r
 
 
 /* Update */
-def updateBase(bpId: Int, base_id: Long) = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+def updateBase(bpId: Int, base_id: Long) = silhouette.SecuredAction.async(BodyParsers.parse.json) { implicit request =>
   request.body.validate[BaseNewValue].map{
     case entity => {
           if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, bpId)) {
@@ -427,7 +428,7 @@ def updateBase(bpId: Int, base_id: Long) = SecuredAction.async(BodyParsers.parse
 
 
 /* Update */
-def updateFrontElem(bpId: Int, elem_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def updateFrontElem(bpId: Int, elem_id: Int) = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
   request.body.validate[UndefElement].map{
     case entity => {
           if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, entity.bprocess)) {
@@ -446,7 +447,7 @@ def updateFrontElem(bpId: Int, elem_id: Int) = SecuredAction(BodyParsers.parse.j
     }
 }
 
-def updateSpace(id: Int, space_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def updateSpace(id: Int, space_id: Int) = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
   request.body.validate[BPSpaceDTO].map{
     case entity => {
         if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, entity.bprocess)) {
@@ -461,7 +462,7 @@ def updateSpace(id: Int, space_id: Int) = SecuredAction(BodyParsers.parse.json) 
       e => BadRequest("formWithErrors")
     }
 }
-def updateSpaceElem(id: Int, spelem_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def updateSpaceElem(id: Int, spelem_id: Int) = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
   request.body.validate[SpaceElementDTO].map{
     case entity => {
         if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, entity.bprocess)) {
@@ -481,7 +482,7 @@ def updateSpaceElem(id: Int, spelem_id: Int) = SecuredAction(BodyParsers.parse.j
     }
 }
 
-def moveUpFrontElem(bpId: Int, elem_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def moveUpFrontElem(bpId: Int, elem_id: Int) = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, bpId)) {
           ProcElemDAO.moveUp(bpId, elem_id)
           action(request.identity.emailFilled, process = Some(bpId),
@@ -491,7 +492,7 @@ def moveUpFrontElem(bpId: Int, elem_id: Int) = SecuredAction(BodyParsers.parse.j
     } else { Forbidden(Json.obj("status" -> "Access denied")) }
 
 }
-def moveDownFrontElem(bpId: Int, elem_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def moveDownFrontElem(bpId: Int, elem_id: Int) = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, bpId)) {
       ProcElemDAO.moveDown(bpId, elem_id)
       action(request.identity.emailFilled, process = Some(bpId),
@@ -500,7 +501,7 @@ def moveDownFrontElem(bpId: Int, elem_id: Int) = SecuredAction(BodyParsers.parse
       Ok(Json.toJson("moved"))
     } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
-def moveUpSpaceElem(id: Int, spelem_id: Int, space_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def moveUpSpaceElem(id: Int, spelem_id: Int, space_id: Int) = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
     val process_id = id
     if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, process_id)) {
       SpaceElemDAO.moveUp(id, spelem_id, space_id)
@@ -510,7 +511,7 @@ def moveUpSpaceElem(id: Int, spelem_id: Int, space_id: Int) = SecuredAction(Body
       Ok(Json.toJson("moved"))
     } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
-def moveDownSpaceElem(id: Int, spelem_id: Int, space_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def moveDownSpaceElem(id: Int, spelem_id: Int, space_id: Int) = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
     val process_id = id
     if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, process_id)) {
       SpaceElemDAO.moveDown(id, spelem_id, space_id)
@@ -526,7 +527,7 @@ def moveDownSpaceElem(id: Int, spelem_id: Int, space_id: Int) = SecuredAction(Bo
 
 
 /* Delete */
-def deleteFrontElem(bpID: Int, elem_id: Int) = SecuredAction { implicit request =>
+def deleteFrontElem(bpID: Int, elem_id: Int) = silhouette.SecuredAction { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, bpID)) {
       val elem = ProcElemDAO.findById(elem_id).get
 
@@ -542,7 +543,7 @@ def deleteFrontElem(bpID: Int, elem_id: Int) = SecuredAction { implicit request 
           }
      } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
-def deleteSpace(bpID: Int, space_id: Int) = SecuredAction { implicit request =>
+def deleteSpace(bpID: Int, space_id: Int) = silhouette.SecuredAction { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, bpID)) {
 
       BPSpaceDAOF.await( BPSpaceDAOF.delete(space_id) ) match {
@@ -551,7 +552,7 @@ def deleteSpace(bpID: Int, space_id: Int) = SecuredAction { implicit request =>
       }
     } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
-def deleteSpaceElem(bpID: Int, spelem_id: Int) = SecuredAction { implicit request =>
+def deleteSpaceElem(bpID: Int, spelem_id: Int) = silhouette.SecuredAction { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, bpID)) {
       val spelem = SpaceElemDAO.findById(spelem_id).get
       SpaceElemDAO.delete(spelem_id) match {
@@ -572,7 +573,7 @@ def deleteSpaceElem(bpID: Int, spelem_id: Int) = SecuredAction { implicit reques
  * Element topology
  */
 
-def element_topos(id: Int) = SecuredAction { implicit request =>
+def element_topos(id: Int) = silhouette.SecuredAction { implicit request =>
   if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, id)) {
       val topologs_dto = ElemTopologDAO.findByBP(id)
       Logger.debug(s"topos quantity are $topologs_dto.length")
@@ -599,51 +600,51 @@ def element_topos(id: Int) = SecuredAction { implicit request =>
 /**
  * State, reactions, switchers
  **/
-def state_index(BPid: Int) = SecuredAction { implicit request =>
+def state_index(BPid: Int) = silhouette.SecuredAction { implicit request =>
   if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, BPid)) {
     Ok(Json.toJson(BPStateDAOF.findByBP(BPid)))
   } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
-def state_session_index(BPid: Int, session_id: Int) = SecuredAction { implicit request =>
+def state_session_index(BPid: Int, session_id: Int) = silhouette.SecuredAction { implicit request =>
   if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, BPid)) {
     Ok(Json.toJson( BPSessionStateDAOF.await( BPSessionStateDAOF.findByBPAndSession(BPid, session_id) ) ))
   } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
-def update_session_state(BPid: Int, session_id: Int, state_id: Int) = SecuredAction { implicit request =>
+def update_session_state(BPid: Int, session_id: Int, state_id: Int) = silhouette.SecuredAction { implicit request =>
   if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, BPid)) {
     Ok(Json.toJson("Ok"))
   } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
-def delete_session_state(BPid: Int, session_id: Int, state_id: Int) = SecuredAction { implicit request =>
+def delete_session_state(BPid: Int, session_id: Int, state_id: Int) = silhouette.SecuredAction { implicit request =>
   if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, BPid)) {
     Ok(Json.toJson("Ok"))
   } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
-def update_state(BPid: Int, state_id: Int) = SecuredAction { implicit request =>
+def update_state(BPid: Int, state_id: Int) = silhouette.SecuredAction { implicit request =>
   if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, BPid)) {
     Ok(Json.toJson("Ok"))
   } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
-def delete_state(BPid: Int, state_id: Int) = SecuredAction { implicit request =>
+def delete_state(BPid: Int, state_id: Int) = silhouette.SecuredAction { implicit request =>
   if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, BPid)) {
      Ok(Json.toJson("Ok"))
   } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
-def switches_index(BPid: Int) = SecuredAction { implicit request =>
+def switches_index(BPid: Int) = silhouette.SecuredAction { implicit request =>
   if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, BPid)) {
      Ok(Json.toJson(SwitcherDAO.findByBPId(BPid)))
   } else { Forbidden(Json.obj("status" -> "Access denied")) }
 
 }
-def update_switcher(id: Int) = SecuredAction { implicit request =>
+def update_switcher(id: Int) = silhouette.SecuredAction { implicit request =>
   Ok(Json.toJson("Ok"))
 }
-def delete_switcher(id: Int) = SecuredAction { implicit request =>
+def delete_switcher(id: Int) = silhouette.SecuredAction { implicit request =>
   Ok(Json.toJson("Ok"))
 }
 
 // GET 			/bprocess/:BPid/reactions		      @controllers.ProcessElementsController.reactions_index(BPid: Int)
-def reactions_index(BPid: Int) = SecuredAction { implicit request =>
+def reactions_index(BPid: Int) = silhouette.SecuredAction { implicit request =>
   if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, BPid)) {
     Ok(Json.toJson(ReactionDAO.findByBP(BPid).map { react =>
 
@@ -668,10 +669,10 @@ def reactions_index(BPid: Int) = SecuredAction { implicit request =>
   } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
 
-def update_reaction(id: Int) = SecuredAction { implicit request =>
+def update_reaction(id: Int) = silhouette.SecuredAction { implicit request =>
   Ok(Json.toJson("Ok"))
 }
-def delete_reaction(id: Int) = SecuredAction { implicit request =>
+def delete_reaction(id: Int) = silhouette.SecuredAction { implicit request =>
   Ok(Json.toJson("Ok"))
 }
 

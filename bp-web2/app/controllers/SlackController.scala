@@ -1,4 +1,5 @@
 package controllers
+import utils.auth.DefaultEnv
 import sys.process._
 
 import play.api._
@@ -20,7 +21,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import controllers.users._
@@ -47,22 +48,22 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
 import play.api.mvc.{ Action, RequestHeader }
 class SlackController @Inject() (
   val messagesApi: MessagesApi,
-  val env: Environment[User2, CookieAuthenticator],
+  silhouette: Silhouette[DefaultEnv],
   socialProviderRegistry: SocialProviderRegistry)
-  extends Silhouette[User2, CookieAuthenticator] { // with Secured  {
+  extends Controller with I18nSupport { // with Secured  {
   import play.api.Play.current
   implicit val TokenResultFormat = Json.format[TokenResult]
   implicit val TokenResultReaders = Json.reads[TokenResult]
   val applicationLogger = play.api.Logger("application")
 
-  def auth(code: Option[String]) = SecuredAction { implicit request =>
+  def auth(code: Option[String]) = silhouette.SecuredAction { implicit request =>
     // https://slack.com/oauth/authorize?client_id=2175858941.8432520967&scope=users%3Aread+groups%3Aread&state=authed
     // client_id    - issued when you created your app (required)
     // scope        - permissions to request (see below) (required)
@@ -88,7 +89,7 @@ class SlackController @Inject() (
 	}
   }
 
-  def getUsers() = SecuredAction.async { implicit request =>
+  def getUsers() = silhouette.SecuredAction.async { implicit request =>
   	val userEmail = request.identity.emailFilled
   	val result = SlackCred.userCodes.find(code => code.email == userEmail) match {
   		case Some(code) => {

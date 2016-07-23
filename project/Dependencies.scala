@@ -122,6 +122,9 @@ object Dependencies {
   val jwtCore         = "com.atlassian.jwt"         % "jwt-core"                % "1.2.4"
   val jwtApi          = "com.atlassian.jwt"         % "jwt-api"                 % "1.2.4"
   val silhouette      = "com.mohiva"                %% "play-silhouette"        % "4.0.0"
+  val silhEpassword   = "com.mohiva"                %% "play-silhouette-password-bcrypt" % "4.0.0"
+  val silhEcrypto     = "com.mohiva"                %% "play-silhouette-crypto-jca" % "4.0.0"
+  val silhEpersistenc = "com.mohiva"                %% "play-silhouette-persistence" % "4.0.0"
   val silhouettetest  = "com.mohiva"                %% "play-silhouette-testkit"% "4.0.0"   % "test"
 
   val amonite         = "com.lihaoyi"               %% "ammonite-repl"          % "0.2.4" % "test"

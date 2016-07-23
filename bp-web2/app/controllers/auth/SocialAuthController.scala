@@ -1,6 +1,9 @@
 package controllers
+import utils.auth.DefaultEnv
+import play.api.i18n.{ I18nSupport, MessagesApi }
 
 import javax.inject.Inject
+import play.api.mvc.Controller
 
 import com.mohiva.play.silhouette.api._
 import com.mohiva.play.silhouette.api.exceptions.ProviderException
@@ -26,11 +29,11 @@ import scala.concurrent.Future
  */
 class SocialAuthController @Inject() (
   val messagesApi: MessagesApi,
-  val env: Environment[User2, CookieAuthenticator],
+  silhouette: Silhouette[DefaultEnv],
   userService: UserService,
   authInfoRepository: AuthInfoRepository,
   socialProviderRegistry: SocialProviderRegistry)
-  extends Silhouette[User2, CookieAuthenticator] with Logger {
+  extends Controller with I18nSupport with Logger {
 
   /**
    * Authenticates a user against a social provider.
@@ -47,11 +50,11 @@ class SocialAuthController @Inject() (
             profile <- p.retrieveProfile(authInfo)
             user <- userService.save(profile)
             authInfo <- authInfoRepository.save(profile.loginInfo, authInfo)
-            authenticator <- env.authenticatorService.create(profile.loginInfo)
-            value <- env.authenticatorService.init(authenticator)
-            result <- env.authenticatorService.embed(value, Redirect(routes.ProfileController.dashboard()))
+            authenticator <- silhouette.env.authenticatorService.create(profile.loginInfo)
+            value <- silhouette.env.authenticatorService.init(authenticator)
+            result <- silhouette.env.authenticatorService.embed(value, Redirect(routes.ProfileController.dashboard()))
           } yield {
-            env.eventBus.publish(LoginEvent(user, request, request2Messages))
+            silhouette.env.eventBus.publish(LoginEvent(user, request))
             result
           }
         }

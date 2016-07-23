@@ -1,4 +1,5 @@
 package controllers
+import utils.auth.DefaultEnv
 import sys.process._
 
 import play.api._
@@ -28,17 +29,17 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.routing._
 
 class Application @Inject() (
   val messagesApi: MessagesApi,
-  val env: Environment[User2, CookieAuthenticator],
+  silhouette: Silhouette[DefaultEnv],
   hook: utils.MessageQueueConnection,
   socialProviderRegistry: SocialProviderRegistry)
-  extends Silhouette[User2, CookieAuthenticator] {
+  extends Controller with I18nSupport {
   import play.api.Play.current
 
   val applicationLogger = play.api.Logger("application")
@@ -93,7 +94,7 @@ class Application @Inject() (
 
 
 
-  def app() = SecuredAction { implicit request =>
+  def app() = silhouette.SecuredAction { implicit request =>
     // Expired plan checking
       //AccountPlanDAO.getByMasterAcc(request.identity.masterFirst) match {
       //  case Some(current_plan) => applicationLogger.info(s"Plan expired_at: ${current_plan.expired_at}")
@@ -109,7 +110,7 @@ class Application @Inject() (
       //}
   }
 
-  def app2() = SecuredAction { implicit request =>
+  def app2() = silhouette.SecuredAction { implicit request =>
         Ok(views.html.app2(request.identity))
   }
 
@@ -118,7 +119,7 @@ class Application @Inject() (
     Ok(Json.toJson(test_error))
   }
   
-  def proPage() = SecuredAction { implicit request =>
+  def proPage() = silhouette.SecuredAction { implicit request =>
       AccountsDAO.getAccountInfo(request.identity.emailFilled) match {
         case Some(infos) => {
                 val eaSubmited  = infos.ea
@@ -129,7 +130,7 @@ class Application @Inject() (
       }
 
   }
-  def subscribePro() = SecuredAction(BodyParsers.parse.json) { implicit request =>
+  def subscribePro() = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
       println(request.body)
       AccountsDAO.subscribeToPro(request.identity.emailFilled)
       AccountsDAO.getAccountInfo(request.identity.emailFilled) match {
@@ -142,7 +143,7 @@ class Application @Inject() (
       }
   }
 
-  def subscribeEa() = SecuredAction(BodyParsers.parse.json) { implicit request =>
+  def subscribeEa() = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
       println(request.body)
       AccountsDAO.subscribeToEA(request.identity.emailFilled)
       AccountsDAO.getAccountInfo(request.identity.emailFilled) match {
@@ -199,7 +200,7 @@ def uptime() = Action { implicit request =>
 }
 
 
-  def whoami = SecuredAction.async { implicit request =>
+  def whoami = silhouette.SecuredAction.async { implicit request =>
     val email = request.identity.emailFilled
     val business = request.identity.businessFirst
     applicationLogger.debug("Attempting risky calculation.")

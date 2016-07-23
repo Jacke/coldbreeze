@@ -1,5 +1,6 @@
 package controllers.swagger
 
+import utils.auth.DefaultEnv
 import models.User
 import play.api.libs.json.Json
 import play.api.mvc.Controller
@@ -25,7 +26,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.ExecutionContext.Implicits.global

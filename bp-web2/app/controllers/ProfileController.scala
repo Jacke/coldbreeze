@@ -1,4 +1,5 @@
 package controllers
+import utils.auth.DefaultEnv
 
 import play.api._
 import play.api.mvc._
@@ -17,7 +18,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import controllers.users._
@@ -40,14 +41,14 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models._
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.ExecutionContext.Implicits._
@@ -62,9 +63,9 @@ case class planInfo(title: String, expire_at: org.joda.time.DateTime)
 
 class ProfileController @Inject() (
   val messagesApi: MessagesApi,
-  val env: Environment[User2, CookieAuthenticator],
+  silhouette: Silhouette[DefaultEnv],
   socialProviderRegistry: SocialProviderRegistry)
-  extends Silhouette[User2, CookieAuthenticator] {
+  extends Controller with I18nSupport {
 
   val Home = Redirect(routes.ProfileController.dashboard())
   val DashScreen = Redirect(routes.ProfileController.dashboardScreen())
@@ -72,7 +73,7 @@ class ProfileController @Inject() (
   /************
    * Root entry point
    ************/
-  def dashboard = UserAwareAction.async { implicit request =>
+  def dashboard = silhouette.UserAwareAction.async { implicit request =>
 
     request.identity match {
           case Some(user) => Future.successful( DashScreen )
@@ -80,7 +81,7 @@ class ProfileController @Inject() (
         }
 }
 
-  def dashboardScreen = SecuredAction.async { implicit request =>
+  def dashboardScreen = silhouette.SecuredAction.async { implicit request =>
       val business = request.identity.businessFirst
       if (business < 1) {
         Future(Redirect(controllers.routes.SettingController.workbench()))

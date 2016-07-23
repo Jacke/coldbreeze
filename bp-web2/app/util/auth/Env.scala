@@ -11,3 +11,6 @@ trait DefaultEnv extends Env {
   type I = User2
   type A = CookieAuthenticator
 }
+
+
+/// JWTAuthenticator for REST

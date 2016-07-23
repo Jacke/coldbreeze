@@ -1,4 +1,5 @@
 package controllers.comments
+import utils.auth.DefaultEnv
 import sys.process._
 import play.api._
 import play.api.mvc._
@@ -20,7 +21,7 @@ import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
 import models.comments._
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import controllers.users._
@@ -38,7 +39,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -48,9 +49,9 @@ case class LaunchCommentContainer(comment: Comment, launch_comment: LaunchCommen
 
 class CommentsController @Inject() (
   val messagesApi: MessagesApi,
-  val env: Environment[User2, CookieAuthenticator],
+  silhouette: Silhouette[DefaultEnv],
   socialProviderRegistry: SocialProviderRegistry)
-  extends Silhouette[User2, CookieAuthenticator] {
+  extends Controller with I18nSupport {
 
 
 
@@ -78,7 +79,7 @@ implicit val LaunchCommentContainerReaders = Json.reads[LaunchCommentContainer]
 
 
 // GET    /launch_comments/:launchId   @controllers.comments.CommentsController.indexLaunchComments(launchId: Int)
-	def indexLaunchComments(launchId: Int) = SecuredAction.async { implicit request =>
+	def indexLaunchComments(launchId: Int) = silhouette.SecuredAction.async { implicit request =>
 		LaunchCommentDAOF.getAllByLaunch(launchId).flatMap { launchComments =>
 			val commentsIds:Seq[Long] = launchComments.map(_.comment)
 			val commentsF:Future[Seq[Comment]] = CommentsDAOF.getAllByIds(commentsIds)
@@ -96,7 +97,7 @@ implicit val LaunchCommentContainerReaders = Json.reads[LaunchCommentContainer]
 
 
 //  POST   /launch_comments 			@controllers.comments.CommentsController.createLaunchComment()
-	def createLaunchComment() = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+	def createLaunchComment() = silhouette.SecuredAction.async(BodyParsers.parse.json) { implicit request =>
 	  request.body.validate[LaunchCommentContainer].map{
 	    case entity => CommentsDAOF.pull(entity.comment).flatMap { obj =>
 	        obj match {
@@ -114,7 +115,7 @@ implicit val LaunchCommentContainerReaders = Json.reads[LaunchCommentContainer]
 	}
 
 // POST   /launch_comment/:id 		@controllers.comments.CommentsController.updateLaunchComment(id: Long) 
-	def updateLaunchComment(id: Long) = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+	def updateLaunchComment(id: Long) = silhouette.SecuredAction.async(BodyParsers.parse.json) { implicit request =>
 	   request.body.validate[LaunchCommentContainer].map {
 	   	// LaunchCommentDAOF.update(id: Long, launches_comment: LaunchComment
 	    // CommentsDAOF.update(id: Long, comment: Comment) 
@@ -130,7 +131,7 @@ implicit val LaunchCommentContainerReaders = Json.reads[LaunchCommentContainer]
 	}
 
 //DELETE /launch_comment/:id 		@controllers.comments.CommentsController.deleteLaunchComment(id: Long) 
-	def deleteLaunchComment(id: Long) = SecuredAction.async { implicit request =>
+	def deleteLaunchComment(id: Long) = silhouette.SecuredAction.async { implicit request =>
 	  LaunchCommentDAOF.delete(id).map { res =>
 	    res match {
 	      case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))

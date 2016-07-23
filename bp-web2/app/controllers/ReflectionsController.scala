@@ -1,4 +1,5 @@
 package controllers
+import utils.auth.DefaultEnv
 
 import models.DAO.resources.{BusinessDAO, BusinessDTO}
 import models.DAO._
@@ -26,7 +27,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.BProcessDTO
@@ -50,7 +51,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -88,9 +89,9 @@ case class ReactionContainer(reaction: UnitReactionRef,
 
 class ReflectionsController @Inject() (
                                         val messagesApi: MessagesApi,
-                                        val env: Environment[User2, CookieAuthenticator],
+                                        silhouette: Silhouette[DefaultEnv],
                                         socialProviderRegistry: SocialProviderRegistry)
-                                        extends Silhouette[User2, CookieAuthenticator] {
+                                        extends Controller with I18nSupport {
 
 implicit val RefReads = Json.reads[Ref]
 implicit val RefWrites = Json.format[Ref]
@@ -132,7 +133,7 @@ implicit val ReactionContainerWrites = Json.format[ReactionContainer]
 implicit val RefContainerReads = Json.reads[RefContainer]
 implicit val RefContainerWrites = Json.format[RefContainer]
 
-def index() = SecuredAction { implicit request =>
+def index() = silhouette.SecuredAction { implicit request =>
 	val refs = RefDAO.getAllVisible
   val refs_collected = refs.map { ref =>
       val reactions = ReactionRefDAO.findByRef(ref.id.get)
@@ -172,7 +173,7 @@ def index() = SecuredAction { implicit request =>
 /***
  * Create ref
  */
-def create() = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def create() = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
   request.body.validate[Ref].map{
     case entity => RefDAO.pull_object(entity) match {
             case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not create ref ${entity.title}")))
@@ -186,7 +187,7 @@ def create() = SecuredAction(BodyParsers.parse.json) { implicit request =>
 }
 
 
-def elem_create() = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def elem_create() = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
 
 
   request.body.validate[UnitElementRef].map{
@@ -206,7 +207,7 @@ def elem_create() = SecuredAction(BodyParsers.parse.json) { implicit request =>
 
 
 
-def space_create() = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def space_create() = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
 
   val placeResult = request.body.validate[UnitSpaceRef]
    request.body.validate[UnitSpaceRef].map{
@@ -222,7 +223,7 @@ def space_create() = SecuredAction(BodyParsers.parse.json) { implicit request =>
       e => BadRequest(s"formWithErrors ${e.toString}")
     }
 }
-def spaceelems_create() = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def spaceelems_create() = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
 
   val placeResult = request.body.validate[UnitSpaceElementRef]
   request.body.validate[UnitSpaceElementRef].map{
@@ -248,7 +249,7 @@ def spaceelems_create() = SecuredAction(BodyParsers.parse.json) { implicit reque
 
 
 
-def state_create() = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def state_create() = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
   request.body.validate[BPStateRef].map{
     case entity => BPStateRefDAO.pull_object(entity) match {
             case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not create ref ${entity.title}")))
@@ -260,7 +261,7 @@ def state_create() = SecuredAction(BodyParsers.parse.json) { implicit request =>
       e => BadRequest(s"formWithErrors ${e.toString}")
     }
 }
-def switche_create() = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def switche_create() = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
   request.body.validate[UnitSwitcherRef].map{
     case entity => SwitcherRefDAO.pull_object(entity) match {
             case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not create ref ${entity.switch_type}")))
@@ -278,7 +279,7 @@ def switche_create() = SecuredAction(BodyParsers.parse.json) { implicit request 
 /***
  * Update
  */
-def update(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def update(id: Int) = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
   request.body.validate[Ref].map{
     case entity => RefDAO.update(id,entity) match {
             case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not update ref ${entity.title}")))
@@ -288,7 +289,7 @@ def update(id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =
       e => BadRequest(s"formWithErrors ${e.toString}")
     }
 }
-def elem_update(elem_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def elem_update(elem_id: Int) = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
   request.body.validate[UnitElementRef].map{
     case entity => ProcElemReflectionDAO.update(elem_id,entity) match {
             case false =>  Ok(Json.toJson(Map("failure" ->  s"Could not update front element ${entity.title}")))
@@ -299,7 +300,7 @@ def elem_update(elem_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit
     }
 }
 
-def space_update(space_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def space_update(space_id: Int) = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
   request.body.validate[UnitSpaceRef].map{
     case entity => SpaceReflectionDAO.update(space_id,entity) match {
             case false =>  Ok(Json.toJson(Map("failure" ->  s"Could not update space ${entity.id}")))
@@ -310,7 +311,7 @@ def space_update(space_id: Int) = SecuredAction(BodyParsers.parse.json) { implic
     }
 }
 
-def spaceelems_update(spelem_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def spaceelems_update(spelem_id: Int) = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
   request.body.validate[UnitSpaceElementRef].map{
     case entity => SpaceElementReflectionDAO.update(spelem_id,entity) match {
             case false =>  Ok(Json.toJson(Map("failure" ->  s"Could not update space element ${entity.title}")))
@@ -322,19 +323,19 @@ def spaceelems_update(spelem_id: Int) = SecuredAction(BodyParsers.parse.json) { 
 
 }
 
-def moveUpFrontElem(bpId: Int, elem_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def moveUpFrontElem(bpId: Int, elem_id: Int) = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
   ProcElemReflectionDAO.moveUp(bpId, elem_id)
   Ok(Json.toJson("moved"))
 }
-def moveDownFrontElem(bpId: Int, elem_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def moveDownFrontElem(bpId: Int, elem_id: Int) = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
   ProcElemReflectionDAO.moveDown(bpId, elem_id)
   Ok(Json.toJson("moved"))
 }
-def moveUpSpaceElem(id: Int, spelem_id: Int, space_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def moveUpSpaceElem(id: Int, spelem_id: Int, space_id: Int) = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
     SpaceElementReflectionDAO.moveUp(id, spelem_id, space_id)
   Ok(Json.toJson("moved"))
 }
-def moveDownSpaceElem(id: Int, spelem_id: Int, space_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def moveDownSpaceElem(id: Int, spelem_id: Int, space_id: Int) = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
     SpaceElementReflectionDAO.moveDown(id, spelem_id, space_id)
   Ok(Json.toJson("moved"))
 }
@@ -342,7 +343,7 @@ def moveDownSpaceElem(id: Int, spelem_id: Int, space_id: Int) = SecuredAction(Bo
 
 
 // Misc
-def state_update(state_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def state_update(state_id: Int) = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
   request.body.validate[BPStateRef].map{
     case entity => BPStateRefDAO.update(state_id,entity) match {
             case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not update space element ${entity.title}")))
@@ -355,7 +356,7 @@ def state_update(state_id: Int) = SecuredAction(BodyParsers.parse.json) { implic
 }
 
 
-def switche_update(switch_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def switche_update(switch_id: Int) = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
   request.body.validate[UnitSwitcherRef].map{
     case entity => SwitcherRefDAO.update(switch_id,entity) match {
             case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not update  ${entity.switch_type}")))
@@ -375,34 +376,34 @@ def switche_update(switch_id: Int) = SecuredAction(BodyParsers.parse.json) { imp
 /***
  * Delete
  */
-def delete(id: Int) = SecuredAction { implicit request =>
+def delete(id: Int) = silhouette.SecuredAction { implicit request =>
     RefDAO.delete(id) match {
         case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
         case x =>  Ok(Json.toJson(Map("success" -> s"Entity has been deleted (deleted $x row(s))")))
       }
 }
-def elem_delete(elem_id: Int) = SecuredAction { implicit request =>
+def elem_delete(elem_id: Int) = silhouette.SecuredAction { implicit request =>
     ProcElemReflectionDAO.delete(elem_id) match {
         case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
         case x =>  Ok(Json.toJson(Map("success" -> s"Entity has been deleted (deleted $x row(s))")))
       }
 }
 
-def space_delete(space_id: Int) = SecuredAction { implicit request =>
+def space_delete(space_id: Int) = silhouette.SecuredAction { implicit request =>
     SpaceReflectionDAO.delete(space_id) match {
         case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
         case x =>  Ok(Json.toJson(Map("success" -> s"Entity has been deleted (deleted $x row(s))")))
       }
 }
 
-def spaceelems_delete(spelem_id: Int) = SecuredAction { implicit request =>
+def spaceelems_delete(spelem_id: Int) = silhouette.SecuredAction { implicit request =>
     SpaceElementReflectionDAO.delete(spelem_id) match {
         case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
         case x =>  Ok(Json.toJson(Map("success" -> s"Entity has been deleted (deleted $x row(s))")))
       }
 }
 
-def state_delete(state_id: Int) = SecuredAction { implicit request =>
+def state_delete(state_id: Int) = silhouette.SecuredAction { implicit request =>
     BPStateRefDAO.delete(state_id) match {
         case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
         case x =>  Ok(Json.toJson(Map("success" -> s"Entity has been deleted (deleted $x row(s))")))
@@ -410,7 +411,7 @@ def state_delete(state_id: Int) = SecuredAction { implicit request =>
 }
 
 
-def switche_delete(switch_id: Int) = SecuredAction { implicit request =>
+def switche_delete(switch_id: Int) = silhouette.SecuredAction { implicit request =>
     SwitcherRefDAO.delete(switch_id) match {
         case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
         case x =>  Ok(Json.toJson(Map("success" -> s"Entity has been deleted (deleted $x row(s))")))
@@ -428,7 +429,7 @@ def switche_delete(switch_id: Int) = SecuredAction { implicit request =>
 ********************************************************************************************************************
 *********************************************************************************************************************/
 
- def reaction_create() = SecuredAction(BodyParsers.parse.json) { implicit request =>
+ def reaction_create() = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
    request.body.validate[UnitReactionRef].map{
      case entity => ReactionRefDAO.pull_object(entity) match {
              case -1 =>  Ok(Json.toJson(Map("failure" ->  s"Could not create ref ${entity}")))
@@ -441,7 +442,7 @@ def switche_delete(switch_id: Int) = SecuredAction { implicit request =>
        e => BadRequest(s"formWithErrors ${e.toString}")
      }
  }
- def reaction_update(reaction_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+ def reaction_update(reaction_id: Int) = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
    request.body.validate[ReactionContainer].map{
      case entity => ReactionRefDAO.update(reaction_id,entity.reaction) match { // ReactionRefDAO ReactionStateOutRefDAO
 
@@ -462,7 +463,7 @@ def switche_delete(switch_id: Int) = SecuredAction { implicit request =>
      }
 
  }
- def reaction_delete(reaction_id: Int) = SecuredAction { implicit request =>
+ def reaction_delete(reaction_id: Int) = silhouette.SecuredAction { implicit request =>
      ReactionRefDAO.delete(reaction_id) match {
          case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
          case x =>  Ok(Json.toJson(Map("success" -> s"Entity has been deleted (deleted $x row(s))")))
@@ -472,7 +473,7 @@ def switche_delete(switch_id: Int) = SecuredAction { implicit request =>
 /*********************************************************************************************
 // Action internals
 **********************************************************************************************/
-def create_middleware() = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+def create_middleware() = silhouette.SecuredAction.async(BodyParsers.parse.json) { implicit request =>
   request.body.validate[MiddlewareRef].map{
     case entity => MiddlewareRefsDAOF.pull(entity).map { obj =>
       obj match {
@@ -486,7 +487,7 @@ def create_middleware() = SecuredAction.async(BodyParsers.parse.json) { implicit
       e => Future.successful( BadRequest(s"formWithErrors ${e.toString}") )
     }
 }
-def create_strategy() = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+def create_strategy() = silhouette.SecuredAction.async(BodyParsers.parse.json) { implicit request =>
   request.body.validate[StrategyRef].map{
     case entity => StrategyRefsDAOF.pull(entity).map { obj =>
         obj match {
@@ -502,7 +503,7 @@ def create_strategy() = SecuredAction.async(BodyParsers.parse.json) { implicit r
 }
 
 
-def delete_middleware(middleware_id: Long) = SecuredAction.async { implicit request =>
+def delete_middleware(middleware_id: Long) = silhouette.SecuredAction.async { implicit request =>
   MiddlewareRefsDAOF.delete(middleware_id).map { res =>
     res match {
       case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
@@ -510,7 +511,7 @@ def delete_middleware(middleware_id: Long) = SecuredAction.async { implicit requ
     }
   }
 }
-def delete_strategy(strategy_id: Long) = SecuredAction.async { implicit request =>
+def delete_strategy(strategy_id: Long) = silhouette.SecuredAction.async { implicit request =>
   StrategyRefsDAOF.delete(strategy_id).map { res =>
     res match {
       case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
@@ -521,7 +522,7 @@ def delete_strategy(strategy_id: Long) = SecuredAction.async { implicit request 
 
 
 // Action pipes
-def create_base() = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+def create_base() = silhouette.SecuredAction.async(BodyParsers.parse.json) { implicit request =>
   request.body.validate[StrategyBaseRef].map{
     case entity => StrategyBaseRefsDAOF.pull(entity).map { obj =>
        obj match {
@@ -535,7 +536,7 @@ def create_base() = SecuredAction.async(BodyParsers.parse.json) { implicit reque
       e => Future.successful( BadRequest(s"formWithErrors ${e.toString}") )
     }
 }
-def create_input() = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+def create_input() = silhouette.SecuredAction.async(BodyParsers.parse.json) { implicit request =>
   request.body.validate[StrategyInputRef].map{
     case entity => StrategyInputRefsDAOF.pull(entity).map { obj =>
        obj match {
@@ -549,7 +550,7 @@ def create_input() = SecuredAction.async(BodyParsers.parse.json) { implicit requ
       e => Future.successful( BadRequest(s"formWithErrors ${e.toString}") )
     }
 }
-def create_output() = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+def create_output() = silhouette.SecuredAction.async(BodyParsers.parse.json) { implicit request =>
   request.body.validate[StrategyOutputRef].map{
     case entity => StrategyOutputRefsDAOF.pull(entity).map { obj =>
        obj match {
@@ -567,7 +568,7 @@ def create_output() = SecuredAction.async(BodyParsers.parse.json) { implicit req
 
 
 
-def delete_base(base_id: Long) = SecuredAction.async { implicit request =>
+def delete_base(base_id: Long) = silhouette.SecuredAction.async { implicit request =>
    StrategyBaseRefsDAOF.delete(base_id).map { res =>
      res match {
        case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
@@ -576,7 +577,7 @@ def delete_base(base_id: Long) = SecuredAction.async { implicit request =>
    }
 }
 
-def delete_input(input_id: Long) = SecuredAction.async { implicit request =>
+def delete_input(input_id: Long) = silhouette.SecuredAction.async { implicit request =>
   StrategyBaseRefsDAOF.delete(input_id).map { res =>
     res match {
       case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))
@@ -585,7 +586,7 @@ def delete_input(input_id: Long) = SecuredAction.async { implicit request =>
   }
 }
 
-def delete_output(output_id: Long) = SecuredAction.async { implicit request =>
+def delete_output(output_id: Long) = silhouette.SecuredAction.async { implicit request =>
   StrategyBaseRefsDAOF.delete(output_id).map { res =>
     res match {
       case 0 =>  Ok(Json.toJson(Map("failure" -> "Entity has Not been deleted")))

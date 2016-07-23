@@ -1,4 +1,6 @@
 package controllers
+import utils.auth.DefaultEnv
+import play.api.mvc.Controller
 
 import javax.inject.Inject
 
@@ -10,7 +12,7 @@ import com.mohiva.play.silhouette.impl.providers._
 import models._
 import models.daos._
 import models.services.UserService
-import play.api.i18n.{ MessagesApi, Messages }
+import play.api.i18n._
 import play.api.libs.concurrent.Execution.Implicits._
 import play.api.mvc.Action
 import java.util.UUID
@@ -29,11 +31,11 @@ import scala.concurrent.Future
  /*
 class LegacyAuthController @Inject() (
   val messagesApi: MessagesApi,
-  val env: Environment[User2, CookieAuthenticator],
+  silhouette: Silhouette[DefaultEnv],
   userService: UserService,
   authInfoRepository: AuthInfoRepository,
   socialProviderRegistry: SocialProviderRegistry)
-  extends Silhouette[User2, CookieAuthenticator] with Logger {
+  extends Controller with I18nSupport with Logger {
 
     def migrate() = Action { implicit request =>
       // 1. get all accounts

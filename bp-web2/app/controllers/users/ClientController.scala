@@ -1,4 +1,5 @@
 /* package controllers.users
+import utils.auth.DefaultEnv
 
 import models.DAO.resources.{ClientDTO, ClientDAO}
 import models.DAO.resources.ClientBusinessDAO
@@ -23,7 +24,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.resources.web._

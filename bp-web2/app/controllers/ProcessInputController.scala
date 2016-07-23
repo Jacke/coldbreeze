@@ -1,4 +1,5 @@
 package controllers
+import utils.auth.DefaultEnv
 import play.api._
 import play.api.mvc._
 import play.twirl.api.Html
@@ -32,7 +33,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO._
@@ -48,7 +49,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -59,9 +60,9 @@ import play.api.mvc.{ Action, RequestHeader }
  */
 class ProcessInputController @Inject() (
   val messagesApi: MessagesApi,
-  val env: Environment[User2, CookieAuthenticator],
+  silhouette: Silhouette[DefaultEnv],
   socialProviderRegistry: SocialProviderRegistry)
-  extends Silhouette[User2, CookieAuthenticator] {
+  extends Controller with I18nSupport {
   import play.api.Play.current
   import models.DAO.CompositeValues
   implicit val CompositeVReads = Json.reads[CompositeValues]
@@ -86,7 +87,7 @@ class ProcessInputController @Inject() (
 
 
 // POST         /bprocess/:bpID/invoke
-def invoke(bpID: Int)  = SecuredAction.async { implicit request =>
+def invoke(bpID: Int)  = silhouette.SecuredAction.async { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, bpID)) {
       val userId = request.identity.emailFilled
       val langF = models.AccountsDAOF.getRolesAndLang(userId)
@@ -119,7 +120,7 @@ def invoke(bpID: Int)  = SecuredAction.async { implicit request =>
 
 
 // POST         /bprocess/:bpID/invoke_from/:station_id
-def invokeFrom(session_id: Int, bpID: Int) = SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+def invokeFrom(session_id: Int, bpID: Int) = silhouette.SecuredAction.async(BodyParsers.parse.json) { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, bpID)) {
 
 
@@ -197,7 +198,7 @@ def inputLogsBySession(BPid: Int, session_id:Int) = Action.async { implicit requ
     }
 }
 
-def schemes(BPid: Int, station_id: Int) = SecuredAction { implicit request =>
+def schemes(BPid: Int, station_id: Int) = silhouette.SecuredAction { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, BPid)) {
 
 

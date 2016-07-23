@@ -1,4 +1,5 @@
 package controllers
+import utils.auth.DefaultEnv
 
 import models.DAO.resources.{BusinessDAO, BusinessDTO}
 import models.DAO.resources.EmployeesBusinessDAO
@@ -25,7 +26,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.resources.web._
@@ -37,7 +38,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -48,9 +49,9 @@ import play.api.mvc.{ Action, RequestHeader }
  */
 class BusinessController @Inject() (
   val messagesApi: MessagesApi,
-  val env: Environment[User2, CookieAuthenticator],
+  silhouette: Silhouette[DefaultEnv],
   socialProviderRegistry: SocialProviderRegistry)
-  extends Silhouette[User2, CookieAuthenticator] {
+  extends Controller with I18nSupport {
   import play.api.Play.current
 
    val Home = Redirect(routes.BusinessController.index())
@@ -70,17 +71,17 @@ class BusinessController @Inject() (
       "updated_at"-> optional(jodaDate),
       "organization" -> boolean)(BusinessDTO.apply)(BusinessDTO.unapply))
 
- def index() = SecuredAction { implicit request =>
+ def index() = silhouette.SecuredAction { implicit request =>
     val businesses = BusinessDAO.getAll
     Ok(views.html.businesses.index(
       Page(businesses, 1, 1, businesses.length), 1, "%", request.identity))
   }
 
-  def create() = SecuredAction { implicit request =>
+  def create() = silhouette.SecuredAction { implicit request =>
         Ok(views.html.businesses.business_form(businessForm, request.identity))
   }
 
-  def create_new() = SecuredAction { implicit request =>
+  def create_new() = silhouette.SecuredAction { implicit request =>
     businessForm.bindFromRequest.fold(
       formWithErrors => BadRequest(views.html.businesses.business_form(formWithErrors, request.identity)),
       entity => {
@@ -94,7 +95,7 @@ class BusinessController @Inject() (
       })
   }
 
-def update(id: Int) = SecuredAction { implicit request =>
+def update(id: Int) = silhouette.SecuredAction { implicit request =>
     val business = BusinessDAO.get(id)
     business match {
       case Some(business) =>
@@ -104,7 +105,7 @@ def update(id: Int) = SecuredAction { implicit request =>
     }
   }
 
-def update_make(id: Int) = SecuredAction { implicit request =>
+def update_make(id: Int) = silhouette.SecuredAction { implicit request =>
     businessForm.bindFromRequest.fold(
       formWithErrors => BadRequest(views.html.businesses.business_edit_form(id, formWithErrors, request.identity)),
       entity => {
@@ -115,7 +116,7 @@ def update_make(id: Int) = SecuredAction { implicit request =>
       })
 }
 
-def destroy(id: Int) = SecuredAction { implicit request =>
+def destroy(id: Int) = silhouette.SecuredAction { implicit request =>
     Home.flashing(BusinessDAO.delete(id) match {
       case 0 => "failure" -> "Entity has Not been deleted"
       case x => "success" -> s"Entity has been deleted (deleted $x row(s))"

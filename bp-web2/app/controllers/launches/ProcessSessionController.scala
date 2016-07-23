@@ -1,4 +1,5 @@
 package controllers
+import utils.auth.DefaultEnv
 
 import models.DAO.resources.{BusinessDAO, BusinessDTO}
 import models.DAO._
@@ -26,7 +27,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import models.DAO.BProcessDTO
@@ -53,7 +54,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.mvc.{ Action, RequestHeader }
@@ -77,9 +78,9 @@ case class LogsContainer(session_loggers: List[BPLoggerDTO],
 
 class ProcessSessionController @Inject() (
   val messagesApi: MessagesApi,
-  val env: Environment[User2, CookieAuthenticator],
+  silhouette: Silhouette[DefaultEnv],
   socialProviderRegistry: SocialProviderRegistry)
-  extends Silhouette[User2, CookieAuthenticator] {
+  extends Controller with I18nSupport {
 
 implicit val SessionElementsReads = Json.reads[SessionElements]
 implicit val SessionElementsWrites = Json.format[SessionElements]
@@ -130,7 +131,7 @@ implicit val LaunchStateObjectsWrites = Json.format[LaunchStateObjects]
 
 
 // GET         /bprocess/:id/stations
-def station_index(id: Int) = SecuredAction { implicit request =>
+def station_index(id: Int) = silhouette.SecuredAction { implicit request =>
   if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, id)) {
 
      val result = models.DAO.BPStationDAO.findByBPId(id) //BPStationDAO.findByBPId(id)
@@ -140,7 +141,7 @@ def station_index(id: Int) = SecuredAction { implicit request =>
 }
 
 // GET         /bprocess/stations
-def all_stations() = SecuredAction.async { implicit request =>
+def all_stations() = silhouette.SecuredAction.async { implicit request =>
   val business = request.identity.businessFirst
   val user_services = BusinessServiceDAO.getAllByBusiness(business).map(_.id.getOrElse(-1))
   // processes ->
@@ -155,7 +156,7 @@ def all_stations() = SecuredAction.async { implicit request =>
 }
 
 // GET          /bprocess/:BPid/sessions
-def process_all_session(pid: Int) = SecuredAction { implicit request =>
+def process_all_session(pid: Int) = silhouette.SecuredAction { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, pid)) {
 
       val sess =  BPSessionDAOF.findByProcess(pid)
@@ -173,7 +174,7 @@ def process_all_session(pid: Int) = SecuredAction { implicit request =>
 
 
 // GET   /sessions
-def all_sessions(page: Option[Long], active: Option[Boolean]) = SecuredAction.async { implicit request =>
+def all_sessions(page: Option[Long], active: Option[Boolean]) = silhouette.SecuredAction.async { implicit request =>
   val resourceCountF = BPSessionDAOF.countByBusiness(request.identity.businessFirst, active)
   val offset = 9
   val pageSkip = page match {
@@ -203,7 +204,7 @@ def all_sessions(page: Option[Long], active: Option[Boolean]) = SecuredAction.as
 
 // GET all_cached_sessions
 
-def all_cached_sessions(timestamp:String) = SecuredAction.async { implicit request =>
+def all_cached_sessions(timestamp:String) = silhouette.SecuredAction.async { implicit request =>
 	val email = request.identity.emailFilled
   val business = request.identity.businessFirst
 
@@ -235,7 +236,7 @@ def all_cached_sessions(timestamp:String) = SecuredAction.async { implicit reque
 
 
 // GET         /sessions/filter
-def filtered_sessions(session_ids: List[Int]) = SecuredAction.async { implicit request =>
+def filtered_sessions(session_ids: List[Int]) = silhouette.SecuredAction.async { implicit request =>
   val email = request.identity.emailFilled
   val sess_cnsF = BPSessionDAOF.findByBusinessAndIds(request.identity.businessFirst, session_ids)
   //val updated_cns:List[SessionContainer] = sess_cns.map { cn =>
@@ -250,13 +251,13 @@ def filtered_sessions(session_ids: List[Int]) = SecuredAction.async { implicit r
 
 
 // /bprocess/:id/station/:station_id
-def show_station(id: Int, station_id: Int) = SecuredAction { implicit request =>
+def show_station(id: Int, station_id: Int) = silhouette.SecuredAction { implicit request =>
   if (security.BRes.stationSecured(station_id, request.identity.emailFilled, request.identity.businessFirst)) {
      Ok(Json.toJson(BPStationDAO.findById(station_id)))
   } else { Forbidden(Json.obj("status" -> "Not found")) }
 }
 // /bprocess/:id/station/:station_id/halt
-def halt_session(id: Int, session_id: Int) = SecuredAction { implicit request =>
+def halt_session(id: Int, session_id: Int) = silhouette.SecuredAction { implicit request =>
   if (security.BRes.sessionSecured(session_id, request.identity.emailFilled, request.identity.businessFirst)) {
 
     val station_id = BPStationDAO.findBySession(session_id)
@@ -271,20 +272,20 @@ def halt_session(id: Int, session_id: Int) = SecuredAction { implicit request =>
 
 
 // POST        /session/:id/unlisted
-def makeUnlisted(id: Int) = SecuredAction { implicit request =>
+def makeUnlisted(id: Int) = silhouette.SecuredAction { implicit request =>
     if (security.BRes.sessionSecured(id, request.identity.emailFilled, request.identity.businessFirst)) {
          Ok(Json.toJson(BPSessionDAOF.makeUnlisted(id)))
     } else { Forbidden(Json.obj("status" -> "Not found")) }
 
 }
 // POST        /session/:id/listed
-def makeListed(id: Int) = SecuredAction { implicit request =>
+def makeListed(id: Int) = silhouette.SecuredAction { implicit request =>
   if (security.BRes.sessionSecured(id, request.identity.emailFilled, request.identity.businessFirst)) {
      Ok(Json.toJson(BPSessionDAOF.makeListed(id)))
   } else { Forbidden(Json.obj("status" -> "Not found")) }
 }
 // DELETE /session/:session_id/
-def delete_session(session_id: Int) = SecuredAction.async { implicit request =>
+def delete_session(session_id: Int) = silhouette.SecuredAction.async { implicit request =>
     if (security.BRes.sessionSecured(session_id, request.identity.emailFilled, request.identity.businessFirst)) {
       BPSessionDAOF.delete(session_id, request.identity.businessFirst.toString ).map { result =>
         Ok(Json.toJson(result))
@@ -295,7 +296,7 @@ def delete_session(session_id: Int) = SecuredAction.async { implicit request =>
 
 
 // /bprocess/:id/station/:station_id/around
-def stations_elems_around(id: Int, station_id: Int) = SecuredAction { implicit request =>
+def stations_elems_around(id: Int, station_id: Int) = silhouette.SecuredAction { implicit request =>
   if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, id)) {
       Ok(Json.toJson(AroundProcessElementsBuilder.detect(id, station_id)))
   } else { Forbidden(Json.obj("status" -> "Not found")) }
@@ -308,7 +309,7 @@ def stations_elems_around(id: Int, station_id: Int) = SecuredAction { implicit r
  * Fetch all sessions logs for process
  */
  //GET         /bprocess/:id/logs
-def logs_index(id: Int) = SecuredAction.async { implicit request =>
+def logs_index(id: Int) = silhouette.SecuredAction.async { implicit request =>
   if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, id)) {
       val processHistoriesF:Future[Seq[models.DAO.ProcessHistoryDTO]] = ProcHistoryDAO.getByProcessF(id)
       val session_loggers = BPLoggerDAOF.findByBPId(id)
@@ -347,7 +348,7 @@ val state_logs_objectsF = allStatesF.map { allStates =>
 
 
 //GET         /bprocess/allLogs/
-def logs_indexes(ids: List[Int]) = SecuredAction.async { implicit request =>
+def logs_indexes(ids: List[Int]) = silhouette.SecuredAction.async { implicit request =>
   val secured_ids = ids.filter( id =>
     security.BRes.procIsOwnedByBiz(request.identity.businessFirst, id))
 
@@ -379,7 +380,7 @@ def logs_indexes(ids: List[Int]) = SecuredAction.async { implicit request =>
  * Update station note
  */
 // POST        /bprocess/:id/station/:station_id/note
-def update_note(id: Int, station_id: Int) = SecuredAction(BodyParsers.parse.json) { implicit request =>
+def update_note(id: Int, station_id: Int) = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
   val perm = true // TODO: Make permission !!!
   if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, id)) {
 

@@ -2,7 +2,7 @@ package utils
 
 import javax.inject.Inject
 
-import com.mohiva.play.silhouette.api.SecuredErrorHandler
+import com.mohiva.play.silhouette.api.actions.SecuredErrorHandler
 import controllers.routes
 import play.api.http.DefaultHttpErrorHandler
 import play.api.i18n.Messages
@@ -34,12 +34,12 @@ class ErrorHandler @Inject() (
    * @param messages The messages for the current language.
    * @return The result to send to the client.
    */
-  override def onNotAuthenticated(request: RequestHeader, messages: Messages): Option[Future[Result]] = {
+  override def onNotAuthenticated(implicit request: RequestHeader):Future[Result] = {
     println(request.uri)
     if (isJsonRequest(request)) {
-      Some(Future.successful(Ok(jsonNotAuthorized)))
+      Future.successful(Ok(jsonNotAuthorized))
     } else {
-      Some(Future.successful(Redirect(routes.ApplicationController2.signIn())))
+      Future.successful(Redirect(routes.ApplicationController2.signIn()))
     }
   }
 
@@ -52,12 +52,14 @@ class ErrorHandler @Inject() (
    * @param messages The messages for the current language.
    * @return The result to send to the client.
    */
-  override def onNotAuthorized(request: RequestHeader, messages: Messages): Option[Future[Result]] = {
+  override def onNotAuthorized(implicit request: RequestHeader):Future[Result] = {
     println(request.uri)
     if (isJsonRequest(request)) {
-      Some(Future.successful(Ok(jsonNotAuthorized)))
+      Future.successful(Ok(jsonNotAuthorized))
     } else {
-      Some(Future.successful(Redirect(routes.ApplicationController2.signIn()).flashing("error" -> Messages("access.denied")(messages))))
+      Future.successful(
+        Redirect(routes.ApplicationController2.signIn()).flashing("error" -> 
+          "access.denied"))
     }
   }
 

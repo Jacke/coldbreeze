@@ -1,4 +1,5 @@
 package controllers
+import utils.auth.DefaultEnv
 import scala.util.{Try, Success, Failure}
 
 import models.{AccountsDAO, User, Page}
@@ -7,7 +8,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import controllers.users._
@@ -34,7 +35,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -51,7 +52,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -59,9 +60,9 @@ import play.api.mvc.{ Action, RequestHeader }
 
 class SubscribtionController @Inject() (
   val messagesApi: MessagesApi,
-  val env: Environment[User2, CookieAuthenticator],
+  silhouette: Silhouette[DefaultEnv],
   socialProviderRegistry: SocialProviderRegistry)
-  extends Silhouette[User2, CookieAuthenticator] {
+  extends Controller with I18nSupport {
     implicit val sumFormat                    = Json.format[SumActor.Sum]
     implicit val sumFrameFormatter            = FrameFormatter.jsonFrame[SumActor.Sum]
     implicit val sumResultFormat              = Json.format[SumActor.SumResult]
@@ -76,7 +77,7 @@ class SubscribtionController @Inject() (
   implicit val SubscriberReads = Json.reads[Subscriber]
   implicit val SubscriberWrites = Json.format[Subscriber]
 
-def sendInvite(emails_hash: String, invite_link: String) = SecuredAction { implicit request =>
+def sendInvite(emails_hash: String, invite_link: String) = silhouette.SecuredAction { implicit request =>
   val emails = emails_hash.split(",").toList
   mailers.Mailer.sendInvite(subject = "Minority Platform Invite",
               emails = emails,

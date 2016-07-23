@@ -1,4 +1,5 @@
 package controllers
+import utils.auth.DefaultEnv
 
 import play.api._
 import play.api.mvc._
@@ -21,7 +22,7 @@ import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
 import forms._
 import models.User2
-import play.api.i18n.MessagesApi
+import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -34,9 +35,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
  */
 class ApplicationController2 @Inject() (
   val messagesApi: MessagesApi,
-  val env: Environment[User2, CookieAuthenticator],
+  silhouette: Silhouette[DefaultEnv],
   socialProviderRegistry: SocialProviderRegistry)
-  extends Silhouette[User2, CookieAuthenticator] {
+  extends Controller with I18nSupport {
 
 
 
@@ -50,7 +51,7 @@ class ApplicationController2 @Inject() (
  *
  * @return The result to display.
  */
-def signIn = UserAwareAction.async { implicit request =>
+def signIn = silhouette.UserAwareAction.async { implicit request =>
   request.identity match {
     case Some(user) => Future.successful(Redirect(routes.ProfileController.dashboard()))
     case None => Future.successful(Ok(views.html.auth.signIn(SignInForm.form, socialProviderRegistry)))
@@ -62,7 +63,7 @@ def signIn = UserAwareAction.async { implicit request =>
  *
  * @return The result to display.
  */
-def signUp = UserAwareAction.async { implicit request =>
+def signUp = silhouette.UserAwareAction.async { implicit request =>
   request.identity match {
     case Some(user) => Future.successful(Redirect(routes.ProfileController.dashboard()))
     case None => Future.successful(Ok(views.html.auth.signUp(SignUpForm.form)))
@@ -74,9 +75,9 @@ def signUp = UserAwareAction.async { implicit request =>
  *
  * @return The result to display.
  */
-def signOut = SecuredAction.async { implicit request =>
+def signOut = silhouette.SecuredAction.async { implicit request =>
   val result = Redirect(routes.ProfileController.dashboard())
-  env.eventBus.publish(LogoutEvent(request.identity, request, request2Messages))
-  env.authenticatorService.discard(request.authenticator, result)
+  silhouette.env.eventBus.publish(LogoutEvent(request.identity, request))
+  silhouette.env.authenticatorService.discard(request.authenticator, result)
 }
 }
