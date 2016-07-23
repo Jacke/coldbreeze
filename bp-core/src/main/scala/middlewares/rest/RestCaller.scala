@@ -40,6 +40,7 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 import scala.collection.mutable._
 import us.ority.min.actions._
+import play.api.libs.json._
 
 object GETStrategy {
   val DEFAULT_URL = "https://api.ipify.org?format=json"
@@ -57,12 +58,17 @@ val client = AhcWSClient()
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
 
 
-    def execute(argument: StrategyArguments, 
+    def execute(arguments: StrategyArguments, 
                 parts: ActionParts):ActionAct = {
       println("GETStrategy Strategy executed")
-      val url:String = argument.takeArg("URL", StrategyArgument(argString=DEFAULT_URL)).argString
+      val url:String = arguments.takeArg("URL", StrategyArgument(argString=DEFAULT_URL)).argString
+      val headersJson = arguments.takeArgs("header")
+      val headers:Seq[(String, String)] = headersJson.map(_.argString).map { hJson => 
+        val j = Json.parse(hJson).as[JsObject]
+        (j.keys.head -> j.value.values.head.as[String]) 
+      } ++ Seq( ("Content-Type" -> "application/json") )
 
-      val res = await( client.url(url).withHeaders("Content-Type" -> "application/xml").get() )
+      val res = await( client.url(url).withHeaders(headers: _*).get() )
       parts.process.getActs(parts.action.id.get).headOption match {
         case Some(act) => {
           val status = ActionStatus(id = None,

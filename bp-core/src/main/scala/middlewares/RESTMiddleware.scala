@@ -37,7 +37,7 @@ import scala.util.Try
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
-import scala.collection.mutable._
+//import scala.collection.mutable._
 import us.ority.min.actions._
 import us.ority.min.actions.middlewares.rest._
 
@@ -50,6 +50,7 @@ object RESTMiddleware {
 import play.api.libs.ws.ahc.AhcWSClient
 import akka.stream.ActorMaterializer
 import akka.actor.ActorSystem
+import play.api.libs.json._
 
 implicit val system = ActorSystem()
 implicit val materializer = ActorMaterializer()
@@ -89,10 +90,20 @@ val client = AhcWSClient()
             case Some(u) => u.valueContent
             case _ => DEFAULT_URL
         }
+        val headersJsonArray:scala.collection.mutable.Seq[JsObject] = bases.find(b => b.key == "HEADERS") match {
+            case Some(u) => Json.parse(u.valueContent).as[scala.collection.mutable.Seq[JsObject]]
+            case _ => Json.parse("[]").as[scala.collection.mutable.Seq[JsObject]]
+        }
+        val headersJsonSeq:scala.collection.mutable.Seq[StrategyArgument] = {
+          headersJsonArray.map { js =>
+           StrategyArgument(argString =  js.as[JsObject].toString, argKey="header")
+          }
+        }
     	stategyTitle match {
     		case "GETStrategy" => 
     			StrategyArguments(
-            Seq(StrategyArgument(argString = urlBase, argKey="URL") ) )
+            Seq(
+              StrategyArgument(argString = urlBase, argKey="URL") ) ++ headersJsonSeq )
 			  case "POSTStrategy" => 
 				  StrategyArguments(
             Seq(StrategyArgument(argString = urlBase, argKey="URL") ) )

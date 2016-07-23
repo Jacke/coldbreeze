@@ -13,6 +13,9 @@ case class StrategyArguments(c: Seq[StrategyArgument] = Seq()) {
       case _ => default
     }
   }
+  def takeArgs(key: String):Seq[StrategyArgument] = 
+    c.filter(c => c.argKey == key)
+    
 }
 
 case class StrategyArgument(
