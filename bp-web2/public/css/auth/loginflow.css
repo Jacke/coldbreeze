@@ -550,3 +550,14 @@ button.loading {
     }
 }
 
+
+
+.loginFlowPage .classField dt, .loginFlowPage .classField dd.info {
+  display: none;
+}
+
+.loginFlowPage .classField dd {
+  margin-left: 0px;
+}
+.classField {
+}

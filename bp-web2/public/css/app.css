@@ -955,16 +955,16 @@ i.uicon-svg142 {
 .ref-page .ref-element-actions {
     width: 100%;
     background: #263238;
-    padding: 7px;
+    padding: 4px 0px 0px 0px;
     color: white;
     clear: both;
     display: block;
 }
-
 .ref-page .ref-element-actions .ref-action {
     background: #37474f;
-    padding: 3px 22px 11px 20px;
+    padding: 4px 0px 0px 0px;
 }
+
 
 .ref-page .ref-element-actions .ref-action h5.ref-action-title {
     font-size: 22px;
@@ -995,14 +995,17 @@ i.uicon-svg142 {
 .ref-page .ref-element-actions .ref-action .ref-action-middleware {
     text-align: center;
     display: block;
-    margin: 5px auto;
-    padding: 20px 11px;
+    margin: 0;
+    /* padding: 19px 0px 0px 0px; */
     font-size: 17px;
     font-weight: 900;
     font-family: 'Whitney';
     text-shadow: none;
     background: #546e7a;
     margin-top: 14px;
+    /* margin-left: -20px; */
+    width: 100%;
+    padding-top: 7px;
 }
 
 .ref-page .ref-element-actions .ref-action .ref-action-depth .ref-action-strategies .ref-action-strategy-selector {

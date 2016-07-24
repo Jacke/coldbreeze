@@ -13,6 +13,8 @@ import play.api.data.Forms._
 import play.api.data.format.Formats
 import play.api.data.format.Formatter
 import play.api.data.FormError
+import com.nappin.play.recaptcha.{RecaptchaVerifier, WidgetHelper}
+
 
 
 import javax.inject.Inject
@@ -36,7 +38,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class ApplicationController2 @Inject() (
   val messagesApi: MessagesApi,
   silhouette: Silhouette[DefaultEnv],
-  socialProviderRegistry: SocialProviderRegistry)
+  socialProviderRegistry: SocialProviderRegistry,
+  val verifier: RecaptchaVerifier)(
+  implicit widgetHelper: WidgetHelper)
   extends Controller with I18nSupport {
 
 
