@@ -101,9 +101,9 @@ $scope.addBaseHeaderEntity = function(testBase) {
 $scope.sendTest = function() {
         var url;
         if ($scope.ngDialogData.testAction == 'refAction') {
-          url = '/action/ref/13/test'
+          url = '/action/ref/+'$scope.ngDialogData.actionId'+/test'
         } else {
-          url = '/action/process/13/test'
+          url = '/action/process/'+$scope.ngDialogData.actionId+'/test'
         }
         // fill headers
         $scope.testBases = _.map($scope.testBases, function(t) {

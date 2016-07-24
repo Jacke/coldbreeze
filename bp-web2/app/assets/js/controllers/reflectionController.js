@@ -616,7 +616,7 @@ $scope.textExec = function(action, middleware, strategy) {
       template: '/assets/partials/actions/action-test.html',
       controller: 'actionController',
       scope: $scope,
-      data: {'testAction':'refAction'}
+      data: {'testAction':'refAction', 'actionId': action.id}
     });
 }
 
