@@ -26,4 +26,14 @@ import main.scala.simple_parts.process._
                   created_at,
                   updated_at)
   }
- }
+ def reflectWithId(process: Int, element: Int, from_state: Option[Int]):UnitReaction = {
+    UnitReaction(id,
+                  process,
+                  autostart,
+                  element,
+                  from_state,
+                  title,
+                  created_at,
+                  updated_at)
+  } 
+}

@@ -293,28 +293,45 @@ def actionsProcesses() = silhouette.SecuredAction.async { implicit request =>
 
 
 // POST /action/ref/:reaction/test
-def testActionRef(reactionId: Int) = silhouette.SecuredAction.async { implicit request =>
-  
-  val reactionsFOpt= ReactionRefDAOF.findById(reactionId)
-  reactionsFOpt.map { reactionsOpt => 
-    reactionsOpt match {
-      case Some(reaction) => {
-        val reactions = List(reaction)
-        val reaction_outs = ReactionStateOutRefDAO.findByReactionRefs(reactions.map(_.id.get))
-        val middlewares = MiddlewareRefsDAOF.await( MiddlewareRefsDAOF.getAllByReaction(reaction.id.get) )
-        val middlewaresIds = middlewares.map(_.id.get).toList
-        val strategies = MiddlewareRefsDAOF.await( StrategyRefsDAOF.getByMWS(middlewaresIds) )
-        val strategiesIds = strategies.map(_.id.get).toList
-        val bases = StrategyBaseRefsDAOF.await( StrategyBaseRefsDAOF.getByStrategies(strategiesIds) )
-        val inputs = StrategyInputRefsDAOF.await( StrategyInputRefsDAOF.getByStrategies(strategiesIds) )
-        val ouputs = StrategyInputRefsDAOF.await( StrategyOutputRefsDAOF.getByStrategies(strategiesIds) )      
-        Ok(Json.toJson("ok"))
-      }
-      case _ => Ok(Json.toJson("ok"))
-    }
-  }
+def testActionRef(reactionId: Int) = silhouette.SecuredAction.async(BodyParsers.parse.json) { implicit request =>
 
+  val actionOpt = ReactionRefDAOF.await(ReactionRefDAOF.findById(reactionId))
+  actionOpt match {
+    case Some(actionRef) => {
+      val action = actionRef.reflectWithId(-1, -1, None)
+      val act_ids = List(action.id.get) 
+      applyTestActionPayload(act_ids.head, request) match {
+        case Some(payload) => {
+          val middlewares = Seq(payload.middleware)
+          val strategies = Seq(payload.strategy.get)
+          val strategyBases = payload.strategy_bases
+          val strategyInputs = payload.strategy_inputs
+          val strategyOutputs = payload.strategy_outputs
+          val result = us.ority.min.actions.tester.ActionTester(
+            action,
+            middlewares,
+            strategies,
+            strategyInputs,
+            strategyBases,
+            strategyOutputs
+          )
+          result match {
+            case Some(r) => Future.successful(Ok(Json.toJson( ActionActContainer(r, 
+                                                                                 r.statuses.toSeq, 
+                                                                                 r.results.toSeq) )))
+            case _ => Future.successful(Ok(Json.toJson(Map("status" -> "action execution is failed"))))
+          }
+        }
+        case _ => {
+          Future.successful(Ok(Json.toJson(Map("status" -> "test action payload was not sended"))))
+        }
+      }
+    }
+    case _ => Future.successful(Ok(Json.toJson(Map("status" -> "action not found"))))
+  }
 }
+
+
 // POST /action/process/:reaction/test
 def testActionProcess(reactionId: Int) = silhouette.SecuredAction.async(BodyParsers.parse.json) { implicit request =>
 

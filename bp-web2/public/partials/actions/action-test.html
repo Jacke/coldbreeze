@@ -330,7 +330,7 @@ ul.perm-menu.element-data-nav {
 
 </style>
 
-<ul class="perm-menu">
+<ul class="perm-menu" style="display:none;">
   <li ng-class="{ 'active': !elementShow}">
     <a ng-init="elementShow=true;" ng-click="elementShow=true;processShow=false;">Elements</a>
   </li>
@@ -340,11 +340,84 @@ ul.perm-menu.element-data-nav {
 </ul>
 
 <div class="elements-data" ng-init="elementShow=true;processShow=false;" ng-show="elementShow">
-  <div class="elements-data-element" ng-repeat="element in $parent.trees">
+  <div class="elements-data-element">
+
+    <label for="testMiddleware-title">testMiddleware.title</label>
+    <input type="text"
+    id="testMiddleware-title"
+    class="form-control"
+    ng-model="testMiddleware.title" required="">
+    <label for="testMiddleware-ident">testMiddleware.ident</label>
+    <input type="text"
+    id="testMiddleware-ident"
+    class="form-control"
+    ng-model="testMiddleware.ident" required="">
+    <label for="testMiddleware-ifaceIdent">testMiddleware.ifaceIdent</label>
+    <input type="text"
+    id="testMiddleware-ifaceIdent"
+    class="form-control"
+    ng-model="testMiddleware.ifaceIdent" required="">  
+    <label for="testStrategy-ident">testStrategy.ident</label>    
+
+    <label for="testStrategy-ident">testStrategy.ident</label>
+    <input type="text"
+    id="testStrategy-ident"
+    class="form-control"
+    ng-model="testStrategy.ident" required="">
 
 
+    <a ng-click="addBase()">AddBase</a>
+    <div class="bases" ng-repeat="testBase in testBases">
+      <a ng-click="addBaseHeader(testBase)">Add header</a>
+      <label for="testBase-key">testBase.key</label>
+      <input type="text"
+      id="testBase-key"
+      class="form-control"
+      ng-model="testBase.key" required="">
+      <label for="testBase-baseType">testBase.baseType</label>
+      <input type="text"
+      id="testBase-baseType"
+      class="form-control"
+      ng-model="testBase.baseType" required="">
+      <label for="testBase-valueType">testBase.valueType</label>
+      <input type="text"
+      id="testBase-valueType"
+      class="form-control"
+      ng-model="testBase.valueType" required="">
+      <label for="testBase-valueContent">testBase.valueContent</label>
+      <input type="text"
+      id="testBase-valueContent"
+      class="form-control"
+      ng-hide="testBase.baseType == 'headers'"
+      ng-model="testBase.valueContent" required="">
+      <a ng-show="testBase.baseType == 'headers'" ng-click="addBaseHeaderEntity(testBase)">Add header fields</a>
 
-    <div class="elements-data-element-title"><h3>{{ element.title }}</h3>
+      <div ng-show="testBase.baseType == 'headers'" ng-repeat="k in testBase.headers">
+        <input type="text"
+        id="testBase-valueContent"
+        class="form-control"
+        ng-model="k.key" required="">
+        <input type="text"
+        id="testBase-valueContent"
+        class="form-control"
+        ng-model="k.value" required="">      
+      </div>
+
+
+      <label for="testBase-validationScheme">testBase.validationScheme</label>
+      <input type="text"
+      id="testBase-validationScheme"
+      class="form-control"
+      ng-model="testBase.validationScheme" required="">
+    </div>
+
+
+    <a ng-click="sendTest()">Send</a>
+    <div class="out">
+      {{ testerOut | json }}
+    </div>
+
+    <div class="elements-data-element-title" style="display:none;"><h3>{{ element.title }}</h3>
       <ul class="perm-menu element-data-nav">
 
         <li ng-class="{ 'active': !element.costShow}" class="element-data-nav-controll-field">
@@ -445,53 +518,6 @@ ul.perm-menu.element-data-nav {
 
 
 
-
-<div class="process-data" ng-show="processShow">
-<!--
-  <h6>Indicators</h6>
-
-  <div class="process-data-costs">
-    <div class="data-cost">
-      <div class="data-cost-type"><span>Type</span>
-        <div class="data-cost-default">Default value</div>
-      </div>
-      <div class="data-cost-title">Indicator</div>
-      <div class="data-cost-value">Value</div>
-      <div class="data-cost-controls"><span class="moicon moicon-menu3"></span></div>
-
-      <div class="data-cost-controlls-expanded">
-        <input type="text" id="inputContentBlankValue" class="form-control" ng-model="entity.newModelValue" required="">
-        <div class="data-cost-controlls-buttons">
-        <a class="btn btn-small btn-success btn-fill" ng-click="fillValue(cost, entity, entity.newModelValue)">Fill</a>
-        <a class="btn btn-danger btn-success btn-fill" ng-click="fillValue(cost, entity, entity.newModelValue)">Remove</a>
-      </div></div>
-    </div>
-    <div class="data-cost-add-button">
-    <a href="#" class="btn btn-small btn-success btn-fill">Add</a></div>
-  </div>
--->
-
-  <div class="process-data-files">
-      <h6>Files</h6>
-
-  <div class="data-file-arr" ng-repeat="fileArr in files">
-   <div class="data-file" ng-repeat="file in fileArr | filter:filesForLaunch">
-     <div class="data-file-type"><span>Type</span></div>
-     <div class="data-file-title">
-       <a ng-href="{{ file.fileUrl }}">{{ file.file.fileName }}</a>
-     </div>
-     <a class="btn btn-danger btn-success btn-fill" ng-click="removeFile(file)">Remove</a>
-
-   </div>
- </div>
-   <div class="data-file-add-button">
-     <button ngf-select="uploadFiles($files)" class="btn btn-small btn-success btn-fill" multiple
-             accept="*">Select Files</button>
-   </div>
-
-  </div>
-
-</div>
 
 
 

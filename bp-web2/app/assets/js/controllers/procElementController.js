@@ -2459,7 +2459,8 @@ $scope.textExec = function(action, middleware, strategy) {
       ngDialog.open({
       template: '/assets/partials/actions/action-test.html',
       controller: 'actionController',
-      scope: $scope
+      scope: $scope,
+      data: {'testAction':'elemAction'}
     });
 }
 
