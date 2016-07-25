@@ -13,6 +13,13 @@ import scala.concurrent.Future
 trait UserDAO {
 
   /**
+   * Finds a user by its user ID.
+   *
+   * @return The found users.
+   */
+  def findAll(): Future[Seq[User2]]
+
+  /**
    * Finds a user by its login info.
    *
    * @param loginInfo The login info of the user to find.

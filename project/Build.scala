@@ -141,6 +141,7 @@ integrationTest := {
           selenide,
           logfmt,
           captcha,
+          stripe,
 
 
           scalamandrill,

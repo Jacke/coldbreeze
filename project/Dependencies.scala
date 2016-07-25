@@ -186,7 +186,7 @@ object Dependencies {
   val scalatest2      = "org.specs2"                %% "specs2-junit"        % "2.3.13-scalaz-7.1.0-RC1" % "test"
   val scalatest3      = "org.specs2"                %% "specs2-mock"         % "2.3.13-scalaz-7.1.0-RC1" % "test"
 
-
+  val stripe          = "com.stripe"                %  "stripe-java"         % "2.7.0"
 
 
   val webserviceclient =   "com.typesafe.play"      %% "play-ws"         % "2.5.4"

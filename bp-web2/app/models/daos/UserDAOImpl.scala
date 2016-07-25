@@ -34,6 +34,27 @@ class UserDAOImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvid
       }
     }
   }
+  def findAll(): Future[Seq[User2]] = {
+    val query = for {
+      dbUser <- slickUsers
+      dbUserLoginInfo <- slickUserLoginInfos
+      dbLoginInfo <- slickLoginInfos
+    } yield (dbUser, dbLoginInfo)
+    db.run(query.result).map { resultOption =>
+      resultOption.map {
+        case (user, loginInfo) =>
+          User2(
+            UUID.fromString(user.userID),
+            LoginInfo(loginInfo.providerID, loginInfo.providerKey),
+            user.firstName,
+            user.lastName,
+            user.fullName,
+            user.email,
+            user.avatarURL)
+      }
+    }    
+  }
+
 
   /**
    * Finds a user by its user ID.
