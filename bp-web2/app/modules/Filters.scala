@@ -4,10 +4,9 @@ import javax.inject.Inject
 
 import play.api.http.HttpFilters
 import play.api.mvc.EssentialFilter
+import play.filters.cors._
 import play.filters.csrf.CSRFFilter
 import play.filters.headers.SecurityHeadersFilter
-import play.filters.cors.CORSFilter
-
 import play.api.db.slick.DatabaseConfigProvider
 import play.api.db.slick.HasDatabaseConfigProvider
 import play.api.libs.concurrent.Execution.Implicits.defaultContext

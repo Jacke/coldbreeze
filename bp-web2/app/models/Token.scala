@@ -8,9 +8,9 @@ import anorm.SqlParser._
 
 import java.util.Date
 
-case class Token(token: String, email: String, action: String, created: Date)
+case class Token2(token: String, email: String, action: String, created: Date)
 
-object Token {
+object Token2 {
   /*
   val simple = {
     get[String]("token.token") ~

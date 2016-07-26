@@ -18,6 +18,8 @@ import scala.concurrent.Future
  */
 class UserServiceImpl @Inject() (userDAO: UserDAO) extends UserService {
 
+  def retrieveById(id: UUID): Future[Option[User2]] = userDAO.find(id)
+
   /**
    * Retrieves a user that matches the specified login info.
    *

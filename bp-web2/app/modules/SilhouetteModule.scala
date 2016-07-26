@@ -35,7 +35,8 @@ import play.api.libs.concurrent.Execution.Implicits._
 import play.api.libs.openid.OpenIdClient
 import play.api.libs.ws.WSClient
 import utils.auth._
-
+import models.services._
+import models.daos._
 /**
  * The Guice module which wires all Silhouette dependencies.
  */
@@ -72,6 +73,10 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
     bind[DelegableAuthInfoDAO[OAuth1Info]].to[OAuth1InfoDAO]
     bind[DelegableAuthInfoDAO[OAuth2Info]].to[OAuth2InfoDAO]
     bind[DelegableAuthInfoDAO[OpenIDInfo]].to[OpenIDInfoDAO]
+
+    bind[AuthTokenDAO].to[AuthTokenDAOImpl]
+    bind[AuthTokenService].to[AuthTokenServiceImpl]
+
   }
 
   /**
