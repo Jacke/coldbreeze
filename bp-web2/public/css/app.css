@@ -1340,6 +1340,8 @@ span.selectedRefType.col-xs-6.ref-selected-object {
     color: white;
     padding: 8px 0px 8px 14px;
     overflow: hidden;
+    border-radius: 2px;
+    border: solid 1px #415763;
 }
 
 .element-new-form .new-elem-ref-actions-select__action-title {
@@ -8733,6 +8735,8 @@ order:1;
      color: white;
      padding: 8px 0px 8px 14px;
      overflow: hidden;
+     border-radius: 2px;
+    border: solid 1px #415763;  
  }
 
 .form-edit-bpelem .edit-elem-ref-actions-select__action-title {
