@@ -1359,7 +1359,9 @@ span.selectedRefType.col-xs-6.ref-selected-object {
     float: right;
     width: 41%;
     margin-top: 5px;
+    display: none;
 }
+
 
 .element-new-form .new-elem-ref-actions-select__action-pipes > * {
     display: inline-block;
@@ -8741,6 +8743,9 @@ order:1;
 .form-edit-bpelem .edit-elem-action__action-base {
 
  }
+.form-edit-bpelem .edit-elem-ref-actions-select__action-pipes {
+  display: none;
+}
 
 .form-edit-bpelem .form-horizontal.edit-elem-action__action-base__action-base-form {
      background: #37474F !important;
