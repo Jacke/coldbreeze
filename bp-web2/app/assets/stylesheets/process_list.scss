@@ -298,14 +298,88 @@ span.number.true.finished {
     text-align: left;
 }
 li.tableMinListItem.fastElementForm {
-  padding-top: 0px;
+    padding-top: 0px;
+    margin-top: -17px;
 }
+li.tableMinListItem.fastElementForm .new-elem-ref-actions-select__action-pipes {
+  display: none;
+}
+li.tableMinListItem.fastElementForm .new-elem-ref-actions-select__middleware-title,
+li.tableMinListItem.fastElementForm .new-elem-ref-actions-select__action-title {
+  display: none;
+}
+li.tableMinListItem.fastElementForm .new-elem-action__action-base .formly-field.new-elem-action__action-base__action-base-form__field.formly-field-input {
+    margin-top: 0px;
+}
+
+li.tableMinListItem.fastElementForm .new-elem-action__action-base .formly-field.new-elem-action__action-base__action-base-form__field.formly-field-input label.control-label {
+  color: black;
+}
+li.tableMinListItem.fastElementForm .new-elem-strategy__strategy a.new-elem-ref-actions-select__strategy-link.selected {
+  color: #9E9E9E;
+}
+li.tableMinListItem.fastElementForm .ref-desc.ref-desc-select-container a.ref-desc-select-container-link p {
+    font-family: 'Open Sans', Helvetica, Arial;
+    font-weight: 400;
+    display: block;
+    font-size: 14px;
+    width: 100%;
+    white-space: pre-line;
+}
+
+li.tableMinListItem.fastElementForm .ref.ref-desc.ref-desc-select-container a.ref-desc-select-container-link {
+    padding-left: 18px;
+    display: block;
+    height: auto;
+    width: 98%;
+}
+
+li.tableMinListItem.fastElementForm .ref.ref-desc.ref-desc-select-container.col-xs-6.ng-scope {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+li.tableMinListItem.fastElementForm .templateButton {
+    width: 100%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .fastElementForm label.control-label.col-sm-1 {
     font-family: "AvenirNextCyr-Good", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
     font-size: 14px;
     line-height: 32px;
     font-weight: 200;
     margin-top: 0px;
+    color: black;
     padding-top: 0px;
     padding-bottom: 20px;
 }
@@ -342,9 +416,10 @@ label.control-label {
   width: 55%;
 }
 .form-fast-element-create .ref-select-container {
-    width: 60%;
+    width: 100%;
     margin-right: 0px;
 }
+
 
 
 
@@ -453,9 +528,10 @@ label.control-label {
     margin-left: 16px;
     margin-top: -8px;
     font-size: 14px;
+    color: black;
 }
 .form-fast-element-create a.expand-ref-select span.moicon.moicon-info.expand-ref-select {
-    top: 1px;
+    top: 5px;
 }
 .form-fast-element-create label.control-label.type-label {
     margin-top: -4px !important;

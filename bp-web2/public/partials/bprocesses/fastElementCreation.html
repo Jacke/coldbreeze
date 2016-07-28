@@ -51,8 +51,12 @@
               <option value="0" selected="selected">Base</option>
       </select>
     <div class="templateButton form-group clearfix">
-      <div class="ref col-xs-6" ng-repeat="ref in $parent.$parent.refs | filter: ref.hide == false" ng-class="{selected: newBpelem.selectedRef.ref.id == ref.ref.id }">
-        <a ng-mouseover="$parent.$parent.refElem(ref, newBpelem)" ng-click="newBpelem.refSelectHidden=true;" class="btn btn-small btn-primary container_brick" ng-class="isSelected(ref, newBpelem.elem)">{{ ref.ref.title }}</a>
+      <div class="ref ref-desc ref-desc-select-container col-xs-6" ng-repeat="ref in $parent.$parent.refs | filter: ref.hide == false">
+
+<a class="ref-desc-select-container-link" ng-click="$parent.$parent.refElem(ref, newBpelem);newBpelem.refSelectHidden=true">
+<h6>{{ ref.ref.title }}</h6>
+<p>{{ ref.ref.desc }}</p>
+
       </div>
     </div>
     <!--
@@ -159,7 +163,7 @@
     <div class="new-elem-ref-actions-select__strategy-title">
           <a class="new-elem-ref-actions-select__strategy-link"
              ng-click="selectStrategy(strategy, middleware, action, newBpelem.selectedRef.bases)"
-             ng-class="isStrategySelected(strategy, action) ? 'selected' : ''">{{ strategy.ident }}</a>
+             ng-class="isStrategySelected(strategy, action) ? 'selected' : ''">{{ strategy.ident.replace('Strategy', '')  }}</a>
     </div>
 
     <div class="new-elem-action__action-base" ng-show="isStrategySelected(strategy, action)">

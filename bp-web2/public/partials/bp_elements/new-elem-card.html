@@ -122,7 +122,7 @@
     <div class="new-elem-ref-actions-select__strategy-title">
           <a class="new-elem-ref-actions-select__strategy-link"
              ng-click="selectStrategy(strategy, middleware, action, newBpelem.selectedRef.bases)"
-             ng-class="isStrategySelected(strategy, action) ? 'selected' : ''">{{ strategy.ident }}</a>
+             ng-class="isStrategySelected(strategy, action) ? 'selected' : ''">{{ strategy.ident.replace('Strategy', '') }}</a>
     </div>
     <div class="new-elem-ref-actions-select__middleware-text-exec">
         <a ng-click="textExec(action,middleware,strategy)">Test</a>

@@ -81,7 +81,7 @@
 
     <div class="edit-elem-strategy__strategy" ng-repeat="strategy in action.strategies | filter:byMiddleware(middleware)">
     <div class="edit-elem-ref-actions-select__strategy-title">
-          <span class="edit-elem-ref-actions-select__strategy-link">{{ strategy.ident }}</span>
+          <span class="edit-elem-ref-actions-select__strategy-link">{{ strategy.ident.replace('Strategy', '') }}</span>
     </div>
   <div class="new-elem-ref-actions-select__middleware-text-exec">
       <a ng-click="textExec(action,middleware,strategy)">Test</a>

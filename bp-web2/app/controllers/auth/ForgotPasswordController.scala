@@ -61,7 +61,7 @@ class ForgotPasswordController @Inject() (
               val url = routes.ResetPasswordController.view(authToken.id).absoluteURL()
 
               mailerClient.send(Email(
-                subject = Messages("email.reset.password.subject"),
+                subject = Messages("Reset your password | Minority Workflow platform"),
                 from = "iamjacke@gmail.com",
                 to = Seq(email),
                 //bodyText = Some(views.txt.emails.resetPassword(user, url).body),
