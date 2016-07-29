@@ -13,35 +13,39 @@ import models.DAO.conversion.DatabaseCred
  */
 
 
-class ReflectElementMappings(tag: Tag) extends Table[ReflectElementMap](tag, "reflect_element_mappings") {
+class ReflectActionMappings(tag: Tag) extends Table[ReflectedActionMap](tag, "reflect_action_mappings") {
   def id               = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def reflection       = column[Int]("reflection_id")
-  def topology_element = column[Int]("topology_element_id")
+  def ref_action       = column[Int]("ref_action")
+
+  def element_action = column[Int]("element_action")
 
   def created_at = column[Option[org.joda.time.DateTime]]("created_at")
   def updated_at = column[Option[org.joda.time.DateTime]]("updated_at")
 
   def * = (id.?, reflection,
-          topology_element,
-          created_at, updated_at) <> (ReflectElementMap.tupled, ReflectElementMap.unapply)
+          ref_action,
+          element_action,
+          created_at, updated_at) <> (ReflectedActionMap.tupled, ReflectedActionMap.unapply)
 
-  def reflectFK          = foreignKey("reflect_element_mappings_reflect_fk", 
-  		reflection, models.DAO.reflect.RefDAO.refs)(_.id, onDelete = ForeignKeyAction.Cascade)
-  def topology_elementFK = foreignKey("reflect_element_mappings_topology_element_fk", 
-  		topology_element, models.DAO.ElemTopologDAO.elem_topologs)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def reflectFK          = foreignKey("reflect_action_mappings_reflect_fk", 
+      reflection, models.DAO.reflect.RefDAO.refs)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def ref_actionFK          = foreignKey("reflect_action_mappings_ref_action_fk", 
+      ref_action, models.DAO.reflect.ReactionRefDAOF.reaction_refs)(_.id, onDelete = ForeignKeyAction.Cascade)
+  def elementActionFK = foreignKey("reflect_action_mappings_element_action_fk", 
+      element_action, models.DAO.ElemTopologDAO.elem_topologs)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }
-case class ReflectElementMap(id: Option[Int],
+case class ReflectedActionMap(id: Option[Int],
   reflection: Int,
-  topology_element: Int,
+  ref_action: Int,
+  element_action: Int,
   created_at: Option[org.joda.time.DateTime] = None,
   updated_at: Option[org.joda.time.DateTime] = None)
 
 
-object ReflectElementMappingsDAO {
+object ReflectActionMappingsDAO {
   import akka.actor.ActorSystem
-
-
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
   //import slick.driver.JdbcProfile
   import slick.driver.PostgresDriver.api._
@@ -55,24 +59,24 @@ object ReflectElementMappingsDAO {
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
-  val reflect_element_mappings = TableQuery[ReflectElementMappings]
+  val reflect_action_mappings = TableQuery[ReflectElementMappings]
 
   private def filterQuery(id: Int): Query[ReflectElementMappings, ReflectElementMap, Seq] =
-    reflect_element_mappings.filter(_.id === id)
+    reflect_action_mappings.filter(_.id === id)
   private def filterByIdsQuery(ids: List[Int]): Query[ReflectElementMappings, ReflectElementMap, Seq] =
-    reflect_element_mappings.filter(_.id inSetBind ids)
+    reflect_action_mappings.filter(_.id inSetBind ids)
   private def filterByReflection(reflection: Int): Query[ReflectElementMappings, ReflectElementMap, Seq] =
-    reflect_element_mappings.filter(_.reflection === reflection)
+    reflect_action_mappings.filter(_.reflection === reflection)
   private def filterByReflections(reflections: List[Int]): Query[ReflectElementMappings, ReflectElementMap, Seq] =
-    reflect_element_mappings.filter(_.reflection inSetBind reflections)
+    reflect_action_mappings.filter(_.reflection inSetBind reflections)
 
 
   def pull_object(s: ReflectElementMap) =   {
-      await(db.run( reflect_element_mappings returning reflect_element_mappings.map(_.id) += s ))
+      await(db.run( reflect_action_mappings returning reflect_action_mappings.map(_.id) += s ))
   }
   def pull(s: ReflectElementMap) = 
-	  db.run( reflect_element_mappings returning reflect_element_mappings.map(_.id) += s )
-	  
+    db.run( reflect_action_mappings returning reflect_action_mappings.map(_.id) += s )
+    
   def findByRef(id: Int):List[ReflectElementMap] =   {
     await(db.run(filterByReflection(id).result)).toList
   }
@@ -88,19 +92,20 @@ object ReflectElementMappingsDAO {
 
   def update(id: Int, topology: ReflectElementMap) =   {
     val topologyToUpdate: ReflectElementMap = topology.copy(Option(id))
-    await(db.run( reflect_element_mappings.filter(_.id === id).update(topologyToUpdate) ))
+    await(db.run( reflect_action_mappings.filter(_.id === id).update(topologyToUpdate) ))
   }
   def delete(id: Int) =   {
-    await(db.run( reflect_element_mappings.filter(_.id === id).delete ))
+    await(db.run( reflect_action_mappings.filter(_.id === id).delete ))
   }
 
 
-  val create: DBIO[Unit] = reflect_element_mappings.schema.create
-  val drop: DBIO[Unit] = reflect_element_mappings.schema.drop
+  val create: DBIO[Unit] = reflect_action_mappings.schema.create
+  val drop: DBIO[Unit] = reflect_action_mappings.schema.drop
   def ddl_create = db.run(create)
   def ddl_drop = db.run(drop)
 
 
 }
+
 
 

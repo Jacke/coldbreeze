@@ -149,11 +149,14 @@ object ProcElemDAO {
   private def filterByBPSQuery(ids: List[Int]): Query[ProcElementsF, UndefElement, Seq] =
     proc_elements.filter(_.bprocess inSetBind ids)
 
-    private def findByBPanOrderQuery(id: Int, order: Int): Query[ProcElementsF, UndefElement, Seq] =
-      proc_elements.filter(el => el.bprocess === id && el.order === order)
+  private def filterByTypeTypeTitle(b_type: String, type_title: String): Query[ProcElementsF, UndefElement, Seq] =
+    proc_elements.filter(el => el.b_type === b_type && el.type_title === type_title)
 
-    private def renewOrderQuery(bprocess: Int, order_num: Int): Query[ProcElementsF, UndefElement, Seq] =
-      proc_elements.filter(el => el.bprocess === bprocess && el.order > order_num)
+  private def findByBPanOrderQuery(id: Int, order: Int): Query[ProcElementsF, UndefElement, Seq] =
+    proc_elements.filter(el => el.bprocess === id && el.order === order)
+
+  private def renewOrderQuery(bprocess: Int, order_num: Int): Query[ProcElementsF, UndefElement, Seq] =
+    proc_elements.filter(el => el.bprocess === bprocess && el.order > order_num)
 
   /**
    * Find a specific entity by id.
@@ -163,6 +166,9 @@ object ProcElemDAO {
   }
   def findById(id: Int) = {
     await(db.run(filterQuery(id).result.headOption))
+  }
+  def findByTypeAndTypeTitle(b_type:String, type_title:String):Seq[UndefElement] = {
+    await(db.run(filterByTypeTypeTitle(b_type, type_title).result))
   }
 
   def lastOrderOfBP(id: Int):Int = {
@@ -206,6 +212,11 @@ object ProcElemDAO {
        case _ =>
     }
     res
+  }
+
+  def deleteWithoutOrderRenew(id: Int) = {
+    val elem = findById(id)
+    await(db.run( proc_elements.filter(_.id === id).delete ) )
   }
 
   def moveUp(bprocess: Int, element_id: Int) = {

@@ -136,14 +136,17 @@ class BusinessProcessController @Inject() (
   implicit val wStrategyOutputUnitWrites = Json.format[StrategyOutputUnit]
 
 
-
+  implicit val RefMapResultReads = Json.reads[models.DAO.reflect.RefMapResult]
+  implicit val RefMapResultWrites = Json.format[models.DAO.reflect.RefMapResult]
 
   implicit val RefActionContainerReads = Json.reads[RefActionContainer]
   implicit val RefActionContainerWrites = Json.format[RefActionContainer]
   implicit val RefElemContainerReads = Json.reads[RefElemContainer]
   implicit val RefElemContainerWrites = Json.format[RefElemContainer]
+
   implicit val RefResultedReads = Json.reads[models.DAO.reflect.RefResulted]
   implicit val RefResultedWrites = Json.format[models.DAO.reflect.RefResulted]
+
   implicit val SessionElementsReads = Json.reads[SessionElements]
   implicit val SessionElementsFormat = Json.format[SessionElements]
   implicit val BPSessionStateReads = Json.reads[BPSessionState]

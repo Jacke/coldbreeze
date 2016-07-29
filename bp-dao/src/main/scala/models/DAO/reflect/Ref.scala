@@ -26,6 +26,48 @@ case class RefActionContainer(
   bases: List[BaseContainer] = List()
 )
 
+case class Ref(id: Option[Int],
+              title: String,
+              host: String = "",
+              desc: Option[String] = None,
+              created_at:Option[org.joda.time.DateTime] = None,
+              updated_at:Option[org.joda.time.DateTime] = None,
+              category: String = "Base",
+              hidden:Boolean = false)
+
+
+case class RetrivedRef(
+  proc_elems: List[UnitElement],
+  spaces: List[UnitSpace], // change to DTO
+  space_elems: List[UnitSpaceElement], // change to DTO
+  states: List[BPState],
+  switches: List[UnitSwitcher],
+  reactions: List[UnitReaction],
+  reaction_state_outs: List[UnitReactionStateOut])
+
+case class RefMapResult(oldId: Int, 
+  newId:Int,
+  oldIdLong: Long = -1L,
+  newIdLong: Long = -1L)
+case class RefResulted(
+  proc_elems: List[RefMapResult],
+  space_elems: List[RefMapResult],
+  spaces:List[RefMapResult],
+  states: List[RefMapResult],
+  switches: List[RefMapResult],
+  reactions: List[RefMapResult],
+  reaction_state_outs: List[RefMapResult],
+  topoElem:List[RefMapResult]=List.empty,
+  topoSpaceElem:List[RefMapResult]=List.empty,
+  middlewares:List[RefMapResult]=List.empty,
+  strategies:List[RefMapResult]=List.empty,
+  inputs:List[RefMapResult]=List.empty,
+  bases:List[RefMapResult]=List.empty,
+  outputs:List[RefMapResult]=List.empty
+)
+
+
+
 object RefDAOF {
   import akka.actor.ActorSystem
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
@@ -52,7 +94,7 @@ object RefDAOF {
    *  If ref existed create element
    *  @return In success return RefResulted otherwise return Nothing
    */
-  def retriveAndCreateElement(refId: Int,
+  def retrieveAndCreateElement(refId: Int,
               process: Int,
               business: Int, in: String = "front",
               title: String, desc:String = "",
@@ -75,21 +117,66 @@ object RefDAOF {
             Future.sequence( 
               refResult.topoElem.map { topo =>
                 ReflectElementMappingsDAO.pull(
-                                                      ReflectElementMap(None,
-                                                        reflection = refId,
-                                                        topology_element = topo,
-                                                        created_at = Some(org.joda.time.DateTime.now()),
-                                                        updated_at = Some(org.joda.time.DateTime.now()))
+                                              ReflectElementMap(None,
+                                                reflection = refId,
+                                                topology_element = topo.newId,
+                                                ref_topo_element = Some(topo.oldId),
+                                                created_at = Some(org.joda.time.DateTime.now()),
+                                                updated_at = Some(org.joda.time.DateTime.now()))
                                                     )
                 })
           }
           case _ => Future.successful(List())
         }
       }
-
       refResultOptF
   }
 
+  /**
+   *  Search for ref
+   *  If ref existed create element
+   *  @return In success return RefResulted otherwise return Nothing
+   */
+  def retrieveAndCreateElementWithOrder(refId: Int,
+              process: Int,
+              order: Int,
+              business: Int, 
+              in: String = "front",
+              title: String, 
+              desc:String = "",
+              space_id: Option[Int] = None,
+              refActionContainer: List[RefActionContainer] = List() ):Future[Option[RefResulted]] = {
+      val refResultOptF = in match {
+        // Creating front element
+        case "front" => 
+          ElementComponentsProjector.projecting(refId, order, process, business, 
+                                   title,desc, "front", None, refActionContainer)
+        // Creating nested element
+        case _ => 
+          ElementComponentsProjector.projecting(refId, order, process, business, 
+                                   title,desc, "nested", space_id)
+      }
+      // Record mapping operation for element based on RefResult topology ids
+      refResultOptF.map { refResultOpt =>
+        refResultOpt match {
+          case Some(refResult) => {
+            Future.sequence( 
+              refResult.topoElem.map { topo =>
+                ReflectElementMappingsDAO.pull(
+                                              ReflectElementMap(None,
+                                                reflection = refId,
+                                                topology_element = topo.newId,
+                                                ref_topo_element = Some(topo.oldId),
+                                                created_at = Some(org.joda.time.DateTime.now()),
+                                                updated_at = Some(org.joda.time.DateTime.now()))
+                                                    )
+                })
+          }
+          case _ => Future.successful(List())
+        }
+      }
+      refResultOptF
+  }
 
 
   def get(k: Int):Future[Option[Ref]] = {
@@ -121,35 +208,6 @@ class Refs(tag: Tag) extends Table[Ref](tag, "refs") {
 
 }
 
-case class Ref(id: Option[Int],
-              title: String,
-              host: String = "",
-              desc: Option[String] = None,
-              created_at:Option[org.joda.time.DateTime] = None,
-              updated_at:Option[org.joda.time.DateTime] = None,
-              category: String = "Base",
-              hidden:Boolean = false)
-
-
-case class RetrivedRef(
-  proc_elems: List[UnitElement],
-  spaces: List[UnitSpace], // change to DTO
-  space_elems: List[UnitSpaceElement], // change to DTO
-  states: List[BPState],
-  switches: List[UnitSwitcher],
-  reactions: List[UnitReaction],
-  reaction_state_outs: List[UnitReactionStateOut])
-
-case class RefResulted(
-  proc_elems: List[Int],
-  space_elems: List[Int],
-  spaces:List[Int],
-  states: List[Int],
-  switches: List[Int],
-  reactions: List[Int],
-  reaction_state_outs: List[Int],
-  topoElem:List[Int]=List.empty,
-  topoSpaceElem:List[Int]=List.empty)
 
 
 
@@ -198,16 +256,16 @@ object RefDAO {
   /**
   * Project ref to existed elements and states
   */
-  def retrive(k: Int, process: Int,
+  def retrieve(k: Int, process: Int,
               business: Int, in: String = "front",
               title: String, desc:String = "",
               space_id: Option[Int] = None):Option[RefResulted] =   {
     //logger.debug(k, process, business, title, desc, space_id)
-
-      in match {
-        case "front" => RefProjector.projecting(k, process, business, title,desc, "front")
-        case _ => RefProjector.projecting(k, process, business, title,desc, "nested", space_id)
-      }
+    val results = in match {
+      case "front" => RefProjectorF.projecting(k, process, business, title,desc, "front")
+      case _ => RefProjectorF.projecting(k, process, business, title,desc, "nested", space_id)
+    }
+    await(results)
   }
 
 

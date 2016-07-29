@@ -8,7 +8,16 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 import scala.util.Try
+case class ElemProjectionContainer(
+  elements: Map[Int, Int], 
+  last_order: Int, elem_ref: List[UnitElement])
 
+case class SpaceProjectionContainer(spaces_ids: Map[Int,Int], 
+  spaces_refs: List[UnitSpaceRef], last_index: Int)
+
+case class SpaceElemProjectionContainer(elements: Map[Int, Int], 
+  last_order: Int, 
+  ref_ids: List[UnitSpaceElementRef])
 
 trait FrontElemProjectionF {
   /**
@@ -27,7 +36,8 @@ trait FrontElemProjectionF {
                           title: String,
                           desc: String = "",
                           scope: String = "front",
-                          space_id:Option[Int] = None): Future[ElemProjectionContainer] = {
+                          space_id:Option[Int] = None,
+                          orderOpt: Option[Int] = None): Future[ElemProjectionContainer] = {
     scope match {
       case "front" => {
         val last_order = ProcElemDAO.lastOrderOfBP(process)
@@ -37,10 +47,17 @@ trait FrontElemProjectionF {
           val all_orders = Range(last_order, last_order + elements.length).toList
           val first_order = all_orders.head
           ElemProjectionContainer(
-            elements.zip(all_orders).map {
-              el =>
-                val el2 = if (el._2 == first_order) ProcElemDCO.conv(el._1.copy(title = title, desc = desc, order = el._2)) else ProcElemDCO.conv(el._1.copy(order = el._2))
-                el._1.id.get -> ProcElemDAOF.await ( ProcElemDAOF.pull(el2) )
+            elements.zip(all_orders).map { el =>
+              val el2 = orderOpt match {
+                case Some(order) => ProcElemDCO.conv(el._1.copy(order = order))
+                case _ => {
+                  if (el._2 == first_order) ProcElemDCO.conv(el._1.copy(title = title, 
+                    desc = desc, 
+                    order = el._2)) else ProcElemDCO.conv(el._1.copy(order = el._2))
+                  } 
+                }
+
+              el._1.id.get -> ProcElemDAOF.await ( ProcElemDAOF.pull(el2) )
             }.toMap, last_order, elements.toList)
         }
       }

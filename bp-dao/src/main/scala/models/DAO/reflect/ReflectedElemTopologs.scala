@@ -65,6 +65,13 @@ object ReflectElemTopologDAOF {
     reflected_elem_topologs.filter(_.id inSetBind ids)
   private def filterByReflection(reflection: Int): Query[ReflectElemTopologs, RefElemTopology, Seq] =
     reflected_elem_topologs.filter(_.reflection === reflection)
+  private def filterByFrontId(id: Int): Query[ReflectElemTopologs, RefElemTopology, Seq] =
+    reflected_elem_topologs.filter(_.front_elem_id === id)
+
+
+  def findByFrontId(id: Int):Future[Option[RefElemTopology]] = {
+    db.run(filterByFrontId(id).result.headOption)
+  }
 
   def findByRef(reflection: Int):Future[Seq[RefElemTopology]] = {
     db.run(filterByReflection(reflection).result)

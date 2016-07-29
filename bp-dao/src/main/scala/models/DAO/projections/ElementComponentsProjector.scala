@@ -10,8 +10,12 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 import scala.util.Try
 
+/*********
+  NOT READY YET!!!!
+  ORDER ONLY FOR ONE FRONT ELEMENT 
+ *********/
 
-object RefProjectorF extends FrontElemProjectionF
+object ElementComponentsProjector extends FrontElemProjectionF
   with SpaceProjectionF
   with SpaceElemProjectionF
   with StateProjectionF
@@ -21,12 +25,13 @@ object RefProjectorF extends FrontElemProjectionF
   with ActionIternalProjectionF {
 
   def projecting(k: Int,
-				process: Int,
-				business: Int,
-				title: String,
-				desc: String = "",
-				sc: String = "front",
-				space_id: Option[Int] = None,
+        order: Int,
+        process: Int,
+        business: Int,
+        title: String,
+        desc: String = "",
+        sc: String = "front",
+        space_id: Option[Int] = None,
         refActionContainer: List[RefActionContainer] = List() ):Future[Option[RefResulted]] = {
 
     models.DAO.reflect.RefDAOF.get(k).flatMap { refOpt =>
@@ -34,25 +39,25 @@ object RefProjectorF extends FrontElemProjectionF
       case Some(ref) => {
         // Front fetching
         val front_containerF: Future[ElemProjectionContainer] =
-        		frontElemsProjection(k, process, business, title, desc,sc,space_id)
-		front_containerF.flatMap { front_container =>
-		val idToRefId:Map[Int, Int] = front_container.elements
-		val ref_ids:List[Int] = front_container.elem_ref.map(_.id.get)
+            frontElemsProjection(k, process, business, title, desc,sc,space_id, Some(order))
+    front_containerF.flatMap { front_container =>
+    val idToRefId:Map[Int, Int] = front_container.elements
+    val ref_ids:List[Int] = front_container.elem_ref.map(_.id.get)
 
         // Space fetching
         val space_containerF: Future[SpaceProjectionContainer] =
-        		spacesProjection(k, process, business, title, desc, idToRefId, ref_ids)
-		space_containerF.flatMap { space_container =>
+            spacesProjection(k, process, business, title, desc, idToRefId, ref_ids)
+    space_containerF.flatMap { space_container =>
 
-		val conv_spaces:Map[Int, Int] = space_container.spaces_ids
-		val space_refs:List[UnitSpaceRef] = space_container.spaces_refs
-		val last_index:Int = space_container.last_index
+    val conv_spaces:Map[Int, Int] = space_container.spaces_ids
+    val space_refs:List[UnitSpaceRef] = space_container.spaces_refs
+    val last_index:Int = space_container.last_index
 
         // Space elem fetching
         val space_elem_containerF: Future[SpaceElemProjectionContainer] =
-    		spaceElemsProjection(k, process, business, title, desc, conv_spaces)
+        spaceElemsProjection(k, process, business, title, desc, conv_spaces)
 
-		space_elem_containerF.flatMap { space_elem_container =>
+    space_elem_containerF.flatMap { space_elem_container =>
         val conv_sp_elems:Map[Int, Int] = space_elem_container.elements
         val sp_elems_refs:List[UnitSpaceElementRef] = space_elem_container.ref_ids
         /**
@@ -70,12 +75,12 @@ object RefProjectorF extends FrontElemProjectionF
 
         // Fetch states
         val state_containerF: Future[StateProjectionContainer] =
-        	statesProjection(k, process, business, title, desc,idToRefId, conv_spaces, conv_sp_elems, scope=sc)
+          statesProjection(k, process, business, title, desc,idToRefId, conv_spaces, conv_sp_elems, scope=sc)
         state_containerF.flatMap { state_container =>
         val stateIdToRefId = state_container.states_ids
         // Fetch switchers
         val switcher_containerF: Future[SwitcherProjectionContainer] =
-        	switcherProjection(k, process, business, title, desc, stateIdToRefId)
+          switcherProjection(k, process, business, title, desc, stateIdToRefId)
         switcher_containerF.flatMap { switcher_container =>
         val switcherIdToRefId = switcher_container.switcher_ids
 
@@ -100,13 +105,13 @@ object RefProjectorF extends FrontElemProjectionF
             front_elem_id=None)
         )
         // TOPOLOGY MAKING
-    		val reaction_containerF: Future[ReactionProjectionContainer] =
+        val reaction_containerF: Future[ReactionProjectionContainer] =
           reactionsProjection(k, process, business, title, desc, topoElem, topoSpaceElem)
 
     reaction_containerF.flatMap { reaction_container =>
-		  val reactionsIdToRefId:Map[Int, Int] = reaction_container.reaction_ids
-		  val reaction_ref:List[UnitReactionRef] = reaction_container.reactions
-		  val reaction_sout_containerF: Future[ReactionStateOutProjectionContainer] =
+      val reactionsIdToRefId:Map[Int, Int] = reaction_container.reaction_ids
+      val reaction_ref:List[UnitReactionRef] = reaction_container.reactions
+      val reaction_sout_containerF: Future[ReactionStateOutProjectionContainer] =
         reactionStateOutsProjection(k,process,business,title,desc,reaction_ref,reactionsIdToRefId, stateIdToRefId)
 
 
@@ -115,10 +120,10 @@ object RefProjectorF extends FrontElemProjectionF
       val reactionCompnentsF = projectReactionComponents(reaction_container, refActionContainer )
 
       reactionCompnentsF.flatMap { reactionCompnents =>
-  		reaction_sout_containerF.map { reaction_sout_container =>
-  			val reaction_state_outIdToRefId = reaction_sout_container.outs_ids
+      reaction_sout_containerF.map { reaction_sout_container =>
+        val reaction_state_outIdToRefId = reaction_sout_container.outs_ids
 
-  	        Some(RefResulted(
+            Some(RefResulted(
               proc_elems = makeRefMapResult(idToRefId),
               space_elems = makeRefMapResult(conv_sp_elems),
               spaces = makeRefMapResult(conv_spaces),
@@ -133,43 +138,44 @@ object RefProjectorF extends FrontElemProjectionF
               inputs = makeRefMapResultLong(reactionCompnents.inputs),
               bases = makeRefMapResultLong(reactionCompnents.bases),
               outputs = makeRefMapResultLong(reactionCompnents.outputs)
-  	        ))
+            ))
       }
     }
     }
 
           }
-	      }
-		  }
-		  }
-	      }
-	      }
-	  }
+        }
+      }
+      }
+        }
+        }
+    }
 
       case _ => Future(None) // Ref not found
     }
   }
 }
 
-
 private def makeRefMapResult(values:Map[Int, Int]):List[RefMapResult] = {
   values.map { keyVal => RefMapResult(keyVal._1,keyVal._2) }.toList
 }
+
 private def makeRefMapResultLong(values:Map[Long, Long]):List[RefMapResult] = {
   values.map { keyVal => RefMapResult(-1,-1,keyVal._1,keyVal._2) }.toList
 }
 
+
 private def makeTopolog(process: Int, front_elem_id: Option[Int], space_elem_id: Option[Int]):Int = {
-	//println(front_elem_id)
-	ElemTopologDAOF.await(
-		ElemTopologDAOF.pull_object(ElemTopology(
-												  id = None,
-												  process = process,
-												  front_elem_id = front_elem_id,
-												  space_elem_id = space_elem_id,
-												  hash = "",
-												  space_id = None))
-	)
+  //println(front_elem_id)
+  ElemTopologDAOF.await(
+    ElemTopologDAOF.pull_object(ElemTopology(
+                          id = None,
+                          process = process,
+                          front_elem_id = front_elem_id,
+                          space_elem_id = space_elem_id,
+                          hash = "",
+                          space_id = None))
+  )
 }
 
 }

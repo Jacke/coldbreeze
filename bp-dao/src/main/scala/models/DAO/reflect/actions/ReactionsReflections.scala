@@ -62,7 +62,8 @@ object ReactionRefDAOF {
     reaction_refs.filter(_.reflection === reflection)
   private def filterById(id: Int): Query[ReactionRefs, UnitReactionRef, Seq] =
     reaction_refs.filter(_.id === id)
-
+  private def filterByElem(elem: Int): Query[ReactionRefs, UnitReactionRef, Seq] =
+    reaction_refs.filter(_.element === elem)
 
   def findById(id: Int):Future[Option[UnitReactionRef]] = {
     db.run(filterById(id).result.headOption)
@@ -70,6 +71,9 @@ object ReactionRefDAOF {
 
   def findByRef(reflection: Int):Future[Seq[UnitReactionRef]] = {
     db.run(filterByReflection(reflection).result)
+  }
+  def findAllByElem(reflection: Int):Future[Seq[UnitReactionRef]] = {
+    db.run(filterByElem(reflection).result)
   }
 
   def retrive(k: Int, process: Int, element: Int, from_state: Option[Int]):Future[List[UnitReaction]] = {

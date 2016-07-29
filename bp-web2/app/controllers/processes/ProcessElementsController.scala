@@ -85,7 +85,9 @@ implicit val BaseNewValueWrites = Json.format[BaseNewValue]
   implicit val StationNoteReads = Json.reads[StationNoteMsg]
   implicit val StationNoteWrites = Json.format[StationNoteMsg]
 
-
+  implicit val RefMapResultReads = Json.reads[models.DAO.reflect.RefMapResult]
+  implicit val RefMapResultWrites = Json.format[models.DAO.reflect.RefMapResult]
+  
   implicit val BaseContainerReads = Json.reads[BaseContainer]
   implicit val BaseContainerWrites = Json.format[BaseContainer]
 
@@ -324,7 +326,7 @@ def createFrontElem() = silhouette.SecuredAction.async(BodyParsers.parse.json) {
 request.body.validate[RefElemContainer].map {
   case entity => {
          if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, entity.process)) {
-            RefDAOF.retriveAndCreateElement(refId = entity.ref,
+            RefDAOF.retrieveAndCreateElement(refId = entity.ref,
                            process = entity.process,
                            business = entity.business,
                            in = "front",
@@ -344,7 +346,7 @@ request.body.validate[RefElemContainer].map {
                               action(request.identity.emailFilled, process = Some(entity.process),
                                 action = ProcHisCom.elementCreated,
                                 what = Some(entity.title),
-                                what_id = elem_id)
+                                what_id = refResultIdGetter(elem_id) )
                               Ok(Json.toJson(Map("success" ->  Json.toJson(ref_resulted))))
                             }
                           }
@@ -379,7 +381,7 @@ def createSpaceElem() = silhouette.SecuredAction.async(BodyParsers.parse.json) {
   request.body.validate[RefElemContainer].map{
       case entity => {
             if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, entity.process)) {
-                 RefDAOF.retriveAndCreateElement(refId = entity.ref,
+                 RefDAOF.retrieveAndCreateElement(refId = entity.ref,
                                  process = entity.process,
                                  business = entity.business,
                                  in = "nested",
@@ -397,7 +399,7 @@ def createSpaceElem() = silhouette.SecuredAction.async(BodyParsers.parse.json) {
                                     action(request.identity.emailFilled, process = Some(entity.process),
                                       action = ProcHisCom.spaceElementCreated,
                                       what = Some(entity.title),
-                                      what_id = elem_id)
+                                      what_id = refResultIdGetter(elem_id))
                                     Ok(Json.toJson(Map("success" ->  Json.toJson(ref_resulted))))
                                   }
                                 }
@@ -543,6 +545,8 @@ def deleteFrontElem(bpID: Int, elem_id: Int) = silhouette.SecuredAction { implic
           }
      } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
+
+
 def deleteSpace(bpID: Int, space_id: Int) = silhouette.SecuredAction { implicit request =>
     if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, bpID)) {
 
@@ -735,6 +739,12 @@ private def haltActiveStations(BPid: Int) = {
        }
       case _ => false
     }
+}
+private def refResultIdGetter(refResult:Option[models.DAO.reflect.RefMapResult]) = {
+  refResult match {
+    case Some(refResult) => Some(refResult.newId)
+    case _ => None
+  }
 }
 
 private def deleteOwnedSpace(elem_id:Option[Int],spelem_id:Option[Int]) {

@@ -9,6 +9,14 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 import scala.util.Try
+case class SwitcherProjectionContainer(switcher_ids: Map[Int,Int], 
+  switchers: List[UnitSwitcherRef])
+case class StateProjectionContainer(states_ids: Map[Int,Int], 
+  state_refs: List[BPStateRef])
+case class ReactionProjectionContainer(reaction_ids: Map[Int,Int], 
+  reactions:List[UnitReactionRef])
+case class ReactionStateOutProjectionContainer(outs_ids: Map[Int,Int], 
+  outs: List[UnitReactionStateOutRef])
 
 
 trait SwitcherProjectionF {

@@ -79,6 +79,12 @@ object ProcElemReflectionDAOF {
   private def filterByReflections(reflections: List[Int]): Query[ProcElementReflections, UnitElementRef, Seq] =
     proc_element_reflections.filter(_.reflection inSetBind reflections)
 
+  private def filterByTypeTypeTitle(b_type: String, type_title: String): Query[ProcElementReflections, UnitElementRef, Seq] =
+    proc_element_reflections.filter(el => el.b_type === b_type && el.type_title === type_title)
+
+  def findByTypeAndTypeTitle(b_type:String, type_title:String):Option[UnitElementRef] = {
+    await(db.run(filterByTypeTypeTitle(b_type, type_title).result.headOption))
+  }
 
   def findByRef(reflection: Int):Future[Seq[UnitElementRef]] = {
     db.run(filterByReflection(reflection).result)

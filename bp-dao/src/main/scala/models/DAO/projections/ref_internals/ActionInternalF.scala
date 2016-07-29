@@ -18,8 +18,9 @@ import main.scala.simple_parts.process._
 trait ActionIternalProjectionF {
 
 
-  def projectReactionComponents(reaction_container: ReactionProjectionContainer,
-                                refActionContainer: List[RefActionContainer] = List() ):Future[List[Option[Long]]] = {
+  def projectReactionComponents(
+    reaction_container: ReactionProjectionContainer,
+    refActionContainer: List[RefActionContainer] = List() ):Future[ActionInternalContainer] = {
 
       /*
       action_id: Int,
@@ -44,23 +45,38 @@ trait ActionIternalProjectionF {
 
 
       */
-    val components:List[scala.concurrent.Future[Option[Long]]] =
+    val components:List[scala.concurrent.Future[Option[ActionInternalContainer]]] =
       refActionContainer.map { reactionComp =>
         reaction_container.reaction_ids.get(reactionComp.action_id) match {
-        case Some(trueActionId) => {
-            prepareMiddleware(reactionComp, trueActionId)
-        }
-        case _ => Future.successful(None)
-
+          case Some(trueActionId) => {
+              prepareMiddleware(reactionComp, trueActionId)
+          }
+          case _ => Future.successful(None)
         }
       }
 
-      scala.concurrent.Future.sequence( components )
-      //components
+      scala.concurrent.Future.sequence( components ).map { components =>
+        //components
+        val componentsList:List[ActionInternalContainer] = components.flatten
+        ActionInternalContainer(
+          middleware = componentsList.map(c => c.middleware).flatten.toMap,
+          strategy = componentsList.map(c => c.strategy).flatten.toMap,
+          inputs = componentsList.map(c => c.inputs).flatten.toMap,
+          bases = componentsList.map(c => c.bases).flatten.toMap,
+          outputs = componentsList.map(c => c.outputs).flatten.toMap
+        )
+      }
 }
 
+case class ActionInternalContainer(
+  middleware: Map[Long,Long] = Map(),
+  strategy: Map[Long,Long] = Map(),
+  inputs: Map[Long,Long] = Map(),
+  bases: Map[Long, Long] = Map(),
+  outputs: Map[Long,Long] = Map())
+
 // Create middleware from ref
-def prepareMiddleware(reactionComp: RefActionContainer, trueActionId: Int):Future[Option[Long]] =  {
+def prepareMiddleware(reactionComp: RefActionContainer, trueActionId: Int):Future[Option[ActionInternalContainer]] =  {
   MiddlewareRefsDAOF.get(reactionComp.middleware_id).flatMap { middlewareRefOpt =>
     middlewareRefOpt match {
       case Some(middlewareRef) => {
@@ -73,7 +89,8 @@ def prepareMiddleware(reactionComp: RefActionContainer, trueActionId: Int):Futur
             trueActionId
           )
         ).flatMap { trueMiddlewareId =>
-          prepareStrategy(reactionComp, trueMiddlewareId)
+          val acn = ActionInternalContainer(middleware = Map(middlewareRef.id.get -> trueMiddlewareId))
+          prepareStrategy(reactionComp, trueMiddlewareId, acn)
         }
       }
       case _ => Future.successful(None)
@@ -82,7 +99,9 @@ def prepareMiddleware(reactionComp: RefActionContainer, trueActionId: Int):Futur
 }
 
 // Create strategy from ref
-def prepareStrategy(reactionComp: RefActionContainer, trueMiddlewareId: Long):Future[Option[Long]] = {
+def prepareStrategy(reactionComp: RefActionContainer, 
+        trueMiddlewareId: Long,
+        acn: ActionInternalContainer):Future[Option[ActionInternalContainer]] = {
   StrategyRefsDAOF.get(reactionComp.strategy_id).flatMap { strategyRefOpt =>
     strategyRefOpt match {
       case Some(strategyRef) => {
@@ -91,9 +110,12 @@ def prepareStrategy(reactionComp: RefActionContainer, trueMiddlewareId: Long):Fu
               None, strategyRef.ident, trueMiddlewareId, strategyRef.isNullStrategy
             )
           ).flatMap { trueStrategyId =>
-              prepareInputs(reactionComp, trueStrategyId).flatMap { a =>
-                prepareOutputs(reactionComp, trueStrategyId).flatMap { b =>
-                  prepareBases(reactionComp, trueStrategyId)
+              val acnNew = acn.copy(strategy = Map(strategyRef.id.get -> trueStrategyId))
+              prepareInputs(reactionComp, trueStrategyId, acnNew).flatMap { a =>
+                prepareOutputs(reactionComp, trueStrategyId, a).flatMap { b =>
+                  prepareBases(reactionComp, trueStrategyId, b).map { z =>
+                    Some(z)
+                  }
                 }
               }
           }
@@ -107,7 +129,9 @@ def prepareStrategy(reactionComp: RefActionContainer, trueMiddlewareId: Long):Fu
 /*****
  * Action pipes
  */
-def prepareBases(reactionComp: RefActionContainer, trueStrategyId: Long):Future[Option[Long]] = {
+def prepareBases(reactionComp: RefActionContainer, 
+      trueStrategyId: Long,
+      acn: ActionInternalContainer):Future[ActionInternalContainer] = {
   Future.sequence ( reactionComp.bases.map { base =>
     // Create bases from refs
     StrategyBaseRefsDAOF.get(base.base_id).flatMap { refOfBaseUnitOpt =>
@@ -123,7 +147,7 @@ def prepareBases(reactionComp: RefActionContainer, trueStrategyId: Long):Future[
                    validationScheme = Some( base.base_req_type ),
                    validationPattern = None)
         ).map { baseId =>
-          None
+          Some( Map(refOfBaseUnit.id.get -> baseId) )
         }
 
         }
@@ -131,12 +155,14 @@ def prepareBases(reactionComp: RefActionContainer, trueStrategyId: Long):Future[
       }
 
     }
-  } ).map { c =>
-    None
+  } ).map { acList =>
+    acn.copy(bases = acList.flatten.flatten.toMap)
   }
 }
 
-def prepareInputs(reactionComp: RefActionContainer, trueStrategyId: Long):Future[Seq[Long]] = {
+def prepareInputs(reactionComp: RefActionContainer, 
+  trueStrategyId: Long,
+  acn: ActionInternalContainer):Future[ActionInternalContainer] = {
     // Create bases from refs
     StrategyInputRefsDAOF.getByStrategy(trueStrategyId).flatMap { units =>
       val now = org.joda.time.DateTime.now()
@@ -149,12 +175,18 @@ def prepareInputs(reactionComp: RefActionContainer, trueStrategyId: Long):Future
             unit.desc,
             unit.ident,
             unit.targetType, Some(now), Some(now) )
-          )
-      })
+          ).map { newId =>
+            Map(unit.id.get -> newId)          
+        }
+      }).map { ac =>
+        acn.copy(inputs = ac.reduce (_ ++ _))
+      }
     }
 }
 
-def prepareOutputs(reactionComp: RefActionContainer, trueStrategyId: Long):Future[Seq[Long]] = {
+def prepareOutputs(reactionComp: RefActionContainer, 
+  trueStrategyId: Long,
+  acn: ActionInternalContainer):Future[ActionInternalContainer] = {
     // Create bases from refs
     StrategyOutputRefsDAOF.getByStrategy(trueStrategyId).flatMap { units =>
          val now = org.joda.time.DateTime.now()
@@ -167,8 +199,12 @@ def prepareOutputs(reactionComp: RefActionContainer, trueStrategyId: Long):Futur
                unit.desc,
                unit.ident,
                unit.targetType, Some(now), Some(now) )
-             )
-         } )
+             ).map { newId =>
+                Map(unit.id.get -> newId)          
+              }
+         }).map { ac =>
+          acn.copy(outputs = ac.reduce (_ ++ _))
+         }
     }
 }
 
