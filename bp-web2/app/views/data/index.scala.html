@@ -25,8 +25,10 @@
 
 
 <div class="data-container-nav">
-  <a ng-click="setTab(0)" ng-class="isSet(0)? 'active' : ''">Indicators</a></label>
-  <a ng-click="setTab(1)" ng-class="isSet(1)? 'active' : ''">Acts</a>
+  <a href="/data#?view=indicators" 
+     ng-click="setTab(0)" ng-class="isSet(0)? 'active' : ''">Indicators</a></label>
+  <a href="/data#?view=acts" 
+     ng-click="setTab(1)" ng-class="isSet(1)? 'active' : ''">Acts</a>
 </div>
 
 

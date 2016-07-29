@@ -6277,6 +6277,72 @@ footer .applicationFooterListLink,footer .applicationFooterCopyrightLink {
 }
 
 
+
+.actionTestWindow a.addBaseButton {
+    text-decoration: none;
+    cursor: pointer;
+    padding: 5px 12px;
+    background-color: #33424a;
+    color: white;
+    border-radius: 4px;
+    margin-bottom: 7px;
+    display: inline-block;
+    font-size: 13px;
+    border: solid 2px #a6a6da;
+    font-family: 'Open Sans', Helvetica;
+    line-height: 17px;
+    transition: all 0.7s;
+    font-weight: 700 !important;
+    text-shadow: none;
+}
+
+.actionTestWindow a.sendTestButton {
+    text-decoration: none;
+    cursor: pointer;
+    padding: 5px 12px;
+    background-color: #33424a;
+    color: white;
+    border-radius: 4px;
+    margin-bottom: 7px;
+    display: inline-block;
+    font-size: 13px;
+    border: solid 2px #a6a6da;
+    font-family: 'Open Sans', Helvetica;
+    line-height: 17px;
+    transition: all 0.7s;
+    font-weight: 700 !important;
+    text-shadow: none;
+    margin-top: 9px;
+}
+.actionTestWindow a.addBaseHeaderButton {
+    text-decoration: none;
+    cursor: pointer;
+    padding: 5px 12px;
+    background-color: #33424a;
+    color: white;
+    border-radius: 4px;
+    margin-bottom: 7px;
+    display: inline-block;
+    font-size: 13px;
+    border: solid 2px #a6a6da;
+    font-family: 'Open Sans', Helvetica;
+    line-height: 17px;
+    transition: all 0.7s;
+    font-weight: 700 !important;
+    text-shadow: none;
+    margin-top: 9px;
+}
+.actionTestWindow a.addBaseButton:hover,
+.actionTestWindow a.sendTestButton:hover,
+.actionTestWindow a.addBaseHeaderButton:hover {
+  background-color: #222d33;
+    border: solid 2px #485358;
+    text-decoration: none;
+    color: white;
+}
+
+
+
 .control-group *, .control-group *:before, .control-group *:after {
     box-sizing: initial;
 }
@@ -12382,7 +12448,12 @@ body.themeGrad.mobileMenu nav.minMenu.menuCell.menuEntity, body.themeGrad.mobile
     text-align: center;
     padding-left: 10px;
 }
-
+.tree-thumb.process-tree .elem-card.api {
+    background: #9c27b0;
+}
+.tree-thumb.process-tree .elem-card.delay {
+    background: #4527b0;
+}
 
 
 .process_content li.angular-ui-tree-node {
