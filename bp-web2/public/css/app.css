@@ -12288,6 +12288,13 @@ body.themeGrad.mobileMenu nav.minMenu.menuCell.menuEntity, body.themeGrad.mobile
     border: none;
     left: 0px;
 }
+/* API REST ELEMENT TYPE */
+.proc-element.minimal .element-header .info .type.api {
+    background: linear-gradient(to right, rgba(247, 159, 255, 0.19) 0%, rgba(251, 242, 255, 0.17) 54%, rgba(246, 231, 255, 0.1) 94%, rgb(255, 253, 251) 100%);
+}
+
+
+
 
 .proc-element .info h4.title {
     margin-left: 19px;
