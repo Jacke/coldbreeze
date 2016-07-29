@@ -1317,6 +1317,38 @@ span.selectedRefType.col-xs-6.ref-selected-object {
     background: rgba(0, 85, 255, 0.02);
 }
 
+.new-elem-ref-actions-select__middleware-text-exec {
+    float: right;
+    margin-right: 29px;
+    color: white;
+}
+
+.new-elem-ref-actions-select__middleware-text-exec a {
+    text-decoration: none;
+    cursor: pointer;
+    padding: 5px 12px;
+    background-color: #33424a;
+    color: white;
+    border-radius: 4px;
+    margin-bottom: 7px;
+    display: inline-block;
+    font-size: 13px;
+    border: solid 2px #a6a6da;
+    font-family: 'Open Sans', Helvetica;
+    line-height: 17px;
+    transition: all 0.7s;
+}
+
+.new-elem-ref-actions-select__middleware-text-exec a:hover {
+    background-color: #222d33;
+    border: solid 2px #485358;
+    text-decoration: none;
+    color: white;
+}
+
+
+
+
 .ref-desc.ref-desc-select-container a.ref-desc-select-container-link {
     cursor: pointer;
     text-decoration: none;
