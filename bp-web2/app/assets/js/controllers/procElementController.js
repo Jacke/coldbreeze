@@ -1710,7 +1710,22 @@ $scope.refs.$promise.then(function(data) {
 $scope.refElem = function (ref, elem) {
     elem.ref = ref.ref.id;
     elem.selectedRef = ref;
+    // AUTO SELECT FIRST STRATEGY
+    console.log('elem.ref', elem.ref);    
+    if (ref.strategies !== undefined && ref.middlewares !== undefined &&
+        ref.middlewares.length > 0 && ref.strategies.length > 0) {
+      var middlewareToSelect = ref.middlewares[0]; 
+      var actionToSelect = _.find(ref.reactions, function(ac) {return ac.id == middlewareToSelect.reaction});
+      console.log('middlewareToSelect', middlewareToSelect);
+      if (actionToSelect !== undefined) {
+        console.log('actionToSelect', actionToSelect);
+        var strategyToSelect = ref.strategies[0];
+        $scope.selectStrategy(strategyToSelect, middlewareToSelect, actionToSelect, 
+            _.filter(ref.bases, function(base){return base.strategy == strategyToSelect.id }) );
+      }
+    }
 }
+
 $scope.selectedRef = function(newBpelem) {
   var finded_ref = _.find($scope.refs, function(ref) { return newBpelem.ref == ref.ref.id });
   if (finded_ref != undefined) {
