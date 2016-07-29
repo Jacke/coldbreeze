@@ -50,7 +50,7 @@
 </div>
 -->
 
-<div class="ref-desc ref-desc-select-container form-group" ng-repeat="ref in refs">
+<div class="ref-desc ref-desc-select-container form-group" ng-class="ref.unitelement[0].type_title" ng-repeat="ref in refs">
 <a class="ref-desc-select-container-link" ng-click="refElem(ref, newBpelem);newBpelem.refSelectHidden=true">
 <h6>{{ ref.ref.title }}</h6>
 <p>{{ ref.ref.desc }}</p>

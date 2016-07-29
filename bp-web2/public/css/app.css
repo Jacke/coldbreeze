@@ -1309,6 +1309,14 @@ span.selectedRefType.col-xs-6.ref-selected-object {
     border-radius: 6px;
     margin: 8px auto !important;
 }
+.ref-desc.ref-desc-select-container.api {
+    background: rgba(255, 0, 254, 0.05);
+}
+
+.ref-desc.ref-desc-select-container.delay {
+    background: rgba(0, 85, 255, 0.02);
+}
+
 .ref-desc.ref-desc-select-container a.ref-desc-select-container-link {
     cursor: pointer;
     text-decoration: none;
@@ -12392,6 +12400,9 @@ body.themeGrad.mobileMenu nav.minMenu.menuCell.menuEntity, body.themeGrad.mobile
 }
 form.form-horizontal.form-new-bpelem.form-edit-bpelem {
     height: 100%;
+}
+.form-new-bpelem .edit-elem-ref-actions-select__middleware-title {
+    display: none;
 }
 .edit-element-card-container .edit-element-card-container {
   height: 100%;
