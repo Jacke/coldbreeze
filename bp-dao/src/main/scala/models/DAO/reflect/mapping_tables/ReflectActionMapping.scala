@@ -59,39 +59,39 @@ object ReflectActionMappingsDAO {
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
-  val reflect_action_mappings = TableQuery[ReflectElementMappings]
+  val reflect_action_mappings = TableQuery[ReflectActionMappings]
 
-  private def filterQuery(id: Int): Query[ReflectElementMappings, ReflectElementMap, Seq] =
+  private def filterQuery(id: Int): Query[ReflectActionMappings, ReflectedActionMap, Seq] =
     reflect_action_mappings.filter(_.id === id)
-  private def filterByIdsQuery(ids: List[Int]): Query[ReflectElementMappings, ReflectElementMap, Seq] =
+  private def filterByIdsQuery(ids: List[Int]): Query[ReflectActionMappings, ReflectedActionMap, Seq] =
     reflect_action_mappings.filter(_.id inSetBind ids)
-  private def filterByReflection(reflection: Int): Query[ReflectElementMappings, ReflectElementMap, Seq] =
+  private def filterByReflection(reflection: Int): Query[ReflectActionMappings, ReflectedActionMap, Seq] =
     reflect_action_mappings.filter(_.reflection === reflection)
-  private def filterByReflections(reflections: List[Int]): Query[ReflectElementMappings, ReflectElementMap, Seq] =
+  private def filterByReflections(reflections: List[Int]): Query[ReflectActionMappings, ReflectedActionMap, Seq] =
     reflect_action_mappings.filter(_.reflection inSetBind reflections)
 
 
-  def pull_object(s: ReflectElementMap) =   {
+  def pull_object(s: ReflectedActionMap) =   {
       await(db.run( reflect_action_mappings returning reflect_action_mappings.map(_.id) += s ))
   }
-  def pull(s: ReflectElementMap) = 
+  def pull(s: ReflectedActionMap) = 
     db.run( reflect_action_mappings returning reflect_action_mappings.map(_.id) += s )
     
-  def findByRef(id: Int):List[ReflectElementMap] =   {
+  def findByRef(id: Int):List[ReflectedActionMap] =   {
     await(db.run(filterByReflection(id).result)).toList
   }
 
-  def findByRef(ids: List[Int]):List[ReflectElementMap] =   {
+  def findByRef(ids: List[Int]):List[ReflectedActionMap] =   {
     await(db.run(filterByReflections(ids).result)).toList
   }
 
-  def get(k: Int):Option[ReflectElementMap] =   {
+  def get(k: Int):Option[ReflectedActionMap] =   {
     await(db.run(filterQuery(k).result.headOption))
   }
 
 
-  def update(id: Int, topology: ReflectElementMap) =   {
-    val topologyToUpdate: ReflectElementMap = topology.copy(Option(id))
+  def update(id: Int, topology: ReflectedActionMap) =   {
+    val topologyToUpdate: ReflectedActionMap = topology.copy(Option(id))
     await(db.run( reflect_action_mappings.filter(_.id === id).update(topologyToUpdate) ))
   }
   def delete(id: Int) =   {
