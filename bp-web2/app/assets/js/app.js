@@ -194,6 +194,7 @@ var minorityApp =
       'ngSanitize',
       'ngAngularError',
       'restangular',
+      'hljs',
       'ui.select',
       'angular-cache',
       'toaster',

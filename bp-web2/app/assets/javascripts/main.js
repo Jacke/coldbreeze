@@ -301,6 +301,15 @@ export: 'actionController'
   deps: ['angular', 'app'],
   export: 'restangular'
 },
+'hljs': {
+  deps: ['angular', 'app'],
+  export: 'hljs'
+},
+'hljsangular': {
+  deps: ['angular', 'app', 'hljs'],
+  export: 'hljsangular'
+},
+
 'angularDragAndDropLists': {
   deps: ['angular', 'app'],
   export: 'angularDragAndDropLists'
@@ -452,6 +461,8 @@ export: 'actionController'
   'pnotifybuttons':'../bower_components/pnotify/pnotify.buttons',
   'angularpnotify':'../bower_components/angular-pnotify/src/angular-pnotify',
 'restangular':'../bower_components/restangular/dist/restangular',
+'hljsangular':'../bower_components/angular-highlightjs/build/angular-highlightjs',
+'hljs':'../javascripts/highlightjs',
 'angularDragAndDropLists':'../bower_components/angular-drag-and-drop-lists/angular-drag-and-drop-lists',
 'cgNotify': '../bower_components/angular-notify/dist/angular-notify',
 'angular-cache':'../bower_components/angular-cache/dist/angular-cache',

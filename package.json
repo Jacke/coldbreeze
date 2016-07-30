@@ -10,6 +10,7 @@
     "test": "test"
   },
   "dependencies": {
+    "angular-highlightjs": "^0.6.1",
     "angular-websocket": "^1.0.14",
     "babel-core": "^6.2.1",
     "babel-preset-react": "^6.3.13",
