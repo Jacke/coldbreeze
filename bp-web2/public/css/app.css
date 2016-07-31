@@ -4621,6 +4621,7 @@ form.form-horizontal.element-new-form.form-new-bpelem.form-edit-bpelem.form-new-
     display: block;
     padding: 10px 10px 10px 11px;
     border-right: 1px solid #B0B2B7;
+    transition: 0.5s all;
 }
 
 
@@ -6442,6 +6443,7 @@ ul.process-control li {
     float: left;
     margin-right: 0px;
     padding: 0px 0px 0px 0px;
+    transition: 0.5s all;
 }
 ul.process-control li a {
     color: #06c;
@@ -6459,7 +6461,8 @@ ul.process-control {
 }
 ul.process-control li:hover a {
     background-color: #DDDDDD;
-    color: black;
+    color: #616161;
+    text-shadow: none;
 }
 .process-control span.minicon {
     margin-right: 10px;
@@ -6567,9 +6570,10 @@ li.element-data-nav-controll-field {
 .process-control a.tableMinControlsLink.ajaxLink.tableMinLinkPeople {
     position: relative;
     padding-left: 32px;
-    font-size:13px;
+    font-size: 13px;
     font-weight: 700;
     font-family: 'Open Sans';
+    transition: all 1s;
 }
 
 

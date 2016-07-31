@@ -43,7 +43,7 @@ import us.ority.min.actions.middlewares.rest._
 
 
 
-object RESTMiddleware {
+object RESTMiddleware extends MiddlewareInterface {
   val DEFAULT_URL = "https://api.ipify.org?format=json"
 
 

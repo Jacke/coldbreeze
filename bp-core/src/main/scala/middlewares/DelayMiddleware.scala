@@ -13,41 +13,48 @@ import main.scala.utils._
 import us.ority.min.jobs._
 import us.ority.min.actions._
 
-object DelayMiddleware {
+object DelayMiddleware extends MiddlewareInterface {
 
   def execute(
-    parts: ActionParts, 
-    s: Strategy, 
-    strategyArgument: StrategyArgument,
-  	stateInputs: List[UnitReactionStateIn] = List(), 
-    dataInputs: List[UnitReactionDataIn] = List() ):ActionAct = {
+      parts: ActionParts, s: Strategy,
+      stateInputs:List[UnitReactionStateIn] = List(), 
+      dataInputs: List[UnitReactionDataIn] = List()
+      ):ActionAct = {
     	s.ident match {
     		case "Duration" => { 
     			delayRequest(parts, org.joda.time.DateTime.now().plusSeconds(20).getMillis() )
     			DurationStrategy.execute( 
-            parts, retriveDataForDelay(stategyTitle = "Duration", dataInputs) 
+            parts, retriveDataForDelay("Duration", dataInputs) 
 	    		)
     		}
     		case "scheduleDelayStrategy" => ScheduleStrategy.execute( 
-          parts, retriveDataForDelay(stategyTitle = "scheduleDelayStrategy", dataInputs) )
-    		case _ => NullStrategy.execute(parts, StrategyArgument() )
+          parts, retriveDataForDelay("scheduleDelayStrategy", dataInputs) )
+    		case _ => NullStrategy.execute(parts, StrategyArguments() )
     	}
   }
 
-  def retriveDataForDelay(stategyTitle: String, dataInputs: List[UnitReactionDataIn]):StrategyArgument = {
+
+    def retriveDataForDelay(
+      stategyTitle: String, 
+      dataInputs: List[UnitReactionDataIn],
+      bases: MutableList[StrategyBaseUnit] = MutableList()):StrategyArguments = {
   	// Find input duration or schedule
   	// or
   	//StrategyArgument(argInt: Int = 0, argLong:Long = 0L, argString: String = "")
   	stategyTitle match {
   		case "Duration" => 
-  			StrategyArgument(argLong = org.joda.time.DateTime.now().plusSeconds(20).getMillis())
+        StrategyArguments(
+            Seq( StrategyArgument(argLong = org.joda.time.DateTime.now().plusSeconds(20).getMillis()) ) )
 		  case "scheduleDelayStrategy" => 
-			  StrategyArgument(argLong = org.joda.time.DateTime.now().plusHours(1).getMillis())
+			          StrategyArguments(
+            Seq(
+              StrategyArgument(argLong = 
+                org.joda.time.DateTime.now().plusHours(1).getMillis()) ))
   	}
   }
 
 	object DurationStrategy {
-		def execute(parts: ActionParts, argument: StrategyArgument):ActionAct = {
+		def execute(parts: ActionParts, arguments: StrategyArguments):ActionAct = {
 			println("DurationStrategy Strategy executed")
       parts.process.getActs(parts.action.id.get).head
 			// put process in stack
@@ -56,7 +63,7 @@ object DelayMiddleware {
 		}
 	}
 	object NullStrategy {
-		def execute(parts: ActionParts, argument: StrategyArgument):ActionAct = {
+		def execute(parts: ActionParts, arguments: StrategyArguments):ActionAct = {
 			println("NullStrategy executed")
       parts.process.getActs(parts.action.id.get).head
 			// put process in stack
@@ -68,7 +75,7 @@ object DelayMiddleware {
 
 
 	object ScheduleStrategy {
-		def execute(parts: ActionParts, argument: StrategyArgument):ActionAct = {
+		def execute(parts: ActionParts, arguments: StrategyArguments):ActionAct = {
 			println("ScheduleStrategy executed")
       parts.process.getActs(parts.action.id.get).head
 		}		

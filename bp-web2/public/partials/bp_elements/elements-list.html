@@ -352,9 +352,9 @@
 </div>
 
 <div class="thumb-session" ng-hide="toolbar_more">
-    <div class="proc-session active" ng-click="resetSession()" data-desc="Draft">
-    </div>
-<a href="a#/bprocess/{{session.process.id}}/elements?launch={{session.session.id}}" ng-click="changeSession(session)" ng-repeat="session in sessions | limitTo: 5" class="current-proc-session-info session-link proc-session"  data-desc="Launch {{$index+1 }} - {{ session.percent}}%" ng-class="isSelected(session.session.id)">
+    <a class="proc-session active" href="a#/bprocess/{{BPid}}/elements" data-desc="Draft">
+    </a>
+<a href="a#/bprocess/{{session.process.id}}/launch/{{session.session.id}}/elements" ng-click="changeSession(session)" ng-repeat="session in sessions | limitTo: 5" class="current-proc-session-info session-link proc-session"  data-desc="Launch {{$index+1 }} - {{ session.percent}}%" ng-class="isSelected(session.session.id)">
    <span class="unpin moicon moicon-pushpin" ng-click="unlisted(session.session)"></span>
 </a>
 </div>

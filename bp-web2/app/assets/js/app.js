@@ -718,6 +718,8 @@ minorityApp.config(['$locationProvider','$routeProvider', '$httpProvider', funct
 /*R*/$routeProvider.when('/bprocess/:BPid/element/:id/show', {templateUrl: '/assets/partials/bp_elements/bpelem-detail.html', controller: 'BPelementDetailCtrl'});
 /*U*/$routeProvider.when('/bprocess/:BPid/element/:id/edit', {templateUrl: '/assets/partials/bp_elements/bpelem-edit.html', controller: 'BPelementDetailCtrl'});
 
+/*I*/$routeProvider.when('/bprocess/:BPid/launch/:launch/elements', {templateUrl: '/assets/partials/bp_elements/elements-list.html', controller: 'launchedProcElementController', reloadOnSearch: false});
+
     // Stations
 /*A*/$routeProvider.when('/launches', {templateUrl: '/assets/partials/launches/launches.html', controller: 'LaunchesCtrl'});
 /*I*/$routeProvider.when('/bprocess/:BPid/launches', {templateUrl: '/assets/partials/proc_launches/launch-list.html', controller: 'ProcLaunchesListCtrl'});

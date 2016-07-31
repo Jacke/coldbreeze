@@ -361,6 +361,10 @@ export: 'actionController'
   deps: ['angular', 'app', 'controllers', 'toastr'],
   export: 'procElementController'
 },
+'launchedProcElementController':{
+  deps: ['angular','app', 'controllers'],
+  export: 'launchedProcElementController'
+},
 'reflectionController': {
   deps: ['angular', 'app', 'controllers', 'toastr'],
   export: 'reflectionController'
@@ -517,6 +521,7 @@ export: 'actionController'
   'loggerController': '../js/controllers/loggerController',
   'stationController': '../js/controllers/stationController',
   'procElementController': '../js/controllers/procElementController',
+  'launchedProcElementController': '../js/controllers/launchedProcElementController',
 
 
   'reflectionController': '../js/controllers/reflectionController',

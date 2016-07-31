@@ -34,7 +34,7 @@ case class Strategy(val id: Option[Long],
 
 /******************************************************************
  * Session Units
- * Used only in CONVERSION BETWEN PLAIN
+ * Used only in CONVERSION BETWEEN PLAIN
  * DO NOT USE IN REGULAR INVOKATION!!!!!! ONLY FOR CONVERSION!!!
  *****************************************************************/
 case class LaunchStrategy(val id: Option[Long],

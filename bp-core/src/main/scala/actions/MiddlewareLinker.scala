@@ -18,12 +18,11 @@ object MiddlewareLinker {
         pushAct(parts)
         middleware.strategies match {
           case MutableList(head, _*) => Some( 
-              DelayMiddleware.execute(parts, head, StrategyArgument()) 
+              DelayMiddleware.execute(parts, head) 
             )
           case _ if middleware.strategies.length < 1 => Some( 
               DelayMiddleware.execute(parts, 
-                            middleware.nullStrategy.asStrategy, 
-                            StrategyArgument()) 
+                            middleware.nullStrategy.asStrategy) 
             )
         }
       }
