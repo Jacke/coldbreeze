@@ -143,10 +143,10 @@ def replaceStrategy() = {
   // partial projection possible
 }
 
-    // Copy users
-    def copyUser(user1: String, user2: String) = {
-      // copy creds
+// Copy users
+def copyUser(user1: String, user2: String) = {
+  // copy creds
 
-    }
+}
 
 }

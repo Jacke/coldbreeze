@@ -213,6 +213,34 @@ def acts() = silhouette.SecuredAction.async { implicit request =>
 }
 
 
+def launchActs(launchId: Int) = silhouette.SecuredAction.async { implicit request =>
+    val email = request.identity.emailFilled
+    val launchesCn = BPSessionDAOF.await(
+      BPSessionDAOF.findByBusiness(request.identity.businessFirst)    )
+    val launchesUn:Seq[BPSession] = launchesCn.map { l => l.sessions.map(l => l.session) }.flatten
+    val launches:Seq[BPSession] =  launchesUn.filter( launch =>
+        launch.id.get == launchId
+    )
+
+    val reactions = SessionReactionDAOF.await(
+      SessionReactionDAOF.findBySessions(launches.map(l => l.id.get))   )
+    val acts = ActionActsDAOF.await(
+      ActionActsDAOF.findByReactions(reactions.toList.map(r => r.id.get))   )
+    val act_results = ActionActResultsDAOF.await(
+      ActionActResultsDAOF.getsByAct(acts.map(a => a.id.get))   )
+    val act_statuses = ActionStatusesDAOF.await(
+      ActionStatusesDAOF.getsByAct(acts.map(a => a.id.get))   )
+    val actContainer = acts.map { act =>
+      ActionActContainer(act, 
+               act_statuses.filter(l => l.act == act.id.get),
+               act_results.filter(l => l.act == act.id.get))
+    }
+    println(Json.toJson( actContainer).toString)
+    
+  Future.successful(Ok(Json.toJson( actContainer) ))
+}
+
+
 // GET /actions/refs
 // Action that exist only in refs and not created in processes 
 def actionsRefs() = silhouette.SecuredAction.async { implicit request =>

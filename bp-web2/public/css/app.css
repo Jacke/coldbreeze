@@ -2545,6 +2545,12 @@ border-color: pink;
 .proc-session.done, .proc-session.active {
     padding-top: 0px;
 }
+.proc-session.active:hover {
+    text-decoration: none;
+    border-color: #73b5e8;
+    border: 4px solid #73b5e8;
+}
+
 
 div#proc-sessions.hiding {
     bottom: -122px;

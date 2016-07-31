@@ -338,7 +338,9 @@ GET      /data/indicators_table @controllers.DataIndicatorController.indicatorsT
 GET      /data/acts_table       @controllers.DataIndicatorController.actsTable()
 
 # Acts
-GET   /acts      @controllers.ActionController.acts()
+GET   /acts                       @controllers.ActionController.acts()
+GET   /launch/:launchId/acts      @controllers.ActionController.launchActs(launchId: Int)
+
 
 # Test action
 GET /actions/refs         @controllers.ActionController.actionsRefs()

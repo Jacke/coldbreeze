@@ -113,6 +113,7 @@ object DLL_Initiator {
     models.DAO.ActionActResultsDAOF.ddl_create
     models.DAO.ActionStatusesDAOF.ddl_create
     ReflectElementMappingsDAO.ddl_create
+    ReflectActionMappingsDAO.ddl_create
 
     true
   }
@@ -195,6 +196,15 @@ object DLL_Initiator {
     ElementResourceDAO.ddl_drop
     SessionElementResourceDAO.ddl_drop
     ResourceDAO.ddl_drop
+
+
+
+    models.DAO.ActionStatusesDAOF.ddl_drop
+    models.DAO.ActionActResultsDAOF.ddl_drop
+    models.DAO.ActionActsDAOF.await(models.DAO.ActionActsDAOF.ddl_drop)
+
+    ReflectElementMappingsDAO.ddl_drop
+    ReflectActionMappingsDAO.ddl_drop
 
     true
   }

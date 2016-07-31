@@ -2019,7 +2019,7 @@ $scope.turnMinimal();
 $scope.changeSession = function(session) {
 
  $scope.session = session;
- $location.search('launch', $scope.session.session.id);
+ //$location.search('launch', $scope.session.session.id);
  $scope.inSession = true;
  $scope.station = $scope.session.station;//_.find(session.station, function(s) { return s.front == true })
  $scope.session_bar = 'hiding';
@@ -2033,13 +2033,17 @@ $scope.changeSession = function(session) {
  if ($scope.station != undefined && $scope.station.inspace == false) {
    if ($scope.bpelems[$scope.station.step] !== undefined) {
     var elem = $scope.bpelems[$scope.station.step].id
-   } else {  // MAKE SAFE FOR LAST ELEMENT
-    var elem = $scope.bpelems[$scope.station.step].id
-   }
-   var top = $('.elem-'+elem).offset().top;
-   console.log("top traverse marker" + top);
+    var top = $('.elem-'+elem).offset().top;
+    console.log("top traverse marker" + top);
+    $('.traverse-marker').css('top', top-35 + 'px')
 
-   $('.traverse-marker').css('top', top-35 + 'px')
+   } else {  // MAKE SAFE FOR LAST ELEMENT
+             // When it's finished
+    var elem = $scope.bpelems[$scope.station.step-1].id
+    var top = $('.elem-'+elem).offset().top;
+    console.log("top traverse marker" + top);
+    $('.traverse-marker').css('top', top-35+35 + 'px')
+   }
  }
  if ($scope.station != undefined && $scope.station.inspace == true) {
   var spelem = $scope.bpelems[$scope.station.step].id
@@ -2495,6 +2499,25 @@ $scope.moveElement = function(elem) {
   console.log('moveElement', index);
   $scope.bpelems.splice(index, 1)
 }
+
+/****
+ * Load acts for launch
+ */
+$http({
+  url: '/launch/'+$routeParams.launch+'/acts',
+  method: "GET",
+}).then(function(response) {
+  // success
+  console.log(response.data);
+  $scope.acts = response.data;
+},
+function(response) { // optional
+  // failed
+  console.log(response);
+});
+
+
+
 
 
 }]);

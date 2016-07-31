@@ -6,8 +6,10 @@ document.minority =
     founded:  2014
   jobs:
     status: "Comming soon"
-    aprox:  16                                                                 
-console.log "%c      Minority App, Empia Inc.© 2014-2016   ", "color: red"   
+    aprox:  16              
+
+console.log "%cMinority Workflow Platform", "color:white; padding: 10px 10px; background:#455064; font-size: 16pt"
+
 console.log "%c       ___       ", "color:blue"
 console.log "%c      /\__\      ", "color:blue"
 console.log "%c     /::|  |     ", "color:blue"
