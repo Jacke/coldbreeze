@@ -19,7 +19,7 @@
                 <div class="session-container">
                 <div class="active-sessions">
                                                 <div class="info">
-                                                    <div class="desc pull-left"><a href="/a#/bprocess/@{session.process.id.getOrElse(0)}/elements?session=@session.session.id">
+                                                    <div class="desc pull-left"><a href="/a#/bprocess/@{session.process.id.getOrElse(0)}/launch/@session.session.id/elements">
                                                     @session.station match {
                                                       case Some(station) => {
                                                             @station.note match {
