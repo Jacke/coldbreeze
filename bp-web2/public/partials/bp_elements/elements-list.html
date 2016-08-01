@@ -196,52 +196,30 @@
       </div>
     </div>
 
-<div class="proc-element-spaces">
-      <!--<div class="proc-space">
-        <div class="space-subbricks">
-          <div class="space-subbrick">
-            <div class="element-header">
-                  <div class="primary-states">
-                  </div>
-                  <div class="info">
-                    <h4 class="title">Subbrick</h4>
-                  </div>
-                  </div>
 
-          </div>
-        </div>
-        <div class="space-elements">
-            <div class="space-element">
-            <div class="element-header">
-                <div class="primary-states">
-                </div>
-                <div class="info">
-                  <div class="type">CF</div>
-                  <h4 class="title">Element</h4>
-                  <h6 class="desc">On front</h6>
-                </div>
-                </div>
-                <div class="right-bar">
-                  <div class="states-row">
-                    <div class="state-row">
-                      <div class="row-top">
-                        s top <b>Bold </b>
-                      </div>
-                      <div class="row-bottom">
-                        s bottom
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row-selector"></div>
-                </div>
-            </div>
-        </div>
-      </div>-->
+
+
+
 <div class="proc-element-spaces">
           <div ng-include src="'assets/partials/bp_elements/elem_container_tmp.html'"></div>
 </div>
+ 
+</div>
+
+  <div class="proc-element-acts" ng-attr-id="'frontElem'+bpelem.id" ng-class="'elem-'+bpelem.id" ng-show="inSession">
+  <div class="proc-element-actions">
+    <div class="proc-element-actions__action" ng-repeat="action in reactions | filter:filterActionForElement(bpelem)">
+      <div class="proc-element-acts__act" ng-repeat="act in acts | filter: filterByAction(action)">
+        <div class="proc-element-acts__act-title">{{ act.act.uid }}</div>
+        <div class="proc-element-acts__act-content" ng-repeat="result in act.results">
+          <pre>{{ result.content }}</pre>
         </div>
+      </div>
+    </div>
   </div>
+  </div>
+
+</div>
 
 
 <!--

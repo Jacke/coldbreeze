@@ -13247,7 +13247,15 @@ position: absolute;
 
 
 
-
+.elements .proc-element-acts {
+    width: 25%;
+    display: inline-block;
+    float: left;
+    background: white;
+    margin-left: 35px;
+    border-radius: 6px;
+    padding: 6px 14px;
+}
 
 
 

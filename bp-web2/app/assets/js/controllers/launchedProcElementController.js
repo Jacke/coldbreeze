@@ -2517,7 +2517,25 @@ function(response) { // optional
 });
 
 
+$scope.filterActionForElement = function(element) {
+  return function(obj) {
+    if (obj.reaction.element == element.topo_id.topo_id) {
+      return obj;
+    } else {
+      return false;
+    }
+  }
+};
 
+$scope.filterByAction = function(action) {
+  return function(obj) {
+    if (obj.act.reaction == action.reaction.id) {
+      return obj;
+    } else {
+      return false;
+    }
+  }
+};
 
 
 }]);

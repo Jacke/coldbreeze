@@ -8,7 +8,7 @@ document.minority =
     status: "Comming soon"
     aprox:  16              
 
-console.log "%cMinority Workflow Platform", "color:white; padding: 10px 10px; background:#455064; font-size: 16pt"
+console.log "%cMinority Workflow Platform", "color:white; padding: 10px 10px; background:#455064; font-size: 16pt;font-family:'Comic Sans MS'"
 
 console.log "%c       ___       ", "color:blue"
 console.log "%c      /\__\      ", "color:blue"
