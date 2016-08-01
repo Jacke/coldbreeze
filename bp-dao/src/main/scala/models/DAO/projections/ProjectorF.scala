@@ -118,6 +118,17 @@ object RefProjectorF extends FrontElemProjectionF
   		reaction_sout_containerF.map { reaction_sout_container =>
   			val reaction_state_outIdToRefId = reaction_sout_container.outs_ids
 
+          // Mapping ref action -> action
+          reactionsIdToRefId.map { keyVal =>
+          ReflectActionMappingsDAO.pull_object(
+            ReflectedActionMap(id = None,
+                              reflection = k,
+                              ref_action = Some(keyVal._1),
+                              element_action = keyVal._2,
+                              created_at=Some(org.joda.time.DateTime.now()),
+                              updated_at=Some(org.joda.time.DateTime.now())) )
+            }
+
   	        Some(RefResulted(
               proc_elems = makeRefMapResult(idToRefId),
               space_elems = makeRefMapResult(conv_sp_elems),
@@ -151,7 +162,9 @@ object RefProjectorF extends FrontElemProjectionF
   }
 }
 
-
+/***************************************************************************************
+ *   Ref object id -> Object Id
+ */
 private def makeRefMapResult(values:Map[Int, Int]):List[RefMapResult] = {
   values.map { keyVal => RefMapResult(keyVal._1,keyVal._2) }.toList
 }

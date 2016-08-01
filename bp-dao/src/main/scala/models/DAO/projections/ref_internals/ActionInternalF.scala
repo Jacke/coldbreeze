@@ -179,7 +179,7 @@ def prepareInputs(reactionComp: RefActionContainer,
             Map(unit.id.get -> newId)          
         }
       }).map { ac =>
-        acn.copy(inputs = ac.reduce (_ ++ _))
+        acn.copy(inputs = ac.foldLeft(Map[Long,Long]())(_ ++ _))
       }
     }
 }
@@ -203,7 +203,7 @@ def prepareOutputs(reactionComp: RefActionContainer,
                 Map(unit.id.get -> newId)          
               }
          }).map { ac =>
-          acn.copy(outputs = ac.reduce (_ ++ _))
+          acn.copy(outputs = ac.foldLeft(Map[Long,Long]())(_ ++ _))
          }
     }
 }

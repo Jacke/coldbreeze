@@ -16,7 +16,7 @@ import models.DAO.conversion.DatabaseCred
 class ReflectActionMappings(tag: Tag) extends Table[ReflectedActionMap](tag, "reflect_action_mappings") {
   def id               = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def reflection       = column[Int]("reflection_id")
-  def ref_action       = column[Int]("ref_action")
+  def ref_action       = column[Option[Int]]("ref_action")
 
   def element_action = column[Int]("element_action")
 
@@ -31,14 +31,14 @@ class ReflectActionMappings(tag: Tag) extends Table[ReflectedActionMap](tag, "re
   def reflectFK          = foreignKey("reflect_action_mappings_reflect_fk", 
       reflection, models.DAO.reflect.RefDAO.refs)(_.id, onDelete = ForeignKeyAction.Cascade)
   def ref_actionFK          = foreignKey("reflect_action_mappings_ref_action_fk", 
-      ref_action, models.DAO.reflect.ReactionRefDAOF.reaction_refs)(_.id, onDelete = ForeignKeyAction.Cascade)
+      ref_action, models.DAO.reflect.ReactionRefDAOF.reaction_refs)(_.id, onDelete = ForeignKeyAction.SetNull)
   def elementActionFK = foreignKey("reflect_action_mappings_element_action_fk", 
-      element_action, models.DAO.ElemTopologDAO.elem_topologs)(_.id, onDelete = ForeignKeyAction.Cascade)
+      element_action, models.DAO.ReactionDAO.reactions)(_.id, onDelete = ForeignKeyAction.Cascade)
 
 }
 case class ReflectedActionMap(id: Option[Int],
   reflection: Int,
-  ref_action: Int,
+  ref_action: Option[Int],
   element_action: Int,
   created_at: Option[org.joda.time.DateTime] = None,
   updated_at: Option[org.joda.time.DateTime] = None)

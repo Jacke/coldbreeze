@@ -116,14 +116,7 @@ object RefDAOF {
           case Some(refResult) => {
             Future.sequence( 
               refResult.topoElem.map { topo =>
-                ReflectElementMappingsDAO.pull(
-                                              ReflectElementMap(None,
-                                                reflection = refId,
-                                                topology_element = topo.newId,
-                                                ref_topo_element = Some(topo.oldId),
-                                                created_at = Some(org.joda.time.DateTime.now()),
-                                                updated_at = Some(org.joda.time.DateTime.now()))
-                                                    )
+                  createTopoElementMappingRecord(refId, topo)
                 })
           }
           case _ => Future.successful(List())
@@ -162,20 +155,25 @@ object RefDAOF {
           case Some(refResult) => {
             Future.sequence( 
               refResult.topoElem.map { topo =>
-                ReflectElementMappingsDAO.pull(
-                                              ReflectElementMap(None,
-                                                reflection = refId,
-                                                topology_element = topo.newId,
-                                                ref_topo_element = Some(topo.oldId),
-                                                created_at = Some(org.joda.time.DateTime.now()),
-                                                updated_at = Some(org.joda.time.DateTime.now()))
-                                                    )
+                  createTopoElementMappingRecord(refId, topo)
                 })
           }
           case _ => Future.successful(List())
         }
       }
       refResultOptF
+  }
+
+
+  def createTopoElementMappingRecord(refId: Int, elem: RefMapResult) = {
+                    ReflectElementMappingsDAO.pull(
+                                              ReflectElementMap(None,
+                                                reflection = refId,
+                                                topology_element = elem.newId,
+                                                ref_topo_element = Some(elem.oldId),
+                                                created_at = Some(org.joda.time.DateTime.now()),
+                                                updated_at = Some(org.joda.time.DateTime.now()))
+                                                    )
   }
 
 

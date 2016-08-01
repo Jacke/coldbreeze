@@ -1163,9 +1163,10 @@ $scope.createNewElem = function (el, process, callback) {
       $scope.reloadResources();
       $scope.loadResources();
 
-  
-  process.fastElForm == true ? process.fastElForm=false : process.fastElForm=true;
-  if (process.fastElForm == undefined) {
+  if (process !== undefined && process.fastElForm !== undefined) {
+    process.fastElForm == true ? process.fastElForm=false : process.fastElForm=true;
+  }
+  if (process !== undefined && process.fastElForm == undefined) {
     process.fastElForm = true;
   }
   if (callback !== undefined) {
