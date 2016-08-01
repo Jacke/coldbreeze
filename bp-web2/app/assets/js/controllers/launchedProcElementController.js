@@ -49,6 +49,9 @@ minorityControllers.controller('launchedProcElementController', ['$timeout','$wi
     $scope.BPid = $scope.$parent.bprocess.id;
   }
 
+  $scope.session_id = $routeParams.launch;
+
+
 
   $scope.route = jsRoutes.controllers.BusinessProcessController;
   $scope.businessSet = $rootScope.business;
@@ -2019,6 +2022,7 @@ $scope.turnMinimal();
 $scope.changeSession = function(session) {
 
  $scope.session = session;
+// $scope.session_id = session.id;
  //$location.search('launch', $scope.session.session.id);
  $scope.inSession = true;
  $scope.station = $scope.session.station;//_.find(session.station, function(s) { return s.front == true })

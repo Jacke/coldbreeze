@@ -64,7 +64,7 @@ return minorityControllers.controller('launchDataController', ['$q','$rootScope'
           $scope.launchId = $scope.$parent.session_id;
           $scope.processId = $scope.$parent.bpId;
     } else {
-      $scope.launchId = $scope.session_id;
+      $scope.launchId = $scope.$parent.session_id;
       $scope.bpId ? $scope.processId = $scope.bpId :  $scope.processId = $scope.BPid;
       //$scope.processId = $scope.bpId;
     }
