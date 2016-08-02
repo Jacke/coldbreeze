@@ -65,6 +65,13 @@ object ReflectActionMappingsDAO {
     reflect_action_mappings.filter(_.id === id)
   private def filterByIdsQuery(ids: List[Int]): Query[ReflectActionMappings, ReflectedActionMap, Seq] =
     reflect_action_mappings.filter(_.id inSetBind ids)
+
+  private def filterByElementAction(element_action: Int): Query[ReflectActionMappings, ReflectedActionMap, Seq] =
+    reflect_action_mappings.filter(_.element_action === element_action) 
+  private def filterByElementActions(element_actions: Seq[Int]): Query[ReflectActionMappings, ReflectedActionMap, Seq] =
+    reflect_action_mappings.filter(_.element_action inSetBind element_actions) 
+
+
   private def filterByReflection(reflection: Int): Query[ReflectActionMappings, ReflectedActionMap, Seq] =
     reflect_action_mappings.filter(_.reflection === reflection)
   private def filterByReflections(reflections: List[Int]): Query[ReflectActionMappings, ReflectedActionMap, Seq] =
@@ -77,6 +84,13 @@ object ReflectActionMappingsDAO {
   def pull(s: ReflectedActionMap) = 
     db.run( reflect_action_mappings returning reflect_action_mappings.map(_.id) += s )
     
+  def findByElementAction(element_action: Int):Future[Option[ReflectedActionMap]] = 
+    db.run(filterByElementAction(element_action).result.headOption)
+
+  def findByElementActions(element_actions: Seq[Int]):Future[Seq[ReflectedActionMap]] = 
+    db.run(filterByElementActions(element_actions).result)  
+
+
   def findByRef(id: Int):List[ReflectedActionMap] =   {
     await(db.run(filterByReflection(id).result)).toList
   }

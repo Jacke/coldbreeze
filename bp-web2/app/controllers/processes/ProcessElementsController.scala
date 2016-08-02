@@ -650,9 +650,9 @@ def delete_switcher(id: Int) = silhouette.SecuredAction { implicit request =>
 // GET 			/bprocess/:BPid/reactions		      @controllers.ProcessElementsController.reactions_index(BPid: Int)
 def reactions_index(BPid: Int) = silhouette.SecuredAction { implicit request =>
   if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, BPid)) {
-    Ok(Json.toJson(ReactionDAO.findByBP(BPid).map { react =>
+    val actionPayload = ReactionDAO.findByBP(BPid).map { action =>
 
-       val act_ids = List(react.id.get) // react.map(c => c.id.get)
+       val act_ids = List(action.id.get) // action.map(c => c.id.get)
        val middlewares = MiddlewaresDAOF.await(MiddlewaresDAOF.findByReactions(act_ids) )
        val mids_ids = middlewares.map(c => c.id.get).toList
        val strategies = StrategiesDAOF.await(StrategiesDAOF.findByMiddlewares(mids_ids))
@@ -662,14 +662,17 @@ def reactions_index(BPid: Int) = silhouette.SecuredAction { implicit request =>
        val strategy_outputs = StrategyOutputsDAOF.await( StrategyOutputsDAOF.getByStrategies(strat_ids) )
 
 
-      ReactionCollection(react,
-        ReactionStateOutDAO.findByReaction(react.id.get),
+      ReactionCollection(action,
+        ReactionStateOutDAO.findByReaction(action.id.get),
         middlewares = middlewares,
         strategies = strategies,
         strategy_bases = strategy_bases,
         strategy_inputs = strategy_inputs,
         strategy_outputs = strategy_outputs)
-       } ))
+     }
+     val actionPayloadRefMapping = decorateActionsWithRefMapping(actionPayload)
+
+    Ok(Json.toJson( actionPayloadRefMapping ))
   } else { Forbidden(Json.obj("status" -> "Access denied")) }
 }
 
@@ -703,6 +706,30 @@ private def decorateProcElementsToJson(elements: List[UndefElement]) = {
     obj + ("topo_id" -> Json.toJson(topos.find(topo => topo.front_elem_id.get == elemId ).get  ))
   }
   objWithTopos
+}
+
+def decorateActionsWithRefMapping(actionCollections: Seq[ReactionCollection]) = {
+  val actionsIds = actionCollections.map(c => c.reaction.id.get)
+  val mapsF = ReflectActionMappingsDAO.findByElementActions(actionsIds)
+  val maps = ReflectActionMappingsDAO.await(mapsF)
+
+  val actionCollectionsJson = Json.toJson( actionCollections )
+  val actionCollectionsObj = actionCollectionsJson.as[List[JsObject]]
+  // Replace reaction with reaction ++ reactionRef
+  val objWithTopos = actionCollectionsObj.map { obj =>
+    val reactionObj = (obj \ "reaction").validate[JsObject].get
+    val actionId = (reactionObj \ "id").validate[Int].get
+    val refId = maps.find(m => m.element_action == actionId) match {
+      case Some(mapping) => mapping.ref_action
+      case _ => None
+    }
+
+    obj + ("reaction" -> Json.toJson(
+      reactionObj + (
+        "reaction_ref" -> Json.toJson( refId ) )
+    ))
+  }
+  objWithTopos  
 }
 
 private def decorateProcElementsWithExistedToposToJson(elements: List[UndefElement], 
