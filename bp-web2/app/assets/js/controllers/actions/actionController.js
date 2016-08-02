@@ -78,6 +78,16 @@ $scope.addBase = function() {
         "headers": []
       })
 }
+$scope.delBase = function(item) { 
+  var index = $scope.testBases.indexOf(item);
+  $scope.testBases.splice(index, 1);     
+}
+
+$scope.delBaseHeader = function(testBase, item) { 
+  var index = testBase.headers.indexOf(item);
+  testBase.headers.splice(index, 1);     
+}
+
 $scope.addBaseHeader = function(testBase) {
     testBase.headers.push({"ke111y":"va22lue"});
    $scope.testBases.push({
@@ -99,11 +109,16 @@ $scope.addBaseHeaderEntity = function(testBase) {
 }
 
 $scope.sendTest = function() {
-        var url;
-        if ($scope.ngDialogData.testAction == 'refAction') {
-          url = '/action/ref/'+$scope.ngDialogData.actionId+'/test'
+        var url, actionId;
+        if (!isNaN($scope.ngDialogData.actionId)) {
+          actionId = $scope.ngDialogData.actionId;
         } else {
-          url = '/action/process/'+$scope.ngDialogData.actionId+'/test'
+          actionId = $scope.ngDialogData.actionId.reaction.id; 
+        }
+        if ($scope.ngDialogData.testAction == 'refAction') {
+          url = '/action/ref/'+actionId+'/test'
+        } else {
+          url = '/action/process/'+actionId+'/test'
         }
         // fill headers
         $scope.testBases = _.map($scope.testBases, function(t) {
@@ -116,37 +131,43 @@ $scope.sendTest = function() {
         $http({
             url: url,
             method: "POST",
-            data: {    "middleware":
-      {
-        "id": 7,
-        "title": $scope.testMiddleware.title,
-        "ident": $scope.testMiddleware.ident,
-        "ifaceIdent": $scope.testMiddleware.ifaceIdent,
-        "reaction": 104,
-        "created_at": 1468994505857,
-        "updated_at": 1468994505857
-      },
-    "strategy":
-      {
-        "id": 7,
-        "ident": $scope.testStrategy.ident,
-        "middleware": 7,
-        "isNullStrategy": false,
-        "created_at": 1468994506101,
-        "updated_at": 1468994506101
-      }
-    ,
-    "strategy_bases": $scope.testBases,
-    "strategy_inputs": [],
-    "strategy_outputs": []
-}
+            data: {    
+                "middleware":
+                  {
+                    "id": 7,
+                    "title": $scope.testMiddleware.title,
+                    "ident": $scope.testMiddleware.ident,
+                    "ifaceIdent": $scope.testMiddleware.ifaceIdent,
+                    "reaction": 104,
+                    "created_at": 1468994505857,
+                    "updated_at": 1468994505857
+                  },
+                "strategy":
+                  {
+                    "id": 7,
+                    "ident": $scope.testStrategy.ident,
+                    "middleware": 7,
+                    "isNullStrategy": false,
+                    "created_at": 1468994506101,
+                    "updated_at": 1468994506101
+                  }
+                ,
+                "strategy_bases": $scope.testBases,
+                "strategy_inputs": [],
+                "strategy_outputs": []
+            }
 
             })
             .then(function(response) {
               // success
               //$scope.stationsRefresh(); // Not for session controller
               //$scope.loadSessions();
-              $scope.testerOut = response;
+              var out = response.data
+              out.results = _.map(out.results, function(result) {
+                try { result.content = JSON.parse(result.content) } catch(e) { console.log(e) }
+                return result;
+              });
+              $scope.testerOut = out;
               //$scope.invoke_res = [response];
             },
             function(response) { // optional

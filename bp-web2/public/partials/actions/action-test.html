@@ -327,7 +327,13 @@ ul.perm-menu.element-data-nav {
     margin-top: 20px;
     margin-bottom: -5px;
 }
-
+.header-field.multiple-field {
+    display: inline-block;
+}
+.header-field.multiple-field .form-group.control-group {
+    display: inline-block;
+    margin-right: 7px;
+}
 </style>
 
 <ul class="perm-menu" style="display:none;">
@@ -412,21 +418,26 @@ ul.perm-menu.element-data-nav {
         ng-model="testBase.valueContent" required="">
       </div>
       <div class="form-group control-group clearfix">
-        <a ng-show="testBase.baseType == 'headers'" ng-click="addBaseHeaderEntity(testBase)">Add header fields</a>
+        <a ng-show="testBase.baseType == 'headers'" 
+           class="addBaseHeaderButton" 
+           ng-click="addBaseHeaderEntity(testBase)">Add fields</a>
       </div>
 
-      <div ng-show="testBase.baseType == 'headers'" ng-repeat="k in testBase.headers">
+      <div ng-show="testBase.baseType == 'headers'" class="header-field multiple-field" ng-repeat="k in testBase.headers">
         <div class="form-group control-group clearfix">
           <input type="text"
           id="testBase-valueContent"
-          class="form-control"
+          class="form-control header-key"
           ng-model="k.key" required="">
         </div>
         <div class="form-group control-group clearfix">
           <input type="text"
           id="testBase-valueContent"
-          class="form-control"
+          class="form-control header-value"
           ng-model="k.value" required="">    
+        </div>
+        <div class="form-group control-group clearfix">
+          <button ng-click="delBaseHeader(testBase, k)" class="addBaseHeaderButton">Remove field</button>
         </div>  
       </div>
 
@@ -449,7 +460,7 @@ ul.perm-menu.element-data-nav {
 
 
     <div class="out">
-      <pre hljs source="testerOut | json"></pre>
+      <pre hljs source="result.content | json" ng-repeat="result in testerOut.results"></pre>
     </div>
 
     <div class="elements-data-element-title" style="display:none;"><h3>{{ element.title }}</h3>

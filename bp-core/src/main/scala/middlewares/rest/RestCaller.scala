@@ -64,9 +64,16 @@ val client = AhcWSClient()
       val url:String = arguments.takeArg("URL", StrategyArgument(argString=DEFAULT_URL)).argString
       val headersJson = arguments.takeArgs("header")
       val headers:Seq[(String, String)] = headersJson.map(_.argString).map { hJson => 
+        println(hJson)
+        // {"key":"key354","value":"value3443","$$hashKey":"object:702"}
         val j = Json.parse(hJson).as[JsObject]
-        (j.keys.head -> j.value.values.head.as[String]) 
+        val k = (j \ "key").as[String]
+        val v = (j \ "value").as[String] 
+        println(k)
+        println(v)
+        (k -> v) 
       } ++ Seq( ("Content-Type" -> "application/json") )
+      headers.foreach(println)
 
       val res = await( client.url(url).withHeaders(headers: _*).get() )
       parts.process.getActs(parts.action.id.get).headOption match {

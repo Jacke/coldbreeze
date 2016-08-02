@@ -6,7 +6,7 @@
   requirejs.config({
     // Packages = top-level folders; loads a contained file named 'main.js"
     // baseUrl: '/assets/javascripts',
-    waitSeconds: 200,
+    waitSeconds: 400,
     packages: ['common'],//, 'home', 'user', 'dashboard'],
 
  config: {
@@ -301,6 +301,10 @@ export: 'actionController'
   deps: ['angular', 'app'],
   export: 'restangular'
 },
+'actionFormGenerator': {
+  deps: ['angular', 'app'],
+  export: 'actionFormGenerator'
+},
 'hljs': {
   deps: ['angular', 'app'],
   export: 'hljs'
@@ -465,6 +469,7 @@ export: 'actionController'
   'pnotifybuttons':'../bower_components/pnotify/pnotify.buttons',
   'angularpnotify':'../bower_components/angular-pnotify/src/angular-pnotify',
 'restangular':'../bower_components/restangular/dist/restangular',
+'actionFormGenerator': '../js/services/actionFormGenerator',
 'hljsangular':'../bower_components/angular-highlightjs/build/angular-highlightjs',
 'hljs':'../javascripts/highlightjs',
 'angularDragAndDropLists':'../bower_components/angular-drag-and-drop-lists/angular-drag-and-drop-lists',
@@ -537,6 +542,7 @@ export: 'actionController'
   requirejs.onError = function (err) {
     throw err;//console.log(err);
   };
+
 
   // Load the app. This is kept minimal so it doesn't need much updating.
 require(['requirejs','jsRoutes','jquery','pnofiy','ease','segment', 'mobileDetect','popupoverlay','drag-on','ngFileUploadShim','jquery.nicescroll','ssl','header','tooltip','dropdown','underscore','moment','selectize', 'tether', 'shepherd','tour','notie',
