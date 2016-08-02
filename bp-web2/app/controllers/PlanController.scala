@@ -138,6 +138,15 @@ def index() = silhouette.SecuredAction { implicit request =>
 }
 
 
+def acceptPayment(token: String) = silhouette.SecuredAction { implicit request =>
+  val price = 15000 // TODO: Add price detector
+  try { 
+    val js = us.ority.util.StripeClient.createCharge(token, price)
+      Ok(js.toString)
+    } catch { case a => 
+      Ok(a.toString) 
+    } 
+}
 
 def update_billinginfos() = silhouette.SecuredAction { implicit request =>
   //TODO: Business checking

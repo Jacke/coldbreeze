@@ -13,7 +13,56 @@
 @import models.DAO.resources.BusinessDTO
 @import helper._
 
-@main(Messages("page.plans"), user) {
+@scripts = {
+<script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+<script type="text/javascript" src="https://stripe.com/assets/jquery-47d53801b9f61ca8a21dcc2571aeb3ec.js"></script>
+
+<script type="text/javascript">
+  Stripe.setPublishableKey('pk_test_5RUx0jtl1moEDHVrVSvwTg8u');
+$(function() {
+  var $form = $('#payment-form');
+  $form.find('.submit').on('click', function(event) {
+    console.log('click', event);
+    // Disable the submit button to prevent repeated clicks:
+    $form.find('.submit').prop('disabled', true);
+
+    // Request a token from Stripe:
+    Stripe.card.createToken($form, stripeResponseHandler);
+
+    // Prevent the form from being submitted:
+    return false;
+  });
+});
+function stripeResponseHandler(status, response) {
+  // Grab the form:
+  var $form = $('#payment-form');
+  console.log('stripe handler\'s  called');
+  console.log(response);
+
+  if (response.error) { // Problem!
+
+    // Show the errors on the form:
+    $form.find('.payment-errors').text(response.error.message);
+    $form.find('.submit').prop('disabled', false); // Re-enable submission
+
+  } else { // Token was created!
+
+    // Get the token ID:
+    var token = response.id;
+
+    // Insert the token ID into the form so it gets submitted to the server:
+    $form.append($('<input type="hidden" name="stripeToken">').val(token));
+    $.post( "/plan/charge_token/"+token, function( data ) { console.log(data) })
+
+    // Submit the form:
+    //$form.get(0).submit();
+  }
+};
+
+</script>
+}
+
+@main(Messages("page.plans"), user, scripts) {
 <link rel="stylesheet" href="/assets/css/plan.css">
 <style>
 button.button-default.button-confirm.limit-button {
@@ -111,7 +160,7 @@ li.bill {
 }
 </style>
 
-<div id="ember2864" class="ember-view settings-inner">
+<div class="ember-view settings-inner">
 
 <h1 class="settings-title">Billing Overview</h1>
 <div class="plan-container">
@@ -153,12 +202,12 @@ li.bill {
 <h3 class="settings-insert-title highlighted">Change your Plan</h3>
 <div class="settings-insert settings-plans" style="text-align: center; display: none;">
   <div class="settings-insert-inner">
-    <ul id="ember2878" class="ember-view plans_collection clearfix">
+    <ul class="ember-view plans_collection clearfix">
 
         @plans.map { plan =>
 
 @if((plan.title == "Trial" && current_plan.planObj.get.title == "Trial") || (plan.title == "Free" && current_plan.planObj.get.title == "Free")) {
-    <li id="ember3011" class="ember-view plans_collection-item">
+    <li class="ember-view plans_collection-item">
       <h3 class="plans_collection-item-header">@plan.title</h3>
 
 <div class="plans_collection-item-content">
@@ -185,7 +234,7 @@ li.bill {
 
 @if(plan.title != "Trial" && plan.title != "Free") {
 
-<li id="ember3011" class="ember-view plans_collection-item"><h3 class="plans_collection-item-header">@plan.title</h3>
+<li class="ember-view plans_collection-item"><h3 class="plans_collection-item-header">@plan.title</h3>
 
 <div class="plans_collection-item-content">
   <div>@plan.description.getOrElse("")</div>
@@ -237,7 +286,7 @@ li.bill {
     or Subscribe to Startup plan with Up to 200 transactions for $49 / month
 </li>
 
-<li id="ember3012" class="ember-view plans_collection-item"><h3 class="plans_collection-item-header"><script id="metamorph-152-start" type="text/x-placeholder"></script>Pro<script id="metamorph-152-end" type="text/x-placeholder"></script></h3>
+<li class="ember-view plans_collection-item"><h3 class="plans_collection-item-header"><script id="metamorph-152-start" type="text/x-placeholder"></script>Pro<script id="metamorph-152-end" type="text/x-placeholder"></script></h3>
 
 <div class="plans_collection-item-content">
   <div><script id="metamorph-153-start" type="text/x-placeholder"></script>Up to 1,500 Invoices, Bills &amp; Financial operations every month.<script id="metamorph-153-end" type="text/x-placeholder"></script></div>
@@ -250,7 +299,7 @@ li.bill {
 <div class="plans_collection-item-footer">
   <button class="button-default button-confirm" data-ember-action="3023" data-bindattr-3024="3024"><script id="metamorph-155-start" type="text/x-placeholder"></script>Subscribe<script id="metamorph-155-end" type="text/x-placeholder"></script></button>
 </div>
-</li><li id="ember3013" class="ember-view plans_collection-item"><h3 class="plans_collection-item-header"><script id="metamorph-156-start" type="text/x-placeholder"></script>Enterprise<script id="metamorph-156-end" type="text/x-placeholder"></script></h3>
+</li><li class="ember-view plans_collection-item"><h3 class="plans_collection-item-header"><script id="metamorph-156-start" type="text/x-placeholder"></script>Enterprise<script id="metamorph-156-end" type="text/x-placeholder"></script></h3>
 
 <div class="plans_collection-item-content">
   <div><script id="metamorph-157-start" type="text/x-placeholder"></script>Up to 4,000 Invoices, Bills &amp; Financial operations every month.<script id="metamorph-157-end" type="text/x-placeholder"></script></div>
@@ -337,22 +386,22 @@ li.bill {
                     <button type="submit" value="Update" class="button-default button-confirm">Update</button>
 }
 
-    <form id="ember2983" class="ember-view clearfix " novalidate="novalidate" style="display: none;">
+    <form class="ember-view clearfix " novalidate="novalidate" style="display: none;">
       <div>
         <p>
-          <input id="ember2984" class="ember-view ember-text-field settings-insert-form-firstname-input" placeholder="Firstname" type="text">
-          <input id="ember2985" class="ember-view ember-text-field settings-insert-form-lastname-input" placeholder="Lastname" type="text">
+          <input class="ember-view ember-text-field settings-insert-form-firstname-input" placeholder="Firstname" type="text">
+          <input class="ember-view ember-text-field settings-insert-form-lastname-input" placeholder="Lastname" type="text">
         </p>
       </div>
       <div>
-        <p><input id="ember2986" class="ember-view ember-text-field settings-insert-form-address-input" placeholder="Address" type="text"></p>
+        <p><input class="ember-view ember-text-field settings-insert-form-address-input" placeholder="Address" type="text"></p>
       </div>
       <div class="settings-insert-row">
         <div>
           <p>
-            <input id="ember2987" class="ember-view ember-text-field settings-insert-form-state-input" placeholder="State" type="text">
-            <input id="ember2988" class="ember-view ember-text-field settings-insert-form-city-input" placeholder="City" type="text">
-            <input id="ember2989" class="ember-view ember-text-field settings-insert-form-zipcode-input" placeholder="Zipcode" type="text">
+            <input class="ember-view ember-text-field settings-insert-form-state-input" placeholder="State" type="text">
+            <input class="ember-view ember-text-field settings-insert-form-city-input" placeholder="City" type="text">
+            <input class="ember-view ember-text-field settings-insert-form-zipcode-input" placeholder="Zipcode" type="text">
           </p>
         </div>
       </div>
@@ -366,9 +415,215 @@ li.bill {
 </div>
 
 
-
-
-
-
 </div>
+
+
+<div id="doc">
+<div class="request card active" id="custom-form">
+
+      <form class="card-form" id="payment-form">
+  <div class="row">
+    <label>Number</label>
+    <input type="text" size="20" class="card-number" id="number" value="4242 4242 4242 4242" data-stripe="number">
+  </div>
+  <div class="row">
+    <div class="column">
+      <label>Expiry</label>
+      <input type="text" size="12" class="card-exp" placeholder="MM / YY" id="exp" value="12 / 17" data-stripe="exp">
+    </div>
+    <div class="column">
+      <label class="card-form-label-cvc">CVC</label>
+      <input type="text" size="4" class="card-cvc" id="cvc" value="123" data-stripe="cvc">
+    </div>
+  </div>
+  <div class="row">
+    <p class="payment-errors"></p>
+  </div>
+  <div class="row card-form-submit-row">
+    <input type="submit" value="Submit" class="submit">
+  </div>
+</form>
+
+      <div class="instruction-side" id="instruction-side">
+
+        <p>The form has been pre-filled with valid test values, but feel free to change any of them, using:</p>
+
+        <ul>
+          <li>One of Stripe’s <a href="/docs/testing#cards">test card numbers</a>, such as <strong>4242 4242 4242 4242</strong></li>
+          <li>Any three digit CVC code</li>
+          <li>Any expiration date in the future</li>
+        </ul>
+      </div>
+</div>
+</div>
+
+<style>
+
+#doc #custom-form {
+    display: flex;
+    flex-direction: column;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 1.4
+}
+
+#doc #custom-form .payment-errors {
+    color: #d14;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 32px
+}
+
+#doc #custom-form.card {
+    flex-direction: row
+}
+
+#doc #custom-form.card .instruction-side {
+    width: 50%;
+    margin-top: 20px
+}
+
+#doc #custom-form.card .card-form,#doc #custom-form.card .card-form * {
+    box-sizing: border-box
+}
+
+#doc #custom-form.card .card-form {
+    margin: 15px 30px 15px 0;
+    padding: 2px 14px 8px;
+    background: #fff;
+    border: 1px solid #dadee1;
+    box-shadow: 0 2px 6px 0 #f0f2f3;
+    border-radius: 5px;
+    font-size: 14px
+}
+
+#doc #custom-form.card .card-form p {
+    margin-bottom: 0;
+    display: flex;
+    flex-direction: row
+}
+
+#doc #custom-form.card .card-form .row {
+    border-bottom: 1px solid #ededed;
+    display: flex;
+    flex-direction: row
+}
+
+#doc #custom-form.card .card-form .row:nth-last-child(-n+2) {
+    border: none
+}
+
+#doc #custom-form.card .card-form .row.card-form-submit-row {
+    flex-direction: column;
+    align-items: flex-end
+}
+
+#doc #custom-form.card .card-form .column {
+    position: relative;
+    flex-grow: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    width: 100%
+}
+
+#doc #custom-form.card .card-form .column:not(:first-child) label {
+    margin-left: 14px
+}
+
+#doc #custom-form.card .card-form .column:not(:first-child):after {
+    content: '';
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 1px;
+    background: #ededed
+}
+
+#doc #custom-form.card .card-form input,#doc #custom-form.card .card-form label {
+    padding: 14px 0;
+    font-size: 14px
+}
+
+#doc #custom-form.card .card-form label {
+    display: inline-block;
+    width: 75px;
+    font-weight: 600;
+    color: #000;
+    flex-shrink: 0
+}
+
+#doc #custom-form.card .card-form label.card-form-label-cvc {
+    width: 45px
+}
+
+#doc #custom-form.card .card-form input {
+    border: none;
+    background: none;
+    outline: none;
+    width: 100%
+}
+
+#doc #custom-form.card .card-form input.card-cvc::-webkit-input-placeholder,#doc #custom-form.card .card-form input.card-number::-webkit-input-placeholder {
+    letter-spacing: 2.5px
+}
+
+#doc #custom-form.card .card-form input.card-cvc::-moz-input-placeholder,#doc #custom-form.card .card-form input.card-number::-moz-input-placeholder {
+    letter-spacing: 2.5px
+}
+
+#doc #custom-form.card .card-form input.card-cvc::-ms-input-placeholder,#doc #custom-form.card .card-form input.card-number::-ms-input-placeholder {
+    letter-spacing: 2.5px
+}
+
+#doc #custom-form.card .card-form input.card-exp::-webkit-input-placeholder {
+    letter-spacing: -1px
+}
+
+#doc #custom-form.card .card-form input.card-exp::-moz-input-placeholder {
+    letter-spacing: -1px
+}
+
+#doc #custom-form.card .card-form input.card-exp::-ms-input-placeholder {
+    letter-spacing: -1px
+}
+
+#doc #custom-form.card .card-form input[type=submit] {
+    text-align: center;
+    margin-top: 8px;
+    width: 50%;
+    height: 36px;
+    line-height: 36px;
+    padding: 0;
+    border: 1px solid #e1e3ed;
+    border-bottom-color: #c5cadd;
+    background: #fbfbfc;
+    border-radius: 3px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #1c3544;
+    cursor: pointer;
+    outline: none
+}
+
+#doc #custom-form.card .card-form input[type=submit]:hover:not(:disabled) {
+    background: hsla(202,8%,80%,.2)
+}
+
+#doc #custom-form.card .card-form input[type=submit]:active:not(:disabled) {
+    background: linear-gradient(180deg,#eaedee,#e3e6e9)
+}
+div#doc {
+    padding: 0 18%;
+    width: 100%;
+    background: white !important;
+    display: block;
+    clear: both;
+    overflow: hidden;
+}
+</style>
+
+
 }

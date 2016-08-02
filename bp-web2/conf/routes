@@ -168,6 +168,8 @@ POST       /plan/billinginfo                                    @controllers.Pla
 POST       /plan/switch_limit/:plan_id                          @controllers.PlanController.switchLimit(plan_id: Int)
 POST       /plan/bill/:billId/delete                            @controllers.PlanController.delete_bill(billId: Int)
 
+POST       /plan/charge_token/:token      @controllers.PlanController.acceptPayment(token: String) 
+
 # Settings
 GET        /drive                                               @controllers.DriveController.index()
 GET        /settings                                            @controllers.SettingController.index()
