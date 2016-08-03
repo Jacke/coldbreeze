@@ -2254,8 +2254,12 @@ $scope.unlisted = function (session) {
  */
 $scope.textExec = function(action, middleware, strategy, actionWay) {
   console.log('textExec', action, middleware, strategy);
-  var actionId = action.id;
-      ngDialog.open({
+  if (actionWay == 'elemAction') {
+   var actionId = action.reaction.id;
+  } else {
+    var actionId = action.id;
+  }
+  ngDialog.open({
       template: '/assets/partials/actions/action-test.html',
       controller: 'actionController',
       scope: $scope,
