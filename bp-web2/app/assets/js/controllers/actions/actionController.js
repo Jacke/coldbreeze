@@ -123,7 +123,10 @@ $scope.sendTest = function() {
         // fill headers
         $scope.testBases = _.map($scope.testBases, function(t) {
           if (t.valueType == "headers") {
-            t.valueContent = JSON.stringify(t.headers);
+            console.log(t.headers);
+            try { t.valueContent = JSON.stringify(t.headers); } catch(e) {
+              console.log(e);
+            } 
           }
             return t
         })

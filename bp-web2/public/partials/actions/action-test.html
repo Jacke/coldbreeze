@@ -334,6 +334,94 @@ ul.perm-menu.element-data-nav {
     display: inline-block;
     margin-right: 7px;
 }
+
+
+
+.actionTestWindow a.addBaseButton {
+    text-decoration: none;
+    cursor: pointer;
+    padding: 5px 12px;
+    background-color: #33424a;
+    color: white;
+    border-radius: 4px;
+    margin-bottom: 7px;
+    display: inline-block;
+    font-size: 13px;
+    border: solid 2px #a6a6da;
+    font-family: 'Open Sans', Helvetica;
+    line-height: 17px;
+    transition: all 0.7s;
+    font-weight: 700 !important;
+    text-shadow: none;
+}
+
+.actionTestWindow a.sendTestButton {
+    text-decoration: none;
+    cursor: pointer;
+    padding: 5px 12px;
+    background-color: #33424a;
+    color: white;
+    border-radius: 4px;
+    margin-bottom: 7px;
+    display: inline-block;
+    font-size: 13px;
+    border: solid 2px #a6a6da;
+    font-family: 'Open Sans', Helvetica;
+    line-height: 17px;
+    transition: all 0.7s;
+    font-weight: 700 !important;
+    text-shadow: none;
+    margin-top: 9px;
+    width: 50%;
+    text-align: center;
+    margin: 23px auto 4px;
+    display: block;
+}
+.actionTestWindow a.addBaseHeaderButton {
+    text-decoration: none;
+    cursor: pointer;
+    padding: 5px 12px;
+    background-color: #33424a;
+    color: white;
+    border-radius: 4px;
+    margin-bottom: 7px;
+    display: inline-block;
+    font-size: 13px;
+    border: solid 2px #a6a6da;
+    font-family: 'Open Sans', Helvetica;
+    line-height: 17px;
+    transition: all 0.7s;
+    font-weight: 700 !important;
+    text-shadow: none;
+    margin-top: 9px;
+}
+.actionTestWindow a.addBaseButton:hover,
+.actionTestWindow a.sendTestButton:hover,
+.actionTestWindow a.addBaseHeaderButton:hover {
+  background-color: #222d33;
+    border: solid 2px #485358;
+    text-decoration: none;
+    color: white;
+}
+.actionTestWindow input {
+    background: #393b54;
+    border: solid 1px #434665;
+    color: white;
+    font-family: 'Open Sans';
+    text-shadow: none;
+}
+
+.actionTestWindow input:focus {
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgb(166, 166, 218);
+    border: solid 1px #a6a6da;
+}
+.actionTestWindow .out pre {
+    background: #565a84;
+    color: white;
+    border: solid 1px #424673;
+    text-shadow: none;
+}
+
 </style>
 
 <ul class="perm-menu" style="display:none;">
@@ -437,7 +525,7 @@ ul.perm-menu.element-data-nav {
           ng-model="k.value" required="">    
         </div>
         <div class="form-group control-group clearfix">
-          <button ng-click="delBaseHeader(testBase, k)" class="addBaseHeaderButton">Remove field</button>
+          <a ng-click="delBaseHeader(testBase, k)" class="addBaseHeaderButton">Remove field</a>
         </div>  
       </div>
 

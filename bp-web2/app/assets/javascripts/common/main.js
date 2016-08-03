@@ -45,6 +45,8 @@ define(['angularAMD', 'angular',
 'hljs',
 'hljsangular',
 'actionFormGenerator',
+'actionFormDesctructor',
+
 'restangular',
 'ngsanitize',
 'angular-cache',

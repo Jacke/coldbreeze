@@ -251,7 +251,7 @@
 'treebuilder': {
   deps: ['angular', 'app'],
   export: 'treebuilder'
-},
+},  
 'controllers': {
   deps: ['angular', 'app', 'toastr', 'toaster'],
   export: 'controllers'
@@ -305,6 +305,11 @@ export: 'actionController'
   deps: ['angular', 'app'],
   export: 'actionFormGenerator'
 },
+'actionFormDesctructor': {
+  deps: ['angular', 'app'],
+  export: 'actionFormDesctructor'
+},
+
 'hljs': {
   deps: ['angular', 'app'],
   export: 'hljs'
@@ -470,6 +475,8 @@ export: 'actionController'
   'angularpnotify':'../bower_components/angular-pnotify/src/angular-pnotify',
 'restangular':'../bower_components/restangular/dist/restangular',
 'actionFormGenerator': '../js/services/actionFormGenerator',
+'actionFormDesctructor':'../js/services/actionFormDesctructor',
+
 'hljsangular':'../bower_components/angular-highlightjs/build/angular-highlightjs',
 'hljs':'../javascripts/highlightjs',
 'angularDragAndDropLists':'../bower_components/angular-drag-and-drop-lists/angular-drag-and-drop-lists',

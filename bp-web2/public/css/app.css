@@ -818,7 +818,13 @@ i.uicon-svg142 {
     color: white;
     margin-left: 13px;
     border-radius: 3px;
+    transition: all 0.4s;
+    border: none;
 }
+.ref-page a.btn.btn-small.btn-primary:hover {
+    border: none;
+}
+
 
 .ref-page .ref-card p.ref-card-header-desc {
     width: 391px;
@@ -969,8 +975,12 @@ i.uicon-svg142 {
 .ref-page .ref-element-actions .ref-action h5.ref-action-title {
     font-size: 22px;
     display: inline-block;
+    margin-left: 15px;
+    margin-right: 12px;
 }
-
+.ref-page a.ref-obj-delete-button {
+    text-shadow:none;
+}
 .ref-page .ref-element-actions .ref-action .ref-action-pipes {
     display: inline-block;
     float: right;
@@ -6284,87 +6294,6 @@ footer .applicationFooterListLink,footer .applicationFooterCopyrightLink {
 }
 
 
-
-.actionTestWindow a.addBaseButton {
-    text-decoration: none;
-    cursor: pointer;
-    padding: 5px 12px;
-    background-color: #33424a;
-    color: white;
-    border-radius: 4px;
-    margin-bottom: 7px;
-    display: inline-block;
-    font-size: 13px;
-    border: solid 2px #a6a6da;
-    font-family: 'Open Sans', Helvetica;
-    line-height: 17px;
-    transition: all 0.7s;
-    font-weight: 700 !important;
-    text-shadow: none;
-}
-
-.actionTestWindow a.sendTestButton {
-    text-decoration: none;
-    cursor: pointer;
-    padding: 5px 12px;
-    background-color: #33424a;
-    color: white;
-    border-radius: 4px;
-    margin-bottom: 7px;
-    display: inline-block;
-    font-size: 13px;
-    border: solid 2px #a6a6da;
-    font-family: 'Open Sans', Helvetica;
-    line-height: 17px;
-    transition: all 0.7s;
-    font-weight: 700 !important;
-    text-shadow: none;
-    margin-top: 9px;
-}
-.actionTestWindow a.addBaseHeaderButton {
-    text-decoration: none;
-    cursor: pointer;
-    padding: 5px 12px;
-    background-color: #33424a;
-    color: white;
-    border-radius: 4px;
-    margin-bottom: 7px;
-    display: inline-block;
-    font-size: 13px;
-    border: solid 2px #a6a6da;
-    font-family: 'Open Sans', Helvetica;
-    line-height: 17px;
-    transition: all 0.7s;
-    font-weight: 700 !important;
-    text-shadow: none;
-    margin-top: 9px;
-}
-.actionTestWindow a.addBaseButton:hover,
-.actionTestWindow a.sendTestButton:hover,
-.actionTestWindow a.addBaseHeaderButton:hover {
-  background-color: #222d33;
-    border: solid 2px #485358;
-    text-decoration: none;
-    color: white;
-}
-.actionTestWindow input {
-    background: #393b54;
-    border: solid 1px #434665;
-    color: white;
-    font-family: 'Open Sans';
-    text-shadow: none;
-}
-
-.actionTestWindow input:focus {
-    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgb(166, 166, 218);
-    border: solid 1px #a6a6da;
-}
-.actionTestWindow .out pre {
-    background: #565a84;
-    color: white;
-    border: solid 1px #424673;
-    text-shadow: none;
-}
 
 
 .control-group *, .control-group *:before, .control-group *:after {

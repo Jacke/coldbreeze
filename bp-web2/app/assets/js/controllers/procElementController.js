@@ -42,9 +42,35 @@ minorityControllers.controller('BPelementListCtrl', ['$timeout','$window','$filt
 'ReactionFactory',
 'ElementTopologsFactory',
 'InteractionsFactory',
+'ActionFormBuilder',
+'ActionFormDestructor',
 
   '$location', '$route', '$animate',
-  function ($timeout, $window, $filter, $rootScope, $scope, $q,$http, $routeParams, toaster, BPInLoggersSessionFactory, DataCostAssign, DataCostLaunchAssign, BProcessFactory, BPStationsFactory,EmployeesFactory, ProcPermissionsFactory, PermissionsFactory, BProcessesFactory, ngDialog, BPElemsFactory, BPElemFactory, BPSessionsFactory, BPStationsFactory, BPSpacesFactory, BPSpaceFactory, BPSpaceElemsFactory, BPSpaceElemFactory, BPStatesFactory, BPStateFactory, BPSessionStatesFactory, BPSessionStateFactory,RefsFactory, SwitchesFactory,SwitchFactory,DataCostCollection,  LaunchSwitchersFactory, LaunchElemsFactory,LaunchSpacesFactory,LaunchSpaceElemsFactory,LaunchElementTopologsFactory, LaunchReactionsFactory,ReactionsFactory,ReactionFactory,ElementTopologsFactory, InteractionsFactory, $location, $route, $animate) {
+  function ($timeout, $window, 
+    $filter, $rootScope, 
+    $scope, $q,$http, 
+    $routeParams, toaster, 
+    BPInLoggersSessionFactory, DataCostAssign, 
+    DataCostLaunchAssign, BProcessFactory, 
+    BPStationsFactory,EmployeesFactory, 
+    ProcPermissionsFactory, PermissionsFactory, 
+    BProcessesFactory, ngDialog, 
+    BPElemsFactory, BPElemFactory, 
+    BPSessionsFactory, BPStationsFactory, 
+    BPSpacesFactory, BPSpaceFactory, 
+    BPSpaceElemsFactory, BPSpaceElemFactory, 
+    BPStatesFactory, BPStateFactory, 
+    BPSessionStatesFactory, BPSessionStateFactory, 
+    RefsFactory, SwitchesFactory,
+    SwitchFactory, DataCostCollection,
+    LaunchSwitchersFactory,
+    LaunchElemsFactory, LaunchSpacesFactory,
+    LaunchSpaceElemsFactory, LaunchElementTopologsFactory, 
+    LaunchReactionsFactory, ReactionsFactory,
+    ReactionFactory, ElementTopologsFactory, 
+    InteractionsFactory, ActionFormBuilder, 
+    ActionFormDestructor,
+    $location, $route, $animate) {
 
   if ($route.current.params.BPid !== undefined) {
     $scope.BPid = $route.current.params.BPid
@@ -1735,6 +1761,7 @@ $scope.selectedRef = function(newBpelem) {
     return ''
   }
 }
+
 $scope.isSelected = function(ref, newBpelem) {
     console.log("selected");
     if (newBpelem.selectedRef.ref.id == ref.ref.id) {
@@ -2108,8 +2135,6 @@ $scope.byStrategy = function(strategy) {
 
 
 
-
-
 /*
  Action fields
  Strategy
@@ -2121,265 +2146,20 @@ $scope.byStrategy = function(strategy) {
 
 
 var vm = this;
+$scope.setStrategyFields = ActionFormBuilder.setStrategyFields;
 
-$scope.setStrategyFields = function(strategy, action) {
-  if ($scope.newBpelem.selectedRef != undefined) {
-  if (action.selectedRefFields == undefined) {  // if fields doesnt set
-  action.selectedRefFields = _.map($scope.newBpelem.selectedRef.strategies,function(strategyL) {
-  var bases = _.filter($scope.newBpelem.selectedRef.bases, function(base){
-    return base.strategy == strategy.id
-  });
+vm.fieldsForStrategy = ActionFormBuilder.vm.fieldsForStrategy;
 
-  return {
-    strategy: strategy,
-    fields: _.flatten(_.map(bases, function(base) {
-        if (base.baseType == "duration") {
-          var fieldType = 'number'
-          var placeholder = '';
-          var label = 'Duration';
-        } else if (base.baseType == "datetime") {
-          var fieldType = 'text'
-          var placeholder = 'DD/MM/YEAR HH:MM:SS';
-          var label = 'Schedule';
-        } else if (base.baseType == "url") { 
-          var fieldType = 'url'
-          var label = 'URL';                  
-          var placeholder = 'http://example.com/api/v1/resource';
-        } else {
-          var fieldType = 'text'
-          var placeholder = '';
-          var label = '';
-        }
+$scope.fieldsForStrategy = ActionFormBuilder.fieldsForStrategy;
 
-      return [
-        {
-          key: "base_id",
-          type: 'input',
-          className: 'hidden',
-          defaultValue: base.id,
-          templateOptions: {
-            className: 'hidden',
-            type: "text",
-            label: "Base id",
-            placeholder: ""
-          }
-        },
-        {
-          key: "field_type",
-          type: "input",
-          className: 'hidden',
-          defaultValue: fieldType,
-          templateOptions: {
-            className: 'hidden',
-            type: "text",
-            label: "Field type",
-            placeholder: ""
-          }
+$scope.setStrategyEditFields = ActionFormBuilder.setStrategyEditFields;
 
-        },
-        {
-        key: base.key,
-        type: 'input',
-        className: 'new-elem-action__action-base__action-base-form__field',
-        templateOptions: {
-          className: 'new-elem-action__action-base__action-base-form__field',
-          type: fieldType,
-          label: label,
-          placeholder: placeholder
-        }
-        }];
-    }))
-  }
-
-  });
-  };
-} else {
-  action.selectedRefFields = {};
-}
-
-}
-
-/*****
- * Fields for strategy in new element form
- */
-vm.fieldsForStrategy = function(strategy, action) {
-  $scope.setStrategyFields(strategy, action);
-  var f = _.find(action.selectedRefFields, function(r){ return r.strategy.id == strategy.id });
-  if (f !== undefined) {
-    return f.fields;
-  } else {
-    return undefined;
-  }
-}
-
-$scope.fieldsForStrategy = function(strategy, action) {
-  console.log('fieldsForStrategy', strategy, action);
-  $scope.setStrategyFields(strategy, action);
-  var f = _.find(action.selectedRefFields, function(r){ return r.strategy.id == strategy.id });
-  if (f !== undefined) {
-    console.log('return fields');
-    return f.fields;
-  } else {
-    console.log('return null');
-    return undefined;
-  }
-}
+vm.editFieldsForStrategy = ActionFormBuilder.vm.editFieldsForStrategy;
 
 
+ActionFormDestructor.test();
 
-$scope.setStrategyEditFields = function(strategy, action) {
-  if (action.selectedRefFields == undefined) {  // if fields doesnt set
-  action.selectedRefFields = _.map([strategy], function(strategyL) {
-  var bases = _.filter(action.strategy_bases, function(base){
-    return base.strategy == strategy.id
-  });
 
-  return {
-    strategy: strategy,
-    fields: _.flatten(_.map(bases, function(base) {
-        if (base.baseType == "duration") {
-          var fieldType = 'number'
-          var placeholder = '';
-          var label = 'Duration';
-        } else if (base.baseType == "datetime") {
-          var fieldType = 'text'
-          var placeholder = 'DD/MM/YEAR HH:MM:SS';
-          var label = 'Schedule';
-        } else if (base.baseType == "url") { 
-          var fieldType = 'url'
-          var label = 'URL';                  
-          var placeholder = 'http://example.com/api/v1/resource';
-        } else {
-          var fieldType = 'text'
-          var placeholder = '';
-          var label = '';
-        }
-
-      return [
-        {
-          key: "base_id",
-          type: 'input',
-          className: 'hidden',
-          defaultValue: base.id,
-          templateOptions: {
-            className: 'hidden',
-            type: "text",
-            label: "Base id",
-            placeholder: ""
-          }
-        },
-        {
-          key: "field_type",
-          type: "input",
-          className: 'hidden',
-          defaultValue: fieldType,
-          templateOptions: {
-            className: 'hidden',
-            type: "text",
-            label: "Field type",
-            placeholder: ""
-          }
-
-        },
-        {
-        key: base.key,
-        type: 'input',
-        className: 'new-elem-action__action-base__action-base-form__field',
-        templateOptions: {
-          className: 'new-elem-action__action-base__action-base-form__field',
-          type: fieldType,
-          label: label,
-          placeholder: placeholder
-        }
-        }];
-    }))
-  }
-
-  });
-  };
-
-}
-/*****
- * Fields for strategy in edit form
- */
-vm.editFieldsForStrategy = function(strategy, action, bases) {
-  if (action.selectedRefFields == undefined || action.selec) {  // if fields doesnt set
-
-  console.log('editFieldsForStrategy: ', bases);
-  var f = _.flatten(_.map([bases], function(base) {
-      if (base.baseType == "duration") {
-        var fieldType = 'number'
-        var placeholder = '';
-        var label = 'Duration';
-        var defaultValue = parseInt(base.valueContent)
-      } else if (base.baseType == "datetime") {
-        var fieldType = 'text'
-        var placeholder = 'DD/MM/YEAR HH:MM:SS';
-        var label = 'Schedule';
-        var defaultValue = base.valueContent;
-      } else if (base.baseType == "url") { 
-          var fieldType = 'url'
-          var label = 'URL';        
-          var placeholder = 'http://example.com/api/v1/resource';
-          var defaultValue = base.valueContent;
-
-      } else {
-        var fieldType = 'text'
-        var placeholder = '';
-        var label = '';
-        var defaultValue = base.valueContent;
-
-      }
-
-    return [
-      {
-        key: "base_id",
-        type: 'input',
-        defaultValue: base.id,
-        className: 'hidden',
-        templateOptions: {
-          type: "text",
-            className: 'hidden',
-          label: "Base id",
-          placeholder: ""
-        }
-      },
-      {
-        key: "field_type",
-        type: "input",
-        defaultValue: fieldType,
-        className: 'hidden',
-        templateOptions: {
-          type: "text",
-            className: 'hidden',
-          label: "Field type",
-          placeholder: ""
-        }
-
-      },
-      {
-      key: base.key,
-      type: 'input',
-      className: 'new-elem-action__action-base__action-base-form__field',
-      defaultValue: defaultValue,
-      templateOptions: {
-        className: 'new-elem-action__action-base__action-base-form__field',
-        type: fieldType,
-        label: label,
-        placeholder: placeholder
-      }
-      }];
-    }));
-
-  console.log('f', f);
-  action.selectedRefFields = f;
-  return f;
-
-} else {
-  return undefined;
-}
-
-}
 
 $scope.openElemDetail = function(elem, elems) {
   if (elem.selected == 1) {
@@ -2429,7 +2209,9 @@ $scope.updateBase = function(base) {
 $scope.selectStrategy = function(strategy, middleware, action, bases) {
      console.log('action.selectedStrategy', action.selectedStrategy);
      action.selectedRefFields = undefined;
-     $scope.setStrategyFields(strategy, action);
+     console.log('setStrategyFields', $scope.newBpelem);
+
+     $scope.setStrategyFields(strategy, action, $scope.newBpelem);
      console.log('selectStrategy action.selectedRefFields', action.selectedRefFields);
      var bases = _.filter(bases, function(base){ return base.strategy === strategy.id });
 
@@ -2470,13 +2252,14 @@ $scope.unlisted = function (session) {
 /**
  * Test action execution
  */
-$scope.textExec = function(action, middleware, strategy) {
+$scope.textExec = function(action, middleware, strategy, actionWay) {
   console.log('textExec', action, middleware, strategy);
+  var actionId = action.id;
       ngDialog.open({
       template: '/assets/partials/actions/action-test.html',
       controller: 'actionController',
       scope: $scope,
-      data: {'testAction':'elemAction','actionId': action}
+      data: {'testAction':actionWay,'actionId': actionId}
     });
 }
 

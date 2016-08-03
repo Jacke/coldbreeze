@@ -173,6 +173,7 @@ var minorityApp =
     [
       'minorityApp.services',
       'minorityApp.TreeBuilderService',
+      'minorityApp.ActionFormBuilderService',
       'minorityApp.controllers',
       'ngRoute',
       'formly',

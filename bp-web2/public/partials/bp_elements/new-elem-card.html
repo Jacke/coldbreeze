@@ -125,7 +125,7 @@
              ng-class="isStrategySelected(strategy, action) ? 'selected' : ''">{{ strategy.ident.replace('Strategy', '') }}</a>
     </div>
     <div class="new-elem-ref-actions-select__middleware-text-exec">
-        <a ng-click="textExec(action,middleware,strategy)">Test</a>
+        <a ng-click="textExec(action,middleware,strategy, 'refAction')">Test</a>
     </div>
 
     <div class="new-elem-action__action-base" ng-show="isStrategySelected(strategy, action)">
@@ -133,8 +133,8 @@
 
       <div class="form-horizontal new-elem-action__action-base__action-base-form">
 
-        <div class="new-elem-action__action-base-field" ng-repeat="base in action.refStrategySelect.bases | filter:byStrategy(strategy)">
-          <formly-form model="base.selectedStrategy" fields="vm.fieldsForStrategy(strategy, action, base)">
+        <div class="new-elem-action__action-base-field" repeat="base in action.refStrategySelect.bases | filter:byStrategy(strategy)">
+          <formly-form model="base.selectedStrategy" fields="vm.fieldsForStrategy(strategy, action, newBpelem, action.refStrategySelect.bases)">
           </formly-form>
         </div>
 <!--
