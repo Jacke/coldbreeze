@@ -56,7 +56,6 @@ import models.DAO.reflect._
 import us.ority.min.actions._
 import main.scala.simple_parts.process._
 
-case class BaseNewValue(baseNewValue: String)
 
 class ProcessElementsController @Inject() (
   val messagesApi: MessagesApi,
@@ -413,20 +412,7 @@ def createSpaceElem() = silhouette.SecuredAction.async(BodyParsers.parse.json) {
 
 
 
-/* Update */
-def updateBase(bpId: Int, base_id: Long) = silhouette.SecuredAction.async(BodyParsers.parse.json) { implicit request =>
-  request.body.validate[BaseNewValue].map{
-    case entity => {
-          if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, bpId)) {
-            StrategyBasesDAOF.updateValue(base_id, newValueContent = entity.baseNewValue).map { result =>
-              Ok(Json.toJson(result) )
-            }
-          } else { Future.successful( Forbidden(Json.obj("status" -> "Access denied")) ) }
-    }
-    }.recoverTotal{
-      e => Future.successful( BadRequest("formWithErrors") )
-    }
-}
+
 
 
 /* Update */

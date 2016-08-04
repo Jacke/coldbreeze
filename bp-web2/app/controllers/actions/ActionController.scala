@@ -75,6 +75,7 @@ case class ActionActContainer(
   results: Seq[ActionResult]
 )
 
+case class BaseNewValue(baseId: Long, baseNewValue: String)
 
 case class TestActionPayload(
   middleware: Middleware,
@@ -187,6 +188,11 @@ class ActionController @Inject() (
 
   implicit val TestActionPayloadReads = Json.reads[TestActionPayload]
   implicit val TestActionPayloadWrites = Json.format[TestActionPayload]
+
+
+  implicit val BaseNewValueReads = Json.reads[BaseNewValue]
+  implicit val BaseNewValueWrites = Json.format[BaseNewValue]
+
 
 // GET         /acts
 def acts() = silhouette.SecuredAction.async { implicit request =>
@@ -319,7 +325,9 @@ def actionsProcesses() = silhouette.SecuredAction.async { implicit request =>
 //	Future.successful(Ok(Json.toJson(Map("status" -> "good")) ))
 }
 
-
+/***
+ * Action tester exec endpoint
+ */
 // POST /action/ref/:reaction/test
 def testActionRef(reactionId: Int) = silhouette.SecuredAction.async(BodyParsers.parse.json) { implicit request =>
 
@@ -430,6 +438,104 @@ def testActionProcess(reactionId: Int) = silhouette.SecuredAction.async(BodyPars
     case _ => Future.successful(Ok(Json.toJson(Map("status" -> "action not found"))))
   }
 }
+
+
+
+
+
+
+
+/* Update base */
+def updateBase(bpId: Int, base_id: Long) = silhouette.SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+  request.body.validate[BaseNewValue].map{
+    case entity => {
+          if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, bpId)) {
+            StrategyBasesDAOF.updateValue(entity.baseId, newValueContent = entity.baseNewValue).map { result =>
+              Ok(Json.toJson(result) )
+            }
+          } else { Future.successful( Forbidden(Json.obj("status" -> "Access denied")) ) }
+    }
+    }.recoverTotal{
+      e => Future.successful( BadRequest("formWithErrors") )
+    }
+}
+
+/* Update base */
+def updateBases(bpId: Int, strategy_id: Long) = silhouette.SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+  request.body.validate[List[BaseNewValue]].map{
+    case entity => {
+          if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, bpId)) {
+            Future.sequence(entity.map { ent =>
+              StrategyBasesDAOF.updateValue(ent.baseId, newValueContent = ent.baseNewValue)
+            }).map { results =>
+               Ok(Json.toJson(results) )
+            }
+          } else { Future.successful( Forbidden(Json.obj("status" -> "Access denied")) ) }
+    }
+    }.recoverTotal{
+      e => Future.successful( BadRequest("formWithErrors") )
+    }
+}
+
+
+def updateInputs(bpId: Int, strategy_id: Long) = silhouette.SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+  request.body.validate[List[BaseNewValue]].map{
+    case entity => {
+          if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, bpId)) {
+            Future.sequence(entity.map { ent =>
+              StrategyBasesDAOF.updateValue(ent.baseId, newValueContent = ent.baseNewValue)
+            }).map { results =>
+               Ok(Json.toJson(results) )
+            }
+          } else { Future.successful( Forbidden(Json.obj("status" -> "Access denied")) ) }
+    }
+    }.recoverTotal{
+      e => Future.successful( BadRequest("formWithErrors") )
+    }
+}
+
+def updateOutputs(bpId: Int, strategy_id: Long) = silhouette.SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+  request.body.validate[List[BaseNewValue]].map{
+    case entity => {
+          if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, bpId)) {
+            Future.sequence(entity.map { ent =>
+              StrategyBasesDAOF.updateValue(ent.baseId, newValueContent = ent.baseNewValue)
+            }).map { results =>
+               Ok(Json.toJson(results) )
+            }
+          } else { Future.successful( Forbidden(Json.obj("status" -> "Access denied")) ) }
+    }
+    }.recoverTotal{
+      e => Future.successful( BadRequest("formWithErrors") )
+    }
+}
+
+
+
+
+/** 
+ * Update strategy
+ * @param elementId
+ * @param strategyId strategy that are exist in element`s action
+ * @param strIdRef strategy ref that we will take as template
+ * @param POST body of strategy components(bases, inputs, outputs) 
+ * @return payload for action that ready to pass into tester
+ */
+
+def updateStrategy(elementId: Int, strategy_id: Long, strIdRef: Long) = silhouette.SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+  request.body.validate[BaseNewValue].map{
+    case entity => {
+        // find existed strategy
+        // remove them
+        // partialy create new one with parameters
+
+        Future.successful( Forbidden(Json.obj("status" -> "Access denied")) ) 
+    }
+    }.recoverTotal{
+      e => Future.successful( BadRequest("formWithErrors") )
+    }
+}
+
 
 
 /** 

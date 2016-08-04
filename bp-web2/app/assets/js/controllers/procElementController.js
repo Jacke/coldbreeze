@@ -2147,12 +2147,22 @@ $scope.byStrategy = function(strategy) {
 
 var vm = this;
 $scope.setStrategyFields = ActionFormBuilder.setStrategyFields;
+$scope.setStrategyField = ActionFormBuilder.setStrategyField;
 
-vm.fieldsForStrategy = ActionFormBuilder.vm.fieldsForStrategy;
+
+vm.fieldsForStrategy = function(strategy, action, bases) {
+  var res = ActionFormBuilder.vm.fieldsForStrategy(strategy, action, bases);
+  console.log('vm.fieldsForStrategy', res);
+  return res
+}
+vm.fieldForStrategy = function(strategy, action, newBpelem, base) {
+  var res = ActionFormBuilder.vm.fieldForStrategy(strategy, action, newBpelem, base);
+  console.log('vm.fieldForStrategy', res);
+  return res
+}
+
 
 $scope.fieldsForStrategy = ActionFormBuilder.fieldsForStrategy;
-
-$scope.setStrategyEditFields = ActionFormBuilder.setStrategyEditFields;
 
 vm.editFieldsForStrategy = ActionFormBuilder.vm.editFieldsForStrategy;
 
@@ -2211,7 +2221,12 @@ $scope.selectStrategy = function(strategy, middleware, action, bases) {
      action.selectedRefFields = undefined;
      console.log('setStrategyFields', $scope.newBpelem);
 
-     $scope.setStrategyFields(strategy, action, $scope.newBpelem);
+     //$scope.setStrategyFields(strategy, action, $scope.newBpelem);
+     _.forEach(bases, function(base) {
+       return $scope.setStrategyField(strategy, action, $scope.newBpelem, base);
+     });
+
+
      console.log('selectStrategy action.selectedRefFields', action.selectedRefFields);
      var bases = _.filter(bases, function(base){ return base.strategy === strategy.id });
 
@@ -2219,7 +2234,8 @@ $scope.selectStrategy = function(strategy, middleware, action, bases) {
       action: action,
       middleware: middleware,
       strategy: strategy,
-      bases: bases
+      bases: bases,
+      bases2: bases
     };
 }
 $scope.isStrategySelected = function(strategy, action) {
