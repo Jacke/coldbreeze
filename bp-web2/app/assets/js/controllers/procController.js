@@ -492,7 +492,7 @@ return  $scope.bprocesses.then(function(processes) {
         }
 
     _.forEach(processes, function(proc) { TreeBuilder.buildFetch(proc, $scope.allElementsPromise, function(success){
-        $('.process_content .tree-thumb.process-tree').dragOn();
+//        $('.process_content .tree-thumb.process-tree').dragOn();
     }); });
 
   });

@@ -105,8 +105,32 @@ var setStrategyField = function(strategy, action, newBpelem, base) {
       if (base.baseType == 'headers') {
         return [
         {
+          key: "base_id",
+          type: 'input',
+          className: 'hidden',
+          defaultValue: base.id,
+          templateOptions: {
+            className: 'hidden',
+            type: "text",
+            label: "Base id",
+            placeholder: ""
+          }
+        },
+        {
+          key: "field_type",
+          type: "input",
+          className: 'hidden',
+          defaultValue: fieldDecoration.fieldType,
+          templateOptions: {
+            className: 'hidden',
+            type: "text",
+            label: "Field type",
+            placeholder: ""
+          }
+        },        
+        {
           type: 'repeatSection',
-          key: 'headers',
+          key: 'HEADERS',
           ngModelAttrs: {
             myCustomValue: {
               bound: 'ng-my-custom-value',
@@ -167,7 +191,6 @@ var setStrategyField = function(strategy, action, newBpelem, base) {
             label: "Field type",
             placeholder: ""
           }
-
         },
         {
         key: base.key,
@@ -213,14 +236,38 @@ var setStrategyFields = function(strategy, action, newBpelem) {
       if (base.baseType == 'headers') {
         return [
         {
+          key: "base_id",
+          type: 'input',
+          className: 'hidden',
+          defaultValue: base.id,
+          templateOptions: {
+            className: 'hidden',
+            type: "text",
+            label: "Base id",
+            placeholder: ""
+          }
+        },
+        {
+          key: "field_type",
+          type: "input",
+          className: 'hidden',
+          defaultValue: fieldDecoration.fieldType,
+          templateOptions: {
+            className: 'hidden',
+            type: "text",
+            label: "Field type",
+            placeholder: ""
+          }
+        },        
+        {
           type: 'repeatSection',
-          key: 'headers',
+          key: 'HEADERS',
           ngModelAttrs: {
             myCustomValue: {
               bound: 'ng-my-custom-value',
               attribute: 'my-custom-value'
             }
-          },          
+        },          
           templateOptions: {
             btnText:'Add header',
             fields: [
@@ -310,9 +357,78 @@ vm.editFieldForStrategy = function(strategy, action, base) {
 
   console.log('editFieldForStrategy: ', base);
   var f = _.flatten(_.map([base], function(base) {
-      var fieldDecoration = fieldDecorator(base);
+    var fieldDecoration = fieldDecorator(base);
+      base.updatedStrategy = {
+        base_id: base.id,
+        field_type: fieldDecoration.fieldType,
+      } 
+      base.updatedStrategy[base.key] = JSON.parse(base.valueContent);
 
-
+      if (base.baseType == 'headers') {
+        return [
+        {
+          key: "base_id",
+          type: 'input',
+          className: 'hidden',
+          defaultValue: base.id,
+          templateOptions: {
+            className: 'hidden',
+            type: "text",
+            label: "Base id",
+            placeholder: ""
+          }
+        },
+        {
+          key: "field_type",
+          type: "input",
+          className: 'hidden',
+          defaultValue: fieldDecoration.fieldType,
+          templateOptions: {
+            className: 'hidden',
+            type: "text",
+            label: "Field type",
+            placeholder: ""
+          }
+        },        
+        {
+          type: 'repeatSection',
+          key: 'HEADERS',
+          ngModelAttrs: {
+            myCustomValue: {
+              bound: 'ng-my-custom-value',
+              attribute: 'my-custom-value'
+            }
+        },          
+          templateOptions: {
+            btnText:'Add header',
+            fields: [
+              {
+                className: 'row headers',
+                fieldGroup: [
+                  {
+                    className: 'col-xs-4',
+                    type: 'input',
+                    key: 'key',
+                    templateOptions: {
+                      label: 'Key',
+                      required: true
+                    }
+                  },
+                  {
+                    type: 'input',
+                    key: 'value',
+                    className: 'col-xs-4',
+                    templateOptions: {
+                      label: 'value'
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+         }
+        ]
+      } else {
     return [
       {
         key: "base_id",
@@ -351,7 +467,9 @@ vm.editFieldForStrategy = function(strategy, action, base) {
         placeholder: fieldDecoration.placeholder
       }
       }];
-    }));
+    }
+
+  }));
 
   console.log('f', f);
   base.selectedRefFields = f;

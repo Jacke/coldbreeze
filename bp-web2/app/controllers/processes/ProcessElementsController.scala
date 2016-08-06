@@ -341,6 +341,12 @@ def createFrontElem() = silhouette.SecuredAction.async(BodyParsers.parse.json) {
 request.body.validate[RefElemContainer].map {
   case entity => {
          if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, entity.process)) {
+            /**
+             * entity.refActionContainer beacon
+             */
+            entity.refActionContainer.foreach(cn => cn.bases.foreach(base => 
+                println(base.base_json_opt) ))
+
             RefDAOF.retrieveAndCreateElement(refId = entity.ref,
                            process = entity.process,
                            business = entity.business,

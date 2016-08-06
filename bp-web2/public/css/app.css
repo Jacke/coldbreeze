@@ -12467,12 +12467,10 @@ form.form-horizontal.form-new-bpelem.form-edit-bpelem {
   height: 100%;
 }
 button.edit-element-card-update-btn.btn.btn-small.btTxt.submit.btn.lg.solid-green {
-    position: absolute;
     bottom: 0px;
 }
 
 a.edit-element-card-delete-btn.btn.btn-small.btn.btn-danger.btTxt.btn.lg.solid-green {
-    position: absolute;
     bottom: 0px;
     right: 0px;
 }

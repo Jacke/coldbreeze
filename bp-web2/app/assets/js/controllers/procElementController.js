@@ -1106,18 +1106,26 @@ $scope.createNewElem = function (el, process, callback) {
           // Action 1 -> 1 Middleware
           // Middleware 1 -> 1 Strategy
           // Strategy 1 -> many Bases
-          console.log('action.selectedStrategy', action.selectedStrategy);
+          console.log('action.selectedStrategy', action.refStrategySelect);
         return {
           action_id: action.id,
           middleware_id: action.refStrategySelect.middleware.id,
           strategy_id: action.refStrategySelect.strategy.id,
+          inputs: [],
+          outputs: [],
           bases: _.map(action.refStrategySelect.bases, function(base){
-            return {
-              base_id: base.id,
-              base_req_type: base.selectedStrategy['field_type'],
-              base_content_string: base.selectedStrategy[base.key].toString(),
-              base_content_number: $scope.safeParseInt( base.selectedStrategy[base.key] ),
-              base_content_boolean: false
+            var base_value = base.selectedStrategy[base.key];
+            if (base_value == undefined) {
+
+            } else {
+              return {
+                base_id: base.id,
+                base_req_type: base.selectedStrategy['field_type'],
+                base_content_string: JSON.stringify(base_value),
+                base_json_opt: base_value,
+                base_content_number: $scope.safeParseInt( base_value ),
+                base_content_boolean: false
+              }
             }
           })
           }
