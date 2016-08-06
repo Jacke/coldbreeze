@@ -1113,7 +1113,7 @@ $scope.createNewElem = function (el, process, callback) {
           strategy_id: action.refStrategySelect.strategy.id,
           inputs: [],
           outputs: [],
-          bases: _.flatten(_.map(action.refStrategySelect.bases, function(base){
+          bases: _.filter(_.map(action.refStrategySelect.bases, function(base){
             var base_value = base.selectedStrategy[base.key];
             if (base_value == undefined) {
 
@@ -1127,7 +1127,7 @@ $scope.createNewElem = function (el, process, callback) {
                 base_content_boolean: false
               }
             }
-          }))
+          }), function(z){return !_.isUndefined(z)})
           }
         }
     });
@@ -2203,7 +2203,9 @@ $scope.updateBase = function(base) {
   $http({
       url: '/process/'+bpId+'/base/'+base_id,
       method: "POST",
-      data: { baseNewValue: baseNewValue.toString() }
+      data: { baseId: base_id, 
+              baseNewValue: JSON.stringify(baseNewValue) 
+            }
       })
       .then(function(response) {
         // success
