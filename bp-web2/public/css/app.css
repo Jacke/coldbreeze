@@ -1868,10 +1868,7 @@ span.reaction-icon.minicon.minicon-gear-fill-right {
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
 }
-.proc-element.minimal .element-header .info .type:hover {
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
-}
+
 .proc-element.minimal .right-bar {
     display: none;
 }
@@ -2054,6 +2051,7 @@ span.reaction-icon.minicon.minicon-gear-fill-right {
 }
 
 .proc-element.minimal .element-header .info .type:hover ul.type-tabs {
+  /*
     border-radius: 0px;
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
@@ -2061,6 +2059,8 @@ span.reaction-icon.minicon.minicon-gear-fill-right {
     overflow: hidden;
     min-height: 61px;
     margin-bottom: 0px;
+
+*/
 }
 
 

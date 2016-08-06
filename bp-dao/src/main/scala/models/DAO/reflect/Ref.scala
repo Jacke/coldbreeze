@@ -10,20 +10,48 @@ import models.DAO._
 import models.DAO.projections._
 import main.scala.simple_parts.process._
 import main.scala.bprocesses.refs._
+import play.api.libs.json._
 
+
+/**
+ * BaseContainer
+ * base_req_type: json
+ * base_content_string: json body
+ */
 case class BaseContainer(
   base_id: Long,
   base_req_type: String = "string",
   base_content_string: String = "",
   base_content_number: Long = 0L,
-  base_content_boolean: Boolean = false
+  base_content_boolean: Boolean = false,
+  base_json_opt: Option[JsValue] = None
 )
+case class ActionInputContainer(
+  input_id: Long,
+  input_req_type: String = "string",
+  input_content_string: String = "",
+  input_content_number: Long = 0L,
+  input_content_boolean: Boolean = false,
+  input_json_opt: Option[JsValue] = None
+)
+case class ActionOutputContainer(
+  output_id: Long,
+  output_req_type: String = "string",
+  output_content_string: String = "",
+  output_content_number: Long = 0L,
+  output_content_boolean: Boolean = false,
+  output_json_opt: Option[JsValue] = None
+)
+
+
 
 case class RefActionContainer(
   action_id: Int,
   middleware_id: Long,
   strategy_id: Long,
-  bases: List[BaseContainer] = List()
+  bases: List[BaseContainer] = List(),
+  inputs: List[ActionInputContainer]=List(),
+  outputs: List[ActionOutputContainer]=List()
 )
 
 case class Ref(id: Option[Int],

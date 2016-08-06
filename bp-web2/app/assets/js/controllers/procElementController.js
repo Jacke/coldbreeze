@@ -2156,6 +2156,7 @@ vm.fieldsForStrategy = function(strategy, action, bases) {
   return res
 }
 vm.fieldForStrategy = function(strategy, action, newBpelem, base) {
+  console.log('fieldForStrategy base', base);
   var res = ActionFormBuilder.vm.fieldForStrategy(strategy, action, newBpelem, base);
   console.log('vm.fieldForStrategy', res);
   return res
@@ -2163,10 +2164,7 @@ vm.fieldForStrategy = function(strategy, action, newBpelem, base) {
 
 
 $scope.fieldsForStrategy = ActionFormBuilder.fieldsForStrategy;
-
-vm.editFieldsForStrategy = ActionFormBuilder.vm.editFieldsForStrategy;
-
-
+vm.editFieldForStrategy = ActionFormBuilder.vm.editFieldForStrategy;
 ActionFormDestructor.test();
 
 
@@ -2229,7 +2227,7 @@ $scope.selectStrategy = function(strategy, middleware, action, bases) {
 
      console.log('selectStrategy action.selectedRefFields', action.selectedRefFields);
      var bases = _.filter(bases, function(base){ return base.strategy === strategy.id });
-
+     _.forEach(bases, function(base){ return base.selectedRefFields = undefined;return base; })
     action.refStrategySelect = {
       action: action,
       middleware: middleware,

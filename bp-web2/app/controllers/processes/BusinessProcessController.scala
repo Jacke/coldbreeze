@@ -53,14 +53,6 @@ import main.scala.simple_parts.process._
 import models.DAO.reflect._
 
 
-case class RefElemContainer(title: String,
-                            desc: String = "",
-                            business: Int,
-                            process: Int,
-                            ref: Int,
-                            space_id: Option[Int]= None,
-                            refActionContainer: List[RefActionContainer] = List()
-                          )
 
 
 // Reaction collection used for passing reaction and its deps
@@ -118,6 +110,14 @@ class BusinessProcessController @Inject() (
   implicit val BProcessDTOWrites = Json.format[BProcessDTO]
   implicit val StationNoteReads = Json.reads[StationNoteMsg]
   implicit val StationNoteWrites = Json.format[StationNoteMsg]
+
+
+  implicit val ActionInputContainerReads = Json.reads[ActionInputContainer]
+  implicit val ActionInputContainerWrites = Json.format[ActionInputContainer]
+  implicit val ActionOutputContainerReads = Json.reads[ActionOutputContainer]
+  implicit val ActionOutputContainerWrites = Json.format[ActionOutputContainer]
+
+
 
   implicit val BaseContainerReads = Json.reads[BaseContainer]
   implicit val BaseContainerWrites = Json.format[BaseContainer]

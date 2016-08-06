@@ -91,8 +91,13 @@
       <div class="form-horizontal edit-elem-action__action-base__action-base-form">
 
         <div class="edit-elem-action__action-base-field" ng-repeat="base in action.strategy_bases | filter:byStrategy(strategy)">
-          <formly-form model="base.updatedStrategy" ng-init="vm.editFieldsForStrategy(strategy, action,base)" fields="action.selectedRefFields">
-            <a ng-click="updateBase(base)" class="edit-elem-action__action-base-update-button">Update</a>
+          <formly-form model="base.updatedStrategy" 
+            ng-init="vm.editFieldForStrategy(strategy, action, base)" 
+            fields="base.selectedRefFields">
+              <a ng-click="updateBase(base)" 
+                 class="edit-elem-action__action-base-update-button">
+                   Update
+                 </a>
           </formly-form>
         </div>
       </div>

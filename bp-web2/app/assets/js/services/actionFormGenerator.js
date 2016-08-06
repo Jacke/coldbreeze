@@ -43,8 +43,8 @@ var fieldsForStrategy = function(strategy, action, newBpelem) {
 }
 var fieldForStrategy = function(strategy, action, newBpelem, base) {
   console.log('fieldForStrategy', strategy, action, base);
-  setStrategyField(strategy, action, newBpelem);
-  var f = _.find(action.selectedRefFields, function(r){ return r.strategy.id == strategy.id });
+  setStrategyField(strategy, action, newBpelem, base);
+  var f = _.find(base.selectedRefFields, function(r){ return r.strategy.id == strategy.id });
   if (f !== undefined) {
     console.log('return fields');
     return f.fields;
@@ -93,13 +93,12 @@ var setStrategyField = function(strategy, action, newBpelem, base) {
   console.log('setStrategyField', strategy, action, newBpelem, base);
   
   if (newBpelem.selectedRef != undefined) {
-  if (action.selectedRefFields == undefined) {  // if fields doesnt set
-  action.selectedRefFields = _.map(newBpelem.selectedRef.strategies,function(strategyL) {
+  if (base.selectedRefFields == undefined) {  // if fields doesnt set
+  base.selectedRefFields = _.map(newBpelem.selectedRef.strategies,function(strategyL) {
   var bases = [base]
 
   return {
     strategy: strategy,
-    base: base,
     fields: _.flatten(_.map(bases, function(base) {
     var fieldDecoration = fieldDecorator(base);
 
@@ -190,7 +189,7 @@ var setStrategyField = function(strategy, action, newBpelem, base) {
   });
   };
 } else {
-  action.selectedRefFields = {};
+  base.selectedRefFields = {};
 }
 
 }
@@ -306,11 +305,11 @@ var setStrategyFields = function(strategy, action, newBpelem) {
 /*****
  * Fields for strategy in edit form
  */
-vm.editFieldsForStrategy = function(strategy, action, bases) {
+vm.editFieldForStrategy = function(strategy, action, base) {
   if (action.selectedRefFields == undefined || action.selec) {  // if fields doesnt set
 
-  console.log('editFieldsForStrategy: ', bases);
-  var f = _.flatten(_.map([bases], function(base) {
+  console.log('editFieldForStrategy: ', base);
+  var f = _.flatten(_.map([base], function(base) {
       var fieldDecoration = fieldDecorator(base);
 
 
@@ -355,7 +354,7 @@ vm.editFieldsForStrategy = function(strategy, action, bases) {
     }));
 
   console.log('f', f);
-  action.selectedRefFields = f;
+  base.selectedRefFields = f;
   return f;
 
 } else {
@@ -369,8 +368,8 @@ vm.editFieldsForStrategy = function(strategy, action, bases) {
 /**
  * Form generator
  */
-
- /*
+  return {
+  /*
   * 1 Structure wrapper
   * collection
   * default
@@ -383,20 +382,20 @@ vm.editFieldsForStrategy = function(strategy, action, bases) {
  /*
   * 2 Rednering
   */
-
-
-
-
-
-  return {
+  
     setStrategyFields: setStrategyFields,
     setStrategyField: setStrategyField,
 
     fieldsForStrategy: fieldsForStrategy,
       vm: { fieldsForStrategy: fieldsForStrategy,
-          editFieldsForStrategy: vm.editFieldsForStrategy,
+          editFieldForStrategy: vm.editFieldForStrategy,
+
           fieldForStrategy: fieldForStrategy
-      }
+      },
+    /**
+     * Desctucturing for sending to minority
+     */  
+    destructBase: function(base){return base}
   }
 
 

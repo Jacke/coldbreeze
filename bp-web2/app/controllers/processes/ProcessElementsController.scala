@@ -57,6 +57,16 @@ import us.ority.min.actions._
 import main.scala.simple_parts.process._
 
 
+case class RefElemContainer(title: String,
+                            desc: String = "",
+                            business: Int,
+                            process: Int,
+                            ref: Int,
+                            space_id: Option[Int]= None,
+                            refActionContainer: List[RefActionContainer] = List()
+                          )
+
+
 class ProcessElementsController @Inject() (
   val messagesApi: MessagesApi,
   silhouette: Silhouette[DefaultEnv],
@@ -86,6 +96,12 @@ implicit val BaseNewValueWrites = Json.format[BaseNewValue]
 
   implicit val RefMapResultReads = Json.reads[models.DAO.reflect.RefMapResult]
   implicit val RefMapResultWrites = Json.format[models.DAO.reflect.RefMapResult]
+  
+  implicit val ActionInputContainerReads = Json.reads[ActionInputContainer]
+  implicit val ActionInputContainerWrites = Json.format[ActionInputContainer]
+  implicit val ActionOutputContainerReads = Json.reads[ActionOutputContainer]
+  implicit val ActionOutputContainerWrites = Json.format[ActionOutputContainer]
+
   
   implicit val BaseContainerReads = Json.reads[BaseContainer]
   implicit val BaseContainerWrites = Json.format[BaseContainer]
