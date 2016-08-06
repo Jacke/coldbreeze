@@ -1113,7 +1113,7 @@ $scope.createNewElem = function (el, process, callback) {
           strategy_id: action.refStrategySelect.strategy.id,
           inputs: [],
           outputs: [],
-          bases: _.map(action.refStrategySelect.bases, function(base){
+          bases: _.flatten(_.map(action.refStrategySelect.bases, function(base){
             var base_value = base.selectedStrategy[base.key];
             if (base_value == undefined) {
 
@@ -1127,7 +1127,7 @@ $scope.createNewElem = function (el, process, callback) {
                 base_content_boolean: false
               }
             }
-          })
+          }))
           }
         }
     });
