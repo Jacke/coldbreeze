@@ -8827,25 +8827,25 @@ order:1;
  }
 
 .form-edit-bpelem a.edit-elem-action__action-base-update-button {
-     background: white;
-     padding: 11px 12px;
-     font-size: 14px;
-     width: 20%;
-     margin: 0 63px auto;
-     /* margin-left: -49px; */
-     margin-top: -40px;
-     margin-bottom: -15px;
-     border-top-right-radius: 0px;
-     border-radius: 0px;
-     font-family: "AvenirNextCyr-Good", "AvenirNextCyr", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
-     text-decoration: none;
-     display: inline-block;
-     text-align: center;
-     float: right;
-     cursor: pointer;
-     color: black;
-     transition: all .3s ease-in-out;
- }
+    background: white;
+    padding: 8px 12px;
+    font-size: 13px;
+    width: 17%;
+    margin: 0 63px auto;
+    /* margin-left: -49px; */
+    margin-top: -40px;
+    margin-bottom: -15px;
+    border-top-right-radius: 0px;
+    border-radius: 0px;
+    font-family: "AvenirNextCyr-Good", "AvenirNextCyr", "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    float: right;
+    cursor: pointer;
+    color: black;
+    transition: all .3s ease-in-out;
+}
 .form-edit-bpelem a.edit-elem-action__action-base-update-button:hover {
     color: white;
     background: gray;
@@ -13260,3 +13260,47 @@ ul[dnd-list] li.selected {
 
 
 .hljs{display:block;overflow-x:auto;padding:0.5em;color:#333;background:#f8f8f8;-webkit-text-size-adjust:none}.hljs-comment,.diff .hljs-header{color:#998;font-style:italic}.hljs-keyword,.css .rule .hljs-keyword,.hljs-winutils,.nginx .hljs-title,.hljs-subst,.hljs-request,.hljs-status{color:#333;font-weight:bold}.hljs-number,.hljs-hexcolor,.ruby .hljs-constant{color:#008080}.hljs-string,.hljs-tag .hljs-value,.hljs-doctag,.tex .hljs-formula{color:#d14}.hljs-title,.hljs-id,.scss .hljs-preprocessor{color:#900;font-weight:bold}.hljs-list .hljs-keyword,.hljs-subst{font-weight:normal}.hljs-class .hljs-title,.hljs-type,.vhdl .hljs-literal,.tex .hljs-command{color:#458;font-weight:bold}.hljs-tag,.hljs-tag .hljs-title,.hljs-rule .hljs-property,.django .hljs-tag .hljs-keyword{color:#000080;font-weight:normal}.hljs-attribute,.hljs-variable,.lisp .hljs-body,.hljs-name{color:#008080}.hljs-regexp{color:#009926}.hljs-symbol,.ruby .hljs-symbol .hljs-string,.lisp .hljs-keyword,.clojure .hljs-keyword,.scheme .hljs-keyword,.tex .hljs-special,.hljs-prompt{color:#990073}.hljs-built_in{color:#0086b3}.hljs-preprocessor,.hljs-pragma,.hljs-pi,.hljs-doctype,.hljs-shebang,.hljs-cdata{color:#999;font-weight:bold}.hljs-deletion{background:#fdd}.hljs-addition{background:#dfd}.diff .hljs-change{background:#0086b3}.hljs-chunk{color:#aaa}
+
+
+
+
+
+
+
+
+
+
+
+
+
+.repeatsection.HEADERS {}
+
+.repeatsection.HEADERS .formly-field.formly-field-input {
+    display: inline-block;
+    width: 35%;
+    float: left;
+    clear: none;
+}
+
+.repeatsection.HEADERS .formly-field.formly-field-input input {
+    width: 70%;
+}
+
+.repeatsection.HEADERS button.btn.btn-sm.btn-danger {
+    display: block;
+    border-radius: 0;
+    margin-top: -87px;
+    float: right;
+    margin-right: 60px;
+}
+.repeatsection.HEADERS hr {
+    display: none;
+}
+
+
+.repeatedSectionContainer p.AddNewButton button {
+    font-size: 12px;
+    background: #77d2a8;
+    border: none;
+    border-radius: 0px;
+}

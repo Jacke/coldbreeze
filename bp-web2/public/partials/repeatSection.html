@@ -1,7 +1,7 @@
-      <div>
+<div class="repeatedSectionContainer">
         <!--loop through each element in model array-->
         <div class="{{hideRepeat}}">
-          <div class="repeatsection" ng-repeat="element in model[options.key]" ng-init="fields = copyFields(to.fields)">
+          <div class="repeatsection" ng-class="options.key" ng-repeat="element in model[options.key]" ng-init="fields = copyFields(to.fields)">
             <formly-form fields="fields"
                          model="element"
                          form="form">
@@ -16,4 +16,4 @@
         <p class="AddNewButton">
           <button type="button" class="btn btn-primary" ng-click="addNew()" >{{to.btnText}}</button>
         </p>
-      </div>
+</div>
