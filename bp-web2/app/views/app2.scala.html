@@ -218,6 +218,7 @@
 }
 </style>
 <div class="app-container">
+<!--
 <div class="container app" ng-app="app" data-ng-view>
 
   <div>
@@ -225,6 +226,12 @@
    </div>
 
 </div>
+-->
+
+  <app class="container app">
+    Loading...
+  </app>
+
 </div>
 
 
@@ -244,8 +251,8 @@
 <script src='/jsroutes.js'></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
-<script src='http://dragon.deparadox.com/drag-on.js'></script>
 
+<!--
 <script src="http://apis.google.com/js/client.js"></script>
 <script src="http://apis.google.com/js/api.js"></script>
 <script type="text/javascript" src="https://apis.google.com/js/api.js?onload=onApiLoad"></script>
@@ -332,7 +339,7 @@
 <script src="https://www.google.com/jsapi?key=AIzaSyC_wPVwox46HJlkHVQWgKhy6dnZ0kYfCaA"></script>
 <script src="https://apis.google.com/js/client.js?onload=initPicker"></script>
 <script type="text/javascript" src="https://www.dropbox.com/static/api/2/dropins.js" id="dropboxjs" data-app-key="o4zxff9txoicjkl"></script>
-
+-->
 
 
 
@@ -350,15 +357,16 @@
 
 
 <!-- Webpack Dev Server reload -->
-<script src="http://localhost:8080/app.bundle.js"></script></body>
 
 
 <!--
+<script src="http://localhost:8080/app.bundle.js"></script></body>
+-->
 <script src="http://localhost:3000/webpack-dev-server.js"></script>
 <script src="http://localhost:3000/polyfills.bundle.js"></script>
 <script src="http://localhost:3000/vendor.bundle.js"></script>
 <script src="http://localhost:3000/main.bundle.js"></script>
--->
+
 <link rel="stylesheet" href='@routes.Assets.versioned("css/picaso.css")'>
 <link rel="stylesheet" href='@routes.Assets.versioned("bower_components/angular-ui-select/dist/select.min.css")'>
 <link rel="stylesheet" href='@routes.Assets.versioned("bower_components/angular-ui-tree/dist/angular-ui-tree.min.css")'>

@@ -59,7 +59,11 @@ object StrategiesDAOF {
   val create: DBIO[Unit] = strategies.schema.create
   val drop: DBIO[Unit] = strategies.schema.drop
 
+  def findByMiddleware(middlewareId: Long) = db.run(filterMiddlewareQuery(middlewareId).result.headOption)
   def findByMiddlewares(middlewares: List[Long]) = db.run(filterMiddlewaresQuery(middlewares).result)
+
+  private def filterMiddlewareQuery(id: Long): Query[Strategies, Strategy, Seq] =
+    strategies.filter(c => c.middleware === id)
 
   private def filterMiddlewaresQuery(ids: List[Long]): Query[Strategies, Strategy, Seq] =
     strategies.filter(c => c.middleware inSetBind ids)
@@ -67,6 +71,16 @@ object StrategiesDAOF {
 
   def pull(s: Strategy):Future[Long] = db.run(strategies returning strategies.map(_.id) += s)
   def get(id: Long) = db.run(filterQuery(id).result.headOption)
+
+  def delete(id: Long):Future[Int] = {
+    val strategyOptF = get(id)
+    strategyOptF.flatMap { strategyOpt =>
+      strategyOpt match {
+        case Some(e) => db.run( strategies.filter(_.id === id).delete )
+        case _ => Future.successful(-1)
+      }
+    }
+  }
 
 
   def ddl_create = db.run(create)

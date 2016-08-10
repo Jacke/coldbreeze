@@ -192,6 +192,16 @@ class ActionController @Inject() (
 
   implicit val BaseNewValueReads = Json.reads[BaseNewValue]
   implicit val BaseNewValueWrites = Json.format[BaseNewValue]
+  implicit val RefMapResultReads = Json.reads[models.DAO.reflect.RefMapResult]
+  implicit val RefMapResultWrites = Json.format[models.DAO.reflect.RefMapResult]  
+  implicit val ActionInputContainerReads = Json.reads[ActionInputContainer]
+  implicit val ActionInputContainerWrites = Json.format[ActionInputContainer]
+  implicit val ActionOutputContainerReads = Json.reads[ActionOutputContainer]
+  implicit val ActionOutputContainerWrites = Json.format[ActionOutputContainer]
+  implicit val BaseContainerReads = Json.reads[BaseContainer]
+  implicit val BaseContainerWrites = Json.format[BaseContainer]
+  implicit val RefActionContainerReads = Json.reads[RefActionContainer]
+  implicit val RefActionContainerWrites = Json.format[RefActionContainer]
 
 
 // GET         /acts
@@ -514,22 +524,49 @@ def updateOutputs(bpId: Int, strategy_id: Long) = silhouette.SecuredAction.async
 
 
 /** 
- * Update strategy
- * @param elementId
+ * Replace ONLY ONE defined strategy
+ * @param elementId topology id
  * @param strategyId strategy that are exist in element`s action
  * @param strIdRef strategy ref that we will take as template
  * @param POST body of strategy components(bases, inputs, outputs) 
  * @return payload for action that ready to pass into tester
+  RefActionContainer(
+    action_id: Int, // plain action id
+    middleware_id: Long, // plain
+    strategy_id: Long, // ref ref
+    bases: List[BaseContainer] = List(), // ref ids
+    inputs: List[ActionInputContainer]=List(), // ref ids
+    outputs: List[ActionOutputContainer]=List() // ref ids
+  )
  */
 
-def updateStrategy(elementId: Int, strategy_id: Long, strIdRef: Long) = silhouette.SecuredAction.async(BodyParsers.parse.json) { implicit request =>
-  request.body.validate[BaseNewValue].map{
+def replaceStrategy(elementId: Int, strategy_id: Long, strIdRef: Long) = silhouette.SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+  request.body.validate[RefActionContainer].map{
     case entity => {
-        // find existed strategy
-        // remove them
-        // partialy create new one with parameters
-
-        Future.successful( Forbidden(Json.obj("status" -> "Access denied")) ) 
+        val existedMiddleware = MiddlewaresDAOF.await(
+          MiddlewaresDAOF.findByReaction(entity.action_id))
+        existedMiddleware match {
+          case Some(middleware) => {
+            val existedStrategy = StrategiesDAOF.await(
+              StrategiesDAOF.findByMiddleware(middleware.id.get) )
+            existedStrategy match {
+              case Some(strategy) => {
+                // find existed strategy
+                // remove them
+                StrategiesDAOF.await( StrategiesDAOF.delete(strategy.id.get) )
+                // partialy create new one with parameters
+                RefDAOF.retrieveAndCreateStrategy(strIdRef,
+                                                  elementId,
+                                                  middleware.id.get,
+                                                  entity ).map { r =>
+                  Ok(Json.obj("status" -> r.toString))
+                }              
+              }
+              case _ => Future.successful( Forbidden(Json.obj("status" -> "Access denied")) )
+            }
+          }
+          case _ => Future.successful( Forbidden(Json.obj("status" -> "Access denied")) ) 
+        } 
     }
     }.recoverTotal{
       e => Future.successful( BadRequest("formWithErrors") )

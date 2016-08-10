@@ -61,8 +61,12 @@ object MiddlewaresDAOF {
 
   private def filterReactionsQuery(ids: List[Int]): Query[Middlewares, Middleware, Seq] =
     middlewares.filter(_.reaction inSetBind ids)
+  private def filterReactionQuery(id: Int): Query[Middlewares, Middleware, Seq] =
+    middlewares.filter(_.reaction === id)
 
-  def findByReactions(reaction: List[Int]) = db.run(filterReactionsQuery(reaction).result)
+  def findByReactions(reactions: List[Int]) = db.run(filterReactionsQuery(reactions).result)
+  def findByReaction(reactionId: Int) = db.run(filterReactionQuery(reactionId).result.headOption)
+
 
   private def filterQuery(id: Long): Query[Middlewares, Middleware, Seq] =
     middlewares.filter(_.id === id)

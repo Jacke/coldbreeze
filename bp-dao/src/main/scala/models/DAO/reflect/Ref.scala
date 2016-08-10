@@ -78,13 +78,13 @@ case class RefMapResult(oldId: Int,
   oldIdLong: Long = -1L,
   newIdLong: Long = -1L)
 case class RefResulted(
-  proc_elems: List[RefMapResult],
-  space_elems: List[RefMapResult],
-  spaces:List[RefMapResult],
-  states: List[RefMapResult],
-  switches: List[RefMapResult],
-  reactions: List[RefMapResult],
-  reaction_state_outs: List[RefMapResult],
+  proc_elems: List[RefMapResult]=List.empty,
+  space_elems: List[RefMapResult]=List.empty,
+  spaces:List[RefMapResult]=List.empty,
+  states: List[RefMapResult]=List.empty,
+  switches: List[RefMapResult]=List.empty,
+  reactions: List[RefMapResult]=List.empty,
+  reaction_state_outs: List[RefMapResult]=List.empty,
   topoElem:List[RefMapResult]=List.empty,
   topoSpaceElem:List[RefMapResult]=List.empty,
   middlewares:List[RefMapResult]=List.empty,
@@ -155,7 +155,7 @@ object RefDAOF {
 
   /**
    *  Search for ref
-   *  If ref existed create element
+   *  If ref existed create element with specific order number
    *  @return In success return RefResulted otherwise return Nothing
    */
   def retrieveAndCreateElementWithOrder(refId: Int,
@@ -191,6 +191,22 @@ object RefDAOF {
       }
       refResultOptF
   }
+
+  /**
+   *  Partial ref maker // Strategy creation
+   *  Search for ref
+   *  If ref existed create strategy for the element
+   *  @return In success return RefResulted otherwise return Nothing
+   */
+  def retrieveAndCreateStrategy(refStrategyId: Long,
+                                elementTopoId: Int,
+                                trueMiddlewareId: Long,
+                refActionContainer: RefActionContainer ):Future[Option[RefResulted]] = {
+      ReplaceProjectionF.projectingStrategy(refStrategyId, elementTopoId,trueMiddlewareId, refActionContainer)
+  }
+
+
+
 
 
   def createTopoElementMappingRecord(refId: Int, elem: RefMapResult) = {

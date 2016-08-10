@@ -23,6 +23,139 @@
 
 
 @font-face {
+  font-family: 'Avenir LT Std';
+  src: url('/assets/fonts/Avenir/AvenirLTStd-Oblique.eot');
+  src: url('/assets/fonts/Avenir/AvenirLTStd-Oblique.eot?#iefix') format('embedded-opentype'),
+    url('/assets/fonts/Avenir/AvenirLTStd-Oblique.woff') format('woff'),
+    url('/assets/fonts/Avenir/AvenirLTStd-Oblique.ttf') format('truetype'),
+    url('/assets/fonts/Avenir/AvenirLTStd-Oblique.svg#AvenirLTStd-Oblique') format('svg');
+  font-weight: normal;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Avenir LT Std';
+  src: url('/assets/fonts/Avenir/AvenirLTStd-Light.eot');
+  src: url('/assets/fonts/Avenir/AvenirLTStd-Light.eot?#iefix') format('embedded-opentype'),
+    url('/assets/fonts/Avenir/AvenirLTStd-Light.woff') format('woff'),
+    url('/assets/fonts/Avenir/AvenirLTStd-Light.ttf') format('truetype'),
+    url('/assets/fonts/Avenir/AvenirLTStd-Light.svg#AvenirLTStd-Light') format('svg');
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Avenir LT Std';
+  src: url('/assets/fonts/Avenir/AvenirLTStd-LightOblique.eot');
+  src: url('/assets/fonts/Avenir/AvenirLTStd-LightOblique.eot?#iefix') format('embedded-opentype'),
+    url('/assets/fonts/Avenir/AvenirLTStd-LightOblique.woff') format('woff'),
+    url('/assets/fonts/Avenir/AvenirLTStd-LightOblique.ttf') format('truetype'),
+    url('/assets/fonts/Avenir/AvenirLTStd-LightOblique.svg#AvenirLTStd-LightOblique') format('svg');
+  font-weight: 300;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Avenir LT Std';
+  src: url('/assets/fonts/Avenir/AvenirLTStd-Medium.eot');
+  src: url('/assets/fonts/Avenir/AvenirLTStd-Medium.eot?#iefix') format('embedded-opentype'),
+    url('/assets/fonts/Avenir/AvenirLTStd-Medium.woff') format('woff'),
+    url('/assets/fonts/Avenir/AvenirLTStd-Medium.ttf') format('truetype'),
+    url('/assets/fonts/Avenir/AvenirLTStd-Medium.svg#AvenirLTStd-Medium') format('svg');
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Avenir LT Std';
+  src: url('/assets/fonts/Avenir/AvenirLTStd-BlackOblique.eot');
+  src: url('/assets/fonts/Avenir/AvenirLTStd-BlackOblique.eot?#iefix') format('embedded-opentype'),
+    url('/assets/fonts/Avenir/AvenirLTStd-BlackOblique.woff') format('woff'),
+    url('/assets/fonts/Avenir/AvenirLTStd-BlackOblique.ttf') format('truetype'),
+    url('/assets/fonts/Avenir/AvenirLTStd-BlackOblique.svg#AvenirLTStd-BlackOblique') format('svg');
+  font-weight: 900;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Avenir LT Std';
+  src: url('/assets/fonts/Avenir/AvenirLTStd-Book.eot');
+  src: url('/assets/fonts/Avenir/AvenirLTStd-Book.eot?#iefix') format('embedded-opentype'),
+    url('/assets/fonts/Avenir/AvenirLTStd-Book.woff') format('woff'),
+    url('/assets/fonts/Avenir/AvenirLTStd-Book.ttf') format('truetype'),
+    url('/assets/fonts/Avenir/AvenirLTStd-Book.svg#AvenirLTStd-Book') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Avenir LT Std';
+  src: url('/assets/fonts/Avenir/AvenirLTStd-HeavyOblique.eot');
+  src: url('/assets/fonts/Avenir/AvenirLTStd-HeavyOblique.eot?#iefix') format('embedded-opentype'),
+    url('/assets/fonts/Avenir/AvenirLTStd-HeavyOblique.woff') format('woff'),
+    url('/assets/fonts/Avenir/AvenirLTStd-HeavyOblique.ttf') format('truetype'),
+    url('/assets/fonts/Avenir/AvenirLTStd-HeavyOblique.svg#AvenirLTStd-HeavyOblique') format('svg');
+  font-weight: 900;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Avenir LT Std';
+  src: url('/assets/fonts/Avenir/AvenirLTStd-MediumOblique.eot');
+  src: url('/assets/fonts/Avenir/AvenirLTStd-MediumOblique.eot?#iefix') format('embedded-opentype'),
+    url('/assets/fonts/Avenir/AvenirLTStd-MediumOblique.woff') format('woff'),
+    url('/assets/fonts/Avenir/AvenirLTStd-MediumOblique.ttf') format('truetype'),
+    url('/assets/fonts/Avenir/AvenirLTStd-MediumOblique.svg#AvenirLTStd-MediumOblique') format('svg');
+  font-weight: 500;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: 'Avenir LT Std';
+  src: url('/assets/fonts/Avenir/AvenirLTStd-Black.eot');
+  src: url('/assets/fonts/Avenir/AvenirLTStd-Black.eot?#iefix') format('embedded-opentype'),
+    url('/assets/fonts/Avenir/AvenirLTStd-Black.woff') format('woff'),
+    url('/assets/fonts/Avenir/AvenirLTStd-Black.ttf') format('truetype'),
+    url('/assets/fonts/Avenir/AvenirLTStd-Black.svg#AvenirLTStd-Black') format('svg');
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Avenir LT Std';
+  src: url('/assets/fonts/Avenir/AvenirLTStd-Roman.eot');
+  src: url('/assets/fonts/Avenir/AvenirLTStd-Roman.eot?#iefix') format('embedded-opentype'),
+    url('/assets/fonts/Avenir/AvenirLTStd-Roman.woff') format('woff'),
+    url('/assets/fonts/Avenir/AvenirLTStd-Roman.ttf') format('truetype'),
+    url('/assets/fonts/Avenir/AvenirLTStd-Roman.svg#AvenirLTStd-Roman') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Avenir LT Std';
+  src: url('/assets/fonts/Avenir/AvenirLTStd-Heavy.eot');
+  src: url('/assets/fonts/Avenir/AvenirLTStd-Heavy.eot?#iefix') format('embedded-opentype'),
+    url('/assets/fonts/Avenir/AvenirLTStd-Heavy.woff') format('woff'),
+    url('/assets/fonts/Avenir/AvenirLTStd-Heavy.ttf') format('truetype'),
+    url('/assets/fonts/Avenir/AvenirLTStd-Heavy.svg#AvenirLTStd-Heavy') format('svg');
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Avenir LT Std';
+  src: url('/assets/fonts/Avenir/AvenirLTStd-BookOblique.eot');
+  src: url('/assets/fonts/Avenir/AvenirLTStd-BookOblique.eot?#iefix') format('embedded-opentype'),
+    url('/assets/fonts/Avenir/AvenirLTStd-BookOblique.woff') format('woff'),
+    url('/assets/fonts/Avenir/AvenirLTStd-BookOblique.ttf') format('truetype'),
+    url('/assets/fonts/Avenir/AvenirLTStd-BookOblique.svg#AvenirLTStd-BookOblique') format('svg');
+  font-weight: normal;
+  font-style: italic;
+}
+
+
+@font-face {
     font-family: 'Atlas Grotesk Web';
     src: url('/assets/fonts/Atlas Grotesk Web-Regular.eot');
     src: url('/assets/fonts/Atlas Grotesk Web-Regular.eot?#iefix') format('embedded-opentype'),

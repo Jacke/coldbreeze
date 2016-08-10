@@ -134,7 +134,7 @@
       <div class="form-horizontal new-elem-action__action-base__action-base-form">
         <div class="new-elem-action__action-base-field" ng-repeat="base in action.refStrategySelect.bases | filter:byStrategy(strategy)">
         <!-- action.refStrategySelect.bases -->
-          <pre> {{ base | json }} </pre>
+          <pre style="display: none;"> {{ base | json }} </pre>
           <formly-form model="base.selectedStrategy" fields="vm.fieldForStrategy(strategy, action, newBpelem, base)">
           </formly-form>
         </div>

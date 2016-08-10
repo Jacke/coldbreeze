@@ -11,7 +11,7 @@ import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 import scala.util.Try
 
 
-object ReplaceProjectionF extends ActionReplaceInternalF {
+object ReplaceProjectionF extends ActionIternalProjectionF {
 
   def projecting(k: Int,
 				process: Int,
@@ -30,5 +30,39 @@ object ReplaceProjectionF extends ActionReplaceInternalF {
           Future.successful(None)
 
 }
+
+
+def projectingStrategy(refStrategyId: Long,
+                      elementTopoId: Int,
+                      trueMiddlewareId: Long,
+                      refActionContainer: RefActionContainer ):Future[Option[RefResulted]] = {
+
+val acn = ActionInternalContainer(
+  middleware = Map(),
+  strategy = Map(),
+  inputs = Map(),
+  bases = Map(),
+  outputs = Map())
+
+val strategyResult: Future[Option[ActionInternalContainer]] = 
+  prepareStrategy(refActionContainer, 
+                  trueMiddlewareId,
+                  acn)
+
+  strategyResult.map { reactionCompnentsOpt =>
+    val reactionCompnents:ActionInternalContainer = reactionCompnentsOpt.getOrElse(ActionInternalContainer() )
+    Some(RefResulted(
+      strategies = makeRefMapResultLong(reactionCompnents.strategy),
+      inputs = makeRefMapResultLong(reactionCompnents.inputs),
+      bases = makeRefMapResultLong(reactionCompnents.bases),
+      outputs = makeRefMapResultLong(reactionCompnents.outputs)
+    ))
+  }
+}
+
+private def makeRefMapResultLong(values:Map[Long, Long]):List[RefMapResult] = {
+  values.map { keyVal => RefMapResult(-1,-1,keyVal._1,keyVal._2) }.toList
+}
+
 
 }

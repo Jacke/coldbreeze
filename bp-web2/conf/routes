@@ -517,7 +517,7 @@ POST /process/:bpId/bases/:strategy_id @controllers.ActionController.updateBases
 POST /process/:bpId/inputs/:strategy_id @controllers.ActionController.updateInputs(bpId: Int, strategy_id: Long)
 POST /process/:bpId/outputs/:strategy_id @controllers.ActionController.updateOutputs(bpId: Int, strategy_id: Long)
 
-POST /process/element/:elementId/strategy/:strategy_id/ref/:strIdRef  @controllers.ActionController.updateStrategy(elementId: Int, strategy_id: Long, strIdRef: Long)
+POST /process/element/:elementId/strategy/:strategy_id/ref/:strIdRef  @controllers.ActionController.replaceStrategy(elementId: Int, strategy_id: Long, strIdRef: Long)
 
 PUT  /bprocess/:bpId/element/:elem_id/up             @controllers.ProcessElementsController.moveUpFrontElem(bpId: Int, elem_id: Int)
 PUT  /bprocess/:bpId/element/:elem_id/down           @controllers.ProcessElementsController.moveDownFrontElem(bpId: Int, elem_id: Int)

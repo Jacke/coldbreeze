@@ -17,6 +17,9 @@ import main.scala.simple_parts.process._
 
 trait ActionReplaceInternalF {
 
+  /***
+   * TEMP TRAIT DO NOT USE IN PRODUCTION!!!!!!!
+   *****/ 
 
   def projectReactionComponents(reaction_container: ReactionProjectionContainer,
                                 refActionContainer: List[RefActionContainer] = List() ):Future[List[Option[Long]]] = {
