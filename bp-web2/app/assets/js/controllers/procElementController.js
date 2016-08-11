@@ -361,6 +361,10 @@ $scope.reloadResources = function() {
 $scope.bpelems = BPElemsFactory.query({ BPid: $scope.BPid });
 $scope.spaces =  BPSpacesFactory.query({ BPid: $scope.BPid });
 $scope.spaceelems = BPSpaceElemsFactory.query({ BPid: $scope.BPid });
+
+$scope.reactions =  ReactionsFactory.query({ BPid: $scope.BPid });
+$scope.element_topologs = ElementTopologsFactory.query({ BPid: $scope.BPid });
+
        $scope.states = BPStatesFactory.query({ BPid: $scope.BPid });
        $scope.switches = SwitchesFactory.query({ BPid: $scope.BPid });
        $scope.bpelems.$promise.then(function (bpelems) {
@@ -1175,8 +1179,6 @@ $scope.createNewElem = function (el, process, callback) {
       $scope.createAssignedResEls($scope.newBpelem.costs, data.success.topoElem[0]);
     // Resource assigment added
 
-
-
     /* Element with spaces */
       if ($scope.newBpelem.type_title == "container_brick1") {
         var space = {
@@ -1194,8 +1196,12 @@ $scope.createNewElem = function (el, process, callback) {
       $scope.trees = undefined;
       //$scope.reloadTree($scope.trees);
 
+
+    if (data.success !== undefined) {
       $scope.reloadResources();
       $scope.loadResources();
+    }
+
 
   if (process !== undefined && process.fastElForm !== undefined) {
     process.fastElForm == true ? process.fastElForm=false : process.fastElForm=true;

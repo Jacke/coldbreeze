@@ -27,14 +27,15 @@ object RefProjectorF extends FrontElemProjectionF
 				desc: String = "",
 				sc: String = "front",
 				space_id: Option[Int] = None,
-        refActionContainer: List[RefActionContainer] = List() ):Future[Option[RefResulted]] = {
+        refActionContainer: List[RefActionContainer] = List(),
+        orderOpt: Option[Int] = None ):Future[Option[RefResulted]] = {
 
     models.DAO.reflect.RefDAOF.get(k).flatMap { refOpt =>
     refOpt match {
       case Some(ref) => {
         // Front fetching
         val front_containerF: Future[ElemProjectionContainer] =
-        		frontElemsProjection(k, process, business, title, desc,sc,space_id)
+        		frontElemsProjection(k, process, business, title, desc,sc, space_id, orderOpt)
 		front_containerF.flatMap { front_container =>
 		val idToRefId:Map[Int, Int] = front_container.elements
 		val ref_ids:List[Int] = front_container.elem_ref.map(_.id.get)
@@ -166,7 +167,7 @@ object RefProjectorF extends FrontElemProjectionF
  *   Ref object id -> Object Id
  */
 private def makeRefMapResult(values:Map[Int, Int]):List[RefMapResult] = {
-  values.map { keyVal => RefMapResult(keyVal._1,keyVal._2) }.toList
+  values.map { keyVal => RefMapResult(keyVal._1, keyVal._2, keyVal._1.toLong, keyVal._2.toLong) }.toList
 }
 private def makeRefMapResultLong(values:Map[Long, Long]):List[RefMapResult] = {
   values.map { keyVal => RefMapResult(-1,-1,keyVal._1,keyVal._2) }.toList

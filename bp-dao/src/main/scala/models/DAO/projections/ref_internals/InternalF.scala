@@ -48,7 +48,7 @@ trait FrontElemProjectionF {
           val first_order = all_orders.head
           ElemProjectionContainer(
             elements.zip(all_orders).map { el =>
-              val el2 = orderOpt match {
+              val el2 = orderOpt match { // check for predefined order
                 case Some(order) => ProcElemDCO.conv(el._1.copy(order = order))
                 case _ => {
                   if (el._2 == first_order) ProcElemDCO.conv(el._1.copy(title = title, 

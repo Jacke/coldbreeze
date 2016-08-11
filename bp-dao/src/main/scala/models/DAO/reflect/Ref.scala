@@ -170,12 +170,12 @@ object RefDAOF {
       val refResultOptF = in match {
         // Creating front element
         case "front" => 
-          ElementComponentsProjector.projecting(refId, order, process, business, 
-                                   title,desc, "front", None, refActionContainer)
+          RefProjectorF.projecting(refId, process, business, 
+                                   title,desc, "front", None, refActionContainer, Some(order))
         // Creating nested element
         case _ => 
-          ElementComponentsProjector.projecting(refId, order, process, business, 
-                                   title,desc, "nested", space_id)
+          RefProjectorF.projecting(refId, process, business, 
+                                   title,desc, "nested", space_id, List(), Some(order) )
       }
       // Record mapping operation for element based on RefResult topology ids
       refResultOptF.map { refResultOpt =>

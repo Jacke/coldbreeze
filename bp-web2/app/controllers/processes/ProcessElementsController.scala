@@ -363,13 +363,13 @@ request.body.validate[RefElemContainer].map {
                                   val elem_id = element_result match {
                                     case Some(res) => res.proc_elems.headOption
                                     case _ => None
+                                  }
+                                  action(request.identity.emailFilled, process = Some(entity.process),
+                                    action = ProcHisCom.elementCreated,
+                                    what = Some(entity.title),
+                                    what_id = refResultIdGetter(elem_id) )
+                                  Ok(Json.toJson(Map("success" ->  Json.toJson(ref_resulted))))
                                 }
-                              action(request.identity.emailFilled, process = Some(entity.process),
-                                action = ProcHisCom.elementCreated,
-                                what = Some(entity.title),
-                                what_id = refResultIdGetter(elem_id) )
-                              Ok(Json.toJson(Map("success" ->  Json.toJson(ref_resulted))))
-                            }
                           }
           }
         } else { Future( Forbidden(Json.obj("status" -> "Access denied")) ) }
