@@ -216,6 +216,14 @@
 .applicationFooter {
   display: none;
 }
+.container.app nav a.is-active {
+    color: #3F51B5;
+}
+
+.container.app nav a {
+    color: #8ea6fb;
+}
+
 </style>
 <div class="app-container">
 <!--
@@ -357,16 +365,20 @@
 
 
 <!-- Webpack Dev Server reload -->
-
+<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+async defer>
 
 <!--
 <script src="http://localhost:8080/app.bundle.js"></script></body>
 -->
-<script src="http://localhost:3000/inline.js"></script>
+<script src="http://localhost:3000/webpack-dev-server.js"></script>
+
 <script src="http://localhost:3000/polyfills.bundle.js"></script>
-<script src="http://localhost:3000/main.bundle.js"></script>
-<!--
 <script src="http://localhost:3000/vendor.bundle.js"></script>
+<script src="http://localhost:3000/main.bundle.js"></script>
+
+<!--
+<script src="http://localhost:3000/inline.js"></script>
 -->
 
 <link rel="stylesheet" href='@routes.Assets.versioned("css/picaso.css")'>
