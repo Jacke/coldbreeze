@@ -474,7 +474,7 @@
   </div>
 
 
-<div class="process-indicator-data-table" ng-repeat="process in indicators.processes">
+<div class="process-indicator-data-table" style="display:none;" ng-repeat="process in indicators.processes">
   <div class="process-indicator-data-table-title">{{process.title}}</div>
   <div class="process-indicator-data-table-expand-process" ng-click="process.showIndicators?process.showIndicators=false:process.showIndicators=true" 
   ng-class="process.showIndicators?'expanded':' '">
