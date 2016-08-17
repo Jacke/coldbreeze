@@ -93,7 +93,7 @@ def invoke(bpID: Int)  = silhouette.SecuredAction.async { implicit request =>
       val langF = models.AccountsDAOF.getRolesAndLang(userId)
       val costsF = ElementResourceDAOF.getByProcess(bpID)
       costsF.flatMap { costs =>
-        val costPipeFn = pipes.ElementResourceBuilderPipe.apply(costs.toList)
+        val costPipeFn = builder_pipes.ElementResourceBuilderPipe.apply(costs.toList)
         val pipesList:List[LaunchMapPipe => ExecutedLaunchCVPipes] = List(costPipeFn)
         langF.flatMap { langOpt =>
           val lang = langOpt.get._3

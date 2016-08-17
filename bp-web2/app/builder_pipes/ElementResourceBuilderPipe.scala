@@ -1,4 +1,4 @@
-package pipes
+package builder_pipes
 import service._
 import models.DAO._
 import main.scala.utils._
