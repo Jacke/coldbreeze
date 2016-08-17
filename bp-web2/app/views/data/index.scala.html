@@ -21,7 +21,15 @@
 
 <div class="app-container">
 
+<!--
 <div class="container app data-app" ng-app="app" ng-controller="DataTableController">
+-->
+<app style="display:none">
+  
+</app>
+
+
+<div class="container app data-app">
 
 
 
@@ -34,7 +42,7 @@
 
 
 
-<div class="act-data-table" ng-show="isSet(1)">
+<div class="act-data-table" ng-show="isSet(1)" style="display:none"> 
   <div class="act-object finished" ng-repeat="act in acts">
     <div class="act-icon">
     <svg width="45" height="43" xmlns="http://www.w3.org/2000/svg">
@@ -344,23 +352,41 @@
   <ul ul id="tablemin" class="tableMinList processList resourceList">
   @resContainer.map { cn =>
   <div class="resource" id="resource-@{cn.resource.id.getOrElse(0)}">
-    <div class="process-status">
+    <div class="resource-object">
     <li class="tableMinListItem">
-      <h2 class="tableMinListName">
-        <a class="tableMinName vIcoIn" href="#">@cn.resource.title</a>
-      </h2>
+      <div class="resourceElementHeader">
+        <h2 class="tableMinListName">
+          <a class="tableMinName vIcoIn" href="#">@cn.resource.title</a>
+        </h2>
+      <div class="tableMinListControls processListControls">
+        <!-- <a class="tableMinControlsLink ajaxLink tableMinLinkPeople"><span class="uicon-svg98"></span>Boards</a>-->
+        <!--<a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" ng-click="modalShare(bprocess.id)"><span class="minicon-share"></span> {{ 'SHARE' | translate }}</a>
+        <a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" href="/a#/launches?process={{ bprocess.id }}"><span class="uicon-svg372"></span>{{ 'STATIONS' | translate }}</a>-->
+        @if(ping) {
+          @form(routes.DataController.delete_resource(cn.resource.id.getOrElse(0)), 'class -> "topRight") {
+            <button type="submit" class="icon-trash" href="@cn.resource.id.getOrElse(0)"></button>
+          }
+        }
+      </div>
+
+
+      </div>
         @cn.board_cn.map { bcn =>
         <div class="boards">
            @bcn.boards.filter(board => board.meta.find(m => m.key == "resource_id" && m.value == cn.resource.id.get.toString).isDefined).map { board =>
           <div class="board">
-            <h4>@board.title</h4>
+            <h4 class="board-title">@board.title</h4>
             <span class="boardContent">@board.content</span>
             <div class="entities" style="">
               <!--<a href="@routes.DataController.create_entity_form(cn.resource.id.getOrElse(0), board.getId)" class="btn success btn-success createEntity" id="entityCreateBtn">Create Attribute</a>-->
 
                 @bcn.entities.filter(e => e.boardId.toString == board.getId).map { entity =>
               <div class="boardEntity">
-                  <h4>@entity.title - @entity.etype @entity.default</h4>
+                    <div class="entityHeader">
+                      <h4 class="entityHeaderTitle">@entity.title</h4>
+                      <div class="entityHeaderEntityType">@entity.etype</div>
+                      <div class="entityHeaderEntityDefaultValue">@entity.default</div> 
+                  </div>
 
                 <!-- entity form -->
           <div class="inlineEntityForm">
@@ -442,18 +468,7 @@
         }
       </div>
         }
-      <div class="tableMinListControls processListControls">
-        <!-- <a class="tableMinControlsLink ajaxLink tableMinLinkPeople"><span class="uicon-svg98"></span>Boards</a>-->
-        <!--<a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" ng-click="modalShare(bprocess.id)"><span class="minicon-share"></span> {{ 'SHARE' | translate }}</a>
-        <a class="tableMinControlsLink teamSettingsLink tableMinLinkSettings" href="/a#/launches?process={{ bprocess.id }}"><span class="uicon-svg372"></span>{{ 'STATIONS' | translate }}</a>-->
-@if(ping) {
-        @form(routes.DataController.delete_resource(cn.resource.id.getOrElse(0)), 'class -> "topRight") {
-          <button type="submit" class="tableMinControlsLink teamSettingsLink tableMinLinkDelete" href="@cn.resource.id.getOrElse(0)">
-            Delete
-          </button>
-        }
-}
-      </div>
+
     </li>
     </div>
   </div>
@@ -567,10 +582,33 @@
 <style>
 .ng-table-pager {
     display: none !important;
-}</style>
+}
+.app-container app {
+    display: block;
+    clear: both;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+</style>
 
-<script src="http://localhost:8080/app2.bundle.js"></script>
+
+<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+async defer>
+
+<script src="http://localhost:3000/webpack-dev-server.js"></script>
+<script src="http://localhost:3000/polyfills.bundle.js"></script>
+<script src="http://localhost:3000/vendor.bundle.js"></script>
+<script src="http://localhost:3000/main.bundle.js"></script>
+
+
 <!--
+<script src="http://localhost:8080/app2.bundle.js"></script>
+
+
+
+
+
 <script src="/assets/js/app2.js"></script>
 -->
 

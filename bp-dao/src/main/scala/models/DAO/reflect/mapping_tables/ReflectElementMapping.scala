@@ -64,6 +64,12 @@ object ReflectElementMappingsDAO {
 
   private def filterQuery(id: Int): Query[ReflectElementMappings, ReflectElementMap, Seq] =
     reflect_element_mappings.filter(_.id === id)
+  private def filterQueryByElem(id: Int): Query[ReflectElementMappings, ReflectElementMap, Seq] =
+    reflect_element_mappings.filter(_.topology_element === id)
+  private def filterQueryByElems(ids: List[Int]): Query[ReflectElementMappings, ReflectElementMap, Seq] =
+    reflect_element_mappings.filter(_.topology_element inSetBind ids)
+
+
   private def filterByIdsQuery(ids: List[Int]): Query[ReflectElementMappings, ReflectElementMap, Seq] =
     reflect_element_mappings.filter(_.id inSetBind ids)
   private def filterByReflection(reflection: Int): Query[ReflectElementMappings, ReflectElementMap, Seq] =
@@ -84,6 +90,13 @@ object ReflectElementMappingsDAO {
 
   def findByRef(ids: List[Int]):List[ReflectElementMap] =   {
     await(db.run(filterByReflections(ids).result)).toList
+  }
+
+  def findByTopoElem(id: Int): Option[ReflectElementMap] = {
+    await(db.run( filterQueryByElem(id).result.headOption) )
+  }
+  def findByTopoElems(ids: List[Int]): Seq[ReflectElementMap] = {
+    await(db.run( filterQueryByElems(ids).result) )
   }
 
   def get(k: Int):Option[ReflectElementMap] =   {

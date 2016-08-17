@@ -67,7 +67,7 @@ class CardController @Inject() (
   silhouette: Silhouette[DefaultEnv],
   socialProviderRegistry: SocialProviderRegistry)
   extends Controller with I18nSupport {
- val Home = Redirect(routes.CardController.index())
+ //val Home = Redirect(routes.FlowCardController.index())
 
  def index() = silhouette.SecuredAction.async { implicit request =>
     var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get

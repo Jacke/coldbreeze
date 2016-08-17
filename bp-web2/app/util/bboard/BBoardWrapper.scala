@@ -264,6 +264,22 @@ case class Board(
   }
 }
 
+case class Klass(
+  id: Option[UUID] = Some(UUID.randomUUID()),
+  title: String,
+  boardId: UUID,
+  description: String,
+  publisher: String,
+  meta: List[MetaVal] = List.empty,
+  creationDate: Option[DateTime] = None,
+  updateDate: Option[DateTime] = None) {
+
+  def getId:String = id match {
+    case Some(uuid) => uuid.toString
+    case _ => ""
+  }
+}
+
 case class Entity(
   id: Option[UUID] = Some(UUID.randomUUID()),
   title: String,

@@ -52,6 +52,7 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.mvc.{ Action, RequestHeader }
 import models.DAO.reflect._
+import controllers.pipes._
 
 import us.ority.min.actions._
 import main.scala.simple_parts.process._
@@ -70,6 +71,8 @@ case class RefElemContainer(title: String,
 class ProcessElementsController @Inject() (
   val messagesApi: MessagesApi,
   silhouette: Silhouette[DefaultEnv],
+  val processPipe: ControllerActionPipes,
+  
   socialProviderRegistry: SocialProviderRegistry)
   extends Controller with I18nSupport {
 
@@ -707,11 +710,22 @@ import ProcHistoryDAO._
 private def decorateProcElementsToJson(elements: List[UndefElement]) = {
   val elemIds:List[Int] = elements.map(_.id.get)
   val topos:List[ElemTopology] = ElemTopologDAO.findByFrontElements(elemIds)
+  val refMappings = ReflectElementMappingsDAO.findByTopoElems(topos.map(_.id.get))
   val elemJson = Json.toJson( elements )
   val elemJsonObj = elemJson.as[List[JsObject]]
   val objWithTopos = elemJsonObj.map { obj =>
     val elemId = (obj \ "id").validate[Int].get
-    obj + ("topo_id" -> Json.toJson(topos.find(topo => topo.front_elem_id.get == elemId ).get  ))
+    val topology = topos.find(topo => topo.front_elem_id.get == elemId ).get
+    val refMapOpt = refMappings.find(c => c.topology_element == topology.id.get )
+    refMapOpt match {
+      case Some(refMap) => {
+        val a = obj + ("ref_topo_id" -> Json.toJson( refMap.ref_topo_element) ) 
+        val b = a + ("ref" -> Json.toJson( refMap.reflection) )
+        val c = b + ("topo_id" -> Json.toJson( topology ) ) 
+        c
+      }
+      case _ =>     obj + ("topo_id" -> Json.toJson( topology ))
+    }
   }
   objWithTopos
 }

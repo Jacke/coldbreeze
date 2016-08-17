@@ -198,6 +198,7 @@ integrationTest := {
         List(
           scalarx,
           loggly,
+          sentrylog,
           javaasist,
           javamail,
           courier,

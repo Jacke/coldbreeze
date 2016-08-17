@@ -1,32 +1,68 @@
 .resources-list .resource li.tableMinListItem {
     border: none;
     padding-bottom: 0px;
+    padding-top: 25px;
+    padding: 0;
+    height: auto;
+    width: 100%;
+    overflow: hidden;
 }
-.boards {
+.resourceList .resource .resourceElementHeader {
+    text-align: center;
+    width: 100%;
+    padding-top: 25px;
+    padding-left: 20px;
+    padding-right: 20px;
+    position: relative;
+}
+
+.resourceList .resource .boards {
     clear: both;
 }
-.boards .board span.boardContent {
+.resourceList .resource .boards {
+    padding-left: 25px;
+    padding-right: 25px;
+}
+
+.resourceList .resource .boards .board span.boardContent {
     font-size: 12px;
 }
-.boards .board h4 {
-    font-size: 18px;
-    margin-bottom: 0px;
+.resourceList .resource .boards .entities .boardEntity .entityHeader {
+    display: block;
+    overflow: hidden;
+    padding-left: 8px;
+    border-bottom: solid 1px #f3f3f3;
+
 }
-.boards .board {
+.resourceList .resource .boards .entities .boardEntity .entityHeader h4.entityHeaderTitle {
+    display: inline-block;
+    float: left;
+    font-size: 14px;
+    margin-bottom: 0px;
+    margin-left: 1px;
+    margin-top: 0px;
+    padding-left: 7px;
+}
+.resourceList .resource .boards .entities .boardEntity .entityHeader .entityHeaderEntityType {
+    float: right;
+    font-size: 12px;
+}
+
+.resourceList .resource .boards .board {
     border-bottom: none;
     padding-bottom: 9px;
     margin-bottom: 14px;
     padding-top: 5px;
     margin-top: 9px;
 }
-.boards .board span.boardContent {
+.resourceList .resource .boards .board span.boardContent {
     font-size: 12px;
 }
-.boards .board h4 {
+.resourceList .resource .boards .board h4 {
     font-size: 18px;
     margin-bottom: 0px;
 }
-.boards .board {
+.resourceList .resource .boards .board {
 
     /* border-bottom: solid 1px #CCC3C3; */
     padding-bottom: 2px;
@@ -47,7 +83,26 @@ a.tableMinControlsLink.ajaxLink.tableMinLinkPeople {
     margin-left: 0px;
     margin-right: 22px;
     border: none;
+    position: relative;
+    top: 0px;
+    clear: both;
+    display: block;
 }
+
+.resourceList .resource .resourceElementHeader .tableMinListControls.processListControls {
+    right: -7px;
+    top: 24px;
+    position: absolute;
+    display: block;
+} 
+
+.resourceList .resource .resourceElementHeader .tableMinListControls.processListControls button.icon-trash {
+    color: gray;
+    opacity: 0.6;
+    font-size: 12px;
+}
+
+
 .resource button.tableMinControlsLink.teamSettingsLink.tableMinLinkDelete {
     border: none;
     box-shadow: none;
@@ -62,6 +117,11 @@ a.tableMinControlsLink.ajaxLink.tableMinLinkPeople {
     font-family: 'Open Sans';
     color: white;
     font-size: 12px;
+}
+.resource-list .resource li.tableMinListItem {
+    height: auto;
+    width: 100%;
+    overflow: hidden;
 }
 
 .resource-list .boardEntity form.updateEntityForm, .dataTables .inlineEntityFormNewForm {
@@ -100,38 +160,47 @@ a.tableMinControlsLink.ajaxLink.tableMinLinkPeople {
 
 ul#tablemin.resourceList {
     background-color: transparent;
+    margin-top: 25px;
 }
 .resourceList .resource {
     margin-bottom: 27px;
     background-color: white;
     border-radius: 4px;
-    padding-top: 53px;
     padding-bottom: 18px;
+    width: 20%;
+    display: inline-block;
+    margin-right: 17px;
 }
-.boards .entities .boardEntity {
+.resourceList .resource .resourceElementHeader h2.tableMinListName {
+    margin-top: 0px;
+    text-align: center;
+    width: 100%;
+}
+
+.resourceList .resource .boards .entities {
+
+}
+.resourceList .resource .boards .entities .boardEntity {
     display: inline-block;
     width: 100%;
 }
-.boards .entities a.btn.success.btn-success {
+.resourceList .resource .boards .entities a.btn.success.btn-success {
     display: block;
     width: 13%;
     color: white;
     float: right;
 }
-.boards .entities {
-    margin-bottom: 25px;
-    margin-top: 14px;
-}
-.boards .boardEntity form {
+
+.resourceList .resource .boards .boardEntity form {
     margin-bottom: 10px;
 }
-.boards .entities .slats {
+.resourceList .resource .boards .entities .slats {
     clear: both;
     display: block;
     background-color: #F7EFEF;
     padding: 18px 18px;
 }
-.boards .slats a.btn.success.btn-success {
+.resourceList .resource .boards .slats a.btn.success.btn-success {
     display: block;
     clear: both;
     width: 140px !important;
@@ -342,3 +411,15 @@ button.btn.danger.deleteEntity {
 .inlineEntityFormNewForm button.btn {
     margin-left: -9px;
 }
+
+
+
+
+.resourceList .resource .boards .board span.boardContent {
+    display: none;
+}
+
+.resourceList .resource .boards .board h4.board-title {
+    display: none;
+}
+

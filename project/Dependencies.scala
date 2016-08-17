@@ -103,6 +103,8 @@ object Dependencies {
   val logfmt          = "com.heroku"                %  "logfmt"                 % "0.1"
   val loggly          = "org.logback-extensions"    %  "logback-ext-loggly"     % "0.1.2"
   val syslog   	      = "com.papertrailapp"   	    %  "logback-syslog4j"       % "1.0.0"
+  val sentrylog       = "com.getsentry.raven"       %  "raven-logback"          % "7.6.0"
+  
   val compressor      = "com.mohiva"                %% "play-html-compressor"   % "0.3.1"
   val jsonvariants    = "org.julienrf"              %% "play-json-variants"     % "0.2"
   val playflyway      = "com.github.tototoshi"      %% "play-flyway"            % "1.1.0"

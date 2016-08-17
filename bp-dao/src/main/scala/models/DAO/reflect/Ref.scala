@@ -208,8 +208,10 @@ object RefDAOF {
 
 
 
-
-  def createTopoElementMappingRecord(refId: Int, elem: RefMapResult) = {
+  /** 
+   * Create mapping betwer ref topo, ref -> element topo
+   */
+  private def createTopoElementMappingRecord(refId: Int, elem: RefMapResult) = {
                     ReflectElementMappingsDAO.pull(
                                               ReflectElementMap(None,
                                                 reflection = refId,

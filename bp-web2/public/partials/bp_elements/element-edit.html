@@ -60,123 +60,14 @@
 
 
 
-
-<div class="form-group element-form-fields control-group clearfix">
-  <label class="control-label primary-label col-xs-2 type-label" disable-auto-validate="true" for="inputTitle">Type</label>
-
-  <span class="selectedRefType col-xs-6 ref-selected-object">{{ newBpelem.selectedRef.ref.title }}</span>
-  <a ng-click="newBpelem.refSelectHidden=false;" ng-show="newBpelem.refSelectHidden == true;" class="expand-ref-select">
-    <span class="moicon moicon-info expand-ref-select"></span>
-  </a>
-</div><!-- form-group element-form-fields -->
-<div class="ref-select-container fadein clearfix"
-     ng-hide="newBpelem.refSelectHidden"
-     ng-init="newBpelem.selectedRef != undefined ? newBpelem.refSelectHidden=false : refSelectHidden=true;">
-
-<select style="display:none;"
-        disable-auto-validate="true"
-        name="category"
-        id="categorySelect"
-        ng-model="newBpelem.refCategoryFilter"
-        ng-init="newBpelem.refCategoryFilter = refCategories[0]"
-        ng-options="option for option in refCategories"
-        required=""
-        class="ng-valid ng-valid-required">
-        <option value="0" selected="selected">Base</option>
-</select>
-<div class="ref-desc ref-desc-select-container form-group" ng-class="ref.unitelement[0].type_title" ng-repeat="ref in refs">
-<a class="ref-desc-select-container-link" ng-click="refElem(ref, newBpelem);newBpelem.refSelectHidden=true">
-<h6>{{ ref.ref.title }}</h6>
-<p>{{ ref.ref.desc }}</p>
-
-<ul style="display:none;">
-  <li ng-repeat="state in ref.bpstate"><span>State: {{state.title}}</span></li>
-</ul>
-<div class="new-elem-ref-actions-selects">
-  <div class="new-elem-ref-actions-select" ng-repeat="action in ref.reactions">
-    <div class="new-elem-ref-actions-select__header">
-      <div class="new-elem-ref-actions-select__action-title">
-        {{ action.title }}
-      </div>
-      <div class="new-elem-ref-actions-select__action-desc">
-      </div>
-    </div>
-    <div class="new-elem-ref-actions-select__action-pipes">
-      <div class="new-elem-ref-actions-select__action-pipes__inputs">
-        Inputs
-      </div>
-      <div class="new-elem-ref-actions-select__action-pipes__bases">
-        Bases
-      </div>
-      <div class="new-elem-ref-actions-select__action-pipes__outputs">
-        Outputs
-      </div>
-    </div>
-  </div>
+<div class="edit-elem-ref-action-replace-strategy">
+  <div ng-include src="'assets/partials/bp_elements/element-edit-replace-strategy.html'"></div>
+  <pre>{{ bpelem.replaceStrategy | json  }}</pre>
+  <a ng-click="replaceStrategy(bpelem)" 
+     class="edit-elem-action__action-base-update-button">
+       Replace Strategy
+     </a>  
 </div>
-</a>
-</div>
-</div><!-- ref-select-container -->
-
-
-<div class="new-elem-ref-actions-selected">
-<div class="new-elem-ref-actions-select" ng-repeat="action in newBpelem.selectedRef.reactions">
-  <div class="new-elem-ref-actions-select__header">
-    <div class="new-elem-ref-actions-select__action-title">
-      {{ action.title }}
-    </div>
-  </div>
-  <div class="new-elem-ref-actions-select__action-pipes">
-    <div class="new-elem-ref-actions-select__action-pipes__inputs">
-      Inputs
-    </div>
-    <div class="new-elem-ref-actions-select__action-pipes__bases">
-      Bases
-    </div>
-    <div class="new-elem-ref-actions-select__action-pipes__outputs">
-      Outputs
-    </div>
-  </div>
-<div class="new-elem-action__action-bases" ng-repeat="middleware in newBpelem.selectedRef.middlewares | filter:byReaction(action)">
-  <div class="new-elem-ref-actions-select__middleware-title">
-      {{ middleware.title }}
-  </div>
-    <div class="new-elem-strategy__strategy" ng-repeat="strategy in newBpelem.selectedRef.strategies | filter:byMiddleware(middleware)">
-    <div class="new-elem-ref-actions-select__strategy-title">
-          <a class="new-elem-ref-actions-select__strategy-link"
-             ng-click="selectStrategy(strategy, middleware, action, newBpelem.selectedRef.bases)"
-             ng-class="isStrategySelected(strategy, action) ? 'selected' : ''">{{ strategy.ident.replace('Strategy', '') }}</a>
-    </div>
-    <div class="new-elem-ref-actions-select__middleware-text-exec">
-        <a ng-click="textExec(action,middleware,strategy, 'refAction')">Test</a>
-    </div>
-
-    <div class="new-elem-action__action-base" ng-show="isStrategySelected(strategy, action)">
-  
-
-      <div class="form-horizontal new-elem-action__action-base__action-base-form">
-        <div class="new-elem-action__action-base-field" ng-repeat="base in action.refStrategySelect.bases | filter:byStrategy(strategy)">
-        <!-- action.refStrategySelect.bases -->
-          <pre style="display: none;"> {{ base | json }} </pre>
-          <formly-form model="base.selectedStrategy" fields="vm.fieldForStrategy(strategy, action, newBpelem, base)">
-          </formly-form>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-</div>
-
-
-</div>
-
-
-</div>
-
-
-
-
 
 
 

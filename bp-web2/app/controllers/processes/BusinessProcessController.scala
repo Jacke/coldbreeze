@@ -3,12 +3,9 @@ import utils.auth.DefaultEnv
 
 import models.DAO.resources.{BusinessDAO, BusinessDTO}
 import models.DAO._
-
 import play.api._
 import play.api.mvc._
 import play.twirl.api.Html
-
-//{Action, Controller}
 import play.api.http.MimeTypes
 import play.api.libs.json._
 import play.api.cache._
@@ -18,10 +15,8 @@ import play.api.data.format.Formats
 import play.api.data.format.Formatter
 import play.api.data.FormError
 import play.api.Logger
-
 import views._
 import models.User
-
 import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
 import com.mohiva.play.silhouette.impl.providers.SocialProviderRegistry
@@ -36,7 +31,6 @@ import models.DAO._
 import models.DAO.resources._
 import models.DAO.CompositeValues
 import play.api.Play.current
-
 import main.scala.bprocesses._
 import main.scala.simple_parts.process._
 import models.DAO.reflect._
@@ -46,11 +40,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 import scala.util.Try
-
 import us.ority.min.actions._
 import main.scala.simple_parts.process._
-
 import models.DAO.reflect._
+import controllers.pipes._
 
 
 
@@ -88,6 +81,8 @@ import play.api.mvc.{ Action, RequestHeader }
 
 class BusinessProcessController @Inject() (
   val messagesApi: MessagesApi,
+  val processPipe: ControllerActionPipes,
+
   silhouette: Silhouette[DefaultEnv],
   socialProviderRegistry: SocialProviderRegistry)
   extends Controller with I18nSupport {
@@ -174,36 +169,13 @@ class BusinessProcessController @Inject() (
   implicit val DeltasContainerWrites = Json.format[DeltasContainer]
 
 
-def bprocess = silhouette.SecuredAction { implicit request =>
-    val business = request.identity.businessFirst
-    val user_services = BusinessServiceDAO.getAllByBusiness(business).map(_.id.getOrElse(-1))
-
-    val bprocess = BPDAO.getByServices(user_services) // TODO: Not safe
-    // TODO: Add for actor, if they assigned to process
-
-    val user = request.identity
-
-    /**
-     * Simple employee
-     * Restricted by Act Permission
-     */
-    if (user.isEmployee && !user.isManager) {
-       println(request.identity.isEmployee)
-       println("Restricted by Act Permission")
-       // Employee assigned process
-       val acts = ActPermissionDAO.getByUID(request.identity.emailFilled)
-       val bpIds = ActPermissionDAO.getByUIDprocIDS(request.identity.emailFilled)
-       val procOut = bprocess.filter(bp => bpIds.contains(bp.id.get))
-       Ok(Json.toJson( procOut ))
-    } else {
-      //***
-      //** Primary manager processes
-      //***
-      println("Primary manager processes")
-      val procOut = bprocess.filter(bp => user_services.contains(bp.service))
-      Ok(Json.toJson( procOut ))
-    }
+def bprocess = silhouette.SecuredAction.async { implicit request =>
+  val currentWorkbench = request.identity.businessFirst
+  val processesF = processPipe.processes.listForServicesByUserAndWorkbench(request.identity, 
+                                                                           currentWorkbench)
+  processesF.map(processes => Ok(Json.toJson(processes)))
 }
+
 
 
 def all_cached_bprocess(timestamp: String) = silhouette.SecuredAction.async { implicit request =>

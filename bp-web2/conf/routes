@@ -37,6 +37,8 @@ GET         /password/change                 @controllers.ChangePasswordControll
 POST /password/change                        @controllers.ChangePasswordController.submit
 
 
+# Cards
+#->  /flow_cards flow_cards.Routes
 
 
 # Upload

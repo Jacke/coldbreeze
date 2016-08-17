@@ -58,6 +58,7 @@ import play.api.i18n.{ I18nSupport, MessagesApi }
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import play.api.mvc.{ Action, RequestHeader }
+import controllers.pipes._
 
 
 case class StationNoteMsg(msg: String)
@@ -79,6 +80,8 @@ case class LogsContainer(session_loggers: List[BPLoggerDTO],
 class ProcessSessionController @Inject() (
   val messagesApi: MessagesApi,
   silhouette: Silhouette[DefaultEnv],
+  val processPipe: ControllerActionPipes,
+
   socialProviderRegistry: SocialProviderRegistry)
   extends Controller with I18nSupport {
 

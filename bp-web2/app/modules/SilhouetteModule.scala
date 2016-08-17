@@ -37,6 +37,8 @@ import play.api.libs.ws.WSClient
 import utils.auth._
 import models.services._
 import models.daos._
+import controllers.pipes._
+
 /**
  * The Guice module which wires all Silhouette dependencies.
  */
@@ -55,6 +57,15 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
 
     bind[UserService].to[UserServiceImpl]
     bind[UserDAO].to[UserDAOImpl]
+
+    bind[ProcessesPipes].to[ProcessesPipesImpl]    
+    bind[ProcessElementsPipes].to[ProcessElementsPipesImpl]
+    bind[ControllerActionPipes].to[ControllerActionPipesImpl]
+
+
+
+
+
     bind[CacheLayer].to[PlayCacheLayer]
     bind[IDGenerator].toInstance(new SecureRandomIDGenerator())
     bind[PasswordHasher].toInstance(new BCryptPasswordHasher)
