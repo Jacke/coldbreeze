@@ -4354,7 +4354,7 @@ background-color: gray !important;
     overflow: hidden;
     height: 37px;
     margin-top: 9px;
-    width: 49px;
+    width: 48px;
     margin-left: 6px;
     margin-right: 0px;
 }
@@ -4362,7 +4362,7 @@ svgbuttondirective {
     width: 49px;
     height: 37px;
     display: block;
-    margin-left: -10px;
+    margin-left: -9px;
     padding-left: 6px;
     padding-top: 1px;
     padding-bottom: 10px;
@@ -13081,8 +13081,8 @@ position: absolute;
   .tcon-grid .tcon-grid__item {
     width: 0.5rem;
     height: 0.5rem;
-    background: black;
-    color: black;
+    background: #b1b1b1;
+    color: #b1b1b1;
     transition: 0.3s; }
 
 .tcon-grid.tcon-transform .tcon-grid__item {
