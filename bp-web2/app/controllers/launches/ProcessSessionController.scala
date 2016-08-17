@@ -191,7 +191,9 @@ def all_sessions(page: Option[Long], active: Option[Boolean]) = silhouette.Secur
   }
 
 	val email = request.identity.emailFilled
-  val sess_cnsF = BPSessionDAOF.findByBusiness(request.identity.businessFirst, active = active, offset = pageSkip)
+  val sess_cnsF = BPSessionDAOF.findByBusiness(request.identity.businessFirst, 
+                                               active = active, 
+                                               offset = pageSkip)
   //val updated_cns:List[SessionContainer] = sess_cns.map { cn =>
   //val updatedStatuses:List[SessionStatus] = cn.sessions.map(status => InputLoggerDAO.launchPeopleFetcher(status))
   //val updatedCN = updatedStatuses.map(status => cn.updateStatus(status))

@@ -69,7 +69,12 @@ object BPSessionDAOF {
   private def filterByProcessesQuery(ids: List[Int]): Query[BPSessionsF, BPSession, Seq] =
     bpsessions.filter(_.process inSetBind ids)
 
-  private def filterByProcessesTimestampQuery(ids: List[Int], timestamp: Option[String], offset: Int = 0, limit: Int = 9): DBIO[Seq[BPSession]] = {
+  /***
+   * TODO: Pagination
+   * Bug with limit
+   * Ignore that
+   -**/
+  private def filterByProcessesTimestampQuery(ids: List[Int], timestamp: Option[String], offset: Int = 0, limit: Int = 900): DBIO[Seq[BPSession]] = {
     val sInt: String = timestamp.getOrElse("0")
     val datetime = new org.joda.time.DateTime(sInt.toLong)
     val ts = datetime.getMillis() / 1000
@@ -100,6 +105,10 @@ object BPSessionDAOF {
   }
   private def filterByProcessesAndIdsQuery(processes_ids: List[Int], session_ids: List[Int]): Query[BPSessionsF, BPSession, Seq] =
     bpsessions.filter(c => (c.process inSetBind processes_ids) && (c.id inSetBind session_ids))
+
+
+  def getByProcesses(ids: List[Int], offset: Int = 0, limit: Int = 9) =
+    db.run(filterByProcessesTimestampQuery(ids, None))
 
 
   def countByBusiness(bid: Int, active: Option[Boolean]= None): Future[Int] = {
@@ -221,23 +230,26 @@ object BPSessionDAOF {
       }
   }
 
-  def findByBusiness(bid: Int, timestamp: Option[String] = None, active: Option[Boolean]= None, offset:Int = 0): Future[Seq[SessionContainer]] = {
+  def findByBusiness(bid: Int, timestamp: Option[String] = None, 
+                     active: Option[Boolean]= None, 
+                     offset:Int = 0): Future[Seq[SessionContainer]] = {
     val pF = BPDAOF.findByBusiness(bid)
     pF.flatMap { processes =>
       val processIds: List[Int] = processes.map(_.id.get).toList
+
       val sessF = db.run(filterByProcessesTimestampQuery(processIds, timestamp, offset))
       sessF.flatMap { sess =>
-        sess.foreach(ses => println(ses.created_at))
-        println("sess result "+sess.length)
         val allStationsF = BPStationDAOF.findBySessions(sess.map(s => s.id.get).toList, active)
         allStationsF.flatMap { stations =>
-          println("stations result "+stations.length)
 
           Future.sequence(processes.map { process =>
             val stationSessions = stations.map(_.session)
+            val clSessions = sess.filter(ses => ses.process == process.id.get)
             val sessionsForProcess = sess.filter(ses => ses.process == process.id.get && stationSessions.contains(ses.id.get) )
             val sessionLength = sessionsForProcess.length
-            println(s"sessionsForProcess ${process.id.get} - length ${sessionsForProcess.length}")
+            if (process.id.get == 125) {
+              println(s"sessionsForProcess ${process.id.get} - length ${sessionsForProcess.length} ${clSessions.length}")
+            }
             val sesStatusF = prepareSessionStatusWithStations(
               process,
               sessionsForProcess,
