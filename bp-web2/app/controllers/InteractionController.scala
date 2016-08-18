@@ -277,7 +277,8 @@ def fetchAllInteractionF() = Action.async { implicit request =>
       val session = models.DAO.BPSessionDAOF.await( models.DAO.BPSessionDAOF.findById(id = session_id) )
 
       val process:BProcessDTO = session.get.process
-      val reactions:List[SessionUnitReaction] = SessionReactionDAO.findUnapplied(process.id.get, session_id)
+      val reactions:List[SessionUnitReaction] = SessionReactionDAOF.await(
+        SessionReactionDAOF.findUnapplied(process.id.get, session_id) ).units
       Logger.debug("Session Reactions")
       Logger.debug(s"reaction length ${reactions.length}")
 
@@ -326,7 +327,8 @@ def fetchAllInteraction() = Action.async { implicit request =>
       val session = models.DAO.BPSessionDAOF.await( models.DAO.BPSessionDAOF.findById(id = session_id) )
 
       val process:BProcessDTO = session.get.process
-      val reactions:List[SessionUnitReaction] = SessionReactionDAO.findUnapplied(process.id.get, session_id)
+      val reactions:List[SessionUnitReaction] = SessionReactionDAOF.await(
+        SessionReactionDAOF.findUnapplied(process.id.get, session_id)).units
       Logger.debug("Session Reactions")
       Logger.debug(s"reaction length ${reactions.length}")
 
