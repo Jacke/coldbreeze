@@ -56,10 +56,16 @@ class SessionReactionRefs(tag: Tag) extends Table[SessionUnitReaction](tag, "ses
 }
 import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 
+case class SessionUnitReactionOrdered(
+  unit:SessionUnitReaction,
+  order:Int
+)
+
 case class SessionUnitFutureContainer(
     units: List[SessionUnitReaction],
     state_outs: List[SessionUnitReactionStateOut],
-    session_states:List[BPSessionState]
+    session_states:List[BPSessionState],
+    units_ordered:List[SessionUnitReactionOrdered]=List()
 )
 
 case class SessionUnitReactionContainer(units: Future[Seq[SessionUnitReaction]],
@@ -214,7 +220,7 @@ def findCurrentUnappliedContainerBatch(idz: List[Int],
                     }
                   }
                }
-               
+
             }
           }
           case _ => Future.successful(None)
@@ -235,7 +241,7 @@ def findUnapplied(id: Int, session_id: Int):Future[SessionUnitFutureContainer] =
        val state_outsF = SessionReactionStateOutDAOF.findByReactions(await(session_reactionsF).flatMap(_.id).toList)
        state_outsF.flatMap { state_outs =>
         session_reactionsF.flatMap { session_reactions =>
-          session_statesF.map { session_states =>
+          session_statesF.flatMap { session_states =>
           val unapplied_reactions:Seq[SessionUnitReaction] = session_reactions.filter { reaction =>
               val state_out = state_outs.filter(out => Some(out.reaction) == reaction.id).toList
               val session_state = session_states.find(state =>
@@ -252,10 +258,13 @@ def findUnapplied(id: Int, session_id: Int):Future[SessionUnitFutureContainer] =
                   }
                 }
               }
+              retriveOrdersForActions(unapplied_reactions.toList).map { orderedActions => 
         SessionUnitFutureContainer(unapplied_reactions.toList,
-                                    state_outs.toList,
-                                  session_states.toList
-                                    )
+                                   state_outs.toList,
+                                   session_states.toList,
+                                   orderedActions
+                                   )
+              }
         }
        }
       }
@@ -263,23 +272,40 @@ def findUnapplied(id: Int, session_id: Int):Future[SessionUnitFutureContainer] =
 
 
 
-
-
+def retriveOrdersForActions(actions: List[SessionUnitReaction]):Future[List[SessionUnitReactionOrdered]] = {
+  val toposF = SessionElemTopologDAOF.getByIds(actions.map(_.element))
+  toposF.flatMap { topos => 
+    Future.sequence(actions.map { unApAction =>
+      val orderF = getElementOrder(
+                                 topos.find(topo => topo.id.get == unApAction.element) )
+      orderF.map { order => 
+        SessionUnitReactionOrdered(unApAction, 
+                                   order)
+      }
+    })
+  }
+}
 
 
 
 def getElementOrder(elementTopoOpt: Option[SessionElemTopology], level: String = "front"):Future[Int] = {
-  val elementId = elementTopoOpt.get.front_elem_id.get
-  level match {
-    case _ => {
-      SessionProcElementDAOF.findById(elementId).map { elOpt =>
-        elOpt match {
-          case Some(el) => el.order
-          case _ => -1
+  val elementIdOpt = elementTopoOpt.get.front_elem_id
+  elementIdOpt match {
+    case Some(elementId) => {
+      level match {
+        case _ => {
+          SessionProcElementDAOF.findById(elementId).map { elOpt =>
+            elOpt match {
+              case Some(el) => el.order
+              case _ => -1
+            }
+          }
         }
-      }
-    }
+      }      
+    } 
+    case _ => Future.successful(-1)
   }
+
 }
 
 

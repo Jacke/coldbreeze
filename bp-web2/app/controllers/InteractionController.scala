@@ -121,7 +121,9 @@ class InteractionController @Inject() (
  case class SessionReactionContainer(session_state: Option[BPSessionState],
                                      reaction: SessionUnitReaction,
                                      outs: List[SessionUnitReactionStateOut],
-                                     costs: List[CostContainer] = List())
+                                     costs: List[CostContainer] = List(),
+                                     order: Int = -1)
+
  case class ReactionContainer(session_state: Option[BPSessionState],
                               reaction: UnitReaction,
                               outs: List[UnitReactionStateOut])
@@ -185,9 +187,9 @@ def fetchInteraction(session_id: Int) = silhouette.SecuredAction.async { implici
         val reaction_container = reactions.toList.map(reaction =>
         	SessionReactionContainer(
                     session_state = session_states.find(state => Some(reaction.from_state) == state.origin_state),
-        					  reaction,
-                    reaction_outs.filter(out => Some(out.reaction) == reaction.id),
-                    costs)
+        					  reaction = reaction,
+                    outs = reaction_outs.filter(out => Some(out.reaction) == reaction.id),
+                    costs = costs)
         )
   	    Ok(Json.toJson(SessionInteractionContainer(Some(session), reaction_container, session_states)))
     	}
@@ -233,15 +235,22 @@ def fetchInteractions(session_ids: List[Int]) = silhouette.SecuredAction.async {
       //  findCost(sessionElemTopoId = topo.id.getOrElse(0),
       //           launchId=session_id)
       //}.flatten
+      val actionOrdered:List[SessionUnitReactionOrdered] = unapplied.units_ordered
 
-      val reaction_container = reactions.toList.map(reaction =>
+      val reaction_container = reactions.toList.map { reaction =>
+          val order:Int = actionOrdered.find(c => c.unit.id.get == reaction.id.get) match {
+            case Some(ac) => ac.order
+            case _ => -1
+          }
+
           SessionReactionContainer(
                     session_state = session_states.find(state =>
                                                 Some(reaction.from_state) == state.origin_state),
                     reaction      = reaction,
                     outs          = reaction_outs.filter(out => Some(out.reaction) == reaction.id),
-                    costs         = costs)
-      )
+                    costs         = costs,
+                    order         = order)
+      }
       SessionInteractionContainer(session_container = Some(session),
                                   reactions         = reaction_container,
                                   outs_identity     = session_states,
@@ -296,10 +305,11 @@ def fetchAllInteractionF() = Action.async { implicit request =>
       Logger.debug("Session state")
       Logger.debug(s"session_states length ${session_states.length}")
         val reaction_container = reactions.map(reaction =>
-          SessionReactionContainer(session_state = session_states.find(state => Some(reaction.from_state) == state.origin_state),
-                    reaction,
-                    reaction_outs.filter(out => Some(out.reaction) == reaction.id),
-                    costs)
+          SessionReactionContainer(
+                    session_state = session_states.find(state => Some(reaction.from_state) == state.origin_state),
+                    reaction = reaction,
+                    outs = reaction_outs.filter(out => Some(out.reaction) == reaction.id),
+                    costs = costs)
         )
         SessionInteractionContainer(session, reaction_container, session_states)
       }
@@ -347,9 +357,9 @@ def fetchAllInteraction() = Action.async { implicit request =>
       Logger.debug(s"session_states length ${session_states.length}")
         val reaction_container = reactions.map(reaction =>
           SessionReactionContainer(session_state = session_states.find(state => Some(reaction.from_state) == state.origin_state),
-                    reaction,
-                    reaction_outs.filter(out => Some(out.reaction) == reaction.id),
-                    costs)
+                    reaction = reaction,
+                    outs = reaction_outs.filter(out => Some(out.reaction) == reaction.id),
+                    costs = costs)
         )
         SessionInteractionContainer(session, reaction_container, session_states)
       }
