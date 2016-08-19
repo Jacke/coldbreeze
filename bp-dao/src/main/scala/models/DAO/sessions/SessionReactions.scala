@@ -170,7 +170,7 @@ object SessionReactionDAOF {
 
 
 def findCurrentUnappliedContainerBatch(idz: List[Int],
-                                         session_idz: List[Int]):Future[List[Option[CurrentSessionReactionContainer]]] = {
+          session_idz: List[Int]):Future[List[Option[CurrentSessionReactionContainer]]] = {
        //val id = idz.head
        //val session_id = session_idz.head
        val session_statesF = BPSessionStateDAOF.findByBPSAndSessions(idz, session_idz)
@@ -196,12 +196,18 @@ def findCurrentUnappliedContainerBatch(idz: List[Int],
           }
        }
        /*** Iterate over session_reactions for geting first current reaction*/
-       val reactionFirst = retriveOrdersForActions(session_idz.map { ses_id => unapplied_reactions.filter { 
-        ur => ur.session == ses_id }.toList).sortBy(_.order).map(_.unit).headOption
+       // TODO: Revemo await
+       val reactionFirst = session_idz.map { ses_id => 
+        BPSessionStateDAOF.await(retriveOrdersForActions(unapplied_reactions.filter { ur => 
+            ur.session == ses_id 
+        }.toList)).sortBy(_.order).headOption 
+        }
+ //val reactionFirst = session_idz.map { ses_id => unapplied_reactions.filter { ur => ur.session == ses_id }.headOption }
 
        val reaction_sets = reactionFirst.map { reaction =>
          reaction match {
-          case Some(reaction) => {
+          case Some(reactionOrdered) => {
+            val reaction = reactionOrdered.unit
             models.DAO.SessionElemTopologDAOF.getIdentityById(reaction.element).flatMap { identity =>
              val topoOptF:Future[Option[SessionElemTopology]] = SessionElemTopologDAOF.get(reaction.element)
                topoOptF.flatMap { topoOpt =>
@@ -229,9 +235,10 @@ def findCurrentUnappliedContainerBatch(idz: List[Int],
          }
        }.toList
        Future.sequence( reaction_sets )
-       }
-      }
-    }
+
+     }
+   }
+  }
 }
 
 
