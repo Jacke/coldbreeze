@@ -249,8 +249,8 @@ def fetchInteractions(session_ids: List[Int]) = silhouette.SecuredAction.async {
                     reaction      = reaction,
                     outs          = reaction_outs.filter(out => Some(out.reaction) == reaction.id),
                     costs         = costs,
-                    order         = order).sortBy(_.order)
-      }
+                    order         = order)
+      }.sortBy(_.order)
       SessionInteractionContainer(session_container = Some(session),
                                   reactions         = reaction_container,
                                   outs_identity     = session_states,
