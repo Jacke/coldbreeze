@@ -196,7 +196,9 @@ def findCurrentUnappliedContainerBatch(idz: List[Int],
           }
        }
        /*** Iterate over session_reactions for geting first current reaction*/
-       val reactionFirst = session_idz.map { ses_id => unapplied_reactions.filter { ur => ur.session == ses_id }.headOption }
+       val reactionFirst = retriveOrdersForActions(session_idz.map { ses_id => unapplied_reactions.filter { 
+        ur => ur.session == ses_id }.toList).sortBy(_.order).map(_.unit).headOption
+
        val reaction_sets = reactionFirst.map { reaction =>
          reaction match {
           case Some(reaction) => {
