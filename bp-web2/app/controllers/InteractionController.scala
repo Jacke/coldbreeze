@@ -153,7 +153,9 @@ implicit val CostContainerWrites = Json.format[CostContainer]
   val waitSeconds = 100000
   val wrapper = minority.utils.BBoardWrapper.apply()
 
-/** Fetch interaction action, used in input bar for making request directly to launch
+//       /interact/:session_id 
+/***
+  *  Fetch interaction action, used in input bar for making request directly to launch
   * @param  session_id id of launch
   * @return return either SessionInteractionContainer with session, reaction containers, and session states.
   */
@@ -196,6 +198,9 @@ def fetchInteraction(session_id: Int) = silhouette.SecuredAction.async { implici
 
 } else { Future(Forbidden(Json.obj("status" -> "Access denied"))) }
 }
+
+// GET         /interacts/
+
 
 def fetchInteractions(session_ids: List[Int]) = silhouette.SecuredAction.async { implicit request =>
   val secured_ids = session_ids.filter( session_id =>

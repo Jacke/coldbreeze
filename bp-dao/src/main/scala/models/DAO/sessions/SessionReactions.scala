@@ -19,11 +19,14 @@ import main.scala.simple_parts.process._
 import main.scala.bprocesses.{BPState, BPSessionState}
 
 
-case class CurrentSessionReactionContainer(reaction: SessionUnitReaction,
-                                    title: String,
-                                    front: Option[SessionUndefElement] = None,
-                                    nested: Option[SessionSpaceElementDTO] = None,
-                                    session_id: Int)
+case class CurrentSessionReactionContainer(
+  reaction: SessionUnitReaction,
+  title: String,
+  front: Option[SessionUndefElement] = None,
+  nested: Option[SessionSpaceElementDTO] = None,
+  session_id: Int,
+  actionElemTopo: Option[SessionElemTopology]= None,
+  order: Int = 0)
 class SessionReactionRefs(tag: Tag) extends Table[SessionUnitReaction](tag, "session_reactions") {
   def id          = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def bprocess    = column[Int]("bprocess_id")
@@ -130,16 +133,26 @@ object SessionReactionDAOF {
        /*** Iterate over session_reactions for geting first current reaction*/
        unapplied_reactions.headOption match {
         case Some(reaction) => {
-            models.DAO.SessionElemTopologDAOF.getIdentityById(reaction.element).map { identity =>
-              identity match {
-                case Some(identity) => Some(
-                    CurrentSessionReactionContainer(reaction,
-                      identity.title,
-                      identity.front,
-                      identity.nested,
-                      session_id))
-                case _ => None
-              }
+            models.DAO.SessionElemTopologDAOF.getIdentityById(reaction.element).flatMap { identity =>
+             val topoOptF:Future[Option[SessionElemTopology]] = SessionElemTopologDAOF.get(reaction.element)
+               topoOptF.flatMap { topoOpt =>
+                 val orderF = getElementOrder(topoOpt)
+                 orderF.map { order => 
+                    identity match {
+                      case Some(identity) => {
+                       Some(
+                          CurrentSessionReactionContainer(reaction,
+                            identity.title,
+                            identity.front,
+                            identity.nested,
+                            session_id,
+                            topoOpt,
+                            order))
+                      }
+                      case _ => None
+                    }
+                  }
+               }
             }
         }
         case _ => Future.successful(None)
@@ -148,7 +161,9 @@ object SessionReactionDAOF {
       }
     }
 }
-  def findCurrentUnappliedContainerBatch(idz: List[Int],
+
+
+def findCurrentUnappliedContainerBatch(idz: List[Int],
                                          session_idz: List[Int]):Future[List[Option[CurrentSessionReactionContainer]]] = {
        //val id = idz.head
        //val session_id = session_idz.head
@@ -179,18 +194,28 @@ object SessionReactionDAOF {
        val reaction_sets = reactionFirst.map { reaction =>
          reaction match {
           case Some(reaction) => {
-
-              models.DAO.SessionElemTopologDAOF.getIdentityById(reaction.element).map { identity =>
-                identity match {
-                  case Some(identity) => Some(
-                      CurrentSessionReactionContainer(reaction,
-                        identity.title,
-                        identity.front,
-                        identity.nested,
-                        reaction.session))
-                  case _ => None
-                }
-              }
+            models.DAO.SessionElemTopologDAOF.getIdentityById(reaction.element).flatMap { identity =>
+             val topoOptF:Future[Option[SessionElemTopology]] = SessionElemTopologDAOF.get(reaction.element)
+               topoOptF.flatMap { topoOpt =>
+                 val orderF = getElementOrder(topoOpt)
+                 orderF.map { order => 
+                    identity match {
+                      case Some(identity) => {
+                       Some(
+                          CurrentSessionReactionContainer(reaction,
+                            identity.title,
+                            identity.front,
+                            identity.nested,
+                            reaction.session,
+                            topoOpt,
+                            order))
+                      }
+                      case _ => None
+                    }
+                  }
+               }
+               
+            }
           }
           case _ => Future.successful(None)
          }
@@ -235,6 +260,28 @@ def findUnapplied(id: Int, session_id: Int):Future[SessionUnitFutureContainer] =
        }
       }
 }
+
+
+
+
+
+
+
+
+def getElementOrder(elementTopoOpt: Option[SessionElemTopology], level: String = "front"):Future[Int] = {
+  val elementId = elementTopoOpt.get.front_elem_id.get
+  level match {
+    case _ => {
+      SessionProcElementDAOF.findById(elementId).map { elOpt =>
+        elOpt match {
+          case Some(el) => el.order
+          case _ => -1
+        }
+      }
+    }
+  }
+}
+
 
 
 
