@@ -196,7 +196,7 @@ def findCurrentUnappliedContainerBatch(idz: List[Int],
           }
        }
        /*** Iterate over session_reactions for geting first current reaction*/
-       // TODO: Revemo await
+       // TODO: Remove await
        val reactionFirst = session_idz.map { ses_id => 
         BPSessionStateDAOF.await(retriveOrdersForActions(unapplied_reactions.filter { ur => 
             ur.session == ses_id 
