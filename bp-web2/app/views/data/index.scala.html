@@ -41,7 +41,7 @@
 
 
 
-<div id="main" class="container dataTables resources-list" ng-init="isSet(0)" ng-show="isSet(0)">
+<div id="main" class="container dataTables resources-list" style="display: none;" ng-init="isSet(0)" ng-show="isSet(0)">
 <div class="tableMinListWrap dataTablesTable">
 
 @if(ping) {
@@ -217,7 +217,7 @@
     </div>
   </div>
 
-
+<!--
 <div class="process-indicator-data-table" style="display:none;" ng-repeat="process in indicators.processes">
   <div class="process-indicator-data-table-title">{{process.title}}</div>
   <div class="process-indicator-data-table-expand-process" ng-click="process.showIndicators?process.showIndicators=false:process.showIndicators=true" 
@@ -229,7 +229,6 @@
   <table 
     class="table table-with-indicators">
 <thead>
-    <!-- ngIf: params.hasGroup() -->
     <tr class="ng-table-sort-header">
               <th class="header">
             Launch</th>
@@ -244,11 +243,9 @@
     <td>
 
 
-<!-- Nested table with indicators -->
   <table 
     class="table table-with-indicators">
 <thead>
-    <!-- ngIf: params.hasGroup() -->
     <tr class="ng-table-sort-header">
             <th ng-repeat="el in indy.elements">
               {{el.element.title}}
@@ -286,6 +283,8 @@
   </div>
 </div>
 
+
+-->
 
 
 
@@ -326,10 +325,22 @@
 <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
 async defer>
 
+
+
+<!--
+angular 2 dev
 <script src="http://localhost:3000/webpack-dev-server.js"></script>
 <script src="http://localhost:3000/polyfills.bundle.js"></script>
 <script src="http://localhost:3000/vendor.bundle.js"></script>
 <script src="http://localhost:3000/main.bundle.js"></script>
+-->
+
+<script src="/assets/js/ang2/1.chunk.js"></script>
+
+<script src="/assets/js/ang2/polyfills.bundle.js"></script>
+<script src="/assets/js/ang2/vendor.bundle.js"></script>
+<script src="/assets/js/ang2/main.bundle.js"></script>
+
 
 
 <!--
