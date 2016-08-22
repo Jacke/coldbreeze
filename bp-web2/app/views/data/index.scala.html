@@ -24,22 +24,14 @@
 <!--
 <div class="container app data-app" ng-app="app" ng-controller="DataTableController">
 -->
-<app style="display:none">
+<app>
   
 </app>
 
 
+
+
 <div class="container app data-app">
-
-
-
-<div class="data-container-nav">
-  <a href="/data#?view=indicators" 
-     ng-click="setTab(0)" ng-class="isSet(0)? 'active' : ''">Indicators</a></label>
-  <a href="/data#?view=acts" 
-     ng-click="setTab(1)" ng-class="isSet(1)? 'active' : ''">Acts</a>
-</div>
-
 
 
 <div class="act-data-table" ng-show="isSet(1)" style="display:none"> 
@@ -579,20 +571,6 @@
 
 
 <link rel="stylesheet" href="https://rawgit.com/esvit/ng-table/master/dist/ng-table.min.css">
-<style>
-.ng-table-pager {
-    display: none !important;
-}
-.app-container app {
-    display: block;
-    clear: both;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-}
-</style>
-
-
 <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
 async defer>
 
