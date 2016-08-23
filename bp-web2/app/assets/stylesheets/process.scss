@@ -1,10 +1,10 @@
 .automations_connected {
     min-height: 100%;
-    background-color: #45475d;
+    background-color: #f7f6ff;
     overflow: hidden;
 }
 .automations_connected {
-    color: #fff;
+    color: #737373;
     font-size: 13px;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight: 100;
@@ -357,8 +357,8 @@ a#reactionSelectButton {
     cursor: pointer;
     display: block;
     clear: both;
-    color: #FFF;
-    background-color: rgba(40,43,53,0.78);
+    color: #737373;
+    background-color: rgb(222, 219, 243);
     border-radius: 3px;
     font-family: "Open Sans",Helvetica,sans-serif;
     font-weight: 400;
@@ -370,7 +370,7 @@ a#reactionSelectButton {
     float: none;
     width: 125px;
     margin: 0px auto;
-    bottom: 13px;
+    bottom: 19px;
     right: 26px;
     position: absolute;
     z-index: 9999;

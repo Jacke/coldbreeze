@@ -2097,7 +2097,6 @@ border-left: 2px solid #4dbd74;
     width: 100%;
     padding-left: 23px;
     margin-right: 0px;
-    box-shadow: 2px 0px 1px #2f344a;
     display: block;
     float: none;
 }
@@ -2112,22 +2111,24 @@ li.reaction_list__reaction.reaction_list__reaction_preview {
 .reaction_list__reaction.reaction_list__reaction_preview h3 {
     font-size: 19px;
     text-align: left;
-    color: #f2f6fe;
+    margin-top: 31px;
+    color: #4a4a4a;
+    margin-bottom: 0px;
 }
 .session__buttonInput .moicon-menu.moicon {
     line-height: 21px !important;
 }
 li.reaction_list__reaction {
-    border-bottom: solid 1px #36384D;
+    border-bottom: solid 1px #e8e5fb;
     padding-bottom: 18px;
     padding-top: 15px;
 }
 .request-controller li.reaction_list__reaction .newIncicatorButton a.btn {
-    color: white;
+    color: #4a4a4a;
     background: none;
     border: none;
     font-size: 11px;
-    border-bottom: solid 1px #68A5C4;
+    border-bottom: solid 1px #8c82d0;
     border-radius: 0px;
     font-family: 'Open Sans';
 }
@@ -2144,11 +2145,11 @@ li.reaction_list__reaction {
 
 
 .request-controller .newFileButton button.btn.btn-small.btn-success.btn-fill {
-    color: white;
+    color: #4a4a4a;
     background: none;
     border: none;
     font-size: 11px;
-    border-bottom: solid 1px #68A5C4;
+    border-bottom: solid 1px #8c82d0;
     border-radius: 0px;
     font-family: 'Open Sans';
 }
@@ -5062,7 +5063,7 @@ span.line.elem-card.executed {
     margin-right: 13px;
 }
 .allStations .stations {
-    box-shadow: 0px 0px 9px rgba(128, 128, 128, 0.12);
+    box-shadow: 0px 0px 9px rgba(142, 142, 142, 0.12);
     background: white;
     margin: 20px 14px 0px -27px;
     padding: 0px 25px 0px 21px;
@@ -10832,9 +10833,10 @@ span.firstInputFileName {
 }
 .inline-launch .fastInput a:hover {
     text-decoration: none;
-    color: #E8E8E8;
+    color: #777777;
     transition: all .3s ease-in-out;
-    box-shadow: rgb(36, 37, 58) 1px 1px 3px inset;
+    box-shadow: rgba(212, 212, 212, 0.27) 1px 1px 3px inset;
+    background-color: gainsboro;
 }
 span.firstInputFiles {
     display: inline-block;
