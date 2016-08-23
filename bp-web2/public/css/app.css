@@ -4376,16 +4376,15 @@ svgbuttondirective {
 
 
 .stations.minimal-stations .session__buttonInput:hover {
-    background: #999CC3;
+    background: #ececec;
 }
 .stations.minimal-stations .session__buttonInput:active {
     background: #6A70B1;
     box-shadow: 1px 2px 9px #3F4152 inset;
 }
 .stations.lineDescShowed.minimal-stations .session__buttonInput {
-    background: #6A70B1;
-    box-shadow: 1px 2px 9px #3F4152 inset;
-    border: solid 1px white;
+    background: #c1c1c1;
+    box-shadow: 1px 2px 9px #cacaca inset;
 }
 .stations.minimal-stations .session__buttonInput .svg-button-input {
     margin-left: 5px;
@@ -10717,15 +10716,16 @@ h4.file_title_full {
     margin-top: 5px;
 }
 .inline-launch .fastInput {
-    position: absolute;
+position: absolute;
     top: 0px;
     right: 1px;
-    background: #3D3F55;
+    background: #fbfbfb;
     width: 215px;
     height: 60px;
     border-radius: 0px 3px 0px 0px;
-    border-left: 1px solid #535569;
-    box-shadow: 1px 0px 16px rgb(35, 37, 53) inset;
+    border-left: 1px solid #d8d8d8;
+    box-shadow: 1px 0px 16px rgba(243, 243, 243, 0.25) inset;
+    color: #5d5d5d;
 }
 .launch-info-details {
     width: 50%;
@@ -10814,12 +10814,12 @@ span.firstInputFileName {
 }
 .inline-launch .fastInput a {
     cursor: pointer;
-    color: white;
-    background-color: rgba(40,43,53,0.78);
+    color: #6f6f6f;
+    background-color: rgb(236, 236, 236);
     padding: 4px 4px 5px 2px;
     border-radius: 3px;
     display: inline-block;
-    margin: 11px 10px;
+    margin: 15px 10px;
     font-family: 'Open Sans', Helvetica, Sans-serif;
     font-weight: 400;
     text-align: center;
@@ -10850,7 +10850,7 @@ span.firstInputFiles {
 span.element-title {
     display: inline-block;
     float: left;
-    margin-top: 15px;
+    margin-top: 18px;
     margin-left: 8px;
     width: 100px;
     text-align: center;
@@ -10859,7 +10859,7 @@ span.element-title {
     text-overflow: ellipsis;
     font-family: 'Open Sans', Helvetica, Sans-serif;
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 600;
     text-shadow: none;
 }
 .fastInput a.fastInputPicker {
