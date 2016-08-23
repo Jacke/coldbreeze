@@ -2162,9 +2162,9 @@ li.reaction_list__reaction {
 }
 
 .request-controller form.existed-new-data-cost.form select#selectExistedResource {
-    background: #2C2F3C;
+    background: #b2adce;
     border: none;
-    border-bottom: solid 1px #474A58;
+    border-bottom: solid 1px #928bb7;
     border-radius: 2px;
     height: 30px;
     margin-top: 8px;
@@ -2178,7 +2178,7 @@ input.form-control.indicator-value-entry {
     width: 73%;
     padding: 2px 4px;
     height: 26px;
-    background: #54566D;
+    background: #b2adce;
     color: white;
     border: solid 1px transparent;
     margin-top: 5px;
