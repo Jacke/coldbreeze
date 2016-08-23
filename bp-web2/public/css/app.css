@@ -2100,6 +2100,9 @@ border-left: 2px solid #4dbd74;
     display: block;
     float: none;
 }
+.inline-launch ul.reaction_list li:last-child {
+    border-bottom: none;
+}
 
 
 li.reaction_list__reaction.reaction_list__reaction_preview {
