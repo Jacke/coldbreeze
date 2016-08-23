@@ -3556,14 +3556,14 @@ text-decoration: none;
 
 
 .allStations input.switch::before {
-    height: 2.2em;
-    width: 2.2em;
+    height: 1.2em;
+    width: 1.2em;
 }
 .allStations input.switch {
-    width: 6em;
+    width: 3em;
     margin-left: 0px;
     margin-right: 22px;
-    height: 2.6em;
+    height: 1.6em;
 }
 .input-stations .current-reaction-switcher label.radio-label {
     font-size: 13px;
@@ -4426,7 +4426,7 @@ svgbuttondirective {
     text-align: left;
     clear: both;
     font-family: 'Open Sans', Helvetica;
-    font-weight: 900;
+    font-weight: 400;
     font-size: 12px;
     color: #3D3F55;
 }
@@ -5513,7 +5513,7 @@ input.switch::before {
   display: inline-block;
   height: 4.2em;
   width: 4.2em;
-  margin: 0.2em 0 0 0.2em;
+  margin: 0.2em 0 0 0px;
   background-color: #fff;
   border-radius: 2.1em;
   box-shadow: 0 0.2em 0.4em 0 rgba(0, 0, 0, 0.2), 0 0 0.1em 0.1em rgba(0, 0, 0, 0.1);
@@ -5532,6 +5532,7 @@ input.switch:active:checked::before, input.switch.touch:hover:checked::before {
   margin-left: -0.6em;
 }
 
+/*
 @keyframes slide-on {
   0% {
     padding-left: 0em;
@@ -5554,6 +5555,35 @@ input.switch:active:checked::before, input.switch.touch:hover:checked::before {
   }
   100% {
     padding-left: 0em;
+    text-indent: 0;
+  }
+}
+*/
+
+
+
+@keyframes slide-on {
+  0% {
+    padding-left: 0em;
+  }
+  60% {
+    padding-left: 2.8em;
+  }
+  100% {
+    padding-left: 2.8em;
+  }
+}
+@keyframes slide-off {
+  0% {
+    padding-left: 1.4em;
+    text-indent: 0;
+  }
+  60% {
+    padding-left: 0em;
+    text-indent: -0.4em;
+  }
+  100% {
+    padding-left: 1em;
     text-indent: 0;
   }
 }
@@ -6766,9 +6796,9 @@ input.switch::after {
 }
 input.switch::before {
     display: inline-block;
-    height: 2.2em;
-    width: 2.2em;
-    margin: 0.2em 0 0 -0.8em;
+    height: 1.2em;
+    width: 1.2em;
+    margin: 0.2em 0 0 -13px;
     background-color: #fff;
     border-radius: 2.1em;
     box-shadow: 0 0.2em 0.4em 0 rgba(0, 0, 0, 0.2), 0 0 0.1em 0.1em rgba(0, 0, 0, 0.1);
@@ -6787,20 +6817,22 @@ input.switch:active:checked::before, input.switch.touch:hover:checked::before {
   margin-left: -0.6em;
 }
 
+
+
 @keyframes slide-on {
   0% {
     padding-left: 0em;
   }
   60% {
-    padding-left: 4.8em;
+    padding-left: 6px;
   }
   100% {
-    padding-left: 4.4em;
+    padding-left: 15px;
   }
 }
 @keyframes slide-off {
   0% {
-    padding-left: 4.4em;
+    padding-left: 1.2em;
     text-indent: 0;
   }
   60% {

@@ -154,12 +154,13 @@
   </div>
 
   <div ng-repeat="(key, sessions) in entity.launchesByDate">
-       <div class="launch-date"><span>{{ key | amDateFormat:'MMMM Do YYYY' }}</span></div>
+      <div ng-repeat="c in (filteredLaunches = (sessions | orderBy:'station.paused':true | filter:isOnlyActive))"></div>
+       <div class="launch-date" ng-show="filteredLaunches.length > 0"><span>{{ key | amDateFormat:'MMMM Do YYYY' }}</span></div>
 
   <div class="stations minimal-stations" 
        ng-init="session.lineDescShow=false;" 
        ng-class="{'lineDescShowed': session.lineDescShow == true }" 
-       ng-repeat="session in sessions | orderBy:'station.paused':true | limitTo: 10 | filter:isOnlyActive">
+       ng-repeat="session in sessions | orderBy:'station.paused':true | filter:isOnlyActive">
        
 
   <div class="session__buttonInput" ng-click="showInlineLaunch(session);session.lineDescShow==true ? session.lineDescShow=false : session.lineDescShow=true;">

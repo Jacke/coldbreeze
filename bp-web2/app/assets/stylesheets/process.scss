@@ -423,10 +423,17 @@ li.reaction_list__reaction.reaction_list__reaction_preview a.reaction_list__reac
 li.reaction_list__reaction .reaction_list__reaction_element_launch_nav.launches-nav {
     display: inline-block;
     float: left;
-    width: 20%;
+    width: 19%;
 }
 
-
+.reaction_list__reaction_element_launch_nav.reaction_list__reaction_element_launch_date_nav {
+    margin-top: 0px;
+    font-size: 13px;
+    font-family: 'Open Sans';
+    line-height: 32px;
+    margin-left: 5px;
+    display: inline-block;
+}
 
 
 
