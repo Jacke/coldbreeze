@@ -3564,6 +3564,8 @@ text-decoration: none;
     margin-left: 0px;
     margin-right: 22px;
     height: 1.6em;
+    margin-right: 0px !important;
+    right: -50px;
 }
 .input-stations .current-reaction-switcher label.radio-label {
     font-size: 13px;
@@ -5146,8 +5148,9 @@ label.onlyActiveLabel {
     height: 26px;
     margin-right: 15px;
     position: absolute;
-    right: 0;
-    top: 56%;
+    top: 37px;
+    font-size: 15px;
+    right: 0px;
 }
 
 
