@@ -1,3 +1,42 @@
+1. Process history stage tracking
+How long each step was taken to pass
+1 - a (b-a)
+2 - b (now - b)
+3 - now
+
+
+2. Replace strategy function
+
+3. Indicators REST API and page integration
+
+4. Middleware extension 
+Module: REST 
+Function: GET POST
+Params GETRequest, PostRequest
+
+Slack extends REST
+Function: PostToChannel
+Params: PostToChannel(Auth headers)
+
+5. AuthHeadersStore
+6. Ref Action CUD
+7. Obj page 
+8. Formly preview / Load fields
+9. Klass/Obj/Entity/Value CRUD
+10. Link type
+11. Req type
+
+---------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
 
 
 
