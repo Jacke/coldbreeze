@@ -2186,13 +2186,13 @@ $scope.setStrategyField = ActionFormBuilder.setStrategyField;
 
 vm.fieldsForStrategy = function(strategy, action, bases) {
   var res = ActionFormBuilder.vm.fieldsForStrategy(strategy, action, bases);
-  console.log('vm.fieldsForStrategy', res);
+  //console.log('vm.fieldsForStrategy', res);
   return res
 }
 vm.fieldForStrategy = function(strategy, action, newBpelem, base) {
-  console.log('fieldForStrategy base', base);
+  //console.log('fieldForStrategy base', base);
   var res = ActionFormBuilder.vm.fieldForStrategy(strategy, action, newBpelem, base);
-  console.log('vm.fieldForStrategy', res);
+  //console.log('vm.fieldForStrategy', res);
   return res
 }
 
@@ -2248,7 +2248,54 @@ $scope.updateBase = function(base) {
 }
 
 
+$scope.selectEditStrategy = function(strategy, middleware, action, bases) {
+  /***
+      Edit error fix
+   ***/
+     console.log('action.selectedStrategy', action.selectedStrategy);
+     action.selectedRefFields = undefined;
+     console.log('setStrategyFields', $scope.newBpelem);
 
+     //$scope.setStrategyFields(strategy, action, $scope.newBpelem);
+     _.forEach(bases, function(base) {
+       return $scope.setStrategyField(strategy, action, $scope.newBpelem, base);
+     });
+
+
+     console.log('selectStrategy action.selectedRefFields', action.selectedRefFields);
+     var bases = _.filter(bases, function(base){ return base.strategy === strategy.id });
+     _.forEach(bases, function(base){ return base.selectedRefFields = undefined;return base; })
+    action.refStrategySelect = {
+      middleware: middleware,
+      strategy: strategy,
+      bases: bases,
+      bases2: bases
+    };
+
+}
+
+$scope.replaceStrategy = function(bpelem) {
+  console.log('replaceStrategy');
+  console.log(bpelem);
+  // POST /process/element/:elementId/strategy/:strategy_id/ref/:strIdRef  
+/** 
+ * Replace ONLY ONE defined strategy
+ * @param elementId topology id
+ * @param strategyId strategy that are exist in element`s action
+ * @param strIdRef strategy ref that we will take as template
+ * @param POST body of strategy components(bases, inputs, outputs) 
+ * @return payload for action that ready to pass into tester
+  RefActionContainer(
+    action_id: Int, // plain action id
+    middleware_id: Long, // plain
+    strategy_id: Long, // ref ref
+    bases: List[BaseContainer] = List(), // ref ids
+    inputs: List[ActionInputContainer]=List(), // ref ids
+    outputs: List[ActionOutputContainer]=List() // ref ids
+  )
+  */  
+  return false;
+}
 
 $scope.selectStrategy = function(strategy, middleware, action, bases) {
      console.log('action.selectedStrategy', action.selectedStrategy);

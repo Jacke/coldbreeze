@@ -6,7 +6,8 @@
 
   <label class="control-label primary-label col-xs-2 type-label" disable-auto-validate="true" for="inputTitle">Type</label>
   <span class="selectedRefType col-xs-6 ref-selected-object">{{ bpelem.replaceStrategy.newBpelem.selectedRef.ref.title }}</span>
-  <a ng-click="bpelem.replaceStrategy.newBpelem.refSelectHidden=false;" ng-show="bpelem.replaceStrategy.newBpelem.refSelectHidden == true;" class="expand-ref-select">
+  <a ng-click="bpelem.replaceStrategy.newBpelem.refSelectHidden=false;" 
+     ng-show="bpelem.replaceStrategy.newBpelem.refSelectHidden == true;" class="expand-ref-select">
     <span class="moicon moicon-info expand-ref-select"></span>
   </a>
 </div><!-- form-group element-form-fields -->
@@ -27,7 +28,8 @@
 </select>
 <div class="ref-desc ref-desc-select-container form-group" ng-class="ref.unitelement[0].type_title" ng-repeat="ref in refs | filter:{ref: {id: bpelem.ref}}">
 
-  <a class="ref-desc-select-container-link" ng-click="refElemEditing(ref, bpelem.replaceStrategy.newBpelem);bpelem.replaceStrategy.newBpelem.refSelectHidden=true">
+  <a class="ref-desc-select-container-link" 
+  ng-click="refElemEditing(ref, bpelem.replaceStrategy.newBpelem);bpelem.replaceStrategy.newBpelem.refSelectHidden=true">
   <h6>{{ ref.ref.title }}</h6>
   <p>{{ ref.ref.desc }}</p>
 
@@ -88,7 +90,7 @@
     <div class="new-elem-strategy__strategy" ng-repeat="strategy in bpelem.replaceStrategy.newBpelem.selectedRef.strategies | filter:byMiddleware(middleware)">
     <div class="new-elem-ref-actions-select__strategy-title">
           <a class="new-elem-ref-actions-select__strategy-link"
-             ng-click="selectStrategy(strategy, middleware, action, bpelem.replaceStrategy.newBpelem.selectedRef.bases)"
+             ng-click="selectEditStrategy(strategy, middleware, action, bpelem.replaceStrategy.newBpelem.selectedRef.bases)"
              ng-class="isStrategySelected(strategy, action) ? 'selected' : ''">{{ strategy.ident.replace('Strategy', '') }}</a>
     </div>
     <div class="new-elem-ref-actions-select__middleware-text-exec">

@@ -62,6 +62,7 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
     bind[ProcessElementsPipes].to[ProcessElementsPipesImpl]
     bind[LaunchesPipes].to[LaunchesPipesImpl]
     bind[ControllerActionPipes].to[ControllerActionPipesImpl]
+    bind[LaunchStepElapsedTimePipes].to[LaunchStepElapsedTimeImpl]
 
 
 

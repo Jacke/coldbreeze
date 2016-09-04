@@ -1,3 +1,4 @@
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 1. Process history stage tracking
 How long each step was taken to pass
 1 - a (b-a)
@@ -25,7 +26,17 @@ Params: PostToChannel(Auth headers)
 9. Klass/Obj/Entity/Value CRUD
 10. Link type
 11. Req type
-
+12. Migrate confirm element
+13. Copy test user
+14. Rename task to step
+15. Promo page screenshots / Concept of workflow
+16. Status of MW [Delay, REST]
+17. Popups IO Indicator
+18. Launch acts pagination 
+19. Base fetch duration
+20. Refactor DAO Builder for being easily collect resources
+21. DAO Module refactor
+22. Async exec
 ---------------------------------------------------------------------------------------------------------
 
 
