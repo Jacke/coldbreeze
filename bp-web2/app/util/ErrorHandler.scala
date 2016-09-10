@@ -22,46 +22,8 @@ class ErrorHandler @Inject() (
   config: Configuration,
   sourceMapper: OptionalSourceMapper,
   router: javax.inject.Provider[Router])
-  extends DefaultHttpErrorHandler(env, config, sourceMapper, router)
-  with SecuredErrorHandler {
+  extends DefaultHttpErrorHandler(env, config, sourceMapper, router) {
 
-  /**
-   * Called when a user is not authenticated.
-   *
-   * As defined by RFC 2616, the status code of the response should be 401 Unauthorized.
-   *
-   * @param request The request header.
-   * @param messages The messages for the current language.
-   * @return The result to send to the client.
-   */
-  override def onNotAuthenticated(implicit request: RequestHeader):Future[Result] = {
-    println(request.uri)
-    if (isJsonRequest(request)) {
-      Future.successful(Ok(jsonNotAuthorized))
-    } else {
-      Future.successful(Redirect(routes.ApplicationController2.signIn()))
-    }
-  }
-
-  /**
-   * Called when a user is authenticated but not authorized.
-   *
-   * As defined by RFC 2616, the status code of the response should be 403 Forbidden.
-   *
-   * @param request The request header.
-   * @param messages The messages for the current language.
-   * @return The result to send to the client.
-   */
-  override def onNotAuthorized(implicit request: RequestHeader):Future[Result] = {
-    println(request.uri)
-    if (isJsonRequest(request)) {
-      Future.successful(Ok(jsonNotAuthorized))
-    } else {
-      Future.successful(
-        Redirect(routes.ApplicationController2.signIn()).flashing("error" -> 
-          "access.denied"))
-    }
-  }
 
 
 

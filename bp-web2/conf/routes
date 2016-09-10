@@ -332,6 +332,7 @@ GET      /cards                             @controllers.CardController.index()
 # Data
 ###
 GET      /data 								              @controllers.DataController.index()
+GET      /api/data                          @controllers.DataController.index_json()
 POST     /data/resources					          @controllers.DataController.create_resource()
 POST     /api/v1/data/resources             @controllers.DataController.api_create_resource()
 PUT      /data/resource/:id					        @controllers.DataController.update_resource(id: Int)
@@ -386,6 +387,12 @@ POST	   /data/:boardId/entity/create         @controllers.DataController.create_
 GET      /data/entity/:id/edit  			        @controllers.DataController.update_entity_form(id: String)
 POST     /data/entity/:id/update			        @controllers.DataController.update_entity(id: String)
 POST     /data/entity/:id/delete        	    @controllers.DataController.delete_entity(id: String)
+##### ENTITIES JSON
+
+
+POST /api/data/:boardId/entity/create        @controllers.DataController.create_entity_json(boardId: String)
+POST /api/data/entity/:id/update             @controllers.DataController.update_entity_json(id: String)
+
 
 #### SLATS
 GET      /data/ent/:eid/slat/new  	          @controllers.DataController.create_slat_form(eid: String)

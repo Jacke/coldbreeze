@@ -234,9 +234,17 @@ class DataController @Inject() (
   implicit val ResourceDTOFormat = Json.format[ResourceDTO]
   implicit val ResourceAttributeContainerFormat = Json.format[ResourceAttributeContainer]
   implicit val ResourceAttributeContainerReaders = Json.reads[ResourceAttributeContainer]
+  implicit val OwnershipFormat = Json.format[Ownership]
+  implicit val OwnershipReaders = Json.reads[Ownership]
+  implicit val BoardFormat = Json.format[Board]
+  implicit val BoardReaders = Json.reads[Board]
+  implicit val BoardContainerFormat = Json.format[BoardContainer]
+  implicit val BoardContainerReaders = Json.reads[BoardContainer]
+  implicit val ResourceContainerFormat = Json.format[ResourceContainer]
+  implicit val ResourceContainerReaders = Json.reads[ResourceContainer]
 
- val Home = Redirect(routes.DataController.index())
- val waitSeconds = 100000
+  val Home = Redirect(routes.DataController.index())
+  val waitSeconds = 100000
 
 
 
@@ -274,6 +282,35 @@ def index() = silhouette.SecuredAction.async { implicit request =>
                   ResourceFormContainer().entityForm,
                   ping
          ))
+      }
+    }
+}
+//GET      /api/data                @controllers.DataController.index()
+def index_json() = silhouette.SecuredAction.async { implicit request =>
+    if (request.identity.businessFirst < 1) {
+      Future(Redirect(controllers.routes.SettingController.workbench()))
+    } else {
+
+      var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
+      val bboardPing:Future[Boolean] = minority.utils.BBoardWrapper().ping()
+      val resources = ResourceDAO.findByBusinessId(request.identity.businessFirst)
+      val boards_cn: Future[BoardContainer] = minority.utils.BBoardWrapper().getBoardByResource(0,
+                                                                    request.identity.businessFirst.toString)
+   // boards_cn onComplete {
+   //   case Success(bcn) =>
+   //     val actual_boards_cn = bcn
+   //     val resources_cn = resources.map(r => testResourceContainerList(r, actual_boards_cn)).flatten
+   //       Ok(views.html.data.index(request.identity, isManager, ResourceForms.resourceForm, resources_cn))
+   //   case Failure(failure) =>
+   // //       Ok(views.html.data.index(request.identity, isManager, ResourceForms.resourceForm, testResourceContainerList()))
+   // }
+      for {
+        ping <- bboardPing
+        actual_boards_cn <- boards_cn
+      } yield {
+         val filteredBoards = resources.map(r => testResourceContainerList(r, actual_boards_cn)).flatten
+
+         Ok(Json.toJson(filteredBoards) )
       }
     }
 }
@@ -428,6 +465,48 @@ def create_entity(boardId: String) = silhouette.SecuredAction { implicit request
           }
       })
 }
+
+def create_entity_json(boardId: String) = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
+    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
+    val entityResult = request.body.validate[Entity]
+
+    entityResult.fold(
+      formWithErrors => {
+        println("erorrs:")
+        println(formWithErrors)
+        Ok(Json.toJson(formWithErrors.toString) )
+        },
+      entity => {
+          val future = minority.utils.BBoardWrapper()
+                .addEntityByResource(resource_id = 0,
+                                     entity.copy(boardId = UUID.fromString(boardId)))
+
+          Await.result(future, Duration(waitSeconds, MILLISECONDS)) match {
+            case _ => {
+              controllers.UserActor.updateResource(target="lock", email=request.identity.emailFilled, isLock=true)
+              Ok(Json.toJson("good") )
+            }
+          }
+      })
+}
+def update_entity_json(id: String) = silhouette.SecuredAction(BodyParsers.parse.json) { implicit request =>
+    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
+    val entityResult = request.body.validate[Entity]
+    entityResult.fold(
+      formWithErrors => {
+        println("erorrs:")
+        println(formWithErrors)
+        Ok(Json.toJson(formWithErrors.toString) )
+        },
+      entity => {
+          minority.utils.BBoardWrapper().updateEntity(entity_id = id, entity = entity) match {
+          case _ => Ok(Json.toJson("good") )
+        }
+      })
+}
+
+
+
 def update_entity_form(id: String) = silhouette.SecuredAction { implicit request =>
     var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
     val entity = minority.utils.BBoardWrapper().getEntityById(entity_id = id)

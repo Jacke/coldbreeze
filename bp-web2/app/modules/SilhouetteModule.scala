@@ -49,8 +49,8 @@ class SilhouetteModule extends AbstractModule with ScalaModule {
    */
   def configure() {
     bind[Silhouette[DefaultEnv]].to[SilhouetteProvider[DefaultEnv]]
-  //  bind[UnsecuredErrorHandler].to[CustomUnsecuredErrorHandler]
-  //  bind[SecuredErrorHandler].to[CustomSecuredErrorHandler]
+    bind[UnsecuredErrorHandler].to[CustomUnsecuredErrorHandler]
+    bind[SecuredErrorHandler].to[CustomSecuredErrorHandler]
 
     bind[MotivationElement].to[MotivationElementImpl]
 
