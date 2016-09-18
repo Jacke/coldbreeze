@@ -126,6 +126,31 @@ implicit val SessionStateLogWrites  = Json.format[SessionStateLog]
   }
 
 
+
+
+
+import sangria.parser.QueryParser
+import sangria.execution.{ErrorWithResolver, QueryAnalysisError, Executor}
+import sangria.marshalling.playJson._
+
+import scala.util.{Success, Failure}
+
+
+
+
+
+  def graphql() = Action.async { implicit request =>
+
+
+
+
+
+
+
+    Future.successful(Ok("good"))
+  }
+
+
 }
 /*
 object APIController extends Controller with Secured  {

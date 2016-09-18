@@ -129,6 +129,8 @@ integrationTest := {
           ficus,
           anorm,
           jdbc4,
+          graphql,
+          playgraphql,
           
           swaggerRoute,
           sourcecode,

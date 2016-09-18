@@ -82,6 +82,10 @@ GET         /api/v1/launches            @controllers.APIController.all_sessions_
 
 
 
+POST         /graphql                    @controllers.APIController.graphql()
+
+
+
 # Businesses
 
 #  summary: fetch businesses
@@ -335,6 +339,7 @@ GET      /data 								              @controllers.DataController.index()
 GET      /api/data                          @controllers.DataController.index_json()
 POST     /data/resources					          @controllers.DataController.create_resource()
 POST     /api/v1/data/resources             @controllers.DataController.api_create_resource()
+POST     /api/v1/data/resource_signle       @controllers.DataController.api_create_resource_signle()
 PUT      /data/resource/:id					        @controllers.DataController.update_resource(id: Int)
 POST     /data/resource/:id/delete     		  @controllers.DataController.delete_resource(id: Int)
 GET      /data/test                         @controllers.DataController.boardTest()

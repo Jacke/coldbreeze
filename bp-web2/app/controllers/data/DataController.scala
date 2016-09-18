@@ -401,38 +401,82 @@ def api_create_resource() = silhouette.SecuredAction(BodyParsers.parse.json) { i
     }
 }
 
+
+def api_create_resource_signle() = silhouette.SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+    var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
+    val business = request.identity.businessFirst
+    if (request.identity.businessFirst < 1) {
+      Future.successful( 
+        Ok(Json.toJson(Map("status" -> "Workbench not defined" )))
+      )   
+    } else {
+    val selected = request.body.validate[ResourceDTO]
+        selected.fold(
+        errors => {
+           Logger.error(s"error with $selected")
+           Future.successful( 
+            BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toJson(errors)))
+           )
+        },
+        entity => {
+          println(entity)
+          val resource_id = ResourceDAO.pull_object(entity.copy(business = business))
+          createDefaultBoardsForRes(entity.copy(business = business, id = Some(resource_id))).map { r =>
+            Ok(Json.toJson(Map("status" -> resource_id.toString )))            
+          }
+        }
+      )
+    }
+}
+
+
+
 //PUT      /data/resource/:id         @controllers.DataController.update_resource(id: Int)
-def update_resource(id: Int) = silhouette.SecuredAction { implicit request =>
+def update_resource(id: Int) = silhouette.SecuredAction.async(BodyParsers.parse.json) { implicit request =>
 	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
-  ResourceForms.resourceForm.bindFromRequest.fold(
+  // TODO: Security
+  request.body.validate[ResourceDTO].fold(
       formWithErrors => {
         println(formWithErrors)
-        Home
+        Future.successful( 
+          Ok(Json.toJson(Map("status" -> formWithErrors.toString)))
+        )
         },
       entity => {
           ResourceDAO.get(id) match {
           case Some(res) => {
             if (request.identity.businessFirst == res.business) {
-              ResourceDAO.update(id, entity.copy(id = res.id))
+              ResourceDAO.update(id, entity.copy(id = res.id, business = res.business ))
             }
-            Home
+            Future.successful( 
+              Ok(Json.toJson(Map("status" -> "Ok")))
+            )
           }
-          case _ => Home
+          case _ =>  Future.successful(Ok(Json.toJson(Map("status" -> "Forbidden"))) )
         }
       })
 }
-def delete_resource(id: Int) = silhouette.SecuredAction { implicit request =>
+
+def delete_resource(id: Int) = silhouette.SecuredAction.async { implicit request =>
 	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
+  // TODO: Security  
   ResourceDAO.get(id) match {
     case Some(res) => {
       if (request.identity.businessFirst == res.business) {
         ResourceDAO.delete(res.id.get)
         controllers.UserActor.updateResource(target="lock", email=request.identity.emailFilled, isLock=true)
-
+        Future.successful(
+          Ok(Json.toJson(Map("status" -> "Ok")))
+        )
+      } else {
+        Future.successful( 
+          Ok(Json.toJson(Map("status" -> "Forbidden")))
+        )
       }
-      Home
     }
-    case _ => Home
+    case _ => Future.successful( 
+      Ok(Json.toJson(Map("status" -> "Not found")))
+    )
   }
 }
 

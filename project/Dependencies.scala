@@ -40,6 +40,9 @@ object Dependencies {
   val slickhikari     = "com.typesafe.slick"        %% "slick-hikaricp"         % "3.1.1"
   val slickpg         = "com.github.tminglei"       %% "slick-pg"               % "0.14.1"
 
+  val graphql         = "org.sangria-graphql"       %% "sangria"                % "0.7.3"
+  val playgraphql     = "org.sangria-graphql"       %% "sangria-play-json"      % "0.3.2"
+
   val slick_migrate   = "io.github.nafg"            %% "slick-migration-api"    % "0.1.1"
   val scalikejdbc     = "org.scalikejdbc"           %% "scalikejdbc"                  % "2.2.9"
   val scalikejdbcconf = "org.scalikejdbc"           %% "scalikejdbc-config"           % "2.2.9"
@@ -180,7 +183,7 @@ object Dependencies {
   val guice           = "net.codingwell"            %%  "scala-guice"           % "4.0.1"
   val ficus           = "net.ceedubs"               %%  "ficus"                 % "1.1.2"
   val bootstrapplay   = "com.adrianhurt"            %% "play-bootstrap3"     % "0.4.4-P24"
-  val bootstrapplay4  = "com.adrianhurt"            %% "play-bootstrap"      % "1.1-P25-B3-SNAPSHOT"
+  val bootstrapplay4  = "com.adrianhurt"            %% "play-bootstrap"      % "1.1-P25-B3"
   val scalatest0      = "org.scalatest"             %% "scalatest"           % "2.2.6"
   val wiremock        = "com.github.tomakehurst"    % "wiremock"             % "1.33"
   val playsctest      = "org.scalatestplus"         %  "play_2.11"           % "1.4.0"

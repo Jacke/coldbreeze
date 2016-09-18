@@ -9,7 +9,9 @@ How long each step was taken to pass
 2. Replace strategy function
 
 3. Indicators REST API and page integration
+
 ---------------------------
+
 
 4. Middleware extension 
 Module: REST 
