@@ -132,6 +132,7 @@ implicit val SessionStateLogWrites  = Json.format[SessionStateLog]
 import sangria.parser.QueryParser
 import sangria.execution.{ErrorWithResolver, QueryAnalysisError, Executor}
 import sangria.marshalling.playJson._
+import api_schemas._
 
 import scala.util.{Success, Failure}
 
@@ -139,15 +140,55 @@ import scala.util.{Success, Failure}
 
 
 
-  def graphql() = Action.async { implicit request =>
+  def graphql() = Action.async(BodyParsers.parse.json) { implicit request =>
 
 
+  request.body.validate[JsValue].fold(
+      formWithErrors => {
+        println(formWithErrors)
+        Future.successful(Ok("good"))
+
+        },
+      requestJson => {
+          val JsObject(fields) = requestJson
+          val JsString(query) = fields("query")
+
+          val operation = fields.get("operationName") collect {
+            case JsString(op) ⇒ op
+          }
+
+          val vars = fields.get("variables") match {
+            case Some(obj: JsObject) ⇒ obj
+            case Some(JsString(s)) if s.trim.nonEmpty ⇒ Json.parse(s)
+            case _ ⇒ Json.obj()
+          }
+
+          QueryParser.parse(query) match {
+
+            // query parsed successfully, time to execute it!
+            case Success(queryAst) ⇒
+              
+
+              Executor.execute(SchemaDefinition.StarWarsSchema, queryAst, new CharacterRepo,
+                  variables = vars,
+                  operationName = operation,
+                  deferredResolver = new FriendsResolver)
+                .map(OK → _)
+                .recover {
+                  case error: QueryAnalysisError ⇒ BadRequest → error.resolveError
+                  case error: ErrorWithResolver ⇒ InternalServerError → error.resolveError
+                }.map { result =>
+                Ok(result._2)
+              }
+
+            // can't parse GraphQL query, return error
+            case Failure(error) ⇒
+              println(Json.obj("error" -> JsString(error.getMessage)))
+              Future.successful(Ok("good"))
+          }
+      })      
 
 
-
-
-
-    Future.successful(Ok("good"))
   }
 
 
