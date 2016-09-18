@@ -42,7 +42,23 @@ Params: PostToChannel(Auth headers)
 ---------------------------------------------------------------------------------------------------------
 
 
+--------------
+- Slack action
+- Mashape action
+- Structure as output/input/base
+- Idempotence action flag
+- Secure resources
+- Eliminate queries
+- Unlim usage feature
+- Annotation
+- API Response to object
+- Realtime stations
+- Livemode
+- Public mode(for getting feedback about something)
 
+
+
+--------------
 
 
 
