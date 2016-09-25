@@ -69,17 +69,17 @@ class APIController @Inject() (
   extends Controller with I18nSupport {
 
 
-implicit val SessionElementsReads = Json.reads[SessionElements]
-implicit val SessionElementsWrites = Json.format[SessionElements]
-implicit val BPSessionStateReads = Json.reads[BPSessionState]
-implicit val BPSessionStateWrites = Json.format[BPSessionState]
-implicit val LaunchStateObjectsReads = Json.reads[LaunchStateObjects]
-implicit val LaunchStateObjectsWrites = Json.format[LaunchStateObjects]
+  implicit val SessionElementsReads = Json.reads[SessionElements]
+  implicit val SessionElementsWrites = Json.format[SessionElements]
+  implicit val BPSessionStateReads = Json.reads[BPSessionState]
+  implicit val BPSessionStateWrites = Json.format[BPSessionState]
+  implicit val LaunchStateObjectsReads = Json.reads[LaunchStateObjects]
+  implicit val LaunchStateObjectsWrites = Json.format[LaunchStateObjects]
 
-implicit val InputLoggerReads = Json.reads[InputLogger]
-implicit val InputLoggerWrites = Json.format[InputLogger]
-implicit val SessionStateLogReads  = Json.reads[SessionStateLog]
-implicit val SessionStateLogWrites  = Json.format[SessionStateLog]
+  implicit val InputLoggerReads = Json.reads[InputLogger]
+  implicit val InputLoggerWrites = Json.format[InputLogger]
+  implicit val SessionStateLogReads  = Json.reads[SessionStateLog]
+  implicit val SessionStateLogWrites  = Json.format[SessionStateLog]
 
   implicit val CompositeVReads = Json.reads[CompositeValues]
   implicit val CompositeVWrites = Json.format[CompositeValues]
@@ -146,7 +146,7 @@ import scala.util.{Success, Failure}
   request.body.validate[JsValue].fold(
       formWithErrors => {
         println(formWithErrors)
-        Future.successful(Ok("good"))
+        Future.successful(Ok(formWithErrors.toString))
 
         },
       requestJson => {
@@ -167,7 +167,7 @@ import scala.util.{Success, Failure}
 
             // query parsed successfully, time to execute it!
             case Success(queryAst) ⇒
-              
+
 
               Executor.execute(SchemaDefinition.StarWarsSchema, queryAst, new CharacterRepo,
                   variables = vars,
@@ -183,10 +183,9 @@ import scala.util.{Success, Failure}
 
             // can't parse GraphQL query, return error
             case Failure(error) ⇒
-              println(Json.obj("error" -> JsString(error.getMessage)))
-              Future.successful(Ok("good"))
+              Future.successful(Ok(Json.obj("error" -> JsString(error.getMessage))))
           }
-      })      
+      })
 
 
   }

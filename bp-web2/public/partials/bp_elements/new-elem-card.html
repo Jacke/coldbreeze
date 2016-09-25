@@ -1,20 +1,29 @@
-<div class="tab-hidden-content">
+<div class="tab-hidden-content primary-new-elem-fields">
 
 
-<div class="form-group new-element-form-field-title element-form-fields control-group clearfix" ng-show="newBpelem.refSelectHidden">
-  <label class="control-label primary-label col-sm-1" for="inputTitle">Title</label>
-  <input type="text" id="inputTitle" class="form-control newFrontElemFormTitleField" ng-model="newBpelem.title" required/>
+
+
+<div class="mui-textfield mui-textfield--float-label
+            form-group new-element-form-field-title element-form-fields control-group
+            clearfix" ng-show="newBpelem.refSelectHidden">
+  <input type="text" id="inputNewElemTitle"
+  class="newFrontElemFormTitleField mui--is-empty mui--is-dirty"
+  ng-model="newBpelem.title" required/>
+  <label class="" for="inputNewElemTitle">Title</label>
 </div>
 
-<div class="form-group element-form-fields control-group clearfix" ng-show="newBpelem.refSelectHidden">
-  <label class="control-label primary-label col-xs-2" for="inputBusinessId">{{ 'DESC' | translate }}</label>
-  <textarea type="text" class="col-xs-6 form-control newFrontElemFormDescField" id="inputBusinessId" ng-model="newBpelem.desc"/>
+<div class="mui-textfield mui-textfield--float-label
+            form-group element-form-fields control-group clearfix" ng-show="newBpelem.refSelectHidden">
+  <textarea type="text" class="newFrontElemFormDescField" id="inputNewElemDesc" ng-model="newBpelem.desc"/>
+  <label class="" for="inputNewElemDesc">{{ 'DESC' | translate }}</label>
 </div>
 
 
-<div class="form-group element-form-fields control-group clearfix">
-  <label class="control-label primary-label col-xs-2 type-label" disable-auto-validate="true" for="inputTitle">Type</label>
 
+
+<div class="form-group element-form-fields new-element-type-field control-group clearfix">
+  <label class="control-label primary-label col-xs-2 type-label"
+  disable-auto-validate="true" for="inputTitle">Type</label>
   <span class="selectedRefType col-xs-6 ref-selected-object">{{ newBpelem.selectedRef.ref.title }}</span>
   <a ng-click="newBpelem.refSelectHidden=false;" ng-show="newBpelem.refSelectHidden == true;" class="expand-ref-select">
     <span class="moicon moicon-info expand-ref-select"></span>
@@ -130,7 +139,7 @@
     </div>
 
     <div class="new-elem-action__action-base" ng-show="isStrategySelected(strategy, action)">
-  
+
 
       <div class="form-horizontal new-elem-action__action-base__action-base-form">
         <div class="new-elem-action__action-base-field" ng-repeat="base in action.refStrategySelect.bases | filter:byStrategy(strategy)">

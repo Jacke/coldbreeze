@@ -22,7 +22,7 @@
     </div>
 
 
-    <div ng-show="isSet(0, newBpelem)">
+    <div class="newElemCardPartial" ng-show="isSet(0, newBpelem)">
       <div ng-include src="'assets/partials/bp_elements/new-elem-card.html'"></div>
     </div>
 
@@ -45,7 +45,7 @@
     <ui-select-match placeholder="Select a person in the list or search his name...">{{ credFetch($item).fullName }}</ui-select-match>
     <ui-select-choices repeat="employeegroup in employees_groups">
       <div class="people-select-avatar">
-        <img  ng-src="{{ credFetch(employeegroup).avatarURL }}" 
+        <img  ng-src="{{ credFetch(employeegroup).avatarURL }}"
               alt="{{ credFetch(employeegroup).fullName }}">
       </div>
       <div class="people-select-credentials">
