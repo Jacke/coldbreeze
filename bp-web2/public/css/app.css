@@ -306,17 +306,17 @@ div#reactapp {
 .noWorkbench .teamSettings {height: 568px;}
 
 body.themeGrad {
-  vertical-align: baseline;
-  background-repeat: no-repeat !important;
-  background-size: contain;
-  -webkit-font-smoothing: subpixel-antialiased;
-  background: -webkit-linear-gradient(top, rgb(0, 145, 255) 0%, rgb(76, 138, 255) 54%, rgb(142, 132, 255) 94%, rgb(147, 132, 255) 100%);
-  background: -o-linear-gradient(top, rgb(0, 145, 255) 0%, rgb(76, 138, 255) 54%, rgb(142, 132, 255) 94%, rgb(147, 132, 255) 100%);
-  background: -ms-linear-gradient(top, rgb(0, 145, 255) 0%, rgb(76, 138, 255) 54%, rgb(142, 132, 255) 94%, rgb(147, 132, 255) 100%);
-  background: -moz-linear-gradient(top, rgb(0, 145, 255) 0%, rgb(76, 138, 255) 54%, rgb(142, 132, 255) 94%, rgb(147, 132, 255) 100%);
-  background: linear-gradient(to bottom, rgb(0, 145, 255) 0%, rgb(76, 138, 255) 54%, rgb(142, 132, 255) 94%, rgb(147, 132, 255) 100%);
-  background-color: rgb(162, 154, 255);
-  height: 100%;
+    vertical-align: baseline;
+    background-repeat: no-repeat !important;
+    background-size: contain;
+    -webkit-font-smoothing: subpixel-antialiased;
+    /* background: -webkit-linear-gradient(top, rgb(0, 145, 255) 0%, rgb(76, 138, 255) 54%, rgb(142, 132, 255) 94%, rgb(147, 132, 255) 100%); */
+    background: -o-linear-gradient(top, rgb(0, 145, 255) 0%, rgb(76, 138, 255) 54%, rgb(142, 132, 255) 94%, rgb(147, 132, 255) 100%);
+    background: -ms-linear-gradient(top, rgb(0, 145, 255) 0%, rgb(76, 138, 255) 54%, rgb(142, 132, 255) 94%, rgb(147, 132, 255) 100%);
+    background: -moz-linear-gradient(top, rgb(0, 145, 255) 0%, rgb(76, 138, 255) 54%, rgb(142, 132, 255) 94%, rgb(147, 132, 255) 100%);
+    background: linear-gradient(to bottom, #18485f 0%, #607D8B 54%, #9E9E9E 94%, #9E9E9E 100%);
+    background-color: rgb(160, 160, 160);
+    height: 100%;
 }
 
 .noWorkbench nav.minMenu.menuCell.menuEntity {-webkit-filter: blur(2px) contrast(2.9) saturate(10);cursor: none;}
@@ -420,7 +420,7 @@ body.themeGrad {
 }
 
 body.themeGrad div#container.container-global {
-    background: rgba(251, 251, 251, 0.93);
+    background: rgba(255, 255, 255, 0.92);
     display: flex;
     min-height: 100vh;
     flex-direction: column;

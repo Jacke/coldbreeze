@@ -56,6 +56,7 @@ class CharacterRepo {
     episode flatMap (_ => getHuman("1000")) getOrElse droids.last
 
   def getHuman(id: String): Option[Human] = humans.find(c => c.id == id)
+  def getHumans: List[Human] = humans
 
   def getDroid(id: String): Option[Droid] = droids.find(c => c.id == id)
 }

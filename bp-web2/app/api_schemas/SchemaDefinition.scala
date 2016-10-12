@@ -100,6 +100,10 @@ object SchemaDefinition {
       Field("human", OptionType(Human),
         arguments = ID :: Nil,
         resolve = ctx => ctx.ctx.getHuman(ctx arg ID)),
+      Field("humans", ListType(Human),
+        arguments = Nil,
+        resolve = ctx => ctx.ctx.getHumans),
+
       Field("droid", Droid,
         arguments = ID :: Nil,
         resolve = Projector((ctx, f) => ctx.ctx.getDroid(ctx arg ID).get))
