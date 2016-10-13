@@ -21,7 +21,8 @@ case class Human(
   name: Option[String],
   friends: List[String],
   appearsIn: List[Episode.Value],
-  homePlanet: Option[String]) extends Character
+  homePlanet: Option[String],
+  additValues: List[String] = List() ) extends Character
 
 case class Droid(
   id: String,
@@ -36,6 +37,7 @@ case class Droid(
  */
 case class DeferFriends(friends: List[String]) extends Deferred[List[Option[Character]]]
 
+case class DeferAddit(additValues: List[String]) extends Deferred[List[Option[Human]]]
 /**
  * Resolves the lists of friends collected during the query execution.
  * For this demonstration the implementation is pretty simplistic, but in real-world scenario you
@@ -86,13 +88,15 @@ object CharacterRepo {
       name = Some("Leia Organa"),
       friends = List("1000", "1002", "2000", "2001"),
       appearsIn = List(Episode.NEWHOPE, Episode.EMPIRE, Episode.JEDI),
-      homePlanet = Some("Alderaan")),
+      homePlanet = Some("Alderaan"),
+      additValues = List("s", "z") ),
     Human(
       id = "1004",
       name = Some("Wilhuff Tarkin"),
       friends = List("1001"),
       appearsIn = List(Episode.NEWHOPE, Episode.EMPIRE, Episode.JEDI),
-      homePlanet = None)
+      homePlanet = None,
+      additValues = List("s", "z", "qa") )
   )
 
   val droids = List(

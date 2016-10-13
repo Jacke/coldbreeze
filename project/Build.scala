@@ -131,7 +131,7 @@ integrationTest := {
           jdbc4,
           graphql,
           playgraphql,
-          
+
           swaggerRoute,
           sourcecode,
           silhouette,
@@ -145,7 +145,7 @@ integrationTest := {
           captcha,
           stripe,
 
-
+          sendgrid,
           scalamandrill,
           javamandrill,
           javamandrill2,

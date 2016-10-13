@@ -61,7 +61,10 @@ object SchemaDefinition {
           resolve = _.value.appearsIn map (e => Some(e))),
         Field("homePlanet", OptionType(StringType),
           Some("The home planet of the human, or null if unknown."),
-          resolve = _.value.homePlanet)
+          resolve = _.value.homePlanet),
+        Field("additType", ListType(StringType),
+          Some("additType if unknown."),
+          resolve = _.value.additValues)
       ))
 
   val Droid = ObjectType(

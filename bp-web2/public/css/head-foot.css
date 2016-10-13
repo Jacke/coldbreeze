@@ -1557,9 +1557,11 @@ background: #455064;
     border-top-color: #676d81;
 }
 .secondaryNav .secondaryNavItem span {
-    margin-right: 13px;
+    margin-right: 14px;
 }
-
+span.uicon-svg522.vLogout.vDimmedState {
+    margin-right: 14px;
+}
 .secondaryNav .secondaryNavItem .changelogLink span {
     margin-right: 19px;
 }

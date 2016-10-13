@@ -81,11 +81,13 @@ object Dependencies {
   val hicaricp        = "com.sandinh"               %% "play-hikaricp"          % "1.7.1"
   val javamail        = "javax.mail"                % "mail"                    % "1.5.0-b01"
   val courier         = "me.lessis"                 %% "courier"                % "0.1.3"
-  val scalamandrill   = "com.github.dzsessona"      % "scamandrill_2.11"       % "1.1.0"
+  val scalamandrill   = "com.github.dzsessona"      % "scamandrill_2.11"        % "1.1.0"
   val javamandrill    = "com.mandrillapp.wrapper.lutung" % "lutung"             % "0.0.5"
   val javamandrill2   = "com.cribbstechnologies.clients" % "mandrillClient"     % "1.1"
   //val scalamandril2   = "org.globalmoney"           % "play-mandrill"           % "0.1.1-SNAPSHOT"
-  val mailchimp       = "com.ecwid" % "ecwid-mailchimp" % "2.0.1.0"
+  val mailchimp       = "com.ecwid"                 % "ecwid-mailchimp"         % "2.0.1.0"
+  val sendgrid        = "com.sendgrid"              % "sendgrid-java"           % "3.1.0"
+
 
   val selenium        = "org.seleniumhq.selenium"   % "selenium-java"           % "2.44.0" //% "test"
   val selenide        = "com.codeborne"             % "selenide"                % "2.23"
@@ -107,7 +109,7 @@ object Dependencies {
   val loggly          = "org.logback-extensions"    %  "logback-ext-loggly"     % "0.1.2"
   val syslog   	      = "com.papertrailapp"   	    %  "logback-syslog4j"       % "1.0.0"
   val sentrylog       = "com.getsentry.raven"       %  "raven-logback"          % "7.6.0"
-  
+
   val compressor      = "com.mohiva"                %% "play-html-compressor"   % "0.3.1"
   val jsonvariants    = "org.julienrf"              %% "play-json-variants"     % "0.2"
   val playflyway      = "com.github.tototoshi"      %% "play-flyway"            % "1.1.0"
