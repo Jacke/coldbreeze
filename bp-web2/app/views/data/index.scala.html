@@ -19,13 +19,14 @@
 <script src='/jsroutes.js'></script>
 <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/data_tables.css")">
 
+
 <div class="app-container">
 
 <!--
 <div class="container app data-app" ng-app="app" ng-controller="DataTableController">
 -->
 <app>
-  
+
 </app>
 
 
@@ -129,7 +130,7 @@
                     <div class="entityHeader">
                       <h4 class="entityHeaderTitle">@entity.title</h4>
                       <div class="entityHeaderEntityType">@entity.etype</div>
-                      <div class="entityHeaderEntityDefaultValue">@entity.default</div> 
+                      <div class="entityHeaderEntityDefaultValue">@entity.default</div>
                   </div>
 
                 <!-- entity form -->
@@ -220,13 +221,13 @@
 <!--
 <div class="process-indicator-data-table" style="display:none;" ng-repeat="process in indicators.processes">
   <div class="process-indicator-data-table-title">{{process.title}}</div>
-  <div class="process-indicator-data-table-expand-process" ng-click="process.showIndicators?process.showIndicators=false:process.showIndicators=true" 
+  <div class="process-indicator-data-table-expand-process" ng-click="process.showIndicators?process.showIndicators=false:process.showIndicators=true"
   ng-class="process.showIndicators?'expanded':' '">
     <span class="minicon minicon-line-graph"></span>
   </div>
 
 
-  <table 
+  <table
     class="table table-with-indicators">
 <thead>
     <tr class="ng-table-sort-header">
@@ -234,7 +235,7 @@
             Launch</th>
             <th>Elements</th>
     </tr>
-</thead>    
+</thead>
 <tbody>
   <tr ng-repeat="indy in indicators.launches_indicators | filter:indicatorsByProcessRes(process, @{cn.resource.id.getOrElse(0)})">
     <td>
@@ -243,7 +244,7 @@
     <td>
 
 
-  <table 
+  <table
     class="table table-with-indicators">
 <thead>
     <tr class="ng-table-sort-header">
@@ -251,21 +252,21 @@
               {{el.element.title}}
             </th>
     </tr>
-</thead>    
+</thead>
 <tbody>
   <tr>
     <td ng-repeat="el in indy.elements">
         <li ng-repeat="indicator in el.indicators | filter:byTopoElement(el, @{cn.resource.id.getOrElse(0)} )">
           {{ indicator | json}}
         </li>
-    </td>           
+    </td>
   </tr>
 </tbody>
 
 </table>
-      
+
 </td>
-         
+
   </tr>
 </tbody>
 
@@ -273,8 +274,8 @@
 
 
   <div class="indicator-data-table-container" ng-show="process.showIndicators">
-  <table 
-    ng-table-dynamic="tableParams with cols" 
+  <table
+    ng-table-dynamic="tableParams with cols"
     class="table table-with-indicators">
           <tr ng-repeat="row in $data">
             <td ng-repeat="col in $columns">{{row[col.field]}}</td>
@@ -328,19 +329,27 @@
 
 
 
-<!--
-<script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer>
 
-angular 2 dev
 
-<script type="text/javascript" src="/assets/js/ang2/polyfills.bundle.js"></script>
-<script type="text/javascript" src="/assets/js/ang2/vendor.bundle.js"></script>
-<script type="text/javascript" src="/assets/js/ang2/main.bundle.js"></script>
--->
-<script src="http://localhost:3000/webpack-dev-server.js"></script>
-<script src="http://localhost:3000/polyfills.bundle.js"></script>
-<script src="http://localhost:3000/vendor.bundle.js"></script>
-<script src="http://localhost:3000/main.bundle.js"></script>
+@if(request.host == "127.0.0.1:9000" || request.host == "localhost:9000") {
+  <!--
+  <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer>
+  angular 2 dev
+  -->
+
+
+  <script src="http://localhost:3000/webpack-dev-server.js"></script>
+  <script src="http://localhost:3000/polyfills.bundle.js"></script>
+  <script src="http://localhost:3000/vendor.bundle.js"></script>
+  <script src="http://localhost:3000/main.bundle.js"></script>
+
+} else {
+
+  <script type="text/javascript" src="/assets/js/ang2/polyfills.bundle.js"></script>
+  <script type="text/javascript" src="/assets/js/ang2/vendor.bundle.js"></script>
+  <script type="text/javascript" src="/assets/js/ang2/main.bundle.js"></script>
+}
+
 
 
 

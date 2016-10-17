@@ -6,7 +6,7 @@ minorityControllers.directive("svgbuttondirective", function() {
 
   return {
     restrict: 'E',
-    link: function(scope, elm, attrs) { 
+    link: function(scope, elm, attrs) {
 //      document.coolButtons(elm);
      // $('.tcon').on('click', function(d) { $(this).toggleClass('tcon-transform'); });
   console.log("you clicked ", elm[0]);
@@ -17,7 +17,7 @@ minorityControllers.directive("svgbuttondirective", function() {
 });
 
     },
-    template: '<button type="button" class="tcon tcon-grid tcon-grid--rearrange" aria-label="toggle grid"><span class="tcon-grid__item" aria-hidden="true"></span><span class="tcon-visuallyhidden">toggle grid</span></button>' 
+    template: '<button type="button" class="tcon tcon-grid tcon-grid--rearrange" aria-label="toggle grid"><span class="tcon-grid__item" aria-hidden="true"></span><span class="tcon-visuallyhidden">toggle grid</span></button>'
 
 //    template: '<div class="content"><div class="device device--alt"><div class="device__screen"><div id="menu-icon-wrapper2" class="menu-icon-wrapper" style="visibility: hidden"><svg width="1000px" height="1000px"><path id="pathD" d="M 300 400 L 740 400 C 900 400 900 750 600 850 A 400 400 0 0 1 200 200 L 800 800" style="stroke-dashoffset: 5803.15; stroke-dasharray: 2901.57, 5258.15, 240;"></path><path id="pathE" d="M 300 500 L 700 500" style="stroke-dashoffset: 800; stroke-dasharray: 400, 600, 0;"></path><path id="pathF" d="M 700 600 L 290 603 C 100 600 100 200 400 152 A 400 380 0 1 1 200 800 L 800 200" style="stroke-dashoffset: 6993.11; stroke-dasharray: 3496.56, 6448.11, 240;"></path></svg><button id="menu-icon-trigger2" class="menu-icon-trigger"></button></div></div></div></div>'
   }
@@ -91,7 +91,7 @@ $scope.pushBboardTRigger = function(launchId, triggerFn, ident) {
 }
 
 
-  
+
 
 
 $scope.convertTo = function (arr, key, dayWise) {
@@ -112,7 +112,7 @@ $scope.convertTo = function (arr, key, dayWise) {
 
   // { date, dated_sessions }
 };
-  
+
 
 
 $scope.decorateLaunchesByDate = function(launches_container) {
@@ -123,8 +123,8 @@ $scope.decorateLaunchesByDate = function(launches_container) {
     return arr;
   }
 
-  // -> launchesCOntainer(process, launches) 
-  // <- launchesCOntainer(process, launches, launchesByDate(date: launches) ) 
+  // -> launchesCOntainer(process, launches)
+  // <- launchesCOntainer(process, launches, launchesByDate(date: launches) )
   return _.map(launches_container, function(cn) {
     return {
       process: cn.process,
@@ -455,7 +455,16 @@ $scope.processHistory = function(entity) {
 }
 $scope.deleteSession = function(session_id) {
   SessionsFactory.delete({ session_id: session_id}).$promise.then(function (data2) {
-      $scope.reloadSession();
+      //$scope.reloadSession();
+
+      _.map($scope.sessions, function(session_cn) {
+        session_cn.sessions = _.filter(session_cn.sessions, function(ses) {
+          return ses.session.id !== session_id
+        })
+        return session_cn;
+      })
+    //$scope.reloadSessionForDeleted(session_id);
+
   })
 };
 
@@ -736,7 +745,7 @@ $scope.isExecutionOfElement = function(element, sessionId) {
     });
     //console.log('lastState', lastState, states);
     if (lastState !== undefined) {
-      var finalStateLog = _.find($scope.allLogs.state_logs, function(d){ 
+      var finalStateLog = _.find($scope.allLogs.state_logs, function(d){
                                 return d.state_id == lastState.id });
       //console.log('final state log', finalStateLog);
       if (finalStateLog !== undefined) {

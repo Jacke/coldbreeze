@@ -183,9 +183,9 @@ object SpamMailer {
              //request.body = mail.build();
 
              request.body = s"""
-             {\"personalizations\":[{\"to\":[{\"email\":\"test@minorityapp.com\"}],
-             \"subject\":\"Hello World from the SendGrid Java Library!\"}],
-             \"from\":{\"email\":\"a@minorityapp.com\"},
+             {\"personalizations\":[{\"to\":[{\"email\":\"stan@minorityapp.com\"}, {\"email\":\"paul@minorityapp.com\"}],
+             \"subject\":\"Test newslettering!\"}],
+             \"from\":{\"email\":\"stan@minorityapp.com\"},
              \"content\":[{\"type\":\"text/html\",
                \"value\": \"Hello, Email!\"}],
              \"template_id" : \"8dcf1239-087c-478c-b0ce-8ddc7e8c787f\"}"""
