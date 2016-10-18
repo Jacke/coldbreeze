@@ -456,13 +456,21 @@ $scope.processHistory = function(entity) {
 $scope.deleteSession = function(session_id) {
   SessionsFactory.delete({ session_id: session_id}).$promise.then(function (data2) {
       //$scope.reloadSession();
+console.log('deleteSession', $scope.sessions);
 
-      _.map($scope.sessions, function(session_cn) {
-        session_cn.sessions = _.filter(session_cn.sessions, function(ses) {
-          return ses.session.id !== session_id
-        })
-        return session_cn;
-      })
+      $timeout(function(){
+        $scope.sessions = _.map($scope.sessions, function(session_cn) {
+          console.log('non filtered', session_cn.sessions);
+
+          var filtered = _.filter(session_cn.sessions, function(ses) {
+            return ses.session.id !== session_id
+          });
+          console.log('filtered', filtered);
+          session_cn.sessions = filtered;
+          return session_cn;
+        });
+      }, 0);
+      return $scope.sessions;
     //$scope.reloadSessionForDeleted(session_id);
 
   })
