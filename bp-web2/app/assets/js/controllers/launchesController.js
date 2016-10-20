@@ -54,6 +54,15 @@ angular.element(document).ready(function () {
 //  document.coolButtons();
 });
 
+
+$scope.batchEdit = false;
+
+$scope.startEditBatch = function() {
+  return $scope.batchEdit ? $scope.batchEdit = false : $scope.batchEdit=true;
+}
+
+
+
 $scope.isEmptyLaunchesCheck = function() {
   //$rootScope.$on('cfpLoadingBar:completed', function(event, data){
   $scope.isEmptyLaunches = false;

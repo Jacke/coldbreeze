@@ -1,6 +1,11 @@
 <div class="allStations allSessionsList">
 <!--<h1>{{ 'ALL_SESSIONS' | translate }}</h1>-->
 
+
+
+<div class="start-edit-batch" ng-class="{'activated': batchEdit}">
+  <a ng-click="startEditBatch()">Edit</a>
+</div>
   <div class="active-switcher">
     <input type="checkbox" class="switch" id="switch-1" ng-init="onlyActive=true;" data-ng-model="onlyActive"/>
     <label for="switch-1" class="onlyActiveLabel">Active</label>
@@ -131,12 +136,12 @@
 </div>
 -->
 
-<!--  
+<!--
   <div class="session-process-dates" ng-repeat="(date, session_cn) in sessions">
 -->
 
 
-    
+
 
 
 <div class="session-process" ng-repeat="entity in sessions" ng-hide="isSessionsOnlyActive(entity.sessions)">
@@ -157,21 +162,21 @@
       <div ng-repeat="c in (filteredLaunches = (sessions | orderBy:'station.paused':true | filter:isOnlyActive))"></div>
        <div class="launch-date" ng-show="filteredLaunches.length > 0"><span>{{ key | amDateFormat:'MMMM Do YYYY' }}</span></div>
 
-  <div class="stations minimal-stations" 
-       ng-init="session.lineDescShow=false;" 
-       ng-class="{'lineDescShowed': session.lineDescShow == true }" 
+  <div class="stations minimal-stations"
+       ng-init="session.lineDescShow=false;"
+       ng-class="{'lineDescShowed': session.lineDescShow == true }"
        ng-repeat="session in sessions | orderBy:'station.paused':true | filter:isOnlyActive">
-       
+
 
   <div class="session__buttonInput" ng-click="showInlineLaunch(session);session.lineDescShow==true ? session.lineDescShow=false : session.lineDescShow=true;">
- 
+
 
 
       <svgbuttondirective></svgbuttondirective>
     <button class="svg-button-input">
 
-    <!--    
-      <svg class="inline-svg" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"      y="0px" width="21px" height="24px" fill="white" viewBox="0 0 32 22.5" 
+    <!--
+      <svg class="inline-svg" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px"      y="0px" width="21px" height="24px" fill="white" viewBox="0 0 32 22.5"
             enable-background="new 0 0 32 22.5" xml:space="preserve">
             <title>Mobile Menu</title>
             <g class="svg-menu-toggle">
@@ -212,7 +217,7 @@
                 <abbr class="session__header__created_at" title="{{ session.session.created_at | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }}" am-time-ago="session.session.created_at"></abbr>
                </div>
 
-           <!--    
+           <!--
           <div class="session__header session__people">
             <div class="launched-by" ng-show="session.peoples.launched_by != 'not@found.com'" ng-init="account = accFetchSessioned(session.peoples.launched_by)">
                 <span class="account-pic" tooltip-placement="right" uib-tooltip="{{ account.tooltip }}" tooltip-side="left">

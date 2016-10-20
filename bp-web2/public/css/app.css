@@ -5142,17 +5142,17 @@ span.line.elem-card.executed {
     float: right;
     padding-top: 35px;
     position: relative;
-    margin-right: 0px;
+    margin-right: 36px;
     width: 167px;
 }
 label.onlyActiveLabel {
     font-size: 17px;
     color: rgb(154, 166, 194);
     height: 26px;
-    margin-right: 15px;
+    margin-right: 26px;
     position: absolute;
-    top: 37px;
-    font-size: 15px;
+    top: 40px;
+    font-size: 11px;
     right: 0px;
 }
 
@@ -13390,4 +13390,40 @@ ul[dnd-list] li.selected {
     background: #77d2a8;
     border: none;
     border-radius: 0px;
+}
+
+
+
+
+.start-edit-batch {
+    display: inline-block;
+    float: right;
+    padding-top: 37px;
+    position: relative;
+    margin-right: 15px;
+    width: 59px;
+    margin-left: -17px;
+}
+
+.start-edit-batch a {
+  background: #78909C;
+  color: white;
+  text-shadow: none;
+  padding: 8px 19px;
+  font-size: 11px;
+  border-radius: 2px;
+  transition: 1s all;
+  cursor: pointer;
+  box-shadow: 1px 1px 1px #797979;
+}
+
+.start-edit-batch a:hover {
+    color: white;
+    text-decoration: none;
+    background: #37474F;
+}
+
+.start-edit-batch.activated a {
+  background: #37474F;
+  box-shadow: 1px 1px 1px #1b2529 inset;
 }
