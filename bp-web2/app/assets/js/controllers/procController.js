@@ -52,6 +52,18 @@ $scope.search = function() {
 }
 
 
+
+$scope.batchEdit = false;
+
+$scope.startEditBatch = function() {
+  return $scope.batchEdit ? $scope.batchEdit = false : $scope.batchEdit=true;
+}
+
+
+
+
+
+
 $scope.cacheFactory = CacheFactory;
 
 
@@ -398,13 +410,13 @@ $scope.loadProcessesFromCache = function() {
             // 4. Split C and D and apply C for new created resources
             var removedIds = _.map(resp.data.deltas.d, function(d) { return parseInt(d.resourceId) });
             var existedProcessIds = _.map(processesCache.get('processes'), function(d){return d.id});
-            var cleanCreatedProcess = _.filter(resp.data.c, function(p){ 
-              return !(_.contains(existedProcessIds, p.id)); 
+            var cleanCreatedProcess = _.filter(resp.data.c, function(p){
+              return !(_.contains(existedProcessIds, p.id));
             });
 
             var concatedProcess = processesCache.get('processes').concat(cleanCreatedProcess);
-            var finalizedProcess = _.filter(concatedProcess, function(c){ 
-              return !_.contains(removedIds, c.id) 
+            var finalizedProcess = _.filter(concatedProcess, function(c){
+              return !_.contains(removedIds, c.id)
             });
             processesCache.put('processes', finalizedProcess);
             // 5. D for resource with ids that need to be removed
@@ -412,8 +424,8 @@ $scope.loadProcessesFromCache = function() {
             // title:.(\S+\s+\S+|\S+).service:
 
             var updatedTitles = _.map(resp.data.deltas.u, function(d) {
-              return {id: parseInt(d.resourceId), 
-                    title: d.updatedAttributes.split(/title:(.*?) service:/)[1], 
+              return {id: parseInt(d.resourceId),
+                    title: d.updatedAttributes.split(/title:(.*?) service:/)[1],
                     service: parseInt(d.updatedAttributes.split(/service:.(\S+\s+\S+|\S+).version:/)[1])
                   }
             });
@@ -778,16 +790,16 @@ $scope.refElem = function (ref, elem) {
     elem.ref = ref.ref.id;
     elem.selectedRef = ref;
     // AUTO SELECT FIRST STRATEGY
-    console.log('elem.ref', elem.ref);    
+    console.log('elem.ref', elem.ref);
     if (ref.strategies !== undefined && ref.middlewares !== undefined &&
         ref.middlewares.length > 0 && ref.strategies.length > 0) {
-      var middlewareToSelect = ref.middlewares[0]; 
+      var middlewareToSelect = ref.middlewares[0];
       var actionToSelect = _.find(ref.reactions, function(ac) {return ac.id == middlewareToSelect.reaction});
       console.log('middlewareToSelect', middlewareToSelect);
       if (actionToSelect !== undefined) {
         console.log('actionToSelect', actionToSelect);
         var strategyToSelect = ref.strategies[0];
-        $scope.selectStrategy(strategyToSelect, middlewareToSelect, actionToSelect, 
+        $scope.selectStrategy(strategyToSelect, middlewareToSelect, actionToSelect,
             _.filter(ref.bases, function(base){return base.strategy == strategyToSelect.id }) );
       }
     }

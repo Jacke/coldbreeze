@@ -4062,24 +4062,25 @@ a.confirmation-btn.btn.btn-small.confirmed {
 
 .process-remove-aside-button {
     position: absolute;
-    right: 0px;
-    top: 11px;
+    right: 46px;
+    top: 7px;
     z-index: 9000;
     cursor: pointer;
 }
 
 .process-remove-aside-button a#processDeleteButton {
-    padding: 3px 0px 0px 0px;
+    padding: 9px 10px 8px 10px;
     border: none;
-    background: #F44336;
+    background: white;
     font-size: 11px;
     z-index: 99999;
-    color: white;
-    border-radius: 0px 5px 6px 0px;
+    color: gray !important;
+    border-radius: 90px;
+    border: solid 1px #616161;
 }
 
 .process-remove-aside-button a#processDeleteButton span.minicon-trash {
-    color: white;
+    color: #424242;
     font-size: 13px;
     font-weight: 900;
 }
@@ -5331,7 +5332,7 @@ label.onlyActiveLabel {
     padding-left: 11px;
     float: left;
     background: #428bca;
-    padding: 14px 10px;
+    padding: 11px 10px;
     color: white;
     margin-left: 15px;
     font-size: 15px;
@@ -13427,3 +13428,20 @@ ul[dnd-list] li.selected {
   background: #37474F;
   box-shadow: 1px 1px 1px #1b2529 inset;
 }
+.processes-tables .start-edit-batch {
+    float: right;
+    margin-right: 1%;
+    margin-top: -28px;
+}
+
+.processes-tables .start-edit-batch a {
+    padding: 12px 19px;
+    font-size: 12px;
+    box-shadow: 1px 1px 1px rgba(121, 121, 121, 0.01);
+}
+.processes-tables .start-edit-batch.activated a {
+    box-shadow: 1px 1px 1px #223035 inset;
+}
+
+.process-remove-aside-button.ng-hide-add         { animation:0.5s lightSpeedOutY ease; }
+.process-remove-aside-button.ng-hide-remove      { animation:0.5s flipInXY ease; }

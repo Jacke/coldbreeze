@@ -1,4 +1,4 @@
-<div class="tableMinListWrap">
+<div class="tableMinListWrap processes-tables">
 
 <a class="createMin ajaxLink cacheable" id="createNewProcessBtn" ng-click="createNewBP()" ng-show="isManagerVal">
   <span class="plusSign vIco vPlusSquare vShineState"></span> {{ 'NEW_PROCESS' | translate }}
@@ -8,6 +8,9 @@
   <div class="service-helper" ng-show="service_id != null">
     <a ng-click="allServices()">{{ 'ALL_SERVICES' | translate }} </a>
   </div>
+
+
+
   <div class="tableMinListFilter search-process-input filterLayer">
     <span class="magnifyGlass vIco vLoupe vLight2State"></span>
     <input type="text" size="41" ng-model="searchValue"
@@ -15,6 +18,10 @@
     class="filterInput tableMinListFilterInput"
     placeholder="{{ 'SEARCH_PROC' | translate }}">
   </div>
+  <div class="start-edit-batch" ng-class="{'activated': batchEdit}">
+    <a ng-click="startEditBatch()">Edit</a>
+  </div>
+
 <style>
 .empty-reponse {
     margin-left: 0px;
@@ -44,8 +51,8 @@
         <span class="tableMinVanity">{{ filterService(bprocess.service) }}</span>
       </h2>
       <div class="fastElCreateBtn">
-        <a class="fastElFormButton" 
-           ng-click="switchFastElementForm(bprocess)" 
+        <a class="fastElFormButton"
+           ng-click="switchFastElementForm(bprocess)"
            uib-tooltip="Add element" tooltip-side="left">+</a>
       </div>
       <div class="process_content" ng:show="emptyElemCheck(bprocess.trees)">
@@ -67,14 +74,14 @@
       </div>
       <div class="process-launch-thumb" ng-show="bprocess.executedOnce"><a href="/a#/launches/"><div class="red-indicator"></div></a></div>
 
-      <div class="process-thumb" ng:show="emptyElemCheck(bprocess.trees)" ng-init="bprocess.loading=false;">
+      <div class="process-thumb" ng:show="!batchEdit && emptyElemCheck(bprocess.trees)" ng-init="bprocess.loading=false;">
         <p class="tableMinListGithub">
           <a class="redButton" ng-show="!bprocess.loading" id="launchProcessButton" ng-click="run(bprocess)" tooltip-placement="left" uib-tooltip="Launch process" tooltip-side="left">Run</a>
           <div class="jawn" ng-show="bprocess.loading"></div>
         </p>
       </div>
 
-      <div class="process-remove-aside-button">
+      <div class="process-remove-aside-button" ng-show="batchEdit">
         <a class="tableMinControlsLink teamSettingsLink tableMinLinkDelete"
         id="processDeleteButton"
         ng-click="deleteBP(bprocess.id)"> <span class="minicon-trash"></span></a>
