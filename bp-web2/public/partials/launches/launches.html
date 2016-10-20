@@ -3,13 +3,15 @@
 
 
 
+
+<div class="active-switcher">
+  <input type="checkbox" class="switch" id="switch-1" ng-init="onlyActive=true;" data-ng-model="onlyActive"/>
+  <label for="switch-1" class="onlyActiveLabel">Active</label>
+</div>
+
 <div class="start-edit-batch" ng-class="{'activated': batchEdit}">
   <a ng-click="startEditBatch()">Edit</a>
 </div>
-  <div class="active-switcher">
-    <input type="checkbox" class="switch" id="switch-1" ng-init="onlyActive=true;" data-ng-model="onlyActive"/>
-    <label for="switch-1" class="onlyActiveLabel">Active</label>
-  </div>
 
 
   <div class="cd-filter">
