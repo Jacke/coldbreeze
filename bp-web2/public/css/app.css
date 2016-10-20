@@ -5143,7 +5143,7 @@ span.line.elem-card.executed {
     float: right;
     padding-top: 35px;
     position: relative;
-    margin-right: 36px;
+    margin-left: -28px;
     width: 167px;
 }
 label.onlyActiveLabel {
