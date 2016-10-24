@@ -188,7 +188,7 @@
   }
 
   /*
-      
+
   */
   @include b(session_list) {
     padding-top: 10px;
@@ -943,6 +943,27 @@ a.add-btn {
   display: inline-block;
   width: 63%;
 }
+
+
+
+.teamSettingsCheckbox.serviceForm {
+    margin-left: 21px;
+}
+
+.teamSettingsCheckbox.serviceForm input#newServiceFormField {
+}
+
+.teamSettingsCheckbox.serviceForm fieldset {
+    width: 30%;
+}
+
+.tableMinListWrap.settings-page td.service-title-link {
+    font-size: 13px;
+    width: 85%;
+    padding-left: 20px;
+}
+
+
 
 
 /***********

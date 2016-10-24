@@ -61,13 +61,13 @@ isManager:Boolean = false)(implicit request: RequestHeader)
                 @entities.map {
                  case (entity) => {
                         <tr class="business-service-entity">
-                            <td>
+                            <td class="service-title-link">
                                 <a href="@routes.Application.app()#/bprocesses?service=@entity.id" class="business-service-title">@entity.title</a></td>
-                            <td>
+                            <td class="service-rename-button">
                                 <a href="@routes.BusinessServiceController.update(entity.id.get)">@Messages("page.rename")</a>
 
                             </td>
-                            <td>
+                            <td class="service-delete-button">
                               @form(routes.BusinessServiceController.destroy(entity.id.get), 'class -> "topRight") {
                                   <input type="submit" value="Delete" class="btn danger">
                               }
