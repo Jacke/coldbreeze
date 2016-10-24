@@ -10,10 +10,81 @@
     	@sessions.map { session_cn =>
           @if(session_cn.sessions.length > 0) {
           <div class="session_list__session">
-    		  <div class="session_list__session__process">
+
+            <div class="session_list__session__process_overview">
+
+          <div class="session_list__session__process">
     		  	<a href="/a#/bprocess/@{session_cn.process.id.getOrElse(0)}">@session_cn.process.title</a>
     		  </div>
 
+<div class="process_content">
+  <div class="tree-thumb process-tree ng-scope angular-ui-tree" id="style-1" ui-tree="options" data-drag-enabled="false">
+  <ol ui-tree-nodes="" ng-model="bprocess.trees" class="ng-pristine ng-untouched ng-valid ng-scope angular-ui-tree-nodes">
+
+    <!-- ngRepeat: trr in bprocess.trees | orderBy:'order' --><li ng-repeat="trr in bprocess.trees | orderBy:'order'" ui-tree-node="" class="ng-scope angular-ui-tree-node">
+        <a href="/a#/bprocess/126/elements?f_element=340"><div class="elem-card confirm ">
+         cxZvz
+       </div></a>
+      <ol ui-tree-nodes="" ng-model="trr.nodes" class="ng-pristine ng-untouched ng-valid ng-scope angular-ui-tree-nodes">
+        <!-- ngRepeat: node in trr.nodes -->
+      </ol>
+    </li><!-- end ngRepeat: trr in bprocess.trees | orderBy:'order' --><li ng-repeat="trr in bprocess.trees | orderBy:'order'" ui-tree-node="" class="ng-scope angular-ui-tree-node">
+        <a href="/a#/bprocess/126/elements?f_element=341"><div class="elem-card confirm ">
+         zxvz
+       </div></a>
+      <ol ui-tree-nodes="" ng-model="trr.nodes" class="ng-pristine ng-untouched ng-valid ng-scope angular-ui-tree-nodes">
+        <!-- ngRepeat: node in trr.nodes -->
+      </ol>
+    </li><!-- end ngRepeat: trr in bprocess.trees | orderBy:'order' --><li ng-repeat="trr in bprocess.trees | orderBy:'order'" ui-tree-node="" class="ng-scope angular-ui-tree-node">
+        <a href="/a#/bprocess/126/elements?f_element=342"><div class="elem-card confirm ">
+         Qualify
+       </div></a>
+      <ol ui-tree-nodes="" ng-model="trr.nodes" class="ng-pristine ng-untouched ng-valid ng-scope angular-ui-tree-nodes">
+        <!-- ngRepeat: node in trr.nodes -->
+      </ol>
+    </li><!-- end ngRepeat: trr in bprocess.trees | orderBy:'order' --><li ng-repeat="trr in bprocess.trees | orderBy:'order'" ui-tree-node="" class="ng-scope angular-ui-tree-node">
+        <a href="/a#/bprocess/126/elements?f_element=343"><div class="elem-card confirm ">
+         Qualify4
+       </div></a>
+      <ol ui-tree-nodes="" ng-model="trr.nodes" class="ng-pristine ng-untouched ng-valid ng-scope angular-ui-tree-nodes">
+        <!-- ngRepeat: node in trr.nodes -->
+      </ol>
+    </li><!-- end ngRepeat: trr in bprocess.trees | orderBy:'order' --><li ng-repeat="trr in bprocess.trees | orderBy:'order'" ui-tree-node="" class="ng-scope angular-ui-tree-node">
+        <a href="/a#/bprocess/126/elements?f_element=344"><div class="elem-card confirm ">
+         Qualify1
+       </div></a>
+      <ol ui-tree-nodes="" ng-model="trr.nodes" class="ng-pristine ng-untouched ng-valid ng-scope angular-ui-tree-nodes">
+        <!-- ngRepeat: node in trr.nodes -->
+      </ol>
+    </li><!-- end ngRepeat: trr in bprocess.trees | orderBy:'order' --><li ng-repeat="trr in bprocess.trees | orderBy:'order'" ui-tree-node="" class="ng-scope angular-ui-tree-node">
+        <a href="/a#/bprocess/126/elements?f_element=345"><div class="elem-card confirm ">
+         Qualify5
+       </div></a>
+      <ol ui-tree-nodes="" ng-model="trr.nodes" class="ng-pristine ng-untouched ng-valid ng-scope angular-ui-tree-nodes">
+        <!-- ngRepeat: node in trr.nodes -->
+      </ol>
+    </li><!-- end ngRepeat: trr in bprocess.trees | orderBy:'order' --><li ng-repeat="trr in bprocess.trees | orderBy:'order'" ui-tree-node="" class="ng-scope angular-ui-tree-node">
+        <a href="/a#/bprocess/126/elements?f_element=346"><div class="elem-card confirm ">
+         Qualify7
+       </div></a>
+      <ol ui-tree-nodes="" ng-model="trr.nodes" class="ng-pristine ng-untouched ng-valid ng-scope angular-ui-tree-nodes">
+        <!-- ngRepeat: node in trr.nodes -->
+      </ol>
+    </li><!-- end ngRepeat: trr in bprocess.trees | orderBy:'order' --><li ng-repeat="trr in bprocess.trees | orderBy:'order'" ui-tree-node="" class="ng-scope angular-ui-tree-node">
+        <a href="/a#/bprocess/126/elements?f_element=347"><div class="elem-card confirm ">
+         Qualify8
+       </div></a>
+      <ol ui-tree-nodes="" ng-model="trr.nodes" class="ng-pristine ng-untouched ng-valid ng-scope angular-ui-tree-nodes">
+        <!-- ngRepeat: node in trr.nodes -->
+      </ol>
+    </li><!-- end ngRepeat: trr in bprocess.trees | orderBy:'order' -->
+  </ol>
+</div>
+</div>
+<div class="process_run">
+  <a class="process_run_button">Run</a>
+</div>
+</div>
 
                 @session_cn.sessions.filter(status => status.percent < 100).map { session =>
                 <div class="session-container">
@@ -61,7 +132,7 @@
       }
       }
     </div>
-    <a href="/a#/launches" class="single-mail text-center">View All Sessions</a>
+    <a href="/a#/launches" class="single-mail text-center">View All Launches</a>
   </div>
 
 
