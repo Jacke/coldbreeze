@@ -62,7 +62,8 @@ class BusinessServiceController @Inject() (
   extends Controller with I18nSupport {
    import play.api.Play.current
 
-   val Home = Redirect(routes.ProfileController.dashboard())
+   val Home = Redirect(routes.SettingController.index())
+
    val serviceForm = Form(
     mapping(
       "id" -> optional(number),

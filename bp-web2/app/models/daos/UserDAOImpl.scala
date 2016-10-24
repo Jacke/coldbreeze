@@ -34,6 +34,18 @@ class UserDAOImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvid
       }
     }
   }
+
+  def findPasswordHash(loginInfo: LoginInfo): Future[Option[DBPasswordInfo]] = {
+    val userQuery = for {
+      dbLoginInfo <- loginInfoQuery(loginInfo)
+      dbUserLoginInfo <- slickPasswordInfos.filter(_.loginInfoId === dbLoginInfo.id)
+    } yield dbUserLoginInfo
+    db.run(userQuery.result.headOption).map { dbUserOption =>
+      dbUserOption
+    }
+  }
+
+
   def findAll(): Future[Seq[User2]] = {
     val query = for {
       dbUser <- slickUsers
@@ -52,7 +64,7 @@ class UserDAOImpl @Inject()(protected val dbConfigProvider: DatabaseConfigProvid
             user.email,
             user.avatarURL)
       }
-    }    
+    }
   }
 
 

@@ -8,6 +8,7 @@ import com.mohiva.play.silhouette.impl.providers.CommonSocialProfile
 import models.User2
 import models.daos.UserDAO
 import play.api.libs.concurrent.Execution.Implicits._
+import models.daos._
 
 import scala.concurrent.Future
 
@@ -27,6 +28,9 @@ class UserServiceImpl @Inject() (userDAO: UserDAO) extends UserService {
    * @return The retrieved user or None if no user could be retrieved for the given login info.
    */
   def retrieve(loginInfo: LoginInfo): Future[Option[User2]] = userDAO.find(loginInfo)
+
+
+  def findPasswordHash(loginInfo: LoginInfo): Future[Option[DBPasswordInfo]] = userDAO.findPasswordHash(loginInfo)
 
   /**
    * Saves a user.

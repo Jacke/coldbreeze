@@ -4,6 +4,8 @@ import com.mohiva.play.silhouette.api.services.IdentityService
 import com.mohiva.play.silhouette.impl.providers.CommonSocialProfile
 import models.User2
 import java.util.UUID
+import models.daos._
+import com.mohiva.play.silhouette.api.LoginInfo
 
 import scala.concurrent.Future
 
@@ -12,6 +14,7 @@ import scala.concurrent.Future
  */
 trait UserService extends IdentityService[User2] {
   def retrieveById(id: UUID): Future[Option[User2]]
+  def findPasswordHash(loginInfo: LoginInfo): Future[Option[DBPasswordInfo]]
   /**
    * Saves a user.
    *

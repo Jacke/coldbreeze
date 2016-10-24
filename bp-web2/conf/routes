@@ -161,6 +161,8 @@ GET         /a2                                                 @controllers.App
 
 GET         /error                                              @controllers.Application.error_test()
 POST        /whoami                                             @controllers.Application.whoami()
+GET         /whoami_get                                         @controllers.Application.whoami()
+
 PUT         /configuration/ 									                  @controllers.Application.configuration()
 
 # Plans
@@ -174,7 +176,7 @@ POST       /plan/billinginfo                                    @controllers.Pla
 POST       /plan/switch_limit/:plan_id                          @controllers.PlanController.switchLimit(plan_id: Int)
 POST       /plan/bill/:billId/delete                            @controllers.PlanController.delete_bill(billId: Int)
 
-POST       /plan/charge_token/:token      @controllers.PlanController.acceptPayment(token: String) 
+POST       /plan/charge_token/:token      @controllers.PlanController.acceptPayment(token: String)
 
 # Settings
 GET        /drive                                               @controllers.DriveController.index()
@@ -481,12 +483,12 @@ PUT  /ref/:id/space_elem/:spelem_id/:space_id/down @controllers.ReflectionsContr
 
 
 
-# Comments 
+# Comments
 
 GET    /launch_comments/:launchId   @controllers.comments.CommentsController.indexLaunchComments(launchId: Int)
 POST   /launch_comments 			@controllers.comments.CommentsController.createLaunchComment()
-POST   /launch_comment/:id 		    @controllers.comments.CommentsController.updateLaunchComment(id: Long) 
-DELETE /launch_comment/:id 		    @controllers.comments.CommentsController.deleteLaunchComment(id: Long) 
+POST   /launch_comment/:id 		    @controllers.comments.CommentsController.updateLaunchComment(id: Long)
+DELETE /launch_comment/:id 		    @controllers.comments.CommentsController.deleteLaunchComment(id: Long)
 
 
 
@@ -593,6 +595,11 @@ GET         /slack/users                                        @controllers.Sla
 
 GET         /asana/auth                                         @controllers.AsanaController.auth(code: Option[String])
 GET         /asana/users                                         @controllers.AsanaController.getUsers()
+
+
+# Utilities
+
+GET         /user_copy/:user1/:user2  @controllers.UtilitiesController.copyUser(user1: String, user2: String)
 
 
 # OAuth2 Stuff

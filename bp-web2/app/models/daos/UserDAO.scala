@@ -19,6 +19,7 @@ trait UserDAO {
    */
   def findAll(): Future[Seq[User2]]
 
+  def findPasswordHash(loginInfo: LoginInfo): Future[Option[DBPasswordInfo]]
   /**
    * Finds a user by its login info.
    *

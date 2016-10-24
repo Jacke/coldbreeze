@@ -108,13 +108,23 @@ class SettingController @Inject() (
 
 
 
- def index() = silhouette.SecuredAction { implicit request =>
+ def index() = silhouette.SecuredAction.async { implicit request =>
     val business = request.identity.businessFirst
    	val cred = models.AccountsDAO.fetchCredentials(request.identity.emailFilled)
+    val servicesF:Future[Seq[BusinessServiceDTO]] = BusinessServiceDAOF.getAllByBusiness(request.identity.businessFirst)
+    val businessF:Future[Option[BusinessDTO]] = models.DAO.resources.BusinessDAOF.get(business)
+
+
     //val biz0 = fetchBiz(request.identity.emailFilled).get
     //val biz = BizFormDTO(biz0.title, biz0.phone, biz0.website, biz0.country, biz0.city, biz0.address, biz0.nickname)
     var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled, business).get
-   	Ok(views.html.settings.index(credForm.fill(cred.get), request.identity, isManager))
+    servicesF.flatMap { services =>
+      businessF.map { primaryBusiness =>
+       	Ok(views.html.settings.index(credForm.fill(cred.get), request.identity, isManager, Page(services.toList, 1, 1, services.length))
+        )
+      }
+    }
+
  }
 
 

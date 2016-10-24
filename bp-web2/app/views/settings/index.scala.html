@@ -6,7 +6,7 @@
 
 
 @import helper._
-@(serviceForm: Form[controllers.Credentials], user: models.User2, isManager: Boolean = false)(implicit request: RequestHeader)
+@(serviceForm: Form[controllers.Credentials], user: models.User2, isManager: Boolean = false, currentPage: Page[BusinessServiceDTO])(implicit request: RequestHeader)
 @import play.api.{Logger, Play}
 @import helper._
 @import play.api.Play
@@ -54,6 +54,7 @@
 <div class="col-sm-3 col-md-2 sidebar">
     <ul id="sideTab" class="nav nav-sidebar" role="tablist">
         <li class="active"><a href="#personal" aria-controls="personal" role="tab" data-toggle="tab">@Messages("page.credentials")</a></li>
+        <li><a href="#services" aria-controls="services" role="tab" data-toggle="tab">Services</a></li>
         <li><a href="#password" aria-controls="password" role="tab" data-toggle="tab">Password</a></li>
     </ul>
     <ul id="sideTab1" class="nav nav-sidebar">
@@ -353,6 +354,16 @@ user.passwordInfo.map { info =>
     </p>
     }
 </div>
+
+
+
+<div class="tab-pane" id="services">
+  @services_pages(user, currentPage, isManager)
+
+</div>
+
+
+
 </div>
 </div>
 
