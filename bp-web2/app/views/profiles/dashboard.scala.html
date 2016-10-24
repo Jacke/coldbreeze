@@ -141,12 +141,55 @@
 
 <div class="grids">
 
-<div class="dashboard_sessions col-md-8">
+<div class="dashboard_sessions col-md-12">
 @active_sessions(sessions, currentReaction)
 </div>
 
 
-<div class="dashboard_services col-md-4">
+<div class="dashboard_services col-md-4" style="display: none;">
+  <p>Fast launch</p>
+  @sessions.map { session_cn =>
+      @if(session_cn.sessions.length > 0) {
+      <div class="session_list__session">
+      <div class="session_list__session__process">
+        <a href="/a#/bprocess/@{session_cn.process.id.getOrElse(0)}">@session_cn.process.title</a>
+      </div>
+
+
+            @session_cn.sessions.filter(status => status.percent < 100).map { session =>
+            <div class="session-container">
+            <div class="active-sessions">
+                                            <div class="info">
+                                                <div class="desc pull-left"><a href="/a#/bprocess/@{session.process.id.getOrElse(0)}/launch/@session.session.id/elements">
+                                                @session.station match {
+                                                  case Some(station) => {
+                                                        @station.note match {
+                                                            case Some(note) => { @{note} }
+                                                            case _ => {  }
+                                                        }
+                                                        <time class="updated" itemprop="dateModified" datetime="@session.session.created_at"></time></a></div>
+                                                  }
+                                                  case _ => {
+                                                        <time class="updated" itemprop="dateModified" datetime="station.created_at"></time></a></div>
+                                                  }
+                                                }
+                                                <div class="percent pull-right">@{session.percent}%</div>
+                                            </div>
+                                            <div class="progress progress-sm">
+                                                <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: @{session.percent}%">
+                                                    <span class="sr-only">@{session.percent}% </span>
+                                                </div>
+                                            </div>
+</div>
+
+
+
+
+</div>
+}
+  </div>
+  }
+  }
 </div>
 
 @dashboard_footer()
