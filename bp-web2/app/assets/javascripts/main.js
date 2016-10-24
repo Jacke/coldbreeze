@@ -251,7 +251,7 @@
 'treebuilder': {
   deps: ['angular', 'app'],
   export: 'treebuilder'
-},  
+},
 'controllers': {
   deps: ['angular', 'app', 'toastr', 'toaster'],
   export: 'controllers'
@@ -1121,6 +1121,23 @@ $('.ea-submit').on('click', function(event) {
 });
 
 }
+
+
+///// settings
+var url = document.location.toString();
+if (url.match('#')) {
+    $('.nav a[href="#' + url.split('#')[1] + '"]').tab('show');
+}
+
+// Change hash for page-reload
+$('.nav a').on('shown.bs.tab', function (e) {
+    window.location.hash = e.target.hash;
+})
+
+
+
+
+
 //
 // Databoard
 //
@@ -1288,9 +1305,9 @@ function AdjustHeight() {
     if (height > 81) { // for extra big nav
       document.getElementsByClassName("app-container")[0].style.marginTop = height + 'px';
     }
-}    
+}
 $(document).ready(AdjustHeight);
-$(window).resize(AdjustHeight);    
+$(window).resize(AdjustHeight);
 
 
 

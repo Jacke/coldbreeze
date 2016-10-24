@@ -14,8 +14,13 @@
 @import models.DAO.resources.BusinessDTO
 @import helper._
 
+@scripts = {
 
-@main(Messages("page.settings"), user) {
+}
+
+
+
+@main(Messages("page.settings"), user, scripts) {
 <style>
 .nav-sidebar {
   margin-right: 10px;
@@ -340,6 +345,11 @@ select(serviceForm("country"), options = Seq("US"->"USA", "UK" -> "United kingdo
 <div class="actions">
 <input type="submit" value="Update" class="btn btn-primary">
 </div>
+
+
+
+
+
 }
 </div>
 

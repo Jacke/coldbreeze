@@ -6747,6 +6747,16 @@ ul.elem-control.elem-tabs {
     overflow: visible;
 }
 
+
+.settings-page div#services {
+    width: 80%;
+}
+
+.settings-page div#services table.zebra-striped {
+    width: 100%;
+}
+
+
 dd {
     margin-bottom: 3px;
 }
