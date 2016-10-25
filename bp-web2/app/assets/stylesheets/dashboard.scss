@@ -213,10 +213,10 @@
   clear: both;
 }
 .active-sessions {
-  width: 60%;
-  max-width: 50%;
-  display: inline-block;
-  float: left;
+    width: 60%;
+    max-width: 35%;
+    display: inline-block;
+    float: left;
 }
 .session_list__session {
     clear: both;
@@ -979,8 +979,8 @@ NEW DASHBOARD
     overflow-y: hidden;
     white-space: nowrap;
     height: 37px;
+    opacity: 0.5;
 }
-
 
 .session_list__session .process_content .tree-thumb.process-tree li {
     display: inline-block;
@@ -1045,6 +1045,30 @@ width: 58px;
     line-height: 27px;
     height: 27px;
 }
+.session_list__session .session-container {
+    overflow: hidden;
+    padding: 26px 20px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /***********
    Media queries
 *************/
