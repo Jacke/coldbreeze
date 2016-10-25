@@ -406,15 +406,15 @@ def api_create_resource_signle() = silhouette.SecuredAction.async(BodyParsers.pa
     var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
     val business = request.identity.businessFirst
     if (request.identity.businessFirst < 1) {
-      Future.successful( 
+      Future.successful(
         Ok(Json.toJson(Map("status" -> "Workbench not defined" )))
-      )   
+      )
     } else {
     val selected = request.body.validate[ResourceDTO]
         selected.fold(
         errors => {
            Logger.error(s"error with $selected")
-           Future.successful( 
+           Future.successful(
             BadRequest(Json.obj("status" ->"KO", "message" -> JsError.toJson(errors)))
            )
         },
@@ -422,7 +422,27 @@ def api_create_resource_signle() = silhouette.SecuredAction.async(BodyParsers.pa
           println(entity)
           val resource_id = ResourceDAO.pull_object(entity.copy(business = business))
           createDefaultBoardsForRes(entity.copy(business = business, id = Some(resource_id))).map { r =>
-            Ok(Json.toJson(Map("status" -> resource_id.toString )))            
+
+            val boardId = (Json.parse(r) \ "message").as[String]
+
+            val defaultEntity = Entity(
+              id = Some(UUID.randomUUID()),
+              title = "",
+              boardId = java.util.UUID.fromString(boardId),
+              description = "",
+              publisher = "",
+              etype = "text",
+              default = "",
+              meta = List.empty)
+            val future = minority.utils.BBoardWrapper()
+                  .addEntityByResource(resource_id = resource_id,
+                                       defaultEntity.copy(boardId = java.util.UUID.fromString(boardId) ))
+
+            Await.result(future, Duration(waitSeconds, MILLISECONDS)) match {
+              case _ => {
+                Ok(Json.toJson(Map("status" -> resource_id.toString )))
+              }
+            }
           }
         }
       )
@@ -438,7 +458,7 @@ def update_resource(id: Int) = silhouette.SecuredAction.async(BodyParsers.parse.
   request.body.validate[ResourceDTO].fold(
       formWithErrors => {
         println(formWithErrors)
-        Future.successful( 
+        Future.successful(
           Ok(Json.toJson(Map("status" -> formWithErrors.toString)))
         )
         },
@@ -448,7 +468,7 @@ def update_resource(id: Int) = silhouette.SecuredAction.async(BodyParsers.parse.
             if (request.identity.businessFirst == res.business) {
               ResourceDAO.update(id, entity.copy(id = res.id, business = res.business ))
             }
-            Future.successful( 
+            Future.successful(
               Ok(Json.toJson(Map("status" -> "Ok")))
             )
           }
@@ -459,7 +479,7 @@ def update_resource(id: Int) = silhouette.SecuredAction.async(BodyParsers.parse.
 
 def delete_resource(id: Int) = silhouette.SecuredAction.async { implicit request =>
 	var (isManager, isEmployee, lang) = AccountsDAO.getRolesAndLang(request.identity.emailFilled).get
-  // TODO: Security  
+  // TODO: Security
   ResourceDAO.get(id) match {
     case Some(res) => {
       if (request.identity.businessFirst == res.business) {
@@ -469,12 +489,12 @@ def delete_resource(id: Int) = silhouette.SecuredAction.async { implicit request
           Ok(Json.toJson(Map("status" -> "Ok")))
         )
       } else {
-        Future.successful( 
+        Future.successful(
           Ok(Json.toJson(Map("status" -> "Forbidden")))
         )
       }
     }
-    case _ => Future.successful( 
+    case _ => Future.successful(
       Ok(Json.toJson(Map("status" -> "Not found")))
     )
   }
@@ -737,7 +757,7 @@ private def createDefaultEntityValue(resource_id: Int, boardId: String):Future[S
   etype = "text",
   default = "",
   meta = List.empty)
-  
+
   minority.utils.BBoardWrapper()
                 .addEntityByResource(resource_id,
                                      entity)

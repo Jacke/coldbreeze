@@ -19,7 +19,7 @@
 
 </div>
 
-
+<div style="display:none">
 <div class="process_content">
   <div class="tree-thumb process-tree ng-scope angular-ui-tree" id="style-1" ui-tree="options" data-drag-enabled="false">
   <ol ui-tree-nodes="" ng-model="bprocess.trees" class="ng-pristine ng-untouched ng-valid ng-scope angular-ui-tree-nodes">
@@ -84,10 +84,11 @@
   </ol>
 </div>
 </div>
-
 <div class="process_run">
   <a class="process_run_button">Run</a>
 </div>
+</div>
+
 
 
 
@@ -122,7 +123,7 @@
     <span class="element-thumb">@currentReaction.title</span>
     <button class="confirm-btn reaction_id @{currentReaction.reaction.id.getOrElse(0)}"
     data-session-id="@session.session.id"
-    data-process-id="@session.process.id" 
+    data-process-id="@session.process.id"
     data-reaction-id="@currentReaction.reaction.id.getOrElse(0)">@currentReaction.reaction.title</button>
 <!--
     <div class="instant-input-attachment" data-session-id="@session.session.id" id="pick"><span data-session-id="@session.session.id" class="moicon moicon-paste"></span></div>

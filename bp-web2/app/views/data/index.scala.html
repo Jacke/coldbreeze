@@ -120,6 +120,7 @@
         <div class="boards">
            @bcn.boards.filter(board => board.meta.find(m => m.key == "resource_id" && m.value == cn.resource.id.get.toString).isDefined).map { board =>
           <div class="board">
+            @{cn.resource.id.get.toString}
             <h4 class="board-title">@board.title</h4>
             <span class="boardContent">@board.content</span>
             <div class="entities" style="">
