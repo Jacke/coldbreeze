@@ -213,10 +213,11 @@
   clear: both;
 }
 .active-sessions {
-    width: 60%;
-    max-width: 35%;
+    width: 75%;
+    max-width: 51%;
     display: inline-block;
     float: left;
+    margin-left: -14px;
 }
 .session_list__session {
     clear: both;
@@ -226,10 +227,10 @@
 }
 .session_list__session .session-container .instant-input {
     display: inline-block;
-    width: 45%;
+    width: 19%;
     float: left;
-    margin-left: 20px;
-    margin-top: 9px;
+    margin-left: 16px;
+    margin-top: 0px;
     padding-bottom: 2px;
     font-family: 'Open Sans', Helvetica, Sans-serif;
     padding-left: 0px;
@@ -978,8 +979,9 @@ NEW DASHBOARD
     overflow-x: scroll;
     overflow-y: hidden;
     white-space: nowrap;
-    height: 37px;
+    height: 29px;
     opacity: 0.5;
+    margin-bottom: -9px;
 }
 
 .session_list__session .process_content .tree-thumb.process-tree li {
@@ -992,17 +994,23 @@ width: 58px;
     display: inline-block;
     float: left;
     clear: none;
-    margin-left: 10%;
 }
+.session_list__session ol {
+    padding-left: 0px;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+}
+
+
 
 .session_list__session .session_list__session__process {
     display: inline-block;
     float: left;
-    width: 15%;
+    width: 51%;
 }
 .session_list__session .process_run {
     display: inline-block;
-    float: right;
+    float: left;
     border: solid 1px green;
     padding: 6px 6px;
     height: 29px;
@@ -1018,6 +1026,7 @@ width: 58px;
     font-family: 'Open Sans', sans-serif;
     text-shadow: none;
     margin-top: 0px;
+    margin-left: 21px;
 }
 .session_list__session .process_run a.process_run_button {
     color: #5ba209;
@@ -1042,8 +1051,10 @@ width: 58px;
 .session_list__session .process_content .tree-thumb.process-tree li .elem-card {
     font-size: 10px;
     padding: 0px 7px;
-    line-height: 27px;
-    height: 27px;
+    line-height: 21px;
+    height: 22px;
+    font-size: 10px;
+    font-weight: 100;
 }
 .session_list__session .session-container {
     overflow: hidden;
