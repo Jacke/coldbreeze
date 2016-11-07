@@ -4,6 +4,9 @@ import sangria.schema.{DeferredResolver, Deferred}
 
 import scala.concurrent.Future
 import scala.util.Try
+import models.User2
+import models.DAO.resources._
+
 
 object Episode extends Enumeration {
   val NEWHOPE, EMPIRE, JEDI = Value
@@ -53,6 +56,8 @@ class FriendsResolver extends DeferredResolver[Any] {
 
 class CharacterRepo {
   import CharacterRepo._
+  var user:Option[User2] = None
+  var ids:Map[String, List[Int]] = Map()
 
   def getHero(episode: Option[Episode.Value]) =
     episode flatMap (_ => getHuman("1000")) getOrElse droids.last
@@ -61,6 +66,14 @@ class CharacterRepo {
   def getHumans: List[Human] = humans
 
   def getDroid(id: String): Option[Droid] = droids.find(c => c.id == id)
+
+
+  def getServices(user:User2):List[BusinessServiceDTO] = {
+    val business = user.businessFirst
+    BusinessServiceDAO.getAllByBusiness(business)  //.map(_.id.getOrElse(-1))
+
+  }
+
 }
 
 object CharacterRepo {

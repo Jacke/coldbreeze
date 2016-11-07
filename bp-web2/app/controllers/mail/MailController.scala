@@ -94,17 +94,17 @@ com.google.code.samples.oauth2.OAuth2Authenticator.main(Array("iamjacke@gmail.co
 }
 
 object Mailer {
-  def sendEmail(mailerClient: MailerClient) {
+  def sendEmail(to: String, msg: String, mailerClient: MailerClient) {
     val cid = "1234"
     val email = Email(
-      "Кто тяжело работает тот?",
-      "MinorityApp FROM <iamjacke@gmail.com>",
-      Seq("Stan TO <iamjacke@gmail.com>"),
+      "Minority Workflow managment Platform | Invitation",
+      "MinorityApp FROM <a@minorityapp.com>",
+      Seq(s"Stan TO <${to}>"),
       // adds attachment
       attachments = Seq(),
       // sends text, HTML or both...
-      bodyText = Some("Кто тяжело работает тот?"),
-      bodyHtml = Some(s"""<html><body><p>ТОТ <b>Тяжело отдыхает</b> message with cid <img src="cid:$cid"></p></body></html>""")
+      bodyText = Some("Invitation"),
+      bodyHtml = Some(msg)
     )
     mailerClient.send(email)
   }

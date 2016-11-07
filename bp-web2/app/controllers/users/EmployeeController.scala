@@ -44,6 +44,7 @@ import utilities.AccountCredHiding
  */
 case class ActorCont(emps: List[EmployeeDTO], creds:List[models.daos.DBUser])
 import javax.inject.Inject
+import play.api.libs.mailer._
 
 import com.mohiva.play.silhouette.api.{ Environment, LogoutEvent, Silhouette }
 import com.mohiva.play.silhouette.impl.authenticators.CookieAuthenticator
@@ -58,6 +59,7 @@ import play.api.mvc.{ Action, RequestHeader }
 class EmployeeController @Inject() (
   val messagesApi: MessagesApi,
   silhouette: Silhouette[DefaultEnv],
+    mailerClient: MailerClient,
   socialProviderRegistry: SocialProviderRegistry)
   extends Controller with I18nSupport {
    import play.api.Play.current
@@ -213,7 +215,14 @@ def create_new() = silhouette.SecuredAction(BodyParsers.parse.json) { implicit r
         EmployeesBusinessDAO.pull(employee_id = employee_id, business_id = request.identity.businessFirst)
         // TODO SEND SIGN UP
         ///////??????????
-        ////// controllers.CustomRegistration.handleStartSignUp(emp.uid, request.host)
+        val msg = s"""<html><body>
+            <p>
+Hi! Good news. Someone invited to you into Minority workflow platform.</p>
+<p>Let me remind you, Minority is a workflow management platform for small and medium businesses.
+<a href="https://min.ority.us/auth/signUp">Go now</a><a href="x">x</a>. 
+            </p>
+        </body></html>"""
+        Mailer.sendEmail(emp.uid, msg, mailerClient)
       }
       Ok(Json.toJson(Map("success" -> Json.toJson(entity))))
       }

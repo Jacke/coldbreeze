@@ -62,6 +62,11 @@ import com.mohiva.play.silhouette.impl.authenticators.JWTAuthenticator
 
 import play.api.mvc.{ Action, RequestHeader }
 
+
+
+
+
+
 class APIController @Inject() (
   val messagesApi: MessagesApi,
   silhouette: Silhouette[DefaultEnv],
@@ -140,8 +145,7 @@ import scala.util.{Success, Failure}
 
 
 
-  def graphql() = Action.async(BodyParsers.parse.json) { implicit request =>
-
+def graphql() = silhouette.SecuredAction.async(BodyParsers.parse.json) { implicit request =>
 
   request.body.validate[JsValue].fold(
       formWithErrors => {
@@ -166,10 +170,11 @@ import scala.util.{Success, Failure}
           QueryParser.parse(query) match {
 
             // query parsed successfully, time to execute it!
-            case Success(queryAst) ⇒
+            case Success(queryAst) ⇒ {
 
-
-              Executor.execute(SchemaDefinition.StarWarsSchema, queryAst, new CharacterRepo,
+              var rep = new CharacterRepo
+              rep.user = Some(request.identity)
+              Executor.execute(SchemaDefinition.StarWarsSchema, queryAst, rep,
                   variables = vars,
                   operationName = operation,
                   deferredResolver = new FriendsResolver)
@@ -180,15 +185,15 @@ import scala.util.{Success, Failure}
                 }.map { result =>
                 Ok(result._2)
               }
+            }
 
             // can't parse GraphQL query, return error
             case Failure(error) ⇒
-              Future.successful(Ok(Json.obj("error" -> JsString(error.getMessage))))
+              Future.successful(BadRequest(Json.obj("error" -> JsString(error.getMessage))))
           }
       })
 
-
-  }
+}
 
 
 }
