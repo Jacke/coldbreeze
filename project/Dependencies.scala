@@ -13,6 +13,8 @@ object Dependencies {
     "p11k" at "http://pk11-scratch.googlecode.com/svn/trunk",
     "Atlassian Releases" at "https://maven.atlassian.com/public/",
     "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases",
+    "threedimensions" at "https://dl.bintray.com/breadfan/maven/",
+
     "bintray-naftoligug-maven" at "http://dl.bintray.com/naftoligug/maven",
     "Rhinofly Internal Release Repository" at "http://maven-repository.rhinofly.net:8081/artifactory/libs-release-local",
     "google-sedis-fix" at "http://pk11-scratch.googlecode.com/svn/trunk",
@@ -95,6 +97,8 @@ object Dependencies {
   val fluentleniumasj = "org.fluentlenium"          % "fluentlenium-assertj"    % "0.10.3" //% "test"
 
   val play            = "com.typesafe.play"         % "play_2.11"               % "2.3.10"
+  val playmetrics     = "de.threedimensions"        % "metrics-play_2.11"       % "2.5.13"
+
   val play2oauth2     = "com.nulab-inc"             %% "play2-oauth2-provider"  % "0.14.0"
   val play4           = "com.typesafe.play"         %% "play"                   % "2.5.4"
   val slackapi        = "com.github.gilbertw1"      %% "slack-scala-client"     % "0.1.3"

@@ -117,6 +117,8 @@ integrationTest := {
           .settings(libraryDependencies ++=
         List(
           play4, // good
+          playmetrics,
+          
           playslick,
           bootstrap, // good
           guice,

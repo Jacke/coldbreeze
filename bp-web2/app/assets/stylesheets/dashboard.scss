@@ -1068,9 +1068,39 @@ width: 58px;
 
 
 
+.dashboard_sessions .session_list {
+    padding-top: 10px;
+    width: 60%;
+    display: inline-block;
+    float: left;
+}
 
+.process__list {
+    display: inline-block;
+    float: left;
+    width: 40%;
+}
 
-
+.session_list__session__process a.process_run_button {
+    display: inline-block;
+    float: right;
+    border: solid 1px green;
+    padding: 6px 6px;
+    height: 29px;
+    width: 50px;
+    display: block;
+    background: white;
+    border-radius: 3px;
+    transition: all .5s;
+    border: solid 2px #8BC34A;
+    color: #8BC34A;
+    padding: 3px 11px;
+    font-size: 12px;
+    font-family: 'Open Sans', sans-serif;
+    text-shadow: none;
+    margin-top: -26px;
+    margin-left: 21px;
+}
 
 
 
