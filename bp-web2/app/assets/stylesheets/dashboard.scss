@@ -1070,16 +1070,36 @@ width: 58px;
 
 .dashboard_sessions .session_list {
     padding-top: 10px;
-    width: 60%;
+    width: 77%;
     display: inline-block;
     float: left;
 }
 
+
 .process__list {
     display: inline-block;
-    float: left;
-    width: 40%;
+    float: right;
+    width: 22%;
 }
+
+.process__list .session_header__top_bar {
+    margin-top: -30px;
+    margin-bottom: 20px;
+}
+
+.process__list .session_header__top_bar {
+    margin-top: -30px;
+}
+
+.process__list .session_list__session__process {
+    font-size: 14px;
+    margin-bottom: 22px;
+}
+.process__list .session_list__session__process .process_run {
+    margin-top: 4px;
+}
+
+
 
 .session_list__session__process a.process_run_button {
     display: inline-block;

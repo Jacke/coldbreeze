@@ -98,6 +98,10 @@ object Dependencies {
 
   val play            = "com.typesafe.play"         % "play_2.11"               % "2.3.10"
   val playmetrics     = "de.threedimensions"        % "metrics-play_2.11"       % "2.5.13"
+  val datadog         = "org.coursera"              % "dropwizard-metrics-datadog" % "1.1.6"
+  //val statsd          = "com.bealetech"             % "metrics-statsd" % "3.0.0-SNAPSHOT"
+  val graphite        = "io.dropwizard.metrics"     % "metrics-graphite" % "3.1.0"
+
 
   val play2oauth2     = "com.nulab-inc"             %% "play2-oauth2-provider"  % "0.14.0"
   val play4           = "com.typesafe.play"         %% "play"                   % "2.5.4"

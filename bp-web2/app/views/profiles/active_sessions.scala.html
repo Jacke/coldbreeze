@@ -48,11 +48,11 @@
 
 @currentReactionCN.filter(cn => Some(cn.session_id) == session.session.id).map { currentReaction =>
 <div class="instant-input">
-    <span class="element-thumb">@currentReaction.title</span>
+    <span class="element-thumb" style="display:none;">@currentReaction.reaction.title</span>
     <button class="confirm-btn reaction_id @{currentReaction.reaction.id.getOrElse(0)}"
     data-session-id="@session.session.id"
     data-process-id="@session.process.id"
-    data-reaction-id="@currentReaction.reaction.id.getOrElse(0)">@currentReaction.reaction.title</button>
+    data-reaction-id="@currentReaction.reaction.id.getOrElse(0)">@currentReaction.title</button>
 <!--
     <div class="instant-input-attachment" data-session-id="@session.session.id" id="pick"><span data-session-id="@session.session.id" class="moicon moicon-paste"></span></div>
 -->
@@ -71,6 +71,10 @@
     </div>
 
 <div class="process__list">
+    <div class="session_header__top_bar">
+	    <header class="panel-heading head-border">Processes</header>
+    </div>
+
 @sessions.map { session_cn =>
           <div class="session_list__session__process">
                     <div class="process_title">

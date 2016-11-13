@@ -118,7 +118,10 @@ integrationTest := {
         List(
           play4, // good
           playmetrics,
-          
+          datadog,
+          //statsd,
+          graphite,
+
           playslick,
           bootstrap, // good
           guice,
