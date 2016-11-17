@@ -1115,13 +1115,17 @@ width: 58px;
     border: solid 2px #8BC34A;
     color: #8BC34A;
     padding: 3px 11px;
+    cursor: pointer;
     font-size: 12px;
     font-family: 'Open Sans', sans-serif;
     text-shadow: none;
     margin-top: -26px;
     margin-left: 21px;
 }
-
+.session_list__session__process a.process_run_button:hover {
+    color: white;
+    background: #8bc34a;
+}
 
 
 
