@@ -785,6 +785,20 @@ $('.settings-insert-title').click(function(e) {
   $(this).toggleClass('highlighted');
 })
 
+// Utils for fast process run on dashboard
+if ($('.process__list .process_title').length > 0) {
+  $('.process__list .process_run_button.process_run_inline').on('click', function(ev){
+    ev.preventDefault;
+    $(this).addClass('loading');
+    var data = $( this ).data();
+    
+    console.log($( this ).data())
+  });
+}
+
+
+
+
 // Utils for fast input on dashboard
 if ($('.dashboard_sessions').length > 0) {
   $('.instant-input button').on('click', function(ev){
@@ -828,6 +842,11 @@ if ($('.dashboard_sessions').length > 0) {
     console.log($( this ).data())
   });
 }
+
+
+
+
+
 
 
 

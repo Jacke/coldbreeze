@@ -1031,6 +1031,14 @@ width: 58px;
 .session_list__session .process_run a.process_run_button {
     color: #5ba209;
 }
+
+.session_list__session__process a.process_run_button.process_run_inline.loading {
+    background: #4d860c;
+    border-color: #31500d;
+    color: white;
+}
+
+
 .session_list__session .session_list__session__process_overview {
     display: block;
     width: 100%;
