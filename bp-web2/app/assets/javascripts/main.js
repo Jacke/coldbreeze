@@ -785,13 +785,19 @@ $('.settings-insert-title').click(function(e) {
   $(this).toggleClass('highlighted');
 })
 
+
+
+
+
+
 // Utils for fast process run on dashboard
 if ($('.process__list .process_title').length > 0) {
   $('.process__list .process_run_button.process_run_inline').on('click', function(ev){
     ev.preventDefault;
     $(this).addClass('loading');
     var data = $( this ).data();
-    
+    window.location.reload();//.href = "a#/launches";
+
     console.log($( this ).data())
   });
 }
