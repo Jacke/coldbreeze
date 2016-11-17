@@ -796,9 +796,17 @@ if ($('.process__list .process_title').length > 0) {
     ev.preventDefault;
     $(this).addClass('loading');
     var data = $( this ).data();
-    window.location.reload();//.href = "a#/launches";
 
+         jQuery.ajax({
+          url: '/bprocess/'+data.processId+'/invoke',
+          method: "POST",
+          data: { },
+          }).done(function(response) {
+             window.location.reload();//.href = "a#/launches";
+
+          });
     console.log($( this ).data())
+
   });
 }
 
