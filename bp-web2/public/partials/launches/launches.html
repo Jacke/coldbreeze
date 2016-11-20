@@ -166,7 +166,8 @@
 
   <div class="stations minimal-stations"
        ng-init="session.lineDescShow=false;"
-       ng-class="{'lineDescShowed': session.lineDescShow == true }"
+       ng-class="{'lineDescShowed': session.lineDescShow == true,
+                   'completed': session.percent == 100 }"
        ng-repeat="session in sessions | orderBy:'station.paused':true | filter:isOnlyActive">
 
 

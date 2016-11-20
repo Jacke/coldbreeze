@@ -4313,7 +4313,12 @@ background-color: gray !important;
     padding: 0px 10px 0px 3px;
     margin-bottom: 16px;
 }
-
+.allStations .stations.minimal-stations.completed {
+    background: rgba(228, 228, 228, 0.32);
+}
+.stations.completed.minimal-stations .session__buttonInput {
+    background: #eaeaea;
+}
 .stations.minimal-stations .session-launches-bar {
     margin-bottom: 0px;
 }
