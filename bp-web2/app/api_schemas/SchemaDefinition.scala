@@ -16,6 +16,8 @@ import scala.util.{Try, Success, Failure}
 import sangria.validation.{ValueCoercionViolation, IntCoercionViolation, BigIntCoercionViolation}
 import org.joda.time.format._
 import sangria._
+import models.DAO.reflect._
+import controllers._
 
 /**
  * Defines a GraphQL schema for the current project
@@ -127,6 +129,81 @@ val DateTimeType = ScalarType[DateTime]("DateTime",
     ))
 
 
+
+val LaunchLogs = ObjectType("LaunchLogs", "LaunchLog.",
+   fields[CharacterRepo, BProcessDTO](
+      Field("id", IntType,
+        Some("The id of the droid."),
+        resolve = _.value.id.getOrElse(0))
+  )
+)
+
+
+val ElementStates = ObjectType("ElementStates", "ElementState.",
+   fields[CharacterRepo, BProcessDTO](
+      Field("id", IntType,
+        Some("The id of the droid."),
+        resolve = _.value.id.getOrElse(0))
+  )
+)
+
+val ElementPerms = ObjectType("ElementPerms", "ElementPerm.",
+   fields[CharacterRepo, BProcessDTO](
+      Field("id", IntType,
+        Some("The id of the droid."),
+        resolve = _.value.id.getOrElse(0))
+  )
+)
+
+
+val LaunchElementStates = ObjectType("LaunchElementStates", "LaunchElementState.",
+   fields[CharacterRepo, BProcessDTO](
+      Field("id", IntType,
+        Some("The id of the droid."),
+        resolve = _.value.id.getOrElse(0))
+  )
+)
+
+
+val LaunchElements = ObjectType("LaunchElements", "LaunchElement.",
+   fields[CharacterRepo, BProcessDTO](
+      Field("id", IntType,
+        Some("The id of the droid."),
+        resolve = _.value.id.getOrElse(0)),
+       Field("topo_id", IntType,
+        Some("The id of the droid."),
+        resolve = _.value.id.getOrElse(0)),
+      Field("states", ListType(LaunchElementStates),
+        Some("The friends of the human, or an empty list if they have none."),
+        resolve = (ctx) => {
+          BPSessionDAOF.findByProcesses(ctx.ctx.ids.get("processes").get.toSeq ).map { launches =>
+            //ctx.ctx.ids = ctx.ctx.ids ++ Map("launches" -> launches.toList.map { i => i.id.get })
+            launches
+            List()
+          }
+          //Future.successful(Seq() )
+        })
+
+
+  )
+)
+val LaunchInteracts = ObjectType("LaunchInteracts", "LaunchInteract.",
+   fields[CharacterRepo, BProcessDTO](
+      Field("id", IntType,
+        Some("The id of the droid."),
+        resolve = _.value.id.getOrElse(0))
+  )
+)
+val LaunchStations = ObjectType("LaunchStations", "LaunchStation.",
+   fields[CharacterRepo, BProcessDTO](
+      Field("id", IntType,
+        Some("The id of the droid."),
+        resolve = _.value.id.getOrElse(0))
+  )
+)
+
+
+
   val Launches = ObjectType(
       "Launches",
       "Launch.",
@@ -142,8 +219,51 @@ val DateTimeType = ScalarType[DateTime]("DateTime",
           resolve = _.value.updated_at),
         Field("active_listed", BooleanType,
           Some("The process of the Launch."),
-          resolve = _.value.active_listed)
+          resolve = _.value.active_listed),
 
+        Field("logs", OptionType(ListType(LaunchLogs)),
+          Some("The friends of the human, or an empty list if they have none."),
+          resolve = (ctx) => {
+            BPSessionDAOF.findByProcesses(ctx.ctx.ids.get("processes").get.toSeq ).map { launches =>
+              //ctx.ctx.ids = ctx.ctx.ids ++ Map("launches" -> launches.toList.map { i => i.id.get })
+              launches
+              List()
+            }
+            //Future.successful(Seq() )
+          }),
+        Field("elements", ListType(LaunchElements),
+          Some("The friends of the human, or an empty list if they have none."),
+          resolve = (ctx) => {
+            BPSessionDAOF.findByProcesses(ctx.ctx.ids.get("processes").get.toSeq ).map { launches =>
+              //ctx.ctx.ids = ctx.ctx.ids ++ Map("launches" -> launches.toList.map { i => i.id.get })
+              launches
+              List()
+            }
+            //Future.successful(Seq() )
+          }),
+        Field("interacts", ListType(LaunchInteracts),
+          Some("The friends of the human, or an empty list if they have none."),
+          resolve = (ctx) => {
+            BPSessionDAOF.findByProcesses(ctx.ctx.ids.get("processes").get.toSeq ).map { launches =>
+              //ctx.ctx.ids = ctx.ctx.ids ++ Map("launches" -> launches.toList.map { i => i.id.get })
+              launches
+              List()
+            }
+            //Future.successful(Seq() )
+          }),
+
+
+
+        Field("station", ListType(LaunchStations),
+          Some("The friends of the human, or an empty list if they have none."),
+          resolve = (ctx) => {
+            BPSessionDAOF.findByProcesses(ctx.ctx.ids.get("processes").get.toSeq ).map { launches =>
+              //ctx.ctx.ids = ctx.ctx.ids ++ Map("launches" -> launches.toList.map { i => i.id.get })
+              launches
+              List()
+            }
+            //Future.successful(Seq() )
+          })
 
 
       ))
@@ -156,11 +276,33 @@ val DateTimeType = ScalarType[DateTime]("DateTime",
         Some("The id of the droid."),
         resolve = _.value.id.getOrElse(0)),
 
-      Field("states", IntType,
+       Field("topo_id", IntType,
         Some("The id of the droid."),
-        resolve = _.value.id.getOrElse(0)))
+        resolve = _.value.id.getOrElse(0)),
 
-      )
+      Field("states", ListType(ElementStates),
+        Some("The friends of the human, or an empty list if they have none."),
+        resolve = (ctx) => {
+          BPSessionDAOF.findByProcesses(ctx.ctx.ids.get("processes").get.toSeq ).map { launches =>
+            //ctx.ctx.ids = ctx.ctx.ids ++ Map("launches" -> launches.toList.map { i => i.id.get })
+            launches
+            List()
+          }
+          //Future.successful(Seq() )
+        }),
+      Field("perms", ListType(ElementPerms),
+        Some("The friends of the human, or an empty list if they have none."),
+        resolve = (ctx) => {
+          BPSessionDAOF.findByProcesses(ctx.ctx.ids.get("processes").get.toSeq ).map { launches =>
+            //ctx.ctx.ids = ctx.ctx.ids ++ Map("launches" -> launches.toList.map { i => i.id.get })
+            launches
+            List()
+          }
+          //Future.successful(Seq() )
+        })
+
+
+    ))
 
   val BProcess = ObjectType(
     "BProcessDTO",
@@ -204,6 +346,28 @@ val DateTimeType = ScalarType[DateTime]("DateTime",
             }
             //Future.successful(Seq() )
           }),
+
+        Field("perms", ListType(Elements),
+          Some("The friends of the human, or an empty list if they have none."),
+          resolve = (ctx) => {
+            BPSessionDAOF.findByProcesses(ctx.ctx.ids.get("processes").get.toSeq ).map { launches =>
+              //ctx.ctx.ids = ctx.ctx.ids ++ Map("launches" -> launches.toList.map { i => i.id.get })
+              launches
+              List()
+            }
+            //Future.successful(Seq() )
+          }),
+        Field("reaction", ListType(Elements),
+          Some("The friends of the human, or an empty list if they have none."),
+          resolve = (ctx) => {
+            BPSessionDAOF.findByProcesses(ctx.ctx.ids.get("processes").get.toSeq ).map { launches =>
+              //ctx.ctx.ids = ctx.ctx.ids ++ Map("launches" -> launches.toList.map { i => i.id.get })
+              launches
+              List()
+            }
+            //Future.successful(Seq() )
+          }),
+
         Field("state_machine_type", StringType,
           Some("The name of the droid."),
           resolve = _.value.state_machine_type),
@@ -222,6 +386,7 @@ val DateTimeType = ScalarType[DateTime]("DateTime",
 
 
 
+  val RefsSch = RefSchema.schema
 
 
 
@@ -314,12 +479,44 @@ val DateTimeType = ScalarType[DateTime]("DateTime",
         }),
 
         // todo
-      Field("refs", ListType(Services),
+      Field("refs", ListType(RefsSch),
         arguments = Nil,
         resolve = ctx => {
-          val services = ctx.ctx.getServices(ctx.ctx.user.get)
-          //ctx.ctx.ids = ctx.ctx.ids ++ Map("services" -> services.map { i => i.id.get })
-          services
+
+  val refs = RefDAO.getAllVisible
+  refs.map { ref =>
+      val reactions = ReactionRefDAO.findByRef(ref.id.get)
+      val reaction_outs = ReactionStateOutRefDAO.findByReactionRefs(reactions.map(_.id.get))
+      val middlewares = MiddlewareRefsDAOF.await( MiddlewareRefsDAOF.getByRef(ref.id.get) )
+      val middlewaresIds = middlewares.map(_.id.get).toList
+      val strategies = MiddlewareRefsDAOF.await( StrategyRefsDAOF.getByMWS(middlewaresIds) )
+      val strategiesIds = strategies.map(_.id.get).toList
+      val bases = StrategyBaseRefsDAOF.await( StrategyBaseRefsDAOF.getByStrategies(strategiesIds) )
+      val inputs = StrategyInputRefsDAOF.await( StrategyInputRefsDAOF.getByStrategies(strategiesIds) )
+      val ouputs = StrategyInputRefsDAOF.await( StrategyOutputRefsDAOF.getByStrategies(strategiesIds) )
+
+
+      RefContainer(ref,
+        ProcElemReflectionDAO.findByRef(ref.id.get),
+        SpaceReflectionDAO.findByRef(ref.id.get),
+        SpaceElementReflectionDAO.findByRef(ref.id.get),
+        ReflectElemTopologDAO.findByRef(ref.id.get),
+        BPStateRefDAO.findByRef(ref.id.get),
+        SwitcherRefDAO.findByRef(ref.id.get),
+        reactions,
+        reaction_outs,
+        reactions.map( re => ReactionContainer(re, reaction_outs.filter(out => out.reaction == re.id.get ))),
+
+        middlewares = middlewares,
+        strategies = strategies,
+        inputs = inputs,
+        bases = bases,
+        outputs = ouputs
+)
+
+  }
+
+
         }),
 
       Field("cost_assign", ListType(Services),
