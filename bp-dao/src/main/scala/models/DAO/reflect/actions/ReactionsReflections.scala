@@ -13,6 +13,34 @@ import models.DAO.conversion.DatabaseCred
 import main.scala.simple_parts.process._
 import main.scala.bprocesses.refs._
 
+
+
+case class RefContainer(ref: Ref,
+  unitelement:List[UnitElementRef],
+  unitspace:List[UnitSpaceRef],
+  unitspaceelement:List[UnitSpaceElementRef],
+  topology: List[RefElemTopology],
+  bpstate:List[BPStateRef],
+  unitswitcher:List[UnitSwitcherRef],
+  reactions: List[UnitReactionRef],
+  reaction_state_outs: List[UnitReactionStateOutRef],
+  reaction_cn: List[ReactionContainer],
+  middlewares: Seq[MiddlewareRef] = Seq(),
+  strategies: Seq[StrategyRef] = Seq(),
+  inputs: Seq[StrategyInputRef] = Seq(),
+  bases: Seq[StrategyBaseRef] = Seq(),
+  outputs: Seq[StrategyOutputRef] = Seq()
+)
+
+case class ReactionContainer(reaction: UnitReactionRef,
+  reaction_state_outs: List[UnitReactionStateOutRef])
+
+
+
+
+
+
+
 class ReactionRefs(tag: Tag) extends Table[UnitReactionRef](tag, "reaction_refs") {
   def id          = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def reflection  = column[Int]("reflection_id")

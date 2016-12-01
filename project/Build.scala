@@ -134,8 +134,7 @@ integrationTest := {
           ficus,
           anorm,
           jdbc4,
-          graphql,
-          playgraphql,
+
 
           swaggerRoute,
           sourcecode,
@@ -262,6 +261,12 @@ integrationTest := {
           paypal,
           slick,
           slickhikari,
+
+
+
+          graphql,
+          playgraphql,
+
 
           //slick_migrate,
           //hikari_core,

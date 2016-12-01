@@ -7,7 +7,6 @@ import sangria.marshalling._
 
 
 import scala.concurrent.Future
-import models.User2
 import models.DAO.resources._
 import scala.concurrent.ExecutionContext.Implicits._
 import models.DAO._
@@ -31,10 +30,34 @@ import main.scala.bprocesses.refs._
 import main.scala.bprocesses.refs.{BPStateRef}
 import models.DAO.conversion._
 
+/*
+case class RefContainer(ref: Ref,
+  unitelement:List[UnitElementRef],
+  unitspace:List[UnitSpaceRef],
+  unitspaceelement:List[UnitSpaceElementRef],
+  topology: List[RefElemTopology],
+  bpstate:List[BPStateRef],
+  unitswitcher:List[UnitSwitcherRef],
+  reactions: List[UnitReactionRef],
+  reaction_state_outs: List[UnitReactionStateOutRef],
+  reaction_cn: List[ReactionContainer],
+  middlewares: Seq[MiddlewareRef] = Seq(),
+  strategies: Seq[StrategyRef] = Seq(),
+  inputs: Seq[StrategyInputRef] = Seq(),
+  bases: Seq[StrategyBaseRef] = Seq(),
+  outputs: Seq[StrategyOutputRef] = Seq()
+)
+
+
+case class ReactionContainer(reaction: UnitReactionRef,
+  reaction_state_outs: List[UnitReactionStateOutRef])
+
+
+*/
 
 object RefSchema {
   val UnitRefs = ObjectType("UnitRefs", "UnitRef",
-    fields[CharacterRepo, Ref](
+    fields[CharacterRepo2, Ref](
     Field("id", IntType, Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.id.getOrElse(-1) )
     ),
@@ -54,10 +77,10 @@ object RefSchema {
     Field("hidden", BooleanType, Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.hidden )
     ),    
-    Field("created_at", OptionType(SchemaDefinition.DateTimeType), Some("|unitelement|"), resolve = ctx =>
+    Field("created_at", OptionType(DateHelper.DateTimeType), Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.created_at )
     ),
-    Field("updated_at", OptionType(SchemaDefinition.DateTimeType), Some("|unitelement|"), resolve = ctx =>
+    Field("updated_at", OptionType(DateHelper.DateTimeType), Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.updated_at )
     )        
 
@@ -65,7 +88,7 @@ object RefSchema {
 
 
   val UnitElements = ObjectType("UnitElementsRef", "UnitElementRef",
-    fields[CharacterRepo, UnitElementRef](
+    fields[CharacterRepo2, UnitElementRef](
     Field("id", IntType, Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.id.getOrElse(-1))
     ),
@@ -90,10 +113,10 @@ object RefSchema {
     Field("order", IntType, Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.order )
     ),
-    Field("created_at", OptionType(SchemaDefinition.DateTimeType), Some("|unitelement|"), resolve = ctx =>
+    Field("created_at", OptionType(DateHelper.DateTimeType), Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.created_at )
     ),
-    Field("updated_at", OptionType(SchemaDefinition.DateTimeType), Some("|unitelement|"), resolve = ctx =>
+    Field("updated_at", OptionType(DateHelper.DateTimeType), Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.updated_at )
     )                                    
   ))
@@ -102,7 +125,7 @@ object RefSchema {
 
 
   val UnitSpaces = ObjectType("UnitSpacesRef", "UnitSpaceRef",
-    fields[CharacterRepo, UnitSpaceRef](
+    fields[CharacterRepo2, UnitSpaceRef](
     Field("id", IntType, Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.id.getOrElse(-1))
     ),
@@ -127,10 +150,10 @@ object RefSchema {
     Field("nestingLevel", IntType, Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.nestingLevel )
     ),
-    Field("created_at", OptionType(SchemaDefinition.DateTimeType), Some("|unitelement|"), resolve = ctx =>
+    Field("created_at", OptionType(DateHelper.DateTimeType), Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.created_at )
     ),
-    Field("updated_at", OptionType(SchemaDefinition.DateTimeType), Some("|unitelement|"), resolve = ctx =>
+    Field("updated_at", OptionType(DateHelper.DateTimeType), Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.updated_at )
     )                                    
   ))
@@ -138,7 +161,7 @@ object RefSchema {
 
 
   val UnitSpaceElements = ObjectType("UnitSpaceElementsRef", "UnitSpaceElementRef",
-    fields[CharacterRepo, UnitSpaceElementRef](
+    fields[CharacterRepo2, UnitSpaceElementRef](
     Field("id", IntType, Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.id.getOrElse(-1))
     ),
@@ -169,10 +192,10 @@ object RefSchema {
     Field("order", IntType, Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.order )
     ),
-    Field("created_at", OptionType(SchemaDefinition.DateTimeType), Some("|unitelement|"), resolve = ctx =>
+    Field("created_at", OptionType(DateHelper.DateTimeType), Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.created_at )
     ),
-    Field("updated_at", OptionType(SchemaDefinition.DateTimeType), Some("|unitelement|"), resolve = ctx =>
+    Field("updated_at", OptionType(DateHelper.DateTimeType), Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.updated_at )
     )
 
@@ -181,7 +204,7 @@ object RefSchema {
 
 
   val Topologies = ObjectType("TopologiesRef", "TopologyRef",
-    fields[CharacterRepo, RefElemTopology](
+    fields[CharacterRepo2, RefElemTopology](
     Field("id", IntType, Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.id.getOrElse(-1))
     ),
@@ -200,10 +223,10 @@ object RefSchema {
     Field("space_id", OptionType(IntType), Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.space_id )
     ),
-    Field("created_at", OptionType(SchemaDefinition.DateTimeType), Some("|unitelement|"), resolve = ctx =>
+    Field("created_at", OptionType(DateHelper.DateTimeType), Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.created_at )
     ),
-    Field("updated_at", OptionType(SchemaDefinition.DateTimeType), Some("|unitelement|"), resolve = ctx =>
+    Field("updated_at", OptionType(DateHelper.DateTimeType), Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.updated_at )
     )    
   ))
@@ -211,7 +234,7 @@ object RefSchema {
 
 
   val BPStates = ObjectType("BPStatesRef", "BPStateRef",
-    fields[CharacterRepo, BPStateRef](
+    fields[CharacterRepo2, BPStateRef](
     Field("id", IntType, Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.id.getOrElse(-1))
     ),
@@ -257,10 +280,10 @@ object RefSchema {
     Field("lang", StringType, Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.lang )
     ),
-    Field("created_at",  OptionType(SchemaDefinition.DateTimeType), Some("|unitelement|"), resolve = ctx =>
+    Field("created_at",  OptionType(DateHelper.DateTimeType), Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.created_at )
     ),
-    Field("updated_at",  OptionType(SchemaDefinition.DateTimeType), Some("|unitelement|"), resolve = ctx =>
+    Field("updated_at",  OptionType(DateHelper.DateTimeType), Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.updated_at )
     )
   ))
@@ -268,7 +291,7 @@ object RefSchema {
 
 
   val UnitSwitchers = ObjectType("UnitSwitchersRef", "UnitSwitcherRef",
-    fields[CharacterRepo, UnitSwitcherRef](
+    fields[CharacterRepo2, UnitSwitcherRef](
     Field("id", IntType, Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.id.getOrElse(-1))
     ),
@@ -293,16 +316,16 @@ object RefSchema {
     Field("override_group", IntType, Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.override_group )
     ),
-    Field("created_at", OptionType(SchemaDefinition.DateTimeType), Some("|unitelement|"), resolve = ctx =>
+    Field("created_at", OptionType(DateHelper.DateTimeType), Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.created_at )
     ),
-    Field("updated_at", OptionType(SchemaDefinition.DateTimeType), Some("|unitelement|"), resolve = ctx =>
+    Field("updated_at", OptionType(DateHelper.DateTimeType), Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.updated_at )
     )
   ))
 
   val Reactions = ObjectType("ReactionsRef", "ReactionRef",
-    fields[CharacterRepo, UnitReactionRef](
+    fields[CharacterRepo2, UnitReactionRef](
     Field("id", IntType, Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.id.getOrElse(-1))
     ),
@@ -321,10 +344,10 @@ object RefSchema {
     Field("title", StringType, Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.title )
     ),
-    Field("created_at", OptionType(SchemaDefinition.DateTimeType), Some("|unitelement|"), resolve = ctx =>
+    Field("created_at", OptionType(DateHelper.DateTimeType), Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.created_at )
     ),
-    Field("updated_at", OptionType(SchemaDefinition.DateTimeType), Some("|unitelement|"), resolve = ctx =>
+    Field("updated_at", OptionType(DateHelper.DateTimeType), Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.updated_at )
     )
 
@@ -333,7 +356,7 @@ object RefSchema {
 
 
   val ReactionStateOuts = ObjectType("ReactionStateOutsRef", "ReactionStateOutRef",
-    fields[CharacterRepo, UnitReactionStateOutRef](
+    fields[CharacterRepo2, UnitReactionStateOutRef](
     Field("id", IntType, Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.id.getOrElse(-1))
     ),
@@ -352,10 +375,10 @@ object RefSchema {
     Field("is_input", BooleanType, Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.is_input )
     ),
-    Field("created_at", OptionType(SchemaDefinition.DateTimeType), Some("|unitelement|"), resolve = ctx =>
+    Field("created_at", OptionType(DateHelper.DateTimeType), Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.created_at )
     ),
-    Field("updated_at", OptionType(SchemaDefinition.DateTimeType), Some("|unitelement|"), resolve = ctx =>
+    Field("updated_at", OptionType(DateHelper.DateTimeType), Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.updated_at )
     )
 
@@ -363,7 +386,7 @@ object RefSchema {
 
 
   val ReactionContainers = ObjectType("ReactionContainersRef", "ReactionContainerRef",
-    fields[CharacterRepo, ReactionContainer](
+    fields[CharacterRepo2, ReactionContainer](
 
     Field("reaction", Reactions, Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.reaction )
@@ -375,7 +398,7 @@ object RefSchema {
 
 
   val Middlewares = ObjectType("MiddlewaresRef", "MiddlewareRef",
-    fields[CharacterRepo, MiddlewareRef](
+    fields[CharacterRepo2, MiddlewareRef](
     Field("id", LongType, Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.id.getOrElse(-1L))
     ),
@@ -394,10 +417,10 @@ object RefSchema {
     Field("reflection", IntType, Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.reflection )
     ),
-    Field("created_at", OptionType(SchemaDefinition.DateTimeType), Some("|unitelement|"), resolve = ctx =>
+    Field("created_at", OptionType(DateHelper.DateTimeType), Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.created_at )
     ),
-    Field("updated_at", OptionType(SchemaDefinition.DateTimeType), Some("|unitelement|"), resolve = ctx =>
+    Field("updated_at", OptionType(DateHelper.DateTimeType), Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.updated_at )
     )    
 
@@ -405,7 +428,7 @@ object RefSchema {
 
 
   val Strategies = ObjectType("StrategiesRef", "StrategyRef",
-    fields[CharacterRepo, StrategyRef](
+    fields[CharacterRepo2, StrategyRef](
 
 
     Field("id", LongType, Some("|unitelement|"), resolve = ctx =>
@@ -423,10 +446,10 @@ object RefSchema {
     Field("isNullStrategy", BooleanType, Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.isNullStrategy )
     ),
-    Field("created_at", OptionType(SchemaDefinition.DateTimeType), Some("|unitelement|"), resolve = ctx =>
+    Field("created_at", OptionType(DateHelper.DateTimeType), Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.created_at )
     ),
-    Field("updated_at", OptionType(SchemaDefinition.DateTimeType), Some("|unitelement|"), resolve = ctx =>
+    Field("updated_at", OptionType(DateHelper.DateTimeType), Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.updated_at )
     )
 
@@ -434,7 +457,7 @@ object RefSchema {
 
 
   val Inputs = ObjectType("InputsRef", "InputRef",
-    fields[CharacterRepo, StrategyInputRef](
+    fields[CharacterRepo2, StrategyInputRef](
 
     Field("id", LongType, Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.id.getOrElse(-1L))
@@ -457,10 +480,10 @@ object RefSchema {
     Field("targetType", StringType, Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.targetType )
     ),
-    Field("created_at", OptionType(SchemaDefinition.DateTimeType), Some("|unitelement|"), resolve = ctx =>
+    Field("created_at", OptionType(DateHelper.DateTimeType), Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.created_at )
     ),
-    Field("updated_at", OptionType(SchemaDefinition.DateTimeType), Some("|unitelement|"), resolve = ctx =>
+    Field("updated_at", OptionType(DateHelper.DateTimeType), Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.updated_at )
     )
 
@@ -468,7 +491,7 @@ object RefSchema {
 
 
   val Bases = ObjectType("BasesRef", "BaseRef",
-    fields[CharacterRepo, StrategyBaseRef](
+    fields[CharacterRepo2, StrategyBaseRef](
     Field("id", LongType, Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.id.getOrElse(-1L))
     ),
@@ -493,10 +516,10 @@ object RefSchema {
     Field("validationPattern", OptionType(StringType), Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.validationPattern )
     ),
-    Field("created_at", OptionType(SchemaDefinition.DateTimeType), Some("|unitelement|"), resolve = ctx =>
+    Field("created_at", OptionType(DateHelper.DateTimeType), Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.created_at )
     ),
-    Field("updated_at", OptionType(SchemaDefinition.DateTimeType), Some("|unitelement|"), resolve = ctx =>
+    Field("updated_at", OptionType(DateHelper.DateTimeType), Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.updated_at )
     )
 
@@ -505,7 +528,7 @@ object RefSchema {
 
 
   val Outputs = ObjectType("OutputsRef", "OutputRef",
-    fields[CharacterRepo, StrategyOutputRef](
+    fields[CharacterRepo2, StrategyOutputRef](
     Field("id", LongType, Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.id.getOrElse(-1L))
     ),
@@ -527,10 +550,10 @@ object RefSchema {
     Field("targetType", StringType, Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.targetType )
     ),
-    Field("created_at", OptionType(SchemaDefinition.DateTimeType), Some("|unitelement|"), resolve = ctx =>
+    Field("created_at", OptionType(DateHelper.DateTimeType), Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.created_at )
     ),
-    Field("updated_at", OptionType(SchemaDefinition.DateTimeType), Some("|unitelement|"), resolve = ctx =>
+    Field("updated_at", OptionType(DateHelper.DateTimeType), Some("|unitelement|"), resolve = ctx =>
       Future.successful(ctx.value.updated_at )
     )
 
@@ -546,7 +569,7 @@ object RefSchema {
   ///// MAIN SCHEMA
 
   val schema = ObjectType("RefsSch", "RefSch",
-    fields[CharacterRepo, RefContainer](
+    fields[CharacterRepo2, RefContainer](
 
 Field("ref", UnitRefs, Some("|unitelement|"), resolve = ctx =>
   Future.successful(ctx.value.ref)

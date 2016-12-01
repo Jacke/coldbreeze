@@ -24,27 +24,7 @@ import controllers._
  */
 object SchemaDefinition {
 
-
-case object DateCoercionViolation extends ValueCoercionViolation("Date value expected")
-
-def parseDate(s: String) = Try(new DateTime(s, DateTimeZone.UTC)) match {
-  case Success(date) ⇒ Right(date)
-  case Failure(_) ⇒ Left(DateCoercionViolation)
-}
-val DateTimeType = ScalarType[DateTime]("DateTime",
-  coerceOutput = (d, caps) ⇒
-    if (caps.contains(DateSupport)) d.toDate
-    else ISODateTimeFormat.dateTime().print(d),
-  coerceUserInput = {
-    case s: String ⇒ parseDate(s)
-    case _ ⇒ Left(DateCoercionViolation)
-  },
-  coerceInput = {
-    case ast.StringValue(s, _, _) ⇒ parseDate(s)
-    case _ ⇒ Left(DateCoercionViolation)
-  })
-
-
+  val DateTimeType = DateHelper.DateTimeType
 
   val EpisodeEnum = EnumType(
     "Episode",
@@ -496,7 +476,7 @@ val LaunchStations = ObjectType("LaunchStations", "LaunchStation.",
       val ouputs = StrategyInputRefsDAOF.await( StrategyOutputRefsDAOF.getByStrategies(strategiesIds) )
 
 
-      RefContainer(ref,
+      models.DAO.reflect.RefContainer(ref,
         ProcElemReflectionDAO.findByRef(ref.id.get),
         SpaceReflectionDAO.findByRef(ref.id.get),
         SpaceElementReflectionDAO.findByRef(ref.id.get),

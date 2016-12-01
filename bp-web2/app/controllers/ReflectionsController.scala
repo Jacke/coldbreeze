@@ -65,25 +65,7 @@ UnitSpaceElementRef
 BPStateRef
 UnitSwitcherRef
 */
-case class RefContainer(ref: Ref,
-  unitelement:List[UnitElementRef],
-  unitspace:List[UnitSpaceRef],
-  unitspaceelement:List[UnitSpaceElementRef],
-  topology: List[RefElemTopology],
-  bpstate:List[BPStateRef],
-  unitswitcher:List[UnitSwitcherRef],
-  reactions: List[UnitReactionRef],
-  reaction_state_outs: List[UnitReactionStateOutRef],
-  reaction_cn: List[ReactionContainer],
-  middlewares: Seq[MiddlewareRef] = Seq(),
-  strategies: Seq[StrategyRef] = Seq(),
-  inputs: Seq[StrategyInputRef] = Seq(),
-  bases: Seq[StrategyBaseRef] = Seq(),
-  outputs: Seq[StrategyOutputRef] = Seq()
-)
 
-case class ReactionContainer(reaction: UnitReactionRef,
-  reaction_state_outs: List[UnitReactionStateOutRef])
 
 
 
