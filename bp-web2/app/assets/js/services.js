@@ -413,7 +413,7 @@ minorityAppServices.factory('RefStrategyBaseFactory', ['$resource', function ($r
 ** Employees FACTORY
 */
 minorityAppServices.factory('EmployeesFactory', ['$resource', function ($resource) {
-    return $resource(baseUrl + 'actors', {}, {
+    return $resource(baseUrl + 'participators', {}, {
         query: { method: 'GET', isArray: false }
     })
 }]);

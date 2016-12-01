@@ -3,21 +3,29 @@ import slick.driver.PostgresDriver.api._
 import com.github.nscala_time.time.Imports._
 import com.github.tototoshi.slick.PostgresJodaSupport._
 
+
+case class EmployeeDTO(var id: Option[Int],
+                       uid: String,
+                       master_acc:String,
+                       position:Option[String],
+                       manager:Boolean = false,
+                       workbench:Int=0)
+
+
 object EmployeesBusinessDAOF {
+
   import scala.util.Try
-import akka.actor.ActorSystem
-
-
-import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
-//import slick.driver.JdbcProfile
-import slick.driver.PostgresDriver.api._
-import slick.jdbc.meta.MTable
-import scala.concurrent.ExecutionContext.Implicits.global
-import com.github.tototoshi.slick.PostgresJodaSupport._
-import scala.concurrent.duration.Duration
-import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
-import scala.util.Try
-import models.DAO.conversion.DatabaseFuture._
+  import akka.actor.ActorSystem
+  import slick.backend.{StaticDatabaseConfig, DatabaseConfig}
+  //import slick.driver.JdbcProfile
+  import slick.driver.PostgresDriver.api._
+  import slick.jdbc.meta.MTable
+  import scala.concurrent.ExecutionContext.Implicits.global
+  import com.github.tototoshi.slick.PostgresJodaSupport._
+  import scala.concurrent.duration.Duration
+  import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
+  import scala.util.Try
+  import models.DAO.conversion.DatabaseFuture._
 
 //  val dbConfig = models.DAO.conversion.DatabaseCred.dbConfig//slick.backend.DatabaseConfig.forConfig[slick.driver.JdbcProfile]("postgres")
 //  val db = models.DAO.conversion.DatabaseCred.databaseF // all database interactions are realised through this object
@@ -138,12 +146,7 @@ class Employees(tag: Tag) extends Table[EmployeeDTO](tag, "employees") {
 
 }
 
-case class EmployeeDTO(var id: Option[Int],
-                       uid: String,
-                       master_acc:String,
-                       position:Option[String],
-                       manager:Boolean = false,
-                       workbench:Int=0)
+
 
 
 object EmployeeDAO {

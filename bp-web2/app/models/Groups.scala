@@ -8,6 +8,12 @@ import com.github.tototoshi.slick.PostgresJodaSupport._
 
 import com.github.nscala_time.time.Imports._
 
+case class GroupDTO(var id: Option[Int],
+                  title: String,
+                  business: Int,
+                  created_at: Option[org.joda.time.DateTime],
+                  updated_at: Option[org.joda.time.DateTime])
+
 class Groups(tag: Tag) extends Table[GroupDTO](tag, "groups") {
   def id          = column[Int]("id", O.PrimaryKey, O.AutoInc)
 
@@ -209,11 +215,7 @@ object AccountGroupDAO {
 
 }
 
-case class GroupDTO(var id: Option[Int],
-                  title: String,
-                  business: Int,
-                  created_at: Option[org.joda.time.DateTime],
-                  updated_at: Option[org.joda.time.DateTime])
+
 object GroupsDAO {
   import akka.actor.ActorSystem
   import slick.backend.{StaticDatabaseConfig, DatabaseConfig}

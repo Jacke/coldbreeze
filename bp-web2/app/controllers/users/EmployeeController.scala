@@ -42,7 +42,9 @@ import utilities.AccountCredHiding
 /**
  * Created by Sobolev on 22.07.2014.
  */
-case class ActorCont(emps: List[EmployeeDTO], creds:List[models.daos.DBUser])
+case class ParticipatorsContainer(emps: List[EmployeeDTO], creds:List[models.daos.DBUser])
+
+
 import javax.inject.Inject
 import play.api.libs.mailer._
 
@@ -72,8 +74,8 @@ class EmployeeController @Inject() (
   implicit val InputParamWrites = Json.format[EmployeeDTO]
   implicit val AccountReads = Json.reads[models.daos.DBUser]
   implicit val AccountWrites = Json.format[models.daos.DBUser]
-  implicit val ActorContReads = Json.reads[ActorCont]
-  implicit val ActorContWrites = Json.format[ActorCont]
+  implicit val ParticipatorsContainerReads = Json.reads[ParticipatorsContainer]
+  implicit val ParticipatorsContainerWrites = Json.format[ParticipatorsContainer]
 
    //val uidsForm = Form()
    // case class EmployeeDTO(var id: Option[Int], uid: String, acc:Int, position:Option[String], manager:Boolean = false)
@@ -185,8 +187,8 @@ class EmployeeController @Inject() (
     }
   }
 }
-//GET         /actors      @controllers.users.EmployeeController.actors()
-def actors() = silhouette.SecuredAction.async { implicit request =>
+//GET         /participators      @controllers.users.EmployeeController.participators()
+def participators() = silhouette.SecuredAction.async { implicit request =>
      val user                        = request.identity.emailFilled
      val business                    = request.identity.businessFirst
 
@@ -196,7 +198,7 @@ def actors() = silhouette.SecuredAction.async { implicit request =>
        val creds:List[models.daos.DBUser]      =  models.AccountsDAO.findAllByEmails(employeesList.map(_.master_acc))
        val cleanCreds = creds.map(acc => AccountCredHiding.hide(acc))
 
-       Ok(Json.toJson(ActorCont(employeesList, cleanCreds)))
+       Ok(Json.toJson(ParticipatorsContainer(employeesList, cleanCreds)))
      }
 }
 

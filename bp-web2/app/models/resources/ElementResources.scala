@@ -27,6 +27,34 @@ Then in your table schema:
 def * = id ~ myInt ~ myString <> (Foo.fromRow _, Foo.toRow _)
 */
 
+case class ElementResourceDTO(
+  var id: Option[Int],
+  element_id: Int,
+  process_id:Int,
+  resource_id: Int,
+  entities: String = "",
+  created_at: Option[org.joda.time.DateTime] = None,
+  updated_at: Option[org.joda.time.DateTime] = None
+) {
+  def fetchEntities:List[String] = {
+    entities.split(",").toList
+  }
+}
+case class SessionElementResourceDTO(
+  var id: Option[Int],
+  element_id: Int,
+  process_id:Int,
+  session_id:Int,
+  resource_id: Int,
+  entities: String = "",
+  created_at: Option[org.joda.time.DateTime] = None,
+  updated_at: Option[org.joda.time.DateTime] = None) {
+  def fetchEntities:List[String] = {
+    entities.split(",").toList
+  }
+}
+
+
 class ElementResources(tag: Tag) extends Table[ElementResourceDTO](tag, "element_resources"){
   def id         = column[Int]("id", O.PrimaryKey, O.AutoInc)
   def element    = column[Int]("element_id")
@@ -61,32 +89,7 @@ class SessionElementResources(tag: Tag) extends Table[SessionElementResourceDTO]
            created_at,
            updated_at) <> (SessionElementResourceDTO.tupled, SessionElementResourceDTO.unapply)
 }
-case class ElementResourceDTO(
-  var id: Option[Int],
-  element_id: Int,
-  process_id:Int,
-  resource_id: Int,
-  entities: String = "",
-  created_at: Option[org.joda.time.DateTime] = None,
-  updated_at: Option[org.joda.time.DateTime] = None
-) {
-	def fetchEntities:List[String] = {
-		entities.split(",").toList
-	}
-}
-case class SessionElementResourceDTO(
-  var id: Option[Int],
-  element_id: Int,
-  process_id:Int,
-  session_id:Int,
-  resource_id: Int,
-  entities: String = "",
-  created_at: Option[org.joda.time.DateTime] = None,
-  updated_at: Option[org.joda.time.DateTime] = None) {
-  def fetchEntities:List[String] = {
-    entities.split(",").toList
-  }
-}
+
 
 
 object ElementResourceDAO {
