@@ -163,7 +163,7 @@ integrationTest := {
 
 
 
-  lazy val bbSDK = Project("bbSDK", file("bb-sdk"))
+  lazy val databoardSDK = Project("databoardSDK", file("databoard-sdk"))
     .settings(basicSettings: _*)
     .settings(revolverSettings: _*)
     .settings(

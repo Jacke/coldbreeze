@@ -127,6 +127,11 @@ object ElementResourceDAO {
       await(db.run(q3.result)).toList
   }
 
+  def getByProcesses(k: List[Int]) =   {
+      val q3 = for { s ← element_resources if s.process inSetBind k } yield s
+      await(db.run(q3.result)).toList
+  }
+
   def getAllByElement(k: Int):List[ElementResourceDTO] =   {
       val q3 = for { s ← element_resources if s.element === k } yield s
       await(db.run(q3.result)).toList

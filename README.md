@@ -12,6 +12,19 @@ Minority platform is a cloud-enabled, language-agnostic platform for workflow ma
   - Result
   - Events/Reaction
 
+### Directories
+  - bp-core
+  - bp-dao
+  - bp-web
+  - bp-minority [first initial project that is isolated from bp-web [domain specific abstraction, like services, businesses]]
+  - run_helpers [Dir of variety of scripts for initiating, testing, load-testing]
+  - project_scaffold [Dir of bootstraps projects ]
+  - databoard [Data warehouse for central project]
+  - databoard-sdk [Data warehouse SDK for central project]  
+  - docs [Documentation]  
+  - deploy [Scripts for Ansible [deprecated]]
+  -
+
 ### Version
 1.3.0
 
