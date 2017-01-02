@@ -562,7 +562,9 @@ DELETE /bprocess/:bpID/space_elem/:spelem_id            @controllers.ProcessElem
 # Input
 GET          /bprocess/:BPid/request/:station_id      @controllers.ProcessInputController.schemes(BPid: Int, station_id: Int)
 POST         /bprocess/:bpID/invoke                   @controllers.ProcessInputController.invoke(bpID: Int)
+POST         /bprocess/:bpID/invoke_async             @controllers.ProcessInputController.invokeAsync(bpID: Int)
 POST         /bprocess/:bpID/invoke_from/:station_id  @controllers.ProcessInputController.invokeFrom(station_id:Int, bpID: Int)
+POST         /bprocess/:bpID/invoke_async_from/:station_id  @controllers.ProcessInputController.invokeAsyncFrom(station_id:Int, bpID: Int)
 
 GET          /bprocess/:BPid/input_logs               @controllers.ProcessInputController.inputLogs(BPid: Int)
 GET          /bprocess/:BPid/input_logs/:session_id   @controllers.ProcessInputController.inputLogsBySession(BPid: Int, session_id:Int)

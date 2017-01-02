@@ -97,7 +97,7 @@ def invoke(bpID: Int)  = silhouette.SecuredAction.async { implicit request =>
         val pipesList:List[LaunchMapPipe => ExecutedLaunchCVPipes] = List(costPipeFn)
         langF.flatMap { langOpt =>
           val lang = langOpt.get._3
-          service.BuildF.run(bpID, Some(lang), invoke = true, pipesList).map { process =>
+          service.BuilderRunnerEntries.cleanRun(bpID, Some(lang), invoke = true, pipesList).finished.map { process =>
              //runned match {
               //case Some(process) => {
                 action(request.identity.emailFilled, process = Some(bpID), ProcHisCom.processLaunched, None, None)
@@ -113,7 +113,32 @@ def invoke(bpID: Int)  = silhouette.SecuredAction.async { implicit request =>
     )
    }
 }
-
+// POST         /bprocess/:bpID/invoke_async
+def invokeAsync(bpID: Int)  = silhouette.SecuredAction.async { implicit request =>
+    if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, bpID)) {
+      val userId = request.identity.emailFilled
+      val langF = models.AccountsDAOF.getRolesAndLang(userId)
+      val costsF = ElementResourceDAOF.getByProcess(bpID)
+      costsF.flatMap { costs =>
+        val costPipeFn = builder_pipes.ElementResourceBuilderPipe.apply(costs.toList)
+        val pipesList:List[LaunchMapPipe => ExecutedLaunchCVPipes] = List(costPipeFn)
+        langF.flatMap { langOpt =>
+          val lang = langOpt.get._3
+          val processPhases = service.BuilderRunnerEntries.cleanRun(bpID, Some(lang), invoke = true, pipesList)
+          processPhases.runned.map { process =>
+                action(request.identity.emailFilled, process = Some(bpID), ProcHisCom.processLaunched, None, None)
+                processPhases.finished.map { processFinished =>
+                  action(request.identity.emailFilled, process = Some(bpID), ProcHisCom.processFinished, None, None)
+                }
+                Ok(Json.toJson(Map("success" -> "station_id", "session" -> process.session_id.toString)))
+          }
+        }
+      }
+    } else { Future.successful(
+      Forbidden(Json.obj("status" -> "Access denied"))
+    )
+   }
+}
 
 
 
@@ -161,11 +186,11 @@ def invokeFrom(session_id: Int, bpID: Int) = silhouette.SecuredAction.async(Body
                 }
           }
         }*/
-    val resumedProcF = service.BuildF.newRunFrom(session_id = session_id,
+    val resumedProcF = service.BuilderRunnerEntries.runResumed(session_id = session_id,
       bpID = bpID, 
       params = pmsResult.get, 
       invoke = true)
-    resumedProcF.map { process =>
+    resumedProcF.finished.map { process =>
      action(request.identity.emailFilled, process = Some(bpID), ProcHisCom.processResumed, None, None)
      controlles.launches.LaunchStack.pop(launchId = session_id)
      controllers.UserActor.updateLaunchLock(target="lock", 
@@ -181,6 +206,71 @@ def invokeFrom(session_id: Int, bpID: Int) = silhouette.SecuredAction.async(Body
   } else { Future.successful( Forbidden(Json.obj("status" -> "Access denied")) ) }
 }
 
+
+// POST         /bprocess/:bpID/invoke_async_from/:station_id
+def invokeAsyncFrom(session_id: Int, bpID: Int) = silhouette.SecuredAction.async(BodyParsers.parse.json) { implicit request =>
+    if (security.BRes.procIsOwnedByBiz(request.identity.businessFirst, bpID)) {
+
+
+    val pmsResult = request.body.validate[List[ReactionActivator]]
+    /*
+    case class InputLogger(var id: Option[Int],
+      uid:Option[String]=None,
+      action:String,
+      arguments:List[String],
+      front_elem_id:Option[Int],
+      space_elem_id:Option[Int],
+      date: org.joda.time.DateTime,
+      station: Int)*/
+     // TODO: Input logger for reaction
+    val input_logs = pmsResult.map{
+                              case entity => entity.map { pm =>
+                                  InputLogger(None,
+                                    uid = request.identity.email,
+                                    action = "input", // TODO: Add reaction title
+                                    arguments = List.empty[String],
+                                    reaction = pm.reaction_id,
+                                    input = None,
+                                    org.joda.time.DateTime.now,
+                                    session_id)
+                                }
+      }
+
+    if (controlles.launches.LaunchStack.push(launchId = session_id)) {
+       controllers.UserActor.updateLaunchLock(target="lock", email=request.identity.emailFilled, isLock=true, launchId=session_id)
+
+    InputLoggerDAO.pull_for_input(input_logs.get)
+        // case class InputParamProc(felem: Option[Int], selem: Option[Int], param: String, args: List[String])
+       /*
+        val genparams = pmsResult.map{
+          case entity => {
+               entity.map { t =>
+                InputParamProc(t.f_elem, t.sp_elem, t.param, t.arguments.getOrElse(List.empty[String]))
+                }
+          }
+        }*/
+    val resumedProcF = service.BuilderRunnerEntries.runResumed(session_id = session_id,
+      bpID = bpID, 
+      params = pmsResult.get, 
+      invoke = true)
+    resumedProcF.launched.map { process =>
+      action(request.identity.emailFilled, process = Some(bpID), ProcHisCom.processResumed, None, None)
+      controlles.launches.LaunchStack.pop(launchId = session_id)
+      controllers.UserActor.updateLaunchLock(target="lock", 
+                                            email= request.identity.emailFilled, 
+                                            isLock=true, 
+                                            launchId= session_id)
+      resumedProcF.finished.map { finishedProcess => 
+        action(request.identity.emailFilled, process = Some(bpID), ProcHisCom.processFinished, None, None)
+      }
+      Ok(Json.toJson(Map("success" -> process.session_id)))
+    }
+   } else { // already launching
+      Future.successful( BadRequest(Json.toJson(Map("error" -> "Already launching"))) )
+   }
+
+  } else { Future.successful( Forbidden(Json.obj("status" -> "Access denied")) ) }
+}
 
 
 

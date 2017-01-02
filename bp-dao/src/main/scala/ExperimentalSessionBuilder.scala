@@ -26,7 +26,7 @@ import us.ority.min.actions._
 import scala.concurrent.ExecutionContext.Implicits.global
 /******************************************************************************
 
-	Convert launched object to original and original to launched
+	Convert launched process objects to original and original to launched
 
 *******************************************************************************/
 

@@ -1,5 +1,4 @@
 package service
-
 //import com.typesafe.scalalogging.slf4j.Logger
 import models.DAO._
 import main.scala.utils._
@@ -24,7 +23,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
 import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
 import scala.util.Try
+import com.typesafe.scalalogging.Logger
+import org.slf4j.LoggerFactory
+import us.ority.min.actions._
+import us.ority.min.jobs._
 
-object BuilderFutureFetcher {
+object BuildingFetchers {
 
 }

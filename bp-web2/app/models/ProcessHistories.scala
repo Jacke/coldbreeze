@@ -60,6 +60,8 @@ object ProcHisCom {
   def processUpdated = "process_updated"
   def processDeleted = "process_deleted"
   def processLaunched = "process_launched"
+  def processFinished = "process_finished"
+
   def processResumed = "process_resumed"
   def elementCreated = "elem_created"
   def elementRenamed = "element_renamed"

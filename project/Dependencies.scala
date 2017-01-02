@@ -27,7 +27,8 @@ object Dependencies {
      Resolver.jcenterRepo
   )
 
-  val akkaVersion     = "2.4.8"
+  val akkaVersion     = "2.4.16"
+  val playVersion     = "2.5.10"
   val sprayVersion    = "1.3.1-20140423"
   val javaasist       = "org.javassist" % "javassist" % "3.20.0-GA"
   val heroku          = "com.heroku"                % "sbt-heroku"              % "0.1.4"
@@ -79,7 +80,6 @@ object Dependencies {
   val futiles         = "com.markatta"              %% "futiles"                % "1.1.3"
   val scaldiakka      = "org.scaldi"                %% "scaldi-akka"            % "0.4"
   val hikari_core     = "com.zaxxer"                % "HikariCP"                % "2.3.5"
-  //val hicaricp        = "com.edulify"               %% "play-hikaricp"          % "1.5.0"
   val hicaricp        = "com.sandinh"               %% "play-hikaricp"          % "1.7.1"
   val javamail        = "javax.mail"                % "mail"                    % "1.5.0-b01"
   val courier         = "me.lessis"                 %% "courier"                % "0.1.3"
@@ -104,7 +104,7 @@ object Dependencies {
 
 
   val play2oauth2     = "com.nulab-inc"             %% "play2-oauth2-provider"  % "0.14.0"
-  val play4           = "com.typesafe.play"         %% "play"                   % "2.5.4"
+  val play4           = "com.typesafe.play"         %% "play"                   % playVersion
   val slackapi        = "com.github.gilbertw1"      %% "slack-scala-client"     % "0.1.3"
   val playslick       = "com.typesafe.play"         %  "play-slick_2.11"        % "2.0.0"
   val playauth        = "jp.t2v"                    %% "play2-auth"             % "0.12.0"
@@ -156,19 +156,18 @@ object Dependencies {
 
   val mailerses       = "nl.rhinofly"               %% "play-mailer"            % "3.0.0"
   val apamailer       = "org.apache.commons"        %  "commons-email"          % "1.3.1"
-  val filter          = "com.typesafe.play"         %% "filters-helpers"        % "2.5.4"
-  val filter4         = "com.typesafe.play"         %% "filters-helpers"        % "2.5.4"
-  val cache           = "com.typesafe.play"         %% "play-cache"             % "2.5.4"
+  val filter          = "com.typesafe.play"         %% "filters-helpers"        % playVersion
+  val filter4         = "com.typesafe.play"         %% "filters-helpers"        % playVersion
+  val cache           = "com.typesafe.play"         %% "play-cache"             % playVersion
   val cache4           = "com.typesafe.play.modules" %% "play-modules-redis"    % "2.5.0"
 
   val rediscache      = "com.typesafe.play.plugins" %% "play-plugins-redis"     % "2.3.1"
-  val ptest           = "com.typesafe.play"         %% "play-test"              % "2.5.4"
-  val jdbc4            = "com.typesafe.play"        %% "play-jdbc"              % "2.5.4"
-  val jdbc            = "com.typesafe.play"         %% "play-jdbc"              % "2.5.4"
-  val playjson        = "com.typesafe.play"         %% "play-json"              % "2.5.4"
+  val ptest           = "com.typesafe.play"         %% "play-test"              % playVersion
+  val jdbc4            = "com.typesafe.play"        %% "play-jdbc"              % playVersion
+  val jdbc            = "com.typesafe.play"         %% "play-jdbc"              % playVersion
+  val playjson        = "com.typesafe.play"         %% "play-json"              % playVersion
   val junit           = "com.novocode"              % "junit-interface"         % "0.10" % "test"
   val anorm           = "com.typesafe.play"         %% "anorm"                  % "2.5.2"
-  val anorm4          =  "com.typesafe.play"        %% "anorm"                  % "2.4.0"
 
 
   val jodatime        = "joda-time"                 % "joda-time"               % "2.7"
@@ -204,7 +203,7 @@ object Dependencies {
   val stripe          = "com.stripe"                %  "stripe-java"         % "2.7.0"
 
 
-  val webserviceclient =   "com.typesafe.play"      %% "play-ws"         % "2.5.4"
+  val webserviceclient =   "com.typesafe.play"      %% "play-ws"         % playVersion
 
 
   val scalaLog        = "com.typesafe.scala-logging"%%  "scala-logging"         % "3.4.0"
