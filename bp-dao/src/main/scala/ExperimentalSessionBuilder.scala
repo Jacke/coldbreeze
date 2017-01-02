@@ -39,11 +39,7 @@ object ExperimentalSessionBuilder {
 	// session states to that
 	// session reactions
 	// session reactions outs
-
-
-
-
-
+///////////////////////////////////////////////////////////////////////////////
 	// session elements
 	def fromOriginEl(el: UndefElement, session: Int, burnMap: scala.collection.mutable.Map[Int, Int]):SessionUndefElement = {
       val obj = SessionUndefElement(

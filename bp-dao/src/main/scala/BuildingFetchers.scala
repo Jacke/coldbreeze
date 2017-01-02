@@ -31,6 +31,23 @@ import us.ority.min.jobs._
 case class RootElements(procElements:List[UndefElement],
                         test_space:List[BPSpaceDTO],
                         space_elems:List[SpaceElementDTO])
+case class GeneratedLaunchComponents(
+    runFrom:Boolean = false,
+    session_id:Int = 0,
+    sessionEls:List[SessionUndefElement] = List(),
+    sessionSpaces:List[SessionSpaceDTO] = List(),
+    sessionSpaceEls:List[SessionSpaceElementDTO] = List(),
+    elemMap:scala.collection.mutable.Map[Int, Int] = scala.collection.mutable.Map().empty,
+    spaceMap:scala.collection.mutable.Map[Int, Int] = scala.collection.mutable.Map().empty,
+    spaceElsMap:scala.collection.mutable.Map[Int, Int] = scala.collection.mutable.Map().empty,
+    burnElemMap:scala.collection.mutable.Map[Int, Int] = scala.collection.mutable.Map().empty,
+    burnSpaceMap:scala.collection.mutable.Map[Int, Int] = scala.collection.mutable.Map().empty,
+    burnSpaceElMap:scala.collection.mutable.Map[Int, Int] = scala.collection.mutable.Map().empty
+)
+
+
+
+
 object BuildingFetchers {
   def fetchRootElements(bpID: Int):Future[RootElements] = {
     val procElementsF: Future[Seq[UndefElement]] = ProcElemDAOF.findByBPId(bpID)
@@ -46,6 +63,53 @@ object BuildingFetchers {
         }
       }
     }
+  }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  def generateExistedLaunch():GeneratedLaunchComponents = {
+    val runFrom = true
+    val session_id = session_val
+    //val sessionElsF:Future[Seq[SessionUndefElement]]         = SessionProcElementDAOF.findBySession(session_id)
+    //val sessionSpacesF:Future[Seq[SessionSpaceDTO]]          = SessionSpaceDAOF.findBySession(session_id)
+    //val sessionSpaceElsF:Future[Seq[SessionSpaceElementDTO]] = SessionSpaceElemDAOF.findBySession(session_id)
+    //sessionElsF     .map { sessionElsObj =>
+    //sessionSpacesF  .map { sessionSpacesObj =>
+    //sessionSpaceElsF.map { sessionSpaceElsObj =>
+    val sessionEls      = SessionProcElementDAO.findBySession(session_id)//sessionElsObj.toList
+    val sessionSpaces   = SessionSpaceDAO.findBySession(session_id)//sessionSpacesObj.toList
+    val sessionSpaceEls = SessionSpaceElemDAO.findBySession(session_id)//sessionSpaceElsObj.toList
+    //}
+    //}
+    //}
+    getStationToProcess(processRunned, session_id)
+    GeneratedLaunchComponents(runFrom = runFrom, session_id = session_id, sessionEls = sessionEls,
+      sessionSpaces = sessionSpaces,
+      sessionSpaceEls = sessionSpaceEls) 
+  }
+
+  def generateClearLaunch():GeneratedLaunchComponents = {
+    val session_id = models.DAO.sessions.SessionProcElementDAOF.await(
+      saveSession(processRunned, bpDTO, lang) )
+    // FRONT ELEM NOT FOR BRICKS
+    val sessionEls = procElements.map { el =>
+        val obj = ExperimentalSessionBuilder.fromOriginEl(el, session_id, burnElemMap)
+        elemMap += el.id.get -> obj.id.get
+        obj
+    }.toList
+    val sessionSpaces = test_space.map { sp =>//.filter(sp => sp.brick_nested.isDefined).map ( sp =>
+      val obj = ExperimentalSessionBuilder.fromOriginSp(sp, session_id, elemMap, spaceElsMap)
+      spaceMap += sp.id.get -> obj.id.get
+      obj
+    }
+    ExperimentalAfterBurning.makeBurn(spaceMap, burnElemMap)
+    val sessionSpaceEls = space_elems.map { spel =>//.filter(n => n.space_own.isDefined).map ( spel =>
+      val obj = ExperimentalSessionBuilder.fromOriginSpElem(spel, session_id, spaceMap)
+      spaceElsMap += spel.id.get -> obj.id.get
+      obj
+    }
+    GeneratedLaunchComponents(session_id = session_id, sessionEls = sessionEls,
+      sessionSpaces = sessionSpaces,
+      sessionSpaceEls = sessionSpaceEls) 
   }
 
 }

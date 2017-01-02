@@ -41,7 +41,7 @@ object BuildF {
   * @lang optional language
   **/
   def run(bpID: Int, lang: Option[String] = Some("en"), invoke: Boolean,
-  pipes: List[LaunchMapPipe => ExecutedLaunchCVPipes]=List.empty ):BuildingPhases = {
+          pipes: List[LaunchMapPipe => ExecutedLaunchCVPipes]=List.empty ):BuildingPhases = {
     //presenceValidate
     val bpDTO = BPDAO.get(bpID).get
     val processRunned1F:BuildingPhases = initiate(bpID, invoke, bpDTO, session_id = None, pipes = pipes)
@@ -104,8 +104,8 @@ def initiate(bpID: Int,
   ElementRegistrator.apply
   val process = new BProcess(new Managment, id = bpDTO.id)
   val preparedProcess:Future[PreparedProcess] = 
-    initiate2F(bpID, run_proc, process, bpDTO, lang, with_pulling = true, session_id_val = session_id,
-               params = params, pipes = pipes, minimal = minimal)
+      initiate2F(bpID, run_proc, process, bpDTO, lang, with_pulling = true, session_id_val = session_id,
+                 params = params, pipes = pipes, minimal = minimal)
 
   val finishedProcessF: Future[BProcess] = majorLaunchFunction(preparedProcess)
   BuildingPhases(
@@ -127,72 +127,36 @@ def initiate2F(bpID: Int,
               minimal: Boolean = false ):Future[PreparedProcess] =
 {
     val rootElementsF = BuildingFetchers.fetchRootElements(bpID)
-    rootElementsF.flatMap { rootElements =>
+    rootElementsF.map { rootElements =>
       val procElements = rootElements.procElements
       val test_space = rootElements.test_space
       val space_elems = rootElements.space_elems
       val process = processRunned
 
 
-    //process_dto
-    // val session_id = 1 // REMOVE THIS!!
-    var session_id: Int = 0
-    var runFrom: Boolean = false // RUNFROM BOOLEAN CONSTANT
-    var sessionEls:List[SessionUndefElement] = List()
-    var sessionSpaces: List[SessionSpaceDTO] = List()
-    var sessionSpaceEls: List[SessionSpaceElementDTO] = List()
-
-    // Maps Origin to Session
-    var elemMap:scala.collection.mutable.Map[Int, Int]    = scala.collection.mutable.Map().empty
-    var spaceMap:scala.collection.mutable.Map[Int, Int]   = scala.collection.mutable.Map().empty
-    var spaceElsMap:scala.collection.mutable.Map[Int,Int] = scala.collection.mutable.Map().empty
-
-    var burnElemMap:scala.collection.mutable.Map[Int,Int]    = scala.collection.mutable.Map().empty
-    var burnSpaceMap:scala.collection.mutable.Map[Int,Int]   = scala.collection.mutable.Map().empty
-    var burnSpaceElMap:scala.collection.mutable.Map[Int,Int] = scala.collection.mutable.Map().empty
 
     // Generate sessions
-    session_id_val match {
+    val generatedLaunch:GeneratedLaunchComponents = session_id_val match {
       case Some(session_val) => { // Launch from existed session
-        runFrom = true
-        session_id = session_val
-        //val sessionElsF:Future[Seq[SessionUndefElement]]         = SessionProcElementDAOF.findBySession(session_id)
-        //val sessionSpacesF:Future[Seq[SessionSpaceDTO]]          = SessionSpaceDAOF.findBySession(session_id)
-        //val sessionSpaceElsF:Future[Seq[SessionSpaceElementDTO]] = SessionSpaceElemDAOF.findBySession(session_id)
-        //sessionElsF     .map { sessionElsObj =>
-        //sessionSpacesF  .map { sessionSpacesObj =>
-        //sessionSpaceElsF.map { sessionSpaceElsObj =>
-          sessionEls      = SessionProcElementDAO.findBySession(session_id)//sessionElsObj.toList
-          sessionSpaces   = SessionSpaceDAO.findBySession(session_id)//sessionSpacesObj.toList
-          sessionSpaceEls = SessionSpaceElemDAO.findBySession(session_id)//sessionSpaceElsObj.toList
-        //}
-        //}
-        //}
-        getStationToProcess(processRunned, session_id)
+          generateExistedLaunch()
       }
       case _ => { // launch from empty session
-        session_id = models.DAO.sessions.SessionProcElementDAOF.await(
-          saveSession(processRunned, bpDTO, lang) )
-        // FRONT ELEM NOT FOR BRICKS
-        sessionEls = procElements.map { el =>
-            val obj = ExperimentalSessionBuilder.fromOriginEl(el, session_id, burnElemMap)
-            elemMap += el.id.get -> obj.id.get
-            obj
-        }.toList
-        sessionSpaces = test_space.map { sp =>//.filter(sp => sp.brick_nested.isDefined).map ( sp =>
-          val obj = ExperimentalSessionBuilder.fromOriginSp(sp, session_id, elemMap, spaceElsMap)
-          spaceMap += sp.id.get -> obj.id.get
-          obj
-        }
-        ExperimentalAfterBurning.makeBurn(spaceMap, burnElemMap)
-        sessionSpaceEls = space_elems.map { spel =>//.filter(n => n.space_own.isDefined).map ( spel =>
-          val obj = ExperimentalSessionBuilder.fromOriginSpElem(spel, session_id, spaceMap)
-          spaceElsMap += spel.id.get -> obj.id.get
-          obj
-        }
+          generateClearLaunch()
       }
     }
 
+    var runFrom: Boolean = generatedLaunch.runFrom // RUNFROM BOOLEAN CONSTANT
+    val session_id = generatedLaunch.session_id
+    val sessionEls = generatedLaunch.sessionEls
+    val sessionSpaces = generatedLaunch.sessionSpaces
+    val sessionSpaceEls = generatedLaunch.sessionSpaceEls
+    // Maps Origin to Session
+    val elemMap = generatedLaunch.elemMap
+    val spaceMap = generatedLaunch.spaceMap
+    val spaceElsMap = generatedLaunch.spaceElsMap
+    val burnElemMapy = generatedLaunch.burnElemMapy
+    val burnSpaceMap = generatedLaunch.burnSpaceMap
+    val burnSpaceElMap = generatedLaunch.burnSpaceElMap
     // Update session for process
     processRunned.session_id = session_id
     val station_id = saveOrUpdateState(processRunned, bpDTO, session_id, lang, run_proc)
@@ -200,28 +164,30 @@ def initiate2F(bpID: Int,
     //val session_states_ids = saveSessionStates(processRunned, bpDTO, session_id)
 
 
+
     saveLogsInit(processRunned, bpDTO, station_id, BPSpaceDAOF.findByBPIdB(bpID))
     saveStationLog(bpID, station_id, processRunned)
 
-
-  /****** Physical element casting  */
-  val target2 = sessionEls.map(el => ExperimentalSessionBuilder.fromSessionEl(el))
-  val arrays = target2.map(c => c.cast(process)).flatten.toArray
-  process.push {
-    arrays.sortWith(_.order < _.order)
-  }
-  toApplogger("elements " + process.allElements.length + " " + procElements.length)
-
-  /* Presence validation  */
-  val front_bricks = process.findFrontBrick()
-  val test_space2 = sessionSpaces.map(sp => ExperimentalSessionBuilder.fromSessionSp(sp))
-  val space_elems2 = sessionSpaceEls.map(el => ExperimentalSessionBuilder.fromSessionSpEl(el))
-  if (front_bricks.length > 0 && test_space2.length > 0) {
-    makeFrontSpaces(process, test_space2, front_bricks, space_elems2)
-    if (test_space2.reduceLeft(getLatestNest).nestingLevel > 1) {
-      makeNestedSpaces(process, test_space2, process.findNestedBricks(), space_elems2)
+    /****** 
+     *  Physical element casting
+     **/
+    val target2 = sessionEls.map(el => ExperimentalSessionBuilder.fromSessionEl(el))
+    val arrays = target2.map(c => c.cast(process)).flatten.toArray
+    process.push {
+      arrays.sortWith(_.order < _.order)
     }
-  }
+    toApplogger("elements " + process.allElements.length + " " + procElements.length)
+
+    /* Presence validation  */
+    val front_bricks = process.findFrontBrick()
+    val test_space2 = sessionSpaces.map(sp => ExperimentalSessionBuilder.fromSessionSp(sp))
+    val space_elems2 = sessionSpaceEls.map(el => ExperimentalSessionBuilder.fromSessionSpEl(el))
+    if (front_bricks.length > 0 && test_space2.length > 0) {
+      makeFrontSpaces(process, test_space2, front_bricks, space_elems2)
+      if (test_space2.reduceLeft(getLatestNest).nestingLevel > 1) {
+        makeNestedSpaces(process, test_space2, process.findNestedBricks(), space_elems2)
+      }
+    }
 
 /*************************************************************************************************************************/
 /*************************************************************************************************************************/
@@ -447,7 +413,7 @@ def initiate2F(bpID: Int,
       space.states ++=  states.filter(state => state.space_id == space.id)
       space.session_states ++=  session_states.filter(state => state.space_id == space.id)
     }
-/////////////////////////////////
+////////////////////////////////////////////////////////////
     addToLaunchStack(process)
 
     /**
