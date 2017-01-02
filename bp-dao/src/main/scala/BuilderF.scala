@@ -29,8 +29,9 @@ import us.ority.min.actions._
 import us.ority.min.jobs._
 
 /*****
- * By default all elements of process goes from RUN:     plain -> launch -> plain OR
- *                                              RUNFROM: launch -> plain
+ * By default all elements of process transformint as   RUN:     model's -> init launch's (switch ids)-> model's OR
+ *                                                      RUNFROM: launch's (switch ids)-> model's
+ * where plain = model
  */
 
 object BuildF {
@@ -40,11 +41,14 @@ object BuildF {
   * @lang optional language
   **/
   def run(bpID: Int, lang: Option[String] = Some("en"), invoke: Boolean,
-  pipes: List[LaunchMapPipe => ExecutedLaunchCVPipes]=List.empty ):Future[BProcess] = {
+  pipes: List[LaunchMapPipe => ExecutedLaunchCVPipes]=List.empty ):BuildingPhases = {
     //presenceValidate
     val bpDTO = BPDAO.get(bpID).get
-    val processRunned1F:Future[BProcess] = initiate(bpID, invoke, bpDTO, session_id = None, pipes = pipes)
-    BuilderRunnerUtils.generateConsoleOutput(processRunned1F)
+    val processRunned1F:BuildingPhases = initiate(bpID, invoke, bpDTO, session_id = None, pipes = pipes)
+    processRunned1F.finished.map { finishedPhase =>
+      BuilderRunnerUtils.generateConsoleOutput(finishedPhase)      
+    }
+    processRunned1F
   }
   /**
    * Run from launch
@@ -58,7 +62,7 @@ object BuildF {
                  invoke:Boolean = true,
                  process_dto:Option[BProcessDTO]=None,
                  station_dto:Option[BPStationDTO]=None,
-                 minimal: Boolean = false):Future[BProcess]  = {
+                 minimal: Boolean = false):BuildingPhases = {
     println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
     println(s"NEW RUN FROM (pid: ${bpID}, session_id: ${session_id} ${params} invoke:${invoke})")
     println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
@@ -96,50 +100,42 @@ def initiate(bpID: Int,
              session_id: Option[Int],
              params: List[ReactionActivator] = List(),
              pipes: List[LaunchMapPipe => ExecutedLaunchCVPipes]=List(),
-             minimal: Boolean = false ):Future[BProcess] = {
+             minimal: Boolean = false ):BuildingPhases = {
+  ElementRegistrator.apply
+  val process = new BProcess(new Managment, id = bpDTO.id)
+  val preparedProcess:Future[PreparedProcess] = 
+    initiate2F(bpID, run_proc, process, bpDTO, lang, with_pulling = true, session_id_val = session_id,
+               params = params, pipes = pipes, minimal = minimal)
 
-ElementRegistrator.apply
-// caster
-//val process_dto = BPDAO.get(bpID).get
-val procElementsF = ProcElemDAOF.findByBPId(bpID)
-val process = new BProcess(new Managment, id = bpDTO.id)
+  val finishedProcessF: Future[BProcess] = majorLaunchFunction(preparedProcess)
+  BuildingPhases(
+    preparedProcess, finishedProcessF, finishedProcessF
+  )
 
-initiate2F(bpID, run_proc, process, bpDTO, procElementsF, lang, with_pulling = true, session_id_val = session_id,
-          params = params, pipes = pipes, minimal = minimal)
 }
-
-
-
 
 
 def initiate2F(bpID: Int,
               run_proc: Boolean,
               processRunned: BProcess,
               bpDTO: BProcessDTO,
-              procElementsF: Future[Seq[UndefElement]],
               lang: Option[String] = Some("en"),
               with_pulling: Boolean = false,
               session_id_val: Option[Int],
               params: List[ReactionActivator] = List(),
               pipes: List[LaunchMapPipe => ExecutedLaunchCVPipes]=List(),
-              minimal: Boolean = false ):Future[BProcess] =
+              minimal: Boolean = false ):Future[PreparedProcess] =
 {
-    val test_spaceF = BPSpaceDAOF.findByBPId(bpID)
-    val space_elemsF = SpaceElemDAOF.findByBPId(bpID)
-    procElementsF.flatMap { procElementsObj =>
-    test_spaceF.flatMap { test_spaceObj =>
-    space_elemsF.flatMap { space_elemsObj =>
-
-    val procElements = procElementsObj.toList
-    val test_space = test_spaceObj.toList
-    val space_elems = space_elemsObj.toList
-
-    val process = processRunned
+    val rootElementsF = BuildingFetchers.fetchRootElements(bpID)
+    rootElementsF.flatMap { rootElements =>
+      val procElements = rootElements.procElements
+      val test_space = rootElements.test_space
+      val space_elems = rootElements.space_elems
+      val process = processRunned
 
 
-  //process_dto
-  // val session_id = 1 // REMOVE THIS!!
-
+    //process_dto
+    // val session_id = 1 // REMOVE THIS!!
     var session_id: Int = 0
     var runFrom: Boolean = false // RUNFROM BOOLEAN CONSTANT
     var sessionEls:List[SessionUndefElement] = List()
@@ -381,12 +377,12 @@ def initiate2F(bpID: Int,
   val reaction_state_out:List[UnitReactionStateOut] = sessionReactOuts.map(el =>
               ExperimentalSessionBuilder.fromSessionReactionStateOut(el))
 
-              // Actions
-              val middlewares:List[Middleware] = sessionMiddlewares.map(el => ExperimentalSessionBuilder.fromSessionMiddlewares(el))
-              val strategies:List[Strategy] = sessionStrategies.map(el => ExperimentalSessionBuilder.fromSessionStrategies(el))
-              val strategiy_bases:List[StrategyBaseUnit] = sessionStBases.map(el => ExperimentalSessionBuilder.fromSessionStBases(el))
-              val strategiy_inputs:List[StrategyInputUnit] = sessionStInputs.map(el => ExperimentalSessionBuilder.fromSessionStInputs(el))
-              val strategiy_outputs:List[StrategyOutputUnit] = sessionStOuts.map(el =>   ExperimentalSessionBuilder.fromSessionStOuts(el))
+  // Actions
+  val middlewares:List[Middleware] = sessionMiddlewares.map(el => ExperimentalSessionBuilder.fromSessionMiddlewares(el))
+  val strategies:List[Strategy] = sessionStrategies.map(el => ExperimentalSessionBuilder.fromSessionStrategies(el))
+  val strategiy_bases:List[StrategyBaseUnit] = sessionStBases.map(el => ExperimentalSessionBuilder.fromSessionStBases(el))
+  val strategiy_inputs:List[StrategyInputUnit] = sessionStInputs.map(el => ExperimentalSessionBuilder.fromSessionStInputs(el))
+  val strategiy_outputs:List[StrategyOutputUnit] = sessionStOuts.map(el =>   ExperimentalSessionBuilder.fromSessionStOuts(el))
 
 
 //val topologs = ElemTopologDAO.findByBP(bpID)
@@ -431,15 +427,6 @@ def initiate2F(bpID: Int,
         }
       }
       reaction_middlewares.foreach { reaction_middleware =>   reaction.middlewares += reaction_middleware }
-
-    }
-
-
-    def topoIdFetch(topo: Option[ElemTopology]):Option[Int] = {
-      topo match {
-       case Some(topo) => topo.id
-       case _ => None
-      }
     }
 
 
@@ -448,7 +435,7 @@ def initiate2F(bpID: Int,
       element.session_states ++=  session_states.filter(state => state.front_elem_id == Some(element.id))
       element.reactions ++= reactions.filter { react =>
         val pred_elem = topologs.find(topo => topo.front_elem_id == Some(element.id))
-        Some(react.element) == topoIdFetch(pred_elem)
+        Some(react.element) == BuilderRunnerUtils.topoIdFetch(pred_elem)
       }
     }
     process.spacesElements.foreach { element =>
@@ -460,7 +447,7 @@ def initiate2F(bpID: Int,
       space.states ++=  states.filter(state => state.space_id == space.id)
       space.session_states ++=  session_states.filter(state => state.space_id == space.id)
     }
-
+/////////////////////////////////
     addToLaunchStack(process)
 
     /**
@@ -488,6 +475,25 @@ def initiate2F(bpID: Int,
                                     ReactOutsMap)
     )
     val executedPipes:List[ExecutedLaunchCVPipes] = pipes.map(pipe => pipe(launchPipe))
+    ///////////////////////////////////////////
+    PreparedProcess(process, bpDTO, station_id, procElements, test_space, space_elems, run_proc, minimal, lang)
+  }
+}
+
+
+
+
+def majorLaunchFunction(prepared_pF: Future[PreparedProcess]):Future[BProcess] = {
+  prepared_pF.map { prepared_p => 
+  val process = prepared_p.process
+  val bpDTO = prepared_p.bpDTO
+  val station_id = prepared_p.station_id  
+  val procElements= prepared_p.procElements   
+  val test_space= prepared_p.test_space    
+  val space_elems= prepared_p.space_elems    
+  val run_proc= prepared_p.run_proc     
+  val minimal= prepared_p.minimal     
+  val lang= prepared_p.lang 
 /************************************************************************************************/
 /************************************************************************************************/
 /************************************************************************************************/
@@ -517,10 +523,7 @@ def initiate2F(bpID: Int,
       saveStationLog(bpID, station_id, process)
       saveLaunchAct(process, bpDTO)
     }
-
-    Future( process )
-    }
-    }
+    process
   }
 }
 
@@ -537,9 +540,9 @@ def initiate2F(bpID: Int,
 
 
 
-
-
-
+/****
+ * For what??????????
+ */ 
   def initFrom(station_id:Int,
               bpID:Int,
               params: List[InputParamProc],

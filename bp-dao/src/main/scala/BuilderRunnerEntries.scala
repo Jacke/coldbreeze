@@ -36,22 +36,11 @@ object BuilderRunnerEntries {
   def cleanRun(bpID: Int, 
                lang: Option[String] = Some("en"), 
                invoke: Boolean,
-               pipes: List[LaunchMapPipe => ExecutedLaunchCVPipes]=List.empty):BuildingPhases = {
-    val processF = BuildF.run(bpID, Some(lang), invoke = true, pipesList)
-    BuildingPhases(
-      processF, processF, processF
-    )
-  }
+               pipes: List[LaunchMapPipe => ExecutedLaunchCVPipes]=List.empty):BuildingPhases =
+    BuildF.run(bpID, Some(lang), invoke = true, pipesList)
+
 
   // entry with resume
-  def runResumed():BuildingPhases = {
-    val processF = BuildF.newRunFrom(session_id = session_id,
-      bpID = bpID, 
-      params = pmsResult.get, 
-      invoke = true)
-    BuildingPhases(
-      processF, processF, processF
-    )
-  }
-
+  def runResumed():BuildingPhases = 
+    BuildF.newRunFrom(session_id = session_id, bpID = bpID, params = pmsResult.get, invoke = true)
 }

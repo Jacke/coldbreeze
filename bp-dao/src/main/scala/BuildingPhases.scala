@@ -34,4 +34,19 @@ import us.ority.min.jobs._
   finished: process was completed own execution [doesn't mean process is completed, it's just complete execution!!!]
  */
 
-case class BuildingPhases(initiated: Future[BProcess], runned: Future[BProcess], finished: Future[BProcess])
+case class BuildingPhases(initiated: Future[PreparedProcess], runned: Future[BProcess], finished: Future[BProcess])
+
+/********
+ * Prepared process object that ready to run
+ */
+case class PreparedProcess(
+                        process:BProcess, 
+                        bpDTO:BProcessDTO, 
+                        station_id:Int, 
+                        procElements:List[UndefElement], 
+                        test_space:List[BPSpaceDTO], 
+                        space_elems:List[SpaceElementDTO], 
+                        run_proc:Boolean, 
+                        minimal:Boolean, 
+                        lang: Option[String]
+ )

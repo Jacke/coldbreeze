@@ -174,6 +174,13 @@ def saveOrUpdateSessionStates(bprocess: BProcess, bprocess_dto: BProcessDTO, ses
     }
   }
 
+def topoIdFetch(topo: Option[ElemTopology]):Option[Int] = {
+  topo match {
+   case Some(topo) => topo.id
+   case _ => None
+  }
+}
+
 
 def generateConsoleOutput(processRunned1F: Future[BProcess]):Future[BProcess] = {
   processRunned1F.map { processRunned1 =>

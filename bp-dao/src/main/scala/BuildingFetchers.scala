@@ -28,6 +28,24 @@ import org.slf4j.LoggerFactory
 import us.ority.min.actions._
 import us.ority.min.jobs._
 
+case class RootElements(procElements:List[UndefElement],
+                        test_space:List[BPSpaceDTO],
+                        space_elems:List[SpaceElementDTO])
 object BuildingFetchers {
+  def fetchRootElements(bpID: Int):Future[RootElements] = {
+    val procElementsF: Future[Seq[UndefElement]] = ProcElemDAOF.findByBPId(bpID)
+    val test_spaceF:Future[Seq[BPSpaceDTO]] = BPSpaceDAOF.findByBPId(bpID)
+    val space_elemsF:Future[Seq[SpaceElementDTO]] = SpaceElemDAOF.findByBPId(bpID)
+    procElementsF.flatMap { procElementsObj =>
+      test_spaceF.flatMap { test_spaceObj =>
+        space_elemsF.map { space_elemsObj =>
+        val procElements = procElementsObj.toList
+        val test_space = test_spaceObj.toList
+        val space_elems = space_elemsObj.toList
+          RootElements(procElements, test_space, space_elems)
+        }
+      }
+    }
+  }
 
 }
