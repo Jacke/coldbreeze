@@ -28,27 +28,15 @@ import org.slf4j.LoggerFactory
 import us.ority.min.actions._
 import us.ority.min.jobs._
 
-
-
-object BuilderRunnerEntries {
-  // entry with init
-  // entry with clean run
-  def cleanRun():BuildingPhases = {
-    val processF = BuildF.run(bpID, Some(lang), invoke = true, pipesList)
-    BuildingPhases(
-      processF, processF, processF
-    )
-  }
-
-  // entry with resume
-  def runResumed():BuildingPhases = {
-    val processF = BuildF.newRunFrom(session_id = session_id,
-      bpID = bpID, 
-      params = pmsResult.get, 
-      invoke = true)
-    BuildingPhases(
-      processF, processF, processF
-    )
-  }
-
+object TestBuilder2 extends App {
+  println("test")
+  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
+  val processF = BuildF.run(97, invoke = true)
+  val process = await(processF)
+  println(process)
+  //NInvoker.toApplogger("Launched " + process.get.session_id + " session")
+  //Build.newRunFrom(bpID = 46, session_id = process.get.session_id, params = List(
+  //  ReactionActivator(reaction_id = 1),
+  //  ReactionActivator(reaction_id = 2)
+  //))
 }

@@ -35,24 +35,6 @@ import us.ority.min.jobs._
  *                                              RUNFROM: launch -> plain
  */
 
-
-
-
-
-object TestBuilder2 extends App {
-  println("test")
-  def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-
-  val processF = BuildF.run(97, invoke = true)
-  val process = await(processF)
-  println(process)
-  //NInvoker.toApplogger("Launched " + process.get.session_id + " session")
-  //Build.newRunFrom(bpID = 46, session_id = process.get.session_id, params = List(
-  //  ReactionActivator(reaction_id = 1),
-  //  ReactionActivator(reaction_id = 2)
-  //))
-}
-
 object BuildF {
   // Resume hoook for launchStack
   def resumeProcess(bpID:Int,
