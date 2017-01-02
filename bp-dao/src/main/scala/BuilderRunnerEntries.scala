@@ -33,7 +33,10 @@ import us.ority.min.jobs._
 object BuilderRunnerEntries {
   // entry with init
   // entry with clean run
-  def cleanRun():BuildingPhases = {
+  def cleanRun(bpID: Int, 
+               lang: Option[String] = Some("en"), 
+               invoke: Boolean,
+               pipes: List[LaunchMapPipe => ExecutedLaunchCVPipes]=List.empty):BuildingPhases = {
     val processF = BuildF.run(bpID, Some(lang), invoke = true, pipesList)
     BuildingPhases(
       processF, processF, processF
