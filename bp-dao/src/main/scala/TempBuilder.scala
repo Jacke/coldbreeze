@@ -116,7 +116,7 @@ def initiateWithElements2F(bpID: Int,
       }
       case _ => { // launch from empty session
         session_id = models.DAO.sessions.SessionProcElementDAOF.await(
-          saveSession(processRunned, bpDTO, lang) )
+          BuilderRunnerUtils.saveSession(processRunned, bpDTO, lang) )
         // FRONT ELEM NOT FOR BRICKS
         sessionEls = procElements.map { el =>
             val obj = ExperimentalSessionBuilder.fromOriginEl(el, session_id, burnElemMap)
@@ -139,13 +139,13 @@ def initiateWithElements2F(bpID: Int,
 
     // Update session for process
     processRunned.session_id = session_id
-    val station_id = saveOrUpdateState(processRunned, bpDTO, session_id, lang, run_proc)
+    val station_id = BuilderRunnerUtils.saveOrUpdateState(processRunned, bpDTO, session_id, lang, run_proc)
     // session state linked with session elements
     //val session_states_ids = saveSessionStates(processRunned, bpDTO, session_id)
 
 
-    saveLogsInit(processRunned, bpDTO, station_id, BPSpaceDAOF.findByBPIdB(bpID))
-    saveStationLog(bpID, station_id, processRunned)
+    BuilderRunnerUtils.saveLogsInit(processRunned, bpDTO, station_id, BPSpaceDAOF.findByBPIdB(bpID))
+    BuilderRunnerUtils.saveStationLog(bpID, station_id, processRunned)
 
 
   /****** Physical element casting  */
@@ -154,16 +154,16 @@ def initiateWithElements2F(bpID: Int,
   process.push {
     arrays.sortWith(_.order < _.order)
   }
-  toApplogger("elements " + process.allElements.length + " " + procElements.length)
+  BuilderRunnerUtils.toAppLogger("elements " + process.allElements.length + " " + procElements.length)
 
   /* Presence validation  */
   val front_bricks = process.findFrontBrick()
   val test_space2 = sessionSpaces.map(sp => ExperimentalSessionBuilder.fromSessionSp(sp))
   val space_elems2 = sessionSpaceEls.map(el => ExperimentalSessionBuilder.fromSessionSpEl(el))
   if (front_bricks.length > 0 && test_space2.length > 0) {
-    makeFrontSpaces(process, test_space2, front_bricks, space_elems2)
-    if (test_space2.reduceLeft(getLatestNest).nestingLevel > 1) {
-      makeNestedSpaces(process, test_space2, process.findNestedBricks(), space_elems2)
+    BuilderRunnerUtils.makeFrontSpaces(process, test_space2, front_bricks, space_elems2)
+    if (test_space2.reduceLeft(BuilderRunnerUtils.getLatestNest).nestingLevel > 1) {
+      BuilderRunnerUtils.makeNestedSpaces(process, test_space2, process.findNestedBricks(), space_elems2)
     }
   }
 
@@ -298,15 +298,15 @@ def initiateWithElements2F(bpID: Int,
 
 
 
-        toApplogger("[RED Initial Run Cast result: RESET]")
-        toApplogger(s"states ${states.length}")
-        toApplogger(s"sessionTopologs ${sessionTopologs.length}")
-        toApplogger(s"sessionSwitchers ${sessionSwitchers.length}")
-        toApplogger(s"sessionReactions ${sessionReactions.length}")
-        toApplogger(s"sessionReactOuts ${sessionReactOuts.length}")
-        toApplogger("REACT OUT FROM PLAIN RUN")
-        ReactionsMap.values.toList.foreach { l => toApplogger(l)}
-        toApplogger(s"${ReactionsMap.values.toList.length}")
+        BuilderRunnerUtils.toAppLogger("[RED Initial Run Cast result: RESET]")
+        BuilderRunnerUtils.toAppLogger(s"states ${states.length}")
+        BuilderRunnerUtils.toAppLogger(s"sessionTopologs ${sessionTopologs.length}")
+        BuilderRunnerUtils.toAppLogger(s"sessionSwitchers ${sessionSwitchers.length}")
+        BuilderRunnerUtils.toAppLogger(s"sessionReactions ${sessionReactions.length}")
+        BuilderRunnerUtils.toAppLogger(s"sessionReactOuts ${sessionReactOuts.length}")
+        BuilderRunnerUtils.toAppLogger("REACT OUT FROM PLAIN RUN")
+        ReactionsMap.values.toList.foreach { l => BuilderRunnerUtils.toAppLogger(l)}
+        BuilderRunnerUtils.toAppLogger(s"${ReactionsMap.values.toList.length}")
     }
 
 
@@ -334,13 +334,13 @@ val strategiy_outputs:List[StrategyOutputUnit] = sessionStOuts.map(el =>   Exper
 //val reaction_state_out:List[UnitReactionStateOut] = ReactionStateOutDAO.findByReactions(reactions.map(react => react.id.get))
     process.topology = topologs
 
-    toApplogger("states found: " + states.length)
-    toApplogger("session_states found: " + session_states.length)
+    BuilderRunnerUtils.toAppLogger("states found: " + states.length)
+    BuilderRunnerUtils.toAppLogger("session_states found: " + session_states.length)
     states.foreach { state =>
-      // toApplogger(state.front_elem_id.toString)
+      // BuilderRunnerUtils.toAppLogger(state.front_elem_id.toString)
     }
     session_states.foreach { state =>
-      // toApplogger(state.front_elem_id.toString)
+      // BuilderRunnerUtils.toAppLogger(state.front_elem_id.toString)
     }
     reactions.foreach { react => react.reaction_state_outs ++= reaction_state_out.filter(sout => sout.reaction == react.id.get) }
     states.foreach { state => state.switchers ++= switches.filter(sw => sw.state_ref == state.id.get) }
@@ -391,7 +391,7 @@ val strategiy_outputs:List[StrategyOutputUnit] = sessionStOuts.map(el =>   Exper
       space.session_states ++=  session_states.filter(state => state.space_id == space.id)
     }
 
-    addToLaunchStack(process)
+    BuilderRunnerUtils.addToLaunchStack(process)
 
     BuilderRunnerUtils.activateParameters(process, params)
 
@@ -427,10 +427,10 @@ val strategiy_outputs:List[StrategyOutputUnit] = sessionStOuts.map(el =>   Exper
 /************************************************************************************************/
 /************************************************************************************************/
     println("start invoking process with NInvoker")
-    if (validateElements(procElements.toList, test_space, space_elems) && run_proc)
+    if (BuilderRunnerUtils.validateElements(procElements.toList, test_space, space_elems) && run_proc)
       NInvoker.run_proc(process)
     else
-      toApplogger("Process launch flag is off")
+      BuilderRunnerUtils.toAppLogger("Process launch flag is off")
 /************************************************************************************************/
 /************************************************************************************************/
 /************************************************************************************************/
@@ -442,12 +442,12 @@ val strategiy_outputs:List[StrategyOutputUnit] = sessionStOuts.map(el =>   Exper
     *  Save state and logs only if process was runned
     **/
     if (run_proc && !minimal) {
-      saveLogsInit(process, bpDTO, station_id, test_space)
-      saveOrUpdateSessionStates(process, bpDTO, session_id, pulling = true)
-      saveSessionStateLogs(process, bpDTO)
-      saveOrUpdateState(process, bpDTO, session_id, lang)
-      saveStationLog(bpID, station_id, process)
-      saveLaunchAct(process, bpDTO)
+      BuilderRunnerUtils.saveLogsInit(process, bpDTO, station_id, test_space)
+      BuilderRunnerUtils.saveOrUpdateSessionStates(process, bpDTO, session_id, pulling = true)
+      BuilderRunnerUtils.saveSessionStateLogs(process, bpDTO)
+      BuilderRunnerUtils.saveOrUpdateState(process, bpDTO, session_id, lang)
+      BuilderRunnerUtils.saveStationLog(bpID, station_id, process)
+      BuilderRunnerUtils.saveLaunchAct(process, bpDTO)
     }
 
     Future( ProcessExecutionResult( 

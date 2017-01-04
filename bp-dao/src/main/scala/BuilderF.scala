@@ -45,9 +45,7 @@ object BuildF {
     //presenceValidate
     val bpDTO = BPDAO.get(bpID).get
     val processRunned1F:BuildingPhases = initiate(bpID, invoke, bpDTO, session_id = None, pipes = pipes)
-    processRunned1F.finished.map { finishedPhase =>
-      BuilderRunnerUtils.generateConsoleOutput(finishedPhase)      
-    }
+    BuilderRunnerUtils.generateConsoleOutput(processRunned1F.finished)
     processRunned1F
   }
   /**
@@ -138,10 +136,10 @@ def initiate2F(bpID: Int,
     // Generate sessions
     val generatedLaunch:GeneratedLaunchComponents = session_id_val match {
       case Some(session_val) => { // Launch from existed session
-          generateExistedLaunch(processRunned, bpDTO, lang)
+          BuildingFetchers.generateExistedLaunch(processRunned, bpDTO, lang, session_val)
       }
       case _ => { // launch from empty session
-          generateClearLaunch(processRunned, bpDTO, lang)
+          BuildingFetchers.generateClearLaunch(processRunned, bpDTO, lang, rootElements)
       }
     }
 
@@ -154,16 +152,16 @@ def initiate2F(bpID: Int,
     val elemMap = generatedLaunch.elemMap
     val spaceMap = generatedLaunch.spaceMap
     val spaceElsMap = generatedLaunch.spaceElsMap
-    val burnElemMapy = generatedLaunch.burnElemMapy
+    val burnElemMap = generatedLaunch.burnElemMap
     val burnSpaceMap = generatedLaunch.burnSpaceMap
     val burnSpaceElMap = generatedLaunch.burnSpaceElMap
     // Update session for process
     processRunned.session_id = session_id
-    val station_id = saveOrUpdateState(processRunned, bpDTO, session_id, lang, run_proc)
+    val station_id = BuilderRunnerUtils.saveOrUpdateState(processRunned, bpDTO, session_id, lang, run_proc)
     // session state linked with session elements
     //val session_states_ids = saveSessionStates(processRunned, bpDTO, session_id)
-    saveLogsInit(processRunned, bpDTO, station_id, BPSpaceDAOF.findByBPIdB(bpID))
-    saveStationLog(bpID, station_id, processRunned)
+    BuilderRunnerUtils.saveLogsInit(processRunned, bpDTO, station_id, BPSpaceDAOF.findByBPIdB(bpID))
+    BuilderRunnerUtils.saveStationLog(bpID, station_id, processRunned)
 
 
 
@@ -175,16 +173,16 @@ def initiate2F(bpID: Int,
     process.push {
       arrays.sortWith(_.order < _.order)
     }
-    toApplogger("elements " + process.allElements.length + " " + procElements.length)
+    BuilderRunnerUtils.toAppLogger("elements " + process.allElements.length + " " + procElements.length)
 
     /* Presence validation  */
     val front_bricks = process.findFrontBrick()
     val test_space2 = sessionSpaces.map(sp => ExperimentalSessionBuilder.fromSessionSp(sp))
     val space_elems2 = sessionSpaceEls.map(el => ExperimentalSessionBuilder.fromSessionSpEl(el))
     if (front_bricks.length > 0 && test_space2.length > 0) {
-      makeFrontSpaces(process, test_space2, front_bricks, space_elems2)
-      if (test_space2.reduceLeft(getLatestNest).nestingLevel > 1) {
-        makeNestedSpaces(process, test_space2, process.findNestedBricks(), space_elems2)
+      BuilderRunnerUtils.makeFrontSpaces(process, test_space2, front_bricks, space_elems2)
+      if (test_space2.reduceLeft(BuilderRunnerUtils.getLatestNest).nestingLevel > 1) {
+        BuilderRunnerUtils.makeNestedSpaces(process, test_space2, process.findNestedBricks(), space_elems2)
       }
     }
 /*************************************************************************************************************************/
@@ -194,43 +192,43 @@ def initiate2F(bpID: Int,
 /*************************************************************************************************************************/
     val runFromSessionMarker = runFrom && !minimal
     val runFromPlainMarker = !minimal
-    val generatedLaunch:GeneratedLaunchComponents:GeneratedLaunchComponentStates = runFromSessionMarker match {
+    val generatedLaunchSessionComponents:GeneratedLaunchComponentStates = runFromSessionMarker match {
       case true => {
-        BuildingFetchers.generateExistedLaunchComponentStates(bpID, session_id, with_pulling)
+        BuildingFetchers.generateExistedLaunchComponentStates(bpID, session_id)
       }
       case _ => {
         runFromPlainMarker match {
           case true => {
-            BuildingFetchers.generateClearLaunchComponentStates()
+            BuildingFetchers.generateClearLaunchComponentStates(bpID, processRunned,bpDTO, session_id, with_pulling, generatedLaunch)
           }
-          case _ => GeneratedLaunchComponentStates(bpID, session_id)
+          case _ => GeneratedLaunchComponentStates()
         }
       }
     }
 
   // map fetched generated component states
-  val states = generatedLaunch.states
-  val session_states = generatedLaunch.session_states
-  val initialStates = generatedLaunch.initialStates
-  val sessionTopologs = generatedLaunch.sessionTopologs
-  val sessionSwitchers = generatedLaunch.sessionSwitchers
-  val sessionReactions = generatedLaunch.sessionReactions
-  val sessionReactOuts = generatedLaunch.sessionReactOuts
-  val initialStateMap = generatedLaunch.initialStateMap
-  val TopologsMap = generatedLaunch.TopologsMap
-  val SwitchersMap = generatedLaunch.SwitchersMap
-  val ReactionsMap = generatedLaunch.ReactionsMap
-  val ReactOutsMap = generatedLaunch.ReactOutsMap
-  val sessionMiddlewares = generatedLaunch.sessionMiddlewares
-  val sessionStrategies = generatedLaunch.sessionStrategies
-  val sessionStBases = generatedLaunch.sessionStBases
-  val sessionStInputs = generatedLaunch.sessionStInputs
-  val sessionStOuts = generatedLaunch.sessionStOuts
-  val MiddlewaresMap = generatedLaunch.MiddlewaresMap
-  val StrategiesMap = generatedLaunch.StrategiesMap
-  val StBasesMap = generatedLaunch.StBasesMap
-  val StInputsMap = generatedLaunch.StInputsMap
-  val StOutsMap = generatedLaunch.StOutsMap
+  val states = generatedLaunchSessionComponents.states
+  val session_states = generatedLaunchSessionComponents.session_states
+  val initialStates = generatedLaunchSessionComponents.initialStates
+  val sessionTopologs = generatedLaunchSessionComponents.sessionTopologs
+  val sessionSwitchers = generatedLaunchSessionComponents.sessionSwitchers
+  val sessionReactions = generatedLaunchSessionComponents.sessionReactions
+  val sessionReactOuts = generatedLaunchSessionComponents.sessionReactOuts
+  val initialStateMap = generatedLaunchSessionComponents.initialStateMap
+  val TopologsMap = generatedLaunchSessionComponents.TopologsMap
+  val SwitchersMap = generatedLaunchSessionComponents.SwitchersMap
+  val ReactionsMap = generatedLaunchSessionComponents.ReactionsMap
+  val ReactOutsMap = generatedLaunchSessionComponents.ReactOutsMap
+  val sessionMiddlewares = generatedLaunchSessionComponents.sessionMiddlewares
+  val sessionStrategies = generatedLaunchSessionComponents.sessionStrategies
+  val sessionStBases = generatedLaunchSessionComponents.sessionStBases
+  val sessionStInputs = generatedLaunchSessionComponents.sessionStInputs
+  val sessionStOuts = generatedLaunchSessionComponents.sessionStOuts
+  val MiddlewaresMap = generatedLaunchSessionComponents.MiddlewaresMap
+  val StrategiesMap = generatedLaunchSessionComponents.StrategiesMap
+  val StBasesMap = generatedLaunchSessionComponents.StBasesMap
+  val StInputsMap = generatedLaunchSessionComponents.StInputsMap
+  val StOutsMap = generatedLaunchSessionComponents.StOutsMap
 
 
 
@@ -258,13 +256,13 @@ def initiate2F(bpID: Int,
 //val reaction_state_out:List[UnitReactionStateOut] = ReactionStateOutDAO.findByReactions(reactions.map(react => react.id.get))
     process.topology = topologs
 
-    toApplogger("states found: " + states.length)
-    toApplogger("session_states found: " + session_states.length)
+    BuilderRunnerUtils.toAppLogger("states found: " + states.length)
+    BuilderRunnerUtils.toAppLogger("session_states found: " + session_states.length)
     states.foreach { state =>
-      // toApplogger(state.front_elem_id.toString)
+      // BuilderRunnerUtils.toAppLogger(state.front_elem_id.toString)
     }
     session_states.foreach { state =>
-      // toApplogger(state.front_elem_id.toString)
+      // BuilderRunnerUtils.toAppLogger(state.front_elem_id.toString)
     }
     reactions.foreach { react => react.reaction_state_outs ++= reaction_state_out.filter(sout => sout.reaction == react.id.get) }
     states.foreach { state => state.switchers ++= switches.filter(sw => sw.state_ref == state.id.get) }
@@ -314,7 +312,7 @@ def initiate2F(bpID: Int,
       space.session_states ++=  session_states.filter(state => state.space_id == space.id)
     }
 ////////////////////////////////////////////////////////////
-    addToLaunchStack(process)
+    BuilderRunnerUtils.addToLaunchStack(process)
 
     /**
     * Activate reaction by params
@@ -342,7 +340,7 @@ def initiate2F(bpID: Int,
     )
     val executedPipes:List[ExecutedLaunchCVPipes] = pipes.map(pipe => pipe(launchPipe))
     ///////////////////////////////////////////
-    PreparedProcess(process, bpDTO, station_id, procElements, test_space, space_elems, run_proc, minimal, lang)
+    PreparedProcess(process, bpDTO, station_id, session_id, procElements, test_space, space_elems, run_proc, minimal, lang)
   }
 }
 
@@ -351,6 +349,7 @@ def initiate2F(bpID: Int,
 
 def majorLaunchFunction(prepared_pF: Future[PreparedProcess]):Future[BProcess] = {
   prepared_pF.map { prepared_p => 
+  val session_id = prepared_p.session_id
   val process = prepared_p.process
   val bpDTO = prepared_p.bpDTO
   val station_id = prepared_p.station_id  
@@ -367,10 +366,10 @@ def majorLaunchFunction(prepared_pF: Future[PreparedProcess]):Future[BProcess] =
 /************************************************************************************************/
 /************************************************************************************************/
 /************************************************************************************************/
-    if (validateElements(procElements.toList, test_space, space_elems) && run_proc)
+    if (BuilderRunnerUtils.validateElements(procElements.toList, test_space, space_elems) && run_proc)
       NInvoker.run_proc(process)
     else
-      toApplogger("Process launch flag is off")
+      BuilderRunnerUtils.toAppLogger("Process launch flag is off")
 /************************************************************************************************/
 /************************************************************************************************/
 /************************************************************************************************/
@@ -382,12 +381,12 @@ def majorLaunchFunction(prepared_pF: Future[PreparedProcess]):Future[BProcess] =
     *  Save state and logs only if process was runned
     **/
     if (run_proc && !minimal) {
-      saveLogsInit(process, bpDTO, station_id, test_space)
-      saveOrUpdateSessionStates(process, bpDTO, session_id, pulling = true)
-      saveSessionStateLogs(process, bpDTO)
-      saveOrUpdateState(process, bpDTO, session_id, lang)
-      saveStationLog(bpID, station_id, process)
-      saveLaunchAct(process, bpDTO)
+      BuilderRunnerUtils.saveLogsInit(process, bpDTO, station_id, test_space)
+      BuilderRunnerUtils.saveOrUpdateSessionStates(process, bpDTO, session_id, pulling = true)
+      BuilderRunnerUtils.saveSessionStateLogs(process, bpDTO)
+      BuilderRunnerUtils.saveOrUpdateState(process, bpDTO, session_id, lang)
+      BuilderRunnerUtils.saveStationLog(process.id.get, station_id, process)
+      BuilderRunnerUtils.saveLaunchAct(process, bpDTO)
     }
     process
   }
@@ -443,12 +442,12 @@ def majorLaunchFunction(prepared_pF: Future[PreparedProcess]):Future[BProcess] =
       Presence validation
      */
     if (front_bricks.length > 0 && test_space.length > 0) {
-      makeFrontSpaces(process, test_space, front_bricks, space_elems)
-      if (test_space.reduceLeft(getLatestNest).nestingLevel > 1) {
-        makeNestedSpaces(process, test_space, process.findNestedBricks(), space_elems)
+      BuilderRunnerUtils.makeFrontSpaces(process, test_space, front_bricks, space_elems)
+      if (test_space.reduceLeft(BuilderRunnerUtils.getLatestNest).nestingLevel > 1) {
+        BuilderRunnerUtils.makeNestedSpaces(process, test_space, process.findNestedBricks(), space_elems)
       }
     }
-    validateElements(target, test_space, space_elems)
+    BuilderRunnerUtils.validateElements(target, test_space, space_elems)
 
 
 

@@ -28,6 +28,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 	Convert launched process objects to original and original to launched
 
+  Object of launch -------------------------> Object of process model
+  Object of process model -------------------------> Object of launch
+
 *******************************************************************************/
 
 

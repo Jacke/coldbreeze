@@ -43,6 +43,7 @@ case class PreparedProcess(
                         process:BProcess, 
                         bpDTO:BProcessDTO, 
                         station_id:Int, 
+                        session_id:Int,
                         procElements:List[UndefElement], 
                         test_space:List[BPSpaceDTO], 
                         space_elems:List[SpaceElementDTO], 

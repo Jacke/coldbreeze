@@ -45,12 +45,24 @@ object BuilderRunnerUtils {
         //case "error" => appLogger.info(msg.toString)
       }
   }
-  
+  def toAppLogger(msg: Any, log_type: String = "info")(implicit line: sourcecode.Line, file: sourcecode.File) = {
+      log_type match {
+        //case "debug" => appLogger.info(msg.toString)
+        case _ => {
+          //Future { println(s"${file.value}:${line.value} ${msg.toString}") }
+          //Future { appLogger.info(msg.toString) }
+          println(s"${file.value}:${line.value} ${msg.toString}")
+          //appLogger.info(msg.toString)
+        }
+        //case "error" => appLogger.info(msg.toString)
+      }
+  }  
+
   // Resume hoook for launchStack
   def resumeProcess(bpID:Int, session_id: Int, reaction_id: Int):Future[BProcess] = {
     println("resume process hook called")
     val activator = ReactionActivator(reaction_id, Some("delay") )
-    newRunFrom(bpID, session_id, invoke = true, params = List(activator))
+    BuildF.newRunFrom(bpID, session_id, invoke = true, params = List(activator)).finished
   } 
   // Add to launchStack
   def addToLaunchStack(process: BProcess):Unit = {

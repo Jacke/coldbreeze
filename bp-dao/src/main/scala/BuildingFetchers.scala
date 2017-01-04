@@ -97,7 +97,7 @@ object BuildingFetchers {
   }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  def generateExistedLaunch(processRunned:BProcess, bpDTO:BProcessDTO, lang: Option[String] = Some("en")):GeneratedLaunchComponents = {
+  def generateExistedLaunch(processRunned:BProcess, bpDTO:BProcessDTO, lang: Option[String] = Some("en"), session_val:Int):GeneratedLaunchComponents = {
     val runFrom = true
     val session_id = session_val
     //val sessionElsF:Future[Seq[SessionUndefElement]]         = SessionProcElementDAOF.findBySession(session_id)
@@ -112,13 +112,13 @@ object BuildingFetchers {
     //}
     //}
     //}
-    getStationToProcess(processRunned, session_id)
+    BuilderRunnerUtils.getStationToProcess(processRunned, session_id)
     GeneratedLaunchComponents(runFrom = runFrom, session_id = session_id, sessionEls = sessionEls,
       sessionSpaces = sessionSpaces,
       sessionSpaceEls = sessionSpaceEls) 
   }
 
-  def generateClearLaunch(processRunned:BProcess, bpDTO:BProcessDTO, lang: Option[String] = Some("en")):GeneratedLaunchComponents = {
+  def generateClearLaunch(processRunned:BProcess, bpDTO:BProcessDTO, lang: Option[String] = Some("en"), rootElms: RootElements):GeneratedLaunchComponents = {
     var elemMap:scala.collection.mutable.Map[Int, Int] = scala.collection.mutable.Map().empty
     var spaceMap:scala.collection.mutable.Map[Int, Int] = scala.collection.mutable.Map().empty
     var spaceElsMap:scala.collection.mutable.Map[Int, Int] = scala.collection.mutable.Map().empty
@@ -127,20 +127,20 @@ object BuildingFetchers {
     var burnSpaceElMap:scala.collection.mutable.Map[Int, Int] = scala.collection.mutable.Map().empty
 
     val session_id = models.DAO.sessions.SessionProcElementDAOF.await(
-      saveSession(processRunned, bpDTO, lang) )
+      BuilderRunnerUtils.saveSession(processRunned, bpDTO, lang) )
     // FRONT ELEM NOT FOR BRICKS
-    val sessionEls = procElements.map { el =>
+    val sessionEls = rootElms.procElements.map { el =>
         val obj = ExperimentalSessionBuilder.fromOriginEl(el, session_id, burnElemMap)
         elemMap += el.id.get -> obj.id.get
         obj
     }.toList
-    val sessionSpaces = test_space.map { sp => //.filter(sp => sp.brick_nested.isDefined).map ( sp =>
+    val sessionSpaces = rootElms.test_space.map { sp => //.filter(sp => sp.brick_nested.isDefined).map ( sp =>
       val obj = ExperimentalSessionBuilder.fromOriginSp(sp, session_id, elemMap, spaceElsMap)
       spaceMap += sp.id.get -> obj.id.get
       obj
     }
     ExperimentalAfterBurning.makeBurn(spaceMap, burnElemMap)
-    val sessionSpaceEls = space_elems.map { spel => //.filter(n => n.space_own.isDefined).map ( spel =>
+    val sessionSpaceEls = rootElms.space_elems.map { spel => //.filter(n => n.space_own.isDefined).map ( spel =>
       val obj = ExperimentalSessionBuilder.fromOriginSpElem(spel, session_id, spaceMap)
       spaceElsMap += spel.id.get -> obj.id.get
       obj
@@ -162,46 +162,51 @@ object BuildingFetchers {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //         States
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-  def generateClearLaunchComponentStates(bpID:Int, session_id:Int, with_pulling:Boolean):GeneratedLaunchComponentStates = {
+  def generateClearLaunchComponentStates(bpID:Int, 
+                                         processRunned:BProcess,
+                                         bpDTO:BProcessDTO,
+                                         session_id:Int, 
+                                         with_pulling:Boolean, 
+                                         launchCmps: GeneratedLaunchComponents):GeneratedLaunchComponentStates = {
     var initialStateMap:scala.collection.mutable.Map[Int, Int]    = scala.collection.mutable.Map().empty
     var TopologsMap:scala.collection.mutable.Map[Int, Int]        = scala.collection.mutable.Map().empty
     var SwitchersMap:scala.collection.mutable.Map[Int, Int]       = scala.collection.mutable.Map().empty
     var ReactionsMap:scala.collection.mutable.Map[Int,Int]        = scala.collection.mutable.Map().empty
-    var ReactOutsMap:scala.collection.mutable.Map[Int,Int]        = scala.collection.mutable.Map().empty
-    var MiddlewaresMap:scala.collection.mutable.Map[Long,Long]        = scala.collection.mutable.Map().empty
-    var StrategiesMap:scala.collection.mutable.Map[Long,Long]        = scala.collection.mutable.Map().empty
-    var StBasesMap:scala.collection.mutable.Map[Long,Long]        = scala.collection.mutable.Map().empty
-    var StInputsMap:scala.collection.mutable.Map[Long,Long]        = scala.collection.mutable.Map().empty
+    var ReactOutsMap:scala.collection.mutable.Map[Int,Int]       = scala.collection.mutable.Map().empty
+    var MiddlewaresMap:scala.collection.mutable.Map[Long,Long]   = scala.collection.mutable.Map().empty
+    var StrategiesMap:scala.collection.mutable.Map[Long,Long]    = scala.collection.mutable.Map().empty
+    var StBasesMap:scala.collection.mutable.Map[Long,Long]       = scala.collection.mutable.Map().empty
+    var StInputsMap:scala.collection.mutable.Map[Long,Long]      = scala.collection.mutable.Map().empty
     var StOutsMap:scala.collection.mutable.Map[Long,Long]        = scala.collection.mutable.Map().empty
   
+    var initialStatesAccumulator: List[SessionInitialState]      = List()
 
     val states = BPStateDAOF.findByBP(bpID).map { state =>
-        val ogState = ExperimentalSessionBuilder.fromOriginState(state, session_id, elemMap,spaceMap,spaceElsMap)
+        val ogState = ExperimentalSessionBuilder.fromOriginState(state, session_id, launchCmps.elemMap, launchCmps.spaceMap, launchCmps.spaceElsMap)
         initialStateMap += state.id.get -> ogState.id.get
-        initialStates = ogState :: initialStates
+        initialStatesAccumulator = ogState :: initialStatesAccumulator
         ExperimentalSessionBuilder.fromInitialState(ogState)
     }
-
-    if (with_pulling) {
-    //} else {
-      val temp_session_states = Build.saveSessionStates(processRunned, 
-        bpDTO, 
-        session_id, 
-        pulling = true, 
-        elemMap, 
-        spaceMap, 
-        spaceElsMap, 
-        initialStateMap).session_states
-      val existedSesStates = BPSessionStateDAOF.await( BPSessionStateDAOF.findByBPAndSession(bpID, session_id) ).toList
-      val session_states = SessionStatesContainer(existedSesStates, existedSesStates.map(o => o.id.getOrElse(0))).session_states
-    } else {
-      val session_states:   List[BPSessionState] = List()
+    val session_states:   List[BPSessionState] = with_pulling match {
+      case true => {
+        val temp_session_states = Build.saveSessionStates(processRunned, 
+          bpDTO, 
+          session_id, 
+          pulling = true, 
+          launchCmps.elemMap, 
+          launchCmps.spaceMap, 
+          launchCmps.spaceElsMap, 
+          initialStateMap).session_states
+        val existedSesStates = BPSessionStateDAOF.await( BPSessionStateDAOF.findByBPAndSession(bpID, session_id) ).toList
+        SessionStatesContainer(existedSesStates, existedSesStates.map(o => o.id.getOrElse(0))).session_states
+      }
+      case _ => List()
     }
 
     //session_states = session_states.map(ss => ss.copy(origin_state = initialStateMap.get(ss.origin_state.getOrElse(0))))
     // Element TOPOLOGY
     val sessionTopologs = ElemTopologDAO.findByBP(bpID).map { el =>
-        val obj = ExperimentalSessionBuilder.fromOriginTopo(el, session_id, elemMap,spaceMap,spaceElsMap)
+        val obj = ExperimentalSessionBuilder.fromOriginTopo(el, session_id, launchCmps.elemMap,launchCmps.spaceMap,launchCmps.spaceElsMap)
         TopologsMap += el.id.get -> obj.id.get
         obj
     }
@@ -249,21 +254,21 @@ object BuildingFetchers {
     }.toList
 
 
-    toApplogger("[RED Initial Run Cast result: RESET]")
-    toApplogger(s"states ${states.length}")
-    toApplogger(s"sessionTopologs ${sessionTopologs.length}")
-    toApplogger(s"sessionSwitchers ${sessionSwitchers.length}")
-    toApplogger(s"sessionReactions ${sessionReactions.length}")
-    toApplogger(s"sessionReactOuts ${sessionReactOuts.length}")
-    toApplogger("REACT OUT FROM PLAIN RUN")
-    ReactionsMap.values.toList.foreach { l => toApplogger(l)}
-    toApplogger(s"${ReactionsMap.values.toList.length}")
+    BuilderRunnerUtils.toAppLogger("[RED Initial Run Cast result: RESET]")
+    BuilderRunnerUtils.toAppLogger(s"states ${states.length}")
+    BuilderRunnerUtils.toAppLogger(s"sessionTopologs ${sessionTopologs.length}")
+    BuilderRunnerUtils.toAppLogger(s"sessionSwitchers ${sessionSwitchers.length}")
+    BuilderRunnerUtils.toAppLogger(s"sessionReactions ${sessionReactions.length}")
+    BuilderRunnerUtils.toAppLogger(s"sessionReactOuts ${sessionReactOuts.length}")
+    BuilderRunnerUtils.toAppLogger("REACT OUT FROM PLAIN RUN")
+    ReactionsMap.values.toList.foreach { l => BuilderRunnerUtils.toAppLogger(l)}
+    BuilderRunnerUtils.toAppLogger(s"${ReactionsMap.values.toList.length}")
 
 
     GeneratedLaunchComponentStates(
       states = states,
       session_states = session_states,
-      initialStates = initialStates,
+      initialStates = initialStatesAccumulator,
       sessionTopologs = sessionTopologs,
       sessionSwitchers = sessionSwitchers,
       sessionReactions = sessionReactions,
@@ -321,7 +326,7 @@ object BuildingFetchers {
           sessionStrategies = sessionStrategies,
           sessionStBases = sessionStBases,
           sessionStInputs = sessionStInputs,
-          sessionStOuts = sessionStOuts,
+          sessionStOuts = sessionStOuts
         )
   }  
 

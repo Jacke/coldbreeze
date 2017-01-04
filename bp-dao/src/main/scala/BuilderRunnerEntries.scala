@@ -37,10 +37,22 @@ object BuilderRunnerEntries {
                lang: Option[String] = Some("en"), 
                invoke: Boolean,
                pipes: List[LaunchMapPipe => ExecutedLaunchCVPipes]=List.empty):BuildingPhases =
-    BuildF.run(bpID, Some(lang), invoke = true, pipesList)
+    BuildF.run(bpID, lang, invoke = true, pipes)
 
 
   // entry with resume
-  def runResumed():BuildingPhases = 
-    BuildF.newRunFrom(session_id = session_id, bpID = bpID, params = pmsResult.get, invoke = true)
+  def runResumed(bpID:Int,
+                 session_id: Int,
+                 params: List[ReactionActivator] = List(),
+                 invoke:Boolean = true,
+                 process_dto:Option[BProcessDTO]=None,
+                 station_dto:Option[BPStationDTO]=None,
+                 minimal: Boolean = false):BuildingPhases = 
+    BuildF.newRunFrom(bpID,
+                 session_id,
+                 params,
+                 invoke,
+                 process_dto,
+                 station_dto,
+                 minimal)
 }

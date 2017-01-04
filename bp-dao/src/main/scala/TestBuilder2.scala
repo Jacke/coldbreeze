@@ -32,7 +32,7 @@ object TestBuilder2 extends App {
   println("test")
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
   val processF = BuildF.run(97, invoke = true)
-  val process = await(processF)
+  val process = await(processF.finished)
   println(process)
   //NInvoker.toApplogger("Launched " + process.get.session_id + " session")
   //Build.newRunFrom(bpID = 46, session_id = process.get.session_id, params = List(
