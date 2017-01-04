@@ -196,14 +196,14 @@ def initiate2F(bpID: Int,
     val runFromPlainMarker = !minimal
     val generatedLaunch:GeneratedLaunchComponents:GeneratedLaunchComponentStates = runFromSessionMarker match {
       case true => {
-        BuildingFetchers.generateExistedLaunchComponentStates()
+        BuildingFetchers.generateExistedLaunchComponentStates(bpID, session_id, with_pulling)
       }
       case _ => {
         runFromPlainMarker match {
           case true => {
             BuildingFetchers.generateClearLaunchComponentStates()
           }
-          case _ => GeneratedLaunchComponentStates()
+          case _ => GeneratedLaunchComponentStates(bpID, session_id)
         }
       }
     }
