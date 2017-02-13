@@ -157,11 +157,13 @@ def initiate2F(bpID: Int,
     val burnSpaceElMap = generatedLaunch.burnSpaceElMap
     // Update session for process
     processRunned.session_id = session_id
+    // Fetch station_id
     val station_id = BuilderRunnerUtils.saveOrUpdateState(processRunned, bpDTO, session_id, lang, run_proc)
     // session state linked with session elements
     //val session_states_ids = saveSessionStates(processRunned, bpDTO, session_id)
     BuilderRunnerUtils.saveLogsInit(processRunned, bpDTO, station_id, BPSpaceDAOF.findByBPIdB(bpID))
     BuilderRunnerUtils.saveStationLog(bpID, station_id, processRunned)
+
 
 
 
