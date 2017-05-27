@@ -110,8 +110,10 @@ class Application @Inject() (
       //}
   }
 
-  def app2() = silhouette.SecuredAction { implicit request =>
-        Ok(views.html.app2(request.identity))
+  def app2() = Action.async { implicit request =>
+       Future.successful(
+        Ok(views.html.app2())
+       )
   }
 
   def error_test() = Action { implicit request =>

@@ -5,7 +5,7 @@
 
 
 
-@(user: models.User2)(implicit request: RequestHeader)
+@()(implicit request: RequestHeader)
 
 <!doctype html>
 <head>
@@ -57,11 +57,7 @@
 
 </head>
 
-@if(user.businessFirst < 1) {
-<body class="themeDark themeGrad website noWorkbench">
-} else {
 <body class="themeDark themeGrad website">
-}
 <div class="overlay_mobile">Please use desktop or tablet for best app experience.<a href="#">Skip</a>
 </div>
 
@@ -136,7 +132,7 @@
             <span class="uicon-svg14"></span>
             Refs</a>
         </li> -->
-        @if(user.isManager && user.emailFilled == user.masterFirst) {
+        if(user.isManager && user.emailFilled == user.masterFirst) {
         <li class="minMenuItem">
           <a id="navPeopleLink" class="vIcoIn menuEntityLink" onclick="window.stop();window.location.pathname='/peoples'" href="@users.routes.EmployeeController.index()">
             <span class="uicon-svg98"></span>@Messages("nav.people")  </a>
@@ -164,7 +160,7 @@
       <div class="menuCell flexibleSpace"></div>
         <div class="secondaryNav switcherWrap menuCell">
         <div class="switcherToggle" data-toggle="dropdown">
-            @{user.emailFilled}
+            {user.emailFilled}
             <span class="gravatar">
                 <img src="@gravatar(None)" width="32px" height="32px"/>
             </span>
@@ -181,7 +177,7 @@
                                     Back to My Account
                               </a></li>-->
 
-              @if(user.isManager) {
+              if(user.isManager) {
                 <li class="secondaryNavItem">
                 <a class="changelogLink vIcoIn" href="@routes.PlanController.index()"><i class="uicon-svg142"></i>
                 @Messages("page.plans") </a></li>

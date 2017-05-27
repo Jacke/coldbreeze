@@ -160,7 +160,7 @@ POST        /people/:id/to_participator                       @controllers.users
 GET         /test                                               @controllers.Application.index()
 GET         /test/test										                      @controllers.TestController.index()
 GET         /a                                                  @controllers.Application.app()
-GET         /a2                                                 @controllers.Application.app2()
+GET         /heyapi                                             @controllers.Application.app2()
 
 GET         /error                                              @controllers.Application.error_test()
 POST        /whoami                                             @controllers.Application.whoami()
