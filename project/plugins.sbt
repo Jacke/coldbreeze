@@ -63,7 +63,7 @@ libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.1.7"
 addSbtPlugin("com.typesafe.sbteclipse" % "sbteclipse-plugin" % "2.4.0")
 
 
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.10" exclude("org.slf4j", "slf4j-simple"))
+addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.6.10" exclude("org.slf4j", "slf4j-simple"))
 
 
 // gulp required new version of play
