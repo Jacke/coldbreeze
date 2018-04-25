@@ -1,3 +1,0 @@
-2016-04-01 21:36:46,898 [INFO] from play.core.server.NettyServer in pool-66-thread-4 - Listening for HTTP on /0:0:0:0:0:0:0:0:9000
-2016-04-01 21:37:54,121 [WARN] from org.jboss.netty.channel.socket.nio.AbstractNioSelector in New I/O worker #1 - Unexpected exception in the selector loop.
-java.lang.OutOfMemoryError: Metaspace
