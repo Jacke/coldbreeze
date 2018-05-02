@@ -19,11 +19,11 @@ dependencies:
     - "~/.sbt"
   post:
     - sudo apt-get install -y x11vnc
-    - x11vnc -forever -nopw -rfbport 5901 -bg
-    - xterm &
+    #- x11vnc -forever -nopw -rfbport 5901 -bg
+    #- xterm &
     #- git clone https://github.com/kanaka/noVNC.git && cd noVNC/utils && ./launch.sh --vnc localhost:5900
 test:
   override:
-    - sbt bp-core/test:compile # use PHPunit for testing
+    - sbt test #bp-core/test:compile # use PHPunit for testing
   post:
-    - sbt bp-core/test:test # add an extra test type
+    - sbt test #bp-core/test:test # add an extra test type
