@@ -12,11 +12,7 @@ libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2
 lazy val global = project
   .in(file("."))
   .settings(settings)
-  .aggregate(
-    core,
-    dao,
-    web
-  ).enablePlugins(PlayScala)
+  .enablePlugins(PlayScala)
 
 lazy val core = project
   .settings(
@@ -29,21 +25,19 @@ lazy val dao = project
   .settings(
     name := "bp-dao",
     settings,
-    assemblySettings,
     libraryDependencies ++= commonDependencies ++ Seq(
       dependencies.monocleCore,
       dependencies.monocleMacro
     )
   )
   .dependsOn(
-    common
+    core
   )
 
 lazy val web = project
   .settings(
     name := "bp-web2",
     settings,
-    assemblySettings,
     libraryDependencies ++= commonDependencies ++ Seq(
       dependencies.pureconfig
     )
@@ -96,9 +90,7 @@ lazy val commonDependencies = Seq(
 // SETTINGS
 
 lazy val settings =
-commonSettings ++
-wartremoverSettings ++
-scalafmtSettings
+commonSettings
 
 lazy val compilerOptions = Seq(
   "-unchecked",
@@ -121,24 +113,7 @@ lazy val commonSettings = Seq(
   )
 )
 
-lazy val wartremoverSettings = Seq(
-  wartremoverWarnings in (Compile, compile) ++= Warts.allBut(Wart.Throw)
-)
 
-lazy val scalafmtSettings =
-  Seq(
-    scalafmtOnCompile := true,
-    scalafmtTestOnCompile := true,
-    scalafmtVersion := "1.2.0"
-  )
-
-lazy val assemblySettings = Seq(
-  assemblyJarName in assembly := name.value + ".jar",
-  assemblyMergeStrategy in assembly := {
-    case PathList("META-INF", xs @ _*) => MergeStrategy.discard
-    case _                             => MergeStrategy.first
-  }
-)
 
 
 // Adds additional packages into Twirl
