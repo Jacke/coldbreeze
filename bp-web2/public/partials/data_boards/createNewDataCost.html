@@ -1,0 +1,29 @@
+<div class="data-cost-controlls-expanded new-data-cost">
+  <form class="new-data-cost-form form">
+    <div class="form-group">
+        <label for="newDataCostTitle">Title</label>
+        <input type="text" id="newDataCostTitle" class="form-control" ng-model="entity.newModelValue" required="">
+    </div>
+    <div class="form-group">
+        <label for="newDataCostDesc">Description</label>
+        <input type="text" id="newDataCostDesc" class="form-control" ng-model="entity.newModelValue" required="">
+    </div>
+    <div class="form-group">
+        <label for="newDataCostType">Type</label>
+        <select type="text" id="newDataCostType" class="form-control" ng-model="entity.newModelValue" required="">
+          <option>1</option>
+           <option>2</option>
+           <option>3</option>
+           <option>4</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="newDataCostDefault">Default value</label>
+        <input type="text" id="newDataCostDefault" class="form-control" ng-model="entity.newModelValue" required="">
+    </div>
+  <div class="data-cost-controlls-buttons">
+  <a class="btn btn-small btn-success btn-fill" ng-click="fillValue(cost, entity, entity.newModelValue);$parent.addNewCostForm=false">Add</a>
+  <a class="btn btn-danger btn-success btn-fill" ng-click="$parent.addNewCostForm=false">Cancel</a>
+</div>
+</form>
+</div>

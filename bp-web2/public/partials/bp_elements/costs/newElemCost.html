@@ -1,0 +1,29 @@
+<div class="control-group cost-control-group">
+  <div class="form-group element-form-fields">
+  <div class="form-group control-group clearfix">
+
+    <div class="controls col-xs-6" ng-init="newBpelem.costs = [];">
+      <div class="costs cost-list" ng-repeat="cost in newBpelem.costs">
+        <span class="resource-block" tooltip="{{ cost.resource.title }}">
+            {{ cost.resource.resource.title }} — {{ entityDecorator(cost.entities, cost.resource) }}
+            <a ng-click="delElementResource(cost, newBpelem.costs)" class="btn-delete minicon"></a>
+        </span>
+      </div>
+      <div class="input-resource-block">
+           <span class="input-resource-block-title col-xs-7">Resource</span>
+          <select id="inputResource" ng-init="newBpelem.cost = {};" ng-model="newBpelem.cost.resource"
+          ng-init="newBpelem.cost.resource=resources[0];newBpelem.cost.entity=newBpelem.cost.resource.entities[0]"
+          ng-change="newBpelem.cost.entity=newBpelem.cost.resource.entities[0]"
+          class="forResource forResource form-control col-xs-7"
+          ng-options="res_cn as res_cn.resource.title for res_cn in resources"></select>
+      </div>
+      <div class="input-entity-block">
+           <span class="input-entity-block-title col-xs-7" ng-show="newBpelem.cost.resource !== undefined">Indicator</span>
+          <select id="inputEntity" ng-model="newBpelem.cost.entities" class="forResource form-control col-xs-7"
+          ng-options="entity.id as entity.title for entity in newBpelem.cost.resource.entities" ng-show="newBpelem.cost.resource !== undefined"></select>
+      </div>
+      <a ng-click="createElementResource(newBpelem.cost, newBpelem.costs)" class="btn btn-small btTxt submit btn lg solid-green btn-add-entity">{{ 'ADD' | translate }}</a>
+    </div>
+  </div>
+  </div>
+</div>

@@ -1,0 +1,470 @@
+
+@import models.DAO._
+@import models.DAO.resources.BusinessDTO
+@import models.DAO.resources.web.BizFormDTO
+@import controllers.{NestedTreeLeaf, TreeLeaf, Tree}
+@(tree: List[TreeLeaf], proc: BProcessDTO, station: BPStationDTO, active_elem:Map[String, Int], biz_sup: BizFormDTO)(implicit request: RequestHeader, lang: Lang)
+
+
+<!doctype html>
+<html prefix="og: http://ogp.me/ns#">
+<head>
+  <meta charset="utf-8">
+
+  <title>@proc.title — Process Status</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="Minority">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/css/auth/fonts.css">
+  <link rel="stylesheet" href="/css/auth/footer.css">
+  <link rel="stylesheet" href="/css/auth/website.css">
+  <link rel="stylesheet" href="/css/auth/loginflow.css" />
+  <!-- /Styles -->
+
+  <link rel="shortcut icon" href="/favicon.ico">
+<style>
+#websiteHeader .headerLogotype {
+   position: absolute;
+height: 66px;
+width: 100px;
+top: 0px;
+left: 0px;
+background: url('../images/minority-logo.svg') no-repeat scroll 0px 0px transparent;
+background-size: contain;
+}
+.help-block {
+  font-size: 10px;
+margin-top: 0px;
+display: block;
+}
+
+
+
+
+
+
+
+
+
+
+.process-tree {
+    background: white;
+}
+.process-tree .elem-card.confirm {
+    background: #e67e22;
+}
+.process-tree .elem-card.container_brick {
+    background: #27ae60;
+
+}   
+.process-tree .elem-card {
+    
+    padding-left: 15px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    color: white;
+    font-size: 14px;
+    font-family: 'Proxima Nova','Helvetica',sans-serif;
+    
+}
+.process-tree .angular-ui-tree-nodes .angular-ui-tree-nodes {
+    margin-left: 5px;
+    padding-left: 25px;
+}
+.elem-card.active {
+  padding-right: 11px;
+    display: inline;
+    -webkit-animation: glowIt 2s infinite;
+-moz-animation: glowIt 2s infinite;
+-o-animation: glowIt 2s infinite;
+animation: glowIt 2s infinite;
+}
+.process-tree.state-false .elem-card.active {
+    -webkit-animation: redGlowIt 7s infinite;
+-moz-animation: redGlowIt 7s infinite;
+-o-animation: redGlowIt 7s infinite;
+animation: redGlowIt 7s infinite;
+}
+
+/* key-frame-animations */
+@@-webkit-keyframes redGlowIt {
+  0% { 
+    background-color: #c0392b; 
+    -webkit-box-shadow: 0 0 9px #ccc; 
+  }
+  50% { 
+    background-color: #A52A1D; 
+    -webkit-box-shadow: 0 0 18px #91bd09; 
+  }
+  100% { 
+    background-color: #88271D; 
+    -webkit-box-shadow: 0 0 9px #ccc; }
+}
+@@-moz-keyframes redGlowIt {
+  0% { 
+    background-color: #c0392b; 
+    -moz-box-shadow: 0 0 9px #ccc; 
+  }
+  50% { 
+    background-color: #A52A1D; 
+    -moz-box-shadow: 0 0 18px #91bd09; 
+  }
+  100% { 
+    background-color: #88271D; 
+    -moz-box-shadow: 0 0 9px #ccc; }
+}
+@@-o-keyframes redGlowIt {
+  0% { 
+    background-color: #c0392b; 
+    -o-box-shadow: 0 0 9px #ccc; 
+  }
+  50% { 
+    background-color: #A52A1D; 
+    -o-box-shadow: 0 0 18px #91bd09; 
+  }
+  100% { 
+    background-color: #88271D; 
+    -o-box-shadow: 0 0 9px #ccc; }
+}
+@@keyframes redGlowIt {
+  0% { 
+    background-color: #c0392b; 
+    box-shadow: 0 0 9px #ccc; 
+  }
+  50% { 
+    background-color: #A52A1D; 
+    box-shadow: 0 0 18px #91bd09; 
+  }
+  100% { 
+    background-color: #88271D; 
+    box-shadow: 0 0 9px #ccc; }
+}
+
+
+
+
+
+@@-webkit-keyframes glowIt {
+  0% { 
+    background-color: #749a02; 
+    -webkit-box-shadow: 0 0 9px #ccc; 
+  }
+  50% { 
+    background-color: #91bd09; 
+    -webkit-box-shadow: 0 0 18px #91bd09; 
+  }
+  100% { 
+    background-color: #749a02; 
+    -webkit-box-shadow: 0 0 9px #ccc; }
+}
+
+@@-webkit-keyframes spinnLeft {
+  0% { -webkit-transform:rotate(0deg); }
+  100% { -webkit-transform:rotate(-360deg); }
+}
+
+@@-webkit-keyframes spinnRight {
+  0% { -webkit-transform:rotate(0deg); }
+  100% { -webkit-transform:rotate(720deg); }
+}
+
+
+@@-webkit-keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@@-moz-keyframes glowIt {
+  0% { 
+    background-color: #749a02; 
+    -moz-box-shadow: 0 0 9px #ccc; 
+  }
+  50% { 
+    background-color: #91bd09; 
+    -moz-box-shadow: 0 0 18px #91bd09; 
+  }
+  100% { 
+    background-color: #749a02; 
+    -moz-box-shadow: 0 0 9px #ccc; }
+}
+
+@@-moz-keyframes spinnLeft {
+  0% { -moz-transform:rotate(0deg); }
+  100% { -moz-transform:rotate(-360deg); }
+}
+
+@@-moz-keyframes spinnRight {
+  0% { -moz-transform:rotate(0deg); }
+  100% { -moz-transform:rotate(720deg); }
+}
+
+
+@@-moz-keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@@-o-keyframes glowIt {
+  0% { 
+    background-color: #749a02; 
+    -o-box-shadow: 0 0 9px #ccc; 
+  }
+  50% { 
+    background-color: #91bd09; 
+    -o-box-shadow: 0 0 18px #91bd09; 
+  }
+  100% { 
+    background-color: #749a02; 
+    -o-box-shadow: 0 0 9px #ccc; }
+}
+
+@@-o-keyframes spinnLeft {
+  0% { -o-transform:rotate(0deg); }
+  100% { -o-transform:rotate(-360deg); }
+}
+
+@@-o-keyframes spinnRight {
+  0% { -o-transform:rotate(0deg); }
+  100% { -o-transform:rotate(720deg); }
+}
+
+@@-o-keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@@keyframes glowIt {
+  0% { 
+    background-color: #749a02; 
+    box-shadow: 0 0 9px #ccc; 
+  }
+  50% { 
+    background-color: #91bd09; 
+    box-shadow: 0 0 18px #91bd09; 
+  }
+  100% { 
+    background-color: #749a02; 
+    box-shadow: 0 0 9px #ccc; }
+}
+
+@@-moz-keyframes spinnLeft {
+  0% { transform:rotate(0deg); }
+  100% { transform:rotate(-360deg); }
+}
+
+@@-moz-keyframes spinnRight {
+  0% { transform:rotate(0deg); }
+  100% { transform:rotate(720deg); }
+}
+
+@@-moz-keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+
+
+
+
+
+
+
+</style>
+</head>
+<body class="website loginFlow">
+
+<!-- website-header -->
+  <header id="websiteHeader"><div class="positioning">
+    <a class="headerLogotypeLink" href="http://minorityapp.com/"><h1 class="visuallyhidden" title="Minority">Minority</h1><div class="headerLogotype"></div></a>
+    <a class="to_nav" href="#navigation"><span class="visuallyhidden">Go to Navigation</span></a>
+  </div></header>
+<!-- /website-header -->
+
+<div class="loginFlowPage">
+
+
+@request.flash.get("success").map { msg =>
+<div class="messageBoxWrap">
+  <p class="message">
+  @msg </p>
+</div>
+}
+@request.flash.get("error").map { msg =>
+<div class="messageBoxWrap">
+  <p class="message">
+  @msg </p>
+</div>
+}
+
+  <div class="loginPage loginPage__login">
+    <div class="loginView">
+
+ 
+
+</div>
+    </div>
+      <div class="loginPage loginPage__register loginPage__active">
+      <div class="loginView">
+
+  <h1 class="loginHeading">@proc.title @Messages("custom.status"):</h1>
+
+
+
+<p>@Messages("custom.active"): @active_elem.values.head</p>
+
+
+
+<div class="process-tree">
+  <ol ui-tree-nodes="">
+
+
+
+@tree.map { main_leaf =>
+<li ui-tree-node>
+        <div class="elem-card @main_leaf.leaf.type_title @main_leaf.active">
+        <span class="id">@Messages("custom.elem"): id: @main_leaf.leaf.id</span> @main_leaf.leaf.title:  @main_leaf.leaf.type_title
+        </div>
+      <ol ui-tree-nodes="">
+        @main_leaf.nodes.map { node =>
+        <li ng-repeat="node in trr.nodes" ui-tree-node class="space-container">
+            @Messages("custom.space"): # @node.space_id
+          <ol ui-tree-nodes="">
+            @node.nodes.map { nested_node =>
+            <li ui-tree-node>
+              <div class="elem-card @nested_node.leaf.type_title @nested_node.active">
+               <span class="id">@Messages("custom.spaceelem"): id: @nested_node.leaf.id </span>  @nested_node.leaf.title: @nested_node.leaf.type_title
+               </div>
+                
+                <ol ui-tree-nodes="" ng-model="spelem.nodes">
+                @nested_node.nodes.map { nested_node2 => 
+                        <li ng-repeat="node1 in spelem.nodes" ui-tree-node class="space-container">
+                            @Messages("custom.space"): # @nested_node2.space_id
+                          <ol ui-tree-nodes="" ng-model="node1.space_elem">
+                            <li ng-repeat="spelem1 in node1.space_elem | orderBy:'order'" ui-tree-node>
+
+                              <div class="elem-card {{ spelem1.type_title }} {{ $parent.highlightActive(station, spelem1) }}">
+                               <span class="id">@Messages("custom.spaceelem"): id:  @nested_node2.leaf.id</span> @nested_node2.leaf.title: @nested_node2.leaf.type_title
+                               <div>
+                                <!-- LIMIT TO TREE
+                                  <ol ui-tree-nodes="" ng-model="spelem1.nodes">
+                                          <li ng-repeat="node2 in spelem1.nodes" ui-tree-node class="space-container">
+                                              @Messages("custom.space"): #{{node2.index}}
+                                            <ol ui-tree-nodes="" ng-model="node2.space_elem">
+                                              <li ng-repeat="spelem2 in node2.space_elem | orderBy:'order'" ui-tree-node>
+
+                                                <div class="elem-card {{ spelem2.type_title }} {{ $parent.highlightActive(station, spelem2) }}">
+                                                 <span class="id">@Messages("custom.spaceelem"): id:{{spelem2.id}}</span> {{spelem2.title}}: {{ spelem2.type_title}}
+                                                 </div>
+                                                  <ol ui-tree-nodes="" ng-model="spelem2.nodes">
+                                                          <li ng-repeat="node3 in spelem2.nodes" ui-tree-node class="space-container">
+                                                              @Messages("custom.space"): #{{node3.index}}
+                                                            <ol ui-tree-nodes="" ng-model="node3.space_elem | orderBy:'order'">
+                                                              <li ng-repeat="spelem3 in node3.space_elem" ui-tree-node>
+
+                                                                <div class="elem-card {{ spelem3.type_title }} {{ $parent.highlightActive(station, spelem3) }}">
+                                                                 <span class="id">@Messages("custom.spaceelem"): id:{{spelem3.id}}</span> {{spelem3.title}}: {{ spelem3.type_title}}
+                                                               </div>
+                                                                <ol ui-tree-nodes="" ng-model="spelem3.nodes">
+                                                                      <li ng-repeat="node4 in spelem3.nodes" ui-tree-node class="space-container">
+                                                                          @Messages("custom.space"): #{{node4.index}}
+                                                                        <ol ui-tree-nodes="" ng-model="node4.space_elem | orderBy:'order'">
+                                                                          <li ng-repeat="spelem4 in node4.space_elem" ui-tree-node>
+
+                                                                            <div class="elem-card {{ spelem4.type_title }} {{ $parent.highlightActive(station, spelem4) }}">
+                                                                             <span class="id">@Messages("custom.spaceelem"): id:{{spelem4.id}}</span> {{spelem4.title}}: {{ spelem4.type_title}}
+                                                                             </div>
+                                                                                  <ol ui-tree-nodes="" ng-model="spelem4.nodes">
+                                                                                          <li ng-repeat="node5 in spelem4.nodes" ui-tree-node class="space-container">
+                                                                                              @Messages("custom.space"): #{{node5.index}}
+                                                                                            <ol ui-tree-nodes="" ng-model="node5.space_elem | orderBy:'order'">
+                                                                                              <li ng-repeat="spelem5 in node5.space_elem" ui-tree-node>
+
+                                                                                                <div class="elem-card {{ spelem5.type_title }} {{ $parent.highlightActive(station, spelem5) }}">
+                                                                                                 <span class="id">@Messages("custom.spaceelem"): id:{{spelem5.id}}</span> {{spelem5.title}}: {{ spelem5.type_title}}
+                                                                                               </div>
+                                                                                                <ol ui-tree-nodes="" ng-model="spelem5.nodes">
+                                                                                                        <li ng-repeat="node6 in spelem5.nodes" ui-tree-node class="space-container">
+                                                                                                            @Messages("custom.space"): #{{node6.index}}
+                                                                                                          <ol ui-tree-nodes="" ng-model="node6.space_elem | orderBy:'order'">
+                                                                                                            <li ng-repeat="spelem6 in node6.space_elem" ui-tree-node>
+
+                                                                                                              <div class="elem-card {{ spelem6.type_title }} {{ $parent.highlightActive(station, spelem6) }}">
+                                                                                                               <span class="id">@Messages("custom.spaceelem"): id:{{spelem6.id}}</span> {{spelem6.title}}: {{ spelem6.type_title}}
+                                                                                                             </div>
+                                                                                                            </li>
+                                                                                                          </ol>
+                                                                                                        </li>
+                                                                                                </ol>                                                                                                 
+                                                                                              </li>
+                                                                                            </ol>
+                                                                                          </li>
+                                                                                  </ol>
+                                                                          </li>
+                                                                        </ol>
+                                                                      </li>
+                                                                </ol>                                                                 
+                                                              </li>
+                                                            </ol>
+                                                          </li>
+                                                  </ol>
+
+                                              </li>
+                                            </ol>
+                                          </li>
+                                  </ol>
+                            </li>
+                          </ol>
+                        </li> -->
+                  }
+                </ol>
+            </li>
+          }
+          </ol>
+        </li>
+      }
+      </ol>
+    </li>
+}
+
+    
+  </ol>
+</div>
+
+
+
+
+
+
+<p class="loginText">@Messages("custom.companyInfo"): 
+<hr>
+<a href="tel://@biz_sup.phone.getOrElse(" ")">@biz_sup.phone.getOrElse(" ") </a> 
+<hr>
+<a class="switchView" tabindex="14" href="@biz_sup.website.getOrElse(" ")">@biz_sup.title</a>.
+</p>
+
+</div>
+    </div>
+  
+
+</div>
+
+<script src="/js/jquery.js"></script>
+
+
+<!-- website-navigation -->
+  <div id="navigation">
+    <nav class="websiteNav positioning">
+    </nav>
+  </div>
+
+
+<script src="/js/website-scroll.js"></script>
+<script src="/jsroutes.js"></script>
+
+</body>
+</html>
+
+
+

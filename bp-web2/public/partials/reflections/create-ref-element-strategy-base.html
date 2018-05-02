@@ -1,0 +1,52 @@
+<div class="new-ref-form-activate" ng-init="$parent.strategy.showNewStrategyBaseForm=false" ng-hide="$parent.strategy.showNewStrategyBaseForm">
+  <a ng-click="$parent.strategy.showNewStrategyBaseForm ? $parent.strategy.showNewStrategyBaseForm=false : $parent.strategy.showNewStrategyBaseForm=true"
+     class="btn btn-small btn-primary">Add Strategy Base</a>
+</div>
+
+<div class="new-ref-form" ng-show="$parent.strategy.showNewStrategyBaseForm">
+  <form novalidate="novalidate" class="form-horizontal form-new-ref">
+  <div class="control-group form-group">
+    <label class="control-label col-sm-1" for="inputTitle">key:</label>
+    <div class="controls col-xs-4">
+      <input type="text" id="inputTitle" class="form-control" ng-model="$parent.strategy.NewStrategyBase.key"/>
+    </div>
+  </div>
+  <div class="control-group form-group">
+    <label class="control-label col-sm-1" for="inputBusinessId">baseType:</label>
+    <div class="controls col-xs-4">
+      <input type="text" class="form-control" id="inputBusinessId" ng-model="$parent.strategy.NewStrategyBase.baseType"/>
+    </div>
+  </div>
+  <div class="control-group form-group">
+    <label class="control-label col-sm-1" for="inputBusinessId">valueType:</label>
+    <div class="controls col-xs-4">
+      <input type="text" class="form-control" id="inputBusinessId" ng-model="$parent.strategy.NewStrategyBase.valueType"/>
+    </div>
+  </div>
+  <div class="control-group form-group">
+    <label class="control-label col-sm-1" for="inputBusinessId">valueContent:</label>
+    <div class="controls col-xs-4">
+      <input type="text" class="form-control" id="inputBusinessId" ng-model="$parent.strategy.NewStrategyBase.valueContent"/>
+    </div>
+  </div>
+    <div class="control-group form-group">
+    <label class="control-label col-sm-1" for="inputBusinessId">validationScheme(optional):</label>
+    <div class="controls col-xs-4">
+      <input type="text" class="form-control" id="inputBusinessId" ng-model="$parent.strategy.NewStrategyBase.validationScheme"/>
+    </div>
+  </div>
+    <div class="control-group form-group">
+    <label class="control-label col-sm-1" for="inputBusinessId">validationPattern(optional):</label>
+    <div class="controls col-xs-4">
+      <input type="text" class="form-control" id="inputBusinessId" ng-model="$parent.strategy.NewStrategyBase.validationPattern"/>
+    </div>
+  </div>
+
+  <div class="control-group form-group">
+    <div class="controls col-xs-4">
+      <a ng-click="createMiddlewareStrategyBase($parent.strategy.NewStrategyBase, $parent.strategy)" class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</a>
+      <a ng-click="$parent.strategy.showNewStrategyBaseForm=false" class="btn btn-small btn-primary">Cancel</a>
+    </div>
+  </div>
+  </form>
+</div>

@@ -1,0 +1,37 @@
+<div class="nested-space-elems">
+  <div class="space-blocks" ng-attr-id="'spaceElem'+spaceelem.id" ng-repeat="spaceelem in spaceelems | filter:{space_owned: space.id} | orderBy:'order'" style="padding: 2px 10px;">
+
+
+
+<ul class="elem-control elem-tabs" role="tablist" ng-show="isManagerVal">
+  <li class="active"><a href="" role="tab" data-toggle="tab" ng:click="selected=1"><span class="glyphicon glyphicon-list-alt"></span></a></li>
+  <li><a href="" role="tab" data-toggle="tab" ng:click="selected=2"><span class="glyphicon glyphicon-edit"></span></a></li>
+  <li><a ng-click="deleteSpaceElem(spaceelem)"><span class="glyphicon glyphicon-remove"></span></a></li>
+  <li><a href="" ng:click="moveUpSpaceElem(spaceelem)"><span class="glyphicon glyphicon-arrow-up"></span></a></li>
+  <li><a href="" ng:click="moveDownSpaceElem(spaceelem)"><span class="glyphicon glyphicon-arrow-down"></span></a></li>
+</ul>
+<div class="tab-pane active" id="edit" ng:show="selected == 2">
+  <div ng-include src="'assets/partials/bp_elements/spelem-edit.html'"></div>
+</div>
+    <div class="tab-content">
+      <div class="block-card tab-pane active" id="show" ng-class="'spelem-'+spaceelem.id">
+        <span class="primary">{{ spaceelem.order }}: {{ spaceelem.title }}</span><!-- OWNED BY: {{ spaceelem.space_owned }}-->
+        <span class="descr">{{ spaceelem.b_type }}</span>
+        <span class="type">{{ spaceelem.type_title }}</span>
+      </div>
+          <div class="row-top">
+            <div class="state" ng-class="state.on" ng-repeat="state in spaceelem.states">
+              <div class="switcher" ng-repeat="switcher in state.switches">
+              <span class="switcher-icon" ng-class="switcher.switch_type"></span>{{ state.title }} — {{ state.neutral }}
+            </div>
+            </div>
+          </div> 
+
+        <div class="tab-pane active" id="edit" ng:show="spaceelem.type_title == 'container_brick'">
+            <div class="nested-spaces" ng-repeat="space in nestedSpaces[spaceelem.id]">
+                <div ng-include src="'assets/partials/bp_elements/nested_cn.html'"></div>
+                <div ng-include src="'assets/partials/bp_elements/nested_cn_elems.html'"></div>
+            </div>
+        </div>
+      </div></div>
+</div>

@@ -1,0 +1,146 @@
+@import play.api.i18n._
+@import helper._
+@(user: models.User2)
+
+<!doctype html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>Minority | Playground</title>
+  <meta name="description" content="Minority Application. Process defines result. Application for modeling, executing and optimize any processes.">
+  <meta name="author" content="Empia Corp.">
+  <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+  <link rel="stylesheet" href='@routes.Assets.versioned("css/font-awesome.css")'>
+  <link rel="stylesheet" href='@routes.Assets.versioned("css/new.css")'>
+  <link rel="stylesheet" href='@routes.Assets.versioned("css/head-foot.css")' media='screen, presentation' />
+  <link rel="stylesheet" href='@routes.Assets.versioned("css/multi.css")'>
+  <link rel="stylesheet" href="@routes.Assets.versioned("css/app.css")"/>
+  <link rel="stylesheet" href="@routes.Assets.versioned("css/auth/fonts.css")"/>
+  <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800' rel='stylesheet' type='text/css'>
+  <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("favicon.png")">
+  <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/dashboard.css")">
+  <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/main-layout.css")">
+  <link rel="stylesheet" type="text/css" media="screen" href="@routes.Assets.versioned("css/bootstrap.css")">
+  <link rel="stylesheet" href="@routes.Assets.versioned("css/selectize.css")"/>
+  <link rel="stylesheet" href="@routes.Assets.versioned("css/selectize.bootstrap3.css")"/>
+  <link rel="stylesheet" href="@routes.Assets.versioned("bower_components/tether-shepherd/dist/css/shepherd-theme-arrows.css")"/>
+
+  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>-->
+
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
+  <style>
+.overlay_mobile {
+    position: fixed;
+    background-color: white;
+    width: 100%;
+    height: 100%;
+    z-index: 99999;
+    font-size: 52px;
+    text-align: center;
+    padding-top: 37px;
+    display: none;
+    padding: 10% 8% 16% 8%;
+}
+.visible_overlay.overlay_mobile {
+    display: block;
+}
+</style>
+<script src='/jsroutes.js'></script>
+
+<script type="text/javascript">
+  window.heap=window.heap||[],heap.load=function(e,t){window.heap.appid=e,window.heap.config=t=t||{};var n=t.forceSSL||"https:"===document.location.protocol,a=document.createElement("script");a.type="text/javascript",a.async=!0,a.src=(n?"https:":"http:")+"//cdn.heapanalytics.com/js/heap-"+e+".js";var o=document.getElementsByTagName("script")[0];o.parentNode.insertBefore(a,o);for(var r=function(e){return function(){heap.push([e].concat(Array.prototype.slice.call(arguments,0)))}},p=["clearEventProperties","identify","setEventProperties","track","unsetEventProperty"],c=0;c<p.length;c++)heap[p[c]]=r(p[c])};
+  heap.load("2224245585");
+</script>
+</head>
+
+
+<body class="themeDark themeGrad website">
+
+<!-- <div id="reactapp"></div>-->
+  <div id="container" class="container-global">
+        @header(user)
+
+ 
+
+
+<style>
+.applicationFooter {
+  display: none;
+}
+</style>
+<div class="app-container">
+<div class="container app" ng-app="app" data-ng-view>
+
+  <div>
+     Loading...
+   </div>
+
+</div>
+</div>
+
+
+
+
+<!-- website-footer -->
+
+<footer class="applicationFooter">
+
+  <div class="applicationFooterRow">
+    <div class="applicationFooterColumns">
+    <div class="applicationFooterColumn">
+    </div>  </div>
+
+  <div class="applicationFooterRow">
+    <p class="applicationFooterCopyright"> 2014—2016 &copy; Empire InCloud Inc. @Messages("footer.rights"). <span class="applicationFooterCopyrightLinks"><a href="http://minorityapp.com/tos" class="applicationFooterCopyrightLink">@Messages("footer.terms")</a> <a href="https://www.iubenda.com/privacy-policy/" class="applicationFooterCopyrightLink">@Messages("footer.privacy")</a></span></p>
+  </div>
+</footer>
+
+<!--<script src="@routes.Assets.versioned("javascripts/core.bundle.js")"></script>
+<script src="http://localhost:8080/app2.bundle.js"></script>
+-->
+<script src="/assets/js/app2.js"></script>
+  <!--<script type="text/javascript" src="bower_components/ui-sortable/src/sortable.js"></script>-->
+  <!--<script src='@routes.Assets.versioned("js/ui-bootstrap-custom-0.10.0.js")'></script>-->
+  <!--<script src='@routes.Assets.versioned("js/ui-bootstrap-custom-tpls-0.10.0.js")'></script>-->
+  <link rel="stylesheet" href='@routes.Assets.versioned("css/picaso.css")'>
+  <link rel="stylesheet" href='@routes.Assets.versioned("bower_components/angular-ui-select/dist/select.min.css")'>
+  <link rel="stylesheet" href='@routes.Assets.versioned("bower_components/angular-ui-tree/dist/angular-ui-tree.min.css")'>
+  <link rel="stylesheet" href='@routes.Assets.versioned("bower_components/ngDialog/css/ngDialog.css")'>
+  <link rel="stylesheet" href='@routes.Assets.versioned("bower_components/ngDialog/css/ngDialog-theme-default.css")'>
+  <link rel="stylesheet" href='@routes.Assets.versioned("bower_components/ngDialog/css/ngDialog-theme-plain.css")'>
+  <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/process.css")'>
+  <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/process_list.css")">
+  <link rel="stylesheet" href='@routes.Assets.versioned("bower_components/pnotify/pnotify.core.css")'>
+  <link rel="stylesheet" href='@routes.Assets.versioned("bower_components/pnotify/pnotify.buttons.css")'>
+  <link rel="stylesheet" href='@routes.Assets.versioned("bower_components/pnotify/pnotify.core.css")'/>
+  <link rel="stylesheet" href='@routes.Assets.versioned("bower_components/angular-loading-bar/src/loading-bar.css")'/>
+  <link rel="stylesheet" href='@routes.Assets.versioned("bower_components/bootstrap-daterangepicker/daterangepicker-bs3.css")'/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.8.5/css/selectize.default.css">
+  <link rel="import" href='@routes.Assets.versioned("bower_components/polymer/polymer.html")'>
+  <link href='@routes.Assets.versioned("fonts/avenirnextcyr/stylesheet.css")' rel='stylesheet' type='text/css'>
+
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-13037685-4', 'auto');
+  ga('send', 'pageview');
+  </script>
+
+<script>(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');ga('create', 'UA-13037685-4', 'auto');ga('send', 'pageview');</script>
+<script type="text/javascript"> (function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter30361447 = new Ya.Metrika({ id:30361447, clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true, trackHash:true }); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = "https://mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks");</script><noscript><div><img src="https://mc.yandex.ru/watch/30361447" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /website-footer -->
+
+ </body>
+</html>
+
+
+

@@ -1,0 +1,74 @@
+ <form novalidate="novalidate" ng-submit="updateSpaceElem(spaceelem);" class="form-horizontal form-new-bpelem form-edit-bpelem form-edit-spaceelem">
+    <div class="form-group element-form-fields">
+    <div class="form-group element-form-fields control-group clearfix">
+      <div class="controls col-xs-2">
+        <label class="control-label col-sm-1" for="inputTitle">Title</label>
+      </div>
+      <div class="controls col-xs-6">      
+        <input type="text" id="inputTitle" class="form-control" ng-model="spaceelem.title" required/>
+      </div>
+
+    </div>
+    <div class="form-group element-form-fields control-group clearfix">
+      <div class="controls col-xs-2">
+        <label class="control-label col-sm-1" for="inputEditElemDesc">{{ 'DESC' | translate }}</label>
+      </div>
+      <div class="controls col-xs-6">
+        <textarea type="text" class="form-control" id="inputEditElemDesc" ng-model="spaceelem.desc"/>
+      </div>
+    </div>
+
+    <div class="form-group element-form-fields control-group clearfix">
+
+    <div class="controls col-xs-2">
+          <label class="control-label ng-binding" for="inputTitle">Type</label>
+    </div>
+      <div class="controls col-xs-6">
+          <span class="selectedRefType">{{ spaceelem.b_type }}</span>
+      </div>      
+    </div><!-- form-group element-form-fields -->
+
+<!-- Cost module
+    <div class="control-group cost-control-group">
+      <div class="form-group element-form-fields">
+      <div class="form-group control-group clearfix">
+        <div class="controls col-xs-2">
+          <label class="control-label col-sm-1" for="inputPerm">Cost</label>
+        </div>
+        <div class="controls col-xs-6">  
+          <div class="costs cost-list" ng-repeat="cost in spaceelem.costs">
+            <span class="resource-block" tooltip="{{ cost.resource.title }}">
+                {{ cost.resource.resource.title }} — {{ entityDecorator(cost.entities, cost.resource) }}
+                <a ng-click="delElementResource(cost, spaceelem.costs, true)" class="btn-delete minicon"></a>
+            </span>
+          </div>   
+          <div class="input-resource-block">
+               <span class="input-resource-block-title">Resource</span>
+              <select id="inputResource" ng-init="spaceelem.cost = {};" ng-model="spaceelem.cost.resource" ng-init="newBpelem.cost.resource=resources[0];newBpelem.cost.entity=newBpelem.cost.resource.entities[0]" ng-change="newBpelem.cost.entity=newBpelem.cost.resource.entities[0]" class="forResource" ng-options="res_cn as res_cn.resource.title for res_cn in resources"></select>
+          </div>
+          <div class="input-entity-block">
+               <span class="input-entity-block-title">Entity</span>
+              <select id="inputEntity" ng-model="spaceelem.cost.entity" class="forResource" ng-options="entity.id as entity.title for entity in newBpelem.cost.resource.entities"></select>      
+          </div>    
+          <a ng-click="createElementResource(spaceelem.cost, spaceelem.costs)" class="btn btn-big btn-success">{{ 'ADD' | translate }}</a>
+        </div>
+      </div>
+      </div>
+    </div> / cost module-->
+
+    </div>
+
+
+  <input type="hidden" name="value" ng-model="spaceelem.business" value="{{ business }}">
+  <input type="hidden" name="value" ng-model="spaceelem.process" value="{{ BPid }}">
+  <input type="hidden" id="inputBusinessId" ng-model="spaceelem.b_type"/>
+  <input type="hidden" id="inputBusinessId" ng-model="spaceelem.type_title"/>
+  <input type="hidden" id="inputBusinessId" ng-model="spaceelem.space_own"/>
+
+    <div class="control-group form-submit form-group" style="clear:both;" ng-show="isManagerVal">
+      <div class="controls">
+        <button type="submit" class="btn btn-small btTxt submit btn lg solid-green ng-binding">Update</button>
+        <a ng-click="deleteSpaceElem(spaceelem)" class="btn btn-small btn btn-danger btTxt btn lg solid-green ng-binding">Delete</a>
+      </div>
+    </div>
+</form>

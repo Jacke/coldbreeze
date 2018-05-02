@@ -1,0 +1,23 @@
+@(boardId: String, id: Option[String], form: Form[models.Entity], files: Option[String])(implicit messages: Messages)
+
+@main("Edit entity") {
+  <div class="row">
+  <div class="span8">
+  <h2>
+    @if(!id.isDefined) {
+      Add
+    } else {
+      Edit
+    } an entity</h2>
+  @helper.form(if(!id.isDefined) routes.EntityController.create(boardId) else routes.EntityController.edit(boardId, id.get)) {
+    @helper.inputText(form("title"))    
+    @helper.textarea(form("description"))
+    @helper.select(form("etype"), Seq("number"->"Number", "text"->"Text", "boolean" -> "Boolean"))      
+    @helper.inputText(form("default"))
+    <div class="form-actions">
+      <input class="btn btn-primary" type="submit">
+    </div>
+  }
+  </div>
+
+}

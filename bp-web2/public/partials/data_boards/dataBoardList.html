@@ -1,0 +1,499 @@
+<div class="container dataBoardList">
+<h1 class="primary">Data</h1>
+<style>
+.ngdialog.ngdialog-theme-default .ngdialog-content {
+    width: 531px !important;
+}
+.ngdialog-content .container h1 {
+      background: #3D3F55;
+      color: white;
+      border-bottom: #4F5165 1px solid;
+      margin-right: -30px;
+}
+
+.ngdialog-content {
+    background: white;
+}
+
+.ngdialog.ngdialog-theme-default .ngdialog-content {
+    background: #45475D !important;
+    color: white !important;
+}
+
+
+.element-data-costs {
+    margin-top: 24px;
+}
+.data-cost input#inputContentBlankValue {
+    width: 62%;
+    padding: 2px 4px;
+    height: 26px;
+    display: inline-block;
+    background: #54566D;
+    color: white;
+    border: solid 1px transparent;
+    float: left;
+    margin-top: 5px;
+}
+.data-cost .data-cost-title {
+    display: inline-block;
+    font-size: 18px;
+    width: 222px;
+    text-align: left;
+    margin-left: 11px;
+    float: left;
+}
+.data-cost .data-cost-type {
+    display: inline-block;
+    background: #393B52;
+    padding: 3px 15px;
+    margin-right: 5px;
+    font-size: 12px;
+    float: left;
+    border-radius: 3px;
+
+}
+.data-cost .data-cost-value {
+  display: inline-block;
+  max-width: 25%;
+  text-align: center;
+  background: #3C3D50;
+  padding: 5px 11px;
+  margin-right: 19px;
+  border-radius: 3px;
+  text-overflow: ellipsis;
+  min-width: 10%;
+  white-space: nowrap;
+  float: right;
+  overflow: hidden;
+}
+.data-cost .data-cost-controlls-expanded {
+  margin-top: 17px;
+  display: block;
+  width: 100%;
+  height: 49px;
+  padding-top: 27px;
+  margin-bottom: 9px;
+}
+.element-data-costs .data-cost {
+  display: block;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      width: 100%;
+      clear: both;
+      margin-bottom: 10px;
+}
+
+.data-cost .data-cost-default {
+    display: none;
+}
+.data-cost-controls {
+  display: inline-block;
+  width: 3%;
+  text-align: right;
+  font-size: 15px;
+  float: right;
+  margin-top: 4px;
+  font-weight: 100;
+}
+.data-cost input#inputContentBlankValue:focus {
+    box-shadow: none;
+}
+
+.data-cost .data-cost-controlls-buttons {
+    display: inline-block;
+    float: right;
+}
+.data-cost a.btn {font-size: 11px;font-weight: 900;    text-shadow: none;}
+.element-data-costs .data-cost-add-button {
+    clear: both;
+}
+.data-cost-add-button a.btn, .element-data-file .data-file a.btn, .data-file-add-button a.btn, .data-file a.btn.btn-success.btn-fill {
+    font-size: 11px;
+    font-weight: 900;
+      text-shadow: none;
+}
+
+.ngdialog .dataBoardList a {
+    color: white;
+    font-weight: 100;
+}
+.ngdialog .dataBoardList ul.perm-menu {
+    margin-left: 0px;
+    padding-left: 0px;
+    margin: 0 auto;
+    width: 162px;
+    margin-top: 15px;
+}
+
+
+
+
+
+
+.new-data-cost-form label {
+    float: left;
+    margin-right: 16px;
+    margin-top: 6px;
+    width: 25%;
+    text-align: left;
+    margin-bottom: 9px;
+    font-weight: 600;
+    font-size: 13px;
+}
+.data-cost-controlls-expanded.select-existed-new-data-cost label {
+    text-align: left;
+    margin-bottom: -1px;
+    font-weight: 600;
+    font-size: 13px;
+}
+.new-data-cost-form .form-group {
+    clear: both;
+    display: block;
+    width: 100%;
+}
+
+input#newDataCostTitle, input#newDataCostDesc,input#newDataCostDefault, select#newDataCostType {
+    width: 62%;
+    padding: 2px 4px;
+    height: 26px;
+    display: inline-block;
+    background: #54566D;
+    color: white;
+    border: solid 1px transparent;
+    float: right;
+    margin-top: 5px;
+}
+.new-data-cost-form .data-cost-controlls-buttons {
+    clear: both;
+    float: left !important;
+    margin-left: 34%;
+    margin-top: 18px;
+    margin-bottom: 19px;
+}
+.data-cost-controlls-expanded.select-existed-new-data-cost {
+    clear: both;
+}
+select#selectExistedResource, select#selectExistedEntity {
+    width: 62%;
+    padding: 2px 4px;
+    height: 26px;
+    display: inline-block;
+    background: #54566D;
+    color: white;
+    border: solid 1px transparent;
+    float: right;
+    margin-top: 5px;
+}
+
+
+.existed-new-data-cost .data-cost-controlls-buttons {
+    margin-left: 34%;
+    float: left !important;
+    margin-top: 10px;
+}
+
+
+.element-data-files .data-file {
+    padding-bottom: 30px;
+    padding-top: 30px;
+}
+
+.element-data-files .data-file .data-file-type {
+    display: inline-block;
+    display: inline-block;
+    background: #393B52;
+    padding: 3px 15px;
+    margin-right: 5px;
+    font-size: 12px;
+    float: left;
+}
+
+.element-data-files .data-file .data-file-title {
+    display: inline-block;
+    display: inline-block;
+    font-size: 18px;
+    width: 222px;
+    text-align: left;
+    margin-left: 11px;
+    margin-right: 10px;
+    margin-top: 4px;
+    border-bottom: 1px white dotted;
+}
+
+.element-data-files .data-file a.btn.btn-fill {
+    display: inline-block;
+    float: right;
+}
+
+.element-data-files .data-file a.btn.btn-success.btn-fill {
+    font-weight: 100;
+}
+.ngdialog .dataBoardList .perm-menu a {
+    border-bottom: solid 1px white;
+}
+
+
+
+.ngdialog .dataBoardList .perm-menu li a {
+    color: white;
+    text-shadow: none;
+    text-decoration: none;
+    border-bottom: none;
+    font-size: 12px;
+    font-weight: 900;
+    font-family: 'Open Sans';
+}
+.ngdialog .dataBoardList .perm-menu li.active a {
+    color: #9BD1EF;
+}
+
+.elements-data-element {
+    clear: both;
+    padding-top: 6px;
+}
+ul.perm-menu.element-data-nav {
+    display: inline-block;
+    width: 30% !important;
+    /* margin: 0 auto !important; */
+    float: right;
+    margin-top: 20px !important;
+}
+
+.elements-data-element-title h3 {
+    width: 50%;
+    display: inline-block;
+    float: left;
+}
+
+.elements-data-element-title {
+    margin-top: 12px;
+    padding-bottom: 48px;
+}
+
+.ngdialog .dataBoardList ul.perm-menu.element-data-nav a {
+    color: white;
+    border-bottom: solid 1px white;
+}
+.data-file .data-file-type {
+    display: inline-block;
+    background: #393B52;
+    padding: 3px 15px;
+    margin-right: 5px;
+    font-size: 12px;
+    float: left;
+}
+
+.data-file .data-file-title {
+    display: inline-block;
+    font-size: 18px;
+    width: 222px;
+    text-align: left;
+    margin-left: 11px;
+}
+
+.data-file {
+    display: block;
+    margin-bottom: 17px;
+}
+
+.data-file a.btn.btn-danger.btn-success.btn-fill {
+    display: inline-block;
+    float: right;
+}
+
+.data-file-arr {
+    margin-bottom: 30px;
+}
+
+.dataBoardList h6 {
+    font-size: 13px;
+    margin-top: 15px;
+    font-weight: 900;
+    font-family: 'Open Sans';
+    margin-bottom: 15px;
+}
+.ngdialog .dataBoardList ul.perm-menu.element-data-nav li.active a {
+    color: #9BD1EF;
+    text-shadow: none;
+    text-decoration: none;
+    border-bottom: none;
+}
+.ngdialog .data-file-add-button button.btn {
+    font-size: 11px;
+    text-shadow: none;
+    clear: both;
+    display: block;
+    margin-top: 20px;
+    margin-bottom: -5px;
+}
+
+</style>
+
+<ul class="perm-menu">
+  <li ng-class="{ 'active': !elementShow}">
+    <a ng-init="elementShow=true;" ng-click="elementShow=true;processShow=false;">Elements</a>
+  </li>
+  <li ng-class="{ 'active': !processShow}">
+    <a ng-init="processShow=false;" ng-click="processShow=true;elementShow=false;">Process</a>
+  </li>
+</ul>
+
+<div class="elements-data" ng-init="elementShow=true;processShow=false;" ng-show="elementShow">
+  <div class="elements-data-element" ng-repeat="element in $parent.trees">
+
+
+
+    <div class="elements-data-element-title"><h3>{{ element.title }}</h3>
+      <ul class="perm-menu element-data-nav">
+
+        <li ng-class="{ 'active': !element.costShow}" class="element-data-nav-controll-field">
+            <span class="data-board-count data-board-files-count">
+              <div ng-repeat="costObj in sessionCosts1 | filter: byElement(element) as filteredCost">
+              </div>
+              {{filteredCost.length}}
+            </span>
+          <a ng-init="element.costShow=true;"
+          ng-click="element.costShow=true;element.fileShow=false;">Indicators</a></li>
+
+        <li ng-class="{ 'active': !element.fileShow}" class="element-data-nav-controll-field">
+          <span class="data-board-count data-board-costs-count">
+            <div ng-repeat="fileArr in files.files | filter:filesForLaunchElement(element) as filteredFiles">
+            </div>
+            {{filteredFiles.length}}
+          </span>
+
+          <a ng-init="element.fileShow=false;"
+          ng-click="element.fileShow=true;element.costShow=false;">Files</a></li>
+      </ul>
+    </div>
+    <div class="element-data-costs" ng-show="element.costShow">
+      <div class="element-data-cost-object" ng-repeat="costObj in sessionCosts1 | filter: byElement(element) ">
+      <div class="data-cost" ng-repeat="cost in costObj.costs">
+        <div class="data-cost-type"><span>{{ cost.entity.etype }}</span>
+          <div class="data-cost-default">Default value: {{ cost.entity.default }}</div>
+        </div>
+        <div class="data-cost-title">{{ cost.entity.title }}</div>
+        <div class="data-cost-controls"><span class="moicon moicon-menu3" style="cursor:pointer"
+              ng-click="cost.controllsExpanded ? cost.controllsExpanded=false : cost.controllsExpanded=true"></span></div>
+        <div class="data-cost-value">{{ cost.value.sval }}</div>
+
+        <div class="data-cost-controlls-expanded" ng-init="cost.value == undefined ? cost.controllsExpanded=true : cost.controllsExpanded=false"
+             ng-show="cost.controllsExpanded">
+          <input type="text"
+          id="inputContentBlankValue"
+          class="form-control"
+          ng-init="cost.value == undefined ? entity.newModelValue=cost.entity.default : entity.newModelValue=cost.value.sval"
+          ng-model="cost.newModelValue" required="">
+          <div class="data-cost-controlls-buttons">
+          <a class="btn btn-small btn-success btn-fill" ng-click="fillValue(cost, cost.newModelValue, costObj.obj)">Fill</a>
+          <a class="btn btn-danger btn-success btn-fill" ng-click="clearCost(cost, costObj.obj)">Clear</a>
+        </div>
+      </div>
+  </div>
+</div>
+
+
+
+
+  <div ng-init="addNewCostForm=false;addExistedCostForm=false;"ng-include src="'assets/partials/data_boards/createNewDataCost.html'"
+          class="createNewDataCost" ng-show="addNewCostForm == true"></div>
+  <div ng-include src="'assets/partials/data_boards/selectExistedNewDataCost.html'"
+          class="selectExistedNewDataCost" ng-show="addExistedCostForm == true"></div>
+
+
+
+  <div class="data-cost-add-button" ng-show="(addNewCostForm !== true) && (addExistedCostForm !== true)">
+        <!-- <a class="btn btn-small btn-success btn-fill" ng-click="addNewCostForm=true">Add New Indicator</a> -->
+        <a class="btn btn-small btn-success btn-fill" ng-click="addExistedCostForm ? addExistedCostForm=false : addExistedCostForm=true">Assign Indicator</a>
+  </div>
+
+</div>
+
+
+    <div class="element-data-files" ng-show="element.fileShow">
+
+
+
+       <div class="data-file-arr" ng-repeat="fileArr in files">
+         <div class="data-file" ng-repeat="file in fileArr | filter:filesForLaunchElement(element)">
+           <div class="data-file-type"><span>Type</span></div>
+           <div class="data-file-title">
+             <a ng-href="{{ file.fileUrl }}">{{ file.file.fileName }}</a>
+           </div>
+           <a class="btn btn-danger btn-success btn-fill" ng-click="removeFile(file)">Remove</a>
+         </div>
+       </div>
+     <div class="data-file-add-button">
+       <button ngf-select="uploadFilesForElement($files,element)" class="btn btn-small btn-success btn-fill" multiple
+               accept="*">Select Files</button>
+     </div>
+    </div>
+
+
+</div>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+<div class="process-data" ng-show="processShow">
+<!--
+  <h6>Indicators</h6>
+
+  <div class="process-data-costs">
+    <div class="data-cost">
+      <div class="data-cost-type"><span>Type</span>
+        <div class="data-cost-default">Default value</div>
+      </div>
+      <div class="data-cost-title">Indicator</div>
+      <div class="data-cost-value">Value</div>
+      <div class="data-cost-controls"><span class="moicon moicon-menu3"></span></div>
+
+      <div class="data-cost-controlls-expanded">
+        <input type="text" id="inputContentBlankValue" class="form-control" ng-model="entity.newModelValue" required="">
+        <div class="data-cost-controlls-buttons">
+        <a class="btn btn-small btn-success btn-fill" ng-click="fillValue(cost, entity, entity.newModelValue)">Fill</a>
+        <a class="btn btn-danger btn-success btn-fill" ng-click="fillValue(cost, entity, entity.newModelValue)">Remove</a>
+      </div></div>
+    </div>
+    <div class="data-cost-add-button">
+    <a href="#" class="btn btn-small btn-success btn-fill">Add</a></div>
+  </div>
+-->
+
+  <div class="process-data-files">
+      <h6>Files</h6>
+
+  <div class="data-file-arr" ng-repeat="fileArr in files">
+   <div class="data-file" ng-repeat="file in fileArr | filter:filesForLaunch">
+     <div class="data-file-type"><span>Type</span></div>
+     <div class="data-file-title">
+       <a ng-href="{{ file.fileUrl }}">{{ file.file.fileName }}</a>
+     </div>
+     <a class="btn btn-danger btn-success btn-fill" ng-click="removeFile(file)">Remove</a>
+
+   </div>
+ </div>
+   <div class="data-file-add-button">
+     <button ngf-select="uploadFiles($files)" class="btn btn-small btn-success btn-fill" multiple
+             accept="*">Select Files</button>
+   </div>
+
+  </div>
+
+</div>
+
+
+
+
+</div><!--container-->

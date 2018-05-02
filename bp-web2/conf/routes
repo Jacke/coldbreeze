@@ -1,0 +1,625 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Enable webjar based resources to be returned
+#GET         /webjars/*file                                      controllers.WebJarAssets.at(file)
+
+# Home page
+GET         /                                                   @controllers.ProfileController.dashboard()
+GET         /dashboard  										                    @controllers.ProfileController.dashboardScreen()
+GET         /uptime                                             @controllers.Application.uptime()
+GET         /admin/metrics                                      com.kenshoo.play.metrics.MetricsController.metrics
+
+
+
+GET         /motivation                                         @controllers.MotivationController.index()
+GET         /motivation/socket                                  @controllers.MotivationController.socketTest
+
+##############################
+# Auth
+#GET         /migrate                         @controllers.LegacyAuthController.migrate
+GET         /signIn                          @controllers.ApplicationController2.signIn
+GET         /auth/login                      @controllers.ApplicationController2.signIn
+GET         /signUp                          @controllers.ApplicationController2.signUp
+GET         /signOut                         @controllers.ApplicationController2.signOut
+POST        /signOut                         @controllers.ApplicationController2.signOut
+
+GET         /authenticate/:provider          @controllers.SocialAuthController.authenticate(provider)
+POST        /authenticate/credentials        @controllers.CredentialsAuthController.authenticate
+POST        /api/authenticate/credentials    @controllers.RestCredentialsAuthController.authenticate
+
+POST        /signUp                          @controllers.SignUpController.signUp
+
+
+GET         /password/forgot                 @controllers.ForgotPasswordController.view
+POST        /password/forgot                 @controllers.ForgotPasswordController.submit
+GET         /password/reset/:token           @controllers.ResetPasswordController.view(token: java.util.UUID)
+POST        /password/reset/:token           @controllers.ResetPasswordController.submit(token: java.util.UUID)
+GET         /password/change                 @controllers.ChangePasswordController.view
+POST /password/change                        @controllers.ChangePasswordController.submit
+
+
+# Cards
+#->  /flow_cards flow_cards.Routes
+
+
+# Upload
+GET      /files                                     @controllers.FileUploadController.allFiles
+GET      /downloadFile/:fileName/:hash/:urlParams   @controllers.FileUploadController.downloadFile(fileName: String, hash: String, urlParams: String)
+GET      /launch_files/:launch_id                   @controllers.FileUploadController.allFilesForLaunch(launch_id: Int)
+POST     /upload                                    @controllers.FileUploadController.upload()
+POST     /uploadLaunchFile/:launch_id               @controllers.FileUploadController.uploadLaunchFile(launch_id: Int, element_id: Option[Int] ?= None)
+POST     /uploadLaunchFile/delete/:launchFileId        @controllers.FileUploadController.deleteLaunchFile(launchFileId: Long)
+
+
+# Notification routine
+GET         /notify								    @controllers.NotificationController.socket
+GET         /popup/:emails_hash/:target             @controllers.NotificationController.popup(emails_hash: String, target: String)
+#GET         /notify2/test_action                    @controllers.NotificationController.tagItem
+GET         /invite/:emails_hash/:invite_link       @controllers.SubscribtionController.sendInvite(emails_hash: String, invite_link: String)
+GET         /subscribers                            @controllers.SubscribtionController.fetchSubscribers()
+GET         /subscribers/new                        @controllers.SubscribtionController.newSubscribers()
+
+
+
+
+# Test
+GET         /notify_test/:msg                       @controllers.NotificationController.notify_test(msg: String)
+GET         /test_mail                              @controllers.MailController.testMail()
+
+
+# API
+
+#GET         /v1													@controllers.APIController.v1
+
+###
+#  summary: fetch launches
+#  responses:
+#    200:
+#      description: success
+#      schema:
+#        $ref: '#/definitions/us.ority.core.Protocol.BPSession'
+###
+GET         /api/v1/launches            @controllers.APIController.all_sessions_v1
+
+
+
+POST         /graphql                    @controllers.APIController.graphql()
+
+
+
+# Businesses
+
+#  summary: fetch businesses
+#  responses:
+#    200:
+#      description: success
+###
+GET         /businesses                                         @controllers.BusinessController.index()
+
+GET         /business/create                                    @controllers.BusinessController.create()
+POST        /business/create                                    @controllers.BusinessController.create_new()
+GET         /business/update/:id                                @controllers.BusinessController.update(id: Int)
+POST        /business/update/:id                                @controllers.BusinessController.update_make(id: Int)
+# Elem perms
+GET         /bprocess/:BPid/elemperms                           @controllers.PermissionController.proc_index(BPid: Int)
+GET         /bprocess/:BPid/perms                               @controllers.PermissionController.permsOnly(BPid: Int)
+GET         /api/v1/peoples                                  	  @controllers.PermissionController.peoplesOnly()
+
+
+#  summary: fetch businesses
+#  responses:
+#    200:
+#      description: success
+#      schema:
+#        $ref: '#/definitions/com.iheart.api.Protocol.CardCreated'
+###
+GET         /elemperms                                          @controllers.PermissionController.index()
+
+POST        /elemperms                                          @controllers.PermissionController.create_new()
+PUT         /elemperm/:id                                       @controllers.PermissionController.update(id: Int)
+DELETE      /elemperm/:id                                       @controllers.PermissionController.destroy(id: Int)
+
+# Services
+GET         /services                                           @controllers.BusinessServiceController.index()
+GET         /service/create                                     @controllers.BusinessServiceController.create()
+POST        /service/create                                     @controllers.BusinessServiceController.create_new()
+GET         /service/update/:id                                 @controllers.BusinessServiceController.update(id: Int)
+POST        /service/update/:id                                 @controllers.BusinessServiceController.update_make(id: Int)
+POST        /service/:id/destroy                                @controllers.BusinessServiceController.destroy(id: Int)
+# Employees
+GET         /participators                                    @controllers.users.EmployeeController.participators()
+GET         /peoples                                          @controllers.users.EmployeeController.index()
+GET         /peoples/team                                     @controllers.users.EmployeeController.team()
+GET         /peoples/:group_id                                @controllers.users.EmployeeController.index_group(group_id: Int)
+GET         /people/create                                    @controllers.users.EmployeeController.create()
+POST        /people/create                                    @controllers.users.EmployeeController.create_new()
+GET         /people/update/:id                                @controllers.users.EmployeeController.update(id: Int)
+
+POST        /people/:employee_id/assign/:business_id          @controllers.users.EmployeeController.assign_business(employee_id: Int, business_id: Int)
+POST        /people/:employee_id/unassign/:business_id        @controllers.users.EmployeeController.unassign_business(employee_id: Int, business_id: Int)
+
+POST        /people/update/:id                                @controllers.users.EmployeeController.update_make(id: Int)
+POST        /people/:id/destroy                               @controllers.users.EmployeeController.destroy(id: Int)
+POST        /people/:id/to_manager                            @controllers.users.EmployeeController.toManager(id: Int)
+POST        /people/:id/to_participator                       @controllers.users.EmployeeController.toParticipator(id: Int)
+# Clients
+##GET         /clients                                            @controllers.users.ClientController.index()
+##GET         /client/create                                      @controllers.users.ClientController.create()
+##POST        /client/create                                      @controllers.users.ClientController.create_new()
+##GET         /client/update/:id                                  @controllers.users.ClientController.update(id: Int)
+##POST        /client/update/:id                                  @controllers.users.ClientController.update_make(id: Int)
+##POST        /client/:id/destroy                                 @controllers.users.ClientController.destroy(id: Int)
+##GET         /client/:client_id/assign/:business_id              @controllers.users.ClientController.assign_business(client_id: Int, business_id: Int)
+##GET         /client/:client_id/unassign/:business_id            @controllers.users.ClientController.unassign_business(client_id: Int, business_id: Int)
+
+
+# App
+
+GET         /test                                               @controllers.Application.index()
+GET         /test/test										                      @controllers.TestController.index()
+GET         /a                                                  @controllers.Application.app()
+GET         /heyapi                                             @controllers.Application.app2()
+
+GET         /error                                              @controllers.Application.error_test()
+POST        /whoami                                             @controllers.Application.whoami()
+GET         /whoami_get                                         @controllers.Application.whoami()
+
+PUT         /configuration/ 									                  @controllers.Application.configuration()
+
+# Plans
+GET        /plans                                               @controllers.PlanController.index()
+GET        /plans/redirect_url									                @controllers.PlanController.redirect_url()
+GET        /plans/cancel_url									                  @controllers.PlanController.cancel_url()
+GET        /plan/test_pay                                       @controllers.PlanController.test_pay()
+POST       /plan/switch/:plan_id                                @controllers.PlanController.switch(plan_id: Int)
+POST       /plan/checkout/:bill_id                              @controllers.PlanController.checkout(bill_id: Int)
+POST       /plan/billinginfo                                    @controllers.PlanController.update_billinginfos()
+POST       /plan/switch_limit/:plan_id                          @controllers.PlanController.switchLimit(plan_id: Int)
+POST       /plan/bill/:billId/delete                            @controllers.PlanController.delete_bill(billId: Int)
+
+POST       /plan/charge_token/:token      @controllers.PlanController.acceptPayment(token: String)
+
+# Settings
+GET        /drive                                               @controllers.DriveController.index()
+GET        /settings                                            @controllers.SettingController.index()
+GET        /settings/workbenchs                                 @controllers.SettingController.workbench()
+GET        /settings/reset_bench                                @controllers.SettingController.resetBench(bench_id: Int=-1)
+GET        /settings/reset_bench/:bench_id                      @controllers.SettingController.resetBench(bench_id: Int)
+
+POST       /settings/update_cred                                @controllers.SettingController.update_credentials()
+POST       /settings/update_business                            @controllers.SettingController.update_biz_credentials()
+
+# Observers
+GET        /observe/:hash_code                                  @controllers.ObserverController.show(hash_code: String)
+
+GET        /observers/:process/:station                         @controllers.ObserverController.indexStation(process: Int, station: Int)
+GET        /observers/:process                                  @controllers.ObserverController.index(process: Int)
+POST       /observers                                           @controllers.ObserverController.create()
+DELETE     /observe/:observe_id                                 @controllers.ObserverController.destroy(observe_id: Int)
+
+
+# Walkthrough
+GET        /walkthrough                                         @controllers.WalkthroughController.index()
+
+
+# Groups
+
+GET    /groups									    @controllers.GroupController.index()
+POST   /group/create		    					@controllers.GroupController.create_new()
+PUT    /group/update/:id					    	@controllers.GroupController.update_make(id: Int)
+POST   /group/assign_user/:group_id/:account_id	    @controllers.GroupController.assign_user(account_id: String, group_id: Int)
+POST   /group/unassign_user/:group_id/:account_id	@controllers.GroupController.unassign_user(account_id: String, group_id: Int)
+DELETE /group/destroy/:id						    @controllers.GroupController.destroy(id: Int)
+
+
+
+
+
+##################################################################
+# BProcess
+GET         /bprocesses                                         @controllers.BusinessProcessController.bprocess()
+GET         /bprocesses/cached/:timestamp	                      @controllers.BusinessProcessController.all_cached_bprocess(timestamp:String)
+
+
+GET         /bprocesses/services                                @controllers.BusinessServiceController.bprocesses_services()
+POST        /bprocesses                                         @controllers.BusinessProcessController.create_bprocess()
+GET         /bprocess/:id/info                                  @controllers.BusinessProcessController.show_bprocess(id: Int)
+DELETE      /bprocess/:id/info                                  @controllers.BusinessProcessController.delete_bprocess(id: Int)
+PUT         /bprocess/:id/info                                  @controllers.BusinessProcessController.update_bprocess(id: Int)
+POST        /bprocess/:bpId/copy/:title                         @controllers.BusinessProcessController.copy(bpId: Int, title: String)
+
+# Stations
+GET         /sessions 		@controllers.ProcessSessionController.all_sessions(page: Option[Long] ?= None, active: Option[Boolean] ?= None)
+GET         /sessions/cached/:timestamp	 @controllers.ProcessSessionController.all_cached_sessions(timestamp:String)
+
+GET         /sessions/filter                         @controllers.ProcessSessionController.filtered_sessions(ids: List[Int])
+
+
+GET         /interact/:session_id                    @controllers.InteractionController.fetchInteraction(session_id: Int)
+GET         /interacts                               @controllers.InteractionController.fetchAllInteraction()
+GET         /interactsf                              @controllers.InteractionController.fetchAllInteractionF()
+
+# Warp
+POST        /warp                                    @controllers.WarpController.warpGenerate(launch_id: Option[String] ?= None, element_id: Option[String] ?= None)
+POST        /warp/send 								               @controllers.WarpController.warpSend()
+
+
+# Tests
+#GET         /load/interact/:session_id               @controllers.HighLoadController.load(session_id: Int)
+#GET         /semiload/interact/:session_id           @controllers.HighLoadController.semiload(session_id: Int)
+#GET         /highload/interact/:session_id           @controllers.HighLoadController.highload(session_id: Int)
+
+# Sessions
+GET         /bprocess/:id/logs                       @controllers.ProcessSessionController.logs_index(id: Int)
+GET         /bprocess/allLogs/                       @controllers.ProcessSessionController.logs_indexes(ids: List[Int])
+
+GET          /bprocess/:BPid/sessions        		 @controllers.ProcessSessionController.process_all_session(BPid: Int)
+#GET         /bprocess/:BPid/session/:id     		 #
+#DELETE      /bprocess/:BPid/session/:id     		 #
+GET         /bprocess/stations                       @controllers.ProcessSessionController.all_stations()
+GET         /bprocess/:id/station/:station_id/around @controllers.ProcessSessionController.stations_elems_around(id: Int, station_id: Int)
+GET         /bprocess/:id/stations                   @controllers.ProcessSessionController.station_index(id: Int)
+GET         /bprocess/:id/station/:station_id        @controllers.ProcessSessionController.show_station(id: Int, station_id: Int)
+POST        /bprocess/:id/session/:session_id/halt   @controllers.ProcessSessionController.halt_session(id: Int, session_id: Int)
+DELETE      /session/:session_id                     @controllers.ProcessSessionController.delete_session(session_id: Int)
+POST        /bprocess/:id/station/:station_id/note   @controllers.ProcessSessionController.update_note(id: Int, station_id: Int)
+POST        /session/:id/unlisted                    @controllers.ProcessSessionController.makeUnlisted(id: Int)
+POST        /session/:id/listed                      @controllers.ProcessSessionController.makeListed(id: Int)
+
+
+
+
+
+
+
+
+# States, switcher and reactions with outputs
+GET    /bprocess/:BPid/states        			  	             @controllers.ProcessElementsController.state_index(BPid: Int)
+GET    /bprocess/:BPid/session/:session_id/states          @controllers.ProcessElementsController.state_session_index(BPid: Int, session_id: Int)
+PUT    /bprocess/:BPid/session/:session_id/state/:state_id @controllers.ProcessElementsController.update_session_state(BPid: Int, session_id: Int, state_id: Int)
+DELETE /bprocess/:BPid/session/:session_id/state/:state_id @controllers.ProcessElementsController.delete_session_state(BPid: Int, session_id: Int, state_id: Int)
+PUT    /bprocess/:BPid/state/:state_id   @controllers.ProcessElementsController.update_state(BPid: Int, state_id: Int)
+DELETE /bprocess/:BPid/state/:state_id   @controllers.ProcessElementsController.delete_state(BPid: Int, state_id: Int)
+
+GET 			/bprocess/:BPid/switches		      @controllers.ProcessElementsController.switches_index(BPid: Int)
+PUT 			/bprocess/switch/:id 			        @controllers.ProcessElementsController.update_switcher(id: Int)
+DELETE 		/bprocess/switch/:id 			        @controllers.ProcessElementsController.delete_switcher(id: Int)
+
+GET 			/bprocess/:BPid/reactions		      @controllers.ProcessElementsController.reactions_index(BPid: Int)
+PUT 			/bprocess/reaction/:id 			      @controllers.ProcessElementsController.update_reaction(id: Int)
+DELETE 		/bprocess/reaction/:id            @controllers.ProcessElementsController.delete_reaction(id: Int)
+
+################
+# Launches
+####
+GET     /launch/:launch_id/initial_state @controllers.LaunchElementsControllers.state_index(launch_id: Int)
+GET    	/launch/:launch_id/element_topos @controllers.LaunchElementsControllers.element_topos(launch_id: Int)
+GET    	/launch/:launch_id/elements	   @controllers.LaunchElementsControllers.frontElems(launch_id: Int)
+GET    	/launch/:launch_id/spaces      @controllers.LaunchElementsControllers.spaces(launch_id: Int)
+GET  	/launch/:launch_id/space_elems @controllers.LaunchElementsControllers.spaceElems(launch_id: Int)
+GET     /launch/:launch_id/switchers   @controllers.LaunchElementsControllers.switches_index(launch_id: Int)
+GET     /launch/:launch_id/reactions   @controllers.LaunchElementsControllers.reactions_index(launch_id: Int)
+
+
+POST    /share/launch/:launch_id	   @controllers.LaunchShareController.makeShare(launch_id: Int)
+GET     /shared/launch/:launch_hash	   @controllers.LaunchShareController.index(launch_hash: String)
+
+#POST   	launch/:launch_id/elements 					# @controllers.LaunchElementsControllers
+#GET    	launch/:launch_id/element/:id 				# @controllers.LaunchElementsControllers
+#PUT    	launch/:launch_id/element/:id 				# @controllers.LaunchElementsControllers
+#DELETE 	launch/:launch_id/element/:id 				# @controllers.LaunchElementsControllers
+
+#POST   	launch/:launch_id/spaces 					# @controllers.LaunchElementsControllers
+#GET    	launch/:launch_id/space/:id  				# @controllers.LaunchElementsControllers
+#PUT    	launch/:launch_id/space/:id  				# @controllers.LaunchElementsControllers
+#DELETE 	launch/:launch_id/space/:id  				# @controllers.LaunchElementsControllers
+
+#POST 	launch/:launch_id/space_elems 				# @controllers.LaunchElementsControllers
+#GET  	launch/:launch_id/space_elem/:id 			# @controllers.LaunchElementsControllers
+#PUT  	launch/:launch_id/space_elem/:id 			# @controllers.LaunchElementsControllers
+#GET  	launch/:launch_id/space_elem/:id 			# @controllers.LaunchElementsControllers
+
+#POST    launch/:launch_id/switchers 				# @controllers.LaunchElementsControllers
+#GET     launch/:launch_id/switcher/:id 				# @controllers.LaunchElementsControllers
+#PUT     launch/:launch_id/switcher/:id 				# @controllers.LaunchElementsControllers
+#DELETE  launch/:launch_id/switcher/:id 				# @controllers.LaunchElementsControllers
+
+#POST    launch/:launch_id/reactions 				# @controllers.LaunchElementsControllers
+#GET     launch/:launch_id/reaction/:id 				# @controllers.LaunchElementsControllers
+#PUT     launch/:launch_id/reaction/:id 				# @controllers.LaunchElementsControllers
+#DELETE  launch/:launch_id/reaction/:id 				# @controllers.LaunchElementsControllers
+
+################
+# Cards
+###
+GET      /cards                             @controllers.CardController.index()
+
+
+################
+# Data
+###
+GET      /data 								              @controllers.DataController.index()
+GET      /api/data                          @controllers.DataController.index_json()
+POST     /data/resources					          @controllers.DataController.create_resource()
+POST     /api/v1/data/resources             @controllers.DataController.api_create_resource()
+POST     /api/v1/data/resource_signle       @controllers.DataController.api_create_resource_signle()
+PUT      /data/resource/:id					        @controllers.DataController.update_resource(id: Int)
+POST     /data/resource/:id/delete     		  @controllers.DataController.delete_resource(id: Int)
+GET      /data/test                         @controllers.DataController.boardTest()
+
+GET      /data/indicators_table @controllers.DataIndicatorController.indicatorsTable()
+GET      /data/acts_table       @controllers.DataIndicatorController.actsTable()
+
+# Acts
+GET   /acts                       @controllers.ActionController.acts()
+GET   /launch/:launchId/acts      @controllers.ActionController.launchActs(launchId: Int)
+
+
+# Test action
+GET /actions/refs         @controllers.ActionController.actionsRefs()
+GET /actions/processes    @controllers.ActionController.actionsProcesses()
+POST /action/ref/:reaction/test @controllers.ActionController.testActionRef(reaction: Int)
+POST /action/process/:reaction/test @controllers.ActionController.testActionProcess(reaction: Int)
+
+#################
+# Cost module
+#############
+
+
+
+GET   /data/cost/collection                @controllers.CostFillController.assignResourceCollection
+GET 	/data/cost/assigns/:proc_id  	       @controllers.CostFillController.assigns(proc_id: Int)
+GET	  /data/cost/launch_assigns/:l_id      @controllers.CostFillController.launch_assigns(l_id: Int)
+GET   /data/cost/elem_launch_assigns/:l_id @controllers.CostFillController.launch_assigns_for_elements(l_id: Int)
+
+
+POST	 /data/cost/assign/:resource_id		              @controllers.CostFillController.createCostElement(resource_id: Int)
+POST	 /data/cost/launch_assign/:resource_id/:s       @controllers.CostFillController.createLaunchCostElement(resource_id: Int, s: Int)
+
+
+POST	 /data/cost/up_assign/:resource_id	            @controllers.CostFillController.update_assigned_element(resource_id: Int)
+
+POST   /data/cost/del_launch_assign/:resource_id      @controllers.CostFillController.delete_launch_assigned_element(resource_id: Int)
+POST	 /data/cost/del_assign/:resource_id             @controllers.CostFillController.delete_assigned_element(resource_id: Int)
+POST   /data/entity/:entity_id/delete                 @controllers.CostFillController.removeEntityById(entity_id: String)
+
+# Cost values
+
+POST  /data/launch/:launch_id/values/fill    @controllers.CostValuesController.fillLaunchCost(launch_id: Int)
+POST  /data/launch/:launch_id/values/refill  @controllers.CostValuesController.refillLaunchCost(launch_id: Int)
+POST  /data/launch/:launch_id/values/clear   @controllers.CostValuesController.clearLaunchCost(launch_id: Int)
+
+##### ENTITIES
+GET      /data/:resId/:boardId/entity/new     @controllers.DataController.create_entity_form(resId: Int, boardId: String)
+POST	   /data/:boardId/entity/create         @controllers.DataController.create_entity(boardId: String)
+GET      /data/entity/:id/edit  			        @controllers.DataController.update_entity_form(id: String)
+POST     /data/entity/:id/update			        @controllers.DataController.update_entity(id: String)
+POST     /data/entity/:id/delete        	    @controllers.DataController.delete_entity(id: String)
+##### ENTITIES JSON
+
+
+POST /api/data/:boardId/entity/create        @controllers.DataController.create_entity_json(boardId: String)
+POST /api/data/entity/:id/update             @controllers.DataController.update_entity_json(id: String)
+
+
+#### SLATS
+GET      /data/ent/:eid/slat/new  	          @controllers.DataController.create_slat_form(eid: String)
+POST	   /data/ent/:eid/slat/create	          @controllers.DataController.create_slat(eid: String)
+GET      /data/ent/:eid/slat/:id/edit	        @controllers.DataController.update_slat_form(eid: String, id: String)
+POST     /data/ent/:eid/slat/:id/update	      @controllers.DataController.update_slat(eid: String, id: String)
+POST     /data/slat/:id/delete        	      @controllers.DataController.delete_slat(id: String)
+
+#### FILL
+POST     /data/fill/ent/:entityId/:launchId/:resourceId  @controllers.DataController.fill_slat(entityId: String, launchId: Int, resourceId: Int)
+POST     /data/refill/ent/:entityId/:launchId/:resourceId/:slatId  @controllers.DataController.refill_slat(entityId: String, launchId: Int, resourceId: Int, slatId: String)
+
+
+
+
+
+################
+# Reflections
+# are template for elements
+###
+
+GET      /refs 			  @controllers.ReflectionsController.index()
+POST     /refs			  @controllers.ReflectionsController.create()
+PUT     	/ref/:id            @controllers.ReflectionsController.update(id: Int)
+DELETE  	/ref/:id            @controllers.ReflectionsController.delete(id: Int)
+
+POST		/ref/elems  	        @controllers.ReflectionsController.elem_create()
+PUT	    /ref/elem/:elem_id    @controllers.ReflectionsController.elem_update(elem_id: Int)
+DELETE	/ref/elem/:elem_id    @controllers.ReflectionsController.elem_delete(elem_id: Int)
+
+POST		/ref/spaces		    @controllers.ReflectionsController.space_create()
+PUT		/ref/space/:space_id  @controllers.ReflectionsController.space_update(space_id: Int)
+DELETE	/ref/space/:space_id  @controllers.ReflectionsController.space_delete(space_id: Int)
+
+DELETE	/ref/spaceelems            @controllers.ReflectionsController.spaceelems_create()
+PUT      /ref/spaceelem/:spelem_id  @controllers.ReflectionsController.spaceelems_update(spelem_id: Int)
+DELETE   /ref/spaceelem/:spelem_id  @controllers.ReflectionsController.spaceelems_delete(spelem_id: Int)
+
+POST	    /ref/states                @controllers.ReflectionsController.state_create()
+PUT	    /ref/state/:state_id       @controllers.ReflectionsController.state_update(state_id: Int)
+DELETE  /ref/state/:state_id       @controllers.ReflectionsController.state_delete(state_id: Int)
+
+POST		  /ref/switches              @controllers.ReflectionsController.switche_create()
+PUT		  /ref/switch/:switch_id     @controllers.ReflectionsController.switche_update(switch_id: Int)
+DELETE	  /ref/switch/:switch_id     @controllers.ReflectionsController.switche_delete(switch_id: Int)
+
+
+# Actions
+POST		  /ref/reactions  	        @controllers.ReflectionsController.reaction_create()
+PUT		  /ref/reaction/:reaction_id  @controllers.ReflectionsController.reaction_update(reaction_id: Int)
+DELETE	  /ref/reaction/:reaction_id  @controllers.ReflectionsController.reaction_delete(reaction_id: Int)
+
+
+POST      /ref/middleware                  @controllers.ReflectionsController.create_middleware()
+DELETE    /ref/middleware/:middleware_id   @controllers.ReflectionsController.delete_middleware(middleware_id: Long)
+
+POST      /ref/strategy                @controllers.ReflectionsController.create_strategy()
+DELETE    /ref/strategy/:strategy_id   @controllers.ReflectionsController.delete_strategy(strategy_id: Long)
+
+
+POST      /ref/base                  @controllers.ReflectionsController.create_base()
+DELETE    /ref/base/:base_id         @controllers.ReflectionsController.delete_base(base_id: Long)
+
+POST      /ref/input                @controllers.ReflectionsController.create_input()
+DELETE    /ref/input/:input_id      @controllers.ReflectionsController.delete_input(input_id: Long)
+
+POST      /ref/output               @controllers.ReflectionsController.create_output()
+DELETE    /ref/output/:output       @controllers.ReflectionsController.delete_output(output: Long)
+
+
+
+
+PUT  /ref/:id/element/:elem_id/up                  @controllers.ReflectionsController.moveUpFrontElem(id: Int, elem_id: Int)
+PUT  /ref/:id/element/:elem_id/down                @controllers.ReflectionsController.moveDownFrontElem(id: Int, elem_id: Int)
+PUT  /ref/:id/space_elem/:spelem_id/:space_id/up   @controllers.ReflectionsController.moveUpSpaceElem(id: Int, spelem_id: Int, space_id: Int)
+PUT  /ref/:id/space_elem/:spelem_id/:space_id/down @controllers.ReflectionsController.moveDownSpaceElem(id: Int, spelem_id: Int, space_id: Int)
+
+##############################
+
+
+
+
+
+# Comments
+
+GET    /launch_comments/:launchId   @controllers.comments.CommentsController.indexLaunchComments(launchId: Int)
+POST   /launch_comments 			@controllers.comments.CommentsController.createLaunchComment()
+POST   /launch_comment/:id 		    @controllers.comments.CommentsController.updateLaunchComment(id: Long)
+DELETE /launch_comment/:id 		    @controllers.comments.CommentsController.deleteLaunchComment(id: Long)
+
+
+
+
+# Acts
+GET   /acts      @controllers.ActionController.acts()
+
+
+
+# Logs
+GET         /interacts/                              @controllers.InteractionController.fetchInteractions(ids: List[Int])
+
+
+GET         /bprocess/elems_length               @controllers.ProcessElementsController.bpElemLength()
+# Elements
+GET         /bprocess/:id/elements               @controllers.ProcessElementsController.frontElems(id: Int)
+GET         /bprocess/:id/element_topos			     @controllers.ProcessElementsController.element_topos(id: Int)
+GET         /bprocess/:id/spaces                 @controllers.ProcessElementsController.spaces(id: Int)
+GET         /bprocess/:id/space_elems            @controllers.ProcessElementsController.spaceElems(id: Int)
+
+
+# All elements
+GET   /processes/elements/	       @controllers.ProcessElementsController.allElements(ids: List[Int])
+GET   /processes/elements/cached   @controllers.LaunchBulkElementsController.allElementsCached(ids: List[Int],timestamp: String)
+
+GET   /launches/allElements/       @controllers.LaunchBulkElementsController.allElements(ids: List[Int])
+GET   /launches/allElements/cached @controllers.LaunchBulkElementsController.allElements(ids: List[Int])
+
+
+
+###############
+# Elements CUDs
+POST /bprocess/elements                              @controllers.ProcessElementsController.createFrontElem()
+POST /bprocess/spaces                                @controllers.ProcessElementsController.createSpace()
+POST /bprocess/space_elems                           @controllers.ProcessElementsController.createSpaceElem()
+#### Make parameterized /|\ ??????
+
+PUT  /bprocess/:bpId/element/:elem_id                @controllers.ProcessElementsController.updateFrontElem(bpId: Int, elem_id: Int)
+POST /process/:bpId/base/:base_id  @controllers.ActionController.updateBase(bpId: Int, base_id: Long)
+
+POST /process/:bpId/bases/:strategy_id @controllers.ActionController.updateBases(bpId: Int, strategy_id: Long)
+POST /process/:bpId/inputs/:strategy_id @controllers.ActionController.updateInputs(bpId: Int, strategy_id: Long)
+POST /process/:bpId/outputs/:strategy_id @controllers.ActionController.updateOutputs(bpId: Int, strategy_id: Long)
+
+POST /process/element/:elementId/strategy/:strategy_id/ref/:strIdRef  @controllers.ActionController.replaceStrategy(elementId: Int, strategy_id: Long, strIdRef: Long)
+
+PUT  /bprocess/:bpId/element/:elem_id/up             @controllers.ProcessElementsController.moveUpFrontElem(bpId: Int, elem_id: Int)
+PUT  /bprocess/:bpId/element/:elem_id/down           @controllers.ProcessElementsController.moveDownFrontElem(bpId: Int, elem_id: Int)
+
+PUT  /bprocess/:id/space/:space_id                   @controllers.ProcessElementsController.updateSpace(id: Int, space_id: Int)
+
+PUT  /bprocess/:id/space_elem/:spelem_id                @controllers.ProcessElementsController.updateSpaceElem(id: Int, spelem_id: Int)
+PUT  /bprocess/:id/space_elem/:spelem_id/:space_id/up   @controllers.ProcessElementsController.moveUpSpaceElem(id: Int, spelem_id: Int, space_id: Int)
+PUT  /bprocess/:id/space_elem/:spelem_id/:space_id/down @controllers.ProcessElementsController.moveDownSpaceElem(id: Int, spelem_id: Int, space_id: Int)
+
+
+DELETE /bprocess/:bpID/element/:elem_id                 @controllers.ProcessElementsController.deleteFrontElem(bpID: Int, elem_id: Int)
+DELETE /bprocess/:bpID/space/:space_id                  @controllers.ProcessElementsController.deleteSpace(bpID: Int, space_id: Int)
+DELETE /bprocess/:bpID/space_elem/:spelem_id            @controllers.ProcessElementsController.deleteSpaceElem(bpID: Int, spelem_id: Int)
+
+
+
+
+
+
+
+
+# Input
+GET          /bprocess/:BPid/request/:station_id      @controllers.ProcessInputController.schemes(BPid: Int, station_id: Int)
+POST         /bprocess/:bpID/invoke                   @controllers.ProcessInputController.invoke(bpID: Int)
+POST         /bprocess/:bpID/invoke_async             @controllers.ProcessInputController.invokeAsync(bpID: Int)
+POST         /bprocess/:bpID/invoke_from/:station_id  @controllers.ProcessInputController.invokeFrom(station_id:Int, bpID: Int)
+POST         /bprocess/:bpID/invoke_async_from/:station_id  @controllers.ProcessInputController.invokeAsyncFrom(station_id:Int, bpID: Int)
+
+GET          /bprocess/:BPid/input_logs               @controllers.ProcessInputController.inputLogs(BPid: Int)
+GET          /bprocess/:BPid/input_logs/:session_id   @controllers.ProcessInputController.inputLogsBySession(BPid: Int, session_id:Int)
+#GET         /bprocess/:id/active_stations BPStationDAO.areActiveForBP(id)
+#GET         /bprocess/:id/last_run        BPLoggerDAO.lastRunOfBP(id)
+#POST /station/:id/inputcall
+#GET /station/:id/threads
+######################################################################
+
+
+
+
+# JavaScript routes object
+GET         /jsroutes.js                                        @controllers.Application.jsRoutes()
+
+GET         /assets/*file                                       controllers.Assets.versioned(path="/public", file: Asset)
+# Map the JS resource paths
+#GET         /assets/*file                                      controllers.Assets.versioned(path="/public", file)
+
+
+GET         /pro                                                @controllers.Application.proPage()
+POST        /pro/subscribe                                      @controllers.Application.subscribePro()
+POST        /ea/subscribe                                       @controllers.Application.subscribeEa()
+
+
+
+# Slack
+
+GET         /slack/auth                                         @controllers.SlackController.auth(code: Option[String])
+GET         /slack/users                                        @controllers.SlackController.getUsers()
+
+# Asana
+
+GET         /asana/auth                                         @controllers.AsanaController.auth(code: Option[String])
+GET         /asana/users                                         @controllers.AsanaController.getUsers()
+
+
+# Utilities
+
+GET         /user_copy/:user1/:user2  @controllers.UtilitiesController.copyUser(user1: String, user2: String)
+
+
+# OAuth2 Stuff
+#POST    /oauth2/access_token        controllers.OAuth2Controller.accessToken
+
+#GET        /_oauth-callback        util.OAuth2.callback(code: Option[String], state: Option[String])
+#GET        /_oauth-success         util.OAuth2.success
+
+
+#GET     /ui         com.github.mmizutani.playgulp.Gulp.index
+#->      /ui/        gulp.Routes
+
+
+###
+# summary: swagger definition
+# description: for swagger UI to consume
+###
+GET   /docs/swagger.json         @controllers.swagger.ApiSpecs.specs

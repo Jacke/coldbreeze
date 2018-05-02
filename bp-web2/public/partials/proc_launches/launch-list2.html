@@ -1,0 +1,279 @@
+<style>
+input.switch {
+  font-size: 10px;
+  position: relative;
+  display: inline-block;
+  -webkit-appearance: none;
+  -webkit-user-select: none;
+-webkit-tap-highlight-color: transparent;
+-webkit-touch-callout: none;
+  appearance: none;
+  width: 9em;
+  height: 4.6em;
+  line-height: 4.6em;
+  border-radius: 2.3em;
+  margin: 0;
+  padding: 0;
+  box-shadow: inset 0 0 0 0.2em #eee;
+  outline: 1px solid transparent !important;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  transition: box-shadow .3s ease-in-out, padding .25s ease-in-out;
+  transition-delay: .1s, 0s;
+  /* Animations if supported */
+}
+input.switch:checked {
+  transition-delay: 0s, 0s;
+  box-shadow: inset 0 0 0 2.62857em #00c169 !important;
+  padding-left: 4.4em;
+}
+input.switch.hit {
+  animation: slide-off .35s ease both;
+  -webkit-animation: slide-off .35s ease both;
+}
+input.switch.hit:checked {
+  -webkit-animation: slide-on  .35s ease both .05s;
+  animation: slide-on  .35s ease both .05s;
+}
+input.switch::before, input.switch::after {
+  content: "";
+}
+input.switch::after {
+  /* Increases hit area */
+  position: absolute;
+  top: -1.4em;
+  left: -1.4em;
+  bottom: -1.4em;
+  right: -1.4em;
+}
+input.switch::before {
+  display: inline-block;
+  height: 4.2em;
+  width: 4.2em;
+  margin: 0.2em 0 0 0.2em;
+  background-color: #fff;
+  border-radius: 2.1em;
+  box-shadow: 0 0.2em 0.4em 0 rgba(0, 0, 0, 0.2), 0 0 0.1em 0.1em rgba(0, 0, 0, 0.1);
+  transition: all .1s ease .1s;
+}
+input.switch:active::before {
+  transition: all .1s ease .05s;
+}
+input.switch.touch:hover::before {
+  transition: all .0s ease .00s;
+}
+input.switch:active::before, input.switch.touch:hover::before {
+  width: 5.0em;
+}
+input.switch:active:checked::before, input.switch.touch:hover:checked::before {
+  margin-left: -0.6em;
+}
+
+@keyframes slide-on {
+  0% {
+    padding-left: 0em;
+  }
+  60% {
+    padding-left: 4.8em;
+  }
+  100% {
+    padding-left: 4.4em;
+  }
+}
+@keyframes slide-off {
+  0% {
+    padding-left: 4.4em;
+    text-indent: 0;
+  }
+  60% {
+    padding-left: 0em;
+    text-indent: -0.4em;
+  }
+  100% {
+    padding-left: 0em;
+    text-indent: 0;
+  }
+}
+
+
+
+
+
+</style>
+<div class="allStations">
+<h1>{{ 'STATIONS' | translate }}</h1>
+
+
+
+<div class="active-switcher">
+<input type="checkbox" class="switch" id="switch-1" data-ng-model="onlyActive"/>
+</div>
+  
+<div class="station-filters">
+  <ul>
+    <li><label><input type="checkbox" name="response" value="true" data-ng-model="onlyCanceled"/>{{ 'CANCELED' | translate }}</label></li>
+    <li><label><input type="checkbox" name="response" value="true" data-ng-model="onlyFinished"/>{{ 'FINISHED' | translate }}</label></li>
+  </ul>
+</div>  
+
+  
+  
+<script>
+document.addEventListener('touchmove', function(e){}, false);
+var _switch   = document.getElementById("switch-1"),
+    switchHit = false,
+    hasTouch  = false;
+function toggleHit(){ if(!switchHit){ switchHit = true; _switch.classList.add("hit"  ); }}
+function setTouch() { if(!hasTouch) { hasTouch = true;  _switch.classList.add("touch"); }}
+_switch.onclick = toggleHit;
+_switch.ontouchstart = function(e){ setTouch(); e.preventDefault(); e.target.click(); }
+</script>
+
+
+<div class="stations" ng-repeat="station in bpstations | filter:isOnlyActive" style="clear: both;">
+
+              <span class="number {{ station.state }}">{{ $index + 1 }}</span>
+           <!--<p>
+            {{ stationByProcess(station.id).id }}
+            {{ stationByProcess(station.id).title }}
+          </p>-->
+
+
+<div ng-include src="'partials/treeInStation.html'"></div>
+<div class="row">
+<div class="col-xs-3 state-box-container">
+  <div class="station-markers">
+  <ul class="station-states">
+                      <li class="state started {{ station.started }}"> {{ 'STARTED' | translate }} </li>
+                      <li class="state paused {{ station.paused }}"> {{ 'PAUSED' | translate }} </li>
+                      <li class="state finished {{ station.finished }}"> {{ 'FINISHED' | translate }} </li>
+    <li class="state canceled {{ station.canceled }}"> {{ 'CANCELED' | translate }} </li>
+  </ul>
+  </div>
+  <div class="station-settings">
+  <div class="note">
+    <input type="text" class="station-note" ng-model="station.note">
+    <a ng-click="updateNote(station)" ng-show="isManagerVal">Update note</a> 
+  </div>
+
+
+  <div class="station-observers" ng-show="isManagerVal">
+
+      <div class="observer">
+        <h3>{{ 'OBSERVER' | translate }}: </h3>
+        <div class="observers" ng-repeat="obs in station.obsrs">
+          <h6> {{ obs.fullName }}</h6>
+          <input type="text" class="input-mini input-monospace js-url-field" value="http://min.ority.us/observe/{{ obs.hash_code }}">
+          <a ng-click="deleteObserver(obs.id)" class="btn btn-small btn-primary">{{ 'DELETE' | translate}}</a>
+        </div>
+
+<form novalidate="novalidate" class="form-horizontal">
+      <input type="hidden" id="inputTitle" ng-model="station.newObserver.observer.bprocess" ng-init="station.newObserver.observer.bprocess=station.process" required/>
+      <label class="control-label" for="inputTitle">{{ 'EMAILS' | translate }}:</label>
+    <div class="controls">
+        <textarea type="text" id="inputBusinessId" ng-model="station.newObserver.emails" ng-init="station.newObserver.emails = []"/>
+        <input type="text" id="inputFullName" ng-model="station.newObserver.observer.fullName" placeholder="{{ 'FULL_NAME' | translate }}" required/>
+      </div>
+    </div>
+    <input type="hidden" id="inputTitle" ng-model="station.newObserver.observer.station_id" ng-init="station.newObserver.observer.station_id=station.id" required/>
+
+    <div class="control-group">
+      <div class="controls">
+        <a ng-click="createNewObserver(station.newObserver)" class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</a>
+      </div>
+    </div>
+</form>
+
+
+
+
+      </div>
+</div>
+  
+  </div>
+
+</div>
+  
+  
+  
+
+
+<!--
+<div class="row">
+<div class="col-xs-5">
+<h3><a ng-click="expand = !expand">{{ 'LOGS' | translate }}</a></h3>
+
+<div class="slide" ng-show="expand">
+
+
+          <div class="logs" ng-repeat="log in logsByStation(station.id)">
+                  <table class="table table-user-information">
+                    <tbody>
+                      <tr>
+                        <td> {{ 'ELEMENT' | translate }} </td>
+
+<td> {{ 'DATE' | translate }} </td>
+<td> {{ 'STEP' | translate }} </td>
+<td> {{ 'CV' | translate }} </td>
+
+                      </tr>
+                      <tr>
+<td> {{ elemsHash[log.element].id }} {{ elemsHash[log.element].title }}  {{ elemsHash[log.element].type_title }}
+{{ spaceElemHash[log.space_elem].id }} {{ spaceElemHash[log.space_elem].title }} {{ spaceElemHash[log.element].type_title }}  </td>
+<td> {{ log.date | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }} </td>
+<td> {{ log.step }} </td>
+<td> {{ log.comps }} </td>
+            </tr>
+                    </tbody>
+                  </table>
+</div>
+</div>
+</div>
+
+<div class="col-xs-5">
+<h3><a ng-click="expandil = !expandil">{{ 'ILOGS' | translate }}</a></h3>
+<div class="slide" ng-show="expandil">
+          <div class="input-logs" ng-repeat="il in inputLoggers[station.id]">
+                  <table class="table table-user-information">
+                    <tbody>
+                      <tr>
+                        <td> {{ 'ELEMENT' | translate }} </td>
+<td> {{ 'USER' | translate }} </td>
+<td> {{ 'ACTION' | translate }} </td>
+<td> {{ 'ARGUMENTS' | translate }} </td>
+<td> {{ 'DATE' | translate }} </td>
+
+
+                      </tr>
+                      <tr>
+<td> {{ elemsHash[il.front_elem_id].id }} {{ elemsHash[il.front_elem_id].title }} {{ elemsHash[il.front_elem_id].type_title }} 
+     {{ spaceElemHash[il.space_elem_id].id }} {{ spaceElemHash[il.space_elem_id].title }} {{ spaceElemHash[il.space_elem_id].type_title }}
+  </td>
+<td> <a href="employees/">{{ il.uid }}</a></td>
+<td> {{ il.action }} </td>
+<td> <pre>{{ il.arguments | json }}</pre> </td>
+<td> {{ il.date | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a' }} </td>
+
+
+            </tr>
+                    </tbody>
+                  </table>
+          </div>
+</div>
+</div>
+</div> -->
+
+          <div ng-if="station.paused == true && station.finished == false">
+          <a ng-click="haltStation(station.id)" class="btn btn-danger btn-big" ng-show="isManagerVal">{{ 'TURN_DOWN' | translate }}</a>
+          </div>
+
+           <hr>
+</div>
+
+
+</div>
+</div>

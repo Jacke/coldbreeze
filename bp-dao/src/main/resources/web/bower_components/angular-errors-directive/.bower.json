@@ -1,0 +1,24 @@
+{
+  "name": "angular-errors-directive",
+  "version": "0.2.5",
+  "main": "angular-awesome-error.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components"
+  ],
+  "dependencies": {
+    "angular": "1.2.3"
+  },
+  "homepage": "https://github.com/minsh/angular-errors-directive",
+  "_release": "0.2.5",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.2.5",
+    "commit": "005fe9df90c58f1c43a7d983cb8017a63d360709"
+  },
+  "_source": "git://github.com/minsh/angular-errors-directive.git",
+  "_target": "~0.2.5",
+  "_originalSource": "angular-errors-directive",
+  "_direct": true
+}

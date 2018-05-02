@@ -1,0 +1,158 @@
+<div class="container ref-page">
+
+<h1>
+  <a ng-click="resetRefPage()">
+    Reflections
+  </a>
+</h1>
+
+<div class="tableMinListFilter search-process-input filterLayer">
+    <span class="magnifyGlass vIco vLoupe vLight2State"></span>
+    <input type="text" size="41" ng-model="searchValue"
+    data-toggle-class="hidden"
+    class="filterInput tableMinListFilterInput ng-pristine ng-valid ng-touched"
+    placeholder="Search Reflection" style="">
+  </div>
+
+<hr>
+
+<div class="new-ref-form-activate" ng-hide="showNewRefForm">
+  <a ng-click="showNewRefForm ? showNewRefForm=false : showNewRefForm=true" class="btn btn-small btn-primary">Add Reflection</a>
+</div>
+
+<div class="new-ref-form" ng-show="showNewRefForm">
+  <form novalidate="novalidate" class="form-horizontal form-new-ref">
+  <div class="control-group form-group">
+    <label class="control-label col-sm-1" for="inputTitle">{{ 'TITLE' | translate }}:</label>
+    <div class="controls col-xs-4">
+      <input type="text" id="inputTitle" class="form-control" ng-model="newRef.title"/>
+    </div>
+  </div>
+  <div class="control-group form-group">
+    <label class="control-label col-sm-1" for="inputBusinessId">Host:</label>
+    <div class="controls col-xs-4">
+      <input type="text" class="form-control" id="inputBusinessId" ng-model="newRef.host"/>
+    </div>
+  </div>
+
+
+  <div class="control-group form-group">
+    <label class="control-label col-sm-1" for="inputBusinessId">desc:</label>
+    <div class="controls col-xs-4">
+      <textarea type="text" class="form-control" id="inputBusinessId" ng-model="newRef.desc"/>
+    </div>
+  </div>
+  <div class="control-group form-group">
+    <label class="control-label col-sm-1" for="inputBusinessId">category:</label>
+    <div class="controls col-xs-4">
+      <select type="text" name="newRefCategory" class="form-control" id="inputBusinessId" ng-model="newRef.category">
+        <option value="Base">Base</option>
+      </select>
+    </div>
+  </div>
+  <div class="control-group form-group">
+    <label class="control-label col-sm-1" for="inputBusinessId">hidden:</label>
+    <div class="controls col-xs-4">
+      <input type="checkbox" ng-model="newRef.hidden">
+    </div>
+  </div>    
+
+  <div class="control-group form-group">
+    <div class="controls col-xs-4">
+      <a ng-click="createRef(newRef)" class="btn btn-small btn-primary">{{ 'CREATE' | translate }}</a>
+      <a ng-click="showNewRefForm=false" class="btn btn-small btn-primary">Cancel</a>
+    </div>
+  </div>
+  </form>
+</div>
+
+
+<div class="tab-content ref-element" ng-show="isInRefPage(refObj.ref.id)" ng-repeat="refObj in refs | filter: search1">
+<div class="ref-list-page header-frame">
+
+<div class="ref-card" ng-init="refObj.exData=false;refObj.edit=false;">
+
+    <div class="ref-card-header">
+      <h3>
+        <a ng-click="switchToRefPage(refObj.ref.id)">
+          {{ refObj.ref.title }}
+        </a>
+      </h3>
+      <p class="ref-card-header-desc">{{ refObj.ref.desc }}</p>
+    </div>
+    <div class="ref-card-info">
+      <span class="ref-card-header-host">{{ refObj.ref.host }}</span>
+      <span class="ref-card-info-hidden moicon-eye moicon" ng-class="refObj.ref.hidden ? 'hidden' : 'shown'"></span>
+      <span class="ref-card-info-category">{{ refObj.ref.category }}</span>
+    </div>
+
+    <div class="ref-card-controls">
+    <a ng-click="refObj.exData ? refObj.exData=false : refObj.exData=true">Json</a>
+<!--    <a ng-click="refObj.edit ? refObj.edit=false : refObj.edit=true">Edit</a>-->
+    <a ng-click="deleteRef(refObj)" class="btn btn-small btn-primary btn-red">Remove</a>
+
+    </div>
+</div>
+
+<div class="ref-card-info-objects">
+  <pre ng-show="refObj.exData">
+    {{ refObj | json }}
+  </pre>
+  <div ng-include src="'assets/partials/reflections/edit-ref.html'" ng-show="refObj.edit"></div>
+</div>
+
+
+</div>
+
+<div class="ref-elements" ng-show="showElementForRef(refObj.ref.id)">
+
+  <div ng-include src="'assets/partials/reflections/create-ref-element.html'"></div>
+
+
+  <div class="ref-element" ng-repeat="element in refObj.unitelement">
+    <div class="ref-element-header">
+      <span class="ref-element-title">{{ element.title}}</span>
+      <span class="ref-element-desc">{{ element.desc }}</span>
+    </div>
+    <div class="ref-element-control">
+      <a ng-click="deleteElem(element)" class="ref-obj-delete-button">Delete</a>
+    </div>
+    <div class="ref-element-states">
+      <div ng-include src="'assets/partials/reflections/create-ref-element-state.html'"></div>
+
+      <div class="ref-element-state" ng-repeat="state in refObj.bpstate | filter: byUnitElement(element)">
+        <ul class="ref-element-state-transitions">
+          <li class="finish-state">{{ state.title }}</li>
+          <li class="neutral-state">{{ state.neutral }}</li>
+          <li class="middle-state">{{ state.middle }}</li>
+          <li class="oposite-state">{{ state.oposite }}</li>
+        </ul>
+        <a ng-click="deleteRefElementState(state)" class="ref-obj-delete-button">Delete state</a>
+      </div>
+    </div>
+
+
+    <div ng-include src="'assets/partials/reflections/create-ref-element-action.html'"></div>
+
+    <div ng-repeat="action in refObj.reactions | filter: reactionByTopoUnitElement(element, refObj) as filteredActions">
+    </div>
+        <div ng-include src="'assets/partials/reflections/elem_actions.html'"></div>
+  </div>
+
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+<style>
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400,700,600);
+</style>

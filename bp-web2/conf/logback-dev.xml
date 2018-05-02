@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+<!--
+  <appender name="LE"
+    class="com.logentries.logback.LogentriesAppender">
+  <Debug>False</Debug>
+    <Token>9f1d3824-14a2-4b2c-a6b2-90ff57a853a3</Token>
+    <Ssl>False</Ssl>
+    <facility>USER</facility>
+    <layout>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+    </layout>
+  </appender> -->
+  <appender name="PAPERTRAIL" class="com.papertrailapp.logback.Syslog4jAppender">
+
+  <appender name="Sentry" class="com.getsentry.raven.logback.SentryAppender">
+    <dsn>https://db36640be90f435aaab0227f60a49a82:333d312c663444b5af45c780803d657c@app.getsentry.com/92092?options</dsn>
+    <tags>tag1:value1,tag2:value2</tags>
+    <!-- Optional, allows to select the ravenFactory -->
+    <!--<ravenFactory>com.getsentry.raven.DefaultRavenFactory</ravenFactory>-->
+  </appender>
+
+  <appender name="loggly" class="ch.qos.logback.ext.loggly.LogglyAppender">
+      <endpointUrl>http://logs-01.loggly.com/inputs/a62dc635-fa16-48de-9ebf-4cc9ebadea52/tag/logback</endpointUrl>
+      <!--<pattern>%d{"ISO8601", UTC}  %p %t %c{0}.%M - %m%n</pattern>-->
+      <pattern>%d{HH:mm:ss}[%thread]%highlight([%-5level]) %cyan(%class{0}.%method:%L)%white(- %m%n)</pattern>
+  </appender>
+
+  <root level="WARN">
+      <appender-ref ref="loggly" />
+      <appender-ref ref="ROLLBAR"/>
+      <appender-ref ref="Sentry"/>
+      <appender-ref ref="STDOUT" />
+
+  </root>
+  <appender name="ROLLBAR" class="com.tapstream.rollbar.RollbarAppender">
+    <apiKey>ffbd85a639d443259dde94b60a392f03</apiKey>
+    <environment>production</environment>
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <pattern>%d{HH:mm:ss}[%thread][%-5p] %class{0}.%method:%L - %m%n</pattern>
+
+</appender>
+
+<appender name="ACCESS_LOG_FILE" class="ch.qos.logback.core.FileAppender">
+        <file>logs/access.log</file>
+        <encoder>
+            <pattern>%date{yyyy-MM-dd HH:mm:ss ZZZZ} %message%n</pattern>
+        </encoder>
+    </appender>
+     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+      <pattern>%d{HH:mm:ss}[%thread][%-5p] %class{0}.%method:%L - %m%n</pattern>
+        </encoder>
+</appender>
+
+<appender name="STDOUTASYNC" class="ch.qos.logback.classic.AsyncAppender">
+  <appender-ref ref="STDOUT" />
+</appender>
+
+    <!-- additivity=false ensures access log data only goes to the access log
+    <logger name="accesslog" level="INFO" additivity="false">
+         <appender-ref ref="SYSLOG-TLS" />
+         <appender-ref ref="ACCESS_LOG_FILE" />
+    </logger>  -->
+
+
+
+<logger name="build" level="INFO">
+     <appender-ref ref="STDOUTASYNC" />
+</logger>
+
+ <logger name="play" level="ERROR">
+    <appender-ref ref="STDOUT" />
+    <appender-ref ref="loggly" />
+    <appender-ref ref="ROLLBAR"/>
+ </logger>
+ <logger name="application" level="INFO">
+   <appender-ref ref="loggly" />
+   <appender-ref ref="STDOUT" />
+   <appender-ref ref="ROLLBAR"/>
+ </logger>
+
+    <!--
+<logger name="scala.slick.jdbc.JdbcBackend.statement" level="DEBUG">
+    <appender-ref ref="STDOUT" />
+</logger>
+<logger name="slick.jdbc.JdbcBackend.statement" level="DEBUG">
+    <appender-ref ref="STDOUT" />
+</logger>
+-->
+
+<!--
+<logger name="slick.jdbc" level="DEBUG">
+      <appender-ref ref="SYSLOG-TLS" />
+    <appender-ref ref="STDOUT" />
+</logger>
+    <logger name="com.zaxxer.hikari" level="DEBUG">
+      <appender-ref ref="SYSLOG-TLS" />
+    <appender-ref ref="STDOUT" />
+</logger>
+  <root level="INFO">
+    <appender-ref ref="SYSLOG-TLS" />
+    <appender-ref ref="STDOUT" />
+ </root>
+<root level="ERROR">
+    <appender-ref ref="SYSLOG-TLS" />
+    <appender-ref ref="STDOUT" />
+  </root>
+<root level="INFO">
+    <appender-ref ref="SYSLOG-TLS" />
+    <appender-ref ref="STDOUT" />
+  </root>
+-->
+
+
+</configuration>

@@ -1,0 +1,43 @@
+<div class="costs">
+<!--	<h2 class="costTitle">Data</h2>-->
+
+
+<div class="costs_fields" ng-repeat="costObj in (filteredCostItems = ($parent.sessionCosts | filter: $parent.byElement($parent.elem)))">
+	<div class="inputCost" ng-repeat="cost in costObj.costs">
+		<div class="pipeContent">
+			<div class="pipeContentTitle">{{ cost.resource.title }}</div>
+			<a class="pipeContentValueRefill" ng-click="cost.refill ? cost.refill=false : cost.refill=true;"><span>{{ cost.value.sval }}</span></a>
+			<div class="pipeContentValue">
+				<div class="pipeContentValueRefill" ng-show="cost.refill" ng-init="cost.refill=false">
+					<input type="text" 
+						   id="inputContentBlankValue" 
+						   class="form-control" 
+						   ng-model="cost.newValue" 
+						   ng-init="cost.newValue=cost.value.sval"
+						   required="">
+					<div class="indicator-controls">
+						<a class="btn btn-small btn-success update-indicator-btn" 
+						   ng-click="fillLaunchAssignedRefValue(cost, $parent.elem, costObj)">Update</a>
+						<a class="btn btn-small btn-success remove-indicator-btn" 
+						   ng-click="deleteLaunchAsssignedResEl(costObj)">Delete</a>
+					</div>
+				</div>
+			</div>
+			<!--
+			<div class="pipeContentBlankValue" ng-show="slatFilter(entity, cost.slats).length < 1">
+				<input type="text" id="inputContentBlankValue" class="form-control" ng-init="entity.newModelValue=defaultValueParser(entity.default)" ng-model="entity.newModelValue" required="">
+				<a class="btn btn-small btn-success" ng-click="fillValue(cost, entity, entity.newModelValue)">Fill</a>
+			</div>
+			-->
+		</div>
+	</div>
+</div>
+<div class="newIncicatorButton">
+	<a class="btn btn-small btn-fill" ng-click="addExistedCostForm ? addExistedCostForm=false : addExistedCostForm=true">Assign Indicator</a>
+
+ <div ng-init="addNewCostForm=false;addExistedCostForm=false;"ng-include src="'assets/partials/data_boards/createNewDataCost.html'" class="createNewDataCost" ng-show="addNewCostForm == true"></div>
+  <div ng-include src="'assets/partials/data_boards/selectExistedNewDataCost.html'"
+       class="selectExistedNewDataCost" ng-show="addExistedCostForm == true"></div>
+			        </div>
+
+</div>

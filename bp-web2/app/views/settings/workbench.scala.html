@@ -1,0 +1,410 @@
+
+@import controllers.employeeParams
+@import models.DAO.resources.ActPermission
+@import models.DAO.resources.BusinessServiceDTO
+@import models.DAO.resources.BusinessDTO
+
+
+@import helper._
+@(bizForm: Option[Form[models.DAO.resources.web.BizFormDTO]], user: models.User2, isManager: Boolean = false, workbench:Option[BusinessDTO]=None, workbenches: Seq[BusinessDTO]=Seq())(implicit request: RequestHeader)
+@import play.api.{Logger, Play}
+@import helper._
+@import play.api.Play
+@import models.DAO.resources.BusinessServiceDTO
+@import models.DAO.resources.BusinessDTO
+@import helper._
+
+
+@main(Messages("page.settings"), user) {
+<style>
+.nav-sidebar {
+  margin-right: 10px;
+  margin-bottom: 20px;
+  margin-left: -20px;
+}
+.nav-sidebar > li > a {
+  padding-right: 20px;
+  padding-left: 20px;
+}
+.nav-sidebar > .active > a,
+.nav-sidebar > .active > a:hover,
+.nav-sidebar > .active > a:focus {
+  color: #fff;
+  background-color: #428bca;
+}
+
+.teamSettingsWrap, .tableMinListWrap {
+    padding: 25px 20px;
+    margin: 0 auto;
+    max-width: 1320px;
+    flex: 1;
+    text-shadow: none;
+}
+body.themeGrad div#container.container-global {
+    background: rgba(255, 255, 255, 0.93);
+    min-height: 100%;
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+}
+.workbench-settings {
+    position: relative;
+    width: 100%;
+    display: block;
+}
+svg#Capa_1 {
+    fill: #AED2CE;
+    margin: 0 auto;
+    width: 263px;
+    height: 261px;
+    display: block;
+    text-align: center;
+    overflow: hidden;
+    clear: both;
+    position: absolute;
+    left: 46%;
+    top: -7px;
+    opacity: 0.8;
+}
+svg#Capa_2 {
+    fill: #AED2CE;
+    margin: 0 auto;
+    width: 263px;
+    height: 261px;
+    display: block;
+    text-align: center;
+    overflow: hidden;
+    clear: both;
+    position: absolute;
+    left: 46%;
+    top: 64px;
+    opacity: 0.1;
+}
+.workbench-container.setting-container div#business {
+    width: 100%;
+}
+.workbench-container.setting-container .avaliable-workbench {
+    margin-left: 179px;
+    text-align: center;
+}
+.current-workbench {
+    text-align: center;
+}
+.current-workbench a.changeBenchBtn {
+    margin-top: 218px;
+    margin-left: 0px;
+}
+.sexyBtn {
+        display: -webkit-inline-box;
+    display: -webkit-inline-flex;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+    height: 2.75rem;
+    padding: 0 1rem;
+    outline: none;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 1000px;
+    text-decoration: none;
+    white-space: nowrap;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1;
+    vertical-align: bottom;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-transition: background-color linear .1s,color linear .1s,border-color linear .1s,box-shadow linear .1s;
+    transition: background-color linear .1s,color linear .1s,border-color linear .1s,box-shadow linear .1s;
+}
+
+.sexyBtn.sexyBtnRed {
+    background: #BF0D49;
+    color: white;
+    cursor: pointer !important;
+}
+
+.sexyBtn:hover {
+    background-color: rgba(144, 4, 51, 0.94);
+    color: white !important;
+    text-decoration: none;
+}
+.avaliable-workbenches {
+    z-index: 9999999;
+    position: relative;
+}
+</style>
+
+
+
+<!--
+<div style="display: block;" class="ng-scope" id="onboardingSlideShow" ng-controller="OnboardingController" ng-init="getOnboardingOverview()">
+    <p class="onboarding-close"><i tabindex="0" role="button" ng-click="hideOnboarding();_ClickTracking('onboarding_close')" class="fa fa-times"></i></p>
+    <div class="onboarding">
+        <div class="onboarding-content center-center">
+            <div class="onboarding-headingContainer">
+                <h1 class="ng-binding">Thanks jacke! Before we let you go, here are a few things<br> that will help you get the most out of Mohiomap</h1>
+            </div>
+
+            <div class="onboarding-slidesContainer ">
+<div class="ng-scope" ng-repeat="slide in slides" ng-if="viewing == slide">
+                    <div class="onboarding-slideHeader  ">
+                        <h1 class="center-center ng-binding">
+                            Search across multiple platforms
+                        </h1>
+                    </div>
+                    <div class="onboarding-body">
+                        <img src="assets/img/onboarding/slides/on-board-search.gif" ng-src="assets/img/onboarding/slides/on-board-search.gif">
+                    </div>
+                    <div class="onboarding-slideFooter ">
+                        <p class="center-center ng-binding">
+                            Get a better overview of your documents by searching across multiple platforms.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="onboarding-stages center-center">
+               <div class="ng-scope" style="width:125px;" ng-repeat="slide in slides track by $index">
+                   <div ng-if="viewing == slide" class="onboarding-stageMarker onboarding-stageMarker-viewing onboarding-stageMarker-complete ng-scope"></div>
+                </div><div class="ng-scope" style="width:125px;" ng-repeat="slide in slides track by $index">
+                   <div tabindex="0" role="button" ng-if="viewing != slide &amp;&amp; !slide.viewed" ng-click="viewSlide(slide)" class="onboarding-stageMarker ng-scope"></div><div class="ng-scope" style="width:125px;" ng-repeat="slide in slides track by $index">
+                    <div tabindex="0" role="button" ng-if="viewing != slide &amp;&amp; !slide.viewed" ng-click="viewSlide(slide)" class="onboarding-stageMarker ng-scope"></div>
+                </div><div class="ng-scope" style="width:125px;" ng-repeat="slide in slides track by $index">
+                    <div tabindex="0" role="button" ng-if="viewing != slide &amp;&amp; !slide.viewed" ng-click="viewSlide(slide)" class="onboarding-stageMarker ng-scope"></div>
+                </div>
+                <div>
+                    <button tabindex="0" style="margin-left: -5px;" ng-click="hideOnboarding();_ClickTracking('onboarding_getStarted')" class="button button-green button-connect width-125"><p>Get Started</p></button>
+                </div>
+            </div>
+            <p tabindex="0" role="button" class="onboarding-previous center-center" ng-click="previousSlide();_ClickTracking(&quot;onboarding_previous&quot;)"><i class="fa fa-angle-left"></i></p>
+            <p tabindex="0" role="button" class="onboarding-next center-center " ng-click="nextSlide();_ClickTracking(&quot;onboarding_next&quot;)"><i class="fa fa-angle-right"></i></p>
+        </div>
+    </div>
+</div>
+-->
+
+
+<div class="tableMinListWrap settings-page"><div class="panelLike organisationsGridLike">
+
+<div class="teamSettings">
+<div class="grids">
+  <div class="page-header">
+      <h2><img src="@None.getOrElse("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iRWJlbmVfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSIxNnB4IiBoZWlnaHQ9IjE2cHgiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZW5hYmxlLWJhY2tncm91bmQ9Im5ldyAwIDAgMTYgMTYiIHhtbDpzcGFjZT0icHJlc2VydmUiPjx0aXRsZT5EZWZhdWx0IEF2YXRhcjwvdGl0bGU+PGRlc2M+RGVmYXVsdCBBdmF0YXIgZm9yIFdDRiAyLjA8L2Rlc2M+IDxkZWZzPjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+PCFbQ0RBVEFbLnN1cmZhY2UgeyBmaWxsOiAjZmZmOyB9LnNoYWRvdyB7IGZpbGw6ICNiYmI7IH1dXT48L3N0eWxlPjwvZGVmcz48cmVjdCB4PSIwIiBjbGFzcz0ic2hhZG93IiB3aWR0aD0iMTYiIGhlaWdodD0iMTYiLz48cGF0aCBjbGFzcz0ic3VyZmFjZSIgZD0iTTMuNTI4LDE2QzMuNzc2LDExLjQ5OSw1LjY4NCw4LDgsOHM0LjIyNCwzLjQ5OSw0LjQ3Myw3Ljk5OCIvPjxjaXJjbGUgY2xhc3M9InN1cmZhY2UiIGN4PSI4IiBjeT0iNiIgcj0iMy41Ii8+PC9zdmc+")"
+        alt="@user.firstName.getOrElse("")" width="40px" height="40px"/> @Messages("profile.welcome")
+        @user.firstName.getOrElse("")</h2>
+  </div>
+<!--
+<div class="deleteInfo">
+    <h3>@Messages("page.deleteInfo")</h3>
+</div>
+-->
+
+<div class="tabpanel">
+
+<div class="col-sm-3 col-md-2 sidebar">
+    <ul class="nav nav-sidebar">
+        <li class="active"><a href="/settings">All Settings</a></li>
+    </ul>
+</div>
+
+
+<div class="container workbench-container setting-container">
+
+
+<div id="business">
+<div class="workbench-settings">
+    <div class="current-workbench">
+    @workbench.map { bench =>
+    <h4>Current workbench: @bench.title</h4>
+    <a class="changeBenchBtn sexyBtn sexyBtnRed" href="@routes.SettingController.resetBench(-1)">Reset bench</a>
+    }
+    @if(workbench.isDefined) {
+<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512 512" style="enable-background:new 0 0 512 512;" xml:space="preserve">
+<g>
+  <path d="M504,212c-5.827,0-11.289,1.573-16,4.305V140c0-4.418-3.582-8-8-8s-8,3.582-8,8H365.162
+    c-28.398-15.27-68.026-24-109.162-24s-80.764,8.73-109.162,24H40c0-4.418-3.582-8-8-8s-8,3.582-8,8v76.305
+    C19.289,213.573,13.827,212,8,212c-4.418,0-8,3.582-8,8s3.582,8,8,8c8.822,0,16,7.178,16,16v136h-8c-4.418,0-8,3.582-8,8
+    s3.582,8,8,8h16c4.418,0,8-3.582,8-8v-72h432v72c0,4.418,3.582,8,8,8h16c4.418,0,8-3.582,8-8s-3.582-8-8-8h-8V244
+    c0-8.822,7.178-16,16-16c4.418,0,8-3.582,8-8S508.418,212,504,212z M40,252h432v24H40V252z M148.884,156
+    c1.364,0,2.705-0.349,3.896-1.013C178.984,140.379,216.606,132,256,132s77.016,8.379,103.22,22.987
+    c1.191,0.664,2.532,1.013,3.896,1.013H472v80H40v-80H148.884z M40,300v-8h432v8H40z"></path>
+  <path d="M64,220h384c4.418,0,8-3.582,8-8v-15.998c0-0.001,0-0.003,0-0.005V180c0-4.418-3.582-8-8-8h-23.997
+    c-0.002,0-0.003,0-0.005,0h-39.995c-0.002,0-0.003,0-0.005,0h-20.882c-4.082,0-8.123-1.05-11.687-3.037
+    C327.534,155.641,292.751,148,256,148c-2.298,0-4.588,0.03-6.868,0.089c-0.93-0.132-1.876-0.104-2.797,0.091
+    c-33.132,1.214-63.975,8.635-85.764,20.783c-3.563,1.987-7.604,3.037-11.686,3.037h-4.882c-0.001,0-0.003,0-0.005,0h-39.995
+    c-0.001,0-0.003,0-0.005,0H64c-4.418,0-8,3.582-8,8v32C56,216.418,59.582,220,64,220z M124.687,188l-16,16H91.313l16-16H124.687z
+     M205.988,169.291c6.701-1.504,13.726-2.703,20.984-3.576L188.687,204h-17.373l34.343-34.343
+    C205.774,169.539,205.879,169.414,205.988,169.291z M256,164c4.164,0,8.295,0.104,12.379,0.307L228.687,204h-17.373l39.951-39.951
+    C252.838,164.02,254.416,164,256,164z M291.313,204l26.343-26.343c1.307-1.307,2.059-2.954,2.273-4.656
+    c5.087,1.59,9.906,3.377,14.408,5.349L308.687,204H291.313z M268.687,204h-17.373l34.343-34.343
+    c1.035-1.034,1.719-2.283,2.068-3.602c5.539,0.733,10.933,1.659,16.141,2.766L268.687,204z M404.687,188l-16,16h-17.373l16-16
+    H404.687z M440,192.687L428.687,204h-17.373l16-16H440V192.687z M364.687,188l-16,16h-17.373l18.343-18.343
+    c0.003-0.003,0.005-0.006,0.008-0.009c4.306,1.537,8.86,2.353,13.451,2.353H364.687z M168.362,182.938
+    c0.967-0.539,1.962-1.064,2.97-1.583L148.687,204h-17.373l16-16h1.571C155.687,188,162.422,186.249,168.362,182.938z M84.687,188
+    L72,200.687V188H84.687z"></path>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+</svg>
+    }
+    @if(!workbench.isDefined) {
+    <h4>You are disconnected from workbench</h4>
+    <p>Please select any avaliable workbench below. For any questions <a href="mailto:a@@minorityapp.com">a@@minorityapp.com</a></p>
+<svg version="1.1" id="Capa_2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+   viewBox="0 0 472.951 472.951" style="enable-background:new 0 0 472.951 472.951;" xml:space="preserve">
+<g>
+  <g>
+    <g>
+      <path style="fill:#010002;" d="M462.557,77.627c-14.323-25.556-41.488-41.423-70.889-41.423c-13.835,0-27.54,3.585-39.602,10.364
+        l-152.557,85.635l17.55,31.279l152.565-85.635c6.747-3.78,14.371-5.779,22.069-5.779c16.428,0,31.596,8.852,39.594,23.11
+        c5.909,10.535,7.356,22.752,4.072,34.408c-3.268,11.656-10.876,21.346-21.411,27.255l-138.291,77.604
+        c-2.634-16.851-10.494-32.392-22.793-44.699c-21.687-21.663-56.063-29.328-84.935-18.964l-12.485,4.495l12.128,33.734
+        l12.534-4.471c16.127-5.869,35.319-1.496,47.406,10.567c6.974,6.982,11.388,15.826,12.786,25.41
+        c-0.585-0.138-1.171-0.285-1.731-0.447c-11.681-3.284-21.354-10.9-27.271-21.476l-6.519-11.518l-31.303,17.59l6.56,11.518
+        c10.6,18.915,27.93,32.571,48.836,38.44c0.723,0.187,1.455,0.39,2.187,0.561c-1.105,1.398-2.284,2.731-3.536,3.983
+        l-114.32,114.328c-8.551,8.543-19.931,13.241-32.035,13.241c-12.112,0-23.492-4.698-32.027-13.241
+        c-8.535-8.543-13.233-19.907-13.233-32.027c0-12.112,4.698-23.483,13.233-32.018l99.291-99.282l-25.369-25.369l-99.282,99.282
+        C8.446,319.427,0,339.806,0,361.468c0,21.679,8.446,42.049,23.776,57.396c15.339,15.339,35.709,23.768,57.388,23.768
+        s42.049-8.429,57.388-23.768l114.345-114.32c8.372-8.405,14.81-18.566,18.842-29.71c6.625-1.764,12.924-4.3,18.777-7.6
+        l140.99-79.115c18.875-10.608,32.514-27.946,38.375-48.828C475.749,118.4,473.148,96.493,462.557,77.627z"/>
+    </g>
+    <g>
+      <g>
+        <path style="fill:#010002;" d="M173.171,141.769c4.503-0.821,7.511-5.145,6.69-9.657l-17.103-94.942
+          c-0.821-4.519-5.162-7.527-9.665-6.722c-4.511,0.821-7.527,5.145-6.706,9.673l17.111,94.925
+          C164.311,139.575,168.644,142.574,173.171,141.769z"/>
+      </g>
+    </g>
+    <g>
+      <g>
+        <path style="fill:#010002;" d="M43.561,191.776l94.934-17.119c4.519-0.821,7.527-5.145,6.706-9.657
+          c-0.821-4.528-5.145-7.543-9.649-6.722L40.61,175.405c-4.503,0.797-7.519,5.145-6.698,9.657
+          C34.717,189.582,39.058,192.589,43.561,191.776z"/>
+      </g>
+    </g>
+  </g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+<g>
+</g>
+</svg>
+    }
+</div>
+    <div class="avaliable-workbenches">
+    @workbenches.map { aval_bench =>
+      <div class="avaliable-workbench">
+        <h4><a class="changeBenchBtn" href="@routes.SettingController.resetBench(aval_bench.id.get)">Workbench: @aval_bench.title</a></h4>
+      </div>
+    }
+    </div>
+</div>
+
+@if(isManager) {
+@if(bizForm.isDefined) {
+@form(routes.SettingController.update_biz_credentials()) {
+<fieldset>
+   @inputText(bizForm.get("title"), '_label -> Messages("settings.businessName"), 'class -> "form-control")
+   @inputText(bizForm.get("nickname"), '_label -> Messages("settings.companyName"), 'class -> "form-control")
+   @inputText(bizForm.get("phone"), '_label -> Messages("settings.phone"), 'class -> "form-control")
+   @inputText(bizForm.get("website"), '_label -> Messages("settings.website"), 'class -> "form-control")
+   @inputText(bizForm.get("country"), '_label -> Messages("settings.country"), 'class -> "form-control")
+   @inputText(bizForm.get("city"), '_label -> Messages("settings.city"), 'class -> "form-control")
+   @inputText(bizForm.get("address"), '_label -> Messages("settings.address"), 'class -> "form-control")
+</fieldset>
+<div class="actions">
+<input type="submit" value="Update" class="btn btn-primary">
+</div>
+}
+}
+
+</div>
+}
+
+
+
+</div>
+</div>
+
+
+
+<!--
+    <span>Link this account to
+    env.providers.values.map { provider =>
+        if( provider.authMethod == OAuth1 || provider.authMethod == OAuth2 ) {
+            defining( "images/providers/%s.png".format(provider.id) ) { imageUrl =>
+            <a href="env.routes.authenticationUrl(provider.id, Some("/link-result"))"> <img src="securesocial.controllers.routes.Assets.at(imageUrl)"/></a>
+            }
+        }
+    }
+    </span>-->
+</div>
+</div>
+</div>
+</div>
+</div>
+}
