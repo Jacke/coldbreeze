@@ -94,7 +94,7 @@ object Parallel {
 
 
     Thread.sleep(1000)
-    system.shutdown
+    system.terminate
 
 
 

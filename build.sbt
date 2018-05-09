@@ -6,22 +6,35 @@ version := "2.0.alpha1"
 scalaVersion := "2.12.4"
 
 libraryDependencies += guice
+libraryDependencies += ws
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test
-
+libraryDependencies += "joda-time" % "joda-time" % "2.9.9"
+libraryDependencies += "org.joda" % "joda-money" % "0.12"
+libraryDependencies += "com.github.nscala-time" %% "nscala-time"            % "2.18.0"
+libraryDependencies += "com.enragedginger"      %% "akka-quartz-scheduler" % "1.6.1-akka-2.5.x"
+libraryDependencies += "org.scalaz"             %% "scalaz-core" % "7.2.22"
+libraryDependencies += "org.scalaz.stream"      %% "scalaz-stream" % "0.8.6"
 
 lazy val global = project
   .in(file("."))
-  .settings(settings)
-  .enablePlugins(PlayScala)
-
-lazy val core = project
   .settings(
-    name := "bp-core",
+    name := "global",
     settings,
     libraryDependencies ++= commonDependencies
   )
 
+lazy val core = project
+  .in(file("./bp-core"))
+  .settings(
+    name := "bp-core",
+    settings,
+    libraryDependencies ++= commonDependencies
+  ).dependsOn(
+    global
+  )
+
 lazy val dao = project
+  .in(file("./bp-dao"))
   .settings(
     name := "bp-dao",
     settings,
@@ -31,10 +44,11 @@ lazy val dao = project
     )
   )
   .dependsOn(
-    core
+    global, core
   )
 
 lazy val web = project
+  .in(file("./bp-web"))
   .settings(
     name := "bp-web2",
     settings,
@@ -43,8 +57,8 @@ lazy val web = project
     )
   )
   .dependsOn(
-    core
-  )
+    global, core, dao
+  ).enablePlugins(PlayScala)
 
 
 
@@ -74,6 +88,7 @@ lazy val dependencies =
     val pureconfig     = "com.github.pureconfig"      %% "pureconfig"              % pureconfigV
     val scalatest      = "org.scalatest"              %% "scalatest"               % scalatestV
     val scalacheck     = "org.scalacheck"             %% "scalacheck"              % scalacheckV
+    val joda           = "joda-time"                  % "joda-time"                % "2.9.9"
   }
 
 lazy val commonDependencies = Seq(
