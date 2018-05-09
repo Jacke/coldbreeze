@@ -73,7 +73,7 @@ object BPStateDAOF {
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val bpstates = TableQuery[BPStatesF]
 
   def pull(s: BPState): Future[Int] = db.run(bpstates returning bpstates.map(_.id) += s)

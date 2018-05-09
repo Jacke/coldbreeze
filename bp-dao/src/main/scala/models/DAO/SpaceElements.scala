@@ -223,7 +223,7 @@ object SpaceElemDAO {
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val space_elements = TableQuery[SpaceElements]
 
   private def filterQuery(id: Int): Query[SpaceElements, SpaceElementDTO, Seq] =

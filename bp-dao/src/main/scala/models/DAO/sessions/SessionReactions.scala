@@ -85,7 +85,7 @@ object SessionReactionDAOF {
   import models.DAO.conversion.DatabaseFuture._
     //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val session_reactions = TableQuery[SessionReactionRefs]
 
   //private def filterQueryByProcess(process: Int): Query[ProcessHistoriesF, ProcessHistoryDTO, Seq] =
@@ -354,7 +354,7 @@ object SessionReactionDAO {
   import models.DAO.conversion.DatabaseFuture._
     //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val session_reactions = TableQuery[SessionReactionRefs]
 
   //private def filterQueryByProcess(process: Int): Query[ProcessHistoriesF, ProcessHistoryDTO, Seq] =

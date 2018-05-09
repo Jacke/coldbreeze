@@ -58,7 +58,7 @@ object ReflectElemTopologDAOF {
   import models.DAO.conversion.DatabaseFuture._
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val reflected_elem_topologs = TableQuery[ReflectElemTopologs]
 
   private def filterByIdsQuery(ids: List[Int]): Query[ReflectElemTopologs, RefElemTopology, Seq] =
@@ -95,7 +95,7 @@ object ReflectElemTopologDAO {
   import models.DAO.conversion.DatabaseFuture._
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val reflected_elem_topologs = TableQuery[ReflectElemTopologs]
 
   private def filterQuery(id: Int): Query[ReflectElemTopologs, RefElemTopology, Seq] =

@@ -87,7 +87,7 @@ object ReactionDAOF {
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val reactions = TableQuery[ReactionRefsF]
 
   private def filterQuery(id: Int): Query[ReactionRefsF, UnitReaction, Seq] =
@@ -121,7 +121,7 @@ object ReactionStateOutDAOF {
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val reaction_state_outs = TableQuery[ReactionStateOutsF]
 
   private def filterQuery(id: Int): Query[ReactionStateOutsF, UnitReactionStateOut, Seq] =

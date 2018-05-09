@@ -166,7 +166,7 @@ object SessionSpaceElemDAOF {
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val space_elements = TableQuery[SessionSpaceElements]
 
   private def filterByLaunchesQuery(ids: List[Int]): Query[SessionSpaceElements, SessionSpaceElementDTO, Seq] =
@@ -204,7 +204,7 @@ object SessionSpaceElemDAO {
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val space_elements = TableQuery[SessionSpaceElements]
 
   private def filterQuery(id: Int): Query[SessionSpaceElements, SessionSpaceElementDTO, Seq] =

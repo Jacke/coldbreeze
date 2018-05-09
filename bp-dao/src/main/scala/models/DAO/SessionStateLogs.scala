@@ -51,7 +51,7 @@ object SessionStateLogDAOF {
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val session_state_logs = SessionStateLogDAO.session_state_logs
 
   private def filterQuery(id: Int): Query[SessionStateLogs, SessionStateLog, Seq] =
@@ -73,7 +73,7 @@ object SessionStateLogDAO {
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val session_state_logs = TableQuery[SessionStateLogs]
   private def filterQuery(id: Int): Query[SessionStateLogs, SessionStateLog, Seq] =
   session_state_logs.filter(_.id === id)

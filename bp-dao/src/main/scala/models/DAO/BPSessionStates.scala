@@ -46,7 +46,7 @@ class BPSessionStates(tag: Tag) extends Table[BPSessionState](tag, "sessionstate
 
   def lang          = column[String]("lang", O.Default("en"))
 
-   def session_elements = (s_front_elem_id,s_space_id,s_space_elem_id).<>[Option[SessionElements], (Option[Int], Option[Int], Option[Int])]({
+   def session_elements = (s_front_elem_id,s_space_id,s_space_elem_id).<>[Option[SessionElements]]({
      case (Some(lt), Some(ln), Some(fn)) => Some(SessionElements(Some(lt), Some(ln), Some(fn)))
      case (Some(lt), Some(ln), None) => Some(SessionElements(Some(lt), Some(ln), None))
      case (Some(lt), None, Some(fn)) => Some(SessionElements(Some(lt), None, Some(fn)))
@@ -112,7 +112,7 @@ object BPSessionStateDAOF {
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val sessionstates = TableQuery[BPSessionStates]
 
   private def filterQuery(id: Int): Query[BPSessionStates, BPSessionState, Seq] =

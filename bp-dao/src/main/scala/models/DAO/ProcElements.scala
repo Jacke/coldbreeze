@@ -140,7 +140,7 @@ object ProcElemDAO {
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val proc_elements = TableQuery[ProcElementsF]
   private def filterQuery(id: Int): Query[ProcElementsF, UndefElement, Seq] =
     proc_elements.filter(_.id === id)

@@ -111,7 +111,7 @@ object RefDAOF {
   //import dbConfig.driver.api._ //
 
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val refs = RefDAO.refs
 
   private def filterQuery(id: Int): Query[Refs, Ref, Seq] =
@@ -270,7 +270,7 @@ object RefDAO {
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val refs = TableQuery[Refs]
   private def filterQuery(id: Int): Query[Refs, Ref, Seq] =
     refs.filter(_.id === id)

@@ -59,7 +59,7 @@ object StrategyOutputsDAOF {
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val strategy_outputs = TableQuery[StrategyOutputs]
 
   private def filterQuery(id: Long): Query[StrategyOutputs, StrategyOutputUnit, Seq] =

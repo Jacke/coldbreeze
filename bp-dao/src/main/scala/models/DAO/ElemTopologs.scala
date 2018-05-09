@@ -22,7 +22,7 @@ object ElemTopologDAOF {
   import models.DAO.conversion.DatabaseFuture._
   import dbConfig.driver.api._
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val elem_topologs = TableQuery[ElemTopologs]
 
   private def filterQuery(id: Int): Query[ElemTopologs, ElemTopology, Seq] =
@@ -84,7 +84,7 @@ object ElemTopologDAO {
   import models.DAO.conversion.DatabaseFuture._
   import dbConfig.driver.api._
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val elem_topologs = TableQuery[ElemTopologs]
 
   private def filterQuery(id: Int): Query[ElemTopologs, ElemTopology, Seq] =

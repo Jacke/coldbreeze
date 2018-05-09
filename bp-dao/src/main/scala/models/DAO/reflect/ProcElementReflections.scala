@@ -69,7 +69,7 @@ object ProcElemReflectionDAOF {
   import models.DAO.conversion.DatabaseFuture._
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val proc_element_reflections = ProcElemReflectionDAO.proc_element_reflections
 
   private def filterByIdsQuery(ids: List[Int]): Query[ProcElementReflections, UnitElementRef, Seq] =
@@ -118,7 +118,7 @@ object ProcElemReflectionDAO {
   import models.DAO.conversion.DatabaseFuture._
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
 
   private def filterByIdsQuery(ids: List[Int]): Query[ProcElementReflections, UnitElementRef, Seq] =
     proc_element_reflections.filter(_.id inSetBind ids)

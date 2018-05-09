@@ -52,7 +52,7 @@ object LaunchStrategiesDAOF {
 //import slick.driver.PostgresDriver.api._
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val launch_strategies = TableQuery[LaunchStrategies]
 
   private def filterQuery(id: Long): Query[LaunchStrategies, LaunchStrategy, Seq] =

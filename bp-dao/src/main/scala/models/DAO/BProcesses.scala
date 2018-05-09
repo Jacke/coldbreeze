@@ -66,7 +66,7 @@ object BPDAOF {
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val bprocesses = TableQuery[BProcesses]
   implicit val getBProcessDTOResult = GetResult(r => BProcessDTO(r.<<, r.<<,r.<<,r.<<,r.<<,r.<<,r.<<,r.<< ))
 
@@ -133,7 +133,7 @@ object BPDAO {
   import slick.jdbc._
 
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
 
   val bprocesses = TableQuery[BProcesses]
 

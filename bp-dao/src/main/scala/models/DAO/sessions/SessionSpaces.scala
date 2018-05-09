@@ -117,7 +117,7 @@ object SessionSpaceDAOF {
   import models.DAO.conversion.DatabaseFuture._
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val session_spaces = TableQuery[SessionSpaces]
 
 
@@ -150,7 +150,7 @@ object SessionSpaceDAO {
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val session_spaces = TableQuery[SessionSpaces]
   private def filterQuery(id: Int): Query[SessionSpaces, SessionSpaceDTO, Seq] =
     session_spaces.filter(_.id === id)

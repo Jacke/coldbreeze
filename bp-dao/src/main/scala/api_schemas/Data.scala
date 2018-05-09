@@ -1,6 +1,7 @@
 package api_schemas
 
-import sangria.schema.{DeferredResolver, Deferred}
+import sangria.schema._
+import sangria.execution.deferred._
 
 import scala.concurrent.Future
 import scala.util.Try

@@ -94,7 +94,7 @@ object BPStationDAOF {
   import models.DAO.conversion.DatabaseFuture._
 
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val stations = BPStationDAO.bpstations
 
   private def filterQueryBySessions(session_ids: List[Int]): Query[BPStations, BPStationDTO, Seq] =
@@ -153,7 +153,7 @@ object BPStationDAO {
   import models.DAO.conversion.DatabaseFuture._
 
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
 
   val bpstations = TableQuery[BPStations]
 

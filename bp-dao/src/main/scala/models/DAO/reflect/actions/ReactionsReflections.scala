@@ -81,7 +81,7 @@ object ReactionRefDAOF {
   import models.DAO.conversion.DatabaseFuture._
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val reaction_refs = TableQuery[ReactionRefs]
 
   private def filterByIdsQuery(ids: List[Int]): Query[ReactionRefs, UnitReactionRef, Seq] =
@@ -126,7 +126,7 @@ object ReactionRefDAO {
   import models.DAO.conversion.DatabaseFuture._
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val reaction_refs = TableQuery[ReactionRefs]
 
   private def filterByIdsQuery(ids: List[Int]): Query[ReactionRefs, UnitReactionRef, Seq] =

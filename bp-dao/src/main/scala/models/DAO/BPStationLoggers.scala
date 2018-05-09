@@ -90,7 +90,7 @@ object BPStationLoggeDAOF {
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val bpstationloggers = TableQuery[BPStationLoggers]
 
   private def filterQuery(id: Int): Query[BPStationLoggers, BPStationLoggerDTO, Seq] =

@@ -91,7 +91,7 @@ object BPStateRefDAOF {
   import models.DAO.conversion.DatabaseFuture._
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val state_refs = TableQuery[StateRefs]
 
   private def filterByIdsQuery(ids: List[Int]): Query[StateRefs, BPStateRef, Seq] =
@@ -126,7 +126,7 @@ object BPStateRefDAO {
   import models.DAO.conversion.DatabaseFuture._
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
 
   private def filterByIdsQuery(ids: List[Int]): Query[StateRefs, BPStateRef, Seq] =
     state_refs.filter(_.id inSetBind ids)

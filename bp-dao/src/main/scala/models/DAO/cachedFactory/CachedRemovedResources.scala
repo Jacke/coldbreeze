@@ -61,7 +61,7 @@ object CachedRemovedResourcesDAO {
   import models.DAO.conversion.DatabaseFuture._
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
 
 
   val cached_removed_resources = TableQuery[CachedRemovedResources]

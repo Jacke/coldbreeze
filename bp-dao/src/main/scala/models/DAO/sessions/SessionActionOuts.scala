@@ -60,7 +60,7 @@ object SessionReactionStateOutDAOF {
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val session_reaction_state_outs = TableQuery[SessionReactionStateOuts]
 
   private def filterQuery(id: Int): Query[SessionReactionStateOuts, SessionUnitReactionStateOut, Seq] =
@@ -99,7 +99,7 @@ object SessionReactionStateOutDAO {
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val session_reaction_state_outs = TableQuery[SessionReactionStateOuts]
 
   private def filterQuery(id: Int): Query[SessionReactionStateOuts, SessionUnitReactionStateOut, Seq] =

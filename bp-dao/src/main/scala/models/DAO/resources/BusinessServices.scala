@@ -43,7 +43,7 @@ object BusinessServiceDAOF {
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val business_services = TableQuery[BusinessServices]
 
   private def filterQuery(id: Int): Query[BusinessServices, BusinessServiceDTO, Seq] =
@@ -75,7 +75,7 @@ object BusinessServiceDAO {
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val business_services = TableQuery[BusinessServices]
 
   private def filterQuery(id: Int): Query[BusinessServices, BusinessServiceDTO, Seq] =

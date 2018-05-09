@@ -69,7 +69,7 @@ object SessionInitialStateDAOF {
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val session_initial_states = TableQuery[SessionInitialStates]
 
   private def filterQuery(id: Int): Query[SessionInitialStates, SessionInitialState, Seq] =
@@ -91,7 +91,7 @@ object SessionInitialStateDAO {
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val session_initial_states = TableQuery[SessionInitialStates]
 
   private def filterQuery(id: Int): Query[SessionInitialStates, SessionInitialState, Seq] =

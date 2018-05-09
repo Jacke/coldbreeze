@@ -61,7 +61,7 @@ object ReactionStateOutDAO {
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val reaction_state_outs = TableQuery[ReactionStateOuts]
   private def filterQuery(id: Int): Query[ReactionStateOuts, UnitReactionStateOut, Seq] =
     reaction_state_outs.filter(_.id === id)

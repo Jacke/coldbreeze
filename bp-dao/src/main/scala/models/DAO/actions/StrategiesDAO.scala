@@ -50,7 +50,7 @@ object StrategiesDAOF {
 //import slick.driver.PostgresDriver.api._
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val strategies = StrategiesDAO.strategies
 
   private def filterQuery(id: Long): Query[Strategies, Strategy, Seq] =

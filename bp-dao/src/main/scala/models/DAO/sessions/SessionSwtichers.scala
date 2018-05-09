@@ -65,7 +65,7 @@ object SessionSwitcherDAOF {
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val session_switchers = TableQuery[SessionSwitchers]
 
   private def filterQuery(id: Int): Query[SessionSwitchers, SessionUnitSwitcher, Seq] =
@@ -89,7 +89,7 @@ object SessionSwitcherDAO {
 
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val session_switchers = TableQuery[SessionSwitchers]
 
   private def filterQuery(id: Int): Query[SessionSwitchers, SessionUnitSwitcher, Seq] =

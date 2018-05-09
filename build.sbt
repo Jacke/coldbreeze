@@ -15,6 +15,15 @@ libraryDependencies += "com.enragedginger"      %% "akka-quartz-scheduler" % "1.
 libraryDependencies += "org.scalaz"             %% "scalaz-core" % "7.2.22"
 libraryDependencies += "org.scalaz.stream"      %% "scalaz-stream" % "0.8.6"
 
+libraryDependencies += "com.typesafe.play"      %% "play-slick"              % "3.0.3"
+libraryDependencies += "com.typesafe.play"      %% "play-slick-evolutions"   % "3.0.3"
+libraryDependencies += "org.postgresql"          % "postgresql"              % "9.4-1201-jdbc41"
+libraryDependencies += "com.github.tototoshi"   %% "slick-joda-mapper"       % "2.3.0"
+libraryDependencies += "com.github.tminglei" %% "slick-pg" % "0.16.1"
+libraryDependencies += "org.sangria-graphql" %% "sangria" % "1.4.0"
+libraryDependencies += "org.sangria-graphql" %% "sangria-play-json" % "1.0.4"
+libraryDependencies += "com.lihaoyi" %% "sourcecode" % "0.1.4" 
+
 lazy val global = project
   .in(file("."))
   .settings(

@@ -70,7 +70,7 @@ object SpaceElementReflectionDAOF {
   import models.DAO.conversion.DatabaseFuture._
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val space_element_reflections = TableQuery[SpaceElementReflections]
 
   private def filterByIdsQuery(ids: List[Int]): Query[SpaceElementReflections, UnitSpaceElementRef, Seq] =
@@ -119,7 +119,7 @@ object SpaceElementReflectionDAO {
   import models.DAO.conversion.DatabaseFuture._
   //import dbConfig.driver.api._ //
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val space_element_reflections = TableQuery[SpaceElementReflections]
 
   private def filterByIdsQuery(ids: List[Int]): Query[SpaceElementReflections, UnitSpaceElementRef, Seq] =

@@ -40,7 +40,7 @@ object FieldsDAOF {
   import scala.util.Try
 
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val middlewares = TableQuery[Fields]
 
 

@@ -58,7 +58,7 @@ object StrategyOutputRefsDAOF {
   import scala.concurrent.{ExecutionContext, Awaitable, Await, Future}
   import scala.util.Try
   def await[T](a: Awaitable[T])(implicit ec: ExecutionContext) = Await.result(a, Duration.Inf)
-  def awaitAndPrint[T](a: Awaitable[T])(implicit ec: ExecutionContext) = println(await(a))
+  
   val strategy_output_refs = TableQuery[StrategyOutputRefs]
 
   def pull(s: StrategyOutputRef):Future[Long] = db.run(strategy_output_refs returning strategy_output_refs.map(_.id) += s)
