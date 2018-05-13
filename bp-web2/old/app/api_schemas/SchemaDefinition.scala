@@ -1,3 +1,4 @@
+/*
 package api_schemas
 
 import sangria.schema._
@@ -345,3 +346,4 @@ def findEntitiesElRes(costs:List[ElementResourceDTO]):List[Entity] = {
 */
 
 }
+*/
