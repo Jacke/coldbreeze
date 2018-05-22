@@ -57,7 +57,7 @@ lazy val dao = project
   )
 
 lazy val web = project
-  .in(file("./bp-web2"))
+  .in(file("./bp-web2/old"))
   .settings(
     name := "bp-web2",
     settings,
